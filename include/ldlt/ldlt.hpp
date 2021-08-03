@@ -284,6 +284,22 @@ struct LowerTriAccGenerator {
 		return Pack::fmsub(lik.mul(ljk), dk, acc);
 	}
 };
+
+template <typename Scalar>
+struct ArrayGenerator {
+	Scalar const* mem;
+
+	LDLT_INLINE auto add(Scalar acc) -> Scalar {
+		Scalar x = *mem + acc;
+		++mem;
+		return x;
+	}
+	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
+		Scalar x = *mem - comp;
+		++mem;
+		return x;
+	}
+};
 } // namespace detail
 
 namespace accumulators {
@@ -342,6 +358,7 @@ struct Kahan {
 
 template <typename Scalar>
 struct KahanVectorized {
+	static_assert(std::is_trivially_copyable<Scalar>::value, ".");
 	using Pack = detail::NativePack<Scalar>;
 	using PackInfo = detail::NativePackInfo<Scalar>;
 
@@ -360,17 +377,14 @@ struct KahanVectorized {
 			psum = pt;
 		}
 
-		Scalar rem_sum(0);
-		Scalar c(0);
-
+		Scalar psum_array[2 * N];
+		std::memcpy(&psum_array, &psum, sizeof(psum));
 		for (usize k = 0; k < rem; ++k) {
-			Scalar y = fn.sub(c);
-			Scalar t = rem_sum + y;
-			c = (t - rem_sum) - y;
-			rem_sum = t;
+			psum_array[N + k] = fn.add(-Scalar(0));
 		}
-
-		return psum.sum() + rem_sum;
+		return Kahan<Scalar>{}(
+				N + rem,
+				detail::ArrayGenerator<Scalar>{static_cast<Scalar const*>(psum_array)});
 	}
 };
 } // namespace accumulators
