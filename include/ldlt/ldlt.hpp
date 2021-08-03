@@ -31,8 +31,8 @@ template <>
 struct MemoryOffset<Layout::colmajor> {
 	template <typename T>
 	LDLT_INLINE static constexpr auto
-	offset(T* ptr, usize row, usize col, usize outer_stride) noexcept -> T* {
-		return ptr + (row + col * outer_stride);
+	offset(T* ptr, i32 row, i32 col, i32 outer_stride) noexcept -> T* {
+		return ptr + (usize(row) + usize(col) * usize(outer_stride));
 	}
 };
 
@@ -40,8 +40,8 @@ template <>
 struct MemoryOffset<Layout::rowmajor> {
 	template <typename T>
 	LDLT_INLINE static constexpr auto
-	offset(T* ptr, usize row, usize col, usize outer_stride) noexcept -> T* {
-		return ptr + (col + row * outer_stride);
+	offset(T* ptr, i32 row, i32 col, i32 outer_stride) noexcept -> T* {
+		return ptr + (usize(col) + usize(row) * usize(outer_stride));
 	}
 };
 } // namespace detail
@@ -49,9 +49,9 @@ struct MemoryOffset<Layout::rowmajor> {
 template <typename Scalar, Layout L>
 struct MatrixView {
 	Scalar const* data;
-	usize dim;
+	i32 dim;
 
-	LDLT_INLINE auto operator()(usize row, usize col) const noexcept
+	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
 			-> Scalar const& {
 		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
 	}
@@ -60,9 +60,9 @@ struct MatrixView {
 template <typename Scalar, Layout L>
 struct LowerTriangularMatrixView {
 	Scalar const* data;
-	usize dim;
+	i32 dim;
 
-	LDLT_INLINE auto operator()(usize row, usize col) const noexcept
+	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
 			-> Scalar const& {
 		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
 	}
@@ -71,13 +71,13 @@ struct LowerTriangularMatrixView {
 template <typename Scalar, Layout L>
 struct LowerTriangularMatrixViewMut {
 	Scalar* data;
-	usize dim;
+	i32 dim;
 
 	LDLT_INLINE auto as_const() const noexcept
 			-> LowerTriangularMatrixView<Scalar, L> {
 		return {data, dim};
 	}
-	LDLT_INLINE auto operator()(usize row, usize col) const noexcept -> Scalar& {
+	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
 		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
 	}
 };
@@ -86,13 +86,13 @@ template <typename Scalar, Layout L>
 struct LowerTriangularMatrix {
 private:
 	std::vector<Scalar> _data = {};
-	usize _dim = 0;
+	i32 _dim = 0;
 
 public:
 	LowerTriangularMatrix() noexcept = default;
-	LowerTriangularMatrix(WithDim /*tag*/, usize dim)
+	LowerTriangularMatrix(WithDim /*tag*/, i32 dim)
 			: _data(dim * dim), _dim(dim) {}
-	LowerTriangularMatrix(WithDimUninit /*tag*/, usize dim)
+	LowerTriangularMatrix(WithDimUninit /*tag*/, i32 dim)
 			: LowerTriangularMatrix(with_dim, dim) {}
 
 	LDLT_INLINE auto as_view() const noexcept
@@ -108,9 +108,9 @@ public:
 template <typename Scalar>
 struct DiagonalMatrixView {
 	Scalar const* data;
-	usize dim;
+	i32 dim;
 
-	HEDLEY_ALWAYS_INLINE auto operator()(usize index) const noexcept
+	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept
 			-> Scalar const& {
 		return *(data + index);
 	}
@@ -119,11 +119,11 @@ struct DiagonalMatrixView {
 template <typename Scalar>
 struct DiagonalMatrixViewMut {
 	Scalar* data;
-	usize dim;
+	i32 dim;
 	LDLT_INLINE auto as_const() const noexcept -> DiagonalMatrixView<Scalar> {
 		return {data, dim};
 	}
-	HEDLEY_ALWAYS_INLINE auto operator()(usize index) const noexcept -> Scalar& {
+	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
 		return *(data + index);
 	}
 };
@@ -132,12 +132,12 @@ template <typename Scalar>
 struct DiagonalMatrix {
 private:
 	std::vector<Scalar> _data{};
-	usize _dim = 0;
+	i32 _dim = 0;
 
 public:
 	DiagonalMatrix() noexcept = default;
-	DiagonalMatrix(WithDim /*tag*/, usize dim) : _data(dim), _dim(dim) {}
-	DiagonalMatrix(WithDimUninit /*tag*/, usize dim)
+	DiagonalMatrix(WithDim /*tag*/, i32 dim) : _data(dim), _dim(dim) {}
+	DiagonalMatrix(WithDimUninit /*tag*/, i32 dim)
 			: DiagonalMatrix(with_dim, dim) {}
 
 	LDLT_INLINE auto as_view() const noexcept -> DiagonalMatrixView<Scalar> {
@@ -155,12 +155,33 @@ public:
 #endif
 
 namespace detail {
+template <Layout L>
+struct MatrixLoadRowBlock;
+
+template <>
+struct MatrixLoadRowBlock<Layout::rowmajor> {
+	template <usize N, typename Scalar>
+	LDLT_INLINE static auto load_pack(Scalar const* p, i32 stride) noexcept
+			-> Pack<Scalar, N> {
+		(void)stride;
+		return Pack<Scalar, N>::load_unaligned(p);
+	}
+};
+template <>
+struct MatrixLoadRowBlock<Layout::colmajor> {
+	template <usize N, typename Scalar>
+	LDLT_INLINE static auto load_pack(Scalar const* p, i32 stride) noexcept
+			-> Pack<Scalar, N> {
+		return Pack<Scalar, N>::load_gather(p, stride);
+	}
+};
+
 template <typename Scalar, Layout L>
 struct DiagAccGenerator {
 	LowerTriangularMatrixView<Scalar, L> l;
 	DiagonalMatrixView<Scalar> d;
-	usize j;
-	usize k;
+	i32 j;
+	i32 k;
 
 	LDLT_INLINE auto add(Scalar acc) -> Scalar {
 		Scalar ljk = l(j, k);
@@ -186,18 +207,21 @@ struct DiagAccGenerator {
 	}
 
 	using Pack = NativePack<Scalar>;
+	using PackInfo = NativePackInfo<Scalar>;
 	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
-		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack ljk =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
 		Pack dk = Pack::load_unaligned(&d(k));
-		k += NativePackInfo<Scalar>::N;
+		k += i32{NativePackInfo<Scalar>::N};
 
 		return Pack::fmadd(ljk.mul(ljk), dk, acc);
 	}
 
 	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
-		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack ljk =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
 		Pack dk = Pack::load_unaligned(&d(k));
-		k += NativePackInfo<Scalar>::N;
+		k += i32{NativePackInfo<Scalar>::N};
 
 		return Pack::fmsub(ljk.mul(ljk), dk, acc);
 	}
@@ -207,9 +231,9 @@ template <typename Scalar, Layout L>
 struct LowerTriAccGenerator {
 	LowerTriangularMatrixView<Scalar, L> l;
 	DiagonalMatrixView<Scalar> d;
-	usize i;
-	usize j;
-	usize k;
+	i32 i;
+	i32 j;
+	i32 k;
 
 	LDLT_INLINE auto add(Scalar acc) -> Scalar {
 		Scalar lik = l(i, k);
@@ -237,18 +261,23 @@ struct LowerTriAccGenerator {
 	}
 
 	using Pack = NativePack<Scalar>;
+	using PackInfo = NativePackInfo<Scalar>;
 	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
-		Pack lik = Pack::load_unaligned(&l(i, k));
-		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack lik =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(i, k), l.dim);
+		Pack ljk =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
 		Pack dk = Pack::load_unaligned(&d(k));
-		k += NativePackInfo<Scalar>::N;
+		k += i32{NativePackInfo<Scalar>::N};
 
 		return Pack::fmadd(lik.mul(ljk), dk, acc);
 	}
 
 	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
-		Pack lik = Pack::load_unaligned(&l(i, k));
-		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack lik =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(i, k), l.dim);
+		Pack ljk =
+				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
 		Pack dk = Pack::load_unaligned(&d(k));
 		k += NativePackInfo<Scalar>::N;
 
@@ -324,41 +353,25 @@ void factorize_ldlt_unblocked(
 		MatrixView<Scalar, InL> in_matrix,
 		AccumuluateFn acc = {}) {
 
-	usize dim = out_l.dim;
+	i32 dim = out_l.dim;
 	auto in_l = out_l.as_const();
 	auto in_d = out_d.as_const();
 
-	for (usize j = 0; j < dim; ++j) {
-		Scalar acc_d = Scalar(
-				acc(j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
-		Scalar debug_acc_d = Scalar(accumulators::Sequential<Scalar>{}(
-				j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
-
-		fmt::print(
-				"count: {}, diff: {}, acc: {}, debug: {}\n",
-				j,
-				acc_d - debug_acc_d,
-				acc_d,
-				debug_acc_d);
+	for (i32 j = 0; j < dim; ++j) {
+		Scalar acc_d =
+				acc(usize(j), detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0});
 
 		out_d(j) = in_matrix(j, j) - acc_d;
 
-		for (usize i = 0; i < j; ++i) {
+		for (i32 i = 0; i < j; ++i) {
 			out_l(i, j) = Scalar(0);
 		}
 		out_l(j, j) = Scalar(1);
-		for (usize i = j + 1; i < dim; ++i) {
-			Scalar acc_l = Scalar(acc(
-					j, detail::LowerTriAccGenerator<Scalar, OutL>{in_l, in_d, i, j, 0}));
-			Scalar debug_acc_l = Scalar(accumulators::Sequential<Scalar>{}(
-					j, detail::LowerTriAccGenerator<Scalar, OutL>{in_l, in_d, i, j, 0}));
+		for (i32 i = j + 1; i < dim; ++i) {
+			Scalar acc_l =
+					acc(usize(j),
+			        detail::LowerTriAccGenerator<Scalar, OutL>{in_l, in_d, i, j, 0});
 
-			// fmt::print(
-			// 		"count: {}, diff: {}, acc: {}, debug: {}\n",
-			// 		j,
-			// 		acc_l - debug_acc_l,
-			// 		acc_l,
-			// 		debug_acc_l);
 			out_l(i, j) = (in_matrix(i, j) - acc_l) / out_d(j);
 		}
 	}

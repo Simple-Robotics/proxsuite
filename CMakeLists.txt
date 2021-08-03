@@ -27,11 +27,28 @@ include(cmake/conan.cmake)
 
 add_library(inria_ldlt INTERFACE)
 target_include_directories(
-  inria_ldlt SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
-                              ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
+  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
+target_include_directories(
+  inria_ldlt SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+  # Conan dependencies
+  set(CONAN_REQUIRES
+      # MIT License
+      fmt/8.0.0
+      backward-cpp/1.5
+      #
+      # Mozilla Public License 2.0
+      eigen/3.3.9
+      #
+      # LGPL v3
+      mpfr/4.1.0
+  )
+  set(CONAN_OPTIONS)
+  run_conan()
+
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 

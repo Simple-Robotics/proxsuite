@@ -3,6 +3,10 @@
 
 #include "ldlt/detail/hedley.h"
 
+#define LDLT_REMOVE_PAREN(...) __VA_ARGS__
+
+#define LDLT_NOM_SEMICOLON static_assert(true, ".")
+
 #ifndef LDLT_INLINE
 #define LDLT_INLINE HEDLEY_ALWAYS_INLINE
 #endif

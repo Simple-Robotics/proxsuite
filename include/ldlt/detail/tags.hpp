@@ -1,7 +1,8 @@
 #ifndef LDLT_TAGS_HPP_9FTN4PUWS
 #define LDLT_TAGS_HPP_9FTN4PUWS
 
-#define LDLT_NOM_SEMICOLON static_assert(true, ".");
+#include "ldlt/detail/macros.hpp"
+
 #define LDLT_DEFINE_TAG(Name, Type)                                            \
 	struct Type {                                                                \
 		constexpr explicit Type() noexcept =                                       \

@@ -2,21 +2,6 @@ include(../cmake/doctest.cmake)
 
 include_directories(include)
 
-# Conan dependencies
-set(CONAN_REQUIRES
-    # MIT License
-    fmt/8.0.0
-    backward-cpp/1.5
-    #
-    # Mozilla Public License 2.0
-    eigen/3.3.9
-    #
-    # LGPL v3
-    mpfr/4.1.0
-)
-set(CONAN_OPTIONS)
-run_conan()
-
 target_link_libraries(
   inria_ldlt INTERFACE CONAN_PKG::fmt CONAN_PKG::eigen CONAN_PKG::mpfr
 )

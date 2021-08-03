@@ -1,7 +1,7 @@
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <ldlt/ldlt.hpp>
 #include <fmt/ostream.h>
+#include <ldlt/ldlt.hpp>
 
 using namespace ldlt;
 
@@ -14,7 +14,7 @@ template <typename T>
 using DoNotDeduce = typename DoNotDeduceImpl<T>::Type;
 
 template <typename T>
-using Mat = Eigen::Matrix<T, -1, -1>;
+using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 template <typename T>
 using Vec = Eigen::Matrix<T, -1, 1>;
 
@@ -34,7 +34,7 @@ auto matmul3(
 	return ::matmul(::matmul(a, b), c);
 }
 
-using T = f32;
+using T = f64;
 
 struct Error {
 	T eigen;
@@ -42,7 +42,7 @@ struct Error {
 };
 
 template <typename Fn>
-auto ldlt_roundtrip_error(usize n, Fn fn) -> Error {
+auto ldlt_roundtrip_error(i32 n, Fn fn) -> Error {
 	Mat<T> mat(n, n);
 	Mat<T> l(n, n);
 	Vec<T> d(n);
@@ -72,7 +72,7 @@ auto ldlt_roundtrip_error(usize n, Fn fn) -> Error {
 }
 
 auto main() -> int {
-	for (usize n = 9; n <= 9; ++n) {
+	for (i32 n = 1; n <= 128; ++n) {
 
 		{
 			auto err = ::ldlt_roundtrip_error(
