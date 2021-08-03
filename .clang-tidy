@@ -1,0 +1,34 @@
+---
+Checks:          '*,-abseil-*,-fuchsia-*,-google-*,-llvm-*,-zircon-*,
+                  -cert-dcl21-cpp,
+                  -clang-diagnostic-c++98-compat-pedantic,
+                  -clang-diagnostic-unused-macros,
+                  -cppcoreguidelines-avoid-magic-numbers,
+                  -cppcoreguidelines-macro-usage,
+                  -cppcoreguidelines-no-malloc,
+
+                  -cppcoreguidelines-owning-memory,
+                  # https://github.com/isocpp/CppCoreGuidelines/issues/1589,
+                  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+
+                  -hicpp-avoid-c-arrays,
+                  -hicpp-member-init,
+                  -hicpp-noexcept-move,
+                  -hicpp-no-malloc,
+                  -hicpp-special-member-functions,
+                  -hicpp-vararg,
+                  -llvmlibc-callee-namespace,
+                  -llvmlibc-restrict-system-libc-headers,
+                  -modernize-avoid-c-arrays,
+                  -readability-braces-around-statements,
+                  -readability-else-after-return,
+                  -readability-magic-numbers,
+                  -readability-misleading-indentation,
+                  -readability-named-parameter,
+                  '
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+FormatStyle:     none
+CheckOptions:
+  - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value:           '1'
