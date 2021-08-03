@@ -34,20 +34,15 @@ auto matmul3(
 	return ::matmul(::matmul(a, b), c);
 }
 
-using T = f64;
-
-struct Error {
-	T eigen;
-	T ours;
-};
-
+template <typename T>
 struct Data {
 	Mat<T> mat;
 	Mat<T> l;
 	Vec<T> d;
 };
 
-auto generate_data(i32 n) -> Data {
+template <typename T>
+auto generate_data(i32 n) -> Data<T> {
 	Mat<T> mat(n, n);
 	Mat<T> l(n, n);
 	Vec<T> d(n);
@@ -58,8 +53,8 @@ auto generate_data(i32 n) -> Data {
 	return {LDLT_FWD(mat), LDLT_FWD(l), LDLT_FWD(d)};
 }
 
-template <typename Fn>
-auto ldlt_roundtrip_error(Data& data, Fn fn) -> T {
+template <typename T, typename Fn>
+auto ldlt_roundtrip_error(Data<T>& data, Fn fn) -> T {
 	auto const& mat = data.mat;
 	auto& l = data.l;
 	auto& d = data.d;
@@ -76,7 +71,8 @@ auto ldlt_roundtrip_error(Data& data, Fn fn) -> T {
 	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
 }
 
-auto eigen_ldlt_roundtrip_error(Data& data) -> T {
+template <typename T>
+auto eigen_ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto ldlt = data.mat.ldlt();
 	auto const& L = ldlt.matrixL();
 	auto const& P = ldlt.transpositionsP();
@@ -88,25 +84,27 @@ auto eigen_ldlt_roundtrip_error(Data& data) -> T {
 
 template <typename Acc>
 struct LdltUnblocked {
+	using ScalarType = typename Acc::ScalarType;
 	Acc acc;
 
 	void operator()(
-			LowerTriangularMatrixViewMut<T, colmajor> l_view,
-			DiagonalMatrixViewMut<T> d_view,
-			MatrixView<T, colmajor> m_view) {
+			LowerTriangularMatrixViewMut<ScalarType, colmajor> l_view,
+			DiagonalMatrixViewMut<ScalarType> d_view,
+			MatrixView<ScalarType, colmajor> m_view) {
 		ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view, acc);
 	}
 };
 
-auto main() -> int {
-	for (i32 n = 1; n <= 128; ++n) {
+template <typename T>
+void roundtrip_test(i32 min, i32 max) {
+	for (i32 n = min; n <= max; ++n) {
 
-		auto data = generate_data(n);
+		auto data = generate_data<T>(n);
 
 		auto display = [&](fmt::string_view name, T err) {
-			fmt::print("n = {}, {:<10}: {}\n", n, name, err);
+			fmt::print("n = {}, {:<10}: {:>7.5e}\n", n, name, err);
 		};
-    fmt::print("{:-<79}\n", "");
+		fmt::print("{:-<40}\n", "");
 
 		display("eigen", ::eigen_ldlt_roundtrip_error(data));
 
@@ -133,4 +131,9 @@ auto main() -> int {
 						data,
 						LdltUnblocked<accumulators::KahanVectorized<T>>{}));
 	}
+}
+
+auto main() -> int {
+	roundtrip_test<f32>(1, 64);
+	roundtrip_test<f64>(1, 64);
 }

@@ -305,6 +305,8 @@ struct ArrayGenerator {
 namespace accumulators {
 template <typename Scalar>
 struct Sequential {
+	using ScalarType = Scalar;
+
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
 		Scalar sum(0);
@@ -317,6 +319,8 @@ struct Sequential {
 
 template <typename Scalar>
 struct SequentialVectorized {
+	using ScalarType = Scalar;
+
 	using Pack = detail::NativePack<Scalar>;
 	using PackInfo = detail::NativePackInfo<Scalar>;
 
@@ -375,6 +379,8 @@ struct SequentialVectorized {
 
 template <typename Scalar>
 struct Kahan {
+	using ScalarType = Scalar;
+
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
 		// https://en.wikipedia.org/wiki/Kahan_summation_algorithm
@@ -395,6 +401,8 @@ struct Kahan {
 
 template <typename Scalar>
 struct KahanVectorized {
+	using ScalarType = Scalar;
+
 	static_assert(std::is_trivially_copyable<Scalar>::value, ".");
 	using Pack = detail::NativePack<Scalar>;
 	using PackInfo = detail::NativePackInfo<Scalar>;
