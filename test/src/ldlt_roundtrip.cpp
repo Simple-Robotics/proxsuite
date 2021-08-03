@@ -72,7 +72,7 @@ auto ldlt_roundtrip_error(usize n, Fn fn) -> Error {
 }
 
 auto main() -> int {
-	for (usize n = 1; n <= 128; ++n) {
+	for (usize n = 9; n <= 9; ++n) {
 
 		{
 			auto err = ::ldlt_roundtrip_error(
@@ -98,6 +98,19 @@ auto main() -> int {
 					});
 			fmt::print(
 					"n = {}, kahan   : eigen: {}, ours: {}\n", n, err.eigen, err.ours);
+		}
+
+		{
+			auto err = ::ldlt_roundtrip_error(
+					n,
+					[](LowerTriangularMatrixViewMut<T, colmajor> l_view,
+			       DiagonalMatrixViewMut<T> d_view,
+			       MatrixView<T, colmajor> m_view) {
+						ldlt::factorize_ldlt_unblocked(
+								l_view, d_view, m_view, accumulators::Vectorized<T>{});
+					});
+			fmt::print(
+					"n = {}, simd    : eigen: {}, ours: {}\n", n, err.eigen, err.ours);
 		}
 	}
 }

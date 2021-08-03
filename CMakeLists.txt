@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(inria_ldlt CXX)
 
 get_directory_property(has_parent PARENT_DIRECTORY)
-if (has_parent)
+if(has_parent)
   set(top_level FALSE)
 else()
   set(top_level TRUE)
@@ -27,18 +27,15 @@ include(cmake/conan.cmake)
 
 add_library(inria_ldlt INTERFACE)
 target_include_directories(
-  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/ ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
+  inria_ldlt SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+                              ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
-  target_link_libraries(
-    inria_ldlt
-    INTERFACE project_options
-              project_warnings
-  )
+  target_link_libraries(inria_ldlt INTERFACE project_options project_warnings)
 
   include(cmake/extra_local_settings.cmake)
 

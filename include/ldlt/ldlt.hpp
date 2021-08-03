@@ -5,6 +5,7 @@
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
 #include <vector>
+#include <fmt/ostream.h>
 
 namespace ldlt {
 using usize = decltype(sizeof(0));
@@ -147,6 +148,12 @@ public:
 	}
 };
 
+#ifdef __clang__
+#define LDLT_FP_PRAGMA _Pragma("STDC FP_CONTRACT ON")
+#else
+#define LDLT_FP_PRAGMA
+#endif
+
 namespace detail {
 template <typename Scalar, Layout L>
 struct DiagAccGenerator {
@@ -162,7 +169,7 @@ struct DiagAccGenerator {
 
 		Scalar prod = ljk * ljk;
 		{
-#pragma STDC FP_CONTRACT ON
+			LDLT_FP_PRAGMA
 			return acc + prod * dk;
 		}
 	}
@@ -173,7 +180,7 @@ struct DiagAccGenerator {
 
 		Scalar prod = ljk * ljk;
 		{
-#pragma STDC FP_CONTRACT ON
+			LDLT_FP_PRAGMA
 			return prod * dk - comp;
 		}
 	}
@@ -212,7 +219,7 @@ struct LowerTriAccGenerator {
 
 		Scalar prod = lik * ljk;
 		{
-#pragma STDC FP_CONTRACT ON
+			LDLT_FP_PRAGMA
 			return acc + prod * dk;
 		}
 	}
@@ -224,7 +231,7 @@ struct LowerTriAccGenerator {
 
 		Scalar prod = lik * ljk;
 		{
-#pragma STDC FP_CONTRACT ON
+			LDLT_FP_PRAGMA
 			return prod * dk - comp;
 		}
 	}
@@ -271,10 +278,19 @@ struct Vectorized {
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
 		Pack psum = Pack::zero();
-		for (usize k = 0; k < count; ++k) {
-			psum = psum.add(fn.pack());
+		constexpr usize N = PackInfo::N;
+		usize div = count / N;
+		usize rem = count % N;
+		for (usize k = 0; k < div; ++k) {
+			psum = fn.add_pack(psum);
 		}
-		return psum;
+
+		Scalar rem_sum = Scalar(0);
+		for (usize k = 0; k < rem; ++k) {
+			rem_sum = fn.add(rem_sum);
+		}
+		Scalar psum_reduced = psum.sum();
+		return psum_reduced + rem_sum;
 	}
 };
 
@@ -313,22 +329,37 @@ void factorize_ldlt_unblocked(
 	auto in_d = out_d.as_const();
 
 	for (usize j = 0; j < dim; ++j) {
-		out_d(j) =
-				in_matrix(j, j) //
-				- Scalar(
-							acc(j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
+		Scalar acc_d = Scalar(
+				acc(j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
+		Scalar debug_acc_d = Scalar(accumulators::Sequential<Scalar>{}(
+				j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
+
+		fmt::print(
+				"count: {}, diff: {}, acc: {}, debug: {}\n",
+				j,
+				acc_d - debug_acc_d,
+				acc_d,
+				debug_acc_d);
+
+		out_d(j) = in_matrix(j, j) - acc_d;
 
 		for (usize i = 0; i < j; ++i) {
 			out_l(i, j) = Scalar(0);
 		}
 		out_l(j, j) = Scalar(1);
 		for (usize i = j + 1; i < dim; ++i) {
-			out_l(i, j) = (in_matrix(i, j) //
-			               - Scalar(
-													 acc(j,
-			                         detail::LowerTriAccGenerator<Scalar, OutL>{
-																	 in_l, in_d, i, j, 0}))) //
-			              / out_d(j);
+			Scalar acc_l = Scalar(acc(
+					j, detail::LowerTriAccGenerator<Scalar, OutL>{in_l, in_d, i, j, 0}));
+			Scalar debug_acc_l = Scalar(accumulators::Sequential<Scalar>{}(
+					j, detail::LowerTriAccGenerator<Scalar, OutL>{in_l, in_d, i, j, 0}));
+
+			// fmt::print(
+			// 		"count: {}, diff: {}, acc: {}, debug: {}\n",
+			// 		j,
+			// 		acc_l - debug_acc_l,
+			// 		acc_l,
+			// 		debug_acc_l);
+			out_l(i, j) = (in_matrix(i, j) - acc_l) / out_d(j);
 		}
 	}
 }
