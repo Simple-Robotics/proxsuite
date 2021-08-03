@@ -4,10 +4,7 @@
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
-#include <cstdlib>
-#include <type_traits>
 #include <vector>
-#include <iostream>
 
 namespace ldlt {
 using usize = decltype(sizeof(0));
@@ -87,13 +84,14 @@ struct LowerTriangularMatrixViewMut {
 template <typename Scalar, Layout L>
 struct LowerTriangularMatrix {
 private:
-	std::vector<Scalar> _data;
-	usize _dim;
+	std::vector<Scalar> _data = {};
+	usize _dim = 0;
 
 public:
 	LowerTriangularMatrix() noexcept = default;
-	LowerTriangularMatrix(WithDim tag, usize dim) : _data(dim * dim), _dim(dim) {}
-	LowerTriangularMatrix(WithDimUninit tag, usize dim)
+	LowerTriangularMatrix(WithDim /*tag*/, usize dim)
+			: _data(dim * dim), _dim(dim) {}
+	LowerTriangularMatrix(WithDimUninit /*tag*/, usize dim)
 			: LowerTriangularMatrix(with_dim, dim) {}
 
 	LDLT_INLINE auto as_view() const noexcept
@@ -132,13 +130,13 @@ struct DiagonalMatrixViewMut {
 template <typename Scalar>
 struct DiagonalMatrix {
 private:
-	std::vector<Scalar> _data;
-	usize _dim;
+	std::vector<Scalar> _data{};
+	usize _dim = 0;
 
 public:
 	DiagonalMatrix() noexcept = default;
-	DiagonalMatrix(WithDim tag, usize dim) : _data(dim), _dim(dim) {}
-	DiagonalMatrix(WithDimUninit tag, usize dim)
+	DiagonalMatrix(WithDim /*tag*/, usize dim) : _data(dim), _dim(dim) {}
+	DiagonalMatrix(WithDimUninit /*tag*/, usize dim)
 			: DiagonalMatrix(with_dim, dim) {}
 
 	LDLT_INLINE auto as_view() const noexcept -> DiagonalMatrixView<Scalar> {
@@ -222,7 +220,7 @@ struct Vectorized {
 
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
-    Pack psum = Pack::zero();
+		Pack psum = Pack::zero();
 		for (usize k = 0; k < count; ++k) {
 			psum = psum.add(fn.pack());
 		}

@@ -10,7 +10,7 @@
 	namespace {                                                                  \
 	Type const& Name = ::ldlt::detail::StaticConst<Type>::value; /* NOLINT */    \
 	}                                                                            \
-	LDLT_NOM_SEMICOLON
+	static_assert(sizeof(Name) == 1, ".");
 
 namespace ldlt {
 namespace detail {
