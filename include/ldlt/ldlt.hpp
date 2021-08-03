@@ -322,19 +322,54 @@ struct SequentialVectorized {
 
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
-		Pack psum = Pack::zero();
+		// manual unrolling since latency of vectorized add/mul
+		// is about 6× the reciprocal throughput
+		// https://www.agner.org/optimize/instruction_tables.pdf
+
 		constexpr usize N = PackInfo::N;
-		usize div = count / N;
-		usize rem = count % N;
-		for (usize k = 0; k < div; ++k) {
-			psum = fn.add_pack(psum);
+		usize div8 = count / (8 * N);
+		usize rem8 = count % (8 * N);
+		usize div = rem8 / N;
+		usize rem = rem8 % N;
+
+		Pack psum0 = Pack::zero();
+		Pack psum1 = Pack::zero();
+		Pack psum2 = Pack::zero();
+		Pack psum3 = Pack::zero();
+		Pack psum4 = Pack::zero();
+		Pack psum5 = Pack::zero();
+		Pack psum6 = Pack::zero();
+		Pack psum7 = Pack::zero();
+
+		for (usize k = 0; k < div8; ++k) {
+			psum0 = fn.add_pack(psum0);
+			psum1 = fn.add_pack(psum1);
+			psum2 = fn.add_pack(psum2);
+			psum3 = fn.add_pack(psum3);
+			psum4 = fn.add_pack(psum4);
+			psum5 = fn.add_pack(psum5);
+			psum6 = fn.add_pack(psum6);
+			psum7 = fn.add_pack(psum7);
 		}
+		for (usize k = 0; k < div; ++k) {
+			psum0 = fn.add_pack(psum0);
+		}
+
+		psum0 = psum0.add(psum1);
+		psum2 = psum2.add(psum3);
+		psum4 = psum4.add(psum5);
+		psum6 = psum6.add(psum7);
+
+		psum0 = psum0.add(psum2);
+		psum4 = psum4.add(psum6);
+
+		psum0 = psum0.add(psum4);
 
 		Scalar rem_sum = Scalar(0);
 		for (usize k = 0; k < rem; ++k) {
 			rem_sum = fn.add(rem_sum);
 		}
-		return psum.sum() + rem_sum;
+		return psum0.sum() + rem_sum;
 	}
 };
 
@@ -342,6 +377,8 @@ template <typename Scalar>
 struct Kahan {
 	template <typename Fn>
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
+		// https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+
 		Scalar sum(0);
 		Scalar c(0);
 
@@ -380,6 +417,10 @@ struct KahanVectorized {
 		Scalar psum_array[2 * N];
 		std::memcpy(&psum_array, &psum, sizeof(psum));
 		for (usize k = 0; k < rem; ++k) {
+			// -0 because
+			// for all x
+			// x + -0 == x
+			// but +0 + -0 == +0
 			psum_array[N + k] = fn.add(-Scalar(0));
 		}
 		return Kahan<Scalar>{}(
@@ -399,6 +440,7 @@ void factorize_ldlt_unblocked(
 		DiagonalMatrixViewMut<Scalar> out_d,
 		MatrixView<Scalar, InL> in_matrix,
 		AccumuluateFn acc = {}) {
+	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
 	i32 dim = out_l.dim;
 	auto in_l = out_l.as_const();
