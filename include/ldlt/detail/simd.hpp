@@ -26,11 +26,22 @@ namespace detail {
 	}                                                                            \
 	LDLT_NOM_SEMICOLON
 
+#define LDLT_FN_IMPL3(Fn, Prefix, Suffix)                                      \
+	LDLT_INLINE static auto Fn(Pack a, Pack b, Pack c) noexcept->Pack {          \
+		return Pack{                                                               \
+				simde_mm##Prefix##_##Fn##_##Suffix(a.inner, b.inner, c.inner)};        \
+	}                                                                            \
+	LDLT_NOM_SEMICOLON
+
 #define LDLT_ARITHMETIC_IMPL(Prefix, Suffix)                                   \
 	LDLT_FN_IMPL(add, Prefix, Suffix);                                           \
 	LDLT_FN_IMPL(sub, Prefix, Suffix);                                           \
 	LDLT_FN_IMPL(mul, Prefix, Suffix);                                           \
-	LDLT_FN_IMPL(div, Prefix, Suffix)
+	LDLT_FN_IMPL(div, Prefix, Suffix);                                           \
+	LDLT_FN_IMPL3(fmadd, Prefix, Suffix);  /* (a * b + c) */                     \
+	LDLT_FN_IMPL3(fmsub, Prefix, Suffix)   /* (a * b - c) */                     \
+	LDLT_FN_IMPL3(fnmadd, Prefix, Suffix); /* (-a * b + c) */                    \
+	LDLT_FN_IMPL3(fnmsub, Prefix, Suffix)  /* (-a * b - c) */
 
 #define LDLT_LOAD_STORE(Prefix, Suffix)                                        \
 	LDLT_INLINE static auto load_unaligned(                                      \

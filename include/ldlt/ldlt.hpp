@@ -155,20 +155,44 @@ struct DiagAccGenerator {
 	usize j;
 	usize k;
 
-	LDLT_INLINE auto operator()() -> Scalar {
+	LDLT_INLINE auto add(Scalar acc) -> Scalar {
 		Scalar ljk = l(j, k);
 		Scalar dk = d(k);
 		++k;
-		return ljk * ljk * dk;
+
+		Scalar prod = ljk * ljk;
+		{
+#pragma STDC FP_CONTRACT ON
+			return acc + prod * dk;
+		}
+	}
+	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
+		Scalar ljk = l(j, k);
+		Scalar dk = d(k);
+		++k;
+
+		Scalar prod = ljk * ljk;
+		{
+#pragma STDC FP_CONTRACT ON
+			return prod * dk - comp;
+		}
 	}
 
 	using Pack = NativePack<Scalar>;
-	LDLT_INLINE auto pack() -> Pack {
+	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
 		Pack ljk = Pack::load_unaligned(&l(j, k));
 		Pack dk = Pack::load_unaligned(&d(k));
 		k += NativePackInfo<Scalar>::N;
 
-		return ljk.mul(ljk).mul(dk);
+		return Pack::fmadd(ljk.mul(ljk), dk, acc);
+	}
+
+	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
+		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack dk = Pack::load_unaligned(&d(k));
+		k += NativePackInfo<Scalar>::N;
+
+		return Pack::fmsub(ljk.mul(ljk), dk, acc);
 	}
 };
 
@@ -180,22 +204,48 @@ struct LowerTriAccGenerator {
 	usize j;
 	usize k;
 
-	LDLT_INLINE auto operator()() -> Scalar {
+	LDLT_INLINE auto add(Scalar acc) -> Scalar {
 		Scalar lik = l(i, k);
 		Scalar ljk = l(j, k);
 		Scalar dk = d(k);
 		++k;
-		return lik * ljk * dk;
+
+		Scalar prod = lik * ljk;
+		{
+#pragma STDC FP_CONTRACT ON
+			return acc + prod * dk;
+		}
+	}
+	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
+		Scalar lik = l(i, k);
+		Scalar ljk = l(j, k);
+		Scalar dk = d(k);
+		++k;
+
+		Scalar prod = lik * ljk;
+		{
+#pragma STDC FP_CONTRACT ON
+			return prod * dk - comp;
+		}
 	}
 
 	using Pack = NativePack<Scalar>;
-	LDLT_INLINE auto pack() -> Pack {
+	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
 		Pack lik = Pack::load_unaligned(&l(i, k));
 		Pack ljk = Pack::load_unaligned(&l(j, k));
 		Pack dk = Pack::load_unaligned(&d(k));
 		k += NativePackInfo<Scalar>::N;
 
-		return lik.mul(ljk).mul(dk);
+		return Pack::fmadd(lik.mul(ljk), dk, acc);
+	}
+
+	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
+		Pack lik = Pack::load_unaligned(&l(i, k));
+		Pack ljk = Pack::load_unaligned(&l(j, k));
+		Pack dk = Pack::load_unaligned(&d(k));
+		k += NativePackInfo<Scalar>::N;
+
+		return Pack::fmsub(lik.mul(ljk), dk, acc);
 	}
 };
 } // namespace detail
@@ -207,7 +257,7 @@ struct Sequential {
 	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
 		Scalar sum(0);
 		for (usize k = 0; k < count; ++k) {
-			sum += fn();
+			sum = fn.add(sum);
 		}
 		return sum;
 	}
@@ -236,8 +286,7 @@ struct Kahan {
 		Scalar c(0);
 
 		for (usize k = 0; k < count; ++k) {
-			Scalar next = fn();
-			Scalar y = next - c;
+			Scalar y = fn.sub(c);
 			Scalar t = sum + y;
 			c = (t - sum) - y;
 			sum = t;
@@ -264,9 +313,10 @@ void factorize_ldlt_unblocked(
 	auto in_d = out_d.as_const();
 
 	for (usize j = 0; j < dim; ++j) {
-		out_d(j) = in_matrix(j, j) //
-		           -
-		           acc(j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0});
+		out_d(j) =
+				in_matrix(j, j) //
+				- Scalar(
+							acc(j, detail::DiagAccGenerator<Scalar, OutL>{in_l, in_d, j, 0}));
 
 		for (usize i = 0; i < j; ++i) {
 			out_l(i, j) = Scalar(0);
@@ -274,9 +324,10 @@ void factorize_ldlt_unblocked(
 		out_l(j, j) = Scalar(1);
 		for (usize i = j + 1; i < dim; ++i) {
 			out_l(i, j) = (in_matrix(i, j) //
-			               - acc(j,
-			                     detail::LowerTriAccGenerator<Scalar, OutL>{
-															 in_l, in_d, i, j, 0})) //
+			               - Scalar(
+													 acc(j,
+			                         detail::LowerTriAccGenerator<Scalar, OutL>{
+																	 in_l, in_d, i, j, 0}))) //
 			              / out_d(j);
 		}
 	}

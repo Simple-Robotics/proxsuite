@@ -1,6 +1,7 @@
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <ldlt/ldlt.hpp>
+#include <fmt/ostream.h>
 
 using namespace ldlt;
 
@@ -33,7 +34,7 @@ auto matmul3(
 	return ::matmul(::matmul(a, b), c);
 }
 
-using T = f64;
+using T = f32;
 
 struct Error {
 	T eigen;
@@ -45,7 +46,7 @@ auto ldlt_roundtrip_error(usize n, Fn fn) -> Error {
 	Mat<T> mat(n, n);
 	Mat<T> l(n, n);
 	Vec<T> d(n);
-	std::srand(n);
+	std::srand(unsigned(n));
 	mat.setRandom();
 	mat = (mat.transpose() * mat).eval();
 
@@ -82,24 +83,8 @@ auto main() -> int {
 						ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view);
 					});
 
-			std::cout << "n = " << n << ", standard: "
-								<< "eigen: " << err.eigen << " ours: " << err.ours << '\n';
-		}
-
-		{
-			auto err = ::ldlt_roundtrip_error(
-					n,
-					[](LowerTriangularMatrixViewMut<T, colmajor> l_view,
-			       DiagonalMatrixViewMut<T> d_view,
-			       MatrixView<T, colmajor> m_view) {
-						ldlt::factorize_ldlt_unblocked(
-								l_view,
-								d_view,
-								m_view,
-								accumulators::Sequential<long double>{});
-					});
-			std::cout << "n = " << n << ", upscaled: "
-								<< "eigen: " << err.eigen << " ours: " << err.ours << '\n';
+			fmt::print(
+					"n = {}, standard: eigen: {}, ours: {}\n", n, err.eigen, err.ours);
 		}
 
 		{
@@ -111,8 +96,8 @@ auto main() -> int {
 						ldlt::factorize_ldlt_unblocked(
 								l_view, d_view, m_view, accumulators::Kahan<T>{});
 					});
-			std::cout << "n = " << n << ", kahan   : "
-								<< "eigen: " << err.eigen << " ours: " << err.ours << '\n';
+			fmt::print(
+					"n = {}, kahan   : eigen: {}, ours: {}\n", n, err.eigen, err.ours);
 		}
 	}
 }
