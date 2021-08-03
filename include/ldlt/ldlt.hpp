@@ -300,7 +300,7 @@ struct Sequential {
 };
 
 template <typename Scalar>
-struct Vectorized {
+struct SequentialVectorized {
 	using Pack = detail::NativePack<Scalar>;
 	using PackInfo = detail::NativePackInfo<Scalar>;
 
@@ -318,8 +318,7 @@ struct Vectorized {
 		for (usize k = 0; k < rem; ++k) {
 			rem_sum = fn.add(rem_sum);
 		}
-		Scalar psum_reduced = psum.sum();
-		return psum_reduced + rem_sum;
+		return psum.sum() + rem_sum;
 	}
 };
 
@@ -338,6 +337,40 @@ struct Kahan {
 		}
 
 		return sum;
+	}
+};
+
+template <typename Scalar>
+struct KahanVectorized {
+	using Pack = detail::NativePack<Scalar>;
+	using PackInfo = detail::NativePackInfo<Scalar>;
+
+	template <typename Fn>
+	LDLT_INLINE auto operator()(usize count, Fn fn) const -> Scalar {
+		constexpr usize N = PackInfo::N;
+
+		Pack psum = Pack::zero();
+		Pack pc = Pack::zero();
+		usize div = count / N;
+		usize rem = count % N;
+		for (usize k = 0; k < div; ++k) {
+			Pack py = fn.sub_pack(pc);
+			Pack pt = psum.add(py);
+			pc = (pt.sub(psum)).sub(py);
+			psum = pt;
+		}
+
+		Scalar rem_sum(0);
+		Scalar c(0);
+
+		for (usize k = 0; k < rem; ++k) {
+			Scalar y = fn.sub(c);
+			Scalar t = rem_sum + y;
+			c = (t - rem_sum) - y;
+			rem_sum = t;
+		}
+
+		return psum.sum() + rem_sum;
 	}
 };
 } // namespace accumulators

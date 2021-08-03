@@ -41,8 +41,13 @@ struct Error {
 	T ours;
 };
 
-template <typename Fn>
-auto ldlt_roundtrip_error(i32 n, Fn fn) -> Error {
+struct Data {
+	Mat<T> mat;
+	Mat<T> l;
+	Vec<T> d;
+};
+
+auto generate_data(i32 n) -> Data {
 	Mat<T> mat(n, n);
 	Mat<T> l(n, n);
 	Vec<T> d(n);
@@ -50,67 +55,82 @@ auto ldlt_roundtrip_error(i32 n, Fn fn) -> Error {
 	mat.setRandom();
 	mat = (mat.transpose() * mat).eval();
 
+	return {LDLT_FWD(mat), LDLT_FWD(l), LDLT_FWD(d)};
+}
+
+template <typename Fn>
+auto ldlt_roundtrip_error(Data& data, Fn fn) -> T {
+	auto const& mat = data.mat;
+	auto& l = data.l;
+	auto& d = data.d;
+	l.setZero();
+	d.setZero();
+	i32 n = i32(mat.rows());
+
 	auto m_view = MatrixView<T, colmajor>{mat.data(), n};
 	auto l_view = LowerTriangularMatrixViewMut<T, colmajor>{l.data(), n};
 	auto d_view = DiagonalMatrixViewMut<T>{d.data(), n};
 
 	fn(l_view, d_view, m_view);
 
-	T ours = (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
+	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
+}
 
-	auto ldlt = mat.ldlt();
+auto eigen_ldlt_roundtrip_error(Data& data) -> T {
+	auto ldlt = data.mat.ldlt();
 	auto const& L = ldlt.matrixL();
 	auto const& P = ldlt.transpositionsP();
 	auto const& D = ldlt.vectorD();
 
 	Mat<T> tmp = P.transpose() * Mat<T>(L);
-	T eigen = (matmul3(tmp, D.asDiagonal(), tmp.transpose()) - mat).norm();
-	return {
-			eigen,
-			ours,
-	};
+	return (matmul3(tmp, D.asDiagonal(), tmp.transpose()) - data.mat).norm();
 }
+
+template <typename Acc>
+struct LdltUnblocked {
+	Acc acc;
+
+	void operator()(
+			LowerTriangularMatrixViewMut<T, colmajor> l_view,
+			DiagonalMatrixViewMut<T> d_view,
+			MatrixView<T, colmajor> m_view) {
+		ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view, acc);
+	}
+};
 
 auto main() -> int {
 	for (i32 n = 1; n <= 128; ++n) {
 
-		{
-			auto err = ::ldlt_roundtrip_error(
-					n,
-					[](LowerTriangularMatrixViewMut<T, colmajor> l_view,
-			       DiagonalMatrixViewMut<T> d_view,
-			       MatrixView<T, colmajor> m_view) {
-						ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view);
-					});
+		auto data = generate_data(n);
 
-			fmt::print(
-					"n = {}, standard: eigen: {}, ours: {}\n", n, err.eigen, err.ours);
-		}
+		auto display = [&](fmt::string_view name, T err) {
+			fmt::print("n = {}, {:<10}: {}\n", n, name, err);
+		};
+    fmt::print("{:-<79}\n", "");
 
-		{
-			auto err = ::ldlt_roundtrip_error(
-					n,
-					[](LowerTriangularMatrixViewMut<T, colmajor> l_view,
-			       DiagonalMatrixViewMut<T> d_view,
-			       MatrixView<T, colmajor> m_view) {
-						ldlt::factorize_ldlt_unblocked(
-								l_view, d_view, m_view, accumulators::Kahan<T>{});
-					});
-			fmt::print(
-					"n = {}, kahan   : eigen: {}, ours: {}\n", n, err.eigen, err.ours);
-		}
+		display("eigen", ::eigen_ldlt_roundtrip_error(data));
 
-		{
-			auto err = ::ldlt_roundtrip_error(
-					n,
-					[](LowerTriangularMatrixViewMut<T, colmajor> l_view,
-			       DiagonalMatrixViewMut<T> d_view,
-			       MatrixView<T, colmajor> m_view) {
-						ldlt::factorize_ldlt_unblocked(
-								l_view, d_view, m_view, accumulators::Vectorized<T>{});
-					});
-			fmt::print(
-					"n = {}, simd    : eigen: {}, ours: {}\n", n, err.eigen, err.ours);
-		}
+		display(
+				"seq",
+				::ldlt_roundtrip_error( //
+						data,
+						LdltUnblocked<accumulators::Sequential<T>>{}));
+
+		display(
+				"kahan seq",
+				::ldlt_roundtrip_error( //
+						data,
+						LdltUnblocked<accumulators::Kahan<T>>{}));
+
+		display(
+				"simd",
+				::ldlt_roundtrip_error( //
+						data,
+						LdltUnblocked<accumulators::SequentialVectorized<T>>{}));
+		display(
+				"kahan simd",
+				::ldlt_roundtrip_error( //
+						data,
+						LdltUnblocked<accumulators::KahanVectorized<T>>{}));
 	}
 }
