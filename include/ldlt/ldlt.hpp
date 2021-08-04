@@ -380,7 +380,7 @@ void factorize_ldlt_unblocked(
 
 	auto workspace = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>(dim);
 
-	for (i32 k = 0; k < dim; ++k) {
+	for (i32 j = 0; j < dim; ++j) {
 		/********************************************************************************
 		 *     l00 l01 l02
 		 * l = l10  1  l12
@@ -389,36 +389,40 @@ void factorize_ldlt_unblocked(
 		 * l{0,1,2}0 already known, compute l21
 		 */
 
-		i32 m = dim - k - 1;
-		auto l01 = detail::VecMapMut<Scalar>{std::addressof(out_l(0, k)), k};
+		i32 m = dim - j - 1;
+
+    // avoid buffer overflow UB when accessing the matrices
+		i32 j_inc = ((j + 1) < dim) ? j + 1 : j;
+
+		auto l01 = detail::VecMapMut<Scalar>{std::addressof(out_l(0, j)), j};
 		l01.setZero();
-		out_l(k, k) = Scalar(1);
+		out_l(j, j) = Scalar(1);
 
 		auto l10 = detail::VecMapStrided<Scalar>{
-				std::addressof(out_l(k, 0)),
-				k,
+				std::addressof(out_l(j, 0)),
+				j,
 				1,
 				Eigen::InnerStride<Eigen::Dynamic>(dim),
 		};
 
 		auto l20 = detail::MatMap<Scalar>{
-				std::addressof(out_l(k + 1, 0)),
+				std::addressof(out_l(j_inc, 0)),
 				m,
-				k,
+				j,
 				Eigen::OuterStride<Eigen::Dynamic>{dim},
 		};
-		auto l21 = detail::VecMapMut<Scalar>{std::addressof(out_l(k + 1, k)), m};
-		auto a21 = detail::VecMap<Scalar>{std::addressof(in_matrix(k + 1, k)), m};
+		auto l21 = detail::VecMapMut<Scalar>{std::addressof(out_l(j_inc, j)), m};
+		auto a21 = detail::VecMap<Scalar>{std::addressof(in_matrix(j_inc, j)), m};
 
-		auto d = detail::VecMap<Scalar>{out_d.data, k};
-		auto tmp_read = detail::VecMap<Scalar>{workspace.data(), k};
-		auto tmp = detail::VecMapMut<Scalar>{workspace.data(), k};
+		auto d = detail::VecMap<Scalar>{out_d.data, j};
+		auto tmp_read = detail::VecMap<Scalar>{workspace.data(), j};
+		auto tmp = detail::VecMapMut<Scalar>{workspace.data(), j};
 
 		tmp.array() = l10.array().operator*(d.array());
-		out_d(k) = in_matrix(k, k) - Scalar(tmp_read.dot(l10));
+		out_d(j) = in_matrix(j, j) - Scalar(tmp_read.dot(l10));
 		l21 = a21;
 		l21.noalias().operator-=(l20.operator*(tmp_read));
-		l21 = l21.operator/(out_d(k));
+		l21 = l21.operator/(out_d(j));
 	}
 }
 } // namespace ldlt
