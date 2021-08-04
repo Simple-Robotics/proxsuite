@@ -53,8 +53,8 @@ auto generate_data(i32 n) -> Data<T> {
 	return {LDLT_FWD(mat), LDLT_FWD(l), LDLT_FWD(d)};
 }
 
-template <typename T, typename Fn>
-auto ldlt_roundtrip_error(Data<T>& data, Fn fn) -> T {
+template <typename T>
+auto ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto const& mat = data.mat;
 	auto& l = data.l;
 	auto& d = data.d;
@@ -66,7 +66,7 @@ auto ldlt_roundtrip_error(Data<T>& data, Fn fn) -> T {
 	auto l_view = LowerTriangularMatrixViewMut<T, colmajor>{l.data(), n};
 	auto d_view = DiagonalMatrixViewMut<T>{d.data(), n};
 
-	fn(l_view, d_view, m_view);
+	ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view);
 
 	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
 }
@@ -82,19 +82,6 @@ auto eigen_ldlt_roundtrip_error(Data<T>& data) -> T {
 	return (matmul3(tmp, D.asDiagonal(), tmp.transpose()) - data.mat).norm();
 }
 
-template <typename Acc>
-struct LdltUnblocked {
-	using ScalarType = typename Acc::ScalarType;
-	Acc acc;
-
-	void operator()(
-			LowerTriangularMatrixViewMut<ScalarType, colmajor> l_view,
-			DiagonalMatrixViewMut<ScalarType> d_view,
-			MatrixView<ScalarType, colmajor> m_view) {
-		ldlt::factorize_ldlt_unblocked(l_view, d_view, m_view, acc);
-	}
-};
-
 template <typename T>
 void roundtrip_test(i32 min, i32 max) {
 	for (i32 n = min; n <= max; ++n) {
@@ -107,29 +94,7 @@ void roundtrip_test(i32 min, i32 max) {
 		fmt::print("{:-<40}\n", "");
 
 		display("eigen", ::eigen_ldlt_roundtrip_error(data));
-
-		display(
-				"seq",
-				::ldlt_roundtrip_error( //
-						data,
-						LdltUnblocked<accumulators::Sequential<T>>{}));
-
-		display(
-				"kahan seq",
-				::ldlt_roundtrip_error( //
-						data,
-						LdltUnblocked<accumulators::Kahan<T>>{}));
-
-		display(
-				"simd",
-				::ldlt_roundtrip_error( //
-						data,
-						LdltUnblocked<accumulators::SequentialVectorized<T>>{}));
-		display(
-				"kahan simd",
-				::ldlt_roundtrip_error( //
-						data,
-						LdltUnblocked<accumulators::KahanVectorized<T>>{}));
+		display("ours", ::ldlt_roundtrip_error(data));
 	}
 }
 

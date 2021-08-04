@@ -33,22 +33,30 @@ target_include_directories(
   inria_ldlt SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
+# Conan dependencies
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
-  # Conan dependencies
   set(CONAN_REQUIRES
       # MIT License
-      fmt/8.0.0
+      fmt/8.0.1
       backward-cpp/1.5
       #
+      # Apache-2.0
+      benchmark/1.5.3
       # Mozilla Public License 2.0
       eigen/3.3.9
       #
       # LGPL v3
       mpfr/4.1.0
   )
-  set(CONAN_OPTIONS)
-  run_conan()
+else()
+  set(CONAN_REQUIRES # Mozilla Public License 2.0
+      eigen/3.3.9
+  )
+endif()
+set(CONAN_OPTIONS)
+run_conan()
 
+if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
