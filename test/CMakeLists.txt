@@ -14,5 +14,5 @@ add_library(backward_cpp_main OBJECT src/backward.cpp)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 set(testlibs inria_ldlt backward_cpp_main doctest_main)
 
-add_executable(ldlt_roundtrip src/ldlt_roundtrip.cpp)
-target_link_libraries(ldlt_roundtrip ${testlibs})
+add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
+target_link_libraries(.test.factorize.roundtrip ${testlibs})
