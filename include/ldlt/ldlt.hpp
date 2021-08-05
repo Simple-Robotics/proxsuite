@@ -9,12 +9,6 @@
 #include <Eigen/Core>
 
 namespace ldlt {
-using usize = decltype(sizeof(0));
-using f32 = float;
-using f64 = double;
-
-LDLT_DEFINE_TAG(with_dim, WithDim);
-LDLT_DEFINE_TAG(with_dim_uninit, WithDimUninit);
 
 enum struct Layout : unsigned char {
 	colmajor = 0,
@@ -115,50 +109,15 @@ struct MatrixView {
 };
 
 template <typename Scalar, Layout L>
-struct LowerTriangularMatrixView {
-	Scalar const* data;
-	i32 dim;
-
-	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
-			-> Scalar const& {
-		return *detail::ElementAccess<L>::offset(data, row, col, dim);
-	}
-};
-
-template <typename Scalar, Layout L>
-struct LowerTriangularMatrixViewMut {
+struct MatrixViewMut {
 	Scalar* data;
 	i32 dim;
 
-	LDLT_INLINE auto as_const() const noexcept
-			-> LowerTriangularMatrixView<Scalar, L> {
+	LDLT_INLINE auto as_const() const noexcept -> MatrixView<Scalar, L> {
 		return {data, dim};
 	}
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
 		return *detail::ElementAccess<L>::offset(data, row, col, dim);
-	}
-};
-
-template <typename Scalar, Layout L>
-struct LowerTriangularMatrix {
-private:
-	std::vector<Scalar> _data = {};
-	i32 _dim = 0;
-
-public:
-	LowerTriangularMatrix() noexcept = default;
-	LowerTriangularMatrix(WithDim /*tag*/, i32 dim)
-			: _data(dim * dim), _dim(dim) {}
-	LowerTriangularMatrix(WithDimUninit /*tag*/, i32 dim)
-			: LowerTriangularMatrix(with_dim, dim) {}
-
-	LDLT_INLINE auto as_view() const noexcept
-			-> LowerTriangularMatrixView<Scalar, L> {
-		return {_data.data(), _dim};
-	}
-	LDLT_INLINE auto as_mut() noexcept
-			-> LowerTriangularMatrixViewMut<Scalar, L> {
-		return {_data.data(), _dim};
 	}
 };
 
@@ -182,26 +141,6 @@ struct DiagonalMatrixViewMut {
 	}
 	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
 		return *(data + index);
-	}
-};
-
-template <typename Scalar>
-struct DiagonalMatrix {
-private:
-	std::vector<Scalar> _data{};
-	i32 _dim = 0;
-
-public:
-	DiagonalMatrix() noexcept = default;
-	DiagonalMatrix(WithDim /*tag*/, i32 dim) : _data(dim), _dim(dim) {}
-	DiagonalMatrix(WithDimUninit /*tag*/, i32 dim)
-			: DiagonalMatrix(with_dim, dim) {}
-
-	LDLT_INLINE auto as_view() const noexcept -> DiagonalMatrixView<Scalar> {
-		return {_data.data(), _dim};
-	}
-	LDLT_INLINE auto as_mut() noexcept -> DiagonalMatrixViewMut<Scalar> {
-		return {_data.data(), _dim};
 	}
 };
 
@@ -233,133 +172,6 @@ struct MatrixLoadRowBlock<Layout::colmajor> {
 	}
 };
 
-template <typename Scalar, Layout L>
-struct DiagAccGenerator {
-	LowerTriangularMatrixView<Scalar, L> l;
-	DiagonalMatrixView<Scalar> d;
-	i32 j;
-	i32 k;
-
-	LDLT_INLINE auto add(Scalar acc) -> Scalar {
-		Scalar ljk = l(j, k);
-		Scalar dk = d(k);
-		++k;
-
-		Scalar prod = ljk * ljk;
-		{
-			LDLT_FP_PRAGMA
-			return acc + prod * dk;
-		}
-	}
-	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
-		Scalar ljk = l(j, k);
-		Scalar dk = d(k);
-		++k;
-
-		Scalar prod = ljk * ljk;
-		{
-			LDLT_FP_PRAGMA
-			return prod * dk - comp;
-		}
-	}
-
-	using Pack = NativePack<Scalar>;
-	using PackInfo = NativePackInfo<Scalar>;
-	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
-		Pack ljk =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
-		Pack dk = Pack::load_unaligned(&d(k));
-		k += i32{NativePackInfo<Scalar>::N};
-
-		return Pack::fmadd(ljk.mul(ljk), dk, acc);
-	}
-
-	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
-		Pack ljk =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
-		Pack dk = Pack::load_unaligned(&d(k));
-		k += i32{NativePackInfo<Scalar>::N};
-
-		return Pack::fmsub(ljk.mul(ljk), dk, acc);
-	}
-};
-
-template <typename Scalar, Layout L>
-struct LowerTriAccGenerator {
-	LowerTriangularMatrixView<Scalar, L> l;
-	DiagonalMatrixView<Scalar> d;
-	i32 i;
-	i32 j;
-	i32 k;
-
-	LDLT_INLINE auto add(Scalar acc) -> Scalar {
-		Scalar lik = l(i, k);
-		Scalar ljk = l(j, k);
-		Scalar dk = d(k);
-		++k;
-
-		Scalar prod = lik * ljk;
-		{
-			LDLT_FP_PRAGMA
-			return acc + prod * dk;
-		}
-	}
-	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
-		Scalar lik = l(i, k);
-		Scalar ljk = l(j, k);
-		Scalar dk = d(k);
-		++k;
-
-		Scalar prod = lik * ljk;
-		{
-			LDLT_FP_PRAGMA
-			return prod * dk - comp;
-		}
-	}
-
-	using Pack = NativePack<Scalar>;
-	using PackInfo = NativePackInfo<Scalar>;
-	LDLT_INLINE auto add_pack(Pack acc) -> Pack {
-		Pack lik =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(i, k), l.dim);
-		Pack ljk =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
-		Pack dk = Pack::load_unaligned(&d(k));
-		k += i32{NativePackInfo<Scalar>::N};
-
-		return Pack::fmadd(lik.mul(ljk), dk, acc);
-	}
-
-	LDLT_INLINE auto sub_pack(Pack acc) -> Pack {
-		Pack lik =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(i, k), l.dim);
-		Pack ljk =
-				MatrixLoadRowBlock<L>::template load_pack<PackInfo::N>(&l(j, k), l.dim);
-		Pack dk = Pack::load_unaligned(&d(k));
-		k += NativePackInfo<Scalar>::N;
-
-		return Pack::fmsub(lik.mul(ljk), dk, acc);
-	}
-};
-
-template <typename Scalar>
-struct ArrayGenerator {
-	Scalar const* mem;
-
-	LDLT_INLINE auto add(Scalar acc) -> Scalar {
-		Scalar x = *mem + acc;
-		++mem;
-		return x;
-	}
-	LDLT_INLINE auto sub(Scalar comp) -> Scalar {
-		Scalar x = *mem - comp;
-		++mem;
-		return x;
-	}
-};
-} // namespace detail
-
-namespace detail {
 template <typename T, typename Stride>
 using EigenVecMap = Eigen::Map< //
 		Eigen::Matrix<              //
@@ -399,7 +211,7 @@ using VecMapMut = EigenVecMapMut<T, Eigen::Stride<0, 0>>;
 namespace detail {
 template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
-		LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
+		MatrixViewMut<Scalar, OutL> out_l,
 		DiagonalMatrixViewMut<Scalar> out_d,
 		MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
@@ -486,7 +298,7 @@ namespace nb {
 struct factorize {
 	template <typename Scalar, Layout OutL, Layout InL>
 	LDLT_INLINE void operator()(
-			LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
+			MatrixViewMut<Scalar, OutL> out_l,
 			DiagonalMatrixViewMut<Scalar> out_d,
 			MatrixView<Scalar, InL> in_matrix) const {
 		detail::factorize_ldlt_tpl(out_l, out_d, in_matrix);
@@ -496,11 +308,11 @@ struct factorize {
 struct factorize_defer_to_colmajor {
 	template <typename Scalar, Layout OutL, Layout InL>
 	LDLT_INLINE void operator()(
-			LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
+			MatrixViewMut<Scalar, OutL> out_l,
 			DiagonalMatrixViewMut<Scalar> out_d,
 			MatrixView<Scalar, InL> in_matrix) const {
 		detail::factorize_ldlt_tpl(
-				LowerTriangularMatrixViewMut<Scalar, colmajor>{
+				MatrixViewMut<Scalar, colmajor>{
 						out_l.data,
 						out_l.dim,
 				},

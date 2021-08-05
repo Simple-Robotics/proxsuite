@@ -58,7 +58,7 @@ void bench_ours(benchmark::State& s) {
 
 	for (auto _ : s) {
 		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim};
-		auto l_view = ldlt::LowerTriangularMatrixViewMut<T, OutL>{l.data(), dim};
+		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
 		LdltFn{}(l_view, d_view, a_view);
