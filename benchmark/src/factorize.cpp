@@ -66,17 +66,17 @@ void bench_ours(benchmark::State& s) {
 	}
 }
 
-template <typename T, Layout InL, Layout OutL>
+template <typename T, Layout L>
 void bench_ours_inplace(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
-	Mat<T, InL> a(dim, dim);
+	Mat<T, L> a(dim, dim);
 	{
 		a.setRandom();
 		a = a.transpose() * a;
 	}
 
-	Mat<T, OutL> l(dim, dim);
+	Mat<T, L> l(dim, dim);
 	l.setZero();
 	Vec<T> d(dim);
 	d.setZero();
@@ -86,8 +86,8 @@ void bench_ours_inplace(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, InL>{l.data(), dim};
-		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim};
+		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim};
+		auto l_view = ldlt::MatrixViewMut<T, L>{l.data(), dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
 		l = a;
@@ -114,14 +114,16 @@ constexpr i32 dim_large = 1024;
 			->Arg(Dim);                                                              \
 	LDLT_BENCHMARK_TPL(                                                          \
 			bench_ours, ldlt::nb::factorize_defer_to_colmajor, Type, InL, OutL)      \
-			->Arg(Dim);                                                              \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type, InL, OutL)->Arg(Dim)
+			->Arg(Dim);
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
+	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor, colmajor);                                   \
 	LDLT_BENCH(Dim, Type, rowmajor, colmajor);                                   \
 	LDLT_BENCH(Dim, Type, colmajor, rowmajor);                                   \
-	LDLT_BENCH(Dim, Type, rowmajor, rowmajor)
+	LDLT_BENCH(Dim, Type, rowmajor, rowmajor);                                   \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type, colmajor)->Arg(Dim);            \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type, rowmajor)->Arg(Dim)
 
 #define LDLT_BENCH_DIM(Type)                                                   \
 	LDLT_BENCH_LAYOUT(dim_small, Type);                                          \
