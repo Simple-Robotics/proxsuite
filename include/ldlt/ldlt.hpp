@@ -16,33 +16,89 @@ using f64 = double;
 LDLT_DEFINE_TAG(with_dim, WithDim);
 LDLT_DEFINE_TAG(with_dim_uninit, WithDimUninit);
 
-enum struct Layout {
-	colmajor,
-	rowmajor,
+enum struct Layout : unsigned char {
+	colmajor = 0,
+	rowmajor = 1,
 };
+
+constexpr auto flip_layout(Layout l) noexcept -> Layout {
+	return Layout(1 - u32(l));
+}
 
 constexpr Layout colmajor = Layout::colmajor;
 constexpr Layout rowmajor = Layout::rowmajor;
 
 namespace detail {
 template <Layout L>
-struct MemoryOffset;
+struct ElementAccess;
 
 template <>
-struct MemoryOffset<Layout::colmajor> {
+struct ElementAccess<Layout::colmajor> {
 	template <typename T>
 	LDLT_INLINE static constexpr auto
 	offset(T* ptr, i32 row, i32 col, i32 outer_stride) noexcept -> T* {
 		return ptr + (usize(row) + usize(col) * usize(outer_stride));
 	}
+
+	using NextRowStride = Eigen::Stride<0, 0>;
+	using NextColStride = Eigen::InnerStride<Eigen::Dynamic>;
+	LDLT_INLINE static auto next_row_stride(i32 outer_stride) noexcept
+			-> NextRowStride {
+		(void)outer_stride;
+		return NextRowStride{};
+	}
+	LDLT_INLINE static auto next_col_stride(i32 outer_stride) noexcept
+			-> NextColStride {
+		return NextColStride /* NOLINT(modernize-return-braced-init-list) */ (
+				outer_stride);
+	}
+
+	template <typename T>
+	LDLT_INLINE static void
+	transpose_if_rowmajor(T* ptr, i32 dim, i32 outer_stride) {
+		(void)ptr, (void)dim, (void)outer_stride;
+	}
 };
 
 template <>
-struct MemoryOffset<Layout::rowmajor> {
+struct ElementAccess<Layout::rowmajor> {
 	template <typename T>
 	LDLT_INLINE static constexpr auto
 	offset(T* ptr, i32 row, i32 col, i32 outer_stride) noexcept -> T* {
 		return ptr + (usize(col) + usize(row) * usize(outer_stride));
+	}
+
+	using NextColStride = Eigen::Stride<0, 0>;
+	using NextRowStride = Eigen::InnerStride<Eigen::Dynamic>;
+	LDLT_INLINE static auto next_col_stride(i32 outer_stride) noexcept
+			-> NextColStride {
+		(void)outer_stride;
+		return NextColStride{};
+	}
+	LDLT_INLINE static auto next_row_stride(i32 outer_stride) noexcept
+			-> NextRowStride {
+		return NextRowStride /* NOLINT(modernize-return-braced-init-list) */ (
+				outer_stride);
+	}
+
+	template <typename T>
+	LDLT_INLINE static void
+	transpose_if_rowmajor(T* ptr, i32 dim, i32 outer_stride) {
+		Eigen::Map<                            //
+				Eigen::Matrix<                     //
+						T,                             //
+						Eigen::Dynamic,                //
+						Eigen::Dynamic                 //
+						>,                             //
+				Eigen::Unaligned,                  //
+				Eigen::OuterStride<Eigen::Dynamic> //
+				>{
+				ptr,
+				dim,
+				dim,
+				Eigen::OuterStride<Eigen::Dynamic>(outer_stride),
+		}
+				.transposeInPlace();
 	}
 };
 } // namespace detail
@@ -54,7 +110,7 @@ struct MatrixView {
 
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
 			-> Scalar const& {
-		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
+		return *detail::ElementAccess<L>::offset(data, row, col, dim);
 	}
 };
 
@@ -65,7 +121,7 @@ struct LowerTriangularMatrixView {
 
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
 			-> Scalar const& {
-		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
+		return *detail::ElementAccess<L>::offset(data, row, col, dim);
 	}
 };
 
@@ -79,7 +135,7 @@ struct LowerTriangularMatrixViewMut {
 		return {data, dim};
 	}
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
-		return *detail::MemoryOffset<L>::offset(data, row, col, dim);
+		return *detail::ElementAccess<L>::offset(data, row, col, dim);
 	}
 };
 
@@ -304,76 +360,48 @@ struct ArrayGenerator {
 } // namespace detail
 
 namespace detail {
-template <typename T>
-using VecMapStridedMut = Eigen::Map<   //
-		Eigen::Matrix<                     //
-				T,                             //
-				Eigen::Dynamic,                //
-				1                              //
-				>,                             //
-		Eigen::Unaligned,                  //
-		Eigen::InnerStride<Eigen::Dynamic> //
+template <typename T, typename Stride>
+using EigenVecMap = Eigen::Map< //
+		Eigen::Matrix<              //
+				T,                      //
+				Eigen::Dynamic,         //
+				1                       //
+				> const,                //
+		Eigen::Unaligned,           //
+		Stride                      //
+		>;
+template <typename T, typename Stride>
+using EigenVecMapMut = Eigen::Map< //
+		Eigen::Matrix<                 //
+				T,                         //
+				Eigen::Dynamic,            //
+				1                          //
+				>,                         //
+		Eigen::Unaligned,              //
+		Stride                         //
 		>;
 
-template <typename T>
-using VecMapStrided = Eigen::Map<      //
-		Eigen::Matrix<                     //
-				T,                             //
-				Eigen::Dynamic,                //
-				1                              //
-				> const,                       //
-		Eigen::Unaligned,                  //
-		Eigen::InnerStride<Eigen::Dynamic> //
-		>;
+template <typename T, Layout L>
+using ColToVec = EigenVecMap<T, typename ElementAccess<L>::NextRowStride>;
+template <typename T, Layout L>
+using RowToVec = EigenVecMap<T, typename ElementAccess<L>::NextColStride>;
+template <typename T, Layout L>
+using ColToVecMut = EigenVecMapMut<T, typename ElementAccess<L>::NextRowStride>;
+template <typename T, Layout L>
+using RowToVecMut = EigenVecMapMut<T, typename ElementAccess<L>::NextColStride>;
 
 template <typename T>
-using VecMap = Eigen::Map< //
-		Eigen::Matrix<         //
-				T,                 //
-				Eigen::Dynamic,    //
-				1                  //
-				> const,           //
-		Eigen::Unaligned       //
-		>;
-
+using VecMap = EigenVecMap<T, Eigen::Stride<0, 0>>;
 template <typename T>
-using VecMapMut = Eigen::Map< //
-		Eigen::Matrix<            //
-				T,                    //
-				Eigen::Dynamic,       //
-				1                     //
-				>,                    //
-		Eigen::Unaligned          //
-		>;
-
-template <typename T>
-using MatMap = Eigen::Map<             //
-		Eigen::Matrix<                     //
-				T,                             //
-				Eigen::Dynamic,                //
-				Eigen::Dynamic                 //
-				> const,                       //
-		Eigen::Unaligned,                  //
-		Eigen::OuterStride<Eigen::Dynamic> //
-		>;
-
-template <typename T>
-using MatMapMut = Eigen::Map<          //
-		Eigen::Matrix<                     //
-				T,                             //
-				Eigen::Dynamic,                //
-				Eigen::Dynamic                 //
-				>,                             //
-		Eigen::Unaligned,                  //
-		Eigen::OuterStride<Eigen::Dynamic> //
-		>;
+using VecMapMut = EigenVecMapMut<T, Eigen::Stride<0, 0>>;
 } // namespace detail
 
-template <typename Scalar>
-void factorize_ldlt_unblocked(
-		LowerTriangularMatrixViewMut<Scalar, colmajor> out_l,
+namespace detail {
+template <typename Scalar, Layout OutL, Layout InL>
+void factorize_ldlt_tpl(
+		LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
 		DiagonalMatrixViewMut<Scalar> out_d,
-		MatrixView<Scalar, colmajor> in_matrix) {
+		MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
 	i32 dim = out_l.dim;
@@ -391,28 +419,55 @@ void factorize_ldlt_unblocked(
 
 		i32 m = dim - j - 1;
 
-    // avoid buffer overflow UB when accessing the matrices
+		// avoid buffer overflow UB when accessing the matrices
 		i32 j_inc = ((j + 1) < dim) ? j + 1 : j;
 
-		auto l01 = detail::VecMapMut<Scalar>{std::addressof(out_l(0, j)), j};
+		auto l01 = detail::ColToVecMut<Scalar, OutL>{
+				detail::ElementAccess<OutL>::offset(out_l.data, 0, j, dim),
+				j,
+				1,
+				detail::ElementAccess<OutL>::next_row_stride(dim),
+		};
 		l01.setZero();
 		out_l(j, j) = Scalar(1);
 
-		auto l10 = detail::VecMapStrided<Scalar>{
-				std::addressof(out_l(j, 0)),
+		auto l10 = detail::RowToVec<Scalar, OutL>{
+				detail::ElementAccess<OutL>::offset(out_l.data, j, 0, dim),
 				j,
 				1,
-				Eigen::InnerStride<Eigen::Dynamic>(dim),
+				detail::ElementAccess<OutL>::next_col_stride(dim),
 		};
 
-		auto l20 = detail::MatMap<Scalar>{
-				std::addressof(out_l(j_inc, 0)),
+		auto l20 = Eigen::Map<                 //
+				Eigen::Matrix<                     //
+						Scalar,                        //
+						Eigen::Dynamic,                //
+						Eigen::Dynamic,                //
+						(OutL == Layout::colmajor)     //
+								? Eigen::ColMajor          //
+								: Eigen::RowMajor          //
+						> const,                       //
+				Eigen::Unaligned,                  //
+				Eigen::OuterStride<Eigen::Dynamic> //
+				>{
+				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, 0, dim),
 				m,
 				j,
 				Eigen::OuterStride<Eigen::Dynamic>{dim},
 		};
-		auto l21 = detail::VecMapMut<Scalar>{std::addressof(out_l(j_inc, j)), m};
-		auto a21 = detail::VecMap<Scalar>{std::addressof(in_matrix(j_inc, j)), m};
+		auto l21 = detail::ColToVecMut<Scalar, OutL>{
+				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, j, dim),
+				m,
+				1,
+				detail::ElementAccess<OutL>::next_row_stride(dim),
+		};
+
+		auto a21 = detail::ColToVec<Scalar, InL>{
+				detail::ElementAccess<InL>::offset(in_matrix.data, j_inc, j, dim),
+				m,
+				1,
+				detail::ElementAccess<InL>::next_row_stride(dim),
+		};
 
 		auto d = detail::VecMap<Scalar>{out_d.data, j};
 		auto tmp_read = detail::VecMap<Scalar>{workspace.data(), j};
@@ -425,6 +480,41 @@ void factorize_ldlt_unblocked(
 		l21 = l21.operator/(out_d(j));
 	}
 }
+} // namespace detail
+
+namespace nb {
+struct factorize {
+	template <typename Scalar, Layout OutL, Layout InL>
+	LDLT_INLINE void operator()(
+			LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
+			DiagonalMatrixViewMut<Scalar> out_d,
+			MatrixView<Scalar, InL> in_matrix) const {
+		detail::factorize_ldlt_tpl(out_l, out_d, in_matrix);
+	}
+};
+
+struct factorize_defer_to_colmajor {
+	template <typename Scalar, Layout OutL, Layout InL>
+	LDLT_INLINE void operator()(
+			LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
+			DiagonalMatrixViewMut<Scalar> out_d,
+			MatrixView<Scalar, InL> in_matrix) const {
+		detail::factorize_ldlt_tpl(
+				LowerTriangularMatrixViewMut<Scalar, colmajor>{
+						out_l.data,
+						out_l.dim,
+				},
+				out_d,
+				in_matrix);
+		detail::ElementAccess<OutL>::transpose_if_rowmajor(
+				out_l.data, out_l.dim, out_l.dim);
+	}
+};
+} // namespace nb
+
+LDLT_DEFINE_NIEBLOID(factorize);
+LDLT_DEFINE_NIEBLOID(factorize_defer_to_colmajor);
+
 } // namespace ldlt
 
 #endif /* end of include guard LDLT_LDLT_HPP_FDFNWYGES */

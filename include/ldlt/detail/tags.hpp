@@ -13,6 +13,13 @@
 	}                                                                            \
 	static_assert(sizeof(Name) == 1, ".");
 
+#define LDLT_DEFINE_NIEBLOID(Name)                                             \
+	namespace {                                                                  \
+	nb::Name const& Name =                                                       \
+			::ldlt::detail::StaticConst<nb::Name>::value; /* NOLINT */               \
+	}                                                                            \
+	static_assert(sizeof(Name) == 1, ".");
+
 namespace ldlt {
 namespace detail {
 template <typename T>

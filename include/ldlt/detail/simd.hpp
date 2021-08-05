@@ -13,10 +13,12 @@ using f32 = float;
 using f64 = double;
 using i64 = long long;
 using i32 = int;
+using u32 = unsigned;
 
 static_assert(static_cast<unsigned char>(-1) == 255, "char should have 8 bits");
 static_assert(sizeof(f32) == 4, "f32 should be 32 bits");
 static_assert(sizeof(i32) == 4, "i32 should be 32 bits");
+static_assert(sizeof(u32) == 4, "u32 should be 32 bits");
 static_assert(sizeof(f64) == 8, "f64 should be 64 bits");
 static_assert(sizeof(i64) == 8, "i64 should be 64 bits");
 

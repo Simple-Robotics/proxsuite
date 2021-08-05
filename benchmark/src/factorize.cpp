@@ -8,22 +8,23 @@
 
 using namespace ldlt;
 
-template <typename T>
-using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
+template <typename T, Layout L>
+using Mat = Eigen::
+		Matrix<T, -1, -1, (L == colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template <typename T>
 using Vec = Eigen::Matrix<T, -1, 1>;
 
-template <typename T>
+template <typename T, Layout InL, Layout OutL>
 void bench_eigen(benchmark::State& s) {
 	i32 dim = i32(s.range(0));
 
-	Mat<T> a(dim, dim);
+	Mat<T, InL> a(dim, dim);
 	{
 		a.setRandom();
 		a = a.transpose() * a;
 	}
 
-	Eigen::LDLT<Mat<T>> l(dim);
+	Eigen::LDLT<Mat<T, OutL>> l(dim);
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(
@@ -36,17 +37,17 @@ void bench_eigen(benchmark::State& s) {
 	}
 }
 
-template <typename T>
+template <typename T, Layout InL, Layout OutL>
 void bench_ours(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
-	Mat<T> a(dim, dim);
+	Mat<T, InL> a(dim, dim);
 	{
 		a.setRandom();
 		a = a.transpose() * a;
 	}
 
-	Mat<T> l(dim, dim);
+	Mat<T, OutL> l(dim, dim);
 	l.setZero();
 	Vec<T> d(dim);
 	d.setZero();
@@ -56,12 +57,11 @@ void bench_ours(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, colmajor>{a.data(), dim};
-		auto l_view =
-				ldlt::LowerTriangularMatrixViewMut<T, colmajor>{l.data(), dim};
+		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim};
+		auto l_view = ldlt::LowerTriangularMatrixViewMut<T, OutL>{l.data(), dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
-		ldlt::factorize_ldlt_unblocked(l_view, d_view, a_view);
+		ldlt::factorize(l_view, d_view, a_view);
 		benchmark::ClobberMemory();
 	}
 }
@@ -72,13 +72,20 @@ constexpr i32 dim_small = 32;
 constexpr i32 dim_medium = 128;
 constexpr i32 dim_large = 1024;
 
-#define LDLT_ALL_BENCH(dim)                                                    \
-	LDLT_BENCHMARK_TPL(bench_eigen, f32)->Arg(dim);                              \
-	LDLT_BENCHMARK_TPL(bench_ours, f32)->Arg(dim);                               \
-                                                                               \
-	LDLT_BENCHMARK_TPL(bench_eigen, f64)->Arg(dim);                              \
-	LDLT_BENCHMARK_TPL(bench_ours, f64)->Arg(dim)
+#define LDLT_BENCH(Dim, Type, InL, OutL)                                       \
+	LDLT_BENCHMARK_TPL(bench_eigen, Type, InL, OutL)->Arg(Dim);                  \
+	LDLT_BENCHMARK_TPL(bench_ours, Type, InL, OutL)->Arg(Dim)
 
-LDLT_ALL_BENCH(dim_small);
-LDLT_ALL_BENCH(dim_medium);
-LDLT_ALL_BENCH(dim_large);
+#define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
+	LDLT_BENCH(Dim, Type, colmajor, colmajor);                                   \
+	LDLT_BENCH(Dim, Type, rowmajor, colmajor);                                   \
+	LDLT_BENCH(Dim, Type, colmajor, rowmajor);                                   \
+	LDLT_BENCH(Dim, Type, rowmajor, rowmajor)
+
+#define LDLT_BENCH_DIM(Type)                                                   \
+	LDLT_BENCH_LAYOUT(dim_small, Type);                                          \
+	LDLT_BENCH_LAYOUT(dim_medium, Type);                                         \
+	LDLT_BENCH_LAYOUT(dim_large, Type)
+
+LDLT_BENCH_DIM(f32);
+LDLT_BENCH_DIM(f64);
