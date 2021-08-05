@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 #include <Eigen/Cholesky>
-#include <ldlt/ldlt.hpp>
+#include <ldlt/factorize.hpp>
 
 #define LDLT_BENCHMARK_MAIN BENCHMARK_MAIN    /* NOLINT */
 #define LDLT_BENCHMARK BENCHMARK              /* NOLINT */
@@ -57,8 +57,8 @@ void bench_ours(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim};
-		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim};
+		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim, dim};
+		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim, dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
 		LdltFn{}(l_view, d_view, a_view);
@@ -86,8 +86,8 @@ void bench_ours_inplace(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim};
-		auto l_view = ldlt::MatrixViewMut<T, L>{l.data(), dim};
+		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim, dim};
+		auto l_view = ldlt::MatrixViewMut<T, L>{l.data(), dim, dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
 		l = a;

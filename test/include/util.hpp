@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 #include <utility>
-#include <ldlt/ldlt.hpp>
+#include <ldlt/views.hpp>
 
 template <typename T, ldlt::Layout L>
 using Mat = Eigen::Matrix<

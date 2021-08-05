@@ -18,4 +18,10 @@
 #define LDLT_FWD(x) (static_cast<decltype(x)&&>(x))
 #define LDLT_DECLVAL(...) (static_cast<auto (*)()->__VA_ARGS__>(nullptr)())
 
+#ifdef __clang__
+#define LDLT_FP_PRAGMA _Pragma("STDC FP_CONTRACT ON")
+#else
+#define LDLT_FP_PRAGMA
+#endif
+
 #endif /* end of include guard LDLT_MACROS_HPP_TSAOHJEXS */

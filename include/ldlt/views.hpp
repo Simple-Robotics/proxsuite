@@ -98,10 +98,11 @@ template <typename Scalar, Layout L>
 struct MatrixView {
 	Scalar const* data;
 	i32 dim;
+	i32 outer_stride;
 
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
 			-> Scalar const& {
-		return *detail::ElementAccess<L>::offset(data, row, col, dim);
+		return *detail::ElementAccess<L>::offset(data, row, col, outer_stride);
 	}
 };
 
@@ -109,12 +110,13 @@ template <typename Scalar, Layout L>
 struct MatrixViewMut {
 	Scalar* data;
 	i32 dim;
+	i32 outer_stride;
 
 	LDLT_INLINE auto as_const() const noexcept -> MatrixView<Scalar, L> {
-		return {data, dim};
+		return {data, dim, outer_stride};
 	}
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
-		return *detail::ElementAccess<L>::offset(data, row, col, dim);
+		return *detail::ElementAccess<L>::offset(data, row, col, outer_stride);
 	}
 };
 
@@ -141,34 +143,7 @@ struct DiagonalMatrixViewMut {
 	}
 };
 
-#ifdef __clang__
-#define LDLT_FP_PRAGMA _Pragma("STDC FP_CONTRACT ON")
-#else
-#define LDLT_FP_PRAGMA
-#endif
-
 namespace detail {
-template <Layout L>
-struct MatrixLoadRowBlock;
-
-template <>
-struct MatrixLoadRowBlock<Layout::rowmajor> {
-	template <usize N, typename Scalar>
-	LDLT_INLINE static auto load_pack(Scalar const* p, i32 stride) noexcept
-			-> Pack<Scalar, N> {
-		(void)stride;
-		return Pack<Scalar, N>::load_unaligned(p);
-	}
-};
-template <>
-struct MatrixLoadRowBlock<Layout::colmajor> {
-	template <usize N, typename Scalar>
-	LDLT_INLINE static auto load_pack(Scalar const* p, i32 stride) noexcept
-			-> Pack<Scalar, N> {
-		return Pack<Scalar, N>::load_gather(p, stride);
-	}
-};
-
 template <typename T, typename Stride>
 using EigenVecMap = Eigen::Map< //
 		Eigen::Matrix<              //

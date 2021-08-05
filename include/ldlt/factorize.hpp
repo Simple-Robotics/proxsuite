@@ -1,10 +1,9 @@
-#ifndef LDLT_LDLT_HPP_FDFNWYGES
-#define LDLT_LDLT_HPP_FDFNWYGES
+#ifndef INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS
+#define INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS
 
 #include "ldlt/views.hpp"
 
 namespace ldlt {
-
 namespace detail {
 template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
@@ -15,6 +14,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 
 	bool inplace = out_l.data == in_matrix.data;
 	i32 dim = out_l.dim;
+	i32 l_stride = out_l.outer_stride;
 
 	auto workspace = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>(dim);
 
@@ -33,19 +33,19 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		i32 j_inc = ((j + 1) < dim) ? j + 1 : j;
 
 		auto l01 = detail::ColToVecMut<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out_l.data, 0, j, dim),
+				detail::ElementAccess<OutL>::offset(out_l.data, 0, j, l_stride),
 				j,
 				1,
-				detail::ElementAccess<OutL>::next_row_stride(dim),
+				detail::ElementAccess<OutL>::next_row_stride(l_stride),
 		};
 		l01.setZero();
 		out_l(j, j) = Scalar(1);
 
 		auto l10 = detail::RowToVec<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out_l.data, j, 0, dim),
+				detail::ElementAccess<OutL>::offset(out_l.data, j, 0, l_stride),
 				j,
 				1,
-				detail::ElementAccess<OutL>::next_col_stride(dim),
+				detail::ElementAccess<OutL>::next_col_stride(l_stride),
 		};
 
 		auto l20 = Eigen::Map<                 //
@@ -60,23 +60,24 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 				Eigen::Unaligned,                  //
 				Eigen::OuterStride<Eigen::Dynamic> //
 				>{
-				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, 0, dim),
+				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, 0, l_stride),
 				m,
 				j,
-				Eigen::OuterStride<Eigen::Dynamic>{dim},
+				Eigen::OuterStride<Eigen::Dynamic>{l_stride},
 		};
 		auto l21 = detail::ColToVecMut<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, j, dim),
+				detail::ElementAccess<OutL>::offset(out_l.data, j_inc, j, l_stride),
 				m,
 				1,
-				detail::ElementAccess<OutL>::next_row_stride(dim),
+				detail::ElementAccess<OutL>::next_row_stride(l_stride),
 		};
 
 		auto a21 = detail::ColToVec<Scalar, InL>{
-				detail::ElementAccess<InL>::offset(in_matrix.data, j_inc, j, dim),
+				detail::ElementAccess<InL>::offset(
+						in_matrix.data, j_inc, j, in_matrix.outer_stride),
 				m,
 				1,
-				detail::ElementAccess<InL>::next_row_stride(dim),
+				detail::ElementAccess<InL>::next_row_stride(in_matrix.outer_stride),
 		};
 
 		auto d = detail::VecMap<Scalar>{out_d.data, j};
@@ -115,11 +116,14 @@ struct factorize_defer_to_colmajor {
 				MatrixViewMut<Scalar, colmajor>{
 						out_l.data,
 						out_l.dim,
+						out_l.outer_stride,
 				},
 				out_d,
 				in_matrix);
-		detail::ElementAccess<OutL>::transpose_if_rowmajor(
-				out_l.data, out_l.dim, out_l.dim);
+		detail::ElementAccess<OutL>::transpose_if_rowmajor( //
+				out_l.data,
+				out_l.dim,
+				out_l.outer_stride);
 	}
 };
 } // namespace nb
@@ -129,4 +133,4 @@ LDLT_DEFINE_NIEBLOID(factorize_defer_to_colmajor);
 
 } // namespace ldlt
 
-#endif /* end of include guard LDLT_LDLT_HPP_FDFNWYGES */
+#endif /* end of include guard INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS */
