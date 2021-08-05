@@ -216,6 +216,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
+	bool inplace = out_l.data == in_matrix.data;
 	i32 dim = out_l.dim;
 
 	auto workspace = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>(dim);
@@ -287,7 +288,9 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 
 		tmp.array() = l10.array().operator*(d.array());
 		out_d(j) = in_matrix(j, j) - Scalar(tmp_read.dot(l10));
-		l21 = a21;
+		if (!inplace) {
+			l21 = a21;
+		}
 		l21.noalias().operator-=(l20.operator*(tmp_read));
 		l21 = l21.operator/(out_d(j));
 	}

@@ -66,6 +66,36 @@ void bench_ours(benchmark::State& s) {
 	}
 }
 
+template <typename T, Layout InL, Layout OutL>
+void bench_ours_inplace(benchmark::State& s) {
+
+	i32 dim = i32(s.range(0));
+	Mat<T, InL> a(dim, dim);
+	{
+		a.setRandom();
+		a = a.transpose() * a;
+	}
+
+	Mat<T, OutL> l(dim, dim);
+	l.setZero();
+	Vec<T> d(dim);
+	d.setZero();
+
+	benchmark::DoNotOptimize(a.data());
+	benchmark::DoNotOptimize(l.data());
+	benchmark::DoNotOptimize(d.data());
+
+	for (auto _ : s) {
+		auto a_view = ldlt::MatrixView<T, InL>{l.data(), dim};
+		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim};
+		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
+
+		l = a;
+		factorize_defer_to_colmajor(l_view, d_view, a_view);
+		benchmark::ClobberMemory();
+	}
+}
+
 void bench_dummy(benchmark::State& s) {
 	for (auto _ : s) {
 	}
@@ -84,7 +114,8 @@ constexpr i32 dim_large = 1024;
 			->Arg(Dim);                                                              \
 	LDLT_BENCHMARK_TPL(                                                          \
 			bench_ours, ldlt::nb::factorize_defer_to_colmajor, Type, InL, OutL)      \
-			->Arg(Dim)
+			->Arg(Dim);                                                              \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type, InL, OutL)->Arg(Dim)
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCH(Dim, Type, colmajor, colmajor);                                   \
