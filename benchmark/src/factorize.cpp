@@ -37,7 +37,7 @@ void bench_eigen(benchmark::State& s) {
 	}
 }
 
-template <typename T, Layout InL, Layout OutL>
+template <typename LdltFn, typename T, Layout InL, Layout OutL>
 void bench_ours(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
@@ -61,8 +61,13 @@ void bench_ours(benchmark::State& s) {
 		auto l_view = ldlt::LowerTriangularMatrixViewMut<T, OutL>{l.data(), dim};
 		auto d_view = ldlt::DiagonalMatrixViewMut<T>{d.data(), dim};
 
-		ldlt::factorize(l_view, d_view, a_view);
+		LdltFn{}(l_view, d_view, a_view);
 		benchmark::ClobberMemory();
+	}
+}
+
+void bench_dummy(benchmark::State& s) {
+	for (auto _ : s) {
 	}
 }
 
@@ -73,8 +78,13 @@ constexpr i32 dim_medium = 128;
 constexpr i32 dim_large = 1024;
 
 #define LDLT_BENCH(Dim, Type, InL, OutL)                                       \
+	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCHMARK_TPL(bench_eigen, Type, InL, OutL)->Arg(Dim);                  \
-	LDLT_BENCHMARK_TPL(bench_ours, Type, InL, OutL)->Arg(Dim)
+	LDLT_BENCHMARK_TPL(bench_ours, ldlt::nb::factorize, Type, InL, OutL)         \
+			->Arg(Dim);                                                              \
+	LDLT_BENCHMARK_TPL(                                                          \
+			bench_ours, ldlt::nb::factorize_defer_to_colmajor, Type, InL, OutL)      \
+			->Arg(Dim)
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCH(Dim, Type, colmajor, colmajor);                                   \

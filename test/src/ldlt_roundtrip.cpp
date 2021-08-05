@@ -1,38 +1,11 @@
-#include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <fmt/ostream.h>
 #include <ldlt/ldlt.hpp>
+#include <util.hpp>
+#include <limits>
+#include <doctest.h>
 
 using namespace ldlt;
-
-template <typename T, Layout L>
-using Mat = Eigen::
-		Matrix<T, -1, -1, (L == colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
-template <typename T>
-using Vec = Eigen::Matrix<T, -1, 1>;
-
-template <
-		typename MatLhs,
-		typename MatRhs,
-		typename T = typename MatLhs::Scalar>
-auto matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, colmajor> {
-	using Upscaled = typename std::
-			conditional<std::is_floating_point<T>::value, long double, T>::type;
-
-	return (Mat<T, colmajor>(a).template cast<Upscaled>().operator*(
-							Mat<T, colmajor>(b).template cast<Upscaled>()))
-	    .template cast<T>();
-}
-
-template <
-		typename MatLhs,
-		typename MatMid,
-		typename MatRhs,
-		typename T = typename MatLhs::Scalar>
-auto matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
-		-> Mat<T, colmajor> {
-	return ::matmul(::matmul(a, b), c);
-}
 
 template <typename T, Layout InL, Layout OutL>
 struct Data {
@@ -83,37 +56,43 @@ auto eigen_ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 }
 
 template <typename T, Layout InL, Layout OutL, typename Fn>
-void roundtrip_test(i32 min, i32 max, Fn ldlt_fn) {
-	for (i32 n = min; n <= max; ++n) {
+auto roundtrip_test(i32 n, Fn ldlt_fn) -> T {
+	auto data = generate_data<T, InL, OutL>(n);
 
-		auto data = generate_data<T, InL, OutL>(n);
-
-		auto display = [&](fmt::string_view name, T err) {
-			fmt::print("n = {}, {:<10}: {:>7.5e}\n", n, name, err);
-		};
-		fmt::print("{:-<40}\n", "");
-
-		display("eigen", ::eigen_ldlt_roundtrip_error(data));
-		display("ours", ::ldlt_roundtrip_error(data, ldlt_fn));
+	T err_ours = ::eigen_ldlt_roundtrip_error(data);
+	T err_eigen = ::ldlt_roundtrip_error(data, ldlt_fn);
+	if (err_ours == 0) {
+		return T(0);
 	}
+	if (err_eigen == 0) {
+		err_eigen = std::numeric_limits<T>::epsilon();
+	}
+
+	return err_ours / err_eigen;
 }
 
-auto main() -> int {
-	roundtrip_test<f32, colmajor, colmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f32, rowmajor, colmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f32, colmajor, rowmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f32, rowmajor, rowmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
+using C = detail::constant<Layout, colmajor>;
+using R = detail::constant<Layout, rowmajor>;
 
-	roundtrip_test<f64, colmajor, colmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f64, rowmajor, colmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f64, colmajor, rowmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
-	roundtrip_test<f64, rowmajor, rowmajor>(
-			1, 64, ldlt::factorize_defer_to_colmajor);
+DOCTEST_TEST_CASE_TEMPLATE(
+		"factorize: roundtrip",
+		Args,
+		detail::type_sequence<f32, C, C, nb::factorize>,
+		detail::type_sequence<f32, C, C, nb::factorize_defer_to_colmajor>,
+		detail::type_sequence<f32, R, C, nb::factorize>,
+		detail::type_sequence<f32, R, C, nb::factorize_defer_to_colmajor>,
+		detail::type_sequence<f32, C, R, nb::factorize>,
+		detail::type_sequence<f32, C, R, nb::factorize_defer_to_colmajor>,
+		detail::type_sequence<f32, R, R, nb::factorize>,
+		detail::type_sequence<f32, R, R, nb::factorize_defer_to_colmajor>) {
+	i32 min = 1;
+	i32 max = 128;
+	using Scalar = detail::typeseq_ith<0, Args>;
+	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
+	constexpr auto OutL = detail::typeseq_ith<2, Args>::value;
+	using Ldlt = detail::typeseq_ith<3, Args>;
+
+	for (i32 i = min; i <= max; ++i) {
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL, OutL>(i, Ldlt{}) <= Scalar(10));
+	}
 }

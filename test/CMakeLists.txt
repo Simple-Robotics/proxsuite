@@ -5,6 +5,9 @@ include_directories(include)
 target_link_libraries(
   inria_ldlt INTERFACE CONAN_PKG::fmt CONAN_PKG::eigen CONAN_PKG::mpfr
 )
+target_include_directories(
+  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 add_library(doctest_main STATIC src/doctest_main.cpp)
 add_library(backward_cpp_main OBJECT src/backward.cpp)

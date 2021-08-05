@@ -11,6 +11,10 @@
 #define LDLT_INLINE HEDLEY_ALWAYS_INLINE
 #endif
 
+#ifndef LDLT_NO_INLINE
+#define LDLT_NO_INLINE HEDLEY_NEVER_INLINE
+#endif
+
 #define LDLT_FWD(x) (static_cast<decltype(x)&&>(x))
 #define LDLT_DECLVAL(...) (static_cast<auto (*)()->__VA_ARGS__>(nullptr)())
 

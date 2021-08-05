@@ -398,7 +398,7 @@ using VecMapMut = EigenVecMapMut<T, Eigen::Stride<0, 0>>;
 
 namespace detail {
 template <typename Scalar, Layout OutL, Layout InL>
-void factorize_ldlt_tpl(
+LDLT_NO_INLINE void factorize_ldlt_tpl(
 		LowerTriangularMatrixViewMut<Scalar, OutL> out_l,
 		DiagonalMatrixViewMut<Scalar> out_d,
 		MatrixView<Scalar, InL> in_matrix) {
