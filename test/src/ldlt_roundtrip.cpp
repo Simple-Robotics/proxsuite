@@ -37,7 +37,7 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, Fn ldlt_fn) -> T {
 
 	auto m_view = MatrixView<T, InL>{mat.data(), n, n};
 	auto l_view = MatrixViewMut<T, OutL>{l.data(), n, n};
-	auto d_view = DiagonalMatrixViewMut<T>{d.data(), n};
+	auto d_view = VectorViewMut<T>{d.data(), n};
 
 	ldlt_fn(l_view, d_view, m_view);
 

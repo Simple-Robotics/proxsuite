@@ -121,7 +121,7 @@ struct MatrixViewMut {
 };
 
 template <typename Scalar>
-struct DiagonalMatrixView {
+struct VectorView {
 	Scalar const* data;
 	i32 dim;
 
@@ -132,10 +132,10 @@ struct DiagonalMatrixView {
 };
 
 template <typename Scalar>
-struct DiagonalMatrixViewMut {
+struct VectorViewMut {
 	Scalar* data;
 	i32 dim;
-	LDLT_INLINE auto as_const() const noexcept -> DiagonalMatrixView<Scalar> {
+	LDLT_INLINE auto as_const() const noexcept -> VectorView<Scalar> {
 		return {data, dim};
 	}
 	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
@@ -144,6 +144,33 @@ struct DiagonalMatrixViewMut {
 };
 
 namespace detail {
+template <typename T, Layout L>
+using EigenMatMap = Eigen::Map<        //
+		Eigen::Matrix<                     //
+				T,                             //
+				Eigen::Dynamic,                //
+				Eigen::Dynamic,                //
+				(L == colmajor)                //
+						? Eigen::ColMajor          //
+						: Eigen::RowMajor          //
+				> const,                       //
+		Eigen::Unaligned,                  //
+		Eigen::OuterStride<Eigen::Dynamic> //
+		>;
+template <typename T, Layout L>
+using EigenMatMapMut = Eigen::Map<     //
+		Eigen::Matrix<                     //
+				T,                             //
+				Eigen::Dynamic,                //
+				Eigen::Dynamic,                //
+				(L == colmajor)                //
+						? Eigen::ColMajor          //
+						: Eigen::RowMajor          //
+				>,                             //
+		Eigen::Unaligned,                  //
+		Eigen::OuterStride<Eigen::Dynamic> //
+		>;
+
 template <typename T, typename Stride>
 using EigenVecMap = Eigen::Map< //
 		Eigen::Matrix<              //

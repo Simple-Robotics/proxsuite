@@ -8,7 +8,7 @@ namespace detail {
 template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
 		MatrixViewMut<Scalar, OutL> out_l,
-		DiagonalMatrixViewMut<Scalar> out_d,
+		VectorViewMut<Scalar> out_d,
 		MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
@@ -100,7 +100,7 @@ struct factorize {
 	template <typename Scalar, Layout OutL, Layout InL>
 	LDLT_INLINE void operator()(
 			MatrixViewMut<Scalar, OutL> out_l,
-			DiagonalMatrixViewMut<Scalar> out_d,
+			VectorViewMut<Scalar> out_d,
 			MatrixView<Scalar, InL> in_matrix) const {
 		detail::factorize_ldlt_tpl(out_l, out_d, in_matrix);
 	}
@@ -110,7 +110,7 @@ struct factorize_defer_to_colmajor {
 	template <typename Scalar, Layout OutL, Layout InL>
 	LDLT_INLINE void operator()(
 			MatrixViewMut<Scalar, OutL> out_l,
-			DiagonalMatrixViewMut<Scalar> out_d,
+			VectorViewMut<Scalar> out_d,
 			MatrixView<Scalar, InL> in_matrix) const {
 		detail::factorize_ldlt_tpl(
 				MatrixViewMut<Scalar, colmajor>{

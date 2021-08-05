@@ -16,3 +16,6 @@ set(testlibs inria_ldlt backward_cpp_main doctest_main)
 
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
 target_link_libraries(.test.factorize.roundtrip ${testlibs})
+
+add_executable(.test.solve src/solve.cpp)
+target_link_libraries(.test.solve ${testlibs})
