@@ -6,7 +6,7 @@
 namespace ldlt {
 namespace detail {
 template <typename T, Layout L>
-void solve_impl( //
+LDLT_NO_INLINE void solve_impl( //
 		VectorViewMut<T> x,
 		LdltView<T, L> ldlt,
 		VectorView<T> b) {

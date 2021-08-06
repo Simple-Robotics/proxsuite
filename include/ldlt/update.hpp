@@ -7,7 +7,7 @@ namespace ldlt {
 namespace detail {
 
 template <typename Scalar, Layout L>
-void rank1_update(
+LDLT_NO_INLINE void rank1_update(
 		LdltViewMut<Scalar, L> out,
 		LdltView<Scalar, L> in,
 		VectorView<Scalar> z,
@@ -42,7 +42,7 @@ void rank1_update(
 namespace nb {
 struct rank1_update {
 	template <typename Scalar, Layout L>
-	void operator()(
+	LDLT_INLINE void operator()(
 			LdltViewMut<Scalar, L> out,
 			LdltView<Scalar, L> in,
 			VectorView<Scalar> z,
