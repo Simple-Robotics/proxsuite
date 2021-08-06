@@ -5,6 +5,7 @@
 
 namespace ldlt {
 namespace detail {
+
 template <typename Scalar, Layout L>
 void rank1_update(
 		MatrixViewMut<Scalar, L> l,
@@ -17,21 +18,19 @@ void rank1_update(
 	auto w = VecMapMut<Scalar>{_workspace.data(), dim};
 	w = VecMap<Scalar>{z.data, dim};
 
-	Scalar acc(1);
-
 	for (i32 j = 0; j < dim; ++j) {
-		Scalar wj = w(j);
+		Scalar p = w(j);
 		Scalar dj = d(j);
+		Scalar new_dj = (dj + alpha * p * p);
+		Scalar gamma = dj / new_dj;
+		d(j) = new_dj;
+		Scalar beta = p * alpha / new_dj;
+		alpha *= gamma;
 
-		Scalar a = alpha * wj * wj;
-		Scalar b = dj * acc + a;
-
-		d(j) += a / acc;
-		acc += a / dj;
-
+		Scalar c = (gamma + beta * p);
 		for (i32 r = j + 1; r < dim; ++r) {
-			w(r) -= wj * l(r, j);
-			l(r, j) += (alpha * wj / b) * w(r);
+			w(r) -= p * l(r, j);
+			l(r, j) = c * l(r, j) + beta * w(r);
 		}
 	}
 }

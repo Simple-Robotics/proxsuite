@@ -112,6 +112,6 @@ DOCTEST_TEST_CASE_TEMPLATE(
 	constexpr auto OutL = detail::typeseq_ith<2, Args>::value;
 
 	for (i32 i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL, OutL>(i) <= Scalar(1e4));
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL, OutL>(i) <= Scalar(1e2));
 	}
 }
