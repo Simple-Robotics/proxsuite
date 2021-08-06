@@ -2,5 +2,6 @@ module ldlt {
   header "factorize.hpp"
   header "views.hpp"
   header "solve.hpp"
+  header "update.hpp"
   export *
 }

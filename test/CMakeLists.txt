@@ -19,3 +19,6 @@ target_link_libraries(.test.factorize.roundtrip ${testlibs})
 
 add_executable(.test.solve src/solve.cpp)
 target_link_libraries(.test.solve ${testlibs})
+
+add_executable(.test.update.roundtrip src/update_roundtrip.cpp)
+target_link_libraries(.test.update.roundtrip ${testlibs})
