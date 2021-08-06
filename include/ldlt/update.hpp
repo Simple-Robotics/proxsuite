@@ -18,8 +18,10 @@ void rank1_update(
 	auto w = VecMapMut<Scalar>{_workspace.data(), dim};
 	w = VecMap<Scalar>{z.data, dim};
 
+	Scalar* HEDLEY_RESTRICT wp = w.data();
+
 	for (i32 j = 0; j < dim; ++j) {
-		Scalar p = w(j);
+		Scalar p = wp[j];
 		Scalar dj = in.d(j);
 		Scalar new_dj = (dj + alpha * p * p);
 		Scalar gamma = dj / new_dj;
@@ -29,8 +31,8 @@ void rank1_update(
 
 		Scalar c = (gamma + beta * p);
 		for (i32 r = j + 1; r < dim; ++r) {
-			w(r) -= p * in.l(r, j);
-			out.l(r, j) = c * in.l(r, j) + beta * w(r);
+			wp[r] -= p * in.l(r, j);
+			out.l(r, j) = c * in.l(r, j) + beta * wp[r];
 		}
 	}
 }
