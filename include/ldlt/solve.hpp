@@ -8,27 +8,18 @@ namespace detail {
 template <typename T, Layout L>
 void solve_impl( //
 		VectorViewMut<T> x,
-		MatrixView<T, L> l,
-		VectorView<T> d,
+		LdltView<T, L> ldlt,
 		VectorView<T> b) {
 
-	i32 dim = l.dim;
+	constexpr Layout LT = ::ldlt::flip_layout(L);
+
+	i32 dim = ldlt.l.dim;
 	bool inplace = x.data == b.data;
 
 	auto x_e = detail::VecMapMut<T>{x.data, dim};
-	auto d_e = detail::VecMap<T>{d.data, dim};
-	auto l_e = EigenMatMap<T, L>{
-			l.data,
-			l.dim,
-			l.dim,
-			l.outer_stride,
-	};
-	auto lt_e = EigenMatMap<T, ldlt::flip_layout(L)>{
-			l.data,
-			l.dim,
-			l.dim,
-			l.outer_stride,
-	};
+	auto d_e = detail::VecMap<T>{ldlt.d.data, dim};
+	auto l_e = EigenMatMap<T, L>{ldlt.l.data, dim, dim, ldlt.l.outer_stride};
+	auto lt_e = EigenMatMap<T, LT>{ldlt.l.data, dim, dim, ldlt.l.outer_stride};
 	auto l_lower = l_e.template triangularView<Eigen::UnitLower>();
 	auto lt_upper = lt_e.template triangularView<Eigen::UnitUpper>();
 
@@ -47,10 +38,9 @@ struct solve {
 	template <typename T, Layout L>
 	LDLT_INLINE void operator()( //
 			VectorViewMut<T> x,
-			MatrixView<T, L> l,
-			VectorView<T> d,
+			LdltView<T, L> ldlt,
 			VectorView<T> b) const {
-		detail::solve_impl(x, l, d, b);
+		detail::solve_impl(x, ldlt, b);
 	}
 };
 } // namespace nb

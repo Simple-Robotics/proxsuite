@@ -29,15 +29,17 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 		a = a.transpose() * a;
 		b.setRandom();
 
-		auto a_view = ldlt::MatrixView<T, colmajor>{a.data(), i, i};
-		auto l_view = ldlt::MatrixViewMut<T, L>{l.data(), i, i};
-		auto d_view = ldlt::VectorViewMut<T>{d.data(), i};
+		auto a_view = MatrixView<T, colmajor>{a.data(), i, i};
+		auto ldl_view = LdltViewMut<T, L>{
+				{l.data(), i, i},
+				{d.data(), i},
+		};
 
-		auto x_view = ldlt::VectorViewMut<T>{x.data(), i};
-		auto b_view = ldlt::VectorView<T>{b.data(), i};
+		auto x_view = VectorViewMut<T>{x.data(), i};
+		auto b_view = VectorView<T>{b.data(), i};
 
-		factorize(l_view, d_view, a_view);
-		solve(x_view, l_view.as_const(), d_view.as_const(), b_view);
+		factorize(ldl_view, a_view);
+		solve(x_view, ldl_view.as_const(), b_view);
 		x_eigen = a.ldlt().solve(b);
 		x_eigen_upscaled =
 				a.cast<long double>().ldlt().solve(b.cast<long double>());

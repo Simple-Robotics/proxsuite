@@ -125,8 +125,7 @@ struct VectorView {
 	Scalar const* data;
 	i32 dim;
 
-	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept
-			-> Scalar const& {
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar const& {
 		return *(data + index);
 	}
 };
@@ -138,8 +137,23 @@ struct VectorViewMut {
 	LDLT_INLINE auto as_const() const noexcept -> VectorView<Scalar> {
 		return {data, dim};
 	}
-	HEDLEY_ALWAYS_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
 		return *(data + index);
+	}
+};
+
+template <typename Scalar, Layout L>
+struct LdltView {
+	MatrixView<Scalar, L> l;
+	VectorView<Scalar> d;
+};
+template <typename Scalar, Layout L>
+struct LdltViewMut {
+	MatrixViewMut<Scalar, L> l;
+	VectorViewMut<Scalar> d;
+
+	LDLT_INLINE constexpr auto as_const() const noexcept -> LdltView<Scalar, L> {
+		return {l.as_const(), d.as_const()};
 	}
 };
 

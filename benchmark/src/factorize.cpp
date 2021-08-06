@@ -58,10 +58,12 @@ void bench_ours(benchmark::State& s) {
 
 	for (auto _ : s) {
 		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim, dim};
-		auto l_view = ldlt::MatrixViewMut<T, OutL>{l.data(), dim, dim};
-		auto d_view = ldlt::VectorViewMut<T>{d.data(), dim};
+		auto ldl_view = ldlt::LdltViewMut<T, OutL>{
+				{l.data(), dim, dim},
+				{d.data(), dim},
+		};
 
-		LdltFn{}(l_view, d_view, a_view);
+		LdltFn{}(ldl_view, a_view);
 		benchmark::ClobberMemory();
 	}
 }
@@ -87,11 +89,13 @@ void bench_ours_inplace(benchmark::State& s) {
 
 	for (auto _ : s) {
 		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim, dim};
-		auto l_view = ldlt::MatrixViewMut<T, L>{l.data(), dim, dim};
-		auto d_view = ldlt::VectorViewMut<T>{d.data(), dim};
+		auto ldl_view = ldlt::LdltViewMut<T, L>{
+				{l.data(), dim, dim},
+				{d.data(), dim},
+		};
 
 		l = a;
-		factorize_defer_to_colmajor(l_view, d_view, a_view);
+		factorize_defer_to_colmajor(ldl_view, a_view);
 		benchmark::ClobberMemory();
 	}
 }

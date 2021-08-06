@@ -55,12 +55,18 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	i32 n = i32(mat.rows());
 
 	auto m_view = MatrixView<T, InL>{mat.data(), n, n};
-	auto l_view = MatrixViewMut<T, OutL>{l.data(), n, n};
-	auto d_view = VectorViewMut<T>{d.data(), n};
+	auto ldl_view = LdltViewMut<T, OutL>{
+			{l.data(), n, n},
+			{d.data(), n},
+	};
 	auto w_view = VectorView<T>{w.data(), n};
 
-	factorize(l_view, d_view, m_view);
-	detail::rank1_update(l_view, d_view, w_view, alpha);
+	factorize(ldl_view, m_view);
+	rank1_update( //
+			ldl_view,
+			ldl_view.as_const(),
+			w_view,
+			alpha);
 
 	return (matmul3(l, d.asDiagonal(), l.transpose()) -
 	        (mat + alpha * w * w.transpose()))
