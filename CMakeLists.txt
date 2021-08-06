@@ -25,12 +25,12 @@ include(cmake/static_analyzers.cmake)
 include(cmake/sanitizers.cmake)
 include(cmake/conan.cmake)
 
-add_library(inria_ldlt INTERFACE)
+add_library(inria_ldlt src/ldlt.cpp)
 target_include_directories(
-  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 target_include_directories(
-  inria_ldlt SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
+  inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
 # Conan dependencies

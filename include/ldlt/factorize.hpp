@@ -93,6 +93,27 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 }
 } // namespace detail
 
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f32, colmajor>, MatrixView<f32, colmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f64, colmajor>, MatrixView<f64, colmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f32, rowmajor>, MatrixView<f32, colmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f64, rowmajor>, MatrixView<f64, colmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f32, colmajor>, MatrixView<f32, rowmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f64, colmajor>, MatrixView<f64, rowmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f32, colmajor>, MatrixView<f32, rowmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f64, colmajor>, MatrixView<f64, rowmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f32, rowmajor>, MatrixView<f32, rowmajor>);
+extern template void ldlt::detail::factorize_ldlt_tpl(
+		LdltViewMut<f64, rowmajor>, MatrixView<f64, rowmajor>);
+
 namespace nb {
 struct factorize {
 	template <typename Scalar, Layout OutL, Layout InL>

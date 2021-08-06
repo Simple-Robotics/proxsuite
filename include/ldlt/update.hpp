@@ -31,13 +31,22 @@ LDLT_NO_INLINE void rank1_update(
 
 		Scalar c = (gamma + beta * p);
 		for (i32 r = j + 1; r < dim; ++r) {
-      LDLT_FP_PRAGMA
+			LDLT_FP_PRAGMA
 			wp[r] -= p * in.l(r, j);
 			out.l(r, j) = c * in.l(r, j) + beta * wp[r];
 		}
 	}
 }
 } // namespace detail
+
+extern template void ldlt::detail::rank1_update(
+		LdltViewMut<f32, colmajor>, LdltView<f32, colmajor>, VectorView<f32>, f32);
+extern template void ldlt::detail::rank1_update(
+		LdltViewMut<f32, rowmajor>, LdltView<f32, rowmajor>, VectorView<f32>, f32);
+extern template void ldlt::detail::rank1_update(
+		LdltViewMut<f64, colmajor>, LdltView<f64, colmajor>, VectorView<f64>, f64);
+extern template void ldlt::detail::rank1_update(
+		LdltViewMut<f64, rowmajor>, LdltView<f64, rowmajor>, VectorView<f64>, f64);
 
 namespace nb {
 struct rank1_update {

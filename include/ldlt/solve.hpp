@@ -33,6 +33,15 @@ LDLT_NO_INLINE void solve_impl( //
 }
 } // namespace detail
 
+extern template void detail::solve_impl(
+		VectorViewMut<f32>, LdltView<f32, colmajor>, VectorView<f32>);
+extern template void detail::solve_impl(
+		VectorViewMut<f64>, LdltView<f64, colmajor>, VectorView<f64>);
+extern template void detail::solve_impl(
+		VectorViewMut<f32>, LdltView<f32, rowmajor>, VectorView<f32>);
+extern template void detail::solve_impl(
+		VectorViewMut<f64>, LdltView<f64, rowmajor>, VectorView<f64>);
+
 namespace nb {
 struct solve {
 	template <typename T, Layout L>
