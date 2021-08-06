@@ -1,4 +1,6 @@
 module ldlt {
-  header "ldlt.hpp"
+  header "factorize.hpp"
+  header "views.hpp"
+  header "solve.hpp"
   export *
 }
