@@ -31,6 +31,7 @@ void rank1_update(
 
 		Scalar c = (gamma + beta * p);
 		for (i32 r = j + 1; r < dim; ++r) {
+      LDLT_FP_PRAGMA
 			wp[r] -= p * in.l(r, j);
 			out.l(r, j) = c * in.l(r, j) + beta * wp[r];
 		}
