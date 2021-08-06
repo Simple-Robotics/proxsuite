@@ -59,8 +59,8 @@ template <typename T, Layout InL, Layout OutL, typename Fn>
 auto roundtrip_test(i32 n, Fn ldlt_fn) -> T {
 	auto data = generate_data<T, InL, OutL>(n);
 
-	T err_ours = ::eigen_ldlt_roundtrip_error(data);
-	T err_eigen = ::ldlt_roundtrip_error(data, ldlt_fn);
+	T err_eigen = ::eigen_ldlt_roundtrip_error(data);
+	T err_ours = ::ldlt_roundtrip_error(data, ldlt_fn);
 	if (err_ours == 0) {
 		return T(0);
 	}
