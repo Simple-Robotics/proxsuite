@@ -25,7 +25,12 @@ include(cmake/static_analyzers.cmake)
 include(cmake/sanitizers.cmake)
 include(cmake/conan.cmake)
 
-add_library(inria_ldlt src/ldlt.cpp)
+add_library(
+  inria_ldlt
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp
+)
 target_include_directories(
   inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
