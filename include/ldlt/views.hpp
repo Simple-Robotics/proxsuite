@@ -154,7 +154,8 @@ struct ElementAccess<Layout::rowmajor> {
 template <typename Scalar, Layout L>
 struct MatrixView {
 	Scalar const* data;
-	i32 dim;
+	i32 rows;
+	i32 cols;
 	i32 outer_stride;
 
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
@@ -166,11 +167,17 @@ struct MatrixView {
 template <typename Scalar, Layout L>
 struct MatrixViewMut {
 	Scalar* data;
-	i32 dim;
+	i32 rows;
+	i32 cols;
 	i32 outer_stride;
 
 	LDLT_INLINE auto as_const() const noexcept -> MatrixView<Scalar, L> {
-		return {data, dim, outer_stride};
+		return {
+				data,
+				rows,
+				cols,
+				outer_stride,
+		};
 	}
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
 		return *detail::ElementAccess<L>::offset(data, row, col, outer_stride);

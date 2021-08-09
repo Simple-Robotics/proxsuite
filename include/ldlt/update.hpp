@@ -13,7 +13,7 @@ LDLT_NO_INLINE void rank1_update(
 		VectorView<Scalar> z,
 		Scalar alpha) {
 
-	i32 dim = out.l.dim;
+	i32 dim = out.l.rows;
 	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
 	VecMapMut<Scalar>{wp, dim} = VecMap<Scalar>{z.data, dim};
 

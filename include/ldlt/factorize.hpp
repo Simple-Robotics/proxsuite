@@ -12,7 +12,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
 	bool inplace = out.l.data == in_matrix.data;
-	i32 dim = out.l.dim;
+	i32 dim = out.l.rows;
 	i32 l_stride = out.l.outer_stride;
 
 	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
@@ -119,13 +119,13 @@ struct factorize_defer_to_colmajor {
 			LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) const {
 		detail::factorize_ldlt_tpl(
 				LdltViewMut<Scalar, colmajor>{
-						{out.l.data, out.l.dim, out.l.outer_stride},
+						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
 						out.d,
 				},
 				in_matrix);
 		detail::ElementAccess<OutL>::transpose_if_rowmajor( //
 				out.l.data,
-				out.l.dim,
+				out.l.rows,
 				out.l.outer_stride);
 	}
 };

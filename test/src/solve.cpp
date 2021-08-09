@@ -29,9 +29,9 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 		a = a.transpose() * a;
 		b.setRandom();
 
-		auto a_view = MatrixView<T, colmajor>{a.data(), i, i};
+		auto a_view = MatrixView<T, colmajor>{a.data(), i, i, i};
 		auto ldl_view = LdltViewMut<T, L>{
-				{l.data(), i, i},
+				{l.data(), i, i, i},
 				{d.data(), i},
 		};
 

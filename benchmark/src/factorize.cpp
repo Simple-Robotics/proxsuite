@@ -57,9 +57,9 @@ void bench_ours(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim, dim};
+		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim, dim, dim};
 		auto ldl_view = ldlt::LdltViewMut<T, OutL>{
-				{l.data(), dim, dim},
+				{l.data(), dim, dim, dim},
 				{d.data(), dim},
 		};
 
@@ -88,9 +88,9 @@ void bench_ours_inplace(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim, dim};
+		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim, dim, dim};
 		auto ldl_view = ldlt::LdltViewMut<T, L>{
-				{l.data(), dim, dim},
+				{l.data(), dim, dim, dim},
 				{d.data(), dim},
 		};
 

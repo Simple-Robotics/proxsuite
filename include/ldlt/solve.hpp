@@ -13,7 +13,7 @@ LDLT_NO_INLINE void solve_impl( //
 
 	constexpr Layout LT = ::ldlt::flip_layout(L);
 
-	i32 dim = ldlt.l.dim;
+	i32 dim = ldlt.l.rows;
 	bool inplace = x.data == b.data;
 
 	auto x_e = detail::VecMapMut<T>{x.data, dim};

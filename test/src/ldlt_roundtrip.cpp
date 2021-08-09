@@ -35,9 +35,9 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, Fn ldlt_fn) -> T {
 	d.setZero();
 	i32 n = i32(mat.rows());
 
-	auto m_view = MatrixView<T, InL>{mat.data(), n, n};
+	auto m_view = MatrixView<T, InL>{mat.data(), n, n, n};
 	auto ldl_view = LdltViewMut<T, OutL>{
-			{l.data(), n, n},
+			{l.data(), n, n, n},
 			{d.data(), n},
 	};
 
