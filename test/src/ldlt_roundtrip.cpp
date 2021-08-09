@@ -33,12 +33,11 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, S strategy) -> T {
 	auto& d = data.d;
 	l.setZero();
 	d.setZero();
-	i32 n = i32(mat.rows());
 
-	auto m_view = MatrixView<T, InL>{mat.data(), n, n, n};
+	auto m_view = detail::from_eigen_matrix(mat);
 	auto ldl_view = LdltViewMut<T, OutL>{
-			{l.data(), n, n, n},
-			{d.data(), n},
+			detail::from_eigen_matrix_mut(l),
+			detail::from_eigen_vector_mut(d),
 	};
 
 	factorize(ldl_view, m_view, strategy);

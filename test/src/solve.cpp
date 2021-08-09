@@ -29,14 +29,14 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 		a = a.transpose() * a;
 		b.setRandom();
 
-		auto a_view = MatrixView<T, colmajor>{a.data(), i, i, i};
+		auto a_view = detail::from_eigen_matrix(a);
 		auto ldl_view = LdltViewMut<T, L>{
-				{l.data(), i, i, i},
-				{d.data(), i},
+				detail::from_eigen_matrix_mut(l),
+				detail::from_eigen_vector_mut(d),
 		};
 
-		auto x_view = VectorViewMut<T>{x.data(), i};
-		auto b_view = VectorView<T>{b.data(), i};
+		auto x_view = detail::from_eigen_vector_mut(x);
+		auto b_view = detail::from_eigen_vector(b);
 
 		factorize(ldl_view, a_view);
 		solve(x_view, ldl_view.as_const(), b_view);

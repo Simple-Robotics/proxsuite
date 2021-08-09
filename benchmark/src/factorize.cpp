@@ -57,10 +57,10 @@ void bench_ours(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, InL>{a.data(), dim, dim, dim};
+		auto a_view = detail::from_eigen_matrix(a);
 		auto ldl_view = ldlt::LdltViewMut<T, OutL>{
-				{l.data(), dim, dim, dim},
-				{d.data(), dim},
+				detail::from_eigen_matrix_mut(l),
+				detail::from_eigen_vector_mut(d),
 		};
 
 		factorize(ldl_view, a_view, Strategy{});
@@ -88,10 +88,10 @@ void bench_ours_inplace(benchmark::State& s) {
 	benchmark::DoNotOptimize(d.data());
 
 	for (auto _ : s) {
-		auto a_view = ldlt::MatrixView<T, L>{l.data(), dim, dim, dim};
+		auto a_view = detail::from_eigen_matrix(a);
 		auto ldl_view = ldlt::LdltViewMut<T, L>{
-				{l.data(), dim, dim, dim},
-				{d.data(), dim},
+				detail::from_eigen_matrix_mut(l),
+				detail::from_eigen_vector_mut(d),
 		};
 
 		l = a;
