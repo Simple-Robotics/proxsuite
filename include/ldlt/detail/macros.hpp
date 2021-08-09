@@ -24,7 +24,9 @@
 #define LDLT_FP_PRAGMA
 #endif
 
+#ifndef LDLT_MAX_STACK_ALLOC_SIZE
 #define LDLT_MAX_STACK_ALLOC_SIZE (1024U * 8U) /* 8KiB */
+#endif
 
 #ifndef LDLT_HAS_ALLOCA
 

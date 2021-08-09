@@ -32,7 +32,8 @@ struct UniqueMalloca {
 	static constexpr usize align = (align_scalar > align_simd) //
 	                                   ? align_scalar
 	                                   : align_simd;
-	static constexpr usize max_stack_count = usize(64 * 8U) / sizeof(T);
+	static constexpr usize max_stack_count =
+			usize(LDLT_MAX_STACK_ALLOC_SIZE) / sizeof(T);
 
 	static constexpr auto can_alloca(usize count) -> bool {
 		return count < max_stack_count;
