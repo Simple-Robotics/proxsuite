@@ -2,9 +2,6 @@ include(../cmake/doctest.cmake)
 
 include_directories(include)
 
-target_link_libraries(
-  inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::eigen CONAN_PKG::mpfr
-)
 target_include_directories(
   inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

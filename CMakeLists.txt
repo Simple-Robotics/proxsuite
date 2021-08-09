@@ -38,28 +38,32 @@ target_include_directories(
   inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
+find_package(
+  Eigen3
+  3.3
+  REQUIRED
+  NO_MODULE
+)
+target_link_libraries(inria_ldlt PUBLIC Eigen3::Eigen)
+
 # Conan dependencies
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   set(CONAN_REQUIRES
       # MIT License
-      fmt/8.0.1
+      fmt/8.0.0
       backward-cpp/1.5
       #
       # Apache-2.0
       benchmark/1.5.3
-      # Mozilla Public License 2.0
-      eigen/3.3.9
       #
       # LGPL v3
       mpfr/4.1.0
   )
-else()
-  set(CONAN_REQUIRES # Mozilla Public License 2.0
-      eigen/3.3.9
-  )
+  set(CONAN_OPTIONS)
+  run_conan()
+
+  target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
 endif()
-set(CONAN_OPTIONS)
-run_conan()
 
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   add_library(project_warnings INTERFACE)
