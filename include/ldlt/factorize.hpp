@@ -5,6 +5,13 @@
 #include <new>
 
 namespace ldlt {
+namespace factorization_strategy {
+LDLT_DEFINE_TAG(standard, Standard);
+LDLT_DEFINE_TAG(defer_to_colmajor, DeferToColMajor);
+LDLT_DEFINE_TAG(defer_to_rowmajor, DeferToRowMajor);
+LDLT_DEFINE_TAG(experimental, Experimental)
+} // namespace factorization_strategy
+
 namespace detail {
 template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
@@ -81,6 +88,61 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		l21.operator*=(Scalar(1) / out.d(j));
 	}
 }
+
+template <typename S>
+struct FactorizeStartegyDispatch;
+
+template <>
+struct FactorizeStartegyDispatch<factorization_strategy::Standard> {
+	template <typename Scalar, Layout OutL, Layout InL>
+	static LDLT_INLINE void
+	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+		detail::factorize_ldlt_tpl(out, in_matrix);
+	}
+};
+template <>
+struct FactorizeStartegyDispatch<factorization_strategy::Experimental> {
+	template <typename Scalar, Layout OutL, Layout InL>
+	static LDLT_INLINE void
+	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+		// TODO: use faster matrix-vector product?
+		detail::factorize_ldlt_tpl(out, in_matrix);
+	}
+};
+template <>
+struct FactorizeStartegyDispatch<factorization_strategy::DeferToColMajor> {
+	template <typename Scalar, Layout OutL, Layout InL>
+	static LDLT_INLINE void
+	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+		detail::factorize_ldlt_tpl(
+				LdltViewMut<Scalar, colmajor>{
+						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
+						out.d,
+				},
+				in_matrix);
+		detail::ElementAccess<OutL>::transpose_if_rowmajor( //
+				out.l.data,
+				out.l.rows,
+				out.l.outer_stride);
+	}
+};
+template <>
+struct FactorizeStartegyDispatch<factorization_strategy::DeferToRowMajor> {
+	template <typename Scalar, Layout OutL, Layout InL>
+	static LDLT_INLINE void
+	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+		detail::factorize_ldlt_tpl(
+				LdltViewMut<Scalar, rowmajor>{
+						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
+						out.d,
+				},
+				in_matrix);
+		detail::ElementAccess<ldlt::flip_layout(OutL)>::transpose_if_rowmajor( //
+				out.l.data,
+				out.l.rows,
+				out.l.outer_stride);
+	}
+};
 } // namespace detail
 
 extern template void ldlt::detail::factorize_ldlt_tpl(
@@ -106,33 +168,21 @@ extern template void ldlt::detail::factorize_ldlt_tpl(
 
 namespace nb {
 struct factorize {
-	template <typename Scalar, Layout OutL, Layout InL>
+	template <
+			typename Scalar,
+			Layout OutL,
+			Layout InL,
+			typename Strategy = factorization_strategy::Standard>
 	LDLT_INLINE void operator()(
-			LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) const {
-		detail::factorize_ldlt_tpl(out, in_matrix);
-	}
-};
-
-struct factorize_defer_to_colmajor {
-	template <typename Scalar, Layout OutL, Layout InL>
-	LDLT_INLINE void operator()(
-			LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) const {
-		detail::factorize_ldlt_tpl(
-				LdltViewMut<Scalar, colmajor>{
-						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
-						out.d,
-				},
-				in_matrix);
-		detail::ElementAccess<OutL>::transpose_if_rowmajor( //
-				out.l.data,
-				out.l.rows,
-				out.l.outer_stride);
+			LdltViewMut<Scalar, OutL> out,
+			MatrixView<Scalar, InL> in_matrix,
+			Strategy /*tag*/ = Strategy{}) const {
+		detail::FactorizeStartegyDispatch<Strategy>::fn(out, in_matrix);
 	}
 };
 } // namespace nb
 
 LDLT_DEFINE_NIEBLOID(factorize);
-LDLT_DEFINE_NIEBLOID(factorize_defer_to_colmajor);
 
 } // namespace ldlt
 

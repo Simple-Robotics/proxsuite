@@ -37,7 +37,7 @@ void bench_eigen(benchmark::State& s) {
 	}
 }
 
-template <typename LdltFn, typename T, Layout InL, Layout OutL>
+template <typename Strategy, typename T, Layout InL, Layout OutL>
 void bench_ours(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
@@ -63,7 +63,7 @@ void bench_ours(benchmark::State& s) {
 				{d.data(), dim},
 		};
 
-		LdltFn{}(ldl_view, a_view);
+		factorize(ldl_view, a_view, Strategy{});
 		benchmark::ClobberMemory();
 	}
 }
@@ -95,7 +95,7 @@ void bench_ours_inplace(benchmark::State& s) {
 		};
 
 		l = a;
-		factorize_defer_to_colmajor(ldl_view, a_view);
+		factorize(ldl_view, a_view, factorization_strategy::defer_to_colmajor);
 		benchmark::ClobberMemory();
 	}
 }
@@ -111,14 +111,16 @@ constexpr i32 dim_small = 32;
 constexpr i32 dim_medium = 128;
 constexpr i32 dim_large = 1024;
 
+namespace strat = factorization_strategy;
+
 #define LDLT_BENCH(Dim, Type, InL, OutL)                                       \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCHMARK_TPL(bench_eigen, Type, InL, OutL)->Arg(Dim);                  \
-	LDLT_BENCHMARK_TPL(bench_ours, ldlt::nb::factorize, Type, InL, OutL)         \
+	LDLT_BENCHMARK_TPL(bench_ours, strat::Standard, Type, InL, OutL)->Arg(Dim);  \
+	LDLT_BENCHMARK_TPL(bench_ours, strat::DeferToColMajor, Type, InL, OutL)      \
 			->Arg(Dim);                                                              \
-	LDLT_BENCHMARK_TPL(                                                          \
-			bench_ours, ldlt::nb::factorize_defer_to_colmajor, Type, InL, OutL)      \
-			->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_ours, strat::DeferToRowMajor, Type, InL, OutL)      \
+			->Arg(Dim)
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCHMARK(bench_dummy);                                                 \

@@ -26,8 +26,8 @@ auto generate_data(i32 n) -> Data<T, InL, OutL> {
 	return {LDLT_FWD(mat), LDLT_FWD(l), LDLT_FWD(d)};
 }
 
-template <typename T, Layout InL, Layout OutL, typename Fn>
-auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, Fn ldlt_fn) -> T {
+template <typename T, Layout InL, Layout OutL, typename S>
+auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, S strategy) -> T {
 	auto const& mat = data.mat;
 	auto& l = data.l;
 	auto& d = data.d;
@@ -41,7 +41,7 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, Fn ldlt_fn) -> T {
 			{d.data(), n},
 	};
 
-	ldlt_fn(ldl_view, m_view);
+	factorize(ldl_view, m_view, strategy);
 
 	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
 }
@@ -57,12 +57,12 @@ auto eigen_ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	return (matmul3(tmp, D.asDiagonal(), tmp.transpose()) - data.mat).norm();
 }
 
-template <typename T, Layout InL, Layout OutL, typename Fn>
-auto roundtrip_test(i32 n, Fn ldlt_fn) -> T {
+template <typename T, Layout InL, Layout OutL, typename S>
+auto roundtrip_test(i32 n, S strategy) -> T {
 	auto data = generate_data<T, InL, OutL>(n);
 
 	T err_eigen = ::eigen_ldlt_roundtrip_error(data);
-	T err_ours = ::ldlt_roundtrip_error(data, ldlt_fn);
+	T err_ours = ::ldlt_roundtrip_error(data, strategy);
 	if (err_ours == 0) {
 		return T(0);
 	}
@@ -79,22 +79,27 @@ using R = detail::constant<Layout, rowmajor>;
 DOCTEST_TEST_CASE_TEMPLATE(
 		"factorize: roundtrip",
 		Args,
-		detail::type_sequence<f32, C, C, nb::factorize>,
-		detail::type_sequence<f32, C, C, nb::factorize_defer_to_colmajor>,
-		detail::type_sequence<f32, R, C, nb::factorize>,
-		detail::type_sequence<f32, R, C, nb::factorize_defer_to_colmajor>,
-		detail::type_sequence<f32, C, R, nb::factorize>,
-		detail::type_sequence<f32, C, R, nb::factorize_defer_to_colmajor>,
-		detail::type_sequence<f32, R, R, nb::factorize>,
-		detail::type_sequence<f32, R, R, nb::factorize_defer_to_colmajor>) {
+		detail::type_sequence<f32, C, C, factorization_strategy::Standard>,
+		detail::type_sequence<f32, C, C, factorization_strategy::DeferToColMajor>,
+		detail::type_sequence<f32, C, C, factorization_strategy::DeferToRowMajor>,
+		detail::type_sequence<f32, R, C, factorization_strategy::Standard>,
+		detail::type_sequence<f32, R, C, factorization_strategy::DeferToColMajor>,
+		detail::type_sequence<f32, R, C, factorization_strategy::DeferToRowMajor>,
+		detail::type_sequence<f32, C, R, factorization_strategy::Standard>,
+		detail::type_sequence<f32, C, R, factorization_strategy::DeferToColMajor>,
+		detail::type_sequence<f32, C, R, factorization_strategy::DeferToRowMajor>,
+		detail::type_sequence<f32, R, R, factorization_strategy::Standard>,
+		detail::type_sequence<f32, R, R, factorization_strategy::DeferToColMajor>,
+		detail::type_sequence<f32, R, R, factorization_strategy::DeferToRowMajor>) {
 	i32 min = 1;
-	i32 max = 128;
+	i32 max = 64;
 	using Scalar = detail::typeseq_ith<0, Args>;
 	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
 	constexpr auto OutL = detail::typeseq_ith<2, Args>::value;
-	using Ldlt = detail::typeseq_ith<3, Args>;
+	using Strategy = detail::typeseq_ith<3, Args>;
 
 	for (i32 i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL, OutL>(i, Ldlt{}) <= Scalar(10));
+		DOCTEST_CHECK(
+				roundtrip_test<Scalar, InL, OutL>(i, Strategy{}) <= Scalar(10));
 	}
 }
