@@ -283,6 +283,75 @@ template <typename T>
 using VecMap = EigenVecMap<T, Eigen::Stride<0, 0>>;
 template <typename T>
 using VecMapMut = EigenVecMapMut<T, Eigen::Stride<0, 0>>;
+
+template <typename T>
+LDLT_INLINE auto from_eigen_matrix(T const& mat) noexcept -> MatrixView<
+		typename T::Scalar,
+		bool(T::IsRowMajor) //
+				? rowmajor
+				: colmajor> {
+	return {
+			(mat.data()),
+			i32(mat.rows()),
+			i32(mat.cols()),
+			i32(mat.outerStride()),
+	};
+}
+template <typename T>
+LDLT_INLINE auto from_eigen_matrix_mut(T& mat) noexcept -> MatrixViewMut<
+		typename T::Scalar,
+		bool(T::IsRowMajor) //
+				? rowmajor
+				: colmajor> {
+	return {
+			(mat.data()),
+			i32(mat.rows()),
+			i32(mat.cols()),
+			i32(mat.outerStride()),
+	};
+}
+
+template <typename T>
+LDLT_INLINE auto from_eigen_vector(T const& vec) noexcept
+		-> VectorView<typename T::Scalar> {
+	return {vec.data(), i32(vec.rows())};
+}
+template <typename T>
+LDLT_INLINE auto from_eigen_vector_mut(T&& vec) noexcept
+		-> VectorViewMut<typename std::remove_reference<T>::type::Scalar> {
+	return {vec.data(), i32(vec.rows())};
+}
+
+template <typename T, Layout L>
+LDLT_INLINE auto to_eigen_matrix(MatrixView<T, L> mat) noexcept
+		-> EigenMatMap<T, L> {
+	return {
+			mat.data,
+			mat.rows,
+			mat.cols,
+			mat.outer_stride,
+	};
+}
+template <typename T, Layout L>
+LDLT_INLINE auto to_eigen_matrix_mut(MatrixViewMut<T, L> mat) noexcept
+		-> EigenMatMapMut<T, L> {
+	return {
+			mat.data,
+			mat.rows,
+			mat.cols,
+			mat.outer_stride,
+	};
+}
+
+template <typename T>
+LDLT_INLINE auto to_eigen_vector(VectorView<T> vec) noexcept -> VecMap<T> {
+	return {vec.data, vec.dim};
+}
+template <typename T>
+LDLT_INLINE auto to_eigen_vector_mut(VectorViewMut<T> vec) noexcept
+		-> VecMapMut<T> {
+	return {vec.data, vec.dim};
+}
 } // namespace detail
 } // namespace ldlt
 
