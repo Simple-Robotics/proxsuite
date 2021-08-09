@@ -4,9 +4,66 @@
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
+#include <cstdint>
 #include <Eigen/Core>
+#include <new>
 
 namespace ldlt {
+namespace detail {
+inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
+	using BytePtr = unsigned char*;
+	using VoidPtr = void*;
+	using UPtr = std::uintptr_t;
+
+	UPtr mask = align - 1;
+	UPtr iptr = UPtr(ptr);
+	UPtr aligned_ptr = (iptr + mask) & ~mask;
+	return VoidPtr(BytePtr(ptr) + aligned_ptr - iptr);
+}
+
+template <typename T>
+struct UniqueMalloca {
+	void* malloca_ptr;
+	T* data;
+	usize n;
+
+	static constexpr usize align_scalar = alignof(T);
+	static constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
+	static constexpr usize align = (align_scalar > align_simd) //
+	                                   ? align_scalar
+	                                   : align_simd;
+	static constexpr usize max_stack_count = usize(64 * 8U) / sizeof(T);
+
+	static constexpr auto can_alloca(usize count) -> bool {
+		return count < max_stack_count;
+	}
+
+	LDLT_INLINE UniqueMalloca(void* ptr, usize count)
+			: malloca_ptr(ptr),
+				data(static_cast<T*>(detail::next_aligned(ptr, align))),
+				n(count) {
+		new (data) T[n];
+	}
+
+	UniqueMalloca(UniqueMalloca const&) = delete;
+	UniqueMalloca(UniqueMalloca&&) = delete;
+	auto operator=(UniqueMalloca const&) -> UniqueMalloca& = delete;
+	auto operator=(UniqueMalloca&&) -> UniqueMalloca& = delete;
+	LDLT_INLINE ~UniqueMalloca() {
+		for (usize i = 0; i < n; ++i) {
+			data[i].~T();
+		}
+		if (n < max_stack_count) {
+#if LDLT_HAS_ALLOCA
+			LDLT_FREEA(malloca_ptr);
+#endif
+		} else {
+			std::free(malloca_ptr);
+		}
+	}
+};
+} // namespace detail
+
 enum struct Layout : unsigned char {
 	colmajor = 0,
 	rowmajor = 1,

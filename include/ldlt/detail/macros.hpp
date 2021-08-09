@@ -24,4 +24,58 @@
 #define LDLT_FP_PRAGMA
 #endif
 
+#define LDLT_MAX_STACK_ALLOC_SIZE (1024U * 8U) /* 8KiB */
+
+#ifndef LDLT_HAS_ALLOCA
+
+#if defined(HEDLEY_MSVC_VERSION)
+#include <malloc.h>
+
+#define LDLT_HAS_ALLOCA 1
+#define LDLT_ALLOCA(x) (_malloca(x))
+#define LDLT_FREEA(x) (_freea(x))
+#elif defined(HEDLEY_GCC_VERSION) || defined(__clang__)
+#include <alloca.h>
+
+#define LDLT_HAS_ALLOCA 1
+#define LDLT_ALLOCA(x) (alloca(x))
+#define LDLT_FREEA(x) ((void)0)
+#else
+#define LDLT_HAS_ALLOCA 0
+#endif
+
+#endif
+
+#if LDLT_HAS_ALLOCA
+
+#define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
+	usize const _alloc##__LINE__ =                                               \
+			usize(Count) * sizeof(Type) + UniqueMalloca<Type>::align;                \
+	UniqueMalloca<Type> _malloca_handler##__LINE__{                              \
+			UniqueMalloca<Type>::can_alloca(usize(Count))                            \
+					? (LDLT_ALLOCA(_alloc##__LINE__))                                    \
+					: ::std::malloc(_alloc##__LINE__),                                   \
+			usize(Count),                                                            \
+	};                                                                           \
+	Type* Name = _malloca_handler##__LINE__.data;                                \
+	static_assert(true, ".")
+
+#else
+
+#define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
+	alignas(UniqueMalloca<Type>::align) unsigned char                            \
+			_buf##__LINE__[LDLT_MAX_STACK_ALLOC_SIZE];                               \
+	usize const _alloc##__LINE__ =                                               \
+			usize(Count) * sizeof(Type) + UniqueMalloca<Type>::align;                \
+	UniqueMalloca<Type> _malloca_handler##__LINE__{                              \
+			UniqueMalloca<Type>::can_alloca(usize(Count))                            \
+					? static_cast<void*>(_buf)                                           \
+					: ::std::malloc(_alloc##__LINE__),                                   \
+			usize(Count),                                                            \
+	};                                                                           \
+	Type* Name = _malloca_handler##__LINE__.data;                                \
+	static_assert(true, ".")
+
+#endif
+
 #endif /* end of include guard LDLT_MACROS_HPP_TSAOHJEXS */

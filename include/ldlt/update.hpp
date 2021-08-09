@@ -14,11 +14,8 @@ LDLT_NO_INLINE void rank1_update(
 		Scalar alpha) {
 
 	i32 dim = out.l.dim;
-	auto _workspace = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>{dim};
-	auto w = VecMapMut<Scalar>{_workspace.data(), dim};
-	w = VecMap<Scalar>{z.data, dim};
-
-	Scalar* HEDLEY_RESTRICT wp = w.data();
+	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
+	VecMapMut<Scalar>{wp, dim} = VecMap<Scalar>{z.data, dim};
 
 	for (i32 j = 0; j < dim; ++j) {
 		Scalar p = wp[j];

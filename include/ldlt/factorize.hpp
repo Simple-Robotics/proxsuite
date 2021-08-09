@@ -2,6 +2,7 @@
 #define INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS
 
 #include "ldlt/views.hpp"
+#include <new>
 
 namespace ldlt {
 namespace detail {
@@ -14,7 +15,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 	i32 dim = out.l.dim;
 	i32 l_stride = out.l.outer_stride;
 
-	auto workspace = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>(dim);
+	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
 
 	for (i32 j = 0; j < dim; ++j) {
 		/********************************************************************************
@@ -46,18 +47,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 				detail::ElementAccess<OutL>::next_col_stride(l_stride),
 		};
 
-		auto l20 = Eigen::Map<                 //
-				Eigen::Matrix<                     //
-						Scalar,                        //
-						Eigen::Dynamic,                //
-						Eigen::Dynamic,                //
-						(OutL == Layout::colmajor)     //
-								? Eigen::ColMajor          //
-								: Eigen::RowMajor          //
-						> const,                       //
-				Eigen::Unaligned,                  //
-				Eigen::OuterStride<Eigen::Dynamic> //
-				>{
+		auto l20 = EigenMatMap<Scalar, OutL>{
 				detail::ElementAccess<OutL>::offset(out.l.data, j_inc, 0, l_stride),
 				m,
 				j,
@@ -79,8 +69,8 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		};
 
 		auto d = detail::VecMap<Scalar>{out.d.data, j};
-		auto tmp_read = detail::VecMap<Scalar>{workspace.data(), j};
-		auto tmp = detail::VecMapMut<Scalar>{workspace.data(), j};
+		auto tmp_read = detail::VecMap<Scalar>{wp, j};
+		auto tmp = detail::VecMapMut<Scalar>{wp, j};
 
 		tmp.array() = l10.array().operator*(d.array());
 		out.d(j) = in_matrix(j, j) - Scalar(tmp_read.dot(l10));
