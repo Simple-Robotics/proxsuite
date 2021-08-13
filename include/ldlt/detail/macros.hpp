@@ -28,6 +28,9 @@
 #define LDLT_MAX_STACK_ALLOC_SIZE (1024U * 8U) /* 8KiB */
 #endif
 
+#define LDLT_CAT_IMPL(a, ...) a##__VA_ARGS__
+#define LDLT_CAT(a, ...) LDLT_CAT_IMPL(a, __VA_ARGS__)
+
 #ifndef LDLT_HAS_ALLOCA
 
 #if defined(HEDLEY_MSVC_VERSION)
@@ -51,31 +54,32 @@
 #if LDLT_HAS_ALLOCA
 
 #define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
-	usize const _alloc##__LINE__ =                                               \
-			usize(Count) * sizeof(Type) + UniqueMalloca<Type>::align;                \
-	UniqueMalloca<Type> _malloca_handler##__LINE__{                              \
-			UniqueMalloca<Type>::can_alloca(usize(Count))                            \
-					? (LDLT_ALLOCA(_alloc##__LINE__))                                    \
-					: ::std::malloc(_alloc##__LINE__),                                   \
+	usize const LDLT_CAT(_alloc, __LINE__) =                                     \
+			usize(Count) * sizeof(Type) +                                            \
+			::ldlt::detail::UniqueMalloca<Type>::align;                              \
+	::ldlt::detail::UniqueMalloca<Type> LDLT_CAT(_malloca_handler, __LINE__){    \
+			::ldlt::detail::UniqueMalloca<Type>::can_alloca(usize(Count))            \
+					? (LDLT_ALLOCA(LDLT_CAT(_alloc, __LINE__)))                          \
+					: ::std::malloc(LDLT_CAT(_alloc, __LINE__)),                         \
 			usize(Count),                                                            \
 	};                                                                           \
-	Type* Name = _malloca_handler##__LINE__.data;                                \
+	Type* Name = LDLT_CAT(_malloca_handler, __LINE__).data;                      \
 	static_assert(true, ".")
 
 #else
 
 #define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
-	alignas(UniqueMalloca<Type>::align) unsigned char                            \
-			_buf##__LINE__[LDLT_MAX_STACK_ALLOC_SIZE];                               \
-	usize const _alloc##__LINE__ =                                               \
-			usize(Count) * sizeof(Type) + UniqueMalloca<Type>::align;                \
-	UniqueMalloca<Type> _malloca_handler##__LINE__{                              \
-			UniqueMalloca<Type>::can_alloca(usize(Count))                            \
+	alignas(::ldlt::detail::UniqueMalloca<Type>::align) unsigned char LDLT_CAT(  \
+			_buf, __LINE__)[LDLT_MAX_STACK_ALLOC_SIZE];                              \
+	usize const LDLT_CAT(_alloc, __LINE__) =                                     \
+			usize(Count) * sizeof(Type) +                                            \
+			::ldlt::detail::UniqueMalloca<Type>::align;                              \
+	::ldlt::detail::UniqueMalloca<Type> LDLT_CAT(_malloca_handler, __LINE__){    \
+			::ldlt::detail::UniqueMalloca<Type>::can_alloca(usize(Count))            \
 					? static_cast<void*>(_buf)                                           \
-					: ::std::malloc(_alloc##__LINE__),                                   \
-			usize(Count),                                                            \
+					: ::std::malloc(LDLT_CAT(_alloc, __LINE__), ) usize(Count),          \
 	};                                                                           \
-	Type* Name = _malloca_handler##__LINE__.data;                                \
+	Type* Name = LDLT_CAT(_malloca_handler, __LINE__).data;                      \
 	static_assert(true, ".")
 
 #endif

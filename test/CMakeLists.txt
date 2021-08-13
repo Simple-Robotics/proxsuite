@@ -19,3 +19,6 @@ target_link_libraries(.test.solve ${testlibs})
 
 add_executable(.test.update.roundtrip src/update_roundtrip.cpp)
 target_link_libraries(.test.update.roundtrip ${testlibs})
+
+add_executable(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
+target_link_libraries(.test.mu_update.roundtrip ${testlibs})
