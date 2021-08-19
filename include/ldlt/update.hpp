@@ -4,6 +4,14 @@
 #include "ldlt/views.hpp"
 
 namespace ldlt {
+
+namespace diagonal_update_strategies {
+LDLT_DEFINE_TAG(multi_pass, MultiPass);
+LDLT_DEFINE_TAG(single_pass, SinglePass);
+LDLT_DEFINE_TAG(refactorize, Refactorize);
+LDLT_DEFINE_TAG(full_refactorize, FullRefactorize);
+} // namespace diagonal_update_strategies
+
 namespace detail {
 
 template <typename Scalar, Layout L>
@@ -27,6 +35,7 @@ LDLT_NO_INLINE void rank1_update(
 		alpha *= gamma;
 
 		Scalar c = gamma + beta * p;
+		// TODO: explicitly vectorize
 		for (i32 r = j + 1; r < dim; ++r) {
 			LDLT_FP_PRAGMA
 			auto& wr = wp[r - offset];
@@ -37,7 +46,7 @@ LDLT_NO_INLINE void rank1_update(
 }
 
 template <typename Scalar, Layout L>
-LDLT_NO_INLINE void mu_update_one_pass(
+LDLT_NO_INLINE void diagonal_update_single_pass(
 		LdltViewMut<Scalar, L> out,
 		LdltView<Scalar, L> in,
 		VectorView<Scalar> diag_diff,
@@ -109,6 +118,21 @@ LDLT_NO_INLINE void mu_update_one_pass(
 	}
 }
 
+template <typename T>
+struct DiagonalUpdateImpl;
+
+template <>
+struct DiagonalUpdateImpl<diagonal_update_strategies::SinglePass> {
+	template <typename Scalar, Layout L>
+	LDLT_INLINE static void
+	fn(LdltViewMut<Scalar, L> out,
+	   LdltView<Scalar, L> in,
+	   VectorView<Scalar> diag_diff,
+	   i32 start_index) {
+		detail::diagonal_update_single_pass(out, in, diag_diff, start_index);
+	}
+};
+
 } // namespace detail
 
 extern template void ldlt::detail::rank1_update(
@@ -150,8 +174,23 @@ struct rank1_update {
 		detail::rank1_update(out, in, VectorViewMut<Scalar>{wp, dim}, 0, alpha);
 	}
 };
+struct diagonal_update {
+	template <
+			typename Scalar,
+			Layout L,
+			typename S = diagonal_update_strategies::SinglePass>
+	LDLT_INLINE void operator()(
+			LdltViewMut<Scalar, L> out,
+			LdltView<Scalar, L> in,
+			VectorView<Scalar> diag_diff,
+			i32 start_index,
+			S /*strategy_tag*/ = S{}) const {
+		detail::DiagonalUpdateImpl<S>::fn(out, in, diag_diff, start_index);
+	};
+};
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(rank1_update);
+LDLT_DEFINE_NIEBLOID(diagonal_update);
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_UPDATE_HPP_OHWFTYRXS */

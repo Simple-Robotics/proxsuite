@@ -22,3 +22,6 @@ target_link_libraries(.test.update.roundtrip ${testlibs})
 
 add_executable(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
 target_link_libraries(.test.mu_update.roundtrip ${testlibs})
+
+add_executable(.test.qp_eq src/qp_eq.cpp)
+target_link_libraries(.test.qp_eq ${testlibs})

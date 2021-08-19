@@ -21,17 +21,21 @@ inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
 	return VoidPtr(BytePtr(ptr) + aligned_ptr - iptr);
 }
 
+constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
+constexpr usize align_cacheline = 64;
+constexpr usize align_simd_and_cacheline =
+		(align_simd > align_cacheline) ? align_simd : align_cacheline;
+
 template <typename T>
 struct UniqueMalloca {
 	void* malloca_ptr;
 	T* data;
 	usize n;
 
-	static constexpr usize align_scalar = alignof(T);
-	static constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
-	static constexpr usize align = (align_scalar > align_simd) //
-	                                   ? align_scalar
-	                                   : align_simd;
+	static constexpr usize align = (alignof(T) > align_simd_and_cacheline) //
+	                                   ? alignof(T)
+	                                   : align_simd_and_cacheline;
+
 	static constexpr usize max_stack_count =
 			usize(LDLT_MAX_STACK_ALLOC_SIZE) / sizeof(T);
 
@@ -285,74 +289,103 @@ using VecMap = EigenVecMap<T, Eigen::Stride<0, 0>>;
 template <typename T>
 using VecMapMut = EigenVecMapMut<T, Eigen::Stride<0, 0>>;
 
-template <typename T>
-LDLT_INLINE auto from_eigen_matrix(T const& mat) noexcept -> MatrixView<
-		typename T::Scalar,
-		bool(T::IsRowMajor) //
-				? rowmajor
-				: colmajor> {
-	return {
-			(mat.data()),
-			i32(mat.rows()),
-			i32(mat.cols()),
-			i32(mat.outerStride()),
-	};
-}
-template <typename T>
-LDLT_INLINE auto from_eigen_matrix_mut(T& mat) noexcept -> MatrixViewMut<
-		typename T::Scalar,
-		bool(T::IsRowMajor) //
-				? rowmajor
-				: colmajor> {
-	return {
-			(mat.data()),
-			i32(mat.rows()),
-			i32(mat.cols()),
-			i32(mat.outerStride()),
-	};
-}
+namespace nb {
+struct from_eigen_matrix {
+	template <typename T>
+	LDLT_INLINE auto operator()(T const& mat) const noexcept -> MatrixView<
+			typename T::Scalar,
+			bool(T::IsRowMajor) //
+					? rowmajor
+					: colmajor> {
+		return {
+				(mat.data()),
+				i32(mat.rows()),
+				i32(mat.cols()),
+				i32(mat.outerStride()),
+		};
+	}
+};
+struct from_eigen_matrix_mut {
+	template <typename T>
+	LDLT_INLINE auto operator()(T& mat) const noexcept -> MatrixViewMut<
+			typename T::Scalar,
+			bool(T::IsRowMajor) //
+					? rowmajor
+					: colmajor> {
+		return {
+				(mat.data()),
+				i32(mat.rows()),
+				i32(mat.cols()),
+				i32(mat.outerStride()),
+		};
+	}
+};
+struct from_eigen_vector {
+	template <typename T>
+	LDLT_INLINE auto operator()(T const& vec) const noexcept
+			-> VectorView<typename T::Scalar> {
+		return {vec.data(), i32(vec.rows())};
+	}
+};
 
-template <typename T>
-LDLT_INLINE auto from_eigen_vector(T const& vec) noexcept
-		-> VectorView<typename T::Scalar> {
-	return {vec.data(), i32(vec.rows())};
-}
-template <typename T>
-LDLT_INLINE auto from_eigen_vector_mut(T&& vec) noexcept
-		-> VectorViewMut<typename std::remove_reference<T>::type::Scalar> {
-	return {vec.data(), i32(vec.rows())};
-}
+struct from_eigen_vector_mut {
+	template <typename T>
+	LDLT_INLINE auto operator()(T&& vec) const noexcept
+			-> VectorViewMut<typename std::remove_reference<T>::type::Scalar> {
+		return {vec.data(), i32(vec.rows())};
+	}
+};
 
-template <typename T, Layout L>
-LDLT_INLINE auto to_eigen_matrix(MatrixView<T, L> mat) noexcept
-		-> EigenMatMap<T, L> {
-	return {
-			mat.data,
-			mat.rows,
-			mat.cols,
-			mat.outer_stride,
-	};
-}
-template <typename T, Layout L>
-LDLT_INLINE auto to_eigen_matrix_mut(MatrixViewMut<T, L> mat) noexcept
-		-> EigenMatMapMut<T, L> {
-	return {
-			mat.data,
-			mat.rows,
-			mat.cols,
-			mat.outer_stride,
-	};
-}
+struct to_eigen_matrix {
+	template <typename T, Layout L>
+	LDLT_INLINE auto operator()(MatrixView<T, L> mat) const noexcept
+			-> EigenMatMap<T, L> {
+		return {
+				mat.data,
+				mat.rows,
+				mat.cols,
+				mat.outer_stride,
+		};
+	}
+};
 
-template <typename T>
-LDLT_INLINE auto to_eigen_vector(VectorView<T> vec) noexcept -> VecMap<T> {
-	return {vec.data, vec.dim};
-}
-template <typename T>
-LDLT_INLINE auto to_eigen_vector_mut(VectorViewMut<T> vec) noexcept
-		-> VecMapMut<T> {
-	return {vec.data, vec.dim};
-}
+struct to_eigen_matrix_mut {
+	template <typename T, Layout L>
+	LDLT_INLINE auto operator()(MatrixViewMut<T, L> mat) const noexcept
+			-> EigenMatMapMut<T, L> {
+		return {
+				mat.data,
+				mat.rows,
+				mat.cols,
+				mat.outer_stride,
+		};
+	}
+};
+
+struct to_eigen_vector {
+	template <typename T>
+	LDLT_INLINE auto operator()(VectorView<T> vec) const noexcept -> VecMap<T> {
+		return {vec.data, vec.dim};
+	}
+};
+
+struct to_eigen_vector_mut {
+	template <typename T>
+	LDLT_INLINE auto operator()(VectorViewMut<T> vec) const noexcept
+			-> VecMapMut<T> {
+		return {vec.data, vec.dim};
+	}
+};
+} // namespace nb
+LDLT_DEFINE_NIEBLOID(from_eigen_matrix);
+LDLT_DEFINE_NIEBLOID(from_eigen_matrix_mut);
+LDLT_DEFINE_NIEBLOID(to_eigen_matrix);
+LDLT_DEFINE_NIEBLOID(to_eigen_matrix_mut);
+
+LDLT_DEFINE_NIEBLOID(from_eigen_vector);
+LDLT_DEFINE_NIEBLOID(from_eigen_vector_mut);
+LDLT_DEFINE_NIEBLOID(to_eigen_vector);
+LDLT_DEFINE_NIEBLOID(to_eigen_vector_mut);
 } // namespace detail
 } // namespace ldlt
 

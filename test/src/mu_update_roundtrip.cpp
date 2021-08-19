@@ -62,7 +62,7 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	};
 
 	factorize(ldl_view, m_view);
-	detail::mu_update_one_pass( //
+	diagonal_update( //
 			ldl_view,
 			ldl_view.as_const(),
 			detail::from_eigen_vector(diag_diff),
