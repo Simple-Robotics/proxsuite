@@ -9,41 +9,6 @@
 
 namespace ldlt {
 namespace qp {
-
-template <typename Scalar, Layout LH, Layout LC>
-struct QpView {
-	MatrixView<Scalar, LH> H;
-	VectorView<Scalar> g;
-
-	MatrixView<Scalar, LC> A;
-	VectorView<Scalar> b;
-	MatrixView<Scalar, LC> C;
-	VectorView<Scalar> d;
-};
-
-template <typename Scalar, Layout LH, Layout LC>
-struct QpViewMut {
-	MatrixViewMut<Scalar, LH> H;
-	VectorViewMut<Scalar> g;
-
-	MatrixViewMut<Scalar, LC> A;
-	VectorViewMut<Scalar> b;
-	MatrixViewMut<Scalar, LC> C;
-	VectorViewMut<Scalar> d;
-
-	LDLT_INLINE constexpr auto as_const() const noexcept
-			-> QpView<Scalar, LH, LC> {
-		return {
-				H.as_const(),
-				g.as_const(),
-				A.as_const(),
-				b.as_const(),
-				C.as_const(),
-				d.as_const(),
-		};
-	}
-};
-
 namespace preconditioner {
 struct IdentityPrecond {
 	template <typename Scalar, Layout LH, Layout LC>
@@ -55,9 +20,23 @@ struct IdentityPrecond {
 	void scale_dual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
 
 	template <typename Scalar>
+	void
+	scale_primal_residue_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
+	template <typename Scalar>
+	void scale_dual_residue_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {
+	}
+
+	template <typename Scalar>
 	void unscale_primal_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
 	template <typename Scalar>
 	void unscale_dual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
+
+	template <typename Scalar>
+	void
+	unscale_primal_residue_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
+	template <typename Scalar>
+	void
+	unscale_dual_residue_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
 };
 } // namespace preconditioner
 
@@ -100,7 +79,11 @@ struct max2 {
 struct norm_inf {
 	template <typename D>
 	auto operator()(Eigen::MatrixBase<D> const& mat) const -> typename D::Scalar {
-		return mat.template lpNorm<Eigen::Infinity>();
+		if (mat.rows() == 0 || mat.cols() == 0) {
+			return typename D::Scalar(0);
+		} else {
+			return mat.template lpNorm<Eigen::Infinity>();
+		}
 	}
 };
 } // namespace nb
@@ -139,8 +122,10 @@ auto solve_qp( //
 			from_eigen_vector_mut(q_copy),
 			from_eigen_matrix_mut(A_copy),
 			from_eigen_vector_mut(b_copy),
-			{}, // no inequalities
-			{},
+
+			// no inequalities
+			{nullptr, 0, dim, 0},
+			{nullptr, 0},
 	};
 	precond.scale_qp_in_place(qp_scaled);
 	precond.scale_primal_in_place(x);
@@ -226,16 +211,17 @@ auto solve_qp( //
 			// A×x - b
 			primal_residue_scaled.setZero();
 			primal_residue_scaled.noalias() += A_ * x_;
+
 			{
 				auto w = residue_scaled_tmp.bottomRows(n_eq);
 				w = primal_residue_scaled;
-				precond.unscale_primal_in_place(from_eigen_vector_mut(w));
+				precond.unscale_primal_residue_in_place(from_eigen_vector_mut(w));
 				primal_feasibility_rhs_0 = norm_inf(w);
 			}
 			primal_residue_scaled -= b_;
 
 			primal_residue_unscaled = primal_residue_scaled;
-			precond.unscale_primal_in_place(
+			precond.unscale_primal_residue_in_place(
 					from_eigen_vector_mut(primal_residue_unscaled));
 
 			primal_feasibility_lhs = norm_inf(primal_residue_unscaled);
@@ -289,19 +275,19 @@ auto solve_qp( //
 				w.setZero();
 				w.noalias() += H_ * x_;
 				{ dual_residue_scaled += w; }
-				precond.unscale_dual_in_place(from_eigen_vector_mut(w));
+				precond.unscale_dual_residue_in_place(from_eigen_vector_mut(w));
 				dual_feasibility_rhs_0 = norm_inf(w);
 
 				w.setZero();
 				w.noalias() += A_.transpose() * y_;
 				{ dual_residue_scaled += w; }
 
-				precond.unscale_dual_in_place(from_eigen_vector_mut(w));
+				precond.unscale_dual_residue_in_place(from_eigen_vector_mut(w));
 				dual_feasibility_rhs_1 = norm_inf(w);
 			}
 
 			dual_residue_unscaled = dual_residue_scaled;
-			precond.unscale_dual_in_place(
+			precond.unscale_dual_residue_in_place(
 					from_eigen_vector_mut(dual_residue_unscaled));
 
 			dual_feasibility_lhs = norm_inf(dual_residue_unscaled);

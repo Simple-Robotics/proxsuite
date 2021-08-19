@@ -25,3 +25,6 @@ target_link_libraries(.test.mu_update.roundtrip ${testlibs})
 
 add_executable(.test.qp_eq src/qp_eq.cpp)
 target_link_libraries(.test.qp_eq ${testlibs})
+
+add_executable(.test.precond.ruiz src/precond_ruiz.cpp)
+target_link_libraries(.test.precond.ruiz ${testlibs})

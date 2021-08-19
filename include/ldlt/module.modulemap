@@ -3,6 +3,6 @@ module ldlt {
   header "views.hpp"
   header "solve.hpp"
   header "update.hpp"
-  header "qp_eq"
+  header "qp_eq.hpp"
   export *
 }
