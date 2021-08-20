@@ -70,12 +70,6 @@ struct pow {
 		return pow(x, y);
 	}
 };
-struct max2 {
-	template <typename T>
-	auto operator()(T const& a, T const& b) const -> T const& {
-		return a > b ? a : b;
-	}
-};
 struct infty_norm {
 	template <typename D>
 	auto operator()(Eigen::MatrixBase<D> const& mat) const -> typename D::Scalar {
@@ -88,7 +82,6 @@ struct infty_norm {
 };
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(pow);
-LDLT_DEFINE_NIEBLOID(max2);
 LDLT_DEFINE_NIEBLOID(infty_norm);
 
 template <
@@ -169,11 +162,13 @@ auto solve_qp( //
 	ldlt::factorize(
 			ldlt_mut, from_eigen_matrix(Htot), factorization_strategy::standard);
 
-	LDLT_WORKSPACE_MEMORY(_residue_scaled, dim + n_eq, Scalar);
-	LDLT_WORKSPACE_MEMORY(_residue_scaled_tmp, dim + n_eq, Scalar);
-	LDLT_WORKSPACE_MEMORY(_residue_unscaled, dim + n_eq, Scalar);
-	LDLT_WORKSPACE_MEMORY(_next_dual, n_eq, Scalar);
-	LDLT_WORKSPACE_MEMORY(_diag_diff, n_eq, Scalar);
+	LDLT_MULTI_WORKSPACE_MEMORY(
+			((_residue_scaled, dim + n_eq),
+	     (_residue_scaled_tmp, dim + n_eq),
+	     (_residue_unscaled, dim + n_eq),
+	     (_next_dual, n_eq),
+	     (_diag_diff, n_eq)),
+			Scalar);
 
 	auto residue_scaled =
 			to_eigen_vector_mut(VectorViewMut<Scalar>{_residue_scaled, dim + n_eq});

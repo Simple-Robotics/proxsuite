@@ -10,6 +10,20 @@
 
 namespace ldlt {
 namespace detail {
+namespace nb {
+struct max2 {
+	template <typename T>
+	LDLT_INLINE constexpr auto operator()(T const& a, T const& b) const
+			-> T const& {
+		return a > b ? a : b;
+	}
+};
+} // namespace nb
+LDLT_DEFINE_NIEBLOID(max2);
+constexpr auto round_up(i32 n, i32 k) noexcept -> i32 {
+	return (n + k - 1) / k * k;
+}
+
 inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
 	using BytePtr = unsigned char*;
 	using VoidPtr = void*;
@@ -23,8 +37,13 @@ inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
 
 constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
 constexpr usize align_cacheline = 64;
-constexpr usize align_simd_and_cacheline =
-		(align_simd > align_cacheline) ? align_simd : align_cacheline;
+constexpr usize align_simd_and_cacheline = max2(align_simd, align_cacheline);
+
+template <typename T>
+struct SimdCachelineAlignStep {
+	static constexpr i32 value =
+			i32(max2(usize(1), align_simd_and_cacheline / alignof(T)));
+};
 
 template <typename T>
 struct UniqueMalloca {
@@ -32,9 +51,7 @@ struct UniqueMalloca {
 	T* data;
 	usize n;
 
-	static constexpr usize align = (alignof(T) > align_simd_and_cacheline) //
-	                                   ? alignof(T)
-	                                   : align_simd_and_cacheline;
+	static constexpr usize align = max2(alignof(T), align_simd_and_cacheline);
 
 	static constexpr usize max_stack_count =
 			usize(LDLT_MAX_STACK_ALLOC_SIZE) / sizeof(T);

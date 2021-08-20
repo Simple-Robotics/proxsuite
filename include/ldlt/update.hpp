@@ -53,23 +53,25 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 		i32 start_index) {
 
 	i32 dim = out.l.rows;
-	i32 m = diag_diff.dim;
-	if (m == 0) {
+	i32 n_diag_terms = diag_diff.dim;
+	if (n_diag_terms == 0) {
 		return;
 	}
 	i32 dim_rest = dim - start_index;
 
 	// TODO: fuse allocations, split up to different cache lines
-	LDLT_WORKSPACE_MEMORY(ws, m * dim_rest, Scalar);
-	LDLT_WORKSPACE_MEMORY(alphas, m, Scalar);
-	LDLT_WORKSPACE_MEMORY(ps, m, Scalar);
-	LDLT_WORKSPACE_MEMORY(betas, m, Scalar);
-	LDLT_WORKSPACE_MEMORY(cs, m, Scalar);
+	LDLT_MULTI_WORKSPACE_MEMORY(
+			((ws, n_diag_terms * dim_rest),
+	     (alphas, n_diag_terms),
+	     (ps, n_diag_terms),
+	     (betas, n_diag_terms),
+	     (cs, n_diag_terms)),
+			Scalar);
 
-	for (i32 k = 0; k < m * dim_rest; ++k) {
+	for (i32 k = 0; k < n_diag_terms * dim_rest; ++k) {
 		ws[k] = Scalar(0);
 	}
-	for (i32 k = 0; k < m; ++k) {
+	for (i32 k = 0; k < n_diag_terms; ++k) {
 		ws[k * dim_rest + k] = Scalar(1);
 		alphas[k] = diag_diff(k);
 	}
@@ -79,7 +81,7 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 		{
 			Scalar dj = in.d(j);
 			for (i32 k = 0, w_offset = 0; //
-			     k < m;
+			     k < n_diag_terms;
 			     ++k, w_offset += dim_rest) {
 				Scalar p = ws[w_offset + (j - start_index)];
 				Scalar& alpha = alphas[k];
@@ -102,7 +104,7 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 
 		// TODO: vectorize
 		for (i32 r = j + 1; r < dim; ++r) {
-			i32 max_k = std::min(r - j, m);
+			i32 max_k = std::min(r - j, n_diag_terms);
 
 			Scalar lr = in.l(r, j);
 			for (i32 k = 0, w_offset = 0; //
