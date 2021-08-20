@@ -76,7 +76,7 @@ struct max2 {
 		return a > b ? a : b;
 	}
 };
-struct norm_inf {
+struct infty_norm {
 	template <typename D>
 	auto operator()(Eigen::MatrixBase<D> const& mat) const -> typename D::Scalar {
 		if (mat.rows() == 0 || mat.cols() == 0) {
@@ -89,7 +89,7 @@ struct norm_inf {
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(pow);
 LDLT_DEFINE_NIEBLOID(max2);
-LDLT_DEFINE_NIEBLOID(norm_inf);
+LDLT_DEFINE_NIEBLOID(infty_norm);
 
 template <
 		typename Scalar,
@@ -186,8 +186,8 @@ auto solve_qp( //
 	auto next_dual = to_eigen_vector_mut(VectorViewMut<Scalar>{_next_dual, n_eq});
 	auto diag_diff = to_eigen_vector_mut(VectorViewMut<Scalar>{_diag_diff, n_eq});
 
-	Scalar primal_feasibility_rhs_1 = norm_inf(to_eigen_vector(qp.b));
-	Scalar dual_feasibility_rhs_2 = norm_inf(to_eigen_vector(qp.g));
+	Scalar primal_feasibility_rhs_1 = infty_norm(to_eigen_vector(qp.b));
+	Scalar dual_feasibility_rhs_2 = infty_norm(to_eigen_vector(qp.g));
 
 	for (i32 iter = 0; iter <= max_iter; ++iter) {
 
@@ -216,7 +216,7 @@ auto solve_qp( //
 				auto w = residue_scaled_tmp.bottomRows(n_eq);
 				w = primal_residue_scaled;
 				precond.unscale_primal_residue_in_place(from_eigen_vector_mut(w));
-				primal_feasibility_rhs_0 = norm_inf(w);
+				primal_feasibility_rhs_0 = infty_norm(w);
 			}
 			primal_residue_scaled -= b_;
 
@@ -224,7 +224,7 @@ auto solve_qp( //
 			precond.unscale_primal_residue_in_place(
 					from_eigen_vector_mut(primal_residue_unscaled));
 
-			primal_feasibility_lhs = norm_inf(primal_residue_unscaled);
+			primal_feasibility_lhs = infty_norm(primal_residue_unscaled);
 
 			if (iter > 0) {
 				if (primal_feasibility_lhs <= bcl_eta) {
@@ -276,21 +276,21 @@ auto solve_qp( //
 				w.noalias() += H_ * x_;
 				{ dual_residue_scaled += w; }
 				precond.unscale_dual_residue_in_place(from_eigen_vector_mut(w));
-				dual_feasibility_rhs_0 = norm_inf(w);
+				dual_feasibility_rhs_0 = infty_norm(w);
 
 				w.setZero();
 				w.noalias() += A_.transpose() * y_;
 				{ dual_residue_scaled += w; }
 
 				precond.unscale_dual_residue_in_place(from_eigen_vector_mut(w));
-				dual_feasibility_rhs_1 = norm_inf(w);
+				dual_feasibility_rhs_1 = infty_norm(w);
 			}
 
 			dual_residue_unscaled = dual_residue_scaled;
 			precond.unscale_dual_residue_in_place(
 					from_eigen_vector_mut(dual_residue_unscaled));
 
-			dual_feasibility_lhs = norm_inf(dual_residue_unscaled);
+			dual_feasibility_lhs = infty_norm(dual_residue_unscaled);
 		}
 
 		// TODO(1): always true for QP?

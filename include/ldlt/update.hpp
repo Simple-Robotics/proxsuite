@@ -186,7 +186,7 @@ struct diagonal_update {
 			i32 start_index,
 			S /*strategy_tag*/ = S{}) const {
 		detail::DiagonalUpdateImpl<S>::fn(out, in, diag_diff, start_index);
-	};
+	}
 };
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(rank1_update);

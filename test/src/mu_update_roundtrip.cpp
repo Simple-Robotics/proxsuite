@@ -22,17 +22,11 @@ auto generate_data(i32 n) -> Data<T, InL, OutL> {
 	i32 n_eq = 1;
 	Mat<T, InL> mat(n, n);
 	Vec<T> diag_diff(n_eq);
-	T alpha;
 
 	Mat<T, OutL> l(n, n);
 	Vec<T> d(n);
 	std::srand(unsigned(n));
 	mat.setRandom();
-	{
-		Vec<T> _alpha(1);
-		_alpha.setRandom();
-		alpha = _alpha(0);
-	}
 	diag_diff.setRandom();
 	mat = (mat.transpose() * mat).eval();
 
