@@ -85,7 +85,8 @@ auto ruiz_scale_qp_in_place( //
 			}
 			iter += 1;
 		}
-		// vecteur de normalisation
+
+		// normalization vector
 		for (i32 k = 0; k < n; ++k) {
 			delta(k) = Scalar(1) / (sqrt(max2(
 																	infty_norm(H.col(k)), //
@@ -102,14 +103,14 @@ auto ruiz_scale_qp_in_place( //
 					Scalar(1) / (sqrt(infty_norm(C.row(k))) + machine_eps);
 		}
 
-		// normalisation des colonnes de H, A, C
+		// normalize columns of H, A, C
 
 		for (i32 j = 0; j < n; ++j) {
 			H.col(j) *= delta(j);
 			A.col(j) *= delta(j);
 			C.col(j) *= delta(j);
 		}
-		// normalisation des lignes
+		// normalize rows
 		for (i32 i = 0; i < n; ++i) {
 			H.row(i) *= delta(i);
 			g(i) *= delta(i);
@@ -125,7 +126,7 @@ auto ruiz_scale_qp_in_place( //
 			d(i) *= delta(i + n + n_eq);
 		}
 
-		// supplementary normalisation for the cost function
+		// additional normalization for the cost function
 
 		Scalar gamma =
 				1 / max2(
@@ -135,7 +136,7 @@ auto ruiz_scale_qp_in_place( //
 		g *= gamma;
 		H *= gamma;
 
-		S.array() *= delta.array(); // coefficient wise product using array
+		S.array() *= delta.array(); // coefficientwise product
 		c *= gamma;
 	}
 	return c;
