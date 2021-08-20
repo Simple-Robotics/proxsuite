@@ -63,7 +63,6 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 			qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
 					dim,
 					n_eq,
-					&std::cout,
 			});
 
 	DOCTEST_CHECK(
