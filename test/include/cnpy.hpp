@@ -15,82 +15,27 @@
 #include <cstdio>
 #include <memory>
 #include <cstdint>
+#include <Eigen/Core>
 
 #define CNPY_FWD(x) static_cast<decltype(x)&&>(x)
+#define CNPY_ASSERT(Cond)                                                      \
+	((Cond) ? (void)0                                                            \
+	        : ::cnpy::detail::terminate_with_message(#Cond, sizeof(#Cond)))
 
 namespace cnpy {
 namespace detail {
+
+void terminate_with_message(char const* msg, size_t len);
+
 template <typename T>
-struct MapType {
-	static constexpr char value = '?';
-};
+struct TypeCode;
 template <>
-struct MapType<float> {
+struct TypeCode<float> {
 	static constexpr char value = 'f';
 };
 template <>
-struct MapType<double> {
+struct TypeCode<double> {
 	static constexpr char value = 'f';
-};
-template <>
-struct MapType<long double> {
-	static constexpr char value = 'f';
-};
-template <>
-struct MapType<int> {
-	static constexpr char value = 'i';
-};
-template <>
-struct MapType<char> {
-	static constexpr char value = 'i';
-};
-template <>
-struct MapType<short> {
-	static constexpr char value = 'i';
-};
-template <>
-struct MapType<long> {
-	static constexpr char value = 'i';
-};
-template <>
-struct MapType<long long> {
-	static constexpr char value = 'i';
-};
-template <>
-struct MapType<unsigned char> {
-	static constexpr char value = 'u';
-};
-template <>
-struct MapType<unsigned short> {
-	static constexpr char value = 'u';
-};
-template <>
-struct MapType<unsigned long> {
-	static constexpr char value = 'u';
-};
-template <>
-struct MapType<unsigned long long> {
-	static constexpr char value = 'u';
-};
-template <>
-struct MapType<unsigned int> {
-	static constexpr char value = 'u';
-};
-template <>
-struct MapType<bool> {
-	static constexpr char value = 'b';
-};
-template <>
-struct MapType<std::complex<float>> {
-	static constexpr char value = 'c';
-};
-template <>
-struct MapType<std::complex<double>> {
-	static constexpr char value = 'c';
-};
-template <>
-struct MapType<std::complex<long double>> {
-	static constexpr char value = 'c';
 };
 
 struct FromByteRepr {};
@@ -117,49 +62,11 @@ struct StrView {
 	constexpr StrView(FromLiteral /*tag*/, char const (&literal)[N]) noexcept
 			: data{literal}, size{N - 1} {}
 };
+
 } // namespace detail
 
-struct NpyArray {
-	NpyArray(std::vector<size_t> _shape, size_t _word_size, bool _fortran_order)
-			: word_size(_word_size),
-				num_vals{1},
-				fortran_order(_fortran_order),
-				shape(CNPY_FWD(_shape)) {
-		for (unsigned long i : shape) {
-			num_vals *= i;
-		}
-		data_holder = std::vector<char>(num_vals * word_size);
-	}
-
-	NpyArray() = default;
-
-	template <typename T>
-	auto data() -> T* {
-		return reinterpret_cast<T*>(data_holder.data());
-	}
-
-	template <typename T>
-	auto data() const -> const T* {
-		return reinterpret_cast<T*>(data_holder.data());
-	}
-
-	template <typename T>
-	auto as_vec() const -> std::vector<T> {
-		T const* p = data<T>();
-		return std::vector<T>(p, p + num_vals);
-	}
-
-	auto num_bytes() const -> size_t { return data_holder.size(); }
-
-	size_t word_size{};
-	size_t num_vals{};
-	bool fortran_order{false};
-	std::vector<char> data_holder;
-	std::vector<size_t> shape;
-};
-
 namespace detail {
-auto BigEndianTest() -> char {
+inline auto BigEndianTest() -> char {
 	int x = 1;
 	char buf[sizeof(x)];
 	std::memcpy(&buf, &x, sizeof(x));
@@ -169,7 +76,7 @@ template <typename T>
 auto create_npy_header(std::vector<size_t> const& shape) -> std::vector<char>;
 
 auto create_npy_header(
-		std::vector<size_t> const& shape, size_t sizeof_T, char map_value)
+		std::vector<size_t> const& shape, size_t sizeof_T, char type_code)
 		-> std::vector<char>;
 void parse_npy_header(
 		FILE* fp,
@@ -183,31 +90,96 @@ void parse_npy_header(
 		bool& fortran_order);
 
 void npy_vsave(
-		std::string const& fname,
+		char const* fname,
 		void const* vdata,
 		size_t sizeof_T,
-		char map_value,
-		std::vector<size_t> const& shape,
-		std::string const& mode);
-} // namespace detail
-auto npy_load(std::string const& fname) -> NpyArray;
+		char type_code,
+		size_t const* shape,
+		size_t ndim,
+		char const* mode);
 
-template <typename T>
-void npy_save(
+void npy_vload_vec(
 		std::string const& fname,
-		T const* data,
-		std::vector<size_t> const& shape,
+		void* vec,
+		void* (*ptr)(void*),
+		void (*resize)(void*, size_t rows));
+void npy_vload_mat(
+		std::string const& fname,
+		void* vec,
+		void* (*ptr)(void*),
+		void (*resize)(void*, size_t rows, size_t cols));
+} // namespace detail
+
+template <typename D>
+void npy_save_mat(
+		std::string const& fname,
+		Eigen::MatrixBase<D> const& mat,
 		std::string const& mode = "w") {
-	detail::npy_vsave(
-			fname, data, sizeof(T), detail::MapType<T>::value, shape, mode);
+
+	auto const& eval = mat.eval();
+	size_t rowcol[] = {eval.rows(), eval.cols()};
+
+	using T = typename D::Scalar;
+
+	detail::npy_vsave( //
+			fname.c_str(),
+			eval.data(),
+			sizeof(T),
+			detail::TypeCode<T>::value,
+			&rowcol[0],
+			2,
+			mode.c_str());
+}
+
+template <typename D>
+void npy_save_vec(
+		std::string const& fname,
+		Eigen::MatrixBase<D> const& vec,
+		const std::string& mode = "w") {
+
+	auto const& eval = vec.eval();
+	using T = typename D::Scalar;
+	CNPY_ASSERT(vec.cols() == 1);
+	std::size_t size = vec.rows();
+
+	detail::npy_vsave( //
+			fname.c_str(),
+			vec.data(),
+			sizeof(T),
+			detail::TypeCode<T>::value,
+			&size,
+			1,
+			mode.c_str());
 }
 
 template <typename T>
-void npy_save(
-		std::string fname, std::vector<T> const& data, std::string mode = "w") {
-	std::vector<size_t> shape;
-	shape.push_back(data.size());
-	npy_save(fname, data.data(), shape, mode);
+auto npy_load_vec(std::string const& fname)
+		-> Eigen::Matrix<T, Eigen::Dynamic, 1> {
+	using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+	Vec out;
+	detail::npy_vload_vec( //
+			fname.c_str(),
+			std::addressof(out),
+			+[](void* vec) -> void* { return static_cast<Vec*>(vec)->data(); },
+			+[](void* vec, std::size_t rows) -> void {
+				static_cast<Vec*>(vec)->resize(rows, 1);
+			});
+	return out;
+}
+
+template <typename T>
+auto npy_load_mat(std::string const& fname)
+		-> Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> {
+	using Mat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
+	Mat out;
+	detail::npy_vload_mat( //
+			fname.c_str(),
+			std::addressof(out),
+			+[](void* mat) -> void* { return static_cast<Mat*>(mat)->data(); },
+			+[](void* mat, std::size_t rows, std::size_t cols) -> void {
+				static_cast<Mat*>(mat)->resize(rows, cols);
+			});
+	return out;
 }
 
 } // namespace cnpy
