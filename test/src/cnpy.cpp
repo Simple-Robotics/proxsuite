@@ -50,6 +50,7 @@ struct File {
 
 void terminate_with_message(char const* msg, size_t len) {
 	std::fwrite(msg, 1, len, stderr);
+	std::fputc('\n', stderr);
 	std::terminate();
 }
 
@@ -228,68 +229,88 @@ void parse_npy_header(
 	word_size = std::stoul(str_ws.substr(0, loc2));
 }
 
-void load_npy_vec(
+auto load_npy_vec(
 		std::FILE* fp,
+		std::size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows)) {
+		void (*resize)(void*, size_t rows)) -> LoadVecResult {
 	std::vector<size_t> shape;
 
 	size_t word_size{};
 	bool fortran_order{};
 
 	cnpy::detail::parse_npy_header(fp, word_size, shape, fortran_order);
+	if (word_size != sizeof_T) {
+		return LoadVecResult::failed_dtype;
+	}
+	if (shape.size() != 1) {
+		return LoadVecResult(int(LoadVecResult::failed_ndim) + shape.size());
+	}
 
-	CNPY_ASSERT(shape.size() == 1);
 	size_t nbytes = word_size * shape[0];
 	resize(vec, shape[0]);
 
 	CNPY_ASSERT(
 			std::fread(ptr(vec), 1, nbytes, fp) == nbytes &&
 			"load_the_npy_file: failed fread");
+	return LoadVecResult::success;
 }
 
-void load_npy_mat(
+auto load_npy_mat(
 		std::FILE* fp,
+		std::size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows, size_t cols)) {
+		void (*resize)(void*, size_t rows, size_t cols)) -> LoadMatResult {
 	std::vector<size_t> shape;
 
 	size_t word_size{};
 	bool fortran_order{};
 
 	cnpy::detail::parse_npy_header(fp, word_size, shape, fortran_order);
-
-	CNPY_ASSERT(shape.size() == 2);
+	if (word_size != sizeof_T) {
+		return LoadMatResult::failed_dtype;
+	}
+	if (shape.size() != 2) {
+		return LoadMatResult(int(LoadMatResult::failed_ndim) + shape.size());
+	}
 	size_t nbytes = word_size * shape[0] * shape[1];
 	resize(vec, shape[0], shape[1]);
 
 	CNPY_ASSERT(
 			std::fread(ptr(vec), 1, nbytes, fp) == nbytes &&
 			"load_the_npy_file: failed fread");
+
+	if (fortran_order) {
+		return LoadMatResult::success;
+	} else {
+		return LoadMatResult::success_transpose;
+	}
 }
 
-void npy_vload_vec(
+auto npy_vload_vec(
 		std::string const& fname,
+		std::size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows)) {
+		void (*resize)(void*, size_t rows)) -> LoadVecResult {
 	File fp{fname.c_str(), "rb"}; // NOLINT
 
 	CNPY_ASSERT(fp.ptr != nullptr);
-	detail::load_npy_vec(fp.ptr, vec, ptr, resize);
+	return detail::load_npy_vec(fp.ptr, sizeof_T, vec, ptr, resize);
 }
 
-void npy_vload_mat(
+auto npy_vload_mat(
 		std::string const& fname,
+		std::size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows, size_t cols)) {
+		void (*resize)(void*, size_t rows, size_t cols)) -> LoadMatResult {
 	File fp{fname.c_str(), "rb"}; // NOLINT
 
 	CNPY_ASSERT(fp.ptr != nullptr);
-	detail::load_npy_mat(fp.ptr, vec, ptr, resize);
+	return detail::load_npy_mat(fp.ptr, sizeof_T, vec, ptr, resize);
 }
 } // namespace detail
 } // namespace cnpy

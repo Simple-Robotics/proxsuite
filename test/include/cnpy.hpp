@@ -20,10 +20,30 @@
 #define CNPY_FWD(x) static_cast<decltype(x)&&>(x)
 #define CNPY_ASSERT(Cond)                                                      \
 	((Cond) ? (void)0                                                            \
-	        : ::cnpy::detail::terminate_with_message(#Cond, sizeof(#Cond)))
+	        : ::cnpy::detail::terminate_with_message(                            \
+								"assertion failed: " #Cond,                                    \
+								sizeof("assertion failed: " #Cond) - 1))
+
+#define CNPY_LITERAL(X) X, sizeof(X) - 1
 
 namespace cnpy {
 namespace detail {
+
+enum struct LoadVecResult : int {
+	success = 0,
+	failed_file = 1,
+	failed_dtype = 2,
+	failed_ndim = 3,
+};
+
+enum struct LoadMatResult : int {
+	success = 0,
+	success_transpose = -1,
+
+	failed_file = 1,
+	failed_dtype = 2,
+	failed_ndim = 3,
+};
 
 void terminate_with_message(char const* msg, size_t len);
 
@@ -98,16 +118,18 @@ void npy_vsave(
 		size_t ndim,
 		char const* mode);
 
-void npy_vload_vec(
+auto npy_vload_vec(
 		std::string const& fname,
+		size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows));
-void npy_vload_mat(
+		void (*resize)(void*, size_t rows)) -> LoadVecResult;
+auto npy_vload_mat(
 		std::string const& fname,
+		size_t sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows, size_t cols));
+		void (*resize)(void*, size_t rows, size_t cols)) -> LoadMatResult;
 } // namespace detail
 
 template <typename D>
@@ -157,13 +179,36 @@ auto npy_load_vec(std::string const& fname)
 		-> Eigen::Matrix<T, Eigen::Dynamic, 1> {
 	using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 	Vec out;
-	detail::npy_vload_vec( //
+
+	using Res = detail::LoadVecResult;
+	using detail::terminate_with_message;
+
+	Res res = detail::npy_vload_vec( //
 			fname.c_str(),
+			sizeof(T),
 			std::addressof(out),
 			+[](void* vec) -> void* { return static_cast<Vec*>(vec)->data(); },
 			+[](void* vec, std::size_t rows) -> void {
 				static_cast<Vec*>(vec)->resize(rows, 1);
 			});
+
+	if (res == Res::failed_file) {
+		terminate_with_message(CNPY_LITERAL("libnpy: could not load file"));
+	}
+	if (res == Res::failed_dtype) {
+		terminate_with_message(CNPY_LITERAL("libnpy: mismatching scalar type"));
+	}
+	if (res == Res::failed_ndim) {
+		char buf[4096];
+		std::size_t len = std::size_t(std::snprintf(
+				&buf[0],
+				4096,
+				"libnpy: wrong number of dimensions. expected %zu, got %zu",
+				std::size_t{2},
+				std::size_t(res) - std::size_t(Res::failed_ndim)));
+		CNPY_ASSERT(len + 1 < 4096);
+		terminate_with_message(&buf[0], len);
+	}
 	return out;
 }
 
@@ -172,13 +217,40 @@ auto npy_load_mat(std::string const& fname)
 		-> Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> {
 	using Mat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
 	Mat out;
-	detail::npy_vload_mat( //
+
+	using Res = detail::LoadMatResult;
+	using detail::terminate_with_message;
+
+	Res res = detail::npy_vload_mat( //
 			fname.c_str(),
+			sizeof(T),
 			std::addressof(out),
 			+[](void* mat) -> void* { return static_cast<Mat*>(mat)->data(); },
 			+[](void* mat, std::size_t rows, std::size_t cols) -> void {
 				static_cast<Mat*>(mat)->resize(rows, cols);
 			});
+
+	if (res == Res::failed_file) {
+		terminate_with_message(CNPY_LITERAL("libnpy: could not load file"));
+	}
+	if (res == Res::failed_dtype) {
+		terminate_with_message(CNPY_LITERAL("libnpy: mismatching scalar type"));
+	}
+	if (res == Res::failed_ndim) {
+		char buf[4096];
+		std::size_t len = std::size_t(std::snprintf(
+				&buf[0],
+				4096,
+				"libnpy: wrong number of dimensions. expected %zu, got %zu",
+				std::size_t{2},
+				std::size_t(res) - std::size_t(Res::failed_ndim)));
+		CNPY_ASSERT(len + 1 < 4096);
+		terminate_with_message(&buf[0], len);
+	}
+	if (res == Res::success_transpose) {
+		Mat tmp = out.transpose();
+		std::memcpy(out.data(), tmp.data(), sizeof(T) * out.size());
+	}
 	return out;
 }
 
