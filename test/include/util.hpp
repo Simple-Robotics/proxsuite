@@ -2,6 +2,7 @@
 #define INRIA_LDLT_UTIL_HPP_ZX9HNY5GS
 
 #include <Eigen/Core>
+#include <Eigen/Cholesky>
 #include <utility>
 #include <ldlt/views.hpp>
 #include <ldlt/qp/views.hpp>
@@ -199,10 +200,14 @@ struct Qp {
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g_,
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A_,
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b_) noexcept
-			: H(LDLT_FWD(H_)), g(LDLT_FWD(g_)), A(LDLT_FWD(A_)), b(LDLT_FWD(b_)) {
+			: H(LDLT_FWD(H_)),
+				g(LDLT_FWD(g_)),
+				A(LDLT_FWD(A_)),
+				b(LDLT_FWD(b_)),
+				solution(H.rows() + A.rows()) {
 
-		ldlt::i32 dim = H_.rows();
-		ldlt::i32 n_eq = A_.rows();
+		ldlt::i32 dim = H.rows();
+		ldlt::i32 n_eq = A.rows();
 
 		auto kkt_mat =
 				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
@@ -212,6 +217,10 @@ struct Qp {
 		kkt_mat.topRightCorner(dim, n_eq) = A.transpose();
 		kkt_mat.bottomLeftCorner(n_eq, dim) = A;
 		kkt_mat.bottomRightCorner(n_eq, n_eq).setZero();
+
+		solution.topRows(dim) = -g_;
+		solution.bottomRows(n_eq) = -b;
+		solution.ldlt().solveInPlace(solution);
 	}
 
 	Qp(RandomWithDimAndNeq /*tag*/, ldlt::i32 dim, ldlt::i32 n_eq)
