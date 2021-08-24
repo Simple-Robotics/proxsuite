@@ -29,7 +29,6 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 		i32 ipath_len = i32(std::stol(path_len));
 		path.resize(usize(ipath_len));
 		file.read(&path[0], ipath_len);
-		std::fflush(stdout);
 		file.get(); // '\n'
 
 		Qp<Scalar> qp{
