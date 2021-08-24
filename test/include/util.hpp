@@ -10,11 +10,11 @@
 template <typename T, ldlt::Layout L>
 using Mat = Eigen::Matrix<
 		T,
-		-1,
-		-1,
+		Eigen::Dynamic,
+		Eigen::Dynamic,
 		(L == ldlt::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template <typename T>
-using Vec = Eigen::Matrix<T, -1, 1>;
+using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 template <
 		typename MatLhs,
