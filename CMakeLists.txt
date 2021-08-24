@@ -44,7 +44,15 @@ find_package(
   REQUIRED
   NO_MODULE
 )
+
 target_link_libraries(inria_ldlt PUBLIC Eigen3::Eigen)
+set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+if(INRIA_LDLT_PYTHON_BINDINGS)
+  add_subdirectory(external/pybind11)
+  pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
+  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt)
+endif()
 
 # Conan dependencies
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
