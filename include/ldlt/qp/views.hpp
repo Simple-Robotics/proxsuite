@@ -52,6 +52,28 @@ struct QpViewMut {
 		};
 	}
 };
+
+namespace nb {
+struct pow {
+	template <typename Scalar>
+	auto operator()(Scalar x, Scalar y) const -> Scalar {
+		using std::pow;
+		return pow(x, y);
+	}
+};
+struct infty_norm {
+	template <typename D>
+	auto operator()(Eigen::MatrixBase<D> const& mat) const -> typename D::Scalar {
+		if (mat.rows() == 0 || mat.cols() == 0) {
+			return typename D::Scalar(0);
+		} else {
+			return mat.template lpNorm<Eigen::Infinity>();
+		}
+	}
+};
+} // namespace nb
+LDLT_DEFINE_NIEBLOID(pow);
+LDLT_DEFINE_NIEBLOID(infty_norm);
 } // namespace qp
 
 #endif /* end of include guard INRIA_LDLT_VIEWS_HPP_COA7NGHVS */
