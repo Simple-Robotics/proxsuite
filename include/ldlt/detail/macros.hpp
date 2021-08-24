@@ -429,15 +429,15 @@
 #if LDLT_HAS_ALLOCA
 
 #define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
-	usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                             \
-			usize(Count) * sizeof(Type) +                                            \
+	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
+			::ldlt::usize(Count) * sizeof(Type) +                                    \
 			::ldlt::detail::UniqueMalloca<Type>::align;                              \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
 			_ldlt_malloca_handler, __LINE__){                                        \
-			::ldlt::detail::UniqueMalloca<Type>::can_alloca(usize(Count))            \
+			::ldlt::detail::UniqueMalloca<Type>::can_alloca(::ldlt::usize(Count))    \
 					? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                  \
 					: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                 \
-			usize(Count),                                                            \
+			::ldlt::usize(Count),                                                    \
 	};                                                                           \
 	Type* Name = LDLT_PP_CAT(_ldlt_malloca_handler, __LINE__).data;              \
 	static_assert(true, ".")
@@ -447,14 +447,15 @@
 #define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
 	alignas(::ldlt::detail::UniqueMalloca<Type>::align) unsigned char            \
 			LDLT_PP_CAT(_ldlt_buf, __LINE__)[LDLT_MAX_STACK_ALLOC_SIZE];             \
-	usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                             \
-			usize(Count) * sizeof(Type) +                                            \
+	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
+			::ldlt::usize(Count) * sizeof(Type) +                                    \
 			::ldlt::detail::UniqueMalloca<Type>::align;                              \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
 			_ldlt_malloca_handler, __LINE__){                                        \
-			::ldlt::detail::UniqueMalloca<Type>::can_alloca(usize(Count))            \
+			::ldlt::detail::UniqueMalloca<Type>::can_alloca(::ldlt::usize(Count))    \
 					? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))               \
-					: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__), ) usize(Count),  \
+					: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__), )::ldlt::usize(  \
+								Count),                                                        \
 	};                                                                           \
 	Type* Name = LDLT_PP_CAT(_ldlt_ldlt_malloca_handler, __LINE__).data;         \
 	static_assert(true, ".")

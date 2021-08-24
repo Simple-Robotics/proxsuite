@@ -1,7 +1,7 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <ldlt/qp_eq.hpp>
+#include <ldlt/qp/eq_solver.hpp>
 #include <ldlt/precond/ruiz.hpp>
 #include <iostream>
 #include <fmt/core.h>
@@ -24,7 +24,7 @@ DOCTEST_TEST_CASE("qp: random") {
 	dual_init.setZero();
 
 	Scalar eps_abs = Scalar(1e-10);
-	detail::solve_qp( //
+	qp::detail::solve_qp( //
 			detail::from_eigen_vector_mut(primal_init),
 			detail::from_eigen_vector_mut(dual_init),
 			qp.as_view(),
@@ -53,7 +53,7 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 	dual_init.setZero();
 
 	Scalar eps_abs = Scalar(1e-10);
-	detail::solve_qp( //
+	qp::detail::solve_qp( //
 			detail::from_eigen_vector_mut(primal_init),
 			detail::from_eigen_vector_mut(dual_init),
 			qp.as_view(),
@@ -84,7 +84,7 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 	dual_init = qp.solution.bottomRows(n_eq);
 
 	Scalar eps_abs = Scalar(1e-10);
-	auto iter = detail::solve_qp( //
+	auto iter = qp::detail::solve_qp( //
 			detail::from_eigen_vector_mut(primal_init),
 			detail::from_eigen_vector_mut(dual_init),
 			qp.as_view(),

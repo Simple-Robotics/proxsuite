@@ -81,32 +81,6 @@ public:
 	void remove_row(i32 idx);
 };
 
-template <typename Scalar>
-struct IdentityPreconditionner {
-	template <typename Out, typename In>
-	void apply_in_place(Eigen::DenseCoeffsBase<Out>& x) {}
-	template <typename Out, typename In>
-	void apply_inv_in_place(Eigen::DenseCoeffsBase<Out>& x) {}
-
-	template <typename Out, typename In>
-	void apply_to_qp_in_place(QpViewMut<Scalar> qp) {}
-	template <typename Out, typename In>
-	void apply_inv_to_qp_in_place(QpViewMut<Scalar> qp) {}
-};
-
-template < //
-		typename Scalar,
-		typename Preconditionner = IdentityPreconditionner<Scalar>>
-auto solve_qp( //
-		QpView<Scalar> qp,
-		i32 max_iter,
-		Scalar eps_abs,
-		Scalar eps_rel,
-		Preconditioner precond = Preconditionner{}) -> i32 {
-
-	{ precond.apply_in_place(...); }
-}
-
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_LDLT_HPP_VCVSK3EOS */

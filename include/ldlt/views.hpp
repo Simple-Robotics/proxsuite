@@ -404,42 +404,6 @@ LDLT_DEFINE_NIEBLOID(from_eigen_vector_mut);
 LDLT_DEFINE_NIEBLOID(to_eigen_vector);
 LDLT_DEFINE_NIEBLOID(to_eigen_vector_mut);
 } // namespace detail
-
-namespace qp {
-template <typename Scalar, Layout LH, Layout LC>
-struct QpView {
-	MatrixView<Scalar, LH> H;
-	VectorView<Scalar> g;
-
-	MatrixView<Scalar, LC> A;
-	VectorView<Scalar> b;
-	MatrixView<Scalar, LC> C;
-	VectorView<Scalar> d;
-};
-
-template <typename Scalar, Layout LH, Layout LC>
-struct QpViewMut {
-	MatrixViewMut<Scalar, LH> H;
-	VectorViewMut<Scalar> g;
-
-	MatrixViewMut<Scalar, LC> A;
-	VectorViewMut<Scalar> b;
-	MatrixViewMut<Scalar, LC> C;
-	VectorViewMut<Scalar> d;
-
-	LDLT_INLINE constexpr auto as_const() const noexcept
-			-> QpView<Scalar, LH, LC> {
-		return {
-				H.as_const(),
-				g.as_const(),
-				A.as_const(),
-				b.as_const(),
-				C.as_const(),
-				d.as_const(),
-		};
-	}
-};
-} // namespace qp
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_VIEWS_HPP_UGNXAQSBS */

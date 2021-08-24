@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <utility>
 #include <ldlt/views.hpp>
+#include <ldlt/qp/views.hpp>
 
 template <typename T, ldlt::Layout L>
 using Mat = Eigen::Matrix<
@@ -183,6 +184,7 @@ struct constant {
 } // namespace ldlt
 
 LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
+LDLT_DEFINE_TAG(from_data, FromData);
 template <typename Scalar>
 struct Qp {
 	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> H;
@@ -191,6 +193,26 @@ struct Qp {
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b;
 
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> solution;
+
+	Qp(FromData /*tag*/,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> H_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b_) noexcept
+			: H(LDLT_FWD(H_)), g(LDLT_FWD(g_)), A(LDLT_FWD(A_)), b(LDLT_FWD(b_)) {
+
+		ldlt::i32 dim = H_.rows();
+		ldlt::i32 n_eq = A_.rows();
+
+		auto kkt_mat =
+				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
+						dim + n_eq, dim + n_eq);
+
+		kkt_mat.topLeftCorner(dim, dim) = H;
+		kkt_mat.topRightCorner(dim, n_eq) = A.transpose();
+		kkt_mat.bottomLeftCorner(n_eq, dim) = A;
+		kkt_mat.bottomRightCorner(n_eq, n_eq).setZero();
+	}
 
 	Qp(RandomWithDimAndNeq /*tag*/, ldlt::i32 dim, ldlt::i32 n_eq)
 			: H(dim, dim), g(dim), A(n_eq, dim), b(n_eq), solution(dim + n_eq) {
@@ -212,7 +234,7 @@ struct Qp {
 		b = A * primal_solution;
 	}
 
-	auto as_view() -> ldlt::qp::QpView<Scalar, ldlt::colmajor, ldlt::colmajor> {
+	auto as_view() -> qp::QpView<Scalar, ldlt::colmajor, ldlt::colmajor> {
 		return {
 				ldlt::detail::from_eigen_matrix(H),
 				ldlt::detail::from_eigen_vector(g),
@@ -222,7 +244,7 @@ struct Qp {
 				{},
 		};
 	}
-	auto as_mut() -> ldlt::qp::QpViewMut<Scalar, ldlt::colmajor, ldlt::colmajor> {
+	auto as_mut() -> qp::QpViewMut<Scalar, ldlt::colmajor, ldlt::colmajor> {
 		return {
 				ldlt::detail::from_eigen_matrix_mut(H),
 				ldlt::detail::from_eigen_vector_mut(g),

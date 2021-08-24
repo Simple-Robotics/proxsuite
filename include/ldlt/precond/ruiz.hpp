@@ -5,12 +5,12 @@
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
 #include "ldlt/views.hpp"
-#include "ldlt/qp_eq.hpp"
+#include "ldlt/qp/views.hpp"
 #include <ostream>
 
 #include <Eigen/Core>
 
-namespace ldlt {
+namespace qp {
 namespace detail {
 namespace nb {
 struct sqrt {
@@ -142,9 +142,8 @@ auto ruiz_scale_qp_in_place( //
 	return c;
 }
 } // namespace detail
-namespace qp {
-namespace preconditioner {
 
+namespace preconditioner {
 template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -240,7 +239,7 @@ struct RuizEquilibration {
 };
 
 } // namespace preconditioner
+
 } // namespace qp
-} // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_RUIZ_HPP_XXCS7AMRS */
