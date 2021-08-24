@@ -2,7 +2,6 @@
 #define INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS
 
 #include "ldlt/views.hpp"
-#include <new>
 
 namespace ldlt {
 namespace factorization_strategy {
@@ -18,7 +17,8 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 
-	bool inplace = out.l.data == in_matrix.data;
+	bool inplace = (out.l.data == in_matrix.data) && (OutL == InL);
+
 	i32 dim = out.l.rows;
 	i32 l_stride = out.l.outer_stride;
 
@@ -45,6 +45,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 				detail::ElementAccess<OutL>::next_row_stride(l_stride),
 		};
 		l01.setZero();
+		Scalar in_diag = in_matrix(j, j);
 		out.l(j, j) = Scalar(1);
 
 		auto l10 = detail::RowToVec<Scalar, OutL>{
@@ -80,7 +81,7 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		auto tmp = detail::VecMapMut<Scalar>{wp, j};
 
 		tmp.array() = l10.array().operator*(d.array());
-		out.d(j) = in_matrix(j, j) - Scalar(tmp_read.dot(l10));
+		out.d(j) = in_diag - Scalar(tmp_read.dot(l10));
 		if (!inplace) {
 			l21 = a21;
 		}
