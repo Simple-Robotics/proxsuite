@@ -60,14 +60,8 @@ INRIA LDLT decomposition
      factorize
   )pbdoc";
 	using namespace ldlt;
-	m.def("factorize", &ldlt::pybind11::factorize<f32, colmajor, colmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f32, rowmajor, colmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f32, colmajor, rowmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f32, rowmajor, rowmajor>);
-
-	m.def("factorize", &ldlt::pybind11::factorize<f64, colmajor, colmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f64, rowmajor, colmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f64, colmajor, rowmajor>);
-	m.def("factorize", &ldlt::pybind11::factorize<f64, rowmajor, rowmajor>);
+	constexpr auto r = rowmajor;
+	m.def("factorize", &ldlt::pybind11::factorize<f32, r, r>);
+	m.def("factorize", &ldlt::pybind11::factorize<f64, r, r>);
 	m.attr("__version__") = "dev";
 }
