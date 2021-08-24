@@ -105,16 +105,13 @@ auto ruiz_scale_qp_in_place( //
 					Scalar(1) / (sqrt(infty_norm(C.row(k))) + machine_eps);
 		}
 
-		// normalize columns of H, A, C
-		H *= delta.head(n).asDiagonal() ; 
-		A *= delta.head(n).asDiagonal() ; 
-		C *= delta.head(n).asDiagonal() ; 
-		// normalize rows
-		H = delta.head(n).asDiagonal() * H ; 
+		// normalize H, A and C
+		H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal() ; 
+		A = delta.middleRows(n, n_eq).asDiagonal() * A * delta.head(n).asDiagonal() ; 
+		C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal() ; 
+		// normalize vectors
 		g.array() *= delta.head(n).array() ; 
-		A =  delta.middleRows(n, n_eq).asDiagonal() * A;
 		b.array() *= delta.middleRows(n, n_eq).array();
-		C = delta.tail(n_in).asDiagonal() * C;
 		d.array() *= delta.tail(n_in).array() ; 
 		// additional normalization for the cost function
 
