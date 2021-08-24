@@ -313,4 +313,14 @@ auto npy_vload_mat(
 	return detail::load_npy_mat(fp.ptr, sizeof_T, vec, ptr, resize);
 }
 } // namespace detail
+
+template auto npy_load_mat<float>(std::string const&)
+		-> Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+template auto npy_load_mat<double>(std::string const&)
+		-> Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+
+template auto npy_load_vec<float>(std::string const&)
+		-> Eigen::Matrix<float, Eigen::Dynamic, 1, Eigen::ColMajor>;
+template auto npy_load_vec<double>(std::string const&)
+		-> Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::ColMajor>;
 } // namespace cnpy

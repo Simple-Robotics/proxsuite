@@ -248,11 +248,33 @@ auto npy_load_mat(std::string const& fname)
 		terminate_with_message(&buf[0], len);
 	}
 	if (res == Res::success_transpose) {
-		Mat tmp = out.transpose();
-		std::memcpy(out.data(), tmp.data(), sizeof(T) * out.size());
+		auto rowmajor = Eigen::Map< //
+				Eigen::Matrix<          //
+						T,                  //
+						Eigen::Dynamic,     //
+						Eigen::Dynamic,     //
+						Eigen::RowMajor     //
+						>                   //
+				>{
+				out.data(),
+				out.rows(),
+				out.cols(),
+		};
+		Mat tmp = rowmajor;
+		out = tmp;
 	}
 	return out;
 }
+
+extern template auto npy_load_mat<float>(std::string const&)
+		-> Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+extern template auto npy_load_mat<double>(std::string const&)
+		-> Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+
+extern template auto npy_load_vec<float>(std::string const&)
+		-> Eigen::Matrix<float, Eigen::Dynamic, 1, Eigen::ColMajor>;
+extern template auto npy_load_vec<double>(std::string const&)
+		-> Eigen::Matrix<double, Eigen::Dynamic, 1, Eigen::ColMajor>;
 
 } // namespace cnpy
 
