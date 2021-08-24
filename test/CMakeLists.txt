@@ -9,6 +9,7 @@ target_include_directories(
 add_library(doctest_main STATIC src/doctest_main.cpp)
 add_library(backward_cpp_main OBJECT src/backward.cpp)
 add_library(libcnpy OBJECT src/cnpy.cpp)
+target_link_libraries(libcnpy Eigen3::Eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 set(LDLT_TEST_LIBS
     inria_ldlt
