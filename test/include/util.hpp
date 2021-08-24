@@ -206,8 +206,8 @@ struct Qp {
 				b(LDLT_FWD(b_)),
 				solution(H.rows() + A.rows()) {
 
-		ldlt::i32 dim = H.rows();
-		ldlt::i32 n_eq = A.rows();
+		ldlt::i32 dim = ldlt::i32(H.rows());
+		ldlt::i32 n_eq = ldlt::i32(A.rows());
 
 		auto kkt_mat =
 				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
@@ -218,9 +218,9 @@ struct Qp {
 		kkt_mat.bottomLeftCorner(n_eq, dim) = A;
 		kkt_mat.bottomRightCorner(n_eq, n_eq).setZero();
 
-		solution.topRows(dim) = -g_;
-		solution.bottomRows(n_eq) = -b;
-		solution.ldlt().solveInPlace(solution);
+		solution.topRows(dim) = -g;
+		solution.bottomRows(n_eq) = b;
+		kkt_mat.ldlt().solveInPlace(solution);
 	}
 
 	Qp(RandomWithDimAndNeq /*tag*/, ldlt::i32 dim, ldlt::i32 n_eq)

@@ -175,8 +175,14 @@ def generate_problems(dim_l, l_seed, path, l_pbl_type, l_delta_l):
                     dim_l, l_seed, current_path, name, pbl_type, delta_l
                 )
                 list_dir_path += l_path
-    with open(current_path / "source_files.txt", "w") as f:
-        f.write("\n".join([p.absolute().as_posix() for p in list_dir_path]))
+    with open(current_path / "source_files.txt", "wb") as f:
+        for p in list_dir_path:
+            path_str = p.absolute().as_posix().encode("utf-8")
+            length = len(path_str)
+            f.write(str(length).zfill(32).encode("utf-8"))
+            f.write(b":")
+            f.write(path_str)
+            f.write(b"\n")
 
 
 if __name__ == "__main__":

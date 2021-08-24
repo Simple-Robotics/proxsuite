@@ -74,6 +74,7 @@ if(top_level AND INRIA_LDLT_ENABLE_TESTING)
 endif()
 
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+  find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
