@@ -57,8 +57,7 @@ INRIA LDLT decomposition
   .. autosummary::
      :toctree: _generate
 
-     factorize_f32
-     factorize_f64
+     factorize
   )pbdoc";
 	using namespace ldlt;
 	m.def("factorize", &ldlt::pybind11::factorize<f32, colmajor, colmajor>);
