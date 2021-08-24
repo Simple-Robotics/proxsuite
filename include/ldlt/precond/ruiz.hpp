@@ -10,6 +10,8 @@
 
 #include <Eigen/Core>
 
+#define EIGEN_RUNTIME_NO_MALLOC
+
 namespace qp {
 namespace detail {
 namespace nb {
@@ -104,34 +106,22 @@ auto ruiz_scale_qp_in_place( //
 		}
 
 		// normalize columns of H, A, C
-
-		for (i32 j = 0; j < n; ++j) {
-			H.col(j) *= delta(j);
-			A.col(j) *= delta(j);
-			C.col(j) *= delta(j);
-		}
+		H *= delta.head(n).asDiagonal() ; 
+		A *= delta.head(n).asDiagonal() ; 
+		C *= delta.head(n).asDiagonal() ; 
 		// normalize rows
-		for (i32 i = 0; i < n; ++i) {
-			H.row(i) *= delta(i);
-			g(i) *= delta(i);
-		}
-
-		for (i32 i = 0; i < n_eq; ++i) {
-			A.row(i) *= delta(i + n);
-			b(i) *= delta(i + n);
-		}
-
-		for (i32 i = 0; i < n_in; ++i) {
-			C.row(i) *= delta(i + n + n_eq);
-			d(i) *= delta(i + n + n_eq);
-		}
-
+		H = delta.head(n).asDiagonal() * H ; 
+		g.array() *= delta.head(n).array() ; 
+		A =  delta.middleRows(n, n_eq).asDiagonal() * A;
+		b.array() *= delta.middleRows(n, n_eq).array();
+		C = delta.tail(n_in).asDiagonal() * C;
+		d.array() *= delta.tail(n_in).array() ; 
 		// additional normalization for the cost function
 
 		Scalar gamma =
 				1 / max2(
-								max2(infty_norm(g), Scalar(1)),
-								(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+					max2(infty_norm(g), Scalar(1)),
+					(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
 
 		g *= gamma;
 		H *= gamma;
