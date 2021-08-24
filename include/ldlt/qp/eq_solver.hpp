@@ -60,28 +60,6 @@ void mul_no_alias(Dst& dst, Lhs const& lhs, Rhs const& rhs) {
 	mul_add_no_alias(dst, lhs, rhs);
 }
 
-namespace nb {
-struct pow {
-	template <typename Scalar>
-	auto operator()(Scalar x, Scalar y) const -> Scalar {
-		using std::pow;
-		return pow(x, y);
-	}
-};
-struct infty_norm {
-	template <typename D>
-	auto operator()(Eigen::MatrixBase<D> const& mat) const -> typename D::Scalar {
-		if (mat.rows() == 0 || mat.cols() == 0) {
-			return typename D::Scalar(0);
-		} else {
-			return mat.template lpNorm<Eigen::Infinity>();
-		}
-	}
-};
-} // namespace nb
-LDLT_DEFINE_NIEBLOID(pow);
-LDLT_DEFINE_NIEBLOID(infty_norm);
-
 template <
 		typename Scalar,
 		Layout LH,
@@ -103,10 +81,31 @@ auto solve_qp( //
 	auto bcl_mu = Scalar(1e2);
 	Scalar bcl_eta = 1 / pow(bcl_mu, Scalar(0.1));
 
-	auto H_copy = to_eigen_matrix(qp.H).eval();
-	auto q_copy = to_eigen_vector(qp.g).eval();
-	auto A_copy = to_eigen_matrix(qp.A).eval();
-	auto b_copy = to_eigen_vector(qp.b).eval();
+	LDLT_MULTI_WORKSPACE_MEMORY(
+			((_h_scaled, dim * dim),
+	     (_g_scaled, dim),
+	     (_a_scaled, n_eq * dim),
+	     (_b_scaled, n_eq),
+	     (_htot, (dim + n_eq) * (dim + n_eq)),
+	     (_d, dim + n_eq),
+	     (_residue_scaled, dim + n_eq),
+	     (_residue_scaled_tmp, dim + n_eq),
+	     (_residue_unscaled, dim + n_eq),
+	     (_next_dual, n_eq),
+	     (_diag_diff, n_eq)),
+			Scalar);
+
+	auto H_copy = to_eigen_matrix_mut(
+			MatrixViewMut<Scalar, colmajor>{_h_scaled, dim, dim, dim});
+	auto q_copy = to_eigen_vector_mut(VectorViewMut<Scalar>{_g_scaled, dim});
+	auto A_copy = to_eigen_matrix_mut(
+			MatrixViewMut<Scalar, colmajor>{_a_scaled, n_eq, dim, n_eq});
+	auto b_copy = to_eigen_vector_mut(VectorViewMut<Scalar>{_b_scaled, n_eq});
+
+	H_copy = to_eigen_matrix(qp.H);
+	q_copy = to_eigen_vector(qp.g);
+	A_copy = to_eigen_matrix(qp.A);
+	b_copy = to_eigen_vector(qp.b);
 
 	auto qp_scaled = qp::QpViewMut<Scalar, LH, LC>{
 			from_eigen_matrix_mut(H_copy),
@@ -122,15 +121,13 @@ auto solve_qp( //
 	precond.scale_primal_in_place(x);
 	precond.scale_dual_in_place(y);
 
-	using MatrixType = Eigen::Matrix< //
-			Scalar,
-			Eigen::Dynamic,
-			Eigen::Dynamic,
-			Eigen::ColMajor /* TODO: rowmajor? */>;
-
-	auto Htot = MatrixType(dim + n_eq, dim + n_eq);
-	auto l = MatrixType(dim + n_eq, dim + n_eq);
-	auto d = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>(dim + n_eq);
+	auto Htot = to_eigen_matrix_mut(MatrixViewMut<Scalar, colmajor>{
+			_htot,
+			dim + n_eq,
+			dim + n_eq,
+			dim + n_eq,
+	});
+	auto d = to_eigen_vector_mut(VectorViewMut<Scalar>{_d, dim + n_eq});
 
 	Htot.setZero();
 
@@ -152,21 +149,15 @@ auto solve_qp( //
 	}
 
 	auto ldlt_mut = LdltViewMut<Scalar, colmajor>{
-			from_eigen_matrix_mut(l),
+			from_eigen_matrix_mut(Htot),
 			from_eigen_vector_mut(d),
 	};
 
 	// initial LDLT factorization
 	ldlt::factorize(
-			ldlt_mut, from_eigen_matrix(Htot), ldlt::factorization_strategy::standard);
-
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			((_residue_scaled, dim + n_eq),
-	     (_residue_scaled_tmp, dim + n_eq),
-	     (_residue_unscaled, dim + n_eq),
-	     (_next_dual, n_eq),
-	     (_diag_diff, n_eq)),
-			Scalar);
+			ldlt_mut,
+			from_eigen_matrix(Htot),
+			ldlt::factorization_strategy::standard);
 
 	auto residue_scaled =
 			to_eigen_vector_mut(VectorViewMut<Scalar>{_residue_scaled, dim + n_eq});
