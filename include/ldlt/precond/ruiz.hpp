@@ -10,8 +10,6 @@
 
 #include <Eigen/Core>
 
-#define EIGEN_RUNTIME_NO_MALLOC
-
 namespace qp {
 namespace detail {
 namespace nb {
@@ -106,19 +104,19 @@ auto ruiz_scale_qp_in_place( //
 		}
 
 		// normalize H, A and C
-		H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal() ; 
-		A = delta.middleRows(n, n_eq).asDiagonal() * A * delta.head(n).asDiagonal() ; 
-		C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal() ; 
+		H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
+		A = delta.middleRows(n, n_eq).asDiagonal() * A * delta.head(n).asDiagonal();
+		C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
 		// normalize vectors
-		g.array() *= delta.head(n).array() ; 
+		g.array() *= delta.head(n).array();
 		b.array() *= delta.middleRows(n, n_eq).array();
-		d.array() *= delta.tail(n_in).array() ; 
+		d.array() *= delta.tail(n_in).array();
 		// additional normalization for the cost function
 
 		Scalar gamma =
 				1 / max2(
-					max2(infty_norm(g), Scalar(1)),
-					(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+								max2(infty_norm(g), Scalar(1)),
+								(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
 
 		g *= gamma;
 		H *= gamma;
