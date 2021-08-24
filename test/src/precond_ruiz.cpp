@@ -16,7 +16,10 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 			n_eq,
 	};
 
-	precond.scale_qp_in_place(scaled_qp.as_mut());
+  {
+    EigenNoAlloc _{};
+    precond.scale_qp_in_place(scaled_qp.as_mut());
+  }
 	auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
 			precond.delta.head(dim).asDiagonal());
 	auto tail = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(

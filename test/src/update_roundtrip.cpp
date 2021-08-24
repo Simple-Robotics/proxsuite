@@ -60,12 +60,15 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	};
 	auto w_view = detail::from_eigen_vector(w);
 
-	factorize(ldl_view, m_view);
-	rank1_update( //
-			ldl_view,
-			ldl_view.as_const(),
-			w_view,
-			alpha);
+	{
+		EigenNoAlloc _{};
+		factorize(ldl_view, m_view);
+		rank1_update( //
+				ldl_view,
+				ldl_view.as_const(),
+				w_view,
+				alpha);
+	}
 
 	return (matmul3(l, d.asDiagonal(), l.transpose()) -
 	        (mat + alpha * w * w.transpose()))

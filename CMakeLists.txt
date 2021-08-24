@@ -56,6 +56,7 @@ endif()
 
 # Conan dependencies
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+  target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
   set(CONAN_REQUIRES
       # MIT License
       fmt/8.0.0

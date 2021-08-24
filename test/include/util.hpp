@@ -265,4 +265,22 @@ struct Qp {
 	}
 };
 
+struct EigenNoAlloc {
+	EigenNoAlloc(EigenNoAlloc&&) = delete;
+	EigenNoAlloc(EigenNoAlloc const&) = delete;
+	auto operator=(EigenNoAlloc&&) -> EigenNoAlloc& = delete;
+	auto operator=(EigenNoAlloc const&) -> EigenNoAlloc& = delete;
+
+	EigenNoAlloc() noexcept {
+#if defined(EIGEN_RUNTIME_NO_MALLOC)
+		Eigen::internal::set_is_malloc_allowed(false);
+#endif
+	}
+	~EigenNoAlloc() noexcept {
+#if defined(EIGEN_RUNTIME_NO_MALLOC)
+		Eigen::internal::set_is_malloc_allowed(true);
+#endif
+	}
+};
+
 #endif /* end of include guard INRIA_LDLT_UTIL_HPP_ZX9HNY5GS */

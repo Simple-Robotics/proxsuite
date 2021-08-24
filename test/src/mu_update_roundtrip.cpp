@@ -55,12 +55,15 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 			detail::from_eigen_vector_mut(d),
 	};
 
-	factorize(ldl_view, m_view);
-	diagonal_update( //
-			ldl_view,
-			ldl_view.as_const(),
-			detail::from_eigen_vector(diag_diff),
-			data.index);
+	{
+		EigenNoAlloc _{};
+		factorize(ldl_view, m_view);
+		diagonal_update( //
+				ldl_view,
+				ldl_view.as_const(),
+				detail::from_eigen_vector(diag_diff),
+				data.index);
+	}
 
 	auto new_mat = mat;
 	for (i32 i = 0; i < diag_diff.rows(); ++i) {

@@ -38,8 +38,11 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 		auto x_view = detail::from_eigen_vector_mut(x);
 		auto b_view = detail::from_eigen_vector(b);
 
-		factorize(ldl_view, a_view);
-		solve(x_view, ldl_view.as_const(), b_view);
+		{
+			EigenNoAlloc _{};
+			factorize(ldl_view, a_view);
+			solve(x_view, ldl_view.as_const(), b_view);
+		}
 		x_eigen = a.ldlt().solve(b);
 		x_eigen_upscaled =
 				a.cast<long double>().ldlt().solve(b.cast<long double>());

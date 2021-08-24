@@ -24,14 +24,17 @@ DOCTEST_TEST_CASE("qp: random") {
 	dual_init.setZero();
 
 	Scalar eps_abs = Scalar(1e-10);
-	qp::detail::solve_qp( //
-			detail::from_eigen_vector_mut(primal_init),
-			detail::from_eigen_vector_mut(dual_init),
-			qp.as_view(),
-			200,
-			eps_abs,
-			0,
-			qp::preconditioner::IdentityPrecond{});
+	{
+		EigenNoAlloc _{};
+		qp::detail::solve_qp( //
+				detail::from_eigen_vector_mut(primal_init),
+				detail::from_eigen_vector_mut(dual_init),
+				qp.as_view(),
+				200,
+				eps_abs,
+				0,
+				qp::preconditioner::IdentityPrecond{});
+	}
 
 	DOCTEST_CHECK(
 			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
@@ -53,17 +56,22 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 	dual_init.setZero();
 
 	Scalar eps_abs = Scalar(1e-10);
-	qp::detail::solve_qp( //
-			detail::from_eigen_vector_mut(primal_init),
-			detail::from_eigen_vector_mut(dual_init),
-			qp.as_view(),
-			200,
-			eps_abs,
-			0,
-			qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
-					dim,
-					n_eq,
-			});
+	{
+		auto ruiz =
+				qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
+						dim,
+						n_eq,
+				};
+		EigenNoAlloc _{};
+		qp::detail::solve_qp( //
+				detail::from_eigen_vector_mut(primal_init),
+				detail::from_eigen_vector_mut(dual_init),
+				qp.as_view(),
+				200,
+				eps_abs,
+				0,
+				LDLT_FWD(ruiz));
+	}
 
 	DOCTEST_CHECK(
 			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
@@ -84,14 +92,17 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 	dual_init = qp.solution.bottomRows(n_eq);
 
 	Scalar eps_abs = Scalar(1e-10);
-	auto iter = qp::detail::solve_qp( //
-			detail::from_eigen_vector_mut(primal_init),
-			detail::from_eigen_vector_mut(dual_init),
-			qp.as_view(),
-			200,
-			eps_abs,
-			0,
-			qp::preconditioner::IdentityPrecond{});
+	auto iter = [&] {
+		EigenNoAlloc _{};
+		qp::detail::solve_qp( //
+				detail::from_eigen_vector_mut(primal_init),
+				detail::from_eigen_vector_mut(dual_init),
+				qp.as_view(),
+				200,
+				eps_abs,
+				0,
+				qp::preconditioner::IdentityPrecond{});
+	};
 
 	DOCTEST_CHECK(
 			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);

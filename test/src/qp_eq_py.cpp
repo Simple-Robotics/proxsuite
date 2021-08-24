@@ -49,21 +49,26 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 				"-- problem_path   : {}\n"
 				"-- n              : {}\n"
 				"-- n_eq           : {}\n",
-        path,
+				path,
 				n,
 				n_eq);
 
-		auto iter = qp::detail::solve_qp( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
-				qp.as_view(),
-				2000,
-				eps_abs,
-				0,
-				qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
-						n,
-						n_eq,
-				});
+		auto iter = [&] {
+			auto ruiz =
+					qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
+							n,
+							n_eq,
+					};
+			EigenNoAlloc _{};
+			return qp::detail::solve_qp( //
+					detail::from_eigen_vector_mut(primal_init),
+					detail::from_eigen_vector_mut(dual_init),
+					qp.as_view(),
+					200,
+					eps_abs,
+					0,
+					LDLT_FWD(ruiz));
+		}();
 
 		fmt::print(
 				"-- iter           : {}\n"
