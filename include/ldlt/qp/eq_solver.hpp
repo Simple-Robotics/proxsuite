@@ -156,7 +156,7 @@ auto solve_qp( //
 
 	// initial LDLT factorization
 	{
-		auto _ = LDLT_SCOPE_TIMER("factorization", Scalar);
+		LDLT_DECL_SCOPE_TIMER("factorization", Scalar);
 		ldlt::factorize(
 				ldlt_mut,
 				from_eigen_matrix(Htot),
