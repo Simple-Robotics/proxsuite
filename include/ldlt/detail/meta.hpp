@@ -143,14 +143,16 @@ using Container = std::vector<Duration>;
 template <typename T>
 struct UniqueObserver {
 	T* ptr;
-	explicit UniqueObserver(T* ptr_) noexcept : ptr{ptr_} {}
+	LDLT_INLINE explicit UniqueObserver(T* ptr_) noexcept : ptr{ptr_} {}
 
 	UniqueObserver(UniqueObserver const& rhs) noexcept = delete;
 	auto operator=(UniqueObserver const& rhs) noexcept
 			-> UniqueObserver& = delete;
 
-	UniqueObserver(UniqueObserver&& rhs) noexcept : ptr(rhs.ptr) { rhs.ptr = {}; }
-	auto operator=(UniqueObserver&& rhs) noexcept -> UniqueObserver& {
+	LDLT_INLINE UniqueObserver(UniqueObserver&& rhs) noexcept : ptr(rhs.ptr) {
+		rhs.ptr = {};
+	}
+	LDLT_INLINE auto operator=(UniqueObserver&& rhs) noexcept -> UniqueObserver& {
 		T* tmp = rhs.ptr;
 		rhs.ptr = {};
 		ptr = rhs.ptr;
@@ -162,10 +164,13 @@ struct ScopedTimer {
 	UniqueObserver<Container> timings;
 	Time begin;
 
-	~ScopedTimer() {
+	LDLT_INLINE ~ScopedTimer() {
 		if (timings.ptr != nullptr) {
-			timings.ptr->push_back(Clock::now() - begin);
+			destroy();
 		}
+	}
+	LDLT_NO_INLINE void destroy() const {
+		timings.ptr->push_back(Clock::now() - begin);
 	}
 
 	ScopedTimer(ScopedTimer const&) = delete;
