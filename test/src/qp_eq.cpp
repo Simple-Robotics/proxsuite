@@ -3,8 +3,6 @@
 #include <Eigen/Cholesky>
 #include <ldlt/qp/eq_solver.hpp>
 #include <ldlt/precond/ruiz.hpp>
-#include <iostream>
-#include <fmt/core.h>
 #include <util.hpp>
 
 using namespace ldlt;

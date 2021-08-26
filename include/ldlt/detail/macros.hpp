@@ -385,6 +385,24 @@
 
 #define LDLT_NOM_SEMICOLON static_assert(true, ".")
 
+#define LDLT_PP_IMPL_IS_1(_0, _1, _2, _3, _4, _5, _7, N, ...) N
+#define LDLT_PP_IS_SINGLE_ARG(...)                                             \
+	LDLT_PP_IMPL_IS_1(__VA_ARGS__, 0, 0, 0, 0, 0, 0, 1, 1)
+
+#define LDLT_PP_HEAD_ROBUST_0(x, ...) x
+#define LDLT_PP_HEAD_ROBUST_1(...) __VA_ARGS__
+
+#define LDLT_PP_TAIL_ROBUST_0(x, ...) , __VA_ARGS__
+#define LDLT_PP_TAIL_ROBUST_1(...)
+
+#define LDLT_PP_HEAD_ROBUST(...)                                               \
+	LDLT_PP_CAT2(LDLT_PP_HEAD_ROBUST_, LDLT_PP_IS_SINGLE_ARG(__VA_ARGS__))       \
+	(__VA_ARGS__)
+
+#define LDLT_PP_TAIL_ROBUST(...)                                               \
+	LDLT_PP_CAT2(LDLT_PP_TAIL_ROBUST_, LDLT_PP_IS_SINGLE_ARG(__VA_ARGS__))       \
+	(__VA_ARGS__)
+
 #ifndef LDLT_INLINE
 #define LDLT_INLINE HEDLEY_ALWAYS_INLINE
 #endif

@@ -8,6 +8,12 @@ else()
   set(top_level TRUE)
 endif()
 
+if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+  set(INRIA_LDLT_ENABLE_TESTING ON)
+else()
+  set(INRIA_LDLT_ENABLE_TESTING OFF)
+endif()
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 if(ENABLE_DOCS_ONLY)
@@ -15,7 +21,7 @@ if(ENABLE_DOCS_ONLY)
   return()
 endif()
 
-if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+if(INRIA_LDLT_ENABLE_TESTING)
   set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
@@ -31,6 +37,7 @@ add_library(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp
 )
+target_compile_options(inria_ldlt PRIVATE "-march=native")
 target_include_directories(
   inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
@@ -55,7 +62,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 endif()
 
 # Conan dependencies
-if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+if(INRIA_LDLT_ENABLE_TESTING)
   target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
   set(CONAN_REQUIRES
       # MIT License
@@ -74,7 +81,7 @@ if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
 endif()
 
-if(top_level AND INRIA_LDLT_ENABLE_TESTING)
+if(INRIA_LDLT_ENABLE_TESTING)
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
@@ -84,7 +91,6 @@ if(top_level AND INRIA_LDLT_ENABLE_TESTING)
   include(cmake/extra_local_settings.cmake)
 
   set_project_warnings(project_warnings)
-
   enable_sanitizers(project_options)
 
   enable_testing()

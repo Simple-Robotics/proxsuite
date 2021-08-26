@@ -6,6 +6,7 @@
 #include <utility>
 #include <ldlt/views.hpp>
 #include <ldlt/qp/views.hpp>
+#include <ldlt/detail/meta.hpp>
 
 template <typename T, ldlt::Layout L>
 using Mat = Eigen::Matrix<
@@ -41,99 +42,6 @@ auto matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
 
 namespace ldlt {
 namespace detail {
-namespace meta_ {
-
-template <typename T, T... Nums>
-struct integer_sequence;
-
-#if defined(__has_builtin)
-#define LDLT_HAS_BUILTIN(x) __has_builtin(x)
-#else
-#define LDLT_HAS_BUILTIN(x) 0
-#endif
-
-#if LDLT_HAS_BUILTIN(__make_integer_seq)
-
-template <typename T, T N>
-using make_integer_sequence = __make_integer_seq<integer_sequence, T, N>;
-
-#elif __GNUC__ >= 8
-
-template <typename T, T N>
-using make_integer_sequence = integer_sequence<T, __integer_pack(N)...>;
-
-#else
-
-namespace internal {
-
-template <typename Seq1, typename Seq2>
-struct _merge;
-
-template <typename Seq1, typename Seq2>
-struct _merge_p1;
-
-template <typename T, T... Nums1, T... Nums2>
-struct _merge<integer_sequence<T, Nums1...>, integer_sequence<T, Nums2...>> {
-	using type = integer_sequence<T, Nums1..., (sizeof...(Nums1) + Nums2)...>;
-};
-
-template <typename T, T... Nums1, T... Nums2>
-struct _merge_p1<integer_sequence<T, Nums1...>, integer_sequence<T, Nums2...>> {
-	using type = integer_sequence<
-			T,
-			Nums1...,
-			(sizeof...(Nums1) + Nums2)...,
-			sizeof...(Nums1) + sizeof...(Nums2)>;
-};
-
-template <typename T, usize N, bool Even = (N % 2) == 0>
-struct _make_integer_sequence {
-	using type = typename _merge<
-			typename _make_integer_sequence<T, N / 2>::type,
-			typename _make_integer_sequence<T, N / 2>::type>::type;
-};
-
-template <typename T, usize N>
-struct _make_integer_sequence<T, N, false> {
-	using type = typename _merge_p1<
-			typename _make_integer_sequence<T, N / 2>::type,
-			typename _make_integer_sequence<T, N / 2>::type>::type;
-};
-
-template <typename T>
-struct _make_integer_sequence<T, 0> {
-	using type = integer_sequence<T>;
-};
-template <typename T>
-struct _make_integer_sequence<T, 1> {
-	using type = integer_sequence<T, 0>;
-};
-
-} // namespace internal
-
-template <typename T, T N>
-using make_integer_sequence =
-		typename internal::_make_integer_sequence<T, N>::type;
-
-#endif
-
-template <usize N>
-using make_index_sequence = make_integer_sequence<usize, N>;
-
-template <typename... Ts>
-struct type_sequence;
-
-} // namespace meta_
-
-template <typename T, T N>
-using make_integer_sequence = meta_::make_integer_sequence<T, N>*;
-template <usize N>
-using make_index_sequence = meta_::make_integer_sequence<usize, N>*;
-
-template <typename T, T... Nums>
-using integer_sequence = meta_::integer_sequence<T, Nums...>*;
-template <usize... Nums>
-using index_sequence = integer_sequence<usize, Nums...>;
 template <typename... Ts>
 using type_sequence = meta_::type_sequence<Ts...>*;
 

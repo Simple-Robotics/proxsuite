@@ -4,6 +4,7 @@
 #include "ldlt/views.hpp"
 #include "ldlt/qp/views.hpp"
 #include "ldlt/factorize.hpp"
+#include "ldlt/detail/meta.hpp"
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
 #include <cmath>
@@ -154,10 +155,13 @@ auto solve_qp( //
 	};
 
 	// initial LDLT factorization
-	ldlt::factorize(
-			ldlt_mut,
-			from_eigen_matrix(Htot),
-			ldlt::factorization_strategy::standard);
+	{
+		auto _ = LDLT_SCOPE_TIMER("factorization", Scalar);
+		ldlt::factorize(
+				ldlt_mut,
+				from_eigen_matrix(Htot),
+				ldlt::factorization_strategy::standard);
+	}
 
 	auto residue_scaled =
 			to_eigen_vector_mut(VectorViewMut<Scalar>{_residue_scaled, dim + n_eq});
