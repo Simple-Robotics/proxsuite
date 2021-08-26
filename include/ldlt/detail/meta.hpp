@@ -2,6 +2,8 @@
 #define INRIA_LDLT_META_HPP_VHFXDOQHS
 
 #include <vector>
+#include <string>
+#include <map>
 #include <chrono>
 #include "ldlt/detail/macros.hpp"
 
@@ -139,6 +141,10 @@ using Clock = std::chrono::steady_clock;
 using Time = typename Clock::time_point;
 using Duration = typename Time::duration;
 using Container = std::vector<Duration>;
+struct ContainerRefMut {
+	Container& ref;
+};
+using Map = std::map<std::string, ContainerRefMut>;
 
 template <typename T>
 struct UniqueObserver {
@@ -183,20 +189,38 @@ struct ScopedTimer {
 			: timings{std::addressof(ref)}, begin{Clock::now()} {}
 };
 
-inline auto container_init() -> Container {
+LDLT_NO_INLINE inline auto container_init_0() -> Container {
 	Container vec;
 	vec.reserve(4096);
 	return vec;
 }
 
+template <typename Tag, typename... ExtraArgs>
+struct SectionTimingMap {
+	static auto ref() -> Map& {
+		static Map v;
+		return v;
+	}
+	static void register_container(std::string name, Container& c) {
+		ref().insert({LDLT_FWD(name), {c}});
+	}
+};
+
 template <typename Char, Char... Cs>
 struct SectionTimings {
-	template <typename... ExtraArgs>
+	template <typename Tag, typename... ExtraArgs>
+	LDLT_NO_INLINE static auto container_init() -> Container& {
+		static auto vec = container_init_0();
+		Char buf[] = {Cs...};
+		SectionTimingMap<Tag, ExtraArgs...>::register_container(
+				std::string(buf, buf + sizeof(buf) / sizeof(buf[0])), vec);
+		return vec;
+	}
+
+	template <typename Tag, typename... ExtraArgs>
 	struct Type {
-	private:
-	public:
 		static auto ref() -> Container& {
-			static auto v = container_init();
+			static auto& v = container_init<Tag, ExtraArgs...>();
 			return v;
 		}
 		auto scoped() noexcept -> ScopedTimer { return ScopedTimer{ref()}; }
@@ -233,5 +257,8 @@ struct SectionTimings {
 
 #define LDLT_GET_DURATIONS(...)                                                \
 	(LDLT_LITERAL_TO_TEMPLATE(::ldlt::detail::SectionTimings, __VA_ARGS__).ref())
+
+#define LDLT_GET_MAP(...)                                                      \
+	(::ldlt::detail::SectionTimingMap<__VA_ARGS__>::ref())
 
 #endif /* end of include guard INRIA_LDLT_META_HPP_VHFXDOQHS */
