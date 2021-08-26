@@ -92,7 +92,7 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 	Scalar eps_abs = Scalar(1e-10);
 	auto iter = [&] {
 		EigenNoAlloc _{};
-		qp::detail::solve_qp( //
+		return qp::detail::solve_qp( //
 				detail::from_eigen_vector_mut(primal_init),
 				detail::from_eigen_vector_mut(dual_init),
 				qp.as_view(),
@@ -100,7 +100,7 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 				eps_abs,
 				0,
 				qp::preconditioner::IdentityPrecond{});
-	};
+	}();
 
 	DOCTEST_CHECK(
 			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
@@ -108,5 +108,5 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 			(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init)
 					.lpNorm<Eigen::Infinity>() <= eps_abs);
 
-	DOCTEST_CHECK(iter == 0);
+	DOCTEST_CHECK(iter.n_iters == 0);
 }

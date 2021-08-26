@@ -74,7 +74,7 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 				"-- iter           : {}\n"
 				"-- primal residual: {}\n"
 				"-- dual residual  : {}\n\n",
-				iter,
+				iter.n_iters,
 				(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>(),
 				(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init)
 						.lpNorm<Eigen::Infinity>());

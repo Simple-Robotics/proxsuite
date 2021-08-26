@@ -59,7 +59,6 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 	}
 	i32 dim_rest = dim - start_index;
 
-	// TODO: fuse allocations, split up to different cache lines
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			((ws, n_diag_terms * dim_rest),
 	     (alphas, n_diag_terms),

@@ -63,6 +63,10 @@ void mul_no_alias(Dst& dst, Lhs const& lhs, Rhs const& rhs) {
 }
 
 struct EqSolverTimer {};
+struct QpSolveStats {
+	i32 n_iters;
+	i32 n_mu_updates;
+};
 
 template <
 		typename Scalar,
@@ -76,13 +80,14 @@ auto solve_qp( //
 		i32 max_iter,
 		DoNotDeduce<Scalar> eps_abs,
 		DoNotDeduce<Scalar> eps_rel,
-		Preconditioner precond = Preconditioner{}) -> i32 {
+		Preconditioner precond = Preconditioner{}) -> QpSolveStats {
 
 	i32 dim = qp.H.rows;
 	i32 n_eq = qp.A.rows;
+	i32 n_mu_updates = 0;
 
 	auto rho = Scalar(1e-10);
-	auto bcl_mu = Scalar(1e2);
+	auto bcl_mu = Scalar(1e5);
 	Scalar bcl_eta = 1 / pow(bcl_mu, Scalar(0.1));
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
@@ -245,6 +250,7 @@ auto solve_qp( //
 									from_eigen_vector(diag_diff),
 									dim,
 									ldlt::diagonal_update_strategies::single_pass);
+							++n_mu_updates;
 						}
 					}
 					bcl_mu = new_bcl_mu;
@@ -315,7 +321,7 @@ auto solve_qp( //
 				precond.unscale_primal_in_place(x);
 				precond.unscale_dual_in_place(y);
 			}
-			return iter;
+			return {iter, n_mu_updates};
 		}
 
 		// newton step
@@ -335,7 +341,7 @@ auto solve_qp( //
 			next_dual = to_eigen_vector(y.as_const()) + rhs.bottomRows(n_eq);
 		}
 	}
-	return max_iter;
+	return {max_iter, n_mu_updates};
 }
 } // namespace detail
 
