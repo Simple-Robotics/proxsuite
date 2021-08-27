@@ -87,7 +87,7 @@ auto solve_qp( //
 	i32 n_mu_updates = 0;
 
 	auto rho = Scalar(1e-10);
-	auto bcl_mu = Scalar(1e5);
+	auto bcl_mu = Scalar(1e3);
 	Scalar bcl_eta = 1 / pow(bcl_mu, Scalar(0.1));
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
@@ -127,11 +127,11 @@ auto solve_qp( //
 			{nullptr, 0},
 	};
 	{
-		LDLT_DECL_SCOPE_TIMER("scale qp", EqSolverTimer, Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "scale qp", Scalar);
 		precond.scale_qp_in_place(qp_scaled);
 	}
 	{
-		LDLT_DECL_SCOPE_TIMER("scale solution", EqSolverTimer, Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "scale solution", Scalar);
 		precond.scale_primal_in_place(x);
 		precond.scale_dual_in_place(y);
 	}
@@ -145,7 +145,7 @@ auto solve_qp( //
 	auto d = to_eigen_vector_mut(VectorViewMut<Scalar>{_d, dim + n_eq});
 
 	{
-		LDLT_DECL_SCOPE_TIMER("set H", EqSolverTimer, Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "set H", Scalar);
 		Htot.topLeftCorner(dim, dim) = to_eigen_matrix(qp_scaled.H.as_const());
 		for (i32 i = 0; i < dim; ++i) {
 			Htot(i, i) += rho;
@@ -172,7 +172,7 @@ auto solve_qp( //
 
 	// initial LDLT factorization
 	{
-		LDLT_DECL_SCOPE_TIMER("factorization", EqSolverTimer, Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "factorization", Scalar);
 		ldlt::factorize(
 				ldlt_mut,
 				from_eigen_matrix(Htot),
@@ -209,7 +209,7 @@ auto solve_qp( //
 		Scalar dual_feasibility_lhs(0);
 		{
 			{
-				LDLT_DECL_SCOPE_TIMER("primal residual", EqSolverTimer, Scalar);
+				LDLT_DECL_SCOPE_TIMER("eq solver", "primal residual", Scalar);
 				auto A_ = to_eigen_matrix(qp_scaled.A.as_const());
 				auto x_ = to_eigen_vector(x.as_const());
 				auto b_ = to_eigen_vector(qp_scaled.b.as_const());
@@ -241,7 +241,7 @@ auto solve_qp( //
 					Scalar new_bcl_mu = max2(bcl_mu * Scalar(10), Scalar(1e12));
 					if (bcl_mu != new_bcl_mu) {
 						{
-							LDLT_DECL_SCOPE_TIMER("mu update", EqSolverTimer, Scalar);
+							LDLT_DECL_SCOPE_TIMER("eq solver", "mu update", Scalar);
 							diag_diff.setConstant(
 									Scalar(1) / bcl_mu - Scalar(1) / new_bcl_mu);
 							ldlt::diagonal_update(
@@ -270,7 +270,7 @@ auto solve_qp( //
 
 		// compute dual residual
 		{
-			LDLT_DECL_SCOPE_TIMER("dual residual", EqSolverTimer, Scalar);
+			LDLT_DECL_SCOPE_TIMER("eq solver", "dual residual", Scalar);
 			auto H_ = to_eigen_matrix(qp_scaled.H.as_const());
 			auto A_ = to_eigen_matrix(qp_scaled.A.as_const());
 			auto x_ = to_eigen_vector(x.as_const());
@@ -317,7 +317,7 @@ auto solve_qp( //
 
 		if (is_primal_feasible && is_dual_feasible) {
 			{
-				LDLT_DECL_SCOPE_TIMER("unscale solution", EqSolverTimer, Scalar);
+				LDLT_DECL_SCOPE_TIMER("eq solver", "unscale solution", Scalar);
 				precond.unscale_primal_in_place(x);
 				precond.unscale_dual_in_place(y);
 			}
@@ -330,7 +330,7 @@ auto solve_qp( //
 
 			rhs = -rhs;
 			{
-				LDLT_DECL_SCOPE_TIMER("newton step", EqSolverTimer, Scalar);
+				LDLT_DECL_SCOPE_TIMER("eq solver", "newton step", Scalar);
 				ldlt::solve(
 						from_eigen_vector_mut(rhs),
 						ldlt_mut.as_const(),

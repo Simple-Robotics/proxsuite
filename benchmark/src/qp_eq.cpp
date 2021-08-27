@@ -9,19 +9,6 @@ using Scalar = double;
 auto main() -> int {
 	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
 
-	using Tag = qp::detail::EqSolverTimer;
-	{
-		LDLT_GET_DURATIONS("scale qp", Tag, Scalar);
-		LDLT_GET_DURATIONS("scale solution", Tag, Scalar);
-		LDLT_GET_DURATIONS("set H", Tag, Scalar);
-		LDLT_GET_DURATIONS("factorization", Tag, Scalar);
-		LDLT_GET_DURATIONS("primal residual", Tag, Scalar);
-		LDLT_GET_DURATIONS("mu update", Tag, Scalar);
-		LDLT_GET_DURATIONS("dual residual", Tag, Scalar);
-		LDLT_GET_DURATIONS("unscale solution", Tag, Scalar);
-		LDLT_GET_DURATIONS("newton step", Tag, Scalar);
-	}
-
 	using ldlt::i32;
 	i32 total = 128;
 	i32 dim = 66;
@@ -50,7 +37,7 @@ auto main() -> int {
 		}
 	}
 
-	for (auto c : LDLT_GET_MAP(Tag, Scalar)) {
+	for (auto c : LDLT_GET_MAP(Scalar)["eq solver"]) {
 		using ldlt::detail::Duration;
 		auto& durations = c.second.ref;
 		auto avg = std::accumulate(durations.begin(), durations.end(), Duration{}) /

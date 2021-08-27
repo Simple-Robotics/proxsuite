@@ -392,7 +392,7 @@
 #define LDLT_PP_HEAD_ROBUST_0(x, ...) x
 #define LDLT_PP_HEAD_ROBUST_1(...) __VA_ARGS__
 
-#define LDLT_PP_TAIL_ROBUST_0(x, ...) , __VA_ARGS__
+#define LDLT_PP_TAIL_ROBUST_0(x, ...) __VA_ARGS__
 #define LDLT_PP_TAIL_ROBUST_1(...)
 
 #define LDLT_PP_HEAD_ROBUST(...)                                               \

@@ -104,36 +104,22 @@ using integer_sequence = meta_::integer_sequence<T, Nums...>*;
 template <usize... Nums>
 using index_sequence = integer_sequence<usize, Nums...>;
 
-template <
-		template <typename Char, Char... Cs>
-		class F,
-		typename LiteralType,
-		typename Seq,
-		typename... ExtraArgs>
+template <typename Char, Char... Cs>
+struct LiteralConstant {};
+
+template <typename LiteralType, typename Seq>
 struct ExtractCharsImpl;
 
-template <
-		template <typename Char, Char... Cs>
-		class F,
-		typename... ExtraArgs,
-		typename LiteralType,
-		usize... Is>
-struct ExtractCharsImpl<F, LiteralType, index_sequence<Is...>, ExtraArgs...> {
+template <typename LiteralType, usize... Is>
+struct ExtractCharsImpl<LiteralType, index_sequence<Is...>> {
 	using Type =
-			typename F<typename LiteralType::Type, LiteralType::value()[Is]...>::
-					template Type<ExtraArgs...>;
+			LiteralConstant<typename LiteralType::Type, LiteralType::value()[Is]...>;
 };
 
-template <
-		template <typename Char, Char... Cs>
-		class F,
-		typename... ExtraArgs,
-		typename LiteralType>
+template <typename LiteralType>
 auto ExtractChars(LiteralType /*unused*/) -> typename ExtractCharsImpl<
-		F,
 		LiteralType,
-		make_index_sequence<LiteralType::size()>,
-		ExtraArgs...>::Type {
+		make_index_sequence<LiteralType::size()>>::Type {
 	return {};
 }
 
@@ -144,7 +130,8 @@ using Container = std::vector<Duration>;
 struct ContainerRefMut {
 	Container& ref;
 };
-using Map = std::map<std::string, ContainerRefMut>;
+using InnerMap = std::map<std::string, ContainerRefMut>;
+using OuterMap = std::map<std::string, InnerMap>;
 
 template <typename T>
 struct UniqueObserver {
@@ -195,47 +182,72 @@ LDLT_NO_INLINE inline auto container_init_0() -> Container {
 	return vec;
 }
 
-template <typename Tag, typename... ExtraArgs>
+template <typename... Args>
 struct SectionTimingMap {
-	static auto ref() -> Map& {
-		static Map v;
+	static auto ref() -> OuterMap& {
+		static OuterMap v;
 		return v;
 	}
-	static void register_container(std::string name, Container& c) {
-		ref().insert({LDLT_FWD(name), {c}});
+	static void register_container(
+			std::string outer_name, std::string inner_name, Container& c) {
+		ref()[LDLT_FWD(outer_name)].insert({
+				LDLT_FWD(inner_name),
+				{c},
+		});
 	}
 };
 
-template <typename Char, Char... Cs>
-struct SectionTimings {
-	template <typename Tag, typename... ExtraArgs>
-	LDLT_NO_INLINE static auto container_init() -> Container& {
-		static auto vec = container_init_0();
-		Char buf[] = {Cs...};
-		SectionTimingMap<Tag, ExtraArgs...>::register_container(
-				std::string(buf, buf + sizeof(buf) / sizeof(buf[0])), vec);
-		return vec;
-	}
+template <typename CharO, CharO... COs>
+struct SectionTimingOuterTag {
 
-	template <typename Tag, typename... ExtraArgs>
-	struct Type {
-		static auto ref() -> Container& {
-			static auto& v = container_init<Tag, ExtraArgs...>();
-			return v;
-		}
-		auto scoped() noexcept -> ScopedTimer { return ScopedTimer{ref()}; }
+	template <typename CharI, CharI... CIs>
+	struct SectionTimingInnerTag {
+
+		template <typename... Args>
+		struct Type {
+
+			LDLT_NO_INLINE static auto container_init() -> Container& {
+				static auto vec = container_init_0();
+				CharO outer[] = {COs...};
+				CharI inner[] = {CIs...};
+				SectionTimingMap<Args...>::register_container(
+						std::string(outer, outer + sizeof(outer) / sizeof(outer[0]) - 1),
+						std::string(inner, inner + sizeof(inner) / sizeof(inner[0]) - 1),
+						vec);
+				return vec;
+			}
+
+			static auto ref() -> Container& {
+				static auto& v = container_init();
+				return v;
+			}
+			auto scoped() noexcept -> ScopedTimer { return ScopedTimer{ref()}; }
+		};
 	};
 };
+
+template <
+		typename... Args,
+		typename CharOuter,
+		CharOuter... COs,
+		typename CharInner,
+		CharInner... CIs>
+auto section_timings(
+		LiteralConstant<CharOuter, COs...> /*unused*/,
+		LiteralConstant<CharInner, CIs...> /*unused*/) noexcept ->
+		typename SectionTimingOuterTag<CharOuter, COs...>::
+				template SectionTimingInnerTag<CharInner, CIs...>::template Type<
+						Args...> {
+	return {};
+}
 } // namespace detail
 } // namespace ldlt
 
-#define LDLT_LITERAL_TO_TEMPLATE(Tpl, ...)                                     \
-	(::ldlt::detail::ExtractChars<Tpl LDLT_PP_TAIL_ROBUST(                       \
-			 __VA_ARGS__)>([]() /* NOLINT */ noexcept {                              \
+#define LDLT_LITERAL_TO_CONSTANT(Literal)                                      \
+	(::ldlt::detail::ExtractChars([]() /* NOLINT */ noexcept {                   \
 		struct LDLT_HiddenType {                                                   \
-			static constexpr auto value() noexcept                                   \
-					-> decltype(LDLT_PP_HEAD_ROBUST(__VA_ARGS__)) {                      \
-				return (LDLT_PP_HEAD_ROBUST(__VA_ARGS__));                             \
+			static constexpr auto value() noexcept -> decltype(Literal) {            \
+				return Literal;                                                        \
 			};                                                                       \
 			using Type = typename std::remove_const<                                 \
 					typename std::remove_reference<decltype(value()[0])>::type>::type;   \
@@ -246,19 +258,20 @@ struct SectionTimings {
 		return LDLT_HiddenType{};                                                  \
 	}()))
 
-#define LDLT_SCOPE_TIMER(...)                                                  \
-	(LDLT_LITERAL_TO_TEMPLATE(::ldlt::detail::SectionTimings, __VA_ARGS__)       \
-	     .scoped())
+#define LDLT_IMPL_TIMINGS(OuterTag, ...)                                       \
+	(::ldlt::detail::section_timings<LDLT_PP_TAIL_ROBUST(__VA_ARGS__)>(          \
+			LDLT_LITERAL_TO_CONSTANT(OuterTag),                                      \
+			LDLT_LITERAL_TO_CONSTANT(LDLT_PP_HEAD_ROBUST(__VA_ARGS__))))
+
+#define LDLT_SCOPE_TIMER(...) (LDLT_IMPL_TIMINGS(__VA_ARGS__).scoped())
 
 #define LDLT_DECL_SCOPE_TIMER(...)                                             \
 	auto&& LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__) =                      \
 			LDLT_SCOPE_TIMER(__VA_ARGS__);                                           \
 	((void)LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__));
 
-#define LDLT_GET_DURATIONS(...)                                                \
-	(LDLT_LITERAL_TO_TEMPLATE(::ldlt::detail::SectionTimings, __VA_ARGS__).ref())
+#define LDLT_GET_DURATIONS(...) (LDLT_IMPL_TIMINGS(__VA_ARGS__).ref())
 
-#define LDLT_GET_MAP(...)                                                      \
-	(::ldlt::detail::SectionTimingMap<__VA_ARGS__>::ref())
+#define LDLT_GET_MAP(...) (::ldlt::detail::SectionTimingMap<__VA_ARGS__>::ref())
 
 #endif /* end of include guard INRIA_LDLT_META_HPP_VHFXDOQHS */
