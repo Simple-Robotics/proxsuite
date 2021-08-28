@@ -85,6 +85,55 @@ LDLT_INLINE auto _iseq512() -> simde__m512i {
 	return out;
 }
 
+template <typename T>
+struct Pack<T, 1> {
+	using ScalarType = T;
+
+	T inner;
+
+	LDLT_INLINE auto add(Pack rhs) const noexcept -> Pack {
+		return {inner + rhs.inner};
+	}
+	LDLT_INLINE auto sub(Pack rhs) const noexcept -> Pack {
+		return {inner - rhs.inner};
+	}
+	LDLT_INLINE auto mul(Pack rhs) const noexcept -> Pack {
+		return {inner * rhs.inner};
+	}
+	LDLT_INLINE auto div(Pack rhs) const noexcept -> Pack {
+		return {inner / rhs.inner};
+	}
+	LDLT_INLINE static auto fmadd(Pack a, Pack b, Pack c) noexcept -> Pack {
+		LDLT_FP_PRAGMA
+		return {a.inner * b.inner + c.inner};
+	}
+	LDLT_INLINE static auto fmsub(Pack a, Pack b, Pack c) noexcept -> Pack {
+		return fmadd(a, b, {-c.inner});
+	}
+	LDLT_INLINE static auto fnmadd(Pack a, Pack b, Pack c) noexcept -> Pack {
+		return fmadd({-a.inner}, b, c);
+	}
+	LDLT_INLINE static auto fnmsub(Pack a, Pack b, Pack c) noexcept -> Pack {
+		return fmadd({-a.inner}, b, {-c.inner});
+	}
+	LDLT_INLINE static auto zero() noexcept -> Pack { return {ScalarType(0)}; }
+	LDLT_INLINE static auto load_unaligned(ScalarType const* ptr) noexcept
+			-> Pack {
+		return {*ptr};
+	}
+	LDLT_INLINE void store_unaligned(ScalarType* ptr) const noexcept {
+		*ptr = inner;
+	}
+	LDLT_INLINE static auto
+	load_gather(ScalarType const* ptr, i32 /*stride*/) noexcept -> Pack {
+		return {*ptr};
+	}
+	LDLT_INLINE void
+	store_scatter(ScalarType* ptr, i32 /*stride*/) const noexcept {
+		*ptr = inner;
+	}
+};
+
 template <>
 struct Pack<f32, 4> {
 	using ScalarType = f32;
@@ -102,7 +151,7 @@ struct Pack<f32, 4> {
 						sizeof(f32)),
 		};
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;
@@ -140,7 +189,7 @@ struct Pack<f32, 8> {
 						sizeof(f32)),
 		};
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;
@@ -169,7 +218,7 @@ struct Pack<f32, 16> {
 		(void)ptr, (void)stride;
 		std::terminate();
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;
@@ -202,7 +251,7 @@ struct Pack<f64, 2> {
 						sizeof(f64)),
 		};
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;
@@ -235,7 +284,7 @@ struct Pack<f64, 4> {
 						sizeof(f64)),
 		};
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;
@@ -263,7 +312,7 @@ struct Pack<f64, 8> {
 		(void)ptr, (void)stride;
 		std::terminate();
 	}
-	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
 		// TODO: PR to simde
 		std::terminate();
 		(void)this, (void)(ptr[0] = 0), (void)stride;

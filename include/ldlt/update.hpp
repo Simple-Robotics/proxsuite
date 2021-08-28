@@ -46,76 +46,6 @@ LDLT_INLINE void rank1_update_inner_loop_packed(
 }
 
 template <typename Scalar, Layout L>
-LDLT_INLINE void rank1_update_inner_loop_tail(
-		std::integral_constant<usize, 4> /*tag*/,
-		i32 rem,
-		i32 done,
-
-		MatrixViewMut<Scalar, L> out_l,
-		MatrixView<Scalar, L> in_l,
-		Scalar* wp,
-		i32 j,
-		i32 offset,
-		Scalar p,
-		Scalar c,
-		Scalar beta) {
-
-	i32 r = done + j + 1;
-	switch (rem) {
-	case 1:
-	case 3: {
-		{
-			LDLT_FP_PRAGMA
-			auto& wr = wp[r - offset];
-			wr = wr - p * in_l(r, j);
-			out_l(r, j) = c * in_l(r, j) + beta * wr;
-			++r;
-		}
-
-		if (rem == 1) {
-			break;
-		}
-	}
-	case 2:
-		for (i32 i = 0; i < 2; ++i) {
-			LDLT_FP_PRAGMA
-			auto& wr = wp[r - offset];
-			wr = wr - p * in_l(r, j);
-			out_l(r, j) = c * in_l(r, j) + beta * wr;
-			++r;
-		}
-	default:
-		break;
-	}
-}
-
-template <typename Scalar, Layout L>
-LDLT_INLINE void rank1_update_inner_loop_tail(
-		std::integral_constant<usize, 2> /*tag*/,
-		i32 rem,
-		i32 done,
-
-		MatrixViewMut<Scalar, L> out_l,
-		MatrixView<Scalar, L> in_l,
-		Scalar* wp,
-		i32 j,
-		i32 offset,
-		Scalar p,
-		Scalar c,
-		Scalar beta) {
-
-	if (rem == 1) {
-		i32 r = done + j + 1;
-		{
-			LDLT_FP_PRAGMA
-			auto& wr = wp[r - offset];
-			wr = wr - p * in_l(r, j);
-			out_l(r, j) = c * in_l(r, j) + beta * wr;
-		}
-	}
-}
-
-template <typename Scalar, Layout L>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, true> /*tag*/,
 		MatrixViewMut<Scalar, L> out_l,
@@ -130,6 +60,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 
 	using Info = NativePackInfo<Scalar>;
 	constexpr i32 N = i32{Info::N};
+	constexpr i32 N_min = i32{Info::N_min};
 
 	i32 const loop_len = dim - (j + 1);
 	i32 done = loop_len / N * N;
@@ -149,7 +80,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 
 #if LDLT_SIMD_HAS_HALF
 	if (rem >= (N / 2)) {
-		using Pack_ = Pack<Scalar, N / 2>;
+		using Pack_ = Pack<Scalar, usize{N / 2}>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
@@ -164,7 +95,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 #if LDLT_SIMD_HAS_QUARTER
 
 	if (rem >= (N / 4)) {
-		using Pack_ = Pack<Scalar, N / 4>;
+		using Pack_ = Pack<Scalar, usize{N / 4}>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
@@ -178,18 +109,26 @@ LDLT_INLINE void rank1_update_inner_loop(
 #endif
 #endif
 
-	detail::rank1_update_inner_loop_tail(
-			std::integral_constant<usize, Info::N_min>{},
-			rem,
-			done,
-			out_l,
-			in_l,
-			wp,
-			j,
-			offset,
-			p,
-			c,
-			beta);
+	static_assert(N_min == 4 || N_min == 2, ".");
+
+	using Pack_ = Pack<Scalar, 1>;
+	Pack_ p_p = {p};
+	Pack_ p_c = {c};
+	Pack_ p_beta = {beta};
+
+	LDLT_IF_CONSTEXPR(Info::N_min == 4) {
+		if (rem >= 2) {
+			for (i32 i = 0; i < 2; ++i) {
+				detail::rank1_update_inner_loop_packed(
+						done + i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+			}
+			rem -= 2;
+		}
+	}
+	if (rem == 1) {
+		detail::rank1_update_inner_loop_packed(
+				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+	}
 }
 template <typename Scalar, Layout L>
 LDLT_INLINE void rank1_update_inner_loop(
@@ -203,11 +142,16 @@ LDLT_INLINE void rank1_update_inner_loop(
 		Scalar p,
 		Scalar c,
 		Scalar beta) {
-	for (i32 r = j + 1; r < dim; ++r) {
-		LDLT_FP_PRAGMA
-		auto& wr = wp[r - offset];
-		wr = wr - p * in_l(r, j);
-		out_l(r, j) = c * in_l(r, j) + beta * wr;
+
+	using Pack_ = Pack<Scalar, 1>;
+	Pack_ p_p = {p};
+	Pack_ p_c = {c};
+	Pack_ p_beta = {beta};
+
+	i32 const loop_len = dim - (j + 1);
+	for (i32 i = 0; i < loop_len; ++i) {
+		detail::rank1_update_inner_loop_packed(
+				i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
 	}
 }
 

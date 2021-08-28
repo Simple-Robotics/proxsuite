@@ -501,4 +501,10 @@
 	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_DECL_MEMORY, Type, Names_Counts)            \
 	static_assert(true, ".")
 
+#if __cplusplus >= 201703L
+#define LDLT_IF_CONSTEXPR if constexpr
+#else
+#define LDLT_IF_CONSTEXPR if
+#endif
+
 #endif /* end of include guard LDLT_MACROS_HPP_TSAOHJEXS */

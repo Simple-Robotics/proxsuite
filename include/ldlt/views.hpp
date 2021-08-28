@@ -157,7 +157,7 @@ struct ElementAccess<Layout::rowmajor> {
 	template <usize N, typename T>
 	LDLT_INLINE static void
 	store_col_pack(T* ptr, Pack<T, N> pack, i32 outer_stride) noexcept {
-		return pack.store_gather(ptr, outer_stride);
+		return pack.store_scatter(ptr, outer_stride);
 	}
 
 	using NextColStride = Eigen::Stride<0, 0>;
