@@ -29,6 +29,9 @@ LDLT_INLINE void rank1_update_inner_loop_packed(
 		i32 offset) {
 	i32 r = i + j + 1;
 
+	// TODO[PERF]: check asm, clang does weird stuff with address computations in tight
+	// loop
+
 	auto in_l_ptr = ElementAccess<L>::offset(in_l.data, r, j, in_l.outer_stride);
 	auto out_l_ptr =
 			ElementAccess<L>::offset(out_l.data, r, j, out_l.outer_stride);
