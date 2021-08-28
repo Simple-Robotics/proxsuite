@@ -102,6 +102,12 @@ struct Pack<f32, 4> {
 						sizeof(f32)),
 		};
 	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
+	}
+
 	LDLT_INLINE auto sum() const noexcept -> f32 {
 		// inner = {0 1 2 3}
 		simde__m128 dup = simde_mm_movehdup_ps(inner);
@@ -134,6 +140,11 @@ struct Pack<f32, 8> {
 						sizeof(f32)),
 		};
 	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
+	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f32, 4> {
 		return {simde_mm256_castps256_ps128(inner)};
@@ -157,6 +168,11 @@ struct Pack<f32, 16> {
 		// TODO: PR to simde
 		(void)ptr, (void)stride;
 		std::terminate();
+	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
 	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f32, 8> {
@@ -186,6 +202,11 @@ struct Pack<f64, 2> {
 						sizeof(f64)),
 		};
 	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
+	}
 
 	LDLT_INLINE auto sum() const noexcept -> f64 {
 		simde__m128 inner_ps = simde_mm_castpd_ps(inner);
@@ -214,6 +235,11 @@ struct Pack<f64, 4> {
 						sizeof(f64)),
 		};
 	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
+	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f64, 2> {
 		return {simde_mm256_castpd256_pd128(inner)};
@@ -237,6 +263,11 @@ struct Pack<f64, 8> {
 		(void)ptr, (void)stride;
 		std::terminate();
 	}
+	LDLT_INLINE void store_gather(ScalarType* ptr, i32 stride) noexcept {
+		// TODO: PR to simde
+		std::terminate();
+		(void)this, (void)(ptr[0] = 0), (void)stride;
+	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f64, 4> {
 		return {simde_mm512_castpd512_pd256(inner)};
@@ -252,14 +283,28 @@ struct NativePackInfo {
 	using Type = void;
 };
 
+#if SIMDE_NATURAL_VECTOR_SIZE >= 256
+#define LDLT_SIMD_HAS_HALF (1)
+#else
+#define LDLT_SIMD_HAS_HALF (0)
+#endif
+
+#if SIMDE_NATURAL_VECTOR_SIZE >= 512
+#define LDLT_SIMD_HAS_QUARTER (1)
+#else
+#define LDLT_SIMD_HAS_QUARTER (0)
+#endif
+
 template <>
 struct NativePackInfo<f32> {
 	static constexpr usize N = SIMDE_NATURAL_VECTOR_SIZE / 32;
+	static constexpr usize N_min = 4;
 	using Type = Pack<f32, N>;
 };
 template <>
 struct NativePackInfo<f64> {
 	static constexpr usize N = SIMDE_NATURAL_VECTOR_SIZE / 64;
+	static constexpr usize N_min = 2;
 	using Type = Pack<f64, N>;
 };
 

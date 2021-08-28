@@ -37,11 +37,30 @@ auto main() -> int {
 		}
 	}
 
+	fmt::print("{:<20} | {:>15} | {:>15} | head..tail\n", "", "total avg", "section avg");
+
 	for (auto c : LDLT_GET_MAP(Scalar)["eq solver"]) {
 		using ldlt::detail::Duration;
 		auto& durations = c.second.ref;
 		auto avg = std::accumulate(durations.begin(), durations.end(), Duration{}) /
 		           n_iter;
-		fmt::print("{:<20}: {:>10}\n", c.first, avg);
+		auto section_avg =
+				std::accumulate(durations.begin(), durations.end(), Duration{}) /
+				durations.size();
+
+		fmt::print("{:<20} | {:>15} | {:>15} | ", c.first, avg, section_avg);
+
+		if (durations.size() <= 6) {
+			fmt::print("{}\n", durations);
+		} else {
+			fmt::print( //
+					"[{}, {}, {}, ..., {}, {}, {}]\n",
+					durations[0],
+					durations[1],
+					durations[2],
+					durations[durations.size() - 1],
+					durations[durations.size() - 2],
+					durations[durations.size() - 3]);
+		}
 	}
 }

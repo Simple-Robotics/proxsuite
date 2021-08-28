@@ -2,6 +2,7 @@
 #define INRIA_LDLT_UPDATE_HPP_OHWFTYRXS
 
 #include "ldlt/views.hpp"
+#include "ldlt/detail/meta.hpp"
 
 namespace ldlt {
 
@@ -13,6 +14,202 @@ LDLT_DEFINE_TAG(full_refactorize, FullRefactorize);
 } // namespace diagonal_update_strategies
 
 namespace detail {
+
+template <typename Scalar, Layout L, usize N>
+LDLT_INLINE void rank1_update_inner_loop_packed(
+		i32 i,
+		Pack<Scalar, N> p_p,
+		Pack<Scalar, N> p_c,
+		Pack<Scalar, N> p_beta,
+
+		MatrixViewMut<Scalar, L> out_l,
+		MatrixView<Scalar, L> in_l,
+		Scalar* wp,
+		i32 j,
+		i32 offset) {
+	i32 r = i + j + 1;
+
+	auto in_l_ptr = ElementAccess<L>::offset(in_l.data, r, j, in_l.outer_stride);
+	auto out_l_ptr =
+			ElementAccess<L>::offset(out_l.data, r, j, out_l.outer_stride);
+
+	Pack<Scalar, N> p_wr = Pack<Scalar, N>::load_unaligned(wp + (r - offset));
+	Pack<Scalar, N> p_in_l =
+			ElementAccess<L>::template load_col_pack<N>(in_l_ptr, in_l.outer_stride);
+
+	p_wr = Pack<Scalar, N>::fnmadd(p_p, p_in_l, p_wr);
+	p_wr.store_unaligned(wp + (r - offset));
+	p_in_l = p_in_l.mul(p_c);
+	p_in_l = Pack<Scalar, N>::fmadd(p_beta, p_wr, p_in_l);
+
+	ElementAccess<L>::store_col_pack(out_l_ptr, p_in_l, out_l.outer_stride);
+}
+
+template <typename Scalar, Layout L>
+LDLT_INLINE void rank1_update_inner_loop_tail(
+		std::integral_constant<usize, 4> /*tag*/,
+		i32 rem,
+		i32 done,
+
+		MatrixViewMut<Scalar, L> out_l,
+		MatrixView<Scalar, L> in_l,
+		Scalar* wp,
+		i32 j,
+		i32 offset,
+		Scalar p,
+		Scalar c,
+		Scalar beta) {
+
+	i32 r = done + j + 1;
+	switch (rem) {
+	case 1:
+	case 3: {
+		{
+			LDLT_FP_PRAGMA
+			auto& wr = wp[r - offset];
+			wr = wr - p * in_l(r, j);
+			out_l(r, j) = c * in_l(r, j) + beta * wr;
+			++r;
+		}
+
+		if (rem == 1) {
+			break;
+		}
+	}
+	case 2:
+		for (i32 i = 0; i < 2; ++i) {
+			LDLT_FP_PRAGMA
+			auto& wr = wp[r - offset];
+			wr = wr - p * in_l(r, j);
+			out_l(r, j) = c * in_l(r, j) + beta * wr;
+			++r;
+		}
+	default:
+		break;
+	}
+}
+
+template <typename Scalar, Layout L>
+LDLT_INLINE void rank1_update_inner_loop_tail(
+		std::integral_constant<usize, 2> /*tag*/,
+		i32 rem,
+		i32 done,
+
+		MatrixViewMut<Scalar, L> out_l,
+		MatrixView<Scalar, L> in_l,
+		Scalar* wp,
+		i32 j,
+		i32 offset,
+		Scalar p,
+		Scalar c,
+		Scalar beta) {
+
+	if (rem == 1) {
+		i32 r = done + j + 1;
+		{
+			LDLT_FP_PRAGMA
+			auto& wr = wp[r - offset];
+			wr = wr - p * in_l(r, j);
+			out_l(r, j) = c * in_l(r, j) + beta * wr;
+		}
+	}
+}
+
+template <typename Scalar, Layout L>
+LDLT_INLINE void rank1_update_inner_loop(
+		std::integral_constant<bool, true> /*tag*/,
+		MatrixViewMut<Scalar, L> out_l,
+		MatrixView<Scalar, L> in_l,
+		i32 dim,
+		Scalar* wp,
+		i32 j,
+		i32 offset,
+		Scalar p,
+		Scalar c,
+		Scalar beta) {
+
+	using Info = NativePackInfo<Scalar>;
+	constexpr i32 N = i32{Info::N};
+
+	i32 const loop_len = dim - (j + 1);
+	i32 done = loop_len / N * N;
+	i32 rem = loop_len - done;
+
+	{
+		using Pack_ = NativePack<Scalar>;
+		Pack_ p_p = Pack_::broadcast(p);
+		Pack_ p_c = Pack_::broadcast(c);
+		Pack_ p_beta = Pack_::broadcast(beta);
+
+		for (i32 i = 0; i < done; i += N) {
+			detail::rank1_update_inner_loop_packed(
+					i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+		}
+	}
+
+#if LDLT_SIMD_HAS_HALF
+	if (rem >= (N / 2)) {
+		using Pack_ = Pack<Scalar, N / 2>;
+		Pack_ p_p = Pack_::broadcast(p);
+		Pack_ p_c = Pack_::broadcast(c);
+		Pack_ p_beta = Pack_::broadcast(beta);
+
+		detail::rank1_update_inner_loop_packed(
+				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+
+		rem -= N / 2;
+		done += N / 2;
+	}
+
+#if LDLT_SIMD_HAS_QUARTER
+
+	if (rem >= (N / 4)) {
+		using Pack_ = Pack<Scalar, N / 4>;
+		Pack_ p_p = Pack_::broadcast(p);
+		Pack_ p_c = Pack_::broadcast(c);
+		Pack_ p_beta = Pack_::broadcast(beta);
+
+		detail::rank1_update_inner_loop_packed(
+				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+		rem -= N / 4;
+		done += N / 4;
+	}
+
+#endif
+#endif
+
+	detail::rank1_update_inner_loop_tail(
+			std::integral_constant<usize, Info::N_min>{},
+			rem,
+			done,
+			out_l,
+			in_l,
+			wp,
+			j,
+			offset,
+			p,
+			c,
+			beta);
+}
+template <typename Scalar, Layout L>
+LDLT_INLINE void rank1_update_inner_loop(
+		std::integral_constant<bool, false> /*tag*/,
+		MatrixViewMut<Scalar, L> out_l,
+		MatrixView<Scalar, L> in_l,
+		i32 dim,
+		Scalar* wp,
+		i32 j,
+		i32 offset,
+		Scalar p,
+		Scalar c,
+		Scalar beta) {
+	for (i32 r = j + 1; r < dim; ++r) {
+		LDLT_FP_PRAGMA
+		auto& wr = wp[r - offset];
+		wr = wr - p * in_l(r, j);
+		out_l(r, j) = c * in_l(r, j) + beta * wr;
+	}
+}
 
 template <typename Scalar, Layout L>
 LDLT_NO_INLINE void rank1_update(
@@ -35,25 +232,131 @@ LDLT_NO_INLINE void rank1_update(
 		alpha *= gamma;
 
 		Scalar c = gamma + beta * p;
-		// TODO: explicitly vectorize
-		for (i32 r = j + 1; r < dim; ++r) {
-			LDLT_FP_PRAGMA
-			auto& wr = wp[r - offset];
-			wr = wr - p * in.l(r, j);
-			out.l(r, j) = c * in.l(r, j) + beta * wr;
-		}
+
+		detail::rank1_update_inner_loop(
+				std::integral_constant<
+						bool,
+						(std::is_same<Scalar, f32>::value ||
+		         std::is_same<Scalar, f64>::value)>{},
+				out.l,
+				in.l,
+				dim,
+				wp,
+				j,
+				offset,
+				p,
+				c,
+				beta);
 	}
 }
 
+struct Dyn {
+	i32 inner;
+	LDLT_INLINE constexpr auto value() const noexcept -> i32 { return inner; }
+	LDLT_INLINE constexpr auto incr() const noexcept -> Dyn {
+		return {inner + 1};
+	}
+	LDLT_INLINE constexpr auto decr() const noexcept -> Dyn {
+		return {inner - 1};
+	}
+
+	template <typename Fn>
+	LDLT_INLINE void loop(Fn fn) const {
+		for (i32 i = 0; i < inner; ++i) {
+			fn(Dyn{i});
+		}
+	}
+};
+struct Empty {};
+template <i32 N>
+struct Fix {
+	LDLT_INLINE constexpr auto value() const noexcept -> i32 { return N; }
+	LDLT_INLINE constexpr auto incr() const noexcept -> Fix<N + 1> { return {}; }
+	LDLT_INLINE constexpr auto decr() const noexcept -> Fix<N - 1> { return {}; }
+
+	template <typename Fn, i32... Is>
+	LDLT_INLINE void
+	loop_impl(Fn fn, integer_sequence<i32, Is...> /*tag*/) const {
+		using Arr = Empty[];
+		(void)Arr{Empty{}, (void(fn(Fix<Is>{})), Empty{})...};
+	}
+
+	template <typename Fn>
+	LDLT_INLINE void loop(Fn fn) const {
+		loop_impl(LDLT_FWD(fn), make_integer_sequence<i32, N>{});
+	}
+
+	LDLT_INLINE operator Dyn /* NOLINT */() const noexcept { return {N}; }
+};
+
+namespace nb {
+struct min2 {
+	template <typename T>
+	LDLT_INLINE constexpr auto operator()(T a, T b) const -> T {
+		return (a < b) ? a : b;
+	}
+};
+} // namespace nb
+LDLT_DEFINE_NIEBLOID(min2);
+
+template <typename Scalar>
+struct LoopData {
+	Scalar* ws;
+	Scalar* ps;
+	Scalar* betas;
+	Scalar* cs;
+	i32 start_index;
+	i32 dim_rest;
+};
+
+template <typename Scalar>
+struct InnerLoop {
+	Scalar& lr;
+	i32& w_offset;
+	LoopData<Scalar> data;
+	i32 r;
+
+	LDLT_INLINE void operator()(Dyn k) const {
+		LDLT_FP_PRAGMA
+		auto& wr = data.ws[w_offset + (r - data.start_index)];
+		wr = wr - data.ps[k.value()] * lr;
+		lr = data.cs[k.value()] * lr + data.betas[k.value()] * wr;
+
+		w_offset += data.dim_rest;
+	}
+};
+
 template <typename Scalar, Layout L>
+struct OuterLoop {
+	MatrixViewMut<Scalar, L> out_l;
+	MatrixView<Scalar, L> in_l;
+	LoopData<Scalar> data;
+	i32 j;
+
+	LDLT_INLINE void operator()(Fix<0> /*n_diag*/) const {}
+
+	template <typename RMinusJ>
+	LDLT_INLINE void operator()(RMinusJ r_minus_j) const {
+		if (r_minus_j.value() > 0) {
+			i32 r = r_minus_j.value() + j;
+			Scalar lr = in_l(r, j);
+			i32 w_offset = 0;
+			r_minus_j.loop(InnerLoop<Scalar>{lr, w_offset, data, r});
+			out_l(r, j) = lr;
+		}
+	}
+};
+
+template <typename Scalar, Layout L, typename NDiag>
 LDLT_NO_INLINE void diagonal_update_single_pass(
 		LdltViewMut<Scalar, L> out,
 		LdltView<Scalar, L> in,
 		VectorView<Scalar> diag_diff,
-		i32 start_index) {
+		i32 start_index,
+		NDiag n_diag) {
 
 	i32 dim = out.l.rows;
-	i32 n_diag_terms = diag_diff.dim;
+	i32 n_diag_terms = n_diag.value();
 	if (n_diag_terms == 0) {
 		return;
 	}
@@ -101,21 +404,58 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 			out.d(j) = dj;
 		}
 
-		// TODO: vectorize
-		for (i32 r = j + 1; r < dim; ++r) {
-			i32 max_k = std::min(r - j, n_diag_terms);
+		if (j + n_diag_terms <= dim) {
+			n_diag.loop(OuterLoop<Scalar, L>{
+					out.l,
+					in.l,
+					{ws, ps, betas, cs, start_index, dim_rest},
+					j,
+			});
+		} else {
+			Dyn{dim - j}.loop(OuterLoop<Scalar, L>{
+					out.l,
+					in.l,
+					{ws, ps, betas, cs, start_index, dim_rest},
+					j,
+			});
+		}
 
+		// TODO: vectorize
+		for (i32 r = j + n_diag_terms; r < dim; ++r) {
+			i32 w_offset = 0;
 			Scalar lr = in.l(r, j);
-			for (i32 k = 0, w_offset = 0; //
-			     k < max_k;
-			     ++k, w_offset += dim_rest) {
-				LDLT_FP_PRAGMA
-				auto& wr = ws[w_offset + (r - start_index)];
-				wr = wr - ps[k] * lr;
-				lr = cs[k] * lr + betas[k] * wr;
-			}
+			n_diag.loop(InnerLoop<Scalar>{
+					lr,
+					w_offset,
+					{ws, ps, betas, cs, start_index, dim_rest},
+					r,
+			});
 			out.l(r, j) = lr;
 		}
+	}
+}
+
+template <typename Scalar, Layout L>
+LDLT_INLINE void diagonal_update_multi_pass(
+		LdltViewMut<Scalar, L> out,
+		LdltView<Scalar, L> in,
+		VectorView<Scalar> diag_diff,
+		i32 start_index) {
+	i32 dim = out.l.rows;
+	i32 dim_rem = dim - start_index;
+	LDLT_WORKSPACE_MEMORY(ws, dim_rem, Scalar);
+	for (i32 k = 0; k < diag_diff.dim; ++k) {
+		ws[0] = Scalar(1);
+		for (i32 i = 1; i < dim_rem; ++i) {
+			ws[i] = Scalar(0);
+		}
+		detail::rank1_update( //
+				out,
+				in,
+				VectorViewMut<Scalar>{ws, dim_rem},
+				start_index + k,
+				diag_diff(k));
+		--dim_rem;
 	}
 }
 
@@ -130,7 +470,20 @@ struct DiagonalUpdateImpl<diagonal_update_strategies::SinglePass> {
 	   LdltView<Scalar, L> in,
 	   VectorView<Scalar> diag_diff,
 	   i32 start_index) {
-		detail::diagonal_update_single_pass(out, in, diag_diff, start_index);
+		detail::diagonal_update_single_pass(
+				out, in, diag_diff, start_index, Dyn{diag_diff.dim});
+	}
+};
+
+template <>
+struct DiagonalUpdateImpl<diagonal_update_strategies::MultiPass> {
+	template <typename Scalar, Layout L>
+	LDLT_INLINE static void
+	fn(LdltViewMut<Scalar, L> out,
+	   LdltView<Scalar, L> in,
+	   VectorView<Scalar> diag_diff,
+	   i32 start_index) {
+		detail::diagonal_update_multi_pass(out, in, diag_diff, start_index);
 	}
 };
 
@@ -179,7 +532,7 @@ struct diagonal_update {
 	template <
 			typename Scalar,
 			Layout L,
-			typename S = diagonal_update_strategies::SinglePass>
+			typename S = diagonal_update_strategies::MultiPass>
 	LDLT_INLINE void operator()(
 			LdltViewMut<Scalar, L> out,
 			LdltView<Scalar, L> in,

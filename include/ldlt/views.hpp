@@ -110,6 +110,17 @@ struct ElementAccess<Layout::colmajor> {
 		return ptr + (usize(row) + usize(col) * usize(outer_stride));
 	}
 
+	template <usize N, typename T>
+	LDLT_INLINE static auto
+	load_col_pack(T const* ptr, i32 /*outer_stride*/) noexcept -> Pack<T, N> {
+		return Pack<T, N>::load_unaligned(ptr);
+	}
+	template <usize N, typename T>
+	LDLT_INLINE static void
+	store_col_pack(T* ptr, Pack<T, N> pack, i32 /*outer_stride*/) noexcept {
+		return pack.store_unaligned(ptr);
+	}
+
 	using NextRowStride = Eigen::Stride<0, 0>;
 	using NextColStride = Eigen::InnerStride<Eigen::Dynamic>;
 	LDLT_INLINE static auto next_row_stride(i32 outer_stride) noexcept
@@ -136,6 +147,17 @@ struct ElementAccess<Layout::rowmajor> {
 	LDLT_INLINE static constexpr auto
 	offset(T* ptr, i32 row, i32 col, i32 outer_stride) noexcept -> T* {
 		return ptr + (usize(col) + usize(row) * usize(outer_stride));
+	}
+
+	template <usize N, typename T>
+	LDLT_INLINE static auto load_col_pack(T const* ptr, i32 outer_stride) noexcept
+			-> Pack<T, N> {
+		return Pack<T, N>::load_gather(ptr, outer_stride);
+	}
+	template <usize N, typename T>
+	LDLT_INLINE static void
+	store_col_pack(T* ptr, Pack<T, N> pack, i32 outer_stride) noexcept {
+		return pack.store_gather(ptr, outer_stride);
 	}
 
 	using NextColStride = Eigen::Stride<0, 0>;

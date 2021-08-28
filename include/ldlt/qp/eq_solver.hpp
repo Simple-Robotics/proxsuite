@@ -249,7 +249,7 @@ auto solve_qp( //
 									ldlt_mut.as_const(),
 									from_eigen_vector(diag_diff),
 									dim,
-									ldlt::diagonal_update_strategies::single_pass);
+									ldlt::diagonal_update_strategies::multi_pass);
 							++n_mu_updates;
 						}
 					}

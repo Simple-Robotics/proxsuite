@@ -268,7 +268,7 @@ auto section_timings(
 #define LDLT_DECL_SCOPE_TIMER(...)                                             \
 	auto&& LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__) =                      \
 			LDLT_SCOPE_TIMER(__VA_ARGS__);                                           \
-	((void)LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__));
+	((void)LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__))
 
 #define LDLT_GET_DURATIONS(...) (LDLT_IMPL_TIMINGS(__VA_ARGS__).ref())
 
