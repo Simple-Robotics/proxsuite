@@ -301,6 +301,7 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 		VectorView<Scalar> diag_diff,
 		i32 start_index,
 		NDiag n_diag) {
+  // FIXME: buggy for ndiag > 1
 
 	i32 dim = out.l.rows;
 	i32 n_diag_terms = n_diag.value();
