@@ -9,146 +9,11 @@
 #include <cmath>
 #include <ldlt/qp/eq_solver.hpp>
 #include <ldlt/precond/ruiz.hpp>
+#include <util.hpp>
 
 using namespace ldlt;
 
-template <typename Scalar>
-using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
-
-template <typename Scalar>
-using Mat =
-		Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
-template <typename Scalar>
-using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
-
 using Scalar = double;
-
-namespace ldlt_test {
-namespace rand {
-
-using std::uint64_t;
-
-using uint128_t = __uint128_t;
-uint128_t g_lehmer64_state =
-		uint128_t(0xda942042e4dd58b5) * uint128_t(0xda942042e4dd58b5);
-
-auto lehmer64() -> uint64_t { // [0, 2^64)
-	g_lehmer64_state *= 0xda942042e4dd58b5;
-	return g_lehmer64_state >> 64U;
-}
-
-void set_seed(uint64_t seed) {
-	g_lehmer64_state = seed + 1;
-	lehmer64();
-	lehmer64();
-}
-
-auto uniform_rand() -> double { // [0, 2^53]
-	uint64_t a = lehmer64() / (1U << 11U);
-	return double(a) / double(uint64_t(1) << 53U);
-}
-auto normal_rand() -> double {
-	static const double pi2 = std::atan(static_cast<double>(1)) * 8;
-
-	double u1 = uniform_rand();
-	double u2 = uniform_rand();
-
-	double ln = std::log(u1);
-	double sqrt = std::sqrt(-2 * ln);
-
-	return sqrt * std::cos(pi2 * u2);
-}
-
-template <typename Scalar>
-auto sparse_positive_definite_rand(i32 n, Scalar cond, double p)
-		-> SparseMat<Scalar> {
-	auto H = SparseMat<Scalar>(n, n);
-
-	for (i32 i = 0; i < n; ++i) {
-		auto urandom = rand::uniform_rand();
-		if (urandom < p) {
-			auto random = Scalar(rand::normal_rand());
-			H.insert(i, i) = random;
-		}
-	}
-
-	for (i32 i = 0; i < n; ++i) {
-		for (i32 j = i + 1; j < n; ++j) {
-			auto urandom = rand::uniform_rand();
-			if (urandom < p / 2) {
-				auto random = Scalar(rand::normal_rand());
-				H.insert(i, j) = random;
-			}
-		}
-	}
-
-	using Mat =
-			Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
-	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
-
-	Mat H_dense = H.toDense();
-	Vec eigh = H_dense.template selfadjointView<Eigen::Upper>().eigenvalues();
-
-	Scalar min = eigh.minCoeff();
-	Scalar max = eigh.maxCoeff();
-
-	// new_min = min + rho
-	// new_max = max + rho
-	//
-	// (max + rho)/(min + rho) = cond
-	// 1 + (max - min) / (min + rho) = cond
-	// (max - min) / (min + rho) = cond - 1
-	// min + rho = (max - min) / (cond - 1)
-	// rho = (max - min)/(cond - 1) - min
-	Scalar rho = (max - min) / (cond - 1) - min;
-
-	for (i32 i = 0; i < n; ++i) {
-		H.coeffRef(i, i) += rho;
-	}
-	H.makeCompressed();
-	return H;
-}
-
-template <typename Scalar>
-auto sparse_matrix_rand(i32 nrows, i32 ncols, double p) -> SparseMat<Scalar> {
-	auto A = SparseMat<Scalar>(nrows, ncols);
-
-	for (i32 i = 0; i < nrows; ++i) {
-		for (i32 j = 0; j < ncols; ++j) {
-			if (rand::uniform_rand() < p) {
-				A.insert(i, j) = Scalar(rand::normal_rand());
-			}
-		}
-	}
-	A.makeCompressed();
-	return A;
-}
-
-template <typename Scalar>
-auto vector_rand(i32 nrows) -> Vec<Scalar> {
-	auto v = Vec<Scalar>(nrows);
-
-	for (i32 i = 0; i < nrows; ++i) {
-		v(i) = Scalar(rand::normal_rand());
-	}
-
-	return v;
-}
-} // namespace rand
-
-template <typename Scalar>
-auto eigen_to_osqp_mat(SparseMat<Scalar>& mat) -> csc {
-	return {
-			mat.nonZeros(),
-			mat.rows(),
-			mat.cols(),
-			mat.outerIndexPtr(),
-			mat.innerIndexPtr(),
-			mat.valuePtr(),
-			-1,
-	};
-}
-} // namespace ldlt_test
 
 auto main() -> int {
 	i32 dim = 1000;
@@ -204,8 +69,9 @@ auto main() -> int {
 		Vec<Scalar> x(dim);
 		Vec<Scalar> y(n_eq);
 
-		auto H = Mat<Scalar>(H_eigen.toDense().selfadjointView<Eigen::Upper>());
-		auto A = Mat<Scalar>(A_eigen.toDense());
+		auto H = Mat<Scalar, colmajor>(
+				H_eigen.toDense().selfadjointView<Eigen::Upper>());
+		auto A = Mat<Scalar, colmajor>(A_eigen.toDense());
 		auto precond = qp::preconditioner::IdentityPrecond{};
 
 		{
