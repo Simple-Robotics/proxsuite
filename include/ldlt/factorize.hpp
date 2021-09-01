@@ -16,6 +16,7 @@ template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
 		LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
+  // TODO: use upper half of in_matrix
 
 	bool inplace = (out.l.data == in_matrix.data) && (OutL == InL);
 

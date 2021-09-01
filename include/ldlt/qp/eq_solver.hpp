@@ -151,11 +151,12 @@ auto solve_qp( //
 			Htot(i, i) += rho;
 		}
 
-		// TODO: unneeded
 		Htot.topRightCorner(dim, n_eq) =
 				to_eigen_matrix(qp_scaled.A.as_const()).transpose();
 
+		// TODO: unneeded: see "ldlt/factorize.hpp"
 		Htot.bottomLeftCorner(n_eq, dim) = to_eigen_matrix(qp_scaled.A.as_const());
+
 		Htot.bottomRightCorner(n_eq, n_eq).setZero();
 		{
 			Scalar tmp = -Scalar(1) / bcl_mu;
