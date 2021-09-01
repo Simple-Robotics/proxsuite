@@ -17,21 +17,16 @@ struct Data {
 
 template <typename T, Layout InL, Layout OutL>
 auto generate_data(i32 n) -> Data<T, InL, OutL> {
-	Mat<T, InL> mat(n, n);
-	Vec<T> w(n);
-	T alpha;
+	ldlt_test::rand::set_seed(uint64_t(n));
+	Mat<T, InL> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
+	Vec<T> w = ldlt_test::rand::vector_rand<T>(n);
+	T alpha = ldlt_test::rand::normal_rand();
 
 	Mat<T, OutL> l(n, n);
+	l.setZero();
+
 	Vec<T> d(n);
-	std::srand(unsigned(n));
-	mat.setRandom();
-	{
-		Vec<T> _alpha(1);
-		_alpha.setRandom();
-		alpha = _alpha(0);
-	}
-	w.setRandom();
-	mat = (mat.transpose() * mat).eval();
+	d.setZero();
 
 	return {
 			LDLT_FWD(mat),

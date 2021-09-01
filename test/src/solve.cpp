@@ -4,6 +4,7 @@
 #include <ldlt/solve.hpp>
 #include <ldlt/factorize.hpp>
 #include <fmt/ostream.h>
+#include <util.hpp>
 
 using namespace ldlt;
 
@@ -16,18 +17,14 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 	constexpr Layout L = LType::value;
 	for (i32 i = 1; i <= 128; ++i) {
 		std::srand(unsigned(i));
-		Mat<T, colmajor> a(i, i);
+		Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(i, T(1e2));
 		Mat<T, L> l(i, i);
 		Vec<T> d(i);
 
-		Vec<T> b(i);
+		Vec<T> b = ldlt_test::rand::vector_rand<T>(i);
 		Vec<T> x(i);
 		Vec<T> x_eigen(i);
 		Vec<long double> x_eigen_upscaled(i);
-
-		a.setRandom();
-		a = a.transpose() * a;
-		b.setRandom();
 
 		auto a_view = detail::from_eigen_matrix(a);
 		auto ldl_view = LdltViewMut<T, L>{

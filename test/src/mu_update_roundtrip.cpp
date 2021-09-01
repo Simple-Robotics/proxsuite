@@ -20,15 +20,12 @@ auto generate_data(i32 n) -> Data<T, InL, OutL> {
 	i32 index = n / 2;
 	i32 max_n_eq = 2;
 	i32 n_eq = ((max_n_eq + index) < n) ? max_n_eq : n - index;
-	Mat<T, InL> mat(n, n);
-	Vec<T> diag_diff(n_eq);
+	ldlt_test::rand::set_seed(uint64_t(n));
+	Mat<T, InL> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
+	Vec<T> diag_diff = ldlt_test::rand::vector_rand<T>(n_eq);
 
 	Mat<T, OutL> l(n, n);
 	Vec<T> d(n);
-	std::srand(unsigned(n));
-	mat.setRandom();
-	diag_diff.setRandom();
-	mat = (mat.transpose() * mat).eval();
 
 	return {
 			LDLT_FWD(mat),

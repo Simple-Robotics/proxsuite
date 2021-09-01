@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <Eigen/Cholesky>
 #include <ldlt/factorize.hpp>
+#include <util.hpp>
 
 #define LDLT_BENCHMARK_MAIN BENCHMARK_MAIN    /* NOLINT */
 #define LDLT_BENCHMARK BENCHMARK              /* NOLINT */
@@ -18,12 +19,8 @@ template <typename T, Layout InL, Layout OutL>
 void bench_eigen(benchmark::State& s) {
 	i32 dim = i32(s.range(0));
 
-	Mat<T, InL> a(dim, dim);
-	{
-		a.setRandom();
-		a = a.transpose() * a;
-	}
-
+	Mat<T, InL> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
+	;
 	Eigen::LDLT<Mat<T, OutL>> l(dim);
 
 	benchmark::DoNotOptimize(a.data());
@@ -41,11 +38,8 @@ template <typename Strategy, typename T, Layout InL, Layout OutL>
 void bench_ours(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
-	Mat<T, InL> a(dim, dim);
-	{
-		a.setRandom();
-		a = a.transpose() * a;
-	}
+	Mat<T, InL> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
+	;
 
 	Mat<T, OutL> l(dim, dim);
 	l.setZero();
@@ -72,11 +66,7 @@ template <typename T, Layout L>
 void bench_ours_inplace(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
-	Mat<T, L> a(dim, dim);
-	{
-		a.setRandom();
-		a = a.transpose() * a;
-	}
+	Mat<T, InL> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, L> l(dim, dim);
 	l.setZero();
