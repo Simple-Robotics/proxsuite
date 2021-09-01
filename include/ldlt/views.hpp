@@ -18,8 +18,16 @@ struct max2 {
 		return a > b ? a : b;
 	}
 };
+struct min2 {
+	template <typename T>
+	LDLT_INLINE constexpr auto operator()(T a, T b) const -> T {
+		return (a < b) ? a : b;
+	}
+};
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(max2);
+LDLT_DEFINE_NIEBLOID(min2);
+
 constexpr auto round_up(i32 n, i32 k) noexcept -> i32 {
 	return (n + k - 1) / k * k;
 }

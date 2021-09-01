@@ -133,6 +133,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
 	}
 }
+
 template <typename Scalar, Layout L>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, false> /*tag*/,
@@ -214,7 +215,9 @@ struct Dyn {
 		}
 	}
 };
+
 struct Empty {};
+
 template <i32 N>
 struct Fix {
 	LDLT_INLINE constexpr auto value() const noexcept -> i32 { return N; }
@@ -235,16 +238,6 @@ struct Fix {
 
 	LDLT_INLINE operator Dyn /* NOLINT */() const noexcept { return {N}; }
 };
-
-namespace nb {
-struct min2 {
-	template <typename T>
-	LDLT_INLINE constexpr auto operator()(T a, T b) const -> T {
-		return (a < b) ? a : b;
-	}
-};
-} // namespace nb
-LDLT_DEFINE_NIEBLOID(min2);
 
 template <typename Scalar>
 struct LoopData {

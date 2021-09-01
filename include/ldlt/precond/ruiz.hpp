@@ -207,18 +207,18 @@ struct RuizEquilibration {
 	}
 
 	// modifies residuals in place
-	void scale_primal_residue_in_place(VectorViewMut<Scalar> primal) {
+	void scale_primal_residual_in_place(VectorViewMut<Scalar> primal) {
 		detail::to_eigen_vector_mut(primal).array() *=
 				delta.tail(delta.size() - dim).array();
 	}
-	void scale_dual_residue_in_place(VectorViewMut<Scalar> dual) {
+	void scale_dual_residual_in_place(VectorViewMut<Scalar> dual) {
 		detail::to_eigen_vector_mut(dual).array() *= delta.head(dim).array() * c;
 	}
-	void unscale_primal_residue_in_place(VectorViewMut<Scalar> primal) {
+	void unscale_primal_residual_in_place(VectorViewMut<Scalar> primal) {
 		detail::to_eigen_vector_mut(primal).array() /=
 				delta.tail(delta.size() - dim).array();
 	}
-	void unscale_dual_residue_in_place(VectorViewMut<Scalar> dual) {
+	void unscale_dual_residual_in_place(VectorViewMut<Scalar> dual) {
 		detail::to_eigen_vector_mut(dual).array() /= delta.head(dim).array() * c;
 	}
 };
