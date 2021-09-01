@@ -66,7 +66,7 @@ template <typename T, Layout L>
 void bench_ours_inplace(benchmark::State& s) {
 
 	i32 dim = i32(s.range(0));
-	Mat<T, InL> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
+	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, L> l(dim, dim);
 	l.setZero();
