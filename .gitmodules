@@ -4,3 +4,6 @@
 [submodule "external/pybind11"]
 	path = external/pybind11
 	url = https://github.com/pybind/pybind11
+[submodule "external/osqp"]
+	path = external/osqp
+	url = https://github.com/osqp/osqp

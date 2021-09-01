@@ -3,7 +3,6 @@
 #include <ldlt/update.hpp>
 #include <ldlt/factorize.hpp>
 #include <Eigen/Cholesky>
-#include <iostream>
 
 using namespace ldlt;
 
@@ -18,8 +17,9 @@ struct Data {
 
 template <typename T, Layout InL, Layout OutL>
 auto generate_data(i32 n) -> Data<T, InL, OutL> {
-	i32 index = 0;
-	i32 n_eq = 1;
+	i32 index = n / 2;
+	i32 max_n_eq = 2;
+	i32 n_eq = ((max_n_eq + index) < n) ? max_n_eq : n - index;
 	Mat<T, InL> mat(n, n);
 	Vec<T> diag_diff(n_eq);
 
