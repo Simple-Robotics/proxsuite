@@ -31,6 +31,10 @@ include(cmake/static_analyzers.cmake)
 include(cmake/sanitizers.cmake)
 include(cmake/conan.cmake)
 
+if(INRIA_LDLT_ENABLE_TESTING)
+  add_compile_options("-g")
+endif()
+
 add_library(
   inria_ldlt
   ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
