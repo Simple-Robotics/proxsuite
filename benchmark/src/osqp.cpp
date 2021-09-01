@@ -19,7 +19,7 @@ auto main() -> int {
 	i32 dim = 1000;
 	i32 n_eq = 100;
 
-	double p = 1;
+	double p = 0.15;
 	auto cond = Scalar(1e2);
 
 	auto H_eigen = ldlt_test::rand::sparse_positive_definite_rand(dim, cond, p);
@@ -53,16 +53,14 @@ auto main() -> int {
 		osqp_settings.warm_start = 0;
 		osqp_settings.verbose = 0;
 
-		OSQPWorkspace* osqp_work{};
-
-		osqp_setup(&osqp_work, &osqp, &osqp_settings);
-
 		LDLT_DECL_SCOPE_TIMER("osqp bench", "osqp");
 		for (i32 i = 0; i < n_iter; ++i) {
-			{ osqp_solve(osqp_work); }
-		}
+			OSQPWorkspace* osqp_work{};
 
-		osqp_cleanup(osqp_work);
+			osqp_setup(&osqp_work, &osqp, &osqp_settings);
+			{ osqp_solve(osqp_work); }
+			osqp_cleanup(osqp_work);
+		}
 	}
 
 	{
