@@ -78,7 +78,10 @@ if(INRIA_LDLT_ENABLE_TESTING)
   set(CONAN_OPTIONS)
   run_conan()
 
-  target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
+  add_subdirectory(external/osqp)
+  target_link_libraries(
+    inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr osqpstatic
+  )
 endif()
 
 if(INRIA_LDLT_ENABLE_TESTING)

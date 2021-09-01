@@ -9,3 +9,6 @@ target_link_libraries(.bench.factorize ${benchlibs} CONAN_PKG::benchmark)
 
 add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${benchlibs} CONAN_PKG::benchmark)
+
+add_executable(.bench.osqp src/osqp.cpp)
+target_link_libraries(.bench.osqp ${benchlibs} CONAN_PKG::benchmark)
