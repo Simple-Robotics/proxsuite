@@ -23,7 +23,6 @@ auto main() -> int {
 	i32 max_iter = 1000;
 
 	std::ifstream file(INRIA_LDLT_QP_PYTHON_PATH "osqp_source_files.txt");
-	fmt::print("{}\n", INRIA_LDLT_QP_PYTHON_PATH "osqp_source_files.txt");
 
 	std::string path_len;
 	std::string path;
@@ -31,7 +30,6 @@ auto main() -> int {
 
 	file.read(&path_len[0], 32);
 	file.get(); // '\n'
-	fmt::print("{}\n", path_len);
 	std::fflush(stdout);
 	i32 n_files = i32(std::stol(path_len));
 
