@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <chrono>
+#include <atomic>
 #include "ldlt/detail/macros.hpp"
 
 namespace ldlt {
@@ -154,16 +155,17 @@ struct UniqueObserver {
 };
 
 struct ScopedTimer {
-	UniqueObserver<Container> timings;
+	Container* timings;
 	Time begin;
 
 	LDLT_INLINE ~ScopedTimer() {
-		if (timings.ptr != nullptr) {
+		if (timings != nullptr) {
 			destroy();
 		}
 	}
+
 	LDLT_NO_INLINE void destroy() const {
-		timings.ptr->push_back(Clock::now() - begin);
+		timings->push_back(Clock::now() - begin);
 	}
 
 	ScopedTimer(ScopedTimer const&) = delete;
@@ -172,8 +174,11 @@ struct ScopedTimer {
 	ScopedTimer(ScopedTimer&&) = default;
 	auto operator=(ScopedTimer&&) -> ScopedTimer& = default;
 
-	explicit ScopedTimer(Container& ref) noexcept
-			: timings{std::addressof(ref)}, begin{Clock::now()} {}
+	explicit ScopedTimer(Container* ref) noexcept : timings{ref}, begin{} {
+		if (timings != nullptr) {
+			begin = Clock::now();
+		}
+	}
 };
 
 LDLT_NO_INLINE inline auto container_init_0() -> Container {
@@ -196,6 +201,11 @@ struct SectionTimingMap {
 		});
 	}
 };
+
+inline auto benchmark_var() -> std::atomic<bool>& {
+	std::atomic<bool> inner(true);
+	return inner;
+}
 
 template <typename CharO, CharO... COs>
 struct SectionTimingOuterTag {
@@ -221,7 +231,12 @@ struct SectionTimingOuterTag {
 				static auto& v = container_init();
 				return v;
 			}
-			auto scoped() noexcept -> ScopedTimer { return ScopedTimer{ref()}; }
+			auto scoped() noexcept -> ScopedTimer {
+				return ScopedTimer{
+						benchmark_var().load(std::memory_order_acquire) //
+								? std::addressof(ref())
+								: nullptr};
+			}
 		};
 	};
 };
@@ -239,6 +254,10 @@ auto section_timings(
 				template SectionTimingInnerTag<CharInner, CIs...>::template Type<
 						Args...> {
 	return {};
+}
+
+void toggle_benchmarks(bool enable) {
+	benchmark_var().store(enable, std::memory_order_release);
 }
 } // namespace detail
 } // namespace ldlt
@@ -271,7 +290,6 @@ auto section_timings(
 	((void)LDLT_PP_CAT2(_ldlt_dummy_timer_var_, __LINE__))
 
 #define LDLT_GET_DURATIONS(...) (LDLT_IMPL_TIMINGS(__VA_ARGS__).ref())
-
 #define LDLT_GET_MAP(...) (::ldlt::detail::SectionTimingMap<__VA_ARGS__>::ref())
 
 #endif /* end of include guard INRIA_LDLT_META_HPP_VHFXDOQHS */
