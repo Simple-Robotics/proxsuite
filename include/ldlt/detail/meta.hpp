@@ -203,7 +203,7 @@ struct SectionTimingMap {
 };
 
 inline auto benchmark_var() -> std::atomic<bool>& {
-	std::atomic<bool> inner(true);
+	static std::atomic<bool> inner(true);
 	return inner;
 }
 
