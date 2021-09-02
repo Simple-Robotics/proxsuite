@@ -12,6 +12,7 @@
 
 #include <ldlt/qp/eq_solver.hpp>
 #include <ldlt/precond/ruiz.hpp>
+#include <chrono>
 
 using Scalar = c_float;
 using namespace ldlt;
@@ -52,14 +53,6 @@ auto main() -> int {
 		i32 n = i32(qp.H.rows());
 		i32 n_eq = i32(qp.A.rows());
 
-		fmt::print(
-				"-- problem_path   : {}\n"
-				"-- n              : {}\n"
-				"-- n_eq           : {}\n",
-				path,
-				n,
-				n_eq);
-
 		Vec<Scalar> primal_init = Vec<Scalar>::Zero(n);
 		Vec<Scalar> dual_init = Vec<Scalar>::Zero(n_eq);
 
@@ -69,23 +62,37 @@ auto main() -> int {
 						n_eq,
 				};
 
-		qp::detail::solve_qp( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
-				qp.as_view(),
-				max_iter,
-				eps_abs,
-				eps_rel);
+		auto duration = std::chrono::seconds{1};
+		auto ours = ldlt_test::bench_for(duration, [&] {
+			qp::detail::solve_qp( //
+					detail::from_eigen_vector_mut(primal_init),
+					detail::from_eigen_vector_mut(dual_init),
+					qp.as_view(),
+					max_iter,
+					eps_abs,
+					eps_rel);
+		});
 
-		ldlt_test::osqp::solve_eq_osqp_sparse( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
-				ldlt_test::osqp::to_sparse_sym(qp.H),
-				ldlt_test::osqp::to_sparse(qp.A),
-				qp.as_view().g,
-				qp.as_view().b,
-				max_iter,
-				eps_abs,
-				eps_rel);
+		auto osqp = ldlt_test::bench_for(duration, [&] {
+			ldlt_test::osqp::solve_eq_osqp_sparse( //
+					detail::from_eigen_vector_mut(primal_init),
+					detail::from_eigen_vector_mut(dual_init),
+					ldlt_test::osqp::to_sparse_sym(qp.H),
+					ldlt_test::osqp::to_sparse(qp.A),
+					qp.as_view().g,
+					qp.as_view().b,
+					max_iter,
+					eps_abs,
+					eps_rel);
+		});
+
+		fmt::print(
+				"n: {}, n_eq: {}\n"
+				"ours: {}\n"
+				"osqp: {}\n\n",
+				n,
+				n_eq,
+				ours,
+				osqp);
 	}
 }

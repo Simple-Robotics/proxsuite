@@ -253,7 +253,48 @@ inline auto solve_eq_osqp_sparse(
 	osqp_cleanup(osqp_work);
 	return n_iter;
 };
+
 } // namespace osqp
+using ldlt::detail::Duration;
+using ldlt::detail::Clock;
+using ldlt::usize;
+
+template <typename Fn>
+auto bench_for_n(usize n, Fn fn) -> Duration {
+	auto begin = Clock::now();
+	for (usize i = 0; i < n; ++i) {
+		fn();
+	}
+	auto end = Clock::now();
+	return (end - begin) / n;
+}
+
+template <typename Fn>
+auto bench_for(Duration d, Fn fn) -> Duration {
+	namespace time = std::chrono;
+	using DurationF64 = time::duration<double, std::ratio<1>>;
+
+	auto elapsed = Duration(0);
+	usize n_runs = 1;
+
+	while (true) {
+		elapsed = ldlt_test::bench_for_n(n_runs, fn);
+		if (elapsed > d) {
+			return elapsed;
+		}
+
+		if ((elapsed * n_runs) > time::microseconds{100}) {
+			break;
+		}
+		n_runs *= 2;
+	}
+
+	auto d_f64 = time::duration_cast<DurationF64>(d);
+	auto elapsed_f64 = time::duration_cast<DurationF64>(elapsed);
+	double ratio = (d_f64 / elapsed_f64);
+	return ldlt_test::bench_for_n(usize(std::ceil(ratio)), fn);
+}
+
 } // namespace ldlt_test
 
 template <
