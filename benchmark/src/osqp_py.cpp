@@ -62,7 +62,9 @@ auto main() -> int {
 
 		auto duration = std::chrono::seconds{1};
 		auto ours = ldlt_test::bench_for(duration, [&] {
-			qp::detail::solve_qp( //
+			primal_init.setZero();
+			dual_init.setZero();
+			return qp::detail::solve_qp( //
 					detail::from_eigen_vector_mut(primal_init),
 					detail::from_eigen_vector_mut(dual_init),
 					qp.as_view(),
@@ -72,7 +74,7 @@ auto main() -> int {
 		});
 
 		auto osqp = ldlt_test::bench_for(duration, [&] {
-			ldlt_test::osqp::solve_eq_osqp_sparse( //
+			return ldlt_test::osqp::solve_eq_osqp_sparse( //
 					detail::from_eigen_vector_mut(primal_init),
 					detail::from_eigen_vector_mut(dual_init),
 					ldlt_test::osqp::to_sparse_sym(qp.H),
@@ -86,11 +88,13 @@ auto main() -> int {
 
 		fmt::print(
 				"n: {}, n_eq: {}\n"
-				"ours: {}\n"
-				"osqp: {}\n\n",
+				"ours: {:>4} iters, {:>15}\n"
+				"osqp: {:>4} iters, {:>15}\n\n",
 				n,
 				n_eq,
-				ours,
-				osqp);
+				ours.result.n_iters,
+				ours.duration,
+				osqp.result,
+				osqp.duration);
 	}
 }

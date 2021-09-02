@@ -247,7 +247,8 @@ inline auto solve_eq_osqp_sparse(
 	OSQPWorkspace* osqp_work{};
 
 	osqp_setup(&osqp_work, &osqp, &osqp_settings);
-	i32 n_iter = i32(osqp_solve(osqp_work));
+	osqp_solve(osqp_work);
+	i32 n_iter = i32(osqp_work->info->iter);
 	std::memcpy(x.data, osqp_work->solution->x, usize(dim) * sizeof(c_float));
 	std::memcpy(y.data, osqp_work->solution->y, usize(n_eq) * sizeof(c_float));
 	osqp_cleanup(osqp_work);
@@ -259,18 +260,31 @@ using ldlt::detail::Duration;
 using ldlt::detail::Clock;
 using ldlt::usize;
 
+template <typename T>
+struct BenchResult {
+	Duration duration;
+	T result;
+};
+
 template <typename Fn>
-auto bench_for_n(usize n, Fn fn) -> Duration {
+auto bench_for_n(usize n, Fn fn) -> BenchResult<decltype(fn())> {
 	auto begin = Clock::now();
-	for (usize i = 0; i < n; ++i) {
-		fn();
+
+	auto result = fn();
+
+	for (usize i = 1; i < n; ++i) {
+		result = fn();
 	}
+
 	auto end = Clock::now();
-	return (end - begin) / n;
+	return {
+			(end - begin) / n,
+			LDLT_FWD(result),
+	};
 }
 
 template <typename Fn>
-auto bench_for(Duration d, Fn fn) -> Duration {
+auto bench_for(Duration d, Fn fn) -> BenchResult<decltype(fn())> {
 	namespace time = std::chrono;
 	using DurationF64 = time::duration<double, std::ratio<1>>;
 
@@ -278,9 +292,10 @@ auto bench_for(Duration d, Fn fn) -> Duration {
 	usize n_runs = 1;
 
 	while (true) {
-		elapsed = ldlt_test::bench_for_n(n_runs, fn);
+		auto res = ldlt_test::bench_for_n(n_runs, fn);
+		elapsed = res.duration;
 		if (elapsed > d) {
-			return elapsed;
+			return res;
 		}
 
 		if ((elapsed * n_runs) > time::microseconds{100}) {
