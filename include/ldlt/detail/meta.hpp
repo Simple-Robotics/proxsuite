@@ -256,7 +256,7 @@ auto section_timings(
 	return {};
 }
 
-void toggle_benchmarks(bool enable) {
+inline void toggle_benchmarks(bool enable) {
 	benchmark_var().store(enable, std::memory_order_release);
 }
 } // namespace detail
