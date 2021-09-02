@@ -156,6 +156,7 @@ def stock_problem(dim_l, seed_l, path, name, ill_conditionned, delta_l):
 
 def generate_problems(dim_l, l_seed, path, l_pbl_type, l_delta_l):
     list_dir_path = []
+    osqp_list_dir_path = []
     current_path = path / "qp_problem"
     current_path.mkdir(parents=True, exist_ok=True)
 
@@ -175,14 +176,23 @@ def generate_problems(dim_l, l_seed, path, l_pbl_type, l_delta_l):
                     dim_l, l_seed, current_path, name, pbl_type, delta_l
                 )
                 list_dir_path += l_path
-    with open(current_path / "source_files.txt", "wb") as f:
-        for p in list_dir_path:
-            path_str = p.absolute().as_posix().encode("utf-8")
-            length = len(path_str)
-            f.write(str(length).zfill(32).encode("utf-8"))
-            f.write(b":")
-            f.write(path_str)
+                osqp_list_dir_path += l_path
+
+    path_data = [
+        [list_dir_path, current_path / "source_files.txt"],
+        [osqp_list_dir_path, current_path / "osqp_source_files.txt"],
+    ]
+    for pd in path_data:
+        with open(pd[1], "wb") as f:
+            f.write(str(len(pd[0])).zfill(32).encode("utf-8"))
             f.write(b"\n")
+            for p in pd[0]:
+                path_str = p.absolute().as_posix().encode("utf-8")
+                length = len(path_str)
+                f.write(str(length).zfill(32).encode("utf-8"))
+                f.write(b":")
+                f.write(path_str)
+                f.write(b"\n")
 
 
 if __name__ == "__main__":

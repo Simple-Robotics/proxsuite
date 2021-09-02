@@ -2,18 +2,21 @@
 #include <fmt/ostream.h>
 #include <fmt/chrono.h>
 #include <fmt/ranges.h>
-#include <osqp.h>
+
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <cmath>
+
 #include <ldlt/qp/eq_solver.hpp>
 #include <ldlt/precond/ruiz.hpp>
 #include <util.hpp>
 
+#include <osqp.h>
+
 using namespace ldlt;
 
-using Scalar = double;
+using Scalar = c_float;
 
 auto main() -> int {
 	i32 dim = 1000;
@@ -26,46 +29,36 @@ auto main() -> int {
 	auto A_eigen = ldlt_test::rand::sparse_matrix_rand<Scalar>(n_eq, dim, p);
 	auto g_eigen = ldlt_test::rand::vector_rand<Scalar>(dim);
 	auto b_eigen = ldlt_test::rand::vector_rand<Scalar>(n_eq);
-	i32 n_iter = 100;
+	i32 n_runs = 100;
 
 	{
 		{ LDLT_DECL_SCOPE_TIMER("osqp bench", "osqp"); }
 		{ LDLT_DECL_SCOPE_TIMER("osqp bench", "ours"); }
 		(void)0;
 	}
+
+	Vec<Scalar> x(dim);
+	Vec<Scalar> y(n_eq);
+
+	i32 max_iter = 1000;
+	Scalar eps_abs = Scalar(1e-9);
+	Scalar eps_rel = 0;
+
 	{
-		auto H = ldlt_test::eigen_to_osqp_mat(H_eigen);
-		auto A = ldlt_test::eigen_to_osqp_mat(A_eigen);
-		auto osqp = OSQPData{
-				dim,
-				n_eq,
-				&H,
-				&A,
-				g_eigen.data(),
-				b_eigen.data(),
-				b_eigen.data(),
-		};
-
-		OSQPSettings osqp_settings{};
-		osqp_set_default_settings(&osqp_settings);
-		osqp_settings.eps_rel = 1e-9;
-		osqp_settings.eps_abs = 1e-9;
-		osqp_settings.warm_start = 0;
-		osqp_settings.verbose = 0;
-
 		LDLT_DECL_SCOPE_TIMER("osqp bench", "osqp");
-		for (i32 i = 0; i < n_iter; ++i) {
-			OSQPWorkspace* osqp_work{};
-
-			osqp_setup(&osqp_work, &osqp, &osqp_settings);
-			{ osqp_solve(osqp_work); }
-			osqp_cleanup(osqp_work);
-		}
+		ldlt_test::osqp::solve_eq_osqp_sparse(
+				detail::from_eigen_vector_mut(x),
+				detail::from_eigen_vector_mut(y),
+				H_eigen,
+				A_eigen,
+				detail::from_eigen_vector(g_eigen),
+				detail::from_eigen_vector(b_eigen),
+				max_iter,
+				eps_abs,
+				eps_rel);
 	}
 
 	{
-		Vec<Scalar> x(dim);
-		Vec<Scalar> y(n_eq);
 
 		auto H = Mat<Scalar, colmajor>(
 				H_eigen.toDense().selfadjointView<Eigen::Upper>());
@@ -74,7 +67,7 @@ auto main() -> int {
 
 		{
 			LDLT_DECL_SCOPE_TIMER("osqp bench", "ours");
-			for (i32 i = 0; i < n_iter; ++i) {
+			for (i32 i = 0; i < n_runs; ++i) {
 				x.setZero();
 				y.setZero();
 
@@ -89,15 +82,15 @@ auto main() -> int {
 								{},
 								{},
 						},
-						1000,
-						1e-9,
-						0,
+						max_iter,
+						eps_abs,
+						eps_rel,
 						LDLT_FWD(precond));
 			};
 		}
 	}
 
 	for (auto& outer : LDLT_GET_MAP()["osqp bench"]) {
-		fmt::print("{}: {}\n", outer.first, outer.second.ref.back() / n_iter);
+		fmt::print("{}: {}\n", outer.first, outer.second.ref.back() / n_runs);
 	}
 }

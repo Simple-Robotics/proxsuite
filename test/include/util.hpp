@@ -163,10 +163,40 @@ auto sparse_matrix_rand(i32 nrows, i32 ncols, double p) -> SparseMat<Scalar> {
 	A.makeCompressed();
 	return A;
 }
-
 } // namespace rand
-template <typename Scalar>
-auto eigen_to_osqp_mat(SparseMat<Scalar>& mat) -> csc {
+
+namespace osqp {
+
+inline auto to_sparse(Mat<c_float, colmajor>& mat) -> SparseMat<c_float> {
+	SparseMat<c_float> out(mat.rows(), mat.cols());
+
+	using Eigen::Index;
+	for (Index j = 0; j < mat.cols(); ++j) {
+		for (Index i = 0; i < mat.rows(); ++i) {
+			if (mat(i, j) != 0) {
+				out.insert(i, j) = mat(i, j);
+			}
+		}
+	}
+	out.makeCompressed();
+	return out;
+}
+
+inline auto to_sparse_sym(Mat<c_float, colmajor>& mat) -> SparseMat<c_float> {
+	SparseMat<c_float> out(mat.rows(), mat.cols());
+	using Eigen::Index;
+	for (Index j = 0; j < mat.cols(); ++j) {
+		for (Index i = 0; i < j + 1; ++i) {
+			if (mat(i, j) != 0) {
+				out.insert(i, j) = mat(i, j);
+			}
+		}
+	}
+	out.makeCompressed();
+	return out;
+}
+
+inline auto from_eigen(SparseMat<c_float>& mat) -> csc {
 	return {
 			mat.nonZeros(),
 			mat.rows(),
@@ -177,6 +207,53 @@ auto eigen_to_osqp_mat(SparseMat<Scalar>& mat) -> csc {
 			-1,
 	};
 }
+
+inline auto solve_eq_osqp_sparse(
+		VectorViewMut<c_float> x,
+		VectorViewMut<c_float> y,
+		SparseMat<c_float> const& H_eigen,
+		SparseMat<c_float> const& A_eigen,
+		VectorView<c_float> g,
+		VectorView<c_float> b,
+		i32 max_iter,
+		c_float eps_abs,
+		c_float eps_rel) -> i32 {
+
+	i32 dim = i32(H_eigen.rows());
+	i32 n_eq = i32(A_eigen.rows());
+
+	auto H =
+			osqp::from_eigen(const_cast /* NOLINT */<SparseMat<c_float>&>(H_eigen));
+	auto A =
+			osqp::from_eigen(const_cast /* NOLINT */<SparseMat<c_float>&>(A_eigen));
+
+	auto osqp = OSQPData{
+			dim,
+			n_eq,
+			&H,
+			&A,
+			const_cast /* NOLINT */<double*>(g.data),
+			const_cast /* NOLINT */<double*>(b.data),
+			const_cast /* NOLINT */<double*>(b.data),
+	};
+
+	OSQPSettings osqp_settings{};
+	osqp_set_default_settings(&osqp_settings);
+	osqp_settings.eps_rel = eps_rel;
+	osqp_settings.eps_abs = eps_abs;
+	osqp_settings.max_iter = max_iter;
+	osqp_settings.warm_start = 0;
+	osqp_settings.verbose = 0;
+	OSQPWorkspace* osqp_work{};
+
+	osqp_setup(&osqp_work, &osqp, &osqp_settings);
+	i32 n_iter = i32(osqp_solve(osqp_work));
+	std::memcpy(x.data, osqp_work->solution->x, usize(dim) * sizeof(c_float));
+	std::memcpy(y.data, osqp_work->solution->y, usize(n_eq) * sizeof(c_float));
+	osqp_cleanup(osqp_work);
+	return n_iter;
+};
+} // namespace osqp
 } // namespace ldlt_test
 
 template <
@@ -337,16 +414,12 @@ struct EigenNoAlloc {
 	auto operator=(EigenNoAlloc&&) -> EigenNoAlloc& = delete;
 	auto operator=(EigenNoAlloc const&) -> EigenNoAlloc& = delete;
 
-	EigenNoAlloc() noexcept {
 #if defined(EIGEN_RUNTIME_NO_MALLOC)
-		Eigen::internal::set_is_malloc_allowed(false);
+	EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(false); }
+	~EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(true); }
+#else
+	EigenNoAlloc() = default;
 #endif
-	}
-	~EigenNoAlloc() noexcept {
-#if defined(EIGEN_RUNTIME_NO_MALLOC)
-		Eigen::internal::set_is_malloc_allowed(true);
-#endif
-	}
 };
 
 #endif /* end of include guard INRIA_LDLT_UTIL_HPP_ZX9HNY5GS */

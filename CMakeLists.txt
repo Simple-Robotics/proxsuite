@@ -86,20 +86,20 @@ if(INRIA_LDLT_ENABLE_TESTING)
   target_link_libraries(
     inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr osqpstatic
   )
-endif()
 
-if(INRIA_LDLT_ENABLE_TESTING)
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
-  target_link_libraries(inria_ldlt INTERFACE project_options project_warnings)
+  target_link_libraries(inria_ldlt PUBLIC project_options project_warnings)
 
   include(cmake/extra_local_settings.cmake)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
+endif()
 
+if(INRIA_LDLT_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(test)
   add_subdirectory(benchmark)

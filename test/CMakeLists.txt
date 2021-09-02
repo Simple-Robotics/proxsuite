@@ -48,8 +48,9 @@ add_custom_target(
 )
 add_executable(.test.qp_eq.py src/qp_eq_py.cpp)
 target_link_libraries(.test.qp_eq.py ${LDLT_TEST_LIBS})
+set(INRIA_LDLT_QP_PYTHON_PATH "${CMAKE_CURRENT_BINARY_DIR}/qp_problem/" PARENT_SCOPE)
 target_compile_definitions(
   .test.qp_eq.py
-  PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${CMAKE_CURRENT_BINARY_DIR}/qp_problem/"
+  PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
 )
 add_dependencies(.test.qp_eq.py .test.qp_eq.py.generated_problems)
