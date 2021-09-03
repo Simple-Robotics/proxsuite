@@ -20,3 +20,11 @@ target_compile_definitions(
   PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
 )
 add_dependencies(.bench.osqp.py .test.qp_eq.py.generated_problems)
+
+add_executable(.bench.qpalm.py src/qpalm_py.cpp)
+target_link_libraries(.bench.qpalm.py ${LDLT_BENCH_LIBS})
+target_compile_definitions(
+  .bench.qpalm.py
+  PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
+)
+add_dependencies(.bench.qpalm.py .test.qp_eq.py.generated_problems)

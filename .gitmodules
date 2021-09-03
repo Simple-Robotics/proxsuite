@@ -7,3 +7,6 @@
 [submodule "external/osqp"]
 	path = external/osqp
 	url = https://github.com/osqp/osqp
+[submodule "external/qpalm"]
+	path = external/qpalm
+	url = https://github.com/Benny44/QPALM_vLADEL

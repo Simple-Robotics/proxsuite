@@ -11,7 +11,7 @@
 #include <ldlt/precond/ruiz.hpp>
 #include <chrono>
 
-#include <osqp.hpp>
+#include <qpalm.hpp>
 
 using Scalar = c_float;
 using namespace ldlt;
@@ -72,12 +72,12 @@ auto main() -> int {
 					eps_rel);
 		});
 
-		auto osqp = ldlt_test::bench_for(duration, [&] {
-			return ldlt_test::osqp::solve_eq_osqp_sparse( //
+		auto qpalm = ldlt_test::bench_for(duration, [&] {
+			return ldlt_test::qpalm::solve_eq_qpalm_sparse( //
 					detail::from_eigen_vector_mut(primal_init),
 					detail::from_eigen_vector_mut(dual_init),
-					ldlt_test::osqp::to_sparse_sym(qp.H),
-					ldlt_test::osqp::to_sparse(qp.A),
+					ldlt_test::qpalm::to_sparse_sym(qp.H),
+					ldlt_test::qpalm::to_sparse(qp.A),
 					qp.as_view().g,
 					qp.as_view().b,
 					max_iter,
@@ -88,12 +88,12 @@ auto main() -> int {
 		fmt::print(
 				"n: {}, n_eq: {}\n"
 				"ours : {:>4} iters, {:>15}\n"
-				"osqp : {:>4} iters, {:>15}\n\n",
+				"qpalm: {:>4} iters, {:>15}\n\n",
 				n,
 				n_eq,
 				ours.result.n_iters,
 				ours.duration,
-				osqp.result,
-				osqp.duration);
+				qpalm.result,
+				qpalm.duration);
 	}
 }

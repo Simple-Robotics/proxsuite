@@ -800,12 +800,15 @@ struct row_delete {
 	LDLT_INLINE void operator()( //
 			LdltViewMut<Scalar, L> out,
 			LdltView<Scalar, L> in,
-			i32 row_idx) const {}
+			i32 row_idx) const {
+		detail::row_delete_single(out, in, row_idx);
+	}
 };
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(rank1_update);
 LDLT_DEFINE_NIEBLOID(diagonal_update);
 LDLT_DEFINE_NIEBLOID(row_append);
+LDLT_DEFINE_NIEBLOID(row_delete);
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_UPDATE_HPP_OHWFTYRXS */
