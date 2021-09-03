@@ -84,13 +84,7 @@ if(INRIA_LDLT_ENABLE_TESTING)
 
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
-  target_link_libraries(
-    inria_ldlt
-    PUBLIC CONAN_PKG::fmt
-           CONAN_PKG::mpfr
-           osqpstatic
-           qpalm
-  )
+  target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
 
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)

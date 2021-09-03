@@ -69,7 +69,8 @@ auto main() -> int {
 					qp.as_view(),
 					max_iter,
 					eps_abs,
-					eps_rel);
+					eps_rel,
+					ruiz);
 		});
 
 		auto osqp = ldlt_test::bench_for(duration, [&] {

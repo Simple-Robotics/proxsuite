@@ -14,7 +14,7 @@ add_executable(.bench.osqp src/osqp.cpp)
 target_link_libraries(.bench.osqp ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 add_executable(.bench.osqp.py src/osqp_py.cpp)
-target_link_libraries(.bench.osqp.py ${LDLT_BENCH_LIBS})
+target_link_libraries(.bench.osqp.py ${LDLT_BENCH_LIBS} osqpstatic)
 target_compile_definitions(
   .bench.osqp.py
   PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
@@ -22,7 +22,7 @@ target_compile_definitions(
 add_dependencies(.bench.osqp.py .test.qp_eq.py.generated_problems)
 
 add_executable(.bench.qpalm.py src/qpalm_py.cpp)
-target_link_libraries(.bench.qpalm.py ${LDLT_BENCH_LIBS})
+target_link_libraries(.bench.qpalm.py ${LDLT_BENCH_LIBS} qpalm)
 target_compile_definitions(
   .bench.qpalm.py
   PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
