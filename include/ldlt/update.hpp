@@ -29,8 +29,8 @@ LDLT_INLINE void rank1_update_inner_loop_packed(
 		i32 offset) {
 	i32 r = i + j + 1;
 
-	// TODO[PERF]: check asm, clang does weird stuff with address computations in tight
-	// loop
+	// TODO[PERF]: check asm, clang does weird stuff with address computations in
+	// tight loop
 
 	auto in_l_ptr = ElementAccess<L>::offset(in_l.data, r, j, in_l.outer_stride);
 	auto out_l_ptr =
@@ -294,7 +294,7 @@ LDLT_NO_INLINE void diagonal_update_single_pass(
 		VectorView<Scalar> diag_diff,
 		i32 start_index,
 		NDiag n_diag) {
-  // FIXME: buggy for ndiag > 1
+	// FIXME: buggy for ndiag > 1
 
 	i32 dim = out.l.rows;
 	i32 n_diag_terms = n_diag.value();
@@ -428,6 +428,85 @@ struct DiagonalUpdateImpl<diagonal_update_strategies::MultiPass> {
 	}
 };
 
+template <Layout L>
+struct RowAppendImpl;
+
+template <>
+struct RowAppendImpl<rowmajor> {
+	template <typename T>
+	LDLT_NO_INLINE static void corner_update(
+			LdltViewMut<T, rowmajor> out_l,
+			LdltView<T, rowmajor> in_l,
+			VectorView<T> a) {
+
+		i32 dim = in_l.d.dim;
+
+		auto new_row = to_eigen_vector_mut(VectorViewMut<T>{
+				out_l.l.data + (out_l.l.outer_stride * dim),
+				dim,
+		});
+
+		new_row = to_eigen_vector(VectorView<T>{a.data, dim});
+		auto l_e = to_eigen_matrix(in_l.l);
+		l_e.template triangularView<Eigen::UnitLower>().solveInPlace(new_row);
+		new_row.array() /= to_eigen_vector(in_l.d).array();
+
+		{
+			auto l = new_row.array();
+			auto d = to_eigen_vector(in_l.d).array();
+			out_l.d(dim) = a(dim) - (l * l * d).sum();
+		}
+	}
+};
+template <>
+struct RowAppendImpl<colmajor> {
+	template <typename T>
+	LDLT_NO_INLINE static void corner_update(
+			LdltViewMut<T, colmajor> out_l,
+			LdltView<T, colmajor> in_l,
+			VectorView<T> a) {
+
+		i32 dim = in_l.d.dim;
+		LDLT_WORKSPACE_MEMORY(w, dim, T);
+
+		auto tmp_row = to_eigen_vector_mut(VectorViewMut<T>{w, dim});
+
+		tmp_row = to_eigen_vector(VectorView<T>{a.data, dim});
+		auto l_e = to_eigen_matrix(in_l.l);
+		l_e.template triangularView<Eigen::UnitLower>().solveInPlace(tmp_row);
+		tmp_row.array() /= to_eigen_vector(in_l.d).array();
+
+		{
+			auto l = tmp_row.array();
+			auto d = to_eigen_vector(in_l.d).array();
+			out_l.d(dim) = a(dim) - (l * l * d).sum();
+		}
+
+		EigenVecMap<T, Eigen::InnerStride<Eigen::Dynamic>>(
+				out_l.l.data + dim,
+				dim,
+				1,
+				Eigen::InnerStride<Eigen::Dynamic>(out_l.l.outer_stride)) = tmp_row;
+	}
+};
+
+template <typename T, Layout L>
+LDLT_NO_INLINE void
+row_append(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a) {
+	i32 dim = in_l.d.dim;
+	bool inplace = out_l.l.data == in_l.l.data;
+
+	auto l = out_l.l;
+	if (!inplace) {
+		to_eigen_matrix_mut(MatrixViewMut<T, L>{
+				out_l.l.data,
+				dim,
+				dim,
+				out_l.l.outer_stride,
+		}) = to_eigen_matrix(in_l.l);
+	}
+	RowAppendImpl<L>::corner_update(out_l, in_l, a);
+}
 } // namespace detail
 
 extern template void ldlt::detail::rank1_update(
@@ -483,9 +562,19 @@ struct diagonal_update {
 		detail::DiagonalUpdateImpl<S>::fn(out, in, diag_diff, start_index);
 	}
 };
+struct row_append {
+	template <typename Scalar, Layout L>
+	LDLT_INLINE void operator()(
+			LdltViewMut<Scalar, L> out,
+			LdltView<Scalar, L> in,
+			VectorView<Scalar> new_row) const {
+		detail::row_append(out, in, new_row);
+	}
+};
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(rank1_update);
 LDLT_DEFINE_NIEBLOID(diagonal_update);
+LDLT_DEFINE_NIEBLOID(row_append);
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_UPDATE_HPP_OHWFTYRXS */
