@@ -507,6 +507,226 @@ row_append(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a) {
 	}
 	RowAppendImpl<L>::corner_update(out_l, in_l, a);
 }
+
+template <Layout L>
+struct RowDeleteImpl;
+
+template <>
+struct RowDeleteImpl<colmajor> {
+	template <typename T>
+	LDLT_INLINE static void copy_block(
+			T* out,
+			T const* in,
+			i32 rows,
+			i32 cols,
+			i32 out_outer_stride,
+			i32 in_outer_stride) {
+		for (i32 i = 0; i < cols; ++i) {
+			T* in_p = in + (i * in_outer_stride);
+			T* out_p = out + (i * out_outer_stride);
+			std::copy(in_p, in_p + rows, out_p);
+		}
+	}
+
+	template <typename T>
+	LDLT_NO_INLINE static void handle_bottom_right( //
+			LdltViewMut<T, colmajor> out_bottom_right,
+			LdltView<T, colmajor> in_bottom_right,
+			T const* l,
+			T d,
+			i32 rem_dim,
+			bool inplace) {
+
+		if (inplace) {
+			// const cast is fine here since we can mutate output
+
+			auto l_mut = VectorViewMut<T>{
+					const_cast /* NOLINT */<T*>(l),
+					rem_dim,
+			};
+
+			// same as in_bottom_right, except mutable
+			auto out_from_in = LdltViewMut<T, colmajor>{
+					MatrixViewMut<T, colmajor>{
+							const_cast /* NOLINT */<T*>(in_bottom_right.l.data),
+							in_bottom_right.l.rows,
+							in_bottom_right.l.cols,
+							in_bottom_right.l.outer_stride,
+					},
+					VectorViewMut<T>{
+							const_cast /* NOLINT */<T*>(in_bottom_right.d.data),
+							in_bottom_right.d.dim,
+					},
+			};
+
+			detail::rank1_update( //
+					out_from_in,
+					out_from_in.as_const(),
+					l_mut,
+					0,
+					d);
+			// move bottom right corner
+			copy_block(
+					out_bottom_right.l.data,
+					in_bottom_right.l.data,
+					rem_dim,
+					rem_dim,
+					out_bottom_right.l.outer_stride,
+					in_bottom_right.l.outer_stride);
+
+			// move bottom part of d
+			std::copy(
+					in_bottom_right.d.data,
+					in_bottom_right.d.data + rem_dim,
+					out_bottom_right.d.data);
+
+		} else {
+			LDLT_WORKSPACE_MEMORY(w, rem_dim, T);
+			std::copy(l, l + rem_dim, w);
+			detail::rank1_update( //
+					out_bottom_right,
+					in_bottom_right,
+					VectorViewMut<T>{w, rem_dim},
+					0,
+					d);
+		}
+	}
+};
+
+template <>
+struct RowDeleteImpl<rowmajor> {
+	template <typename T>
+	LDLT_INLINE static void copy_block(
+			T* out,
+			T const* in,
+			i32 rows,
+			i32 cols,
+			i32 out_outer_stride,
+			i32 in_outer_stride) {
+		for (i32 i = 0; i < rows; ++i) {
+			T* in_p = in + (i * in_outer_stride);
+			T* out_p = out + (i * out_outer_stride);
+			std::copy(in_p, in_p + cols, out_p);
+		}
+	}
+
+	template <typename T>
+	LDLT_NO_INLINE static void handle_bottom_right( //
+			LdltViewMut<T, colmajor> out_bottom_right,
+			LdltView<T, colmajor> in_bottom_right,
+			T const* l,
+			T d,
+			i32 rem_dim,
+			bool /*inplace*/) {
+
+		LDLT_WORKSPACE_MEMORY(w, rem_dim, T);
+		for (i32 i = 0; i < rem_dim; ++i) {
+			w[i] = l[i * in_bottom_right.l.outer_stride];
+		}
+		detail::rank1_update( //
+				out_bottom_right,
+				in_bottom_right,
+				VectorViewMut<T>{w, rem_dim},
+				0,
+				d);
+	}
+};
+
+template <typename T, Layout L>
+LDLT_NO_INLINE void
+row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
+	i32 dim = in_l.d.dim;
+	if ((i + 1) == dim) {
+		return;
+	}
+
+	bool inplace = out_l.l.data == in_l.l.data;
+
+	// top left
+	if (!inplace) {
+		to_eigen_matrix_mut(MatrixViewMut<T, L>{
+				out_l.l.data,
+				i,
+				i,
+				out_l.l.outer_stride,
+		}) = to_eigen_matrix(MatrixView<T, L>{
+				in_l.l.data,
+				i,
+				i,
+				in_l.l.outer_stride,
+		});
+	}
+
+	// bottom left
+	RowDeleteImpl<L>::copy_block(
+			ElementAccess<L>::offset(out_l.l.data, i, 0, out_l.l.outer_stride),
+			ElementAccess<L>::offset(in_l.l.data, i + 1, 0, in_l.l.outer_stride),
+			dim - i,
+			i,
+			out_l.l.outer_stride,
+			in_l.l.outer_stride);
+
+	auto copy = [&] {
+		RowDeleteImpl<L>::copy_block(
+				ElementAccess<L>::offset( //
+						out_l.l.data,
+						i,
+						i,
+						out_l.l.outer_stride),
+				ElementAccess<L>::offset( //
+						in_l.l.data,
+						i + 1,
+						i + 1,
+						in_l.l.outer_stride),
+				dim - i,
+				dim - i,
+				out_l.l.outer_stride,
+				in_l.l.outer_stride);
+	};
+
+	i32 rem_dim = dim - i;
+	RowDeleteImpl<L>::handle_bottom_right(
+			LdltViewMut<T, L>{
+					{
+							ElementAccess<L>::offset( //
+									out_l.l.data,
+									i,
+									i,
+									out_l.l.outer_stride),
+							rem_dim,
+							rem_dim,
+							out_l.l.outer_stride,
+					},
+					{
+							out_l.d.data + i,
+							rem_dim,
+					},
+			},
+			LdltView<T, L>{
+					{
+							ElementAccess<L>::offset( //
+									in_l.l.data,
+									i + 1,
+									i + 1,
+									in_l.l.outer_stride),
+							rem_dim,
+							rem_dim,
+							in_l.l.outer_stride,
+					},
+					{
+							in_l.d.data + i,
+							rem_dim,
+					},
+			},
+			ElementAccess<L>::offset( //
+					in_l.l.data,
+					i + 1,
+					i,
+					in_l.l.outer_stride),
+			in_l.d(i),
+			dim - i,
+			inplace);
+}
 } // namespace detail
 
 extern template void ldlt::detail::rank1_update(
@@ -537,7 +757,7 @@ extern template void ldlt::detail::rank1_update(
 namespace nb {
 struct rank1_update {
 	template <typename Scalar, Layout L>
-	LDLT_INLINE void operator()(
+	void operator()(
 			LdltViewMut<Scalar, L> out,
 			LdltView<Scalar, L> in,
 			VectorView<Scalar> z,
@@ -562,6 +782,8 @@ struct diagonal_update {
 		detail::DiagonalUpdateImpl<S>::fn(out, in, diag_diff, start_index);
 	}
 };
+
+// output.dim == input.dim + 1
 struct row_append {
 	template <typename Scalar, Layout L>
 	LDLT_INLINE void operator()(
@@ -570,6 +792,15 @@ struct row_append {
 			VectorView<Scalar> new_row) const {
 		detail::row_append(out, in, new_row);
 	}
+};
+
+// output.dim == input.dim - 1
+struct row_delete {
+	template <typename Scalar, Layout L>
+	LDLT_INLINE void operator()( //
+			LdltViewMut<Scalar, L> out,
+			LdltView<Scalar, L> in,
+			i32 row_idx) const {}
 };
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(rank1_update);
