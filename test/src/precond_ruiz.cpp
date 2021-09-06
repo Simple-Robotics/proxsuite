@@ -1,16 +1,26 @@
 #include <doctest.h>
 #include <qp/precond/ruiz.hpp>
 #include <util.hpp>
+#include <iostream>
 
 using namespace ldlt;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner") {
-	i32 dim = 30;
+	i32 dim = 5;
 	i32 n_eq = 6;
-	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
-	Qp<Scalar> scaled_qp = qp;
+	Scalar epsilon = Scalar(1.e-3);
+	i32 max_iter = 20 ;
+	i32 enum_ = 1; // 0 : upper triangular (by default), 1: lower triangular ; else full matrix
 
+	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
+	if (enum_ == 0){
+		qp.H = qp.H.triangularView<Eigen::Upper>();
+	} else if (enum_ == 1){
+		qp.H = qp.H.triangularView<Eigen::Lower>();
+	}
+	Qp<Scalar> scaled_qp = qp;
+	std::cout << "qp.H : " << qp.H << std::endl << std::endl;
 	qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor> precond{
 			dim,
 			n_eq,
@@ -18,7 +28,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 
   {
     EigenNoAlloc _{};
-    precond.scale_qp_in_place(scaled_qp.as_mut());
+    precond.scale_qp_in_place(scaled_qp.as_mut(),epsilon,max_iter,enum_);
   }
 	auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
 			precond.delta.head(dim).asDiagonal());

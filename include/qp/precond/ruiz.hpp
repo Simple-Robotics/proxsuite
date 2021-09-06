@@ -29,7 +29,8 @@ auto ruiz_scale_qp_in_place( //
 		std::ostream* logger_ptr,
 		qp::QpViewMut<Scalar, LH, LC> qp,
 		Scalar epsilon,
-		i32 max_iter) -> Scalar {
+		i32 max_iter,
+		i32 enum_) -> Scalar {
 
 	Scalar c(1);
 	auto S = to_eigen_vector_mut(delta_);
@@ -88,12 +89,29 @@ auto ruiz_scale_qp_in_place( //
 
 		// normalization vector
 		for (i32 k = 0; k < n; ++k) {
-			delta(k) = Scalar(1) / (sqrt(max2(
+			if  (enum_ == i32(0)){// upper triangular part
+				delta(k) = Scalar(1) / (sqrt(max2(
+																	infty_norm(H.row(k).tail(n-k)), //
+																	max2(                 //
+																			infty_norm(A.col(k)),
+																			infty_norm(C.col(k))))) +
+			                        machine_eps);
+			} else if (enum_ == i32(1)){// lower triangular part
+				delta(k) = Scalar(1) / (sqrt(max2(
+																	infty_norm(H.col(k).tail(n-k)), //
+																	max2(                 //
+																			infty_norm(A.col(k)),
+																			infty_norm(C.col(k))))) +
+			                        machine_eps);
+			}
+			else{
+				delta(k) = Scalar(1) / (sqrt(max2(
 																	infty_norm(H.col(k)), //
 																	max2(                 //
 																			infty_norm(A.col(k)),
 																			infty_norm(C.col(k))))) +
 			                        machine_eps);
+			}
 		}
 		for (i32 k = 0; k < n_eq; ++k) {
 			delta(n + k) = Scalar(1) / (sqrt(infty_norm(A.row(k))) + machine_eps);
@@ -103,8 +121,36 @@ auto ruiz_scale_qp_in_place( //
 					Scalar(1) / (sqrt(infty_norm(C.row(k))) + machine_eps);
 		}
 
-		// normalize H, A and C
-		H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
+		// normalize H
+		if (enum_ == i32(0)){
+			// upper triangular part
+            for (i32 j = 0; j < n;++j){
+				H.col(j).head(j+1) *= delta(j);
+                //(detail::to_eigen_matrix_mut(qp.H_view)).col(j) *= delta(j);
+            }
+            // normalisation des lignes 
+            for (i32 i = 0; i < n;++i){
+                //(detail::to_eigen_matrix_mut(qp.H_view)).row(i) *= delta(i);
+				H.row(i).tail(n-i) *= delta(i);
+            }
+		}
+		else if(enum_ == i32(1)){
+			// lower triangular part
+            for (i32 j = 0; j < n;++j){
+				H.col(j).tail(n-j) *= delta(j);
+                //(detail::to_eigen_matrix_mut(qp.H_view)).col(j) *= delta(j);
+            }
+            // normalisation des lignes 
+            for (i32 i = 0; i < n;++i){
+                //(detail::to_eigen_matrix_mut(qp.H_view)).row(i) *= delta(i);
+				H.row(i).head(i+1) *= delta(i);
+            }
+		}
+		else{
+			// all matrix
+			H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
+		}
+		// normalize A and C
 		A = delta.middleRows(n, n_eq).asDiagonal() * A * delta.head(n).asDiagonal();
 		C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
 		// normalize vectors
@@ -114,9 +160,8 @@ auto ruiz_scale_qp_in_place( //
 		// additional normalization for the cost function
 
 		Scalar gamma =
-				1 / max2(
-								max2(infty_norm(g), Scalar(1)),
-								(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+				1 / max2( max2(infty_norm(g), Scalar(1)),
+						(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
 
 		g *= gamma;
 		H *= gamma;
@@ -157,19 +202,21 @@ struct RuizEquilibration {
 	void scale_qp_in_place(
 			QpViewMut<Scalar, LH, LC> qp,
 			Scalar epsilon = Scalar(1.e-3),
-			i32 max_iter = 20) {
+			i32 max_iter = 20,
+			i32 enum_ = 0) {
 		c = detail::ruiz_scale_qp_in_place(
 				detail::from_eigen_vector_mut(delta),
 				logger_ptr,
 				qp,
 				epsilon,
-				max_iter);
+				max_iter,
+				enum_);
 	}
 	void scale_qp(
 			QpView<Scalar, LH, LC> qp,
 			QpViewMut<Scalar, LH, LC> scaled_qp,
 			Scalar epsilon = Scalar(1.e-3F),
-			i32 max_iter = 20) {
+			i32 max_iter = 20,i32 enum_ = 0) {
 
 		using namespace detail;
 		/*
@@ -186,7 +233,7 @@ struct RuizEquilibration {
 		to_eigen_vector_mut(scaled_qp.b) = to_eigen_vector(qp.b);
 		to_eigen_vector_mut(scaled_qp.d) = to_eigen_vector(qp.d);
 
-		scale_qp_in_place(scaled_qp, epsilon, max_iter);
+		scale_qp_in_place(scaled_qp, epsilon, max_iter,enum_);
 	}
 	// modifies variables in place
 	void scale_primal_in_place(VectorViewMut<Scalar> primal) {
