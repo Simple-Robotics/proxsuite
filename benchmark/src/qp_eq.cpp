@@ -1,4 +1,6 @@
 #include <qp/eq_solver.hpp>
+#include <qp/precond/ruiz.hpp>
+
 #include <numeric>
 #include <util.hpp>
 #include <fmt/chrono.h>
@@ -27,7 +29,9 @@ auto main() -> int {
 				2000,
 				eps_abs,
 				0,
-				qp::preconditioner::IdentityPrecond{});
+				qp::preconditioner::
+						RuizEquilibration<Scalar, ldlt::colmajor, ldlt::colmajor>{
+								dim, n_eq});
 		if (i == 0) {
 			fmt::print(
 					" - {} iterations, {} mu updates, error: {}\n",
@@ -37,9 +41,13 @@ auto main() -> int {
 		}
 	}
 
-	fmt::print("{:<20} | {:>15} | {:>15} | head..tail\n", "", "total avg", "section avg");
+	fmt::print(
+			"{:<20} | {:>15} | {:>15} | head..tail\n",
+			"",
+			"total avg",
+			"section avg");
 
-	for (auto c : LDLT_GET_MAP(Scalar)["eq solver"]) {
+	for (auto c : LDLT_GET_MAP(Scalar)["ruiz equilibration"]) {
 		using ldlt::detail::Duration;
 		auto& durations = c.second.ref;
 		auto avg = std::accumulate(durations.begin(), durations.end(), Duration{}) /
