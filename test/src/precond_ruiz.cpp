@@ -1,5 +1,5 @@
 #include <doctest.h>
-#include <ldlt/precond/ruiz.hpp>
+#include <qp/precond/ruiz.hpp>
 #include <util.hpp>
 
 using namespace ldlt;

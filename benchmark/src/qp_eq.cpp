@@ -1,4 +1,4 @@
-#include <ldlt/qp/eq_solver.hpp>
+#include <qp/eq_solver.hpp>
 #include <numeric>
 #include <util.hpp>
 #include <fmt/chrono.h>

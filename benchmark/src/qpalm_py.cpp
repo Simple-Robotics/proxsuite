@@ -7,8 +7,8 @@
 
 #include <fstream>
 
-#include <ldlt/qp/eq_solver.hpp>
-#include <ldlt/precond/ruiz.hpp>
+#include <qp/eq_solver.hpp>
+#include <qp/precond/ruiz.hpp>
 #include <chrono>
 
 #include <qpalm.hpp>

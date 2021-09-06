@@ -5,7 +5,7 @@
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
 #include "ldlt/views.hpp"
-#include "ldlt/qp/views.hpp"
+#include "qp/views.hpp"
 #include <ostream>
 
 #include <Eigen/Core>

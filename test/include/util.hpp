@@ -7,7 +7,7 @@
 #include <Eigen/QR>
 #include <utility>
 #include <ldlt/views.hpp>
-#include <ldlt/qp/views.hpp>
+#include <qp/views.hpp>
 #include <ldlt/detail/meta.hpp>
 
 using c_int = long long;

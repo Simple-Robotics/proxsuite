@@ -11,7 +11,7 @@ add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 add_executable(.bench.osqp src/osqp.cpp)
-target_link_libraries(.bench.osqp ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
+target_link_libraries(.bench.osqp ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark osqpstatic)
 
 add_executable(.bench.osqp.py src/osqp_py.cpp)
 target_link_libraries(.bench.osqp.py ${LDLT_BENCH_LIBS} osqpstatic)

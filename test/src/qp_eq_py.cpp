@@ -5,8 +5,8 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <ldlt/qp/eq_solver.hpp>
-#include <ldlt/precond/ruiz.hpp>
+#include <qp/eq_solver.hpp>
+#include <qp/precond/ruiz.hpp>
 #include <iostream>
 #include <fmt/core.h>
 #include <util.hpp>

@@ -8,11 +8,11 @@
 #include <Eigen/Eigenvalues>
 #include <cmath>
 
-#include <ldlt/qp/eq_solver.hpp>
-#include <ldlt/precond/ruiz.hpp>
+#include <qp/eq_solver.hpp>
+#include <qp/precond/ruiz.hpp>
 #include <util.hpp>
 
-#include <osqp.h>
+#include <osqp.hpp>
 
 using namespace ldlt;
 

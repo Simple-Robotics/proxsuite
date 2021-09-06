@@ -2,7 +2,7 @@
 #define INRIA_LDLT_EQ_SOLVER_HPP_HDWGZKCLS
 
 #include "ldlt/views.hpp"
-#include "ldlt/qp/views.hpp"
+#include "qp/views.hpp"
 #include "ldlt/factorize.hpp"
 #include "ldlt/detail/meta.hpp"
 #include "ldlt/solve.hpp"
