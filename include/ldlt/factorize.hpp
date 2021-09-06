@@ -16,12 +16,11 @@ template <typename Scalar, Layout OutL, Layout InL>
 LDLT_NO_INLINE void factorize_ldlt_tpl(
 		LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
-  // TODO: use upper half of in_matrix
+	// TODO: use upper half of in_matrix
 
 	bool inplace = (out.l.data == in_matrix.data) && (OutL == InL);
 
 	i32 dim = out.l.rows;
-	i32 l_stride = out.l.outer_stride;
 
 	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
 
@@ -39,45 +38,20 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		// avoid buffer overflow UB when accessing the matrices
 		i32 j_inc = ((j + 1) < dim) ? j + 1 : j;
 
-		auto l01 = detail::ColToVecMut<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out.l.data, 0, j, l_stride),
-				j,
-				1,
-				detail::ElementAccess<OutL>::next_row_stride(l_stride),
-		};
+		auto l01 = to_eigen_vector_mut(out.l.col(j).segment(0, j));
 		l01.setZero();
 		Scalar in_diag = in_matrix(j, j);
 		out.l(j, j) = Scalar(1);
 
-		auto l10 = detail::RowToVec<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out.l.data, j, 0, l_stride),
-				j,
-				1,
-				detail::ElementAccess<OutL>::next_col_stride(l_stride),
-		};
+		auto l_c = out.l.as_const();
+		auto d_c = out.d.as_const();
 
-		auto l20 = EigenMatMap<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out.l.data, j_inc, 0, l_stride),
-				m,
-				j,
-				Eigen::OuterStride<Eigen::Dynamic>{l_stride},
-		};
-		auto l21 = detail::ColToVecMut<Scalar, OutL>{
-				detail::ElementAccess<OutL>::offset(out.l.data, j_inc, j, l_stride),
-				m,
-				1,
-				detail::ElementAccess<OutL>::next_row_stride(l_stride),
-		};
+		auto l10 = to_eigen_vector(l_c.row(j).segment(0, j));
+		auto l20 = to_eigen_matrix(l_c.block(j_inc, 0, m, j));
+		auto l21 = to_eigen_vector_mut(out.l.col(j).segment(j_inc, m));
+		auto a21 = to_eigen_vector(in_matrix.col(j).segment(j_inc, m));
+		auto d = to_eigen_vector(d_c.segment(0, j));
 
-		auto a21 = detail::ColToVec<Scalar, InL>{
-				detail::ElementAccess<InL>::offset(
-						in_matrix.data, j_inc, j, in_matrix.outer_stride),
-				m,
-				1,
-				detail::ElementAccess<InL>::next_row_stride(in_matrix.outer_stride),
-		};
-
-		auto d = detail::VecMap<Scalar>{out.d.data, j};
 		auto tmp_read = detail::VecMap<Scalar>{wp, j};
 		auto tmp = detail::VecMapMut<Scalar>{wp, j};
 

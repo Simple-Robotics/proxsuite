@@ -659,8 +659,8 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 
 	// bottom left
 	RowDeleteImpl<L>::copy_block(
-			ElementAccess<L>::offset(out_l.l.data, i, 0, out_l.l.outer_stride),
-			ElementAccess<L>::offset(in_l.l.data, i + 1, 0, in_l.l.outer_stride),
+			out_l.l.block(i, 0, 0, 0).data,
+			in_l.l.block(i + 1, 0, 0, 0).data,
 			dim - i,
 			i,
 			out_l.l.outer_stride,
@@ -668,16 +668,8 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 
 	auto copy = [&] {
 		RowDeleteImpl<L>::copy_block(
-				ElementAccess<L>::offset( //
-						out_l.l.data,
-						i,
-						i,
-						out_l.l.outer_stride),
-				ElementAccess<L>::offset( //
-						in_l.l.data,
-						i + 1,
-						i + 1,
-						in_l.l.outer_stride),
+				out_l.l.block(i, i, 0, 0).data,
+				in_l.l.block(i + 1, i + 1, 0, 0).data,
 				dim - i,
 				dim - i,
 				out_l.l.outer_stride,
@@ -687,42 +679,14 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 	i32 rem_dim = dim - i;
 	RowDeleteImpl<L>::handle_bottom_right(
 			LdltViewMut<T, L>{
-					{
-							ElementAccess<L>::offset( //
-									out_l.l.data,
-									i,
-									i,
-									out_l.l.outer_stride),
-							rem_dim,
-							rem_dim,
-							out_l.l.outer_stride,
-					},
-					{
-							out_l.d.data + i,
-							rem_dim,
-					},
+					out_l.l.block(i, i, rem_dim, rem_dim),
+					out_l.d.segment(i, rem_dim),
 			},
 			LdltView<T, L>{
-					{
-							ElementAccess<L>::offset( //
-									in_l.l.data,
-									i + 1,
-									i + 1,
-									in_l.l.outer_stride),
-							rem_dim,
-							rem_dim,
-							in_l.l.outer_stride,
-					},
-					{
-							in_l.d.data + i,
-							rem_dim,
-					},
+					in_l.l.block(i + 1, i + 1, rem_dim, rem_dim),
+					in_l.d.segment(i + 1, rem_dim),
 			},
-			ElementAccess<L>::offset( //
-					in_l.l.data,
-					i + 1,
-					i,
-					in_l.l.outer_stride),
+			in_l.l.block(i + 1, i, 0, 0).data,
 			in_l.d(i),
 			dim - i,
 			inplace);

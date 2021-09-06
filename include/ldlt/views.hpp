@@ -203,6 +203,76 @@ struct ElementAccess<Layout::rowmajor> {
 };
 } // namespace detail
 
+template <typename Scalar>
+struct VectorView {
+	Scalar const* data;
+	i32 dim;
+
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar const& {
+		return *(data + index);
+	}
+	LDLT_INLINE auto segment(i32 i, i32 size) const noexcept -> VectorView {
+		return {data + i, size};
+	}
+};
+
+template <typename Scalar>
+struct VectorViewMut {
+	Scalar* data;
+	i32 dim;
+	LDLT_INLINE auto as_const() const noexcept -> VectorView<Scalar> {
+		return {data, dim};
+	}
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
+		return *(data + index);
+	}
+	LDLT_INLINE auto segment(i32 i, i32 size) const noexcept -> VectorViewMut {
+		return {data + i, size};
+	}
+};
+
+template <typename Scalar>
+struct StridedVectorView {
+	Scalar const* data;
+	i32 dim;
+	i32 stride;
+
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar const& {
+		return *(data + stride * index);
+	}
+	LDLT_INLINE auto segment(i32 i, i32 size) const noexcept
+			-> StridedVectorView {
+		return {
+				data + stride * i,
+				size,
+				stride,
+		};
+	}
+};
+
+template <typename Scalar>
+struct StridedVectorViewMut {
+	Scalar* data;
+	i32 dim;
+	i32 stride;
+
+	LDLT_INLINE auto as_const() const noexcept -> StridedVectorView<Scalar> {
+		return {data, dim, stride};
+	}
+	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
+		return *(data + stride * index);
+	}
+	LDLT_INLINE auto segment(i32 i, i32 size) const noexcept
+			-> StridedVectorViewMut {
+		return {
+				data + stride * i,
+				size,
+				stride,
+		};
+	}
+};
+
+// colmajor
 template <typename Scalar, Layout L>
 struct MatrixView {
 	Scalar const* data;
@@ -214,8 +284,66 @@ struct MatrixView {
 			-> Scalar const& {
 		return *detail::ElementAccess<L>::offset(data, row, col, outer_stride);
 	}
+	LDLT_INLINE auto block(i32 row, i32 col, i32 nrows, i32 ncols) const noexcept
+			-> MatrixView {
+		return {
+				detail::ElementAccess<L>::offset(data, row, col, outer_stride),
+				nrows,
+				ncols,
+				outer_stride,
+		};
+	}
+	LDLT_INLINE auto col(i32 c) const noexcept -> VectorView<Scalar> {
+		return {
+				detail::ElementAccess<L>::offset(data, 0, c, outer_stride),
+				rows,
+		};
+	}
+	LDLT_INLINE auto row(i32 r) const noexcept -> StridedVectorView<Scalar> {
+		return {
+				detail::ElementAccess<L>::offset(data, r, 0, outer_stride),
+				cols,
+				outer_stride,
+		};
+	}
+};
+template <typename Scalar>
+struct MatrixView<Scalar, rowmajor> {
+	Scalar const* data;
+	i32 rows;
+	i32 cols;
+	i32 outer_stride;
+
+	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept
+			-> Scalar const& {
+		return *detail::ElementAccess<rowmajor>::offset(
+				data, row, col, outer_stride);
+	}
+	LDLT_INLINE auto block(i32 row, i32 col, i32 nrows, i32 ncols) const noexcept
+			-> MatrixView {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, row, col, outer_stride),
+				nrows,
+				ncols,
+				outer_stride,
+		};
+	}
+	LDLT_INLINE auto row(i32 r) const noexcept -> VectorView<Scalar> {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, r, 0, outer_stride),
+				cols,
+		};
+	}
+	LDLT_INLINE auto col(i32 c) const noexcept -> StridedVectorView<Scalar> {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, 0, c, outer_stride),
+				rows,
+				outer_stride,
+		};
+	}
 };
 
+// colmajor
 template <typename Scalar, Layout L>
 struct MatrixViewMut {
 	Scalar* data;
@@ -231,30 +359,74 @@ struct MatrixViewMut {
 				outer_stride,
 		};
 	}
+
 	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
 		return *detail::ElementAccess<L>::offset(data, row, col, outer_stride);
 	}
-};
-
-template <typename Scalar>
-struct VectorView {
-	Scalar const* data;
-	i32 dim;
-
-	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar const& {
-		return *(data + index);
+	LDLT_INLINE auto block(i32 row, i32 col, i32 nrows, i32 ncols) const noexcept
+			-> MatrixViewMut {
+		return {
+				detail::ElementAccess<L>::offset(data, row, col, outer_stride),
+				nrows,
+				ncols,
+				outer_stride,
+		};
+	}
+	LDLT_INLINE auto col(i32 c) const noexcept -> VectorViewMut<Scalar> {
+		return {
+				detail::ElementAccess<L>::offset(data, 0, c, outer_stride),
+				rows,
+		};
+	}
+	LDLT_INLINE auto row(i32 r) const noexcept -> StridedVectorViewMut<Scalar> {
+		return {
+				detail::ElementAccess<L>::offset(data, r, 0, outer_stride),
+				cols,
+				outer_stride,
+		};
 	}
 };
-
 template <typename Scalar>
-struct VectorViewMut {
+struct MatrixViewMut<Scalar, rowmajor> {
 	Scalar* data;
-	i32 dim;
-	LDLT_INLINE auto as_const() const noexcept -> VectorView<Scalar> {
-		return {data, dim};
+	i32 rows;
+	i32 cols;
+	i32 outer_stride;
+
+	LDLT_INLINE auto as_const() const noexcept -> MatrixView<Scalar, rowmajor> {
+		return {
+				data,
+				rows,
+				cols,
+				outer_stride,
+		};
 	}
-	LDLT_INLINE auto operator()(i32 index) const noexcept -> Scalar& {
-		return *(data + index);
+
+	LDLT_INLINE auto operator()(i32 row, i32 col) const noexcept -> Scalar& {
+		return *detail::ElementAccess<rowmajor>::offset(
+				data, row, col, outer_stride);
+	}
+	LDLT_INLINE auto block(i32 row, i32 col, i32 nrows, i32 ncols) const noexcept
+			-> MatrixViewMut {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, row, col, outer_stride),
+				nrows,
+				ncols,
+				outer_stride,
+		};
+	}
+	LDLT_INLINE auto row(i32 r) const noexcept -> VectorViewMut<Scalar> {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, r, 0, outer_stride),
+				cols,
+		};
+	}
+	LDLT_INLINE auto col(i32 c) const noexcept -> StridedVectorViewMut<Scalar> {
+		return {
+				detail::ElementAccess<rowmajor>::offset(data, 0, c, outer_stride),
+				rows,
+				outer_stride,
+		};
 	}
 };
 
@@ -414,6 +586,16 @@ struct to_eigen_vector {
 	LDLT_INLINE auto operator()(VectorView<T> vec) const noexcept -> VecMap<T> {
 		return {vec.data, vec.dim};
 	}
+	template <typename T>
+	LDLT_INLINE auto operator()(StridedVectorView<T> vec) const noexcept
+			-> EigenVecMap<T, Eigen::InnerStride<Eigen::Dynamic>> {
+		return {
+				vec.data,
+				vec.dim,
+				1,
+				Eigen::InnerStride<Eigen::Dynamic>(vec.stride),
+		};
+	}
 };
 
 struct to_eigen_vector_mut {
@@ -421,6 +603,16 @@ struct to_eigen_vector_mut {
 	LDLT_INLINE auto operator()(VectorViewMut<T> vec) const noexcept
 			-> VecMapMut<T> {
 		return {vec.data, vec.dim};
+	}
+	template <typename T>
+	LDLT_INLINE auto operator()(StridedVectorViewMut<T> vec) const noexcept
+			-> EigenVecMapMut<T, Eigen::InnerStride<Eigen::Dynamic>> {
+		return {
+				vec.data,
+				vec.dim,
+				1,
+				Eigen::InnerStride<Eigen::Dynamic>(vec.stride),
+		};
 	}
 };
 } // namespace nb
