@@ -73,26 +73,18 @@ auto ruiz_scale_qp_in_place( //
 
 	i32 iter = 1;
 	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
-		if (iter >= max_iter) {
-			if (logger_ptr != nullptr) {
-				*logger_ptr                                     //
-						<< "j : "                                   //
-						<< iter                                     //
-						<< " ; error : "                            //
-						<< infty_norm((1 - delta.array()).matrix()) //
-						<< "\n\n";
-			}
+		if (logger_ptr != nullptr) {
+			*logger_ptr                                     //
+					<< "j : "                                   //
+					<< iter                                     //
+					<< " ; error : "                            //
+					<< infty_norm((1 - delta.array()).matrix()) //
+					<< "\n\n";
+		}
+		if (iter == max_iter) {
 			break;
 		} else {
-			if (logger_ptr != nullptr) {
-				*logger_ptr                                     //
-						<< "j : "                                   //
-						<< iter                                     //
-						<< " ; error : "                            //
-						<< infty_norm((1 - delta.array()).matrix()) //
-						<< "\n\n";
-			}
-			iter += 1;
+			++iter;
 		}
 
 		// normalization vector
@@ -143,6 +135,16 @@ auto ruiz_scale_qp_in_place( //
 
 		{
 			LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "normalization", Scalar);
+
+			// normalize A and C
+			A = delta.middleRows(n, n_eq).asDiagonal() * A *
+			    delta.head(n).asDiagonal();
+			C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
+			// normalize vectors
+			g.array() *= delta.head(n).array();
+			b.array() *= delta.middleRows(n, n_eq).array();
+			d.array() *= delta.tail(n_in).array();
+
 			// normalize H
 			switch (sym) {
 			case Symmetry::upper: {
@@ -172,48 +174,40 @@ auto ruiz_scale_qp_in_place( //
 				H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
 				break;
 			}
-			default: {
+			default:
+				break;
 			}
-			}
-			// normalize A and C
-			A = delta.middleRows(n, n_eq).asDiagonal() * A *
-			    delta.head(n).asDiagonal();
-			C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
-			// normalize vectors
-			g.array() *= delta.head(n).array();
-			b.array() *= delta.middleRows(n, n_eq).array();
-			d.array() *= delta.tail(n_in).array();
-			// additional normalization for the cost function
 
+			// additional normalization for the cost function
 			switch (sym) {
 			case Symmetry::upper: {
 				// upper triangular part
-				Scalar tmp = Scalar(0) ; 
+				Scalar tmp = Scalar(0);
 				for (i32 j = 0; j < n; ++j) {
-					tmp += infty_norm(H.row(j).tail(n-j));
+					tmp += infty_norm(H.row(j).tail(n - j));
 				}
-			 	gamma = 1 /  max2(tmp/n,max2(infty_norm(g), Scalar(1)))  ;
+				gamma = 1 / max2(tmp / n, max2(infty_norm(g), Scalar(1)));
 				break;
 			}
 			case Symmetry::lower: {
 				// lower triangular part
-				Scalar tmp = Scalar(0); 
+				Scalar tmp = Scalar(0);
 				for (i32 j = 0; j < n; ++j) {
 					tmp += infty_norm(H.col(j).tail(n - j));
 				}
-				gamma = 1 / max2(tmp/n,max2(infty_norm(g), Scalar(1))) ;
+				gamma = 1 / max2(tmp / n, max2(infty_norm(g), Scalar(1)));
 				break;
 			}
 			case Symmetry::general: {
 				// all matrix
 				gamma =
-					1 / max2(
-							max2(infty_norm(g), Scalar(1)),
-							(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+						1 / max2(
+										max2(infty_norm(g), Scalar(1)),
+										(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
 				break;
 			}
-			default: {
-			}
+			default:
+				break;
 			}
 			g *= gamma;
 			H *= gamma;
