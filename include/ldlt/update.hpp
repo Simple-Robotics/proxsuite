@@ -180,6 +180,7 @@ LDLT_NO_INLINE void rank1_update(
 		alpha *= gamma;
 
 		Scalar c = gamma + beta * p;
+		out.l(j, j) = Scalar(1);
 
 		detail::rank1_update_inner_loop(
 				std::integral_constant<
@@ -522,7 +523,7 @@ struct RowDeleteImpl<colmajor> {
 			i32 out_outer_stride,
 			i32 in_outer_stride) {
 		for (i32 i = 0; i < cols; ++i) {
-			T* in_p = in + (i * in_outer_stride);
+			T const* in_p = in + (i * in_outer_stride);
 			T* out_p = out + (i * out_outer_stride);
 			std::copy(in_p, in_p + rows, out_p);
 		}
@@ -604,7 +605,7 @@ struct RowDeleteImpl<rowmajor> {
 			i32 out_outer_stride,
 			i32 in_outer_stride) {
 		for (i32 i = 0; i < rows; ++i) {
-			T* in_p = in + (i * in_outer_stride);
+			T const* in_p = in + (i * in_outer_stride);
 			T* out_p = out + (i * out_outer_stride);
 			std::copy(in_p, in_p + cols, out_p);
 		}
@@ -612,8 +613,8 @@ struct RowDeleteImpl<rowmajor> {
 
 	template <typename T>
 	LDLT_NO_INLINE static void handle_bottom_right( //
-			LdltViewMut<T, colmajor> out_bottom_right,
-			LdltView<T, colmajor> in_bottom_right,
+			LdltViewMut<T, rowmajor> out_bottom_right,
+			LdltView<T, rowmajor> in_bottom_right,
 			T const* l,
 			T d,
 			i32 rem_dim,
@@ -636,9 +637,6 @@ template <typename T, Layout L>
 LDLT_NO_INLINE void
 row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 	i32 dim = in_l.d.dim;
-	if ((i + 1) == dim) {
-		return;
-	}
 
 	bool inplace = out_l.l.data == in_l.l.data;
 
@@ -655,6 +653,10 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 				i,
 				in_l.l.outer_stride,
 		});
+		std::copy(in_l.d.data, in_l.d.data + i, out_l.d.data);
+	}
+	if ((i + 1) == dim) {
+		return;
 	}
 
 	// bottom left
@@ -666,17 +668,7 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 			out_l.l.outer_stride,
 			in_l.l.outer_stride);
 
-	auto copy = [&] {
-		RowDeleteImpl<L>::copy_block(
-				out_l.l.block(i, i, 0, 0).data,
-				in_l.l.block(i + 1, i + 1, 0, 0).data,
-				dim - i,
-				dim - i,
-				out_l.l.outer_stride,
-				in_l.l.outer_stride);
-	};
-
-	i32 rem_dim = dim - i;
+	i32 rem_dim = dim - i - 1;
 	RowDeleteImpl<L>::handle_bottom_right(
 			LdltViewMut<T, L>{
 					out_l.l.block(i, i, rem_dim, rem_dim),
@@ -688,7 +680,7 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 			},
 			in_l.l.block(i + 1, i, 0, 0).data,
 			in_l.d(i),
-			dim - i,
+			rem_dim,
 			inplace);
 }
 } // namespace detail
