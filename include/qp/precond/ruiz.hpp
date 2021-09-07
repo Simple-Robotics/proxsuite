@@ -61,6 +61,7 @@ auto ruiz_scale_qp_in_place( //
 	i32 n_in = qp.C.rows;
 
 	S.setConstant(Scalar(1));
+	Scalar gamma = Scalar(1);
 
 	LDLT_WORKSPACE_MEMORY(_delta, n + n_eq + n_in, Scalar);
 	auto delta = to_eigen_vector_mut(VectorViewMut<Scalar>{
@@ -184,11 +185,36 @@ auto ruiz_scale_qp_in_place( //
 			d.array() *= delta.tail(n_in).array();
 			// additional normalization for the cost function
 
-			Scalar gamma =
+			switch (sym) {
+			case Symmetry::upper: {
+				// upper triangular part
+				Scalar tmp = Scalar(0) ; 
+				for (i32 j = 0; j < n; ++j) {
+					tmp += infty_norm(H.row(j).tail(n-j));
+				}
+			 	gamma = 1 /  max2(tmp/n,max2(infty_norm(g), Scalar(1)))  ;
+				break;
+			}
+			case Symmetry::lower: {
+				// lower triangular part
+				Scalar tmp = Scalar(0); 
+				for (i32 j = 0; j < n; ++j) {
+					tmp += infty_norm(H.col(j).tail(n - j));
+				}
+				gamma = 1 / max2(tmp/n,max2(infty_norm(g), Scalar(1))) ;
+				break;
+			}
+			case Symmetry::general: {
+				// all matrix
+				gamma =
 					1 / max2(
-									max2(infty_norm(g), Scalar(1)),
-									(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
-
+							max2(infty_norm(g), Scalar(1)),
+							(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+				break;
+			}
+			default: {
+			}
+			}
 			g *= gamma;
 			H *= gamma;
 
