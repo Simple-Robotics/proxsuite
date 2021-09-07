@@ -19,27 +19,35 @@ set(LDLT_TEST_LIBS
 )
 
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
+doctest_discover_tests(.test.factorize.roundtrip)
 target_link_libraries(.test.factorize.roundtrip ${LDLT_TEST_LIBS})
 
 add_executable(.test.solve src/solve.cpp)
+doctest_discover_tests(.test.solve)
 target_link_libraries(.test.solve ${LDLT_TEST_LIBS})
 
 add_executable(.test.update.roundtrip src/update_roundtrip.cpp)
+doctest_discover_tests(.test.update.roundtrip)
 target_link_libraries(.test.update.roundtrip ${LDLT_TEST_LIBS})
 
 add_executable(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
+doctest_discover_tests(.test.mu_update.roundtrip)
 target_link_libraries(.test.mu_update.roundtrip ${LDLT_TEST_LIBS})
 
 add_executable(.test.row_delete src/row_delete.cpp)
+doctest_discover_tests(.test.row_delete)
 target_link_libraries(.test.row_delete ${LDLT_TEST_LIBS})
 
 add_executable(.test.row_append src/row_append.cpp)
+doctest_discover_tests(.test.row_append)
 target_link_libraries(.test.row_append ${LDLT_TEST_LIBS})
 
 add_executable(.test.precond.ruiz src/precond_ruiz.cpp)
+doctest_discover_tests(.test.precond.ruiz)
 target_link_libraries(.test.precond.ruiz ${LDLT_TEST_LIBS})
 
 add_executable(.test.qp_eq.cpp src/qp_eq.cpp)
+doctest_discover_tests(.test.qp_eq.cpp)
 target_link_libraries(.test.qp_eq.cpp ${LDLT_TEST_LIBS})
 
 add_custom_command(
@@ -53,10 +61,29 @@ add_custom_target(
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
 )
 add_executable(.test.qp_eq.py src/qp_eq_py.cpp)
+doctest_discover_tests(.test.qp_eq.py)
 target_link_libraries(.test.qp_eq.py ${LDLT_TEST_LIBS})
-set(INRIA_LDLT_QP_PYTHON_PATH "${CMAKE_CURRENT_BINARY_DIR}/qp_problem/" PARENT_SCOPE)
+set(INRIA_LDLT_QP_PYTHON_PATH "${CMAKE_CURRENT_BINARY_DIR}/qp_problem/")
+set(INRIA_LDLT_QP_PYTHON_PATH
+    ${INRIA_LDLT_QP_PYTHON_PATH}
+    PARENT_SCOPE
+)
 target_compile_definitions(
   .test.qp_eq.py
   PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${INRIA_LDLT_QP_PYTHON_PATH}"
 )
 add_dependencies(.test.qp_eq.py .test.qp_eq.py.generated_problems)
+
+add_custom_target(
+  check
+  COMMAND ${CMAKE_CTEST_COMMAND} --verbose
+  DEPENDS .test.factorize.roundtrip
+          .test.solve
+          .test.update.roundtrip
+          .test.mu_update.roundtrip
+          .test.row_delete
+          .test.row_append
+          .test.precond.ruiz
+          .test.qp_eq.cpp
+          .test.qp_eq.py
+)

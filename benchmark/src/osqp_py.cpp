@@ -26,10 +26,8 @@ auto main() -> int {
 	std::string path_len;
 	std::string path;
 	path_len.resize(32);
-
 	file.read(&path_len[0], 32);
 	file.get(); // '\n'
-	std::fflush(stdout);
 	i32 n_files = i32(std::stol(path_len));
 
 	for (i32 i = 0; i < n_files; ++i) {

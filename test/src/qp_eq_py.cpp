@@ -24,7 +24,7 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 	std::string path;
 	path_len.resize(32);
 	file.read(&path_len[0], 32);
-	file.get(); // ':'
+	file.get(); // '\n'
 	i32 n_files = i32(std::stol(path_len));
 
 	for (i32 i = 0; i < n_files; ++i) {
