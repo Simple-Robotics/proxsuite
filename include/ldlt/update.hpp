@@ -465,7 +465,7 @@ struct RowAppendImpl<rowmajor> {
 			LdltView<T, rowmajor> in_l,
 			VectorView<T> a) {
 		i32 dim = in_l.d.dim;
-		detail::corner_update_impl(out_l, in_l, a, out_l.l.row(dim));
+		detail::corner_update_impl(out_l, in_l, a, out_l.l.row(dim).data);
 	}
 };
 template <>
@@ -490,6 +490,7 @@ row_append(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a) {
 	if (!inplace) {
 		to_eigen_matrix_mut(out_l.l.block(0, 0, dim, dim)) =
 				to_eigen_matrix(in_l.l);
+		to_eigen_vector_mut(out_l.d.segment(0, dim)) = to_eigen_vector(in_l.d);
 	}
 	RowAppendImpl<L>::corner_update(out_l, in_l, a);
 	out_l.l(dim, dim) = T(1);

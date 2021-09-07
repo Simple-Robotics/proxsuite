@@ -33,6 +33,9 @@ target_link_libraries(.test.mu_update.roundtrip ${LDLT_TEST_LIBS})
 add_executable(.test.row_delete src/row_delete.cpp)
 target_link_libraries(.test.row_delete ${LDLT_TEST_LIBS})
 
+add_executable(.test.row_append src/row_append.cpp)
+target_link_libraries(.test.row_append ${LDLT_TEST_LIBS})
+
 add_executable(.test.precond.ruiz src/precond_ruiz.cpp)
 target_link_libraries(.test.precond.ruiz ${LDLT_TEST_LIBS})
 
