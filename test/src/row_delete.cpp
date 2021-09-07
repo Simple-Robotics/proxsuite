@@ -34,10 +34,13 @@ DOCTEST_TEST_CASE_TEMPLATE(
 	Mat l_in(n, n);
 	Vec d_in(n);
 
-	Mat l_out(n - 1, n - 1);
-	Vec d_out(n - 1);
-	l_out.setZero();
-	d_out.setZero();
+	Mat l_out_storage(n, n);
+	Vec d_out_storage(n);
+	l_out_storage.setZero();
+	d_out_storage.setZero();
+
+	auto l_out = l_out_storage.topLeftCorner(n - 1, n - 1);
+	auto d_out = d_out_storage.topRows(n - 1);
 
 	using LdltView = ldlt::LdltView<Scalar, L::value>;
 	using LdltViewMut = ldlt::LdltViewMut<Scalar, L::value>;
@@ -53,22 +56,26 @@ DOCTEST_TEST_CASE_TEMPLATE(
 					},
 					ldlt::detail::from_eigen_matrix(m));
 
+			if (inplace) {
+				l_out_storage = l_in;
+				d_out_storage = d_in;
+			}
+
 			// delete ith row
 			ldlt::row_delete(
-					inplace //
-							? (LdltViewMut{
-										ldlt::detail::from_eigen_matrix_mut(l_in).block(
-												0, 0, n - 1, n - 1),
-										ldlt::detail::from_eigen_vector_mut(d_in).segment(0, n - 1),
-								})
-							: (LdltViewMut{
-										ldlt::detail::from_eigen_matrix_mut(l_out),
-										ldlt::detail::from_eigen_vector_mut(d_out),
-								}),
-					LdltView{
-							ldlt::detail::from_eigen_matrix(l_in),
-							ldlt::detail::from_eigen_vector(d_in),
+					LdltViewMut{
+							ldlt::detail::from_eigen_matrix_mut(l_out),
+							ldlt::detail::from_eigen_vector_mut(d_out),
 					},
+					inplace //
+							? (LdltView{
+										ldlt::detail::from_eigen_matrix(l_out_storage),
+										ldlt::detail::from_eigen_vector(d_out_storage),
+								})
+							: (LdltView{
+										ldlt::detail::from_eigen_matrix(l_in),
+										ldlt::detail::from_eigen_vector(d_in),
+								}),
 					idx);
 
 			// compute target
@@ -91,14 +98,8 @@ DOCTEST_TEST_CASE_TEMPLATE(
 			}
 
 			Scalar eps = Scalar(1e-10);
-			if (inplace) {
-				DOCTEST_CHECK(
-						(l_target - l_in.topLeftCorner(n - 1, n - 1)).norm() <= eps);
-				DOCTEST_CHECK((d_target - d_in.topRows(n - 1)).norm() <= eps);
-			} else {
-				DOCTEST_CHECK((l_target - l_out).norm() <= eps);
-				DOCTEST_CHECK((d_target - d_out).norm() <= eps);
-			}
+			DOCTEST_CHECK((l_target - l_out).norm() <= eps);
+			DOCTEST_CHECK((d_target - d_out).norm() <= eps);
 		}
 	}
 }
