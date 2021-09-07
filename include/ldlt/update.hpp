@@ -432,31 +432,40 @@ struct DiagonalUpdateImpl<diagonal_update_strategies::MultiPass> {
 template <Layout L>
 struct RowAppendImpl;
 
+template <typename T, Layout L>
+LDLT_NO_INLINE void corner_update_impl(
+		LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a, T* w) {
+
+	i32 dim = in_l.d.dim;
+
+	auto tmp_row = to_eigen_vector_mut(VectorViewMut<T>{w, dim});
+
+	tmp_row = to_eigen_vector(a.segment(0, dim));
+	auto l_e = to_eigen_matrix(in_l.l);
+	l_e.template triangularView<Eigen::UnitLower>().solveInPlace(tmp_row);
+	tmp_row.array() /= to_eigen_vector(in_l.d).array();
+
+	{
+		auto l = tmp_row.array();
+		auto d = to_eigen_vector(in_l.d).array();
+		out_l.d(dim) = a(dim) - (l * l * d).sum();
+	}
+
+	auto last_row = out_l.l.row(dim);
+	if (last_row.data != w) {
+		to_eigen_vector_mut(out_l.l.row(dim)) = tmp_row;
+	}
+}
+
 template <>
 struct RowAppendImpl<rowmajor> {
 	template <typename T>
-	LDLT_NO_INLINE static void corner_update(
+	LDLT_INLINE static void corner_update(
 			LdltViewMut<T, rowmajor> out_l,
 			LdltView<T, rowmajor> in_l,
 			VectorView<T> a) {
-
 		i32 dim = in_l.d.dim;
-
-		auto new_row = to_eigen_vector_mut(VectorViewMut<T>{
-				out_l.l.data + (out_l.l.outer_stride * dim),
-				dim,
-		});
-
-		new_row = to_eigen_vector(VectorView<T>{a.data, dim});
-		auto l_e = to_eigen_matrix(in_l.l);
-		l_e.template triangularView<Eigen::UnitLower>().solveInPlace(new_row);
-		new_row.array() /= to_eigen_vector(in_l.d).array();
-
-		{
-			auto l = new_row.array();
-			auto d = to_eigen_vector(in_l.d).array();
-			out_l.d(dim) = a(dim) - (l * l * d).sum();
-		}
+		detail::corner_update_impl(out_l, in_l, a, out_l.l.row(dim));
 	}
 };
 template <>
@@ -466,28 +475,9 @@ struct RowAppendImpl<colmajor> {
 			LdltViewMut<T, colmajor> out_l,
 			LdltView<T, colmajor> in_l,
 			VectorView<T> a) {
-
 		i32 dim = in_l.d.dim;
 		LDLT_WORKSPACE_MEMORY(w, dim, T);
-
-		auto tmp_row = to_eigen_vector_mut(VectorViewMut<T>{w, dim});
-
-		tmp_row = to_eigen_vector(VectorView<T>{a.data, dim});
-		auto l_e = to_eigen_matrix(in_l.l);
-		l_e.template triangularView<Eigen::UnitLower>().solveInPlace(tmp_row);
-		tmp_row.array() /= to_eigen_vector(in_l.d).array();
-
-		{
-			auto l = tmp_row.array();
-			auto d = to_eigen_vector(in_l.d).array();
-			out_l.d(dim) = a(dim) - (l * l * d).sum();
-		}
-
-		EigenVecMap<T, Eigen::InnerStride<Eigen::Dynamic>>(
-				out_l.l.data + dim,
-				dim,
-				1,
-				Eigen::InnerStride<Eigen::Dynamic>(out_l.l.outer_stride)) = tmp_row;
+		detail::corner_update_impl(out_l, in_l, a, w);
 	}
 };
 
@@ -497,16 +487,12 @@ row_append(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a) {
 	i32 dim = in_l.d.dim;
 	bool inplace = out_l.l.data == in_l.l.data;
 
-	auto l = out_l.l;
 	if (!inplace) {
-		to_eigen_matrix_mut(MatrixViewMut<T, L>{
-				out_l.l.data,
-				dim,
-				dim,
-				out_l.l.outer_stride,
-		}) = to_eigen_matrix(in_l.l);
+		to_eigen_matrix_mut(out_l.l.block(0, 0, dim, dim)) =
+				to_eigen_matrix(in_l.l);
 	}
 	RowAppendImpl<L>::corner_update(out_l, in_l, a);
+	out_l.l(dim, dim) = T(1);
 }
 
 template <Layout L>
