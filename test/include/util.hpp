@@ -37,7 +37,7 @@ uint128_t g_lehmer64_state =
 
 auto lehmer64() -> uint64_t { // [0, 2^64)
 	g_lehmer64_state *= 0xda942042e4dd58b5;
-	return g_lehmer64_state >> 64U;
+	return uint64_t(g_lehmer64_state >> uint128_t(64U));
 }
 
 void set_seed(uint64_t seed) {
