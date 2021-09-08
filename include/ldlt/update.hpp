@@ -385,6 +385,29 @@ LDLT_INLINE void diagonal_update_multi_pass(
 		i32 start_index) {
 	i32 dim = out.l.rows;
 	i32 dim_rem = dim - start_index;
+
+	bool inplace = out.l.data != in.l.data;
+
+	if (!inplace) {
+		if (diag_diff.dim == 0) {
+			// copy all of l, d
+			to_eigen_matrix_mut(out.l) = to_eigen_matrix(in.l);
+			to_eigen_vector_mut(out.d) = to_eigen_vector(in.d);
+		} else {
+			// copy left part of l, d
+			to_eigen_matrix_mut(out.l.block(0, 0, dim, start_index)) =
+					to_eigen_matrix(in.l.block(0, 0, dim, start_index));
+
+			to_eigen_vector_mut(out.d.segment(0, start_index)) =
+					to_eigen_vector(in.d.segment(0, start_index));
+		}
+	}
+	if (diag_diff.dim == 0) {
+		return;
+	}
+
+	LdltView<Scalar, L> current_in = in;
+
 	LDLT_WORKSPACE_MEMORY(ws, dim_rem, Scalar);
 	for (i32 k = 0; k < diag_diff.dim; ++k) {
 		ws[0] = Scalar(1);
@@ -393,11 +416,12 @@ LDLT_INLINE void diagonal_update_multi_pass(
 		}
 		detail::rank1_update( //
 				out,
-				in,
+				current_in,
 				VectorViewMut<Scalar>{ws, dim_rem},
 				start_index + k,
 				diag_diff(k));
 		--dim_rem;
+		current_in = out.as_const();
 	}
 }
 
