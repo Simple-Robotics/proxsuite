@@ -109,19 +109,18 @@ void row_append( //
 
 template <typename T, Layout L>
 void solve( //
-VecRefMut<T> x,
-MatRef<T, L> l,
-VecRef<T> d,
-VecRef<T> rhs) {
-detail::solve_impl(
-detail::from_eigen_vector_mut(x),
-LdltView<T, L>{
-detail::from_eigen_matrix(l),
-detail::from_eigen_vector(d),
-},
-detail::from_eigen_vector(rhs)
-);
-
+		VecRefMut<T> x,
+		MatRef<T, L> l,
+		VecRef<T> d,
+		VecRef<T> rhs) {
+	detail::solve_impl(
+			detail::from_eigen_vector_mut(x),
+			LdltView<T, L>{
+					detail::from_eigen_matrix(l),
+					detail::from_eigen_vector(d),
+			},
+			detail::from_eigen_vector(rhs));
+}
 } // namespace pybind11
 } // namespace ldlt
 
