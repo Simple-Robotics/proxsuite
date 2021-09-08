@@ -106,6 +106,22 @@ void row_append( //
 			},
 			detail::from_eigen_vector(new_row));
 }
+
+template <typename T, Layout L>
+void solve( //
+VecRefMut<T> x,
+MatRef<T, L> l,
+VecRef<T> d,
+VecRef<T> rhs) {
+detail::solve_impl(
+detail::from_eigen_vector_mut(x),
+LdltView<T, L>{
+detail::from_eigen_matrix(l),
+detail::from_eigen_vector(d),
+},
+detail::from_eigen_vector(rhs)
+);
+
 } // namespace pybind11
 } // namespace ldlt
 
@@ -137,6 +153,9 @@ INRIA LDLT decomposition
 
 	m.def("row_append", &ldlt::pybind11::row_append<f32, c>);
 	m.def("row_append", &ldlt::pybind11::row_append<f64, c>);
+
+	m.def("solve", &ldlt::pybind11::solve<f32, c>);
+	m.def("solve", &ldlt::pybind11::solve<f64, c>);
 
 	m.attr("__version__") = "dev";
 }
