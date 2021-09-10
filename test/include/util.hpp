@@ -63,21 +63,21 @@ auto normal_rand() -> double {
 }
 
 template <typename Scalar>
-auto vector_rand(i32 nrows) -> Vec<Scalar> {
+auto vector_rand(isize nrows) -> Vec<Scalar> {
 	auto v = Vec<Scalar>(nrows);
 
-	for (i32 i = 0; i < nrows; ++i) {
+	for (isize i = 0; i < nrows; ++i) {
 		v(i) = Scalar(rand::normal_rand());
 	}
 
 	return v;
 }
 template <typename Scalar>
-auto matrix_rand(i32 nrows, i32 ncols) -> Mat<Scalar, colmajor> {
+auto matrix_rand(isize nrows, isize ncols) -> Mat<Scalar, colmajor> {
 	auto v = Mat<Scalar, colmajor>(nrows, ncols);
 
-	for (i32 i = 0; i < nrows; ++i) {
-		for (i32 j = 0; j < ncols; ++j) {
+	for (isize i = 0; i < nrows; ++i) {
+		for (isize j = 0; j < ncols; ++j) {
 			v(i, j) = Scalar(rand::normal_rand());
 		}
 	}
@@ -86,7 +86,7 @@ auto matrix_rand(i32 nrows, i32 ncols) -> Mat<Scalar, colmajor> {
 }
 
 template <typename Scalar>
-auto positive_definite_rand(i32 n, Scalar cond) -> Mat<Scalar, colmajor> {
+auto positive_definite_rand(isize n, Scalar cond) -> Mat<Scalar, colmajor> {
 	auto out = rand::matrix_rand<Scalar>(n, n);
 	auto qr = out.householderQr();
 	Mat<Scalar, colmajor> q = qr.householderQ();
@@ -96,7 +96,7 @@ auto positive_definite_rand(i32 n, Scalar cond) -> Mat<Scalar, colmajor> {
 		using std::exp;
 		using std::log;
 		Scalar diff = log(cond);
-		for (i32 i = 0; i < n; ++i) {
+		for (isize i = 0; i < n; ++i) {
 			d(i) = exp(Scalar(i) / Scalar(n) * diff);
 		}
 	}
@@ -105,11 +105,11 @@ auto positive_definite_rand(i32 n, Scalar cond) -> Mat<Scalar, colmajor> {
 }
 
 template <typename Scalar>
-auto sparse_positive_definite_rand(i32 n, Scalar cond, double p)
+auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 		-> SparseMat<Scalar> {
 	auto H = SparseMat<Scalar>(n, n);
 
-	for (i32 i = 0; i < n; ++i) {
+	for (isize i = 0; i < n; ++i) {
 		auto urandom = rand::uniform_rand();
 		if (urandom < p) {
 			auto random = Scalar(rand::normal_rand());
@@ -117,8 +117,8 @@ auto sparse_positive_definite_rand(i32 n, Scalar cond, double p)
 		}
 	}
 
-	for (i32 i = 0; i < n; ++i) {
-		for (i32 j = i + 1; j < n; ++j) {
+	for (isize i = 0; i < n; ++i) {
+		for (isize j = i + 1; j < n; ++j) {
 			auto urandom = rand::uniform_rand();
 			if (urandom < p / 2) {
 				auto random = Scalar(rand::normal_rand());
@@ -144,7 +144,7 @@ auto sparse_positive_definite_rand(i32 n, Scalar cond, double p)
 	// rho = (max - min)/(cond - 1) - min
 	Scalar rho = (max - min) / (cond - 1) - min;
 
-	for (i32 i = 0; i < n; ++i) {
+	for (isize i = 0; i < n; ++i) {
 		H.coeffRef(i, i) += rho;
 	}
 	H.makeCompressed();
@@ -152,11 +152,12 @@ auto sparse_positive_definite_rand(i32 n, Scalar cond, double p)
 }
 
 template <typename Scalar>
-auto sparse_matrix_rand(i32 nrows, i32 ncols, double p) -> SparseMat<Scalar> {
+auto sparse_matrix_rand(isize nrows, isize ncols, double p)
+		-> SparseMat<Scalar> {
 	auto A = SparseMat<Scalar>(nrows, ncols);
 
-	for (i32 i = 0; i < nrows; ++i) {
-		for (i32 j = 0; j < ncols; ++j) {
+	for (isize i = 0; i < nrows; ++i) {
+		for (isize j = 0; j < ncols; ++j) {
 			if (rand::uniform_rand() < p) {
 				A.insert(i, j) = Scalar(rand::normal_rand());
 			}
@@ -349,8 +350,8 @@ struct Qp {
 				b(LDLT_FWD(b_)),
 				solution(H.rows() + A.rows()) {
 
-		ldlt::i32 dim = ldlt::i32(H.rows());
-		ldlt::i32 n_eq = ldlt::i32(A.rows());
+		ldlt::isize dim = ldlt::isize(H.rows());
+		ldlt::isize n_eq = ldlt::isize(A.rows());
 
 		auto kkt_mat =
 				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
@@ -366,7 +367,7 @@ struct Qp {
 		kkt_mat.ldlt().solveInPlace(solution);
 	}
 
-	Qp(RandomWithDimAndNeq /*tag*/, ldlt::i32 dim, ldlt::i32 n_eq)
+	Qp(RandomWithDimAndNeq /*tag*/, ldlt::isize dim, ldlt::isize n_eq)
 			: H(ldlt_test::rand::positive_definite_rand<Scalar>(dim, Scalar(1e2))),
 				g(dim),
 				A(ldlt_test::rand::matrix_rand<Scalar>(n_eq, dim)),
@@ -382,24 +383,24 @@ struct Qp {
 		b = A * primal_solution;
 	}
 
-	auto as_view() -> qp::QpView<Scalar, ldlt::colmajor, ldlt::colmajor> {
+	auto as_view() -> qp::QpView<Scalar> {
 		return {
-				ldlt::detail::from_eigen_matrix(H),
-				ldlt::detail::from_eigen_vector(g),
-				ldlt::detail::from_eigen_matrix(A),
-				ldlt::detail::from_eigen_vector(b),
-				{},
-				{},
+				{ldlt::from_eigen, H},
+				{ldlt::from_eigen, g},
+				{ldlt::from_eigen, A},
+				{ldlt::from_eigen, b},
+				{ldlt::from_ptr_rows_cols_stride, nullptr, 0, ldlt::isize(H.rows()), 0},
+				{ldlt::from_ptr_size, nullptr, 0},
 		};
 	}
-	auto as_mut() -> qp::QpViewMut<Scalar, ldlt::colmajor, ldlt::colmajor> {
+	auto as_mut() -> qp::QpViewMut<Scalar> {
 		return {
-				ldlt::detail::from_eigen_matrix_mut(H),
-				ldlt::detail::from_eigen_vector_mut(g),
-				ldlt::detail::from_eigen_matrix_mut(A),
-				ldlt::detail::from_eigen_vector_mut(b),
-				{nullptr, 0, ldlt::i32(H.rows()), 0},
-				{nullptr, 0},
+				{ldlt::from_eigen, H},
+				{ldlt::from_eigen, g},
+				{ldlt::from_eigen, A},
+				{ldlt::from_eigen, b},
+				{ldlt::from_ptr_rows_cols_stride, nullptr, 0, ldlt::isize(H.rows()), 0},
+				{ldlt::from_ptr_size, nullptr, 0},
 		};
 	}
 };

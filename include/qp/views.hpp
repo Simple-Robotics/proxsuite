@@ -10,6 +10,7 @@ using namespace ldlt::detail;
 
 using ldlt::Layout;
 using ldlt::i32;
+using ldlt::isize;
 using ldlt::MatrixViewMut;
 using ldlt::MatrixView;
 using ldlt::VectorViewMut;
@@ -19,29 +20,28 @@ using ldlt::LdltView;
 using ldlt::colmajor;
 using ldlt::rowmajor;
 
-template <typename Scalar, Layout LH, Layout LC>
+template <typename T>
 struct QpView {
-	MatrixView<Scalar, LH> H;
-	VectorView<Scalar> g;
+	MatrixView<T, colmajor> H;
+	VectorView<T> g;
 
-	MatrixView<Scalar, LC> A;
-	VectorView<Scalar> b;
-	MatrixView<Scalar, LC> C;
-	VectorView<Scalar> d;
+	MatrixView<T, colmajor> A;
+	VectorView<T> b;
+	MatrixView<T, colmajor> C;
+	VectorView<T> d;
 };
 
-template <typename Scalar, Layout LH, Layout LC>
+template <typename T>
 struct QpViewMut {
-	MatrixViewMut<Scalar, LH> H;
-	VectorViewMut<Scalar> g;
+	MatrixViewMut<T, colmajor> H;
+	VectorViewMut<T> g;
 
-	MatrixViewMut<Scalar, LC> A;
-	VectorViewMut<Scalar> b;
-	MatrixViewMut<Scalar, LC> C;
-	VectorViewMut<Scalar> d;
+	MatrixViewMut<T, colmajor> A;
+	VectorViewMut<T> b;
+	MatrixViewMut<T, colmajor> C;
+	VectorViewMut<T> d;
 
-	LDLT_INLINE constexpr auto as_const() const noexcept
-			-> QpView<Scalar, LH, LC> {
+	LDLT_INLINE constexpr auto as_const() const noexcept -> QpView<T> {
 		return {
 				H.as_const(),
 				g.as_const(),
@@ -55,8 +55,8 @@ struct QpViewMut {
 
 namespace nb {
 struct pow {
-	template <typename Scalar>
-	auto operator()(Scalar x, Scalar y) const -> Scalar {
+	template <typename T>
+	auto operator()(T x, T y) const -> T {
 		using std::pow;
 		return pow(x, y);
 	}

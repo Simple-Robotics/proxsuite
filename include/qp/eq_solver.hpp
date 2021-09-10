@@ -12,33 +12,29 @@
 namespace qp {
 namespace preconditioner {
 struct IdentityPrecond {
-	template <typename Scalar, Layout LH, Layout LC>
-	void scale_qp_in_place(QpViewMut<Scalar, LH, LC> /*qp*/) const noexcept {}
+	template <typename T>
+	void scale_qp_in_place(QpViewMut<T> /*qp*/) const noexcept {}
 
-	template <typename Scalar>
-	void scale_primal_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
-	template <typename Scalar>
-	void scale_dual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
+	template <typename T>
+	void scale_primal_in_place(VectorViewMut<T> /*x*/) const noexcept {}
+	template <typename T>
+	void scale_dual_in_place(VectorViewMut<T> /*y*/) const noexcept {}
 
-	template <typename Scalar>
-	void
-	scale_primal_residual_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
-	template <typename Scalar>
-	void
-	scale_dual_residual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
+	template <typename T>
+	void scale_primal_residual_in_place(VectorViewMut<T> /*x*/) const noexcept {}
+	template <typename T>
+	void scale_dual_residual_in_place(VectorViewMut<T> /*y*/) const noexcept {}
 
-	template <typename Scalar>
-	void unscale_primal_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {}
-	template <typename Scalar>
-	void unscale_dual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
+	template <typename T>
+	void unscale_primal_in_place(VectorViewMut<T> /*x*/) const noexcept {}
+	template <typename T>
+	void unscale_dual_in_place(VectorViewMut<T> /*y*/) const noexcept {}
 
-	template <typename Scalar>
-	void
-	unscale_primal_residual_in_place(VectorViewMut<Scalar> /*x*/) const noexcept {
+	template <typename T>
+	void unscale_primal_residual_in_place(VectorViewMut<T> /*x*/) const noexcept {
 	}
-	template <typename Scalar>
-	void
-	unscale_dual_residual_in_place(VectorViewMut<Scalar> /*y*/) const noexcept {}
+	template <typename T>
+	void unscale_dual_residual_in_place(VectorViewMut<T> /*y*/) const noexcept {}
 };
 } // namespace preconditioner
 
@@ -69,26 +65,26 @@ struct QpSolveStats {
 };
 
 template <
-		typename Scalar,
-		Layout LH,
-		Layout LC,
+		typename T,
 		typename Preconditioner = qp::preconditioner::IdentityPrecond>
 auto solve_qp( //
-		VectorViewMut<Scalar> x,
-		VectorViewMut<Scalar> y,
-		qp::QpView<Scalar, LH, LC> qp,
+		VectorViewMut<T> x,
+		VectorViewMut<T> y,
+		qp::QpView<T> qp,
 		i32 max_iter,
-		DoNotDeduce<Scalar> eps_abs,
-		DoNotDeduce<Scalar> eps_rel,
+		DoNotDeduce<T> eps_abs,
+		DoNotDeduce<T> eps_rel,
 		Preconditioner precond = Preconditioner{}) -> QpSolveStats {
 
-	i32 dim = qp.H.rows;
-	i32 n_eq = qp.A.rows;
+	using namespace ldlt::tags;
+
+	isize dim = qp.H.rows;
+	isize n_eq = qp.A.rows;
 	i32 n_mu_updates = 0;
 
-	auto rho = Scalar(1e-10);
-	auto bcl_mu = Scalar(1e3);
-	Scalar bcl_eta = 1 / pow(bcl_mu, Scalar(0.1));
+	auto rho = T(1e-10);
+	auto bcl_mu = T(1e3);
+	T bcl_eta = 1 / pow(bcl_mu, T(0.1));
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			((_h_scaled, dim * dim),
@@ -102,97 +98,104 @@ auto solve_qp( //
 	     (_residual_unscaled, dim + n_eq),
 	     (_next_dual, n_eq),
 	     (_diag_diff, n_eq)),
-			Scalar);
+			T);
 
-	auto H_copy = to_eigen_matrix_mut(
-			MatrixViewMut<Scalar, colmajor>{_h_scaled, dim, dim, dim});
-	auto q_copy = to_eigen_vector_mut(VectorViewMut<Scalar>{_g_scaled, dim});
-	auto A_copy = to_eigen_matrix_mut(
-			MatrixViewMut<Scalar, colmajor>{_a_scaled, n_eq, dim, n_eq});
-	auto b_copy = to_eigen_vector_mut(VectorViewMut<Scalar>{_b_scaled, n_eq});
+	auto H_copy =
+			MatrixViewMut<T, colmajor>{
+					from_ptr_rows_cols_stride, _h_scaled, dim, dim, dim}
+					.to_eigen();
+	auto q_copy = VectorViewMut<T>{from_ptr_size, _g_scaled, dim}.to_eigen();
+	auto A_copy =
+			MatrixViewMut<T, colmajor>{
+					from_ptr_rows_cols_stride, _a_scaled, n_eq, dim, n_eq}
+					.to_eigen();
+	auto b_copy = VectorViewMut<T>{from_ptr_size, _b_scaled, n_eq}.to_eigen();
 
-	H_copy = to_eigen_matrix(qp.H);
-	q_copy = to_eigen_vector(qp.g);
-	A_copy = to_eigen_matrix(qp.A);
-	b_copy = to_eigen_vector(qp.b);
+	H_copy = qp.H.to_eigen();
+	q_copy = qp.g.to_eigen();
+	A_copy = qp.A.to_eigen();
+	b_copy = qp.b.to_eigen();
 
-	auto qp_scaled = qp::QpViewMut<Scalar, LH, LC>{
-			from_eigen_matrix_mut(H_copy),
-			from_eigen_vector_mut(q_copy),
-			from_eigen_matrix_mut(A_copy),
-			from_eigen_vector_mut(b_copy),
+	auto qp_scaled = qp::QpViewMut<T>{
+			{from_eigen, H_copy},
+			{from_eigen, q_copy},
+			{from_eigen, A_copy},
+			{from_eigen, b_copy},
 
 			// no inequalities
-			{nullptr, 0, dim, 0},
-			{nullptr, 0},
+			{from_ptr_rows_cols_stride, nullptr, 0, dim, 0},
+			{from_ptr_size, nullptr, 0},
 	};
 	{
-		LDLT_DECL_SCOPE_TIMER("eq solver", "scale qp", Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "scale qp", T);
 		precond.scale_qp_in_place(qp_scaled);
 	}
 	{
-		LDLT_DECL_SCOPE_TIMER("eq solver", "scale solution", Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "scale solution", T);
 		precond.scale_primal_in_place(x);
 		precond.scale_dual_in_place(y);
 	}
 
-	auto Htot = to_eigen_matrix_mut(MatrixViewMut<Scalar, colmajor>{
-			_htot,
-			dim + n_eq,
-			dim + n_eq,
-			dim + n_eq,
-	});
-	auto d = to_eigen_vector_mut(VectorViewMut<Scalar>{_d, dim + n_eq});
+	auto Htot =
+			MatrixViewMut<T, colmajor>{
+					from_ptr_rows_cols_stride,
+					_htot,
+					dim + n_eq,
+					dim + n_eq,
+					dim + n_eq,
+			}
+					.to_eigen();
+	auto d = VectorViewMut<T>{from_ptr_size, _d, dim + n_eq}.to_eigen();
 
 	{
-		LDLT_DECL_SCOPE_TIMER("eq solver", "set H", Scalar);
-		Htot.topLeftCorner(dim, dim) = to_eigen_matrix(qp_scaled.H.as_const());
-		for (i32 i = 0; i < dim; ++i) {
+		LDLT_DECL_SCOPE_TIMER("eq solver", "set H", T);
+		Htot.topLeftCorner(dim, dim) = qp_scaled.H.as_const().to_eigen();
+		for (isize i = 0; i < dim; ++i) {
 			Htot(i, i) += rho;
 		}
 
-		Htot.topRightCorner(dim, n_eq) =
-				to_eigen_matrix(qp_scaled.A.as_const()).transpose();
+		Htot.topRightCorner(dim, n_eq) = qp_scaled.A.as_const().trans().to_eigen();
 
 		// TODO: unneeded: see "ldlt/factorize.hpp"
-		Htot.bottomLeftCorner(n_eq, dim) = to_eigen_matrix(qp_scaled.A.as_const());
-
+		Htot.bottomLeftCorner(n_eq, dim) = qp_scaled.A.as_const().to_eigen();
 		Htot.bottomRightCorner(n_eq, n_eq).setZero();
 		{
-			Scalar tmp = -Scalar(1) / bcl_mu;
-			for (i32 i = 0; i < n_eq; ++i) {
+			T tmp = -T(1) / bcl_mu;
+			for (isize i = 0; i < n_eq; ++i) {
 				Htot(dim + i, dim + i) = tmp;
 			}
 		}
 	}
 
-	auto ldlt_mut = LdltViewMut<Scalar, colmajor>{
-			from_eigen_matrix_mut(Htot),
-			from_eigen_vector_mut(d),
+	auto ldlt_mut = LdltViewMut<T>{
+			{from_eigen, Htot},
+			{from_eigen, d},
 	};
 
 	// initial LDLT factorization
 	{
-		LDLT_DECL_SCOPE_TIMER("eq solver", "factorization", Scalar);
+		LDLT_DECL_SCOPE_TIMER("eq solver", "factorization", T);
 		ldlt::factorize(
 				ldlt_mut,
-				from_eigen_matrix(Htot),
+				MatrixView<T, colmajor>{from_eigen, Htot},
 				ldlt::factorization_strategy::standard);
 	}
 
 	auto residual_scaled =
-			to_eigen_vector_mut(VectorViewMut<Scalar>{_residual_scaled, dim + n_eq});
-	auto residual_scaled_tmp = to_eigen_vector_mut(
-			VectorViewMut<Scalar>{_residual_scaled_tmp, dim + n_eq});
+			VectorViewMut<T>{from_ptr_size, _residual_scaled, dim + n_eq}.to_eigen();
+	auto residual_scaled_tmp =
+			VectorViewMut<T>{from_ptr_size, _residual_scaled_tmp, dim + n_eq}
+					.to_eigen();
 
-	auto residual_unscaled = to_eigen_vector_mut(
-			VectorViewMut<Scalar>{_residual_unscaled, dim + n_eq});
+	auto residual_unscaled =
+			VectorViewMut<T>{from_ptr_size, _residual_unscaled, dim + n_eq}
+					.to_eigen();
 
-	auto next_dual = to_eigen_vector_mut(VectorViewMut<Scalar>{_next_dual, n_eq});
-	auto diag_diff = to_eigen_vector_mut(VectorViewMut<Scalar>{_diag_diff, n_eq});
+	auto next_dual = VectorViewMut<T>{from_ptr_size, _next_dual, n_eq}.to_eigen();
+	auto diag_diff = VectorViewMut<T>{from_ptr_size, _diag_diff, n_eq}.to_eigen();
 
-	Scalar primal_feasibility_rhs_1 = infty_norm(to_eigen_vector(qp.b));
-	Scalar dual_feasibility_rhs_2 = infty_norm(to_eigen_vector(qp.g));
+	T primal_feasibility_rhs_1 = infty_norm(qp.b.to_eigen());
+	T dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());
 
 	for (i32 iter = 0; iter <= max_iter; ++iter) {
 
@@ -202,18 +205,18 @@ auto solve_qp( //
 		auto primal_residual_unscaled = residual_unscaled.bottomRows(n_eq);
 
 		// compute primal residual
-		Scalar primal_feasibility_rhs_0(0);
-		Scalar dual_feasibility_rhs_0(0);
-		Scalar dual_feasibility_rhs_1(0);
+		T primal_feasibility_rhs_0(0);
+		T dual_feasibility_rhs_0(0);
+		T dual_feasibility_rhs_1(0);
 
-		Scalar primal_feasibility_lhs(0);
-		Scalar dual_feasibility_lhs(0);
+		T primal_feasibility_lhs(0);
+		T dual_feasibility_lhs(0);
 		{
 			{
-				LDLT_DECL_SCOPE_TIMER("eq solver", "primal residual", Scalar);
-				auto A_ = to_eigen_matrix(qp_scaled.A.as_const());
-				auto x_ = to_eigen_vector(x.as_const());
-				auto b_ = to_eigen_vector(qp_scaled.b.as_const());
+				LDLT_DECL_SCOPE_TIMER("eq solver", "primal residual", T);
+				auto A_ = qp_scaled.A.as_const().to_eigen();
+				auto x_ = x.as_const().to_eigen();
+				auto b_ = qp_scaled.b.as_const().to_eigen();
 
 				// A×x - b
 				primal_residual_scaled.setZero();
@@ -222,40 +225,40 @@ auto solve_qp( //
 				{
 					auto w = residual_scaled_tmp.bottomRows(n_eq);
 					w = primal_residual_scaled;
-					precond.unscale_primal_residual_in_place(from_eigen_vector_mut(w));
+					precond.unscale_primal_residual_in_place(
+							VectorViewMut<T>{from_eigen, w});
 					primal_feasibility_rhs_0 = infty_norm(w);
 				}
 				primal_residual_scaled -= b_;
 
 				primal_residual_unscaled = primal_residual_scaled;
 				precond.unscale_primal_residual_in_place(
-						from_eigen_vector_mut(primal_residual_unscaled));
+						VectorViewMut<T>{from_eigen, primal_residual_unscaled});
 
 				primal_feasibility_lhs = infty_norm(primal_residual_unscaled);
 			}
 
 			if (iter > 0) {
 				if (primal_feasibility_lhs <= bcl_eta) {
-					to_eigen_vector_mut(y) = next_dual;
-					bcl_eta = bcl_eta / pow(bcl_mu, Scalar(0.9));
+					y.to_eigen() = next_dual;
+					bcl_eta = bcl_eta / pow(bcl_mu, T(0.9));
 				} else {
-					Scalar new_bcl_mu = max2(bcl_mu * Scalar(10), Scalar(1e12));
+					T new_bcl_mu = max2(bcl_mu * T(10), T(1e12));
 					if (bcl_mu != new_bcl_mu) {
 						{
-							LDLT_DECL_SCOPE_TIMER("eq solver", "mu update", Scalar);
-							diag_diff.setConstant(
-									Scalar(1) / bcl_mu - Scalar(1) / new_bcl_mu);
+							LDLT_DECL_SCOPE_TIMER("eq solver", "mu update", T);
+							diag_diff.setConstant(T(1) / bcl_mu - T(1) / new_bcl_mu);
 							ldlt::diagonal_update(
 									ldlt_mut,
 									ldlt_mut.as_const(),
-									from_eigen_vector(diag_diff),
+									{from_eigen, diag_diff},
 									dim,
 									ldlt::diagonal_update_strategies::multi_pass);
 							++n_mu_updates;
 						}
 					}
 					bcl_mu = new_bcl_mu;
-					bcl_eta = Scalar(1) / pow(bcl_mu, Scalar(0.1));
+					bcl_eta = T(1) / pow(bcl_mu, T(0.1));
 				}
 			}
 			if (iter == max_iter) {
@@ -271,12 +274,12 @@ auto solve_qp( //
 
 		// compute dual residual
 		{
-			LDLT_DECL_SCOPE_TIMER("eq solver", "dual residual", Scalar);
-			auto H_ = to_eigen_matrix(qp_scaled.H.as_const());
-			auto A_ = to_eigen_matrix(qp_scaled.A.as_const());
-			auto x_ = to_eigen_vector(x.as_const());
-			auto y_ = to_eigen_vector(y.as_const());
-			auto g_ = to_eigen_vector(qp_scaled.g.as_const());
+			LDLT_DECL_SCOPE_TIMER("eq solver", "dual residual", T);
+			auto H_ = qp_scaled.H.as_const().to_eigen();
+			auto A_ = qp_scaled.A.as_const().to_eigen();
+			auto x_ = x.as_const().to_eigen();
+			auto y_ = y.as_const().to_eigen();
+			auto g_ = qp_scaled.g.as_const().to_eigen();
 
 			// H×x + g + A.T×y
 
@@ -289,20 +292,20 @@ auto solve_qp( //
 				w.setZero();
 				w.noalias() += H_ * x_;
 				{ dual_residual_scaled += w; }
-				precond.unscale_dual_residual_in_place(from_eigen_vector_mut(w));
+				precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen, w});
 				dual_feasibility_rhs_0 = infty_norm(w);
 
 				w.setZero();
 				w.noalias() += A_.transpose() * y_;
 				{ dual_residual_scaled += w; }
 
-				precond.unscale_dual_residual_in_place(from_eigen_vector_mut(w));
+				precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen, w});
 				dual_feasibility_rhs_1 = infty_norm(w);
 			}
 
 			dual_residual_unscaled = dual_residual_scaled;
 			precond.unscale_dual_residual_in_place(
-					from_eigen_vector_mut(dual_residual_unscaled));
+					VectorViewMut<T>{from_eigen, dual_residual_unscaled});
 
 			dual_feasibility_lhs = infty_norm(dual_residual_unscaled);
 		}
@@ -318,7 +321,7 @@ auto solve_qp( //
 
 		if (is_primal_feasible && is_dual_feasible) {
 			{
-				LDLT_DECL_SCOPE_TIMER("eq solver", "unscale solution", Scalar);
+				LDLT_DECL_SCOPE_TIMER("eq solver", "unscale solution", T);
 				precond.unscale_primal_in_place(x);
 				precond.unscale_dual_in_place(y);
 			}
@@ -331,15 +334,12 @@ auto solve_qp( //
 
 			rhs = -rhs;
 			{
-				LDLT_DECL_SCOPE_TIMER("eq solver", "newton step", Scalar);
-				ldlt::solve(
-						from_eigen_vector_mut(rhs),
-						ldlt_mut.as_const(),
-						from_eigen_vector(rhs));
+				LDLT_DECL_SCOPE_TIMER("eq solver", "newton step", T);
+				ldlt::solve({from_eigen, rhs}, ldlt_mut.as_const(), {from_eigen, rhs});
 			}
 
-			to_eigen_vector_mut(x) += rhs.topRows(dim);
-			next_dual = to_eigen_vector(y.as_const()) + rhs.bottomRows(n_eq);
+			x.to_eigen() += rhs.topRows(dim);
+			next_dual = y.as_const().to_eigen() + rhs.bottomRows(n_eq);
 		}
 	}
 	return {max_iter, n_mu_updates};

@@ -4,11 +4,17 @@
 #include "ldlt/detail/macros.hpp"
 #include <simde/x86/avx2.h>
 #include <simde/x86/avx512.h>
+#include <type_traits>
 #include <cstring>
 
 namespace ldlt {
 
 using usize = decltype(sizeof(0));
+using isize = std::common_type<    //
+		std::make_signed<usize>::type, //
+		std::ptrdiff_t                 //
+		>::type;
+
 using f32 = float;
 using f64 = double;
 using i64 = long long;
@@ -66,25 +72,6 @@ namespace detail {
 template <typename T, usize N>
 struct Pack;
 
-LDLT_INLINE auto _iseq128() -> simde__m128i {
-	i32 indices[4] = {0, 1, 2, 3};
-	simde__m128i out;
-	std::memcpy(&out, &indices, sizeof(out));
-	return out;
-}
-LDLT_INLINE auto _iseq256() -> simde__m256i {
-	i32 indices[8] = {0, 1, 2, 3, 4, 5, 6, 7};
-	simde__m256i out;
-	std::memcpy(&out, &indices, sizeof(out));
-	return out;
-}
-LDLT_INLINE auto _iseq512() -> simde__m512i {
-	i32 indices[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-	simde__m512i out;
-	std::memcpy(&out, &indices, sizeof(out));
-	return out;
-}
-
 template <typename T>
 struct Pack<T, 1> {
 	using ScalarType = T;
@@ -124,14 +111,6 @@ struct Pack<T, 1> {
 	LDLT_INLINE void store_unaligned(ScalarType* ptr) const noexcept {
 		*ptr = inner;
 	}
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 /*stride*/) noexcept -> Pack {
-		return {*ptr};
-	}
-	LDLT_INLINE void
-	store_scatter(ScalarType* ptr, i32 /*stride*/) const noexcept {
-		*ptr = inner;
-	}
 };
 
 template <>
@@ -141,21 +120,6 @@ struct Pack<f32, 4> {
 	simde__m128 inner;
 	LDLT_ARITHMETIC_IMPL(, ps);
 	LDLT_LOAD_STORE(, ps);
-
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		return {
-				simde_mm_i32gather_ps( // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-						ptr,
-						simde_mm_mullo_epi32(_iseq128(), simde_mm_set1_epi32(stride)),
-						sizeof(f32)),
-		};
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
 
 	LDLT_INLINE auto sum() const noexcept -> f32 {
 		// inner = {0 1 2 3}
@@ -180,21 +144,6 @@ struct Pack<f32, 8> {
 	LDLT_ARITHMETIC_IMPL(256, ps);
 	LDLT_LOAD_STORE(256, ps);
 
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		return {
-				simde_mm256_i32gather_ps( // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-						ptr,
-						simde_mm256_mullo_epi32(_iseq256(), simde_mm256_set1_epi32(stride)),
-						sizeof(f32)),
-		};
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
-
 	LDLT_INLINE auto lo() const noexcept -> Pack<f32, 4> {
 		return {simde_mm256_castps256_ps128(inner)};
 	}
@@ -211,18 +160,6 @@ struct Pack<f32, 16> {
 	simde__m512 inner;
 	LDLT_ARITHMETIC_IMPL(512, ps);
 	LDLT_LOAD_STORE(512, ps);
-
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		// TODO: PR to simde
-		(void)ptr, (void)stride;
-		std::terminate();
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f32, 8> {
 		return {simde_mm512_castps512_ps256(inner)};
@@ -242,21 +179,6 @@ struct Pack<f64, 2> {
 	LDLT_ARITHMETIC_IMPL(, pd);
 	LDLT_LOAD_STORE(, pd);
 
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		return {
-				simde_mm_i32gather_pd( // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-						ptr,
-						simde_mm_mullo_epi32(_iseq128(), simde_mm_set1_epi32(stride)),
-						sizeof(f64)),
-		};
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
-
 	LDLT_INLINE auto sum() const noexcept -> f64 {
 		simde__m128 inner_ps = simde_mm_castpd_ps(inner);
 		// inner = {0 1}
@@ -275,21 +197,6 @@ struct Pack<f64, 4> {
 	LDLT_ARITHMETIC_IMPL(256, pd);
 	LDLT_LOAD_STORE(256, pd);
 
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		return {
-				simde_mm256_i32gather_pd( // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-						ptr,
-						simde_mm_mullo_epi32(_iseq128(), simde_mm_set1_epi32(stride)),
-						sizeof(f64)),
-		};
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
-
 	LDLT_INLINE auto lo() const noexcept -> Pack<f64, 2> {
 		return {simde_mm256_castpd256_pd128(inner)};
 	}
@@ -305,18 +212,6 @@ struct Pack<f64, 8> {
 	simde__m512d inner;
 	LDLT_ARITHMETIC_IMPL(512, pd);
 	LDLT_LOAD_STORE(512, pd);
-
-	LDLT_INLINE static auto
-	load_gather(ScalarType const* ptr, i32 stride) noexcept -> Pack {
-		// TODO: PR to simde
-		(void)ptr, (void)stride;
-		std::terminate();
-	}
-	LDLT_INLINE void store_scatter(ScalarType* ptr, i32 stride) const noexcept {
-		// TODO: PR to simde
-		std::terminate();
-		(void)this, (void)(ptr[0] = 0), (void)stride;
-	}
 
 	LDLT_INLINE auto lo() const noexcept -> Pack<f64, 4> {
 		return {simde_mm512_castpd512_pd256(inner)};

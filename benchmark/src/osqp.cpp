@@ -19,8 +19,8 @@ using namespace ldlt;
 using Scalar = c_float;
 
 auto main() -> int {
-	i32 dim = 1000;
-	i32 n_eq = 100;
+	isize dim = 1000;
+	isize n_eq = 100;
 
 	double p = 0.15;
 	auto cond = Scalar(1e2);
@@ -47,12 +47,12 @@ auto main() -> int {
 	{
 		LDLT_DECL_SCOPE_TIMER("osqp bench", "osqp");
 		ldlt_test::osqp::solve_eq_osqp_sparse(
-				detail::from_eigen_vector_mut(x),
-				detail::from_eigen_vector_mut(y),
+				{from_eigen, x},
+				{from_eigen, y},
 				H_eigen,
 				A_eigen,
-				detail::from_eigen_vector(g_eigen),
-				detail::from_eigen_vector(b_eigen),
+				{from_eigen, g_eigen},
+				{from_eigen, b_eigen},
 				max_iter,
 				eps_abs,
 				eps_rel);
@@ -72,15 +72,15 @@ auto main() -> int {
 				y.setZero();
 
 				qp::detail::solve_qp(
-						VectorViewMut<Scalar>{x.data(), i32(x.rows())},
-						VectorViewMut<Scalar>{y.data(), i32(y.rows())},
-						qp::QpView<Scalar, colmajor, colmajor>{
-								detail::from_eigen_matrix(H),
-								detail::from_eigen_vector(g_eigen),
-								detail::from_eigen_matrix(A),
-								detail::from_eigen_vector(b_eigen),
-								{},
-								{},
+						VectorViewMut<Scalar>{from_eigen, x},
+						VectorViewMut<Scalar>{from_eigen, y},
+						qp::QpView<Scalar>{
+								{from_eigen, H},
+								{from_eigen, g_eigen},
+								{from_eigen, A},
+								{from_eigen, b_eigen},
+								{from_ptr_rows_cols_stride, nullptr, 0, H.rows(), 0},
+								{from_ptr_size, nullptr, 0},
 						},
 						max_iter,
 						eps_abs,

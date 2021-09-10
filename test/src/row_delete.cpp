@@ -8,23 +8,16 @@
 #include <ldlt/update.hpp>
 #include <ldlt/factorize.hpp>
 
-using Scalar = double;
+using namespace ldlt;
+using T = f64;
 
-DOCTEST_TEST_CASE_TEMPLATE(
-		"row delete", L, ldlt::detail::constant<ldlt::Layout, ldlt::colmajor>
-		// ,ldlt::detail::constant<ldlt::Layout, ldlt::rowmajor>
-    // requires simde store_scatter
-) {
-	ldlt::i32 n = 7;
+DOCTEST_TEST_CASE("row delete") {
+	isize n = 7;
 
-	using Mat = Eigen::Matrix<
-			Scalar,
-			Eigen::Dynamic,
-			Eigen::Dynamic,
-			L::value == ldlt::colmajor ? Eigen::ColMajor : Eigen::RowMajor>;
-	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
+	using Mat = ::Mat<T, colmajor>;
+	using Vec = ::Vec<T>;
 
-	Mat m(n, n);
+	Mat m = ldlt_test::rand::positive_definite_rand(n, T(1e2));
 	m.setRandom();
 	m = m * m.transpose();
 
@@ -42,19 +35,19 @@ DOCTEST_TEST_CASE_TEMPLATE(
 	auto l_out = l_out_storage.topLeftCorner(n - 1, n - 1);
 	auto d_out = d_out_storage.topRows(n - 1);
 
-	using LdltView = ldlt::LdltView<Scalar, L::value>;
-	using LdltViewMut = ldlt::LdltViewMut<Scalar, L::value>;
+	using LdltView = ldlt::LdltView<T>;
+	using LdltViewMut = ldlt::LdltViewMut<T>;
 
 	bool bool_values[] = {false, true};
 	for (bool inplace : bool_values) {
-		for (ldlt::i32 idx = 0; idx < n; ++idx) {
+		for (isize idx = 0; idx < n; ++idx) {
 			// factorize input matrix
 			ldlt::factorize(
 					LdltViewMut{
-							ldlt::detail::from_eigen_matrix_mut(l_in),
-							ldlt::detail::from_eigen_vector_mut(d_in),
+							{from_eigen, l_in},
+							{from_eigen, d_in},
 					},
-					ldlt::detail::from_eigen_matrix(m));
+					MatrixView<T, colmajor>{from_eigen, m});
 
 			if (inplace) {
 				l_out_storage = l_in;
@@ -64,24 +57,24 @@ DOCTEST_TEST_CASE_TEMPLATE(
 			// delete ith row
 			ldlt::row_delete(
 					LdltViewMut{
-							ldlt::detail::from_eigen_matrix_mut(l_out),
-							ldlt::detail::from_eigen_vector_mut(d_out),
+							{from_eigen, l_out},
+							{from_eigen, d_out},
 					},
 					inplace //
 							? (LdltView{
-										ldlt::detail::from_eigen_matrix(l_out_storage),
-										ldlt::detail::from_eigen_vector(d_out_storage),
+										{from_eigen, l_out_storage},
+										{from_eigen, d_out_storage},
 								})
 							: (LdltView{
-										ldlt::detail::from_eigen_matrix(l_in),
-										ldlt::detail::from_eigen_vector(d_in),
+										{from_eigen, l_in},
+										{from_eigen, d_in},
 								}),
 					idx);
 
 			// compute target
 			{
 				// delete idx'th row and column
-				ldlt::i32 rem = n - idx - 1;
+				isize rem = n - idx - 1;
 				l_target.topLeftCorner(idx, idx) = m.topLeftCorner(idx, idx);
 				l_target.bottomLeftCorner(rem, idx) = m.bottomLeftCorner(rem, idx);
 
@@ -91,13 +84,13 @@ DOCTEST_TEST_CASE_TEMPLATE(
 				// factorize matrix inplace
 				ldlt::factorize(
 						LdltViewMut{
-								ldlt::detail::from_eigen_matrix_mut(l_target),
-								ldlt::detail::from_eigen_vector_mut(d_target),
+								{from_eigen, l_target},
+								{from_eigen, d_target},
 						},
-						ldlt::detail::from_eigen_matrix(l_target));
+						MatrixView<T, colmajor>{from_eigen, l_target});
 			}
 
-			Scalar eps = Scalar(1e-10);
+			T eps = T(1e-10);
 			DOCTEST_CHECK((l_target - l_out).norm() <= eps);
 			DOCTEST_CHECK((d_target - d_out).norm() <= eps);
 		}

@@ -25,8 +25,8 @@ DOCTEST_TEST_CASE("qp: random") {
 	{
 		EigenNoAlloc _{};
 		qp::detail::solve_qp( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
+				{from_eigen, primal_init},
+				{from_eigen, dual_init},
 				qp.as_view(),
 				200,
 				eps_abs,
@@ -62,8 +62,8 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 				};
 		EigenNoAlloc _{};
 		qp::detail::solve_qp( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
+				{from_eigen, primal_init},
+				{from_eigen, dual_init},
 				qp.as_view(),
 				200,
 				eps_abs,
@@ -93,8 +93,8 @@ DOCTEST_TEST_CASE("qp: start from solution") {
 	auto iter = [&] {
 		EigenNoAlloc _{};
 		return qp::detail::solve_qp( //
-				detail::from_eigen_vector_mut(primal_init),
-				detail::from_eigen_vector_mut(dual_init),
+				{from_eigen, primal_init},
+				{from_eigen, dual_init},
 				qp.as_view(),
 				200,
 				eps_abs,

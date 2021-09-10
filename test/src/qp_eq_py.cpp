@@ -30,7 +30,7 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 	for (i32 i = 0; i < n_files; ++i) {
 		file.read(&path_len[0], 32);
 		file.get(); // ':'
-		i32 ipath_len = i32(std::stol(path_len));
+		isize ipath_len = isize(std::stol(path_len));
 		path.resize(usize(ipath_len));
 		file.read(&path[0], ipath_len);
 		file.get(); // '\n'
@@ -42,8 +42,8 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 				cnpy::npy_load_mat<double>(path + "/A.npy").cast<long double>(),
 				cnpy::npy_load_vec<double>(path + "/b.npy").cast<long double>(),
 		};
-		i32 n = i32(qp.H.rows());
-		i32 n_eq = i32(qp.A.rows());
+		isize n = isize(qp.H.rows());
+		isize n_eq = isize(qp.A.rows());
 
 		using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
 		Vec primal_init = Vec::Zero(n);
@@ -65,8 +65,8 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 					};
 			EigenNoAlloc _{};
 			return qp::detail::solve_qp( //
-					detail::from_eigen_vector_mut(primal_init),
-					detail::from_eigen_vector_mut(dual_init),
+					{from_eigen, primal_init},
+					{from_eigen, dual_init},
 					qp.as_view(),
 					200,
 					eps_abs,

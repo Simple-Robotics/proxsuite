@@ -1,15 +1,8 @@
 module ldlt {
-  header "factorize.hpp"
   header "views.hpp"
+  header "factorize.hpp"
   header "solve.hpp"
   header "update.hpp"
   header "ldlt.hpp"
-  export *
-}
-
-module qp {
-  header "qp/eq_solver.hpp"
-  header "qp/views.hpp"
-  header "precond/ruiz.hpp"
   export *
 }

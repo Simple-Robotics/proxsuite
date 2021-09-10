@@ -45,8 +45,8 @@ auto main() -> int {
 				cnpy::npy_load_mat<double>(path + "/A.npy").cast<Scalar>(),
 				cnpy::npy_load_vec<double>(path + "/b.npy").cast<Scalar>(),
 		};
-		i32 n = i32(qp.H.rows());
-		i32 n_eq = i32(qp.A.rows());
+		isize n = isize(qp.H.rows());
+		isize n_eq = isize(qp.A.rows());
 
 		Vec<Scalar> primal_init = Vec<Scalar>::Zero(n);
 		Vec<Scalar> dual_init = Vec<Scalar>::Zero(n_eq);
@@ -62,8 +62,8 @@ auto main() -> int {
 			primal_init.setZero();
 			dual_init.setZero();
 			return qp::detail::solve_qp( //
-					detail::from_eigen_vector_mut(primal_init),
-					detail::from_eigen_vector_mut(dual_init),
+					{from_eigen, primal_init},
+					{from_eigen, dual_init},
 					qp.as_view(),
 					max_iter,
 					eps_abs,
@@ -73,8 +73,8 @@ auto main() -> int {
 
 		auto osqp = ldlt_test::bench_for(duration, [&] {
 			return ldlt_test::osqp::solve_eq_osqp_sparse( //
-					detail::from_eigen_vector_mut(primal_init),
-					detail::from_eigen_vector_mut(dual_init),
+					{from_eigen, primal_init},
+					{from_eigen, dual_init},
 					ldlt_test::osqp::to_sparse_sym(qp.H),
 					ldlt_test::osqp::to_sparse(qp.A),
 					qp.as_view().g,

@@ -8,20 +8,6 @@
 namespace ldlt {
 namespace pybind11 {
 
-constexpr auto to_eigen_layout(Layout l) -> int {
-	return l == colmajor ? Eigen::ColMajor : Eigen::RowMajor;
-}
-constexpr auto from_eigen_layout(int l) -> Layout {
-	return (unsigned(l) & Eigen::RowMajorBit) == Eigen::RowMajor ? rowmajor
-	                                                             : colmajor;
-}
-static_assert(
-		to_eigen_layout(from_eigen_layout(Eigen::ColMajor)) == Eigen::ColMajor,
-		".");
-static_assert(
-		to_eigen_layout(from_eigen_layout(Eigen::RowMajor)) == Eigen::RowMajor,
-		".");
-
 template <typename T, Layout L>
 using MatRef = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
@@ -34,92 +20,91 @@ using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
 template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
-template <typename T, Layout OutL, Layout InL>
+template <typename T, Layout L>
 void factorize( //
-		MatRefMut<T, OutL> out_l,
+		MatRefMut<T, colmajor> out_l,
 		VecRefMut<T> out_d,
-		MatRef<T, InL> mat) {
+		MatRef<T, L> mat) {
 	ldlt::factorize( //
-			LdltViewMut<T, OutL>{
-					detail::from_eigen_matrix_mut(out_l),
-					detail::from_eigen_vector_mut(out_d),
+			LdltViewMut<T>{
+					{from_eigen, out_l},
+					{from_eigen, out_d},
 			},
-			detail::from_eigen_matrix(mat),
-			factorization_strategy::defer_to_colmajor);
+			MatrixView<T, L>{from_eigen, mat});
 }
 
-template <typename T, Layout L>
+template <typename T>
 void diagonal_update( //
-		MatRefMut<T, L> out_l,
+		MatRefMut<T, colmajor> out_l,
 		VecRefMut<T> out_d,
-		MatRef<T, L> in_l,
+		MatRef<T, colmajor> in_l,
 		VecRef<T> in_d,
 		VecRef<T> diag_section,
 		i32 start_idx) {
 	ldlt::diagonal_update(
-			LdltViewMut<T, L>{
-					detail::from_eigen_matrix_mut(out_l),
-					detail::from_eigen_vector_mut(out_d),
+			LdltViewMut<T>{
+					{from_eigen, out_l},
+					{from_eigen, out_d},
 			},
-			LdltView<T, L>{
-					detail::from_eigen_matrix(in_l),
-					detail::from_eigen_vector(in_d),
+			LdltView<T>{
+					{from_eigen, in_l},
+					{from_eigen, in_d},
 			},
-			detail::from_eigen_vector(diag_section),
+			{from_eigen, diag_section},
 			start_idx);
 }
 
-template <typename T, Layout L>
+template <typename T>
 void row_delete( //
-		MatRefMut<T, L> out_l,
+		MatRefMut<T, colmajor> out_l,
 		VecRefMut<T> out_d,
-		MatRef<T, L> in_l,
+		MatRef<T, colmajor> in_l,
 		VecRef<T> in_d,
 		i32 row_idx) {
 	ldlt::row_delete(
-			LdltViewMut<T, L>{
-					detail::from_eigen_matrix_mut(out_l),
-					detail::from_eigen_vector_mut(out_d),
+			LdltViewMut<T>{
+					{from_eigen, out_l},
+					{from_eigen, out_d},
 			},
-			LdltView<T, L>{
-					detail::from_eigen_matrix(in_l),
-					detail::from_eigen_vector(in_d),
+			LdltView<T>{
+					{from_eigen, in_l},
+					{from_eigen, in_d},
 			},
 			row_idx);
 }
 
-template <typename T, Layout L>
+template <typename T>
 void row_append( //
-		MatRefMut<T, L> out_l,
+		MatRefMut<T, colmajor> out_l,
 		VecRefMut<T> out_d,
-		MatRef<T, L> in_l,
+		MatRef<T, colmajor> in_l,
 		VecRef<T> in_d,
 		VecRef<T> new_row) {
 	ldlt::row_append(
-			LdltViewMut<T, L>{
-					detail::from_eigen_matrix_mut(out_l),
-					detail::from_eigen_vector_mut(out_d),
+			LdltViewMut<T>{
+					{from_eigen, out_l},
+					{from_eigen, out_d},
 			},
-			LdltView<T, L>{
-					detail::from_eigen_matrix(in_l),
-					detail::from_eigen_vector(in_d),
+			LdltView<T>{
+					{from_eigen, in_l},
+					{from_eigen, in_d},
 			},
-			detail::from_eigen_vector(new_row));
+			{from_eigen, new_row});
 }
 
-template <typename T, Layout L>
+template <typename T>
 void solve( //
 		VecRefMut<T> x,
-		MatRef<T, L> l,
+		MatRef<T, colmajor> l,
 		VecRef<T> d,
 		VecRef<T> rhs) {
 	detail::solve_impl(
-			detail::from_eigen_vector_mut(x),
-			LdltView<T, L>{
-					detail::from_eigen_matrix(l),
-					detail::from_eigen_vector(d),
+			{from_eigen, x},
+			LdltView<T>{
+					{from_eigen, l},
+					{from_eigen, d},
 			},
-			detail::from_eigen_vector(rhs));
+			{from_eigen, rhs});
 }
 } // namespace pybind11
 } // namespace ldlt
@@ -139,22 +124,22 @@ INRIA LDLT decomposition
 	constexpr auto r = rowmajor;
 	constexpr auto c = colmajor;
 
-	m.def("factorize", &ldlt::pybind11::factorize<f32, c, r>);
-	m.def("factorize", &ldlt::pybind11::factorize<f64, c, r>);
-	m.def("factorize", &ldlt::pybind11::factorize<f32, c, c>);
-	m.def("factorize", &ldlt::pybind11::factorize<f64, c, c>);
+	m.def("factorize", &ldlt::pybind11::factorize<f32, r>);
+	m.def("factorize", &ldlt::pybind11::factorize<f64, r>);
+	m.def("factorize", &ldlt::pybind11::factorize<f32, c>);
+	m.def("factorize", &ldlt::pybind11::factorize<f64, c>);
 
-	m.def("diagonal_update", &ldlt::pybind11::diagonal_update<f32, c>);
-	m.def("diagonal_update", &ldlt::pybind11::diagonal_update<f64, c>);
+	m.def("diagonal_update", &ldlt::pybind11::diagonal_update<f32>);
+	m.def("diagonal_update", &ldlt::pybind11::diagonal_update<f64>);
 
-	m.def("row_delete", &ldlt::pybind11::row_delete<f32, c>);
-	m.def("row_delete", &ldlt::pybind11::row_delete<f64, c>);
+	m.def("row_delete", &ldlt::pybind11::row_delete<f32>);
+	m.def("row_delete", &ldlt::pybind11::row_delete<f64>);
 
-	m.def("row_append", &ldlt::pybind11::row_append<f32, c>);
-	m.def("row_append", &ldlt::pybind11::row_append<f64, c>);
+	m.def("row_append", &ldlt::pybind11::row_append<f32>);
+	m.def("row_append", &ldlt::pybind11::row_append<f64>);
 
-	m.def("solve", &ldlt::pybind11::solve<f32, c>);
-	m.def("solve", &ldlt::pybind11::solve<f64, c>);
+	m.def("solve", &ldlt::pybind11::solve<f32>);
+	m.def("solve", &ldlt::pybind11::solve<f64>);
 
 	m.attr("__version__") = "dev";
 }

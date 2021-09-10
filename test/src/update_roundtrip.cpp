@@ -6,23 +6,23 @@
 
 using namespace ldlt;
 
-template <typename T, Layout InL, Layout OutL>
+template <typename T>
 struct Data {
-	Mat<T, InL> mat;
+	Mat<T, colmajor> mat;
 	Vec<T> w;
 	T alpha;
-	Mat<T, OutL> l;
+	Mat<T, colmajor> l;
 	Vec<T> d;
 };
 
-template <typename T, Layout InL, Layout OutL>
-auto generate_data(i32 n) -> Data<T, InL, OutL> {
+template <typename T>
+auto generate_data(isize n) -> Data<T> {
 	ldlt_test::rand::set_seed(uint64_t(n));
-	Mat<T, InL> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
+	Mat<T, colmajor> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
 	Vec<T> w = ldlt_test::rand::vector_rand<T>(n);
-	T alpha = ldlt_test::rand::normal_rand();
+	T alpha = T(ldlt_test::rand::normal_rand());
 
-	Mat<T, OutL> l(n, n);
+	Mat<T, colmajor> l(n, n);
 	l.setZero();
 
 	Vec<T> d(n);
@@ -37,8 +37,8 @@ auto generate_data(i32 n) -> Data<T, InL, OutL> {
 	};
 }
 
-template <typename T, Layout InL, Layout OutL>
-auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
+template <typename T>
+auto ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto const& mat = data.mat;
 	auto const& w = data.w;
 	auto const& alpha = data.alpha;
@@ -48,12 +48,12 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	l.setZero();
 	d.setZero();
 
-	auto m_view = detail::from_eigen_matrix(mat);
-	auto ldl_view = LdltViewMut<T, OutL>{
-			detail::from_eigen_matrix_mut(l),
-			detail::from_eigen_vector_mut(d),
+	auto m_view = MatrixView<T, colmajor>{from_eigen, mat};
+	auto ldl_view = LdltViewMut<T>{
+			{from_eigen, l},
+			{from_eigen, d},
 	};
-	auto w_view = detail::from_eigen_vector(w);
+	auto w_view = VectorView<T>{from_eigen, w};
 
 	{
 		EigenNoAlloc _{};
@@ -70,8 +70,8 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	    .norm();
 }
 
-template <typename T, Layout InL, Layout OutL>
-auto eigen_ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
+template <typename T>
+auto eigen_ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto const& mat = data.mat;
 	auto const& w = data.w;
 	auto const& alpha = data.alpha;
@@ -87,9 +87,9 @@ auto eigen_ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
 	    .norm();
 }
 
-template <typename T, Layout InL, Layout OutL>
-auto roundtrip_test(i32 n) -> T {
-	auto data = generate_data<T, InL, OutL>(n);
+template <typename T>
+auto roundtrip_test(isize n) -> T {
+	auto data = generate_data<T>(n);
 
 	T err_eigen = ::eigen_ldlt_roundtrip_error(data);
 	T err_ours = ::ldlt_roundtrip_error(data);
@@ -106,15 +106,11 @@ auto roundtrip_test(i32 n) -> T {
 using C = detail::constant<Layout, colmajor>;
 using R = detail::constant<Layout, rowmajor>;
 
-DOCTEST_TEST_CASE_TEMPLATE(
-		"rank one update: roundtrip", Args, detail::type_sequence<f64, C, C>) {
-	i32 min = 1;
-	i32 max = 128;
-	using Scalar = detail::typeseq_ith<0, Args>;
-	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
-	constexpr auto OutL = detail::typeseq_ith<2, Args>::value;
+DOCTEST_TEST_CASE_TEMPLATE("rank one update: roundtrip", Scalar, f64) {
+	isize min = 1;
+	isize max = 16;
 
-	for (i32 i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL, OutL>(i) <= Scalar(1e2));
+	for (isize i = min; i <= max; ++i) {
+		DOCTEST_CHECK(roundtrip_test<Scalar>(i) <= Scalar(1e2));
 	}
 }

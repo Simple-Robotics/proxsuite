@@ -6,25 +6,22 @@
 namespace ldlt {
 namespace factorization_strategy {
 LDLT_DEFINE_TAG(standard, Standard);
-LDLT_DEFINE_TAG(defer_to_colmajor, DeferToColMajor);
-LDLT_DEFINE_TAG(defer_to_rowmajor, DeferToRowMajor);
-LDLT_DEFINE_TAG(experimental, Experimental)
+LDLT_DEFINE_TAG(experimental, Experimental);
 } // namespace factorization_strategy
 
 namespace detail {
-template <typename Scalar, Layout OutL, Layout InL>
-LDLT_NO_INLINE void factorize_ldlt_tpl(
-		LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+template <typename T, Layout L>
+LDLT_NO_INLINE void
+factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 	// TODO: use upper half of in_matrix
 
-	bool inplace = (out.l.data == in_matrix.data) && (OutL == InL);
+	bool inplace = (out.l.data == in_matrix.data);
+	isize dim = out.l.rows;
 
-	i32 dim = out.l.rows;
+	LDLT_WORKSPACE_MEMORY(wp, dim, T);
 
-	LDLT_WORKSPACE_MEMORY(wp, dim, Scalar);
-
-	for (i32 j = 0; j < dim; ++j) {
+	for (isize j = 0; j < dim; ++j) {
 		/********************************************************************************
 		 *     l00 l01 l02
 		 * l = l10  1  l12
@@ -33,35 +30,35 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		 * l{0,1,2}0 already known, compute l21
 		 */
 
-		i32 m = dim - j - 1;
+		isize m = dim - j - 1;
 
 		// avoid buffer overflow UB when accessing the matrices
-		i32 j_inc = ((j + 1) < dim) ? j + 1 : j;
+		isize j_inc = ((j + 1) < dim) ? j + 1 : j;
 
-		auto l01 = to_eigen_vector_mut(out.l.col(j).segment(0, j));
+		auto l01 = out.l.col(j).segment(0, j).to_eigen();
 		l01.setZero();
-		Scalar in_diag = in_matrix(j, j);
-		out.l(j, j) = Scalar(1);
+		T in_diag = in_matrix(j, j);
+		out.l(j, j) = T(1);
 
 		auto l_c = out.l.as_const();
 		auto d_c = out.d.as_const();
 
-		auto l10 = to_eigen_vector(l_c.row(j).segment(0, j));
-		auto l20 = to_eigen_matrix(l_c.block(j_inc, 0, m, j));
-		auto l21 = to_eigen_vector_mut(out.l.col(j).segment(j_inc, m));
-		auto a21 = to_eigen_vector(in_matrix.col(j).segment(j_inc, m));
-		auto d = to_eigen_vector(d_c.segment(0, j));
+		auto l10 = l_c.row(j).segment(0, j).to_eigen();
+		auto l20 = l_c.block(j_inc, 0, m, j).to_eigen();
+		auto l21 = out.l.col(j).segment(j_inc, m).to_eigen();
+		auto a21 = in_matrix.col(j).segment(j_inc, m).to_eigen();
+		auto d = d_c.segment(0, j).to_eigen();
 
-		auto tmp_read = detail::VecMap<Scalar>{wp, j};
-		auto tmp = detail::VecMapMut<Scalar>{wp, j};
+		auto tmp_read = detail::VecMap<T>{wp, j};
+		auto tmp = detail::VecMapMut<T>{wp, j};
 
 		tmp.array() = l10.array().operator*(d.array());
-		out.d(j) = in_diag - Scalar(tmp_read.dot(l10));
+		out.d(j) = in_diag - T(tmp_read.dot(l10));
 		if (!inplace) {
 			l21 = a21;
 		}
 		l21.noalias().operator-=(l20.operator*(tmp_read));
-		l21.operator*=(Scalar(1) / out.d(j));
+		l21.operator*=(T(1) / out.d(j));
 	}
 }
 
@@ -70,88 +67,40 @@ struct FactorizeStartegyDispatch;
 
 template <>
 struct FactorizeStartegyDispatch<factorization_strategy::Standard> {
-	template <typename Scalar, Layout OutL, Layout InL>
-	static LDLT_INLINE void
-	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+	template <typename T, Layout L>
+	static LDLT_INLINE void fn(LdltViewMut<T> out, MatrixView<T, L> in_matrix) {
 		detail::factorize_ldlt_tpl(out, in_matrix);
 	}
 };
 template <>
 struct FactorizeStartegyDispatch<factorization_strategy::Experimental> {
-	template <typename Scalar, Layout OutL, Layout InL>
-	static LDLT_INLINE void
-	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
+	template <typename T, Layout L>
+	static LDLT_INLINE void fn(LdltViewMut<T> out, MatrixView<T, L> in_matrix) {
 		// TODO: use faster matrix-vector product?
 		detail::factorize_ldlt_tpl(out, in_matrix);
 	}
 };
-template <>
-struct FactorizeStartegyDispatch<factorization_strategy::DeferToColMajor> {
-	template <typename Scalar, Layout OutL, Layout InL>
-	static LDLT_INLINE void
-	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
-		detail::factorize_ldlt_tpl(
-				LdltViewMut<Scalar, colmajor>{
-						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
-						out.d,
-				},
-				in_matrix);
-		detail::ElementAccess<OutL>::transpose_if_rowmajor( //
-				out.l.data,
-				out.l.rows,
-				out.l.outer_stride);
-	}
-};
-template <>
-struct FactorizeStartegyDispatch<factorization_strategy::DeferToRowMajor> {
-	template <typename Scalar, Layout OutL, Layout InL>
-	static LDLT_INLINE void
-	fn(LdltViewMut<Scalar, OutL> out, MatrixView<Scalar, InL> in_matrix) {
-		detail::factorize_ldlt_tpl(
-				LdltViewMut<Scalar, rowmajor>{
-						{out.l.data, out.l.rows, out.l.cols, out.l.outer_stride},
-						out.d,
-				},
-				in_matrix);
-		detail::ElementAccess<ldlt::flip_layout(OutL)>::transpose_if_rowmajor( //
-				out.l.data,
-				out.l.rows,
-				out.l.outer_stride);
-	}
-};
-} // namespace detail
 
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f32, colmajor>, MatrixView<f32, colmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f64, colmajor>, MatrixView<f64, colmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f32, rowmajor>, MatrixView<f32, colmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f64, rowmajor>, MatrixView<f64, colmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f32, colmajor>, MatrixView<f32, rowmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f64, colmajor>, MatrixView<f64, rowmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f32, colmajor>, MatrixView<f32, rowmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f64, colmajor>, MatrixView<f64, rowmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f32, rowmajor>, MatrixView<f32, rowmajor>);
-extern template void ldlt::detail::factorize_ldlt_tpl(
-		LdltViewMut<f64, rowmajor>, MatrixView<f64, rowmajor>);
+extern template void
+		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, colmajor>);
+extern template void
+		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, colmajor>);
+extern template void
+		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, rowmajor>);
+extern template void
+		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, rowmajor>);
+
+} // namespace detail
 
 namespace nb {
 struct factorize {
 	template <
-			typename Scalar,
-			Layout OutL,
-			Layout InL,
+			typename T,
+			Layout L,
 			typename Strategy = factorization_strategy::Standard>
 	LDLT_INLINE void operator()(
-			LdltViewMut<Scalar, OutL> out,
-			MatrixView<Scalar, InL> in_matrix,
+			LdltViewMut<T> out,
+			MatrixView<T, L> in_matrix,
 			Strategy /*tag*/ = Strategy{}) const {
 		detail::FactorizeStartegyDispatch<Strategy>::fn(out, in_matrix);
 	}

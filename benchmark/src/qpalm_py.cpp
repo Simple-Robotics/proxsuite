@@ -64,8 +64,8 @@ auto main() -> int {
 			primal_init.setZero();
 			dual_init.setZero();
 			return qp::detail::solve_qp( //
-					detail::from_eigen_vector_mut(primal_init),
-					detail::from_eigen_vector_mut(dual_init),
+					{from_eigen, primal_init},
+					{from_eigen, dual_init},
 					qp.as_view(),
 					max_iter,
 					eps_abs,
@@ -75,8 +75,8 @@ auto main() -> int {
 
 		auto qpalm = ldlt_test::bench_for(duration, [&] {
 			return ldlt_test::qpalm::solve_eq_qpalm_sparse( //
-					detail::from_eigen_vector_mut(primal_init),
-					detail::from_eigen_vector_mut(dual_init),
+					{from_eigen, primal_init},
+					{from_eigen, dual_init},
 					ldlt_test::qpalm::to_sparse_sym(qp.H),
 					ldlt_test::qpalm::to_sparse(qp.A),
 					qp.as_view().g,

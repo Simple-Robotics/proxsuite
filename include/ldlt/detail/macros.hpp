@@ -492,7 +492,7 @@
 			::ldlt::detail::SimdCachelineAlignStep<Type>::value);
 
 #define LDLT_MULTI_WORKSPACE_MEMORY(Names_Counts, Type)                        \
-	::ldlt::i32 LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__) =                       \
+	::ldlt::isize LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__) =                     \
 			LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_PLUS, Type, Names_Counts);              \
 	LDLT_WORKSPACE_MEMORY(                                                       \
 			LDLT_PP_CAT2(_ldlt_workspace, __LINE__),                                 \
@@ -506,5 +506,180 @@
 #else
 #define LDLT_IF_CONSTEXPR if
 #endif
+
+#define LDLT_TEMPLATE(TParams, Constraint, Attr_Name, ...)                     \
+	LDLT_IMPL_TEMPLATE(                                                          \
+			Attr_Name,                                                               \
+			TParams,                                                                 \
+			LDLT_PP_CAT2(LDLT_IMPL_PREFIX_, Constraint),                             \
+			__VA_ARGS__)
+
+#define LDLT_IMPL_PREFIX_requires
+#define LDLT_IMPL_PREFIX_explicit
+
+#if defined(__cpp_concepts) && __cpp_concepts >= 201907L
+#define LDLT_HAS_CONCEPTS 1
+#else
+#define LDLT_HAS_CONCEPTS 0
+#endif
+
+#if LDLT_HAS_CONCEPTS
+#define LDLT_IMPL_TEMPLATE(Attr_Name, TParams, Constraint, ...)                \
+	template <LDLT_PP_REMOVE_PAREN(TParams)>                                     \
+	requires Constraint Attr_Name LDLT_PP_TUPLE_TRANSFORM_I(                     \
+			LDLT_IMPL_PARAM_EXPAND, _, (__VA_ARGS__))
+#else
+
+#define LDLT_IMPL_TEMPLATE2_HELPER_0(Constraint, Param)                        \
+	LDLT_PP_TAIL Param LDLT_PP_HEAD Param
+
+#define LDLT_IMPL_TEMPLATE2_HELPER_1(Constraint, Param)                        \
+	::ldlt::detail::DiscardFirst<                                                \
+			::ldlt::detail::enable_if_t<(Constraint), void>,                         \
+			LDLT_PP_TAIL Param>                                                      \
+			LDLT_PP_HEAD Param
+
+#define LDLT_IMPL_TEMPLATE2_HELPER(I, Constraint, Param)                       \
+	LDLT_PP_CAT2(                                                                \
+			LDLT_IMPL_TEMPLATE2_HELPER_, LDLT_IMPL_PP_IS_1(LDLT_IMPL_PP_INC(I)))     \
+	(Constraint, Param)
+
+#define LDLT_IMPL_TEMPLATE(Attr_Name, TParams, Constraint, ...)                \
+	template <LDLT_PP_REMOVE_PAREN(TParams)>                                     \
+	Attr_Name LDLT_PP_TUPLE_TRANSFORM_I(                                         \
+			LDLT_IMPL_TEMPLATE2_HELPER, Constraint, (__VA_ARGS__))
+
+#endif
+
+#if LDLT_HAS_CONCEPTS
+
+#define LDLT_IMPL_AND(_, Param) &&LDLT_PP_UNWRAP(Param)
+#define LDLT_IMPL_OR(_, Param) || LDLT_PP_UNWRAP(Param)
+
+#define LDLT_IMPL_CONJUNCTION(First, ...)                                      \
+	(LDLT_PP_UNWRAP(First)                                                       \
+	     LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_AND, _, (__VA_ARGS__)))
+
+#define LDLT_IMPL_DISJUNCTION(First, ...)                                      \
+	(LDLT_PP_UNWRAP(First) LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_OR, _, (__VA_ARGS__)))
+
+#define LDLT_DEF_CONCEPT(Tpl, Name, ...)                                       \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	concept Name = __VA_ARGS__
+
+#define LDLT_CHECK_CONCEPT_MACRO(Namespace, ...)                               \
+	static_assert(                                                               \
+			Namespace::__VA_ARGS__, LDLT_PP_STRINGIZE(__VA_ARGS__) " failed")
+#define LDLT_CONCEPT_MACRO(Namespace, ...) Namespace::__VA_ARGS__
+
+#define LDLT_DEF_CONCEPT_CONJUNCTION(Tpl, Name, Terms)                         \
+	LDLT_DEF_CONCEPT(Tpl, Name, LDLT_IMPL_CONJUNCTION Terms)
+#define LDLT_DEF_CONCEPT_DISJUNCTION(Tpl, Name, Terms)                         \
+	LDLT_DEF_CONCEPT(Tpl, Name, LDLT_IMPL_DISJUNCTION Terms)
+
+#else
+
+#if __cplusplus >= 201703L
+#define LDLT_IMPL_DEF_CONCEPT(Tpl, Name, Value, ...)                           \
+	namespace _ {                                                                \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	struct Name : __VA_ARGS__ {};                                                \
+	}                                                                            \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	inline constexpr bool const& Name = Value
+#elif __cplusplus >= 201402L
+#define LDLT_IMPL_DEF_CONCEPT(Tpl, Name, Value, ...)                           \
+	namespace _ {                                                                \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	struct Name : __VA_ARGS__ {};                                                \
+	}                                                                            \
+	namespace {                                                                  \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	constexpr bool const& Name = ::ldlt::detail::Constant<bool, Value>::value;   \
+	}                                                                            \
+	LDLT_NOM_SEMICOLON
+#else
+#define LDLT_IMPL_DEF_CONCEPT(Tpl, Name, Value, ...)                           \
+	template <LDLT_PP_REMOVE_PAREN1(Tpl)>                                        \
+	struct Name : __VA_ARGS__ {}
+#endif
+
+#if __cplusplus >= 201402L
+#define LDLT_CONCEPT_MACRO(Namespace, ...) Namespace::__VA_ARGS__
+#define LDLT_IMPL_ADD_VALUE(I, _, Param) (Param)
+#define LDLT_IMPL_TRAIT(Param) LDLT_PP_HEAD Param _::LDLT_PP_TAIL Param
+#else
+#define LDLT_CONCEPT_MACRO(Namespace, ...) Namespace::__VA_ARGS__::value
+#define LDLT_IMPL_ADD_VALUE(I, _, Param) ((LDLT_PP_REMOVE_PAREN(Param)::value))
+#define LDLT_IMPL_TRAIT(Param) LDLT_PP_UNWRAP(Param)
+#endif
+#define LDLT_IMPL_PUT_TRAIT(I, _, Param) LDLT_IMPL_TRAIT(Param)
+
+#define LDLT_CHECK_CONCEPT_MACRO(Namespace, ...)                               \
+	static_assert(                                                               \
+			decltype(Namespace::check_##__VA_ARGS__())::value,                       \
+			LDLT_PP_STRINGIZE(__VA_ARGS__) " failed")
+#define LDLT_DEF_CONCEPT(Tpl, Name, ...)                                       \
+	LDLT_IMPL_DEF_CONCEPT(                                                       \
+			Tpl, Name, (__VA_ARGS__), ::ldlt::detail::Constant<bool, __VA_ARGS__>);  \
+	LDLT_TEMPLATE(                                                               \
+			Tpl, requires(__VA_ARGS__), constexpr auto check_##Name, (_ = 0, int))   \
+	noexcept->::ldlt::detail::Constant<bool, true>
+
+#define LDLT_IMPL_SFINAE(_, Param)                                             \
+	, ::ldlt::detail::enable_if_t<LDLT_PP_UNWRAP Param, int> = 0
+
+#define LDLT_IMPL_OVERLOAD(Name_Tpl, Param)                                    \
+	template <                                                                   \
+			LDLT_PP_REMOVE_PAREN(LDLT_PP_TAIL Name_Tpl),                             \
+			::ldlt::detail::enable_if_t<LDLT_PP_UNWRAP Param, int> = 0>              \
+	auto LDLT_PP_CAT(                                                            \
+			check_,                                                                  \
+			LDLT_PP_HEAD Name_Tpl)() noexcept->::ldlt::detail::Constant<bool, true>;
+
+#define LDLT_DEF_CONCEPT_BOOL_CONJUNCTION_IMPL(Tpl, Name, Base, Seq)           \
+	LDLT_IMPL_DEF_CONCEPT(                                                       \
+			Tpl,                                                                     \
+			Name,                                                                    \
+			(LDLT_PP_REMOVE_PAREN1(Base)::value),                                    \
+			LDLT_PP_REMOVE_PAREN1(Base));                                            \
+	template <LDLT_PP_REMOVE_PAREN(Tpl)                                          \
+	              LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_SFINAE, _, Seq)>              \
+	auto check_##Name() noexcept->::ldlt::detail::Constant<bool, true>
+#define LDLT_DEF_CONCEPT_BOOL_DISJUNCTION_IMPL(Tpl, Name, Base, Seq)           \
+	LDLT_IMPL_DEF_CONCEPT(                                                       \
+			Tpl,                                                                     \
+			Name,                                                                    \
+			(LDLT_PP_REMOVE_PAREN1(Base)::value),                                    \
+			LDLT_PP_REMOVE_PAREN1(Base));                                            \
+	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_OVERLOAD, (Name, Tpl), Seq)                 \
+	LDLT_NOM_SEMICOLON
+
+#define LDLT_DEF_CONCEPT_CONJUNCTION(Tpl, Name, Terms)                         \
+	LDLT_DEF_CONCEPT_BOOL_CONJUNCTION_IMPL(                                      \
+			Tpl,                                                                     \
+			Name,                                                                    \
+			(LDLT_IMPL_CONJUNCTION(Terms)),                                          \
+			LDLT_PP_TUPLE_TRANSFORM_I(LDLT_IMPL_ADD_VALUE, _, Terms))
+
+#define LDLT_DEF_CONCEPT_DISJUNCTION(Tpl, Name, Terms)                         \
+	LDLT_DEF_CONCEPT_BOOL_DISJUNCTION_IMPL(                                      \
+			Tpl,                                                                     \
+			Name,                                                                    \
+			(LDLT_IMPL_DISJUNCTION(Terms)),                                          \
+			LDLT_PP_TUPLE_TRANSFORM_I(LDLT_IMPL_ADD_VALUE, _, Terms))
+
+#define LDLT_IMPL_CONJUNCTION(Tuple)                                           \
+	::ldlt::detail::Conjunction<LDLT_PP_REMOVE_PAREN(                            \
+			LDLT_PP_TUPLE_TRANSFORM_I(LDLT_IMPL_PUT_TRAIT, _, Tuple))>
+#define LDLT_IMPL_DISJUNCTION(Tuple)                                           \
+	::ldlt::detail::Disjunction<LDLT_PP_REMOVE_PAREN(                            \
+			LDLT_PP_TUPLE_TRANSFORM_I(LDLT_IMPL_PUT_TRAIT, _, Tuple))>
+
+#endif
+
+#define LDLT_CHECK_CONCEPT(...)                                                \
+	LDLT_CHECK_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
+#define LDLT_CONCEPT(...) LDLT_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
 
 #endif /* end of include guard LDLT_MACROS_HPP_TSAOHJEXS */

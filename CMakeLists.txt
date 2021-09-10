@@ -8,10 +8,12 @@ else()
   set(top_level TRUE)
 endif()
 
+option(INRIA_LDLT_ENABLE_TESTING "build with tests" OFF)
+
 if(top_level AND INRIA_LDLT_ENABLE_TESTING)
-  set(INRIA_LDLT_ENABLE_TESTING ON)
+  set(ENABLE_TESTING ON)
 else()
-  set(INRIA_LDLT_ENABLE_TESTING OFF)
+  set(ENABLE_TESTING OFF)
 endif()
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -21,7 +23,7 @@ if(ENABLE_DOCS_ONLY)
   return()
 endif()
 
-if(INRIA_LDLT_ENABLE_TESTING)
+if(ENABLE_TESTING)
   set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
@@ -31,8 +33,9 @@ include(cmake/static_analyzers.cmake)
 include(cmake/sanitizers.cmake)
 include(cmake/conan.cmake)
 
-if(INRIA_LDLT_ENABLE_TESTING)
+if(ENABLE_TESTING)
   add_compile_options("-g")
+  include(cmake/extra_local_settings.cmake)
 endif()
 
 add_library(
@@ -66,7 +69,8 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 endif()
 
 # Conan dependencies
-if(INRIA_LDLT_ENABLE_TESTING)
+if(ENABLE_TESTING)
+
   target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
   set(CONAN_REQUIRES
       # MIT License
@@ -92,13 +96,11 @@ if(INRIA_LDLT_ENABLE_TESTING)
 
   target_link_libraries(inria_ldlt PUBLIC project_options project_warnings)
 
-  include(cmake/extra_local_settings.cmake)
-
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
 endif()
 
-if(INRIA_LDLT_ENABLE_TESTING)
+if(ENABLE_TESTING)
   enable_testing()
   add_subdirectory(test)
   add_subdirectory(benchmark)

@@ -8,17 +8,12 @@
 
 using namespace ldlt;
 
-using C = detail::constant<Layout, colmajor>;
-using R = detail::constant<Layout, rowmajor>;
-
-DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
+DOCTEST_TEST_CASE("solve") {
 	using T = double;
 
-	constexpr Layout L = LType::value;
-	for (i32 i = 1; i <= 128; ++i) {
-		std::srand(unsigned(i));
+	for (isize i = 1; i <= 16; ++i) {
 		Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(i, T(1e2));
-		Mat<T, L> l(i, i);
+		Mat<T, colmajor> l(i, i);
 		Vec<T> d(i);
 
 		Vec<T> b = ldlt_test::rand::vector_rand<T>(i);
@@ -26,14 +21,14 @@ DOCTEST_TEST_CASE_TEMPLATE("solve", LType, C, R) {
 		Vec<T> x_eigen(i);
 		Vec<long double> x_eigen_upscaled(i);
 
-		auto a_view = detail::from_eigen_matrix(a);
-		auto ldl_view = LdltViewMut<T, L>{
-				detail::from_eigen_matrix_mut(l),
-				detail::from_eigen_vector_mut(d),
+		auto a_view = MatrixView<T, colmajor>{from_eigen, a};
+		auto ldl_view = LdltViewMut<T>{
+				{from_eigen, l},
+				{from_eigen, d},
 		};
 
-		auto x_view = detail::from_eigen_vector_mut(x);
-		auto b_view = detail::from_eigen_vector(b);
+		auto x_view = VectorViewMut<T>{from_eigen, x};
+		auto b_view = VectorView<T>{from_eigen, b};
 
 		{
 			EigenNoAlloc _{};

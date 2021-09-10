@@ -15,67 +15,65 @@ LDLT_DEFINE_TAG(full_refactorize, FullRefactorize);
 
 namespace detail {
 
-template <typename Scalar, Layout L, usize N>
+template <typename T, usize N>
 LDLT_INLINE void rank1_update_inner_loop_packed(
-		i32 i,
-		Pack<Scalar, N> p_p,
-		Pack<Scalar, N> p_c,
-		Pack<Scalar, N> p_beta,
+		isize i,
+		Pack<T, N> p_p,
+		Pack<T, N> p_c,
+		Pack<T, N> p_beta,
 
-		MatrixViewMut<Scalar, L> out_l,
-		MatrixView<Scalar, L> in_l,
-		Scalar* wp,
-		i32 j,
-		i32 offset) {
-	i32 r = i + j + 1;
+		MatrixViewMut<T, colmajor> out_l,
+		MatrixView<T, colmajor> in_l,
+		T* wp,
+		isize j,
+		isize offset) {
+	isize r = i + j + 1;
 
 	// TODO[PERF]: check asm, clang does weird stuff with address computations in
 	// tight loop
 
-	auto in_l_ptr = ElementAccess<L>::offset(in_l.data, r, j, in_l.outer_stride);
-	auto out_l_ptr =
-			ElementAccess<L>::offset(out_l.data, r, j, out_l.outer_stride);
+	auto in_l_ptr = in_l.ptr(r, j);
+	auto out_l_ptr = out_l.ptr(r, j);
 
-	Pack<Scalar, N> p_wr = Pack<Scalar, N>::load_unaligned(wp + (r - offset));
-	Pack<Scalar, N> p_in_l =
-			ElementAccess<L>::template load_col_pack<N>(in_l_ptr, in_l.outer_stride);
+	Pack<T, N> p_wr = Pack<T, N>::load_unaligned(wp + (r - offset));
+	Pack<T, N> p_in_l = Pack<T, N>::load_unaligned(in_l_ptr);
 
-	p_wr = Pack<Scalar, N>::fnmadd(p_p, p_in_l, p_wr);
+	p_wr = Pack<T, N>::fnmadd(p_p, p_in_l, p_wr);
 	p_wr.store_unaligned(wp + (r - offset));
 	p_in_l = p_in_l.mul(p_c);
-	p_in_l = Pack<Scalar, N>::fmadd(p_beta, p_wr, p_in_l);
+	p_in_l = Pack<T, N>::fmadd(p_beta, p_wr, p_in_l);
 
-	ElementAccess<L>::store_col_pack(out_l_ptr, p_in_l, out_l.outer_stride);
+	p_in_l.store_unaligned(out_l_ptr);
 }
 
-template <typename Scalar, Layout L>
+template <typename T>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, true> /*tag*/,
-		MatrixViewMut<Scalar, L> out_l,
-		MatrixView<Scalar, L> in_l,
-		i32 dim,
-		Scalar* wp,
-		i32 j,
-		i32 offset,
-		Scalar p,
-		Scalar c,
-		Scalar beta) {
+		MatrixViewMut<T, colmajor> out_l,
+		MatrixView<T, colmajor> in_l,
+		isize dim,
+		T* wp,
+		isize j,
+		isize offset,
+		T p,
+		T c,
+		T beta) {
 
-	using Info = NativePackInfo<Scalar>;
-	constexpr i32 N = i32{Info::N};
-	constexpr i32 N_min = i32{Info::N_min};
+	using Info = NativePackInfo<T>;
+	constexpr isize N = isize{Info::N};
+	constexpr isize N_min = isize{Info::N_min};
 
-	i32 const loop_len = dim - (j + 1);
-	i32 done = loop_len / N * N;
-	i32 rem = loop_len - done;
+	isize const loop_len = dim - (j + 1);
+	isize done = loop_len / N * N;
+	isize rem = loop_len - done;
 
 	{
-		using Pack_ = NativePack<Scalar>;
+		using Pack_ = NativePack<T>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
 
-		for (i32 i = 0; i < done; i += N) {
+		for (isize i = 0; i < done; i += N) {
 			detail::rank1_update_inner_loop_packed(
 					i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
 		}
@@ -83,7 +81,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 
 #if LDLT_SIMD_HAS_HALF
 	if (rem >= (N / 2)) {
-		using Pack_ = Pack<Scalar, usize{N / 2}>;
+		using Pack_ = Pack<T, usize{N / 2}>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
@@ -98,7 +96,7 @@ LDLT_INLINE void rank1_update_inner_loop(
 #if LDLT_SIMD_HAS_QUARTER
 
 	if (rem >= (N / 4)) {
-		using Pack_ = Pack<Scalar, usize{N / 4}>;
+		using Pack_ = Pack<T, usize{N / 4}>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
@@ -114,14 +112,14 @@ LDLT_INLINE void rank1_update_inner_loop(
 
 	static_assert(N_min == 4 || N_min == 2, ".");
 
-	using Pack_ = Pack<Scalar, 1>;
+	using Pack_ = Pack<T, 1>;
 	Pack_ p_p = {p};
 	Pack_ p_c = {c};
 	Pack_ p_beta = {beta};
 
 	LDLT_IF_CONSTEXPR(Info::N_min == 4) {
 		if (rem >= 2) {
-			for (i32 i = 0; i < 2; ++i) {
+			for (isize i = 0; i < 2; ++i) {
 				detail::rank1_update_inner_loop_packed(
 						done + i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
 			}
@@ -134,59 +132,58 @@ LDLT_INLINE void rank1_update_inner_loop(
 	}
 }
 
-template <typename Scalar, Layout L>
+template <typename T>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, false> /*tag*/,
-		MatrixViewMut<Scalar, L> out_l,
-		MatrixView<Scalar, L> in_l,
-		i32 dim,
-		Scalar* wp,
-		i32 j,
-		i32 offset,
-		Scalar p,
-		Scalar c,
-		Scalar beta) {
+		MatrixViewMut<T, colmajor> out_l,
+		MatrixView<T, colmajor> in_l,
+		isize dim,
+		T* wp,
+		isize j,
+		isize offset,
+		T p,
+		T c,
+		T beta) {
 
-	using Pack_ = Pack<Scalar, 1>;
+	using Pack_ = Pack<T, 1>;
 	Pack_ p_p = {p};
 	Pack_ p_c = {c};
 	Pack_ p_beta = {beta};
 
-	i32 const loop_len = dim - (j + 1);
-	for (i32 i = 0; i < loop_len; ++i) {
+	isize const loop_len = dim - (j + 1);
+	for (isize i = 0; i < loop_len; ++i) {
 		detail::rank1_update_inner_loop_packed(
 				i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
 	}
 }
 
-template <typename Scalar, Layout L>
+template <typename T>
 LDLT_NO_INLINE void rank1_update(
-		LdltViewMut<Scalar, L> out,
-		LdltView<Scalar, L> in,
-		VectorViewMut<Scalar> z,
-		i32 offset,
-		Scalar alpha) {
+		LdltViewMut<T> out,
+		LdltView<T> in,
+		VectorViewMut<T> z,
+		isize offset,
+		T alpha) {
 
-	i32 dim = out.l.rows;
-	Scalar* HEDLEY_RESTRICT wp = z.data;
+	isize dim = out.l.rows;
+	T* HEDLEY_RESTRICT wp = z.data;
 
-	for (i32 j = offset; j < dim; ++j) {
-		Scalar p = wp[j - offset];
-		Scalar old_dj = in.d(j);
-		Scalar new_dj = old_dj + alpha * p * p;
-		Scalar gamma = old_dj / new_dj;
+	for (isize j = offset; j < dim; ++j) {
+		T p = wp[j - offset];
+		T old_dj = in.d(j);
+		T new_dj = old_dj + alpha * p * p;
+		T gamma = old_dj / new_dj;
 		out.d(j) = new_dj;
-		Scalar beta = p * alpha / new_dj;
+		T beta = p * alpha / new_dj;
 		alpha *= gamma;
 
-		Scalar c = gamma + beta * p;
-		out.l(j, j) = Scalar(1);
+		T c = gamma + beta * p;
+		out.l(j, j) = T(1);
 
 		detail::rank1_update_inner_loop(
 				std::integral_constant<
 						bool,
-						(std::is_same<Scalar, f32>::value ||
-		         std::is_same<Scalar, f64>::value)>{},
+						(std::is_same<T, f32>::value || std::is_same<T, f64>::value)>{},
 				out.l,
 				in.l,
 				dim,
@@ -199,226 +196,47 @@ LDLT_NO_INLINE void rank1_update(
 	}
 }
 
-struct Dyn {
-	i32 inner;
-	LDLT_INLINE constexpr auto value() const noexcept -> i32 { return inner; }
-	LDLT_INLINE constexpr auto incr() const noexcept -> Dyn {
-		return {inner + 1};
-	}
-	LDLT_INLINE constexpr auto decr() const noexcept -> Dyn {
-		return {inner - 1};
-	}
-
-	template <typename Fn>
-	LDLT_INLINE void loop(Fn fn) const {
-		for (i32 i = 0; i < inner; ++i) {
-			fn(Dyn{i});
-		}
-	}
-};
-
-struct Empty {};
-
-template <i32 N>
-struct Fix {
-	LDLT_INLINE constexpr auto value() const noexcept -> i32 { return N; }
-	LDLT_INLINE constexpr auto incr() const noexcept -> Fix<N + 1> { return {}; }
-	LDLT_INLINE constexpr auto decr() const noexcept -> Fix<N - 1> { return {}; }
-
-	template <typename Fn, i32... Is>
-	LDLT_INLINE void
-	loop_impl(Fn fn, integer_sequence<i32, Is...> /*tag*/) const {
-		using Arr = Empty[];
-		(void)Arr{Empty{}, (void(fn(Fix<Is>{})), Empty{})...};
-	}
-
-	template <typename Fn>
-	LDLT_INLINE void loop(Fn fn) const {
-		loop_impl(LDLT_FWD(fn), make_integer_sequence<i32, N>{});
-	}
-
-	LDLT_INLINE operator Dyn /* NOLINT */() const noexcept { return {N}; }
-};
-
-template <typename Scalar>
-struct LoopData {
-	Scalar* ws;
-	Scalar* ps;
-	Scalar* betas;
-	Scalar* cs;
-	i32 start_index;
-	i32 dim_rest;
-};
-
-template <typename Scalar>
-struct InnerLoop {
-	Scalar& lr;
-	i32& w_offset;
-	LoopData<Scalar> data;
-	i32 r;
-
-	LDLT_INLINE void operator()(Dyn k) const {
-		LDLT_FP_PRAGMA
-		auto& wr = data.ws[w_offset + (r - data.start_index)];
-		wr = wr - data.ps[k.value()] * lr;
-		lr = data.cs[k.value()] * lr + data.betas[k.value()] * wr;
-
-		w_offset += data.dim_rest;
-	}
-};
-
-template <typename Scalar, Layout L>
-struct OuterLoop {
-	MatrixViewMut<Scalar, L> out_l;
-	MatrixView<Scalar, L> in_l;
-	LoopData<Scalar> data;
-	i32 j;
-
-	LDLT_INLINE void operator()(Fix<0> /*n_diag*/) const {}
-
-	template <typename RMinusJ>
-	LDLT_INLINE void operator()(RMinusJ r_minus_j) const {
-		if (r_minus_j.value() > 0) {
-			i32 r = r_minus_j.value() + j;
-			Scalar lr = in_l(r, j);
-			i32 w_offset = 0;
-			r_minus_j.loop(InnerLoop<Scalar>{lr, w_offset, data, r});
-			out_l(r, j) = lr;
-		}
-	}
-};
-
-template <typename Scalar, Layout L, typename NDiag>
-LDLT_NO_INLINE void diagonal_update_single_pass(
-		LdltViewMut<Scalar, L> out,
-		LdltView<Scalar, L> in,
-		VectorView<Scalar> diag_diff,
-		i32 start_index,
-		NDiag n_diag) {
-	// FIXME: buggy for ndiag > 1
-
-	i32 dim = out.l.rows;
-	i32 n_diag_terms = n_diag.value();
-	if (n_diag_terms == 0) {
-		return;
-	}
-	i32 dim_rest = dim - start_index;
-
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			((ws, n_diag_terms * dim_rest),
-	     (alphas, n_diag_terms),
-	     (ps, n_diag_terms),
-	     (betas, n_diag_terms),
-	     (cs, n_diag_terms)),
-			Scalar);
-
-	for (i32 k = 0; k < n_diag_terms * dim_rest; ++k) {
-		ws[k] = Scalar(0);
-	}
-	for (i32 k = 0; k < n_diag_terms; ++k) {
-		ws[k * dim_rest + k] = Scalar(1);
-		alphas[k] = diag_diff(k);
-	}
-
-	for (i32 j = start_index; j < dim; ++j) {
-
-		{
-			Scalar dj = in.d(j);
-			for (i32 k = 0, w_offset = 0; //
-			     k < n_diag_terms;
-			     ++k, w_offset += dim_rest) {
-				Scalar p = ws[w_offset + (j - start_index)];
-				Scalar& alpha = alphas[k];
-
-				Scalar old_dj = dj;
-				Scalar new_dj = old_dj + alpha * p * p;
-				Scalar gamma = old_dj / new_dj;
-				Scalar beta = p * alpha / new_dj;
-				Scalar c = gamma + beta * p;
-
-				alpha *= gamma;
-
-				dj = new_dj;
-				ps[k] = p;
-				betas[k] = beta;
-				cs[k] = c;
-			}
-			out.d(j) = dj;
-		}
-
-		if (j + n_diag_terms <= dim) {
-			n_diag.loop(OuterLoop<Scalar, L>{
-					out.l,
-					in.l,
-					{ws, ps, betas, cs, start_index, dim_rest},
-					j,
-			});
-		} else {
-			Dyn{dim - j}.loop(OuterLoop<Scalar, L>{
-					out.l,
-					in.l,
-					{ws, ps, betas, cs, start_index, dim_rest},
-					j,
-			});
-		}
-
-		// TODO: vectorize
-		for (i32 r = j + n_diag_terms; r < dim; ++r) {
-			i32 w_offset = 0;
-			Scalar lr = in.l(r, j);
-			n_diag.loop(InnerLoop<Scalar>{
-					lr,
-					w_offset,
-					{ws, ps, betas, cs, start_index, dim_rest},
-					r,
-			});
-			out.l(r, j) = lr;
-		}
-	}
-}
-
-template <typename Scalar, Layout L>
-LDLT_INLINE void diagonal_update_multi_pass(
-		LdltViewMut<Scalar, L> out,
-		LdltView<Scalar, L> in,
-		VectorView<Scalar> diag_diff,
-		i32 start_index) {
-	i32 dim = out.l.rows;
-	i32 dim_rem = dim - start_index;
+template <typename T>
+LDLT_NO_INLINE void diagonal_update_multi_pass(
+		LdltViewMut<T> out,
+		LdltView<T> in,
+		VectorView<T> diag_diff,
+		isize start_index) {
+	isize dim = out.l.rows;
+	isize dim_rem = dim - start_index;
+	isize idx = start_index;
 
 	bool inplace = out.l.data != in.l.data;
 
 	if (!inplace) {
 		if (diag_diff.dim == 0) {
 			// copy all of l, d
-			to_eigen_matrix_mut(out.l) = to_eigen_matrix(in.l);
-			to_eigen_vector_mut(out.d) = to_eigen_vector(in.d);
+			out.l.to_eigen() = in.l.to_eigen();
+			out.d.to_eigen() = in.d.to_eigen();
 		} else {
 			// copy left part of l, d
-			to_eigen_matrix_mut(out.l.block(0, 0, dim, start_index)) =
-					to_eigen_matrix(in.l.block(0, 0, dim, start_index));
-
-			to_eigen_vector_mut(out.d.segment(0, start_index)) =
-					to_eigen_vector(in.d.segment(0, start_index));
+			out.l.block(0, 0, dim, idx).to_eigen() =
+					in.l.block(0, 0, dim, idx).to_eigen();
+			out.d.segment(0, idx).to_eigen() = in.d.segment(0, idx).to_eigen();
 		}
 	}
 	if (diag_diff.dim == 0) {
 		return;
 	}
 
-	LdltView<Scalar, L> current_in = in;
+	LdltView<T> current_in = in;
 
-	LDLT_WORKSPACE_MEMORY(ws, dim_rem, Scalar);
-	for (i32 k = 0; k < diag_diff.dim; ++k) {
-		ws[0] = Scalar(1);
-		for (i32 i = 1; i < dim_rem; ++i) {
-			ws[i] = Scalar(0);
+	LDLT_WORKSPACE_MEMORY(ws, dim_rem, T);
+	for (isize k = 0; k < diag_diff.dim; ++k) {
+		ws[0] = T(1);
+		for (isize i = 1; i < dim_rem; ++i) {
+			ws[i] = T(0);
 		}
 		detail::rank1_update( //
 				out,
 				current_in,
-				VectorViewMut<Scalar>{ws, dim_rem},
-				start_index + k,
+				VectorViewMut<T>{from_ptr_size, ws, dim_rem},
+				idx + k,
 				diag_diff(k));
 		--dim_rem;
 		current_in = out.as_const();
@@ -430,25 +248,22 @@ struct DiagonalUpdateImpl;
 
 template <>
 struct DiagonalUpdateImpl<diagonal_update_strategies::SinglePass> {
-	template <typename Scalar, Layout L>
+	template <typename T>
 	LDLT_INLINE static void
-	fn(LdltViewMut<Scalar, L> out,
-	   LdltView<Scalar, L> in,
-	   VectorView<Scalar> diag_diff,
-	   i32 start_index) {
-		detail::diagonal_update_single_pass(
-				out, in, diag_diff, start_index, Dyn{diag_diff.dim});
-	}
+	fn(LdltViewMut<T> out,
+	   LdltView<T> in,
+	   VectorView<T> diag_diff,
+	   isize start_index);
 };
 
 template <>
 struct DiagonalUpdateImpl<diagonal_update_strategies::MultiPass> {
-	template <typename Scalar, Layout L>
+	template <typename T>
 	LDLT_INLINE static void
-	fn(LdltViewMut<Scalar, L> out,
-	   LdltView<Scalar, L> in,
-	   VectorView<Scalar> diag_diff,
-	   i32 start_index) {
+	fn(LdltViewMut<T> out,
+	   LdltView<T> in,
+	   VectorView<T> diag_diff,
+	   isize start_index) {
 		detail::diagonal_update_multi_pass(out, in, diag_diff, start_index);
 	}
 };
@@ -456,67 +271,54 @@ struct DiagonalUpdateImpl<diagonal_update_strategies::MultiPass> {
 template <Layout L>
 struct RowAppendImpl;
 
-template <typename T, Layout L>
+template <typename T>
 LDLT_NO_INLINE void corner_update_impl(
-		LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a, T* w) {
+		LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a, T* w) {
 
-	i32 dim = in_l.d.dim;
+	isize dim = in_l.d.dim;
 
-	auto tmp_row = to_eigen_vector_mut(VectorViewMut<T>{w, dim});
+	auto tmp_row = VectorViewMut<T>{from_ptr_size, w, dim}.to_eigen();
 
-	tmp_row = to_eigen_vector(a.segment(0, dim));
-	auto l_e = to_eigen_matrix(in_l.l);
+	tmp_row = a.segment(0, dim).to_eigen();
+	auto l_e = in_l.l.to_eigen();
 	l_e.template triangularView<Eigen::UnitLower>().solveInPlace(tmp_row);
-	tmp_row.array() /= to_eigen_vector(in_l.d).array();
+	tmp_row.array() /= in_l.d.to_eigen().array();
 
 	{
 		auto l = tmp_row.array();
-		auto d = to_eigen_vector(in_l.d).array();
+		auto d = in_l.d.to_eigen().array();
 		out_l.d(dim) = a(dim) - (l * l * d).sum();
 	}
 
 	auto last_row = out_l.l.row(dim);
 	if (last_row.data != w) {
-		to_eigen_vector_mut(out_l.l.row(dim)) = tmp_row;
+		last_row.segment(0, dim).to_eigen() = tmp_row;
+		last_row(dim) = T(1);
 	}
 }
 
 template <>
-struct RowAppendImpl<rowmajor> {
-	template <typename T>
-	LDLT_INLINE static void corner_update(
-			LdltViewMut<T, rowmajor> out_l,
-			LdltView<T, rowmajor> in_l,
-			VectorView<T> a) {
-		i32 dim = in_l.d.dim;
-		detail::corner_update_impl(out_l, in_l, a, out_l.l.row(dim).data);
-	}
-};
-template <>
 struct RowAppendImpl<colmajor> {
 	template <typename T>
-	LDLT_NO_INLINE static void corner_update(
-			LdltViewMut<T, colmajor> out_l,
-			LdltView<T, colmajor> in_l,
-			VectorView<T> a) {
-		i32 dim = in_l.d.dim;
+	LDLT_INLINE static void
+	corner_update(LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a) {
+		isize dim = in_l.d.dim;
 		LDLT_WORKSPACE_MEMORY(w, dim, T);
 		detail::corner_update_impl(out_l, in_l, a, w);
 	}
 };
 
-template <typename T, Layout L>
+template <typename T>
 LDLT_NO_INLINE void
-row_append(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, VectorView<T> a) {
-	i32 dim = in_l.d.dim;
+row_append(LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a) {
+	isize dim = in_l.d.dim;
 	bool inplace = out_l.l.data == in_l.l.data;
 
 	if (!inplace) {
-		to_eigen_matrix_mut(out_l.l.block(0, 0, dim, dim)) =
-				to_eigen_matrix(in_l.l);
-		to_eigen_vector_mut(out_l.d.segment(0, dim)) = to_eigen_vector(in_l.d);
+		out_l.l.block(0, 0, dim, dim).to_eigen() = in_l.l.to_eigen();
+		out_l.d.segment(0, dim).to_eigen() = in_l.d.to_eigen();
 	}
-	RowAppendImpl<L>::corner_update(out_l, in_l, a);
+	RowAppendImpl<colmajor>::corner_update(out_l, in_l, a);
 	out_l.l(dim, dim) = T(1);
 }
 
@@ -529,11 +331,11 @@ struct RowDeleteImpl<colmajor> {
 	LDLT_INLINE static void copy_block(
 			T* out,
 			T const* in,
-			i32 rows,
-			i32 cols,
-			i32 out_outer_stride,
-			i32 in_outer_stride) {
-		for (i32 i = 0; i < cols; ++i) {
+			isize rows,
+			isize cols,
+			isize out_outer_stride,
+			isize in_outer_stride) {
+		for (isize i = 0; i < cols; ++i) {
 			T const* in_p = in + (i * in_outer_stride);
 			T* out_p = out + (i * out_outer_stride);
 			std::copy(in_p, in_p + rows, out_p);
@@ -542,30 +344,33 @@ struct RowDeleteImpl<colmajor> {
 
 	template <typename T>
 	LDLT_NO_INLINE static void handle_bottom_right( //
-			LdltViewMut<T, colmajor> out_bottom_right,
-			LdltView<T, colmajor> in_bottom_right,
+			LdltViewMut<T> out_bottom_right,
+			LdltView<T> in_bottom_right,
 			T const* l,
 			T d,
-			i32 rem_dim,
+			isize rem_dim,
 			bool inplace) {
 
 		if (inplace) {
 			// const cast is fine here since we can mutate output
 
 			auto l_mut = VectorViewMut<T>{
+					from_ptr_size,
 					const_cast /* NOLINT */<T*>(l),
 					rem_dim,
 			};
 
 			// same as in_bottom_right, except mutable
-			auto out_from_in = LdltViewMut<T, colmajor>{
+			auto out_from_in = LdltViewMut<T>{
 					MatrixViewMut<T, colmajor>{
+							from_ptr_rows_cols_stride,
 							const_cast /* NOLINT */<T*>(in_bottom_right.l.data),
 							in_bottom_right.l.rows,
 							in_bottom_right.l.cols,
 							in_bottom_right.l.outer_stride,
 					},
 					VectorViewMut<T>{
+							from_ptr_size,
 							const_cast /* NOLINT */<T*>(in_bottom_right.d.data),
 							in_bottom_right.d.dim,
 					},
@@ -598,94 +403,45 @@ struct RowDeleteImpl<colmajor> {
 			detail::rank1_update( //
 					out_bottom_right,
 					in_bottom_right,
-					VectorViewMut<T>{w, rem_dim},
+					VectorViewMut<T>{from_ptr_size, w, rem_dim},
 					0,
 					d);
 		}
 	}
 };
 
-template <>
-struct RowDeleteImpl<rowmajor> {
-	template <typename T>
-	LDLT_INLINE static void copy_block(
-			T* out,
-			T const* in,
-			i32 rows,
-			i32 cols,
-			i32 out_outer_stride,
-			i32 in_outer_stride) {
-		for (i32 i = 0; i < rows; ++i) {
-			T const* in_p = in + (i * in_outer_stride);
-			T* out_p = out + (i * out_outer_stride);
-			std::copy(in_p, in_p + cols, out_p);
-		}
-	}
-
-	template <typename T>
-	LDLT_NO_INLINE static void handle_bottom_right( //
-			LdltViewMut<T, rowmajor> out_bottom_right,
-			LdltView<T, rowmajor> in_bottom_right,
-			T const* l,
-			T d,
-			i32 rem_dim,
-			bool /*inplace*/) {
-
-		LDLT_WORKSPACE_MEMORY(w, rem_dim, T);
-		for (i32 i = 0; i < rem_dim; ++i) {
-			w[i] = l[i * in_bottom_right.l.outer_stride];
-		}
-		detail::rank1_update( //
-				out_bottom_right,
-				in_bottom_right,
-				VectorViewMut<T>{w, rem_dim},
-				0,
-				d);
-	}
-};
-
-template <typename T, Layout L>
+template <typename T>
 LDLT_NO_INLINE void
-row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
-	i32 dim = in_l.d.dim;
+row_delete_single(LdltViewMut<T> out_l, LdltView<T> in_l, isize i) {
+	isize dim = in_l.d.dim;
 
 	bool inplace = out_l.l.data == in_l.l.data;
 
 	// top left
 	if (!inplace) {
-		to_eigen_matrix_mut(MatrixViewMut<T, L>{
-				out_l.l.data,
-				i,
-				i,
-				out_l.l.outer_stride,
-		}) = to_eigen_matrix(MatrixView<T, L>{
-				in_l.l.data,
-				i,
-				i,
-				in_l.l.outer_stride,
-		});
-		std::copy(in_l.d.data, in_l.d.data + i, out_l.d.data);
+		out_l.l.block(0, 0, i, i).to_eigen() = in_l.l.block(0, 0, i, i).to_eigen();
+		out_l.d.segment(0, i).to_eigen() = in_l.d.segment(0, i).to_eigen();
 	}
 	if ((i + 1) == dim) {
 		return;
 	}
 
 	// bottom left
-	RowDeleteImpl<L>::copy_block(
-			out_l.l.block(i, 0, 0, 0).data,
-			in_l.l.block(i + 1, 0, 0, 0).data,
+	RowDeleteImpl<colmajor>::copy_block(
+			out_l.l.ptr(i, 0),
+			in_l.l.ptr(i + 1, 0),
 			dim - i,
 			i,
 			out_l.l.outer_stride,
 			in_l.l.outer_stride);
 
-	i32 rem_dim = dim - i - 1;
-	RowDeleteImpl<L>::handle_bottom_right(
-			LdltViewMut<T, L>{
+	isize rem_dim = dim - i - 1;
+	RowDeleteImpl<colmajor>::handle_bottom_right(
+			LdltViewMut<T>{
 					out_l.l.block(i, i, rem_dim, rem_dim),
 					out_l.d.segment(i, rem_dim),
 			},
-			LdltView<T, L>{
+			LdltView<T>{
 					in_l.l.block(i + 1, i + 1, rem_dim, rem_dim),
 					in_l.d.segment(i + 1, rem_dim),
 			},
@@ -694,57 +450,31 @@ row_delete_single(LdltViewMut<T, L> out_l, LdltView<T, L> in_l, i32 i) {
 			rem_dim,
 			inplace);
 }
+extern template void rank1_update(
+		LdltViewMut<f32>, LdltView<f32>, VectorViewMut<f32>, isize, f32);
+extern template void rank1_update(
+		LdltViewMut<f64>, LdltView<f64>, VectorViewMut<f64>, isize, f64);
 } // namespace detail
-
-extern template void ldlt::detail::rank1_update(
-		LdltViewMut<f32, colmajor>,
-		LdltView<f32, colmajor>,
-		VectorViewMut<f32>,
-		i32,
-		f32);
-extern template void ldlt::detail::rank1_update(
-		LdltViewMut<f32, rowmajor>,
-		LdltView<f32, rowmajor>,
-		VectorViewMut<f32>,
-		i32,
-		f32);
-extern template void ldlt::detail::rank1_update(
-		LdltViewMut<f64, colmajor>,
-		LdltView<f64, colmajor>,
-		VectorViewMut<f64>,
-		i32,
-		f64);
-extern template void ldlt::detail::rank1_update(
-		LdltViewMut<f64, rowmajor>,
-		LdltView<f64, rowmajor>,
-		VectorViewMut<f64>,
-		i32,
-		f64);
 
 namespace nb {
 struct rank1_update {
-	template <typename Scalar, Layout L>
+	template <typename T>
 	void operator()(
-			LdltViewMut<Scalar, L> out,
-			LdltView<Scalar, L> in,
-			VectorView<Scalar> z,
-			Scalar alpha) const {
-		i32 dim = out.l.rows;
-		LDLT_WORKSPACE_MEMORY(wp, out.d.dim, Scalar);
+			LdltViewMut<T> out, LdltView<T> in, VectorView<T> z, T alpha) const {
+		isize dim = out.l.rows;
+		LDLT_WORKSPACE_MEMORY(wp, out.d.dim, T);
 		std::copy(z.data, z.data + dim, wp);
-		detail::rank1_update(out, in, VectorViewMut<Scalar>{wp, dim}, 0, alpha);
+		detail::rank1_update(
+				out, in, VectorViewMut<T>{from_ptr_size, wp, dim}, 0, alpha);
 	}
 };
 struct diagonal_update {
-	template <
-			typename Scalar,
-			Layout L,
-			typename S = diagonal_update_strategies::MultiPass>
+	template <typename T, typename S = diagonal_update_strategies::MultiPass>
 	LDLT_INLINE void operator()(
-			LdltViewMut<Scalar, L> out,
-			LdltView<Scalar, L> in,
-			VectorView<Scalar> diag_diff,
-			i32 start_index,
+			LdltViewMut<T> out,
+			LdltView<T> in,
+			VectorView<T> diag_diff,
+			isize start_index,
 			S /*strategy_tag*/ = S{}) const {
 		detail::DiagonalUpdateImpl<S>::fn(out, in, diag_diff, start_index);
 	}
@@ -752,22 +482,20 @@ struct diagonal_update {
 
 // output.dim == input.dim + 1
 struct row_append {
-	template <typename Scalar, Layout L>
-	LDLT_INLINE void operator()(
-			LdltViewMut<Scalar, L> out,
-			LdltView<Scalar, L> in,
-			VectorView<Scalar> new_row) const {
+	template <typename T>
+	LDLT_INLINE void
+	operator()(LdltViewMut<T> out, LdltView<T> in, VectorView<T> new_row) const {
 		detail::row_append(out, in, new_row);
 	}
 };
 
 // output.dim == input.dim - 1
 struct row_delete {
-	template <typename Scalar, Layout L>
+	template <typename T>
 	LDLT_INLINE void operator()( //
-			LdltViewMut<Scalar, L> out,
-			LdltView<Scalar, L> in,
-			i32 row_idx) const {
+			LdltViewMut<T> out,
+			LdltView<T> in,
+			isize row_idx) const {
 		detail::row_delete_single(out, in, row_idx);
 	}
 };

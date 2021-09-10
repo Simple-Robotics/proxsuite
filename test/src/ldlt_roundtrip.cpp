@@ -7,34 +7,34 @@
 
 using namespace ldlt;
 
-template <typename T, Layout InL, Layout OutL>
+template <typename T, Layout L>
 struct Data {
-	Mat<T, InL> mat;
-	Mat<T, OutL> l;
+	Mat<T, L> mat;
+	Mat<T, colmajor> l;
 	Vec<T> d;
 };
 
-template <typename T, Layout InL, Layout OutL>
-auto generate_data(i32 n) -> Data<T, InL, OutL> {
+template <typename T, Layout L>
+auto generate_data(isize n) -> Data<T, L> {
 	ldlt_test::rand::set_seed(uint64_t(n));
-	Mat<T, InL> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
-	Mat<T, OutL> l(n, n);
+	Mat<T, L> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
+	Mat<T, colmajor> l(n, n);
 	Vec<T> d(n);
 	return {LDLT_FWD(mat), LDLT_FWD(l), LDLT_FWD(d)};
 }
 
-template <typename T, Layout InL, Layout OutL, typename S>
-auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, S strategy) -> T {
+template <typename T, Layout L, typename S>
+auto ldlt_roundtrip_error(Data<T, L>& data, S strategy) -> T {
 	auto const& mat = data.mat;
 	auto& l = data.l;
 	auto& d = data.d;
 	l.setZero();
 	d.setZero();
 
-	auto m_view = detail::from_eigen_matrix(mat);
-	auto ldl_view = LdltViewMut<T, OutL>{
-			detail::from_eigen_matrix_mut(l),
-			detail::from_eigen_vector_mut(d),
+	auto m_view = MatrixView<T, L>{from_eigen, mat};
+	auto ldl_view = LdltViewMut<T>{
+			{from_eigen, l},
+			{from_eigen, d},
 	};
 
 	{
@@ -45,20 +45,20 @@ auto ldlt_roundtrip_error(Data<T, InL, OutL>& data, S strategy) -> T {
 	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
 }
 
-template <typename T, Layout InL, Layout OutL>
-auto eigen_ldlt_roundtrip_error(Data<T, InL, OutL>& data) -> T {
+template <typename T, Layout L>
+auto eigen_ldlt_roundtrip_error(Data<T, L>& data) -> T {
 	auto ldlt = data.mat.ldlt();
-	auto const& L = ldlt.matrixL();
-	auto const& P = ldlt.transpositionsP();
-	auto const& D = ldlt.vectorD();
+	auto const& l = ldlt.matrixL();
+	auto const& p = ldlt.transpositionsP();
+	auto const& d = ldlt.vectorD();
 
-	Mat<T, colmajor> tmp = P.transpose() * Mat<T, colmajor>(L);
-	return (matmul3(tmp, D.asDiagonal(), tmp.transpose()) - data.mat).norm();
+	Mat<T, colmajor> tmp = p.transpose() * Mat<T, colmajor>(l);
+	return (matmul3(tmp, d.asDiagonal(), tmp.transpose()) - data.mat).norm();
 }
 
-template <typename T, Layout InL, Layout OutL, typename S>
-auto roundtrip_test(i32 n, S strategy) -> T {
-	auto data = generate_data<T, InL, OutL>(n);
+template <typename T, Layout L, typename S>
+auto roundtrip_test(isize n, S strategy) -> T {
+	auto data = generate_data<T, L>(n);
 
 	T err_eigen = ::eigen_ldlt_roundtrip_error(data);
 	T err_ours = ::ldlt_roundtrip_error(data, strategy);
@@ -78,27 +78,15 @@ using R = detail::constant<Layout, rowmajor>;
 DOCTEST_TEST_CASE_TEMPLATE(
 		"factorize: roundtrip",
 		Args,
-		detail::type_sequence<f32, C, C, factorization_strategy::Standard>,
-		detail::type_sequence<f32, C, C, factorization_strategy::DeferToColMajor>,
-		detail::type_sequence<f32, C, C, factorization_strategy::DeferToRowMajor>,
-		detail::type_sequence<f32, R, C, factorization_strategy::Standard>,
-		detail::type_sequence<f32, R, C, factorization_strategy::DeferToColMajor>,
-		detail::type_sequence<f32, R, C, factorization_strategy::DeferToRowMajor>,
-		detail::type_sequence<f32, C, R, factorization_strategy::Standard>,
-		detail::type_sequence<f32, C, R, factorization_strategy::DeferToColMajor>,
-		detail::type_sequence<f32, C, R, factorization_strategy::DeferToRowMajor>,
-		detail::type_sequence<f32, R, R, factorization_strategy::Standard>,
-		detail::type_sequence<f32, R, R, factorization_strategy::DeferToColMajor>,
-		detail::type_sequence<f32, R, R, factorization_strategy::DeferToRowMajor>) {
-	i32 min = 1;
-	i32 max = 64;
+		detail::type_sequence<f32, C, factorization_strategy::Standard>,
+		detail::type_sequence<f32, R, factorization_strategy::Standard>) {
+	isize min = 1;
+	isize max = 64;
 	using Scalar = detail::typeseq_ith<0, Args>;
 	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
-	constexpr auto OutL = detail::typeseq_ith<2, Args>::value;
-	using Strategy = detail::typeseq_ith<3, Args>;
+	using Strategy = detail::typeseq_ith<2, Args>;
 
-	for (i32 i = min; i <= max; ++i) {
-		DOCTEST_CHECK(
-				roundtrip_test<Scalar, InL, OutL>(i, Strategy{}) <= Scalar(10));
+	for (isize i = min; i <= max; ++i) {
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, Strategy{}) <= Scalar(10));
 	}
 }

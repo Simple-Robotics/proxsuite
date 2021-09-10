@@ -5,21 +5,19 @@
 
 namespace ldlt {
 namespace detail {
-template <typename T, Layout L>
+template <typename T>
 LDLT_NO_INLINE void solve_impl( //
 		VectorViewMut<T> x,
-		LdltView<T, L> ldlt,
+		LdltView<T> ldl,
 		VectorView<T> b) {
 
-	constexpr Layout LT = ::ldlt::flip_layout(L);
-
-	i32 dim = ldlt.l.rows;
+	isize dim = ldl.l.rows;
 	bool inplace = x.data == b.data;
 
 	auto x_e = detail::VecMapMut<T>{x.data, dim};
-	auto d_e = detail::VecMap<T>{ldlt.d.data, dim};
-	auto l_e = EigenMatMap<T, L>{ldlt.l.data, dim, dim, ldlt.l.outer_stride};
-	auto lt_e = EigenMatMap<T, LT>{ldlt.l.data, dim, dim, ldlt.l.outer_stride};
+	auto d_e = detail::VecMap<T>{ldl.d.data, dim};
+	auto l_e = ldl.l.to_eigen();
+	auto lt_e = ldl.l.trans().to_eigen();
 	auto l_lower = l_e.template triangularView<Eigen::UnitLower>();
 	auto lt_upper = lt_e.template triangularView<Eigen::UnitUpper>();
 
@@ -31,25 +29,20 @@ LDLT_NO_INLINE void solve_impl( //
 	x_e.array().operator/=(d_e.array());
 	lt_upper.solveInPlace(x_e);
 }
+extern template void
+		solve_impl(VectorViewMut<f32>, LdltView<f32>, VectorView<f32>);
+extern template void
+		solve_impl(VectorViewMut<f64>, LdltView<f64>, VectorView<f64>);
 } // namespace detail
-
-extern template void detail::solve_impl(
-		VectorViewMut<f32>, LdltView<f32, colmajor>, VectorView<f32>);
-extern template void detail::solve_impl(
-		VectorViewMut<f64>, LdltView<f64, colmajor>, VectorView<f64>);
-extern template void detail::solve_impl(
-		VectorViewMut<f32>, LdltView<f32, rowmajor>, VectorView<f32>);
-extern template void detail::solve_impl(
-		VectorViewMut<f64>, LdltView<f64, rowmajor>, VectorView<f64>);
 
 namespace nb {
 struct solve {
-	template <typename T, Layout L>
+	template <typename T>
 	LDLT_INLINE void operator()( //
 			VectorViewMut<T> x,
-			LdltView<T, L> ldlt,
+			LdltView<T> ldl,
 			VectorView<T> b) const {
-		detail::solve_impl(x, ldlt, b);
+		detail::solve_impl(x, ldl, b);
 	}
 };
 } // namespace nb

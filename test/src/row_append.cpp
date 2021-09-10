@@ -9,24 +9,16 @@
 #include <ldlt/factorize.hpp>
 
 using Scalar = double;
+using namespace ldlt;
 
-DOCTEST_TEST_CASE_TEMPLATE(
-		"row add",
-		L,
-		ldlt::detail::constant<ldlt::Layout, ldlt::colmajor>,
-		ldlt::detail::constant<ldlt::Layout, ldlt::rowmajor>) {
-	ldlt::i32 n = 7;
+DOCTEST_TEST_CASE("row add") {
+	isize n = 7;
+	using T = f64;
 
-	using Mat = Eigen::Matrix<
-			Scalar,
-			Eigen::Dynamic,
-			Eigen::Dynamic,
-			L::value == ldlt::colmajor ? Eigen::ColMajor : Eigen::RowMajor>;
-	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
+	using Mat = ::Mat<T, colmajor>;
+	using Vec = ::Vec<T>;
 
-	Mat m(n + 1, n + 1);
-	m.setRandom();
-	m = m * m.transpose();
+	Mat m = ldlt_test::rand::positive_definite_rand(n + 1, T(1e2));
 
 	Mat l_target(n + 1, n + 1);
 	Vec d_target(n + 1);
@@ -39,18 +31,22 @@ DOCTEST_TEST_CASE_TEMPLATE(
 	l_out.setZero();
 	d_out.setZero();
 
-	using LdltView = ldlt::LdltView<Scalar, L::value>;
-	using LdltViewMut = ldlt::LdltViewMut<Scalar, L::value>;
+	using LdltView = ldlt::LdltView<T>;
+	using LdltViewMut = ldlt::LdltViewMut<T>;
+	using MatrixView = ldlt::MatrixView<T, colmajor>;
+	using MatrixViewMut = ldlt::MatrixViewMut<T, colmajor>;
+	using VectorView = ldlt::VectorView<T>;
+	using VectorViewMut = ldlt::VectorViewMut<T>;
 
 	bool bool_values[] = {false, true};
 	for (bool inplace : bool_values) {
 		// factorize input matrix
 		ldlt::factorize(
 				LdltViewMut{
-						ldlt::detail::from_eigen_matrix_mut(l_in),
-						ldlt::detail::from_eigen_vector_mut(d_in),
+						{from_eigen, l_in},
+						{from_eigen, d_in},
 				},
-				ldlt::detail::from_eigen_matrix(m.topLeftCorner(n, n)));
+				MatrixView{from_eigen, m}.block(0, 0, n, n));
 
 		if (inplace) {
 			l_out.topLeftCorner(n, n) = l_in.topLeftCorner(n, n);
@@ -60,27 +56,27 @@ DOCTEST_TEST_CASE_TEMPLATE(
 		// append row
 		ldlt::row_append(
 				LdltViewMut{
-						ldlt::detail::from_eigen_matrix_mut(l_out).block(0, 0, n, n),
-						ldlt::detail::from_eigen_vector_mut(d_out).segment(0, n),
+						MatrixViewMut{from_eigen, l_out},
+						VectorViewMut{from_eigen, d_out},
 				},
 				inplace //
 						? (LdltView{
-									ldlt::detail::from_eigen_matrix(l_out).block(0, 0, n, n),
-									ldlt::detail::from_eigen_vector(d_out).segment(0, n),
+									MatrixView{from_eigen, l_out}.block(0, 0, n, n),
+									VectorView{from_eigen, d_out}.segment(0, n),
 							})
 						: (LdltView{
-									ldlt::detail::from_eigen_matrix(l_in),
-									ldlt::detail::from_eigen_vector(d_in),
+									{from_eigen, l_in},
+									{from_eigen, d_in},
 							}),
-				ldlt::detail::from_eigen_vector(Vec(m.row(n))));
+				{from_eigen, Vec(m.row(n))});
 
 		// compute target
 		ldlt::factorize(
 				LdltViewMut{
-						ldlt::detail::from_eigen_matrix_mut(l_target),
-						ldlt::detail::from_eigen_vector_mut(d_target),
+						{from_eigen, l_target},
+						{from_eigen, d_target},
 				},
-				ldlt::detail::from_eigen_matrix(m));
+				MatrixView{from_eigen, m});
 
 		Scalar eps = Scalar(1e-10);
 

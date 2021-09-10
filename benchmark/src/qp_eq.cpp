@@ -12,9 +12,10 @@ auto main() -> int {
 	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
 
 	using ldlt::i32;
-	i32 total = 128;
-	i32 dim = 66;
-	i32 n_eq = total - dim;
+	using ldlt::isize;
+	isize total = 128;
+	isize dim = 66;
+	isize n_eq = total - dim;
 	i32 n_iter = 100;
 	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
 
@@ -23,8 +24,8 @@ auto main() -> int {
 		Vec primal_init = Vec::Zero(dim);
 		Vec dual_init = Vec::Zero(n_eq);
 		auto stats = qp::detail::solve_qp( //
-				qp::detail::from_eigen_vector_mut(primal_init),
-				qp::detail::from_eigen_vector_mut(dual_init),
+				{ldlt::from_eigen, primal_init},
+				{ldlt::from_eigen, dual_init},
 				qp.as_view(),
 				2000,
 				eps_abs,
