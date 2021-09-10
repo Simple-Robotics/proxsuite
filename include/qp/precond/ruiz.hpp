@@ -68,7 +68,7 @@ auto ruiz_scale_qp_in_place( //
 
 	delta.setZero();
 
-	i32 iter = 1;
+	i64 iter = 1;
 	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
 		if (logger_ptr != nullptr) {
 			*logger_ptr                                     //
@@ -226,7 +226,7 @@ struct RuizEquilibration {
 	T c;
 	isize dim;
 	T epsilon;
-	i32 max_iter;
+	i64 max_iter;
 	Symmetry sym;
 
 	std::ostream* logger_ptr = nullptr;
@@ -235,7 +235,7 @@ struct RuizEquilibration {
 			isize dim_,
 			isize n_eq_in,
 			T epsilon_ = T(1e-3),
-			i32 max_iter_ = 20,
+			i64 max_iter_ = 20,
 			Symmetry sym_ = Symmetry::general,
 			std::ostream* logger = nullptr)
 			: delta(dim_ + n_eq_in),

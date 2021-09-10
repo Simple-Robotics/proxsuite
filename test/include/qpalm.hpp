@@ -36,12 +36,12 @@ inline auto solve_eq_qpalm_sparse(
 		SparseMat<c_float> const& A_eigen,
 		VectorView<c_float> g,
 		VectorView<c_float> b,
-		i32 max_iter,
+		i64 max_iter,
 		c_float eps_abs,
-		c_float eps_rel) -> i32 {
+		c_float eps_rel) -> i64 {
 
-	i32 dim = i32(H_eigen.rows());
-	i32 n_eq = i32(A_eigen.rows());
+	isize dim = isize(H_eigen.rows());
+	isize n_eq = isize(A_eigen.rows());
 
 	auto H = qpalm::from_eigen_sym(
 			const_cast /* NOLINT */<SparseMat<c_float>&>(H_eigen));
@@ -53,8 +53,8 @@ inline auto solve_eq_qpalm_sparse(
 	settings.max_iter = max_iter;
 	settings.eps_abs = eps_abs;
 	settings.eps_rel = eps_rel;
-  settings.warm_start = 0;
-  settings.verbose = 0;
+	settings.warm_start = 0;
+	settings.verbose = 0;
 
 	QPALMData data{};
 	data.n = usize(dim);
@@ -67,7 +67,7 @@ inline auto solve_eq_qpalm_sparse(
 	data.c = 0;
 	QPALMWorkspace* work = qpalm_setup(&data, &settings);
 	qpalm_solve(work);
-	auto n_iter = i32(work->info->iter);
+	auto n_iter = i64(work->info->iter);
 
 	std::memcpy(x.data, work->solution->x, usize(dim) * sizeof(c_float));
 	std::memcpy(y.data, work->solution->y, usize(n_eq) * sizeof(c_float));

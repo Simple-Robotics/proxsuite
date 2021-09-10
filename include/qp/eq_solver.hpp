@@ -60,8 +60,8 @@ void mul_no_alias(Dst& dst, Lhs const& lhs, Rhs const& rhs) {
 
 struct EqSolverTimer {};
 struct QpSolveStats {
-	i32 n_iters;
-	i32 n_mu_updates;
+	i64 n_iters;
+	i64 n_mu_updates;
 };
 
 template <
@@ -71,7 +71,7 @@ auto solve_qp( //
 		VectorViewMut<T> x,
 		VectorViewMut<T> y,
 		qp::QpView<T> qp,
-		i32 max_iter,
+		i64 max_iter,
 		DoNotDeduce<T> eps_abs,
 		DoNotDeduce<T> eps_rel,
 		Preconditioner precond = Preconditioner{}) -> QpSolveStats {
@@ -80,7 +80,7 @@ auto solve_qp( //
 
 	isize dim = qp.H.rows;
 	isize n_eq = qp.A.rows;
-	i32 n_mu_updates = 0;
+	i64 n_mu_updates = 0;
 
 	auto rho = T(1e-10);
 	auto bcl_mu = T(1e3);
@@ -177,7 +177,7 @@ auto solve_qp( //
 	T primal_feasibility_rhs_1 = infty_norm(qp.b.to_eigen());
 	T dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());
 
-	for (i32 iter = 0; iter <= max_iter; ++iter) {
+	for (i64 iter = 0; iter <= max_iter; ++iter) {
 
 		auto dual_residual_scaled = residual_scaled.topRows(dim);
 		auto primal_residual_scaled = residual_scaled.bottomRows(n_eq);

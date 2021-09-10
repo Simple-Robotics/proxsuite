@@ -40,7 +40,7 @@ void diagonal_update( //
 		MatRef<T, colmajor> in_l,
 		VecRef<T> in_d,
 		VecRef<T> diag_section,
-		i32 start_idx) {
+		isize start_idx) {
 	ldlt::diagonal_update(
 			LdltViewMut<T>{
 					{from_eigen, out_l},
@@ -60,7 +60,7 @@ void row_delete( //
 		VecRefMut<T> out_d,
 		MatRef<T, colmajor> in_l,
 		VecRef<T> in_d,
-		i32 row_idx) {
+		isize row_idx) {
 	ldlt::row_delete(
 			LdltViewMut<T>{
 					{from_eigen, out_l},

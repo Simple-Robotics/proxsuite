@@ -7,10 +7,10 @@ using namespace ldlt;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner") {
-	i32 dim = 5;
-	i32 n_eq = 6;
+	isize dim = 5;
+	isize n_eq = 6;
 	Scalar epsilon = Scalar(1.e-3);
-	i32 max_iter = 20;
+	i64 max_iter = 20;
 	auto sym = qp::Symmetry::upper; // 0 : upper triangular (by default), 1:
 	                                // lower triangular ; else full matrix
 
@@ -29,7 +29,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 	}
 	Qp<Scalar> scaled_qp = qp;
 	std::cout << "qp.H : " << qp.H << std::endl << std::endl;
-	qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor> precond{
+	qp::preconditioner::RuizEquilibration<Scalar> precond{
 			dim,
 			n_eq,
 			epsilon,

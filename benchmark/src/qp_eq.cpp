@@ -11,16 +11,16 @@ using Scalar = double;
 auto main() -> int {
 	using Vec = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
 
-	using ldlt::i32;
+	using ldlt::i64;
 	using ldlt::isize;
 	isize total = 128;
 	isize dim = 66;
 	isize n_eq = total - dim;
-	i32 n_iter = 100;
+	i64 n_iter = 100;
 	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
 
 	Scalar eps_abs = Scalar(1e-10);
-	for (i32 i = 0; i < n_iter; ++i) {
+	for (i64 i = 0; i < n_iter; ++i) {
 		Vec primal_init = Vec::Zero(dim);
 		Vec dual_init = Vec::Zero(n_eq);
 		auto stats = qp::detail::solve_qp( //

@@ -29,7 +29,7 @@ auto main() -> int {
 	auto A_eigen = ldlt_test::rand::sparse_matrix_rand<Scalar>(n_eq, dim, p);
 	auto g_eigen = ldlt_test::rand::vector_rand<Scalar>(dim);
 	auto b_eigen = ldlt_test::rand::vector_rand<Scalar>(n_eq);
-	i32 n_runs = 100;
+	i64 n_runs = 100;
 
 	{
 		{ LDLT_DECL_SCOPE_TIMER("osqp bench", "osqp"); }
@@ -40,7 +40,7 @@ auto main() -> int {
 	Vec<Scalar> x(dim);
 	Vec<Scalar> y(n_eq);
 
-	i32 max_iter = 1000;
+	i64 max_iter = 1000;
 	Scalar eps_abs = Scalar(1e-9);
 	Scalar eps_rel = 0;
 
@@ -67,7 +67,7 @@ auto main() -> int {
 
 		{
 			LDLT_DECL_SCOPE_TIMER("osqp bench", "ours");
-			for (i32 i = 0; i < n_runs; ++i) {
+			for (i64 i = 0; i < n_runs; ++i) {
 				x.setZero();
 				y.setZero();
 

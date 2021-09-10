@@ -25,12 +25,12 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 	path_len.resize(32);
 	file.read(&path_len[0], 32);
 	file.get(); // '\n'
-	i32 n_files = i32(std::stol(path_len));
+	i64 n_files = i64(std::stoll(path_len));
 
-	for (i32 i = 0; i < n_files; ++i) {
+	for (i64 i = 0; i < n_files; ++i) {
 		file.read(&path_len[0], 32);
 		file.get(); // ':'
-		isize ipath_len = isize(std::stol(path_len));
+		isize ipath_len = isize(std::stoll(path_len));
 		path.resize(usize(ipath_len));
 		file.read(&path[0], ipath_len);
 		file.get(); // '\n'
@@ -58,11 +58,10 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 				n_eq);
 
 		auto iter = [&] {
-			auto ruiz =
-					qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
-							n,
-							n_eq,
-					};
+			auto ruiz = qp::preconditioner::RuizEquilibration<Scalar>{
+					n,
+					n_eq,
+			};
 			EigenNoAlloc _{};
 			return qp::detail::solve_qp( //
 					{from_eigen, primal_init},

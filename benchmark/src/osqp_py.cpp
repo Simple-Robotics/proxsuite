@@ -19,7 +19,7 @@ using namespace ldlt;
 auto main() -> int {
 	Scalar eps_abs = Scalar(1e-9);
 	Scalar eps_rel = 0;
-	i32 max_iter = 1000;
+	i64 max_iter = 1000;
 
 	std::ifstream file(INRIA_LDLT_QP_PYTHON_PATH "osqp_source_files.txt");
 
@@ -28,12 +28,12 @@ auto main() -> int {
 	path_len.resize(32);
 	file.read(&path_len[0], 32);
 	file.get(); // '\n'
-	i32 n_files = i32(std::stol(path_len));
+	i64 n_files = i64(std::stoll(path_len));
 
-	for (i32 i = 0; i < n_files; ++i) {
+	for (i64 i = 0; i < n_files; ++i) {
 		file.read(&path_len[0], 32);
 		file.get(); // ':'
-		i32 ipath_len = i32(std::stol(path_len));
+		i64 ipath_len = i64(std::stoll(path_len));
 		path.resize(usize(ipath_len));
 		file.read(&path[0], ipath_len);
 		file.get(); // '\n'
@@ -51,11 +51,10 @@ auto main() -> int {
 		Vec<Scalar> primal_init = Vec<Scalar>::Zero(n);
 		Vec<Scalar> dual_init = Vec<Scalar>::Zero(n_eq);
 
-		auto ruiz =
-				qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
-						n,
-						n_eq,
-				};
+		auto ruiz = qp::preconditioner::RuizEquilibration<Scalar>{
+				n,
+				n_eq,
+		};
 
 		auto duration = std::chrono::seconds{1};
 		auto ours = ldlt_test::bench_for(duration, [&] {

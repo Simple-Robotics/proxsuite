@@ -10,6 +10,7 @@ using namespace ldlt::detail;
 
 using ldlt::Layout;
 using ldlt::i32;
+using ldlt::i64;
 using ldlt::isize;
 using ldlt::MatrixViewMut;
 using ldlt::MatrixView;

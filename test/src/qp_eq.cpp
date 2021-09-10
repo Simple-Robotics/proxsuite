@@ -10,8 +10,8 @@ using namespace ldlt;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("qp: random") {
-	i32 dim = 30;
-	i32 n_eq = 6;
+	isize dim = 30;
+	isize n_eq = 6;
 
 	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
 
@@ -42,8 +42,8 @@ DOCTEST_TEST_CASE("qp: random") {
 }
 
 DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
-	i32 dim = 30;
-	i32 n_eq = 6;
+	isize dim = 30;
+	isize n_eq = 6;
 
 	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
 
@@ -78,8 +78,8 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 }
 
 DOCTEST_TEST_CASE("qp: start from solution") {
-	i32 dim = 30;
-	i32 n_eq = 6;
+	isize dim = 30;
+	isize n_eq = 6;
 
 	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
 

@@ -10,16 +10,16 @@ template <typename T>
 struct Data {
 	Mat<T, colmajor> mat;
 	Vec<T> diag_diff;
-	i32 index;
+	isize index;
 	Mat<T, colmajor> l;
 	Vec<T> d;
 };
 
 template <typename T>
-auto generate_data(i32 n) -> Data<T> {
-	i32 index = n / 2;
-	i32 max_n_eq = 2;
-	i32 n_eq = ((max_n_eq + index) < n) ? max_n_eq : n - index;
+auto generate_data(isize n) -> Data<T> {
+	isize index = n / 2;
+	isize max_n_eq = 2;
+	isize n_eq = ((max_n_eq + index) < n) ? max_n_eq : n - index;
 	ldlt_test::rand::set_seed(uint64_t(n));
 	Mat<T, colmajor> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
 	Vec<T> diag_diff = ldlt_test::rand::vector_rand<T>(n_eq);
@@ -63,7 +63,7 @@ auto ldlt_roundtrip_error(Data<T>& data) -> T {
 	}
 
 	auto new_mat = mat;
-	for (i32 i = 0; i < diag_diff.rows(); ++i) {
+	for (isize i = 0; i < diag_diff.rows(); ++i) {
 		auto ii = data.index + i;
 		new_mat(ii, ii) += diag_diff(i);
 	}
@@ -72,17 +72,17 @@ auto ldlt_roundtrip_error(Data<T>& data) -> T {
 }
 
 template <typename T>
-auto roundtrip_test(i32 n) -> T {
+auto roundtrip_test(isize n) -> T {
 	auto data = generate_data<T>(n);
 	return ::ldlt_roundtrip_error(data);
 }
 
 DOCTEST_TEST_CASE("rank one update: roundtrip") {
-	i32 min = 1;
-	i32 max = 64;
+	isize min = 1;
+	isize max = 64;
 	using Scalar = f64;
 
-	for (i32 i = min; i <= max; ++i) {
+	for (isize i = min; i <= max; ++i) {
 		DOCTEST_CHECK(
 				roundtrip_test<Scalar>(i) <=
 				std::numeric_limits<Scalar>::epsilon() * Scalar(1e3));

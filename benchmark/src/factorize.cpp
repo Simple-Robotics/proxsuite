@@ -17,7 +17,7 @@ using Vec = Eigen::Matrix<T, -1, 1>;
 
 template <typename T, Layout L>
 void bench_eigen(benchmark::State& s) {
-	i32 dim = i32(s.range(0));
+	isize dim = isize(s.range(0));
 
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 	Eigen::LDLT<Mat<T, L>> l(a);
@@ -34,7 +34,7 @@ void bench_eigen(benchmark::State& s) {
 template <typename Strategy, typename T, Layout L>
 void bench_ours(benchmark::State& s) {
 
-	i32 dim = i32(s.range(0));
+	isize dim = isize(s.range(0));
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, colmajor> l(dim, dim);
@@ -61,7 +61,7 @@ void bench_ours(benchmark::State& s) {
 template <typename T>
 void bench_ours_inplace(benchmark::State& s) {
 
-	i32 dim = i32(s.range(0));
+	isize dim = isize(s.range(0));
 	Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, colmajor> l(dim, dim);
@@ -93,9 +93,9 @@ void bench_dummy(benchmark::State& s) {
 
 LDLT_BENCHMARK_MAIN();
 
-constexpr i32 dim_small = 32;
-constexpr i32 dim_medium = 128;
-constexpr i32 dim_large = 1024;
+constexpr isize dim_small = 32;
+constexpr isize dim_medium = 128;
+constexpr isize dim_large = 1024;
 
 namespace strat = factorization_strategy;
 
