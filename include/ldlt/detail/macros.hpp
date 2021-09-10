@@ -504,7 +504,7 @@
 
 #define LDLT_IMPL_PLUS2(Type, Dim)                                             \
 	+::ldlt::detail::round_up(                                                   \
-			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                                      \
+			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                       \
 			::ldlt::detail::SimdCachelineAlignStep<Type>::value)
 
 #define LDLT_IMPL_PLUS(Type, Name_Dim)                                         \
@@ -517,7 +517,7 @@
 	 LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data,                               \
 	 Type);                                                                      \
 	LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data += ::ldlt::detail::round_up(    \
-			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                                      \
+			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                       \
 			::ldlt::detail::SimdCachelineAlignStep<Type>::value);
 
 #define LDLT_IMPL_DECL_MEMORY(Type, Name_Dim)                                  \
