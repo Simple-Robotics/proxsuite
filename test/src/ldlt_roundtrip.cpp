@@ -16,7 +16,7 @@ struct Data {
 
 template <typename T, Layout L>
 auto generate_data(isize n) -> Data<T, L> {
-	ldlt_test::rand::set_seed(uint64_t(n));
+	ldlt_test::rand::set_seed(u64(n));
 	Mat<T, L> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
 	Mat<T, colmajor> l(n, n);
 	Vec<T> d(n);

@@ -17,8 +17,11 @@ using isize = std::common_type<    //
 
 using f32 = float;
 using f64 = double;
+
 using i64 = long long;
 using i32 = int;
+
+using u64 = unsigned long long;
 using u32 = unsigned;
 
 static_assert(static_cast<unsigned char>(-1) == 255, "char should have 8 bits");

@@ -29,26 +29,27 @@ namespace ldlt_test {
 using namespace ldlt;
 namespace rand {
 
-using std::uint64_t;
+using ldlt::u64;
+using ldlt::u32;
+using u128 = __uint128_t;
 
-using uint128_t = __uint128_t;
-uint128_t g_lehmer64_state =
-		uint128_t(0xda942042e4dd58b5) * uint128_t(0xda942042e4dd58b5);
+constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
+u128 g_lehmer64_state = lehmer64_constant * lehmer64_constant;
 
-auto lehmer64() -> uint64_t { // [0, 2^64)
-	g_lehmer64_state *= 0xda942042e4dd58b5;
-	return uint64_t(g_lehmer64_state >> uint128_t(64U));
+auto lehmer64() -> u64 { // [0, 2^64)
+	g_lehmer64_state *= lehmer64_constant;
+	return u64(g_lehmer64_state >> u128(64U));
 }
 
-void set_seed(uint64_t seed) {
-	g_lehmer64_state = seed + 1;
+void set_seed(u64 seed) {
+	g_lehmer64_state = u128(seed) + 1;
 	lehmer64();
 	lehmer64();
 }
 
 auto uniform_rand() -> double { // [0, 2^53]
-	uint64_t a = lehmer64() / (1U << 11U);
-	return double(a) / double(uint64_t(1) << 53U);
+	u64 a = lehmer64() / (1U << 11U);
+	return double(a) / double(u64(1) << 53U);
 }
 auto normal_rand() -> double {
 	static const double pi2 = std::atan(static_cast<double>(1)) * 8;

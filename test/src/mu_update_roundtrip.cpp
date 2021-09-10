@@ -20,7 +20,7 @@ auto generate_data(isize n) -> Data<T> {
 	isize index = n / 2;
 	isize max_n_eq = 2;
 	isize n_eq = ((max_n_eq + index) < n) ? max_n_eq : n - index;
-	ldlt_test::rand::set_seed(uint64_t(n));
+	ldlt_test::rand::set_seed(u64(n));
 	Mat<T, colmajor> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
 	Vec<T> diag_diff = ldlt_test::rand::vector_rand<T>(n_eq);
 
