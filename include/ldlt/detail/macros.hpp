@@ -444,61 +444,93 @@
 
 #endif
 
+#define LDLT_IMPL_WORKSPACE_VEC(Name, Dim, Ptr, Type)                          \
+	::ldlt::VectorViewMut<Type> Name { ::ldlt::tags::FromPtrSize{}, Ptr, Dim }
+
+#define LDLT_IMPL_WORKSPACE_MAT(Name, Dim, Ptr, Type)                          \
+	::ldlt::MatrixViewMut<Type, ::ldlt::colmajor> Name {                         \
+		::ldlt::tags::FromPtrRowsColsStride{}, Ptr, LDLT_PP_HEAD Dim,              \
+				LDLT_PP_TAIL Dim, LDLT_PP_HEAD Dim,                                    \
+	}
+
+#define LDLT_IMPL_DISPATCH_Vec(Dim) LDLT_IMPL_WORKSPACE_VEC
+#define LDLT_IMPL_DISPATCH_Mat(Rows, Cols) LDLT_IMPL_WORKSPACE_MAT
+
+#define LDLT_IMPL_REMOVE_PREFIX_Vec(Dim) (Dim)
+#define LDLT_IMPL_REMOVE_PREFIX_Mat(Rows, Cols) (Rows, Cols)
+
+#define LDLT_IMPL_SIZE_Vec(Dim) (::ldlt::usize(Dim))
+#define LDLT_IMPL_SIZE_Mat(Rows, Cols)                                         \
+	(::ldlt::usize(Rows) * ::ldlt::usize(Cols))
+
+#define LDLT_WORKSPACE_MEMORY(Name, Dim, Type)                                 \
+	LDLT_IMPL_WORKSPACE_MEMORY(Name, LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim), Type);  \
+	LDLT_PP_CAT2(LDLT_IMPL_DISPATCH_, Dim)                                       \
+	(Name,                                                                       \
+	 LDLT_PP_CAT2(LDLT_IMPL_REMOVE_PREFIX_, Dim),                                \
+	 LDLT_PP_CAT(_ldlt_malloca_handler, __LINE__).data,                          \
+	 Type);                                                                      \
+	static_assert(true, ".")
+
 #if LDLT_HAS_ALLOCA
 
-#define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
+#define LDLT_IMPL_WORKSPACE_MEMORY(Name, Size, Type)                           \
 	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
-			::ldlt::usize(Count) * sizeof(Type) +                                    \
-			::ldlt::detail::UniqueMalloca<Type>::align;                              \
+			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
-			_ldlt_malloca_handler, __LINE__){                                        \
-			::ldlt::detail::UniqueMalloca<Type>::can_alloca(::ldlt::usize(Count))    \
-					? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                  \
-					: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                 \
-			::ldlt::usize(Count),                                                    \
-	};                                                                           \
-	Type* Name = LDLT_PP_CAT(_ldlt_malloca_handler, __LINE__).data;              \
-	static_assert(true, ".")
+			_ldlt_malloca_handler, __LINE__) {                                       \
+		::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                      \
+				? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                    \
+				: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                   \
+				Size,                                                                  \
+	}
 
 #else
 
-#define LDLT_WORKSPACE_MEMORY(Name, Count, Type)                               \
+#define LDLT_IMPL_WORKSPACE_MEMORY(Name, Size, Type)                           \
 	alignas(::ldlt::detail::UniqueMalloca<Type>::align) unsigned char            \
 			LDLT_PP_CAT(_ldlt_buf, __LINE__)[LDLT_MAX_STACK_ALLOC_SIZE];             \
 	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
-			::ldlt::usize(Count) * sizeof(Type) +                                    \
-			::ldlt::detail::UniqueMalloca<Type>::align;                              \
+			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
-			_ldlt_malloca_handler, __LINE__){                                        \
-			::ldlt::detail::UniqueMalloca<Type>::can_alloca(::ldlt::usize(Count))    \
-					? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))               \
-					: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__), )::ldlt::usize(  \
-								Count),                                                        \
-	};                                                                           \
-	Type* Name = LDLT_PP_CAT(_ldlt_ldlt_malloca_handler, __LINE__).data;         \
-	static_assert(true, ".")
+			_ldlt_malloca_handler, __LINE__) {                                       \
+		::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                      \
+				? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))                 \
+				: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                   \
+				Size,                                                                  \
+	}
 
 #endif
 
-#define LDLT_IMPL_PLUS(Type, Name_Count)                                       \
+#define LDLT_IMPL_PLUS2(Type, Dim)                                             \
 	+::ldlt::detail::round_up(                                                   \
-			LDLT_PP_TAIL Name_Count,                                                 \
+			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                                      \
 			::ldlt::detail::SimdCachelineAlignStep<Type>::value)
 
-#define LDLT_IMPL_DECL_MEMORY(Type, Name_Count)                                \
-	Type* LDLT_PP_HEAD Name_Count = LDLT_PP_CAT2(_ldlt_workspace, __LINE__);     \
-	LDLT_PP_CAT2(_ldlt_workspace, __LINE__) += ::ldlt::detail::round_up(         \
-			LDLT_PP_TAIL Name_Count,                                                 \
+#define LDLT_IMPL_PLUS(Type, Name_Dim)                                         \
+	LDLT_IMPL_PLUS2(Type, LDLT_PP_TAIL Name_Dim)
+
+#define LDLT_IMPL_DECL_MEMORY2(Type, Name, Dim)                                \
+	LDLT_PP_CAT2(LDLT_IMPL_DISPATCH_, Dim)                                       \
+	(Name,                                                                       \
+	 LDLT_PP_CAT2(LDLT_IMPL_REMOVE_PREFIX_, Dim),                                \
+	 LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data,                               \
+	 Type);                                                                      \
+	LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data += ::ldlt::detail::round_up(    \
+			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                                      \
 			::ldlt::detail::SimdCachelineAlignStep<Type>::value);
 
-#define LDLT_MULTI_WORKSPACE_MEMORY(Names_Counts, Type)                        \
+#define LDLT_IMPL_DECL_MEMORY(Type, Name_Dim)                                  \
+	LDLT_IMPL_DECL_MEMORY2(Type, LDLT_PP_HEAD Name_Dim, LDLT_PP_TAIL Name_Dim)
+
+#define LDLT_MULTI_WORKSPACE_MEMORY(Names_Dims, Type)                          \
 	::ldlt::isize LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__) =                     \
-			LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_PLUS, Type, Names_Counts);              \
+			LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_PLUS, Type, Names_Dims);                \
 	LDLT_WORKSPACE_MEMORY(                                                       \
 			LDLT_PP_CAT2(_ldlt_workspace, __LINE__),                                 \
-			LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__),                                \
+			Vec(LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__)),                           \
 			Type);                                                                   \
-	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_DECL_MEMORY, Type, Names_Counts)            \
+	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_DECL_MEMORY, Type, Names_Dims)              \
 	static_assert(true, ".")
 
 #if __cplusplus >= 201703L

@@ -63,9 +63,8 @@ auto ruiz_scale_qp_in_place( //
 	S.setConstant(T(1));
 	T gamma = T(1);
 
-	LDLT_WORKSPACE_MEMORY(_delta, n + n_eq + n_in, T);
-	auto delta =
-			VectorViewMut<T>{ldlt::from_ptr_size, _delta, n + n_eq + n_in}.to_eigen();
+	LDLT_WORKSPACE_MEMORY(_delta, Vec(n + n_eq + n_in), T);
+	auto delta = _delta.to_eigen();
 
 	delta.setZero();
 

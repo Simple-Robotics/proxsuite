@@ -226,16 +226,16 @@ LDLT_NO_INLINE void diagonal_update_multi_pass(
 
 	LdltView<T> current_in = in;
 
-	LDLT_WORKSPACE_MEMORY(ws, dim_rem, T);
+	LDLT_WORKSPACE_MEMORY(ws, Vec(dim_rem), T);
 	for (isize k = 0; k < diag_diff.dim; ++k) {
-		ws[0] = T(1);
+		ws(0) = T(1);
 		for (isize i = 1; i < dim_rem; ++i) {
-			ws[i] = T(0);
+			ws(i) = T(0);
 		}
 		detail::rank1_update( //
 				out,
 				current_in,
-				VectorViewMut<T>{from_ptr_size, ws, dim_rem},
+				ws,
 				idx + k,
 				diag_diff(k));
 		--dim_rem;
@@ -303,8 +303,8 @@ struct RowAppendImpl<colmajor> {
 	LDLT_INLINE static void
 	corner_update(LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a) {
 		isize dim = in_l.d.dim;
-		LDLT_WORKSPACE_MEMORY(w, dim, T);
-		detail::corner_update_impl(out_l, in_l, a, w);
+		LDLT_WORKSPACE_MEMORY(w, Vec(dim), T);
+		detail::corner_update_impl(out_l, in_l, a, w.dim);
 	}
 };
 
@@ -398,12 +398,12 @@ struct RowDeleteImpl<colmajor> {
 					out_bottom_right.d.data);
 
 		} else {
-			LDLT_WORKSPACE_MEMORY(w, rem_dim, T);
-			std::copy(l, l + rem_dim, w);
+			LDLT_WORKSPACE_MEMORY(w, Vec(rem_dim), T);
+			std::copy(l, l + rem_dim, w.data);
 			detail::rank1_update( //
 					out_bottom_right,
 					in_bottom_right,
-					VectorViewMut<T>{from_ptr_size, w, rem_dim},
+					w,
 					0,
 					d);
 		}
@@ -462,10 +462,9 @@ struct rank1_update {
 	void operator()(
 			LdltViewMut<T> out, LdltView<T> in, VectorView<T> z, T alpha) const {
 		isize dim = out.l.rows;
-		LDLT_WORKSPACE_MEMORY(wp, out.d.dim, T);
-		std::copy(z.data, z.data + dim, wp);
-		detail::rank1_update(
-				out, in, VectorViewMut<T>{from_ptr_size, wp, dim}, 0, alpha);
+		LDLT_WORKSPACE_MEMORY(wp, Vec(dim), T);
+		std::copy(z.data, z.data + dim, wp.data);
+		detail::rank1_update(out, in, wp, 0, alpha);
 	}
 };
 struct diagonal_update {

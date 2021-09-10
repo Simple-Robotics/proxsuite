@@ -19,7 +19,7 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix) {
 	bool inplace = (out.l.data == in_matrix.data);
 	isize dim = out.l.rows;
 
-	LDLT_WORKSPACE_MEMORY(wp, dim, T);
+	LDLT_WORKSPACE_MEMORY(wp, Vec(dim), T);
 
 	for (isize j = 0; j < dim; ++j) {
 		/********************************************************************************
@@ -49,10 +49,12 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix) {
 		auto a21 = in_matrix.col(j).segment(j_inc, m).to_eigen();
 		auto d = d_c.segment(0, j).to_eigen();
 
-		auto tmp_read = detail::VecMap<T>{wp, j};
-		auto tmp = detail::VecMapMut<T>{wp, j};
+		{
+			auto tmp = wp.segment(0, j).to_eigen();
+			tmp.array() = l10.array().operator*(d.array());
+		}
+		auto tmp_read = wp.as_const().segment(0, j).to_eigen();
 
-		tmp.array() = l10.array().operator*(d.array());
 		out.d(j) = in_diag - T(tmp_read.dot(l10));
 		if (!inplace) {
 			l21 = a21;

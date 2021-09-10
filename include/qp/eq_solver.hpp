@@ -87,29 +87,23 @@ auto solve_qp( //
 	T bcl_eta = 1 / pow(bcl_mu, T(0.1));
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			((_h_scaled, dim * dim),
-	     (_g_scaled, dim),
-	     (_a_scaled, n_eq * dim),
-	     (_b_scaled, n_eq),
-	     (_htot, (dim + n_eq) * (dim + n_eq)),
-	     (_d, dim + n_eq),
-	     (_residual_scaled, dim + n_eq),
-	     (_residual_scaled_tmp, dim + n_eq),
-	     (_residual_unscaled, dim + n_eq),
-	     (_next_dual, n_eq),
-	     (_diag_diff, n_eq)),
+			((_h_scaled, Mat(dim, dim)),
+	     (_g_scaled, Vec(dim)),
+	     (_a_scaled, Mat(n_eq, dim)),
+	     (_b_scaled, Vec(n_eq)),
+	     (_htot, Mat((dim + n_eq), (dim + n_eq))),
+	     (_d, Vec(dim + n_eq)),
+	     (_residual_scaled, Vec(dim + n_eq)),
+	     (_residual_scaled_tmp, Vec(dim + n_eq)),
+	     (_residual_unscaled, Vec(dim + n_eq)),
+	     (_next_dual, Vec(n_eq)),
+	     (_diag_diff, Vec(n_eq))),
 			T);
 
-	auto H_copy =
-			MatrixViewMut<T, colmajor>{
-					from_ptr_rows_cols_stride, _h_scaled, dim, dim, dim}
-					.to_eigen();
-	auto q_copy = VectorViewMut<T>{from_ptr_size, _g_scaled, dim}.to_eigen();
-	auto A_copy =
-			MatrixViewMut<T, colmajor>{
-					from_ptr_rows_cols_stride, _a_scaled, n_eq, dim, n_eq}
-					.to_eigen();
-	auto b_copy = VectorViewMut<T>{from_ptr_size, _b_scaled, n_eq}.to_eigen();
+	auto H_copy = _h_scaled.to_eigen();
+	auto q_copy = _g_scaled.to_eigen();
+	auto A_copy = _a_scaled.to_eigen();
+	auto b_copy = _b_scaled.to_eigen();
 
 	H_copy = qp.H.to_eigen();
 	q_copy = qp.g.to_eigen();
@@ -136,16 +130,8 @@ auto solve_qp( //
 		precond.scale_dual_in_place(y);
 	}
 
-	auto Htot =
-			MatrixViewMut<T, colmajor>{
-					from_ptr_rows_cols_stride,
-					_htot,
-					dim + n_eq,
-					dim + n_eq,
-					dim + n_eq,
-			}
-					.to_eigen();
-	auto d = VectorViewMut<T>{from_ptr_size, _d, dim + n_eq}.to_eigen();
+	auto Htot = _htot.to_eigen();
+	auto d = _d.to_eigen();
 
 	{
 		LDLT_DECL_SCOPE_TIMER("eq solver", "set H", T);
@@ -181,18 +167,12 @@ auto solve_qp( //
 				ldlt::factorization_strategy::standard);
 	}
 
-	auto residual_scaled =
-			VectorViewMut<T>{from_ptr_size, _residual_scaled, dim + n_eq}.to_eigen();
-	auto residual_scaled_tmp =
-			VectorViewMut<T>{from_ptr_size, _residual_scaled_tmp, dim + n_eq}
-					.to_eigen();
+	auto residual_scaled = _residual_scaled.to_eigen();
+	auto residual_scaled_tmp = _residual_scaled_tmp.to_eigen();
+	auto residual_unscaled = _residual_unscaled.to_eigen();
 
-	auto residual_unscaled =
-			VectorViewMut<T>{from_ptr_size, _residual_unscaled, dim + n_eq}
-					.to_eigen();
-
-	auto next_dual = VectorViewMut<T>{from_ptr_size, _next_dual, n_eq}.to_eigen();
-	auto diag_diff = VectorViewMut<T>{from_ptr_size, _diag_diff, n_eq}.to_eigen();
+	auto next_dual = _next_dual.to_eigen();
+	auto diag_diff = _diag_diff.to_eigen();
 
 	T primal_feasibility_rhs_1 = infty_norm(qp.b.to_eigen());
 	T dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());

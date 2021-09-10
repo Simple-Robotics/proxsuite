@@ -30,9 +30,7 @@ auto main() -> int {
 				2000,
 				eps_abs,
 				0,
-				qp::preconditioner::
-						RuizEquilibration<Scalar, ldlt::colmajor, ldlt::colmajor>{
-								dim, n_eq});
+				qp::preconditioner::RuizEquilibration<Scalar>{dim, n_eq});
 		if (i == 0) {
 			fmt::print(
 					" - {} iterations, {} mu updates, error: {}\n",

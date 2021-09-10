@@ -55,11 +55,10 @@ DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
 
 	Scalar eps_abs = Scalar(1e-10);
 	{
-		auto ruiz =
-				qp::preconditioner::RuizEquilibration<Scalar, colmajor, colmajor>{
-						dim,
-						n_eq,
-				};
+		auto ruiz = qp::preconditioner::RuizEquilibration<Scalar>{
+				dim,
+				n_eq,
+		};
 		EigenNoAlloc _{};
 		qp::detail::solve_qp( //
 				{from_eigen, primal_init},

@@ -1,8 +1,22 @@
 module ldlt {
-  header "views.hpp"
-  header "factorize.hpp"
-  header "solve.hpp"
-  header "update.hpp"
-  header "ldlt.hpp"
-  export *
+  module views {
+    header "views.hpp"
+    export *
+  }
+  module factorize {
+    header "factorize.hpp"
+    export *
+  }
+  module solve {
+    header "solve.hpp"
+    export *
+  }
+  module update {
+    header "update.hpp"
+    export *
+  }
+  module ldlt {
+    header "ldlt.hpp"
+    export *
+  }
 }
