@@ -26,7 +26,7 @@ LDLT_NO_INLINE void solve_impl( //
 		x_e = detail::VecMap<T>{b.data, dim};
 	}
 	l_lower.solveInPlace(x_e);
-	x_e.array().operator/=(d_e.array());
+	x_e = x_e.cwiseQuotient(d_e);
 	lt_upper.solveInPlace(x_e);
 }
 extern template void

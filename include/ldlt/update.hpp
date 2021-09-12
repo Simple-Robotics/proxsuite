@@ -226,12 +226,13 @@ LDLT_NO_INLINE void diagonal_update_multi_pass(
 
 	LdltView<T> current_in = in;
 
-	LDLT_WORKSPACE_MEMORY(ws, Vec(dim_rem), T);
+	// set bottom right element to zero for use in workspace
+	out.l(dim - 1, dim - 1) = 0;
 	for (isize k = 0; k < diag_diff.dim; ++k) {
+		auto ws = out.l.col(dim - 1).segment(0, dim_rem);
+		// ws is already zeroed
+
 		ws(0) = T(1);
-		for (isize i = 1; i < dim_rem; ++i) {
-			ws(i) = T(0);
-		}
 		detail::rank1_update( //
 				out,
 				current_in,
@@ -239,8 +240,12 @@ LDLT_NO_INLINE void diagonal_update_multi_pass(
 				idx + k,
 				diag_diff(k));
 		--dim_rem;
+
+		detail::set_zero(ws.data, usize(ws.dim));
 		current_in = out.as_const();
 	}
+	// restore bottom right element
+	out.l(dim - 1, dim - 1) = 1;
 }
 
 template <typename T>
@@ -273,26 +278,28 @@ struct RowAppendImpl;
 
 template <typename T>
 LDLT_NO_INLINE void corner_update_impl(
-		LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a, T* w) {
+		LdltViewMut<T> out_l,
+		LdltView<T> in_l,
+		VectorView<T> a,
+		VectorViewMut<T> w) {
 
 	isize dim = in_l.d.dim;
 
-	auto tmp_row = VectorViewMut<T>{from_ptr_size, w, dim}.to_eigen();
-
-	tmp_row = a.segment(0, dim).to_eigen();
+	auto new_row = w.to_eigen();
+	new_row = a.segment(0, dim).to_eigen();
 	auto l_e = in_l.l.to_eigen();
-	l_e.template triangularView<Eigen::UnitLower>().solveInPlace(tmp_row);
-	tmp_row.array() /= in_l.d.to_eigen().array();
+	l_e.template triangularView<Eigen::UnitLower>().solveInPlace(new_row);
+	new_row = new_row.cwiseQuotient(in_l.d.to_eigen());
 
 	{
-		auto l = tmp_row.array();
-		auto d = in_l.d.to_eigen().array();
-		out_l.d(dim) = a(dim) - (l * l * d).sum();
+		auto l = new_row;
+		auto d = in_l.d.to_eigen();
+		out_l.d(dim) = a(dim) - (l.cwiseProduct(l).cwiseProduct(d)).sum();
 	}
 
 	auto last_row = out_l.l.row(dim);
-	if (last_row.data != w) {
-		last_row.segment(0, dim).to_eigen() = tmp_row;
+	if (last_row.data != w.data) {
+		last_row.segment(0, dim).to_eigen() = new_row;
 		last_row(dim) = T(1);
 	}
 }
@@ -303,8 +310,9 @@ struct RowAppendImpl<colmajor> {
 	LDLT_INLINE static void
 	corner_update(LdltViewMut<T> out_l, LdltView<T> in_l, VectorView<T> a) {
 		isize dim = in_l.d.dim;
-		LDLT_WORKSPACE_MEMORY(w, Vec(dim), T);
-		detail::corner_update_impl(out_l, in_l, a, w.dim);
+		auto ws = out_l.l.col(dim).segment(0, dim);
+		detail::corner_update_impl(out_l, in_l, a, ws);
+		detail::set_zero(ws.data, usize(dim));
 	}
 };
 
@@ -398,7 +406,7 @@ struct RowDeleteImpl<colmajor> {
 					out_bottom_right.d.data);
 
 		} else {
-			LDLT_WORKSPACE_MEMORY(w, Vec(rem_dim), T);
+			auto w = out_bottom_right.l.col(rem_dim - 1);
 			std::copy(l, l + rem_dim, w.data);
 			detail::rank1_update( //
 					out_bottom_right,
@@ -406,6 +414,8 @@ struct RowDeleteImpl<colmajor> {
 					w,
 					0,
 					d);
+			detail::set_zero(w.data, usize(w.dim));
+			w(rem_dim - 1) = 1;
 		}
 	}
 };
@@ -459,12 +469,15 @@ extern template void rank1_update(
 namespace nb {
 struct rank1_update {
 	template <typename T>
-	void operator()(
+	LDLT_INLINE void operator()(
 			LdltViewMut<T> out, LdltView<T> in, VectorView<T> z, T alpha) const {
 		isize dim = out.l.rows;
-		LDLT_WORKSPACE_MEMORY(wp, Vec(dim), T);
+
+		auto wp = out.l.col(dim - 1);
 		std::copy(z.data, z.data + dim, wp.data);
 		detail::rank1_update(out, in, wp, 0, alpha);
+		detail::set_zero(wp.data, usize(dim - 1));
+		wp(dim - 1) = 1;
 	}
 };
 struct diagonal_update {

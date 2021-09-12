@@ -29,6 +29,28 @@ struct min2 {
 LDLT_DEFINE_NIEBLOID(max2);
 LDLT_DEFINE_NIEBLOID(min2);
 
+template <typename T, bool = std::is_floating_point<T>::value>
+struct SetZeroImpl {
+	static void fn(T* dest, usize n) {
+		for (usize i = 0; i < n; ++i) {
+			*dest = 0;
+		}
+	}
+};
+
+template <typename T>
+struct SetZeroImpl<T, true> {
+	static void fn(T* dest, usize n) {
+    // TODO: assert bit representation is zero
+		std::memset(dest, 0, n * sizeof(T));
+	}
+};
+
+template <typename T>
+void set_zero(T* dest, usize n) {
+	SetZeroImpl<T>::fn(dest, n);
+}
+
 constexpr auto round_up(isize n, isize k) noexcept -> isize {
 	return (n + k - 1) / k * k;
 }
