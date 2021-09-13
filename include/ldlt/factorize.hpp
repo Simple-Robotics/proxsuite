@@ -21,7 +21,8 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 
 	isize unblocked_n = (block_size == 1) ? dim : (dim % block_size);
 
-	for (isize j = 0; j < unblocked_n; ++j) {
+	isize j = 0;
+	while (true) {
 		/********************************************************************************
 		 *     l00 l01 l02
 		 * l = l10  1  l12
@@ -30,12 +31,17 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		 * l{0,1,2}0 already known, compute l21
 		 */
 
+		auto l01 = out.l.col(j).segment(0, j).to_eigen();
+
+		auto&& cleanup = defer([&] {
+			// has to be after we're done using workspace because they may alias
+			detail::set_zero(l01.data(), usize(l01.size()));
+			++j;
+		});
+		(void)cleanup;
+
 		isize m = dim - j - 1;
 
-		// avoid buffer overflow UB when accessing the matrices
-		isize j_inc = ((j + 1) < dim) ? j + 1 : j;
-
-		auto l01 = out.l.col(j).segment(0, j).to_eigen();
 		T in_diag = in_matrix(j, j);
 		out.l(j, j) = T(1);
 
@@ -43,9 +49,6 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		auto d_c = out.d.as_const();
 
 		auto l10 = l_c.row(j).segment(0, j).to_eigen();
-		auto l20 = l_c.block(j_inc, 0, m, j).to_eigen();
-		auto l21 = out.l.col(j).segment(j_inc, m).to_eigen();
-		auto a21 = in_matrix.col(j).segment(j_inc, m).to_eigen();
 		auto d = d_c.segment(0, j).to_eigen();
 
 		auto wp_j =
@@ -55,18 +58,29 @@ LDLT_NO_INLINE void factorize_ldlt_tpl(
 		auto tmp_read = wp_j.as_const().to_eigen();
 
 		out.d(j) = in_diag - T(tmp_read.dot(l10));
+
+		if (j + 1 == unblocked_n) {
+			break;
+		}
+
+		auto l20 = l_c.block(j + 1, 0, m, j).to_eigen();
+		auto l21 = out.l.col(j).segment(j + 1, m).to_eigen();
+		auto a21 = in_matrix.col(j).segment(j + 1, m).to_eigen();
+
 		if (!inplace) {
 			l21 = a21;
 		}
 		l21.noalias() -= l20 * tmp_read;
 		l21 *= T(1) / out.d(j);
-
-		// has to be after we're done using workspace because they may alias
-		detail::set_zero(l01.data(), usize(l01.size()));
 	}
 
-	for (isize j = unblocked_n; j < dim; j += block_size) {
-    // TODO
+	if (j == dim) {
+		return;
+	}
+
+	while (true) {
+		auto&& cleanup = defer([&] { ++j; });
+		(void)cleanup;
 	}
 }
 

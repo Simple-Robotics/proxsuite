@@ -5,13 +5,37 @@
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
 #include <Eigen/Core>
-#include <Eigen/src/Core/util/ForwardDeclarations.h>
 #include <cstdint>
 #include <new>
 
 namespace ldlt {
 namespace detail {
+
+struct NoCopy {
+	NoCopy() = default;
+	~NoCopy() = default;
+
+	NoCopy(NoCopy const&) = delete;
+	NoCopy(NoCopy&&) = delete;
+	auto operator=(NoCopy const&) -> NoCopy& = delete;
+	auto operator=(NoCopy&&) -> NoCopy& = delete;
+};
+
+template <typename Fn>
+struct Defer /* NOLINT */ {
+	Fn fn;
+	NoCopy _;
+
+	LDLT_INLINE ~Defer() noexcept(noexcept(LDLT_FWD(fn)())) { LDLT_FWD(fn)(); }
+};
+
 namespace nb {
+struct defer {
+	template <typename Fn>
+	LDLT_INLINE constexpr auto operator()(Fn fn) const -> Defer<Fn> {
+		return {LDLT_FWD(fn), {}};
+	}
+};
 struct max2 {
 	template <typename T>
 	LDLT_INLINE constexpr auto operator()(T const& a, T const& b) const
@@ -26,6 +50,7 @@ struct min2 {
 	}
 };
 } // namespace nb
+LDLT_DEFINE_NIEBLOID(defer);
 LDLT_DEFINE_NIEBLOID(max2);
 LDLT_DEFINE_NIEBLOID(min2);
 
@@ -41,7 +66,7 @@ struct SetZeroImpl {
 template <typename T>
 struct SetZeroImpl<T, true> {
 	static void fn(T* dest, usize n) {
-    // TODO: assert bit representation is zero
+		// TODO: assert bit representation is zero
 		std::memset(dest, 0, n * sizeof(T));
 	}
 };
