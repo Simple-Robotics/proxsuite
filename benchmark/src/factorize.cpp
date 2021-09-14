@@ -16,7 +16,7 @@ template <typename T>
 using Vec = Eigen::Matrix<T, -1, 1>;
 
 template <typename T, Layout L>
-void bench_eigen(benchmark::State& s) {
+void bench_eigen___ldlt(benchmark::State& s) {
 	isize dim = isize(s.range(0));
 
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
@@ -32,7 +32,23 @@ void bench_eigen(benchmark::State& s) {
 }
 
 template <typename T, Layout L>
-void bench_ours(benchmark::State& s) {
+void bench_eigen___chol(benchmark::State& s) {
+	isize dim = isize(s.range(0));
+
+	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
+	Eigen::LLT<Mat<T, L>> l(a);
+
+	benchmark::DoNotOptimize(a.data());
+	benchmark::DoNotOptimize(l.matrixLLT().data());
+
+	for (auto _ : s) {
+		l.compute(a);
+		benchmark::ClobberMemory();
+	}
+}
+
+template <typename T, Layout L>
+void bench_ours____ldlt(benchmark::State& s) {
 
 	isize block_size = isize(s.range(0));
 	isize dim = isize(s.range(1));
@@ -60,7 +76,7 @@ void bench_ours(benchmark::State& s) {
 }
 
 template <typename T>
-void bench_ours_inplace(benchmark::State& s) {
+void bench_inplace_ldlt(benchmark::State& s) {
 
 	isize block_size = isize(s.range(0));
 	isize dim = isize(s.range(1));
@@ -103,20 +119,21 @@ constexpr isize dim_huge = 4096;
 
 #define LDLT_BENCH(Dim, Type, L)                                               \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
-	LDLT_BENCHMARK_TPL(bench_eigen, Type, L)->Arg(Dim);                          \
-	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({1, Dim});                     \
-	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({16, Dim});                    \
-	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({32, Dim});                    \
-	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({64, Dim});
+	LDLT_BENCHMARK_TPL(bench_eigen___chol, Type, L)->Arg(Dim);                   \
+	LDLT_BENCHMARK_TPL(bench_eigen___ldlt, Type, L)->Arg(Dim);                   \
+	LDLT_BENCHMARK_TPL(bench_ours____ldlt, Type, L)->Args({1, Dim});             \
+	LDLT_BENCHMARK_TPL(bench_ours____ldlt, Type, L)->Args({16, Dim});            \
+	LDLT_BENCHMARK_TPL(bench_ours____ldlt, Type, L)->Args({32, Dim});            \
+	LDLT_BENCHMARK_TPL(bench_ours____ldlt, Type, L)->Args({64, Dim});
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor);                                             \
 	LDLT_BENCH(Dim, Type, rowmajor);                                             \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({1, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({16, Dim});               \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({32, Dim});               \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({64, Dim});
+	LDLT_BENCHMARK_TPL(bench_inplace_ldlt, Type)->Args({1, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace_ldlt, Type)->Args({16, Dim});               \
+	LDLT_BENCHMARK_TPL(bench_inplace_ldlt, Type)->Args({32, Dim});               \
+	LDLT_BENCHMARK_TPL(bench_inplace_ldlt, Type)->Args({64, Dim});
 
 #define LDLT_BENCH_DIM(Type)                                                   \
 	LDLT_BENCH_LAYOUT(dim_tiny, Type);                                           \
