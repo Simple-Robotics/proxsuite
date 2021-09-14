@@ -834,8 +834,13 @@ void noalias_mul_add(
 		auto dst_col = VectorViewMut<T>{from_ptr_size, dst.data, dst.rows};
 		dst_col.to_eigen().noalias().operator+=(
 				factor*(lhs.to_eigen().operator*(rhs_col.to_eigen())));
-	} else if ((dst.rows < 20) && (dst.cols < 20) && (rhs.rows < 20)) {
+	}
+
+#if !EIGEN_VERSION_AT_LEAST(3, 3, 8)
+	else if ((dst.rows < 20) && (dst.cols < 20) && (rhs.rows < 20)) {
 		// gemm
+		// workaround for eigen 3.3.7 bug:
+		// https://gitlab.com/libeigen/eigen/-/issues/1562
 		using Stride = Eigen::OuterStride<Eigen::Dynamic>;
 		using Mat = Eigen::
 				Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor, 20, 20>;
@@ -852,7 +857,10 @@ void noalias_mul_add(
 										Map(rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))
 												.
 												operator*(factor)));
-	} else {
+	}
+#endif
+
+	else {
 		// gemm
 		dst.to_eigen().noalias().operator+=(
 				lhs.to_eigen().operator*(rhs.to_eigen().operator*(factor)));
