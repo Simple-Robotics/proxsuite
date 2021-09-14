@@ -31,10 +31,11 @@ void bench_eigen(benchmark::State& s) {
 	}
 }
 
-template <typename Strategy, typename T, Layout L>
+template <typename T, Layout L>
 void bench_ours(benchmark::State& s) {
 
-	isize dim = isize(s.range(0));
+	isize block_size = isize(s.range(0));
+	isize dim = isize(s.range(1));
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, colmajor> l(dim, dim);
@@ -53,7 +54,7 @@ void bench_ours(benchmark::State& s) {
 				{from_eigen, d},
 		};
 
-		factorize(ldl_view, a_view, Strategy{});
+		factorize(ldl_view, a_view, factorization_strategy::blocked(block_size));
 		benchmark::ClobberMemory();
 	}
 }
@@ -61,7 +62,8 @@ void bench_ours(benchmark::State& s) {
 template <typename T>
 void bench_ours_inplace(benchmark::State& s) {
 
-	isize dim = isize(s.range(0));
+	isize block_size = isize(s.range(0));
+	isize dim = isize(s.range(1));
 	Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, colmajor> l(dim, dim);
@@ -81,7 +83,7 @@ void bench_ours_inplace(benchmark::State& s) {
 		};
 
 		l = a;
-		factorize(ldl_view, a_view);
+		factorize(ldl_view, a_view, factorization_strategy::blocked(block_size));
 		benchmark::ClobberMemory();
 	}
 }
@@ -93,27 +95,35 @@ void bench_dummy(benchmark::State& s) {
 
 LDLT_BENCHMARK_MAIN();
 
-constexpr isize dim_small = 32;
-constexpr isize dim_medium = 128;
+constexpr isize dim_tiny = 32;
+constexpr isize dim_small = 128;
+constexpr isize dim_medium = 512;
 constexpr isize dim_large = 1024;
-
-namespace strat = factorization_strategy;
+constexpr isize dim_huge = 4096;
 
 #define LDLT_BENCH(Dim, Type, L)                                               \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCHMARK_TPL(bench_eigen, Type, L)->Arg(Dim);                          \
-	LDLT_BENCHMARK_TPL(bench_ours, strat::Standard, Type, L)->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({1, Dim});                     \
+	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({16, Dim});                    \
+	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({32, Dim});                    \
+	LDLT_BENCHMARK_TPL(bench_ours, Type, L)->Args({64, Dim});
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor);                                             \
 	LDLT_BENCH(Dim, Type, rowmajor);                                             \
-	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({1, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({16, Dim});               \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({32, Dim});               \
+	LDLT_BENCHMARK_TPL(bench_ours_inplace, Type)->Args({64, Dim});
 
 #define LDLT_BENCH_DIM(Type)                                                   \
+	LDLT_BENCH_LAYOUT(dim_tiny, Type);                                           \
 	LDLT_BENCH_LAYOUT(dim_small, Type);                                          \
 	LDLT_BENCH_LAYOUT(dim_medium, Type);                                         \
-	LDLT_BENCH_LAYOUT(dim_large, Type)
+	LDLT_BENCH_LAYOUT(dim_large, Type);                                          \
+	LDLT_BENCH_LAYOUT(dim_huge, Type)
 
 LDLT_BENCH_DIM(f32);
 LDLT_BENCH_DIM(f64);

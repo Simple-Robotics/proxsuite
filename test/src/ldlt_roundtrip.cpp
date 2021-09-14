@@ -78,15 +78,21 @@ using R = detail::constant<Layout, rowmajor>;
 DOCTEST_TEST_CASE_TEMPLATE(
 		"factorize: roundtrip",
 		Args,
-		detail::type_sequence<f32, C, factorization_strategy::Standard>,
-		detail::type_sequence<f32, R, factorization_strategy::Standard>) {
+		detail::type_sequence<f32, C>,
+		detail::type_sequence<f32, R>) {
 	isize min = 1;
 	isize max = 64;
 	using Scalar = detail::typeseq_ith<0, Args>;
 	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
-	using Strategy = detail::typeseq_ith<2, Args>;
 
-	for (isize i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, Strategy{}) <= Scalar(10));
+	isize block_sizes[] = {1, 2, 4, 16, 64};
+
+	for (auto bs : block_sizes) {
+		auto tag = factorization_strategy::blocked(bs);
+		for (isize i = min; i <= max; ++i) {
+			DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, tag) <= Scalar(10));
+		}
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(200, tag) <= Scalar(10));
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(256, tag) <= Scalar(10));
 	}
 }

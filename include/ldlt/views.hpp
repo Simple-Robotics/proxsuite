@@ -820,6 +820,70 @@ struct LdltViewMut {
 		return {l.as_const(), d.as_const()};
 	}
 };
+
+namespace detail {
+template <typename T>
+void noalias_mul_add(
+		MatrixViewMut<T, colmajor> dst,
+		MatrixView<T, colmajor> lhs,
+		MatrixView<T, colmajor> rhs,
+		T factor) {
+	if (dst.cols == 1) {
+		// gemv
+		auto rhs_col = VectorView<T>{from_ptr_size, rhs.data, rhs.rows};
+		auto dst_col = VectorViewMut<T>{from_ptr_size, dst.data, dst.rows};
+		dst_col.to_eigen().noalias().operator+=(
+				factor*(lhs.to_eigen().operator*(rhs_col.to_eigen())));
+	} else if ((dst.rows < 20) && (dst.cols < 20) && (rhs.rows < 20)) {
+		// gemm
+		using Stride = Eigen::OuterStride<Eigen::Dynamic>;
+		using Mat = Eigen::
+				Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor, 20, 20>;
+		using MapMut = Eigen::Map<Mat, Eigen::Unaligned, Stride>;
+		using Map = Eigen::Map<Mat const, Eigen::Unaligned, Stride>;
+
+		MapMut(dst.data, dst.rows, dst.cols, Stride(dst.outer_stride))
+				.noalias()
+				.
+				operator+=(
+						Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride))
+								.
+								operator*(
+										Map(rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))
+												.
+												operator*(factor)));
+	} else {
+		// gemm
+		dst.to_eigen().noalias().operator+=(
+				lhs.to_eigen().operator*(rhs.to_eigen().operator*(factor)));
+	}
+}
+
+template <typename T>
+void noalias_mul_add_vec(
+		VectorViewMut<T> dst,
+		MatrixView<T, colmajor> lhs,
+		VectorView<T> rhs,
+		T factor) {
+	detail::noalias_mul_add<T>(
+			{
+					from_ptr_rows_cols_stride,
+					dst.data,
+					dst.dim,
+					1,
+					0,
+			},
+			lhs,
+			{
+					from_ptr_rows_cols_stride,
+					rhs.data,
+					rhs.dim,
+					1,
+					0,
+			},
+			LDLT_FWD(factor));
+}
+} // namespace detail
 } // namespace ldlt
 
 #endif /* end of include guard INRIA_LDLT_VIEWS_HPP_UGNXAQSBS */
