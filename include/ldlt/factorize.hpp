@@ -11,6 +11,9 @@ inline namespace tags {
 struct Blocked {
 	isize block_size;
 };
+struct AltBlocked {
+	isize block_size;
+};
 } // namespace tags
 namespace nb {
 struct blocked {
@@ -19,7 +22,15 @@ struct blocked {
 	}
 };
 } // namespace nb
+namespace nb {
+struct alt_blocked {
+	auto operator()(isize block_size) const noexcept -> AltBlocked {
+		return {block_size};
+	}
+};
+} // namespace nb
 LDLT_DEFINE_NIEBLOID(blocked);
+LDLT_DEFINE_NIEBLOID(alt_blocked);
 } // namespace factorization_strategy
 
 namespace detail {
@@ -164,6 +175,52 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
 	}
 }
 
+template <typename T>
+LDLT_NO_INLINE void
+factorize_ldlt_alt_inplace(LdltViewMut<T> ld, isize block_size) {
+
+	isize n = ld.l.rows;
+	if (n <= 0) {
+		return;
+	}
+
+	isize k = 0;
+	while (true) {
+		isize bs = min2(n - k, block_size);
+
+		auto l11_mut = ld.l.block(k, k, bs, bs);
+		auto d1_mut = ld.d.segment(k, bs);
+
+		auto l11 = l11_mut.as_const();
+		auto d1 = d1_mut.as_const();
+
+		detail::factorize_ldlt_tpl(
+				LdltViewMut<T>{l11_mut, d1_mut}, l11_mut.as_const(), 1);
+
+		if (k + bs == n) {
+			break;
+		}
+
+		isize rem = n - k - bs;
+		auto l21_mut = ld.l.block(k + bs, k, rem, bs);
+		auto l21 = l21_mut.as_const();
+		auto l22_mut = ld.l.block(k + bs, k + bs, rem, rem);
+		l11.to_eigen()
+				.transpose()
+				.template triangularView<Eigen::UnitUpper>()
+				.template solveInPlace<Eigen::OnTheRight>(l21_mut.to_eigen());
+		l21_mut.to_eigen() = l21.to_eigen() * d1.to_eigen().asDiagonal().inverse();
+
+		auto work_k_mut = ld.l.block(0, n - bs, rem, bs);
+		auto work_k = work_k_mut.as_const();
+		work_k_mut.to_eigen() = l21.to_eigen() * d1.to_eigen().asDiagonal();
+		l22_mut.to_eigen().template triangularView<Eigen::Lower>() -=
+				l21.to_eigen() * work_k.trans().to_eigen();
+
+		k += bs;
+	}
+}
+
 template <typename S>
 struct FactorizeStartegyDispatch;
 
@@ -185,6 +242,22 @@ struct FactorizeStartegyDispatch<factorization_strategy::Blocked> {
 	   MatrixView<T, L> in_matrix,
 	   factorization_strategy::Blocked tag) {
 		detail::factorize_ldlt_tpl(out, in_matrix, tag.block_size);
+	}
+};
+template <>
+struct FactorizeStartegyDispatch<factorization_strategy::AltBlocked> {
+	template <typename T, Layout L>
+	static LDLT_INLINE void
+	fn(LdltViewMut<T> out,
+	   MatrixView<T, L> in_matrix,
+	   factorization_strategy::AltBlocked tag) {
+		isize dim = out.l.rows;
+		out.l.to_eigen().template triangularView<Eigen::Lower>() =
+				in_matrix.to_eigen();
+		detail::factorize_ldlt_alt_inplace(out, tag.block_size);
+		for (isize k = 0; k < dim; ++k) {
+			detail::set_zero(out.l.col(k).data, usize(k));
+		}
 	}
 };
 template <>

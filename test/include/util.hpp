@@ -9,6 +9,7 @@
 #include <ldlt/views.hpp>
 #include <qp/views.hpp>
 #include <ldlt/detail/meta.hpp>
+#include <map>
 
 using c_int = long long;
 using c_float = double;
@@ -86,11 +87,36 @@ auto matrix_rand(isize nrows, isize ncols) -> Mat<Scalar, colmajor> {
 	return v;
 }
 
+namespace detail {
+template <typename Scalar>
+auto orthonormal_rand_impl(isize n) -> Mat<Scalar, colmajor> {
+	auto mat = rand::matrix_rand<Scalar>(n, n);
+	auto qr = mat.householderQr();
+	Mat<Scalar, colmajor> q = qr.householderQ();
+	return q;
+}
+using Input = std::pair<u128, isize>;
+} // namespace detail
+
+template <typename Scalar>
+auto orthonormal_rand(isize n) -> Mat<Scalar, colmajor> const& {
+
+	static auto cache = std::map<detail::Input, Mat<Scalar, colmajor>>{};
+	auto input = detail::Input{g_lehmer64_state, n};
+	auto it = cache.find(input);
+	if (it == cache.end()) {
+		auto res = cache.insert({
+				input,
+				detail::orthonormal_rand_impl<Scalar>(n),
+		});
+		it = res.first;
+	}
+	return (*it).second;
+}
+
 template <typename Scalar>
 auto positive_definite_rand(isize n, Scalar cond) -> Mat<Scalar, colmajor> {
-	auto out = rand::matrix_rand<Scalar>(n, n);
-	auto qr = out.householderQr();
-	Mat<Scalar, colmajor> q = qr.householderQ();
+	auto const& q = rand::orthonormal_rand<Scalar>(n);
 	auto d = Vec<Scalar>(n);
 
 	{

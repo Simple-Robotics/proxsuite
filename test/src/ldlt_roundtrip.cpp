@@ -88,6 +88,15 @@ DOCTEST_TEST_CASE_TEMPLATE(
 	isize block_sizes[] = {1, 2, 4, 16, 64};
 
 	for (auto bs : block_sizes) {
+		auto tag = factorization_strategy::alt_blocked(bs);
+		for (isize i = min; i <= max; ++i) {
+			DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, tag) <= Scalar(10));
+		}
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(200, tag) <= Scalar(10));
+		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(256, tag) <= Scalar(10));
+	}
+
+	for (auto bs : block_sizes) {
 		auto tag = factorization_strategy::blocked(bs);
 		for (isize i = min; i <= max; ++i) {
 			DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, tag) <= Scalar(10));

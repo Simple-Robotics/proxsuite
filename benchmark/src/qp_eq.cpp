@@ -30,7 +30,7 @@ auto main() -> int {
 				2000,
 				eps_abs,
 				0,
-				qp::preconditioner::RuizEquilibration<Scalar>{dim, n_eq});
+				qp::preconditioner::IdentityPrecond{});
 		if (i == 0) {
 			fmt::print(
 					" - {} iterations, {} mu updates, error: {}\n",
@@ -46,7 +46,7 @@ auto main() -> int {
 			"total avg",
 			"section avg");
 
-	for (auto c : LDLT_GET_MAP(Scalar)["ruiz equilibration"]) {
+	for (auto c : LDLT_GET_MAP(Scalar)["eq solver"]) {
 		using ldlt::detail::Duration;
 		auto& durations = c.second.ref;
 		auto avg = std::accumulate(durations.begin(), durations.end(), Duration{}) /
