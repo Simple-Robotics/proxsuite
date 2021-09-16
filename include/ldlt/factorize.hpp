@@ -2,6 +2,9 @@
 #define INRIA_LDLT_FACTORIZE_HPP_FOK6CBQFS
 
 #include "ldlt/views.hpp"
+#include <fmt/ostream.h>
+#include <fmt/ranges.h>
+#include <array>
 
 namespace ldlt {
 namespace factorization_strategy {
@@ -34,6 +37,96 @@ LDLT_DEFINE_NIEBLOID(alt_blocked);
 } // namespace factorization_strategy
 
 namespace detail {
+template <typename T>
+struct Indexed {
+	T elem;
+	i32 idx;
+};
+template <typename T>
+LDLT_NO_INLINE void compute_permutation(
+		i32* perm_indices, i32* perm_inv_indices, StridedVectorView<T> diagonal) {
+	isize n = diagonal.dim;
+	LDLT_WORKSPACE_MEMORY(work, Vec(n), Indexed<T>);
+	for (isize k = 0; k < n; ++k) {
+		using std::fabs;
+		work(k) = {fabs(diagonal(k)), i32(k)};
+	}
+	std::stable_sort(
+			work.data,
+			work.data + n,
+			[](Indexed<T> a, Indexed<T> b) noexcept -> bool {
+				return a.elem > b.elem;
+			});
+
+	for (i32 k = 0; k < n; ++k) {
+		i32 inv_k = work(k).idx;
+		perm_indices[k] = inv_k;
+		perm_inv_indices[inv_k] = k;
+	}
+}
+
+template <typename T>
+struct apply_perm_rows {
+	static void
+	fn(T* out,
+	   isize out_stride,
+	   T const* in,
+	   isize in_stride,
+	   isize n,
+	   i32 const* perm_indices) noexcept {
+		for (isize row = 0; row < n; ++row) {
+			i32 indices0 = perm_indices[row];
+			for (isize col = 0; col < n; ++col) {
+				out[out_stride * col + row] = in[in_stride * col + indices0];
+			}
+		}
+	}
+};
+
+template <>
+struct apply_perm_rows<f64> {
+	static void
+	fn(f64* out,
+	   isize out_stride,
+	   f64 const* in,
+	   isize in_stride,
+	   isize n,
+	   i32 const* perm_indices) noexcept;
+};
+
+template <>
+struct apply_perm_rows<f32> {
+	static void
+	fn(f32* out,
+	   isize out_stride,
+	   f32 const* in,
+	   isize in_stride,
+	   isize n,
+	   i32 const* perm_indices) noexcept;
+};
+
+template <typename T>
+void apply_permutation_sym_work(
+		MatrixViewMut<T, colmajor> mat,
+		i32 const* perm_indices,
+		MatrixViewMut<T, colmajor> work) {
+	isize n = mat.rows;
+
+	detail::apply_perm_rows<T>::fn(
+			work.data,
+			work.outer_stride,
+			mat.data,
+			mat.outer_stride,
+			n,
+			perm_indices);
+
+	for (isize k = 0; k < n; ++k) {
+		// already vectorized
+		mat.col(k).to_eigen() =
+				work.col(isize(perm_indices[k])).as_const().to_eigen();
+	}
+}
+
 template <typename T, Layout L>
 LDLT_NO_INLINE void
 factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
