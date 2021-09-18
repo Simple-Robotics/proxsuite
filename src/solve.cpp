@@ -2,7 +2,7 @@
 
 namespace ldlt {
 namespace detail {
-template void solve_impl(VectorViewMut<f32>, LdltView<f32>, VectorView<f32>);
-template void solve_impl(VectorViewMut<f64>, LdltView<f64>, VectorView<f64>);
+LDLT_EXPLICIT_TPL_DEF(3, solve_impl<f32>);
+LDLT_EXPLICIT_TPL_DEF(3, solve_impl<f64>);
 } // namespace detail
 } // namespace ldlt

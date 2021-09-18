@@ -29,10 +29,8 @@ LDLT_NO_INLINE void solve_impl( //
 	x_e = x_e.cwiseQuotient(d_e);
 	lt_upper.solveInPlace(x_e);
 }
-extern template void
-		solve_impl(VectorViewMut<f32>, LdltView<f32>, VectorView<f32>);
-extern template void
-		solve_impl(VectorViewMut<f64>, LdltView<f64>, VectorView<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, solve_impl<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, solve_impl<f64>);
 } // namespace detail
 
 namespace nb {

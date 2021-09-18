@@ -2,14 +2,10 @@
 
 namespace ldlt {
 namespace detail {
-template void
-		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, colmajor>, isize);
-template void
-		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, colmajor>, isize);
-template void
-		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, rowmajor>, isize);
-template void
-		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, rowmajor>, isize);
+LDLT_EXPLICIT_TPL_DEF(1, factorize_unblocked<f32>);
+LDLT_EXPLICIT_TPL_DEF(2, factorize_blocked<f32>);
+LDLT_EXPLICIT_TPL_DEF(1, factorize_unblocked<f64>);
+LDLT_EXPLICIT_TPL_DEF(2, factorize_blocked<f64>);
 
 #if defined(SIMDE_X86_AVX512F_NATIVE)
 // TODO: avx512 implementation

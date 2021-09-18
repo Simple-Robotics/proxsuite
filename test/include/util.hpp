@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
 #include <Eigen/Cholesky>
+#include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <utility>
 #include <ldlt/views.hpp>
@@ -28,6 +29,28 @@ using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
 
 namespace ldlt_test {
 using namespace ldlt;
+namespace eigen {
+template <Layout L, typename T>
+void llt_compute( //
+		Eigen::LLT<Mat<T, L>>& out,
+		Mat<T, L> const& mat) {
+	out.compute(mat);
+}
+template <Layout L, typename T>
+void ldlt_compute( //
+		Eigen::LDLT<Mat<T, L>>& out,
+		Mat<T, L> const& mat) {
+	out.compute(mat);
+}
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<colmajor, f32>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<colmajor, f32>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<rowmajor, f32>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<rowmajor, f32>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<colmajor, f64>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<colmajor, f64>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<rowmajor, f64>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<rowmajor, f64>);
+} // namespace eigen
 namespace rand {
 
 using ldlt::u64;
@@ -35,24 +58,27 @@ using ldlt::u32;
 using u128 = __uint128_t;
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
-u128 g_lehmer64_state = lehmer64_constant * lehmer64_constant;
-
-auto lehmer64() -> u64 { // [0, 2^64)
-	g_lehmer64_state *= lehmer64_constant;
-	return u64(g_lehmer64_state >> u128(64U));
+inline auto lehmer_global() -> u128& {
+	static u128 g_lehmer64_state = lehmer64_constant * lehmer64_constant;
+	return g_lehmer64_state;
 }
 
-void set_seed(u64 seed) {
-	g_lehmer64_state = u128(seed) + 1;
+inline auto lehmer64() -> u64 { // [0, 2^64)
+	lehmer_global() *= lehmer64_constant;
+	return u64(lehmer_global() >> u128(64U));
+}
+
+inline void set_seed(u64 seed) {
+	lehmer_global() = u128(seed) + 1;
 	lehmer64();
 	lehmer64();
 }
 
-auto uniform_rand() -> double { // [0, 2^53]
+inline auto uniform_rand() -> double { // [0, 2^53]
 	u64 a = lehmer64() / (1U << 11U);
 	return double(a) / double(u64(1) << 53U);
 }
-auto normal_rand() -> double {
+inline auto normal_rand() -> double {
 	static const double pi2 = std::atan(static_cast<double>(1)) * 8;
 
 	double u1 = uniform_rand();
@@ -102,7 +128,7 @@ template <typename Scalar>
 auto orthonormal_rand(isize n) -> Mat<Scalar, colmajor> const& {
 
 	static auto cache = std::map<detail::Input, Mat<Scalar, colmajor>>{};
-	auto input = detail::Input{g_lehmer64_state, n};
+	auto input = detail::Input{lehmer_global(), n};
 	auto it = cache.find(input);
 	if (it == cache.end()) {
 		auto res = cache.insert({
@@ -193,6 +219,19 @@ auto sparse_matrix_rand(isize nrows, isize ncols, double p)
 	A.makeCompressed();
 	return A;
 }
+LDLT_EXPLICIT_TPL_DECL(2, matrix_rand<f32>);
+LDLT_EXPLICIT_TPL_DECL(1, vector_rand<f32>);
+LDLT_EXPLICIT_TPL_DECL(2, positive_definite_rand<f32>);
+LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f32>);
+
+LDLT_EXPLICIT_TPL_DECL(2, matrix_rand<f64>);
+LDLT_EXPLICIT_TPL_DECL(1, vector_rand<f64>);
+LDLT_EXPLICIT_TPL_DECL(2, positive_definite_rand<f64>);
+LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f64>);
 } // namespace rand
 using ldlt::detail::Duration;
 using ldlt::detail::Clock;
@@ -280,6 +319,21 @@ inline auto to_sparse_sym(Mat<c_float, colmajor>& mat) -> SparseMat<c_float> {
 } // namespace osqp
 } // namespace ldlt_test
 
+template <typename T>
+auto matmul_impl( //
+		Mat<T, ldlt::colmajor> const& lhs,
+		Mat<T, ldlt::colmajor> const& rhs) -> Mat<T, ldlt::colmajor> {
+	return lhs.operator*(rhs);
+}
+template <typename To, typename From>
+auto mat_cast(Mat<From, ldlt::colmajor> const& from)
+		-> Mat<To, ldlt::colmajor> {
+	return from.template cast<To>();
+}
+LDLT_EXPLICIT_TPL_DECL(2, matmul_impl<long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<ldlt::f64, long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<ldlt::f32, long double>);
+
 template <
 		typename MatLhs,
 		typename MatRhs,
@@ -288,9 +342,9 @@ auto matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, ldlt::colmajor> {
 	using Upscaled = typename std::
 			conditional<std::is_floating_point<T>::value, long double, T>::type;
 
-	return (Mat<T, ldlt::colmajor>(a).template cast<Upscaled>().operator*(
-							Mat<T, ldlt::colmajor>(b).template cast<Upscaled>()))
-	    .template cast<T>();
+	return ::mat_cast<T, Upscaled>(::matmul_impl<Upscaled>(
+			Mat<T, ldlt::colmajor>(a).template cast<Upscaled>(),
+			Mat<T, ldlt::colmajor>(b).template cast<Upscaled>()));
 }
 
 template <
@@ -307,34 +361,6 @@ namespace ldlt {
 namespace detail {
 template <typename... Ts>
 using type_sequence = meta_::type_sequence<Ts...>*;
-
-template <usize I, typename T>
-struct HollowLeaf {};
-template <typename ISeq, typename... Ts>
-struct HollowIndexedTuple;
-template <usize... Is, typename... Ts>
-struct HollowIndexedTuple<index_sequence<Is...>, Ts...>
-		: HollowLeaf<Is, Ts>... {};
-
-template <usize I, typename T>
-auto get_type(HollowLeaf<I, T> const*) noexcept -> T;
-
-template <usize I>
-struct pack_ith_elem {
-	template <typename... Ts>
-	using Type = decltype(detail::get_type<I>(
-			static_cast<
-					HollowIndexedTuple<make_index_sequence<sizeof...(Ts)>, Ts...>*>(
-					nullptr)));
-};
-
-#if LDLT_HAS_BUILTIN(__type_pack_element)
-template <usize I, typename... Ts>
-using ith = __type_pack_element<I, Ts...>;
-#else
-template <usize I, typename... Ts>
-using ith = typename pack_ith_elem<I>::template Type<Ts...>;
-#endif
 
 template <typename T>
 struct type_list_ith_elem_impl;

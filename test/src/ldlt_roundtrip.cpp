@@ -45,63 +45,27 @@ auto ldlt_roundtrip_error(Data<T, L>& data, S strategy) -> T {
 	return (matmul3(l, d.asDiagonal(), l.transpose()) - mat).norm();
 }
 
-template <typename T, Layout L>
-auto eigen_ldlt_roundtrip_error(Data<T, L>& data) -> T {
-	auto ldlt = data.mat.ldlt();
-	auto const& l = ldlt.matrixL();
-	auto const& p = ldlt.transpositionsP();
-	auto const& d = ldlt.vectorD();
-
-	Mat<T, colmajor> tmp = p.transpose() * Mat<T, colmajor>(l);
-	return (matmul3(tmp, d.asDiagonal(), tmp.transpose()) - data.mat).norm();
-}
-
 template <typename T, Layout L, typename S>
 auto roundtrip_test(isize n, S strategy) -> T {
 	auto data = generate_data<T, L>(n);
-
-	T err_eigen = ::eigen_ldlt_roundtrip_error(data);
-	T err_ours = ::ldlt_roundtrip_error(data, strategy);
-	if (err_ours == 0) {
-		return T(0);
-	}
-	if (err_eigen == 0) {
-		err_eigen = std::numeric_limits<T>::epsilon();
-	}
-
-	return err_ours / err_eigen;
+	return ::ldlt_roundtrip_error(data, strategy) /
+	       std::numeric_limits<T>::epsilon();
 }
 
-using C = detail::constant<Layout, colmajor>;
-using R = detail::constant<Layout, rowmajor>;
-
-DOCTEST_TEST_CASE_TEMPLATE(
-		"factorize: roundtrip",
-		Args,
-		detail::type_sequence<f32, C>,
-		detail::type_sequence<f32, R>) {
+DOCTEST_TEST_CASE("factorize: roundtrip") {
 	isize min = 1;
 	isize max = 64;
-	using Scalar = detail::typeseq_ith<0, Args>;
-	constexpr auto InL = detail::typeseq_ith<1, Args>::value;
+	using Scalar = f32;
+	constexpr auto L = colmajor;
 
 	isize block_sizes[] = {1, 2, 4, 16, 64};
 
 	for (auto bs : block_sizes) {
-		auto tag = factorization_strategy::alt_blocked(bs);
-		for (isize i = min; i <= max; ++i) {
-			DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, tag) <= Scalar(10));
-		}
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(200, tag) <= Scalar(10));
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(256, tag) <= Scalar(10));
-	}
-
-	for (auto bs : block_sizes) {
 		auto tag = factorization_strategy::blocked(bs);
 		for (isize i = min; i <= max; ++i) {
-			DOCTEST_CHECK(roundtrip_test<Scalar, InL>(i, tag) <= Scalar(10));
+			DOCTEST_CHECK(roundtrip_test<Scalar, L>(i, tag) <= Scalar(1e3));
 		}
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(200, tag) <= Scalar(10));
-		DOCTEST_CHECK(roundtrip_test<Scalar, InL>(256, tag) <= Scalar(10));
+		DOCTEST_CHECK(roundtrip_test<Scalar, L>(200, tag) <= Scalar(1e3));
+		DOCTEST_CHECK(roundtrip_test<Scalar, L>(256, tag) <= Scalar(1e3));
 	}
 }

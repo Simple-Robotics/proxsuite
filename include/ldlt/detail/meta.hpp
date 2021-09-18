@@ -105,6 +105,43 @@ using integer_sequence = meta_::integer_sequence<T, Nums...>*;
 template <usize... Nums>
 using index_sequence = integer_sequence<usize, Nums...>;
 
+template <usize I, typename T>
+struct HollowLeaf {};
+template <typename ISeq, typename... Ts>
+struct HollowIndexedTuple;
+template <usize... Is, typename... Ts>
+struct HollowIndexedTuple<index_sequence<Is...>, Ts...>
+		: HollowLeaf<Is, Ts>... {};
+
+template <usize I, typename T>
+auto get_type(HollowLeaf<I, T> const*) noexcept -> T;
+
+template <usize I>
+struct pack_ith_elem {
+	template <typename... Ts>
+	using Type = decltype(detail::get_type<I>(
+			static_cast<
+					HollowIndexedTuple<make_index_sequence<sizeof...(Ts)>, Ts...>*>(
+					nullptr)));
+};
+
+#if LDLT_HAS_BUILTIN(__type_pack_element)
+template <usize I, typename... Ts>
+using ith = __type_pack_element<I, Ts...>;
+#else
+template <usize I, typename... Ts>
+using ith = typename pack_ith_elem<I>::template Type<Ts...>;
+#endif
+
+template <typename Fn>
+struct FnInfo;
+template <typename Ret_, typename... Args>
+struct FnInfo<auto(Args...)->Ret_> {
+	template <usize I>
+	using Arg = ith<I, Args...>;
+	using Ret = Ret_;
+};
+
 template <typename Char, Char... Cs>
 struct LiteralConstant {};
 
@@ -291,5 +328,29 @@ inline void toggle_benchmarks(bool enable) {
 
 #define LDLT_GET_DURATIONS(...) (LDLT_IMPL_TIMINGS(__VA_ARGS__).ref())
 #define LDLT_GET_MAP(...) (::ldlt::detail::SectionTimingMap<__VA_ARGS__>::ref())
+
+#define LDLT_IMPL_GET_PARAM(Fn, Idx)                                           \
+	typename ::ldlt::detail::FnInfo<decltype Fn>::template Arg<(Idx)>,
+
+#define LDLT_IMPL_GET_PARAMS_0(NParams, ...)                                   \
+	LDLT_PP_TUPLE_FOR_EACH(                                                      \
+			LDLT_IMPL_GET_PARAM,                                                     \
+			(__VA_ARGS__),                                                           \
+			LDLT_PP_MAKE_TUPLE(LDLT_IMPL_PP_DEC(NParams)))
+
+#define LDLT_IMPL_GET_PARAMS_1(NParams, ...)
+
+#define LDLT_IMPL_GET_PARAMS(NParams, ...)                                     \
+	LDLT_PP_CAT2(LDLT_IMPL_GET_PARAMS_, LDLT_PP_IS_1(NParams))                   \
+	(NParams, __VA_ARGS__)
+
+#define LDLT_EXPLICIT_TPL_DEF(NParams, ...)                                    \
+	template auto __VA_ARGS__(                                                   \
+			LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                               \
+					typename ::ldlt::detail::FnInfo<                                     \
+							decltype(__VA_ARGS__)>::template Arg<(NParams)-1>)               \
+			->typename ::ldlt::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
+#define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
+	extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 
 #endif /* end of include guard INRIA_LDLT_META_HPP_VHFXDOQHS */

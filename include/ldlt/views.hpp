@@ -4,6 +4,7 @@
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/detail/simd.hpp"
+#include "ldlt/detail/meta.hpp"
 #include <Eigen/Core>
 #include <cstdint>
 #include <new>
@@ -697,13 +698,36 @@ struct MatrixView {
 				outer_stride,
 		};
 	}
+
+private:
+	LDLT_INLINE auto
+	col_impl(detail::Constant<Layout, colmajor> /*tag*/, isize c) const noexcept
+			-> VectorView<T> {
+		return {
+				from_ptr_size,
+				data + c * outer_stride,
+				rows,
+		};
+	}
+	LDLT_INLINE auto
+	col_impl(detail::Constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
+			-> StridedVectorView<T> {
+		return {
+				from_ptr_size_stride,
+				data + c,
+				rows,
+				outer_stride,
+		};
+	}
+
+public:
 	LDLT_INLINE auto col(isize c) const noexcept -> detail::
 			Conditional<(L == colmajor), VectorView<T>, StridedVectorView<T>> {
-		return {from_eigen, to_eigen().col(Eigen::Index(c))};
+		return col_impl(detail::Constant<Layout, L>{}, c);
 	}
 	LDLT_INLINE auto row(isize r) const noexcept -> detail::
 			Conditional<(L == rowmajor), VectorView<T>, StridedVectorView<T>> {
-		return {from_eigen, to_eigen().row(Eigen::Index(r)).transpose()};
+		return trans().col(r);
 	}
 	LDLT_INLINE auto trans() const noexcept
 			-> MatrixView<T, ldlt::flip_layout(L)> {
@@ -770,13 +794,36 @@ struct MatrixViewMut {
 				outer_stride,
 		};
 	}
+
+private:
+	LDLT_INLINE auto
+	col_impl(detail::Constant<Layout, colmajor> /*tag*/, isize c) const noexcept
+			-> VectorViewMut<T> {
+		return {
+				from_ptr_size,
+				data + c * outer_stride,
+				rows,
+		};
+	}
+	LDLT_INLINE auto
+	col_impl(detail::Constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
+			-> StridedVectorViewMut<T> {
+		return {
+				from_ptr_size_stride,
+				data + c,
+				rows,
+				outer_stride,
+		};
+	}
+
+public:
 	LDLT_INLINE auto col(isize c) const noexcept -> detail::
 			Conditional<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>> {
-		return {from_eigen, to_eigen().col(Eigen::Index(c))};
+		return col_impl(detail::Constant<Layout, L>{}, c);
 	}
 	LDLT_INLINE auto row(isize r) const noexcept -> detail::
 			Conditional<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>> {
-		return {from_eigen, to_eigen().row(Eigen::Index(r)).transpose()};
+		return trans().col(r);
 	}
 	LDLT_INLINE auto trans() const noexcept
 			-> MatrixViewMut<T, ldlt::flip_layout(L)> {
@@ -828,10 +875,26 @@ void noalias_mul_add(
 		MatrixView<T, colmajor> lhs,
 		MatrixView<T, colmajor> rhs,
 		T factor) {
-	if (dst.cols == 1) {
+
+	if ((dst.cols == 0) || (dst.rows == 0) || (lhs.cols == 0)) {
+		return;
+	}
+
+	if (dst.cols == 1 && dst.rows == 1) {
+		// dot
+		auto rhs_col = rhs.col(0);
+		auto lhs_row = lhs.row(0);
+		auto lhs_as_col = lhs.col(0);
+		lhs_as_col.dim = lhs_row.dim;
+		if (lhs_row.stride == 1) {
+			dst(0, 0) += factor * lhs_as_col.to_eigen().dot(rhs_col.to_eigen());
+		} else {
+			dst(0, 0) += factor * lhs_row.to_eigen().dot(rhs_col.to_eigen());
+		}
+	} else if (dst.cols == 1) {
 		// gemv
-		auto rhs_col = VectorView<T>{from_ptr_size, rhs.data, rhs.rows};
-		auto dst_col = VectorViewMut<T>{from_ptr_size, dst.data, dst.rows};
+		auto rhs_col = rhs.col(0);
+		auto dst_col = dst.col(0);
 		dst_col.to_eigen().noalias().operator+=(
 				factor*(lhs.to_eigen().operator*(rhs_col.to_eigen())));
 	}
@@ -891,6 +954,93 @@ void noalias_mul_add_vec(
 			},
 			LDLT_FWD(factor));
 }
+
+template <typename T>
+auto dot(StridedVectorView<T> lhs, VectorView<T> rhs) -> T {
+	auto out = T(0);
+	detail::noalias_mul_add<T>(
+			{
+					from_ptr_rows_cols_stride,
+					std::addressof(out),
+					1,
+					1,
+					0,
+			},
+			{
+					from_ptr_rows_cols_stride,
+					lhs.data,
+					1,
+					lhs.dim,
+					lhs.stride,
+			},
+			{
+					from_ptr_rows_cols_stride,
+					rhs.data,
+					rhs.dim,
+					1,
+					0,
+			},
+			1);
+	return out;
+}
+template <typename T>
+void assign_cwise_prod(
+		VectorViewMut<T> out, StridedVectorView<T> lhs, VectorView<T> rhs) {
+	out.to_eigen() = lhs.to_eigen().cwiseProduct(rhs.to_eigen());
+}
+template <typename T>
+void assign_scalar_prod(VectorViewMut<T> out, T factor, VectorView<T> in) {
+	out.to_eigen() = in.to_eigen().operator*(factor);
+}
+
+template <typename T>
+void trans_tr_unit_up_solve_in_place_on_right(
+		MatrixView<T, colmajor> tr, MatrixViewMut<T, colmajor> rhs) {
+	tr.to_eigen()
+			.transpose()
+			.template triangularView<Eigen::UnitUpper>()
+			.template solveInPlace<Eigen::OnTheRight>(rhs.to_eigen());
+}
+
+template <typename T>
+void apply_diag_inv_on_right(
+		MatrixViewMut<T, colmajor> out,
+		VectorView<T> d,
+		MatrixView<T, colmajor> in) {
+	out.to_eigen() = in.to_eigen().operator*(d.to_eigen().asDiagonal().inverse());
+}
+template <typename T>
+void apply_diag_on_right(
+		MatrixViewMut<T, colmajor> out,
+		VectorView<T> d,
+		MatrixView<T, colmajor> in) {
+	out.to_eigen() = in.to_eigen().operator*(d.to_eigen().asDiagonal());
+}
+
+template <typename T>
+void noalias_mul_sub_tr_lo(
+		MatrixViewMut<T, colmajor> out,
+		MatrixView<T, colmajor> lhs,
+		MatrixView<T, rowmajor> rhs) {
+	out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
+			lhs.to_eigen().operator*(rhs.to_eigen()));
+}
+
+LDLT_EXPLICIT_TPL_DECL(4, noalias_mul_add<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, assign_cwise_prod<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, assign_scalar_prod<f64>);
+LDLT_EXPLICIT_TPL_DECL(2, trans_tr_unit_up_solve_in_place_on_right<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, apply_diag_inv_on_right<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, apply_diag_on_right<f64>);
+LDLT_EXPLICIT_TPL_DECL(3, noalias_mul_sub_tr_lo<f64>);
+
+LDLT_EXPLICIT_TPL_DECL(4, noalias_mul_add<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, assign_cwise_prod<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, assign_scalar_prod<f32>);
+LDLT_EXPLICIT_TPL_DECL(2, trans_tr_unit_up_solve_in_place_on_right<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, apply_diag_inv_on_right<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, apply_diag_on_right<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, noalias_mul_sub_tr_lo<f32>);
 } // namespace detail
 } // namespace ldlt
 

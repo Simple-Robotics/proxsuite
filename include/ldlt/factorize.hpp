@@ -14,9 +14,6 @@ inline namespace tags {
 struct Blocked {
 	isize block_size;
 };
-struct AltBlocked {
-	isize block_size;
-};
 } // namespace tags
 namespace nb {
 struct blocked {
@@ -25,15 +22,7 @@ struct blocked {
 	}
 };
 } // namespace nb
-namespace nb {
-struct alt_blocked {
-	auto operator()(isize block_size) const noexcept -> AltBlocked {
-		return {block_size};
-	}
-};
-} // namespace nb
 LDLT_DEFINE_NIEBLOID(blocked);
-LDLT_DEFINE_NIEBLOID(alt_blocked);
 } // namespace factorization_strategy
 
 namespace detail {
@@ -70,14 +59,15 @@ struct apply_perm_rows {
 	static void
 	fn(T* out,
 	   isize out_stride,
-	   T const* in,
+	   T* in,
 	   isize in_stride,
 	   isize n,
 	   i32 const* perm_indices) noexcept {
 		for (isize row = 0; row < n; ++row) {
 			i32 indices0 = perm_indices[row];
 			for (isize col = 0; col < n; ++col) {
-				out[out_stride * col + row] = in[in_stride * col + indices0];
+				out[out_stride * col + row] =
+						static_cast<T&&>(in[in_stride * col + indices0]);
 			}
 		}
 	}
@@ -121,26 +111,22 @@ void apply_permutation_sym_work(
 			perm_indices);
 
 	for (isize k = 0; k < n; ++k) {
-		// already vectorized
-		mat.col(k).to_eigen() =
-				work.col(isize(perm_indices[k])).as_const().to_eigen();
+		T* in = work.col(isize(perm_indices[k])).data;
+		T* out = mat.col(k).data;
+		std::move(in, in + n, out);
 	}
 }
 
-template <typename T, Layout L>
-LDLT_NO_INLINE void
-factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
+template <typename T>
+LDLT_NO_INLINE void factorize_unblocked(LdltViewMut<T> out) {
 	// https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition_2
 	// TODO: use upper half of in_matrix?
 
-	bool inplace = (out.l.data == in_matrix.data);
 	isize dim = out.l.rows;
-
-	isize unblocked_n = (bs == 1) ? dim : min2(dim, bs + dim % bs);
 
 	isize j = 0;
 	while (true) {
-		if (j == unblocked_n) {
+		if (j == dim) {
 			break;
 		}
 		/********************************************************************************
@@ -151,12 +137,12 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
 		 * l{0,1,2}0 already known, compute l21
 		 */
 
-		auto l01_w = out.l.col(j).segment(0, j).to_eigen();
-		auto l01 = out.l.col(j).segment(0, j).as_const().to_eigen();
+		auto l01_w = out.l.col(j).segment(0, j);
+		auto l01 = out.l.col(j).segment(0, j).as_const();
 
 		auto&& cleanup = defer([&] {
 			// has to be after we're done using workspace because they may alias
-			detail::set_zero(l01_w.data(), usize(l01_w.size()));
+			detail::set_zero(l01_w.data, usize(l01_w.dim));
 			++j;
 		});
 		(void)cleanup;
@@ -166,12 +152,11 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
 		auto l_c = out.l.as_const();
 		auto d_c = out.d.as_const();
 
-		auto l10 = l_c.row(j).segment(0, j).to_eigen();
-		auto d = d_c.segment(0, j).to_eigen();
+		auto l10 = l_c.row(j).segment(0, j);
+		auto d = d_c.segment(0, j);
 
-		l01_w = l10.cwiseProduct(d);
-
-		out.d(j) = in_matrix(j, j) - l01.dot(l10);
+		detail::assign_cwise_prod(l01_w, l10, d);
+		out.d(j) = out.l(j, j) - detail::dot(l10, l01);
 		out.l(j, j) = 1;
 
 		if (j + 1 == dim) {
@@ -180,97 +165,15 @@ factorize_ldlt_tpl(LdltViewMut<T> out, MatrixView<T, L> in_matrix, isize bs) {
 
 		auto l20 = l_c.block(j + 1, 0, m, j);
 		auto l21 = out.l.col(j).segment(j + 1, m);
-		auto a21 = in_matrix.col(j).segment(j + 1, m);
-
-		if (!inplace) {
-			l21.to_eigen() = a21.to_eigen();
-		}
 
 		// l21 -= l20 * tmp_read
-		detail::noalias_mul_add_vec<T>( //
-				l21,
-				l20,
-				{from_eigen, l01},
-				T(-1));
-
-		l21.to_eigen() *= 1 / out.d(j);
-	}
-
-	if (j == dim) {
-		return;
-	}
-
-	while (true) {
-		auto&& cleanup = defer([&] {
-			for (isize k = j; k < j + bs; ++k) {
-				detail::set_zero(out.l.ptr(0, k), usize(k));
-			}
-			j += bs;
-		});
-		(void)cleanup;
-
-		for (isize k = j; k < j + bs; ++k) {
-			auto l01_w = out.l.col(k).segment(0, k).to_eigen();
-			auto l01 = out.l.col(k).segment(0, k).as_const().to_eigen();
-			auto l10 = out.l.row(k).segment(0, k).as_const().to_eigen();
-
-			auto d = out.d.segment(0, k).to_eigen();
-
-			// TODO: optimize by simdifying over k?
-			l01_w = l10.cwiseProduct(d);
-
-			out.d(k) = in_matrix(k, k) - l01.dot(l10);
-			out.l(k, k) = 1;
-			if ((k + 1) == dim) {
-				return;
-			}
-
-			isize nrows = bs - 1 - (k - j);
-
-			auto l21 = out.l.col(k).segment(k + 1, nrows);
-			auto l20 = out.l.block(k + 1, 0, nrows, k).as_const();
-			if (!inplace) {
-				l21.to_eigen() = in_matrix.col(k).segment(k + 1, nrows).to_eigen();
-			}
-
-			detail::noalias_mul_add_vec<T>( //
-					l21,
-					l20,
-					{from_eigen, l01},
-					T(-1));
-
-			l21.to_eigen() *= 1 / out.d(k);
-		}
-
-		isize m = dim - j - bs;
-
-		auto l01 = out.l.block(0, j, j, bs).as_const();
-		auto l20 = out.l.block(j + bs, 0, m, j).as_const();
-		auto l21 = out.l.block(j + bs, j, m, bs);
-		auto a21 = in_matrix.block(j + bs, j, m, bs);
-
-		if (!inplace) {
-			l21.to_eigen() = a21.to_eigen();
-		}
-		detail::noalias_mul_add<T>(l21, l20, l01, T(-1));
-
-		for (isize p = 0; p < bs; ++p) {
-			auto block = out.l.block(j, j, bs, bs).as_const();
-
-			detail::noalias_mul_add_vec<T>( //
-					l21.col(p),
-					l21.block(0, 0, m, p).as_const(),
-					block.col(p).segment(0, p),
-					T(-1));
-
-			l21.col(p).to_eigen() *= 1 / out.d(j + p);
-		}
+		detail::noalias_mul_add_vec(l21, l20, l01, T(-1));
+		detail::assign_scalar_prod(l21, 1 / out.d(j), l21.as_const());
 	}
 }
 
 template <typename T>
-LDLT_NO_INLINE void
-factorize_ldlt_alt_inplace(LdltViewMut<T> ld, isize block_size) {
+LDLT_NO_INLINE void factorize_blocked(LdltViewMut<T> ld, isize block_size) {
 
 	isize n = ld.l.rows;
 	if (n <= 0) {
@@ -287,8 +190,7 @@ factorize_ldlt_alt_inplace(LdltViewMut<T> ld, isize block_size) {
 		auto l11 = l11_mut.as_const();
 		auto d1 = d1_mut.as_const();
 
-		detail::factorize_ldlt_tpl(
-				LdltViewMut<T>{l11_mut, d1_mut}, l11_mut.as_const(), 1);
+		detail::factorize_unblocked(LdltViewMut<T>{l11_mut, d1_mut});
 
 		if (k + bs == n) {
 			break;
@@ -297,19 +199,16 @@ factorize_ldlt_alt_inplace(LdltViewMut<T> ld, isize block_size) {
 		isize rem = n - k - bs;
 		auto l21_mut = ld.l.block(k + bs, k, rem, bs);
 		auto l21 = l21_mut.as_const();
-		auto l22_mut = ld.l.block(k + bs, k + bs, rem, rem);
-		l11.to_eigen()
-				.transpose()
-				.template triangularView<Eigen::UnitUpper>()
-				.template solveInPlace<Eigen::OnTheRight>(l21_mut.to_eigen());
-		l21_mut.to_eigen() = l21.to_eigen() * d1.to_eigen().asDiagonal().inverse();
+		detail::trans_tr_unit_up_solve_in_place_on_right(l11, l21_mut);
+		detail::apply_diag_inv_on_right(l21_mut, d1, l21);
 
 		auto work_k_mut = ld.l.block(0, n - bs, rem, bs);
-		auto work_k = work_k_mut.as_const();
-		work_k_mut.to_eigen() = l21.to_eigen() * d1.to_eigen().asDiagonal();
-		l22_mut.to_eigen().template triangularView<Eigen::Lower>() -=
-				l21.to_eigen() * work_k.trans().to_eigen();
+		detail::apply_diag_on_right(work_k_mut, d1, l21);
 
+		auto work_k = work_k_mut.as_const();
+
+		auto l22_mut = ld.l.block(k + bs, k + bs, rem, rem);
+		detail::noalias_mul_sub_tr_lo(l22_mut, l21, work_k.trans());
 		k += bs;
 	}
 }
@@ -324,7 +223,16 @@ struct FactorizeStartegyDispatch<factorization_strategy::Standard> {
 	fn(LdltViewMut<T> out,
 	   MatrixView<T, L> in_matrix,
 	   factorization_strategy::Standard /*tag*/) {
-		detail::factorize_ldlt_tpl(out, in_matrix, 1);
+		isize dim = out.l.rows;
+		bool inplace = out.l.data == in_matrix.data;
+		if (!inplace) {
+			out.l.to_eigen().template triangularView<Eigen::Lower>() =
+					in_matrix.to_eigen();
+		}
+		detail::factorize_unblocked(out, in_matrix);
+		for (isize k = 0; k < dim; ++k) {
+			detail::set_zero(out.l.col(k).data, usize(k));
+		}
 	}
 };
 template <>
@@ -334,45 +242,23 @@ struct FactorizeStartegyDispatch<factorization_strategy::Blocked> {
 	fn(LdltViewMut<T> out,
 	   MatrixView<T, L> in_matrix,
 	   factorization_strategy::Blocked tag) {
-		detail::factorize_ldlt_tpl(out, in_matrix, tag.block_size);
-	}
-};
-template <>
-struct FactorizeStartegyDispatch<factorization_strategy::AltBlocked> {
-	template <typename T, Layout L>
-	static LDLT_INLINE void
-	fn(LdltViewMut<T> out,
-	   MatrixView<T, L> in_matrix,
-	   factorization_strategy::AltBlocked tag) {
 		isize dim = out.l.rows;
-		out.l.to_eigen().template triangularView<Eigen::Lower>() =
-				in_matrix.to_eigen();
-		detail::factorize_ldlt_alt_inplace(out, tag.block_size);
+		bool inplace = out.l.data == in_matrix.data;
+		if (!inplace) {
+			out.l.to_eigen().template triangularView<Eigen::Lower>() =
+					in_matrix.to_eigen();
+		}
+		detail::factorize_blocked(out, tag.block_size);
 		for (isize k = 0; k < dim; ++k) {
 			detail::set_zero(out.l.col(k).data, usize(k));
 		}
 	}
 };
-template <>
-struct FactorizeStartegyDispatch<factorization_strategy::Experimental> {
-	template <typename T, Layout L>
-	static LDLT_INLINE void
-	fn(LdltViewMut<T> out,
-	   MatrixView<T, L> in_matrix,
-	   factorization_strategy::Experimental /*tag*/) {
-		// TODO: use faster matrix-vector product?
-		detail::factorize_ldlt_tpl(out, in_matrix, 1);
-	}
-};
 
-extern template void
-		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, colmajor>, isize);
-extern template void
-		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, colmajor>, isize);
-extern template void
-		factorize_ldlt_tpl(LdltViewMut<f32>, MatrixView<f32, rowmajor>, isize);
-extern template void
-		factorize_ldlt_tpl(LdltViewMut<f64>, MatrixView<f64, rowmajor>, isize);
+LDLT_EXPLICIT_TPL_DECL(1, factorize_unblocked<f32>);
+LDLT_EXPLICIT_TPL_DECL(2, factorize_blocked<f32>);
+LDLT_EXPLICIT_TPL_DECL(1, factorize_unblocked<f64>);
+LDLT_EXPLICIT_TPL_DECL(2, factorize_blocked<f64>);
 
 } // namespace detail
 

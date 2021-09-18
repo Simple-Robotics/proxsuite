@@ -21,13 +21,14 @@ void bench_eigen__ldlt(benchmark::State& s) {
 
 	ldlt_test::rand::set_seed(0);
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
-	Eigen::LDLT<Mat<T, L>> l(a);
+	Eigen::LDLT<Mat<T, L>> l(dim);
+	ldlt_test::eigen::ldlt_compute<L>(l, a);
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(l.matrixLDLT().data());
 
 	for (auto _ : s) {
-		l.compute(a);
+		ldlt_test::eigen::ldlt_compute<L>(l, a);
 		benchmark::ClobberMemory();
 	}
 }
@@ -38,13 +39,14 @@ void bench_eigen__chol(benchmark::State& s) {
 
 	ldlt_test::rand::set_seed(0);
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
-	Eigen::LLT<Mat<T, L>> l(a);
+	Eigen::LLT<Mat<T, L>> l(dim);
+	ldlt_test::eigen::llt_compute<L>(l, a);
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(l.matrixLLT().data());
 
 	for (auto _ : s) {
-		l.compute(a);
+		ldlt_test::eigen::llt_compute<L>(l, a);
 		benchmark::ClobberMemory();
 	}
 }
@@ -124,67 +126,6 @@ void bench_ldlt_______(benchmark::State& s) {
 	}
 }
 
-template <typename T>
-void bench_inplace____(benchmark::State& s) {
-
-	isize block_size = isize(s.range(0));
-	isize dim = isize(s.range(1));
-	ldlt_test::rand::set_seed(0);
-	Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
-
-	Mat<T, colmajor> l(dim, dim);
-	l.setZero();
-	Vec<T> d(dim);
-	d.setZero();
-
-	benchmark::DoNotOptimize(a.data());
-	benchmark::DoNotOptimize(l.data());
-	benchmark::DoNotOptimize(d.data());
-
-	for (auto _ : s) {
-		auto a_view = MatrixView<T, colmajor>{from_eigen, a};
-		auto ldl_view = ldlt::LdltViewMut<T>{
-				{from_eigen, l},
-				{from_eigen, d},
-		};
-
-		l = a;
-		factorize(ldl_view, a_view, factorization_strategy::blocked(block_size));
-		benchmark::ClobberMemory();
-	}
-}
-
-template <typename T>
-void bench_inplace_alt(benchmark::State& s) {
-
-	isize block_size = isize(s.range(0));
-	isize dim = isize(s.range(1));
-	ldlt_test::rand::set_seed(0);
-	Mat<T, colmajor> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
-
-	Mat<T, colmajor> l(dim, dim);
-	l.setZero();
-	Vec<T> d(dim);
-	d.setZero();
-
-	benchmark::DoNotOptimize(a.data());
-	benchmark::DoNotOptimize(l.data());
-	benchmark::DoNotOptimize(d.data());
-
-	for (auto _ : s) {
-		auto a_view = MatrixView<T, colmajor>{from_eigen, a};
-		auto ldl_view = ldlt::LdltViewMut<T>{
-				{from_eigen, l},
-				{from_eigen, d},
-		};
-
-		l = a;
-		factorize(
-				ldl_view, a_view, factorization_strategy::alt_blocked(block_size));
-		benchmark::ClobberMemory();
-	}
-}
-
 void bench_dummy(benchmark::State& s) {
 	for (auto _ : s) {
 	}
@@ -213,19 +154,8 @@ constexpr isize dim_huge = 4096;
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor);                                             \
 	LDLT_BENCH(Dim, Type, rowmajor);                                             \
-	LDLT_BENCHMARK_TPL(bench_calc_perm__, Type)->Arg(Dim);                    \
-	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim);                    \
-	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({1, Dim});                 \
-	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({16, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({32, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({64, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({128, Dim});               \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({1, Dim});                 \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({8, Dim});                 \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({16, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({32, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({64, Dim});                \
-	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({128, Dim});
+	LDLT_BENCHMARK_TPL(bench_calc_perm__, Type)->Arg(Dim);                       \
+	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim);
 
 #define LDLT_BENCH_DIM(Type)                                                   \
 	LDLT_BENCH_LAYOUT(dim_tiny, Type);                                           \

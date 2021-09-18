@@ -40,6 +40,8 @@ endif()
 
 add_library(
   inria_ldlt
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f32.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f64.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp

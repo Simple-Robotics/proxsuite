@@ -2,7 +2,12 @@ include_directories(include)
 
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 
-set(LDLT_BENCH_LIBS inria_ldlt backward_cpp_main libcnpy)
+set(LDLT_BENCH_LIBS
+    inria_ldlt
+    backward_cpp_main
+    libcnpy
+    libinria_ldlt_util
+)
 
 add_executable(.bench.factorize src/factorize.cpp)
 target_link_libraries(.bench.factorize ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
@@ -11,7 +16,12 @@ add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 add_executable(.bench.osqp src/osqp.cpp)
-target_link_libraries(.bench.osqp ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark osqpstatic)
+target_link_libraries(
+  .bench.osqp
+  ${LDLT_BENCH_LIBS}
+  CONAN_PKG::benchmark
+  osqpstatic
+)
 
 add_executable(.bench.osqp.py src/osqp_py.cpp)
 target_link_libraries(.bench.osqp.py ${LDLT_BENCH_LIBS} osqpstatic)

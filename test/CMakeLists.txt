@@ -9,6 +9,8 @@ target_include_directories(
 add_library(doctest_main STATIC src/doctest_main.cpp)
 add_library(backward_cpp_main OBJECT src/backward.cpp)
 add_library(libcnpy OBJECT src/cnpy.cpp)
+add_library(libinria_ldlt_util OBJECT src/util_f64.cpp src/util_f32.cpp)
+target_link_libraries(libinria_ldlt_util Eigen3::Eigen inria_ldlt)
 target_link_libraries(libcnpy Eigen3::Eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 set(LDLT_TEST_LIBS
@@ -16,6 +18,7 @@ set(LDLT_TEST_LIBS
     backward_cpp_main
     doctest_main
     libcnpy
+    libinria_ldlt_util
 )
 
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
