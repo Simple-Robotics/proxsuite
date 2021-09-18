@@ -34,7 +34,10 @@ include(cmake/sanitizers.cmake)
 include(cmake/conan.cmake)
 
 if(ENABLE_TESTING)
-  add_compile_options("-g")
+  option(INRIA_LDLT_DEBUG "build with debug symbols" ON)
+  if(INRIA_LDLT_DEBUG)
+    add_compile_options("-g")
+  endif()
   include(cmake/extra_local_settings.cmake)
 endif()
 
