@@ -9,17 +9,24 @@ LDLT_EXPLICIT_TPL_DEF(2, factorize_blocked<f64>);
 LDLT_EXPLICIT_TPL_DEF(3, compute_permutation<f32>);
 LDLT_EXPLICIT_TPL_DEF(3, compute_permutation<f64>);
 
-// avx256 implementation
 #ifdef __clang__
-__attribute__((minsize))
+#define LDLT_MINSIZE __attribute__((minsize))
+#else
+#define LDLT_MINSIZE
 #endif
-  void apply_perm_rows<f64>::fn(
+
+// avx256 implementation
+LDLT_MINSIZE
+void apply_perm_rows<f64>::fn(
 		f64* out,
 		isize out_stride,
 		f64 const* in,
 		isize in_stride,
 		isize n,
-		i32 const* perm_indices) noexcept {
+		i32 const* perm_indices,
+		i32 sym) noexcept {
+
+	auto info = detail::perm_helper(sym, n);
 
 	isize n32 = n / 32 * 32;
 	isize n16 = n / 16 * 16;
@@ -32,7 +39,6 @@ __attribute__((minsize))
 	(void)n32, (void)n16, (void)n8, (void)n4, (void)n2;
 
 	for (isize col = 0; col < n; ++col) {
-		isize row = 0;
 		f64* out_c = out + out_stride * col;
 		f64 const* in_c = in + in_stride * col;
 
@@ -42,6 +48,7 @@ __attribute__((minsize))
 
 		// TODO: benchmark on more modern cpu. gathers may have improved
 #if 0 && defined(SIMDE_X86_AVX2_NATIVE)
+		isize row = info.init / 4 * 4;
 
 		while (row != n4) {
 			simde__m128i indices0 = simde_mm_loadu_epi32(perm_indices + row);
@@ -59,6 +66,8 @@ __attribute__((minsize))
 			row += 2;
 		}
 
+#else
+		isize row = info.init;
 #endif
 
 		while (row != n) {
@@ -71,17 +80,17 @@ __attribute__((minsize))
 	}
 }
 
-// unvectorized seems to be faster for f32?
-#ifdef __clang__
-__attribute__((minsize))
-#endif
- void apply_perm_rows<f32>::fn(
+LDLT_MINSIZE
+void apply_perm_rows<f32>::fn(
 		f32* out,
 		isize out_stride,
 		f32 const* in,
 		isize in_stride,
 		isize n,
-		i32 const* perm_indices) noexcept {
+		i32 const* perm_indices,
+		i32 sym) noexcept {
+
+	auto info = detail::perm_helper(sym, n);
 
 	isize n64 = n / 64 * 64;
 	isize n32 = n / 32 * 32;
@@ -94,7 +103,6 @@ __attribute__((minsize))
 	isize n_prefetch = n < 512 ? 0 : n16;
 
 	for (isize col = 0; col < n; ++col) {
-		isize row = 0;
 		f32* out_c = out + out_stride * col;
 		f32 const* in_c = in + in_stride * col;
 
@@ -103,6 +111,7 @@ __attribute__((minsize))
 		}
 
 #if 0 && defined(SIMDE_X86_AVX2_NATIVE)
+		isize row = info.init / 8 * 8;
 
 		while (row != n8) {
 			simde__m256i indices0 = simde_mm256_loadu_epi32(perm_indices + row);
@@ -119,6 +128,8 @@ __attribute__((minsize))
 			out_c += 4;
 			row += 4;
 		}
+#else
+		isize row = info.init;
 #endif
 		while (row != n) {
 			i32 indices0 = perm_indices[row];
@@ -126,6 +137,7 @@ __attribute__((minsize))
 			++out_c;
 			++row;
 		}
+    info.init += info.inc;
 	}
 }
 

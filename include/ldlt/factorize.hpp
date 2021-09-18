@@ -56,6 +56,24 @@ LDLT_NO_INLINE void compute_permutation(
 LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f32>);
 LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f64>);
 
+struct PermIterInfo {
+	isize init;
+	isize inc;
+};
+
+inline auto perm_helper(i32 sym, isize n) -> PermIterInfo {
+	switch (sym) {
+	case -1:
+		return {n, -1};
+	case 0:
+		return {n, 0};
+	case 1:
+		return {1, 1};
+	default:
+		HEDLEY_UNREACHABLE();
+	}
+}
+
 template <typename T>
 struct apply_perm_rows {
 	static void
@@ -64,12 +82,17 @@ struct apply_perm_rows {
 	   T* in,
 	   isize in_stride,
 	   isize n,
-	   i32 const* perm_indices) noexcept {
-		for (isize row = 0; row < n; ++row) {
-			i32 indices0 = perm_indices[row];
-			for (isize col = 0; col < n; ++col) {
+	   i32 const* perm_indices,
+	   i32 sym) noexcept {
+
+		auto info = detail::perm_helper(sym, n);
+
+		for (isize col = 0; col < n; ++col) {
+			for (isize row = 0; row < info.init; ++row) {
+				i32 indices0 = perm_indices[row];
 				out[out_stride * col + row] =
 						static_cast<T&&>(in[in_stride * col + indices0]);
+				info.init += info.inc;
 			}
 		}
 	}
@@ -83,7 +106,8 @@ struct apply_perm_rows<f64> {
 	   f64 const* in,
 	   isize in_stride,
 	   isize n,
-	   i32 const* perm_indices) noexcept;
+	   i32 const* perm_indices,
+	   i32 sym) noexcept;
 };
 
 template <>
@@ -94,29 +118,35 @@ struct apply_perm_rows<f32> {
 	   f32 const* in,
 	   isize in_stride,
 	   isize n,
-	   i32 const* perm_indices) noexcept;
+	   i32 const* perm_indices,
+	   i32 sym) noexcept;
 };
 
+// sym: -1 is lower half
+//      +1 is upper half
+//       0 is both
+// when only one half is filled, the values in the other half are unspecified
 template <typename T>
 void apply_permutation_sym_work(
 		MatrixViewMut<T, colmajor> mat,
 		i32 const* perm_indices,
-		MatrixViewMut<T, colmajor> work) {
+		MatrixViewMut<T, colmajor> work,
+		i32 sym) {
 	isize n = mat.rows;
 
-	detail::apply_perm_rows<T>::fn(
-			work.data,
-			work.outer_stride,
-			mat.data,
-			mat.outer_stride,
-			n,
-			perm_indices);
-
 	for (isize k = 0; k < n; ++k) {
-		T* in = work.col(isize(perm_indices[k])).data;
-		T* out = mat.col(k).data;
+		T* in = mat.col(isize(perm_indices[k])).data;
+		T* out = work.col(k).data;
 		std::move(in, in + n, out);
 	}
+	detail::apply_perm_rows<T>::fn(
+			mat.data,
+			mat.outer_stride,
+			work.data,
+			work.outer_stride,
+			n,
+			perm_indices,
+			sym);
 }
 
 template <typename T>

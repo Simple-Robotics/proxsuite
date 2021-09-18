@@ -98,7 +98,8 @@ void bench_permute____(benchmark::State& s) {
 		detail::set_zero(work.col(i).data, usize(dim));
 	}
 	for (auto _ : s) {
-		detail::apply_permutation_sym_work<T>({from_eigen, a}, perm.data(), work);
+		detail::apply_permutation_sym_work<T>(
+				{from_eigen, a}, perm.data(), work, -1);
 		benchmark::ClobberMemory();
 	}
 }
