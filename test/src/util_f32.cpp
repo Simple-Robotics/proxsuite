@@ -2,10 +2,10 @@
 
 namespace ldlt_test {
 namespace eigen {
-LDLT_EXPLICIT_TPL_DEF(2, llt_compute<colmajor, f32>);
-LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<colmajor, f32>);
-LDLT_EXPLICIT_TPL_DEF(2, llt_compute<rowmajor, f32>);
-LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<rowmajor, f32>);
+LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f32, colmajor>>);
+LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<Mat<f32, colmajor>>);
+LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f32, rowmajor>>);
+LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<Mat<f32, rowmajor>>);
 } // namespace eigen
 namespace rand {
 LDLT_EXPLICIT_TPL_DEF(2, matrix_rand<f32>);

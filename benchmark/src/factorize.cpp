@@ -22,13 +22,13 @@ void bench_eigen__ldlt(benchmark::State& s) {
 	ldlt_test::rand::set_seed(0);
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 	Eigen::LDLT<Mat<T, L>> l(dim);
-	ldlt_test::eigen::ldlt_compute<L>(l, a);
+	ldlt_test::eigen::ldlt_compute(l, a);
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(l.matrixLDLT().data());
 
 	for (auto _ : s) {
-		ldlt_test::eigen::ldlt_compute<L>(l, a);
+		ldlt_test::eigen::ldlt_compute(l, a);
 		benchmark::ClobberMemory();
 	}
 }
@@ -40,13 +40,13 @@ void bench_eigen__chol(benchmark::State& s) {
 	ldlt_test::rand::set_seed(0);
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 	Eigen::LLT<Mat<T, L>> l(dim);
-	ldlt_test::eigen::llt_compute<L>(l, a);
+	ldlt_test::eigen::llt_compute(l, a);
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(l.matrixLLT().data());
 
 	for (auto _ : s) {
-		ldlt_test::eigen::llt_compute<L>(l, a);
+		ldlt_test::eigen::llt_compute(l, a);
 		benchmark::ClobberMemory();
 	}
 }
@@ -54,7 +54,6 @@ void bench_eigen__chol(benchmark::State& s) {
 template <typename T>
 void bench_calc_perm__(benchmark::State& s) {
 	isize dim = isize(s.range(0));
-	ldlt_test::rand::set_seed(0);
 
 	ldlt_test::rand::set_seed(0);
 	auto a = ldlt_test::rand::matrix_rand<T>(dim, dim);
@@ -76,8 +75,14 @@ void bench_calc_perm__(benchmark::State& s) {
 template <typename T>
 void bench_permute____(benchmark::State& s) {
 	isize dim = isize(s.range(0));
+
 	ldlt_test::rand::set_seed(0);
 	auto a = ldlt_test::rand::matrix_rand<T>(dim, dim);
+	for (isize i = 0; i < dim; ++i) {
+		for (isize j = 0; j < i; ++j) {
+			a(i, j) = a(j, i);
+		}
+	}
 
 	auto perm = std::vector<i32>(usize(dim));
 	auto perm_inv = std::vector<i32>(usize(dim));
@@ -103,6 +108,7 @@ void bench_ldlt_______(benchmark::State& s) {
 
 	isize block_size = isize(s.range(0));
 	isize dim = isize(s.range(1));
+
 	ldlt_test::rand::set_seed(0);
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
@@ -149,14 +155,13 @@ constexpr isize dim_huge = 4096;
 	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({16, Dim});             \
 	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({32, Dim});             \
 	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({64, Dim});             \
-	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({128, Dim});
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({128, Dim})
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor);                                             \
-	LDLT_BENCH(Dim, Type, rowmajor);                                             \
 	LDLT_BENCHMARK_TPL(bench_calc_perm__, Type)->Arg(Dim);                       \
-	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim)
 
 #define LDLT_BENCH_DIM(Type)                                                   \
 	LDLT_BENCH_LAYOUT(dim_tiny, Type);                                           \

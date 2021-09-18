@@ -30,26 +30,27 @@ using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
 namespace ldlt_test {
 using namespace ldlt;
 namespace eigen {
-template <Layout L, typename T>
+template <typename T>
 void llt_compute( //
-		Eigen::LLT<Mat<T, L>>& out,
-		Mat<T, L> const& mat) {
+		Eigen::LLT<T>& out,
+		T const& mat) {
 	out.compute(mat);
 }
-template <Layout L, typename T>
+template <typename T>
 void ldlt_compute( //
-		Eigen::LDLT<Mat<T, L>>& out,
-		Mat<T, L> const& mat) {
+		Eigen::LDLT<T>& out,
+		T const& mat) {
 	out.compute(mat);
 }
-LDLT_EXPLICIT_TPL_DECL(2, llt_compute<colmajor, f32>);
-LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<colmajor, f32>);
-LDLT_EXPLICIT_TPL_DECL(2, llt_compute<rowmajor, f32>);
-LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<rowmajor, f32>);
-LDLT_EXPLICIT_TPL_DECL(2, llt_compute<colmajor, f64>);
-LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<colmajor, f64>);
-LDLT_EXPLICIT_TPL_DECL(2, llt_compute<rowmajor, f64>);
-LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<rowmajor, f64>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<Mat<f32, colmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f32, colmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<Mat<f32, rowmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f32, rowmajor>>);
+
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<Mat<f64, colmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f64, colmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, llt_compute<Mat<f64, rowmajor>>);
+LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f64, rowmajor>>);
 } // namespace eigen
 namespace rand {
 
