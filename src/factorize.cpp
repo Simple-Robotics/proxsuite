@@ -291,6 +291,7 @@ void apply_perm_rows<f32>::fn(
 }
 #else
 // unvectorized implementation
+// TODO: benchmark and optimize?
 
 void apply_perm_rows<f64>::fn(
 		f64* out,
