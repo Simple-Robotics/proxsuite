@@ -53,6 +53,8 @@ LDLT_NO_INLINE void compute_permutation(
 		perm_inv_indices[inv_k] = k;
 	}
 }
+LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f32>);
+LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f64>);
 
 template <typename T>
 struct apply_perm_rows {

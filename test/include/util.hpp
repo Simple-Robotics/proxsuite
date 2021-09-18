@@ -288,34 +288,8 @@ auto bench_for(Duration d, Fn fn) -> BenchResult<decltype(fn())> {
 }
 
 namespace osqp {
-inline auto to_sparse(Mat<c_float, colmajor>& mat) -> SparseMat<c_float> {
-	SparseMat<c_float> out(mat.rows(), mat.cols());
-
-	using Eigen::Index;
-	for (Index j = 0; j < mat.cols(); ++j) {
-		for (Index i = 0; i < mat.rows(); ++i) {
-			if (mat(i, j) != 0) {
-				out.insert(i, j) = mat(i, j);
-			}
-		}
-	}
-	out.makeCompressed();
-	return out;
-}
-
-inline auto to_sparse_sym(Mat<c_float, colmajor>& mat) -> SparseMat<c_float> {
-	SparseMat<c_float> out(mat.rows(), mat.cols());
-	using Eigen::Index;
-	for (Index j = 0; j < mat.cols(); ++j) {
-		for (Index i = 0; i < j + 1; ++i) {
-			if (mat(i, j) != 0) {
-				out.insert(i, j) = mat(i, j);
-			}
-		}
-	}
-	out.makeCompressed();
-	return out;
-}
+auto to_sparse(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
+auto to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
 } // namespace osqp
 } // namespace ldlt_test
 

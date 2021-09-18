@@ -56,8 +56,8 @@ void bench_calc_perm__(benchmark::State& s) {
 	isize dim = isize(s.range(0));
 	ldlt_test::rand::set_seed(0);
 
-	Mat<T, colmajor> a(dim, dim);
-	a.setZero();
+	ldlt_test::rand::set_seed(0);
+	auto a = ldlt_test::rand::matrix_rand<T>(dim, dim);
 
 	auto perm = std::vector<i32>(usize(dim));
 	auto perm_inv = std::vector<i32>(usize(dim));
@@ -77,8 +77,7 @@ template <typename T>
 void bench_permute____(benchmark::State& s) {
 	isize dim = isize(s.range(0));
 	ldlt_test::rand::set_seed(0);
-	Mat<T, colmajor> a(dim, dim);
-	a.setZero();
+	auto a = ldlt_test::rand::matrix_rand<T>(dim, dim);
 
 	auto perm = std::vector<i32>(usize(dim));
 	auto perm_inv = std::vector<i32>(usize(dim));
@@ -90,7 +89,9 @@ void bench_permute____(benchmark::State& s) {
 	detail::compute_permutation<T>(
 			perm.data(), perm_inv.data(), {from_eigen, a.diagonal()});
 	LDLT_WORKSPACE_MEMORY(work, Mat(dim, dim), T);
-	work.to_eigen().setZero();
+	for (isize i = 0; i < dim; ++i) {
+		detail::set_zero(work.col(i).data, usize(dim));
+	}
 	for (auto _ : s) {
 		detail::apply_permutation_sym_work<T>({from_eigen, a}, perm.data(), work);
 		benchmark::ClobberMemory();
@@ -106,9 +107,9 @@ void bench_ldlt_______(benchmark::State& s) {
 	Mat<T, L> a = ldlt_test::rand::positive_definite_rand<T>(dim, T(1e2));
 
 	Mat<T, colmajor> l(dim, dim);
-	l.setZero();
+	detail::set_zero(l.data(), usize(l.size()));
 	Vec<T> d(dim);
-	d.setZero();
+	detail::set_zero(d.data(), usize(d.size()));
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(l.data());

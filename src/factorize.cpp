@@ -6,6 +6,8 @@ LDLT_EXPLICIT_TPL_DEF(1, factorize_unblocked<f32>);
 LDLT_EXPLICIT_TPL_DEF(2, factorize_blocked<f32>);
 LDLT_EXPLICIT_TPL_DEF(1, factorize_unblocked<f64>);
 LDLT_EXPLICIT_TPL_DEF(2, factorize_blocked<f64>);
+LDLT_EXPLICIT_TPL_DEF(3, compute_permutation<f32>);
+LDLT_EXPLICIT_TPL_DEF(3, compute_permutation<f64>);
 
 #if defined(SIMDE_X86_AVX512F_NATIVE)
 // TODO: avx512 implementation
@@ -44,7 +46,7 @@ void apply_perm_rows<f64>::fn(
 		for (isize col = 0; col < n; ++col) {
 			f64 const* base = in + in_stride * col;
 
-			isize offset = 1;
+			isize offset = 0;
 			if ((col + offset) < n) {
 				for (isize i = 0; i < 32; ++i) {
 					f64 const* offset_base = in + in_stride * (col + offset);
@@ -174,7 +176,7 @@ void apply_perm_rows<f32>::fn(
 		for (isize col = 0; col < n; ++col) {
 			f32 const* base = in + in_stride * col;
 
-			isize offset = 1;
+			isize offset = 0;
 			if ((col + offset) < n) {
 				for (isize i = 0; i < 64; ++i) {
 					f32 const* offset_base = in + in_stride * (col + offset);
