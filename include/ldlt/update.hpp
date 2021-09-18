@@ -29,9 +29,6 @@ LDLT_INLINE void rank1_update_inner_loop_packed(
 		isize offset) {
 	isize r = i + j + 1;
 
-	// TODO[PERF]: check asm, clang does weird stuff with address computations in
-	// tight loop
-
 	auto in_l_ptr = in_l.ptr(r, j);
 	auto out_l_ptr = out_l.ptr(r, j);
 
