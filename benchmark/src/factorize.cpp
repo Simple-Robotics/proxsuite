@@ -200,14 +200,32 @@ constexpr isize dim_huge = 4096;
 
 #define LDLT_BENCH(Dim, Type, L)                                               \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
-	LDLT_BENCHMARK_TPL(bench_eigen__chol, Type, L)->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_eigen__chol, Type, L)->Arg(Dim);                    \
+	LDLT_BENCHMARK_TPL(bench_eigen__ldlt, Type, L)->Arg(Dim);                    \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({1, Dim});              \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({8, Dim});              \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({16, Dim});             \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({32, Dim});             \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({64, Dim});             \
+	LDLT_BENCHMARK_TPL(bench_ldlt_______, Type, L)->Args({128, Dim});
 
 #define LDLT_BENCH_LAYOUT(Dim, Type)                                           \
 	LDLT_BENCHMARK(bench_dummy);                                                 \
 	LDLT_BENCH(Dim, Type, colmajor);                                             \
 	LDLT_BENCH(Dim, Type, rowmajor);                                             \
-	LDLT_BENCHMARK_TPL(bench_calc_perm__, Type)->Arg(Dim);                       \
-	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim);
+	LDLT_BENCHMARK_TPL(bench_calc_perm__, Type)->Arg(Dim);                    \
+	LDLT_BENCHMARK_TPL(bench_permute____, Type)->Arg(Dim);                    \
+	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({1, Dim});                 \
+	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({16, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({32, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({64, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace____, Type)->Args({128, Dim});               \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({1, Dim});                 \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({8, Dim});                 \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({16, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({32, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({64, Dim});                \
+	LDLT_BENCHMARK_TPL(bench_inplace_alt, Type)->Args({128, Dim});
 
 #define LDLT_BENCH_DIM(Type)                                                   \
 	LDLT_BENCH_LAYOUT(dim_tiny, Type);                                           \

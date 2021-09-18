@@ -17,12 +17,12 @@ template void
 
 // avx256 implementation
 void apply_perm_rows<f64>::fn(
-		f64* out,
+		f64* HEDLEY_RESTRICT out,
 		isize out_stride,
-		f64 const* in,
+		f64 const* HEDLEY_RESTRICT in,
 		isize in_stride,
 		isize n,
-		i32 const* perm_indices) noexcept {
+		i32 const* HEDLEY_RESTRICT perm_indices) noexcept {
 
 	isize n32 = n / 32 * 32;
 	isize n16 = n / 16 * 16;
@@ -41,8 +41,21 @@ void apply_perm_rows<f64>::fn(
 		simde__m128i indices6 = simde_mm_loadu_epi32(perm_indices + row + 24);
 		simde__m128i indices7 = simde_mm_loadu_epi32(perm_indices + row + 28);
 
+		i32 _prefetch_indices[32];
+		i32* prefetch_indices = &_prefetch_indices[0];
+		std::memcpy(prefetch_indices, perm_indices + row, sizeof(i32) * 32);
+
 		for (isize col = 0; col < n; ++col) {
 			f64 const* base = in + in_stride * col;
+
+			isize offset = 1;
+			if ((col + offset) < n) {
+				for (isize i = 0; i < 32; ++i) {
+					f64 const* offset_base = in + in_stride * (col + offset);
+					simde_mm_prefetch(
+							offset_base + prefetch_indices[i], SIMDE_MM_HINT_T0);
+				}
+			}
 
 			simde__m256d p0 = simde_mm256_i32gather_pd(base, indices0, 8);
 			simde__m256d p1 = simde_mm256_i32gather_pd(base, indices1, 8);
@@ -158,8 +171,21 @@ void apply_perm_rows<f32>::fn(
 		simde__m256i indices6 = simde_mm256_loadu_epi32(perm_indices + row + 48);
 		simde__m256i indices7 = simde_mm256_loadu_epi32(perm_indices + row + 56);
 
+		i32 _prefetch_indices[64];
+		i32* prefetch_indices = &_prefetch_indices[0];
+		std::memcpy(prefetch_indices, perm_indices + row, sizeof(i32) * 64);
+
 		for (isize col = 0; col < n; ++col) {
 			f32 const* base = in + in_stride * col;
+
+			isize offset = 1;
+			if ((col + offset) < n) {
+				for (isize i = 0; i < 64; ++i) {
+					f32 const* offset_base = in + in_stride * (col + offset);
+					simde_mm_prefetch(
+							offset_base + prefetch_indices[i], SIMDE_MM_HINT_T0);
+				}
+			}
 
 			simde__m256 p0 = simde_mm256_i32gather_ps(base, indices0, 4);
 			simde__m256 p1 = simde_mm256_i32gather_ps(base, indices1, 4);
