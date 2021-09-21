@@ -72,7 +72,6 @@ add_custom_target(
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
 )
 add_executable(.test.qp_eq.py src/qp_eq_py.cpp)
-doctest_discover_tests(.test.qp_eq.py)
 target_link_libraries(.test.qp_eq.py ${LDLT_TEST_LIBS})
 set(INRIA_LDLT_QP_PYTHON_PATH "${CMAKE_CURRENT_BINARY_DIR}/qp_problem/")
 set(INRIA_LDLT_QP_PYTHON_PATH
@@ -98,5 +97,4 @@ add_custom_target(
           .test.row_append
           .test.precond.ruiz
           .test.qp_eq.cpp
-          .test.qp_eq.py
 )

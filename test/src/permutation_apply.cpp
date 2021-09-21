@@ -3,8 +3,9 @@
 #include <doctest.h>
 
 using namespace ldlt;
-DOCTEST_TEST_CASE_TEMPLATE("permute apply", T, f64) {
-	isize n = 3;
+DOCTEST_TEST_CASE("permute apply") {
+  using T = f32;
+	isize n = 13;
 	auto in = ldlt_test::rand::matrix_rand<T>(n, n);
 	in = in + in.transpose().eval();
 	auto perm = std::vector<i32>(usize(n));

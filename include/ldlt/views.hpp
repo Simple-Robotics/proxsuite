@@ -1042,7 +1042,9 @@ void noalias_mul_sub_tr_lo(
 		MatrixView<T, rowmajor> rhs) {
 	if (lhs.cols == 1) {
 		out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
-				lhs.col(0).to_eigen().operator*(rhs.row(0).to_eigen()));
+				lhs.col(0).to_eigen().operator*(
+						Eigen::Map<Eigen::Matrix<T, 1, Eigen::Dynamic> const>(
+								rhs.data, 1, rhs.cols)));
 	} else {
 		out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
 				lhs.to_eigen().operator*(rhs.to_eigen()));

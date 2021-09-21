@@ -4,7 +4,8 @@
 #include <doctest.h>
 
 using namespace ldlt;
-DOCTEST_TEST_CASE_TEMPLATE("permute compute", T, f32, f64) {
+DOCTEST_TEST_CASE("permute compute") {
+  using T = f32;
 	isize n = 13;
 	auto m = ldlt_test::rand::matrix_rand<T>(n, n);
 	auto perm = std::vector<i32>(usize(n));

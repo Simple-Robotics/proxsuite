@@ -259,7 +259,7 @@ struct FactorizeStartegyDispatch<factorization_strategy::Standard> {
 			out.l.to_eigen().template triangularView<Eigen::Lower>() =
 					in_matrix.to_eigen();
 		}
-		detail::factorize_unblocked(out, in_matrix);
+		detail::factorize_unblocked(out);
 		for (isize k = 0; k < dim; ++k) {
 			detail::set_zero(out.l.col(k).data, usize(k));
 		}

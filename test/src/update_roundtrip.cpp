@@ -106,11 +106,12 @@ auto roundtrip_test(isize n) -> T {
 using C = detail::constant<Layout, colmajor>;
 using R = detail::constant<Layout, rowmajor>;
 
-DOCTEST_TEST_CASE_TEMPLATE("rank one update: roundtrip", Scalar, f64) {
+DOCTEST_TEST_CASE("rank one update: roundtrip") {
+  using T = f64;
 	isize min = 1;
 	isize max = 16;
 
 	for (isize i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<Scalar>(i) <= Scalar(1e2));
+		DOCTEST_CHECK(roundtrip_test<T>(i) <= T(1e2));
 	}
 }
