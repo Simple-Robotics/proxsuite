@@ -996,10 +996,17 @@ void assign_scalar_prod(VectorViewMut<T> out, T factor, VectorView<T> in) {
 template <typename T>
 void trans_tr_unit_up_solve_in_place_on_right(
 		MatrixView<T, colmajor> tr, MatrixViewMut<T, colmajor> rhs) {
-	tr.to_eigen()
-			.transpose()
-			.template triangularView<Eigen::UnitUpper>()
-			.template solveInPlace<Eigen::OnTheRight>(rhs.to_eigen());
+	if (rhs.cols == 1) {
+		tr.to_eigen()
+				.transpose()
+				.template triangularView<Eigen::UnitUpper>()
+				.template solveInPlace<Eigen::OnTheRight>(rhs.col(0).to_eigen());
+	} else {
+		tr.to_eigen()
+				.transpose()
+				.template triangularView<Eigen::UnitUpper>()
+				.template solveInPlace<Eigen::OnTheRight>(rhs.to_eigen());
+	}
 }
 
 template <typename T>
@@ -1007,14 +1014,25 @@ void apply_diag_inv_on_right(
 		MatrixViewMut<T, colmajor> out,
 		VectorView<T> d,
 		MatrixView<T, colmajor> in) {
-	out.to_eigen() = in.to_eigen().operator*(d.to_eigen().asDiagonal().inverse());
+	if (out.cols == 1) {
+		out.col(0).to_eigen() =
+				in.col(0).to_eigen().operator*(d.to_eigen().asDiagonal().inverse());
+	} else {
+		out.to_eigen() =
+				in.to_eigen().operator*(d.to_eigen().asDiagonal().inverse());
+	}
 }
 template <typename T>
 void apply_diag_on_right(
 		MatrixViewMut<T, colmajor> out,
 		VectorView<T> d,
 		MatrixView<T, colmajor> in) {
-	out.to_eigen() = in.to_eigen().operator*(d.to_eigen().asDiagonal());
+	if (out.cols == 1) {
+		out.col(0).to_eigen() =
+				in.col(0).to_eigen().operator*(d.to_eigen().asDiagonal());
+	} else {
+		out.to_eigen() = in.to_eigen().operator*(d.to_eigen().asDiagonal());
+	}
 }
 
 template <typename T>
@@ -1022,8 +1040,13 @@ void noalias_mul_sub_tr_lo(
 		MatrixViewMut<T, colmajor> out,
 		MatrixView<T, colmajor> lhs,
 		MatrixView<T, rowmajor> rhs) {
-	out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
-			lhs.to_eigen().operator*(rhs.to_eigen()));
+	if (lhs.cols == 1) {
+		out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
+				lhs.col(0).to_eigen().operator*(rhs.row(0).to_eigen()));
+	} else {
+		out.to_eigen().template triangularView<Eigen::Lower>().operator-=(
+				lhs.to_eigen().operator*(rhs.to_eigen()));
+	}
 }
 
 LDLT_EXPLICIT_TPL_DECL(4, noalias_mul_add<f64>);

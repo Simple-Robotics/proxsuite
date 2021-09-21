@@ -749,4 +749,10 @@
 	LDLT_CHECK_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
 #define LDLT_CONCEPT(...) LDLT_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
 
+#ifdef __clang__
+#define LDLT_MINSIZE __attribute__((minsize))
+#else
+#define LDLT_MINSIZE
+#endif
+
 #endif /* end of include guard LDLT_MACROS_HPP_TSAOHJEXS */

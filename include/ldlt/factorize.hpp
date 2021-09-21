@@ -96,40 +96,28 @@ struct apply_perm_rows {
 		isize start_row = 0;
 		isize nrows = info.init;
 
+		isize const bytes_per_col = n * isize(sizeof(T));
+		isize const n_prefetch =
+				(bytes_per_col < 4096) ? 0 : (bytes_per_col / 64 * 64);
+
 		for (isize col = 0; col < n; ++col) {
-			for (isize row = start_row; row < nrows; ++row) {
-				i32 indices0 = perm_indices[row];
-				out[out_stride * col + row] =
-						static_cast<T&&>(in[in_stride * col + indices0]);
-				nrows += info.inc_n;
-				start_row += info.inc_start;
+			T* in_c = in + (in_stride * col);
+			T* out_c = out + (out_stride * col);
+
+			if (std::is_trivially_copyable<T>::value) {
+				for (isize i = 0; i < n_prefetch; i += 64) {
+					simde_mm_prefetch(
+							reinterpret_cast<char const*>(in_c) + i, SIMDE_MM_HINT_T0);
+				}
 			}
+
+			for (isize row = start_row; row < start_row + nrows; ++row) {
+				out_c[row] = static_cast<T&&>(in_c[perm_indices[row]]);
+			}
+			nrows += info.inc_n;
+			start_row += info.inc_start;
 		}
 	}
-};
-
-template <>
-struct apply_perm_rows<f64> {
-	static void
-	fn(f64* out,
-	   isize out_stride,
-	   f64 const* in,
-	   isize in_stride,
-	   isize n,
-	   i32 const* perm_indices,
-	   i32 sym) noexcept;
-};
-
-template <>
-struct apply_perm_rows<f32> {
-	static void
-	fn(f32* out,
-	   isize out_stride,
-	   f32 const* in,
-	   isize in_stride,
-	   isize n,
-	   i32 const* perm_indices,
-	   i32 sym) noexcept;
 };
 
 // sym: -1 is lower half
