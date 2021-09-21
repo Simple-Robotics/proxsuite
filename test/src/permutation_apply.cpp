@@ -4,7 +4,7 @@
 
 using namespace ldlt;
 DOCTEST_TEST_CASE("permute apply") {
-  using T = f32;
+	using T = f32;
 	isize n = 13;
 	auto in = ldlt_test::rand::matrix_rand<T>(n, n);
 	in = in + in.transpose().eval();
@@ -17,10 +17,10 @@ DOCTEST_TEST_CASE("permute apply") {
 
 	i32 syms[] = {0, -1, 1};
 
+	LDLT_WORKSPACE_MEMORY(work, Mat(n, n), T);
 	for (auto sym : syms) {
 		auto out = in;
 
-		LDLT_WORKSPACE_MEMORY(work, Mat(n, n), T);
 		ldlt::detail::apply_permutation_sym_work<T>( //
 				{from_eigen, out},
 				perm.data(),
