@@ -35,20 +35,25 @@ template <typename T>
 LDLT_NO_INLINE void compute_permutation(
 		i32* perm_indices, i32* perm_inv_indices, StridedVectorView<T> diagonal) {
 	isize n = diagonal.dim;
-	LDLT_WORKSPACE_MEMORY(work, Vec(n), Indexed<T>);
 	for (isize k = 0; k < n; ++k) {
-		using std::fabs;
-		work(k) = {fabs(diagonal(k)), i32(k)};
+		perm_indices[k] = i32(k);
 	}
-	std::stable_sort(
-			work.data,
-			work.data + n,
-			[](Indexed<T> a, Indexed<T> b) noexcept -> bool {
-				return a.elem > b.elem;
-			});
+
+	{
+		T const* diagonal_data = diagonal.data;
+		isize stride = diagonal.stride;
+		std::stable_sort(
+				perm_indices,
+				perm_indices + n,
+				[diagonal_data, stride](i32 i, i32 j) noexcept -> bool {
+					using std::fabs;
+					return fabs(diagonal_data[stride * i]) >
+			           fabs(diagonal_data[stride * j]);
+				});
+	}
 
 	for (i32 k = 0; k < n; ++k) {
-		i32 inv_k = work(k).idx;
+		i32 inv_k = perm_indices[k];
 		perm_indices[k] = inv_k;
 		perm_inv_indices[inv_k] = k;
 	}
@@ -58,17 +63,18 @@ LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f64>);
 
 struct PermIterInfo {
 	isize init;
-	isize inc;
+	isize inc_start;
+	isize inc_n;
 };
 
 inline auto perm_helper(i32 sym, isize n) -> PermIterInfo {
 	switch (sym) {
 	case -1:
-		return {n, -1};
+		return {n, 1, -1};
 	case 0:
-		return {n, 0};
+		return {n, 0, 0};
 	case 1:
-		return {1, 1};
+		return {1, 0, 1};
 	default:
 		HEDLEY_UNREACHABLE();
 	}
@@ -87,12 +93,16 @@ struct apply_perm_rows {
 
 		auto info = detail::perm_helper(sym, n);
 
+		isize start_row = 0;
+		isize nrows = info.init;
+
 		for (isize col = 0; col < n; ++col) {
-			for (isize row = 0; row < info.init; ++row) {
+			for (isize row = start_row; row < nrows; ++row) {
 				i32 indices0 = perm_indices[row];
 				out[out_stride * col + row] =
 						static_cast<T&&>(in[in_stride * col + indices0]);
-				info.init += info.inc;
+				nrows += info.inc_n;
+				start_row += info.inc_start;
 			}
 		}
 	}

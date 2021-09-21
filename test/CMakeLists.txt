@@ -21,6 +21,14 @@ set(LDLT_TEST_LIBS
     libinria_ldlt_util
 )
 
+add_executable(.test.permute.compute src/permutation_compute.cpp)
+doctest_discover_tests(.test.permute.compute)
+target_link_libraries(.test.permute.compute ${LDLT_TEST_LIBS})
+
+add_executable(.test.permute.apply src/permutation_apply.cpp)
+doctest_discover_tests(.test.permute.apply)
+target_link_libraries(.test.permute.apply ${LDLT_TEST_LIBS})
+
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
 doctest_discover_tests(.test.factorize.roundtrip)
 target_link_libraries(.test.factorize.roundtrip ${LDLT_TEST_LIBS})
@@ -80,7 +88,9 @@ add_dependencies(.test.qp_eq.py .test.qp_eq.py.generated_problems)
 add_custom_target(
   check
   COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-  DEPENDS .test.factorize.roundtrip
+  DEPENDS .test.permute.compute
+          .test.permute.apply
+          .test.factorize.roundtrip
           .test.solve
           .test.update.roundtrip
           .test.mu_update.roundtrip

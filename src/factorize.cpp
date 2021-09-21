@@ -15,7 +15,6 @@ LDLT_EXPLICIT_TPL_DEF(3, compute_permutation<f64>);
 #define LDLT_MINSIZE
 #endif
 
-// avx256 implementation
 LDLT_MINSIZE
 void apply_perm_rows<f64>::fn(
 		f64* out,
@@ -28,55 +27,30 @@ void apply_perm_rows<f64>::fn(
 
 	auto info = detail::perm_helper(sym, n);
 
-	isize n32 = n / 32 * 32;
-	isize n16 = n / 16 * 16;
 	isize n8 = n / 8 * 8;
-	isize n4 = n / 4 * 4;
-	isize n2 = n / 2 * 2;
 
 	isize n_prefetch = n < 512 ? 0 : n8;
 
-	(void)n32, (void)n16, (void)n8, (void)n4, (void)n2;
+	isize start_row = 0;
+	isize nrows = info.init;
 
 	for (isize col = 0; col < n; ++col) {
 		f64* out_c = out + out_stride * col;
 		f64 const* in_c = in + in_stride * col;
 
+		isize last_row = start_row + nrows;
+
 		for (isize i = 0; i < n_prefetch; i += 8) {
 			simde_mm_prefetch(in_c + i, SIMDE_MM_HINT_T0);
 		}
 
-		// TODO: benchmark on more modern cpu. gathers may have improved
-#if 0 && defined(SIMDE_X86_AVX2_NATIVE)
-		isize row = info.init / 4 * 4;
-
-		while (row != n4) {
-			simde__m128i indices0 = simde_mm_loadu_epi32(perm_indices + row);
-			simde__m256d p0 = simde_mm256_i32gather_pd(in_c, indices0, 8);
-			simde_mm256_storeu_pd(out_c, p0);
-			out_c += 4;
-			row += 4;
-		}
-		while (row != n2) {
-			simde__m128i indices0{};
-			std::memcpy(&indices0, perm_indices + row, sizeof(i32) * 2);
-			simde__m128d p0 = simde_mm_i32gather_pd(in_c, indices0, 8);
-			simde_mm_storeu_pd(out_c, p0);
-			out_c += 2;
-			row += 2;
-		}
-
-#else
-		isize row = info.init;
-#endif
-
-		while (row != n) {
-			i32 indices0 = perm_indices[row];
-			*out_c = in_c[indices0];
-
-			++out_c;
+		isize row = start_row;
+		while (row != last_row) {
+			out_c[row] = in_c[perm_indices[row]];
 			++row;
 		}
+		nrows += info.inc_n;
+		start_row += info.inc_start;
 	}
 }
 
@@ -92,52 +66,32 @@ void apply_perm_rows<f32>::fn(
 
 	auto info = detail::perm_helper(sym, n);
 
-	isize n64 = n / 64 * 64;
-	isize n32 = n / 32 * 32;
 	isize n16 = n / 16 * 16;
-	isize n8 = n / 8 * 8;
-	isize n4 = n / 4 * 4;
-	isize n2 = n / 2 * 2;
-	(void)n64, (void)n32, (void)n16, (void)n8, (void)n4, (void)n2;
 
 	isize n_prefetch = n < 512 ? 0 : n16;
+
+	isize start_row = 0;
+	isize nrows = info.init;
 
 	for (isize col = 0; col < n; ++col) {
 		f32* out_c = out + out_stride * col;
 		f32 const* in_c = in + in_stride * col;
+		isize last_row = start_row + nrows;
 
 		for (isize i = 0; i < n_prefetch; i += 16) {
 			simde_mm_prefetch(in_c + i, SIMDE_MM_HINT_T0);
 		}
 
-#if 0 && defined(SIMDE_X86_AVX2_NATIVE)
-		isize row = info.init / 8 * 8;
-
-		while (row != n8) {
-			simde__m256i indices0 = simde_mm256_loadu_epi32(perm_indices + row);
-			simde__m256 p0 = simde_mm256_i32gather_ps(in_c, indices0, 4);
-
-			simde_mm256_storeu_ps(out_c, p0);
-			out_c += 8;
-			row += 8;
-		}
-		while (row != n4) {
-			simde__m128i indices0 = simde_mm_loadu_epi32(perm_indices + row);
-			simde__m128 p0 = simde_mm_i32gather_ps(in_c, indices0, 8);
-			simde_mm_storeu_ps(out_c, p0);
-			out_c += 4;
-			row += 4;
-		}
-#else
-		isize row = info.init;
-#endif
-		while (row != n) {
+		isize row = start_row;
+		out_c += start_row;
+		while (row != last_row) {
 			i32 indices0 = perm_indices[row];
-			*out = in_c[indices0];
+			*out_c = in_c[indices0];
 			++out_c;
 			++row;
 		}
-    info.init += info.inc;
+		nrows += info.inc_n;
+		start_row += info.inc_start;
 	}
 }
 
