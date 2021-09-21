@@ -64,15 +64,15 @@ LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f64>);
 struct PermIterInfo {
 	isize init;
 	isize inc_start;
-	isize inc_n;
+	isize inc_nrows;
 };
 
-inline auto perm_helper(i32 sym, isize n) -> PermIterInfo {
+inline auto perm_helper(i32 sym, isize nrows) -> PermIterInfo {
 	switch (sym) {
 	case -1:
-		return {n, 1, -1};
+		return {nrows, 1, -1};
 	case 0:
-		return {n, 0, 0};
+		return {nrows, 0, 0};
 	case 1:
 		return {1, 0, 1};
 	default:
@@ -87,20 +87,21 @@ struct apply_perm_rows {
 	   isize out_stride,
 	   T* in,
 	   isize in_stride,
-	   isize n,
+	   isize ncols,
+	   isize nrows,
 	   i32 const* perm_indices,
 	   i32 sym) noexcept {
 
-		auto info = detail::perm_helper(sym, n);
+		auto info = detail::perm_helper(sym, nrows);
 
 		isize start_row = 0;
-		isize nrows = info.init;
+		isize current_nrows = info.init;
 
-		isize const bytes_per_col = n * isize(sizeof(T));
+		isize const bytes_per_col = nrows * isize(sizeof(T));
 		isize const n_prefetch =
 				(bytes_per_col < 4096) ? 0 : (bytes_per_col / 64 * 64);
 
-		for (isize col = 0; col < n; ++col) {
+		for (isize col = 0; col < ncols; ++col) {
 			T* in_c = in + (in_stride * col);
 			T* out_c = out + (out_stride * col);
 
@@ -111,10 +112,10 @@ struct apply_perm_rows {
 				}
 			}
 
-			for (isize row = start_row; row < start_row + nrows; ++row) {
+			for (isize row = start_row; row < start_row + current_nrows; ++row) {
 				out_c[row] = static_cast<T&&>(in_c[perm_indices[row]]);
 			}
-			nrows += info.inc_n;
+			current_nrows += info.inc_nrows;
 			start_row += info.inc_start;
 		}
 	}
@@ -142,6 +143,7 @@ void apply_permutation_sym_work(
 			mat.outer_stride,
 			work.data,
 			work.outer_stride,
+			n,
 			n,
 			perm_indices,
 			sym);
@@ -254,7 +256,7 @@ struct FactorizeStartegyDispatch<factorization_strategy::Standard> {
 	   MatrixView<T, L> in_matrix,
 	   factorization_strategy::Standard /*tag*/) {
 		isize dim = out.l.rows;
-		bool inplace = out.l.data == in_matrix.data;
+		bool inplace = (out.l.data == in_matrix.data) && (L == colmajor);
 		if (!inplace) {
 			out.l.to_eigen().template triangularView<Eigen::Lower>() =
 					in_matrix.to_eigen();
@@ -273,7 +275,7 @@ struct FactorizeStartegyDispatch<factorization_strategy::Blocked> {
 	   MatrixView<T, L> in_matrix,
 	   factorization_strategy::Blocked tag) {
 		isize dim = out.l.rows;
-		bool inplace = out.l.data == in_matrix.data;
+		bool inplace = (out.l.data == in_matrix.data) && (L == colmajor);
 		if (!inplace) {
 			out.l.to_eigen().template triangularView<Eigen::Lower>() =
 					in_matrix.to_eigen();

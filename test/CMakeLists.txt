@@ -37,6 +37,10 @@ add_executable(.test.solve src/solve.cpp)
 doctest_discover_tests(.test.solve)
 target_link_libraries(.test.solve ${LDLT_TEST_LIBS})
 
+add_executable(.test.permute.solve src/permutation_solve.cpp)
+doctest_discover_tests(.test.permute.solve)
+target_link_libraries(.test.permute.solve ${LDLT_TEST_LIBS})
+
 add_executable(.test.update.roundtrip src/update_roundtrip.cpp)
 doctest_discover_tests(.test.update.roundtrip)
 target_link_libraries(.test.update.roundtrip ${LDLT_TEST_LIBS})
@@ -89,6 +93,7 @@ add_custom_target(
   COMMAND ${CMAKE_CTEST_COMMAND} --verbose
   DEPENDS .test.permute.compute
           .test.permute.apply
+          .test.permute.solve
           .test.factorize.roundtrip
           .test.solve
           .test.update.roundtrip
