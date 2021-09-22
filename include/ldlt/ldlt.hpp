@@ -82,7 +82,7 @@ public:
 	}
 
 	auto p() -> Perm { return Perm(VecMapI32(perm.get(), _l.rows())); }
-	auto p_inv() -> Perm { return Perm(VecMapI32(perm_inv.get(), _l.rows())); }
+	auto pt() -> Perm { return Perm(VecMapI32(perm_inv.get(), _l.rows())); }
 
 	auto l() const noexcept -> LView {
 		return Eigen::Map< //

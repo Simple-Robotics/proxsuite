@@ -19,6 +19,6 @@ DOCTEST_TEST_CASE("permute apply") {
 	auto lt = ldl.lt();
 	auto d = ldl.d().asDiagonal();
 	auto p = ldl.p();
-	auto pt = ldl.p_inv();
+	auto pt = ldl.pt();
 	DOCTEST_CHECK((pt * Mat(l) * d * Mat(lt) * p - in).norm() <= 1e3);
 }
