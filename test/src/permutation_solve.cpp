@@ -38,13 +38,13 @@ DOCTEST_TEST_CASE("permute apply") {
 			auto x = rhs;
 			work_rhs.to_eigen() = x;
 			ldlt::detail::apply_perm_rows<T>::fn(
-					x.data(), 0, work_rhs.data, 0, 1, n, perm.data(), 0);
+					x.data(), 0, work_rhs.data, 0, n, 1, perm.data(), 0);
 
 			ldlt::solve({from_eigen, x}, ldl.as_const(), {from_eigen, x});
 
 			work_rhs.to_eigen() = x;
 			ldlt::detail::apply_perm_rows<T>::fn(
-					x.data(), 0, work_rhs.data, 0, 1, n, perm_inv.data(), 0);
+					x.data(), 0, work_rhs.data, 0, n, 1, perm_inv.data(), 0);
 
 			DOCTEST_CHECK(
 					(in * x - rhs).norm() <= T(1e3) * std::numeric_limits<T>::epsilon());

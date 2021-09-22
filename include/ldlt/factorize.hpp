@@ -87,8 +87,8 @@ struct apply_perm_rows {
 	   isize out_stride,
 	   T* in,
 	   isize in_stride,
-	   isize ncols,
 	   isize nrows,
+	   isize ncols,
 	   i32 const* perm_indices,
 	   i32 sym) noexcept {
 

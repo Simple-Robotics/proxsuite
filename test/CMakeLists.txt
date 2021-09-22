@@ -57,6 +57,10 @@ add_executable(.test.row_append src/row_append.cpp)
 doctest_discover_tests(.test.row_append)
 target_link_libraries(.test.row_append ${LDLT_TEST_LIBS})
 
+add_executable(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
+doctest_discover_tests(.test.ldlt_wrapper.solve)
+target_link_libraries(.test.ldlt_wrapper.solve ${LDLT_TEST_LIBS})
+
 add_executable(.test.precond.ruiz src/precond_ruiz.cpp)
 doctest_discover_tests(.test.precond.ruiz)
 target_link_libraries(.test.precond.ruiz ${LDLT_TEST_LIBS})
