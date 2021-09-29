@@ -31,6 +31,17 @@ struct QpView {
 	MatrixView<T, colmajor> C;
 	VectorView<T> d;
 };
+template <typename Scalar>
+struct QpViewBox {
+	MatrixView<Scalar, colmajor> H;
+	VectorView<Scalar> g;
+
+	MatrixView<Scalar, colmajor> A;
+	VectorView<Scalar> b;
+	MatrixView<Scalar, colmajor> C;
+	VectorView<Scalar> u;
+	VectorView<Scalar> l;
+};
 
 template <typename T>
 struct QpViewMut {
@@ -50,6 +61,31 @@ struct QpViewMut {
 				b.as_const(),
 				C.as_const(),
 				d.as_const(),
+		};
+	}
+};
+
+template <typename Scalar>
+struct QpViewBoxMut {
+	MatrixViewMut<Scalar, colmajor> H;
+	VectorViewMut<Scalar> g;
+
+	MatrixViewMut<Scalar, colmajor> A;
+	VectorViewMut<Scalar> b;
+	MatrixViewMut<Scalar, colmajor> C;
+	VectorViewMut<Scalar> u;
+	VectorViewMut<Scalar> l;
+
+	LDLT_INLINE constexpr auto as_const() const noexcept
+			-> QpViewBox<Scalar> {
+		return {
+				H.as_const(),
+				g.as_const(),
+				A.as_const(),
+				b.as_const(),
+				C.as_const(),
+				u.as_const(),
+				l.as_const(),
 		};
 	}
 };
