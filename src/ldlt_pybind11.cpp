@@ -67,7 +67,7 @@ template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
 template <typename T, Layout L>
-T initial_guess_line_search_box( //
+auto initial_guess_line_search_box( //
 		VecRef<T> x,
 		VecRef<T> ye,
 		VecRef<T> ze,
@@ -81,7 +81,7 @@ T initial_guess_line_search_box( //
 		VecRef<T> b,
 		MatRef<T, L> C,
 		VecRef<T> u,
-		VecRef<T> l) {
+		VecRef<T> l) -> T {
 	return line_search::initial_guess_line_search_box(
 			{from_eigen, x},
 			{from_eigen, ye},
@@ -102,7 +102,7 @@ T initial_guess_line_search_box( //
 }
 
 template <typename T, Layout L>
-T correction_guess_line_search_box( //
+auto correction_guess_line_search_box( //
 		VecRef<T> x,
 		VecRef<T> xe,
 		VecRef<T> ye,
@@ -117,7 +117,7 @@ T correction_guess_line_search_box( //
 		VecRef<T> b,
 		MatRef<T, L> C,
 		VecRef<T> u,
-		VecRef<T> l) {
+		VecRef<T> l) -> T {
 	return line_search::correction_guess_line_search_box(
 			{from_eigen, x},
 			{from_eigen, xe},
@@ -138,27 +138,16 @@ T correction_guess_line_search_box( //
 			});
 }
 
-Eigen::Matrix<i32, Eigen::Dynamic, 1>
-active_set_change( //
-                   // VecRef<bool> new_active_set, does not work
+auto active_set_change( //
+                        // VecRef<bool> new_active_set, does not work
 		Eigen::Matrix<bool, Eigen::Dynamic, 1>& new_active_set,
 		// VecRefMut<i32> current_bijection_map,
-		Eigen::Matrix<i32, Eigen::Dynamic, 1>& current_bijection_map,
-		i32& n_c,
-		i32& n,
-		i32& n_eq,
-		i32& n_in) {
+		Eigen::Matrix<isize, Eigen::Dynamic, 1>& current_bijection_map,
+		isize n_c,
+		isize n_in) -> Eigen::Matrix<i32, Eigen::Dynamic, 1> {
 	return line_search::active_set_change(
-			// ldlt::detail::nb::from_eigen_vector(new_active_set), // does not work
-			new_active_set,
-			current_bijection_map,
-			// detail::from_eigen_vector_mut(current_bijection_map), // does not work
-			n_c,
-			n,
-			n_eq,
-			n_in);
+			new_active_set, current_bijection_map, n_c, n_in);
 }
-
 } // namespace pybind11
 } // namespace qp
 
