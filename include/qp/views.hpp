@@ -76,8 +76,7 @@ struct QpViewBoxMut {
 	VectorViewMut<Scalar> u;
 	VectorViewMut<Scalar> l;
 
-	LDLT_INLINE constexpr auto as_const() const noexcept
-			-> QpViewBox<Scalar> {
+	LDLT_INLINE constexpr auto as_const() const noexcept -> QpViewBox<Scalar> {
 		return {
 				H.as_const(),
 				g.as_const(),
