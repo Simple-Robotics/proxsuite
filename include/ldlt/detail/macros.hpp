@@ -498,8 +498,9 @@
 #define LDLT_IMPL_SIZE_Mat(Rows, Cols)                                         \
 	(::ldlt::usize(Rows) * ::ldlt::usize(Cols))
 
-#define LDLT_WORKSPACE_MEMORY(Name, Dim, Type)                                 \
-	LDLT_IMPL_WORKSPACE_MEMORY(Name, LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim), Type);  \
+#define LDLT_TAG_WORKSPACE_MEMORY(Tag, Name, Dim, Type)                        \
+	LDLT_IMPL_WORKSPACE_MEMORY(                                                  \
+			Tag, Name, LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim), Type);                    \
 	LDLT_PP_CAT2(LDLT_IMPL_DISPATCH_, Dim)                                       \
 	(Name,                                                                       \
 	 LDLT_PP_CAT2(LDLT_IMPL_REMOVE_PREFIX_, Dim),                                \
@@ -507,31 +508,39 @@
 	 Type);                                                                      \
 	static_assert(true, ".")
 
+#define LDLT_WORKSPACE_MEMORY(Name, Dim, Type)                                 \
+	LDLT_TAG_WORKSPACE_MEMORY(Init, Name, Dim, Type)
+
+#define LDLT_WORKSPACE_MEMORY_UNINIT(Name, Dim, Type)                          \
+	LDLT_TAG_WORKSPACE_MEMORY(Uninit, Name, Dim, Type)
+
 #if LDLT_HAS_ALLOCA
 
-#define LDLT_IMPL_WORKSPACE_MEMORY(Name, Size, Type)                           \
+#define LDLT_IMPL_WORKSPACE_MEMORY(Tag, Name, Size, Type)                      \
 	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
 			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
 			_ldlt_malloca_handler, __LINE__) {                                       \
-		::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                      \
-				? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                    \
-				: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                   \
+		::ldlt::detail::malloca_tags::Tag{},                                         \
+				::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                  \
+						? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                \
+						: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),               \
 				Size,                                                                  \
 	}
 
 #else
 
-#define LDLT_IMPL_WORKSPACE_MEMORY(Name, Size, Type)                           \
+#define LDLT_IMPL_WORKSPACE_MEMORY(Tag, Name, Size, Type)                      \
 	alignas(::ldlt::detail::UniqueMalloca<Type>::align) unsigned char            \
 			LDLT_PP_CAT(_ldlt_buf, __LINE__)[LDLT_MAX_STACK_ALLOC_SIZE];             \
 	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
 			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
 	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
 			_ldlt_malloca_handler, __LINE__) {                                       \
-		::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                      \
-				? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))                 \
-				: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),                   \
+		::ldlt::detail::malloca_tags::Tag,                                         \
+				::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                  \
+						? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))             \
+						: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),               \
 				Size,                                                                  \
 	}
 
@@ -558,15 +567,21 @@
 #define LDLT_IMPL_DECL_MEMORY(Type, Name_Dim)                                  \
 	LDLT_IMPL_DECL_MEMORY2(Type, LDLT_PP_HEAD Name_Dim, LDLT_PP_TAIL Name_Dim)
 
-#define LDLT_MULTI_WORKSPACE_MEMORY(Names_Dims, Type)                          \
+#define LDLT_TAG_MULTI_WORKSPACE_MEMORY(Tag, Names_Dims, Type)                 \
 	::ldlt::isize LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__) =                     \
 			LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_PLUS, Type, Names_Dims);                \
-	LDLT_WORKSPACE_MEMORY(                                                       \
+	LDLT_TAG_WORKSPACE_MEMORY(                                                   \
+			Tag,                                                                     \
 			LDLT_PP_CAT2(_ldlt_workspace, __LINE__),                                 \
 			Vec(LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__)),                           \
 			Type);                                                                   \
 	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_DECL_MEMORY, Type, Names_Dims)              \
 	static_assert(true, ".")
+
+#define LDLT_MULTI_WORKSPACE_MEMORY(Names_Dims, Type)                          \
+	LDLT_TAG_MULTI_WORKSPACE_MEMORY(Init, Names_Dims, Type)
+#define LDLT_MULTI_WORKSPACE_MEMORY_UNINIT(Names_Dims, Type)                          \
+	LDLT_TAG_MULTI_WORKSPACE_MEMORY(Uninit, Names_Dims, Type)
 
 #if __cplusplus >= 201703L
 #define LDLT_IF_CONSTEXPR if constexpr

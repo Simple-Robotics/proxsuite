@@ -102,8 +102,15 @@ struct SimdCachelineAlignStep {
 			isize(max2(usize(1), align_simd_and_cacheline / alignof(T)));
 };
 
+namespace malloca_tags {
+struct Impl {};
+struct Init {};
+struct Uninit {};
+} // namespace malloca_tags
+
 template <typename T>
 struct UniqueMalloca {
+
 	void* malloca_ptr;
 	T* data;
 	usize n;
@@ -117,11 +124,21 @@ struct UniqueMalloca {
 		return count < max_stack_count;
 	}
 
-	LDLT_INLINE UniqueMalloca(void* ptr, usize count)
+	LDLT_INLINE UniqueMalloca(malloca_tags::Impl /*tag*/, void* ptr, usize count)
 			: malloca_ptr(ptr),
 				data(static_cast<T*>(detail::next_aligned(ptr, align))),
-				n(count) {
+				n(count) {}
+
+	LDLT_INLINE // NOLINT
+	UniqueMalloca(malloca_tags::Uninit /*tag*/, void* ptr, usize count)
+			: UniqueMalloca(malloca_tags::Impl{}, ptr, count) {
 		new (data) T[n];
+	}
+
+	LDLT_INLINE // NOLINT
+	UniqueMalloca(malloca_tags::Init /*tag*/, void* ptr, usize count)
+			: UniqueMalloca(malloca_tags::Impl{}, ptr, count) {
+		new (data) T[n]{};
 	}
 
 	UniqueMalloca(UniqueMalloca const&) = delete;
