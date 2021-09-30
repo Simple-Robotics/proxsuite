@@ -138,15 +138,16 @@ auto correction_guess_line_search_box( //
 			});
 }
 
-auto active_set_change( //
-                        // VecRef<bool> new_active_set, does not work
-		Eigen::Matrix<bool, Eigen::Dynamic, 1>& new_active_set,
-		// VecRefMut<i32> current_bijection_map,
-		Eigen::Matrix<isize, Eigen::Dynamic, 1>& current_bijection_map,
+void active_set_change(
+		VecRef<bool> const& new_active_set,
+		VecRefMut<isize> current_bijection_map,
 		isize n_c,
-		isize n_in) -> Eigen::Matrix<i32, Eigen::Dynamic, 1> {
+		isize n_in) {
 	return line_search::active_set_change(
-			new_active_set, current_bijection_map, n_c, n_in);
+			{from_eigen, new_active_set},
+			{from_eigen, current_bijection_map},
+			n_c,
+			n_in);
 }
 } // namespace pybind11
 } // namespace qp
@@ -164,7 +165,6 @@ INRIA LDLT decomposition
   )pbdoc";
 	using namespace ldlt;
 	using namespace qp;
-	constexpr auto r = rowmajor;
 	constexpr auto c = colmajor;
 
 	m.def(

@@ -13,6 +13,9 @@
 #include <list>
 
 namespace qp {
+inline namespace tags {
+using namespace ldlt::tags;
+}
 namespace line_search {
 
 template <typename Scalar>
@@ -33,13 +36,13 @@ auto gradient_norm_computation_box(
 		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& dz,
 		Scalar mu_in,
 		MatrixView<Scalar, LC> C,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Cdx,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_u,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_l,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& d_dual_for_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& dual_for_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& d_primal_residual_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& primal_residual_eq,
+		VectorView<Scalar> Cdx_,
+		VectorView<Scalar> residual_in_z_u_,
+		VectorView<Scalar> residual_in_z_l_,
+		VectorView<Scalar> d_dual_for_eq_,
+		VectorView<Scalar> dual_for_eq_,
+		VectorView<Scalar> d_primal_residual_eq_,
+		VectorView<Scalar> primal_residual_eq_,
 		Scalar alpha,
 		isize dim,
 		isize n_eq,
@@ -80,6 +83,14 @@ auto gradient_norm_computation_box(
 
 	auto C_copy = C.to_eigen();
 	auto z_e = ze.to_eigen();
+
+	auto Cdx = Cdx_.to_eigen();
+	auto residual_in_z_u = residual_in_z_u_.to_eigen();
+	auto residual_in_z_l = residual_in_z_l_.to_eigen();
+	auto d_dual_for_eq = d_dual_for_eq_.to_eigen();
+	auto dual_for_eq = dual_for_eq_.to_eigen();
+	auto d_primal_residual_eq = d_primal_residual_eq_.to_eigen();
+	auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
 	// define active set
 	auto tmp_u = residual_in_z_u + alpha * Cdx;
@@ -195,13 +206,13 @@ auto gradient_norm_qpalm_box(
 		Scalar mu_in,
 		Scalar rho,
 		Scalar alpha,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Hdx,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& g,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Adx,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_y,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_u,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_l,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Cdx,
+		VectorView<Scalar> Hdx_,
+		VectorView<Scalar> g_,
+		VectorView<Scalar> Adx_,
+		VectorView<Scalar> residual_in_y_,
+		VectorView<Scalar> residual_in_z_u_,
+		VectorView<Scalar> residual_in_z_l_,
+		VectorView<Scalar> Cdx_,
 		isize n_in) -> Scalar {
 
 	/*
@@ -222,6 +233,14 @@ auto gradient_norm_qpalm_box(
 	auto x_ = x.to_eigen();
 	auto xe_ = xe.to_eigen();
 	auto dx_ = dx.to_eigen();
+
+	auto Cdx = Cdx_.to_eigen();
+	auto Hdx = Hdx_.to_eigen();
+	auto Adx = Adx_.to_eigen();
+	auto g = g_.to_eigen();
+	auto residual_in_y = residual_in_y_.to_eigen();
+	auto residual_in_z_u = residual_in_z_u_.to_eigen();
+	auto residual_in_z_l = residual_in_z_l_.to_eigen();
 
 	// define active set
 	auto tmp_u = residual_in_z_u + Cdx * alpha;
@@ -300,16 +319,16 @@ auto gradient_norm_qpalm_box(
 template <typename Scalar, Layout LC>
 auto local_saddle_point_box(
 		VectorView<Scalar> ze,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& dz_,
+		VectorView<Scalar> dz_,
 		Scalar mu_in,
 		MatrixView<Scalar, LC> C,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Cdx,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_u,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& residual_in_z_l,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1> d_dual_for_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_for_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& d_primal_residual_eq,
-		Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& primal_residual_eq,
+		VectorView<Scalar> Cdx_,
+		VectorView<Scalar> residual_in_z_u_,
+		VectorView<Scalar> residual_in_z_l_,
+		VectorView<Scalar> d_dual_for_eq_,
+		VectorView<Scalar> dual_for_eq_,
+		VectorView<Scalar> d_primal_residual_eq_,
+		VectorView<Scalar> primal_residual_eq_,
 		Scalar alpha,
 		isize n_in) -> Scalar {
 	/*
@@ -354,10 +373,20 @@ auto local_saddle_point_box(
 	 * argmin value found
 	 */
 
-	auto tmp_u = residual_in_z_u + alpha * Cdx;
-	auto tmp_l = residual_in_z_l + alpha * Cdx;
 	auto C_copy = C.to_eigen();
 	auto z_e = ze.to_eigen();
+	auto dz = dz_.to_eigen();
+
+	auto Cdx = Cdx_.to_eigen();
+	auto residual_in_z_u = residual_in_z_u_.to_eigen();
+	auto residual_in_z_l = residual_in_z_l_.to_eigen();
+	auto d_dual_for_eq = d_dual_for_eq_.to_eigen().eval();
+	auto dual_for_eq = dual_for_eq_.to_eigen().eval();
+	auto d_primal_residual_eq = d_primal_residual_eq_.to_eigen();
+	auto primal_residual_eq = primal_residual_eq_.to_eigen();
+
+	auto tmp_u = residual_in_z_u + alpha * Cdx;
+	auto tmp_l = residual_in_z_l + alpha * Cdx;
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
@@ -406,17 +435,17 @@ auto local_saddle_point_box(
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> z_p(n_in);
 	z_p = z_e;
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dz_p(n_in);
-	dz_p = dz_;
+	dz_p = dz;
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		Scalar test = z_e(active_set_u(k)) + alpha * dz_(active_set_u(k));
+		Scalar test = z_e(active_set_u(k)) + alpha * dz(active_set_u(k));
 		if (test < 0) {
 			z_p(active_set_u(k)) = 0;
 			dz_p(active_set_u(k)) = 0;
 		}
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		Scalar test2 = z_e(active_set_l(k)) + alpha * dz_(active_set_l(k));
+		Scalar test2 = z_e(active_set_l(k)) + alpha * dz(active_set_l(k));
 		if (test2 > 0) {
 			z_p(active_set_l(k)) = 0;
 			dz_p(active_set_l(k)) = 0;
@@ -656,7 +685,7 @@ auto initial_guess_line_search_box(
 
 		for (auto a : alphas) {
 
-			if (std::abs(a) < 1.E6) {
+			if (std::abs(a) < Scalar(1.e6)) {
 
 				// calcul de la norm du gradient du noeud
 				Scalar grad_norm = line_search::gradient_norm_computation_box(
@@ -664,13 +693,13 @@ auto initial_guess_line_search_box(
 						dz_,
 						mu_in,
 						qp.C,
-						Cdx,
-						residual_in_z_u,
-						residual_in_z_l,
-						d_dual_for_eq,
-						dual_for_eq,
-						d_primal_residual_eq,
-						primal_residual_eq,
+						{from_eigen, Cdx},
+						{from_eigen, residual_in_z_u},
+						{from_eigen, residual_in_z_l},
+						{from_eigen, d_dual_for_eq},
+						{from_eigen, dual_for_eq},
+						{from_eigen, d_primal_residual_eq},
+						{from_eigen, primal_residual_eq},
 						a,
 						dim,
 						n_eq,
@@ -692,7 +721,7 @@ auto initial_guess_line_search_box(
 		interval.push_back((alphas.back() + Scalar(1)));
 
 		std::vector<Scalar> intervals{std::begin(interval), std::end(interval)};
-		isize n_ = intervals.size();
+		isize n_ = isize(intervals.size());
 
 		for (isize i = 0; i < n_ - 1; ++i) {
 
@@ -701,7 +730,7 @@ auto initial_guess_line_search_box(
 			// active_inequalities_l cap ze and dz is derived through function
 			// local_saddle_point_box
 
-			Scalar a_ = (intervals[i] + intervals[i + 1]) / Scalar(2.0);
+			Scalar a_ = (intervals[usize(i)] + intervals[usize(i + 1)]) / Scalar(2.0);
 
 			// 3.3 on this interval the merit function is a second order
 			// polynomial in alpha
@@ -709,16 +738,16 @@ auto initial_guess_line_search_box(
 			// and corresponding merit function L2 norm (for this minimum)
 			Scalar associated_grad_2_norm = line_search::local_saddle_point_box(
 					ze,
-					dz_,
+					{from_eigen, dz_},
 					mu_in,
 					qp.C,
-					Cdx,
-					residual_in_z_u,
-					residual_in_z_l,
-					d_dual_for_eq,
-					dual_for_eq,
-					d_primal_residual_eq,
-					primal_residual_eq,
+					{from_eigen, Cdx},
+					{from_eigen, residual_in_z_u},
+					{from_eigen, residual_in_z_l},
+					{from_eigen, d_dual_for_eq},
+					{from_eigen, dual_for_eq},
+					{from_eigen, d_primal_residual_eq},
+					{from_eigen, primal_residual_eq},
 					a_,
 					n_in);
 
@@ -731,12 +760,12 @@ auto initial_guess_line_search_box(
 					liste_argmin.push_back(a_);
 				}
 			} else if (i == n_ - 2) {
-				if (a_ >= intervals[n_ - 2]) {
+				if (a_ >= intervals[usize(n_ - 2)]) {
 					liste_norm_grad_interval.push_back(associated_grad_2_norm);
 					liste_argmin.push_back(a_);
 				}
 			} else {
-				if (a_ <= intervals[i + 1] && intervals[i] <= a_) {
+				if (a_ <= intervals[usize(i + 1)] && intervals[usize(i)] <= a_) {
 					liste_norm_grad_interval.push_back(associated_grad_2_norm);
 					liste_argmin.push_back(a_);
 				}
@@ -761,7 +790,7 @@ auto initial_guess_line_search_box(
 							vec_norm_grad_interval.begin(), vec_norm_grad_interval.end()) -
 					vec_norm_grad_interval.begin();
 
-			alpha = vec_argmin[index];
+			alpha = vec_argmin[usize(index)];
 		} else if (liste_norm_grad_noeud.empty() == false) {
 
 			std::vector<Scalar> vec_alphas{std::begin(alphas), std::end(alphas)};
@@ -771,7 +800,7 @@ auto initial_guess_line_search_box(
 			auto index = std::min_element(
 											 vec_norm_grad_noeud.begin(), vec_norm_grad_noeud.end()) -
 			             vec_norm_grad_noeud.begin();
-			alpha = vec_alphas[index];
+			alpha = vec_alphas[usize(index)];
 		}
 	}
 
@@ -836,7 +865,6 @@ auto correction_guess_line_search_box(
 	 */
 
 	Scalar machine_eps = std::numeric_limits<Scalar>::epsilon();
-	Scalar machine_inf = std::numeric_limits<Scalar>::infinity();
 
 	isize n_in = qp.C.rows;
 
@@ -899,7 +927,7 @@ auto correction_guess_line_search_box(
 		for (auto a : alphas) {
 
 			if (a > 0) {
-				if (a < 1.e7) {
+				if (a < Scalar(1.e7)) {
 
 					/*
 					 * 2.1
@@ -926,13 +954,13 @@ auto correction_guess_line_search_box(
 							mu_in,
 							rho,
 							a,
-							Hdx,
-							g,
-							Adx,
-							residual_in_y,
-							residual_in_z_u,
-							residual_in_z_l,
-							Cdx,
+							{from_eigen, Hdx},
+							{from_eigen, g},
+							{from_eigen, Adx},
+							{from_eigen, residual_in_y},
+							{from_eigen, residual_in_z_u},
+							{from_eigen, residual_in_z_l},
+							{from_eigen, Cdx},
 							n_in);
 
 					if (gr < 0) {
@@ -964,13 +992,13 @@ auto correction_guess_line_search_box(
 					mu_in,
 					rho,
 					alpha_last_neg,
-					Hdx,
-					g,
-					Adx,
-					residual_in_y,
-					residual_in_z_u,
-					residual_in_z_l,
-					Cdx,
+					{from_eigen, Hdx},
+					{from_eigen, g},
+					{from_eigen, Adx},
+					{from_eigen, residual_in_y},
+					{from_eigen, residual_in_z_u},
+					{from_eigen, residual_in_z_l},
+					{from_eigen, Cdx},
 					n_in);
 			last_neg_grad = gr;
 		}
@@ -988,11 +1016,11 @@ auto correction_guess_line_search_box(
 	return alpha;
 }
 
-auto active_set_change(
-		Eigen::Matrix<bool, Eigen::Dynamic, 1>& new_active_set,
-		Eigen::Matrix<isize, Eigen::Dynamic, 1>& current_bijection_map,
+void active_set_change(
+		VectorView<bool> new_active_set_,
+		VectorViewMut<isize> current_bijection_map_,
 		isize n_c,
-		isize n_in) -> Eigen::Matrix<isize, Eigen::Dynamic, 1> {
+		isize n_in) {
 
 	/*
 	 * arguments
@@ -1040,6 +1068,9 @@ auto active_set_change(
 	 * It returns finally the new_bijection_map, for which
 	 * new_bijection_map(n_in) = n_c_f
 	 */
+	auto current_bijection_map = current_bijection_map_.as_const().to_eigen();
+	auto new_active_set = new_active_set_.to_eigen();
+
 	isize n_c_f = n_c;
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in + 1);
 	new_bijection_map.array().topRows(n_in) = current_bijection_map;
@@ -1079,7 +1110,7 @@ auto active_set_change(
 	}
 
 	new_bijection_map(n_in) = n_c_f;
-	return new_bijection_map;
+	current_bijection_map_.to_eigen() = new_bijection_map;
 }
 } // namespace line_search
 } // namespace qp

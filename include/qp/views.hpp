@@ -12,6 +12,7 @@ using ldlt::Layout;
 using ldlt::i32;
 using ldlt::i64;
 using ldlt::isize;
+using ldlt::usize;
 using ldlt::MatrixViewMut;
 using ldlt::MatrixView;
 using ldlt::VectorViewMut;
