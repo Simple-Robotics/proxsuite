@@ -8,6 +8,7 @@
 #include <Eigen/Core>
 #include <cstdint>
 #include <new>
+#include <initializer_list>
 
 namespace ldlt {
 namespace detail {
@@ -55,6 +56,20 @@ LDLT_DEFINE_NIEBLOID(defer);
 LDLT_DEFINE_NIEBLOID(max2);
 LDLT_DEFINE_NIEBLOID(min2);
 
+template <typename T>
+LDLT_INLINE constexpr auto min_list_impl(T init, T const* arr, usize n) -> T {
+	return (n == 0) ? init
+	                : min2(init, detail::min_list_impl(*arr, arr + 1, n - 1));
+}
+
+template <typename T>
+LDLT_INLINE constexpr auto min_list(std::initializer_list<T> list) -> T {
+	return detail::min_list_impl( //
+			*(list.begin()),
+			list.begin() + 1,
+			list.size() - 1);
+}
+
 template <typename T, bool = std::is_floating_point<T>::value>
 struct SetZeroImpl {
 	static void fn(T* dest, usize n) {
@@ -78,6 +93,9 @@ void set_zero(T* dest, usize n) {
 }
 
 constexpr auto round_up(isize n, isize k) noexcept -> isize {
+	return (n + k - 1) / k * k;
+}
+constexpr auto uround_up(usize n, usize k) noexcept -> usize {
 	return (n + k - 1) / k * k;
 }
 
@@ -107,6 +125,86 @@ struct Impl {};
 struct Init {};
 struct Uninit {};
 } // namespace malloca_tags
+
+template <typename T>
+struct ManagedArrayBase {
+	struct Inner {
+		T* data;
+		usize n;
+	} _;
+
+	LDLT_INLINE
+	ManagedArrayBase(malloca_tags::Uninit /*tag*/, Inner inner) : _{inner} {
+		_.data = ::new (static_cast<void*>(_.data)) T[_.n];
+	}
+	LDLT_INLINE
+	ManagedArrayBase(malloca_tags::Init /*tag*/, Inner inner) : _{inner} {
+		_.data = ::new (static_cast<void*>(_.data)) T[_.n]{};
+	}
+
+	~ManagedArrayBase() = default;
+	ManagedArrayBase(ManagedArrayBase const&) = delete;
+	ManagedArrayBase(ManagedArrayBase&&) = delete;
+	auto operator=(ManagedArrayBase const&) -> ManagedArrayBase& = delete;
+	auto operator=(ManagedArrayBase&&) -> ManagedArrayBase& = delete;
+};
+
+template <typename T, bool = std::is_trivially_destructible<T>::value>
+struct ManagedArray : ManagedArrayBase<T> {
+	using ManagedArrayBase<T>::ManagedArrayBase;
+};
+
+template <typename T>
+struct ManagedArray<T, false> : ManagedArrayBase<T> {
+	using ManagedArrayBase<T>::ManagedArrayBase;
+
+	~ManagedArray() {
+		T* data = ManagedArrayBase<T>::_.data;
+		usize n = ManagedArrayBase<T>::_.n;
+
+		if (data == nullptr) {
+			return;
+		}
+
+		usize i = n;
+		while (true) {
+			--i;
+			data[i].~T();
+			if (i == 0) {
+				break;
+			}
+		}
+	}
+
+	ManagedArray(ManagedArray const&) = delete;
+	ManagedArray(ManagedArray&&) = delete;
+	auto operator=(ManagedArray const&) -> ManagedArray& = delete;
+	auto operator=(ManagedArray&&) -> ManagedArray& = delete;
+};
+
+struct ManagedMalloca {
+	struct Inner {
+		void* malloca_ptr;
+		usize nbytes;
+	} _;
+
+	~ManagedMalloca() {
+		if (_.nbytes < usize{LDLT_MAX_STACK_ALLOC_SIZE}) {
+#if LDLT_HAS_ALLOCA
+			LDLT_FREEA(_.malloca_ptr);
+#endif
+		} else {
+			std::free(_.malloca_ptr);
+		}
+	}
+	ManagedMalloca(malloca_tags::Uninit /*tag*/, Inner inner) noexcept
+			: _{inner} {}
+
+	ManagedMalloca(ManagedMalloca const&) = delete;
+	ManagedMalloca(ManagedMalloca&&) = delete;
+	auto operator=(ManagedMalloca const&) -> ManagedMalloca& = delete;
+	auto operator=(ManagedMalloca&&) -> ManagedMalloca& = delete;
+};
 
 template <typename T>
 struct UniqueMalloca {

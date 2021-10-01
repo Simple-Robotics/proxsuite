@@ -63,10 +63,9 @@ auto ruiz_scale_qp_in_place( //
 	S.setConstant(T(1));
 	T gamma = T(1);
 
-	LDLT_WORKSPACE_MEMORY(_delta, Vec(n + n_eq + n_in), T);
+	LDLT_WORKSPACE_MEMORY(
+			_delta, Init, Vec(n + n_eq + n_in), LDLT_CACHELINE_BYTES, T);
 	auto delta = _delta.to_eigen();
-
-	delta.setZero();
 
 	i64 iter = 1;
 	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {

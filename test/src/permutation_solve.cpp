@@ -21,7 +21,7 @@ DOCTEST_TEST_CASE("permute apply") {
 		auto l = in;
 		auto d = Vec<T>(n);
 		{
-			LDLT_WORKSPACE_MEMORY(work, Mat(n, n), T);
+			LDLT_WORKSPACE_MEMORY(work, Uninit, Mat(n, n), LDLT_CACHELINE_BYTES, T);
 			ldlt::detail::apply_permutation_sym_work<T>( //
 					{from_eigen, l},
 					perm.data(),
@@ -34,7 +34,7 @@ DOCTEST_TEST_CASE("permute apply") {
 		};
 		ldlt::factorize(ldl, ldl.l.as_const());
 		{
-			LDLT_WORKSPACE_MEMORY(work_rhs, Vec(n), T);
+			LDLT_WORKSPACE_MEMORY(work_rhs, Uninit, Vec(n), LDLT_CACHELINE_BYTES, T);
 			auto x = rhs;
 			work_rhs.to_eigen() = x;
 			ldlt::detail::apply_perm_rows<T>::fn(

@@ -17,7 +17,7 @@ DOCTEST_TEST_CASE("permute apply") {
 
 	i32 syms[] = {0, -1, 1};
 
-	LDLT_WORKSPACE_MEMORY(work, Mat(n, n), T);
+	LDLT_WORKSPACE_MEMORY(work, Uninit, Mat(n, n), LDLT_CACHELINE_BYTES, T);
 	for (auto sym : syms) {
 		auto out = in;
 

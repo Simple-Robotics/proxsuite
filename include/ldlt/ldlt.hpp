@@ -142,7 +142,7 @@ public:
 
 	void factorize(Eigen::Ref<ColMat const> mat) {
 		isize n = mat.rows();
-		LDLT_WORKSPACE_MEMORY(work, Mat(n, n), T);
+		LDLT_WORKSPACE_MEMORY(work, Uninit, Mat(n, n), LDLT_CACHELINE_BYTES, T);
 		factorize_work(mat, work.to_eigen());
 	}
 
@@ -163,7 +163,7 @@ public:
 
 	void solve_in_place(Eigen::Ref<Vec> rhs) const {
 		isize n = _l.rows();
-		LDLT_WORKSPACE_MEMORY(work, Vec(n), T);
+		LDLT_WORKSPACE_MEMORY(work, Uninit, Vec(n), LDLT_CACHELINE_BYTES, T);
 		solve_in_place_work(rhs, work.to_eigen());
 	}
 };

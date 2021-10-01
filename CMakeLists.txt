@@ -77,6 +77,7 @@ endif()
 if(ENABLE_TESTING)
 
   target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
+  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
   set(CONAN_REQUIRES
       # MIT License
       fmt/8.0.0

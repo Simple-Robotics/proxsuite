@@ -93,10 +93,7 @@ void bench_permute____(benchmark::State& s) {
 
 	detail::compute_permutation<T>(
 			perm.data(), perm_inv.data(), {from_eigen, a.diagonal()});
-	LDLT_WORKSPACE_MEMORY(work, Mat(dim, dim), T);
-	for (isize i = 0; i < dim; ++i) {
-		detail::set_zero(work.col(i).data, usize(dim));
-	}
+	LDLT_WORKSPACE_MEMORY(work, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T);
 	for (auto _ : s) {
 		detail::apply_permutation_sym_work<T>(
 				{from_eigen, a}, perm.data(), work, -1);

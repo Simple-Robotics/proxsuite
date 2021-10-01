@@ -3,14 +3,13 @@
 
 #include "ldlt/detail/hedley.h"
 
-#define LDLT_IMPL_PP_CAT(A, ...) A##__VA_ARGS__
+#define LDLT_PP_CALL(M, ...) M(__VA_ARGS__)
+#define LDLT_PP_CALL2(M, ...) M(__VA_ARGS__)
 
+#define LDLT_IMPL_PP_CAT(A, ...) A##__VA_ARGS__
 #define LDLT_IMPL_PP_CAT2(A, ...) A##__VA_ARGS__
 
 #define LDLT_IMPL_PP_CONSUME(X)
-
-#define LDLT_IMPL_PP_SEQ_HEAD_1(X)
-#define LDLT_IMPL_PP_SEQ_HEAD_0(X) X LDLT_IMPL_PP_SEQ_HEAD_1(
 
 #define LDLT_IMPL_PP_HEAD_0(arg, ...) arg
 #define LDLT_IMPL_PP_TAIL_0(arg, ...) __VA_ARGS__
@@ -400,16 +399,22 @@
 	(Macro, Data, Tuple)
 
 #define LDLT_PP_TUPLE_SIZE(Tuple) LDLT_IMPL_PP_VARIADIC_SIZE Tuple
-#define LDLT_PP_SEQ_HEAD(Seq)                                                  \
-	LDLT_IMPL_PP_SEQ_HEAD_0 Seq)
-#define LDLT_PP_SEQ_TAIL(Seq) LDLT_IMPL_PP_CONSUME Seq
 
 #define LDLT_PP_HEAD(...) LDLT_IMPL_PP_HEAD_0(__VA_ARGS__)
 #define LDLT_PP_TAIL(...) LDLT_IMPL_PP_TAIL_0(__VA_ARGS__)
 
+#define LDLT_PP_2ND(...) LDLT_PP_HEAD(LDLT_PP_TAIL(__VA_ARGS__))
+#define LDLT_PP_3RD(...) LDLT_PP_HEAD(LDLT_PP_TAIL(LDLT_PP_TAIL(__VA_ARGS__)))
+#define LDLT_PP_4TH(...)                                                       \
+	LDLT_PP_HEAD(LDLT_PP_TAIL(LDLT_PP_TAIL(LDLT_PP_TAIL(__VA_ARGS__))))
+
 #define LDLT_PP_STRINGIZE(...) LDLT_IMPL_PP_STRINGIZE(__VA_ARGS__)
 #define LDLT_PP_CAT(A, ...) LDLT_IMPL_PP_CAT(A, __VA_ARGS__)
 #define LDLT_PP_CAT2(A, ...) LDLT_IMPL_PP_CAT2(A, __VA_ARGS__)
+
+#define LDLT_ID(Name)                                                          \
+	LDLT_PP_CAT(LDLT_PP_CAT(_ldlt_, LDLT_PP_CAT(Name, _)), __LINE__)
+
 #define LDLT_PP_REMOVE_PAREN(...)                                              \
 	LDLT_IMPL_PP_REMOVE_PAREN2(LDLT_IMPL_PP_REMOVE_PAREN1 __VA_ARGS__)
 #define LDLT_PP_REMOVE_PAREN1(...)                                             \
@@ -472,116 +477,158 @@
 
 #define LDLT_HAS_ALLOCA 1
 #define LDLT_ALLOCA(x) (alloca(x))
-#define LDLT_FREEA(x) ((void)0)
+#define LDLT_FREEA(x) ((void)x)
 #else
 #define LDLT_HAS_ALLOCA 0
 #endif
 
 #endif
 
-#define LDLT_IMPL_WORKSPACE_VEC(Name, Dim, Ptr, Type)                          \
-	::ldlt::VectorViewMut<Type> Name { ::ldlt::tags::FromPtrSize{}, Ptr, Dim }
+#define LDLT_CACHELINE_BYTES 64
 
-#define LDLT_IMPL_WORKSPACE_MAT(Name, Dim, Ptr, Type)                          \
-	::ldlt::MatrixViewMut<Type, ::ldlt::colmajor> Name {                         \
-		::ldlt::tags::FromPtrRowsColsStride{}, Ptr, LDLT_PP_HEAD Dim,              \
-				LDLT_PP_TAIL Dim, LDLT_PP_HEAD Dim,                                    \
+#define LDLT_IMPL_TO_ARGS_DISPATCH_Vec(Dim) Dim
+#define LDLT_IMPL_TO_ARGS_DISPATCH_Mat(Rows, Cols) Rows, Cols
+
+#define LDLT_IMPL_TO_ARGS(Dim) LDLT_PP_CAT(LDLT_IMPL_TO_ARGS_DISPATCH_, Dim)
+
+#define LDLT_IMPL_ALIGN(I, _, NameTagDimAlignType)                             \
+	::ldlt::usize{(LDLT_PP_4TH NameTagDimAlignType)},
+
+#define LDLT_IMPL_LOCAL_DIMS_VEC2(I, Dim, Align, Type)                         \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(dim, I)) = ::ldlt::usize(Dim);       \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(size_bytes, I)) =                    \
+			::ldlt::detail::uround_up(                                               \
+					sizeof(Type) * LDLT_ID(LDLT_PP_CAT(dim, I)),                         \
+					::ldlt::usize{(Align)});
+
+#define LDLT_IMPL_LOCAL_DIMS_MAT2(I, Rows, Cols, Align, Type)                  \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(rows, I)) = ::ldlt::usize(Rows);     \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(cols, I)) = ::ldlt::usize(Cols);     \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(stride_bytes, I)) =                  \
+			::ldlt::detail::uround_up(                                               \
+					sizeof(Type) * LDLT_ID(LDLT_PP_CAT(rows, I)),                        \
+					::ldlt::usize{(Align)});                                             \
+	::ldlt::usize const LDLT_ID(LDLT_PP_CAT(size_bytes, I)) =                    \
+			LDLT_ID(LDLT_PP_CAT(cols, I)) * LDLT_ID(LDLT_PP_CAT(stride_bytes, I));
+
+#define LDLT_IMPL_LOCAL_DIMS_VEC(I, Name, Tag, Dim, Align, Type)               \
+	LDLT_IMPL_LOCAL_DIMS_VEC2(I, LDLT_IMPL_TO_ARGS(Dim), Align, Type)
+
+#define LDLT_IMPL_LOCAL_DIMS_MAT(I, Name, Tag, Dim, Align, Type)               \
+	LDLT_PP_CALL2(                                                               \
+			LDLT_IMPL_LOCAL_DIMS_MAT2, I, LDLT_IMPL_TO_ARGS(Dim), Align, Type)
+
+#define LDLT_IMPL_LOCAL_DIMS_DISPATCH_Vec(Dim) LDLT_IMPL_LOCAL_DIMS_VEC
+#define LDLT_IMPL_LOCAL_DIMS_DISPATCH_Mat(Rows, Cols) LDLT_IMPL_LOCAL_DIMS_MAT
+
+#define LDLT_IMPL_MIN_ALIGN_DISPATCH_Vec(Dim) LDLT_IMPL_MIN_ALIGN_VEC
+#define LDLT_IMPL_MIN_ALIGN_DISPATCH_Mat(Rows, Cols) LDLT_IMPL_MIN_ALIGN_MAT
+
+#define LDLT_IMPL_LOCAL_DIMS(I, _, NameTagDimAlignType)                        \
+	LDLT_PP_CALL(                                                                \
+			LDLT_PP_CAT(                                                             \
+					LDLT_IMPL_LOCAL_DIMS_DISPATCH_, LDLT_PP_3RD NameTagDimAlignType),    \
+			I,                                                                       \
+			LDLT_PP_REMOVE_PAREN NameTagDimAlignType)                                \
+	LDLT_ID(total_size_bytes) +=                                                 \
+			LDLT_ID(LDLT_PP_CAT(size_bytes, I)) +                                    \
+			(::ldlt::usize{LDLT_PP_4TH NameTagDimAlignType} - LDLT_ID(min_align));
+
+#define LDLT_IMPL_MAKE_WORKSPACE2_Vec(I, Name, Align, Type)                    \
+	::ldlt::VectorViewMut<Type>(Name) = {                                        \
+			::ldlt::tags::FromPtrSize{},                                             \
+			LDLT_ID(LDLT_PP_CAT(array_manager, I))._.data,                           \
+			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(dim, I))),                             \
 	}
 
-#define LDLT_IMPL_DISPATCH_Vec(Dim) LDLT_IMPL_WORKSPACE_VEC
-#define LDLT_IMPL_DISPATCH_Mat(Rows, Cols) LDLT_IMPL_WORKSPACE_MAT
+#define LDLT_IMPL_MAKE_WORKSPACE2_Mat(I, Name, Align, Type)                    \
+	static_assert(                                                               \
+			((sizeof(Type) % ::ldlt::usize{(Align)} == 0) ||                         \
+	     (::ldlt::usize{(Align)} % sizeof(Type) == 0)),                          \
+			".");                                                                    \
+	::ldlt::MatrixViewMut<Type, ::ldlt::Layout::colmajor>(Name) = {              \
+			::ldlt::tags::FromPtrRowsColsStride{},                                   \
+			LDLT_ID(LDLT_PP_CAT(array_manager, I))._.data,                           \
+			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(rows, I))),                            \
+			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(cols, I))),                            \
+			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(stride_bytes, I)) / sizeof(Type)),     \
+	}
 
-#define LDLT_IMPL_REMOVE_PREFIX_Vec(Dim) (Dim)
-#define LDLT_IMPL_REMOVE_PREFIX_Mat(Rows, Cols) (Rows, Cols)
+#define LDLT_IMPL_MAKE_WORKSPACE2_DISPATCH_Vec(Dim)                            \
+	LDLT_IMPL_MAKE_WORKSPACE2_Vec
 
-#define LDLT_IMPL_SIZE_Vec(Dim) (::ldlt::usize(Dim))
-#define LDLT_IMPL_SIZE_Mat(Rows, Cols)                                         \
-	(::ldlt::usize(Rows) * ::ldlt::usize(Cols))
+#define LDLT_IMPL_MAKE_WORKSPACE2_DISPATCH_Mat(Rows, Cols)                     \
+	LDLT_IMPL_MAKE_WORKSPACE2_Mat
 
-#define LDLT_TAG_WORKSPACE_MEMORY(Tag, Name, Dim, Type)                        \
-	LDLT_IMPL_WORKSPACE_MEMORY(                                                  \
-			Tag, Name, LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim), Type);                    \
-	LDLT_PP_CAT2(LDLT_IMPL_DISPATCH_, Dim)                                       \
-	(Name,                                                                       \
-	 LDLT_PP_CAT2(LDLT_IMPL_REMOVE_PREFIX_, Dim),                                \
-	 LDLT_PP_CAT(_ldlt_malloca_handler, __LINE__).data,                          \
-	 Type);                                                                      \
-	static_assert(true, ".")
+#define LDLT_IMPL_MAKE_WORKSPACE2(I, Name, Tag, Dim, Align, Type)              \
+	::ldlt::detail::ManagedArray<Type> LDLT_ID(LDLT_PP_CAT(array_manager, I)){   \
+			::ldlt::detail::malloca_tags::Tag{},                                     \
+			typename ::ldlt::detail::ManagedArray<Type>::Inner{                      \
+					static_cast<Type*>(::ldlt::detail::next_aligned(                     \
+							LDLT_ID(current_ptr), ::ldlt::usize{(Align)})),                  \
+					(LDLT_ID(LDLT_PP_CAT(size_bytes, I)) / sizeof(Type)),                \
+			},                                                                       \
+	};                                                                           \
+	LDLT_PP_CAT(LDLT_IMPL_MAKE_WORKSPACE2_DISPATCH_, Dim)(I, Name, Align, Type); \
+	LDLT_ID(current_ptr) += LDLT_ID(LDLT_PP_CAT(size_bytes, I));
 
-#define LDLT_WORKSPACE_MEMORY(Name, Dim, Type)                                 \
-	LDLT_TAG_WORKSPACE_MEMORY(Init, Name, Dim, Type)
+#define LDLT_IMPL_MAKE_WORKSPACE(I, _, NameTagDimAlignType)                    \
+	LDLT_PP_CALL(                                                                \
+			LDLT_IMPL_MAKE_WORKSPACE2, I, LDLT_PP_REMOVE_PAREN NameTagDimAlignType)
 
-#define LDLT_WORKSPACE_MEMORY_UNINIT(Name, Dim, Type)                          \
-	LDLT_TAG_WORKSPACE_MEMORY(Uninit, Name, Dim, Type)
+#define LDLT_WORKSPACE_MEMORY(Name, Tag, Dim, Align, Type)                     \
+	LDLT_MULTI_WORKSPACE_MEMORY(((Name, Tag, Dim, Align, Type)))
+
+#define LDLT_MULTI_WORKSPACE_MEMORY(NamesTagsDimsAlignsTypes)                  \
+	constexpr ::ldlt::usize LDLT_ID(min_align) =                                 \
+			::ldlt::detail::min_list({LDLT_PP_TUPLE_FOR_EACH_I(                      \
+					LDLT_IMPL_ALIGN, _, NamesTagsDimsAlignsTypes)});                     \
+	::ldlt::usize LDLT_ID(total_size_bytes) = 0;                                 \
+	LDLT_PP_TUPLE_FOR_EACH_I(LDLT_IMPL_LOCAL_DIMS, _, NamesTagsDimsAlignsTypes)  \
+	LDLT_IMPL_GET_MALLOCA(                                                       \
+			LDLT_ID(w_malloca), LDLT_ID(total_size_bytes), LDLT_ID(min_align));      \
+	unsigned char* LDLT_ID(current_ptr) =                                        \
+			static_cast<unsigned char*>(LDLT_ID(w_malloca)._.malloca_ptr);           \
+	LDLT_PP_TUPLE_FOR_EACH_I(                                                    \
+			LDLT_IMPL_MAKE_WORKSPACE, _, NamesTagsDimsAlignsTypes)                   \
+	LDLT_NOM_SEMICOLON
 
 #if LDLT_HAS_ALLOCA
 
-#define LDLT_IMPL_WORKSPACE_MEMORY(Tag, Name, Size, Type)                      \
-	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
-			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
-	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
-			_ldlt_malloca_handler, __LINE__) {                                       \
-		::ldlt::detail::malloca_tags::Tag{},                                         \
-				::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                  \
-						? (LDLT_ALLOCA(LDLT_PP_CAT(_ldlt_alloc, __LINE__)))                \
-						: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),               \
-				Size,                                                                  \
+#define LDLT_IMPL_GET_MALLOCA(Name, SizeBytes, Align)                          \
+	static_assert(                                                               \
+			::ldlt::usize(Align) > 0, "Align must be a constant expression");        \
+	::ldlt::usize const LDLT_ID(malloca_size_bytes) =                            \
+			::ldlt::usize(SizeBytes) + ::ldlt::usize{Align};                         \
+	::ldlt::detail::ManagedMalloca const Name {                                  \
+		::ldlt::detail::malloca_tags::Uninit{},                                    \
+				::ldlt::detail::ManagedMalloca::Inner{                                 \
+						((LDLT_ID(malloca_size_bytes)) <                                   \
+		         ::ldlt::usize{LDLT_MAX_STACK_ALLOC_SIZE})                         \
+								? (LDLT_ALLOCA(LDLT_ID(malloca_size_bytes)))                   \
+								: (::std::malloc(LDLT_ID(malloca_size_bytes))),                \
+						LDLT_ID(malloca_size_bytes),                                       \
+				},                                                                     \
 	}
 
 #else
 
-#define LDLT_IMPL_WORKSPACE_MEMORY(Tag, Name, Size, Type)                      \
-	alignas(::ldlt::detail::UniqueMalloca<Type>::align) unsigned char            \
-			LDLT_PP_CAT(_ldlt_buf, __LINE__)[LDLT_MAX_STACK_ALLOC_SIZE];             \
-	::ldlt::usize const LDLT_PP_CAT(_ldlt_alloc, __LINE__) =                     \
-			Size * sizeof(Type) + ::ldlt::detail::UniqueMalloca<Type>::align;        \
-	::ldlt::detail::UniqueMalloca<Type> LDLT_PP_CAT(                             \
-			_ldlt_malloca_handler, __LINE__) {                                       \
-		::ldlt::detail::malloca_tags::Tag,                                         \
-				::ldlt::detail::UniqueMalloca<Type>::can_alloca(Size)                  \
-						? static_cast<void*>(LDLT_PP_CAT(_ldlt_buf, __LINE__))             \
-						: ::std::malloc(LDLT_PP_CAT(_ldlt_alloc, __LINE__)),               \
-				Size,                                                                  \
+#define LDLT_IMPL_GET_MALLOCA(Name, SizeBytes, Align)                          \
+	alignas(::ldlt::usize{Align}) unsigned char LDLT_ID(                         \
+			buf)[LDLT_MAX_STACK_ALLOC_SIZE];                                         \
+	::ldlt::usize const LDLT_ID(malloca_size_bytes) =                            \
+			::ldlt::usize(SizeBytes) + ::ldlt::usize{Align};                         \
+	::ldlt::detail::ManagedMalloca Name {                                        \
+		::ldlt::detail::malloca_tags::Uninit{},                                    \
+				::ldlt::detail::ManagedMalloca::Inner{                                 \
+						(((SizeBytes)) < ::ldlt::usize{LDLT_MAX_STACK_ALLOC_SIZE})         \
+								? static_cast<void*>(LDLT_ID(buf))                             \
+								: (::std::malloc(LDLT_ID(malloca_size_bytes))),                \
+						(SizeBytes),                                                       \
+				},                                                                     \
 	}
 
 #endif
-
-#define LDLT_IMPL_PLUS2(Type, Dim)                                             \
-	+::ldlt::detail::round_up(                                                   \
-			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                       \
-			::ldlt::detail::SimdCachelineAlignStep<Type>::value)
-
-#define LDLT_IMPL_PLUS(Type, Name_Dim)                                         \
-	LDLT_IMPL_PLUS2(Type, LDLT_PP_TAIL Name_Dim)
-
-#define LDLT_IMPL_DECL_MEMORY2(Type, Name, Dim)                                \
-	LDLT_PP_CAT2(LDLT_IMPL_DISPATCH_, Dim)                                       \
-	(Name,                                                                       \
-	 LDLT_PP_CAT2(LDLT_IMPL_REMOVE_PREFIX_, Dim),                                \
-	 LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data,                               \
-	 Type);                                                                      \
-	LDLT_PP_CAT2(_ldlt_workspace, __LINE__).data += ::ldlt::detail::round_up(    \
-			::ldlt::isize(LDLT_PP_CAT2(LDLT_IMPL_SIZE_, Dim)),                       \
-			::ldlt::detail::SimdCachelineAlignStep<Type>::value);
-
-#define LDLT_IMPL_DECL_MEMORY(Type, Name_Dim)                                  \
-	LDLT_IMPL_DECL_MEMORY2(Type, LDLT_PP_HEAD Name_Dim, LDLT_PP_TAIL Name_Dim)
-
-#define LDLT_TAG_MULTI_WORKSPACE_MEMORY(Tag, Names_Dims, Type)                 \
-	::ldlt::isize LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__) =                     \
-			LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_PLUS, Type, Names_Dims);                \
-	LDLT_TAG_WORKSPACE_MEMORY(                                                   \
-			Tag,                                                                     \
-			LDLT_PP_CAT2(_ldlt_workspace, __LINE__),                                 \
-			Vec(LDLT_PP_CAT2(_ldlt_alloc_size, __LINE__)),                           \
-			Type);                                                                   \
-	LDLT_PP_TUPLE_FOR_EACH(LDLT_IMPL_DECL_MEMORY, Type, Names_Dims)              \
-	static_assert(true, ".")
-
-#define LDLT_MULTI_WORKSPACE_MEMORY(Names_Dims, Type)                          \
-	LDLT_TAG_MULTI_WORKSPACE_MEMORY(Init, Names_Dims, Type)
-#define LDLT_MULTI_WORKSPACE_MEMORY_UNINIT(Names_Dims, Type)                          \
-	LDLT_TAG_MULTI_WORKSPACE_MEMORY(Uninit, Names_Dims, Type)
 
 #if __cplusplus >= 201703L
 #define LDLT_IF_CONSTEXPR if constexpr
