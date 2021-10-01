@@ -577,9 +577,12 @@
 			LDLT_IMPL_MAKE_WORKSPACE2, I, LDLT_PP_REMOVE_PAREN NameTagDimAlignType)
 
 #define LDLT_WORKSPACE_MEMORY(Name, Tag, Dim, Align, Type)                     \
-	LDLT_MULTI_WORKSPACE_MEMORY(((Name, Tag, Dim, Align, Type)))
+	LDLT_MULTI_WORKSPACE_MEMORY_IMPL(((Name, Tag, Dim, Align, Type)))
 
-#define LDLT_MULTI_WORKSPACE_MEMORY(NamesTagsDimsAlignsTypes)                  \
+#define LDLT_MULTI_WORKSPACE_MEMORY(...)                                       \
+	LDLT_IMPL_MULTI_WORKSPACE_MEMORY((__VA_ARGS__))
+
+#define LDLT_IMPL_MULTI_WORKSPACE_MEMORY(NamesTagsDimsAlignsTypes)             \
 	constexpr ::ldlt::usize LDLT_ID(min_align) =                                 \
 			::ldlt::detail::min_list({LDLT_PP_TUPLE_FOR_EACH_I(                      \
 					LDLT_IMPL_ALIGN, _, NamesTagsDimsAlignsTypes)});                     \

@@ -116,9 +116,9 @@ auto gradient_norm_computation_box(
 	}
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			((_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
-	     (_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize), //
-	     (_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize)));
+			(_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
+			(_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize), //
+			(_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize));
 
 	auto active_set_u = _active_set_u.to_eigen();
 	auto active_set_l = _active_set_l.to_eigen();

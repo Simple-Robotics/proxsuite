@@ -87,17 +87,17 @@ auto solve_qp( //
 	T bcl_eta = 1 / pow(bcl_mu, T(0.1));
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			((_h_scaled, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-	     (_g_scaled, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
-	     (_a_scaled, Init, Mat(n_eq, dim), LDLT_CACHELINE_BYTES, T),
-	     (_b_scaled, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_htot, Init, Mat((dim + n_eq), (dim + n_eq)), LDLT_CACHELINE_BYTES, T),
-	     (_d, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_residual_scaled, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_residual_scaled_tmp, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_residual_unscaled, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_next_dual, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
-	     (_diag_diff, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T)));
+			(_h_scaled, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
+			(_g_scaled, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_a_scaled, Init, Mat(n_eq, dim), LDLT_CACHELINE_BYTES, T),
+			(_b_scaled, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
+			(_htot, Init, Mat((dim + n_eq), (dim + n_eq)), LDLT_CACHELINE_BYTES, T),
+			(_d, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
+			(_residual_scaled, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
+			(_residual_scaled_tmp, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
+			(_residual_unscaled, Init, Vec(dim + n_eq), LDLT_CACHELINE_BYTES, T),
+			(_next_dual, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
+			(_diag_diff, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T));
 
 	auto H_copy = _h_scaled.to_eigen();
 	auto q_copy = _g_scaled.to_eigen();
