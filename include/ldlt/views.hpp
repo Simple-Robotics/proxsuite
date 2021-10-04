@@ -205,57 +205,6 @@ struct ManagedMalloca {
 	auto operator=(ManagedMalloca const&) -> ManagedMalloca& = delete;
 	auto operator=(ManagedMalloca&&) -> ManagedMalloca& = delete;
 };
-
-template <typename T>
-struct UniqueMalloca {
-
-	void* malloca_ptr;
-	T* data;
-	usize n;
-
-	static constexpr usize align = max2(alignof(T), align_simd_and_cacheline);
-
-	static constexpr usize max_stack_count =
-			usize(LDLT_MAX_STACK_ALLOC_SIZE) / sizeof(T);
-
-	static constexpr auto can_alloca(usize count) -> bool {
-		return count < max_stack_count;
-	}
-
-	LDLT_INLINE UniqueMalloca(malloca_tags::Impl /*tag*/, void* ptr, usize count)
-			: malloca_ptr(ptr),
-				data(static_cast<T*>(detail::next_aligned(ptr, align))),
-				n(count) {}
-
-	LDLT_INLINE // NOLINT
-	UniqueMalloca(malloca_tags::Uninit /*tag*/, void* ptr, usize count)
-			: UniqueMalloca(malloca_tags::Impl{}, ptr, count) {
-		new (data) T[n];
-	}
-
-	LDLT_INLINE // NOLINT
-	UniqueMalloca(malloca_tags::Init /*tag*/, void* ptr, usize count)
-			: UniqueMalloca(malloca_tags::Impl{}, ptr, count) {
-		new (data) T[n]{};
-	}
-
-	UniqueMalloca(UniqueMalloca const&) = delete;
-	UniqueMalloca(UniqueMalloca&&) = delete;
-	auto operator=(UniqueMalloca const&) -> UniqueMalloca& = delete;
-	auto operator=(UniqueMalloca&&) -> UniqueMalloca& = delete;
-	LDLT_INLINE ~UniqueMalloca() {
-		for (usize i = 0; i < n; ++i) {
-			data[i].~T();
-		}
-		if (n < max_stack_count) {
-#if LDLT_HAS_ALLOCA
-			LDLT_FREEA(malloca_ptr);
-#endif
-		} else {
-			std::free(malloca_ptr);
-		}
-	}
-};
 } // namespace detail
 
 enum struct Layout : unsigned char {
