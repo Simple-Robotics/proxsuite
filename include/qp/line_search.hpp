@@ -331,7 +331,7 @@ auto local_saddle_point_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> d_primal_residual_eq_,
 		VectorView<T> primal_residual_eq_,
-		T alpha,
+		T& alpha,
 		isize n_in) -> T {
 	/*
 	 * the function returns the unique minimum of the positive second order
