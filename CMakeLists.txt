@@ -57,21 +57,7 @@ target_include_directories(
   inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
-find_package(
-  Eigen3
-  3.3
-  REQUIRED
-  NO_MODULE
-)
-
-target_link_libraries(inria_ldlt PUBLIC Eigen3::Eigen)
-set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-if(INRIA_LDLT_PYTHON_BINDINGS)
-  add_subdirectory(external/pybind11)
-  pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
-  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt)
-endif()
+set(CONAN_REQUIRES eigen/3.4.0)
 
 # Conan dependencies
 if(ENABLE_TESTING)
@@ -79,6 +65,7 @@ if(ENABLE_TESTING)
   target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
   target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
   set(CONAN_REQUIRES
+      ${CONAN_REQUIRES}
       # MIT License
       fmt/8.0.0
       backward-cpp/1.5
@@ -104,6 +91,16 @@ if(ENABLE_TESTING)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
+endif()
+
+target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::eigen)
+set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+if(INRIA_LDLT_PYTHON_BINDINGS)
+  find_package(Python3 COMPONENTS Interpreter Development)
+  add_subdirectory(external/pybind11)
+  pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
+  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt)
 endif()
 
 if(ENABLE_TESTING)
