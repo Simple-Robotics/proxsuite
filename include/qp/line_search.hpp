@@ -103,7 +103,7 @@ auto gradient_norm_computation_box(
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
@@ -116,9 +116,10 @@ auto gradient_norm_computation_box(
 	}
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
+			(_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize), //
 			(_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
-			(_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize), //
-			(_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize));
+			(_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize)  //
+	);
 
 	auto active_set_u = _active_set_u.to_eigen();
 	auto active_set_l = _active_set_l.to_eigen();
@@ -126,15 +127,16 @@ auto gradient_norm_computation_box(
 
 	active_set_u.setZero();
 	isize i_u = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			active_set_u(i_u) = k;
 			i_u += 1;
 		}
 	}
+
 	active_set_l.setZero();
 	isize i_l = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
 			active_set_l(i_l) = k;
 			i_l += 1;
@@ -142,7 +144,7 @@ auto gradient_norm_computation_box(
 	}
 
 	isize i_inact = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
 			inactive_set(i_inact) = k;
 			i_inact += 1;
@@ -153,13 +155,12 @@ auto gradient_norm_computation_box(
 	Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(n_in);
 
 	active_part_z = z_e + alpha * dz;
-	for (isize k = 0; k < num_active_u; k = k + 1) {
+	for (isize k = 0; k < num_active_u; ++k) {
 		if (active_part_z(active_set_u(k)) < T(0.)) {
 			active_part_z(active_set_u(k)) = T(0.);
 		}
 	}
-	for (isize k = 0; k < num_active_l; k = k + 1) {
-
+	for (isize k = 0; k < num_active_l; ++k) {
 		if (active_part_z(active_set_l(k)) > T(0.)) {
 			active_part_z(active_set_l(k)) = T(0.);
 		}
@@ -256,7 +257,7 @@ auto gradient_norm_qpalm_box(
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (active_set_tmp_u(k)) {
 			num_active_u += 1;
 		}
@@ -271,7 +272,7 @@ auto gradient_norm_qpalm_box(
 	active_set_l.setZero();
 	isize i = 0;
 	isize j = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (active_set_tmp_u(k)) {
 			active_set_u(i) = k;
 			i += 1;
@@ -294,15 +295,15 @@ auto gradient_norm_qpalm_box(
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_b0_l(num_active_l);
 	tmp_b0_l.setZero();
 
-	for (isize k = 0; k < num_active_u; k = k + 1) {
+	for (isize k = 0; k < num_active_u; ++k) {
 		tmp_a0_u(k) = Cdx(active_set_u(k));
 		tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
 	}
-	for (isize k = 0; k < num_active_l; k = k + 1) {
+	for (isize k = 0; k < num_active_l; ++k) {
 		tmp_a0_l(k) = Cdx(active_set_l(k));
 		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
 	}
-	for (isize k = 0; k < num_active_l; k = k + 1) {
+	for (isize k = 0; k < num_active_l; ++k) {
 		tmp_a0_l(k) = Cdx(active_set_l(k));
 		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
 	}
@@ -393,7 +394,7 @@ auto local_saddle_point_box(
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
@@ -408,7 +409,7 @@ auto local_saddle_point_box(
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_u(num_active_u);
 	active_set_u.setZero();
 	isize i_u = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			active_set_u(i_u) = k;
 			i_u += 1;
@@ -417,7 +418,7 @@ auto local_saddle_point_box(
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_l(num_active_l);
 	active_set_l.setZero();
 	isize i_l = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
 			active_set_l(i_l) = k;
 			i_l += 1;
@@ -426,7 +427,7 @@ auto local_saddle_point_box(
 
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> inactive_set(num_inactive);
 	isize i_inact = 0;
-	for (isize k = 0; k < n_in; k = k + 1) {
+	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
 			inactive_set(i_inact) = k;
 			i_inact += 1;
@@ -672,7 +673,7 @@ auto initial_guess_line_search_box(
 			A * dx_ - dy_ / mu_eq;
 	Eigen::Matrix<T, Eigen::Dynamic, 1> primal_residual_eq = A * x_ - b;
 
-	if (alphas.empty() == false) {
+	if (!alphas.empty()) {
 		//////// STEP 2 ////////
 		// 2.1/ it sort alpha nodes
 		alphas.sort();
@@ -777,7 +778,7 @@ auto initial_guess_line_search_box(
 		// Otherwise, it returns the node minimizing the most the merit
 		// function
 
-		if (liste_norm_grad_interval.empty() == false) {
+		if (!liste_norm_grad_interval.empty()) {
 
 			std::vector<T> vec_norm_grad_interval{
 					std::begin(liste_norm_grad_interval),
@@ -790,7 +791,7 @@ auto initial_guess_line_search_box(
 					vec_norm_grad_interval.begin();
 
 			alpha = vec_argmin[usize(index)];
-		} else if (liste_norm_grad_noeud.empty() == false) {
+		} else if (!liste_norm_grad_noeud.empty()) {
 
 			std::vector<T> vec_alphas{std::begin(alphas), std::end(alphas)};
 			std::vector<T> vec_norm_grad_noeud{
@@ -910,7 +911,7 @@ auto correction_guess_line_search_box(
 	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_y = A * x_ - b + y_e / mu_eq;
 	Eigen::Matrix<T, Eigen::Dynamic, 1> g = (qp.g).to_eigen();
 
-	if (alphas.empty() == false) {
+	if (!alphas.empty()) {
 		// 1.3 sort the alphas
 		alphas.sort();
 		alphas.unique();
@@ -1077,7 +1078,7 @@ void active_set_change(
 
 	for (isize i = 0; i < n_in; i++) {
 		if (current_bijection_map(i) < n_c) {
-			if (new_active_set(i) == false) {
+			if (!new_active_set(i)) {
 				for (isize j = 0; j < n_in; j++) {
 					if (new_bijection_map(j) > new_bijection_map(i)) {
 						new_bijection_map(j) -= 1;
@@ -1092,7 +1093,7 @@ void active_set_change(
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
 	for (isize i = 0; i < n_in; i++) {
-		if (new_active_set(i) == true) {
+		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
 
 				for (isize j = 0; j < n_in; j++) {

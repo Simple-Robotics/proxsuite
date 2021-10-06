@@ -83,21 +83,21 @@ auto initial_guess_line_search_box( //
 		VecRef<T> u,
 		VecRef<T> l) -> T {
 	return line_search::initial_guess_line_search_box(
-			{from_eigen, x},
-			{from_eigen, ye},
-			{from_eigen, ze},
-			{from_eigen, dw},
+			{from_eigen, x.eval()},
+			{from_eigen, ye.eval()},
+			{from_eigen, ze.eval()},
+			{from_eigen, dw.eval()},
 			mu_eq,
 			mu_in,
 			rho,
 			QpViewBox<T>{
-					{from_eigen, H},
-					{from_eigen, g},
-					{from_eigen, A},
-					{from_eigen, b},
-					{from_eigen, C},
-					{from_eigen, u},
-					{from_eigen, l},
+					{from_eigen, H.eval()},
+					{from_eigen, g.eval()},
+					{from_eigen, A.eval()},
+					{from_eigen, b.eval()},
+					{from_eigen, C.eval()},
+					{from_eigen, u.eval()},
+					{from_eigen, l.eval()},
 			});
 }
 

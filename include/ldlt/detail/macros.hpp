@@ -461,7 +461,7 @@
 #endif
 
 #ifndef LDLT_MAX_STACK_ALLOC_SIZE
-#define LDLT_MAX_STACK_ALLOC_SIZE (1024U * 8U) /* 8KiB */
+#define LDLT_MAX_STACK_ALLOC_SIZE (1024ULL * 8ULL) /* 8KiB */
 #endif
 
 #ifndef LDLT_HAS_ALLOCA
@@ -535,7 +535,7 @@
 			(::ldlt::usize{LDLT_PP_4TH NameTagDimAlignType} - LDLT_ID(min_align));
 
 #define LDLT_IMPL_MAKE_WORKSPACE2_Vec(I, Name, Align, Type)                    \
-	::ldlt::VectorViewMut<Type>(Name) = {                                        \
+	::ldlt::VectorViewMut<Type> Name = {                                         \
 			::ldlt::tags::FromPtrSize{},                                             \
 			LDLT_ID(LDLT_PP_CAT(array_manager, I))._.data,                           \
 			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(dim, I))),                             \
@@ -546,7 +546,7 @@
 			((sizeof(Type) % ::ldlt::usize{(Align)} == 0) ||                         \
 	     (::ldlt::usize{(Align)} % sizeof(Type) == 0)),                          \
 			".");                                                                    \
-	::ldlt::MatrixViewMut<Type, ::ldlt::Layout::colmajor>(Name) = {              \
+	::ldlt::MatrixViewMut<Type, ::ldlt::Layout::colmajor> Name = {               \
 			::ldlt::tags::FromPtrRowsColsStride{},                                   \
 			LDLT_ID(LDLT_PP_CAT(array_manager, I))._.data,                           \
 			::ldlt::isize(LDLT_ID(LDLT_PP_CAT(rows, I))),                            \
