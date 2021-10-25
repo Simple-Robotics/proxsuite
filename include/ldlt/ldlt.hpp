@@ -5,11 +5,17 @@
 #include "ldlt/views.hpp"
 #include "ldlt/factorize.hpp"
 #include "ldlt/solve.hpp"
+#include "ldlt/update.hpp"
+#include <cassert>
 
 namespace ldlt {
 
 LDLT_DEFINE_TAG(decompose, Decompose);
 LDLT_DEFINE_TAG(reserve_uninit, ReserveUninit);
+
+inline void unimplemented() {
+	std::terminate();
+}
 
 namespace detail {
 template <typename T>
@@ -59,30 +65,31 @@ private:
 	using VecMap = Eigen::Map<Vec const>;
 	using VecMapMut = Eigen::Map<Vec>;
 
-	using VecMapI32 = Eigen::Map<Eigen::Matrix<i32, dyn, 1> const>;
-	using Perm = Eigen::PermutationWrapper<VecMapI32>;
+	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, dyn, 1> const>;
+	using Perm = Eigen::PermutationWrapper<VecMapISize>;
 
 	ColMat _l;
 	Vec _d;
-	std::unique_ptr<i32[]> perm;
-	std::unique_ptr<i32[]> perm_inv;
+	std::vector<isize> perm;
+	std::vector<isize> perm_inv;
 
 public:
 	Ldlt(ReserveUninit /*tag*/, isize dim)
-			: _l(dim, dim),
+			: //
+				_l(dim, dim),
 				_d(dim),
-				perm(detail::make_unique_array_uninit<i32>(dim)),
-				perm_inv(detail::make_unique_array_uninit<i32>(dim)) {}
+				perm(usize(dim)),
+				perm_inv(usize(dim)) {}
 	Ldlt(Decompose /*tag*/, ColMat mat)
 			: _l(LDLT_FWD(mat)),
 				_d(_l.rows()),
-				perm(detail::make_unique_array_uninit<i32>(_l.rows())),
-				perm_inv(detail::make_unique_array_uninit<i32>(_l.rows())) {
+				perm(usize(_l.rows())),
+				perm_inv(usize(_l.rows())) {
 		this->factorize(_l);
 	}
 
-	auto p() -> Perm { return Perm(VecMapI32(perm.get(), _l.rows())); }
-	auto pt() -> Perm { return Perm(VecMapI32(perm_inv.get(), _l.rows())); }
+	auto p() -> Perm { return Perm(VecMapISize(perm.data(), _l.rows())); }
+	auto pt() -> Perm { return Perm(VecMapISize(perm_inv.data(), _l.rows())); }
 
 	auto l() const noexcept -> LView {
 		return Eigen::Map< //
@@ -130,10 +137,10 @@ public:
 		}
 
 		ldlt::detail::compute_permutation<T>(
-				perm.get(), perm_inv.get(), {from_eigen, _l.diagonal()});
+				perm.data(), perm_inv.data(), {from_eigen, _l.diagonal()});
 
 		ldlt::detail::apply_permutation_sym_work<T>(
-				{from_eigen, _l}, perm.get(), {from_eigen, work}, -1);
+				{from_eigen, _l}, perm.data(), {from_eigen, work}, -1);
 
 		ldlt::factorize(
 				LdltViewMut<T>{{from_eigen, _l}, {from_eigen, _d}},
@@ -149,7 +156,7 @@ public:
 	void solve_in_place_work(Eigen::Ref<Vec> rhs, Eigen::Ref<Vec> work) const {
 		isize n = rhs.rows();
 		ldlt::detail::apply_perm_rows<T>::fn(
-				work.data(), 0, rhs.data(), 0, n, 1, perm.get(), 0);
+				work.data(), 0, rhs.data(), 0, n, 1, perm.data(), 0);
 		ldlt::solve(
 				{from_eigen, work},
 				LdltView<T>{
@@ -158,13 +165,106 @@ public:
 				},
 				{from_eigen, work});
 		ldlt::detail::apply_perm_rows<T>::fn(
-				rhs.data(), 0, work.data(), 0, n, 1, perm_inv.get(), 0);
+				rhs.data(), 0, work.data(), 0, n, 1, perm_inv.data(), 0);
 	}
 
 	void solve_in_place(Eigen::Ref<Vec> rhs) const {
 		isize n = _l.rows();
 		LDLT_WORKSPACE_MEMORY(work, Uninit, Vec(n), LDLT_CACHELINE_BYTES, T);
 		solve_in_place_work(rhs, work.to_eigen());
+	}
+
+	void rank_one_update(Eigen::Ref<Vec const> z, T alpha) {
+		LDLT_WORKSPACE_MEMORY(
+				z_work, Uninit, Vec(z.rows()), LDLT_CACHELINE_BYTES, T);
+
+		isize n = isize(perm.size());
+		for (isize i = 0; i < n; ++i) {
+			z_work(i) = z.data()[perm[usize(i)]];
+		}
+		LdltViewMut<T> ld = {
+				{from_eigen, _l},
+				{from_eigen, _d},
+		};
+
+		rank1_update( //
+				ld,
+				ld.as_const(),
+				z_work,
+				alpha);
+	}
+
+	// TODO: avoid reallocating all the time
+	void insert_at(isize i, Eigen::Ref<Vec const> a) {
+		// insert row/col at end of matrix
+		// modify permutation
+
+		// TODO: choose better insertion slot
+		isize n = isize(perm.size());
+
+		// FIXME: allow insertions anywhere
+		if (i != n) {
+			unimplemented();
+		}
+
+		{
+			auto new_l = ColMat(n + 1, n + 1);
+			auto new_d = Vec(n + 1);
+			row_append(
+					LdltViewMut<T>{
+							{from_eigen, new_l},
+							{from_eigen, new_d},
+					},
+					LdltView<T>{
+							{from_eigen, _l},
+							{from_eigen, _d},
+					},
+					{from_eigen, a});
+
+			_l = LDLT_FWD(new_l);
+			_d = LDLT_FWD(new_d);
+			perm.push_back(n + 1);
+			perm_inv.push_back(n + 1);
+		}
+	}
+
+	void delete_at(isize i) {
+		// delete corresponding row/col after permutation
+		// modify permutation
+
+		isize n = isize(perm.size());
+		isize perm_i = perm_inv[usize(i)];
+
+		// FIXME: handle general case
+		if (i != perm_i) {
+			unimplemented();
+		}
+
+		{
+			auto new_l = ColMat(n - 1, n - 1);
+			auto new_d = Vec(n - 1);
+			row_delete(
+					LdltViewMut<T>{
+							{from_eigen, new_l},
+							{from_eigen, new_d},
+					},
+					LdltView<T>{
+							{from_eigen, _l},
+							{from_eigen, _d},
+					},
+					perm_i);
+
+			_l = LDLT_FWD(new_l);
+			_d = LDLT_FWD(new_d);
+
+			perm.erase(perm.begin() + i);
+			perm_inv.erase(perm_inv.begin() + i);
+
+			for (isize k = i; k < n - 1; ++k) {
+				--perm[usize(k)];
+				--perm_inv[usize(k)];
+			}
+		}
 	}
 };
 

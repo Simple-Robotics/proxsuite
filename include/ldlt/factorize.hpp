@@ -57,8 +57,7 @@ LDLT_NO_INLINE void compute_permutation(
 	}
 
 	for (i32 k = 0; k < n; ++k) {
-		i32 inv_k = perm_indices[k];
-		perm_inv_indices[inv_k] = k;
+		perm_inv_indices[perm_indices[k]] = k;
 	}
 }
 LDLT_EXPLICIT_TPL_DECL(3, compute_permutation<f32>);
