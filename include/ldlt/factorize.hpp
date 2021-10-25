@@ -42,19 +42,22 @@ LDLT_NO_INLINE void compute_permutation(
 	{
 		T const* diagonal_data = diagonal.data;
 		isize stride = diagonal.stride;
-		std::stable_sort(
+		std::sort(
 				perm_indices,
 				perm_indices + n,
 				[diagonal_data, stride](i32 i, i32 j) noexcept -> bool {
 					using std::fabs;
-					return fabs(diagonal_data[stride * i]) >
-			           fabs(diagonal_data[stride * j]);
+					auto lhs = fabs(diagonal_data[stride * i]);
+					auto rhs = fabs(diagonal_data[stride * j]);
+					if (lhs == rhs) {
+						return i < j;
+					}
+					return lhs > rhs;
 				});
 	}
 
 	for (i32 k = 0; k < n; ++k) {
 		i32 inv_k = perm_indices[k];
-		perm_indices[k] = inv_k;
 		perm_inv_indices[inv_k] = k;
 	}
 }

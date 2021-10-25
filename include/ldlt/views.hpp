@@ -99,15 +99,32 @@ constexpr auto uround_up(usize n, usize k) noexcept -> usize {
 	return (n + k - 1) / k * k;
 }
 
-inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
-	using BytePtr = unsigned char*;
-	using VoidPtr = void*;
+inline auto bytes_to_prev_aligned(void* ptr, usize align) noexcept -> isize {
+	using UPtr = std::uintptr_t;
+
+	UPtr mask = align - 1;
+	UPtr iptr = UPtr(ptr);
+	UPtr aligned_ptr = iptr & ~mask;
+	return isize(aligned_ptr - iptr);
+}
+inline auto bytes_to_next_aligned(void* ptr, usize align) noexcept -> isize {
 	using UPtr = std::uintptr_t;
 
 	UPtr mask = align - 1;
 	UPtr iptr = UPtr(ptr);
 	UPtr aligned_ptr = (iptr + mask) & ~mask;
-	return VoidPtr(BytePtr(ptr) + aligned_ptr - iptr);
+	return isize(aligned_ptr - iptr);
+}
+
+inline auto next_aligned(void* ptr, usize align) noexcept -> void* {
+	using BytePtr = unsigned char*;
+	using VoidPtr = void*;
+	return VoidPtr(BytePtr(ptr) + detail::bytes_to_next_aligned(ptr, align));
+}
+inline auto prev_aligned(void* ptr, usize align) noexcept -> void* {
+	using BytePtr = unsigned char*;
+	using VoidPtr = void*;
+	return VoidPtr(BytePtr(ptr) + detail::bytes_to_prev_aligned(ptr, align));
 }
 
 constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
@@ -960,7 +977,7 @@ void noalias_mul_add(
 		auto rhs_col = rhs.col(0);
 		auto dst_col = dst.col(0);
 		dst_col.to_eigen().noalias().operator+=(
-				factor*(lhs.to_eigen().operator*(rhs_col.to_eigen())));
+				factor * (lhs.to_eigen().operator*(rhs_col.to_eigen())));
 	}
 
 #if !EIGEN_VERSION_AT_LEAST(3, 3, 8)

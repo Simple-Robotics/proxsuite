@@ -17,127 +17,95 @@ namespace detail {
 
 template <typename T, usize N>
 LDLT_INLINE void rank1_update_inner_loop_packed(
-		isize i,
 		Pack<T, N> p_p,
 		Pack<T, N> p_c,
 		Pack<T, N> p_beta,
 
-		MatrixViewMut<T, colmajor> out_l,
-		MatrixView<T, colmajor> in_l,
-		T* wp,
-		isize j,
-		isize offset) {
-	isize r = i + j + 1;
+		T* out_l,
+		T const* in_l,
+		T* wp) {
 
-	auto in_l_ptr = in_l.ptr(r, j);
-	auto out_l_ptr = out_l.ptr(r, j);
-
-	Pack<T, N> p_wr = Pack<T, N>::load_unaligned(wp + (r - offset));
-	Pack<T, N> p_in_l = Pack<T, N>::load_unaligned(in_l_ptr);
+	Pack<T, N> p_wr = Pack<T, N>::load_unaligned(wp);
+	Pack<T, N> p_in_l = Pack<T, N>::load_unaligned(in_l);
 
 	p_wr = Pack<T, N>::fnmadd(p_p, p_in_l, p_wr);
-	p_wr.store_unaligned(wp + (r - offset));
+	p_wr.store_unaligned(wp);
 	p_in_l = p_in_l.mul(p_c);
 	p_in_l = Pack<T, N>::fmadd(p_beta, p_wr, p_in_l);
 
-	p_in_l.store_unaligned(out_l_ptr);
+	p_in_l.store_unaligned(out_l);
 }
 
 template <typename T>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, true> /*tag*/,
-		MatrixViewMut<T, colmajor> out_l,
-		MatrixView<T, colmajor> in_l,
 		isize dim,
+		T* out_l,
+		T const* in_l,
 		T* wp,
-		isize j,
-		isize offset,
 		T p,
 		T c,
 		T beta) {
 
 	using Info = NativePackInfo<T>;
-	constexpr isize N = isize{Info::N};
-	constexpr isize N_min = isize{Info::N_min};
+	constexpr usize N = Info::N;
 
-	isize const loop_len = dim - (j + 1);
-	isize done = loop_len / N * N;
-	isize rem = loop_len - done;
+	isize header_offset =
+			detail::bytes_to_next_aligned(out_l, N * sizeof(T)) / isize{sizeof(T)};
 
+	T* out_l_header_finish = out_l + min2(header_offset, dim);
+	T* out_l_finish = out_l + dim;
+
+	bool early_exit = out_l_header_finish == out_l_finish;
+
+	{
+	scalar_loop:
+		using Pack_ = Pack<T, 1>;
+		Pack_ p_p = {p};
+		Pack_ p_c = {c};
+		Pack_ p_beta = {beta};
+
+		while (out_l < out_l_header_finish) {
+			detail::rank1_update_inner_loop_packed(p_p, p_c, p_beta, out_l, in_l, wp);
+			++out_l;
+			++in_l;
+			++wp;
+		}
+	}
+	if (early_exit) {
+		return;
+	}
+
+	isize footer_offset =
+			detail::bytes_to_prev_aligned(out_l_finish, N * sizeof(T)) /
+			isize{sizeof(T)};
+
+	T* out_l_footer_begin = out_l_finish + footer_offset;
 	{
 		using Pack_ = NativePack<T>;
 		Pack_ p_p = Pack_::broadcast(p);
 		Pack_ p_c = Pack_::broadcast(c);
 		Pack_ p_beta = Pack_::broadcast(beta);
 
-		for (isize i = 0; i < done; i += N) {
-			detail::rank1_update_inner_loop_packed(
-					i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+		while (out_l < out_l_footer_begin) {
+			detail::rank1_update_inner_loop_packed(p_p, p_c, p_beta, out_l, in_l, wp);
+			out_l += N;
+			in_l += N;
+			wp += N;
 		}
 	}
-
-#if LDLT_SIMD_HAS_HALF
-	if (rem >= (N / 2)) {
-		using Pack_ = Pack<T, usize{N / 2}>;
-		Pack_ p_p = Pack_::broadcast(p);
-		Pack_ p_c = Pack_::broadcast(c);
-		Pack_ p_beta = Pack_::broadcast(beta);
-
-		detail::rank1_update_inner_loop_packed(
-				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
-
-		rem -= N / 2;
-		done += N / 2;
-	}
-
-#if LDLT_SIMD_HAS_QUARTER
-
-	if (rem >= (N / 4)) {
-		using Pack_ = Pack<T, usize{N / 4}>;
-		Pack_ p_p = Pack_::broadcast(p);
-		Pack_ p_c = Pack_::broadcast(c);
-		Pack_ p_beta = Pack_::broadcast(beta);
-
-		detail::rank1_update_inner_loop_packed(
-				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
-		rem -= N / 4;
-		done += N / 4;
-	}
-
-#endif
-#endif
-
-	static_assert(N_min == 4 || N_min == 2, ".");
-
-	using Pack_ = Pack<T, 1>;
-	Pack_ p_p = {p};
-	Pack_ p_c = {c};
-	Pack_ p_beta = {beta};
-
-	LDLT_IF_CONSTEXPR(Info::N_min == 4) {
-		if (rem >= 2) {
-			for (isize i = 0; i < 2; ++i) {
-				detail::rank1_update_inner_loop_packed(
-						done + i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
-			}
-			rem -= 2;
-		}
-	}
-	if (rem == 1) {
-		detail::rank1_update_inner_loop_packed(
-				done, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
-	}
+	out_l_header_finish = out_l_finish;
+	early_exit = true;
+	goto scalar_loop; // NOLINT(hicpp-avoid-goto, cppcoreguidelines-avoid-goto)
 }
 
 template <typename T>
 LDLT_INLINE void rank1_update_inner_loop(
 		std::integral_constant<bool, false> /*tag*/,
-		MatrixViewMut<T, colmajor> out_l,
-		MatrixView<T, colmajor> in_l,
 		isize dim,
+		T* out_l,
+		T const* in_l,
 		T* wp,
-		isize j,
-		isize offset,
 		T p,
 		T c,
 		T beta) {
@@ -147,26 +115,21 @@ LDLT_INLINE void rank1_update_inner_loop(
 	Pack_ p_c = {c};
 	Pack_ p_beta = {beta};
 
-	isize const loop_len = dim - (j + 1);
-	for (isize i = 0; i < loop_len; ++i) {
-		detail::rank1_update_inner_loop_packed(
-				i, p_p, p_c, p_beta, out_l, in_l, wp, j, offset);
+	for (isize i = 0; i < dim; ++i) {
+		detail::rank1_update_inner_loop_packed(p_p, p_c, p_beta, out_l, in_l, wp);
 	}
 }
 
 template <typename T>
-LDLT_NO_INLINE void rank1_update(
-		LdltViewMut<T> out,
-		LdltView<T> in,
-		VectorViewMut<T> z,
-		isize offset,
-		T alpha) {
+LDLT_NO_INLINE void
+rank1_update(LdltViewMut<T> out, LdltView<T> in, VectorViewMut<T> z, T alpha) {
 
 	isize dim = out.l.rows;
-	T* HEDLEY_RESTRICT wp = z.data;
+	T* wp = z.data;
 
-	for (isize j = offset; j < dim; ++j) {
-		T p = wp[j - offset];
+	for (isize j = 0; j < dim; ++j) {
+		T p = *wp;
+		++wp;
 		T old_dj = in.d(j);
 		T new_dj = old_dj + alpha * p * p;
 		T gamma = old_dj / new_dj;
@@ -177,19 +140,326 @@ LDLT_NO_INLINE void rank1_update(
 		T c = gamma + beta * p;
 		out.l(j, j) = T(1);
 
+		isize tail_dim = dim - j - 1;
 		detail::rank1_update_inner_loop(
 				std::integral_constant<
 						bool,
 						(std::is_same<T, f32>::value || std::is_same<T, f64>::value)>{},
-				out.l,
-				in.l,
-				dim,
+				tail_dim,
+				out.l.col(j).segment(j + 1, tail_dim).data,
+				in.l.col(j).segment(j + 1, tail_dim).data,
 				wp,
-				j,
-				offset,
 				p,
 				c,
 				beta);
+	}
+}
+
+template <usize N, usize Unroll = 1, typename T>
+LDLT_INLINE void rank_r_update_inner_loop_packed(
+		isize r,
+		T const* HEDLEY_RESTRICT ptr_p,
+		T const* HEDLEY_RESTRICT ptr_c,
+		T const* HEDLEY_RESTRICT ptr_b,
+		T* HEDLEY_RESTRICT out_l,
+		T const* HEDLEY_RESTRICT in_l,
+		T* HEDLEY_RESTRICT wp,
+		isize wp_stride) {
+
+	Pack<T, N> p_in_l[Unroll];
+
+	for (usize u = 0; u < Unroll; ++u) {
+		p_in_l[u] = Pack<T, N>::load_unaligned(in_l + N * u);
+	}
+
+	T* wp_finish = wp + r * wp_stride;
+	while (wp < wp_finish) {
+		// registers used:
+		// - with fma: UNROLL + 3 + 1
+		// - w/o  fma: UNROLL + 3 + 1 + 1
+		//
+		// K + 2×UNROLL
+		// UNROLL = NREG - K
+		//
+		// w/o  fma   : 11
+		// with fma   : 12
+		// with avx512: 28
+		Pack<T, N> p_p = Pack<T, N>::load_unaligned(ptr_p);
+		Pack<T, N> p_c = Pack<T, N>::load_unaligned(ptr_c);
+		Pack<T, N> p_b = Pack<T, N>::load_unaligned(ptr_b);
+
+		for (usize u = 0; u < Unroll; ++u) {
+			Pack<T, N> p_wr = Pack<T, N>::load_unaligned(wp + N * u);
+			p_wr = Pack<T, N>::fnmadd(p_p, p_in_l[u], p_wr);
+			p_wr.store_unaligned(wp + N * u);
+
+			p_in_l[u] = p_in_l[u].mul(p_c);
+			p_in_l[u] = Pack<T, N>::fmadd(p_b, p_wr, p_in_l[u]);
+		}
+
+		wp += wp_stride;
+		ptr_p += N;
+		ptr_c += N;
+		ptr_b += N;
+	}
+
+	for (usize u = 0; u < Unroll; ++u) {
+		p_in_l[u].store_unaligned(out_l + N * u);
+	}
+}
+
+template <typename T>
+LDLT_INLINE void rank_r_update_inner_loop( //
+		std::integral_constant<bool, true> /*tag*/,
+		isize dim,
+		isize r,
+
+		T* out_l,
+		T const* in_l,
+		T* wp,
+		isize wp_stride,
+
+		T const* scalar_p,
+		T const* scalar_c,
+		T const* scalar_b,
+
+		T const* vector_p,
+		T const* vector_c,
+		T const* vector_b) {
+
+	(void)vector_p, (void)vector_c, (void)vector_b;
+
+	using Info = NativePackInfo<T>;
+	constexpr usize N = Info::N;
+	isize header_offset =
+			detail::bytes_to_next_aligned(out_l, N * sizeof(T)) / isize{sizeof(T)};
+	T* out_l_header_finish = out_l + min2(header_offset, dim);
+	T* out_l_finish = out_l + dim;
+	bool early_exit = out_l_header_finish == out_l_finish;
+
+	{
+	scalar_loop:
+		while (out_l < out_l_header_finish) {
+			detail::rank_r_update_inner_loop_packed<1>( //
+					r,
+					scalar_p,
+					scalar_c,
+					scalar_b,
+					out_l,
+					in_l,
+					wp,
+					wp_stride);
+			++out_l;
+			++in_l;
+			++wp;
+		}
+	}
+	if (early_exit) {
+		return;
+	}
+	isize footer_offset =
+			detail::bytes_to_prev_aligned(out_l_finish, N * sizeof(T)) /
+			isize{sizeof(T)};
+	T* out_l_footer_begin = out_l_finish + footer_offset;
+
+	{
+		constexpr usize Unroll = 10;
+
+		isize n_unroll =
+				(out_l_footer_begin - out_l) / isize(N * Unroll) * isize(N * Unroll);
+		T* out_l_unroll_finish = out_l + n_unroll;
+		while (out_l < out_l_unroll_finish) {
+			detail::rank_r_update_inner_loop_packed<N, Unroll>( //
+					r,
+					vector_p,
+					vector_c,
+					vector_b,
+					out_l,
+					in_l,
+					wp,
+					wp_stride);
+
+			out_l += N * Unroll;
+			in_l += N * Unroll;
+			wp += N * Unroll;
+		}
+	}
+	{
+		constexpr usize Unroll = 4;
+
+		isize n_unroll =
+				(out_l_footer_begin - out_l) / isize(N * Unroll) * isize(N * Unroll);
+		T* out_l_unroll_finish = out_l + n_unroll;
+		while (out_l < out_l_unroll_finish) {
+			detail::rank_r_update_inner_loop_packed<N, Unroll>( //
+					r,
+					vector_p,
+					vector_c,
+					vector_b,
+					out_l,
+					in_l,
+					wp,
+					wp_stride);
+
+			out_l += N * Unroll;
+			in_l += N * Unroll;
+			wp += N * Unroll;
+		}
+	}
+	{
+		constexpr usize Unroll = 2;
+
+		isize n_unroll =
+				(out_l_footer_begin - out_l) / isize(N * Unroll) * isize(N * Unroll);
+		T* out_l_unroll_finish = out_l + n_unroll;
+		while (out_l < out_l_unroll_finish) {
+			detail::rank_r_update_inner_loop_packed<N, Unroll>( //
+					r,
+					vector_p,
+					vector_c,
+					vector_b,
+					out_l,
+					in_l,
+					wp,
+					wp_stride);
+
+			out_l += N * Unroll;
+			in_l += N * Unroll;
+			wp += N * Unroll;
+		}
+	}
+
+	{
+		while (out_l < out_l_footer_begin) {
+			detail::rank_r_update_inner_loop_packed<N>( //
+					r,
+					vector_p,
+					vector_c,
+					vector_b,
+					out_l,
+					in_l,
+					wp,
+					wp_stride);
+
+			out_l += N;
+			in_l += N;
+			wp += N;
+		}
+	}
+	out_l_header_finish = out_l_finish;
+	early_exit = true;
+	goto scalar_loop; // NOLINT(hicpp-avoid-goto, cppcoreguidelines-avoid-goto)
+}
+
+template <typename T>
+LDLT_INLINE void rank_r_update_inner_loop( //
+		std::integral_constant<bool, false> /*tag*/,
+		isize dim,
+		isize r,
+
+		T* out_l,
+		T const* in_l,
+		T* wp,
+		isize wp_stride,
+
+		T const* scalar_p,
+		T const* scalar_c,
+		T const* scalar_b,
+
+		T const* vector_p,
+		T const* vector_c,
+		T const* vector_b) {
+	(void)vector_p, (void)vector_c, (void)vector_b;
+
+	for (isize i = 0; i < dim; ++i) {
+		detail::rank_r_update_inner_loop_packed<1>( //
+				r,
+				scalar_p,
+				scalar_c,
+				scalar_b,
+				out_l + i,
+				in_l + i,
+				wp + i,
+				wp_stride);
+	}
+}
+
+template <typename T>
+LDLT_NO_INLINE void rank_r_update( //
+		LdltViewMut<T> out,
+		LdltView<T> in,
+		MatrixViewMut<T, colmajor> z,
+		VectorViewMut<T> alpha) {
+
+	using Info = NativePackInfo<T>;
+	constexpr usize N = Info::N;
+
+	isize n = out.l.rows;
+	isize r = z.cols;
+	T* wp = z.data;
+	isize wp_stride = z.outer_stride;
+
+	LDLT_MULTI_WORKSPACE_MEMORY(
+			(ps, Uninit, Vec(r), alignof(T), T), //
+			(cs, Uninit, Vec(r), alignof(T), T),
+			(bs, Uninit, Vec(r), alignof(T), T),
+
+			(packed_ps, Uninit, Mat(N, r), N * alignof(T), T), //
+			(packed_cs, Uninit, Mat(N, r), N * alignof(T), T),
+			(packed_bs, Uninit, Mat(N, r), N * alignof(T), T));
+
+	isize j = 0;
+	while (true) {
+		T old_dj = in.d(j);
+		for (isize i = 0; i < r; ++i) {
+			T p = wp[i * wp_stride];
+
+			T new_dj = old_dj + alpha(i) * p * p;
+
+			T gamma = old_dj / new_dj;
+
+			T b = p * alpha(i) / new_dj;
+			T c = gamma + b * p;
+
+			old_dj = new_dj;
+
+			alpha(i) *= gamma;
+			out.l(j, j) = T(1);
+
+			ps(i) = p;
+			bs(i) = b;
+			cs(i) = c;
+			Pack<T, N>::broadcast(p).store_unaligned(packed_ps.col(i).data);
+			Pack<T, N>::broadcast(b).store_unaligned(packed_bs.col(i).data);
+			Pack<T, N>::broadcast(c).store_unaligned(packed_cs.col(i).data);
+		}
+		out.d(j) = old_dj;
+
+		isize tail_dim = n - j - 1;
+		if (tail_dim == 0) {
+			break;
+		}
+		++wp;
+		detail::rank_r_update_inner_loop(
+				std::integral_constant<
+						bool,
+						(std::is_same<T, f32>::value || std::is_same<T, f64>::value)>{},
+				tail_dim,
+				r,
+
+				out.l.col(j).segment(j + 1, tail_dim).data,
+				in.l.col(j).segment(j + 1, tail_dim).data,
+				wp,
+				wp_stride,
+
+				ps.data,
+				cs.data,
+				bs.data,
+
+				packed_ps.data,
+				packed_cs.data,
+				packed_bs.data);
+		++j;
 	}
 }
 
@@ -457,8 +727,8 @@ row_delete_single(LdltViewMut<T> out_l, LdltView<T> in_l, isize i) {
 			rem_dim,
 			inplace);
 }
-LDLT_EXPLICIT_TPL_DECL(5, rank1_update<f32>);
-LDLT_EXPLICIT_TPL_DECL(5, rank1_update<f64>);
+LDLT_EXPLICIT_TPL_DECL(4, rank1_update<f32>);
+LDLT_EXPLICIT_TPL_DECL(4, rank1_update<f64>);
 } // namespace detail
 
 namespace nb {
@@ -470,7 +740,7 @@ struct rank1_update {
 
 		auto wp = out.l.col(dim - 1);
 		std::copy(z.data, z.data + dim, wp.data);
-		detail::rank1_update(out, in, wp, 0, alpha);
+		detail::rank1_update(out, in, wp, alpha);
 		detail::set_zero(wp.data, usize(dim - 1));
 		wp(dim - 1) = 1;
 	}

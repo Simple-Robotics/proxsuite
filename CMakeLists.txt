@@ -57,7 +57,7 @@ target_include_directories(
   inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
-set(CONAN_REQUIRES eigen/3.4.0)
+set(CONAN_REQUIRES eigen/3.3.7)
 
 # Conan dependencies
 if(ENABLE_TESTING)
@@ -71,7 +71,7 @@ if(ENABLE_TESTING)
       backward-cpp/1.5
       #
       # Apache-2.0
-      benchmark/1.5.3
+      benchmark/1.6.0
       #
       # LGPL v3
       mpfr/4.1.0

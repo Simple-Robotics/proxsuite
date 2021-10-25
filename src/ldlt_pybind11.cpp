@@ -43,7 +43,8 @@ void iterative_solve_with_permut_fact( //
 		res = -res;
 		ldl.solve_in_place(res);
 		sol += res;
-		res = (mat * sol - rhs);
+    res = -rhs;
+    res.noalias() += mat * sol;
 	}
 }
 

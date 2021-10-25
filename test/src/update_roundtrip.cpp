@@ -9,8 +9,8 @@ using namespace ldlt;
 template <typename T>
 struct Data {
 	Mat<T, colmajor> mat;
-	Vec<T> w;
-	T alpha;
+	Mat<T, colmajor> w;
+	Vec<T> alpha;
 	Mat<T, colmajor> l;
 	Vec<T> d;
 };
@@ -18,9 +18,10 @@ struct Data {
 template <typename T>
 auto generate_data(isize n) -> Data<T> {
 	ldlt_test::rand::set_seed(ldlt::u64(n));
+	isize r = 7;
 	Mat<T, colmajor> mat = ldlt_test::rand::positive_definite_rand<T>(n, T(1e2));
-	Vec<T> w = ldlt_test::rand::vector_rand<T>(n);
-	T alpha = T(ldlt_test::rand::normal_rand());
+	Mat<T, colmajor> w = ldlt_test::rand::matrix_rand<T>(n, r);
+	Vec<T> alpha = ldlt_test::rand::vector_rand<T>(r);
 
 	Mat<T, colmajor> l(n, n);
 	l.setZero();
@@ -44,6 +45,8 @@ auto ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto const& alpha = data.alpha;
 	auto& l = data.l;
 	auto& d = data.d;
+	isize n = w.rows();
+	isize r = w.cols();
 
 	l.setZero();
 	d.setZero();
@@ -53,20 +56,25 @@ auto ldlt_roundtrip_error(Data<T>& data) -> T {
 			{from_eigen, l},
 			{from_eigen, d},
 	};
-	auto w_view = VectorView<T>{from_eigen, w};
 
 	{
+		LDLT_MULTI_WORKSPACE_MEMORY(
+				(z, Uninit, Mat(n, r), LDLT_CACHELINE_BYTES, T),
+				(a, Uninit, Vec(r), LDLT_CACHELINE_BYTES, T));
+		z.to_eigen() = w;
+		a.to_eigen() = alpha;
+
 		EigenNoAlloc _{};
 		factorize(ldl_view, m_view);
-		rank1_update( //
+		detail::rank_r_update( //
 				ldl_view,
 				ldl_view.as_const(),
-				w_view,
-				alpha);
+				z,
+				a);
 	}
 
 	return (matmul3(l, d.asDiagonal(), l.transpose()) -
-	        (mat + alpha * w * w.transpose()))
+	        (mat + matmul3(w, alpha.asDiagonal(), w.transpose())))
 	    .norm();
 }
 
@@ -76,14 +84,16 @@ auto eigen_ldlt_roundtrip_error(Data<T>& data) -> T {
 	auto const& w = data.w;
 	auto const& alpha = data.alpha;
 	auto ldlt = mat.ldlt();
-	ldlt.rankUpdate(data.w, data.alpha);
+	for (isize i = 0; i < data.w.cols(); ++i) {
+		ldlt.rankUpdate(data.w.col(i), data.alpha(i));
+	}
 	auto const& L = ldlt.matrixL();
 	auto const& P = ldlt.transpositionsP();
 	auto const& D = ldlt.vectorD();
 
 	Mat<T, colmajor> tmp = P.transpose() * Mat<T, colmajor>(L);
 	return (matmul3(tmp, D.asDiagonal(), tmp.transpose()) -
-	        (mat + alpha * w * w.transpose()))
+	        (mat + matmul3(w, alpha.asDiagonal(), w.transpose())))
 	    .norm();
 }
 
@@ -107,11 +117,11 @@ using C = detail::constant<Layout, colmajor>;
 using R = detail::constant<Layout, rowmajor>;
 
 DOCTEST_TEST_CASE("rank one update: roundtrip") {
-  using T = f64;
+	using T = f64;
 	isize min = 1;
-	isize max = 16;
+	isize max = 64;
 
 	for (isize i = min; i <= max; ++i) {
-		DOCTEST_CHECK(roundtrip_test<T>(i) <= T(1e2));
+		DOCTEST_CHECK(roundtrip_test<T>(i) <= T(1e3));
 	}
 }

@@ -111,6 +111,9 @@ struct Pack<T, 1> {
 			-> Pack {
 		return {*ptr};
 	}
+	LDLT_INLINE static auto broadcast(ScalarType value) noexcept -> Pack {
+		return {value};
+	}
 	LDLT_INLINE void store_unaligned(ScalarType* ptr) const noexcept {
 		*ptr = inner;
 	}
@@ -227,7 +230,9 @@ struct Pack<f64, 8> {
 
 template <typename T>
 struct NativePackInfo {
-	using Type = void;
+	static constexpr usize N = 1;
+	static constexpr usize N_min = 1;
+	using Type = Pack<f32, N>;
 };
 
 #if SIMDE_NATURAL_VECTOR_SIZE >= 256

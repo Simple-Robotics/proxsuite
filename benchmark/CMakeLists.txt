@@ -11,6 +11,8 @@ set(LDLT_BENCH_LIBS
 
 add_executable(.bench.factorize src/factorize.cpp)
 target_link_libraries(.bench.factorize ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
+add_executable(.bench.rank_update src/rank_update.cpp)
+target_link_libraries(.bench.rank_update ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
