@@ -34,7 +34,7 @@ template <typename T>
 auto ruiz_scale_qp_in_place( //
 		VectorViewMut<T> delta_,
 		std::ostream* logger_ptr,
-		qp::QpViewMut<T> qp,
+		qp::QpViewBoxMut<T> qp,
 		T epsilon,
 		isize max_iter,
 		Symmetry sym) -> T {
@@ -47,7 +47,8 @@ auto ruiz_scale_qp_in_place( //
 	auto A = qp.A.to_eigen();
 	auto b = qp.b.to_eigen();
 	auto C = qp.C.to_eigen();
-	auto d = qp.d.to_eigen();
+	auto u = qp.u.to_eigen();
+	auto l = qp.l.to_eigen();
 
 	T machine_eps = std::numeric_limits<T>::epsilon();
 	/*
@@ -68,6 +69,14 @@ auto ruiz_scale_qp_in_place( //
 	auto delta = _delta.to_eigen();
 
 	i64 iter = 1;
+	/*
+	std::cout <<  "j : "                                   //
+					<< iter                                     //
+					<< " ; error : "                            //
+					<< infty_norm((1 - delta.array()).matrix()) //
+					<< std::endl;
+	*/
+	
 	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
 		if (logger_ptr != nullptr) {
 			*logger_ptr                                     //
@@ -77,6 +86,13 @@ auto ruiz_scale_qp_in_place( //
 					<< infty_norm((1 - delta.array()).matrix()) //
 					<< "\n\n";
 		}
+		/*
+		std::cout <<  "j : "                                   //
+					<< iter                                     //
+					<< " ; error : "                            //
+					<< infty_norm((1 - delta.array()).matrix()) //
+					<< std::endl;
+		*/
 		if (iter == max_iter) {
 			break;
 		} else {
@@ -95,6 +111,13 @@ auto ruiz_scale_qp_in_place( //
 																		 infty_norm(A.col(k)),
 																		 infty_norm(C.col(k))))) +
 					                   machine_eps);
+					/*
+					std::cout << "H part k " << k <<  "upper denominator " << sqrt(max2(
+																 infty_norm(H.row(k).tail(n-k)), //
+																 max2(                             //
+																		 infty_norm(A.col(k)),
+																		 infty_norm(C.col(k))))) << " delta(k) " << delta(k) <<std::endl;
+					*/
 					break;
 				}
 				case Symmetry::lower: { // lower triangular part
@@ -104,6 +127,13 @@ auto ruiz_scale_qp_in_place( //
 																		 infty_norm(A.col(k)),
 																		 infty_norm(C.col(k))))) +
 					                   machine_eps);
+					/*
+					std::cout << "H part k " << k << "lower denominator " << sqrt(max2(
+																 infty_norm(H.col(k).tail(n-k)), //
+																 max2(                             //
+																		 infty_norm(A.col(k)),
+																		 infty_norm(C.col(k))))) << " delta(k) " << delta(k) <<std::endl;
+					*/
 					break;
 				}
 				case Symmetry::general: {
@@ -113,6 +143,9 @@ auto ruiz_scale_qp_in_place( //
 																		 infty_norm(A.col(k)),
 																		 infty_norm(C.col(k))))) +
 					                   machine_eps);
+					
+					//std::cout << "H part k " << k << " delta(k) " << delta(k) <<std::endl;
+					
 					break;
 				}
 				default: {
@@ -121,13 +154,27 @@ auto ruiz_scale_qp_in_place( //
 			}
 
 			for (isize k = 0; k < n_eq; ++k) {
-				delta(n + k) = T(1) / (sqrt(infty_norm(A.row(k))) + machine_eps);
+				T aux = sqrt(infty_norm(A.row(k))) ;
+				if(aux < machine_eps){
+					delta(n + k) = T(1) ; 
+				}else{
+					delta(n + k) = T(1) / ( aux + machine_eps);
+				}
+				
+				//std::cout << "A part k " << k << " old " << T(1)/(sqrt(infty_norm(A.transpose().col(k)))) << " delta(k) " << delta(n+k) << std::endl;
 			}
 			for (isize k = 0; k < n_in; ++k) {
-				delta(k + n + n_eq) = T(1) / (sqrt(infty_norm(C.row(k))) + machine_eps);
+				T aux = sqrt(infty_norm(C.row(k))) ;
+				if (aux < machine_eps){
+					delta(k + n + n_eq) = T(1) ;
+				}else{
+					delta(k + n + n_eq) = T(1) / ( aux + machine_eps);
+				}
+				
+				//std::cout << "C part k " << k << " new " << T(1)/(sqrt(infty_norm(C.transpose().col(k)))) << " delta(k) " << delta(n+n_eq+k) <<  std::endl;
 			}
 		}
-
+		//std::cout << "delta " << delta << std::endl;
 		{
 			LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "normalization", T);
 
@@ -138,7 +185,8 @@ auto ruiz_scale_qp_in_place( //
 			// normalize vectors
 			g.array() *= delta.head(n).array();
 			b.array() *= delta.middleRows(n, n_eq).array();
-			d.array() *= delta.tail(n_in).array();
+			u.array() *= delta.tail(n_in).array();
+			l.array() *= delta.tail(n_in).array();
 
 			// normalize H
 			switch (sym) {
@@ -195,15 +243,25 @@ auto ruiz_scale_qp_in_place( //
 			}
 			case Symmetry::general: {
 				// all matrix
-				gamma =
+				if (infty_norm(g) <machine_eps ){
+					gamma =
 						1 / max2(
-										max2(infty_norm(g), T(1)),
+										T(1),
 										(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+				}else{
+					gamma =
+							1 / max2(
+											infty_norm(g),
+											(H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+				}
 				break;
 			}
 			default:
 				break;
 			}
+			//std::cout << "gamma " << gamma << std::endl;
+			//std::cout << "delta " << delta << std::endl;
+			//std::cout << "g " << g << std::endl;
 			g *= gamma;
 			H *= gamma;
 
@@ -256,11 +314,11 @@ struct RuizEquilibration {
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
-	void scale_qp_in_place(QpViewMut<T> qp) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp) {
 		c = detail::ruiz_scale_qp_in_place(
 				{ldlt::from_eigen, delta}, logger_ptr, qp, epsilon, max_iter, sym);
 	}
-	void scale_qp(QpView<T> qp, QpViewMut<T> scaled_qp) {
+	void scale_qp(QpViewBox<T> qp, QpViewBoxMut<T> scaled_qp) {
 
 		using namespace detail;
 		/*
@@ -287,6 +345,16 @@ struct RuizEquilibration {
 		dual.to_eigen().array() = dual.as_const().to_eigen().array() /
 		                          delta.tail(delta.size() - dim).array() * c;
 	}
+
+	void scale_dual_in_place_eq(VectorViewMut<T> dual) {
+		dual.to_eigen().array() = dual.as_const().to_eigen().array() /
+		                          delta.middleRows(dim,dual.to_eigen().size()).array() * c;
+	}
+	void scale_dual_in_place_in(VectorViewMut<T> dual) {
+		dual.to_eigen().array() = dual.as_const().to_eigen().array() /
+		                          delta.tail(dual.to_eigen().size()).array() * c;
+	}
+
 	void unscale_primal_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() *= delta.array().head(dim);
 	}
@@ -295,15 +363,37 @@ struct RuizEquilibration {
 		                          delta.tail(delta.size() - dim).array() / c;
 	}
 
+	void unscale_dual_in_place_eq(VectorViewMut<T> dual) {
+		dual.to_eigen().array() = dual.as_const().to_eigen().array() *
+		                          delta.middleRows(dim,dual.to_eigen().size()).array() / c;
+	}
+
+	void unscale_dual_in_place_in(VectorViewMut<T> dual) {
+		dual.to_eigen().array() = dual.as_const().to_eigen().array() *
+		                          delta.tail(dual.to_eigen().size()).array() / c;
+	}
 	// modifies residuals in place
 	void scale_primal_residual_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() *= delta.tail(delta.size() - dim).array();
+	}
+	
+	void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) {
+		primal_eq.to_eigen().array() *= delta.middleRows(dim,primal_eq.to_eigen().size()).array();
+	}
+	void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in) {
+		primal_in.to_eigen().array() *= delta.tail(primal_in.to_eigen().size()).array();
 	}
 	void scale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() *= delta.head(dim).array() * c;
 	}
 	void unscale_primal_residual_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() /= delta.tail(delta.size() - dim).array();
+	}
+	void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) {
+		primal_eq.to_eigen().array() /= delta.middleRows(dim,primal_eq.to_eigen().size()).array();
+	}
+	void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in) {
+		primal_in.to_eigen().array() /= delta.tail(primal_in.to_eigen().size()).array();
 	}
 	void unscale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() /= delta.head(dim).array() * c;
