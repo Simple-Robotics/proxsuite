@@ -938,14 +938,30 @@ template <typename T>
 struct LdltView {
 	MatrixView<T, colmajor> l;
 	VectorView<T> d;
+
+	LDLT_INLINE auto tail(isize k) const -> LdltView<T> {
+		isize n = l.rows;
+		return {
+				l.block(n - k, n - k, k, k),
+				d.segment(n - k, k),
+		};
+	}
 };
 template <typename T>
 struct LdltViewMut {
 	MatrixViewMut<T, colmajor> l;
 	VectorViewMut<T> d;
 
-	LDLT_INLINE constexpr auto as_const() const noexcept -> LdltView<T> {
+	LDLT_INLINE auto as_const() const noexcept -> LdltView<T> {
 		return {l.as_const(), d.as_const()};
+	}
+
+	LDLT_INLINE auto tail(isize k) const -> LdltViewMut<T> {
+		isize n = l.rows;
+		return {
+				l.block(n - k, n - k, k, k),
+				d.segment(n - k, k),
+		};
 	}
 };
 

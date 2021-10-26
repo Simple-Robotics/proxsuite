@@ -10,8 +10,8 @@ DOCTEST_TEST_CASE("permute apply") {
 	auto in = ldlt_test::rand::positive_definite_rand<T>(n, 1e2);
 	auto rhs = ldlt_test::rand::vector_rand<T>(n);
 
-	auto perm = std::vector<i32>(usize(n));
-	auto perm_inv = std::vector<i32>(usize(n));
+	auto perm = std::vector<isize>(usize(n));
+	auto perm_inv = std::vector<isize>(usize(n));
 	ldlt::detail::compute_permutation<T>( //
 			perm.data(),
 			perm_inv.data(),

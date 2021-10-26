@@ -498,13 +498,13 @@ LDLT_NO_INLINE void diagonal_update_multi_pass(
 	for (isize k = 0; k < diag_diff.dim; ++k) {
 		auto ws = out.l.col(dim - 1).segment(0, dim_rem);
 		// ws is already zeroed
+		auto tail_size = dim - (idx + k);
 
 		ws(0) = T(1);
 		detail::rank1_update( //
-				out,
-				current_in,
+				out.tail(tail_size),
+				current_in.tail(tail_size),
 				ws,
-				idx + k,
 				diag_diff(k));
 		--dim_rem;
 
@@ -655,7 +655,6 @@ struct RowDeleteImpl<colmajor> {
 					out_from_in,
 					out_from_in.as_const(),
 					l_mut,
-					0,
 					d);
 			// move bottom right corner
 			copy_block(
@@ -679,7 +678,6 @@ struct RowDeleteImpl<colmajor> {
 					out_bottom_right,
 					in_bottom_right,
 					w,
-					0,
 					d);
 			detail::set_zero(w.data, usize(w.dim));
 			w(rem_dim - 1) = 1;

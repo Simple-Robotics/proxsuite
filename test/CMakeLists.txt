@@ -102,6 +102,7 @@ add_custom_target(
           .test.solve
           .test.update.roundtrip
           .test.mu_update.roundtrip
+          .test.ldlt_wrapper.solve
           .test.row_delete
           .test.row_append
           .test.precond.ruiz

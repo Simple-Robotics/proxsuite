@@ -8,8 +8,8 @@ DOCTEST_TEST_CASE("permute compute") {
   using T = f32;
 	isize n = 13;
 	auto m = ldlt_test::rand::matrix_rand<T>(n, n);
-	auto perm = std::vector<i32>(usize(n));
-	auto perm_inv = std::vector<i32>(usize(n));
+	auto perm = std::vector<isize>(usize(n));
+	auto perm_inv = std::vector<isize>(usize(n));
 	ldlt::detail::compute_permutation<T>( //
 			perm.data(),
 			perm_inv.data(),
