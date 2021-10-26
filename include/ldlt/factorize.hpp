@@ -29,14 +29,16 @@ namespace detail {
 template <typename T>
 struct Indexed {
 	T elem;
-	i32 idx;
+	isize idx;
 };
 template <typename T>
 LDLT_NO_INLINE void compute_permutation(
-		i32* perm_indices, i32* perm_inv_indices, StridedVectorView<T> diagonal) {
+		isize* perm_indices,
+		isize* perm_inv_indices,
+		StridedVectorView<T> diagonal) {
 	isize n = diagonal.dim;
 	for (isize k = 0; k < n; ++k) {
-		perm_indices[k] = i32(k);
+		perm_indices[k] = k;
 	}
 
 	{
@@ -45,7 +47,7 @@ LDLT_NO_INLINE void compute_permutation(
 		std::sort(
 				perm_indices,
 				perm_indices + n,
-				[diagonal_data, stride](i32 i, i32 j) noexcept -> bool {
+				[diagonal_data, stride](isize i, isize j) noexcept -> bool {
 					using std::fabs;
 					auto lhs = fabs(diagonal_data[stride * i]);
 					auto rhs = fabs(diagonal_data[stride * j]);
@@ -56,7 +58,7 @@ LDLT_NO_INLINE void compute_permutation(
 				});
 	}
 
-	for (i32 k = 0; k < n; ++k) {
+	for (isize k = 0; k < n; ++k) {
 		perm_inv_indices[perm_indices[k]] = k;
 	}
 }
@@ -91,7 +93,7 @@ struct apply_perm_rows {
 	   isize in_stride,
 	   isize nrows,
 	   isize ncols,
-	   i32 const* perm_indices,
+	   isize const* perm_indices,
 	   i32 sym) noexcept {
 
 		auto info = detail::perm_helper(sym, nrows);
@@ -130,7 +132,7 @@ struct apply_perm_rows {
 template <typename T>
 void apply_permutation_sym_work(
 		MatrixViewMut<T, colmajor> mat,
-		i32 const* perm_indices,
+		isize const* perm_indices,
 		MatrixViewMut<T, colmajor> work,
 		i32 sym) {
 	isize n = mat.rows;
