@@ -6,7 +6,7 @@
 #include "ldlt/factorize.hpp"
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
-#include <cassert>
+#include <iostream>
 
 namespace ldlt {
 
@@ -15,6 +15,15 @@ LDLT_DEFINE_TAG(reserve_uninit, ReserveUninit);
 
 inline void unimplemented() {
 	std::terminate();
+}
+template <typename T>
+inline void dump_array(T const* data, usize len) {
+	std::cout << '{';
+	for (usize i = 0; i < len; ++i) {
+		std::cout << data[i];
+		std::cout << ',';
+	}
+	std::cout << "}\n";
 }
 
 namespace detail {
@@ -90,6 +99,19 @@ public:
 
 	auto p() -> Perm { return Perm(VecMapISize(perm.data(), _l.rows())); }
 	auto pt() -> Perm { return Perm(VecMapISize(perm_inv.data(), _l.rows())); }
+
+	auto reconstructed_matrix() const -> ColMat {
+		auto A =(_l * _d.asDiagonal() * _l.transpose()).eval() ; 
+		isize dim = _d.rows();
+		auto tmp = ColMat(dim, dim) ; 
+		for (isize i = 0 ; i< dim ; i++){
+			tmp.row(i) = A.row(perm_inv[i]) ; 
+		}
+		for (isize i = 0 ; i<dim ; i++){
+			A.col(i) = tmp.col(perm_inv[i]) ; 
+		}
+		return A ; 
+	}
 
 	auto l() const noexcept -> LView {
 		return Eigen::Map< //
@@ -190,7 +212,7 @@ public:
 		rank1_update( //
 				ld,
 				ld.as_const(),
-				z_work,
+				z_work.as_const(),
 				alpha);
 	}
 
@@ -201,6 +223,8 @@ public:
 
 		// TODO: choose better insertion slot
 		isize n = isize(perm.size());
+		//dump_array(perm.data(), perm.size());
+		//dump_array(perm_inv.data(), perm_inv.size());
 
 		// FIXME: allow insertions anywhere
 		if (i != n) {
@@ -223,20 +247,26 @@ public:
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
-			perm.push_back(n + 1);
-			perm_inv.push_back(n + 1);
+			perm.push_back(n);
+			perm_inv.push_back(n);
 		}
+		//dump_array(perm.data(), perm.size());
+		//dump_array(perm_inv.data(), perm_inv.size());
 	}
 
 	void delete_at(isize i) {
 		// delete corresponding row/col after permutation
 		// modify permutation
+		//dump_array(perm.data(), perm.size());
+		//dump_array(perm_inv.data(), perm_inv.size());
 
 		isize n = isize(perm.size());
 		isize perm_i = perm_inv[usize(i)];
 
 		// FIXME: handle general case
 		if (i != perm_i) {
+			std::cout << i << '\n';
+			std::cout << perm_i << '\n';
 			unimplemented();
 		}
 
@@ -265,6 +295,9 @@ public:
 				--perm_inv[usize(k)];
 			}
 		}
+		//dump_array(perm.data(), perm.size());
+		//dump_array(perm_inv.data(), perm_inv.size());
+
 	}
 };
 
