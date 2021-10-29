@@ -101,16 +101,16 @@ public:
 	auto pt() -> Perm { return Perm(VecMapISize(perm_inv.data(), _l.rows())); }
 
 	auto reconstructed_matrix() const -> ColMat {
-		auto A =(_l * _d.asDiagonal() * _l.transpose()).eval() ; 
+		auto A = (_l * _d.asDiagonal() * _l.transpose()).eval();
 		isize dim = _d.rows();
-		auto tmp = ColMat(dim, dim) ; 
-		for (isize i = 0 ; i< dim ; i++){
-			tmp.row(i) = A.row(perm_inv[i]) ; 
+		auto tmp = ColMat(dim, dim);
+		for (isize i = 0; i < dim; i++) {
+			tmp.row(i) = A.row(perm_inv[usize(i)]);
 		}
-		for (isize i = 0 ; i<dim ; i++){
-			A.col(i) = tmp.col(perm_inv[i]) ; 
+		for (isize i = 0; i < dim; i++) {
+			A.col(i) = tmp.col(perm_inv[usize(i)]);
 		}
-		return A ; 
+		return A;
 	}
 
 	auto l() const noexcept -> LView {
@@ -223,8 +223,8 @@ public:
 
 		// TODO: choose better insertion slot
 		isize n = isize(perm.size());
-		//dump_array(perm.data(), perm.size());
-		//dump_array(perm_inv.data(), perm_inv.size());
+		// dump_array(perm.data(), perm.size());
+		// dump_array(perm_inv.data(), perm_inv.size());
 
 		// FIXME: allow insertions anywhere
 		if (i != n) {
@@ -232,6 +232,13 @@ public:
 		}
 
 		{
+			LDLT_WORKSPACE_MEMORY(
+					permuted_a, Uninit, Vec(n + 1), LDLT_CACHELINE_BYTES, T);
+			for (isize k = 0; k < n; ++k) {
+				permuted_a(k) = a(perm[usize(k)]);
+			}
+			permuted_a(n) = a(n);
+
 			auto new_l = ColMat(n + 1, n + 1);
 			auto new_d = Vec(n + 1);
 			row_append(
@@ -243,22 +250,22 @@ public:
 							{from_eigen, _l},
 							{from_eigen, _d},
 					},
-					{from_eigen, a});
+					permuted_a.as_const());
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
 			perm.push_back(n);
 			perm_inv.push_back(n);
 		}
-		//dump_array(perm.data(), perm.size());
-		//dump_array(perm_inv.data(), perm_inv.size());
+		// dump_array(perm.data(), perm.size());
+		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 
 	void delete_at(isize i) {
 		// delete corresponding row/col after permutation
 		// modify permutation
-		//dump_array(perm.data(), perm.size());
-		//dump_array(perm_inv.data(), perm_inv.size());
+		// dump_array(perm.data(), perm.size());
+		// dump_array(perm_inv.data(), perm_inv.size());
 
 		isize n = isize(perm.size());
 		isize perm_i = perm_inv[usize(i)];
@@ -295,9 +302,8 @@ public:
 				--perm_inv[usize(k)];
 			}
 		}
-		//dump_array(perm.data(), perm.size());
-		//dump_array(perm_inv.data(), perm_inv.size());
-
+		// dump_array(perm.data(), perm.size());
+		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 };
 
