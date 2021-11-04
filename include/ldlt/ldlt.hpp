@@ -301,10 +301,6 @@ public:
 					--pinv_k;
 				}
 			}
-
-			// for (isize k = 0; k < n - 1; ++k) {
-			// 	perm_inv[usize(perm[usize(k)])] = k;
-			// }
 		}
 	}
 };
