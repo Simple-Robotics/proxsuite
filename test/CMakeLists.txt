@@ -33,6 +33,10 @@ add_executable(.test.permute.row_insert src/row_add_with_permut.cpp)
 doctest_discover_tests(.test.permute.row_insert)
 target_link_libraries(.test.permute.row_insert ${LDLT_TEST_LIBS})
 
+add_executable(.test.permute.row_delete src/ldlt_delete.cpp)
+doctest_discover_tests(.test.permute.row_delete)
+target_link_libraries(.test.permute.row_delete ${LDLT_TEST_LIBS})
+
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
 doctest_discover_tests(.test.factorize.roundtrip)
 target_link_libraries(.test.factorize.roundtrip ${LDLT_TEST_LIBS})
@@ -103,6 +107,7 @@ add_custom_target(
           .test.permute.apply
           .test.permute.solve
           .test.permute.row_insert
+          .test.permute.row_delete
           .test.factorize.roundtrip
           .test.solve
           .test.update.roundtrip

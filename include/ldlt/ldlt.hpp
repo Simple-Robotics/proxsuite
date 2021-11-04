@@ -18,10 +18,10 @@ inline void unimplemented() {
 }
 template <typename T>
 inline void dump_array(T const* data, usize len) {
-	std::cout << '{';
+	std::cout << "{";
 	for (usize i = 0; i < len; ++i) {
 		std::cout << data[i];
-		std::cout << ',';
+		std::cout << ", ";
 	}
 	std::cout << "}\n";
 }
@@ -39,7 +39,6 @@ auto make_unique_array_uninit(isize n) -> std::unique_ptr<T[]> {
 
 template <typename T>
 struct Ldlt {
-private:
 	static constexpr auto dyn = Eigen::Dynamic;
 	using ColMat = Eigen::Matrix<T, dyn, dyn, Eigen::ColMajor>;
 	using RowMat = Eigen::Matrix<T, dyn, dyn, Eigen::RowMajor>;
@@ -101,13 +100,16 @@ public:
 	auto pt() -> Perm { return Perm(VecMapISize(perm_inv.data(), _l.rows())); }
 
 	auto reconstructed_matrix() const -> ColMat {
-		auto A = (_l * _d.asDiagonal() * _l.transpose()).eval();
-		isize dim = _d.rows();
-		auto tmp = ColMat(dim, dim);
-		for (isize i = 0; i < dim; i++) {
+		isize n = _d.rows();
+		auto tmp = ColMat(n, n);
+    tmp = l();
+    tmp = tmp * _d.asDiagonal();
+    auto A = ColMat(tmp * lt());
+
+		for (isize i = 0; i < n; i++) {
 			tmp.row(i) = A.row(perm_inv[usize(i)]);
 		}
-		for (isize i = 0; i < dim; i++) {
+		for (isize i = 0; i < n; i++) {
 			A.col(i) = tmp.col(perm_inv[usize(i)]);
 		}
 		return A;
@@ -153,8 +155,8 @@ public:
 		if (_l.rows() != mat.rows()) {
 			_d.resize(n);
 			_l.resize(n, n);
-			perm.resize(n);
-			perm_inv.resize(n);
+			perm.resize(usize(n));
+			perm_inv.resize(usize(n));
 		}
 		if (_l.data() != mat.data()) {
 			_l = mat;
@@ -225,8 +227,6 @@ public:
 
 		// TODO: choose better insertion slot
 		isize n = isize(perm.size());
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 
 		// FIXME: allow insertions anywhere
 		if (i != n) {
@@ -259,29 +259,19 @@ public:
 			perm.push_back(n);
 			perm_inv.push_back(n);
 		}
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 
 	void delete_at(isize i) {
 		// delete corresponding row/col after permutation
 		// modify permutation
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 
 		isize n = isize(perm.size());
-		isize perm_i = perm_inv[usize(i)];
-
-		// FIXME: handle general case
-		if (i != perm_i) {
-			std::cout << i << '\n';
-			std::cout << perm_i << '\n';
-			unimplemented();
-		}
+		isize pinv_i = perm_inv[usize(i)];
 
 		{
 			auto new_l = ColMat(n - 1, n - 1);
 			auto new_d = Vec(n - 1);
+
 			row_delete(
 					LdltViewMut<T>{
 							{from_eigen, new_l},
@@ -291,21 +281,30 @@ public:
 							{from_eigen, _l},
 							{from_eigen, _d},
 					},
-					perm_i);
+					pinv_i);
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
 
-			perm.erase(perm.begin() + i);
+			perm.erase(perm.begin() + pinv_i);
 			perm_inv.erase(perm_inv.begin() + i);
 
-			for (isize k = i; k < n - 1; ++k) {
-				--perm[usize(k)];
-				--perm_inv[usize(k)];
+			for (isize k = 0; k < n - 1; ++k) {
+				auto& p_k = perm[usize(k)];
+				auto& pinv_k = perm_inv[usize(k)];
+
+				if (p_k > i) {
+					--p_k;
+				}
+				if (pinv_k > pinv_i) {
+					--pinv_k;
+				}
 			}
+
+			// for (isize k = 0; k < n - 1; ++k) {
+			// 	perm_inv[usize(perm[usize(k)])] = k;
+			// }
 		}
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 };
 
