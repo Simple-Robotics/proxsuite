@@ -76,7 +76,7 @@ struct StrView {
 
 	template <typename T>
 	StrView(FromByteRepr /*tag*/, T const& val) noexcept
-			: data{reinterpret_cast<char const*>(val)}, size{sizeof(T)} {}
+			: data{&reinterpret_cast<char const&>(val)}, size{sizeof(T)} {}
 
 	template <size_t N>
 	constexpr StrView(FromLiteral /*tag*/, char const (&literal)[N]) noexcept
