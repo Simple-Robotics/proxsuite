@@ -187,7 +187,7 @@ auto npy_load_vec(std::string const& fname)
 			std::addressof(out),
 			+[](void* vec) -> void* { return static_cast<Vec*>(vec)->data(); },
 			+[](void* vec, usize rows) -> void {
-				static_cast<Vec*>(vec)->resize(rows, 1);
+				static_cast<Vec*>(vec)->resize(Eigen::Index(rows), 1);
 			});
 
 	if (res == Res::failed_file) {
@@ -225,7 +225,7 @@ auto npy_load_mat(std::string const& fname)
 			std::addressof(out),
 			+[](void* mat) -> void* { return static_cast<Mat*>(mat)->data(); },
 			+[](void* mat, usize rows, usize cols) -> void {
-				static_cast<Mat*>(mat)->resize(rows, cols);
+				static_cast<Mat*>(mat)->resize(Eigen::Index(rows), Eigen::Index(cols));
 			});
 
 	if (res == Res::failed_file) {
