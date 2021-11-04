@@ -29,13 +29,13 @@ add_executable(.test.permute.apply src/permutation_apply.cpp)
 doctest_discover_tests(.test.permute.apply)
 target_link_libraries(.test.permute.apply ${LDLT_TEST_LIBS})
 
-add_executable(.test.permute.row_insert src/row_add_with_permut.cpp)
-doctest_discover_tests(.test.permute.row_insert)
-target_link_libraries(.test.permute.row_insert ${LDLT_TEST_LIBS})
+add_executable(.test.permute.insert src/ldlt_insert.cpp)
+doctest_discover_tests(.test.permute.insert)
+target_link_libraries(.test.permute.insert ${LDLT_TEST_LIBS})
 
-add_executable(.test.permute.row_delete src/ldlt_delete.cpp)
-doctest_discover_tests(.test.permute.row_delete)
-target_link_libraries(.test.permute.row_delete ${LDLT_TEST_LIBS})
+add_executable(.test.permute.delete src/ldlt_delete.cpp)
+doctest_discover_tests(.test.permute.delete)
+target_link_libraries(.test.permute.delete ${LDLT_TEST_LIBS})
 
 add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
 doctest_discover_tests(.test.factorize.roundtrip)
@@ -57,13 +57,13 @@ add_executable(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
 doctest_discover_tests(.test.mu_update.roundtrip)
 target_link_libraries(.test.mu_update.roundtrip ${LDLT_TEST_LIBS})
 
-add_executable(.test.row_delete src/row_delete.cpp)
-doctest_discover_tests(.test.row_delete)
-target_link_libraries(.test.row_delete ${LDLT_TEST_LIBS})
+add_executable(.test.delete src/delete.cpp)
+doctest_discover_tests(.test.delete)
+target_link_libraries(.test.delete ${LDLT_TEST_LIBS})
 
-add_executable(.test.row_append src/row_append.cpp)
-doctest_discover_tests(.test.row_append)
-target_link_libraries(.test.row_append ${LDLT_TEST_LIBS})
+add_executable(.test.append src/append.cpp)
+doctest_discover_tests(.test.append)
+target_link_libraries(.test.append ${LDLT_TEST_LIBS})
 
 add_executable(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
 doctest_discover_tests(.test.ldlt_wrapper.solve)
@@ -106,15 +106,15 @@ add_custom_target(
   DEPENDS .test.permute.compute
           .test.permute.apply
           .test.permute.solve
-          .test.permute.row_insert
-          .test.permute.row_delete
+          .test.permute.insert
+          .test.permute.delete
           .test.factorize.roundtrip
           .test.solve
           .test.update.roundtrip
           .test.mu_update.roundtrip
           .test.ldlt_wrapper.solve
-          .test.row_delete
-          .test.row_append
+          .test.delete
+          .test.append
           .test.precond.ruiz
           .test.qp_eq.cpp
 )
