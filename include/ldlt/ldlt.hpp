@@ -153,6 +153,8 @@ public:
 		if (_l.rows() != mat.rows()) {
 			_d.resize(n);
 			_l.resize(n, n);
+			perm.resize(n);
+			perm_inv.resize(n);
 		}
 		if (_l.data() != mat.data()) {
 			_l = mat;
