@@ -21,11 +21,11 @@ DOCTEST_TEST_CASE("append") {
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_m_init, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
 			(_m_to_get_, Init, Mat(dim + 1, dim + 1), LDLT_CACHELINE_BYTES, T),
-			(row_, Init, Vec(dim + 1), LDLT_CACHELINE_BYTES, T));
+			(_col, Init, Vec(dim + 1), LDLT_CACHELINE_BYTES, T));
 
 	auto m_init = _m_init.to_eigen();
 	auto m_to_get = _m_to_get_.to_eigen();
-	auto col = row_.to_eigen();
+	auto col = _col.to_eigen();
 
 	m_init.diagonal().setRandom();
 	col.setRandom();
