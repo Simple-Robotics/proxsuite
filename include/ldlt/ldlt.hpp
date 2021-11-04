@@ -39,41 +39,42 @@ auto make_unique_array_uninit(isize n) -> std::unique_ptr<T[]> {
 
 template <typename T>
 struct Ldlt {
-	static constexpr auto dyn = Eigen::Dynamic;
-	using ColMat = Eigen::Matrix<T, dyn, dyn, Eigen::ColMajor>;
-	using RowMat = Eigen::Matrix<T, dyn, dyn, Eigen::RowMajor>;
-	using Vec = Eigen::Matrix<T, dyn, 1>;
+private:
+	static constexpr auto DYN = Eigen::Dynamic;
+	using ColMat = Eigen::Matrix<T, DYN, DYN, Eigen::ColMajor>;
+	using RowMat = Eigen::Matrix<T, DYN, DYN, Eigen::RowMajor>;
+	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	using LView = Eigen::TriangularView<
 			Eigen::Map< //
 					ColMat const,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyLower>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitLower>;
 	using LViewMut = Eigen::TriangularView<
 			Eigen::Map< //
 					ColMat,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyLower>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitLower>;
 
 	using LTView = Eigen::TriangularView<
 			Eigen::Map< //
 					RowMat const,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyUpper>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitUpper>;
 	using LTViewMut = Eigen::TriangularView<
 			Eigen::Map< //
 					RowMat,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyUpper>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitUpper>;
 
 	using VecMap = Eigen::Map<Vec const>;
 	using VecMapMut = Eigen::Map<Vec>;
 
-	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, dyn, 1> const>;
+	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
 	using Perm = Eigen::PermutationWrapper<VecMapISize>;
 
 	ColMat _l;
@@ -102,9 +103,9 @@ public:
 	auto reconstructed_matrix() const -> ColMat {
 		isize n = _d.rows();
 		auto tmp = ColMat(n, n);
-    tmp = l();
-    tmp = tmp * _d.asDiagonal();
-    auto A = ColMat(tmp * lt());
+		tmp = l();
+		tmp = tmp * _d.asDiagonal();
+		auto A = ColMat(tmp * lt());
 
 		for (isize i = 0; i < n; i++) {
 			tmp.row(i) = A.row(perm_inv[usize(i)]);
@@ -119,33 +120,33 @@ public:
 		return Eigen::Map< //
 							 ColMat const,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyLower>();
+		    .template triangularView<Eigen::UnitLower>();
 	}
 	auto l_mut() noexcept -> LViewMut {
 		return Eigen::Map< //
 							 ColMat,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyLower>();
+		    .template triangularView<Eigen::UnitLower>();
 	}
 	auto lt() const noexcept -> LTView {
 		return Eigen::Map< //
 							 RowMat const,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyUpper>();
+		    .template triangularView<Eigen::UnitUpper>();
 	}
 	auto lt_mut() noexcept -> LTViewMut {
 		return Eigen::Map< //
 							 RowMat,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyUpper>();
+		    .template triangularView<Eigen::UnitUpper>();
 	}
 	auto d() const noexcept -> VecMap { return VecMap(_d.data(), _d.rows()); }
 	auto d_mut() noexcept -> VecMapMut { return VecMapMut(_d.data(), _d.rows()); }

@@ -12,7 +12,7 @@
 using namespace ldlt;
 using T = f64;
 
-DOCTEST_TEST_CASE("row add") {
+DOCTEST_TEST_CASE("append") {
 
 	using namespace ldlt::tags;
 
@@ -40,7 +40,7 @@ DOCTEST_TEST_CASE("row add") {
 	DOCTEST_CHECK((m_to_get - ldl.reconstructed_matrix()).norm() <= eps);
 }
 
-DOCTEST_TEST_CASE("row add Maros example HS118") {
+DOCTEST_TEST_CASE("append Maros example HS118") {
 
 	using namespace ldlt::tags;
 
@@ -48,17 +48,13 @@ DOCTEST_TEST_CASE("row add Maros example HS118") {
 	T eps = T(1e-10);
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_m_init, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_m_to_get_, Uninit, Mat(dim + 1, dim + 1), LDLT_CACHELINE_BYTES, T),
+			(_m_init, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
+			(_m_to_get_, Init, Mat(dim + 1, dim + 1), LDLT_CACHELINE_BYTES, T),
 			(row_, Init, Vec(dim + 1), LDLT_CACHELINE_BYTES, T));
 
 	auto m_init = _m_init.to_eigen();
 	auto m_to_get = _m_to_get_.to_eigen();
 	auto row = row_.to_eigen();
-
-	m_init.setZero();
-	m_to_get.setZero();
-	row.setZero();
 
 	m_init.diagonal() << 0.000201, 0.000201, 0.000301, 0.000201, 0.000201,
 			0.000301, 0.000201, 0.000201, 0.000301, 0.000201, 0.000201, 0.000301,
