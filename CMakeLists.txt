@@ -48,6 +48,7 @@ add_library(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/test/src/cnpy.cpp
 )
 target_compile_options(inria_ldlt PRIVATE "-march=native")
 target_include_directories(
