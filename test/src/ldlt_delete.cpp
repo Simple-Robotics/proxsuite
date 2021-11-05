@@ -6,6 +6,8 @@ using namespace ldlt;
 
 using T = f64;
 TEST_CASE("delete") {
+	T const eps = std::numeric_limits<T>::epsilon() * T(1e3);
+
 	for (isize n = 2; n < 32; ++n) {
 		auto const mat = ldlt_test::rand::positive_definite_rand<T>(n, 1e2);
 
@@ -25,7 +27,7 @@ TEST_CASE("delete") {
 			auto ldl = Ldlt<T>{decompose, mat};
 			ldl.delete_at(i);
 
-			CHECK((mat_reduced - ldl.reconstructed_matrix()).norm() < 1e-10);
+			CHECK((mat_reduced - ldl.reconstructed_matrix()).norm() < eps);
 		}
 	}
 }

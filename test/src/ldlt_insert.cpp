@@ -12,45 +12,51 @@
 using namespace ldlt;
 using T = f64;
 
-DOCTEST_TEST_CASE("append") {
+DOCTEST_TEST_CASE("insert") {
 
 	using namespace ldlt::tags;
 
-	isize dim = 3;
-	T eps = T(1e-10);
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_m_init, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_m_to_get_, Init, Mat(dim + 1, dim + 1), LDLT_CACHELINE_BYTES, T),
-			(_col, Init, Vec(dim + 1), LDLT_CACHELINE_BYTES, T));
+	T const eps = std::numeric_limits<T>::epsilon() * T(1e3);
 
-	auto m_init = _m_init.to_eigen();
-	auto m_to_get = _m_to_get_.to_eigen();
-	auto col = _col.to_eigen();
+	for (isize n = 1; n < 32; ++n) {
+		auto mat = ldlt_test::rand::positive_definite_rand<T>(n, 1e2);
+		auto col = ldlt_test::rand::vector_rand<T>(n + 1);
+		for (isize i = 0; i < n + 1; ++i) {
+			auto mat_target = [&] {
+				auto mat_target = Mat<T, colmajor>(n + 1, n + 1);
+				isize rem = n - i;
 
-	m_init.diagonal().setRandom();
-	col.setRandom();
+				mat_target.topLeftCorner(i, i) = mat.topLeftCorner(i, i);
+				mat_target.bottomLeftCorner(rem, i) = mat.bottomLeftCorner(rem, i);
+				mat_target.topRightCorner(i, rem) = mat.topRightCorner(i, rem);
+				mat_target.bottomRightCorner(rem, rem) =
+						mat.bottomRightCorner(rem, rem);
 
-	m_to_get.topLeftCorner(dim, dim) = m_init;
-	m_to_get.col(dim) = col;
-	m_to_get.row(dim) = col.transpose();
+				mat_target.col(i) = col;
+				mat_target.row(i) = col.transpose();
 
-	auto ldl = ldlt::Ldlt<T>{decompose, m_init};
-	ldl.insert_at(dim, col);
+				return mat_target;
+			}();
 
-	DOCTEST_CHECK((m_to_get - ldl.reconstructed_matrix()).norm() <= eps);
+			auto ldl = ldlt::Ldlt<T>{decompose, mat};
+			ldl.insert_at(i, col);
+
+			DOCTEST_CHECK((mat_target - ldl.reconstructed_matrix()).norm() <= eps);
+		}
+	}
 }
 
 DOCTEST_TEST_CASE("append Maros example HS118") {
 
 	using namespace ldlt::tags;
 
-	isize dim = 15;
+	isize n = 15;
 	T eps = T(1e-10);
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_m_init, Init, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_m_to_get_, Init, Mat(dim + 1, dim + 1), LDLT_CACHELINE_BYTES, T),
-			(row_, Init, Vec(dim + 1), LDLT_CACHELINE_BYTES, T));
+			(_m_init, Init, Mat(n, n), LDLT_CACHELINE_BYTES, T),
+			(_m_to_get_, Init, Mat(n + 1, n + 1), LDLT_CACHELINE_BYTES, T),
+			(row_, Init, Vec(n + 1), LDLT_CACHELINE_BYTES, T));
 
 	auto m_init = _m_init.to_eigen();
 	auto m_to_get = _m_to_get_.to_eigen();
@@ -66,14 +72,14 @@ DOCTEST_TEST_CASE("append Maros example HS118") {
 
 	row << 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.1;
 
-	ldl.insert_at(dim, row);
+	ldl.insert_at(n, row);
 
 	m_to_get.diagonal() << 0.000201, 0.000201, 0.000301, 0.000201, 0.000201,
 			0.000301, 0.000201, 0.000201, 0.000301, 0.000201, 0.000201, 0.000301,
 			0.000201, 0.000201, 0.000301, -0.1;
 
-	m_to_get.block(dim, 0, 1, dim + 1) = row.transpose(); // insert at the end
-	m_to_get.block(0, dim, dim + 1, 1) = row;
+	m_to_get.block(n, 0, 1, n + 1) = row.transpose(); // insert at the end
+	m_to_get.block(0, n, n + 1, 1) = row;
 
 	DOCTEST_CHECK((m_to_get - ldl.reconstructed_matrix()).norm() <= eps);
 }

@@ -6,36 +6,11 @@
 #include "ldlt/factorize.hpp"
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
-#include <iostream>
 
 namespace ldlt {
 
 LDLT_DEFINE_TAG(decompose, Decompose);
 LDLT_DEFINE_TAG(reserve_uninit, ReserveUninit);
-
-inline void unimplemented() {
-	std::terminate();
-}
-template <typename T>
-inline void dump_array(T const* data, usize len) {
-	std::cout << "{";
-	for (usize i = 0; i < len; ++i) {
-		std::cout << data[i];
-		std::cout << ", ";
-	}
-	std::cout << "}\n";
-}
-
-namespace detail {
-template <typename T>
-auto make_unique_array(isize n) -> std::unique_ptr<T[]> {
-	return std::unique_ptr<T[]>(new T[usize(n)]{});
-}
-template <typename T>
-auto make_unique_array_uninit(isize n) -> std::unique_ptr<T[]> {
-	return std::unique_ptr<T[]>(new T[usize(n)]);
-}
-} // namespace detail
 
 template <typename T>
 struct Ldlt {
@@ -229,18 +204,30 @@ public:
 		// TODO: choose better insertion slot
 		isize n = isize(perm.size());
 
-		// FIXME: allow insertions anywhere
-		if (i != n) {
-			unimplemented();
-		}
+		isize i_actual = n;
 
 		{
 			LDLT_WORKSPACE_MEMORY(
 					permuted_a, Uninit, Vec(n + 1), LDLT_CACHELINE_BYTES, T);
+
 			for (isize k = 0; k < n; ++k) {
+				auto& p_k = perm[usize(k)];
+				auto& pinv_k = perm_inv[usize(k)];
+
+				if (p_k >= i) {
+					++p_k;
+				}
+				if (pinv_k >= i_actual) {
+					++pinv_k;
+				}
+			}
+
+			perm.insert(perm.begin() + i_actual, i);
+			perm_inv.insert(perm_inv.begin() + i, i_actual);
+
+			for (isize k = 0; k < n + 1; ++k) {
 				permuted_a(k) = a(perm[usize(k)]);
 			}
-			permuted_a(n) = a(n);
 
 			auto new_l = ColMat(n + 1, n + 1);
 			auto new_d = Vec(n + 1);
@@ -257,8 +244,6 @@ public:
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
-			perm.push_back(n);
-			perm_inv.push_back(n);
 		}
 	}
 
@@ -267,7 +252,7 @@ public:
 		// modify permutation
 
 		isize n = isize(perm.size());
-		isize pinv_i = perm_inv[usize(i)];
+		isize i_actual = perm_inv[usize(i)];
 
 		{
 			auto new_l = ColMat(n - 1, n - 1);
@@ -282,12 +267,12 @@ public:
 							{from_eigen, _l},
 							{from_eigen, _d},
 					},
-					pinv_i);
+					i_actual);
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
 
-			perm.erase(perm.begin() + pinv_i);
+			perm.erase(perm.begin() + i_actual);
 			perm_inv.erase(perm_inv.begin() + i);
 
 			for (isize k = 0; k < n - 1; ++k) {
@@ -297,7 +282,7 @@ public:
 				if (p_k > i) {
 					--p_k;
 				}
-				if (pinv_k > pinv_i) {
+				if (pinv_k > i_actual) {
 					--pinv_k;
 				}
 			}
