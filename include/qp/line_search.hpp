@@ -91,12 +91,11 @@ auto gradient_norm_computation_box(
 
 	// define active set
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			(tmp_u_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
-			(tmp_l_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
-			(active_part_z_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
-			(res_, Init, Vec(dim+n_eq+n_in), LDLT_CACHELINE_BYTES, T)
-	);
-	
+			(tmp_u_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(tmp_l_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(active_part_z_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(res_, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T));
+
 	auto tmp_u = tmp_u_.to_eigen();
 	auto tmp_l = tmp_l_.to_eigen();
 	auto active_part_z = active_part_z_.to_eigen();
@@ -113,27 +112,27 @@ auto gradient_norm_computation_box(
 	auto num_inactive = inactive_set_tmp.count() ;
 	auto num_active_u = active_set_tmp_u.count();
 	auto num_active_l = active_set_tmp_l.count();
-	
-	
+
+
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
-			num_active_u += 1;
-		}
-		if (tmp_l(k) <= T(0.)) {
-			num_active_l += 1;
-		}
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			num_inactive += 1;
-		}
+	  if (tmp_u(k) >= T(0.)) {
+	    num_active_u += 1;
+	  }
+	  if (tmp_l(k) <= T(0.)) {
+	    num_active_l += 1;
+	  }
+	  if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+	    num_inactive += 1;
+	  }
 	}
-	
+
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize), //
-			(_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
-			(_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize)  //
+	    (_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize), //
+	    (_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
+	    (_inactive_set, Init, Vec(num_inactive), LDLT_CACHELINE_BYTES, isize)  //
 	);
 
 	auto active_set_u = _active_set_u.to_eigen();
@@ -143,90 +142,95 @@ auto gradient_norm_computation_box(
 	active_set_u.setZero();
 	isize i_u = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
-			active_set_u(i_u) = k;
-			i_u += 1;
-		}
+	  if (tmp_u(k) >= T(0.)) {
+	    active_set_u(i_u) = k;
+	    i_u += 1;
+	  }
 	}
 
 	active_set_l.setZero();
 	isize i_l = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_l(k) <= T(0.)) {
-			active_set_l(i_l) = k;
-			i_l += 1;
-		}
+	  if (tmp_l(k) <= T(0.)) {
+	    active_set_l(i_l) = k;
+	    i_l += 1;
+	  }
 	}
 
 	isize i_inact = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			inactive_set(i_inact) = k;
-			i_inact += 1;
-		}
+	  if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+	    inactive_set(i_inact) = k;
+	    i_inact += 1;
+	  }
 	}
 	*/
 	// form the gradient
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(n_in);
+	// Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(n_in);
 
 	active_part_z = z_e + alpha * dz;
 	/*
 	for (isize k = 0; k < num_active_u; ++k) {
-		if (active_part_z(active_set_u(k)) < T(0.)) {
-			active_part_z(active_set_u(k)) = T(0.);
-		}
+	  if (active_part_z(active_set_u(k)) < T(0.)) {
+	    active_part_z(active_set_u(k)) = T(0.);
+	  }
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		if (active_part_z(active_set_l(k)) > T(0.)) {
-			active_part_z(active_set_l(k)) = T(0.);
-		}
+	  if (active_part_z(active_set_l(k)) > T(0.)) {
+	    active_part_z(active_set_l(k)) = T(0.);
+	  }
 	}
 	*/
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> res(dim + n_eq + n_in);
-	//res.setZero();
+	// Eigen::Matrix<T, Eigen::Dynamic, 1> res(dim + n_eq + n_in);
+	// res.setZero();
 
 	res.topRows(dim) = dual_for_eq + alpha * d_dual_for_eq;
 	/*
 	for (isize k = 0; k < num_active_u; ++k) {
-		res.topRows(dim) += active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
+	  res.topRows(dim) += active_part_z(active_set_u(k)) *
+	C_copy.row(active_set_u(k));
 	}
 
 	for (isize k = 0; k < num_active_l; ++k) {
-		res.topRows(dim) += active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
+	  res.topRows(dim) += active_part_z(active_set_l(k)) *
+	C_copy.row(active_set_l(k));
 	}
 	*/
 	res.middleRows(dim, n_eq) = primal_residual_eq + alpha * d_primal_residual_eq;
 	/*
 	for (isize k = 0; k < num_active_u; ++k) {
-		res(dim + n_eq + k) = tmp_u(active_set_u(k)) - active_part_z(active_set_u(k)) / mu_in;
+	  res(dim + n_eq + k) = tmp_u(active_set_u(k)) -
+	active_part_z(active_set_u(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		res(dim + n_eq + num_active_u + k) = tmp_l(active_set_l(k)) - active_part_z(active_set_l(k)) / mu_in;
+	  res(dim + n_eq + num_active_u + k) = tmp_l(active_set_l(k)) -
+	active_part_z(active_set_l(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		res(dim + n_eq + num_active_u + num_active_l + k) = active_part_z(inactive_set(k));
+	  res(dim + n_eq + num_active_u + num_active_l + k) =
+	active_part_z(inactive_set(k));
 	}
 	*/
-	
-	for (isize k = 0 ; k < n_in ; ++k){
 
-		if (tmp_u(k) >= T(0.)){
-			if (active_part_z(k) > T(0.)){
-				res.topRows(dim) += active_part_z(k) * C_copy.row(k) ;
-				res(dim+n_eq+k) = tmp_u(k) - active_part_z(k) / mu_in ;
-			} else{
-				res(dim+n_eq+k) = tmp_u(k) ;
+	for (isize k = 0; k < n_in; ++k) {
+
+		if (tmp_u(k) >= T(0.)) {
+			if (active_part_z(k) > T(0.)) {
+				res.topRows(dim) += active_part_z(k) * C_copy.row(k);
+				res(dim + n_eq + k) = tmp_u(k) - active_part_z(k) / mu_in;
+			} else {
+				res(dim + n_eq + k) = tmp_u(k);
 			}
 
-		} else if (tmp_l(k) <= T(0.)){
-			if (active_part_z(k) < T(0.)){ 
-				res.topRows(dim) += active_part_z(k) * C_copy.row(k) ;
-				res(dim+n_eq+k) = tmp_l(k) - active_part_z(k) / mu_in ;
-			} else{
-				res(dim+n_eq+k) = tmp_l(k) ;
+		} else if (tmp_l(k) <= T(0.)) {
+			if (active_part_z(k) < T(0.)) {
+				res.topRows(dim) += active_part_z(k) * C_copy.row(k);
+				res(dim + n_eq + k) = tmp_l(k) - active_part_z(k) / mu_in;
+			} else {
+				res(dim + n_eq + k) = tmp_l(k);
 			}
-		} else{
-			res(dim+n_eq+k) = active_part_z(k);
+		} else {
+			res(dim + n_eq + k) = active_part_z(k);
 		}
 	}
 
@@ -293,12 +297,12 @@ auto gradient_norm_qpalm_box(
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (active_set_tmp_u(k)) {
-			num_active_u += 1;
-		}
-		if (active_set_tmp_l(k)) {
-			num_active_l += 1;
-		}
+	  if (active_set_tmp_u(k)) {
+	    num_active_u += 1;
+	  }
+	  if (active_set_tmp_l(k)) {
+	    num_active_l += 1;
+	  }
 	}
 
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_u(num_active_u);
@@ -308,14 +312,14 @@ auto gradient_norm_qpalm_box(
 	isize i = 0;
 	isize j = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (active_set_tmp_u(k)) {
-			active_set_u(i) = k;
-			i += 1;
-		}
-		if (active_set_tmp_l(k)) {
-			active_set_l(j) = k;
-			j += 1;
-		}
+	  if (active_set_tmp_u(k)) {
+	    active_set_u(i) = k;
+	    i += 1;
+	  }
+	  if (active_set_tmp_l(k)) {
+	    active_set_l(j) = k;
+	    j += 1;
+	  }
 	}
 
 	// coefficient computation
@@ -331,12 +335,12 @@ auto gradient_norm_qpalm_box(
 	tmp_b0_l.setZero();
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		tmp_a0_u(k) = Cdx(active_set_u(k));
-		tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
+	  tmp_a0_u(k) = Cdx(active_set_u(k));
+	  tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = Cdx(active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
+	  tmp_a0_l(k) = Cdx(active_set_l(k));
+	  tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
 	}
 
 	T a = dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() +
@@ -348,24 +352,22 @@ auto gradient_norm_qpalm_box(
 	      mu_in * (tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u));
 	*/
 
+	T a(dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() + rho * dx_.squaredNorm());
+	T b(x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
+	    mu_eq * (Adx).dot(residual_in_y));
 
-	T a(dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm()+rho * dx_.squaredNorm());
-	T b( x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
-	      mu_eq * (Adx).dot(residual_in_y) ) ; 
+	for (isize k = 0; k < n_in; ++k) {
 
-	for (isize k = 0 ; k < n_in ; ++k){
+		if (tmp_u(k) > T(0.)) {
 
-		if (tmp_u(k) > T(0.)){
+			a += mu_in * pow(Cdx(k), T(2));
+			b += mu_in * Cdx(k) * residual_in_z_u(k);
 
-				a += mu_in * pow(Cdx(k),T(2)) ; 
-				b += mu_in * Cdx(k) * residual_in_z_u(k) ; 
+		} else if (tmp_l(k) < T(0.)) {
 
-		} else if (tmp_l(k) < T(0.)){
-
-				a += mu_in * pow(Cdx(k),T(2)) ; 
-				b += mu_in * Cdx(k) * residual_in_z_l(k) ; 
-
-		} 
+			a += mu_in * pow(Cdx(k), T(2));
+			b += mu_in * Cdx(k) * residual_in_z_l(k);
+		}
 	}
 
 	return a * alpha + b;
@@ -467,25 +469,28 @@ auto gradient_norm_qpalm_box_(
 	tmp_b0_l.setZero();
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		tmp_a0_u(k) = std::sqrt(mu(n_eq+active_set_u(k))) *  Cdx(active_set_u(k));
-		tmp_b0_u(k) = std::sqrt(mu(n_eq+active_set_u(k))) *  residual_in_z_u(active_set_u(k));
+		tmp_a0_u(k) = std::sqrt(mu(n_eq + active_set_u(k))) * Cdx(active_set_u(k));
+		tmp_b0_u(k) = std::sqrt(mu(n_eq + active_set_u(k))) *
+		              residual_in_z_u(active_set_u(k));
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = std::sqrt(mu(n_eq+active_set_l(k))) * Cdx(active_set_l(k));
-		tmp_b0_l(k) = std::sqrt(mu(n_eq+active_set_l(k))) * residual_in_z_l(active_set_l(k));
+		tmp_a0_l(k) = std::sqrt(mu(n_eq + active_set_l(k))) * Cdx(active_set_l(k));
+		tmp_b0_l(k) = std::sqrt(mu(n_eq + active_set_l(k))) *
+		              residual_in_z_l(active_set_l(k));
 	}
 
-	T a = dx_.dot(Hdx) + ((mu.topRows(n_eq).array() * Adx.array()).to_eigen()).dot(Adx) +
+	T a = dx_.dot(Hdx) +
+	      ((mu.topRows(n_eq).array() * Adx.array()).to_eigen()).dot(Adx) +
 	      tmp_a0_u.squaredNorm() + tmp_a0_l.squaredNorm() +
 	      rho * dx_.squaredNorm();
 
-	T b = x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
-	      (Adx).dot(  (residual_in_y.array() * mu.topRows(n_eq).array()).to_eigen()  )+
-	      tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u);
+	T b =
+			x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
+			(Adx).dot((residual_in_y.array() * mu.topRows(n_eq).array()).to_eigen()) +
+			tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u);
 
 	return a * alpha + b;
 }
-
 
 template <typename T, Layout LC>
 auto local_saddle_point_box(
@@ -558,50 +563,50 @@ auto local_saddle_point_box(
 
 	auto tmp_u = residual_in_z_u + alpha * Cdx;
 	auto tmp_l = residual_in_z_l + alpha * Cdx;
-	auto active_part = z_e + alpha * dz ;
+	auto active_part = z_e + alpha * dz;
 	/*
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
-			num_active_u += 1;
-		}
-		if (tmp_l(k) <= T(0.)) {
-			num_active_l += 1;
-		}
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			num_inactive += 1;
-		}
+	  if (tmp_u(k) >= T(0.)) {
+	    num_active_u += 1;
+	  }
+	  if (tmp_l(k) <= T(0.)) {
+	    num_active_l += 1;
+	  }
+	  if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+	    num_inactive += 1;
+	  }
 	}
 
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_u(num_active_u);
 	active_set_u.setZero();
 	isize i_u = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
-			active_set_u(i_u) = k;
-			i_u += 1;
-		}
+	  if (tmp_u(k) >= T(0.)) {
+	    active_set_u(i_u) = k;
+	    i_u += 1;
+	  }
 	}
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_l(num_active_l);
 	active_set_l.setZero();
 	isize i_l = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_l(k) <= T(0.)) {
-			active_set_l(i_l) = k;
-			i_l += 1;
-		}
+	  if (tmp_l(k) <= T(0.)) {
+	    active_set_l(i_l) = k;
+	    i_l += 1;
+	  }
 	}
 
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> inactive_set(num_inactive);
 	inactive_set.setZero();
 	isize i_inact = 0;
 	for (isize k = 0; k < n_in; ++k) {
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			inactive_set(i_inact) = k;
-			i_inact += 1;
-		}
+	  if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+	    inactive_set(i_inact) = k;
+	    i_inact += 1;
+	  }
 	}
 
 	// form the gradient
@@ -611,72 +616,71 @@ auto local_saddle_point_box(
 	dz_p = dz;
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		T test = z_e(active_set_u(k)) + alpha * dz(active_set_u(k));
-		if (test < 0) {
-			z_p(active_set_u(k)) = 0;
-			dz_p(active_set_u(k)) = 0;
-		}
+	  T test = z_e(active_set_u(k)) + alpha * dz(active_set_u(k));
+	  if (test < 0) {
+	    z_p(active_set_u(k)) = 0;
+	    dz_p(active_set_u(k)) = 0;
+	  }
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		T test2 = z_e(active_set_l(k)) + alpha * dz(active_set_l(k));
-		if (test2 > 0) {
-			z_p(active_set_l(k)) = 0;
-			dz_p(active_set_l(k)) = 0;
-		}
+	  T test2 = z_e(active_set_l(k)) + alpha * dz(active_set_l(k));
+	  if (test2 > 0) {
+	    z_p(active_set_l(k)) = 0;
+	    dz_p(active_set_l(k)) = 0;
+	  }
 	}
 	*/
 	// a0 computation
 
 	T a0(d_primal_residual_eq.squaredNorm());
-	T b0( primal_residual_eq.dot(d_primal_residual_eq)) ; 
+	T b0(primal_residual_eq.dot(d_primal_residual_eq));
 	T c0(primal_residual_eq.squaredNorm());
 
-	for (isize k = 0 ; k < n_in ; ++k){
+	for (isize k = 0; k < n_in; ++k) {
 
-		if (tmp_u(k) >= T(0.)){
+		if (tmp_u(k) >= T(0.)) {
 
-			if (active_part(k) > T(0)){
-				
-				d_dual_for_eq += dz(k) * C_copy.row(k);
-				dual_for_eq += z_e(k) * C_copy.row(k);
-				a0 += pow(Cdx(k) - dz(k) / mu_in,T(2)) ; 
-				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_u(k) - z_e(k) / mu_in ) ; 
-				c0 += pow( residual_in_z_u(k) - z_e(k) / mu_in , T(2) ) ; 
-				
-			} else {
-				
-				a0 += pow(Cdx(k),T(2)) ; 
-				b0 += Cdx(k) * residual_in_z_u(k) ; 
-				c0 += pow( residual_in_z_u(k) , T(2) ) ; 
-
-			}
-
-		} else if (tmp_l(k) <= T(0.)){
-			
-			if (active_part(k) < T(0)){
+			if (active_part(k) > T(0)) {
 
 				d_dual_for_eq += dz(k) * C_copy.row(k);
 				dual_for_eq += z_e(k) * C_copy.row(k);
-				a0 += pow(Cdx(k) - dz(k) / mu_in,T(2)) ; 
-				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_l(k) - z_e(k) / mu_in ) ; 
-				c0 += pow( residual_in_z_l(k) - z_e(k) / mu_in , T(2) ) ; 
+				a0 += pow(Cdx(k) - dz(k) / mu_in, T(2));
+				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_u(k) - z_e(k) / mu_in);
+				c0 += pow(residual_in_z_u(k) - z_e(k) / mu_in, T(2));
 
 			} else {
 
-				a0 += pow(Cdx(k),T(2)) ; 
-				b0 += Cdx(k) * residual_in_z_l(k) ; 
-				c0 += pow( residual_in_z_l(k)  , T(2) ) ; 
+				a0 += pow(Cdx(k), T(2));
+				b0 += Cdx(k) * residual_in_z_u(k);
+				c0 += pow(residual_in_z_u(k), T(2));
 			}
 
-		} else{
-				a0 += pow(dz(k),T(2)) ; 
-				b0 += dz(k) * z_e(k) ; 
-				c0 += pow(z_e(k),T(2)) ; 
+		} else if (tmp_l(k) <= T(0.)) {
+
+			if (active_part(k) < T(0)) {
+
+				d_dual_for_eq += dz(k) * C_copy.row(k);
+				dual_for_eq += z_e(k) * C_copy.row(k);
+				a0 += pow(Cdx(k) - dz(k) / mu_in, T(2));
+				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_l(k) - z_e(k) / mu_in);
+				c0 += pow(residual_in_z_l(k) - z_e(k) / mu_in, T(2));
+
+			} else {
+
+				a0 += pow(Cdx(k), T(2));
+				b0 += Cdx(k) * residual_in_z_l(k);
+				c0 += pow(residual_in_z_l(k), T(2));
+			}
+
+		} else {
+			a0 += pow(dz(k), T(2));
+			b0 += dz(k) * z_e(k);
+			c0 += pow(z_e(k), T(2));
 		}
 	}
-	a0 += d_dual_for_eq.squaredNorm() ; 
-	c0 += dual_for_eq.squaredNorm() ; 
-	b0 += d_dual_for_eq.dot(dual_for_eq) ; 
+	a0 += d_dual_for_eq.squaredNorm();
+	c0 += dual_for_eq.squaredNorm();
+	b0 += d_dual_for_eq.dot(dual_for_eq);
 	b0 *= T(2);
 
 	/*
@@ -688,16 +692,16 @@ auto local_saddle_point_box(
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp3(num_inactive);
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		d_dual_for_eq += dz_p(active_set_u(k)) * C_copy.row(active_set_u(k));
-		tmp_d2_u(k) = Cdx(active_set_u(k)) - dz_p(active_set_u(k)) / mu_in;
+	  d_dual_for_eq += dz_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+	  tmp_d2_u(k) = Cdx(active_set_u(k)) - dz_p(active_set_u(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		d_dual_for_eq += dz_p(active_set_l(k)) * C_copy.row(active_set_l(k));
-		tmp_d2_l(k) = Cdx(active_set_l(k)) - dz_p(active_set_l(k)) / mu_in;
+	  d_dual_for_eq += dz_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+	  tmp_d2_l(k) = Cdx(active_set_l(k)) - dz_p(active_set_l(k)) / mu_in;
 	}
 
 	for (isize k = 0; k < num_inactive; ++k) {
-		tmp_d3(k) = dz_p(inactive_set(k));
+	  tmp_d3(k) = dz_p(inactive_set(k));
 	}
 	T a0 = d_dual_for_eq.squaredNorm() + tmp_d2_u.squaredNorm() +
 	       tmp_d2_l.squaredNorm() + tmp_d3.squaredNorm() +
@@ -705,15 +709,15 @@ auto local_saddle_point_box(
 
 	// b0 computation
 	for (isize k = 0; k < num_active_u; ++k) {
-		dual_for_eq += z_p(active_set_u(k)) * C_copy.row(active_set_u(k));
-		tmp2_u(k) = residual_in_z_u(active_set_u(k)) - z_p(active_set_u(k)) / mu_in;
+	  dual_for_eq += z_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+	  tmp2_u(k) = residual_in_z_u(active_set_u(k)) - z_p(active_set_u(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		dual_for_eq += z_p(active_set_l(k)) * C_copy.row(active_set_l(k));
-		tmp2_l(k) = residual_in_z_l(active_set_l(k)) - z_p(active_set_l(k)) / mu_in;
+	  dual_for_eq += z_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+	  tmp2_l(k) = residual_in_z_l(active_set_l(k)) - z_p(active_set_l(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		tmp3(k) = z_p(inactive_set(k));
+	  tmp3(k) = z_p(inactive_set(k));
 	}
 
 	T b0 = 2 * (d_dual_for_eq.dot(dual_for_eq) + tmp_d2_u.dot(tmp2_u) +
@@ -744,7 +748,7 @@ auto local_saddle_point_box(
 
 template <typename T>
 auto initial_guess_line_search_box(
-		VectorView<T> x, 
+		VectorView<T> x,
 		VectorView<T> y,
 		VectorView<T> ze,
 		VectorView<T> dw,
@@ -877,8 +881,8 @@ auto initial_guess_line_search_box(
 	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l =
 			C * x_ - l + z_e / mu_in;
 
-	//std::cout << "residual_in_z_u " << residual_in_z_u << std::endl;
-	//std::cout << "residual_in_z_l " << residual_in_z_l << std::endl;
+	// std::cout << "residual_in_z_u " << residual_in_z_u << std::endl;
+	// std::cout << "residual_in_z_l " << residual_in_z_l << std::endl;
 
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(Cdx(i)) != 0) {
@@ -922,7 +926,7 @@ auto initial_guess_line_search_box(
 		for (auto a : alphas) {
 
 			if (std::abs(a) < T(1.e6)) {
-				
+
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::gradient_norm_computation_box(
 						ze,
@@ -1040,7 +1044,6 @@ auto initial_guess_line_search_box(
 	return alpha;
 }
 
-
 template <typename T, Layout LC>
 auto initial_guess_LS(
 		VectorView<T> ze,
@@ -1052,15 +1055,14 @@ auto initial_guess_LS(
 		VectorView<T> dual_for_eq,
 		VectorView<T> d_primal_residual_eq,
 		VectorView<T> primal_residual_eq,
-		MatrixView<T,LC> C,
+		MatrixView<T, LC> C,
 		T mu_eq,
 		T mu_in,
 		T rho,
 		isize dim,
 		isize n_eq,
 		isize n_in,
-		T ball_radius
-		) -> T {
+		T ball_radius) -> T {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
 	 * (dx,dy,dz) the fonction gives one optimal alpha minimizing the L2 norm
@@ -1147,21 +1149,21 @@ auto initial_guess_LS(
 
 	T alpha = 1;
 
-	T alpha_(0) ; 
+	T alpha_(0);
 	/////////// STEP 1 ////////////
 	// computing the "nodes" alphas which cancel  C.dot(xe+alpha dx) - u,
 	// C.dot(xe+alpha dx) - l and ze + alpha dz  /////////////
 
 	std::list<T> alphas = {}; // TODO use a vector instead of a list
 	// 1.1 add solutions of equation z+alpha dz = 0
-	
+
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(z_e(i)) != 0) {
-			alpha_ = -z_e(i) / (dz_(i) + machine_eps) ; 
-			if (std::abs(alpha_)< ball_radius) {
-				alphas.push_back(alpha_) ; 
+			alpha_ = -z_e(i) / (dz_(i) + machine_eps);
+			if (std::abs(alpha_) < ball_radius) {
+				alphas.push_back(alpha_);
 			}
-			//alphas.push_back(-z_e(i) / (dz_(i) + machine_eps));
+			// alphas.push_back(-z_e(i) / (dz_(i) + machine_eps));
 		}
 	}
 
@@ -1169,21 +1171,23 @@ auto initial_guess_LS(
 	// dx)-l +ze/mu_in = 0
 
 	Eigen::Matrix<T, Eigen::Dynamic, 1> Cdx = Cdx_.to_eigen();
-	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u = residual_in_z_u_.to_eigen();
-	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l = residual_in_z_l_.to_eigen();
+	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u =
+			residual_in_z_u_.to_eigen();
+	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l =
+			residual_in_z_l_.to_eigen();
 
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(Cdx(i)) != 0) {
-			alpha_ = -residual_in_z_u(i) / (Cdx(i) + machine_eps)  ; 
-			if (std::abs(alpha_) < ball_radius){
+			alpha_ = -residual_in_z_u(i) / (Cdx(i) + machine_eps);
+			if (std::abs(alpha_) < ball_radius) {
 				alphas.push_back(alpha_);
 			}
-			alpha_ = -residual_in_z_l(i) / (Cdx(i) + machine_eps) ; 
-			if (std::abs(alpha_)<ball_radius ){
+			alpha_ = -residual_in_z_l(i) / (Cdx(i) + machine_eps);
+			if (std::abs(alpha_) < ball_radius) {
 				alphas.push_back(alpha_);
 			}
-			//alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
-			//alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
+			// alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
+			// alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
 		}
 	}
 
@@ -1204,14 +1208,15 @@ auto initial_guess_LS(
 		std::cout << "Cdx " << Cdx << std::endl;
 		std::cout << "d_dual_for_eq " << d_dual_for_eq.to_eigen() << std::endl;
 		std::cout << "dual_for_eq " << dual_for_eq.to_eigen()  << std::endl;
-		std::cout << "d_primal_residual_eq " << d_primal_residual_eq.to_eigen()  << std::endl;
-		std::cout << "primal_residual_eq " << primal_residual_eq.to_eigen()  << std::endl;
-		std::cout << "dz_ " << dz_ << std::endl;
+		std::cout << "d_primal_residual_eq " << d_primal_residual_eq.to_eigen()  <<
+		std::endl; std::cout << "primal_residual_eq " <<
+		primal_residual_eq.to_eigen()  << std::endl; std::cout << "dz_ " << dz_ <<
+		std::endl;
 		*/
 		for (auto a : alphas) {
 
-			if (std::abs(a) < ball_radius ) {
-				
+			if (std::abs(a) < ball_radius) {
+
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::gradient_norm_computation_box(
 						ze,
@@ -1329,7 +1334,6 @@ auto initial_guess_LS(
 
 	return alpha;
 }
-
 
 template <typename T>
 auto correction_guess_line_search_box(
@@ -1535,30 +1539,38 @@ auto correction_guess_line_search_box(
 		alpha = alpha_last_neg - last_neg_grad *
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
-		//std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos " << alpha_first_pos << " last_neg_grad " << last_neg_grad << " first_pos_grad " <<first_pos_grad<< std::endl;
-	}	
+		// std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos "
+		// << alpha_first_pos << " last_neg_grad " << last_neg_grad << "
+		// first_pos_grad " <<first_pos_grad<< std::endl;
+	}
 	return alpha;
 }
 
-
 template <typename T>
 auto correction_guess_LS(
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Hdx,
+		VectorViewMut<T> Hdx,
+		VectorViewMut<T> Adx,
+		VectorViewMut<T> Cdx,
+		VectorViewMut<T> residual_in_y,
+		VectorViewMut<T> residual_in_z_u,
+		VectorViewMut<T> residual_in_z_l,
 		VectorView<T> dx,
 		VectorView<T> g,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Adx,  
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Cdx,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
 		VectorView<T> x,
 		VectorView<T> xe,
-		VectorView<T> ye, 
+		VectorView<T> ye,
 		VectorView<T> ze,
 		T mu_eq,
 		T mu_in,
 		T rho,
 		isize n_in) -> T {
+
+	auto Hdx_ = Hdx.to_eigen();
+	auto Adx_ = Adx.to_eigen();
+	auto Cdx_ = Cdx.to_eigen();
+	auto residual_in_y_ = residual_in_y.to_eigen();
+	auto residual_in_z_u_ = residual_in_z_u.to_eigen();
+	auto residual_in_z_l_ = residual_in_z_l.to_eigen();
 
 	/*
 	 * The function follows the algorithm designed by qpalm
@@ -1608,8 +1620,9 @@ auto correction_guess_LS(
 	auto x_ = x.to_eigen();
 	auto z_e = ze.to_eigen();
 	auto y_e = ye.to_eigen();
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u = residual_in_z_u.to_eigen();
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l = residual_in_z_l_.to_eigen();
+	// Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u =
+	// residual_in_z_u.to_eigen(); Eigen::Matrix<T, Eigen::Dynamic, 1>
+	// residual_in_z_l = residual_in_z_l_.to_eigen();
 
 	T alpha = 1;
 
@@ -1620,11 +1633,11 @@ auto correction_guess_LS(
 	// dx)-u +ze/mu_in = 0
 
 	for (isize i = 0; i < n_in; i++) {
-		if (Cdx(i) != 0) {
-			alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
+		if (Cdx_(i) != 0) {
+			alphas.push_back(-residual_in_z_u_(i) / (Cdx_(i) + machine_eps));
 		}
-		if (Cdx(i) != 0) {
-			alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
+		if (Cdx_(i) != 0) {
+			alphas.push_back(-residual_in_z_l_(i) / (Cdx_(i) + machine_eps));
 		}
 	}
 
@@ -1665,19 +1678,19 @@ auto correction_guess_LS(
 					T gr = line_search::gradient_norm_qpalm_box(
 							x,
 							xe,
-							//VectorView<T>{from_eigen,dx},
+							// VectorView<T>{from_eigen,dx},
 							dx,
 							mu_eq,
 							mu_in,
 							rho,
 							a,
-							VectorView<T>{from_eigen,Hdx},
+							VectorView<T>{from_eigen, Hdx_},
 							g,
-							VectorView<T>{from_eigen,Adx},
-							VectorView<T>{from_eigen, residual_in_y},
-							VectorView<T>{from_eigen, residual_in_z_u},
-							VectorView<T>{from_eigen, residual_in_z_l},
-							VectorView<T>{from_eigen, Cdx},
+							VectorView<T>{from_eigen, Adx_},
+							VectorView<T>{from_eigen, residual_in_y_},
+							VectorView<T>{from_eigen, residual_in_z_u_},
+							VectorView<T>{from_eigen, residual_in_z_l_},
+							VectorView<T>{from_eigen, Cdx_},
 							n_in);
 
 					if (gr < 0) {
@@ -1704,19 +1717,19 @@ auto correction_guess_LS(
 			T gr = line_search::gradient_norm_qpalm_box(
 					x,
 					xe,
-					//VectorView<T>{from_eigen,dx},
+					// VectorView<T>{from_eigen,dx},
 					dx,
 					mu_eq,
 					mu_in,
 					rho,
 					alpha_last_neg,
-					VectorView<T>{from_eigen,Hdx},
+					VectorView<T>{from_eigen, Hdx_},
 					g,
-					VectorView<T>{from_eigen,Adx},
-					VectorView<T>{from_eigen, residual_in_y},
-					VectorView<T>{from_eigen, residual_in_z_u},
-					VectorView<T>{from_eigen, residual_in_z_l},
-					VectorView<T>{from_eigen, Cdx},
+					VectorView<T>{from_eigen, Adx_},
+					VectorView<T>{from_eigen, residual_in_y_},
+					VectorView<T>{from_eigen, residual_in_z_u_},
+					VectorView<T>{from_eigen, residual_in_z_l_},
+					VectorView<T>{from_eigen, Cdx_},
 					n_in);
 			last_neg_grad = gr;
 		}
@@ -1730,26 +1743,28 @@ auto correction_guess_LS(
 		alpha = alpha_last_neg - last_neg_grad *
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
-		//std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos " << alpha_first_pos << " last_neg_grad " << last_neg_grad << " first_pos_grad " <<first_pos_grad<< std::endl;
-	}	
+		// std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos "
+		// << alpha_first_pos << " last_neg_grad " << last_neg_grad << "
+		// first_pos_grad " <<first_pos_grad<< std::endl;
+	}
 	return alpha;
 }
 
 template <typename T>
 auto correction_guess_LS_QPALM(
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Hdx,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& Hdx,
 		VectorView<T> dx,
 		VectorView<T> g,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Adx,  
-		Eigen::Matrix<T,Eigen::Dynamic,1>& Cdx,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& Adx,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& Cdx,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& residual_in_y,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& residual_in_z_u,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& residual_in_z_l,
 		VectorView<T> x,
 		VectorView<T> xe,
-		VectorView<T> ye, 
+		VectorView<T> ye,
 		VectorView<T> ze,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& mu,  
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& mu,
 		T rho,
 		isize n_in,
 		isize n_eq) -> T {
@@ -1802,8 +1817,9 @@ auto correction_guess_LS_QPALM(
 	auto x_ = x.to_eigen();
 	auto z_e = ze.to_eigen();
 	auto y_e = ye.to_eigen();
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u = residual_in_z_u.to_eigen();
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l = residual_in_z_l_.to_eigen();
+	// Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u =
+	// residual_in_z_u.to_eigen(); Eigen::Matrix<T, Eigen::Dynamic, 1>
+	// residual_in_z_l = residual_in_z_l_.to_eigen();
 
 	T alpha = 1;
 
@@ -1863,9 +1879,9 @@ auto correction_guess_LS_QPALM(
 							mu,
 							rho,
 							a,
-							VectorView<T>{from_eigen,Hdx},
+							VectorView<T>{from_eigen, Hdx},
 							g,
-							VectorView<T>{from_eigen,Adx},
+							VectorView<T>{from_eigen, Adx},
 							VectorView<T>{from_eigen, residual_in_y},
 							VectorView<T>{from_eigen, residual_in_z_u},
 							VectorView<T>{from_eigen, residual_in_z_l},
@@ -1901,9 +1917,9 @@ auto correction_guess_LS_QPALM(
 					mu,
 					rho,
 					alpha_last_neg,
-					VectorView<T>{from_eigen,Hdx},
+					VectorView<T>{from_eigen, Hdx},
 					g,
-					VectorView<T>{from_eigen,Adx},
+					VectorView<T>{from_eigen, Adx},
 					VectorView<T>{from_eigen, residual_in_y},
 					VectorView<T>{from_eigen, residual_in_z_u},
 					VectorView<T>{from_eigen, residual_in_z_l},
@@ -1922,18 +1938,18 @@ auto correction_guess_LS_QPALM(
 		alpha = alpha_last_neg - last_neg_grad *
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
-		//std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos " << alpha_first_pos << " last_neg_grad " << last_neg_grad << " first_pos_grad " <<first_pos_grad<< std::endl;
-	}	
+		// std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos "
+		// << alpha_first_pos << " last_neg_grad " << last_neg_grad << "
+		// first_pos_grad " <<first_pos_grad<< std::endl;
+	}
 	return alpha;
 }
-
 
 void active_set_change(
 		VectorView<bool> new_active_set_,
 		VectorViewMut<isize> current_bijection_map_,
 		isize n_c,
-		isize n_in
-		) {
+		isize n_in) {
 
 	/*
 	 * arguments
@@ -2039,8 +2055,7 @@ void active_set_change_new(
 		qp::QpViewBox<T> qp,
 		T mu_in,
 		T mu_eq,
-		T rho
-		) {
+		T rho) {
 
 	/*
 	 * arguments
@@ -2095,7 +2110,8 @@ void active_set_change_new(
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in);
 	new_bijection_map = current_bijection_map;
 
-	//std::cout << "new_bijection_map before adding " << new_bijection_map << std::endl;
+	// std::cout << "new_bijection_map before adding " << new_bijection_map <<
+	// std::endl;
 
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
@@ -2103,103 +2119,110 @@ void active_set_change_new(
 		if (current_bijection_map(i) < n_c) {
 			if (!new_active_set(i)) {
 				// delete current_bijection_map(i)
-				//std::cout << "delete i " << i << std::endl;
-				//std::cout << "i " << i << " new_bijection_map(i) " << new_bijection_map(i) << std::endl;
-				//std::cout << " i " << i << " ldl.d().size() " << ldl.d().size() <<  " n_c " << n_c_f << std::endl;
-				ldl.delete_at(new_bijection_map(i)+dim+n_eq);
-				//std::cout << "k" << std::endl;
+				// std::cout << "delete i " << i << std::endl;
+				// std::cout << "i " << i << " new_bijection_map(i) " <<
+				// new_bijection_map(i) << std::endl; std::cout << " i " << i << "
+				// ldl.d().size() " << ldl.d().size() <<  " n_c " << n_c_f << std::endl;
+				ldl.delete_at(new_bijection_map(i) + dim + n_eq);
+				// std::cout << "k" << std::endl;
 				for (isize j = 0; j < n_in; j++) {
 					if (new_bijection_map(j) > new_bijection_map(i)) {
 						new_bijection_map(j) -= 1;
 					}
 				}
-				//std::cout << "k2" << std::endl;
+				// std::cout << "k2" << std::endl;
 				n_c_f -= 1;
 				new_bijection_map(i) = n_in - 1;
-				//std::cout << "k3" << std::endl;
+				// std::cout << "k3" << std::endl;
 			}
 		}
 	}
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
-	//std::cout << "new_bijection_map before deleting " << new_bijection_map << std::endl;
+	// std::cout << "new_bijection_map before deleting " << new_bijection_map <<
+	// std::endl;
 	for (isize i = 0; i < n_in; i++) {
 		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
-				// add at the end 
+				// add at the end
 
-				//std::cout << "insert i " << i << std::endl;
-				[&]{
-				LDLT_MULTI_WORKSPACE_MEMORY(
-					(row_,Init, Vec(n_c_f+1+n_eq+dim),LDLT_CACHELINE_BYTES, T)
-				);
-				//std::cout << "add 1" << std::endl;
-				auto row = row_.to_eigen();
-				auto C_ = qp.C.to_eigen();
-				//std::cout << "C_.row(i) " << C_.row(i) << std::endl;
-				row.topRows(dim) = C_.row(i);
-				//row.tail(n_eq+n_c_f+1).setZero();
-				row(dim+n_eq+n_c_f) = -T(1)/mu_in;
-				//std::cout << " added row " << row << std::endl;
-				//std::cout << "add 2" << std::endl; 
-				//std::cout << " i " << i << " ldl.d().size() " << ldl.d().size() <<  " n_c " << n_c_f << std::endl;
-				ldl.insert_at(n_eq+dim+n_c_f, row);
-				//std::cout << "add 3" << std::endl;
-				for (isize j = 0; j < n_in; j++) {
-					if (new_bijection_map(j) < new_bijection_map(i) &&
-					    new_bijection_map(j) >= n_c_f) {
-						new_bijection_map(j) += 1;
+				// std::cout << "insert i " << i << std::endl;
+				[&] {
+					LDLT_MULTI_WORKSPACE_MEMORY(
+							(row_,
+					     Init,
+					     Vec(n_c_f + 1 + n_eq + dim),
+					     LDLT_CACHELINE_BYTES,
+					     T));
+					// std::cout << "add 1" << std::endl;
+					auto row = row_.to_eigen();
+					auto C_ = qp.C.to_eigen();
+					// std::cout << "C_.row(i) " << C_.row(i) << std::endl;
+					row.topRows(dim) = C_.row(i);
+					// row.tail(n_eq+n_c_f+1).setZero();
+					row(dim + n_eq + n_c_f) = -T(1) / mu_in;
+					// std::cout << " added row " << row << std::endl;
+					// std::cout << "add 2" << std::endl;
+					// std::cout << " i " << i << " ldl.d().size() " << ldl.d().size() <<
+					// " n_c " << n_c_f << std::endl;
+					ldl.insert_at(n_eq + dim + n_c_f, row);
+					// std::cout << "add 3" << std::endl;
+					for (isize j = 0; j < n_in; j++) {
+						if (new_bijection_map(j) < new_bijection_map(i) &&
+						    new_bijection_map(j) >= n_c_f) {
+							new_bijection_map(j) += 1;
+						}
 					}
-				}
-				//std::cout << "add 4" << std::endl;
-				new_bijection_map(i) = n_c_f;
-				n_c_f += 1;
+					// std::cout << "add 4" << std::endl;
+					new_bijection_map(i) = n_c_f;
+					n_c_f += 1;
 				}();
 
 				//// TEST
 				/*
 				auto C_p = qp.C.to_eigen().eval();
 				for (isize j = 0;j<n_in ; j++){
-					C_p.row(new_bijection_map(j)) = qp.C.to_eigen().row(j);
+				  C_p.row(new_bijection_map(j)) = qp.C.to_eigen().row(j);
 				}
 
 				LDLT_MULTI_WORKSPACE_MEMORY(
-					(_htot,Uninit, Mat(dim+n_eq+n_c_f, dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T),
-					(Htot_reconstruct_,Uninit, Mat(dim+n_eq+n_c_f, dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T)
+				  (_htot,Uninit, Mat(dim+n_eq+n_c_f,
+				dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T), (Htot_reconstruct_,Uninit,
+				Mat(dim+n_eq+n_c_f, dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T)
 				);
-				
+
 				auto Htot = _htot.to_eigen().eval();
 				auto Htot_reconstruct = Htot_reconstruct_.to_eigen().eval();
 				Htot_reconstruct.setZero();
-				
+
 				{
-						LDLT_DECL_SCOPE_TIMER("in solver", "set H", T);
-						Htot.topLeftCorner(dim, dim) = qp.H.to_eigen();
-						for (isize j = 0; j < dim; ++j) {
-							Htot(j, j) += rho;
-						}
-						
-						Htot.block(0,dim,dim,n_eq) = qp.A.to_eigen().transpose();
-						Htot.block(dim,0,n_eq,dim) = qp.A.to_eigen();
-						Htot.bottomRightCorner(n_eq+n_c_f, n_eq+n_c_f).setZero();
-						{
-							T tmp_eq = -T(1) / mu_eq;
-							T tmp_in = -T(1) / mu_in;
-							for (isize j = 0; j < n_eq; ++j) {
-								Htot(dim + j, dim + j) = tmp_eq;
-							}
-							for (isize j = 0; j < n_c_f; ++j) {
-								Htot(dim + n_eq + j, dim + n_eq + j) = tmp_in;
-							}
-						}
-						for (isize j = 0; j< n_c_f ; ++j){
-							std::cout << "C_p.row(j) manually inserted " << C_p.row(j) << std::endl;
-							Htot.block(j+dim+n_eq,0,1,dim) = C_p.row(j) ; 
-							Htot.block(0,j+dim+n_eq,dim,1) = C_p.transpose().col(j) ; 
-						}
-				} 
-				Htot_reconstruct = ldl.reconstructed_matrix() ; 
+				    LDLT_DECL_SCOPE_TIMER("in solver", "set H", T);
+				    Htot.topLeftCorner(dim, dim) = qp.H.to_eigen();
+				    for (isize j = 0; j < dim; ++j) {
+				      Htot(j, j) += rho;
+				    }
+
+				    Htot.block(0,dim,dim,n_eq) = qp.A.to_eigen().transpose();
+				    Htot.block(dim,0,n_eq,dim) = qp.A.to_eigen();
+				    Htot.bottomRightCorner(n_eq+n_c_f, n_eq+n_c_f).setZero();
+				    {
+				      T tmp_eq = -T(1) / mu_eq;
+				      T tmp_in = -T(1) / mu_in;
+				      for (isize j = 0; j < n_eq; ++j) {
+				        Htot(dim + j, dim + j) = tmp_eq;
+				      }
+				      for (isize j = 0; j < n_c_f; ++j) {
+				        Htot(dim + n_eq + j, dim + n_eq + j) = tmp_in;
+				      }
+				    }
+				    for (isize j = 0; j< n_c_f ; ++j){
+				      std::cout << "C_p.row(j) manually inserted " << C_p.row(j) <<
+				std::endl; Htot.block(j+dim+n_eq,0,1,dim) = C_p.row(j) ;
+				      Htot.block(0,j+dim+n_eq,dim,1) = C_p.transpose().col(j) ;
+				    }
+				}
+				Htot_reconstruct = ldl.reconstructed_matrix() ;
 				std::cout << " Htot " << Htot << std::endl;
 				std::cout << " Htot_reconstruct " << Htot_reconstruct << std::endl;
 				//std::cout << " C_p " << C_p << std::endl;
@@ -2209,7 +2232,7 @@ void active_set_change_new(
 			}
 		}
 	}
-	//std::cout << "ok ls 3 " <<  std::endl;
+	// std::cout << "ok ls 3 " <<  std::endl;
 	n_c = n_c_f;
 	current_bijection_map_.to_eigen() = new_bijection_map;
 }
@@ -2224,9 +2247,8 @@ void active_set_change_QPALM(
 		isize n_eq,
 		ldlt::Ldlt<T>& ldl,
 		qp::QpViewBox<T> qp,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& mu,
-		T rho
-		) {
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& mu,
+		T rho) {
 
 	/*
 	 * arguments
@@ -2286,7 +2308,7 @@ void active_set_change_QPALM(
 	for (isize i = 0; i < n_in; i++) {
 		if (current_bijection_map(i) < n_c) {
 			if (!new_active_set(i)) {
-				ldl.delete_at(new_bijection_map(i)+dim+n_eq);
+				ldl.delete_at(new_bijection_map(i) + dim + n_eq);
 				for (isize j = 0; j < n_in; j++) {
 					if (new_bijection_map(j) > new_bijection_map(i)) {
 						new_bijection_map(j) -= 1;
@@ -2304,29 +2326,31 @@ void active_set_change_QPALM(
 		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
 
-				[&]{
-				LDLT_MULTI_WORKSPACE_MEMORY(
-					(row_,Init, Vec(n_c_f+1+n_eq+dim),LDLT_CACHELINE_BYTES, T)
-				);
-				auto row = row_.to_eigen();
-				auto C_ = qp.C.to_eigen();
-				row.topRows(dim) = C_.row(i);
-				row(dim+n_eq+n_c_f) = -T(1)/mu(n_eq+i);
-				ldl.insert_at(n_eq+dim+n_c_f, row);
-				for (isize j = 0; j < n_in; j++) {
-					if (new_bijection_map(j) < new_bijection_map(i) &&
-					    new_bijection_map(j) >= n_c_f) {
-						new_bijection_map(j) += 1;
+				[&] {
+					LDLT_MULTI_WORKSPACE_MEMORY(
+							(row_,
+					     Init,
+					     Vec(n_c_f + 1 + n_eq + dim),
+					     LDLT_CACHELINE_BYTES,
+					     T));
+					auto row = row_.to_eigen();
+					auto C_ = qp.C.to_eigen();
+					row.topRows(dim) = C_.row(i);
+					row(dim + n_eq + n_c_f) = -T(1) / mu(n_eq + i);
+					ldl.insert_at(n_eq + dim + n_c_f, row);
+					for (isize j = 0; j < n_in; j++) {
+						if (new_bijection_map(j) < new_bijection_map(i) &&
+						    new_bijection_map(j) >= n_c_f) {
+							new_bijection_map(j) += 1;
+						}
 					}
-				}
-				new_bijection_map(i) = n_c_f;
-				n_c_f += 1;
+					new_bijection_map(i) = n_c_f;
+					n_c_f += 1;
 				}();
-
 			}
 		}
 	}
-	//std::cout << "ok ls 3 " <<  std::endl;
+	// std::cout << "ok ls 3 " <<  std::endl;
 	n_c = n_c_f;
 	current_bijection_map_.to_eigen() = new_bijection_map;
 }
