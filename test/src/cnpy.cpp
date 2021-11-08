@@ -48,28 +48,28 @@ struct File {
 	}
 };
 
-void terminate_with_message(char const* msg, size_t len) {
+void terminate_with_message(char const* msg, usize len) {
 	std::fwrite(msg, 1, len, stderr);
 	std::fputc('\n', stderr);
 	std::terminate();
 }
 
 void append_bytes(std::vector<char>& lhs, StrView rhs) {
-	size_t old_size = lhs.size();
+	usize old_size = lhs.size();
 	lhs.resize(old_size + rhs.size);
 	std::memcpy(lhs.data() + old_size, rhs.data, rhs.size);
 }
 void npy_vsave(
 		char const* fname,
 		void const* vdata,
-		size_t sizeof_T,
+		usize sizeof_T,
 		char type_code,
-		size_t const* shape,
-		size_t ndim,
+		usize const* shape,
+		usize ndim,
 		char const* mode) {
 
 	std::FILE* fp{};
-	std::vector<size_t>
+	std::vector<usize>
 			true_data_shape; // if appending, the shape of existing + new data
 
 	if (std::strcmp(mode, "a") == 0) {
@@ -79,7 +79,7 @@ void npy_vsave(
 	if (fp != nullptr) {
 		// file exists. we need to append to it. read the header, modify the array
 		// size
-		size_t word_size = 0;
+		usize word_size = 0;
 		bool fortran_order = false;
 		detail::parse_npy_header(fp, word_size, true_data_shape, fortran_order);
 		CNPY_ASSERT(!fortran_order);
@@ -105,7 +105,7 @@ void npy_vsave(
 			CNPY_ASSERT(true_data_shape.size() != ndim);
 		}
 
-		for (size_t i = 1; i < ndim; i++) {
+		for (usize i = 1; i < ndim; i++) {
 			if (shape[i] != true_data_shape[i]) {
 				std::fprintf( // NOLINT
 						stderr,
@@ -125,8 +125,8 @@ void npy_vsave(
 
 	std::vector<char> header =
 			detail::create_npy_header(true_data_shape, sizeof_T, type_code);
-	size_t nels = size_t(
-			std::accumulate(shape, shape + ndim, 1, std::multiplies<size_t>()));
+	usize nels =
+			usize(std::accumulate(shape, shape + ndim, 1, std::multiplies<usize>()));
 
 	std::fseek(fp, 0, SEEK_SET);
 	std::fwrite(&header[0], sizeof(char), header.size(), fp);
@@ -135,7 +135,7 @@ void npy_vsave(
 	std::fclose(fp);
 }
 auto create_npy_header(
-		std::vector<size_t> const& shape, size_t sizeof_T, char type_code)
+		std::vector<usize> const& shape, usize sizeof_T, char type_code)
 		-> std::vector<char> {
 
 	std::vector<char> dict;
@@ -149,7 +149,7 @@ auto create_npy_header(
 	detail::append_bytes(
 			dict, {FromLiteral{}, "', 'fortran_order': False, 'shape': ("});
 	detail::append_bytes(dict, {FromRange{}, std::to_string(shape[0])});
-	for (size_t i = 1; i < shape.size(); i++) {
+	for (usize i = 1; i < shape.size(); i++) {
 		detail::append_bytes(dict, {FromLiteral{}, ", "});
 		detail::append_bytes(dict, {FromRange{}, std::to_string(shape[i])});
 	}
@@ -160,7 +160,7 @@ auto create_npy_header(
 
 	// pad with spaces so that preamble+dict is modulo 16 bytes. preamble is 10
 	// bytes. dict needs to end with \n
-	size_t remainder = 16 - (10 + dict.size()) % 16;
+	usize remainder = 16 - (10 + dict.size()) % 16;
 	dict.insert(dict.end(), remainder, ' ');
 	dict.back() = '\n';
 
@@ -174,16 +174,16 @@ auto create_npy_header(
 
 void parse_npy_header(
 		std::FILE* fp,
-		size_t& word_size,
-		std::vector<size_t>& shape,
+		usize& word_size,
+		std::vector<usize>& shape,
 		bool& fortran_order) {
 	char buffer[256];
 	CNPY_ASSERT(std::fread(&buffer[0], sizeof(char), 11, fp) == 11);
 	std::string header = std::fgets(&buffer[0], 256, fp);
 	CNPY_ASSERT(header[header.size() - 1] == '\n');
 
-	size_t loc1 = 0;
-	size_t loc2 = 0;
+	usize loc1 = 0;
+	usize loc2 = 0;
 
 	// fortran order
 	loc1 = header.find("fortran_order");
@@ -231,13 +231,13 @@ void parse_npy_header(
 
 auto load_npy_vec(
 		std::FILE* fp,
-		std::size_t sizeof_T,
+		usize sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows)) -> LoadVecResult {
-	std::vector<size_t> shape;
+		void (*resize)(void*, usize rows)) -> LoadVecResult {
+	std::vector<usize> shape;
 
-	size_t word_size{};
+	usize word_size{};
 	bool fortran_order{};
 
 	cnpy::detail::parse_npy_header(fp, word_size, shape, fortran_order);
@@ -248,7 +248,7 @@ auto load_npy_vec(
 		return LoadVecResult(int(LoadVecResult::failed_ndim) + shape.size());
 	}
 
-	size_t nbytes = word_size * shape[0];
+	usize nbytes = word_size * shape[0];
 	resize(vec, shape[0]);
 
 	CNPY_ASSERT(
@@ -259,13 +259,13 @@ auto load_npy_vec(
 
 auto load_npy_mat(
 		std::FILE* fp,
-		std::size_t sizeof_T,
+		usize sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows, size_t cols)) -> LoadMatResult {
-	std::vector<size_t> shape;
+		void (*resize)(void*, usize rows, usize cols)) -> LoadMatResult {
+	std::vector<usize> shape;
 
-	size_t word_size{};
+	usize word_size{};
 	bool fortran_order{};
 
 	cnpy::detail::parse_npy_header(fp, word_size, shape, fortran_order);
@@ -275,7 +275,7 @@ auto load_npy_mat(
 	if (shape.size() != 2) {
 		return LoadMatResult(int(LoadMatResult::failed_ndim) + shape.size());
 	}
-	size_t nbytes = word_size * shape[0] * shape[1];
+	usize nbytes = word_size * shape[0] * shape[1];
 	resize(vec, shape[0], shape[1]);
 
 	CNPY_ASSERT(
@@ -291,10 +291,10 @@ auto load_npy_mat(
 
 auto npy_vload_vec(
 		std::string const& fname,
-		std::size_t sizeof_T,
+		usize sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows)) -> LoadVecResult {
+		void (*resize)(void*, usize rows)) -> LoadVecResult {
 	File fp{fname.c_str(), "rb"}; // NOLINT
 
 	CNPY_ASSERT(fp.ptr != nullptr);
@@ -303,10 +303,10 @@ auto npy_vload_vec(
 
 auto npy_vload_mat(
 		std::string const& fname,
-		std::size_t sizeof_T,
+		usize sizeof_T,
 		void* vec,
 		void* (*ptr)(void*),
-		void (*resize)(void*, size_t rows, size_t cols)) -> LoadMatResult {
+		void (*resize)(void*, usize rows, usize cols)) -> LoadMatResult {
 	File fp{fname.c_str(), "rb"}; // NOLINT
 
 	CNPY_ASSERT(fp.ptr != nullptr);

@@ -21,57 +21,28 @@ set(LDLT_TEST_LIBS
     libinria_ldlt_util
 )
 
-add_executable(.test.permute.compute src/permutation_compute.cpp)
-doctest_discover_tests(.test.permute.compute)
-target_link_libraries(.test.permute.compute ${LDLT_TEST_LIBS})
+macro(ldlt_test testname testpath)
+  add_executable(${testname} ${testpath})
+  doctest_discover_tests(${testname})
+  target_link_libraries(${testname} ${LDLT_TEST_LIBS})
+  set(LDLT_TEST_LIST ${LDLT_TEST_LIST} ${testname})
+endmacro()
 
-add_executable(.test.permute.apply src/permutation_apply.cpp)
-doctest_discover_tests(.test.permute.apply)
-target_link_libraries(.test.permute.apply ${LDLT_TEST_LIBS})
+ldlt_test(.test.permute.compute src/permutation_compute.cpp)
+ldlt_test(.test.permute.apply src/permutation_apply.cpp)
+ldlt_test(.test.permute.insert src/ldlt_insert.cpp)
+ldlt_test(.test.permute.delete src/ldlt_delete.cpp)
+ldlt_test(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
+ldlt_test(.test.solve src/solve.cpp)
+ldlt_test(.test.permute.solve src/permutation_solve.cpp)
+ldlt_test(.test.update.roundtrip src/update_roundtrip.cpp)
+ldlt_test(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
+ldlt_test(.test.delete src/delete.cpp)
+ldlt_test(.test.append src/append.cpp)
+ldlt_test(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
 
-add_executable(.test.permute.row_insert src/row_add_with_permut.cpp)
-doctest_discover_tests(.test.permute.row_insert)
-target_link_libraries(.test.permute.row_insert ${LDLT_TEST_LIBS})
-
-add_executable(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
-doctest_discover_tests(.test.factorize.roundtrip)
-target_link_libraries(.test.factorize.roundtrip ${LDLT_TEST_LIBS})
-
-add_executable(.test.solve src/solve.cpp)
-doctest_discover_tests(.test.solve)
-target_link_libraries(.test.solve ${LDLT_TEST_LIBS})
-
-add_executable(.test.permute.solve src/permutation_solve.cpp)
-doctest_discover_tests(.test.permute.solve)
-target_link_libraries(.test.permute.solve ${LDLT_TEST_LIBS})
-
-add_executable(.test.update.roundtrip src/update_roundtrip.cpp)
-doctest_discover_tests(.test.update.roundtrip)
-target_link_libraries(.test.update.roundtrip ${LDLT_TEST_LIBS})
-
-add_executable(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
-doctest_discover_tests(.test.mu_update.roundtrip)
-target_link_libraries(.test.mu_update.roundtrip ${LDLT_TEST_LIBS})
-
-add_executable(.test.row_delete src/row_delete.cpp)
-doctest_discover_tests(.test.row_delete)
-target_link_libraries(.test.row_delete ${LDLT_TEST_LIBS})
-
-add_executable(.test.row_append src/row_append.cpp)
-doctest_discover_tests(.test.row_append)
-target_link_libraries(.test.row_append ${LDLT_TEST_LIBS})
-
-add_executable(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
-doctest_discover_tests(.test.ldlt_wrapper.solve)
-target_link_libraries(.test.ldlt_wrapper.solve ${LDLT_TEST_LIBS})
-
-add_executable(.test.precond.ruiz src/precond_ruiz.cpp)
-doctest_discover_tests(.test.precond.ruiz)
-target_link_libraries(.test.precond.ruiz ${LDLT_TEST_LIBS})
-
-add_executable(.test.qp_eq.cpp src/qp_eq.cpp)
-doctest_discover_tests(.test.qp_eq.cpp)
-target_link_libraries(.test.qp_eq.cpp ${LDLT_TEST_LIBS})
+ldlt_test(.test.precond.ruiz src/precond_ruiz.cpp)
+ldlt_test(.test.qp_eq.cpp src/qp_eq.cpp)
 
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
@@ -99,17 +70,5 @@ add_dependencies(.test.qp_eq.py .test.qp_eq.py.generated_problems)
 add_custom_target(
   check
   COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-  DEPENDS .test.permute.compute
-          .test.permute.apply
-          .test.permute.solve
-          .test.permute.row_insert
-          .test.factorize.roundtrip
-          .test.solve
-          .test.update.roundtrip
-          .test.mu_update.roundtrip
-          .test.ldlt_wrapper.solve
-          .test.row_delete
-          .test.row_append
-          .test.precond.ruiz
-          .test.qp_eq.cpp
+  DEPENDS ${LDLT_TEST_LIST}
 )

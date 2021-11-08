@@ -6,75 +6,50 @@
 #include "ldlt/factorize.hpp"
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
-#include <iostream>
 
 namespace ldlt {
 
 LDLT_DEFINE_TAG(decompose, Decompose);
 LDLT_DEFINE_TAG(reserve_uninit, ReserveUninit);
 
-inline void unimplemented() {
-	std::terminate();
-}
-template <typename T>
-inline void dump_array(T const* data, usize len) {
-	std::cout << '{';
-	for (usize i = 0; i < len; ++i) {
-		std::cout << data[i];
-		std::cout << ',';
-	}
-	std::cout << "}\n";
-}
-
-namespace detail {
-template <typename T>
-auto make_unique_array(isize n) -> std::unique_ptr<T[]> {
-	return std::unique_ptr<T[]>(new T[usize(n)]{});
-}
-template <typename T>
-auto make_unique_array_uninit(isize n) -> std::unique_ptr<T[]> {
-	return std::unique_ptr<T[]>(new T[usize(n)]);
-}
-} // namespace detail
-
 template <typename T>
 struct Ldlt {
 private:
-	static constexpr auto dyn = Eigen::Dynamic;
-	using ColMat = Eigen::Matrix<T, dyn, dyn, Eigen::ColMajor>;
-	using RowMat = Eigen::Matrix<T, dyn, dyn, Eigen::RowMajor>;
-	using Vec = Eigen::Matrix<T, dyn, 1>;
+	static constexpr auto DYN = Eigen::Dynamic;
+	using ColMat = Eigen::Matrix<T, DYN, DYN, Eigen::ColMajor>;
+	using RowMat = Eigen::Matrix<T, DYN, DYN, Eigen::RowMajor>;
+	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	using LView = Eigen::TriangularView<
 			Eigen::Map< //
 					ColMat const,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyLower>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitLower>;
 	using LViewMut = Eigen::TriangularView<
 			Eigen::Map< //
 					ColMat,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyLower>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitLower>;
 
 	using LTView = Eigen::TriangularView<
 			Eigen::Map< //
 					RowMat const,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyUpper>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitUpper>;
 	using LTViewMut = Eigen::TriangularView<
 			Eigen::Map< //
 					RowMat,
 					Eigen::Unaligned,
-					Eigen::OuterStride<dyn>>,
-			Eigen::StrictlyUpper>;
+					Eigen::OuterStride<DYN>>,
+			Eigen::UnitUpper>;
 
 	using VecMap = Eigen::Map<Vec const>;
 	using VecMapMut = Eigen::Map<Vec>;
 
-	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, dyn, 1> const>;
+	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
 	using Perm = Eigen::PermutationWrapper<VecMapISize>;
 
 	ColMat _l;
@@ -101,13 +76,16 @@ public:
 	auto pt() -> Perm { return Perm(VecMapISize(perm_inv.data(), _l.rows())); }
 
 	auto reconstructed_matrix() const -> ColMat {
-		auto A = (_l * _d.asDiagonal() * _l.transpose()).eval();
-		isize dim = _d.rows();
-		auto tmp = ColMat(dim, dim);
-		for (isize i = 0; i < dim; i++) {
+		isize n = _d.rows();
+		auto tmp = ColMat(n, n);
+		tmp = l();
+		tmp = tmp * _d.asDiagonal();
+		auto A = ColMat(tmp * lt());
+
+		for (isize i = 0; i < n; i++) {
 			tmp.row(i) = A.row(perm_inv[usize(i)]);
 		}
-		for (isize i = 0; i < dim; i++) {
+		for (isize i = 0; i < n; i++) {
 			A.col(i) = tmp.col(perm_inv[usize(i)]);
 		}
 		return A;
@@ -117,33 +95,33 @@ public:
 		return Eigen::Map< //
 							 ColMat const,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyLower>();
+		    .template triangularView<Eigen::UnitLower>();
 	}
 	auto l_mut() noexcept -> LViewMut {
 		return Eigen::Map< //
 							 ColMat,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyLower>();
+		    .template triangularView<Eigen::UnitLower>();
 	}
 	auto lt() const noexcept -> LTView {
 		return Eigen::Map< //
 							 RowMat const,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyUpper>();
+		    .template triangularView<Eigen::UnitUpper>();
 	}
 	auto lt_mut() noexcept -> LTViewMut {
 		return Eigen::Map< //
 							 RowMat,
 							 Eigen::Unaligned,
-							 Eigen::OuterStride<dyn>>(
+							 Eigen::OuterStride<DYN>>(
 							 _l.data(), _l.rows(), _l.cols(), _l.outerStride())
-		    .template triangularView<Eigen::StrictlyUpper>();
+		    .template triangularView<Eigen::UnitUpper>();
 	}
 	auto d() const noexcept -> VecMap { return VecMap(_d.data(), _d.rows()); }
 	auto d_mut() noexcept -> VecMapMut { return VecMapMut(_d.data(), _d.rows()); }
@@ -153,8 +131,8 @@ public:
 		if (_l.rows() != mat.rows()) {
 			_d.resize(n);
 			_l.resize(n, n);
-			perm.resize(n);
-			perm_inv.resize(n);
+			perm.resize(usize(n));
+			perm_inv.resize(usize(n));
 		}
 		if (_l.data() != mat.data()) {
 			_l = mat;
@@ -225,21 +203,31 @@ public:
 
 		// TODO: choose better insertion slot
 		isize n = isize(perm.size());
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 
-		// FIXME: allow insertions anywhere
-		if (i != n) {
-			unimplemented();
-		}
+		isize i_actual = n;
 
 		{
 			LDLT_WORKSPACE_MEMORY(
 					permuted_a, Uninit, Vec(n + 1), LDLT_CACHELINE_BYTES, T);
+
 			for (isize k = 0; k < n; ++k) {
+				auto& p_k = perm[usize(k)];
+				auto& pinv_k = perm_inv[usize(k)];
+
+				if (p_k >= i) {
+					++p_k;
+				}
+				if (pinv_k >= i_actual) {
+					++pinv_k;
+				}
+			}
+
+			perm.insert(perm.begin() + i_actual, i);
+			perm_inv.insert(perm_inv.begin() + i, i_actual);
+
+			for (isize k = 0; k < n + 1; ++k) {
 				permuted_a(k) = a(perm[usize(k)]);
 			}
-			permuted_a(n) = a(n);
 
 			auto new_l = ColMat(n + 1, n + 1);
 			auto new_d = Vec(n + 1);
@@ -256,32 +244,20 @@ public:
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
-			perm.push_back(n);
-			perm_inv.push_back(n);
 		}
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 
 	void delete_at(isize i) {
 		// delete corresponding row/col after permutation
 		// modify permutation
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 
 		isize n = isize(perm.size());
-		isize perm_i = perm_inv[usize(i)];
-
-		// FIXME: handle general case
-		if (i != perm_i) {
-			std::cout << i << '\n';
-			std::cout << perm_i << '\n';
-			unimplemented();
-		}
+		isize i_actual = perm_inv[usize(i)];
 
 		{
 			auto new_l = ColMat(n - 1, n - 1);
 			auto new_d = Vec(n - 1);
+
 			row_delete(
 					LdltViewMut<T>{
 							{from_eigen, new_l},
@@ -291,21 +267,26 @@ public:
 							{from_eigen, _l},
 							{from_eigen, _d},
 					},
-					perm_i);
+					i_actual);
 
 			_l = LDLT_FWD(new_l);
 			_d = LDLT_FWD(new_d);
 
-			perm.erase(perm.begin() + i);
+			perm.erase(perm.begin() + i_actual);
 			perm_inv.erase(perm_inv.begin() + i);
 
-			for (isize k = i; k < n - 1; ++k) {
-				--perm[usize(k)];
-				--perm_inv[usize(k)];
+			for (isize k = 0; k < n - 1; ++k) {
+				auto& p_k = perm[usize(k)];
+				auto& pinv_k = perm_inv[usize(k)];
+
+				if (p_k > i) {
+					--p_k;
+				}
+				if (pinv_k > i_actual) {
+					--pinv_k;
+				}
 			}
 		}
-		// dump_array(perm.data(), perm.size());
-		// dump_array(perm_inv.data(), perm_inv.size());
 	}
 };
 
