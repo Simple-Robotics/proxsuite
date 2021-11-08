@@ -1,6 +1,7 @@
 #ifndef INRIA_LDLT_LINE_SEARCH_HPP_2TUXO5DFS
 #define INRIA_LDLT_LINE_SEARCH_HPP_2TUXO5DFS
 
+#include <ldlt/ldlt.hpp>
 #include "ldlt/views.hpp"
 #include "qp/views.hpp"
 #include <cmath>
@@ -89,16 +90,30 @@ auto gradient_norm_computation_box(
 	auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
 	// define active set
-	auto tmp_u = residual_in_z_u + alpha * Cdx;
-	auto tmp_l = residual_in_z_l + alpha * Cdx;
+	LDLT_MULTI_WORKSPACE_MEMORY(
+			(tmp_u_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
+			(tmp_l_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
+			(active_part_z_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T), 
+			(res_, Init, Vec(dim+n_eq+n_in), LDLT_CACHELINE_BYTES, T)
+	);
+	
+	auto tmp_u = tmp_u_.to_eigen();
+	auto tmp_l = tmp_l_.to_eigen();
+	auto active_part_z = active_part_z_.to_eigen();
+	auto res = res_.to_eigen();
+
+	tmp_u = residual_in_z_u + alpha * Cdx;
+	tmp_l = residual_in_z_l + alpha * Cdx;
 
 	// TODO: buggy?
-	// auto active_set_tmp_u = (tmp_u).array() >= 0 ;
-	// auto active_set_tmp_l = (tmp_l).array() <= 0 ;
-	// auto inactive_set_tmp = !tmp_u && !tmp_l;
-	// auto num_inactive = inactive_set_tmp.count() ;
-	// auto num_active_u = active_set_tmp_u.count();
-	// auto num_active_l = active_set_tmp_l.count();
+	/*
+	auto active_set_tmp_u = (tmp_u).array() >= 0 ;
+	auto active_set_tmp_l = (tmp_l).array() <= 0 ;
+	auto inactive_set_tmp = !active_set_tmp_u && !active_set_tmp_l;
+	auto num_inactive = inactive_set_tmp.count() ;
+	auto num_active_u = active_set_tmp_u.count();
+	auto num_active_l = active_set_tmp_l.count();
+	
 	
 	isize num_active_u = 0;
 	isize num_active_l = 0;
@@ -114,6 +129,7 @@ auto gradient_norm_computation_box(
 			num_inactive += 1;
 		}
 	}
+	
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_active_set_l, Init, Vec(num_active_l), LDLT_CACHELINE_BYTES, isize), //
 			(_active_set_u, Init, Vec(num_active_u), LDLT_CACHELINE_BYTES, isize), //
@@ -149,11 +165,12 @@ auto gradient_norm_computation_box(
 			i_inact += 1;
 		}
 	}
-
+	*/
 	// form the gradient
-	Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(n_in);
 
 	active_part_z = z_e + alpha * dz;
+	/*
 	for (isize k = 0; k < num_active_u; ++k) {
 		if (active_part_z(active_set_u(k)) < T(0.)) {
 			active_part_z(active_set_u(k)) = T(0.);
@@ -164,39 +181,53 @@ auto gradient_norm_computation_box(
 			active_part_z(active_set_l(k)) = T(0.);
 		}
 	}
-
-	Eigen::Matrix<T, Eigen::Dynamic, 1> res(dim + n_eq + n_in);
-	res.setZero();
+	*/
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> res(dim + n_eq + n_in);
+	//res.setZero();
 
 	res.topRows(dim) = dual_for_eq + alpha * d_dual_for_eq;
-	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_u(dim);
-	aux_u.setZero();
+	/*
 	for (isize k = 0; k < num_active_u; ++k) {
-		res.topRows(dim) +=
-				active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
-		aux_u += active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
+		res.topRows(dim) += active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
 	}
 
-	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_l(dim);
-	aux_l.setZero();
 	for (isize k = 0; k < num_active_l; ++k) {
-		res.topRows(dim) +=
-				active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
-		aux_l += active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
+		res.topRows(dim) += active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
 	}
-
+	*/
 	res.middleRows(dim, n_eq) = primal_residual_eq + alpha * d_primal_residual_eq;
+	/*
 	for (isize k = 0; k < num_active_u; ++k) {
-		res(dim + n_eq + k) =
-				tmp_u(active_set_u(k)) - active_part_z(active_set_u(k)) / mu_in;
+		res(dim + n_eq + k) = tmp_u(active_set_u(k)) - active_part_z(active_set_u(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		res(dim + n_eq + num_active_u + k) =
-				tmp_l(active_set_l(k)) - active_part_z(active_set_l(k)) / mu_in;
+		res(dim + n_eq + num_active_u + k) = tmp_l(active_set_l(k)) - active_part_z(active_set_l(k)) / mu_in;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		res(dim + n_eq + num_active_u + num_active_l + k) =
-				active_part_z(inactive_set(k));
+		res(dim + n_eq + num_active_u + num_active_l + k) = active_part_z(inactive_set(k));
+	}
+	*/
+	
+	for (isize k = 0 ; k < n_in ; ++k){
+
+		if (tmp_u(k) >= T(0.)){
+			if (active_part_z(k) > T(0.)){
+				res.topRows(dim) += active_part_z(k) * C_copy.row(k) ;
+				res(dim+n_eq+k) = tmp_u(k) - active_part_z(k) / mu_in ;
+			} else{
+				res(dim+n_eq+k) = tmp_u(k) ;
+			}
+
+		} else if (tmp_l(k) <= T(0.)){
+			if (active_part_z(k) < T(0.)){ 
+				res.topRows(dim) += active_part_z(k) * C_copy.row(k) ;
+				res(dim+n_eq+k) = tmp_l(k) - active_part_z(k) / mu_in ;
+			} else{
+				res(dim+n_eq+k) = tmp_l(k) ;
+			}
+		} else{
+			res(dim+n_eq+k) = active_part_z(k);
+		}
 	}
 
 	return res.squaredNorm();
@@ -219,6 +250,144 @@ auto gradient_norm_qpalm_box(
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> Cdx_,
 		isize n_in) -> T {
+
+	/*
+	 * the function computes the first derivative of the proximal augmented
+	 * lagrangian of the problem
+	 *
+	 * phi(alpha) = f(x_k+alpha dx) + rho/2 |x_k + alpha dx - x_k|**2
+	 *              + mu_eq/2 (|A(x_k+alpha dx)-d+y_k/mu_eq|**2 - |y_k/mu_eq|**2)
+	 *              + mu_in/2 ( | [C(x_k+alpha dx) - u + z_k/mu_in]_+ |**2
+	 *                         +| [C(x_k+alpha dx) - l + z_k/mu_in]_- |**2
+	 *                         - |z_k / mu_in|**2 )
+	 * with f(x) = 0.5 * x^THx + g^Tx
+	 * phi is a second order polynomial in alpha.
+	 * Below are computed its coefficient a0 and b0
+	 * in order to compute the desired gradient a0 * alpha + b0
+	 */
+
+	auto x_ = x.to_eigen();
+	auto xe_ = xe.to_eigen();
+	auto dx_ = dx.to_eigen();
+
+	auto Cdx = Cdx_.to_eigen();
+	auto Hdx = Hdx_.to_eigen();
+	auto Adx = Adx_.to_eigen();
+	auto g = g_.to_eigen();
+	auto residual_in_y = residual_in_y_.to_eigen();
+	auto residual_in_z_u = residual_in_z_u_.to_eigen();
+	auto residual_in_z_l = residual_in_z_l_.to_eigen();
+
+	// define active set
+	auto tmp_u = residual_in_z_u + Cdx * alpha;
+	auto tmp_l = residual_in_z_l + Cdx * alpha;
+
+	/*
+	auto active_set_tmp_u = tmp_u.array() > 0;
+	auto active_set_tmp_l = tmp_l.array() < 0;
+
+	// TODO: buggy
+	// auto num_active_u = active_set_tmp_u.count();
+	// auto num_active_l = active_set_tmp_l.count();
+
+	isize num_active_u = 0;
+	isize num_active_l = 0;
+	for (isize k = 0; k < n_in; ++k) {
+		if (active_set_tmp_u(k)) {
+			num_active_u += 1;
+		}
+		if (active_set_tmp_l(k)) {
+			num_active_l += 1;
+		}
+	}
+
+	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_u(num_active_u);
+	active_set_u.setZero();
+	Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_l(num_active_l);
+	active_set_l.setZero();
+	isize i = 0;
+	isize j = 0;
+	for (isize k = 0; k < n_in; ++k) {
+		if (active_set_tmp_u(k)) {
+			active_set_u(i) = k;
+			i += 1;
+		}
+		if (active_set_tmp_l(k)) {
+			active_set_l(j) = k;
+			j += 1;
+		}
+	}
+
+	// coefficient computation
+
+	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_a0_u(num_active_u);
+	tmp_a0_u.setZero();
+	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_b0_u(num_active_u);
+	tmp_b0_u.setZero();
+
+	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_a0_l(num_active_l);
+	tmp_a0_l.setZero();
+	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_b0_l(num_active_l);
+	tmp_b0_l.setZero();
+
+	for (isize k = 0; k < num_active_u; ++k) {
+		tmp_a0_u(k) = Cdx(active_set_u(k));
+		tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
+	}
+	for (isize k = 0; k < num_active_l; ++k) {
+		tmp_a0_l(k) = Cdx(active_set_l(k));
+		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
+	}
+
+	T a = dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() +
+	      mu_in * (tmp_a0_u.squaredNorm() + tmp_a0_l.squaredNorm()) +
+	      rho * dx_.squaredNorm();
+
+	T b = x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
+	      mu_eq * (Adx).dot(residual_in_y) +
+	      mu_in * (tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u));
+	*/
+
+
+	T a(dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm()+rho * dx_.squaredNorm());
+	T b( x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
+	      mu_eq * (Adx).dot(residual_in_y) ) ; 
+
+	for (isize k = 0 ; k < n_in ; ++k){
+
+		if (tmp_u(k) > T(0.)){
+
+				a += mu_in * pow(Cdx(k),T(2)) ; 
+				b += mu_in * Cdx(k) * residual_in_z_u(k) ; 
+
+		} else if (tmp_l(k) < T(0.)){
+
+				a += mu_in * pow(Cdx(k),T(2)) ; 
+				b += mu_in * Cdx(k) * residual_in_z_l(k) ; 
+
+		} 
+	}
+
+	return a * alpha + b;
+}
+
+template <typename T>
+auto gradient_norm_qpalm_box_(
+		VectorView<T> x,
+		VectorView<T> xe,
+		VectorView<T> dx,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& mu,
+		T rho,
+		T alpha,
+		VectorView<T> Hdx_,
+		VectorView<T> g_,
+		VectorView<T> Adx_,
+		VectorView<T> residual_in_y_,
+		VectorView<T> residual_in_z_u_,
+		VectorView<T> residual_in_z_l_,
+		VectorView<T> Cdx_,
+		isize n_in,
+		isize n_eq) -> T {
 
 	/*
 	 * the function computes the first derivative of the proximal augmented
@@ -298,28 +467,25 @@ auto gradient_norm_qpalm_box(
 	tmp_b0_l.setZero();
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		tmp_a0_u(k) = Cdx(active_set_u(k));
-		tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
+		tmp_a0_u(k) = std::sqrt(mu(n_eq+active_set_u(k))) *  Cdx(active_set_u(k));
+		tmp_b0_u(k) = std::sqrt(mu(n_eq+active_set_u(k))) *  residual_in_z_u(active_set_u(k));
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = Cdx(active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
-	}
-	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = Cdx(active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
+		tmp_a0_l(k) = std::sqrt(mu(n_eq+active_set_l(k))) * Cdx(active_set_l(k));
+		tmp_b0_l(k) = std::sqrt(mu(n_eq+active_set_l(k))) * residual_in_z_l(active_set_l(k));
 	}
 
-	T a = dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() +
-	      mu_in * (tmp_a0_u.squaredNorm() + tmp_a0_l.squaredNorm()) +
+	T a = dx_.dot(Hdx) + ((mu.topRows(n_eq).array() * Adx.array()).to_eigen()).dot(Adx) +
+	      tmp_a0_u.squaredNorm() + tmp_a0_l.squaredNorm() +
 	      rho * dx_.squaredNorm();
 
 	T b = x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
-	      mu_eq * (Adx).dot(residual_in_y) +
-	      mu_in * (tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u));
+	      (Adx).dot(  (residual_in_y.array() * mu.topRows(n_eq).array()).to_eigen()  )+
+	      tmp_a0_l.dot(tmp_b0_l) + tmp_a0_u.dot(tmp_b0_u);
 
 	return a * alpha + b;
 }
+
 
 template <typename T, Layout LC>
 auto local_saddle_point_box(
@@ -392,7 +558,8 @@ auto local_saddle_point_box(
 
 	auto tmp_u = residual_in_z_u + alpha * Cdx;
 	auto tmp_l = residual_in_z_l + alpha * Cdx;
-
+	auto active_part = z_e + alpha * dz ;
+	/*
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
@@ -428,6 +595,7 @@ auto local_saddle_point_box(
 	}
 
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> inactive_set(num_inactive);
+	inactive_set.setZero();
 	isize i_inact = 0;
 	for (isize k = 0; k < n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
@@ -456,9 +624,62 @@ auto local_saddle_point_box(
 			dz_p(active_set_l(k)) = 0;
 		}
 	}
-
+	*/
 	// a0 computation
 
+	T a0(d_primal_residual_eq.squaredNorm());
+	T b0( primal_residual_eq.dot(d_primal_residual_eq)) ; 
+	T c0(primal_residual_eq.squaredNorm());
+
+	for (isize k = 0 ; k < n_in ; ++k){
+
+		if (tmp_u(k) >= T(0.)){
+
+			if (active_part(k) > T(0)){
+				
+				d_dual_for_eq += dz(k) * C_copy.row(k);
+				dual_for_eq += z_e(k) * C_copy.row(k);
+				a0 += pow(Cdx(k) - dz(k) / mu_in,T(2)) ; 
+				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_u(k) - z_e(k) / mu_in ) ; 
+				c0 += pow( residual_in_z_u(k) - z_e(k) / mu_in , T(2) ) ; 
+				
+			} else {
+				
+				a0 += pow(Cdx(k),T(2)) ; 
+				b0 += Cdx(k) * residual_in_z_u(k) ; 
+				c0 += pow( residual_in_z_u(k) , T(2) ) ; 
+
+			}
+
+		} else if (tmp_l(k) <= T(0.)){
+			
+			if (active_part(k) < T(0)){
+
+				d_dual_for_eq += dz(k) * C_copy.row(k);
+				dual_for_eq += z_e(k) * C_copy.row(k);
+				a0 += pow(Cdx(k) - dz(k) / mu_in,T(2)) ; 
+				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_l(k) - z_e(k) / mu_in ) ; 
+				c0 += pow( residual_in_z_l(k) - z_e(k) / mu_in , T(2) ) ; 
+
+			} else {
+
+				a0 += pow(Cdx(k),T(2)) ; 
+				b0 += Cdx(k) * residual_in_z_l(k) ; 
+				c0 += pow( residual_in_z_l(k)  , T(2) ) ; 
+			}
+
+		} else{
+				a0 += pow(dz(k),T(2)) ; 
+				b0 += dz(k) * z_e(k) ; 
+				c0 += pow(z_e(k),T(2)) ; 
+		}
+	}
+	a0 += d_dual_for_eq.squaredNorm() ; 
+	c0 += dual_for_eq.squaredNorm() ; 
+	b0 += d_dual_for_eq.dot(dual_for_eq) ; 
+	b0 *= T(2);
+
+	/*
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d2_u(num_active_u);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d2_l(num_active_l);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d3(num_inactive);
@@ -502,7 +723,7 @@ auto local_saddle_point_box(
 	// c0 computation
 	T c0 = dual_for_eq.squaredNorm() + tmp2_u.squaredNorm() + tmp3.squaredNorm() +
 	       tmp2_l.squaredNorm() + primal_residual_eq.squaredNorm();
-
+	*/
 	// derivation of the loss function value and corresponding argmin alpha
 
 	auto res = T(0);
@@ -523,7 +744,7 @@ auto local_saddle_point_box(
 
 template <typename T>
 auto initial_guess_line_search_box(
-		VectorView<T> x,
+		VectorView<T> x, 
 		VectorView<T> y,
 		VectorView<T> ze,
 		VectorView<T> dw,
@@ -702,7 +923,6 @@ auto initial_guess_line_search_box(
 
 			if (std::abs(a) < T(1.e6)) {
 				
-				//std::cout << "a " << a << std::endl;
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::gradient_norm_computation_box(
 						ze,
@@ -735,10 +955,8 @@ auto initial_guess_line_search_box(
 		std::list<T> interval = alphas;
 		interval.push_front((alphas.front() - T(1)));
 		interval.push_back((alphas.back() + T(1)));
-
 		std::vector<T> intervals{std::begin(interval), std::end(interval)};
 		isize n_ = isize(intervals.size());
-
 		for (isize i = 0; i < n_ - 1; ++i) {
 
 			// 3.2 : it derives the mean node (alpha[i]+alpha[i+1])/2
@@ -766,7 +984,6 @@ auto initial_guess_line_search_box(
 					{from_eigen, primal_residual_eq},
 					a_,
 					n_in);
-
 			// 3.4 if the argmin is within the interval [alpha[i],alpha[i+1]] is
 			// stores the argmin and corresponding L2 norm
 
@@ -841,7 +1058,9 @@ auto initial_guess_LS(
 		T rho,
 		isize dim,
 		isize n_eq,
-		isize n_in) -> T {
+		isize n_in,
+		T ball_radius
+		) -> T {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
 	 * (dx,dy,dz) the fonction gives one optimal alpha minimizing the L2 norm
@@ -928,6 +1147,7 @@ auto initial_guess_LS(
 
 	T alpha = 1;
 
+	T alpha_(0) ; 
 	/////////// STEP 1 ////////////
 	// computing the "nodes" alphas which cancel  C.dot(xe+alpha dx) - u,
 	// C.dot(xe+alpha dx) - l and ze + alpha dz  /////////////
@@ -937,7 +1157,11 @@ auto initial_guess_LS(
 	
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(z_e(i)) != 0) {
-			alphas.push_back(-z_e(i) / (dz_(i) + machine_eps));
+			alpha_ = -z_e(i) / (dz_(i) + machine_eps) ; 
+			if (std::abs(alpha_)< ball_radius) {
+				alphas.push_back(alpha_) ; 
+			}
+			//alphas.push_back(-z_e(i) / (dz_(i) + machine_eps));
 		}
 	}
 
@@ -950,8 +1174,16 @@ auto initial_guess_LS(
 
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(Cdx(i)) != 0) {
-			alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
-			alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
+			alpha_ = -residual_in_z_u(i) / (Cdx(i) + machine_eps)  ; 
+			if (std::abs(alpha_) < ball_radius){
+				alphas.push_back(alpha_);
+			}
+			alpha_ = -residual_in_z_l(i) / (Cdx(i) + machine_eps) ; 
+			if (std::abs(alpha_)<ball_radius ){
+				alphas.push_back(alpha_);
+			}
+			//alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
+			//alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
 		}
 	}
 
@@ -978,10 +1210,7 @@ auto initial_guess_LS(
 		*/
 		for (auto a : alphas) {
 
-			if (std::abs(a) < T(1.e6)) {
-				/*
-				std::cout << "a " << a << std::endl;
-				*/
+			if (std::abs(a) < ball_radius ) {
 				
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::gradient_norm_computation_box(
@@ -1019,14 +1248,12 @@ auto initial_guess_LS(
 
 		std::vector<T> intervals{std::begin(interval), std::end(interval)};
 		isize n_ = isize(intervals.size());
-
 		for (isize i = 0; i < n_ - 1; ++i) {
 
 			// 3.2 : it derives the mean node (alpha[i]+alpha[i+1])/2
 			// the corresponding active sets active_inequalities_u and
 			// active_inequalities_l cap ze and dz is derived through function
 			// local_saddle_point_box
-
 			T a_ = (intervals[usize(i)] + intervals[usize(i + 1)]) / T(2.0);
 
 			// 3.3 on this interval the merit function is a second order
@@ -1068,7 +1295,6 @@ auto initial_guess_LS(
 				}
 			}
 		}
-
 		///////// STEP 4 ///////////
 		// if the list of argmin obtained from intervals is not empty the
 		// algorithm return the one minimizing the most the merit function
@@ -1318,7 +1544,7 @@ auto correction_guess_line_search_box(
 template <typename T>
 auto correction_guess_LS(
 		Eigen::Matrix<T,Eigen::Dynamic,1>& Hdx,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& dx,
+		VectorView<T> dx,
 		VectorView<T> g,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& Adx,  
 		Eigen::Matrix<T,Eigen::Dynamic,1>& Cdx,
@@ -1439,7 +1665,8 @@ auto correction_guess_LS(
 					T gr = line_search::gradient_norm_qpalm_box(
 							x,
 							xe,
-							VectorView<T>{from_eigen,dx},
+							//VectorView<T>{from_eigen,dx},
+							dx,
 							mu_eq,
 							mu_in,
 							rho,
@@ -1477,7 +1704,8 @@ auto correction_guess_LS(
 			T gr = line_search::gradient_norm_qpalm_box(
 					x,
 					xe,
-					VectorView<T>{from_eigen,dx},
+					//VectorView<T>{from_eigen,dx},
+					dx,
 					mu_eq,
 					mu_in,
 					rho,
@@ -1507,11 +1735,205 @@ auto correction_guess_LS(
 	return alpha;
 }
 
+template <typename T>
+auto correction_guess_LS_QPALM(
+		Eigen::Matrix<T,Eigen::Dynamic,1>& Hdx,
+		VectorView<T> dx,
+		VectorView<T> g,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& Adx,  
+		Eigen::Matrix<T,Eigen::Dynamic,1>& Cdx,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
+		VectorView<T> x,
+		VectorView<T> xe,
+		VectorView<T> ye, 
+		VectorView<T> ze,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& mu,  
+		T rho,
+		isize n_in,
+		isize n_eq) -> T {
+
+	/*
+	 * The function follows the algorithm designed by qpalm
+	 * (see algorithm 2 : https://arxiv.org/pdf/1911.02934.pdf)
+	 *
+	 * To do so it does the following step
+	 * 1/
+	 * 1.1/ Store solutions of equations
+	 * C(x+alpha dx) - l + ze/mu_in = 0
+	 * C(x+alpha dx) - u + ze/mu_in = 0
+	 *
+	 * 1.2/ Sort the alpha
+	 * 2/
+	 * 2.1
+	 * For each positive alpha compute the first derivative of
+	 * phi(alpha) = [proximal augmented lagrangian of the subproblem evaluated
+	 *               at x_k + alpha dx]
+	 * using function "gradient_norm_qpalm_box"
+	 * By construction for alpha = 0,
+	 *   phi'(alpha) <= 0
+	 *   and phi'(alpha) goes to infinity with alpha
+	 * hence it cancels uniquely at one optimal alpha*
+	 *
+	 * while phi'(alpha)<=0 store the derivative (noted last_grad_neg) and
+	 * alpha (last_alpha_neg)
+	 * the first time phi'(alpha) > 0 store the derivative (noted
+	 * first_grad_pos) and alpha (first_alpha_pos), and break the loo
+	 *
+	 * 2.2
+	 * If first_alpha_pos corresponds to the first positive alpha of previous
+	 * loop, then do
+	 *   last_alpha_neg = 0
+	 *   last_grad_neg = phi'(0)
+	 * using function "gradient_norm_qpalm_box"
+	 *
+	 * 2.3
+	 * the optimal alpha is within the interval
+	 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi' is
+	 * an affine function in alph
+	 * alpha* = alpha_last_neg
+	 *        - last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+	 *                          (first_pos_grad - last_neg_grad);
+	 */
+
+	T machine_eps = std::numeric_limits<T>::epsilon();
+
+	auto x_ = x.to_eigen();
+	auto z_e = ze.to_eigen();
+	auto y_e = ye.to_eigen();
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_u = residual_in_z_u.to_eigen();
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> residual_in_z_l = residual_in_z_l_.to_eigen();
+
+	T alpha = 1;
+
+	std::list<T> alphas = {};
+
+	///////// STEP 1 /////////
+	// 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
+	// dx)-u +ze/mu_in = 0
+
+	for (isize i = 0; i < n_in; i++) {
+		if (Cdx(i) != 0) {
+			alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
+		}
+		if (Cdx(i) != 0) {
+			alphas.push_back(-residual_in_z_l(i) / (Cdx(i) + machine_eps));
+		}
+	}
+
+	if (!alphas.empty()) {
+		// 1.2 sort the alphas
+		alphas.sort();
+		alphas.unique();
+
+		////////// STEP 2 ///////////
+
+		T last_neg_grad = 0;
+		T alpha_last_neg = 0;
+		T first_pos_grad = 0;
+		T alpha_first_pos = 0;
+
+		for (auto a : alphas) {
+
+			if (a > machine_eps) {
+				if (a < T(1.e21)) {
+
+					/*
+					 * 2.1
+					 * For each positive alpha compute the first derivative of
+					 * phi(alpha) = [proximal augmented lagrangian of the
+					 *               subproblem evaluated at x_k + alpha dx]
+					 * using function "gradient_norm_qpalm_box"
+					 *
+					 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
+					 * phi'(alpha) goes to infinity with alpha hence it cancels
+					 * uniquely at one optimal alpha*
+					 *
+					 * while phi'(alpha)<=0 store the derivative (noted
+					 * last_grad_neg) and alpha (last_alpha_neg
+					 * the first time phi'(alpha) > 0 store the derivative
+					 * (noted first_grad_pos) and alpha (first_alpha_pos), and
+					 * break the loop
+					 */
+					T gr = line_search::gradient_norm_qpalm_box_(
+							x,
+							xe,
+							dx,
+							mu,
+							rho,
+							a,
+							VectorView<T>{from_eigen,Hdx},
+							g,
+							VectorView<T>{from_eigen,Adx},
+							VectorView<T>{from_eigen, residual_in_y},
+							VectorView<T>{from_eigen, residual_in_z_u},
+							VectorView<T>{from_eigen, residual_in_z_l},
+							VectorView<T>{from_eigen, Cdx},
+							n_in,
+							n_eq);
+
+					if (gr < 0) {
+						alpha_last_neg = a;
+						last_neg_grad = gr;
+					} else {
+						first_pos_grad = gr;
+						alpha_first_pos = a;
+						break;
+					}
+				}
+			}
+		}
+
+		/*
+		 * 2.2
+		 * If first_alpha_pos corresponds to the first positive alpha of
+		 * previous loop, then do
+		 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
+		 * "gradient_norm_qpalm_box"
+		 */
+		if (last_neg_grad == T(0)) {
+			alpha_last_neg = T(0);
+			T gr = line_search::gradient_norm_qpalm_box(
+					x,
+					xe,
+					dx,
+					mu,
+					rho,
+					alpha_last_neg,
+					VectorView<T>{from_eigen,Hdx},
+					g,
+					VectorView<T>{from_eigen,Adx},
+					VectorView<T>{from_eigen, residual_in_y},
+					VectorView<T>{from_eigen, residual_in_z_u},
+					VectorView<T>{from_eigen, residual_in_z_l},
+					VectorView<T>{from_eigen, Cdx},
+					n_in,
+					n_eq);
+			last_neg_grad = gr;
+		}
+
+		/*
+		 * 2.3
+		 * the optimal alpha is within the interval
+		 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi'
+		 * is an affine function in alpha
+		 */
+		alpha = alpha_last_neg - last_neg_grad *
+		                             (alpha_first_pos - alpha_last_neg) /
+		                             (first_pos_grad - last_neg_grad);
+		//std::cout << "alpha_last_neg " << alpha_last_neg << " alpha_first_pos " << alpha_first_pos << " last_neg_grad " << last_neg_grad << " first_pos_grad " <<first_pos_grad<< std::endl;
+	}	
+	return alpha;
+}
+
+
 void active_set_change(
 		VectorView<bool> new_active_set_,
 		VectorViewMut<isize> current_bijection_map_,
 		isize n_c,
-		isize n_in) {
+		isize n_in
+		) {
 
 	/*
 	 * arguments
@@ -1571,6 +1993,7 @@ void active_set_change(
 	for (isize i = 0; i < n_in; i++) {
 		if (current_bijection_map(i) < n_c) {
 			if (!new_active_set(i)) {
+
 				for (isize j = 0; j < n_in; j++) {
 					if (new_bijection_map(j) > new_bijection_map(i)) {
 						new_bijection_map(j) -= 1;
@@ -1603,6 +2026,311 @@ void active_set_change(
 	new_bijection_map(n_in) = n_c_f;
 	current_bijection_map_.to_eigen() = new_bijection_map;
 }
+
+template <typename T>
+void active_set_change_new(
+		VectorView<bool> new_active_set_,
+		VectorViewMut<isize> current_bijection_map_,
+		isize& n_c,
+		isize n_in,
+		isize dim,
+		isize n_eq,
+		ldlt::Ldlt<T>& ldl,
+		qp::QpViewBox<T> qp,
+		T mu_in,
+		T mu_eq,
+		T rho
+		) {
+
+	/*
+	 * arguments
+	 * 1/ new_active_set : a vector which contains new active set of the
+	 * problem, namely if
+	 * new_active_set_u = Cx_k-u +z_k/mu_in>= 0
+	 * new_active_set_l = Cx_k-l +z_k/mu_in<=
+	 * then new_active_set = new_active_set_u OR new_active_set_
+	 *
+	 * 2/ current_bijection_map : a vector for which each entry corresponds to
+	 * the current row of C of the current factorization
+	 *
+	 * for example, naming C_initial the initial C matrix of the problem, and
+	 * C_current the one of the current factorization, the
+	 * C_initial[i,:] = C_current[current_bijection_mal[i],:] for all
+	 *
+	 * 3/ n_c : the current number of active_inequalities
+	 * This algorithm ensures that for all new version of C_current in the LDLT
+	 * factorization all row index i < n_c correspond to current active indexes
+	 * (all other correspond to inactive rows
+	 *
+	 * To do so,
+	 * 1/ for initialization
+	 * 1.1/ new_bijection_map = current_bijection_map
+	 * 1.2/ n_c_f = n_
+	 *
+	 * 2/ All active indexes of the current bijection map (i.e
+	 * current_bijection_map(i) < n_c by assumption) which are not active
+	 * anymore in the new active set (new_active_set(i)=false are put at the
+	 * end of new_bijection_map, i.
+	 *
+	 * 2.1/ for all j if new_bijection_map(j) > new_bijection_map(i), then
+	 * new_bijection_map(j)-=1
+	 * 2.2/ n_c_f -=1
+	 * 2.3/ new_bijection_map(i) = n_in-1
+	 *
+	 * 3/ All active indexe of the new active set (new_active_set(i) == true)
+	 * which are not active in the new_bijection_map (new_bijection_map(i) >=
+	 * n_c_f) are put at the end of the current version of C, i.e
+	 * 3.1/ if new_bijection_map(j) < new_bijection_map(i) &&
+	 * new_bijection_map(j) >= n_c_f then new_bijection_map(j)+=1
+	 * 3.2/ new_bijection_map(i) = n_c_f
+	 * 3.3/ n_c_f +=1
+	 *
+	 * It returns finally the new_bijection_map, for which
+	 * new_bijection_map(n_in) = n_c_f
+	 */
+	auto current_bijection_map = current_bijection_map_.as_const().to_eigen();
+	auto new_active_set = new_active_set_.to_eigen();
+
+	isize n_c_f = n_c;
+	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in);
+	new_bijection_map = current_bijection_map;
+
+	//std::cout << "new_bijection_map before adding " << new_bijection_map << std::endl;
+
+	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
+
+	for (isize i = 0; i < n_in; i++) {
+		if (current_bijection_map(i) < n_c) {
+			if (!new_active_set(i)) {
+				// delete current_bijection_map(i)
+				//std::cout << "delete i " << i << std::endl;
+				//std::cout << "i " << i << " new_bijection_map(i) " << new_bijection_map(i) << std::endl;
+				//std::cout << " i " << i << " ldl.d().size() " << ldl.d().size() <<  " n_c " << n_c_f << std::endl;
+				ldl.delete_at(new_bijection_map(i)+dim+n_eq);
+				//std::cout << "k" << std::endl;
+				for (isize j = 0; j < n_in; j++) {
+					if (new_bijection_map(j) > new_bijection_map(i)) {
+						new_bijection_map(j) -= 1;
+					}
+				}
+				//std::cout << "k2" << std::endl;
+				n_c_f -= 1;
+				new_bijection_map(i) = n_in - 1;
+				//std::cout << "k3" << std::endl;
+			}
+		}
+	}
+
+	// ajout au nouvel active set, suppression pour le nouvel unactive set
+
+	//std::cout << "new_bijection_map before deleting " << new_bijection_map << std::endl;
+	for (isize i = 0; i < n_in; i++) {
+		if (new_active_set(i)) {
+			if (new_bijection_map(i) >= n_c_f) {
+				// add at the end 
+
+				//std::cout << "insert i " << i << std::endl;
+				[&]{
+				LDLT_MULTI_WORKSPACE_MEMORY(
+					(row_,Init, Vec(n_c_f+1+n_eq+dim),LDLT_CACHELINE_BYTES, T)
+				);
+				//std::cout << "add 1" << std::endl;
+				auto row = row_.to_eigen();
+				auto C_ = qp.C.to_eigen();
+				//std::cout << "C_.row(i) " << C_.row(i) << std::endl;
+				row.topRows(dim) = C_.row(i);
+				//row.tail(n_eq+n_c_f+1).setZero();
+				row(dim+n_eq+n_c_f) = -T(1)/mu_in;
+				//std::cout << " added row " << row << std::endl;
+				//std::cout << "add 2" << std::endl; 
+				//std::cout << " i " << i << " ldl.d().size() " << ldl.d().size() <<  " n_c " << n_c_f << std::endl;
+				ldl.insert_at(n_eq+dim+n_c_f, row);
+				//std::cout << "add 3" << std::endl;
+				for (isize j = 0; j < n_in; j++) {
+					if (new_bijection_map(j) < new_bijection_map(i) &&
+					    new_bijection_map(j) >= n_c_f) {
+						new_bijection_map(j) += 1;
+					}
+				}
+				//std::cout << "add 4" << std::endl;
+				new_bijection_map(i) = n_c_f;
+				n_c_f += 1;
+				}();
+
+				//// TEST
+				/*
+				auto C_p = qp.C.to_eigen().eval();
+				for (isize j = 0;j<n_in ; j++){
+					C_p.row(new_bijection_map(j)) = qp.C.to_eigen().row(j);
+				}
+
+				LDLT_MULTI_WORKSPACE_MEMORY(
+					(_htot,Uninit, Mat(dim+n_eq+n_c_f, dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T),
+					(Htot_reconstruct_,Uninit, Mat(dim+n_eq+n_c_f, dim+n_eq+n_c_f),LDLT_CACHELINE_BYTES, T)
+				);
+				
+				auto Htot = _htot.to_eigen().eval();
+				auto Htot_reconstruct = Htot_reconstruct_.to_eigen().eval();
+				Htot_reconstruct.setZero();
+				
+				{
+						LDLT_DECL_SCOPE_TIMER("in solver", "set H", T);
+						Htot.topLeftCorner(dim, dim) = qp.H.to_eigen();
+						for (isize j = 0; j < dim; ++j) {
+							Htot(j, j) += rho;
+						}
+						
+						Htot.block(0,dim,dim,n_eq) = qp.A.to_eigen().transpose();
+						Htot.block(dim,0,n_eq,dim) = qp.A.to_eigen();
+						Htot.bottomRightCorner(n_eq+n_c_f, n_eq+n_c_f).setZero();
+						{
+							T tmp_eq = -T(1) / mu_eq;
+							T tmp_in = -T(1) / mu_in;
+							for (isize j = 0; j < n_eq; ++j) {
+								Htot(dim + j, dim + j) = tmp_eq;
+							}
+							for (isize j = 0; j < n_c_f; ++j) {
+								Htot(dim + n_eq + j, dim + n_eq + j) = tmp_in;
+							}
+						}
+						for (isize j = 0; j< n_c_f ; ++j){
+							std::cout << "C_p.row(j) manually inserted " << C_p.row(j) << std::endl;
+							Htot.block(j+dim+n_eq,0,1,dim) = C_p.row(j) ; 
+							Htot.block(0,j+dim+n_eq,dim,1) = C_p.transpose().col(j) ; 
+						}
+				} 
+				Htot_reconstruct = ldl.reconstructed_matrix() ; 
+				std::cout << " Htot " << Htot << std::endl;
+				std::cout << " Htot_reconstruct " << Htot_reconstruct << std::endl;
+				//std::cout << " C_p " << C_p << std::endl;
+				std::cout << "new_bijection_map " << new_bijection_map << std::endl;
+				std::cout << "diff_mat " << Htot_reconstruct -Htot << std::endl;
+				*/
+			}
+		}
+	}
+	//std::cout << "ok ls 3 " <<  std::endl;
+	n_c = n_c_f;
+	current_bijection_map_.to_eigen() = new_bijection_map;
+}
+
+template <typename T>
+void active_set_change_QPALM(
+		VectorView<bool> new_active_set_,
+		VectorViewMut<isize> current_bijection_map_,
+		isize& n_c,
+		isize n_in,
+		isize dim,
+		isize n_eq,
+		ldlt::Ldlt<T>& ldl,
+		qp::QpViewBox<T> qp,
+		Eigen::Matrix<T,Eigen::Dynamic,1>& mu,
+		T rho
+		) {
+
+	/*
+	 * arguments
+	 * 1/ new_active_set : a vector which contains new active set of the
+	 * problem, namely if
+	 * new_active_set_u = Cx_k-u +z_k/mu_in>= 0
+	 * new_active_set_l = Cx_k-l +z_k/mu_in<=
+	 * then new_active_set = new_active_set_u OR new_active_set_
+	 *
+	 * 2/ current_bijection_map : a vector for which each entry corresponds to
+	 * the current row of C of the current factorization
+	 *
+	 * for example, naming C_initial the initial C matrix of the problem, and
+	 * C_current the one of the current factorization, the
+	 * C_initial[i,:] = C_current[current_bijection_mal[i],:] for all
+	 *
+	 * 3/ n_c : the current number of active_inequalities
+	 * This algorithm ensures that for all new version of C_current in the LDLT
+	 * factorization all row index i < n_c correspond to current active indexes
+	 * (all other correspond to inactive rows
+	 *
+	 * To do so,
+	 * 1/ for initialization
+	 * 1.1/ new_bijection_map = current_bijection_map
+	 * 1.2/ n_c_f = n_
+	 *
+	 * 2/ All active indexes of the current bijection map (i.e
+	 * current_bijection_map(i) < n_c by assumption) which are not active
+	 * anymore in the new active set (new_active_set(i)=false are put at the
+	 * end of new_bijection_map, i.
+	 *
+	 * 2.1/ for all j if new_bijection_map(j) > new_bijection_map(i), then
+	 * new_bijection_map(j)-=1
+	 * 2.2/ n_c_f -=1
+	 * 2.3/ new_bijection_map(i) = n_in-1
+	 *
+	 * 3/ All active indexe of the new active set (new_active_set(i) == true)
+	 * which are not active in the new_bijection_map (new_bijection_map(i) >=
+	 * n_c_f) are put at the end of the current version of C, i.e
+	 * 3.1/ if new_bijection_map(j) < new_bijection_map(i) &&
+	 * new_bijection_map(j) >= n_c_f then new_bijection_map(j)+=1
+	 * 3.2/ new_bijection_map(i) = n_c_f
+	 * 3.3/ n_c_f +=1
+	 *
+	 * It returns finally the new_bijection_map, for which
+	 * new_bijection_map(n_in) = n_c_f
+	 */
+	auto current_bijection_map = current_bijection_map_.as_const().to_eigen();
+	auto new_active_set = new_active_set_.to_eigen();
+
+	isize n_c_f = n_c;
+	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in);
+	new_bijection_map = current_bijection_map;
+
+	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
+
+	for (isize i = 0; i < n_in; i++) {
+		if (current_bijection_map(i) < n_c) {
+			if (!new_active_set(i)) {
+				ldl.delete_at(new_bijection_map(i)+dim+n_eq);
+				for (isize j = 0; j < n_in; j++) {
+					if (new_bijection_map(j) > new_bijection_map(i)) {
+						new_bijection_map(j) -= 1;
+					}
+				}
+				n_c_f -= 1;
+				new_bijection_map(i) = n_in - 1;
+			}
+		}
+	}
+
+	// ajout au nouvel active set, suppression pour le nouvel unactive set
+
+	for (isize i = 0; i < n_in; i++) {
+		if (new_active_set(i)) {
+			if (new_bijection_map(i) >= n_c_f) {
+
+				[&]{
+				LDLT_MULTI_WORKSPACE_MEMORY(
+					(row_,Init, Vec(n_c_f+1+n_eq+dim),LDLT_CACHELINE_BYTES, T)
+				);
+				auto row = row_.to_eigen();
+				auto C_ = qp.C.to_eigen();
+				row.topRows(dim) = C_.row(i);
+				row(dim+n_eq+n_c_f) = -T(1)/mu(n_eq+i);
+				ldl.insert_at(n_eq+dim+n_c_f, row);
+				for (isize j = 0; j < n_in; j++) {
+					if (new_bijection_map(j) < new_bijection_map(i) &&
+					    new_bijection_map(j) >= n_c_f) {
+						new_bijection_map(j) += 1;
+					}
+				}
+				new_bijection_map(i) = n_c_f;
+				n_c_f += 1;
+				}();
+
+			}
+		}
+	}
+	//std::cout << "ok ls 3 " <<  std::endl;
+	n_c = n_c_f;
+	current_bijection_map_.to_eigen() = new_bijection_map;
+}
+
 } // namespace line_search
 } // namespace qp
 
