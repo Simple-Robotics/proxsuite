@@ -2002,7 +2002,7 @@ void active_set_change(
 
 	isize n_c_f = n_c;
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in + 1);
-	new_bijection_map.array().topRows(n_in) = current_bijection_map;
+	new_bijection_map.topRows(n_in) = current_bijection_map;
 
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
