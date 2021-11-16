@@ -51,24 +51,51 @@ struct min2 {
 		return (a < b) ? a : b;
 	}
 };
+
+} // namespace nb
+
+template <typename T>
+LDLT_INLINE constexpr auto min_list_impl(T init, T const* arr, usize n) -> T {
+	return (n == 0)
+	           ? init
+	           : nb::min2{}(init, detail::min_list_impl(*arr, arr + 1, n - 1));
+}
+
+template <typename T>
+LDLT_INLINE constexpr auto max_list_impl(T init, T const* arr, usize n) -> T {
+	return (n == 0)
+	           ? init
+	           : nb::max2{}(init, detail::max_list_impl(*arr, arr + 1, n - 1));
+}
+
+namespace nb {
+struct min_list {
+	template <typename T>
+	LDLT_INLINE constexpr auto operator()(std::initializer_list<T> list) const
+			-> T {
+		return detail::min_list_impl( //
+				*(list.begin()),
+				list.begin() + 1,
+				list.size() - 1);
+	}
+};
+
+struct max_list {
+	template <typename T>
+	LDLT_INLINE constexpr auto operator()(std::initializer_list<T> list) const
+			-> T {
+		return detail::max_list_impl( //
+				*(list.begin()),
+				list.begin() + 1,
+				list.size() - 1);
+	}
+};
 } // namespace nb
 LDLT_DEFINE_NIEBLOID(defer);
 LDLT_DEFINE_NIEBLOID(max2);
 LDLT_DEFINE_NIEBLOID(min2);
-
-template <typename T>
-LDLT_INLINE constexpr auto min_list_impl(T init, T const* arr, usize n) -> T {
-	return (n == 0) ? init
-	                : min2(init, detail::min_list_impl(*arr, arr + 1, n - 1));
-}
-
-template <typename T>
-LDLT_INLINE constexpr auto min_list(std::initializer_list<T> list) -> T {
-	return detail::min_list_impl( //
-			*(list.begin()),
-			list.begin() + 1,
-			list.size() - 1);
-}
+LDLT_DEFINE_NIEBLOID(min_list);
+LDLT_DEFINE_NIEBLOID(max_list);
 
 template <typename T, bool = std::is_floating_point<T>::value>
 struct SetZeroImpl {

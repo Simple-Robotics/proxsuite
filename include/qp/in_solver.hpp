@@ -12,6 +12,7 @@
 #include "cnpy.hpp"
 #include "qp/precond/identity.hpp"
 #include <cmath>
+#include <type_traits>
 
 namespace qp {
 inline namespace tags {
@@ -25,6 +26,20 @@ struct QpSolveStats {
 	isize n_mu_updates;
 	isize n_tot;
 };
+
+#define LDLT_DEDUCE_RET(...)                                                   \
+	noexcept(noexcept(__VA_ARGS__))                                              \
+			->typename std::remove_const<decltype(__VA_ARGS__)>::type {              \
+		return __VA_ARGS__;                                                        \
+	}                                                                            \
+	static_assert(true, ".")
+
+template <typename T>
+auto positive_part(T const& expr)
+		LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
+template <typename T>
+auto negative_part(T const& expr)
+		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
 template <typename T>
 void refactorize(
@@ -294,7 +309,7 @@ void iterative_solve_with_permut_fact_QPALM( //
 		isize n_in,
 		VectorView<T> mu_,
 		T rho) {
-	
+
 	auto rhs = rhs_.to_eigen();
 	auto sol = sol_.to_eigen();
 	auto res = res_.to_eigen();
@@ -311,10 +326,10 @@ void iterative_solve_with_permut_fact_QPALM( //
 			n_eq,
 			n_c,
 			n_in,
-			{from_eigen,rhs},
-			{from_eigen,sol},
-			{from_eigen,res},
-			{from_eigen,mu},
+			{from_eigen, rhs},
+			{from_eigen, sol},
+			{from_eigen, res},
+			{from_eigen, mu},
 			rho);
 	std::cout << "infty_norm(res) " << qp::infty_norm(res) << std::endl;
 
@@ -335,10 +350,10 @@ void iterative_solve_with_permut_fact_QPALM( //
 				n_eq,
 				n_c,
 				n_in,
-				{from_eigen,rhs},
-				{from_eigen,sol},
-				{from_eigen,res},
-				{from_eigen,mu},
+				{from_eigen, rhs},
+				{from_eigen, sol},
+				{from_eigen, res},
+				{from_eigen, mu},
 				rho);
 		std::cout << "infty_norm(res) " << qp::infty_norm(res) << std::endl;
 	}
@@ -545,6 +560,16 @@ void QPALM_update_fact(
 	}
 }
 
+// primal_residual_eq_scaled = scaled(Ax - b)
+//
+// primal_feasibility_lhs = max(norm(unscaled(Ax - b)),
+//                              norm(unscaled([Cx - u]+ + [Cx - l]-)))
+// primal_feasibility_eq_rhs_0 = norm(unscaled(Ax))
+// primal_feasibility_in_rhs_0 = norm(unscaled(Cx))
+//
+// indeterminate:
+// primal_residual_in_scaled_u = unscaled(Cx)
+// primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
 template <
 		typename T,
 		typename Preconditioner = qp::preconditioner::IdentityPrecond>
@@ -569,10 +594,9 @@ void global_primal_residual(
 	auto primal_residual_in_scaled_u_ = primal_residual_in_scaled_u.to_eigen();
 	auto primal_residual_in_scaled_l_ = primal_residual_in_scaled_l.to_eigen();
 
-	isize const n_in = qp_scaled.C.rows;
 	primal_residual_eq_scaled_.noalias() = A_ * x_;
 	primal_residual_in_scaled_u_.noalias() = C_ * x_;
- 
+
 	precond.unscale_primal_residual_in_place_eq(primal_residual_eq_scaled);
 	primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled_);
 	precond.unscale_primal_residual_in_place_in(primal_residual_in_scaled_u);
@@ -580,14 +604,8 @@ void global_primal_residual(
 
 	primal_residual_eq_scaled_ -= qp.b.to_eigen();
 	primal_residual_in_scaled_l_ =
-			((primal_residual_in_scaled_u_ - qp.u.to_eigen()).array() > T(0))
-					.select(
-							primal_residual_in_scaled_u_ - qp.u.to_eigen(),
-							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in)) +
-			((primal_residual_in_scaled_u_ - qp.l.to_eigen()).array() < T(0))
-					.select(
-							primal_residual_in_scaled_u_ - qp.l.to_eigen(),
-							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in));
+			detail::positive_part(primal_residual_in_scaled_u_ - qp.u.to_eigen()) +
+			detail::negative_part(primal_residual_in_scaled_u_ - qp.l.to_eigen());
 
 	primal_feasibility_lhs = max2(
 			infty_norm(primal_residual_in_scaled_l_),
@@ -595,6 +613,14 @@ void global_primal_residual(
 	precond.scale_primal_residual_in_place_eq(primal_residual_eq_scaled);
 }
 
+// dual_feasibility_lhs = norm(dual_residual_scaled)
+// dual_feasibility_rhs_0 = norm(unscaled(H×x))
+// dual_feasibility_rhs_1 = norm(unscaled(AT×y))
+// dual_feasibility_rhs_3 = norm(unscaled(CT×z))
+//
+//
+// dual_residual_scaled = scaled(H×x + g + AT×y + CT×z)
+// dw_aug = indeterminate
 template <
 		typename T,
 		typename Preconditioner = qp::preconditioner::IdentityPrecond>
@@ -768,6 +794,12 @@ auto saddle_point(
 	return err;
 }
 
+// z_eq == b
+//
+// [ H + rho I    AT          CT    ]       [ H×x + g + AT×y_eq + CT×y_in ]
+// [ A         -1/µ_eq I      0     ]       [ A×x - z_eq                  ]
+// [ C            0        -1/µ_in I] dw = -[ C×x - z_in                  ]
+
 template <typename T>
 void newton_step_osqp(
 		qp::QpViewBox<T> qp_scaled,
@@ -784,10 +816,9 @@ void newton_step_osqp(
 		isize n_in,
 		ldlt::Ldlt<T>& ldl,
 		VectorViewMut<T> rhs_,
-		VectorView<T> dual_residual_,
-		VectorView<T> primal_residual_eq_
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& primal_residual_in
-		) {
+		VectorView<T> dual_residual_,     // H×x + g + AT×y_eq + CT×y_in
+		VectorView<T> primal_residual_eq_ // A×x-b
+) {
 
 	auto rhs = rhs_.to_eigen();
 	auto dual_residual = dual_residual_.to_eigen();
@@ -801,13 +832,15 @@ void newton_step_osqp(
 	dw.setZero();
 	res.setZero();
 
-	isize inner_pb_dim = dim + n_eq + n_in;
-
 	rhs.topRows(dim) = -dual_residual;
 	rhs.middleRows(dim, n_eq) = -primal_residual_eq;
-	rhs.tail(n_in) = -(C_ * x_e - z_e.tail(n_in));
+	{
+		// C×x - z_in
+		rhs.tail(n_in) = z_e.tail(n_in);
+		rhs.tail(n_in).noalias() -= C_ * x_e;
+	}
 
-	iterative_solve_with_permut_fact_osqp(
+	detail::iterative_solve_with_permut_fact_osqp(
 			rhs_,
 			dw_,
 			err_,
@@ -1148,8 +1181,7 @@ auto initial_guess_fact(
 			mu_in,
 			rho);
 
-
-	d_dual_for_eq_ =  rhs.topRows(dim)  ; // d_dual_for_eq_ = -dual_for_eq_ -C^T dz
+	d_dual_for_eq_ = rhs.topRows(dim); // d_dual_for_eq_ = -dual_for_eq_ -C^T dz
 	for (isize i = 0; i < n_in; i++) {
 		isize j = current_bijection_map(i);
 		if (j < n_c) {
@@ -1158,7 +1190,7 @@ auto initial_guess_fact(
 			} else if (l_active_set_n_l_(i)) {
 				d_dual_for_eq_ -= dw(j + dim + n_eq) * C_.row(i);
 			}
-		} 
+		}
 	}
 
 	dw_aug_.setZero();
@@ -1167,8 +1199,8 @@ auto initial_guess_fact(
 		isize i = current_bijection_map(j);
 		if (i < n_c) {
 			dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
-			cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in; 
-		} else { 
+			cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
+		} else {
 			dw_aug_(j + dim + n_eq) = -z_(j);
 			cdx_(j) = C_.row(j).dot(dw_aug_.topRows(dim));
 		}
@@ -1177,11 +1209,14 @@ auto initial_guess_fact(
 	prim_in_u_ += z_e / mu_in;
 	prim_in_l_ += z_e / mu_in;
 
-	//d_primal_residual_eq_ = (A_ * dw_aug_.topRows(dim) - dw_aug_.middleRows(dim, n_eq) / mu_eq);
-	d_primal_residual_eq_ = rhs.middleRows(dim,n_eq) ; // By definition of linear system solution
-	//d_dual_for_eq_ = (H_ * dw_aug_.topRows(dim) +  A_.transpose() * dw_aug_.middleRows(dim, n_eq) +  rho * dw_aug_.topRows(dim));
+	// d_primal_residual_eq_ = (A_ * dw_aug_.topRows(dim) -
+	// dw_aug_.middleRows(dim, n_eq) / mu_eq);
+	d_primal_residual_eq_ =
+			rhs.middleRows(dim, n_eq); // By definition of linear system solution
+	// d_dual_for_eq_ = (H_ * dw_aug_.topRows(dim) +  A_.transpose() *
+	// dw_aug_.middleRows(dim, n_eq) +  rho * dw_aug_.topRows(dim));
 
-	//cdx_ = C_ * dw_aug_.topRows(dim);
+	// cdx_ = C_ * dw_aug_.topRows(dim);
 	dual_for_eq_ -= C_.transpose() * z_e;
 	T alpha_step = qp::line_search::initial_guess_LS(
 			ze,
@@ -1355,10 +1390,11 @@ auto correction_guess(
 		x.to_eigen() += alpha_step * dw_aug_.topRows(dim);
 		z_pos_ += alpha_step * Cdx_;
 		z_neg_ += alpha_step * Cdx_;
-		residual_in_y_ += alpha_step * Adx_ ;
+		residual_in_y_ += alpha_step * Adx_;
 		y.to_eigen() = mu_eq * residual_in_y_;
-		dual_for_eq_ += alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
-		                   rho * dw_aug_.topRows(dim) + Hdx_) ;
+		dual_for_eq_ +=
+				alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
+		                  rho * dw_aug_.topRows(dim) + Hdx_);
 		for (isize j = 0; j < n_in; ++j) {
 			z(j) = mu_in * (max2(z_pos_(j), T(0)) + min2(z_neg_(j), T(0)));
 		}
@@ -1369,7 +1405,7 @@ auto correction_guess(
 		dw_aug_.topRows(dim) =
 				(qp_scaled.A.to_eigen().transpose()) * (y.to_eigen());
 		rhs_c = max2(rhs_c, infty_norm(dw_aug_.topRows(dim)));
-		Hdx_  += (dw_aug_.topRows(dim)) ;
+		Hdx_ += (dw_aug_.topRows(dim));
 
 		dw_aug_.topRows(dim) =
 				(qp_scaled.C.to_eigen().transpose()) * (z.to_eigen());
@@ -1433,7 +1469,7 @@ T correction_guess_QPALM(
 	auto Adx = Adx_.to_eigen();
 	auto Cdx = Cdx_.to_eigen();
 	auto dw_aug = dw_aug_.to_eigen();
-	
+
 	T err_in = T(0);
 
 	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
@@ -1455,7 +1491,7 @@ T correction_guess_QPALM(
 				mu,
 				rho,
 				eps_int,
-				dim, 
+				dim,
 				n_eq,
 				n_in,
 				z_pos_,
@@ -1491,8 +1527,7 @@ T correction_guess_QPALM(
 					mu,
 					rho,
 					n_in,
-					n_eq
-			);
+					n_eq);
 		}
 
 		if (infty_norm(alpha_step * dw_aug.topRows(dim)) < T(1.E-11)) {
@@ -1585,7 +1620,7 @@ QpSolveStats qpSolve( //
 			(_u_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_l_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 
-			(_residual_scaled, Init, Vec(n_tot_max+n_in), LDLT_CACHELINE_BYTES, T),
+			(_residual_scaled, Init, Vec(n_tot_max + n_in), LDLT_CACHELINE_BYTES, T),
 			(_ye, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_ze, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_xe, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
@@ -1593,10 +1628,10 @@ QpSolveStats qpSolve( //
 			(_diag_diff_in, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 
 			(_kkt,
-				Uninit,
-				Mat(dim + n_eq + n_c, dim + n_eq + n_c),
-				LDLT_CACHELINE_BYTES,
-				T),
+	     Uninit,
+	     Mat(dim + n_eq + n_c, dim + n_eq + n_c),
+	     LDLT_CACHELINE_BYTES,
+	     T),
 
 			(_current_bijection_map, Init, Vec(n_in), LDLT_CACHELINE_BYTES, isize),
 
@@ -1655,10 +1690,10 @@ QpSolveStats qpSolve( //
 			{from_eigen, u_copy},
 			{from_eigen, l_copy}};
 
-	//LDLT_DECL_SCOPE_TIMER("in solver", "scaling", T);
+	// LDLT_DECL_SCOPE_TIMER("in solver", "scaling", T);
 	precond.scale_qp_in_place(qp_scaled);
 
-	//LDLT_DECL_SCOPE_TIMER("in solver", "setting H", T);
+	// LDLT_DECL_SCOPE_TIMER("in solver", "setting H", T);
 	H_ws = H_copy;
 	for (isize i = 0; i < dim; ++i) {
 		H_ws(i, i) += rho;
@@ -1670,7 +1705,7 @@ QpSolveStats qpSolve( //
 	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
 	ldlt::Ldlt<T> ldl{decompose, kkt};
 
-	//LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
+	// LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
 	ldlt::Ldlt<T> ldl_ws{decompose, H_ws};
 	x.to_eigen() = -qp_scaled.g.to_eigen();
 	ldl_ws.solve_in_place(x.to_eigen());
@@ -1684,7 +1719,8 @@ QpSolveStats qpSolve( //
 
 	auto dual_residual_scaled = residual_scaled.topRows(dim);
 	auto primal_residual_eq_scaled = residual_scaled.middleRows(dim, n_eq);
-	auto primal_residual_in_scaled_u = residual_scaled.middleRows(dim+n_eq,n_in);
+	auto primal_residual_in_scaled_u =
+			residual_scaled.middleRows(dim + n_eq, n_in);
 	auto primal_residual_in_scaled_l = residual_scaled.bottomRows(n_in);
 
 	T primal_feasibility_eq_rhs_0(0);
@@ -1716,8 +1752,7 @@ QpSolveStats qpSolve( //
 
 		// compute primal residual
 
-
-		//LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
+		// LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
 		qp::detail::global_primal_residual(
 				primal_feasibility_lhs,
 				primal_feasibility_eq_rhs_0,
@@ -1794,12 +1829,12 @@ QpSolveStats qpSolve( //
 			}
 
 			if (is_dual_feasible) {
-				
+
 				LDLT_DECL_SCOPE_TIMER("in solver", "unscale solution", T);
 				precond.unscale_primal_in_place(x);
 				precond.unscale_dual_in_place_eq(y);
 				precond.unscale_dual_in_place_in(z);
-				
+
 				return {n_ext, n_mu_updates, n_tot};
 			}
 		}
@@ -1814,8 +1849,7 @@ QpSolveStats qpSolve( //
 
 		if (do_initial_guess_fact) {
 
-			
-			//LDLT_DECL_SCOPE_TIMER("in solver", "initial guess", T);
+			// LDLT_DECL_SCOPE_TIMER("in solver", "initial guess", T);
 			err_in = qp::detail::initial_guess_fact(
 					VectorView<T>{from_eigen, xe},
 					VectorView<T>{from_eigen, ye},
@@ -1848,7 +1882,7 @@ QpSolveStats qpSolve( //
 					VectorViewMut<isize>{from_eigen, current_bijection_map},
 					n_c,
 					R);
-			
+
 			n_tot += 1;
 		}
 
@@ -1870,11 +1904,10 @@ QpSolveStats qpSolve( //
 			primal_residual_in_scaled_l += z.to_eigen() / bcl_mu_in;
 		}
 		if (!do_initial_guess_fact) {
-			auto Cx = qp_scaled.C.to_eigen() * x.to_eigen(); 
+			auto Cx = qp_scaled.C.to_eigen() * x.to_eigen();
 
 			primal_residual_eq_scaled += ye / bcl_mu_eq;
 			primal_residual_in_scaled_u = ze / bcl_mu_in;
-
 
 			primal_residual_in_scaled_u.noalias() += Cx;
 
@@ -1882,13 +1915,11 @@ QpSolveStats qpSolve( //
 
 			primal_residual_in_scaled_u -= qp_scaled.u.to_eigen();
 			primal_residual_in_scaled_l -= qp_scaled.l.to_eigen();
-
 		}
 
 		if (do_correction_guess) {
-			
-			
-			//LDLT_DECL_SCOPE_TIMER("in solver", "correction guess", T);
+
+			// LDLT_DECL_SCOPE_TIMER("in solver", "correction guess", T);
 			err_in = qp::detail::correction_guess(
 					{from_eigen, xe},
 					{from_eigen, ye},
@@ -1922,14 +1953,13 @@ QpSolveStats qpSolve( //
 					n_c,
 					{from_eigen, dw_aug},
 					correction_guess_rhs_g);
-			
+
 			std::cout << "primal_feasibility_lhs " << primal_feasibility_lhs
 								<< " error from initial guess : " << err_in << " bcl_eta_in "
 								<< bcl_eta_in << std::endl;
 		}
 
-		
-		//LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
+		// LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
 		qp::detail::global_primal_residual(
@@ -1943,10 +1973,8 @@ QpSolveStats qpSolve( //
 				qp_scaled.as_const(),
 				precond,
 				x.as_const());
-		
 
-		
-		//LDLT_DECL_SCOPE_TIMER("in solver", "BCL", T);
+		// LDLT_DECL_SCOPE_TIMER("in solver", "BCL", T);
 		qp::detail::BCL_update_fact(
 				primal_feasibility_lhs_new,
 				bcl_eta_ext,
@@ -1964,12 +1992,11 @@ QpSolveStats qpSolve( //
 				n_c,
 				ldl,
 				beta);
-		
+
 		// COLD RESTART
 
-		
-		//LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
-		
+		// LDLT_DECL_SCOPE_TIMER("in solver", "residuals", T);
+
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
 		qp::detail::global_dual_residual(
@@ -1984,7 +2011,7 @@ QpSolveStats qpSolve( //
 				x.as_const(),
 				y.as_const(),
 				z.as_const());
-		
+
 		if ((primal_feasibility_lhs_new >=
 		     cold_reset_primal_test_factor *
 		         max2(primal_feasibility_lhs, machine_eps)) &&
@@ -2067,7 +2094,11 @@ QpSolveStats QPALMSolve( //
 			(_diag_diff_eq, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_diag_diff_in, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 
-			(_kkt,Uninit,Mat(dim + n_eq + n_c, dim + n_eq + n_c),LDLT_CACHELINE_BYTES,T),
+			(_kkt,
+	     Uninit,
+	     Mat(dim + n_eq + n_c, dim + n_eq + n_c),
+	     LDLT_CACHELINE_BYTES,
+	     T),
 
 			(current_bijection_map_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, isize),
 
@@ -2262,16 +2293,15 @@ QpSolveStats QPALMSolve( //
 		primal_residual_eq_scaled += (ye / bcl_mu_eq);
 		dual_residual_scaled +=
 				(rho * (x.to_eigen() - xe) -
-				(qp_scaled.A).to_eigen().transpose() * y.to_eigen() -
-				(qp_scaled.C).to_eigen().transpose() * z.to_eigen() +
-				bcl_mu_eq * (qp_scaled.A).to_eigen().transpose() *
-					primal_residual_eq_scaled)
-						;
+		     (qp_scaled.A).to_eigen().transpose() * y.to_eigen() -
+		     (qp_scaled.C).to_eigen().transpose() * z.to_eigen() +
+		     bcl_mu_eq * (qp_scaled.A).to_eigen().transpose() *
+		         primal_residual_eq_scaled);
 		primal_residual_in_scaled_u = qp_scaled.C.to_eigen() * x.to_eigen() -
-										qp_scaled.u.to_eigen() + ze / bcl_mu_in;
+		                              qp_scaled.u.to_eigen() + ze / bcl_mu_in;
 		primal_residual_in_scaled_l = qp_scaled.C.to_eigen() * x.to_eigen() -
-										qp_scaled.l.to_eigen() + ze / bcl_mu_in;
-		
+		                              qp_scaled.l.to_eigen() + ze / bcl_mu_in;
+
 		T err_in = qp::detail::correction_guess(
 				{from_eigen, xe},
 				{from_eigen, ye},
@@ -2308,7 +2338,6 @@ QpSolveStats QPALMSolve( //
 		std::cout << "primal_feasibility_lhs " << primal_feasibility_lhs
 							<< " error from inner loop : " << err_in << " bcl_eta_in "
 							<< bcl_eta_in << std::endl;
-		
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
@@ -2401,18 +2430,15 @@ QpSolveStats osqpSolve( //
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_h_scaled, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
 			(_h_ws, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_g_scaled, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_g_scaled, Uninit, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_a_scaled, Uninit, Mat(n_eq, dim), LDLT_CACHELINE_BYTES, T),
 			(_c_scaled, Uninit, Mat(n_in, dim), LDLT_CACHELINE_BYTES, T),
-			(_b_scaled, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
-			(_u_scaled, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
-			(_l_scaled, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(_b_scaled, Uninit, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
+			(_u_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(_l_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_residual_scaled, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			//(_residual_scaled_tmp,Init, Vec(dim + n_eq+n_in),LDLT_CACHELINE_BYTES,
-	    // T), (y_,Init, Vec(n_eq+n_in),LDLT_CACHELINE_BYTES, T),
-			(ze_, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(z_, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			//(x_,Init, Vec(dim),LDLT_CACHELINE_BYTES, T),
+			(_ze, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
+			(_z, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
 			(_dw, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
 			(_htot,
 	     Uninit,
@@ -2420,15 +2446,12 @@ QpSolveStats osqpSolve( //
 	     LDLT_CACHELINE_BYTES,
 	     T),
 			(_rhs, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(err_, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(tmp_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T));
+			(_err, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
+			(_tmp, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T));
 
 	auto dw = _dw.to_eigen();
-	auto err = err_.to_eigen();
-	auto tmp = tmp_.to_eigen();
-	err.setZero();
-	dw.setZero();
-	tmp.setZero();
+	auto err = _err.to_eigen();
+	auto tmp = _tmp.to_eigen();
 
 	auto H_copy = _h_scaled.to_eigen();
 	auto H_ws = _h_ws.to_eigen();
@@ -2463,13 +2486,12 @@ QpSolveStats osqpSolve( //
 	}
 
 	ldlt::Ldlt<T> ldl_ws{decompose, H_ws};
-	xe.to_eigen() = -(qp_scaled.g).to_eigen();
+	xe.to_eigen() = -(qp_scaled.g.to_eigen());
 	ldl_ws.solve_in_place(xe.to_eigen());
 
-	auto Htot = _htot.to_eigen().eval();
-	auto rhs = _rhs.to_eigen().eval();
+	auto Htot = _htot.to_eigen().eval(); // extra copy?
+	auto rhs = _rhs.to_eigen().eval();   // extra copy?
 	Htot.setZero();
-	// rhs.setZero();
 
 	Htot.topLeftCorner(dim, dim) = qp_scaled.H.to_eigen();
 	for (isize i = 0; i < dim; ++i) {
@@ -2495,9 +2517,9 @@ QpSolveStats osqpSolve( //
 
 	auto residual_scaled = _residual_scaled.to_eigen();
 
-	auto ze = ze_.to_eigen();
+	auto ze = _ze.to_eigen();
 	ze.topRows(n_eq) = qp_scaled.b.to_eigen();
-	auto z = z_.to_eigen();
+	auto z = _z.to_eigen();
 	z.topRows(n_eq) = qp_scaled.b.to_eigen();
 	// auto y = y_.to_eigen();
 	// auto x = x_.to_eigen();
@@ -2546,6 +2568,7 @@ QpSolveStats osqpSolve( //
 				qp_scaled.as_const(),
 				precond,
 				xe.as_const());
+
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
@@ -2565,27 +2588,32 @@ QpSolveStats osqpSolve( //
 		std::cout << " rho : " << rho << " mu_eq : " << mu_eq
 							<< " mu_in : " << mu_in << std::endl;
 
-		rhs_d = max2(
-				max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
-				max2(
-						max2(primal_feasibility_rhs_1_eq, primal_feasibility_rhs_1_in_u),
-						primal_feasibility_rhs_1_in_l));
-		rhs_p = max2(
-				max2(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
-				max2(dual_feasibility_rhs_1, dual_feasibility_rhs_2));
+		rhs_d = max_list({
+				primal_feasibility_eq_rhs_0,
+				primal_feasibility_in_rhs_0,
+				primal_feasibility_rhs_1_eq,
+				primal_feasibility_rhs_1_in_u,
+				primal_feasibility_rhs_1_in_l,
+		});
+
+		rhs_p = max_list({
+				dual_feasibility_rhs_3,
+				dual_feasibility_rhs_0,
+				dual_feasibility_rhs_1,
+				dual_feasibility_rhs_2,
+		});
+
 		bool is_primal_feasible =
 				primal_feasibility_lhs <= (eps_abs + eps_rel * rhs_p);
 
 		bool is_dual_feasible = dual_feasibility_lhs <= (eps_abs + eps_rel * rhs_d);
 
 		if (is_primal_feasible) {
-
 			if (is_dual_feasible) {
 
 				// POLISHING IFF IT HAS CONVERGED
 				rhs.topRows(dim) = -dual_residual_scaled;
 				rhs.middleRows(dim, n_eq) = -primal_residual_eq_scaled;
-				// rhs.tail(n_in) =  -(qp_scaled.C.to_eigen() * x_e - z_e.tail(n_in));
 				{
 					LDLT_MULTI_WORKSPACE_MEMORY(
 							(test_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, bool));
@@ -2640,26 +2668,19 @@ QpSolveStats osqpSolve( //
 						}
 					}
 				}
-				tmp = alpha * (ze.tail(n_in) + dw.tail(n_in) / mu_in) +
-				      (T(1) - alpha) * ze.tail(n_in) + ye.to_eigen().tail(n_in) / mu_in;
-				z.tail(n_in) =
-						tmp +
-						(qp_scaled.l.to_eigen().array() >= tmp.array())
-								.select(
-										qp_scaled.l.to_eigen() - tmp,
-										Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in)) -
-						(qp_scaled.u.to_eigen().array() <= tmp.array())
-								.select(
-										tmp - qp_scaled.u.to_eigen(),
-										Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in));
-				ye.to_eigen().topRows(n_eq) +=
-						(mu_eq * (alpha * (qp_scaled.b.to_eigen() +
-				                       dw.middleRows(dim, n_eq) / mu_eq) +
-				              (T(1) - alpha) * ze.topRows(n_eq) - z.topRows(n_eq)))
-								;
+
+        // see end of loop for comments
+				tmp = (alpha / mu_in) * dw.tail(n_in) //
+				      + ze.tail(n_in)                 //
+				      + ye.to_eigen().tail(n_in) / mu_in;
+
+				z.tail(n_in) = tmp + //
+				               detail::positive_part(qp_scaled.l.to_eigen() - tmp) -
+				               detail::positive_part(tmp - qp_scaled.u.to_eigen());
+
+				ye.to_eigen().topRows(n_eq) += alpha * dw;
 				ye.to_eigen().tail(n_in) = mu_in * (tmp - z.tail(n_in));
-				xe.to_eigen() =
-						(alpha * dw.topRows(dim) + xe.to_eigen());
+				xe.to_eigen() += alpha * dw.topRows(dim);
 
 				// unscale polished solution
 				{
@@ -2678,7 +2699,8 @@ QpSolveStats osqpSolve( //
 		// mu update
 
 		if (iter > 1) {
-			fact = std::sqrt(
+			using std::sqrt;
+			fact = sqrt(
 					(primal_feasibility_lhs * rhs_d) /
 					(dual_feasibility_lhs * rhs_p + machine_eps));
 			if (fact > T(5) || fact < T(0.2)) {
@@ -2711,56 +2733,29 @@ QpSolveStats osqpSolve( //
 				n_eq,
 				n_in,
 				ldl,
-				VectorViewMut<T>{from_eigen,rhs},
-				VectorView<T>{from_eigen,dual_residual_scaled},
-				VectorView<T>{from_eigen,primal_residual_eq_scaled}
-				//primal_residual_in_scaled_l
-				);
+				VectorViewMut<T>{from_eigen, rhs},
+				VectorView<T>{from_eigen, dual_residual_scaled},
+				VectorView<T>{from_eigen, primal_residual_eq_scaled});
+
 		// ITERATES UPDATES according to OSQP algorithm 1 page 9 using
-		/*
-		* x_tild = xe.to_eigen() + dw.topRows(dim)
-		* z_eq_tild = ye.to_eigen().topRows(n_eq) + dw.middleRows(dim,n_eq)
-		* z_in_tild = ye.to_eigen().tail(n_in) + dw.tail(n_in)
-		*
-		* hence after simplifying calculus one gets :
-		*
-		* z_pot_eq = qp_scaled.b.to_eigen() + dw.middleRows(dim,n_eq) /mu_eq
-		* z_pot_in = ze.tail(n_in) + dw.tail(n_in)/mu_in
-		*
-		* and z defined as follows
-		*
-		for (isize i = 0;i<n_in;i++){
-		  T tmp = alpha * z_pot_in(i) + (T(1)-alpha) * ze(n_eq+i) +
-		ye.to_eigen()(n_eq+i)/mu_in ; if (tmp <= qp_scaled.u.to_eigen()(i) && tmp >=
-		qp_scaled.l.to_eigen()(i)){ z(n_eq+i) = tmp ; } else if (tmp >
-		qp_scaled.u.to_eigen()(i)){
 
-		    z(n_eq+i) = qp_scaled.u.to_eigen()(i) ;
-		  }else{
+		// tmp = alpha/µ dw + zk + yk/µ
+		tmp = (alpha / mu_in) * dw.tail(n_in) //
+		      + ze.tail(n_in)                 //
+		      + ye.to_eigen().tail(n_in) / mu_in;
 
-		    z(n_eq+i) = qp_scaled.l.to_eigen()(i) ;
-		  }
-		}
-		*/
+		z.tail(n_in) = tmp + //
+		               detail::positive_part(qp_scaled.l.to_eigen() - tmp) -
+		               detail::positive_part(tmp - qp_scaled.u.to_eigen());
 
-		tmp = alpha * (ze.tail(n_in) + dw.tail(n_in) / mu_in) +
-		      (T(1) - alpha) * ze.tail(n_in) + ye.to_eigen().tail(n_in) / mu_in;
-		z.tail(n_in) = tmp +
-		               (qp_scaled.l.to_eigen().array() >= tmp.array())
-		                   .select(
-													 qp_scaled.l.to_eigen() - tmp,
-													 Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in)) -
-		               (qp_scaled.u.to_eigen().array() <= tmp.array())
-		                   .select(
-													 tmp - qp_scaled.u.to_eigen(),
-													 Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in));
-		ye.to_eigen().topRows(n_eq) +=
-				(mu_eq *
-		     (alpha * (qp_scaled.b.to_eigen() + dw.middleRows(dim, n_eq) / mu_eq) +
-		      (T(1) - alpha) * ze.topRows(n_eq) - z.topRows(n_eq)))
-						;
+		// y{k+1} = yk + µ ( alpha (zk + dw/µ) + (1-alpha) zk - z{k+1} )
+		//        = yk + µ ( zk - z{k+1} + alpha/µ dw )
+		//        = yk + µ (zk - z{k+1}) + alpha dw
+		//
+		// eq constraints: z_k == z_{k+1} == b
+		ye.to_eigen().topRows(n_eq) += alpha * dw;
 		ye.to_eigen().tail(n_in) = mu_in * (tmp - z.tail(n_in));
-		xe.to_eigen() = (alpha * dw.topRows(dim) + xe.to_eigen());
+		xe.to_eigen() += alpha * dw.topRows(dim);
 
 		ze = z;
 	}
