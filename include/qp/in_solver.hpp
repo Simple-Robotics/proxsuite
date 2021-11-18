@@ -57,13 +57,6 @@ auto negative_part(T const& expr)
 		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
 template <typename T>
-auto positive_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template <typename T>
-auto negative_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
-
-template <typename T>
 void refactorize(
 		qp::QpViewBox<T> qp_scaled,
 		VectorViewMut<isize> current_bijection_map_,
@@ -129,7 +122,7 @@ void iterative_residual_osqp(
 			(qp_scaled.C).to_eigen().transpose() * sol.tail(n_in);
 	err.middleRows(dim, n_eq) += (qp_scaled.A).to_eigen() * sol.topRows(dim) -
 	                             sol.middleRows(dim, n_eq) / mu_eq;
-	err.tail(n_in) +=
+	err.tail(n_in) += 
 			(qp_scaled.C).to_eigen() * sol.topRows(dim) - sol.tail(n_in) / mu_in;
 }
 
@@ -155,11 +148,13 @@ void iterative_solve_with_permut_fact_osqp( //
 
 	i32 it = 0;
 	sol = rhs;
+	//std::cout << "sol iterative_solve_with_permut_fact_osqp " <<  sol << std::endl;
 	ldl.solve_in_place(sol);
-
+	//std::cout << "sol after solve in place " <<  sol << std::endl;
+	//std::cout << "res iterative_solve_with_permut_fact_osqp " <<  res << std::endl;
 	qp::detail::iterative_residual_osqp<T>(
 			qp_scaled, dim, n_eq, n_in, rhs_, sol_, res_, mu_eq, mu_in, rho);
-	std::cout << "infty_norm(res) " << qp::infty_norm(res) << std::endl;
+	//std::cout << "infty_norm(res) " << qp::infty_norm(res) << std::endl;
 
 	while (qp::infty_norm(res) >= eps) {
 		it += 1;
@@ -1514,14 +1509,8 @@ auto correction_guess(
 		z_neg_ += alpha_step * Cdx_;
 		residual_in_y_ += alpha_step * Adx_;
 		y.to_eigen() = mu_eq * residual_in_y_;
-<<<<<<< Updated upstream
-		dual_for_eq_ +=
-				alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
-		                  rho * dw_aug_.topRows(dim) + Hdx_);
-=======
 		dual_for_eq_ += alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
 		                  rho * dw_aug_.topRows(dim) + Hdx_) ;
->>>>>>> Stashed changes
 		for (isize j = 0; j < n_in; ++j) {
 			z(j) = mu_in * (max2(z_pos_(j), T(0)) + min2(z_neg_(j), T(0)));
 		}
@@ -1609,13 +1598,8 @@ T correction_guess_QPALM(
 	auto Adx = Adx_.to_eigen();
 	auto Cdx = Cdx_.to_eigen();
 	auto dw_aug = dw_aug_.to_eigen();
-<<<<<<< Updated upstream
-
-	T err_in = T(0);
-=======
 	
 	T err_in = T(1.e6);
->>>>>>> Stashed changes
 
 	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
 		if (iter == max_iter_in+prev_iter) {
@@ -2858,7 +2842,8 @@ auto osqpSolve( //
 
 		if (is_primal_feasible) {
 			if (is_dual_feasible) {
-
+				
+				/*
 				// POLISHING IFF IT HAS CONVERGED
 				rhs.topRows(dim) = -dual_residual_scaled;
 				rhs.middleRows(dim, n_eq) = -primal_residual_eq_scaled;
@@ -2939,14 +2924,14 @@ auto osqpSolve( //
 					precond.unscale_dual_in_place_in(
 							VectorViewMut<T>{from_eigen, ye.to_eigen().tail(n_in)});
 				}
-
+				*/
 				return {n_ext, n_mu_updates, n_tot};
 			}
 		}
 
 		// mu update
-
-		if (iter > 1) {
+		/*
+		if (iter > 1 && iter % 100 == 0 ) {
 			using std::sqrt;
 			fact = sqrt(
 					(primal_feasibility_lhs * rhs_d) /
@@ -2964,9 +2949,9 @@ auto osqpSolve( //
 				n_mu_updates += 1;
 			}
 		}
-
+		*/
 		// NEWTON STEP
-
+		//std::cout << " err before newton " << err << std::endl;
 		qp::detail::newton_step_osqp(
 				qp_scaled,
 				xe.as_const(),
@@ -2991,27 +2976,22 @@ auto osqpSolve( //
 		tmp = (alpha / mu_in) * dw.tail(n_in) //
 		      + ze.tail(n_in)                 //
 		      + ye.to_eigen().tail(n_in) / mu_in;
-
 		z.tail(n_in) = tmp + //
 		               detail::positive_part(qp_scaled.l.to_eigen() - tmp) -
 		               detail::positive_part(tmp - qp_scaled.u.to_eigen());
-
 		// y{k+1} = yk + µ ( alpha (zk + dw/µ) + (1-alpha) zk - z{k+1} )
 		//        = yk + µ ( zk - z{k+1} + alpha/µ dw )
 		//        = yk + µ (zk - z{k+1}) + alpha dw
 		//
 		// eq constraints: z_k == z_{k+1} == b
-		ye.to_eigen().topRows(n_eq) += alpha * dw;
+		ye.to_eigen().topRows(n_eq) += alpha * dw.middleRows(dim,n_eq);
 		ye.to_eigen().tail(n_in) = mu_in * (tmp - z.tail(n_in));
 		xe.to_eigen() += alpha * dw.topRows(dim);
-
 		ze = z;
 	}
 
 	return {max_iter, n_mu_updates, n_tot};
 }
-
-
 
 } // namespace detail
 } // namespace qp
