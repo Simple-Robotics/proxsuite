@@ -68,20 +68,6 @@ using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
 template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
-/*
-void active_set_change(
-    VecRef<bool> const& new_active_set,
-    VecRefMut<isize> current_bijection_map,
-    isize n_c,
-    isize n_in) {
-  return line_search::active_set_change(
-      {from_eigen, new_active_set},
-      {from_eigen, current_bijection_map},
-      n_c,
-      n_in);
-}
-*/
-
 template <typename T, Layout L>
 void QPsolve( //
 		VecRefMut<T> x,
@@ -96,7 +82,7 @@ void QPsolve( //
 		VecRef<T> l,
 		isize max_iter,
 		isize max_iter_in,
-		VecRefMut<i64> res_iter,
+		VecRefMut<double> res_iter,
 		T eps_abs,
 		T eps_rel,
 		T eps_IG,
@@ -137,9 +123,20 @@ void QPsolve( //
 	std::cout << "n_tot : " << res.n_tot << std::endl;
 	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
-	res_iter(0) = res.n_ext;
-	res_iter(1) = res.n_tot;
-	res_iter(2) = res.n_mu_updates;
+	res_iter(0) = double(res.n_ext);
+	res_iter(1) = double(res.n_tot);
+	res_iter(2) = double(res.n_mu_updates);
+	/*
+	res_iter(3) = double(res.equilibration_tmp);
+	res_iter(4) = double(res.fact_tmp );
+	res_iter(5) = double(res.ws_tmp ); 
+	res_iter(6) = double(res.residuals_tmp) ;
+	res_iter(7) = double(res.IG_tmp );
+	res_iter(8) = double(res.CG_tmp );
+	res_iter(9) = double(res.BCL_tmp );
+	res_iter(10) = double(res.cold_restart_tmp) ; 
+	*/
+
 }
 
 template <typename T, Layout L>
@@ -156,11 +153,11 @@ void QPalmSolve( //
 		VecRef<T> l,
 		isize max_iter,
 		isize max_iter_in,
-		VecRefMut<i64> res_iter,
+		VecRefMut<double> res_iter,
 		T eps_abs,
 		T eps_rel,
-		T eps_IG,
-		T R) {
+		T max_rank_update,
+		T max_rank_update_fraction) {
 
 	isize dim = H.eval().rows();
 	isize n_eq = A.eval().rows();
@@ -169,7 +166,7 @@ void QPalmSolve( //
 			dim,
 			n_eq + n_in,
 	};
-	qp::detail::QpSolveStats res = qp::detail::QPALMSolve( //
+	qp::detail::QpalmSolveStats res = qp::detail::QPALMSolve( //
 			{from_eigen, x},
 			{from_eigen, y},
 			{from_eigen, z},
@@ -186,8 +183,8 @@ void QPalmSolve( //
 			max_iter_in,
 			eps_abs,
 			eps_rel,
-			eps_IG,
-			R,
+			max_rank_update,
+			max_rank_update_fraction,
 			LDLT_FWD(ruiz));
 
 	std::cout << "------ SOLVER STATISTICS--------" << std::endl;
@@ -195,9 +192,9 @@ void QPalmSolve( //
 	std::cout << "n_tot : " << res.n_tot << std::endl;
 	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
-	res_iter(0) = res.n_ext;
-	res_iter(1) = res.n_tot;
-	res_iter(2) = res.n_mu_updates;
+	res_iter(0) = double(res.n_ext);
+	res_iter(1) = double(res.n_tot);
+	res_iter(2) = double(res.n_mu_updates);
 }
 
 template <typename T, Layout L>
@@ -213,7 +210,7 @@ void OSQPsolve( //
 		VecRef<T> l,
 		isize max_iter,
 		isize max_iter_in,
-		VecRefMut<i64> res_iter,
+		VecRefMut<T> res_iter,
 		T eps_abs,
 		T eps_rel) {
 
@@ -247,9 +244,10 @@ void OSQPsolve( //
 	std::cout << "n_tot : " << res.n_tot << std::endl;
 	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
-	res_iter(0) = res.n_ext;
-	res_iter(1) = res.n_tot;
-	res_iter(2) = res.n_mu_updates;
+	res_iter(0) = T(res.n_ext);
+	res_iter(1) = T(res.n_tot);
+	res_iter(2) = T(res.n_mu_updates);
+
 }
 
 } // namespace pybind11

@@ -989,7 +989,7 @@ auto correction_guess_LS_QPALM(
 	auto z_e = ze.to_eigen();
 	auto y_e = ye.to_eigen();
 
-	T alpha = 1;
+	T alpha = T(1);
 
 	std::list<T> alphas = {};
 
@@ -1056,8 +1056,7 @@ auto correction_guess_LS_QPALM(
 							VectorView<T>{from_eigen, Cdx},
 							n_in,
 							n_eq);
-
-					if (gr < 0) {
+					if (gr < T(0)) {
 						alpha_last_neg = a;
 						last_neg_grad = gr;
 					} else {
@@ -1342,7 +1341,12 @@ void active_set_change_QPALM(
 		ldlt::Ldlt<T>& ldl,
 		qp::QpViewBox<T> qp,
 		VectorView<T> mu_,
-		T rho) {
+		T rho,
+		T max_rank_update,
+		T max_rank_update_fraction,
+		isize& nb_enter,
+		isize& nb_leave
+		) {
 	
 	auto mu = mu_.to_eigen();
 	/*
@@ -1394,60 +1398,148 @@ void active_set_change_QPALM(
 	auto current_bijection_map = current_bijection_map_.as_const().to_eigen();
 	auto new_active_set = new_active_set_.to_eigen();
 
+
+	
 	isize n_c_f = n_c;
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in);
 	new_bijection_map = current_bijection_map;
 
-	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
-
 	for (isize i = 0; i < n_in; i++) {
 		if (current_bijection_map(i) < n_c) {
 			if (!new_active_set(i)) {
-				ldl.delete_at(new_bijection_map(i) + dim + n_eq);
-				for (isize j = 0; j < n_in; j++) {
-					if (new_bijection_map(j) > new_bijection_map(i)) {
-						new_bijection_map(j) -= 1;
-					}
-				}
-				n_c_f -= 1;
-				new_bijection_map(i) = n_in - 1;
+				nb_leave +=1;
 			}
 		}
 	}
-
-	// ajout au nouvel active set, suppression pour le nouvel unactive set
-
 	for (isize i = 0; i < n_in; i++) {
 		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
+				nb_enter +=1;
+			}
+		}
+	}
+	//std::cout << "test " << test << " n_leaving_constraint " << n_leaving_constraint << " n_entering_constraint " << n_entering_constraint << " std::min(max_rank_update,max_rank_update_fraction * T(dim+n_eq+n_in)) " << std::min(max_rank_update,max_rank_update_fraction * T(dim+n_eq+n_in)) << std::endl;
+	if (T(nb_enter + nb_leave) <= std::min(max_rank_update,max_rank_update_fraction * T(dim+n_eq+n_in))) {
 
-				[&] {
-					LDLT_MULTI_WORKSPACE_MEMORY(
-							(row_,
-					     Init,
-					     Vec(n_c_f + 1 + n_eq + dim),
-					     LDLT_CACHELINE_BYTES,
-					     T));
-					auto row = row_.to_eigen();
-					auto C_ = qp.C.to_eigen();
-					row.topRows(dim) = C_.row(i);
-					row(dim + n_eq + n_c_f) = -T(1) / mu(n_eq + i);
-					ldl.insert_at(n_eq + dim + n_c_f, row);
+		// suppression pour le nouvel active set, ajout dans le nouvel unactive set
+		for (isize i = 0; i < n_in; i++) {
+			if (current_bijection_map(i) < n_c) {
+				if (!new_active_set(i)) {
+					ldl.delete_at(new_bijection_map(i) + dim + n_eq);
+					for (isize j = 0; j < n_in; j++) {
+						if (new_bijection_map(j) > new_bijection_map(i)) {
+							new_bijection_map(j) -= 1;
+						}
+					}
+					n_c_f -= 1;
+					new_bijection_map(i) = n_in - 1;
+				}
+			}
+		}
+
+		// ajout au nouvel active set, suppression pour le nouvel unactive set
+
+		for (isize i = 0; i < n_in; i++) {
+			if (new_active_set(i)) {
+				if (new_bijection_map(i) >= n_c_f) {
+
+					[&] {
+						LDLT_MULTI_WORKSPACE_MEMORY(
+								(row_,
+							Init,
+							Vec(n_c_f + 1 + n_eq + dim),
+							LDLT_CACHELINE_BYTES,
+							T));
+						auto row = row_.to_eigen();
+						auto C_ = qp.C.to_eigen();
+						row.topRows(dim) = C_.row(i);
+						row(dim + n_eq + n_c_f) = -T(1) / mu(n_eq + i);
+						ldl.insert_at(n_eq + dim + n_c_f, row);
+						for (isize j = 0; j < n_in; j++) {
+							if (new_bijection_map(j) < new_bijection_map(i) &&
+								new_bijection_map(j) >= n_c_f) {
+								new_bijection_map(j) += 1;
+							}
+						}
+						new_bijection_map(i) = n_c_f;
+						n_c_f += 1;
+					}();
+				}
+			}
+		}
+		n_c = n_c_f;
+		current_bijection_map_.to_eigen() = new_bijection_map;
+
+	} else{
+
+		// suppression pour le nouvel active set, ajout dans le nouvel unactive set
+		for (isize i = 0; i < n_in; i++) {
+			if (current_bijection_map(i) < n_c) {
+				if (!new_active_set(i)) {
+					for (isize j = 0; j < n_in; j++) {
+						if (new_bijection_map(j) > new_bijection_map(i)) {
+							new_bijection_map(j) -= 1;
+						}
+					}
+					n_c_f -= 1;
+					new_bijection_map(i) = n_in - 1;
+				}
+			}
+		}
+
+		// ajout au nouvel active set, suppression pour le nouvel unactive set
+
+		for (isize i = 0; i < n_in; i++) {
+			if (new_active_set(i)) {
+				if (new_bijection_map(i) >= n_c_f) {
+
 					for (isize j = 0; j < n_in; j++) {
 						if (new_bijection_map(j) < new_bijection_map(i) &&
-						    new_bijection_map(j) >= n_c_f) {
+							new_bijection_map(j) >= n_c_f) {
 							new_bijection_map(j) += 1;
 						}
 					}
 					new_bijection_map(i) = n_c_f;
 					n_c_f += 1;
-				}();
+				}
 			}
 		}
+		n_c = n_c_f;
+		current_bijection_map_.to_eigen() = new_bijection_map;
+
+		[&]{
+			LDLT_MULTI_WORKSPACE_MEMORY(
+				(_htot,Uninit, Mat(dim+n_eq+n_c, dim+n_eq+n_c),LDLT_CACHELINE_BYTES, T)
+			);
+			
+			auto Htot = _htot.to_eigen().eval();
+			Htot.setZero();
+			
+			Htot.topLeftCorner(dim, dim) = qp.H.to_eigen();
+			for (isize i = 0; i < dim; ++i) {
+				Htot(i, i) += rho; 
+			}
+			
+			Htot.block(0,dim,dim,n_eq) = qp.A.to_eigen().transpose();
+			Htot.block(dim,0,n_eq,dim) = qp.A.to_eigen();
+			{
+				for (isize i = 0; i < n_eq; ++i) {
+					Htot(dim + i, dim + i) = -T(1) / mu( i);;
+				}
+			}
+			for (isize i = 0; i< n_in ; ++i){
+				isize j = new_bijection_map(i);
+				if (j<n_c){
+					Htot.block(j+dim+n_eq,0,1,dim) = qp.C.to_eigen().row(i) ; 
+					Htot.block(0,j+dim+n_eq,dim,1) = qp.C.to_eigen().transpose().col(i)  ; 
+					Htot(dim + n_eq + j, dim + n_eq + j) = -T(1) / mu(n_eq + i);
+				}
+			}
+			ldl.factorize(Htot);
+			std::cout << "error " <<  qp::infty_norm(Htot-ldl.reconstructed_matrix()) << std::endl; 
+		}();
 	}
-	// std::cout << "ok ls 3 " <<  std::endl;
-	n_c = n_c_f;
-	current_bijection_map_.to_eigen() = new_bijection_map;
+
 }
 
 } // namespace line_search

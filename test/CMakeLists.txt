@@ -44,6 +44,10 @@ ldlt_test(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
 ldlt_test(.test.precond.ruiz src/precond_ruiz.cpp)
 ldlt_test(.test.qp_eq.cpp src/qp_eq.cpp)
 
+add_executable(.test.add_with_permut.cpp src/row_add_with_permut.cpp)
+doctest_discover_tests(.test.add_with_permut.cpp)
+target_link_libraries(.test.add_with_permut.cpp ${LDLT_TEST_LIBS})
+
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/src/save_qp_eq.py
