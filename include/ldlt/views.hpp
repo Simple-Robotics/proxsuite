@@ -73,7 +73,7 @@ namespace nb {
 struct max_list {
 	template <typename T>
 	LDLT_INLINE auto operator()(std::initializer_list<T> list) const -> T {
-		T* data = list.begin();
+		T const* data = list.begin();
 		isize len = isize(list.size());
 
 		T current_max = data[0];
