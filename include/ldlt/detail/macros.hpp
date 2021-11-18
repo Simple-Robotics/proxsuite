@@ -584,7 +584,7 @@
 
 #define LDLT_IMPL_MULTI_WORKSPACE_MEMORY(NamesTagsDimsAlignsTypes)             \
 	constexpr ::ldlt::usize LDLT_ID(min_align) =                                 \
-			::ldlt::detail::min_list({LDLT_PP_TUPLE_FOR_EACH_I(                      \
+			::ldlt::detail::cx_min_list({LDLT_PP_TUPLE_FOR_EACH_I(                      \
 					LDLT_IMPL_ALIGN, _, NamesTagsDimsAlignsTypes)});                     \
 	::ldlt::usize LDLT_ID(total_size_bytes) = 0;                                 \
 	LDLT_PP_TUPLE_FOR_EACH_I(LDLT_IMPL_LOCAL_DIMS, _, NamesTagsDimsAlignsTypes)  \
