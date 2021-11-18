@@ -68,78 +68,6 @@ using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
 template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
-template <typename T, Layout L>
-auto initial_guess_line_search_box( //
-		VecRef<T> x,
-		VecRef<T> ye,
-		VecRef<T> ze,
-		VecRef<T> dw,
-		T mu_eq,
-		T mu_in,
-		T rho,
-		MatRef<T, L> H,
-		VecRef<T> g,
-		MatRef<T, L> A,
-		VecRef<T> b,
-		MatRef<T, L> C,
-		VecRef<T> u,
-		VecRef<T> l) -> T {
-	return line_search::initial_guess_line_search_box(
-			{from_eigen, x.eval()},
-			{from_eigen, ye.eval()},
-			{from_eigen, ze.eval()},
-			{from_eigen, dw.eval()},
-			mu_eq,
-			mu_in,
-			rho,
-			QpViewBox<T>{
-					{from_eigen, H.eval()},
-					{from_eigen, g.eval()},
-					{from_eigen, A.eval()},
-					{from_eigen, b.eval()},
-					{from_eigen, C.eval()},
-					{from_eigen, u.eval()},
-					{from_eigen, l.eval()},
-			});
-}
-
-template <typename T, Layout L>
-auto correction_guess_line_search_box( //
-		VecRef<T> x,
-		VecRef<T> xe,
-		VecRef<T> ye,
-		VecRef<T> ze,
-		VecRef<T> dx,
-		T mu_eq,
-		T mu_in,
-		T rho,
-		MatRef<T, L> H,
-		VecRef<T> g,
-		MatRef<T, L> A,
-		VecRef<T> b,
-		MatRef<T, L> C,
-		VecRef<T> u,
-		VecRef<T> l) -> T {
-	return line_search::correction_guess_line_search_box(
-			{from_eigen, x.eval()},
-			{from_eigen, xe.eval()},
-			{from_eigen, ye.eval()},
-			{from_eigen, ze.eval()},
-			{from_eigen, dx.eval()},
-			mu_eq,
-			mu_in,
-			rho,
-			QpViewBox<T>{
-					{from_eigen, H.eval()},
-					{from_eigen, g.eval()},
-					{from_eigen, A.eval()},
-					{from_eigen, b.eval()},
-					{from_eigen, C.eval()},
-					{from_eigen, u.eval()},
-					{from_eigen, l.eval()},
-			});
-}
-
 /*
 void active_set_change(
     VecRef<bool> const& new_active_set,
@@ -349,20 +277,6 @@ INRIA LDLT decomposition
 	m.def(
 			"iterative_solve_with_permut_fact",
 			&ldlt::pybind11::iterative_solve_with_permut_fact<f64, c>);
-
-	m.def(
-			"initial_guess_line_search_box",
-			&qp::pybind11::initial_guess_line_search_box<f32, c>);
-	m.def(
-			"initial_guess_line_search_box",
-			&qp::pybind11::initial_guess_line_search_box<f64, c>);
-
-	m.def(
-			"correction_guess_line_search_box",
-			&qp::pybind11::correction_guess_line_search_box<f32, c>);
-	m.def(
-			"correction_guess_line_search_box",
-			&qp::pybind11::correction_guess_line_search_box<f64, c>);
 
 	m.def("QPalmSolve", &qp::pybind11::QPalmSolve<f32, c>);
 	m.def("QPalmSolve", &qp::pybind11::QPalmSolve<f64, c>);

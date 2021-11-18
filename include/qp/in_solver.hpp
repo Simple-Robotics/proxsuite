@@ -560,6 +560,7 @@ void QPALM_update_fact(
 	}
 }
 
+// COMPUTES:
 // primal_residual_eq_scaled = scaled(Ax - b)
 //
 // primal_feasibility_lhs = max(norm(unscaled(Ax - b)),
@@ -567,7 +568,9 @@ void QPALM_update_fact(
 // primal_feasibility_eq_rhs_0 = norm(unscaled(Ax))
 // primal_feasibility_in_rhs_0 = norm(unscaled(Cx))
 //
-// indeterminate:
+// MAY_ALIAS[primal_residual_in_scaled_u, primal_residual_in_scaled_l]
+//
+// INDETERMINATE:
 // primal_residual_in_scaled_u = unscaled(Cx)
 // primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
 template <
@@ -2402,7 +2405,7 @@ QpSolveStats QPALMSolve( //
 template <
 		typename T,
 		typename Preconditioner = qp::preconditioner::IdentityPrecond>
-QpSolveStats osqpSolve( //
+auto osqpSolve( //
 		VectorViewMut<T> xe,
 		VectorViewMut<T> ye,
 		qp::QpViewBox<T> qp,
@@ -2410,7 +2413,7 @@ QpSolveStats osqpSolve( //
 		isize max_iter_in,
 		T eps_abs,
 		T eps_rel,
-		Preconditioner precond = Preconditioner{}) {
+		Preconditioner precond = Preconditioner{}) -> QpSolveStats {
 
 	using namespace ldlt::tags;
 
@@ -2420,6 +2423,7 @@ QpSolveStats osqpSolve( //
 	isize n_mu_updates = 0;
 	isize n_tot = 0;
 	isize n_ext = 0;
+	isize const max_n_tot = dim + n_eq + n_in;
 
 	T machine_eps = std::numeric_limits<T>::epsilon();
 	auto rho = T(1e-6);
@@ -2429,101 +2433,89 @@ QpSolveStats osqpSolve( //
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_h_scaled, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_h_ws, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
+			(_htot, Uninit, Mat(max_n_tot, max_n_tot), LDLT_CACHELINE_BYTES, T),
 			(_g_scaled, Uninit, Vec(dim), LDLT_CACHELINE_BYTES, T),
-			(_a_scaled, Uninit, Mat(n_eq, dim), LDLT_CACHELINE_BYTES, T),
-			(_c_scaled, Uninit, Mat(n_in, dim), LDLT_CACHELINE_BYTES, T),
 			(_b_scaled, Uninit, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_u_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_l_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
-			(_residual_scaled, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
+			(_residual_scaled, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
 			(_ze, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
 			(_z, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(_dw, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(_htot,
-	     Uninit,
-	     Mat(dim + n_eq + n_in, dim + n_eq + n_in),
-	     LDLT_CACHELINE_BYTES,
-	     T),
-			(_rhs, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
-			(_err, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T),
+			(_dw, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
+			(_rhs, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
+			(_err, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
 			(_tmp, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T));
 
 	auto dw = _dw.to_eigen();
 	auto err = _err.to_eigen();
 	auto tmp = _tmp.to_eigen();
 
-	auto H_copy = _h_scaled.to_eigen();
-	auto H_ws = _h_ws.to_eigen();
 	auto q_copy = _g_scaled.to_eigen();
-	auto A_copy = _a_scaled.to_eigen();
-	auto C_copy = _c_scaled.to_eigen();
 	auto b_copy = _b_scaled.to_eigen();
 	auto u_copy = _u_scaled.to_eigen();
 	auto l_copy = _l_scaled.to_eigen();
 
-	H_copy = qp.H.to_eigen();
+	auto residual_scaled = _residual_scaled.to_eigen();
+
 	q_copy = qp.g.to_eigen();
-	A_copy = qp.A.to_eigen();
 	b_copy = qp.b.to_eigen();
-	C_copy = qp.C.to_eigen();
 	u_copy = qp.u.to_eigen();
 	l_copy = qp.l.to_eigen();
 
-	auto qp_scaled = qp::QpViewBoxMut<T>{
-			{from_eigen, H_copy},
-			{from_eigen, q_copy},
-			{from_eigen, A_copy},
-			{from_eigen, b_copy},
-			{from_eigen, C_copy},
-			{from_eigen, u_copy},
-			{from_eigen, l_copy}};
-	precond.scale_qp_in_place(qp_scaled);
+	auto Htot = _htot.to_eigen();
+	auto rhs = _rhs.to_eigen();
 
-	H_ws = H_copy;
-	for (isize i = 0; i < dim; ++i) {
-		H_ws(i, i) += rho;
+	Htot.bottomRightCorner(n_eq + n_in, n_eq + n_in).setZero();
+
+	Htot.topLeftCorner(dim, dim) = qp.H.to_eigen();
+
+	// only set bottom left half
+	Htot.block(dim, 0, n_eq, dim) = qp.A.to_eigen();
+	Htot.block(dim + n_eq, 0, n_in, dim) = qp.C.to_eigen();
+
+	auto qp_scaled = [&] {
+		auto qp_scaled_mut = qp::QpViewBoxMut<T>{
+				{from_eigen, Htot.topLeftCorner(dim, dim)},
+				{from_eigen, q_copy},
+				{from_eigen, Htot.block(dim, 0, n_eq, dim)},
+				{from_eigen, b_copy},
+				{from_eigen, Htot.block(dim + n_eq, 0, n_in, dim)},
+				{from_eigen, u_copy},
+				{from_eigen, l_copy}};
+		precond.scale_qp_in_place(qp_scaled_mut);
+		return qp_scaled_mut.as_const();
+	}();
+
+	{
+		// update diagonal H part
+		for (isize i = 0; i < dim; ++i) {
+			Htot(i, i) += rho;
+		}
+
+		// update diagonal constraint part
+		T tmp_eq = -T(1) / mu_eq;
+		T tmp_in = -T(1) / mu_in;
+		for (isize i = 0; i < n_eq; ++i) {
+			Htot(dim + i, dim + i) = tmp_eq;
+		}
+		for (isize i = 0; i < n_in; ++i) {
+			Htot(dim + n_eq + i, dim + n_eq + i) = tmp_in;
+		}
 	}
 
-	ldlt::Ldlt<T> ldl_ws{decompose, H_ws};
-	xe.to_eigen() = -(qp_scaled.g.to_eigen());
-	ldl_ws.solve_in_place(xe.to_eigen());
-
-	auto Htot = _htot.to_eigen().eval(); // extra copy?
-	auto rhs = _rhs.to_eigen().eval();   // extra copy?
-	Htot.setZero();
-
-	Htot.topLeftCorner(dim, dim) = qp_scaled.H.to_eigen();
-	for (isize i = 0; i < dim; ++i) {
-		Htot(i, i) += rho;
+	{
+		// initial primal guess
+		ldlt::Ldlt<T> ldl_ws{decompose, Htot.topLeftCorner(dim, dim)};
+		xe.to_eigen() = -(qp_scaled.g.to_eigen());
+		ldl_ws.solve_in_place(xe.to_eigen());
 	}
-
-	T tmp_eq = -T(1) / mu_eq;
-	T tmp_in = -T(1) / mu_in;
-	for (isize i = 0; i < n_eq; ++i) {
-		Htot(dim + i, dim + i) = tmp_eq;
-	}
-	for (isize i = 0; i < n_in; ++i) {
-		Htot(dim + n_eq + i, dim + n_eq + i) = tmp_in;
-	}
-
-	Htot.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
-	Htot.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
-
-	Htot.block(0, dim + n_eq, dim, n_in) = qp_scaled.C.to_eigen().transpose();
-	Htot.block(dim + n_eq, 0, n_in, dim) = qp_scaled.C.to_eigen();
 
 	ldlt::Ldlt<T> ldl{decompose, Htot};
-
-	auto residual_scaled = _residual_scaled.to_eigen();
 
 	auto ze = _ze.to_eigen();
 	ze.topRows(n_eq) = qp_scaled.b.to_eigen();
 	auto z = _z.to_eigen();
 	z.topRows(n_eq) = qp_scaled.b.to_eigen();
-	// auto y = y_.to_eigen();
-	// auto x = x_.to_eigen();
-	// x = xe.to_eigen();
 
 	T primal_feasibility_rhs_1_eq = infty_norm(qp.b.to_eigen());
 	T primal_feasibility_rhs_1_in_u = infty_norm(qp.u.to_eigen());
@@ -2533,7 +2525,6 @@ QpSolveStats osqpSolve( //
 	auto dual_residual_scaled = residual_scaled.topRows(dim);
 	auto primal_residual_eq_scaled = residual_scaled.middleRows(dim, n_eq);
 	auto primal_residual_in_scaled_u = residual_scaled.bottomRows(n_in);
-	auto primal_residual_in_scaled_l = residual_scaled.bottomRows(n_in);
 
 	T primal_feasibility_eq_rhs_0(0);
 	T primal_feasibility_in_rhs_0(0);
@@ -2563,9 +2554,9 @@ QpSolveStats osqpSolve( //
 				primal_feasibility_in_rhs_0,
 				{from_eigen, primal_residual_eq_scaled},
 				{from_eigen, primal_residual_in_scaled_u},
-				{from_eigen, primal_residual_in_scaled_l},
+				{from_eigen, primal_residual_in_scaled_u},
 				qp,
-				qp_scaled.as_const(),
+				qp_scaled,
 				precond,
 				xe.as_const());
 
@@ -2576,7 +2567,7 @@ QpSolveStats osqpSolve( //
 				dual_feasibility_rhs_3,
 				{from_eigen, dual_residual_scaled},
 				{from_eigen, dw},
-				qp_scaled.as_const(),
+				qp_scaled,
 				precond,
 				xe.as_const(),
 				ye.as_const().segment(0, n_eq),
@@ -2653,7 +2644,7 @@ QpSolveStats osqpSolve( //
 							ldl,
 							T(1e-5),
 							isize(3),
-							qp_scaled.as_const(),
+							qp_scaled,
 							dim,
 							n_eq,
 							j,
@@ -2669,7 +2660,7 @@ QpSolveStats osqpSolve( //
 					}
 				}
 
-        // see end of loop for comments
+				// see end of loop for comments
 				tmp = (alpha / mu_in) * dw.tail(n_in) //
 				      + ze.tail(n_in)                 //
 				      + ye.to_eigen().tail(n_in) / mu_in;
@@ -2720,7 +2711,7 @@ QpSolveStats osqpSolve( //
 		// NEWTON STEP
 
 		qp::detail::newton_step_osqp(
-				qp_scaled.as_const(),
+				qp_scaled,
 				xe.as_const(),
 				ye.as_const(),
 				VectorView<T>{from_eigen, ze},
@@ -2764,7 +2755,6 @@ QpSolveStats osqpSolve( //
 }
 
 } // namespace detail
-
 } // namespace qp
 
 #endif /* end of include guard INRIA_LDLT_EQ_SOLVER_HPP_HDWGZKCLS */
