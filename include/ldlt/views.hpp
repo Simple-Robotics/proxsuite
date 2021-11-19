@@ -55,18 +55,18 @@ struct min2 {
 } // namespace nb
 
 template <typename T>
-LDLT_INLINE constexpr auto min_list_impl(T init, T const* arr, usize n) noexcept
+constexpr auto min_list_impl(T init, T const* arr, usize n) noexcept
 		-> T {
 	return (n == 0)
 	           ? init
 	           : nb::min2{}(init, detail::min_list_impl(*arr, arr + 1, n - 1));
 }
-template <typename T>
-constexpr auto cx_min_list(std::initializer_list<T> list) noexcept -> T {
+template <typename T, usize N>
+constexpr auto cx_min_list(T const (&arr)[N]) noexcept -> T {
 	return detail::min_list_impl( //
-			*(list.begin()),
-			list.begin() + 1,
-			list.size() - 1);
+			arr[0],
+			arr + 1,
+			N - 1);
 }
 
 namespace nb {
