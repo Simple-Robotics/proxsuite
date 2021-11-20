@@ -17,6 +17,9 @@ target_link_libraries(.bench.rank_update ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark
 add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
+add_executable(.bench.qp_in src/qp_in.cpp)
+target_link_libraries(.bench.qp_in ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
+
 add_executable(.bench.osqp src/osqp.cpp)
 target_link_libraries(
   .bench.osqp

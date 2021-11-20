@@ -206,6 +206,28 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 }
 
 template <typename Scalar>
+auto sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
+		->  Mat<Scalar, colmajor>  {
+	auto H = Mat<Scalar, colmajor>(n, n);
+	H.setZero();
+
+	for (isize i = 0; i < n; ++i) {
+		for (isize j = 0; j < n; ++j) {
+			auto urandom = rand::uniform_rand();
+			if (urandom < p) {
+				auto random = Scalar(rand::normal_rand());
+				H(i, j) = random;
+			}
+		}
+	}
+	
+	H = H * H.transpose(); // safe no aliasing https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
+	H.diagonal().array() += rho;
+
+	return H;
+}
+
+template <typename Scalar>
 auto sparse_matrix_rand(isize nrows, isize ncols, double p)
 		-> SparseMat<Scalar> {
 	auto A = SparseMat<Scalar>(nrows, ncols);
@@ -220,6 +242,23 @@ auto sparse_matrix_rand(isize nrows, isize ncols, double p)
 	A.makeCompressed();
 	return A;
 }
+
+
+template <typename Scalar>
+auto sparse_matrix_rand_not_compressed(isize nrows, isize ncols, double p)
+		->  Mat<Scalar, colmajor>{
+	auto A =  Mat<Scalar, colmajor>(nrows, ncols);
+	A.setZero();
+	for (isize i = 0; i < nrows; ++i) {
+		for (isize j = 0; j < ncols; ++j) {
+			if (rand::uniform_rand() < p) {
+				A(i, j) = Scalar(rand::normal_rand());
+			}
+		}
+	}
+	return A;
+}
+
 LDLT_EXPLICIT_TPL_DECL(2, matrix_rand<f32>);
 LDLT_EXPLICIT_TPL_DECL(1, vector_rand<f32>);
 LDLT_EXPLICIT_TPL_DECL(2, positive_definite_rand<f32>);
@@ -357,6 +396,7 @@ struct constant {
 } // namespace ldlt
 
 LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
+LDLT_DEFINE_TAG(random_with_dim_and_n_in, RandomWithDimAndNin);
 LDLT_DEFINE_TAG(from_data, FromData);
 template <typename Scalar>
 struct Qp {
@@ -364,6 +404,9 @@ struct Qp {
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g;
 	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A;
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b;
+	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> C;
+	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> u;
+	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> l;
 
 	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> solution;
 
@@ -371,13 +414,21 @@ struct Qp {
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> H_,
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g_,
 	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b_) noexcept
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> C_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> u_,
+	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> l_
+	   ) noexcept
 			: H(LDLT_FWD(H_)),
 				g(LDLT_FWD(g_)),
 				A(LDLT_FWD(A_)),
 				b(LDLT_FWD(b_)),
-				solution(H.rows() + A.rows()) {
+				C(LDLT_FWD(C_)),
+				u(LDLT_FWD(u_)),
+				l(LDLT_FWD(l_)),
+				solution(H.rows() + A.rows() + C.rows()) {
 
+		/*
 		ldlt::isize dim = ldlt::isize(H.rows());
 		ldlt::isize n_eq = ldlt::isize(A.rows());
 
@@ -393,6 +444,7 @@ struct Qp {
 		solution.topRows(dim) = -g;
 		solution.bottomRows(n_eq) = b;
 		kkt_mat.ldlt().solveInPlace(solution);
+		*/
 	}
 
 	Qp(RandomWithDimAndNeq /*tag*/, ldlt::isize dim, ldlt::isize n_eq)
@@ -409,6 +461,47 @@ struct Qp {
 
 		g = -H * primal_solution - A.transpose() * dual_solution;
 		b = A * primal_solution;
+	}
+
+	Qp(RandomWithDimAndNin /*tag*/, ldlt::isize dim, double sparsity_factor)
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(dim, Scalar(1e-2), sparsity_factor)),
+			  g(ldlt_test::rand::vector_rand<Scalar>(dim)),
+			  A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(0, dim, sparsity_factor)),
+			  b(0),
+			  C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(ldlt::isize(dim/2), dim, sparsity_factor)),
+			  u(ldlt::isize(dim/2)),
+			  l(ldlt::isize(dim/2)) {
+	
+			ldlt::isize n_in = ldlt::isize(dim/2);
+			
+			auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+			auto delta = Vec<Scalar>(dim);
+
+			for (ldlt::isize i = 0; i < dim; ++i) {
+				delta(i) = ldlt_test::rand::uniform_rand();
+			}
+
+			u = C * x_sol + delta ;
+			l.setZero();
+			l.array() -= 1.e30;
+			/*
+			sparsity = (n**2*sparsity_factor + 2 * n * n_in*sparsity_factor +  n_in) / (n+n_in)**2
+
+			H_ = sparse.random(n, n, density=sparsity_factor,
+							data_rvs=np.random.randn,
+							format='csc')
+			H_ = H_.dot(H_.T).tocsc() + 1e-02 * sparse.eye(n)
+			g_ = np.random.randn(n)
+			C_ = sparse.random(n_in, n, density=sparsity_factor,
+									data_rvs=np.random.randn,
+									format='csc')
+			x_sol = np.random.randn(n)  # Create fictitious solution
+			delta = np.random.rand(n_in)
+			u_ = C_@x_sol + delta
+			#l_ = - np.inf * np.ones(n_in)
+			l_ = - 1.e30 * np.ones(n_in)
+			*/
+
 	}
 
 	auto as_view() -> qp::QpView<Scalar> {
