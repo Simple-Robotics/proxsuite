@@ -169,7 +169,10 @@ void BCL_update_fact(
 		isize n_eq,
 		isize n_c,
 		ldlt::Ldlt<T>& ldl,
-		T beta,
+		T& beta,
+		T& exponent,
+		T& bcl_eta_ext_init,
+		T& cold_reset_bcl_mu_max,
 		bool& VERBOSE) {
 
 	if (primal_feasibility_lhs <= bcl_eta_ext) {
@@ -184,8 +187,8 @@ void BCL_update_fact(
 		}
 		y.to_eigen() = ye.to_eigen();
 		z.to_eigen() = ze.to_eigen();
-		T new_bcl_mu_in = min2(bcl_mu_in * T(10), T(1e8));
-		T new_bcl_mu_eq = min2(bcl_mu_eq * T(10), T(1e10));
+		T new_bcl_mu_in(min2(bcl_mu_in * 10, cold_reset_bcl_mu_max));
+		T new_bcl_mu_eq(min2(bcl_mu_eq * (10), cold_reset_bcl_mu_max * 100));
 		if (bcl_mu_in != new_bcl_mu_in || bcl_mu_eq != new_bcl_mu_eq) {
 			{ ++n_mu_updates; }
 		}
@@ -200,8 +203,8 @@ void BCL_update_fact(
 				ldl);
 		bcl_mu_eq = new_bcl_mu_eq;
 		bcl_mu_in = new_bcl_mu_in;
-		bcl_eta_ext = (T(1) / pow(T(10), T(0.1))) / pow(bcl_mu_in, T(0.1));
-		bcl_eta_in = max2(T(1) / bcl_mu_in, eps_abs);
+		bcl_eta_ext = bcl_eta_ext_init/ pow(bcl_mu_in, exponent);
+		bcl_eta_in = max2(1 / bcl_mu_in, eps_abs);
 	}
 }
 
@@ -351,8 +354,8 @@ void newton_step_fact(
 	auto A_ = qp_scaled.A.to_eigen();
 	auto C_ = qp_scaled.C.to_eigen();
 
-	l_active_set_n_u_ = (z_pos_.array() > T(0)).matrix();
-	l_active_set_n_l_ = (z_neg_.array() < T(0)).matrix();
+	l_active_set_n_u_ = (z_pos_.array() > 0).matrix();
+	l_active_set_n_l_ = (z_neg_.array() < 0).matrix();
 
 	active_inequalities_ = l_active_set_n_u_ || l_active_set_n_l_;
 
@@ -398,7 +401,7 @@ void newton_step_fact(
 			{from_eigen, err},
 			ldl,
 			eps,
-			isize(3),
+			3,
 			qp_scaled,
 			current_bijection_map,
 			dim,
@@ -492,8 +495,8 @@ auto initial_guess_fact(
 	prim_in_u_ += z_e / mu_in;
 	prim_in_l_ += z_e / mu_in;
 
-	l_active_set_n_u_.array() = (prim_in_u_.array() >= T(0));
-	l_active_set_n_l_.array() = (prim_in_l_.array() <= T(0));
+	l_active_set_n_u_.array() = (prim_in_u_.array() >= 0);
+	l_active_set_n_l_.array() = (prim_in_l_.array() <= 0);
 
 	active_inequalities_ = l_active_set_n_u_ || l_active_set_n_l_;
 
@@ -558,7 +561,7 @@ auto initial_guess_fact(
 			{from_eigen, err_it},
 			ldl,
 			eps_int,
-			isize(3),
+			3,
 			qp_scaled,
 			current_bijection_map,
 			dim,
@@ -631,8 +634,8 @@ auto initial_guess_fact(
 	}
 	prim_in_u_ += (alpha_step * cdx_);
 	prim_in_l_ += (alpha_step * cdx_);
-	l_active_set_n_u_ = (prim_in_u_.array() >= T(0)).matrix();
-	l_active_set_n_l_ = (prim_in_l_.array() <= T(0)).matrix();
+	l_active_set_n_u_ = (prim_in_u_.array() >= 0).matrix();
+	l_active_set_n_l_ = (prim_in_l_.array() <= 0).matrix();
 	active_inequalities_ = l_active_set_n_u_ || l_active_set_n_l_;
 
 	x_ += alpha_step * dw_aug_.topRows(dim);
@@ -640,9 +643,9 @@ auto initial_guess_fact(
 
 	for (isize i = 0; i < n_in; ++i) {
 		if (l_active_set_n_u_(i)) {
-			z(i) = max2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0));
+			z(i) = max2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0.));
 		} else if (l_active_set_n_l_(i)) {
-			z(i) = min2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0));
+			z(i) = min2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0.));
 		} else {
 			z(i) += alpha_step * dw_aug_(dim + n_eq + i);
 		}
@@ -718,7 +721,7 @@ auto correction_guess(
 	auto active_inequalities_ = active_inequalities.to_eigen();
 	auto dw_aug_ = dw_aug.to_eigen();
 
-	T err_in = T(0);
+	T err_in(0);
 
 	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
 
@@ -752,7 +755,7 @@ auto correction_guess(
 				deletion,
 				adding,
 				VERBOSE);
-		T alpha_step = T(1);
+		T alpha_step(1);
 		Hdx_ = (qp_scaled.H).to_eigen() * dw_aug_.topRows(dim);
 		Adx_ = (qp_scaled.A).to_eigen() * dw_aug_.topRows(dim);
 		Cdx_ = (qp_scaled.C).to_eigen() * dw_aug_.topRows(dim);
@@ -778,7 +781,7 @@ auto correction_guess(
 			);
 		}
 
-		if (infty_norm(alpha_step * dw_aug_.topRows(dim)) < T(1.E-11)) {
+		if (infty_norm(alpha_step * dw_aug_.topRows(dim)) < 1.E-11) {
 			n_tot += iter + 1;
 			break;
 		}
@@ -855,11 +858,13 @@ QpSolveStats qpSolve( //
 	isize n_ext = 0;
 
 	T machine_eps = std::numeric_limits<T>::epsilon();
-	auto rho = T(1e-6);
-	auto bcl_mu_eq = T(1e3);
-	auto bcl_mu_in = T(1e1);
-	T bcl_eta_ext = 1 / pow(bcl_mu_in, T(0.1));
-	T bcl_eta_in = T(1);
+	T rho = 1e-6;
+	T bcl_mu_eq = 1e3;
+	T bcl_mu_in = 1e1;
+	T exponent(0.1);
+	T bcl_eta_ext_init = 1 / pow(bcl_mu_in, exponent);
+	T bcl_eta_ext = bcl_eta_ext_init;
+	T bcl_eta_in = 1;
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_h_scaled, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
@@ -955,7 +960,7 @@ QpSolveStats qpSolve( //
 	kkt.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
-	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
+	kkt.diagonal().segment(dim, n_eq).setConstant(-1 / bcl_mu_eq);
 	ldl.factorize(kkt);
 	//}
 	//ldlt::Ldlt<T> ldl{decompose, kkt};
@@ -991,15 +996,15 @@ QpSolveStats qpSolve( //
 	T primal_feasibility_in_lhs(0);
 	T dual_feasibility_lhs(0);
 
-	T refactor_dual_feasibility_threshold = T(1e-2);
-	T refactor_rho_threshold = T(1e-7);
-	T refactor_rho_update_factor = T(10);
+	T refactor_dual_feasibility_threshold(1e-2);
+	T refactor_rho_threshold(1e-7);
+	T refactor_rho_update_factor(10);
 
-	T cold_reset_bcl_mu_max = T(1e8);
-	T cold_reset_primal_test_factor = T(1);
-	T cold_reset_dual_test_factor = T(1);
-	T cold_reset_mu_eq = T(1.1);
-	T cold_reset_mu_in = T(1.1);
+	T cold_reset_bcl_mu_max(1e8);
+	T cold_reset_primal_test_factor(1);
+	T cold_reset_dual_test_factor(1);
+	T cold_reset_mu_eq(1.1);
+	T cold_reset_mu_in(1.1);
 	isize deletion(0);
 	isize adding(0);
 
@@ -1072,7 +1077,7 @@ QpSolveStats qpSolve( //
 			if (dual_feasibility_lhs > refactor_dual_feasibility_threshold && //
 			    rho > refactor_rho_threshold) {
 				T rho_new = max2( //
-						T(rho / refactor_rho_update_factor),
+						(rho / refactor_rho_update_factor),
 						refactor_rho_threshold);
 
 				qp::detail::refactorize(
@@ -1282,6 +1287,9 @@ QpSolveStats qpSolve( //
 				n_c,
 				ldl,
 				beta,
+				exponent,
+				bcl_eta_ext_init,
+				cold_reset_bcl_mu_max,
 				VERBOSE);
 
 		// COLD RESTART
