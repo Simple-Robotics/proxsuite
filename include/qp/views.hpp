@@ -4,6 +4,7 @@
 #include "ldlt/views.hpp"
 
 namespace qp {
+	
 namespace detail {
 using namespace ldlt::detail;
 } // namespace detail
