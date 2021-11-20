@@ -785,31 +785,33 @@ auto correction_guess(
 			break;
 		}
 
-		x.to_eigen() += alpha_step * dw_aug_.topRows(dim);
-		z_pos_ += alpha_step * Cdx_;
-		z_neg_ += alpha_step * Cdx_;
-		residual_in_y_ += alpha_step * Adx_;
-		y.to_eigen() = mu_eq * residual_in_y_;
-		dual_for_eq_ += alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
+		x.to_eigen().noalias() += alpha_step * dw_aug_.topRows(dim);
+		z_pos_.noalias() += alpha_step * Cdx_;
+		z_neg_.noalias() += alpha_step * Cdx_;
+		residual_in_y_.noalias() += alpha_step * Adx_;
+		y.to_eigen().noalias() = mu_eq * residual_in_y_;
+		dual_for_eq_.noalias() 
+		+= alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
 		                  rho * dw_aug_.topRows(dim) + Hdx_) ;
+
 		for (isize j = 0; j < n_in; ++j) {
 			z(j) = mu_in * (max2(z_pos_(j), T(0)) + min2(z_neg_(j), T(0)));
 		}
 
-		Hdx_ = (qp_scaled.H).to_eigen() * x.to_eigen();
+		Hdx_.noalias() = (qp_scaled.H).to_eigen() * x.to_eigen();
 		T rhs_c = max2(correction_guess_rhs_g, infty_norm(Hdx_));
 
-		dw_aug_.topRows(dim) =
+		dw_aug_.topRows(dim).noalias() =
 				(qp_scaled.A.to_eigen().transpose()) * (y.to_eigen());
 		rhs_c = max2(rhs_c, infty_norm(dw_aug_.topRows(dim)));
 		Hdx_ += (dw_aug_.topRows(dim));
 
-		dw_aug_.topRows(dim) =
+		dw_aug_.topRows(dim).noalias() =
 				(qp_scaled.C.to_eigen().transpose()) * (z.to_eigen());
 		rhs_c = max2(rhs_c, infty_norm(dw_aug_.topRows(dim)));
-		Hdx_ += (dw_aug_.topRows(dim));
+		Hdx_ += dw_aug_.topRows(dim);
 
-		Hdx_ += ((qp_scaled.g).to_eigen());
+		Hdx_ += (qp_scaled.g).to_eigen();
 
 		err_in = infty_norm(Hdx_ + rho * (x.to_eigen() - xe.to_eigen()));
 		if (VERBOSE){
@@ -856,7 +858,7 @@ QpSolveStats qpSolve( //
 	isize n_tot = 0;
 	isize n_ext = 0;
 
-	T machine_eps = std::numeric_limits<T>::epsilon();
+	constexpr T machine_eps = std::numeric_limits<T>::epsilon();
 	T rho = 1e-6;
 	T bcl_mu_eq = 1e3;
 	T bcl_mu_in = 1e1;
@@ -867,7 +869,6 @@ QpSolveStats qpSolve( //
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_h_scaled, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
-			(_h_ws, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
 			(_g_scaled, Uninit, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_a_scaled, Uninit, Mat(n_eq, dim), LDLT_CACHELINE_BYTES, T),
 			(_c_scaled, Uninit, Mat(n_in, dim), LDLT_CACHELINE_BYTES, T),
@@ -913,7 +914,6 @@ QpSolveStats qpSolve( //
 
 	auto H_copy = _h_scaled.to_eigen();
 	auto kkt = _kkt.to_eigen();
-	auto H_ws = _h_ws.to_eigen();
 	auto q_copy = _g_scaled.to_eigen();
 	auto A_copy = _a_scaled.to_eigen();
 	auto C_copy = _c_scaled.to_eigen();
@@ -946,27 +946,29 @@ QpSolveStats qpSolve( //
 			{from_eigen, l_copy}};
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "equilibration", T);
+	//::Eigen::internal::set_is_malloc_allowed(false);
 	precond.scale_qp_in_place(qp_scaled);
+
 	//}
 	ldlt::Ldlt<T> ldl{reserve_uninit,dim} ;
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "setting kkt", T);
-	H_ws = H_copy;
-	for (isize i = 0; i < dim; ++i) {
-		H_ws(i, i) += rho;
-	}
-	kkt.topLeftCorner(dim, dim) = H_ws;
+	
+	kkt.topLeftCorner(dim, dim) = H_copy;
+	kkt.topLeftCorner(dim, dim).diagonal().array() += rho;	
 	kkt.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
-	kkt.diagonal().segment(dim, n_eq).setConstant(-1 / bcl_mu_eq);
+	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
 	ldl.factorize(kkt);
 	//}
 	//ldlt::Ldlt<T> ldl{decompose, kkt};
 
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
-	ldlt::Ldlt<T> ldl_ws{decompose, H_ws};
+
+	// TODO(jcarpent): use a single decomposition
+	ldlt::Ldlt<T> ldl_ws{decompose, kkt.topLeftCorner(dim, dim)};
 	x.to_eigen() = -qp_scaled.g.to_eigen();
 	ldl_ws.solve_in_place(x.to_eigen());
 	//}
@@ -1049,7 +1051,7 @@ QpSolveStats qpSolve( //
 								<< " bcl_mu_eq : " << bcl_mu_eq << " bcl_mu_in : " << bcl_mu_in
 								<< std::endl;
 		}
-		bool is_primal_feasible =
+		const bool is_primal_feasible =
 				primal_feasibility_lhs <=
 				(eps_abs +
 		     eps_rel *
@@ -1063,7 +1065,7 @@ QpSolveStats qpSolve( //
 
 										 ));
 
-		bool is_dual_feasible =
+		const bool is_dual_feasible =
 				dual_feasibility_lhs <=
 				(eps_abs +
 		     eps_rel * max2(
@@ -1095,9 +1097,11 @@ QpSolveStats qpSolve( //
 			if (is_dual_feasible) {
 
 				//LDLT_DECL_SCOPE_TIMER("in solver", "unscale solution", T);
+					::Eigen::internal::set_is_malloc_allowed(false);
 				precond.unscale_primal_in_place(x);
 				precond.unscale_dual_in_place_eq(y);
 				precond.unscale_dual_in_place_in(z);
+					::Eigen::internal::set_is_malloc_allowed(true);
 
 				/*
 				auto timing_map = LDLT_GET_MAP(T)["in solver"];
@@ -1126,7 +1130,7 @@ QpSolveStats qpSolve( //
 		ye = y.to_eigen();
 		ze = z.to_eigen();
 
-		bool do_initial_guess_fact = primal_feasibility_lhs < err_IG;
+		const bool do_initial_guess_fact = primal_feasibility_lhs < err_IG;
 
 		T err_in(0.);
 
@@ -1176,26 +1180,23 @@ QpSolveStats qpSolve( //
 		                           (do_initial_guess_fact && err_in >= bcl_eta_in);
 
 		if (do_correction_guess) {
-			auto CT_z = qp_scaled.C.trans().to_eigen() * z.to_eigen();
-			auto AT_primal_res =
-					qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled;
-			dual_residual_scaled.noalias() -= CT_z;
-			dual_residual_scaled.noalias() += bcl_mu_eq * AT_primal_res;
+			dual_residual_scaled.noalias() -= qp_scaled.C.to_eigen().transpose() * z.to_eigen();
+			dual_residual_scaled.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
 		}
 
 		if (do_initial_guess_fact && err_in >= bcl_eta_in) {
-			primal_residual_eq_scaled += y.to_eigen() / bcl_mu_eq;
+			primal_residual_eq_scaled.noalias() += y.to_eigen() / bcl_mu_eq;
 
-			primal_residual_in_scaled_u += z.to_eigen() / bcl_mu_in;
-			primal_residual_in_scaled_l += z.to_eigen() / bcl_mu_in;
+			primal_residual_in_scaled_u.noalias() += z.to_eigen() / bcl_mu_in;
+			primal_residual_in_scaled_l.noalias() += z.to_eigen() / bcl_mu_in;
 		}
 		if (!do_initial_guess_fact) {
 			//auto Cx = qp_scaled.C.to_eigen() * x.to_eigen();
 
 			precond.scale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen, primal_residual_in_scaled_u}); // primal_residual_in_scaled_u contains Cx unscaled from global primal residual
 
-			primal_residual_eq_scaled += ye / bcl_mu_eq;
-			primal_residual_in_scaled_u += ze / bcl_mu_in;
+			primal_residual_eq_scaled.noalias()  += ye / bcl_mu_eq;
+			primal_residual_in_scaled_u.noalias()  += ze / bcl_mu_in;
 
 			//primal_residual_in_scaled_u += ze / bcl_mu_in;
 			//primal_residual_in_scaled_u.noalias() += Cx;
