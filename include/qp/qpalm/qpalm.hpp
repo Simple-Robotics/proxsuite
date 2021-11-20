@@ -22,9 +22,9 @@ using namespace ldlt::tags;
 namespace detail {
 
 struct QpalmSolveStats{
-	double n_ext;
-	double n_mu_updates;
-	double n_tot;
+	isize n_ext;
+	isize n_mu_updates;
+	isize n_tot;
 };
 
 #define LDLT_DEDUCE_RET(...)                                                   \
@@ -884,7 +884,7 @@ QpalmSolveStats QPALMSolve( //
 
 
 				}
-				return {double(n_ext), double(n_mu_updates), double(n_tot)};
+				return {n_ext, n_mu_updates, n_tot};
 			}
 		}
 		/* NB 
@@ -1001,7 +1001,7 @@ QpalmSolveStats QPALMSolve( //
 		
 	}
 
-	return {double(n_ext), double(n_mu_updates), double(n_tot)};
+	return {n_ext, n_mu_updates, n_tot};
 }
 
 } // namespace detail

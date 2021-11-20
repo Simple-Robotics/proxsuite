@@ -23,13 +23,13 @@ using namespace ldlt::tags;
 namespace detail {
 
 struct QpSolveStats {
-	double n_ext;
-	double n_mu_updates;
-	double n_tot;
-	double activeSetChange;
-	double SolveLS;
-	double deletion;
-	double adding;
+	isize n_ext;
+	isize n_mu_updates;
+	isize n_tot;
+	isize activeSetChange;
+	isize SolveLS;
+	isize deletion;
+	isize adding;
 	/*
 	double equilibration_tmp ;
 	double fact_tmp;
@@ -1427,7 +1427,7 @@ QpSolveStats qpSolve( //
 	return {double(max_iter), double(n_mu_updates), double(n_tot),equilibration_tmp,fact_tmp,ws_tmp,residuals_tmp,IG_tmp,CG_tmp,BCL_tmp,cold_restart_tmp};
 	*/
 	//return {double(max_iter), double(n_mu_updates), double(n_tot),activeSetChange_tmp,SolveLS_tmp,double(deletion),double(adding)};
-	return {double(max_iter), double(n_mu_updates), double(n_tot)};
+	return {max_iter, n_mu_updates, n_tot};
 }
 
 } // namespace detail

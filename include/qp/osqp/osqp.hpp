@@ -10,8 +10,10 @@
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
 #include "qp/precond/identity.hpp"
+
 #include <cmath>
 #include <type_traits>
+#include <numeric>
 
 namespace qp {
 inline namespace tags {
@@ -21,9 +23,9 @@ using namespace ldlt::tags;
 namespace detail {
 
 struct QpSolveOSQPStats {
-	double n_ext;
-	double n_mu_updates;
-	double n_tot;
+	isize n_ext;
+	isize n_mu_updates;
+	isize n_tot;
 };
 
 #define LDLT_DEDUCE_RET(...)                                                   \
