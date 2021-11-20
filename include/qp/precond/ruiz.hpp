@@ -292,7 +292,7 @@ struct RuizEquilibration {
 			isize dim_,
 			isize n_eq_in,
 			T epsilon_ = T(1e-3),
-			i64 max_iter_ = 20,
+			i64 max_iter_ = 10,
 			Symmetry sym_ = Symmetry::general,
 			std::ostream* logger = nullptr)
 			: delta(dim_ + n_eq_in),
