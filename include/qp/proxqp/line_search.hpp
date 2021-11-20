@@ -103,7 +103,7 @@ auto gradient_norm_computation_box(
 
 		if (tmp_u(k) >= T(0.)) {
 			if (active_part_z(k) > T(0.)) {
-				res.topRows(dim) += active_part_z(k) * C_copy.row(k);
+				res.topRows(dim).noalias() += active_part_z(k) * C_copy.row(k);
 				res(dim + n_eq + k) = tmp_u(k) - active_part_z(k) / mu_in;
 			} else {
 				res(dim + n_eq + k) = tmp_u(k);
@@ -111,7 +111,7 @@ auto gradient_norm_computation_box(
 
 		} else if (tmp_l(k) <= T(0.)) {
 			if (active_part_z(k) < T(0.)) {
-				res.topRows(dim) += active_part_z(k) * C_copy.row(k);
+				res.topRows(dim).noalias() += active_part_z(k) * C_copy.row(k);
 				res(dim + n_eq + k) = tmp_l(k) - active_part_z(k) / mu_in;
 			} else {
 				res(dim + n_eq + k) = tmp_l(k);
