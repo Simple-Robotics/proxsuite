@@ -435,8 +435,8 @@ auto initial_guess_LS(
 	 * Otherwise, it returns the node minimizing the most the merit function
 	 */
 
-	T machine_eps = std::numeric_limits<T>::epsilon();
-	T machine_inf = std::numeric_limits<T>::infinity();
+	static constexpr T machine_eps = std::numeric_limits<T>::epsilon();
+	static constexpr T machine_inf = std::numeric_limits<T>::infinity();
 
 	auto z_e = ze.to_eigen();
 	auto dz_ = dz.to_eigen();
