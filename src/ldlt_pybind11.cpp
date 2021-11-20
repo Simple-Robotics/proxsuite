@@ -1,14 +1,18 @@
+
 #include <ldlt/ldlt.hpp>
 #include <ldlt/factorize.hpp>
 #include <ldlt/solve.hpp>
 #include <ldlt/update.hpp>
-#include <Eigen/Core>
+
+#include <qp/views.hpp>
+#include <qp/proxqp/in_solver.hpp>
+#include <qp/qpalm/qpalm.hpp>
+#include <qp/osqp/osqp.hpp>
+#include <qp/precond/ruiz.hpp>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
-#include <qp/line_search.hpp>
-#include <qp/views.hpp>
-#include <qp/in_solver.hpp>
-#include <qp/precond/ruiz.hpp>
+
 
 namespace ldlt {
 namespace pybind11 {
@@ -118,10 +122,10 @@ void QPsolve( //
 			R,
 			LDLT_FWD(ruiz));
 
-	std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-	std::cout << "n_ext : " << res.n_ext << std::endl;
-	std::cout << "n_tot : " << res.n_tot << std::endl;
-	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
+	//std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+	//std::cout << "n_ext : " << res.n_ext << std::endl;
+	//std::cout << "n_tot : " << res.n_tot << std::endl;
+	//std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
 	res_iter(0) = double(res.n_ext);
 	res_iter(1) = double(res.n_tot);
@@ -129,12 +133,12 @@ void QPsolve( //
 	/*
 	res_iter(3) = double(res.equilibration_tmp);
 	res_iter(4) = double(res.fact_tmp );
-	res_iter(5) = double(res.ws_tmp ); 
+	res_iter(5) = double(res.ws_tmp );
 	res_iter(6) = double(res.residuals_tmp) ;
 	res_iter(7) = double(res.IG_tmp );
 	res_iter(8) = double(res.CG_tmp );
 	res_iter(9) = double(res.BCL_tmp );
-	res_iter(10) = double(res.cold_restart_tmp) ; 
+	res_iter(10) = double(res.cold_restart_tmp) ;
 	*/
 
 }
@@ -187,10 +191,10 @@ void QPalmSolve( //
 			max_rank_update_fraction,
 			LDLT_FWD(ruiz));
 
-	std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-	std::cout << "n_ext : " << res.n_ext << std::endl;
-	std::cout << "n_tot : " << res.n_tot << std::endl;
-	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
+	// std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+	// std::cout << "n_ext : " << res.n_ext << std::endl;
+	// std::cout << "n_tot : " << res.n_tot << std::endl;
+	// std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
 	res_iter(0) = double(res.n_ext);
 	res_iter(1) = double(res.n_tot);
@@ -221,7 +225,7 @@ void OSQPsolve( //
 			dim,
 			n_eq + n_in,
 	};
-	qp::detail::QpSolveStats res = qp::detail::osqpSolve( //
+	qp::detail::QpSolveOSQPStats res = qp::detail::osqpSolve( //
 			{from_eigen, x},
 			{from_eigen, y},
 			QpViewBox<T>{
@@ -239,10 +243,10 @@ void OSQPsolve( //
 			eps_rel,
 			LDLT_FWD(ruiz));
 
-	std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-	std::cout << "n_ext : " << res.n_ext << std::endl;
-	std::cout << "n_tot : " << res.n_tot << std::endl;
-	std::cout << "mu updates : " << res.n_mu_updates << std::endl;
+	// std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+	// std::cout << "n_ext : " << res.n_ext << std::endl;
+	// std::cout << "n_tot : " << res.n_tot << std::endl;
+	// std::cout << "mu updates : " << res.n_mu_updates << std::endl;
 
 	res_iter(0) = T(res.n_ext);
 	res_iter(1) = T(res.n_tot);
