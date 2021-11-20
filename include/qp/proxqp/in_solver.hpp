@@ -10,7 +10,6 @@
 #include "ldlt/solve.hpp"
 #include "ldlt/update.hpp"
 #include "qp/proxqp/line_search.hpp"
-#include "cnpy.hpp"
 #include "qp/precond/identity.hpp"
 #include <cmath>
 #include <type_traits>
