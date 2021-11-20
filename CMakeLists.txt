@@ -16,6 +16,7 @@ else()
   set(ENABLE_TESTING OFF)
 endif()
 
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 if(ENABLE_DOCS_ONLY)
@@ -24,7 +25,6 @@ if(ENABLE_DOCS_ONLY)
 endif()
 
 if(ENABLE_TESTING)
-  set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
@@ -48,7 +48,7 @@ add_library(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/test/src/cnpy.cpp
+  #${CMAKE_CURRENT_SOURCE_DIR}/test/src/cnpy.cpp
 )
 target_compile_options(inria_ldlt PRIVATE "-march=native")
 target_include_directories(
@@ -58,17 +58,11 @@ target_include_directories(
   inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
-set(CONAN_REQUIRES eigen/3.3.7)
-
-# Conan dependencies
+set(CONAN_REQUIRES eigen/3.3.7 fmt/8.0.0)
 if(ENABLE_TESTING)
-
-  target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
-  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
   set(CONAN_REQUIRES
       ${CONAN_REQUIRES}
       # MIT License
-      fmt/8.0.0
       backward-cpp/1.5
       #
       # Apache-2.0
@@ -78,8 +72,14 @@ if(ENABLE_TESTING)
       mpfr/4.1.0
   )
   set(CONAN_OPTIONS)
-  run_conan()
+endif(ENABLE_TESTING)
+run_conan()
 
+# Conan dependencies
+if(ENABLE_TESTING)
+
+  target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
+  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
   target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
@@ -94,7 +94,7 @@ if(ENABLE_TESTING)
   enable_sanitizers(project_options)
 endif()
 
-target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::eigen)
+target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::eigen CONAN_PKG::fmt)
 set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
