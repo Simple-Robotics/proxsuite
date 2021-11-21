@@ -178,15 +178,15 @@ auto gradient_norm_qpalm_box(
 	    mu_eq * (Adx).dot(residual_in_y));
 
 	for (isize k = 0; k < n_in; ++k) {
-
+		
 		if (tmp_u(k) > 0) {
 
-			a += mu_in * Cdx(k) * Cdx(k);
+			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_u(k);
 
 		} else if (tmp_l(k) < 0) {
 
-			a += mu_in * Cdx(k) * Cdx(k);
+			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_l(k);
 		}
 	}
@@ -281,15 +281,15 @@ auto local_saddle_point_box(
 
 				d_dual_for_eq += dz(k) * C_copy.row(k);
 				dual_for_eq += z_e(k) * C_copy.row(k);
-				a0 += pow(Cdx(k) - dz(k) / mu_in, T(2));
+				a0 += qp::detail::square(Cdx(k) - dz(k) / mu_in);
 				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_u(k) - z_e(k) / mu_in);
-				c0 += pow(residual_in_z_u(k) - z_e(k) / mu_in, T(2));
+				c0 += qp::detail::square(residual_in_z_u(k) - z_e(k) / mu_in);
 
 			} else {
 
-				a0 += pow(Cdx(k), T(2));
+				a0 += qp::detail::square(Cdx(k));
 				b0 += Cdx(k) * residual_in_z_u(k);
-				c0 += pow(residual_in_z_u(k), T(2));
+				c0 += qp::detail::square(residual_in_z_u(k));
 			}
 
 		} else if (tmp_l(k) <= 0) {
@@ -298,21 +298,21 @@ auto local_saddle_point_box(
 
 				d_dual_for_eq += dz(k) * C_copy.row(k);
 				dual_for_eq += z_e(k) * C_copy.row(k);
-				a0 += pow(Cdx(k) - dz(k) / mu_in, T(2));
+				a0 += qp::detail::square(Cdx(k) - dz(k) / mu_in);
 				b0 += (Cdx(k) - dz(k) / mu_in) * (residual_in_z_l(k) - z_e(k) / mu_in);
-				c0 += pow(residual_in_z_l(k) - z_e(k) / mu_in, T(2));
+				c0 += qp::detail::square(residual_in_z_l(k) - z_e(k) / mu_in);
 
 			} else {
 
-				a0 += pow(Cdx(k), T(2));
+				a0 += qp::detail::square(Cdx(k));
 				b0 += Cdx(k) * residual_in_z_l(k);
-				c0 += pow(residual_in_z_l(k), T(2));
+				c0 += qp::detail::square(residual_in_z_l(k));
 			}
 
 		} else {
-			a0 += pow(dz(k), T(2));
+			a0 += qp::detail::square(dz(k));
 			b0 += dz(k) * z_e(k);
-			c0 += pow(z_e(k), T(2));
+			c0 += qp::detail::square(z_e(k));
 		}
 	}
 	a0 += d_dual_for_eq.squaredNorm();
@@ -326,7 +326,7 @@ auto local_saddle_point_box(
 
 	if (a0 != 0) {
 		alpha = (-b0 / (2 * a0));
-		res = a0 * pow(alpha, T(2)) + b0 * alpha + c0;
+		res = a0 * qp::detail::square(alpha) + b0 * alpha + c0;
 	} else if (b0 != 0) {
 		alpha = (-c0 / (b0));
 		res = b0 * alpha + c0;

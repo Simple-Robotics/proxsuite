@@ -32,6 +32,10 @@ auto positive_part(T const& expr)
 template <typename T>
 auto negative_part(T const& expr)
 		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
+template <typename T>
+auto square(T const& expr)
+	LDLT_DEDUCE_RET(expr*expr);
+
 
 template <typename T>
 void refactorize(

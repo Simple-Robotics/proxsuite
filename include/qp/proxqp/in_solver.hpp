@@ -208,60 +208,6 @@ void BCL_update_fact(
 }
 
 template <typename T>
-auto SaddlePointError(
-		qp::QpViewBox<T> qp_scaled,
-		VectorViewMut<T> x,
-		VectorViewMut<T> y,
-		VectorViewMut<T> z,
-		VectorView<T> xe,
-		VectorView<T> ye,
-		VectorView<T> ze,
-		T mu_eq,
-		T mu_in,
-		T rho,
-		isize n_in) -> T {
-
-	auto H_ = qp_scaled.H.to_eigen();
-	auto g_ = qp_scaled.g.to_eigen();
-	auto A_ = qp_scaled.A.to_eigen();
-	auto C_ = qp_scaled.C.to_eigen();
-	auto x_ = x.as_const().to_eigen();
-	auto x_e = xe.to_eigen();
-	auto y_ = y.as_const().to_eigen();
-	auto y_e = ye.to_eigen();
-	auto z_ = z.as_const().to_eigen();
-	auto z_e = ze.to_eigen();
-	auto b_ = qp_scaled.b.to_eigen();
-	auto l_ = qp_scaled.l.to_eigen();
-	auto u_ = qp_scaled.u.to_eigen();
-
-	auto prim_in_u = C_ * x_ - u_ - (z_ - z_e) / mu_in;
-	auto prim_in_l = C_ * x_ - l_ - (z_ - z_e) / mu_in;
-
-	T prim_eq_e = infty_norm(A_ * x_ - b_ - (y_ - y_e) / mu_eq);
-	T dual_e = infty_norm(
-			H_ * x_ + rho * (x_ - x_e) + g_ + A_.transpose() * y_ +
-			C_.transpose() * z_);
-	T err = max2(prim_eq_e, dual_e);
-
-	T prim_in_e(0);
-
-	for (isize i = 0; i < n_in; i = i + 1) {
-		using std::fabs;
-		if (z_(i) > 0) {
-			prim_in_e = max2(prim_in_e, fabs(prim_in_u(i)));
-		} else if (z_(i) < 0) {
-			prim_in_e = max2(prim_in_e, fabs(prim_in_l(i)));
-		} else {
-			prim_in_e = max2(prim_in_e, max2(prim_in_u(i), T(0)));
-			prim_in_e = max2(prim_in_e, fabs(min2(prim_in_l(i), T(0))));
-		}
-	}
-	err = max2(err, prim_in_e);
-	return err;
-}
-
-template <typename T>
 auto saddle_point(
 		qp::QpViewBox<T> qp_scaled,
 		VectorView<T> x,
@@ -275,7 +221,8 @@ auto saddle_point(
 		VectorViewMut<T> prim_in_u,
 		VectorViewMut<T> prim_in_l,
 		VectorView<T> prim_eq,
-		VectorViewMut<T> dual_eq) -> T {
+		VectorViewMut<T> dual_eq,
+		T& zero) -> T {
 
 	auto H_ = qp_scaled.H.to_eigen();
 	auto g_ = qp_scaled.g.to_eigen();
@@ -310,8 +257,8 @@ auto saddle_point(
 		} else if (z_(i) < 0) {
 			prim_in_e = max2(prim_in_e, fabs(prim_in_l(i)));
 		} else {
-			prim_in_e = max2(prim_in_e, max2(prim_in_u(i), T(0)));
-			prim_in_e = max2(prim_in_e, fabs(min2(prim_in_l(i), T(0))));
+			prim_in_e = max2(prim_in_e, max2(prim_in_u(i), zero));
+			prim_in_e = max2(prim_in_e, fabs(min2(prim_in_l(i), zero)));
 		}
 	}
 	err = max2(err, prim_in_e);
@@ -340,7 +287,8 @@ void newton_step_fact(
 		isize& n_c,
 		isize& deletion,
 		isize& adding,
-		bool& VERBOSE) {
+		bool& VERBOSE,
+		T& zero) {
 
 	auto z_pos_ = z_pos.to_eigen();
 	auto z_neg_ = z_neg.to_eigen();
@@ -390,7 +338,7 @@ void newton_step_fact(
 	rhs.topRows(dim) -= dual_for_eq_;
 	for (isize j = 0; j < n_in; ++j) {
 		rhs.topRows(dim) -=
-				mu_in * (max2(z_pos_(j), T(0)) + min2(z_neg_(j), T(0))) * C_.row(j);
+				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j);
 	}
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
@@ -452,7 +400,8 @@ auto initial_guess_fact(
 		T R,
 		isize& deletion,
 		isize& adding,
-		bool& VERBOSE) -> T {
+		bool& VERBOSE,
+		T& zero) -> T {
 
 	auto primal_residual_eq_ = primal_residual_eq.to_eigen();
 	auto prim_in_u_ = prim_in_u.to_eigen();
@@ -642,9 +591,9 @@ auto initial_guess_fact(
 
 	for (isize i = 0; i < n_in; ++i) {
 		if (l_active_set_n_u_(i)) {
-			z(i) = max2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0.));
+			z(i) = max2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), zero);
 		} else if (l_active_set_n_l_(i)) {
-			z(i) = min2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), T(0.));
+			z(i) = min2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), zero);
 		} else {
 			z(i) += alpha_step * dw_aug_(dim + n_eq + i);
 		}
@@ -665,7 +614,8 @@ auto initial_guess_fact(
 			{from_eigen, prim_in_u_},
 			{from_eigen, prim_in_l_},
 			{from_eigen, primal_residual_eq_},
-			{from_eigen, dual_for_eq_});
+			{from_eigen, dual_for_eq_},
+			zero);
 	return err;
 }
 
@@ -706,7 +656,8 @@ auto correction_guess(
 		T& correction_guess_rhs_g,
 		isize& deletion,
 		isize& adding,
-		bool& VERBOSE) -> T {
+		bool& VERBOSE,
+		T& zero) -> T {
 
 	auto residual_in_y_ = residual_in_y.to_eigen();
 	auto z_pos_ = z_pos.to_eigen();
@@ -753,7 +704,8 @@ auto correction_guess(
 				n_c,
 				deletion,
 				adding,
-				VERBOSE);
+				VERBOSE,
+				zero);
 		T alpha_step(1);
 		Hdx_ = (qp_scaled.H).to_eigen() * dw_aug_.topRows(dim);
 		Adx_ = (qp_scaled.A).to_eigen() * dw_aug_.topRows(dim);
@@ -795,7 +747,7 @@ auto correction_guess(
 		                  rho * dw_aug_.topRows(dim) + Hdx_) ;
 
 		for (isize j = 0; j < n_in; ++j) {
-			z(j) = mu_in * (max2(z_pos_(j), T(0)) + min2(z_neg_(j), T(0)));
+			z(j) = mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero));
 		}
 
 		Hdx_.noalias() = (qp_scaled.H).to_eigen() * x.to_eigen();
@@ -863,9 +815,11 @@ QpSolveStats qpSolve( //
 	T bcl_mu_eq = 1e3;
 	T bcl_mu_in = 1e1;
 	T exponent(0.1);
-	T bcl_eta_ext_init = 1 / pow(bcl_mu_in, exponent);
+	T bcl_eta_ext_init = T(1) / pow(bcl_mu_in, exponent);
 	T bcl_eta_ext = bcl_eta_ext_init;
 	T bcl_eta_in = 1;
+	T zero(0);
+	T square(2);
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_h_scaled, Uninit, Mat(dim, dim), LDLT_CACHELINE_BYTES, T),
@@ -959,7 +913,7 @@ QpSolveStats qpSolve( //
 	kkt.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
-	kkt.diagonal().segment(dim, n_eq).setConstant(-1 / bcl_mu_eq);
+	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
 	ldl.factorize(kkt);
 	//}
 	//ldlt::Ldlt<T> ldl{decompose, kkt};
@@ -1122,7 +1076,6 @@ QpSolveStats qpSolve( //
 				}
 				*/
 				return {n_ext, n_mu_updates, n_tot};
-				//eturn {double(n_ext), double(n_mu_updates), double(n_tot),activeSetChange_tmp,SolveLS_tmp,double(deletion),double(adding)};
 			}
 		} 
 
@@ -1172,7 +1125,8 @@ QpSolveStats qpSolve( //
 					R,
 					deletion,
 					adding,
-					VERBOSE);
+					VERBOSE,
+					zero);
 			n_tot += 1;
 		}
 
@@ -1245,7 +1199,8 @@ QpSolveStats qpSolve( //
 					correction_guess_rhs_g,
 					deletion,
 					adding,
-					VERBOSE);
+					VERBOSE,
+					zero);
 			if (VERBOSE){
 				std::cout << "primal_feasibility_lhs " << primal_feasibility_lhs
 									<< " error from initial guess : " << err_in << " bcl_eta_in "
@@ -1344,89 +1299,7 @@ QpSolveStats qpSolve( //
 			bcl_mu_eq = new_bcl_mu_eq;
 		}
 	}
-	/*
-	auto timing_map = LDLT_GET_MAP(T)["in solver"];
-	double activeSetChange_tmp(0);
-	double SolveLS_tmp(0);
-	
-	auto it = timing_map.find("activeSetChange");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		activeSetChange_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	it = timing_map.find("SolveLS");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		SolveLS_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	
-	auto timing_map = LDLT_GET_MAP(T)["in solver"];
-	//T eq_tmp = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) /
-	//			duration_vec.size();
-	double equilibration_tmp(0);
-	double fact_tmp(0);
-	double ws_tmp(0);
-	double residuals_tmp(0);
-	double IG_tmp(0);
-	double CG_tmp(0);
-	double BCL_tmp(0);
-	double cold_restart_tmp(0);
-	auto it = timing_map.find("equilibration");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		equilibration_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	it = timing_map.find("unscale solution");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		fact_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	
-	it = timing_map.find("warm starting");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		ws_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	
-	it = timing_map.find("residuals");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		residuals_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	
-	it = timing_map.find("initial guess");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		IG_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	it = timing_map.find("correction guess");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		CG_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	it = timing_map.find("BCL");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		BCL_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	it = timing_map.find("cold restart");
-	if (it != timing_map.end()) {
-		auto& duration_vec = (*it).second.ref;
-		auto duration = std::accumulate(duration_vec.begin(), duration_vec.end(), Duration{}) ;
-		cold_restart_tmp = std::chrono::duration_cast<std::chrono::duration<double>>(duration).count() ;
-	}
-	return {double(max_iter), double(n_mu_updates), double(n_tot),equilibration_tmp,fact_tmp,ws_tmp,residuals_tmp,IG_tmp,CG_tmp,BCL_tmp,cold_restart_tmp};
-	*/
-	//return {double(max_iter), double(n_mu_updates), double(n_tot),activeSetChange_tmp,SolveLS_tmp,double(deletion),double(adding)};
+
 	return {max_iter, n_mu_updates, n_tot};
 }
 
