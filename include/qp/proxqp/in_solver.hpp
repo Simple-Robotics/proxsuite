@@ -586,8 +586,8 @@ auto initial_guess_fact(
 	l_active_set_n_l_ = (prim_in_l_.array() <= 0).matrix();
 	active_inequalities_ = l_active_set_n_u_ || l_active_set_n_l_;
 
-	x_ += alpha_step * dw_aug_.topRows(dim);
-	y_ += alpha_step * dw_aug_.middleRows(dim, n_eq);
+	x_.noalias() += alpha_step * dw_aug_.topRows(dim);
+	y_.noalias()  += alpha_step * dw_aug_.middleRows(dim, n_eq);
 
 	for (isize i = 0; i < n_in; ++i) {
 		if (l_active_set_n_u_(i)) {
@@ -680,7 +680,7 @@ auto correction_guess(
 			break;
 		}
 
-		dw_aug_.topRows(dim).setZero();
+		dw_aug_.head(dim).setZero();
 
 		qp::detail::newton_step_fact(
 				qp_scaled,
@@ -707,9 +707,9 @@ auto correction_guess(
 				VERBOSE,
 				zero);
 		T alpha_step(1);
-		Hdx_ = (qp_scaled.H).to_eigen() * dw_aug_.topRows(dim);
-		Adx_ = (qp_scaled.A).to_eigen() * dw_aug_.topRows(dim);
-		Cdx_ = (qp_scaled.C).to_eigen() * dw_aug_.topRows(dim);
+		Hdx_.noalias() = (qp_scaled.H).to_eigen() * dw_aug_.topRows(dim);
+		Adx_.noalias() = (qp_scaled.A).to_eigen() * dw_aug_.topRows(dim);
+		Cdx_.noalias() = (qp_scaled.C).to_eigen() * dw_aug_.topRows(dim);
 		if (n_in > isize(0)) {
 			alpha_step = qp::line_search::correction_guess_LS(
 					{from_eigen, Hdx_},
