@@ -335,9 +335,9 @@ void newton_step_fact(
 				adding);
 	}
 
-	rhs.topRows(dim) -= dual_for_eq_;
+	rhs.head(dim) -= dual_for_eq_;
 	for (isize j = 0; j < n_in; ++j) {
-		rhs.topRows(dim) -=
+		rhs.head(dim).noalias() -=
 				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j);
 	}
 	{
@@ -360,7 +360,7 @@ void newton_step_fact(
 			rho,
 			VERBOSE);
 	}
-	dx.to_eigen() = dw.topRows(dim);
+	dx.to_eigen() = dw.head(dim);
 }
 
 template <typename T, typename Preconditioner>
@@ -495,12 +495,12 @@ auto initial_guess_fact(
 				rhs(j + dim + n_eq) = -prim_in_l_(i);
 			}
 		} else {
-			rhs.topRows(dim) += z_(i) * C_.row(i);
+			rhs.head(dim).noalias() += z_(i) * C_.row(i);
 		}
 	}
 
-	rhs.topRows(dim) = -dual_for_eq_;
-	rhs.middleRows(dim, n_eq) = -primal_residual_eq_;
+	rhs.head(dim) = -dual_for_eq_;
+	rhs.segment(dim, n_eq) = -primal_residual_eq_;
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
@@ -526,15 +526,15 @@ auto initial_guess_fact(
 		isize j = current_bijection_map(i);
 		if (j < n_c) {
 			if (l_active_set_n_u_(i)) {
-				d_dual_for_eq_ -= dw(j + dim + n_eq) * C_.row(i);
+				d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
 			} else if (l_active_set_n_l_(i)) {
-				d_dual_for_eq_ -= dw(j + dim + n_eq) * C_.row(i);
+				d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
 			}
 		}
 	}
 
-	dw_aug_.setZero();
-	dw_aug_.topRows(dim + n_eq) = dw.topRows(dim + n_eq);
+	dw_aug_.head(dim + n_eq) = dw.head(dim + n_eq);
+	dw_aug_.tail(n_in).setZero();
 	for (isize j = 0; j < n_in; ++j) {
 		isize i = current_bijection_map(j);
 		if (i < n_c) {
@@ -542,7 +542,7 @@ auto initial_guess_fact(
 			cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
 		} else {
 			dw_aug_(j + dim + n_eq) = -z_(j);
-			cdx_(j) = C_.row(j).dot(dw_aug_.topRows(dim));
+			cdx_(j) = C_.row(j).dot(dw_aug_.head(dim));
 		}
 	}
 
@@ -552,12 +552,12 @@ auto initial_guess_fact(
 	// d_primal_residual_eq_ = (A_ * dw_aug_.topRows(dim) -
 	// dw_aug_.middleRows(dim, n_eq) / mu_eq);
 	d_primal_residual_eq_ =
-			rhs.middleRows(dim, n_eq); // By definition of linear system solution
+			rhs.segment(dim, n_eq); // By definition of linear system solution
 	// d_dual_for_eq_ = (H_ * dw_aug_.topRows(dim) +  A_.transpose() *
 	// dw_aug_.middleRows(dim, n_eq) +  rho * dw_aug_.topRows(dim));
 
 	// cdx_ = C_ * dw_aug_.topRows(dim);
-	dual_for_eq_ -= C_.transpose() * z_e;
+	dual_for_eq_.noalias() -= C_.transpose() * z_e;
 	T alpha_step = qp::line_search::initial_guess_LS(
 			ze,
 			VectorView<T>{from_eigen, dw_aug_.tail(n_in)},
@@ -586,8 +586,8 @@ auto initial_guess_fact(
 	l_active_set_n_l_ = (prim_in_l_.array() <= 0).matrix();
 	active_inequalities_ = l_active_set_n_u_ || l_active_set_n_l_;
 
-	x_.noalias() += alpha_step * dw_aug_.topRows(dim);
-	y_.noalias()  += alpha_step * dw_aug_.middleRows(dim, n_eq);
+	x_.noalias() += alpha_step * dw_aug_.head(dim);
+	y_.noalias()  += alpha_step * dw_aug_.segment(dim, n_eq);
 
 	for (isize i = 0; i < n_in; ++i) {
 		if (l_active_set_n_u_(i)) {
@@ -707,9 +707,9 @@ auto correction_guess(
 				VERBOSE,
 				zero);
 		T alpha_step(1);
-		Hdx_.noalias() = (qp_scaled.H).to_eigen() * dw_aug_.topRows(dim);
-		Adx_.noalias() = (qp_scaled.A).to_eigen() * dw_aug_.topRows(dim);
-		Cdx_.noalias() = (qp_scaled.C).to_eigen() * dw_aug_.topRows(dim);
+		Hdx_.noalias() = (qp_scaled.H).to_eigen() * dw_aug_.head(dim);
+		Adx_.noalias() = (qp_scaled.A).to_eigen() * dw_aug_.head(dim);
+		Cdx_.noalias() = (qp_scaled.C).to_eigen() * dw_aug_.head(dim);
 		if (n_in > isize(0)) {
 			alpha_step = qp::line_search::correction_guess_LS(
 					{from_eigen, Hdx_},
@@ -732,19 +732,19 @@ auto correction_guess(
 			);
 		}
 
-		if (infty_norm(alpha_step * dw_aug_.topRows(dim)) < 1.E-11) {
+		if (infty_norm(alpha_step * dw_aug_.head(dim)) < 1.E-11) {
 			n_tot += iter + 1;
 			break;
 		}
 
-		x.to_eigen().noalias() += alpha_step * dw_aug_.topRows(dim);
+		x.to_eigen().noalias() += alpha_step * dw_aug_.head(dim);
 		z_pos_.noalias() += alpha_step * Cdx_;
 		z_neg_.noalias() += alpha_step * Cdx_;
 		residual_in_y_.noalias() += alpha_step * Adx_;
 		y.to_eigen().noalias() = mu_eq * residual_in_y_;
 		dual_for_eq_.noalias() 
 		+= alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
-		                  rho * dw_aug_.topRows(dim) + Hdx_) ;
+		                  rho * dw_aug_.head(dim) + Hdx_) ;
 
 		for (isize j = 0; j < n_in; ++j) {
 			z(j) = mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero));
@@ -753,15 +753,15 @@ auto correction_guess(
 		Hdx_.noalias() = (qp_scaled.H).to_eigen() * x.to_eigen();
 		T rhs_c = max2(correction_guess_rhs_g, infty_norm(Hdx_));
 
-		dw_aug_.topRows(dim).noalias() =
+		dw_aug_.head(dim).noalias() =
 				(qp_scaled.A.to_eigen().transpose()) * (y.to_eigen());
-		rhs_c = max2(rhs_c, infty_norm(dw_aug_.topRows(dim)));
-		Hdx_ += (dw_aug_.topRows(dim));
+		rhs_c = max2(rhs_c, infty_norm(dw_aug_.head(dim)));
+		Hdx_ += (dw_aug_.head(dim));
 
-		dw_aug_.topRows(dim).noalias() =
+		dw_aug_.head(dim).noalias() =
 				(qp_scaled.C.to_eigen().transpose()) * (z.to_eigen());
-		rhs_c = max2(rhs_c, infty_norm(dw_aug_.topRows(dim)));
-		Hdx_ += dw_aug_.topRows(dim);
+		rhs_c = max2(rhs_c, infty_norm(dw_aug_.head(dim)));
+		Hdx_ += dw_aug_.head(dim);
 
 		Hdx_ += (qp_scaled.g).to_eigen();
 

@@ -90,20 +90,21 @@ auto gradient_norm_computation_box(
 	auto active_part_z = active_part_z_.to_eigen();
 	auto res = res_.to_eigen();
 
+	Eigen::internal::set_is_malloc_allowed(false);
 	tmp_u = residual_in_z_u + alpha * Cdx;
 	tmp_l = residual_in_z_l + alpha * Cdx;
 
 	active_part_z = z_e + alpha * dz;
 
-	res.topRows(dim) = dual_for_eq + alpha * d_dual_for_eq;
-
-	res.middleRows(dim, n_eq) = primal_residual_eq + alpha * d_primal_residual_eq;
+	res.head(dim) = dual_for_eq + alpha * d_dual_for_eq;
+	res.segment(dim, n_eq) = primal_residual_eq + alpha * d_primal_residual_eq;
+	Eigen::internal::set_is_malloc_allowed(true);
 
 	for (isize k = 0; k < n_in; ++k) {
 
 		if (tmp_u(k) >= 0) {
 			if (active_part_z(k) > 0) {
-				res.topRows(dim).noalias() += active_part_z(k) * C_copy.row(k);
+				res.head(dim).noalias() += active_part_z(k) * C_copy.row(k);
 				res(dim + n_eq + k) = tmp_u(k) - active_part_z(k) / mu_in;
 			} else {
 				res(dim + n_eq + k) = tmp_u(k);
@@ -111,7 +112,7 @@ auto gradient_norm_computation_box(
 
 		} else if (tmp_l(k) <= 0) {
 			if (active_part_z(k) < 0) {
-				res.topRows(dim).noalias() += active_part_z(k) * C_copy.row(k);
+				res.head(dim).noalias() += active_part_z(k) * C_copy.row(k);
 				res(dim + n_eq + k) = tmp_l(k) - active_part_z(k) / mu_in;
 			} else {
 				res(dim + n_eq + k) = tmp_l(k);
@@ -170,8 +171,10 @@ auto gradient_norm_qpalm_box(
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
 
 	// define active set
-	auto tmp_u = residual_in_z_u + Cdx * alpha;
-	auto tmp_l = residual_in_z_l + Cdx * alpha;
+	// Eigen::internal::set_is_malloc_allowed(false);
+	auto tmp_u = (residual_in_z_u + Cdx * alpha).eval();
+	auto tmp_l = (residual_in_z_l + Cdx * alpha).eval();
+	// Eigen::internal::set_is_malloc_allowed(true);
 
 	T a(dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() + rho * dx_.squaredNorm());
 	T b(x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
@@ -184,7 +187,8 @@ auto gradient_norm_qpalm_box(
 			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_u(k);
 
-		} else if (tmp_l(k) < 0) {
+		} 
+		else if (tmp_l(k) < 0) {
 
 			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_l(k);
@@ -263,9 +267,9 @@ auto local_saddle_point_box(
 	auto d_primal_residual_eq = d_primal_residual_eq_.to_eigen();
 	auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
-	auto tmp_u = residual_in_z_u + alpha * Cdx;
-	auto tmp_l = residual_in_z_l + alpha * Cdx;
-	auto active_part = z_e + alpha * dz;
+	auto tmp_u = (residual_in_z_u + alpha * Cdx).eval();
+	auto tmp_l = (residual_in_z_l + alpha * Cdx).eval();
+	auto active_part = (z_e + alpha * dz).eval();
 
 	// a0 computation
 
@@ -322,7 +326,7 @@ auto local_saddle_point_box(
 
 	// derivation of the loss function value and corresponding argmin alpha
 
-	auto res = 0;
+	T res = 0;
 
 	if (a0 != 0) {
 		alpha = (-b0 / (2 * a0));
