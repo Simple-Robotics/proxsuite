@@ -19,6 +19,23 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+SET(CMAKE_SKIP_RPATH FALSE)
+LIST(APPEND CMAKE_BUILD_RPATH ${CMAKE_CURRENT_BINARY_DIR})
+MESSAGE(STATUS "CMAKE_BUILD_RPATH: ${CMAKE_BUILD_RPATH}")
+IF(APPLE) # Ensure that the policy if is only applied on OSX systems
+  SET(CMAKE_MACOSX_RPATH TRUE)
+  SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+  SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+  IF("${isSystemDir}" STREQUAL "-1")
+     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  ENDIF("${isSystemDir}" STREQUAL "-1")
+ENDIF(APPLE)
+
 if(ENABLE_DOCS_ONLY)
   add_subdirectory("docs")
   return()
@@ -43,6 +60,7 @@ endif()
 
 add_library(
   inria_ldlt
+  SHARED
   ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f32.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f64.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
@@ -74,6 +92,9 @@ if(ENABLE_TESTING)
   set(CONAN_OPTIONS)
 endif(ENABLE_TESTING)
 run_conan()
+if(APPLE)
+  set(CMAKE_SKIP_RPATH FALSE CACHE BOOL "rpaths" FORCE)
+endif(APPLE)
 
 # Conan dependencies
 if(ENABLE_TESTING)
@@ -100,8 +121,22 @@ set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
 if(INRIA_LDLT_PYTHON_BINDINGS)
   find_package(Python3 COMPONENTS Interpreter Development)
   add_subdirectory(external/pybind11)
-  pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
-  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt)
+  #pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
+  add_library(inria_ldlt_py MODULE src/ldlt_pybind11.cpp)
+
+  EXECUTE_PROCESS(
+      COMMAND "${PYTHON_EXECUTABLE}" "-c"
+      "from distutils.sysconfig import get_config_var; print(get_config_var('EXT_SUFFIX'))"
+      OUTPUT_VARIABLE PYTHON_EXT_SUFFIX)
+
+  STRING(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
+  MESSAGE(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
+  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt pybind11::module)
+  set_target_properties(inria_ldlt_py PROPERTIES
+    BUILD_RPATH ${CMAKE_BUILD_RPATH}
+    PREFIX ""
+    SUFFIX "${PYTHON_EXT_SUFFIX}"
+    )
 endif()
 
 if(ENABLE_TESTING)
