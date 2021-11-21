@@ -611,14 +611,14 @@ auto initial_guess_fact(
 	dual_for_eq_ -= C_.transpose() * z_e;
 	T alpha_step = qp::line_search::initial_guess_LS(
 			ze,
-			{from_eigen, dw_aug_.tail(n_in)},
-			{from_eigen, prim_in_l_},
-			{from_eigen, prim_in_u_},
-			{from_eigen, cdx_},
-			{from_eigen, d_dual_for_eq_},
-			{from_eigen, dual_for_eq_},
-			{from_eigen, d_primal_residual_eq_},
-			{from_eigen, primal_residual_eq_},
+			VectorView<T>{from_eigen, dw_aug_.tail(n_in)},
+			VectorView<T>{from_eigen, prim_in_l_},
+			VectorView<T>{from_eigen, prim_in_u_},
+			VectorView<T>{from_eigen, cdx_},
+			VectorView<T>{from_eigen, d_dual_for_eq_},
+			VectorView<T>{from_eigen, dual_for_eq_},
+			VectorView<T>{from_eigen, d_primal_residual_eq_},
+			VectorView<T>{from_eigen, primal_residual_eq_},
 			qp_scaled.C,
 			mu_eq,
 			mu_in,
@@ -959,7 +959,7 @@ QpSolveStats qpSolve( //
 	kkt.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
-	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
+	kkt.diagonal().segment(dim, n_eq).setConstant(-1 / bcl_mu_eq);
 	ldl.factorize(kkt);
 	//}
 	//ldlt::Ldlt<T> ldl{decompose, kkt};
