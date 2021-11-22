@@ -2,15 +2,9 @@ include(../cmake/doctest.cmake)
 
 include_directories(include)
 
-target_include_directories(
-  inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
 add_library(doctest_main STATIC src/doctest_main.cpp)
 add_library(backward_cpp_main OBJECT src/backward.cpp)
 add_library(libcnpy OBJECT src/cnpy.cpp)
-add_library(libinria_ldlt_util STATIC src/util_f64.cpp src/util_f32.cpp)
-target_link_libraries(libinria_ldlt_util inria_ldlt)
 target_link_libraries(libcnpy CONAN_PKG::eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 set(LDLT_TEST_LIBS

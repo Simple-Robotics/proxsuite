@@ -76,12 +76,18 @@ target_include_directories(
   inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
 )
 
+add_library(inria_ldlt_util STATIC test/src/util_f64.cpp test/src/util_f32.cpp)
+target_include_directories(
+  inria_ldlt_util PUBLIC test/include
+)
+target_link_libraries(inria_ldlt_util inria_ldlt)
+
 set(CONAN_REQUIRES eigen/3.3.7 fmt/8.0.0)
 if(ENABLE_TESTING)
   set(CONAN_REQUIRES
       ${CONAN_REQUIRES}
       # MIT License
-      backward-cpp/1.5
+#      backward-cpp/1.6
       #
       # Apache-2.0
       benchmark/1.6.0
