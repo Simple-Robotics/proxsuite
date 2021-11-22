@@ -427,17 +427,12 @@ auto initial_guess_fact(
 	auto u_ = qp_scaled.u.to_eigen();
 
 	{
-		//prim_in_u_ = C_ * x_; prim_in_u contains Cx unscaled from global primal residual
 		prim_in_l_ = prim_in_u_;
 
 		prim_in_u_ -= qp.u.to_eigen();
 		prim_in_l_ -= qp.l.to_eigen();
 	}
 
-	//precond.unscale_primal_residual_in_place_in(
-	//		VectorViewMut<T>{from_eigen, prim_in_u_});
-	//precond.unscale_primal_residual_in_place_in(
-	//		VectorViewMut<T>{from_eigen, prim_in_l_});
 	precond.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen, z_e});
 
 	prim_in_u_ += z_e / mu_in;
@@ -549,14 +544,9 @@ auto initial_guess_fact(
 	prim_in_u_ += z_e / mu_in;
 	prim_in_l_ += z_e / mu_in;
 
-	// d_primal_residual_eq_ = (A_ * dw_aug_.topRows(dim) -
-	// dw_aug_.middleRows(dim, n_eq) / mu_eq);
 	d_primal_residual_eq_ =
 			rhs.segment(dim, n_eq); // By definition of linear system solution
-	// d_dual_for_eq_ = (H_ * dw_aug_.topRows(dim) +  A_.transpose() *
-	// dw_aug_.middleRows(dim, n_eq) +  rho * dw_aug_.topRows(dim));
 
-	// cdx_ = C_ * dw_aug_.topRows(dim);
 	dual_for_eq_.noalias() -= C_.transpose() * z_e;
 	T alpha_step = qp::line_search::initial_guess_LS(
 			ze,
@@ -671,7 +661,7 @@ auto correction_guess(
 	auto active_inequalities_ = active_inequalities.to_eigen();
 	auto dw_aug_ = dw_aug.to_eigen();
 
-	T err_in(0);
+	T err_in(0.);
 
 	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
 
@@ -708,7 +698,7 @@ auto correction_guess(
 				zero);
 		T alpha_step(1);
 		Hdx_.noalias() = (qp_scaled.H).to_eigen() * dw_aug_.head(dim);
-		Adx_.noalias() = (qp_scaled.A).to_eigen() * dw_aug_.head(dim);
+		Adx_.noalias() = dw_aug_.middleRows(dim,n_eq) / mu_eq; // by definition Adx = dy / mu
 		Cdx_.noalias() = (qp_scaled.C).to_eigen() * dw_aug_.head(dim);
 		if (n_in > isize(0)) {
 			alpha_step = qp::line_search::correction_guess_LS(
@@ -728,7 +718,6 @@ auto correction_guess(
 					mu_in,
 					rho,
 					n_in
-
 			);
 		}
 
@@ -742,14 +731,15 @@ auto correction_guess(
 		z_neg_.noalias() += alpha_step * Cdx_;
 		residual_in_y_.noalias() += alpha_step * Adx_;
 		y.to_eigen().noalias() = mu_eq * residual_in_y_;
-		dual_for_eq_.noalias() 
-		+= alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
+		dual_for_eq_.noalias()  += alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
 		                  rho * dw_aug_.head(dim) + Hdx_) ;
 
+		z.to_eigen() = mu_in * (qp::detail::positive_part(z_pos_) + qp::detail::negative_part(z_neg_)) ; 
+		/*
 		for (isize j = 0; j < n_in; ++j) {
 			z(j) = mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero));
 		}
-
+		*/
 		Hdx_.noalias() = (qp_scaled.H).to_eigen() * x.to_eigen();
 		T rhs_c = max2(correction_guess_rhs_g, infty_norm(Hdx_));
 
@@ -834,8 +824,6 @@ QpSolveStats qpSolve( //
 			(_ye, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_ze, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_xe, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
-			(_diag_diff_eq, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
-			(_diag_diff_in, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 
 			(_kkt,
 				Uninit,
@@ -878,8 +866,6 @@ QpSolveStats qpSolve( //
 	auto ye = _ye.to_eigen();
 	auto ze = _ze.to_eigen();
 	auto xe = _xe.to_eigen();
-	auto diag_diff_in = _diag_diff_in.to_eigen();
-	auto diag_diff_eq = _diag_diff_eq.to_eigen();
 
 	auto residual_scaled = _residual_scaled.to_eigen();
 
@@ -904,7 +890,6 @@ QpSolveStats qpSolve( //
 	precond.scale_qp_in_place(qp_scaled);
 
 	//}
-	ldlt::Ldlt<T> ldl{reserve_uninit,dim} ;
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "setting kkt", T);
 	
@@ -914,17 +899,18 @@ QpSolveStats qpSolve( //
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
 	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
-	ldl.factorize(kkt);
-	//}
-	//ldlt::Ldlt<T> ldl{decompose, kkt};
+
+	ldlt::Ldlt<T> ldl{decompose, kkt.topLeftCorner(dim, dim)};
+	x.to_eigen() = -qp_scaled.g.to_eigen();
+	ldl.solve_in_place(x.to_eigen());
+	for (isize i = 0; i<n_eq;++i){
+		dw_aug.head(dim) = A_copy.row(i);
+		dw_aug(dim + i) = -1 / bcl_mu_eq;
+		ldl.insert_at(dim + i, dw_aug.head(dim+i));
+	}
 
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
-
-	// TODO(jcarpent): use a single decomposition
-	ldlt::Ldlt<T> ldl_ws{decompose, kkt.topLeftCorner(dim, dim)};
-	x.to_eigen() = -qp_scaled.g.to_eigen();
-	ldl_ws.solve_in_place(x.to_eigen());
 	//}
 
 	T primal_feasibility_rhs_1_eq = infty_norm(qp.b.to_eigen());
