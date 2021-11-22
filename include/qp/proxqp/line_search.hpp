@@ -996,31 +996,6 @@ void active_set_change_new(
 			if (new_bijection_map(i) >= n_c_f) {
 				// add at the end
 				
-				/*
-				[&] {
-					LDLT_MULTI_WORKSPACE_MEMORY(
-							(row_,
-					     Init,
-					     Vec(n_c_f + 1 + n_eq + dim),
-					     LDLT_CACHELINE_BYTES,
-					     T));
-					auto row = row_.to_eigen();
-					auto C_ = qp.C.to_eigen();
-					row.topRows(dim) = C_.row(i);
-					row(dim + n_eq + n_c_f) = -1 / mu_in;
-					ldl.insert_at(n_eq + dim + n_c_f, row);
-					adding+=1;
-					for (isize j = 0; j < n_in; j++) {
-						if (new_bijection_map(j) < new_bijection_map(i) &&
-						    new_bijection_map(j) >= n_c_f) {
-							new_bijection_map(j) += 1;
-						}
-					}
-					new_bijection_map(i) = n_c_f;
-					n_c_f += 1;
-				}();
-				*/
-				
 				auto C_ = qp.C.to_eigen();
 				dw.setZero();
 				dw.head(dim) = C_.row(i);

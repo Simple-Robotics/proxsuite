@@ -66,23 +66,25 @@ void iterative_residual(
 	auto err_ = err.to_eigen();
 	auto sol_ = sol.to_eigen();
 
-	err_ = -rhs.to_eigen();
-	err_.topRows(dim) +=
+	err_ = rhs.to_eigen();
+
+	err_.head(dim).noalias() -=
 			(qp_scaled.H).to_eigen() * sol_.topRows(dim) + rho * sol_.topRows(dim) +
 			(qp_scaled.A).to_eigen().transpose() * sol_.middleRows(dim, n_eq);
 
 	for (isize i = 0; i < n_in; i++) {
 		isize j = current_bijection_map(i);
 		if (j < n_c) {
-			err_.topRows(dim) += sol_(dim + n_eq + j) * qp_scaled.C.to_eigen().row(i);
-			err_(dim + n_eq + j) +=
+			err_.head(dim).noalias() -= sol_(dim + n_eq + j) * qp_scaled.C.to_eigen().row(i);
+			err_(dim + n_eq + j) -=
 					(qp_scaled.C.to_eigen().row(i)).dot(sol_.topRows(dim)) -
 					sol_(dim + n_eq + j) / mu_in;
 		}
 	}
 
-	err_.middleRows(dim, n_eq) += (qp_scaled.A).to_eigen() * sol_.topRows(dim) -
+	err_.middleRows(dim, n_eq).noalias() -= (qp_scaled.A).to_eigen() * sol_.topRows(dim) -
 	                              sol_.middleRows(dim, n_eq) / mu_eq;
+
 }
 
 template <typename T>
@@ -138,7 +140,6 @@ void iterative_solve_with_permut_fact_new( //
 			break;
 		}
 		++it;
-		res_ = -res_;
 		ldl.solve_in_place(res_);
 		sol_ += res_;
 
@@ -282,6 +283,9 @@ void newton_step_fact(
 		VectorViewMut<bool> l_active_set_n_u,
 		VectorViewMut<bool> l_active_set_n_l,
 		VectorViewMut<bool> active_inequalities,
+		VectorViewMut<T> _err,
+		VectorViewMut<T> _rhs,
+
 		ldlt::Ldlt<T>& ldl,
 		VectorViewMut<isize> current_bijection_map,
 		isize& n_c,
@@ -309,14 +313,13 @@ void newton_step_fact(
 	isize num_active_inequalities = active_inequalities_.count();
 	isize inner_pb_dim = dim + n_eq + num_active_inequalities;
 
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_rhs, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
-			//(_dw, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
-			(_err, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T));
-
 	auto rhs = _rhs.to_eigen();
-	auto dw = _dw.to_eigen();
 	auto err = _err.to_eigen();
+	err.head(inner_pb_dim).setZero();
+	rhs.head(inner_pb_dim) = err.head(inner_pb_dim);
+	rhs.head(dim) = -dual_for_eq_;
+
+	auto dw = _dw.to_eigen();
 	{
 		//LDLT_DECL_SCOPE_TIMER("in solver", "activeSetChange", T);
 		qp::line_search::active_set_change_new(
@@ -336,20 +339,12 @@ void newton_step_fact(
 				adding);
 	}
 
-	rhs.head(dim) -= dual_for_eq_;
-	/*
-	for (isize j = 0; j < n_in; ++j) {
-		rhs.head(dim).noalias() -=
-				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j); // TODO use positive part 
-	}
-	*/
-	//rhs.head(dim).noalias() -= mu_in * C_.transpose() * (qp::detail::positive_part(z_pos_)+qp::detail::negative_part(z_neg_));
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
-			{from_eigen, rhs},
+			VectorViewMut<T>{from_eigen, rhs.head(inner_pb_dim)},
 			VectorViewMut<T>{from_eigen, dw.head(inner_pb_dim)},
-			{from_eigen, err},
+			VectorViewMut<T>{from_eigen, err.head(inner_pb_dim)},
 			ldl,
 			eps,
 			3,
@@ -364,7 +359,7 @@ void newton_step_fact(
 			rho,
 			VERBOSE);
 	}
-	//dx.to_eigen() = dw.head(dim);
+
 }
 
 template <typename T, typename Preconditioner>
@@ -397,6 +392,8 @@ auto initial_guess_fact(
 		VectorViewMut<bool> l_active_set_n_u,
 		VectorViewMut<bool> l_active_set_n_l,
 		VectorViewMut<bool> active_inequalities,
+		VectorViewMut<T> err_it_,
+		VectorViewMut<T>  _rhs,
 		VectorViewMut<T> dw_aug,
 
 		VectorViewMut<T>  residual_in_z_u_plus_alpha_,
@@ -489,13 +486,10 @@ auto initial_guess_fact(
 			deletion,
 			adding);
 	}
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			(_rhs, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
-			(_dw, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
-			(err_it_, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T));
+	
 	auto rhs = _rhs.to_eigen().eval();
-	auto dw = _dw.to_eigen().eval();
 	auto err_it = err_it_.to_eigen().eval();
+	err_it.head(inner_pb_dim).setZero();
 
 	for (isize i = 0; i < n_in; i++) {
 		isize j = current_bijection_map(i);
@@ -515,9 +509,9 @@ auto initial_guess_fact(
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
-			{from_eigen, rhs},
-			{from_eigen, dw},
-			{from_eigen, err_it},
+			{from_eigen, rhs.head(inner_pb_dim)},
+			{from_eigen, dw_aug_.head(inner_pb_dim)},
+			{from_eigen, err_it.head(inner_pb_dim)},
 			ldl,
 			eps_int,
 			3,
@@ -533,29 +527,37 @@ auto initial_guess_fact(
 			VERBOSE);
 	}
 	d_dual_for_eq_ = rhs.topRows(dim); // d_dual_for_eq_ = -dual_for_eq_ -C^T dz
+
 	for (isize i = 0; i < n_in; i++) {
 		isize j = current_bijection_map(i);
 		if (j < n_c) {
 			if (l_active_set_n_u_(i)) {
-				d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
+				//d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
+				d_dual_for_eq_.noalias() -= dw_aug_(j + dim + n_eq) * C_.row(i);
 			} else if (l_active_set_n_l_(i)) {
-				d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
+				//d_dual_for_eq_.noalias() -= dw(j + dim + n_eq) * C_.row(i);
+				d_dual_for_eq_.noalias() -= dw_aug_(j + dim + n_eq) * C_.row(i);
 			}
 		}
 	}
 
-	dw_aug_.head(dim + n_eq) = dw.head(dim + n_eq);
-	dw_aug_.tail(n_in).setZero();
+	// use active_part_z as a temporary variable to permut back dw_aug newton step
 	for (isize j = 0; j < n_in; ++j) {
 		isize i = current_bijection_map(j);
 		if (i < n_c) {
-			dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
-			cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
+			//dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
+			//cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
+			
+			active_part_z(j) = dw_aug_(dim + n_eq + i);
+			cdx_(j) = rhs(i + dim + n_eq) + dw_aug_(dim + n_eq + i) / mu_in;
+			
 		} else {
-			dw_aug_(j + dim + n_eq) = -z_(j);
+			//dw_aug_(j + dim + n_eq) = -z_(j);
+			active_part_z(j) = -z_(j);
 			cdx_(j) = C_.row(j).dot(dw_aug_.head(dim));
 		}
 	}
+	dw_aug_.tail(n_in) = active_part_z ;
 
 	prim_in_u_ += z_e / mu_in;
 	prim_in_l_ += z_e / mu_in;
@@ -667,6 +669,8 @@ auto correction_guess(
 		VectorViewMut<bool> l_active_set_n_u,
 		VectorViewMut<bool> l_active_set_n_l,
 		VectorViewMut<bool> active_inequalities,
+		VectorViewMut<T> _err,
+		VectorViewMut<T> _rhs,
 
 		ldlt::Ldlt<T>& ldl,
 		VectorViewMut<isize> current_bijection_map,
@@ -722,6 +726,8 @@ auto correction_guess(
 				{from_eigen, l_active_set_n_u_},
 				{from_eigen, l_active_set_n_l_},
 				{from_eigen, active_inequalities_},
+				_err,
+				_rhs,
 
 				ldl,
 				current_bijection_map,
@@ -857,13 +863,16 @@ QpSolveStats qpSolve( //
 
 			(_kkt,
 				Uninit,
-				Mat(dim + n_eq + n_c, dim + n_eq + n_c),
+				Mat(dim + n_eq , dim + n_eq ),
 				LDLT_CACHELINE_BYTES,
 				T),
 
 			(_current_bijection_map, Init, Vec(n_in), LDLT_CACHELINE_BYTES, isize),
 
 			(_dw_aug, Init, Vec(n_tot_max), LDLT_CACHELINE_BYTES, T),
+			(_rhs, Init, Vec(n_tot_max), LDLT_CACHELINE_BYTES, T),
+			(_err, Init, Vec(n_tot_max), LDLT_CACHELINE_BYTES, T),
+
 			(_d_dual_for_eq, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_cdx, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_d_primal_residual_eq, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
@@ -936,17 +945,14 @@ QpSolveStats qpSolve( //
 	kkt.topLeftCorner(dim, dim).diagonal().array() += rho;	
 	kkt.block(0, dim, dim, n_eq) = qp_scaled.A.to_eigen().transpose();
 	kkt.block(dim, 0, n_eq, dim) = qp_scaled.A.to_eigen();
-	kkt.bottomRightCorner(n_eq + n_c, n_eq + n_c).setZero();
+	kkt.bottomRightCorner(n_eq, n_eq).setZero();
 	kkt.diagonal().segment(dim, n_eq).setConstant(-T(1) / bcl_mu_eq);
 
-	ldlt::Ldlt<T> ldl{decompose, kkt.topLeftCorner(dim, dim)};
-	x.to_eigen() = -qp_scaled.g.to_eigen();
-	ldl.solve_in_place(x.to_eigen());
-	for (isize i = 0; i<n_eq;++i){
-		dw_aug.head(dim) = A_copy.row(i);
-		dw_aug(dim + i) = -1 / bcl_mu_eq;
-		ldl.insert_at(dim + i, dw_aug.head(dim+i+1));
-	}
+	ldlt::Ldlt<T> ldl{decompose, kkt};
+	residual_scaled.head(dim) = -q_copy;
+	residual_scaled.middleRows(dim,n_eq) = b_copy;
+	ldl.solve_in_place(residual_scaled.head(dim+n_eq));
+	x.to_eigen() = residual_scaled.head(dim);
 
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
@@ -959,7 +965,7 @@ QpSolveStats qpSolve( //
 
 	T correction_guess_rhs_g = infty_norm(qp_scaled.g.to_eigen());
 
-	auto dual_residual_scaled = residual_scaled.topRows(dim);
+	auto dual_residual_scaled = residual_scaled.head(dim);
 	auto primal_residual_eq_scaled = residual_scaled.middleRows(dim, n_eq);
 	auto primal_residual_in_scaled_u =
 			residual_scaled.middleRows(dim + n_eq, n_in);
@@ -1146,6 +1152,8 @@ QpSolveStats qpSolve( //
 					{from_eigen, l_active_set_n_u},
 					{from_eigen, l_active_set_n_l},
 					{from_eigen, active_inequalities},
+					_err,
+					_rhs,
 					{from_eigen, dw_aug},
 
 					residual_in_z_u_plus_alpha_,
@@ -1170,7 +1178,6 @@ QpSolveStats qpSolve( //
 			dual_residual_scaled.noalias() -= qp_scaled.C.to_eigen().transpose() * z.to_eigen();
 
 			ATy.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
-			//dual_residual_scaled.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
 		}
 
 		if (do_initial_guess_fact && err_in >= bcl_eta_in) {
@@ -1180,7 +1187,6 @@ QpSolveStats qpSolve( //
 			primal_residual_in_scaled_l.noalias() += z.to_eigen() / bcl_mu_in;
 		}
 		if (!do_initial_guess_fact) {
-			//auto Cx = qp_scaled.C.to_eigen() * x.to_eigen();
 
 			precond.scale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen, primal_residual_in_scaled_u}); // primal_residual_in_scaled_u contains Cx unscaled from global primal residual
 
@@ -1230,6 +1236,8 @@ QpSolveStats qpSolve( //
 					{from_eigen, l_active_set_n_u},
 					{from_eigen, l_active_set_n_l},
 					{from_eigen, active_inequalities},
+					_err,
+					_rhs,
 
 					ldl,
 					VectorViewMut<isize>{from_eigen, current_bijection_map},
