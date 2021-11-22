@@ -343,7 +343,7 @@ void newton_step_fact(
 				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j); // TODO use positive part 
 	}
 	*/
-	rhs.head(dim).noalias() -= mu_in * C_.transpose() * (qp::detail::positive_part(z_pos_)+qp::detail::negative_part(z_neg_));
+	//rhs.head(dim).noalias() -= mu_in * C_.transpose() * (qp::detail::positive_part(z_pos_)+qp::detail::negative_part(z_neg_));
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
@@ -391,12 +391,17 @@ auto initial_guess_fact(
 		VectorViewMut<T> prim_in_l,
 		VectorViewMut<T> dual_for_eq,
 		VectorViewMut<T> d_dual_for_eq,
+		VectorViewMut<T> CTz,
 		VectorViewMut<T> cdx,
 		VectorViewMut<T> d_primal_residual_eq,
 		VectorViewMut<bool> l_active_set_n_u,
 		VectorViewMut<bool> l_active_set_n_l,
 		VectorViewMut<bool> active_inequalities,
 		VectorViewMut<T> dw_aug,
+
+		VectorViewMut<T>  residual_in_z_u_plus_alpha_,
+		VectorViewMut<T>  residual_in_z_l_plus_alpha_,
+		VectorViewMut<T>  active_part_z_,
 
 		ldlt::Ldlt<T>& ldl,
 		VectorViewMut<isize> current_bijection_map,
@@ -419,6 +424,8 @@ auto initial_guess_fact(
 	auto active_inequalities_ = active_inequalities.to_eigen();
 	auto dw_aug_ = dw_aug.to_eigen();
 
+	auto CTz_ = CTz.to_eigen();
+
 	auto H_ = qp_scaled.H.to_eigen();
 	auto g_ = qp_scaled.g.to_eigen();
 	auto A_ = qp_scaled.A.to_eigen();
@@ -429,6 +436,10 @@ auto initial_guess_fact(
 	auto z_e = ze.to_eigen().eval();
 	auto l_ = qp_scaled.l.to_eigen();
 	auto u_ = qp_scaled.u.to_eigen();
+
+	auto active_part_z = active_part_z_.to_eigen();
+	auto residual_in_z_u_plus_alpha = residual_in_z_u_plus_alpha_.to_eigen();
+	auto residual_in_z_l_plus_alpha = residual_in_z_l_plus_alpha_.to_eigen();
 
 	{
 		prim_in_l_ = prim_in_u_;
@@ -549,10 +560,10 @@ auto initial_guess_fact(
 	prim_in_u_ += z_e / mu_in;
 	prim_in_l_ += z_e / mu_in;
 
-	d_primal_residual_eq_ =
-			rhs.segment(dim, n_eq); // By definition of linear system solution
+	d_primal_residual_eq_ = rhs.segment(dim, n_eq); // By definition of linear system solution
 
-	dual_for_eq_.noalias() -= C_.transpose() * z_e;
+	dual_for_eq_.noalias() -= CTz_;
+
 	T alpha_step = qp::line_search::initial_guess_LS(
 			ze,
 			VectorView<T>{from_eigen, dw_aug_.tail(n_in)},
@@ -563,6 +574,11 @@ auto initial_guess_fact(
 			VectorView<T>{from_eigen, dual_for_eq_},
 			VectorView<T>{from_eigen, d_primal_residual_eq_},
 			VectorView<T>{from_eigen, primal_residual_eq_},
+
+			residual_in_z_u_plus_alpha_,
+			residual_in_z_l_plus_alpha_,
+			active_part_z_,
+
 			qp_scaled.C,
 			mu_eq,
 			mu_in,
@@ -584,15 +600,16 @@ auto initial_guess_fact(
 	x_.noalias() += alpha_step * dw_aug_.head(dim);
 	y_.noalias()  += alpha_step * dw_aug_.segment(dim, n_eq);
 
-	for (isize i = 0; i < n_in; ++i) {
-		if (l_active_set_n_u_(i)) {
-			z(i) = max2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), zero);
-		} else if (l_active_set_n_l_(i)) {
-			z(i) = min2(z(i) + alpha_step * dw_aug_(dim + n_eq + i), zero);
-		} else {
-			z(i) += alpha_step * dw_aug_(dim + n_eq + i);
-		}
-	}
+	
+	active_part_z = z.to_eigen() + alpha_step * dw_aug_.tail(n_in) ;
+
+	residual_in_z_u_plus_alpha = (active_part_z.array() > 0).select(active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(n_in));
+	residual_in_z_l_plus_alpha = (active_part_z.array() < 0).select(active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(n_in));
+
+	z.to_eigen() = (l_active_set_n_u_).select(residual_in_z_u_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(n_in)) +
+				   (l_active_set_n_l_).select(residual_in_z_l_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(n_in)) +
+				   (!l_active_set_n_l_.array() && !l_active_set_n_u_.array()).select(active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(n_in)) ;
+	
 	primal_residual_eq_ += alpha_step * d_primal_residual_eq_;
 	dual_for_eq_ += alpha_step * d_dual_for_eq_;
 
@@ -637,9 +654,16 @@ auto correction_guess(
 		VectorViewMut<T> z_pos,
 		VectorViewMut<T> z_neg,
 		VectorViewMut<T> dual_for_eq,
+		VectorViewMut<T> Hx,
+		VectorViewMut<T> ATy,
 		VectorViewMut<T> Hdx,
 		VectorViewMut<T> Adx,
 		VectorViewMut<T> Cdx,
+
+		VectorViewMut<T> tmp_size_x,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
 		VectorViewMut<bool> l_active_set_n_u,
 		VectorViewMut<bool> l_active_set_n_l,
 		VectorViewMut<bool> active_inequalities,
@@ -658,6 +682,8 @@ auto correction_guess(
 	auto z_pos_ = z_pos.to_eigen();
 	auto z_neg_ = z_neg.to_eigen();
 	auto dual_for_eq_ = dual_for_eq.to_eigen();
+	auto Hx_ = Hx.to_eigen();
+	auto ATy_ = ATy.to_eigen();
 	auto Hdx_ = Hdx.to_eigen();
 	auto Adx_ = Adx.to_eigen();
 	auto Cdx_ = Cdx.to_eigen();
@@ -665,8 +691,11 @@ auto correction_guess(
 	auto l_active_set_n_l_ = l_active_set_n_l.to_eigen();
 	auto active_inequalities_ = active_inequalities.to_eigen();
 	auto dw_aug_ = dw_aug.to_eigen();
+	auto g_ = (qp_scaled.g).to_eigen() ;
 
 	T err_in(0.);
+
+	dual_for_eq_.noalias() = Hx_ + ATy_ + g_ + rho * (x.to_eigen() - xe.to_eigen()) + mu_in * qp_scaled.C.to_eigen().transpose() * (qp::detail::positive_part(z_pos_) + qp::detail::negative_part(z_neg_));  // used for newton step at first iteration
 
 	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
 
@@ -679,7 +708,6 @@ auto correction_guess(
 
 		qp::detail::newton_step_fact(
 				qp_scaled,
-				//VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)},
 				dw_aug,
 				mu_eq,
 				mu_in,
@@ -707,6 +735,7 @@ auto correction_guess(
 		Adx_.noalias() = dw_aug_.middleRows(dim,n_eq) / mu_eq; // by definition Adx = dy / mu
 		Cdx_.noalias() = (qp_scaled.C).to_eigen() * dw_aug_.head(dim);
 		if (n_in > isize(0)) {
+
 			alpha_step = qp::line_search::correction_guess_LS(
 					{from_eigen, Hdx_},
 					{from_eigen, Adx_},
@@ -720,6 +749,11 @@ auto correction_guess(
 					xe,
 					ye,
 					ze,
+
+					tmp_size_x,
+
+					residual_in_z_u_plus_alpha_,
+					residual_in_z_l_plus_alpha_,
 					mu_eq,
 					mu_in,
 					rho,
@@ -737,31 +771,18 @@ auto correction_guess(
 		z_neg_.noalias() += alpha_step * Cdx_;
 		residual_in_y_.noalias() += alpha_step * Adx_;
 		y.to_eigen().noalias() = mu_eq * residual_in_y_;
-		dual_for_eq_.noalias()  += alpha_step * (mu_eq * (qp_scaled.A).to_eigen().transpose() * Adx_ +
-		                  rho * dw_aug_.head(dim) + Hdx_) ;
 
+		Hx_.noalias() += alpha_step * Hdx_ ; // stores Hx
+		ATy_.noalias() += (alpha_step * mu_eq) * (qp_scaled.A).to_eigen().transpose() * Adx_ ; // stores ATy
+		
 		z.to_eigen() = mu_in * (qp::detail::positive_part(z_pos_) + qp::detail::negative_part(z_neg_)) ; 
-		/*
-		for (isize j = 0; j < n_in; ++j) {
-			z(j) = mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero));
-		}
-		*/
-		Hdx_.noalias() = (qp_scaled.H).to_eigen() * x.to_eigen();
-		T rhs_c = max2(correction_guess_rhs_g, infty_norm(Hdx_));
+		T rhs_c = max2(correction_guess_rhs_g, infty_norm(Hx_));
+		rhs_c = max2(rhs_c, infty_norm(ATy_));
+		dual_for_eq_.noalias() = qp_scaled.C.to_eigen().transpose() * z.to_eigen() ; 
+		rhs_c = max2(rhs_c, infty_norm(dual_for_eq_));
+		dual_for_eq_.noalias() += Hx_ + g_ + ATy_ + rho * (x.to_eigen() - xe.to_eigen());
 
-		dw_aug_.head(dim).noalias() =
-				(qp_scaled.A.to_eigen().transpose()) * (y.to_eigen());
-		rhs_c = max2(rhs_c, infty_norm(dw_aug_.head(dim)));
-		Hdx_ += (dw_aug_.head(dim));
-
-		dw_aug_.head(dim).noalias() =
-				(qp_scaled.C.to_eigen().transpose()) * (z.to_eigen());
-		rhs_c = max2(rhs_c, infty_norm(dw_aug_.head(dim)));
-		Hdx_ += dw_aug_.head(dim);
-
-		Hdx_ += (qp_scaled.g).to_eigen();
-
-		err_in = infty_norm(Hdx_ + rho * (x.to_eigen() - xe.to_eigen()));
+		err_in = infty_norm(dual_for_eq_);
 		if (VERBOSE){
 			std::cout << "---it in " << iter << " projection norm " << err_in
 							<< " alpha " << alpha_step << std::endl;
@@ -827,6 +848,9 @@ QpSolveStats qpSolve( //
 			(_l_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 
 			(_residual_scaled, Init, Vec(n_tot_max + n_in), LDLT_CACHELINE_BYTES, T),
+			(_Hx, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_ATy, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_CTz, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_ye, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_ze, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_xe, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
@@ -843,6 +867,11 @@ QpSolveStats qpSolve( //
 			(_d_dual_for_eq, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_cdx, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_d_primal_residual_eq, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
+
+			(residual_in_z_u_plus_alpha_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(residual_in_z_l_plus_alpha_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+			(active_part_z_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
+
 			(_l_active_set_n_u, Init, Vec(n_in), LDLT_CACHELINE_BYTES, bool),
 			(_l_active_set_n_l, Init, Vec(n_in), LDLT_CACHELINE_BYTES, bool),
 			(_active_inequalities, Init, Vec(n_in), LDLT_CACHELINE_BYTES, bool));
@@ -854,6 +883,10 @@ QpSolveStats qpSolve( //
 	auto l_active_set_n_l = _l_active_set_n_l.to_eigen();
 	auto active_inequalities = _active_inequalities.to_eigen();
 	auto dw_aug = _dw_aug.to_eigen();
+
+	auto ATy = _ATy.to_eigen();
+	auto CTz = _CTz.to_eigen();
+	auto Hx = _Hx.to_eigen();
 
 	auto current_bijection_map = _current_bijection_map.to_eigen();
 	for (isize i = 0; i < n_in; i++) {
@@ -981,6 +1014,9 @@ QpSolveStats qpSolve( //
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
 				{from_eigen, dual_residual_scaled},
+				{from_eigen, Hx},
+				{from_eigen, ATy},
+				{from_eigen, CTz},
 				{from_eigen, dw_aug},
 				qp_scaled.as_const(),
 				precond,
@@ -1104,12 +1140,17 @@ QpSolveStats qpSolve( //
 					{from_eigen, primal_residual_in_scaled_l},
 					{from_eigen, dual_residual_scaled},
 					{from_eigen, d_dual_for_eq},
+					{from_eigen, CTz},
 					{from_eigen, Cdx},
 					{from_eigen, d_primal_residual_eq},
 					{from_eigen, l_active_set_n_u},
 					{from_eigen, l_active_set_n_l},
 					{from_eigen, active_inequalities},
 					{from_eigen, dw_aug},
+
+					residual_in_z_u_plus_alpha_,
+					residual_in_z_l_plus_alpha_,
+					active_part_z_,
 
 					ldl,
 					VectorViewMut<isize>{from_eigen, current_bijection_map},
@@ -1127,7 +1168,9 @@ QpSolveStats qpSolve( //
 
 		if (do_correction_guess) {
 			dual_residual_scaled.noalias() -= qp_scaled.C.to_eigen().transpose() * z.to_eigen();
-			dual_residual_scaled.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
+
+			ATy.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
+			//dual_residual_scaled.noalias() += bcl_mu_eq * (qp_scaled.A.trans().to_eigen() * primal_residual_eq_scaled);
 		}
 
 		if (do_initial_guess_fact && err_in >= bcl_eta_in) {
@@ -1143,9 +1186,6 @@ QpSolveStats qpSolve( //
 
 			primal_residual_eq_scaled.noalias()  += ye / bcl_mu_eq;
 			primal_residual_in_scaled_u.noalias()  += ze / bcl_mu_in;
-
-			//primal_residual_in_scaled_u += ze / bcl_mu_in;
-			//primal_residual_in_scaled_u.noalias() += Cx;
 
 			primal_residual_in_scaled_l = primal_residual_in_scaled_u;
 
@@ -1177,9 +1217,16 @@ QpSolveStats qpSolve( //
 					{from_eigen, primal_residual_in_scaled_u},
 					{from_eigen, primal_residual_in_scaled_l},
 					{from_eigen, dual_residual_scaled},
+					{from_eigen, Hx},
+					{from_eigen, ATy},
 					{from_eigen, d_dual_for_eq},
 					{from_eigen, d_primal_residual_eq},
 					{from_eigen, Cdx},
+
+					{from_eigen, CTz},
+
+					residual_in_z_u_plus_alpha_,
+					residual_in_z_l_plus_alpha_, 
 					{from_eigen, l_active_set_n_u},
 					{from_eigen, l_active_set_n_l},
 					{from_eigen, active_inequalities},
@@ -1253,6 +1300,9 @@ QpSolveStats qpSolve( //
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
 				{from_eigen, dual_residual_scaled},
+				{from_eigen, Hx},
+				{from_eigen, ATy},
+				{from_eigen, CTz},
 				{from_eigen, dw_aug},
 				qp_scaled.as_const(),
 				precond,

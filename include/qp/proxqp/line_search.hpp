@@ -28,6 +28,10 @@ auto gradient_norm_computation_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> d_primal_residual_eq_,
 		VectorView<T> primal_residual_eq_,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
+		VectorViewMut<T> active_part_z_,
 		T alpha,
 		isize dim,
 		isize n_eq,
@@ -80,19 +84,16 @@ auto gradient_norm_computation_box(
 
 	// define active set
 	LDLT_MULTI_WORKSPACE_MEMORY(
-			(tmp_u_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
-			(tmp_l_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
-			(active_part_z_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(res_, Init, Vec(dim + n_eq + n_in), LDLT_CACHELINE_BYTES, T));
 
-	auto tmp_u = tmp_u_.to_eigen();
-	auto tmp_l = tmp_l_.to_eigen();
+	auto residual_in_z_u_plus_alpha = residual_in_z_u_plus_alpha_.to_eigen();
+	auto residual_in_z_l_plus_alpha = residual_in_z_l_plus_alpha_.to_eigen();
 	auto active_part_z = active_part_z_.to_eigen();
 	auto res = res_.to_eigen();
 
 	//Eigen::internal::set_is_malloc_allowed(false);
-	tmp_u = residual_in_z_u + alpha * Cdx;
-	tmp_l = residual_in_z_l + alpha * Cdx;
+	residual_in_z_u_plus_alpha = residual_in_z_u + alpha * Cdx;
+	residual_in_z_l_plus_alpha = residual_in_z_l + alpha * Cdx;
 
 	active_part_z = z_e + alpha * dz;
 
@@ -102,20 +103,20 @@ auto gradient_norm_computation_box(
 
 	for (isize k = 0; k < n_in; ++k) {
 
-		if (tmp_u(k) >= 0) {
+		if (residual_in_z_u_plus_alpha(k) >= 0) {
 			if (active_part_z(k) > 0) {
 				res.head(dim).noalias() += active_part_z(k) * C_copy.row(k);
-				res(dim + n_eq + k) = tmp_u(k) - active_part_z(k) / mu_in;
+				res(dim + n_eq + k) = residual_in_z_u_plus_alpha(k) - active_part_z(k) / mu_in;
 			} else {
-				res(dim + n_eq + k) = tmp_u(k);
+				res(dim + n_eq + k) = residual_in_z_u_plus_alpha(k);
 			}
 
-		} else if (tmp_l(k) <= 0) {
+		} else if (residual_in_z_l_plus_alpha(k) <= 0) {
 			if (active_part_z(k) < 0) {
 				res.head(dim).noalias() += active_part_z(k) * C_copy.row(k);
-				res(dim + n_eq + k) = tmp_l(k) - active_part_z(k) / mu_in;
+				res(dim + n_eq + k) = residual_in_z_l_plus_alpha(k) - active_part_z(k) / mu_in;
 			} else {
-				res(dim + n_eq + k) = tmp_l(k);
+				res(dim + n_eq + k) = residual_in_z_l_plus_alpha(k);
 			}
 		} else {
 			res(dim + n_eq + k) = active_part_z(k);
@@ -141,6 +142,11 @@ auto gradient_norm_qpalm_box(
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> Cdx_,
+
+		VectorViewMut<T> tmp_size_x_,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
 		isize n_in) -> T {
 
 	/*
@@ -162,6 +168,9 @@ auto gradient_norm_qpalm_box(
 	auto xe_ = xe.to_eigen();
 	auto dx_ = dx.to_eigen();
 
+	auto residual_in_z_u_plus_alpha = residual_in_z_u_plus_alpha_.to_eigen();
+	auto residual_in_z_l_plus_alpha = residual_in_z_l_plus_alpha_.to_eigen();
+
 	auto Cdx = Cdx_.to_eigen();
 	auto Hdx = Hdx_.to_eigen();
 	auto Adx = Adx_.to_eigen();
@@ -170,25 +179,29 @@ auto gradient_norm_qpalm_box(
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
 
+	auto tmp_size_x = tmp_size_x_.to_eigen();
+
 	// define active set
 	// Eigen::internal::set_is_malloc_allowed(false);
-	auto tmp_u = (residual_in_z_u + Cdx * alpha).eval();
-	auto tmp_l = (residual_in_z_l + Cdx * alpha).eval();
+	residual_in_z_u_plus_alpha = (residual_in_z_u + Cdx * alpha).eval();
+	residual_in_z_l_plus_alpha = (residual_in_z_l + Cdx * alpha).eval();
 	// Eigen::internal::set_is_malloc_allowed(true);
 
+	tmp_size_x = rho * (x_ - xe_) + g;
+
 	T a(dx_.dot(Hdx) + mu_eq * (Adx).squaredNorm() + rho * dx_.squaredNorm());
-	T b(x_.dot(Hdx) + (rho * (x_ - xe_) + g).dot(dx_) +
+	T b(x_.dot(Hdx) + (tmp_size_x).dot(dx_) +
 	    mu_eq * (Adx).dot(residual_in_y));
 
 	for (isize k = 0; k < n_in; ++k) {
 		
-		if (tmp_u(k) > 0) {
+		if (residual_in_z_u_plus_alpha(k) > 0) {
 
 			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_u(k);
 
 		} 
-		else if (tmp_l(k) < 0) {
+		else if (residual_in_z_l_plus_alpha(k) < 0) {
 
 			a += mu_in * qp::detail::square(Cdx(k)) ;
 			b += mu_in * Cdx(k) * residual_in_z_l(k);
@@ -211,6 +224,10 @@ auto local_saddle_point_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> d_primal_residual_eq_,
 		VectorView<T> primal_residual_eq_,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
+		VectorViewMut<T> active_part_z_,
 		T& alpha,
 		isize n_in) -> T {
 	/*
@@ -259,6 +276,10 @@ auto local_saddle_point_box(
 	auto z_e = ze.to_eigen();
 	auto dz = dz_.to_eigen();
 
+	auto residual_in_z_u_plus_alpha = residual_in_z_u_plus_alpha_.to_eigen();
+	auto residual_in_z_l_plus_alpha = residual_in_z_l_plus_alpha_.to_eigen();
+	auto active_part_z = active_part_z_.to_eigen();
+
 	auto Cdx = Cdx_.to_eigen();
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
@@ -267,9 +288,9 @@ auto local_saddle_point_box(
 	auto d_primal_residual_eq = d_primal_residual_eq_.to_eigen();
 	auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
-	auto tmp_u = (residual_in_z_u + alpha * Cdx).eval();
-	auto tmp_l = (residual_in_z_l + alpha * Cdx).eval();
-	auto active_part = (z_e + alpha * dz).eval();
+	residual_in_z_u_plus_alpha = (residual_in_z_u + alpha * Cdx);
+	residual_in_z_l_plus_alpha = (residual_in_z_l + alpha * Cdx);
+	active_part_z = (z_e + alpha * dz);
 
 	// a0 computation
 
@@ -279,9 +300,9 @@ auto local_saddle_point_box(
 
 	for (isize k = 0; k < n_in; ++k) {
 
-		if (tmp_u(k) >= 0) {
+		if (residual_in_z_u_plus_alpha(k) >= 0) {
 
-			if (active_part(k) > 0) {
+			if (active_part_z(k) > 0) {
 
 				d_dual_for_eq += dz(k) * C_copy.row(k);
 				dual_for_eq += z_e(k) * C_copy.row(k);
@@ -296,9 +317,9 @@ auto local_saddle_point_box(
 				c0 += qp::detail::square(residual_in_z_u(k));
 			}
 
-		} else if (tmp_l(k) <= 0) {
+		} else if (residual_in_z_l_plus_alpha(k) <= 0) {
 
-			if (active_part(k) < 0) {
+			if (active_part_z(k) < 0) {
 
 				d_dual_for_eq += dz(k) * C_copy.row(k);
 				dual_for_eq += z_e(k) * C_copy.row(k);
@@ -353,6 +374,10 @@ auto initial_guess_LS(
 		VectorView<T> dual_for_eq,
 		VectorView<T> d_primal_residual_eq,
 		VectorView<T> primal_residual_eq,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
+		VectorViewMut<T> active_part_z_,
 		MatrixView<T,LC> C,
 		T mu_eq,
 		T mu_in,
@@ -525,6 +550,10 @@ auto initial_guess_LS(
 						dual_for_eq,
 						d_primal_residual_eq,
 						primal_residual_eq,
+
+						residual_in_z_u_plus_alpha_,
+						residual_in_z_l_plus_alpha_,
+						active_part_z_,
 						alpha_,
 						dim,
 						n_eq,
@@ -578,6 +607,10 @@ auto initial_guess_LS(
 					dual_for_eq,
 					d_primal_residual_eq,
 					primal_residual_eq,
+
+					residual_in_z_u_plus_alpha_,
+					residual_in_z_l_plus_alpha_,
+					active_part_z_,
 					alpha_,
 					n_in);
 
@@ -657,6 +690,11 @@ auto correction_guess_LS(
 		VectorView<T> xe,
 		VectorView<T> ye,
 		VectorView<T> ze,
+
+		VectorViewMut<T> tmp_size_x,
+
+		VectorViewMut<T> residual_in_z_u_plus_alpha_,
+		VectorViewMut<T> residual_in_z_l_plus_alpha_,
 		T mu_eq,
 		T mu_in,
 		T rho,
@@ -668,6 +706,7 @@ auto correction_guess_LS(
 	auto residual_in_y_ = residual_in_y.to_eigen();
 	auto residual_in_z_u_ = residual_in_z_u.to_eigen();
 	auto residual_in_z_l_ = residual_in_z_l.to_eigen();
+	auto tmp_size_x_ = tmp_size_x.to_eigen();
 
 	/*
 	 * The function follows the algorithm designed by qpalm
@@ -789,6 +828,12 @@ auto correction_guess_LS(
 							VectorView<T>{from_eigen, residual_in_z_u_},
 							VectorView<T>{from_eigen, residual_in_z_l_},
 							VectorView<T>{from_eigen, Cdx_},
+
+							tmp_size_x,
+
+							residual_in_z_u_plus_alpha_,
+							residual_in_z_l_plus_alpha_,
+
 							n_in);
 
 					if (gr < 0) {
@@ -827,6 +872,12 @@ auto correction_guess_LS(
 					VectorView<T>{from_eigen, residual_in_z_u_},
 					VectorView<T>{from_eigen, residual_in_z_l_},
 					VectorView<T>{from_eigen, Cdx_},
+
+					tmp_size_x,
+
+					residual_in_z_u_plus_alpha_,
+					residual_in_z_l_plus_alpha_,
+					
 					n_in);
 			last_neg_grad = gr;
 		}

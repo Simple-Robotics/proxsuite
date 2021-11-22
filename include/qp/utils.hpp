@@ -200,6 +200,9 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_1,
 		T& dual_feasibility_rhs_3,
 		VectorViewMut<T> dual_residual_scaled,
+		VectorViewMut<T> Hx,
+		VectorViewMut<T> ATy,
+		VectorViewMut<T> CTz,
 		VectorViewMut<T> dw_aug,
 		qp::QpViewBox<T> qp_scaled,
 		Preconditioner precond,
@@ -227,38 +230,37 @@ void global_dual_residual(
 
 	auto dual_residual_scaled_ = dual_residual_scaled.to_eigen();
 	auto dw_aug_ = dw_aug.to_eigen();
+	auto Hx_ = Hx.to_eigen();
+	auto ATy_ = ATy.to_eigen();
+	auto CTz_ = CTz.to_eigen();
 
 	dual_residual_scaled_ = g_;
 
 	dw_aug_.topRows(dim).setZero();
 
-	dw_aug_.topRows(dim).noalias() = H_ * x_;
-	dual_residual_scaled_ += dw_aug_.topRows(dim);
-	precond.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)});
-	dual_feasibility_rhs_0 = infty_norm(dw_aug_.topRows(dim));
+	Hx_.noalias() = H_ * x_;
+	dual_residual_scaled_ += Hx_;
+	precond.unscale_dual_residual_in_place(Hx);
+	dual_feasibility_rhs_0 = infty_norm(Hx_);
 
-	dw_aug_.topRows(dim).setZero();
-	dw_aug_.topRows(dim).noalias() = A_.transpose() * y_;
-	dual_residual_scaled_ += dw_aug_.topRows(dim);
-	precond.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)});
-	dual_feasibility_rhs_1 = infty_norm(dw_aug_.topRows(dim));
+	ATy_.noalias() = A_.transpose() * y_;
+	dual_residual_scaled_ += ATy_;
+	precond.unscale_dual_residual_in_place(ATy);
+	dual_feasibility_rhs_1 = infty_norm(ATy_);
 
-	dw_aug_.topRows(dim).setZero();
-	dw_aug_.topRows(dim).noalias() = C_.transpose() * z_;
-	dual_residual_scaled_ += dw_aug_.topRows(dim);
-	precond.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)});
-	dual_feasibility_rhs_3 = infty_norm(dw_aug_.topRows(dim));
+	CTz_.noalias() = C_.transpose() * z_;
+	dual_residual_scaled_ += CTz_;
+	precond.unscale_dual_residual_in_place(CTz);
+	dual_feasibility_rhs_3 = infty_norm(CTz_);
 
-	precond.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, dual_residual_scaled_});
+	precond.unscale_dual_residual_in_place(dual_residual_scaled);
 
 	dual_feasibility_lhs = infty_norm(dual_residual_scaled_);
 
-	precond.scale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, dual_residual_scaled_});
+	precond.scale_dual_residual_in_place(dual_residual_scaled);
+	precond.scale_dual_residual_in_place(Hx);
+	precond.scale_dual_residual_in_place(ATy);
+	precond.scale_dual_residual_in_place(CTz);
 }
 
 } // namespace detail
