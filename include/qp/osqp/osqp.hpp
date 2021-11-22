@@ -214,6 +214,9 @@ auto osqpSolve( //
 			(_u_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_l_scaled, Uninit, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_residual_scaled, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
+			(_Hx, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_ATy, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_CTz, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_ze, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
 			(_z, Init, Vec(n_eq + n_in), LDLT_CACHELINE_BYTES, T),
 			(_dw, Init, Vec(max_n_tot), LDLT_CACHELINE_BYTES, T),
@@ -224,6 +227,10 @@ auto osqpSolve( //
 	auto dw = _dw.to_eigen();
 	auto err = _err.to_eigen();
 	auto tmp = _tmp.to_eigen();
+
+	auto Hx = _Hx.to_eigen();
+	auto ATy = _ATy.to_eigen();
+	auto CTz = _CTz.to_eigen();
 
 	auto q_copy = _g_scaled.to_eigen();
 	auto b_copy = _b_scaled.to_eigen();
@@ -345,20 +352,23 @@ auto osqpSolve( //
 				qp_scaled,
 				precond,
 				xe.as_const());
-
+		/*
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
 				{from_eigen, dual_residual_scaled},
+				{from_eigen, Hx},
+				{from_eigen, ATy},
+				{from_eigen, CTz},
 				{from_eigen, dw},
 				qp_scaled,
 				precond,
 				xe.as_const(),
 				ye.as_const().segment(0, n_eq),
 				ye.as_const().segment(n_eq, n_in));
-
+		*/
 		if (VERBOSE){
 			std::cout << "---------------it : " << iter
 								<< " primal residual : " << primal_feasibility_lhs

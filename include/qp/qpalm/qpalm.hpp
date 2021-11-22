@@ -662,6 +662,9 @@ QpalmSolveStats QPALMSolve( //
 			(_u_scaled, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_l_scaled, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(_residual_scaled, Init, Vec(n_max + 2*n_eq + 3*n_in), LDLT_CACHELINE_BYTES, T),
+			(_Hx, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_ATy, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
+			(_CTz, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
 			(_y, Init, Vec(n_eq), LDLT_CACHELINE_BYTES, T),
 			(_z, Init, Vec(n_in), LDLT_CACHELINE_BYTES, T),
 			(xe_, Init, Vec(dim), LDLT_CACHELINE_BYTES, T),
@@ -686,6 +689,10 @@ QpalmSolveStats QPALMSolve( //
 			(active_inequalities_, Init, Vec(n_in), LDLT_CACHELINE_BYTES, bool));
 
 	auto residual_scaled = _residual_scaled.to_eigen();
+
+	auto Hx = _Hx.to_eigen();
+	auto ATy = _ATy.to_eigen();
+	auto CTz = _CTz.to_eigen();
 
 	auto ye = _y.to_eigen();
 	auto ze = _z.to_eigen();
@@ -829,19 +836,23 @@ QpalmSolveStats QPALMSolve( //
 				x.as_const());
 		primal_residual_in_scaled_l_old = primal_residual_in_scaled_l ; 
 		primal_residual_eq_scaled_old = primal_residual_eq_scaled ; 
+		/*
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
 				{from_eigen, dual_residual_scaled},
+				{from_eigen, Hx},
+				{from_eigen, ATy},
+				{from_eigen, CTz},
 				{from_eigen, dw_aug},
 				qp_scaled.as_const(),
 				precond,
 				x.as_const(),
 				y.as_const(),
 				z.as_const());
-
+		*/
 		if (VERBOSE){
 			std::cout << "---------------it : " << iter
 								<< " primal residual : " << primal_feasibility_lhs
