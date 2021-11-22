@@ -475,9 +475,9 @@ struct Qp {
 			ldlt::isize n_in = ldlt::isize(dim/2);
 			
 			auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
-			auto delta = Vec<Scalar>(dim);
+			auto delta = Vec<Scalar>(n_in);
 
-			for (ldlt::isize i = 0; i < dim; ++i) {
+			for (ldlt::isize i = 0; i < n_in; ++i) {
 				delta(i) = ldlt_test::rand::uniform_rand();
 			}
 
