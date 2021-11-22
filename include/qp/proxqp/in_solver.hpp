@@ -337,11 +337,13 @@ void newton_step_fact(
 	}
 
 	rhs.head(dim) -= dual_for_eq_;
-
+	/*
 	for (isize j = 0; j < n_in; ++j) {
 		rhs.head(dim).noalias() -=
 				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j); // TODO use positive part 
 	}
+	*/
+	rhs.head(dim).noalias() -= mu_in * C_.transpose() * (qp::detail::positive_part(z_pos_)+qp::detail::negative_part(z_neg_));
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
