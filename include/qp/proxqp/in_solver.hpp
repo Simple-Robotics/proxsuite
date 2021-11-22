@@ -268,7 +268,7 @@ auto saddle_point(
 template <typename T>
 void newton_step_fact(
 		qp::QpViewBox<T> qp_scaled,
-		VectorViewMut<T> dx,
+		VectorViewMut<T> _dw,
 		T mu_eq,
 		T mu_in,
 		T rho,
@@ -311,7 +311,7 @@ void newton_step_fact(
 
 	LDLT_MULTI_WORKSPACE_MEMORY(
 			(_rhs, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
-			(_dw, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
+			//(_dw, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T),
 			(_err, Init, Vec(inner_pb_dim), LDLT_CACHELINE_BYTES, T));
 
 	auto rhs = _rhs.to_eigen();
@@ -322,6 +322,7 @@ void newton_step_fact(
 		qp::line_search::active_set_change_new(
 				VectorView<bool>{from_eigen, active_inequalities_},
 				current_bijection_map,
+				_dw,
 				n_c,
 				n_in,
 				dim,
@@ -336,15 +337,16 @@ void newton_step_fact(
 	}
 
 	rhs.head(dim) -= dual_for_eq_;
+
 	for (isize j = 0; j < n_in; ++j) {
 		rhs.head(dim).noalias() -=
-				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j);
+				mu_in * (max2(z_pos_(j), zero) + min2(z_neg_(j), zero)) * C_.row(j); // TODO use positive part 
 	}
 	{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "SolveLS", T);
 	detail::iterative_solve_with_permut_fact_new( //
 			{from_eigen, rhs},
-			{from_eigen, dw},
+			VectorViewMut<T>{from_eigen, dw.head(inner_pb_dim)},
 			{from_eigen, err},
 			ldl,
 			eps,
@@ -360,7 +362,7 @@ void newton_step_fact(
 			rho,
 			VERBOSE);
 	}
-	dx.to_eigen() = dw.head(dim);
+	//dx.to_eigen() = dw.head(dim);
 }
 
 template <typename T, typename Preconditioner>
@@ -461,6 +463,7 @@ auto initial_guess_fact(
 	qp::line_search::active_set_change_new(
 			VectorView<bool>{from_eigen, active_inequalities_},
 			current_bijection_map,
+			dw_aug,
 			n_c,
 			n_in,
 			dim,
@@ -674,7 +677,8 @@ auto correction_guess(
 
 		qp::detail::newton_step_fact(
 				qp_scaled,
-				VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)},
+				//VectorViewMut<T>{from_eigen, dw_aug_.topRows(dim)},
+				dw_aug,
 				mu_eq,
 				mu_in,
 				rho,
@@ -906,7 +910,7 @@ QpSolveStats qpSolve( //
 	for (isize i = 0; i<n_eq;++i){
 		dw_aug.head(dim) = A_copy.row(i);
 		dw_aug(dim + i) = -1 / bcl_mu_eq;
-		ldl.insert_at(dim + i, dw_aug.head(dim+i));
+		ldl.insert_at(dim + i, dw_aug.head(dim+i+1));
 	}
 
 	//{

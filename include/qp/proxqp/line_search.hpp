@@ -90,7 +90,7 @@ auto gradient_norm_computation_box(
 	auto active_part_z = active_part_z_.to_eigen();
 	auto res = res_.to_eigen();
 
-	Eigen::internal::set_is_malloc_allowed(false);
+	//Eigen::internal::set_is_malloc_allowed(false);
 	tmp_u = residual_in_z_u + alpha * Cdx;
 	tmp_l = residual_in_z_l + alpha * Cdx;
 
@@ -98,7 +98,7 @@ auto gradient_norm_computation_box(
 
 	res.head(dim) = dual_for_eq + alpha * d_dual_for_eq;
 	res.segment(dim, n_eq) = primal_residual_eq + alpha * d_primal_residual_eq;
-	Eigen::internal::set_is_malloc_allowed(true);
+	//Eigen::internal::set_is_malloc_allowed(true);
 
 	for (isize k = 0; k < n_in; ++k) {
 
@@ -851,6 +851,7 @@ template <typename T>
 void active_set_change_new(
 		VectorView<bool> new_active_set_,
 		VectorViewMut<isize> current_bijection_map_,
+		VectorViewMut<T> dw_,
 		isize& n_c,
 		isize n_in,
 		isize dim,
@@ -911,6 +912,8 @@ void active_set_change_new(
 	 */
 	auto current_bijection_map = current_bijection_map_.as_const().to_eigen();
 	auto new_active_set = new_active_set_.to_eigen();
+	auto dw = dw_.to_eigen();
+	
 
 	isize n_c_f = n_c;
 	Eigen::Matrix<isize, Eigen::Dynamic, 1> new_bijection_map(n_in);
@@ -941,6 +944,8 @@ void active_set_change_new(
 		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
 				// add at the end
+				
+				/*
 				[&] {
 					LDLT_MULTI_WORKSPACE_MEMORY(
 							(row_,
@@ -963,6 +968,23 @@ void active_set_change_new(
 					new_bijection_map(i) = n_c_f;
 					n_c_f += 1;
 				}();
+				*/
+				
+				auto C_ = qp.C.to_eigen();
+				dw.setZero();
+				dw.head(dim) = C_.row(i);
+				dw(dim + n_eq + n_c_f) = -T(1.) / mu_in;
+				ldl.insert_at(n_eq + dim + n_c_f, dw.head(n_c_f+1+n_eq+dim));
+				adding+=1;
+				for (isize j = 0; j < n_in; j++) {
+					if (new_bijection_map(j) < new_bijection_map(i) &&
+						new_bijection_map(j) >= n_c_f) {
+						new_bijection_map(j) += 1;
+					}
+				}
+				new_bijection_map(i) = n_c_f;
+				n_c_f += 1;
+				
 
 			}
 		}
