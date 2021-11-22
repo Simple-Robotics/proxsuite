@@ -41,7 +41,7 @@ auto ruiz_scale_qp_in_place( //
 
 	T c(1);
 	auto S = delta_.to_eigen();
-
+  
 	auto H = qp.H.to_eigen();
 	auto g = qp.g.to_eigen();
 	auto A = qp.A.to_eigen();
@@ -50,7 +50,7 @@ auto ruiz_scale_qp_in_place( //
 	auto u = qp.u.to_eigen();
 	auto l = qp.l.to_eigen();
 
-	T machine_eps = std::numeric_limits<T>::epsilon();
+	static constexpr T machine_eps = std::numeric_limits<T>::epsilon();
 	/*
 	 * compute equilibration parameters and scale in place the qp following
 	 * algorithm 1 at
@@ -61,7 +61,7 @@ auto ruiz_scale_qp_in_place( //
 	isize n_eq = qp.A.rows;
 	isize n_in = qp.C.rows;
 
-	S.setConstant(T(1));
+	S.setOnes();
 	T gamma = T(1);
 
 	LDLT_WORKSPACE_MEMORY(
@@ -101,7 +101,7 @@ auto ruiz_scale_qp_in_place( //
 
 		// normalization vector
 		{
-			LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "delta computation", T);
+			// LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "delta computation", T);
 			for (isize k = 0; k < n; ++k) {
 				switch (sym) {
 				case Symmetry::upper: { // upper triangular part
@@ -176,7 +176,7 @@ auto ruiz_scale_qp_in_place( //
 		}
 		//std::cout << "delta " << delta << std::endl;
 		{
-			LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "normalization", T);
+			// LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "normalization", T);
 
 			// normalize A and C
 			A = delta.middleRows(n, n_eq).asDiagonal() * A *

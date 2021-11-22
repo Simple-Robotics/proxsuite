@@ -820,7 +820,7 @@ QpSolveStats qpSolve( //
 		T err_IG,
 		T beta,
 		T R,
-		Preconditioner precond = Preconditioner{},
+		Preconditioner & precond = Preconditioner{},
 		bool VERBOSE = false) {
 
 	using namespace ldlt::tags;
@@ -982,7 +982,7 @@ QpSolveStats qpSolve( //
 	qpdata._rhs.middleRows(dim,n_eq) = qp_scaled.b.to_eigen();
 	ldl.solve_in_place(qpdata._rhs.head(dim+n_eq));
 	qpdata._x = qpdata._rhs.head(dim);
-	qpdata._y.middleRows(dim,n_eq) = qpdata._rhs.middleRows(dim,n_eq);
+	qpdata._y = qpdata._rhs.segment(dim,n_eq);
 	//{
 	//LDLT_DECL_SCOPE_TIMER("in solver", "warm starting", T);
 	//}

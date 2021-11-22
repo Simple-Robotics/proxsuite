@@ -77,7 +77,7 @@ auto main() -> int {
             err_IG,
             beta,
             R,
-            LDLT_FWD(ruiz),
+            ruiz,
             VERBOSE);
     for (isize i=0;i<n_iter;i++){
         qp::Qpdata<Scalar> qpdata2{
@@ -96,7 +96,7 @@ auto main() -> int {
             err_IG,
             beta,
             R,
-            LDLT_FWD(ruiz),
+            ruiz,
             VERBOSE);
 
     }
