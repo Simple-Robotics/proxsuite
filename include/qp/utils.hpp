@@ -55,10 +55,8 @@ void refactorize(
 	isize const n_in = qp_scaled.C.rows;
 
 	auto Htot = kkt.to_eigen();
-	for (isize i = 0; i < dim; ++i) {
-		Htot(i, i) += rho_new - rho_old;
-	}
 
+	Htot.diagonal().array() += rho_new - rho_old; 
 	ldl.factorize(Htot);
 
 	if (n_c == 0) {
@@ -72,7 +70,7 @@ void refactorize(
 		for (isize i = 0; i < n_in; ++i) {
 			if (j == current_bijection_map(i)) {
 				auto new_col = _new_col.segment(0, dim + n_eq + j + 1).to_eigen();
-				new_col.topRows(dim) = qp_scaled.C.to_eigen().row(i);
+				new_col.head(dim) = qp_scaled.C.to_eigen().row(i);
 				new_col(dim + n_eq + j) = -T(1) / mu_in;
 				ldl.insert_at(n_eq + dim + j, new_col);
 				new_col(dim + n_eq + j) = T(0);
@@ -156,6 +154,7 @@ void global_primal_residual(
 	precond.unscale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,qpdata._primal_residual_in_scaled_u});
 	primal_feasibility_in_rhs_0 = infty_norm( qpdata._primal_residual_in_scaled_u);
 
+	
 	qpdata._primal_residual_eq_scaled -= qp.b.to_eigen();
 	qpdata._primal_residual_in_scaled_l =
 			detail::positive_part(qpdata._primal_residual_in_scaled_u - qp.u.to_eigen()) +

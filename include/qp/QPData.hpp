@@ -25,6 +25,9 @@ public:
     using VecMapBool = Eigen::Map<Eigen::Matrix<bool, DYN, 1> const>;
     using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
+    ///// Cholesky Factorization
+    ldlt::Ldlt<T> _ldl;
+
     ///// QP STORAGE
     ColMat _h_scaled;
     Vec _g_scaled;
@@ -86,6 +89,7 @@ public:
 
 	Qpdata( isize dim, isize n_eq, isize n_in)
 			: //
+                _ldl(ldlt::reserve_uninit, dim+n_eq,dim+n_eq+n_in),
 				_h_scaled(dim, dim),
 				_g_scaled(dim),
 				_a_scaled(n_eq,dim),

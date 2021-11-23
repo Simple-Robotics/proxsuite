@@ -17,7 +17,7 @@ auto main() -> int {
 
 	using ldlt::i64;
 	using ldlt::isize;
-	isize dim = 50;
+	isize dim = 1000;
     isize n_eq = 0;
     isize n_in = isize(dim/2);
     double sparsity_factor(0.5);
@@ -45,13 +45,13 @@ auto main() -> int {
 			n_eq + n_in,
 	};
     auto qpview = qp::QpViewBox<Scalar>{
-					{ldlt::from_eigen, qp_problem.H.eval()},
-					{ldlt::from_eigen, qp_problem.g.eval()},
-					{ldlt::from_eigen, qp_problem.A.eval()},
-					{ldlt::from_eigen, qp_problem.b.eval()},
-					{ldlt::from_eigen, qp_problem.C.eval()},
-					{ldlt::from_eigen, qp_problem.u.eval()},
-					{ldlt::from_eigen, qp_problem.l.eval()},
+					{ldlt::from_eigen, qp_problem.H},
+					{ldlt::from_eigen, qp_problem.g},
+					{ldlt::from_eigen, qp_problem.A},
+					{ldlt::from_eigen, qp_problem.b},
+					{ldlt::from_eigen, qp_problem.C},
+					{ldlt::from_eigen, qp_problem.u},
+					{ldlt::from_eigen, qp_problem.l},
 		};
     auto x_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, x};
     auto y_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, y};
@@ -59,7 +59,11 @@ auto main() -> int {
 
     using namespace std::chrono;
     qp::detail::QpSolveStats res;
-    isize n_iter(1000);
+    #ifndef NDEBUG
+    isize n_iter(1);
+    #else
+    isize n_iter(10);
+    #endif
     qp::Qpdata<Scalar> qpdata{
             dim, n_eq, n_in
         };
