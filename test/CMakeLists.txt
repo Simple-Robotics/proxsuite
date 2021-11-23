@@ -7,6 +7,8 @@ add_library(backward_cpp_main OBJECT src/backward.cpp)
 add_library(libcnpy OBJECT src/cnpy.cpp)
 target_link_libraries(libcnpy CONAN_PKG::eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
+
+return()
 set(LDLT_TEST_LIBS
     inria_ldlt
     backward_cpp_main
