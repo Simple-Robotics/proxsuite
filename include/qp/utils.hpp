@@ -3,6 +3,7 @@
 
 #include "ldlt/views.hpp"
 #include <ldlt/ldlt.hpp>
+#include <qp/QPData.hpp>
 #include "qp/views.hpp"
 #include "ldlt/factorize.hpp"
 #include "ldlt/detail/meta.hpp"
@@ -83,6 +84,7 @@ void refactorize(
 
 template <typename T>
 void mu_update(
+		qp::Qpdata<T>& qpdata,
 		T mu_eq_old,
 		T mu_eq_new,
 		T mu_in_old,
@@ -92,25 +94,23 @@ void mu_update(
 		isize n_c,
 		ldlt::Ldlt<T>& ldl) {
 	T diff = T(0);
-	LDLT_MULTI_WORKSPACE_MEMORY(
-			(e_k_, Init, Vec(dim + n_eq + n_c), LDLT_CACHELINE_BYTES, T));
-	auto e_k = e_k_.to_eigen().eval();
 
+	qpdata._dw_aug.head(dim+n_eq+n_c).setZero();
 	if (n_eq > 0) {
 		diff = T(1) / mu_eq_old - T(1) / mu_eq_new;
 
 		for (isize i = 0; i < n_eq; i++) {
-			e_k(dim + i) = T(1);
-			ldl.rank_one_update(e_k, diff);
-			e_k(dim + i) = T(0);
+			qpdata._dw_aug(dim + i) = T(1);
+			ldl.rank_one_update(qpdata._dw_aug.head(dim+n_eq+n_c), diff);
+			qpdata._dw_aug(dim + i) = T(0);
 		}
 	}
 	if (n_c > 0) {
 		diff = T(1) / mu_in_old - T(1) / mu_in_new;
 		for (isize i = 0; i < n_c; i++) {
-			e_k(dim + n_eq + i) = T(1);
-			ldl.rank_one_update(e_k, diff);
-			e_k(dim + n_eq + i) = T(0);
+			qpdata._dw_aug(dim + n_eq + i) = T(1);
+			ldl.rank_one_update(qpdata._dw_aug.head(dim+n_eq+n_c), diff);
+			qpdata._dw_aug(dim + n_eq + i) = T(0);
 		}
 	}
 }
@@ -137,49 +137,34 @@ void global_primal_residual(
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
-		VectorViewMut<T> primal_residual_eq_scaled,
-		VectorViewMut<T> primal_residual_in_scaled_u,
-		VectorViewMut<T> primal_residual_in_scaled_l,
+		qp::Qpdata<T>& qpdata,
 		qp::QpViewBox<T> qp,
 		qp::QpViewBox<T> qp_scaled,
-		Preconditioner precond,
-		VectorView<T> x) {
+		Preconditioner& precond
+		) {
 
-		/*
-		* primal_residual_eq_scaled = scaled(Ax-b)
-		* primal_residual_in_scaled_u = unscaled(Cx)
-		* primal_residual_in_scaled_l = unscaled( [Cx-u]+ + [Cx-l]- )
-		* primal_feasibility_lhs = max(|| unscaled(Ax-b)|| + ||primal_residual_in_scaled_l|| )
-		* primal_feasibility_eq_rhs_0 = ||unscaled(Ax)||
-		* primal_feasibility_in_rhs_0 = ||unscaled(Cx)||
-		*/
 	//LDLT_DECL_SCOPE_TIMER("in solver", "primal residual", T);
 	auto A_ = qp_scaled.A.to_eigen();
 	auto C_ = qp_scaled.C.to_eigen();
-	auto x_ = x.to_eigen();
 	auto b_ = qp_scaled.b.to_eigen();
 
-	auto primal_residual_eq_scaled_ = primal_residual_eq_scaled.to_eigen();
-	auto primal_residual_in_scaled_u_ = primal_residual_in_scaled_u.to_eigen();
-	auto primal_residual_in_scaled_l_ = primal_residual_in_scaled_l.to_eigen();
+	qpdata._primal_residual_eq_scaled.noalias() = A_ * qpdata._x;
+	qpdata._primal_residual_in_scaled_u.noalias() = C_ * qpdata._x;
 
-	primal_residual_eq_scaled_.noalias() = A_ * x_;
-	primal_residual_in_scaled_u_.noalias() = C_ * x_;
+	precond.unscale_primal_residual_in_place_eq(VectorViewMut<T>{from_eigen,qpdata._primal_residual_eq_scaled});
+	primal_feasibility_eq_rhs_0 = infty_norm( qpdata._primal_residual_eq_scaled);
+	precond.unscale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,qpdata._primal_residual_in_scaled_u});
+	primal_feasibility_in_rhs_0 = infty_norm( qpdata._primal_residual_in_scaled_u);
 
-	precond.unscale_primal_residual_in_place_eq(primal_residual_eq_scaled);
-	primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled_);
-	precond.unscale_primal_residual_in_place_in(primal_residual_in_scaled_u);
-	primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_u_);
-
-	primal_residual_eq_scaled_ -= qp.b.to_eigen();
-	primal_residual_in_scaled_l_ =
-			detail::positive_part(primal_residual_in_scaled_u_ - qp.u.to_eigen()) +
-			detail::negative_part(primal_residual_in_scaled_u_ - qp.l.to_eigen());
+	qpdata._primal_residual_eq_scaled -= qp.b.to_eigen();
+	qpdata._primal_residual_in_scaled_l =
+			detail::positive_part(qpdata._primal_residual_in_scaled_u - qp.u.to_eigen()) +
+			detail::negative_part(qpdata._primal_residual_in_scaled_u - qp.l.to_eigen());
 
 	primal_feasibility_lhs = max2(
-			infty_norm(primal_residual_in_scaled_l_),
-			infty_norm(primal_residual_eq_scaled_));
-	precond.scale_primal_residual_in_place_eq(primal_residual_eq_scaled);
+			infty_norm(qpdata._primal_residual_in_scaled_l),
+			infty_norm(qpdata._primal_residual_eq_scaled));
+	precond.scale_primal_residual_in_place_eq(VectorViewMut<T>{from_eigen,qpdata._primal_residual_eq_scaled});
 }
 
 // dual_feasibility_lhs = norm(dual_residual_scaled)
@@ -199,16 +184,13 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,
 		T& dual_feasibility_rhs_3,
-		VectorViewMut<T> dual_residual_scaled,
-		VectorViewMut<T> Hx,
-		VectorViewMut<T> ATy,
-		VectorViewMut<T> CTz,
-		VectorViewMut<T> dw_aug,
+		qp::Qpdata<T>& qpdata,
 		qp::QpViewBox<T> qp_scaled,
-		Preconditioner precond,
+		Preconditioner& precond,
 		VectorView<T> x,
 		VectorView<T> y,
 		VectorView<T> z) {
+
 	/*
 	* dual_residual_scaled = scaled(Hx+g+ATy+CTz)
 	* dw_aug = tmp variable
@@ -228,39 +210,30 @@ void global_dual_residual(
 
 	isize const dim = qp_scaled.H.rows;
 
-	auto dual_residual_scaled_ = dual_residual_scaled.to_eigen();
-	auto dw_aug_ = dw_aug.to_eigen();
-	auto Hx_ = Hx.to_eigen();
-	auto ATy_ = ATy.to_eigen();
-	auto CTz_ = CTz.to_eigen();
+	qpdata._dual_residual_scaled = g_;
+	qpdata._Hx.noalias() = H_ * qpdata._x;
+	qpdata._dual_residual_scaled += qpdata._Hx;
+	precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._Hx});
+	dual_feasibility_rhs_0 = infty_norm(qpdata._Hx);
 
-	dual_residual_scaled_ = g_;
+	qpdata._ATy.noalias() = A_.transpose() * y_;
+	qpdata._dual_residual_scaled += qpdata._ATy;
+	precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._ATy});
+	dual_feasibility_rhs_1 = infty_norm(qpdata._ATy);
 
-	dw_aug_.topRows(dim).setZero();
+	qpdata._CTz.noalias() = C_.transpose() * z_;
+	qpdata._dual_residual_scaled += qpdata._CTz;
+	precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._CTz});
+	dual_feasibility_rhs_3 = infty_norm(qpdata._CTz);
 
-	Hx_.noalias() = H_ * x_;
-	dual_residual_scaled_ += Hx_;
-	precond.unscale_dual_residual_in_place(Hx);
-	dual_feasibility_rhs_0 = infty_norm(Hx_);
+	precond.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._dual_residual_scaled});
 
-	ATy_.noalias() = A_.transpose() * y_;
-	dual_residual_scaled_ += ATy_;
-	precond.unscale_dual_residual_in_place(ATy);
-	dual_feasibility_rhs_1 = infty_norm(ATy_);
+	dual_feasibility_lhs = infty_norm(qpdata._dual_residual_scaled);
 
-	CTz_.noalias() = C_.transpose() * z_;
-	dual_residual_scaled_ += CTz_;
-	precond.unscale_dual_residual_in_place(CTz);
-	dual_feasibility_rhs_3 = infty_norm(CTz_);
-
-	precond.unscale_dual_residual_in_place(dual_residual_scaled);
-
-	dual_feasibility_lhs = infty_norm(dual_residual_scaled_);
-
-	precond.scale_dual_residual_in_place(dual_residual_scaled);
-	precond.scale_dual_residual_in_place(Hx);
-	precond.scale_dual_residual_in_place(ATy);
-	precond.scale_dual_residual_in_place(CTz);
+	precond.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._dual_residual_scaled});
+	precond.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._Hx});
+	precond.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._ATy});
+	precond.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpdata._CTz});
 }
 
 } // namespace detail

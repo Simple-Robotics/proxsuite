@@ -142,6 +142,7 @@ void iterative_solve_with_permut_fact_new( //
 
 template <typename T>
 void BCL_update_fact(
+		qp::Qpdata<T>& qpdata,
 		T& primal_feasibility_lhs,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
@@ -149,11 +150,6 @@ void BCL_update_fact(
 		isize& n_mu_updates,
 		T& bcl_mu_in,
 		T& bcl_mu_eq,
-		VectorViewMut<T> ye,
-		VectorViewMut<T> ze,
-		VectorViewMut<T> y,
-		VectorViewMut<T> z,
-
 		isize dim,
 		isize n_eq,
 		isize n_c,
@@ -174,14 +170,15 @@ void BCL_update_fact(
 		if (VERBOSE){
 			std::cout << "bad step" << std::endl;
 		}
-		y.to_eigen() = ye.to_eigen();
-		z.to_eigen() = ze.to_eigen();
+		qpdata._y = qpdata._ye;
+		qpdata._z = qpdata._ze;
 		T new_bcl_mu_in(min2(bcl_mu_in * 10, cold_reset_bcl_mu_max));
 		T new_bcl_mu_eq(min2(bcl_mu_eq * (10), cold_reset_bcl_mu_max * 100));
 		if (bcl_mu_in != new_bcl_mu_in || bcl_mu_eq != new_bcl_mu_eq) {
 			{ ++n_mu_updates; }
 		}
 		qp::detail::mu_update(
+				qpdata,
 				bcl_mu_eq,
 				new_bcl_mu_eq,
 				bcl_mu_in,
@@ -725,28 +722,23 @@ QpSolveStats qpSolve( //
 				primal_feasibility_lhs,
 				primal_feasibility_eq_rhs_0,
 				primal_feasibility_in_rhs_0,
-				{from_eigen, qpdata._primal_residual_eq_scaled},
-				{from_eigen, qpdata._primal_residual_in_scaled_u},
-				{from_eigen, qpdata._primal_residual_in_scaled_l},
+				qpdata,
 				qp,
 				qp_scaled.as_const(),
-				precond,
-				VectorView<T>{from_eigen,qpdata._x});
+				precond
+				);
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
-				{from_eigen, qpdata._dual_residual_scaled},
-				{from_eigen, qpdata._Hx},
-				{from_eigen, qpdata._ATy},
-				{from_eigen, qpdata._CTz},
-				{from_eigen, qpdata._dw_aug},
+				qpdata,
 				qp_scaled.as_const(),
 				precond,
 				VectorView<T>{from_eigen,qpdata._x},
 				VectorView<T>{from_eigen,qpdata._y},
-				VectorView<T>{from_eigen,qpdata._z});
+				VectorView<T>{from_eigen,qpdata._z}
+				);
 		//}
 		//Freturn {0,0,0};
 		if (VERBOSE){
@@ -933,16 +925,15 @@ QpSolveStats qpSolve( //
 				primal_feasibility_lhs_new,
 				primal_feasibility_eq_rhs_0,
 				primal_feasibility_in_rhs_0,
-				VectorViewMut<T>{from_eigen, qpdata._primal_residual_eq_scaled},
-				VectorViewMut<T>{from_eigen, qpdata._primal_residual_in_scaled_u},
-				VectorViewMut<T>{from_eigen, qpdata._primal_residual_in_scaled_l},
+				qpdata,
 				qp,
 				qp_scaled.as_const(),
-				precond,
-				VectorView<T>{from_eigen,qpdata._x});
+				precond
+				);
 
 		// LDLT_DECL_SCOPE_TIMER("in solver", "BCL", T);
 		qp::detail::BCL_update_fact(
+				qpdata,
 				primal_feasibility_lhs_new,
 				bcl_eta_ext,
 				bcl_eta_in,
@@ -950,10 +941,6 @@ QpSolveStats qpSolve( //
 				n_mu_updates,
 				bcl_mu_in,
 				bcl_mu_eq,
-				VectorViewMut<T>{from_eigen, qpdata._ye},
-				VectorViewMut<T>{from_eigen, qpdata._ze},
-				VectorViewMut<T>{from_eigen,qpdata._y},
-				VectorViewMut<T>{from_eigen,qpdata._z},
 				dim,
 				n_eq,
 				n_c,
@@ -978,11 +965,7 @@ QpSolveStats qpSolve( //
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3,
-				VectorViewMut<T>{from_eigen, qpdata._dual_residual_scaled},
-				VectorViewMut<T>{from_eigen, qpdata._Hx},
-				VectorViewMut<T>{from_eigen, qpdata._ATy},
-				VectorViewMut<T>{from_eigen, qpdata._CTz},
-				VectorViewMut<T>{from_eigen, qpdata._dw_aug},
+				qpdata,
 				qp_scaled.as_const(),
 				precond,
 				VectorView<T>{from_eigen,qpdata._x},
@@ -1008,6 +991,7 @@ QpSolveStats qpSolve( //
 			//{
 			//LDLT_DECL_SCOPE_TIMER("in solver", "cold restart", T);
 			qp::detail::mu_update(
+					qpdata,
 					bcl_mu_eq,
 					new_bcl_mu_eq,
 					bcl_mu_in,
