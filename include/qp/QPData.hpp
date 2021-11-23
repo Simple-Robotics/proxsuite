@@ -49,6 +49,7 @@ public:
 
     //// Active set & permutation vector 
     VecISize _current_bijection_map;
+    VecISize _new_bijection_map;
 
     VecBool _l_active_set_n_u;
     VecBool _l_active_set_n_l;
@@ -100,6 +101,7 @@ public:
                 _z(n_in),
                 _kkt(dim+n_eq,dim+n_eq),
                 _current_bijection_map(n_in),
+                _new_bijection_map(n_in),
                 _l_active_set_n_u(n_in),
                 _l_active_set_n_l(n_in),
                 _active_inequalities(n_in),
@@ -136,7 +138,11 @@ public:
                 _y.setZero();
                 _z.setZero();
                 _kkt.setZero();
-                _current_bijection_map.setZero();
+                // start with identity permutation
+                for (isize i = 0; i < n_in; i++) {
+		            _current_bijection_map(i) = i;
+                    _new_bijection_map(i) = i;
+	            }
                 _d_dual_for_eq.setZero();
                 _Cdx.setZero();
                 _d_primal_residual_eq.setZero();

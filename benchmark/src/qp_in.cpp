@@ -59,11 +59,11 @@ auto main() -> int {
 
     using namespace std::chrono;
     qp::detail::QpSolveStats res;
-    auto start = high_resolution_clock::now();
     isize n_iter(1000);
     qp::Qpdata<Scalar> qpdata{
             dim, n_eq, n_in
         };
+    auto start = high_resolution_clock::now();
     res= qp::detail::qpSolve( //
             x_view,
             y_view,
@@ -79,6 +79,7 @@ auto main() -> int {
             R,
             ruiz,
             VERBOSE);
+    
     for (isize i=0;i<n_iter;i++){
         qp::Qpdata<Scalar> qpdata2{
             dim, n_eq, n_in
@@ -98,8 +99,9 @@ auto main() -> int {
             R,
             ruiz,
             VERBOSE);
-
+ 
     }
+    
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
 
