@@ -17,7 +17,7 @@ auto main() -> int {
 
 	using ldlt::i64;
 	using ldlt::isize;
-	isize dim = 1000;
+	isize dim = 50;
     isize n_eq = 0;
     isize n_in = isize(dim/2);
     double sparsity_factor(0.5);
