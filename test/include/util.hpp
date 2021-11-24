@@ -400,32 +400,39 @@ LDLT_DEFINE_TAG(random_with_dim_and_n_in, RandomWithDimAndNin);
 LDLT_DEFINE_TAG(from_data, FromData);
 template <typename Scalar>
 struct Qp {
-	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> H;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> C;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> u;
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> l;
 
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> solution;
+	enum { layout = Eigen::RowMajor };
 
+	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, layout> MatrixType;
+	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1> VectorType;
+
+	MatrixType H;
+	VectorType g;
+	MatrixType A;
+	VectorType b;
+	MatrixType C;
+	VectorType u;
+	VectorType l;
+
+	VectorType solution;
+
+	template<typename Matrix_H, typename Vector_g, typename Matrix_A, typename Vector_b, typename Matrix_C, typename Vector_u, typename Vector_l> 
 	Qp(FromData /*tag*/,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> H_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> g_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> A_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> b_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> C_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> u_,
-	   Eigen::Matrix<Scalar, Eigen::Dynamic, 1, Eigen::ColMajor> l_
+	   const Eigen::MatrixBase<Matrix_H> & H_,
+	   const Eigen::MatrixBase<Vector_g> & g_,
+	   const Eigen::MatrixBase<Matrix_A> & A_,
+	   const Eigen::MatrixBase<Vector_b> & b_,
+	   const Eigen::MatrixBase<Matrix_C> & C_,
+	   const Eigen::MatrixBase<Vector_u> & u_,
+	   const Eigen::MatrixBase<Vector_l> & l_
 	   ) noexcept
-			: H(LDLT_FWD(H_)),
-				g(LDLT_FWD(g_)),
-				A(LDLT_FWD(A_)),
-				b(LDLT_FWD(b_)),
-				C(LDLT_FWD(C_)),
-				u(LDLT_FWD(u_)),
-				l(LDLT_FWD(l_)),
+			: H(H_),
+				g(g_),
+				A(A_),
+				b(b_),
+				C(C_),
+				u(u_),
+				l(l_),
 				solution(H.rows() + A.rows() + C.rows()) {
 
 		/*
@@ -459,8 +466,8 @@ struct Qp {
 		auto primal_solution = solution.topRows(dim);
 		auto dual_solution = solution.bottomRows(n_eq);
 
-		g = -H * primal_solution - A.transpose() * dual_solution;
-		b = A * primal_solution;
+		g.noalias() = -H * primal_solution - A.transpose() * dual_solution;
+		b.noalias() = A * primal_solution;
 	}
 
 	Qp(RandomWithDimAndNin /*tag*/, ldlt::isize dim, double sparsity_factor)

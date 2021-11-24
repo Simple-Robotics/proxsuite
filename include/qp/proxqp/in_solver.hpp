@@ -781,7 +781,7 @@ QpSolveStats qpSolve( //
 				qp::detail::refactorize(
 						qp_scaled.as_const(),
 						VectorViewMut<isize>{from_eigen, qpdata._current_bijection_map},
-						MatrixViewMut<T, colmajor>{from_eigen, qpdata._kkt},
+						MatrixViewMut<T,rowmajor>{from_eigen, qpdata._kkt},
 						n_c,
 						bcl_mu_in,
 						rho,

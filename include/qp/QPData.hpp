@@ -10,7 +10,10 @@ template <typename T>
 struct Qpdata {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
-	using ColMat = Eigen::Matrix<T, DYN, DYN, Eigen::ColMajor>;
+
+    enum { layout = Eigen::RowMajor };
+
+	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	using VecMap = Eigen::Map<Vec const>;

@@ -25,34 +25,42 @@ using ldlt::rowmajor;
 
 template <typename T>
 struct QpView {
-	MatrixView<T, colmajor> H;
+
+	static constexpr Layout layout = rowmajor;
+
+	MatrixView<T, layout> H;
 	VectorView<T> g;
 
-	MatrixView<T, colmajor> A;
+	MatrixView<T, layout> A;
 	VectorView<T> b;
-	MatrixView<T, colmajor> C;
+	MatrixView<T, layout> C;
 	VectorView<T> d;
 };
+
 template <typename Scalar>
 struct QpViewBox {
-	MatrixView<Scalar, colmajor> H;
+	static constexpr Layout layout = rowmajor;
+
+	MatrixView<Scalar, layout> H;
 	VectorView<Scalar> g;
 
-	MatrixView<Scalar, colmajor> A;
+	MatrixView<Scalar, layout> A;
 	VectorView<Scalar> b;
-	MatrixView<Scalar, colmajor> C;
+	MatrixView<Scalar, layout> C;
 	VectorView<Scalar> u;
 	VectorView<Scalar> l;
 };
 
 template <typename T>
 struct QpViewMut {
-	MatrixViewMut<T, colmajor> H;
+	static constexpr Layout layout = rowmajor;
+
+	MatrixViewMut<T, layout> H;
 	VectorViewMut<T> g;
 
-	MatrixViewMut<T, colmajor> A;
+	MatrixViewMut<T, layout> A;
 	VectorViewMut<T> b;
-	MatrixViewMut<T, colmajor> C;
+	MatrixViewMut<T, layout> C;
 	VectorViewMut<T> d;
 
 	LDLT_INLINE constexpr auto as_const() const noexcept -> QpView<T> {
@@ -69,12 +77,14 @@ struct QpViewMut {
 
 template <typename Scalar>
 struct QpViewBoxMut {
-	MatrixViewMut<Scalar, colmajor> H;
+	static constexpr Layout layout = rowmajor;
+
+	MatrixViewMut<Scalar, layout> H;
 	VectorViewMut<Scalar> g;
 
-	MatrixViewMut<Scalar, colmajor> A;
+	MatrixViewMut<Scalar, layout> A;
 	VectorViewMut<Scalar> b;
-	MatrixViewMut<Scalar, colmajor> C;
+	MatrixViewMut<Scalar, layout> C;
 	VectorViewMut<Scalar> u;
 	VectorViewMut<Scalar> l;
 

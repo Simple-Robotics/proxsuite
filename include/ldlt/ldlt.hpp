@@ -49,7 +49,9 @@ private:
 			Eigen::UnitUpper>;
 
 	using ColMatMap = Eigen::Map<ColMat const, Eigen::Aligned, Eigen::OuterStride<DYN>>;
+	using ColMatMapUnstride = Eigen::Map<ColMat const, Eigen::Aligned>;
 	using ColMatMapMut = Eigen::Map<ColMat, Eigen::Aligned, Eigen::OuterStride<DYN>>;
+	using ColMatMapMutUnstride = Eigen::Map<ColMat, Eigen::Aligned>;
 
 	using RowMatMap = Eigen::Map<RowMat const, Eigen::Aligned, Eigen::OuterStride<DYN>>;
 	using RowMatMapMut = Eigen::Map<RowMat, Eigen::Aligned, Eigen::OuterStride<DYN>>;
@@ -133,45 +135,23 @@ public:
 		return A;
 	}
 
-	auto l() const noexcept -> ColMatMap {
-		return Eigen::Map< //
-							 ColMat const,
-							 Eigen::Aligned,
-							 Eigen::OuterStride<DYN>>(
-							 _l.data(), dim, dim, _l.outerStride());
+	auto l() const noexcept -> ColMatMapUnstride {
+		return ColMatMapUnstride(_l.data(), dim, dim);
 	}
 
-	auto l_mut() noexcept -> ColMatMapMut {
-		return Eigen::Map< //
-							 ColMat,
-							 Eigen::Aligned,
-							 Eigen::OuterStride<DYN>>(
-							 _l.data(), dim, dim, _l.outerStride());
+	auto l_mut() noexcept -> ColMatMapMutUnstride {
+		return ColMatMapMutUnstride(_l.data(), dim, dim);
 	}
   
-  auto new_l_mut(isize n) noexcept -> ColMatMapMut {
-    return Eigen::Map< //
-               ColMat,
-               Eigen::Aligned,
-               Eigen::OuterStride<DYN>>(
-               _new_l.data(), n, n, _new_l.outerStride());
+  auto new_l_mut(isize n) noexcept -> ColMatMapMutUnstride {
+    return ColMatMapMutUnstride(_new_l.data(), n, n);
   }
 
 	auto ltri() const noexcept -> LView {
-		return Eigen::Map< //
-							 ColMat const,
-							 Eigen::Aligned,
-							 Eigen::OuterStride<DYN>>(
-							 _l.data(), dim, dim, _l.outerStride())
-		    .template triangularView<Eigen::UnitLower>();
+		return l().template triangularView<Eigen::UnitLower>();
 	}
 	auto ltri_mut() noexcept -> LViewMut {
-		return Eigen::Map< //
-							 ColMat,
-							 Eigen::Aligned,
-							 Eigen::OuterStride<DYN>>(
-							 _l.data(), dim, dim, _l.outerStride())
-		    .template triangularView<Eigen::UnitLower>();
+		return l_mut().template triangularView<Eigen::UnitLower>();
 	}
 	auto lt() const noexcept -> RowMatMap {
 		return Eigen::Map< //
@@ -196,6 +176,7 @@ public:
 							 _l.data(), dim, dim, _l.outerStride())
 		    .template triangularView<Eigen::UnitUpper>();
 	}
+
 	auto d() const noexcept -> VecMap { return VecMap(_d.data(), dim); }
 	auto d_mut() noexcept -> VecMapMut { return VecMapMut(_d.data(), dim); }
   auto new_d(isize n) const noexcept -> VecMap { return VecMap(_new_d.data(), n); }

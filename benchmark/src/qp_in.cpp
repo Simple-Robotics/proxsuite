@@ -17,7 +17,7 @@ auto main() -> int {
 
 	using ldlt::i64;
 	using ldlt::isize;
-	isize dim = 50;
+	isize dim = 10;
     isize n_eq = 0;
     isize n_in = isize(dim/2);
     double sparsity_factor(0.5);
@@ -62,7 +62,7 @@ auto main() -> int {
     #ifndef NDEBUG
     isize n_iter(1);
     #else
-    isize n_iter(1000);
+    isize n_iter(10000);
     #endif
     qp::Qpdata<Scalar> qpdata{
             dim, n_eq, n_in

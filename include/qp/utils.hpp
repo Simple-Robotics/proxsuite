@@ -38,11 +38,11 @@ auto square(T const& expr)
 	LDLT_DEDUCE_RET(expr*expr);
 
 
-template <typename T>
+template <typename T, Layout L>
 void refactorize(
 		qp::QpViewBox<T> qp_scaled,
 		VectorViewMut<isize> current_bijection_map_,
-		MatrixViewMut<T, colmajor> kkt,
+		MatrixViewMut<T, L> kkt,
 		isize n_c,
 		T mu_in,
 		T rho_old,
@@ -91,11 +91,10 @@ void mu_update(
 		isize n_eq,
 		isize n_c,
 		ldlt::Ldlt<T>& ldl) {
-	T diff = T(0);
 
 	qpdata._dw_aug.head(dim+n_eq+n_c).setZero();
 	if (n_eq > 0) {
-		diff = T(1) / mu_eq_old - T(1) / mu_eq_new;
+		T diff = T(1) / mu_eq_old - T(1) / mu_eq_new;
 
 		for (isize i = 0; i < n_eq; i++) {
 			qpdata._dw_aug(dim + i) = T(1);
@@ -104,7 +103,7 @@ void mu_update(
 		}
 	}
 	if (n_c > 0) {
-		diff = T(1) / mu_in_old - T(1) / mu_in_new;
+		T diff = T(1) / mu_in_old - T(1) / mu_in_new;
 		for (isize i = 0; i < n_c; i++) {
 			qpdata._dw_aug(dim + n_eq + i) = T(1);
 			ldl.rank_one_update(qpdata._dw_aug.head(dim+n_eq+n_c), diff);
