@@ -62,7 +62,7 @@ auto main() -> int {
     #ifndef NDEBUG
     isize n_iter(1);
     #else
-    isize n_iter(10);
+    isize n_iter(1000);
     #endif
     qp::Qpdata<Scalar> qpdata{
             dim, n_eq, n_in
