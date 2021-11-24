@@ -147,6 +147,6 @@ endif()
 
 if(ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(test)
+#  add_subdirectory(test)
   add_subdirectory(benchmark)
 endif()
