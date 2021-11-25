@@ -33,6 +33,7 @@ LDLT_DEFINE_NIEBLOID(sqrt);
 template <typename T>
 auto ruiz_scale_qp_in_place( //
 		VectorViewMut<T> delta_,
+		VectorViewMut<T> tmp_delta_preallocated,
 		std::ostream* logger_ptr,
 		qp::QpViewBoxMut<T> qp,
 		T epsilon,
@@ -61,12 +62,16 @@ auto ruiz_scale_qp_in_place( //
 	isize n_eq = qp.A.rows;
 	isize n_in = qp.C.rows;
 
-	S.setOnes();
+	//S.setOnes();
 	T gamma = T(1);
 
+	/*
 	LDLT_WORKSPACE_MEMORY(
 			_delta, Init, Vec(n + n_eq + n_in), LDLT_CACHELINE_BYTES, T);
+	
 	auto delta = _delta.to_eigen();
+	*/
+	auto delta = tmp_delta_preallocated.to_eigen();
 
 	i64 iter = 1;
 	/*
@@ -302,7 +307,7 @@ struct RuizEquilibration {
 				max_iter(max_iter_),
 				sym(sym_),
 				logger_ptr(logger) {
-		delta.setZero();
+		delta.setOnes();
 	}
 	void print() {
 		// CHANGE: endl to newline
@@ -314,12 +319,14 @@ struct RuizEquilibration {
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
-	void scale_qp_in_place(QpViewBoxMut<T> qp) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp,VectorViewMut<T> tmp_delta_preallocated) {
+		delta.setOnes();
+		tmp_delta_preallocated.to_eigen().setZero();
 		c = detail::ruiz_scale_qp_in_place(
-				{ldlt::from_eigen, delta}, logger_ptr, qp, epsilon, max_iter, sym);
+				{ldlt::from_eigen, delta},tmp_delta_preallocated, logger_ptr, qp, epsilon, max_iter, sym);
 	}
-	void scale_qp(QpViewBox<T> qp, QpViewBoxMut<T> scaled_qp) {
-
+	void scale_qp(QpViewBox<T> qp, QpViewBoxMut<T> scaled_qp,VectorViewMut<T> tmp_delta_preallocated) {
+		
 		using namespace detail;
 		/*
 		 * scaled_qp is scaled, whereas first qp is not
@@ -335,7 +342,7 @@ struct RuizEquilibration {
 		scaled_qp.b.to_eigen() = qp.b.to_eigen();
 		scaled_qp.d.to_eigen() = qp.d.to_eigen();
 
-		scale_qp_in_place(scaled_qp, epsilon, max_iter);
+		scale_qp_in_place(scaled_qp,tmp_delta_preallocated, epsilon, max_iter);
 	}
 	// modifies variables in place
 	void scale_primal_in_place(VectorViewMut<T> primal) {

@@ -257,7 +257,7 @@ auto osqpSolve( //
 				{from_eigen, Htot.block(dim + n_eq, 0, n_in, dim)},
 				{from_eigen, u_copy},
 				{from_eigen, l_copy}};
-		precond.scale_qp_in_place(qp_scaled_mut);
+		//precond.scale_qp_in_place(qp_scaled_mut);
 		return qp_scaled_mut.as_const();
 	}();
 
@@ -340,7 +340,7 @@ auto osqpSolve( //
 		}
 
 		// compute primal residual
-
+		/*
 		qp::detail::global_primal_residual(
 				primal_feasibility_lhs,
 				primal_feasibility_eq_rhs_0,
@@ -352,7 +352,7 @@ auto osqpSolve( //
 				qp_scaled,
 				precond,
 				xe.as_const());
-		/*
+		
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,

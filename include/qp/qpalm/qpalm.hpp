@@ -769,7 +769,7 @@ QpalmSolveStats QPALMSolve( //
 			{from_eigen, C_copy},
 			{from_eigen, u_copy},
 			{from_eigen, l_copy}};
-	precond.scale_qp_in_place(qp_scaled);
+	//precond.scale_qp_in_place(qp_scaled);
 
 	//T correction_guess_rhs_g = infty_norm((qp_scaled.g).to_eigen());
 
@@ -822,7 +822,7 @@ QpalmSolveStats QPALMSolve( //
 		}
 
 		// compute primal residual
-
+		/*
 		qp::detail::global_primal_residual(
 				primal_feasibility_lhs,
 				primal_feasibility_eq_rhs_0,
@@ -836,7 +836,7 @@ QpalmSolveStats QPALMSolve( //
 				x.as_const());
 		primal_residual_in_scaled_l_old = primal_residual_in_scaled_l ; 
 		primal_residual_eq_scaled_old = primal_residual_eq_scaled ; 
-		/*
+		
 		qp::detail::global_dual_residual(
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
@@ -960,7 +960,7 @@ QpalmSolveStats QPALMSolve( //
 								<< std::endl;
 		}
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
-
+		/*
 		qp::detail::global_primal_residual(
 				primal_feasibility_lhs_new,
 				primal_feasibility_eq_rhs_0,
@@ -972,6 +972,7 @@ QpalmSolveStats QPALMSolve( //
 				qp_scaled.as_const(),
 				precond,
 				x.as_const());
+		*/
 		qp::detail::QPALM_update_fact(
 				primal_feasibility_lhs_new,
 				eta_ext, 
