@@ -7,6 +7,7 @@
 #include <qp/QPWorkspace.hpp>
 #include <qp/QPData.hpp>
 #include <qp/QPResults.hpp>
+#include <qp/QPSettings.hpp>
 
 #include <fmt/chrono.h>
 #include <fmt/ranges.h>
@@ -23,13 +24,6 @@ auto main() -> int {
     isize n_in = isize(dim/2);
     double sparsity_factor(0.5);
 
-	isize max_iter(100);
-    isize max_iter_in(2500);
-    Scalar eps_abs = Scalar(1e-9);
-    Scalar eps_rel = 0;
-    Scalar err_IG = 1.e-4;
-    Scalar beta = 0.9 ;
-    Scalar R = 3 ;
 	Qp<Scalar> qp_problem{random_with_dim_and_n_in, dim, sparsity_factor};
 
 
@@ -38,7 +32,9 @@ auto main() -> int {
 	Vec y = Vec::Zero(n_eq);
     Vec z = Vec::Zero(n_in);
 
-    // allocating all needed variables
+    // allocating all needed variables 
+
+    qp::Qpsettings<Scalar> qpsettings{};
     
     qp::Qpdata<Scalar> qpmodel{qp_problem.H,
                                qp_problem.g,
@@ -47,18 +43,6 @@ auto main() -> int {
                                qp_problem.C,
                                qp_problem.u,
                                qp_problem.l};
-    
-    /*                         
-    auto qpview = qp::QpViewBox<Scalar>{
-					{ldlt::from_eigen, qp_problem.H},
-					{ldlt::from_eigen, qp_problem.g},
-					{ldlt::from_eigen, qp_problem.A},
-					{ldlt::from_eigen, qp_problem.b},
-					{ldlt::from_eigen, qp_problem.C}, 
-					{ldlt::from_eigen, qp_problem.u},
-					{ldlt::from_eigen, qp_problem.l},
-		};
-    */
     
     auto x_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, x};
     auto y_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, y};
@@ -80,14 +64,7 @@ auto main() -> int {
             qpmodel,
             qpwork,
             qpresults,
-            max_iter,
-            max_iter_in,
-            eps_abs,
-            eps_rel,
-            err_IG,
-            beta,
-            R,
-            VERBOSE);
+            qpsettings);
     
     for (isize i=0;i<n_iter;i++){
         qpresults.clearResults();
@@ -95,14 +72,7 @@ auto main() -> int {
             qpmodel,
             qpwork,
             qpresults,
-            max_iter,
-            max_iter_in,
-            eps_abs,
-            eps_rel,
-            err_IG,
-            beta,
-            R,
-            VERBOSE);
+            qpsettings);
     }
     
     auto stop = high_resolution_clock::now();

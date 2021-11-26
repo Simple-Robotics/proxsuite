@@ -8,6 +8,7 @@
 #include <qp/QPWorkspace.hpp>
 #include <qp/QPResults.hpp>
 #include <qp/QPData.hpp>
+#include <qp/QPSettings.hpp>
 #include "ldlt/factorize.hpp"
 #include "ldlt/detail/meta.hpp"
 #include "ldlt/solve.hpp"
@@ -65,11 +66,10 @@ void iterative_solve_with_permut_fact_new( //
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpsettings<T>& qpsettings,
 		T eps,
-		isize max_it,
 		qp::QpViewBox<T> qp_scaled,
-		isize inner_pb_dim,
-		const bool VERBOSE) {
+		isize inner_pb_dim) {
 
 	i32 it = 0;
 	qpwork._dw_aug.head(inner_pb_dim) = qpwork._rhs.head(inner_pb_dim);
@@ -86,11 +86,11 @@ void iterative_solve_with_permut_fact_new( //
 
 	compute_iterative_residual();
 	++it;
-	if (VERBOSE){
+	if (qpsettings._VERBOSE){
 		std::cout << "infty_norm(res) " << qp::infty_norm( qpwork._err.head(inner_pb_dim)) << std::endl;
 	}
 	while (infty_norm( qpwork._err.head(inner_pb_dim)) >= eps) {
-		if (it >= max_it) {
+		if (it >= qpsettings._nb_iterative_refinement) {
 			break;
 		}
 		++it;
@@ -99,7 +99,7 @@ void iterative_solve_with_permut_fact_new( //
 
 		qpwork._err.head(inner_pb_dim).setZero();
 		compute_iterative_residual();
-		if (VERBOSE){
+		if (qpsettings._VERBOSE){
 			std::cout << "infty_norm(res) " << qp::infty_norm(qpwork._err.head(inner_pb_dim)) << std::endl;
 		}
 	}
@@ -110,33 +110,28 @@ void BCL_update_fact(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpsettings<T>& qpsettings,
 		T primal_feasibility_lhs,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
-		T eps_abs,
-		T beta,
-		T exponent,
-		T bcl_eta_ext_init,
-		T cold_reset_bcl_mu_max,
-		T cold_reset_bcl_mu_max_inv,
-		const bool VERBOSE) {
+		T bcl_eta_ext_init) {
 
 	if (primal_feasibility_lhs <= bcl_eta_ext) {
-		if (VERBOSE){
+		if (qpsettings._VERBOSE){
 			std::cout << "good step" << std::endl;
 		}
-		bcl_eta_ext = bcl_eta_ext * pow(qpresults._mu_in_inv, beta); // mu stores the inverse of mu
-		bcl_eta_in = max2(bcl_eta_in * qpresults._mu_in_inv, eps_abs); // mu stores the inverse of mu
+		bcl_eta_ext = bcl_eta_ext * pow(qpresults._mu_in_inv, qpsettings._beta_bcl); // mu stores the inverse of mu
+		bcl_eta_in = max2(bcl_eta_in * qpresults._mu_in_inv, qpsettings._eps_abs); // mu stores the inverse of mu
 	} else {
-		if (VERBOSE){
+		if (qpsettings._VERBOSE){
 			std::cout << "bad step" << std::endl;
 		}
 		qpresults._y = qpwork._ye;
 		qpresults._z = qpwork._ze;
-		T new_bcl_mu_in_inv(max2(qpresults._mu_in_inv * 0.1, cold_reset_bcl_mu_max_inv)); // mu stores the inverse of mu
-		T new_bcl_mu_eq_inv(max2(qpresults._mu_eq_inv * 0.1, cold_reset_bcl_mu_max_inv * 0.01)); // mu stores the inverse of mu
-		T new_bcl_mu_in(min2(qpresults._mu_in * 10, cold_reset_bcl_mu_max)); // mu stores mu
-		T new_bcl_mu_eq(min2(qpresults._mu_eq * 10, cold_reset_bcl_mu_max * 100)); // mu stores mu
+		T new_bcl_mu_in_inv(max2(qpresults._mu_in_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_in_inv)); // mu stores the inverse of mu
+		T new_bcl_mu_eq_inv(max2(qpresults._mu_eq_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_eq_inv)); // mu stores the inverse of mu
+		T new_bcl_mu_in(min2(qpresults._mu_in * qpsettings._mu_update_factor, qpsettings._mu_max_in)); // mu stores mu
+		T new_bcl_mu_eq(min2(qpresults._mu_eq * qpsettings._mu_update_factor, qpsettings._mu_max_eq)); // mu stores mu
 		if (qpresults._mu_in != new_bcl_mu_in || qpresults._mu_eq != new_bcl_mu_eq) {
 			{ ++qpresults._n_mu_change; }
 		}
@@ -150,8 +145,8 @@ void BCL_update_fact(
 		qpresults._mu_in_inv = new_bcl_mu_in_inv;
 		qpresults._mu_eq = new_bcl_mu_eq;
 		qpresults._mu_in = new_bcl_mu_in;
-		bcl_eta_ext = bcl_eta_ext_init * pow(qpresults._mu_in_inv, exponent); // mu stores the inverse of mu
-		bcl_eta_in = max2(qpresults._mu_in_inv, eps_abs); // mu stores the inverse of mu
+		bcl_eta_ext = bcl_eta_ext_init * pow(qpresults._mu_in_inv, qpsettings._alpha_bcl); // mu stores the inverse of mu
+		bcl_eta_in = max2(qpresults._mu_in_inv, qpsettings._eps_abs); // mu stores the inverse of mu
 	}
 }
 
@@ -196,9 +191,9 @@ void newton_step_fact(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpsettings<T>& qpsettings,
 		qp::QpViewBox<T> qp_scaled,
-		T eps,
-		const bool VERBOSE) {
+		T eps) {
 	
 	qpwork._l_active_set_n_u.array() = (qpwork._primal_residual_in_scaled_u.array() > 0);
 	qpwork._l_active_set_n_l.array() = (qpwork._primal_residual_in_scaled_l.array() < 0);
@@ -226,11 +221,10 @@ void newton_step_fact(
 			qpwork,
 			qpresults,
 			qpmodel,
+			qpsettings,
 			eps,
-			3,
 			qp_scaled,
-			inner_pb_dim,
-			VERBOSE);
+			inner_pb_dim);
 	}
 
 }
@@ -240,10 +234,9 @@ auto initial_guess_fact(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpsettings<T>& qpsettings,
 		qp::QpViewBox<T> qp_scaled,
-		T eps_int,
-		T R,
-		const bool VERBOSE) -> T {
+		T eps_int) -> T {
 
 	auto C_ = qp_scaled.C.to_eigen();
 	
@@ -302,11 +295,10 @@ auto initial_guess_fact(
 			qpwork,
 			qpresults,
 			qpmodel,
+			qpsettings,
 			eps_int,
-			3,
 			qp_scaled,
-			inner_pb_dim,
-			VERBOSE);
+			inner_pb_dim);
 	}
 
 	qpwork._d_dual_for_eq = qpwork._rhs.head(qpmodel._dim); // d_dual_for_eq_ = -dual_for_eq_ -C^T dz
@@ -351,10 +343,10 @@ auto initial_guess_fact(
 			qpwork,
 			qpresults,
 			qpmodel,
-			qp_scaled.C,
-			R);
+			qpsettings,
+			qp_scaled.C);
 	
-	if (VERBOSE){
+	if (qpsettings._VERBOSE){
 		std::cout << "alpha from initial guess " << alpha_step << std::endl;
 	}
 	
@@ -394,11 +386,10 @@ auto correction_guess(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpsettings<T>& qpsettings,
 		qp::QpViewBox<T> qp_scaled,
 		T eps_int,
-		isize max_iter_in,
-		T& correction_guess_rhs_g,
-		const bool VERBOSE) -> T {
+		T& correction_guess_rhs_g) -> T {
 
 	auto g_ = (qp_scaled.g).to_eigen() ;
 
@@ -410,10 +401,10 @@ auto correction_guess(
 	qpwork._dual_residual_scaled.noalias() +=  qp_scaled.C.to_eigen().transpose() * qpwork._active_part_z * qpresults._mu_in ; //mu stores mu  // used for newton step at first iteration
 
 
-	for (i64 iter = 0; iter <= max_iter_in; ++iter) {
+	for (i64 iter = 0; iter <= qpsettings._max_iter_in; ++iter) {
 
-		if (iter == max_iter_in) {
-			qpresults._n_tot += max_iter_in;
+		if (iter == qpsettings._max_iter_in) {
+			qpresults._n_tot += qpsettings._max_iter_in;
 			break;
 		}
 
@@ -422,9 +413,9 @@ auto correction_guess(
 				qpwork,
 				qpresults,
 				qpmodel,
+				qpsettings,
 				qp_scaled,
-				eps_int,
-				VERBOSE);
+				eps_int);
 
 		T alpha_step(1);
 		qpwork._d_dual_for_eq.noalias() = (qp_scaled.H).to_eigen() * qpwork._dw_aug.head(qpmodel._dim);
@@ -462,7 +453,7 @@ auto correction_guess(
 		qpwork._dual_residual_scaled.noalias() += qpwork._Hx + g_ + qpwork._ATy + qpresults._rho * (qpresults._x - qpwork._xe);
 
 		err_in = infty_norm(qpwork._dual_residual_scaled);
-		if (VERBOSE){
+		if (qpsettings._VERBOSE){
 			std::cout << "---it in " << iter << " projection norm " << err_in
 							<< " alpha " << alpha_step << std::endl;
 		}
@@ -481,21 +472,13 @@ void qpSolve( //
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
-		isize max_iter,
-		isize max_iter_in,
-		T eps_abs,
-		T eps_rel,
-		T err_IG,
-		T beta,
-		T R,
-		const bool VERBOSE = false) {
+		qp::Qpsettings<T>& qpsettings) {
 
 	using namespace ldlt::tags;
 	
 	constexpr T machine_eps = std::numeric_limits<T>::epsilon();
 
-	T exponent(0.1);
-	T bcl_eta_ext_init = pow(qpresults._mu_in_inv, exponent);
+	T bcl_eta_ext_init = pow(qpresults._mu_in_inv, qpsettings._alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
 	T bcl_eta_in = 1;
 
@@ -549,23 +532,10 @@ void qpSolve( //
 	T primal_feasibility_eq_lhs(0);
 	T primal_feasibility_in_lhs(0);
 	T dual_feasibility_lhs(0);
-
-	T refactor_dual_feasibility_threshold(1e-2);
-	T refactor_rho_threshold(1e-7);
-	T refactor_rho_update_factor(10);
-
-	T cold_reset_bcl_mu_max(1e8);
-	T cold_reset_bcl_mu_max_inv(1e-8);
-	T cold_reset_primal_test_factor(1);
-	T cold_reset_dual_test_factor(1);
-	T cold_reset_mu_eq(1.1);
-	T cold_reset_mu_in(1.1);
-	T cold_reset_mu_eq_inv(1./1.1);
-	T cold_reset_mu_in_inv(1./1.1);
 	
-	for (i64 iter = 0; iter <= max_iter; ++iter) {
+	for (i64 iter = 0; iter <= qpsettings._max_iter; ++iter) {
 		::Eigen::internal::set_is_malloc_allowed(false);
-		if (iter == max_iter) {
+		if (iter == qpsettings._max_iter) {
 			break;
 		}
 		qpresults._n_ext += 1;
@@ -588,7 +558,7 @@ void qpSolve( //
 				qpresults,
 				qp_scaled.as_const()
 				);
-		if (VERBOSE){
+		if (qpsettings._VERBOSE){
 			std::cout << "---------------it : " << iter
 								<< " primal residual : " << primal_feasibility_lhs
 								<< " dual residual : " << dual_feasibility_lhs << std::endl;
@@ -599,8 +569,8 @@ void qpSolve( //
 		}
 		const bool is_primal_feasible =
 				primal_feasibility_lhs <=
-				(eps_abs +
-		     eps_rel *
+				(qpsettings._eps_abs +
+		     qpsettings._eps_rel *
 		         max2(
 								 max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
 								 max2(
@@ -613,20 +583,19 @@ void qpSolve( //
 
 		const bool is_dual_feasible =
 				dual_feasibility_lhs <=
-				(eps_abs +
-		     eps_rel * max2(
+				(qpsettings._eps_abs +
+		     qpsettings._eps_rel * max2(
 											 max2(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
 											 max2( //
 													 dual_feasibility_rhs_1,
 													 dual_feasibility_rhs_2)));
 
 		if (is_primal_feasible) {
-			if (dual_feasibility_lhs > refactor_dual_feasibility_threshold && //
-			    qpresults._rho > refactor_rho_threshold) {
+			if (dual_feasibility_lhs > qpsettings._refactor_dual_feasibility_threshold && //
+			    qpresults._rho > qpsettings._refactor_rho_threshold) {
 				T rho_new = max2( //
-						(qpresults._rho / refactor_rho_update_factor),
-						refactor_rho_threshold);
-
+						(qpresults._rho * qpsettings._refactor_rho_update_factor),
+						qpsettings._refactor_rho_threshold);
 				qp::detail::refactorize(
 						qp_scaled.as_const(),
 						qpwork,
@@ -671,7 +640,7 @@ void qpSolve( //
 		qpwork._xe = qpresults._x;
 		qpwork._ye = qpresults._y;
 		qpwork._ze = qpresults._z;
-		const bool do_initial_guess_fact = primal_feasibility_lhs < err_IG;
+		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings._err_IG;
 
 		T err_in(0.);
 
@@ -681,10 +650,9 @@ void qpSolve( //
 					qpwork,
 					qpresults,
 					qpmodel,
+					qpsettings,
 					qp_scaled.as_const(),
-					bcl_eta_in,
-					R,
-					VERBOSE);
+					bcl_eta_in);
 			qpresults._n_tot += 1;
 		}
 
@@ -724,14 +692,13 @@ void qpSolve( //
 					qpwork,
 					qpresults,
 					qpmodel,
+					qpsettings,
 					qp_scaled.as_const(),
 					bcl_eta_in,
-					max_iter_in,
-					correction_guess_rhs_g,
-					VERBOSE);
-			if (VERBOSE){
+					correction_guess_rhs_g);
+			if (qpsettings._VERBOSE){
 				std::cout << "primal_feasibility_lhs " << primal_feasibility_lhs
-									<< " error from initial guess : " << err_in << " bcl_eta_in "
+									<< " inner loop error : " << err_in << " bcl_eta_in "
 									<< bcl_eta_in << std::endl;
 			}
 		}
@@ -756,16 +723,11 @@ void qpSolve( //
 				qpwork,
 				qpresults,
 				qpmodel,
+				qpsettings,
 				primal_feasibility_lhs_new,
 				bcl_eta_ext,
 				bcl_eta_in,
-				eps_abs,
-				beta,
-				exponent,
-				bcl_eta_ext_init,
-				cold_reset_bcl_mu_max,
-				cold_reset_bcl_mu_max_inv,
-				VERBOSE);
+				bcl_eta_ext_init);
 
 		// COLD RESTART
 
@@ -786,17 +748,15 @@ void qpSolve( //
 				qp_scaled.as_const()
 				);
 
-		if ((primal_feasibility_lhs_new >=
-		     cold_reset_primal_test_factor *
-		         std::max(primal_feasibility_lhs, machine_eps)) 
+		if ((primal_feasibility_lhs_new >= std::max(primal_feasibility_lhs, machine_eps)) 
 						 &&
-		    (dual_feasibility_lhs_new >=
-		     cold_reset_dual_test_factor *
-		         max2(primal_feasibility_lhs, machine_eps)) 
+		    (dual_feasibility_lhs_new >=  max2(primal_feasibility_lhs, machine_eps)) 
 						 &&
-		    	 min2(qpresults._mu_eq_inv, qpresults._mu_in_inv) <= cold_reset_bcl_mu_max_inv // stores the inverse of mu
+		    	 qpresults._mu_eq_inv <= qpsettings._mu_max_eq_inv 
+				 		&& 
+				 qpresults._mu_in_inv <= qpsettings._mu_max_in_inv // stores the inverse of mu
 				) {
-			if (VERBOSE){
+			if (qpsettings._VERBOSE){
 				std::cout << "cold restart" << std::endl;
 			}
 	
@@ -806,14 +766,14 @@ void qpSolve( //
 					qpwork,
 					qpresults,
 					qpmodel,
-					cold_reset_mu_eq_inv,
-					cold_reset_mu_in_inv);
+					qpsettings._cold_reset_mu_eq_inv,
+					qpsettings._cold_reset_mu_in_inv);
 
 			//}
-			qpresults._mu_in_inv = cold_reset_mu_in_inv; 
-			qpresults._mu_eq_inv = cold_reset_mu_eq_inv; 
-			qpresults._mu_in = cold_reset_mu_in; 
-			qpresults._mu_eq = cold_reset_mu_eq; 
+			qpresults._mu_in_inv = qpsettings._cold_reset_mu_in_inv; 
+			qpresults._mu_eq_inv = qpsettings._cold_reset_mu_eq_inv; 
+			qpresults._mu_in = qpsettings._cold_reset_mu_in; 
+			qpresults._mu_eq = qpsettings._cold_reset_mu_eq; 
 		}
 		::Eigen::internal::set_is_malloc_allowed(true);
 	}

@@ -7,6 +7,7 @@
 #include <qp/QPWorkspace.hpp>
 #include <qp/QPResults.hpp>
 #include <qp/QPData.hpp>
+#include <qp/QPSettings.hpp>
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -273,8 +274,8 @@ auto initial_guess_LS(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
-		MatrixView<T,LC> C,
-		T ball_radius) -> T {
+		qp::Qpsettings<T>& qpsettings,
+		MatrixView<T,LC> C) -> T {
 
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
@@ -378,7 +379,7 @@ auto initial_guess_LS(
 		if (std::abs(qpwork._ze(i)) != 0) {
 
 			alpha_ = -qpwork._ze(i) / (qpwork._dw_aug(qpmodel._dim+qpmodel._n_eq+i) + machine_eps);
-			if (std::abs(alpha_) < ball_radius) {
+			if (std::abs(alpha_) < qpsettings._R) {
 				qpwork.alphas.push_back(alpha_);
 			}
 		}
@@ -390,11 +391,11 @@ auto initial_guess_LS(
 	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (std::abs(qpwork._Cdx(i)) != 0) {
 			alpha_ = -qpwork._primal_residual_in_scaled_u(i) / (qpwork._Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < ball_radius) {
+			if (std::abs(alpha_) < qpsettings._R) {
 				qpwork.alphas.push_back(alpha_);
 			}
 			alpha_ = -qpwork._primal_residual_in_scaled_l(i) / (qpwork._Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < ball_radius) {
+			if (std::abs(alpha_) < qpsettings._R) {
 				qpwork.alphas.push_back(alpha_);
 			}
 		}
@@ -414,7 +415,7 @@ auto initial_guess_LS(
 		bool first = true;
 		for (isize i = 0; i < n_alpha; ++i) {
 			alpha_ = qpwork.alphas[i];
-			if (std::abs(alpha_) < ball_radius) {
+			if (std::abs(alpha_) < qpsettings._R) {
 				
 				
 				// calcul de la norm du gradient du noeud
