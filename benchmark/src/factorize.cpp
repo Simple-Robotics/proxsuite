@@ -58,8 +58,8 @@ void bench_calc_perm__(benchmark::State& s) {
 	ldlt_test::rand::set_seed(0);
 	auto a = ldlt_test::rand::matrix_rand<T>(dim, dim);
 
-	auto perm = std::vector<i32>(usize(dim));
-	auto perm_inv = std::vector<i32>(usize(dim));
+	auto perm = std::vector<isize>(usize(dim));
+	auto perm_inv = std::vector<isize>(usize(dim));
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(perm.data());
@@ -84,8 +84,8 @@ void bench_permute____(benchmark::State& s) {
 		}
 	}
 
-	auto perm = std::vector<i32>(usize(dim));
-	auto perm_inv = std::vector<i32>(usize(dim));
+	auto perm = std::vector<isize>(usize(dim));
+	auto perm_inv = std::vector<isize>(usize(dim));
 
 	benchmark::DoNotOptimize(a.data());
 	benchmark::DoNotOptimize(perm.data());
