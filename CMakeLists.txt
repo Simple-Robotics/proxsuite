@@ -131,7 +131,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
   add_library(inria_ldlt_py MODULE src/ldlt_pybind11.cpp)
 
   EXECUTE_PROCESS(
-      COMMAND "${PYTHON_EXECUTABLE}" "-c"
+      COMMAND "${Python3_EXECUTABLE}" "-c"
       "from distutils.sysconfig import get_config_var; print(get_config_var('EXT_SUFFIX'))"
       OUTPUT_VARIABLE PYTHON_EXT_SUFFIX)
 
