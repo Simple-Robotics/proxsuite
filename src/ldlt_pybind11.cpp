@@ -5,6 +5,7 @@
 #include <ldlt/update.hpp>
 
 #include <qp/views.hpp>
+#include <qp/old_new_QPWorkspace.hpp>
 
 #include <qp/proxqp/in_solver.hpp>
 #include <qp/proxqp/old_solver.hpp>
@@ -711,7 +712,7 @@ void transition_algebra(
 		T bcl_eta_in,
 		T err_in){
 		
-		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings._err_IG || qpmodel._n_in == 0;
+		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings._eps_IG || qpmodel._n_in == 0;
 		bool do_correction_guess = (!do_initial_guess_fact && qpmodel._n_in != 0) ||
 		                           (do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel._n_in != 0) ;
 
@@ -972,11 +973,32 @@ void oldNewQPsolve( //
 			isize dim = H.eval().rows();
 			isize n_eq = A.eval().rows();
 			isize n_in = C.eval().rows();
+
+			////
+
+			qp::Qpsettings<T> qpsettings{};
+			qpsettings._max_iter = max_iter;
+			qpsettings._max_iter_in = max_iter_in;
+			qpsettings._mu_max_eq = mu_max_eq;
+			qpsettings._mu_max_eq_inv = T(1)/mu_max_eq;
+			qpsettings._mu_max_in = mu_max_in;
+			qpsettings._mu_max_in_inv = T(1)/mu_max_in;
+			qpsettings._R = R;
+			qpsettings._eps_IG = eps_IG;
+			qpsettings._eps_refact = eps_refact;
+			qpsettings._eps_abs = eps_abs;
+			qpsettings._eps_rel = eps_rel;
+
+			////
+
+			
 			auto ruiz = qp::preconditioner::RuizEquilibration<T>{
 				dim,
 				n_eq+n_in,
 			};
+			
 			qp::detail::QpSolveStats res = qp::detail::oldNew_qpSolve( //
+								qpsettings,
 								{from_eigen,x},
 								{from_eigen,y},
 								{from_eigen,z},
@@ -989,20 +1011,10 @@ void oldNewQPsolve( //
 									{from_eigen, u.eval()},
 									{from_eigen, l.eval()},
 								},
-								max_iter,
-								max_iter_in,
-								eps_abs,
-								eps_rel,
 								str,
 								LDLT_FWD(ruiz),
-								mu_max_eq,
-								mu_max_in,
-								R,
-								eps_IG,
-								eps_refact,
-								nb_it_refinement,
 								checkNoAlias);
-			
+
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
 			std::cout << "n_ext : " <<  res.n_ext << std::endl;
 			std::cout << "n_tot : " <<  res.n_tot << std::endl;
@@ -1129,47 +1141,6 @@ void OSQPsolve( //
 } // namespace pybind11
 } // namespace qp
 
-/*
-PYBIND11_MODULE(robot, m) : example of class biding
-{
-    // Do not add abstract class constructor
-    // We are just declaring it to python. Because
-    // It is an argument type in T800, T1000  constructors
-    // and also an argument type of Move() function.
-    py::class_<ISpeech>(m, "ISpeech");
-
-    // Add the base class to work polymorphism.
-    // For example T800 constructed with ISpeech, if
-    // we don't declare it here, python doesn't allow
-    // injectign SpeechV1 to T800 constructor.
-    py::class_<SpeechV1, ISpeech>(m, "SpeechV1")
-        .def(py::init<string>()); //Constructor
-
-    py::class_<SpeechV2, ISpeech>(m, "SpeechV2")
-        .def(py::init<string>()); // Constructor
-
-    py::class_<IRobot>(m, "IRobot"); // Abstract, do not add constructor
-    
-    py::class_<T800, IRobot>(m, "T800")
-        .def(py::init<string, int, ISpeech &>()) // constructor
-        .def("Walk", &T800::Walk)
-        .def("Talk", &T800::Talk)
-        .def("GetData", &T800::GetData)
-        // read-write public data memeber
-        // you can use def_readonly as well.
-        .def_readwrite("year", &T800::year); 
-
-    using T = double;
-    py::class_<T1000<T>, IRobot>(m, "T1000")
-        .def(py::init<string, T, ISpeech &>()) // constructor
-        .def("Walk", &T1000<T>::Walk) // method
-        .def("Talk", &T1000<T>::Talk) // method
-        // Define property with getter and setter
-        .def_property("height", &T1000<T>::GetHeight,&T1000<T>::SetHeight); 
-
-    m.def("Move", &Move);
-}
-*/
 
 PYBIND11_MODULE(inria_ldlt_py, m) {
 	m.doc() = R"pbdoc(
@@ -1287,7 +1258,7 @@ INRIA LDLT decomposition
 
 		.def_readwrite("_eps_abs", &qp::Qpsettings<f64>::_eps_abs) 
 		.def_readwrite("_eps_rel", &qp::Qpsettings<f64>::_eps_rel) 
-		.def_readwrite("_err_IG", &qp::Qpsettings<f64>::_err_IG)
+		.def_readwrite("_err_IG", &qp::Qpsettings<f64>::_eps_IG)
 		.def_readwrite("_R", &qp::Qpsettings<f64>::_R)
 		.def_readwrite("_nb_iterative_refinement", &qp::Qpsettings<f64>::_nb_iterative_refinement)
 		.def_readwrite("_VERBOSE", &qp::Qpsettings<f64>::_VERBOSE);

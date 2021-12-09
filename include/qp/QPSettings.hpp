@@ -34,8 +34,9 @@ public:
 	isize _max_iter_in;
 	T _eps_abs;
 	T _eps_rel;
-	T _err_IG;
+	T _eps_IG;
 	T _R;
+    T _eps_refact;
     isize _nb_iterative_refinement;
 
     bool _VERBOSE;
@@ -43,12 +44,12 @@ public:
 	Qpsettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
                T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
                T mu_max_eq=1e6, T mu_max_in=1e6, T mu_max_eq_inv=1e-6,T mu_max_in_inv=1e-6,
-               T mu_update_factor=100, T mu_update_inv_factor=0.01,
+               T mu_update_factor=10, T mu_update_inv_factor=0.1,
                T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
                T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
                T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-4, T R=10.,
                isize max_iter=1000,isize max_iter_in=2500,
-               isize nb_iterative_refinement=5,
+               isize nb_iterative_refinement=10,T eps_refact=1.e-6,
                bool VERBOSE = false)
                 {
         
@@ -73,8 +74,9 @@ public:
 
                     _eps_abs=eps_abs;
                     _eps_rel=eps_rel;
-                    _err_IG=err_IG;
+                    _eps_IG=err_IG;
                     _R=R;
+                    _eps_refact = eps_refact;
 
                     _max_iter=max_iter;
                     _max_iter_in=max_iter_in;

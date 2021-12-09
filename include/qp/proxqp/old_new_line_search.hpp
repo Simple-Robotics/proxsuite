@@ -561,6 +561,7 @@ auto oldNew_local_saddle_point_box(
 
 template <typename T, Layout LC>
 auto oldNew_initial_guess_LS(
+		qp::Qpsettings<T>& qpsettings,
 		VectorView<T> ze,
 		VectorView<T> dz,
 		VectorView<T> residual_in_z_l_,
@@ -576,7 +577,7 @@ auto oldNew_initial_guess_LS(
 		isize dim,
 		isize n_eq,
 		isize n_in,
-		T R,
+		//T R,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
@@ -707,7 +708,7 @@ auto oldNew_initial_guess_LS(
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(z_e(i)) != 0.) {
 			alpha_ = -z_e(i) / (dz_(i) + machine_eps);
-			if (std::abs(alpha_)< R){
+			if (std::abs(alpha_)< qpsettings._R){
 				alphas.push_back(alpha_);
 			}
 		}
@@ -723,11 +724,11 @@ auto oldNew_initial_guess_LS(
 	for (isize i = 0; i < n_in; i++) {
 		if (std::abs(Cdx(i)) != 0) {
 			alpha_= -residual_in_z_u(i) / (Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < R){
+			if (std::abs(alpha_) < qpsettings._R){
 				alphas.push_back(alpha_);
 			}
 			alpha_ = -residual_in_z_l(i) / (Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < R){
+			if (std::abs(alpha_) < qpsettings._R){
 				alphas.push_back(alpha_);
 			}
 		}
