@@ -42,13 +42,13 @@ public:
 
 	Qpsettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
                T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
-               T mu_max_eq=1e10, T mu_max_in=1e8, T mu_max_eq_inv=1e-10,T mu_max_in_inv=1e-8,
-               T mu_update_factor=10, T mu_update_inv_factor=0.1,
+               T mu_max_eq=1e6, T mu_max_in=1e6, T mu_max_eq_inv=1e-6,T mu_max_in_inv=1e-6,
+               T mu_update_factor=100, T mu_update_inv_factor=0.01,
                T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
                T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
-               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-4, T R=3.,
+               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-4, T R=10.,
                isize max_iter=1000,isize max_iter_in=2500,
-               isize nb_iterative_refinement=3,
+               isize nb_iterative_refinement=5,
                bool VERBOSE = false)
                 {
         

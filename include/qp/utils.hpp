@@ -41,7 +41,6 @@ auto square(T const& expr)
 
 template <typename T>
 void refactorize(
-		qp::QpViewBox<T> qp_scaled,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
@@ -58,7 +57,7 @@ void refactorize(
 	for (isize j = 0; j < qpresults._n_c; ++j) {
 		for (isize i = 0; i < qpmodel._n_in; ++i) {
 			if (j == qpwork._current_bijection_map(i)) {
-				qpwork._dw_aug.head(qpmodel._dim) = qp_scaled.C.to_eigen().row(i);
+				qpwork._dw_aug.head(qpmodel._dim) = qpwork._c_scaled.row(i);
 				qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + j) = - qpresults._mu_in; // mu_in stores the inverse of mu_in
 				qpwork._ldl.insert_at(qpmodel._n_eq + qpmodel._dim + j, qpwork._dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c));
 				qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + j) = T(0);
@@ -120,17 +119,13 @@ void global_primal_residual(
 		T& primal_feasibility_in_rhs_0,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
-		qp::Qpdata<T>& qpmodel,
-		qp::QpViewBox<T> qp_scaled
+		qp::Qpdata<T>& qpmodel
 		) {
 
 	//LDLT_DECL_SCOPE_TIMER("in solver", "primal residual", T);
-	auto A_ = qp_scaled.A.to_eigen();
-	auto C_ = qp_scaled.C.to_eigen();
-	auto b_ = qp_scaled.b.to_eigen();
 
-	qpwork._primal_residual_eq_scaled.noalias() = A_ * qpresults._x;
-	qpwork._primal_residual_in_scaled_u.noalias() = C_ * qpresults._x;
+	qpwork._primal_residual_eq_scaled.noalias() = qpwork._a_scaled * qpresults._x;
+	qpwork._primal_residual_in_scaled_u.noalias() = qpwork._c_scaled * qpresults._x;
 
 	qpwork._ruiz.unscale_primal_residual_in_place_eq(VectorViewMut<T>{from_eigen,qpwork._primal_residual_eq_scaled});
 	primal_feasibility_eq_rhs_0 = infty_norm( qpwork._primal_residual_eq_scaled);
@@ -142,7 +137,6 @@ void global_primal_residual(
 	qpwork._primal_residual_in_scaled_l =
 			detail::positive_part(qpwork._primal_residual_in_scaled_u - qpmodel._u) +
 			detail::negative_part(qpwork._primal_residual_in_scaled_u - qpmodel._l);
-
 	primal_feasibility_lhs = max2(
 			infty_norm(qpwork._primal_residual_in_scaled_l),
 			infty_norm(qpwork._primal_residual_eq_scaled));
@@ -165,36 +159,30 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_1,
 		T& dual_feasibility_rhs_3,
 		qp::Qpworkspace<T>& qpwork,
-		qp::Qpresults<T>& qpresults,
-		qp::QpViewBox<T> qp_scaled
+		qp::Qpresults<T>& qpresults
 		) {
 
 	/*
 	* dual_residual_scaled = scaled(Hx+g+ATy+CTz)
-	* dw_aug = tmp variable
 	* dual_feasibility_lhs =  ||unscaled(Hx+g+ATy+CTz)||
-	* dual_feasibility_rhs_0 = ||unscled(Hx)||
+	* dual_feasibility_rhs_0 = ||unscaled(Hx)||
 	* dual_feasibility_rhs_1 = ||unscaled(ATy)||
 	* dual_feasibility_rhs_3 =  ||unscaled(CTz)||
 	*/
-	//LDLT_DECL_SCOPE_TIMER("in solver", "dual residual", T);
-	auto H_ = qp_scaled.H.to_eigen();
-	auto A_ = qp_scaled.A.to_eigen();
-	auto C_ = qp_scaled.C.to_eigen();
-	auto g_ = qp_scaled.g.to_eigen();
 
-	qpwork._dual_residual_scaled = g_;
-	qpwork._Hx.noalias() = H_ * qpresults._x;
+	qpwork._dual_residual_scaled = qpwork._g_scaled;
+	qpwork._Hx.noalias() = qpwork._h_scaled * qpresults._x;
+
 	qpwork._dual_residual_scaled += qpwork._Hx;
 	qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
 	dual_feasibility_rhs_0 = infty_norm(qpwork._Hx);
 
-	qpwork._ATy.noalias() = A_.transpose() * qpresults._y;
+	qpwork._ATy.noalias() = qpwork._a_scaled.transpose() * qpresults._y;
 	qpwork._dual_residual_scaled += qpwork._ATy;
 	qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._ATy});
 	dual_feasibility_rhs_1 = infty_norm(qpwork._ATy);
 
-	qpwork._CTz.noalias() = C_.transpose() * qpresults._z;
+	qpwork._CTz.noalias() = qpwork._c_scaled.transpose() * qpresults._z;
 	qpwork._dual_residual_scaled += qpwork._CTz;
 	qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._CTz});
 	dual_feasibility_rhs_3 = infty_norm(qpwork._CTz);
@@ -203,10 +191,6 @@ void global_dual_residual(
 
 	dual_feasibility_lhs = infty_norm(qpwork._dual_residual_scaled);
 
-	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._dual_residual_scaled});
-	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
-	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._ATy});
-	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._CTz});
 }
 
 } // namespace detail

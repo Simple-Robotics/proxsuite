@@ -16,18 +16,6 @@ public:
 	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
-	using VecMap = Eigen::Map<Vec const>;
-	using VecMapMut = Eigen::Map<Vec>;
-
-    using MatMap = Eigen::Map<ColMat const>;
-	using MatMapMut = Eigen::Map<ColMat>;
-
-	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
-    using VecISize = Eigen::Matrix<isize, DYN, 1>;
-
-    using VecMapBool = Eigen::Map<Eigen::Matrix<bool, DYN, 1> const>;
-    using VecBool = Eigen::Matrix<bool, DYN, 1>;
-
     ///// QP STORAGE
     ColMat _H;
     Vec  _g;
@@ -43,7 +31,7 @@ public:
     isize _n_in;
     isize _n_total;
 
-	Qpdata(ColMat H,Vec g, ColMat A, Vec b, ColMat C, Vec u, Vec l){   
+	Qpdata(ColMat H=ColMat(0,0),Vec g = Vec(0), ColMat A=ColMat(0,0), Vec b= Vec(0), ColMat C=ColMat(0,0), Vec u= Vec(0), Vec l= Vec(0)){   
 
                     _dim = H.rows();
                     _n_eq = A.rows();

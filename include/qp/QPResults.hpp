@@ -34,7 +34,7 @@ public:
     //// timings
     T _timing;
 
-	Qpresults( isize dim, isize n_eq, isize n_in)
+	Qpresults( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 _x(dim),
                 _y(n_eq),
