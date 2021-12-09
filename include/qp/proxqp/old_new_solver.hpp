@@ -425,7 +425,8 @@ void oldNew_BCL_update(
 		T mu_fact_update_inv,
 		T bcl_eta_ext_init,
 		T beta,
-		T alpha
+		T alpha,
+		T eps_in_min
 		){
 		precond.scale_primal_residual_in_place_eq(primal_residual_eq_scaled);
 		precond.scale_primal_residual_in_place_in(primal_residual_in_scaled_l);
@@ -437,7 +438,7 @@ void oldNew_BCL_update(
 		if (tmp <= bcl_eta_ext) {
 			std::cout << "good step"<< std::endl;
 			bcl_eta_ext = bcl_eta_ext * pow(bcl_mu_in_inv, beta);
-			bcl_eta_in = max2(bcl_eta_in * bcl_mu_in_inv,eps_abs);
+			bcl_eta_in = max2(bcl_eta_in * bcl_mu_in_inv,eps_in_min);
 		} else {
 			std::cout << "bad step"<< std::endl; 
 			y.to_eigen() = ye.to_eigen();
@@ -469,7 +470,7 @@ void oldNew_BCL_update(
 			bcl_mu_eq_inv = new_bcl_mu_eq_inv;
 			bcl_mu_in_inv = new_bcl_mu_in_inv;
 			bcl_eta_ext = bcl_eta_ext_init * pow(bcl_mu_in_inv, alpha);
-			bcl_eta_in = max2(  bcl_mu_in_inv  ,eps_abs);
+			bcl_eta_in = max2(  bcl_mu_in_inv  ,eps_in_min);
 	}
 }
 
@@ -1279,6 +1280,7 @@ QpSolveStats oldNew_qpSolve( //
 	T bcl_eta_ext_init = pow(T(0.1),alpha);
 	T bcl_eta_ext = bcl_eta_ext_init;
 	T bcl_eta_in(1);
+	T eps_in_min = std::min(eps_abs,T(1.E-9));
 	
 	LDLT_MULTI_WORKSPACE_MEMORY(
 	     	(_g_scaled,Init, Vec(dim),LDLT_CACHELINE_BYTES, T),
@@ -1832,7 +1834,8 @@ QpSolveStats oldNew_qpSolve( //
 					mu_fact_update_inv,
 					bcl_eta_ext_init,
 					beta,
-					alpha
+					alpha,
+					eps_in_min
 		);
 
 		// COLD RESTART
