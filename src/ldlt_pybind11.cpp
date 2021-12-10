@@ -957,10 +957,7 @@ void oldQPsolve( //
 }
 
 template <typename T,Layout L>
-void oldNewQPsolve( //
-		VecRefMut<T> x,
-		VecRefMut<T> y,
-        VecRefMut<T> z,
+void oldNewQPsolve(
 		MatRef<T, L> H,
 		VecRef<T> g,
 		MatRef<T, L> A,
@@ -969,6 +966,7 @@ void oldNewQPsolve( //
 		VecRef<T> u,
 		VecRef<T> l,
 		qp::Qpdata<T>& qpmodel,
+		qp::Qpresults<T>& qpresults,
 		isize max_iter,
 		isize max_iter_in,
 		VecRefMut<T> res_iter,
@@ -1020,9 +1018,7 @@ void oldNewQPsolve( //
 			qp::detail::QpSolveStats res = qp::detail::oldNew_qpSolve( //
 								qpsettings,
 								qpmodel,
-								VectorViewMut<T>{from_eigen,x},
-								VectorViewMut<T>{from_eigen,y},
-								VectorViewMut<T>{from_eigen,z},
+								qpresults,
 								str,
 								LDLT_FWD(ruiz),
 								checkNoAlias);
