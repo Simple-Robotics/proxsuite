@@ -709,7 +709,7 @@ void qpSolve( //
 			}
 		} 
 		
-		const bool do_initial_guess_fact = (primal_feasibility_lhs < qpsettings._err_IG || qpmodel._n_in == 0 ) ;
+		const bool do_initial_guess_fact = (primal_feasibility_lhs < qpsettings._eps_IG || qpmodel._n_in == 0 ) ;
 
 		T err_in(0.);
 

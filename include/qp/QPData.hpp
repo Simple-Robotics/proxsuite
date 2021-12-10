@@ -16,6 +16,10 @@ public:
 	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
+    using MatRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
+    using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
+
+
     ///// QP STORAGE
     ColMat _H;
     Vec  _g;
@@ -31,26 +35,29 @@ public:
     isize _n_in;
     isize _n_total;
 
-	Qpdata(ColMat H=ColMat(0,0),Vec g = Vec(0), ColMat A=ColMat(0,0), Vec b= Vec(0), ColMat C=ColMat(0,0), Vec u= Vec(0), Vec l= Vec(0)){   
+    Qpdata(isize dim, isize n_eq, isize n_in):
+                    _H(dim, dim),
+                    _g(dim),
+                    _A(n_eq,dim),
+                    _C(n_in,dim),
+                    _b(n_eq),
+                    _u(n_in),
+                    _l(n_in)
+    {
 
-                    _dim = H.rows();
-                    _n_eq = A.rows();
-                    _n_in = C.rows();
+                    _dim = dim;
+                    _n_eq = n_eq;
+                    _n_in = n_in;
                     _n_total = _dim+_n_eq+_n_in;
-                    _H(_dim, _dim);
-                    _g(_dim);
-                    _A(_n_eq,_dim);
-                    _C(_n_in,_dim);
-                    _b(_n_eq);
-                    _u(_n_in);
-                    _l(_n_in);
-                    _H = H;
-                    _g = g;
-                    _A = A;
-                    _C = C;
-                    _b = b;
-                    _u = u;
-                    _l = l;
+
+                    _H.setZero();
+                    _g.setZero();
+                    _A.setZero();
+                    _C.setZero();
+                    _b.setZero();
+                    _u.setZero();
+                    _l.setZero();
+
     }
 
 };

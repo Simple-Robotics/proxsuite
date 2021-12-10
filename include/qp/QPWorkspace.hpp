@@ -87,12 +87,21 @@ public:
     Vec _ATy;
     Vec _CTz;
 	Vec _dual_residual_scaled; // used for storing stores Hx + g + ATy + CTz for ex
-    Vec ATy;
 
-	Qpworkspace( isize dim, isize n_eq, isize n_in)
+    //// Relative residuals constants
+
+    T _primal_feasibility_rhs_1_eq;
+    T _primal_feasibility_rhs_1_in_u;
+    T _primal_feasibility_rhs_1_in_l;
+    T _dual_feasibility_rhs_2;
+    T _correction_guess_rhs_g;
+    T _alpha;
+
+	Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 _ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
-                _ldl(ldlt::reserve_uninit, dim+n_eq,dim+n_eq+n_in),
+                //_ldl(ldlt::reserve_uninit, dim+n_eq,dim+n_eq+n_in), new vesion for debug
+                _ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc
                 _h_scaled(dim, dim),
 				_g_scaled(dim),
 				_a_scaled(n_eq,dim),
@@ -161,7 +170,17 @@ public:
                     _ATy.setZero();
                     _CTz.setZero();
                     _dual_residual_scaled.setZero();
+
+                    _primal_feasibility_rhs_1_eq = 0;
+                    _primal_feasibility_rhs_1_in_u = 0;
+                    _primal_feasibility_rhs_1_in_l = 0;
+                    _dual_feasibility_rhs_2 = 0;
+                    _correction_guess_rhs_g = 0;
+                    _alpha = 0.;
+                    
             }
+
+        
 };
 
 } // namespace qp

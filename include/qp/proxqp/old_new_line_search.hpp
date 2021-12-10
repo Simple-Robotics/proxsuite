@@ -17,6 +17,7 @@ namespace line_search {
 
 template <typename T, Layout LC>
 auto oldNew_gradient_norm_computation_box(
+		qp::Qpdata<T>& qpmodel,
 		VectorView<T> ze,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz,
 		T mu_in_inv,
@@ -29,9 +30,6 @@ auto oldNew_gradient_norm_computation_box(
 		VectorView<T> d_primal_residual_eq_,
 		VectorView<T> primal_residual_eq_,
 		T alpha,
-		isize dim,
-		isize n_eq,
-		isize n_in,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
@@ -101,7 +99,7 @@ auto oldNew_gradient_norm_computation_box(
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
@@ -120,7 +118,7 @@ auto oldNew_gradient_norm_computation_box(
 	inactive_set.setZero();
 	active_set_u.setZero();
 	isize i_u = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			active_set_u(i_u) = k;
 			i_u += 1;
@@ -129,7 +127,7 @@ auto oldNew_gradient_norm_computation_box(
 
 	active_set_l.setZero();
 	isize i_l = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
 			active_set_l(i_l) = k;
 			i_l += 1;
@@ -137,7 +135,7 @@ auto oldNew_gradient_norm_computation_box(
 	}
 
 	isize i_inact = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
 			inactive_set(i_inact) = k;
 			i_inact += 1;
@@ -159,32 +157,32 @@ auto oldNew_gradient_norm_computation_box(
 
 	res.setZero();
 
-	res.topRows(dim).noalias() = dual_for_eq + alpha * d_dual_for_eq;
+	res.topRows(qpmodel._dim).noalias() = dual_for_eq + alpha * d_dual_for_eq;
 	aux_u.setZero();
 	for (isize k = 0; k < num_active_u; ++k) {
-		res.topRows(dim).noalias() +=
+		res.topRows(qpmodel._dim).noalias() +=
 				active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
 		aux_u.noalias()+= active_part_z(active_set_u(k)) * C_copy.row(active_set_u(k));
 	}
 
 	aux_l.setZero();
 	for (isize k = 0; k < num_active_l; ++k) {
-		res.topRows(dim).noalias() +=
+		res.topRows(qpmodel._dim).noalias() +=
 				active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
 		aux_l.noalias() += active_part_z(active_set_l(k)) * C_copy.row(active_set_l(k));
 	}
 
-	res.middleRows(dim, n_eq).noalias() = primal_residual_eq + alpha * d_primal_residual_eq;
+	res.middleRows(qpmodel._dim, qpmodel._n_eq).noalias() = primal_residual_eq + alpha * d_primal_residual_eq;
 	for (isize k = 0; k < num_active_u; ++k) {
-		res(dim + n_eq + k) =
+		res(qpmodel._dim + qpmodel._n_eq + k) =
 				tmp_u(active_set_u(k)) - active_part_z(active_set_u(k)) * mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		res(dim + n_eq + num_active_u + k) =
+		res(qpmodel._dim + qpmodel._n_eq + num_active_u + k) =
 				tmp_l(active_set_l(k)) - active_part_z(active_set_l(k)) * mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		res(dim + n_eq + num_active_u + num_active_l + k) =
+		res(qpmodel._dim + qpmodel._n_eq + num_active_u + num_active_l + k) =
 				active_part_z(inactive_set(k));
 	}
 
@@ -193,6 +191,7 @@ auto oldNew_gradient_norm_computation_box(
 
 template <typename T>
 auto oldNew_gradient_norm_qpalm_box(
+		qp::Qpdata<T>& qpmodel,
 		VectorView<T> x,
 		VectorView<T> xe,
 		VectorView<T> dx,
@@ -207,7 +206,6 @@ auto oldNew_gradient_norm_qpalm_box(
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> Cdx_,
-		isize n_in,
 		
 		VectorViewMut<T> _tmp_u,
 		VectorViewMut<T> _tmp_l,
@@ -265,7 +263,7 @@ auto oldNew_gradient_norm_qpalm_box(
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (l_active_set_n_u(k)) {
 			num_active_u += 1;
 		}
@@ -282,7 +280,7 @@ auto oldNew_gradient_norm_qpalm_box(
 	isize i = 0;
 	isize j = 0;
 
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (l_active_set_n_u(k)) {
 			active_set_u(i) = k;
 			i += 1;
@@ -333,6 +331,7 @@ auto oldNew_gradient_norm_qpalm_box(
 
 template <typename T, Layout LC>
 auto oldNew_local_saddle_point_box(
+		qp::Qpdata<T>& qpmodel,
 		VectorView<T> ze,
 		VectorView<T> dz_,
 		T mu_in_inv,
@@ -345,7 +344,6 @@ auto oldNew_local_saddle_point_box(
 		VectorView<T> d_primal_residual_eq_,
 		VectorView<T> primal_residual_eq_,
 		T& alpha,
-		isize n_in,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& z_p,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
@@ -424,7 +422,7 @@ auto oldNew_local_saddle_point_box(
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
@@ -441,7 +439,7 @@ auto oldNew_local_saddle_point_box(
 	active_set_u.setZero();
 
 	isize i_u = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
 			active_set_u(i_u) = k;
 			i_u += 1;
@@ -451,7 +449,7 @@ auto oldNew_local_saddle_point_box(
 	active_set_l.setZero();
 
 	isize i_l = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
 			active_set_l(i_l) = k;
 			i_l += 1;
@@ -460,7 +458,7 @@ auto oldNew_local_saddle_point_box(
 	auto inactive_set = _inactive_set.to_eigen();
 	inactive_set.setZero();
 	isize i_inact = 0;
-	for (isize k = 0; k < n_in; ++k) {
+	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
 			inactive_set(i_inact) = k;
 			i_inact += 1;
@@ -562,6 +560,7 @@ auto oldNew_local_saddle_point_box(
 template <typename T, Layout LC>
 auto oldNew_initial_guess_LS(
 		qp::Qpsettings<T>& qpsettings,
+		qp::Qpdata<T>& qpmodel,
 		VectorView<T> ze,
 		VectorView<T> dz,
 		VectorView<T> residual_in_z_l_,
@@ -574,10 +573,6 @@ auto oldNew_initial_guess_LS(
 		MatrixView<T,LC> C,
 		T mu_in_inv,
 		T rho,
-		isize dim,
-		isize n_eq,
-		isize n_in,
-		//T R,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
@@ -705,7 +700,7 @@ auto oldNew_initial_guess_LS(
 
 	// 1.1 add solutions of equation z+alpha dz = 0
 	
-	for (isize i = 0; i < n_in; i++) {
+	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (std::abs(z_e(i)) != 0.) {
 			alpha_ = -z_e(i) / (dz_(i) + machine_eps);
 			if (std::abs(alpha_)< qpsettings._R){
@@ -721,7 +716,7 @@ auto oldNew_initial_guess_LS(
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
 
-	for (isize i = 0; i < n_in; i++) {
+	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (std::abs(Cdx(i)) != 0) {
 			alpha_= -residual_in_z_u(i) / (Cdx(i) + machine_eps);
 			if (std::abs(alpha_) < qpsettings._R){
@@ -753,6 +748,7 @@ auto oldNew_initial_guess_LS(
 				
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::oldNew_gradient_norm_computation_box(
+						qpmodel,
 						ze,
 						dz_,
 						mu_in_inv,
@@ -765,9 +761,6 @@ auto oldNew_initial_guess_LS(
 						d_primal_residual_eq,
 						primal_residual_eq,
 						alpha_,
-						dim,
-						n_eq,
-						n_in,
 
 						active_part_z,
 						tmp_u,
@@ -824,6 +817,7 @@ auto oldNew_initial_guess_LS(
 			// the function "local_saddle_point_box" derives the exact minimum
 			// and corresponding merit function L2 norm (for this minimum)
 			T associated_grad_2_norm = line_search::oldNew_local_saddle_point_box(
+					qpmodel,
 					ze,
 					dz,
 					mu_in_inv,
@@ -836,7 +830,6 @@ auto oldNew_initial_guess_LS(
 					d_primal_residual_eq,
 					primal_residual_eq,
 					alpha_,
-					n_in,
 
 					active_part_z,
 					dz_p,
@@ -926,6 +919,7 @@ auto oldNew_initial_guess_LS(
 
 template <typename T>
 auto oldNew_correction_guess_LS(
+		qp::Qpdata<T>& qpmodel,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& Hdx,
 		VectorView<T> dx,
 		VectorView<T> g,
@@ -942,7 +936,6 @@ auto oldNew_correction_guess_LS(
 		T mu_in,
 
 		T rho,
-		isize n_in,
 		
 		VectorViewMut<T> _tmp_u,
 		VectorViewMut<T> _tmp_l,
@@ -1024,7 +1017,7 @@ auto oldNew_correction_guess_LS(
 	// 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
 	// dx)-u +ze/mu_in = 0
 
-	for (isize i = 0; i < n_in; i++) {
+	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (Cdx(i) != 0.) {
 			alphas.push_back(-residual_in_z_u(i) / (Cdx(i) + machine_eps));
 		}
@@ -1072,6 +1065,7 @@ auto oldNew_correction_guess_LS(
 					 * break the loop
 					 */
 					T gr = line_search::oldNew_gradient_norm_qpalm_box(
+							qpmodel,
 							x,
 							xe,
 							dx,
@@ -1086,7 +1080,6 @@ auto oldNew_correction_guess_LS(
 							VectorView<T>{from_eigen, residual_in_z_u},
 							VectorView<T>{from_eigen, residual_in_z_l},
 							VectorView<T>{from_eigen, Cdx},
-							n_in,
 							
 							_tmp_u,
 							_tmp_l,
@@ -1126,6 +1119,7 @@ auto oldNew_correction_guess_LS(
 		if (last_neg_grad == T(0)) {
 			alpha_last_neg = T(0);
 			T gr = line_search::oldNew_gradient_norm_qpalm_box(
+					qpmodel,
 					x,
 					xe,
 					dx,
@@ -1140,7 +1134,6 @@ auto oldNew_correction_guess_LS(
 					VectorView<T>{from_eigen, residual_in_z_u},
 					VectorView<T>{from_eigen, residual_in_z_l},
 					VectorView<T>{from_eigen, Cdx},
-					n_in,
 
 					_tmp_u,
 					_tmp_l,
@@ -1176,6 +1169,7 @@ auto oldNew_correction_guess_LS(
 
 template <typename T>
 void oldNew_active_set_change(
+		qp::Qpdata<T>& qpmodel,
 		qp::QpViewBox<T> qp_scaled,
 		VectorView<bool> new_active_set_,
 		VectorViewMut<isize> current_bijection_map_,
@@ -1184,10 +1178,7 @@ void oldNew_active_set_change(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug,
 		T rho,
 		T mu_in_inv,
-		isize& n_c,
-		isize n_in,
-		isize n_eq,
-		isize dim) {
+		isize& n_c) {
 
 	/*
 	 * arguments
@@ -1247,19 +1238,19 @@ void oldNew_active_set_change(
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
 	T mu_in_inv_neg = -mu_in_inv;
-	for (isize i = 0; i < n_in; i++) {
+	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (current_bijection_map(i) < n_c) {
 			if (!new_active_set(i)) {
 				// delete current_bijection_map(i)
-				ldl.delete_at(new_bijection_map(i) + dim + n_eq);
+				ldl.delete_at(new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
 
-				for (isize j = 0; j < n_in; j++) {
+				for (isize j = 0; j < qpmodel._n_in; j++) {
 					if (new_bijection_map(j) > new_bijection_map(i)) {
 						new_bijection_map(j) -= 1;    
 					}
 				}
 				n_c_f -= 1;
-				new_bijection_map(i) = n_in - 1;
+				new_bijection_map(i) = qpmodel._n_in - 1;
 
 			}
 		} 
@@ -1267,17 +1258,17 @@ void oldNew_active_set_change(
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
-	for (isize i = 0; i < n_in; i++) {
+	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (new_active_set(i)) {
 			if (new_bijection_map(i) >= n_c_f) {
 				// add at the end
 				
 				dw_aug.setZero();
-				dw_aug.head(dim) = C_.row(i);
-				dw_aug(dim + n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
-				ldl.insert_at(n_eq + dim + n_c_f, dw_aug.head(n_c_f+1+n_eq+dim));
+				dw_aug.head(qpmodel._dim) = C_.row(i);
+				dw_aug(qpmodel._dim + qpmodel._n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
+				ldl.insert_at(qpmodel._n_eq + qpmodel._dim + n_c_f, dw_aug.head(n_c_f+1+qpmodel._n_eq+qpmodel._dim));
 
-				for (isize j = 0; j < n_in; j++) {
+				for (isize j = 0; j < qpmodel._n_in; j++) {
 					if (new_bijection_map(j) < new_bijection_map(i) &&
 						new_bijection_map(j) >= n_c_f) {
 						new_bijection_map(j) += 1;

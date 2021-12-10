@@ -188,6 +188,7 @@ void QPsolve( //
 	qpsettings._eps_rel = eps_rel;
 	qpsettings._VERBOSE = VERBOSE;
 	///
+	/*
     qp::Qpdata<T> qpmodel{H.eval(),
                                g.eval(),
                                A.eval(),
@@ -195,6 +196,17 @@ void QPsolve( //
                                C.eval(),
                                u.eval(),
                                l.eval()};
+	*/
+    qp::Qpdata<T> qpmodel{dim,n_eq,n_in};
+
+	qpmodel._H =H.eval();
+	qpmodel._g =g.eval();
+	qpmodel._A =A.eval();
+	qpmodel._b =b.eval();
+	qpmodel._C =C.eval();
+	qpmodel._u =u.eval();
+	qpmodel._l =l.eval();
+
 	qp::Qpworkspace<T> qpwork{dim, n_eq, n_in};
     
     qp::Qpresults<T> qpresults{dim,n_eq,n_in};
@@ -956,6 +968,7 @@ void oldNewQPsolve( //
 		MatRef<T, L> C,
 		VecRef<T> u,
 		VecRef<T> l,
+		qp::Qpdata<T>& qpmodel,
 		isize max_iter,
 		isize max_iter_in,
 		VecRefMut<T> res_iter,
@@ -969,14 +982,24 @@ void oldNewQPsolve( //
 		std::string str,
 		isize nb_it_refinement,
 		bool checkNoAlias){
-			
+
 			isize dim = H.eval().rows();
 			isize n_eq = A.eval().rows();
 			isize n_in = C.eval().rows();
 
-			////
-
+			qpmodel._H = H.eval();
+			qpmodel._g = g.eval();
+			qpmodel._A = A.eval();
+			qpmodel._b = b.eval();
+			qpmodel._C = C.eval();
+			qpmodel._u = u.eval();
+			qpmodel._l = l.eval();
+			qpmodel._dim = dim;
+			qpmodel._n_eq = n_eq;
+			qpmodel._n_in = n_in;
+			
 			qp::Qpsettings<T> qpsettings{};
+
 			qpsettings._max_iter = max_iter;
 			qpsettings._max_iter_in = max_iter_in;
 			qpsettings._mu_max_eq = mu_max_eq;
@@ -989,28 +1012,17 @@ void oldNewQPsolve( //
 			qpsettings._eps_abs = eps_abs;
 			qpsettings._eps_rel = eps_rel;
 
-			////
-
-			
 			auto ruiz = qp::preconditioner::RuizEquilibration<T>{
-				dim,
-				n_eq+n_in,
+				qpmodel._dim,
+				qpmodel._n_eq+qpmodel._n_in,
 			};
 			
 			qp::detail::QpSolveStats res = qp::detail::oldNew_qpSolve( //
 								qpsettings,
-								{from_eigen,x},
-								{from_eigen,y},
-								{from_eigen,z},
-								QpViewBox<T>{
-									{from_eigen, H.eval()},
-									{from_eigen, g.eval()},
-									{from_eigen, A.eval()},
-									{from_eigen, b.eval()},
-									{from_eigen, C.eval()},
-									{from_eigen, u.eval()},
-									{from_eigen, l.eval()},
-								},
+								qpmodel,
+								VectorViewMut<T>{from_eigen,x},
+								VectorViewMut<T>{from_eigen,y},
+								VectorViewMut<T>{from_eigen,z},
 								str,
 								LDLT_FWD(ruiz),
 								checkNoAlias);
@@ -1264,7 +1276,8 @@ INRIA LDLT decomposition
 		.def_readwrite("_VERBOSE", &qp::Qpsettings<f64>::_VERBOSE);
 	
 	::pybind11::class_<qp::Qpdata<f64>>(m, "Qpdata")
-        .def(::pybind11::init()) // constructor
+        //.def(::pybind11::init()) // constructor
+		.def(::pybind11::init<i64, i64, i64 &>()) // constructor
         // read-write public data member
 
 		.def_readonly("_H", &qp::Qpdata<f64>::_H)

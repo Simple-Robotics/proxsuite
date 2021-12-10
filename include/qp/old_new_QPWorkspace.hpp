@@ -173,9 +173,6 @@ public:
                     _ye.setZero();
                     _ze.setZero();
                     _kkt.setZero();
-                    // start with identity permutation
-                    //_current_bijection_map = Eigen::VectorXi::LinSpaced(n_in,0,n_in-1); Deprecated in eigen ??? https://eigen.tuxfamily.org/dox/classEigen_1_1DenseBase.html#a1c6d1dbfeb9f6491173a83eb44e14c1d
-                    //_new_bijection_map = _current_bijection_map;
                     for (isize i = 0; i < n_in; i++) {
                         _current_bijection_map(i) = i;
                         _new_bijection_map(i) = i;
