@@ -18,7 +18,7 @@ target_link_libraries(.bench.qp_in ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 find_package(matioCpp REQUIRED)
 add_executable(parser src/parser.cpp)
-target_link_libraries(parser PRIVATE matioCpp::matioCpp)
+target_link_libraries(parser PRIVATE matioCpp::matioCpp CONAN_PKG::eigen inria_ldlt)
 
 add_executable(.bench.osqp src/osqp.cpp)
 target_link_libraries(
