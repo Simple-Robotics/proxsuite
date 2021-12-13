@@ -308,10 +308,6 @@ auto oldNew_gradient_norm_qpalm_box(
 		tmp_a0_l(k) = Cdx(active_set_l(k));
 		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
 	}
-	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = Cdx(active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
-	}
 
 	T a = dx_.dot(Hdx) + qpresults._mu_eq * (Adx).squaredNorm() +
 	      qpresults._mu_in * (tmp_a0_u.squaredNorm() + tmp_a0_l.squaredNorm()) +
@@ -356,7 +352,10 @@ auto oldNew_local_saddle_point_box(
 		VectorViewMut<T> _tmp_d3,
 		VectorViewMut<T> _tmp2_u,
 		VectorViewMut<T> _tmp2_l,
-		VectorViewMut<T> _tmp3_local_saddle_point
+		VectorViewMut<T> _tmp3_local_saddle_point,
+
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l
 
 		) -> T {
 	/*
@@ -495,28 +494,40 @@ auto oldNew_local_saddle_point_box(
 	auto tmp3 = _tmp3_local_saddle_point.to_eigen();
 	tmp3.setZero();
 
+	aux_u = d_dual_for_eq;
+	aux_l = dual_for_eq;
+
 	for (isize k = 0; k < num_active_u; ++k) {
-		d_dual_for_eq.noalias() += dz_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+		//d_dual_for_eq.noalias() += dz_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+		aux_u.noalias() += dz_p(active_set_u(k)) * C_copy.row(active_set_u(k));
 		tmp_d2_u(k) = Cdx(active_set_u(k)) - dz_p(active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		d_dual_for_eq.noalias() += dz_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+		//d_dual_for_eq.noalias() += dz_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+		aux_u.noalias() += dz_p(active_set_l(k)) * C_copy.row(active_set_l(k));
 		tmp_d2_l(k) = Cdx(active_set_l(k)) - dz_p(active_set_l(k)) * qpresults._mu_in_inv;
 	}
 
 	for (isize k = 0; k < num_inactive; ++k) {
 		tmp_d3(k) = dz_p(inactive_set(k));
 	}
+	/*
 	T a0 = d_dual_for_eq.squaredNorm() + tmp_d2_u.squaredNorm() +
+	       tmp_d2_l.squaredNorm() + tmp_d3.squaredNorm() +
+	       d_primal_residual_eq.squaredNorm();
+	*/
+	T a0 = aux_u.squaredNorm() + tmp_d2_u.squaredNorm() +
 	       tmp_d2_l.squaredNorm() + tmp_d3.squaredNorm() +
 	       d_primal_residual_eq.squaredNorm();
 	// b0 computation
 	for (isize k = 0; k < num_active_u; ++k) {
-		dual_for_eq.noalias() += z_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+		//dual_for_eq.noalias() += z_p(active_set_u(k)) * C_copy.row(active_set_u(k));
+		aux_l.noalias()  += z_p(active_set_u(k)) * C_copy.row(active_set_u(k));
 		tmp2_u(k) = residual_in_z_u(active_set_u(k)) - z_p(active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		dual_for_eq.noalias() += z_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+		//dual_for_eq.noalias() += z_p(active_set_l(k)) * C_copy.row(active_set_l(k));
+		aux_l.noalias() += z_p(active_set_l(k)) * C_copy.row(active_set_l(k));
 		tmp2_l(k) = residual_in_z_l(active_set_l(k)) - z_p(active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
@@ -526,13 +537,23 @@ auto oldNew_local_saddle_point_box(
 	//T b0 = 2 * (d_dual_for_eq.dot(dual_for_eq) + tmp_d2_u.dot(tmp2_u) +
 	//           tmp_d2_l.dot(tmp2_l) + tmp3.dot(tmp_d3) +
 	//            primal_residual_eq.dot(d_primal_residual_eq));
+	/*
 	T b0 =  (d_dual_for_eq.dot(dual_for_eq) + tmp_d2_u.dot(tmp2_u) +
+	           tmp_d2_l.dot(tmp2_l) + tmp3.dot(tmp_d3) +
+	            primal_residual_eq.dot(d_primal_residual_eq));
+	*/
+	T b0 =  (aux_u.dot(aux_l) + tmp_d2_u.dot(tmp2_u) +
 	           tmp_d2_l.dot(tmp2_l) + tmp3.dot(tmp_d3) +
 	            primal_residual_eq.dot(d_primal_residual_eq));
 
 	// c0 computation
+	/*
 	T c0 = dual_for_eq.squaredNorm() + tmp2_u.squaredNorm() + tmp3.squaredNorm() +
 	       tmp2_l.squaredNorm() + primal_residual_eq.squaredNorm();
+	*/
+	T c0 = aux_l.squaredNorm() + tmp2_u.squaredNorm() + tmp3.squaredNorm() +
+	       tmp2_l.squaredNorm() + primal_residual_eq.squaredNorm();
+
 	// derivation of the loss function value and corresponding argmin alpha
 
 	T res(0.);
@@ -841,7 +862,10 @@ auto oldNew_initial_guess_LS(
 					_tmp_d3,
 					_tmp2_u,
 					_tmp2_l,
-					_tmp3_local_saddle_point
+					_tmp3_local_saddle_point,
+
+					aux_u,
+					aux_l
 					
 					);
 

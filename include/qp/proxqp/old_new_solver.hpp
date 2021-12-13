@@ -1096,9 +1096,11 @@ QpSolveStats oldNew_qpSolve( //
 	Eigen::Matrix<T, Eigen::Dynamic, 1> dw_aug(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> rhs(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._n_in);
+	Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> Cdx_(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._n_in);
+	Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._dim);
 	Eigen::Matrix<bool, Eigen::Dynamic, 1> l_active_set_n_u(qpmodel._n_in);
 	Eigen::Matrix<bool, Eigen::Dynamic, 1> l_active_set_n_l(qpmodel._n_in);
 	Eigen::Matrix<bool, Eigen::Dynamic, 1> active_inequalities(qpmodel._n_in);
@@ -1443,10 +1445,14 @@ QpSolveStats oldNew_qpSolve( //
 						primal_residual_eq_scaled,
 						primal_residual_in_scaled_u,
 						primal_residual_in_scaled_l,
+						
 						dual_residual_scaled,
+						d_dual_for_eq,
 						d_primal_residual_eq,
 						Cdx_,
-						d_dual_for_eq,
+						//d_primal_residual_eq,
+						//Cdx_,
+						//d_dual_for_eq,
 						l_active_set_n_u,
 						l_active_set_n_l,
 						active_inequalities,
