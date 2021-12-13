@@ -66,11 +66,8 @@ public:
 	Vec _Cdx;
 	Vec _d_primal_residual_eq;
 
-    Vec _residual_in_z_u_plus_alpha;
-    Vec _residual_in_z_l_plus_alpha;
-
     Vec _active_part_z;
-    std::vector<T> alphas;
+    std::vector<T> _alphas;
 
     ///// Newton variables
     Vec _dw_aug;
@@ -139,8 +136,8 @@ public:
                 _err(dim+n_eq+n_in),
 
                 _residual_scaled(dim+n_eq+n_in),
-                _residual_scaled_tmp(dim+n_eq+n_in),
-                _residual_unscaled(dim+n_eq+n_in),
+                _residual_scaled_tmp(dim+n_eq+2*n_in),
+                _residual_unscaled(dim+n_eq+2*n_in),
                 _tmp_u(n_in),
                 _tmp_l(n_in),
                 _aux_u(dim),
@@ -161,7 +158,7 @@ public:
                 _inactive_set(n_in)
 
             {
-                    alphas.reserve( 3*n_in );
+                    _alphas.reserve( 3*n_in );
                     _h_scaled.setZero();
                     _g_scaled.setZero();
                     _a_scaled.setZero();

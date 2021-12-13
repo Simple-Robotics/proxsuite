@@ -1061,6 +1061,7 @@ QpSolveStats oldNew_qpSolve( //
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
+		qp::OldNew_Qpworkspace<T>& qpwork,
 		std::string str,
 		Preconditioner precond = Preconditioner{},
 		const bool chekNoAlias = false) {
@@ -1082,11 +1083,7 @@ QpSolveStats oldNew_qpSolve( //
 	//// 4/ malloc for no allocation
 	/// 3/ structure préallouée QPData, QPSettings, QPResults
 	/// 5/ load maros problems from c++ parser
-	
-	Eigen::Matrix<T, Eigen::Dynamic, 1> g_scaled(qpmodel._dim);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> b_scaled(qpmodel._n_eq);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> u_scaled(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> l_scaled(qpmodel._n_in);
+
 	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_scaled(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_scaled_tmp(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> residual_unscaled(qpmodel._n_total);
@@ -1096,10 +1093,8 @@ QpSolveStats oldNew_qpSolve( //
 	Eigen::Matrix<T, Eigen::Dynamic, 1> dw_aug(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> rhs(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> Cdx_(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._dim);
 	Eigen::Matrix<bool, Eigen::Dynamic, 1> l_active_set_n_u(qpmodel._n_in);
 	Eigen::Matrix<bool, Eigen::Dynamic, 1> l_active_set_n_l(qpmodel._n_in);
@@ -1138,47 +1133,42 @@ QpSolveStats oldNew_qpSolve( //
 		new_bijection_map(i) = i;
     } 
     
-
-    RowMat H_copy(qpmodel._dim,qpmodel._dim);
-    RowMat A_copy(qpmodel._n_eq,qpmodel._dim);
-    RowMat C_copy(qpmodel._n_in,qpmodel._dim);
     RowMat kkt(qpmodel._dim+qpmodel._n_eq,qpmodel._dim+qpmodel._n_eq);
-    H_copy.setZero();
-    A_copy.setZero();
-    C_copy.setZero();
+
 
 	T primal_feasibility_rhs_1_eq = infty_norm(qpmodel._b);
     T primal_feasibility_rhs_1_in_u = infty_norm(qpmodel._u);
     T primal_feasibility_rhs_1_in_l = infty_norm(qpmodel._l);
 	T dual_feasibility_rhs_2 = infty_norm(qpmodel._g);
 
-	H_copy = qpmodel._H;
-	g_scaled = qpmodel._g;
-	A_copy = qpmodel._A;
-	b_scaled = qpmodel._b;
-    C_copy = qpmodel._C;
-    u_scaled = qpmodel._u;
-    l_scaled = qpmodel._l;
+	qpwork._h_scaled = qpmodel._H;
+	qpwork._g_scaled = qpmodel._g;
+	qpwork._a_scaled = qpmodel._A;
+	qpwork._b_scaled = qpmodel._b;
+    qpwork._c_scaled = qpmodel._C;
+    qpwork._u_scaled = qpmodel._u;
+    qpwork._l_scaled = qpmodel._l;
 
     qp::QpViewBoxMut<T> qp_scaled{
-			{from_eigen,H_copy},
-			{from_eigen,g_scaled},
-			{from_eigen,A_copy},
-			{from_eigen,b_scaled},
-			{from_eigen,C_copy},
-			{from_eigen,u_scaled},
-			{from_eigen,l_scaled}
+			{from_eigen,qpwork._h_scaled},
+			{from_eigen,qpwork._g_scaled},
+			{from_eigen,qpwork._a_scaled},
+			{from_eigen,qpwork._b_scaled},
+			{from_eigen,qpwork._c_scaled},
+			{from_eigen,qpwork._u_scaled},
+			{from_eigen,qpwork._l_scaled}
 	};
+
     
 	precond.scale_qp_in_place(qp_scaled,VectorViewMut<T>{from_eigen,dw_aug});
     dw_aug.setZero();
 	
 	////
 
-	kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = H_copy ;
+	kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qp_scaled.H.to_eigen() ;
 	kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
-	kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = A_copy.transpose();
-	kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = A_copy;
+	kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qp_scaled.A.to_eigen().transpose();
+	kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qp_scaled.A.to_eigen();
 	kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
 	kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
 
@@ -1445,7 +1435,7 @@ QpSolveStats oldNew_qpSolve( //
 						primal_residual_eq_scaled,
 						primal_residual_in_scaled_u,
 						primal_residual_in_scaled_l,
-						
+
 						dual_residual_scaled,
 						d_dual_for_eq,
 						d_primal_residual_eq,
