@@ -31,7 +31,7 @@ auto oldNew_gradient_norm_computation_box(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
 
 		VectorViewMut<isize> _active_set_l,
 		VectorViewMut<isize> _active_set_u,
@@ -82,7 +82,8 @@ auto oldNew_gradient_norm_computation_box(
 	qpwork._active_part_z.setZero();
 	aux_u.setZero();
 	aux_l.setZero();
-	res.setZero();
+	//res.setZero();
+	qpwork._rhs.setZero();
 	// define active set
 	tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
 	tmp_l.noalias() = residual_in_z_l + alpha * qpwork._Cdx;
@@ -146,38 +147,36 @@ auto oldNew_gradient_norm_computation_box(
 		}
 	}
 
-	res.setZero();
-
-	res.topRows(qpmodel._dim).noalias() = dual_for_eq + alpha * qpwork._d_dual_for_eq;
+	qpwork._rhs.topRows(qpmodel._dim).noalias() = dual_for_eq + alpha * qpwork._d_dual_for_eq;
 	aux_u.setZero();
 	for (isize k = 0; k < num_active_u; ++k) {
-		res.topRows(qpmodel._dim).noalias() +=
+		qpwork._rhs.topRows(qpmodel._dim).noalias() +=
 				qpwork._active_part_z(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
 		aux_u.noalias()+= qpwork._active_part_z(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
 	}
 
 	aux_l.setZero();
 	for (isize k = 0; k < num_active_l; ++k) {
-		res.topRows(qpmodel._dim).noalias() +=
+		qpwork._rhs.topRows(qpmodel._dim).noalias() +=
 				qpwork._active_part_z(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
 		aux_l.noalias() += qpwork._active_part_z(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
 	}
 
-	res.middleRows(qpmodel._dim, qpmodel._n_eq).noalias() = primal_residual_eq + alpha * qpwork._d_primal_residual_eq;
+	qpwork._rhs.middleRows(qpmodel._dim, qpmodel._n_eq).noalias() = primal_residual_eq + alpha * qpwork._d_primal_residual_eq;
 	for (isize k = 0; k < num_active_u; ++k) {
-		res(qpmodel._dim + qpmodel._n_eq + k) =
+		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + k) =
 				tmp_u(active_set_u(k)) - qpwork._active_part_z(active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		res(qpmodel._dim + qpmodel._n_eq + num_active_u + k) =
+		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + k) =
 				tmp_l(active_set_l(k)) - qpwork._active_part_z(active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		res(qpmodel._dim + qpmodel._n_eq + num_active_u + num_active_l + k) =
+		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + num_active_l + k) =
 				qpwork._active_part_z(inactive_set(k));
 	}
 
-	return res.squaredNorm();
+	return qpwork._rhs.squaredNorm();
 }
 
 template <typename T>
@@ -185,7 +184,6 @@ auto oldNew_gradient_norm_qpalm_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> dx,
 		T alpha,
 		VectorView<T> residual_in_y_,
 		VectorView<T> residual_in_z_u_,
@@ -217,7 +215,6 @@ auto oldNew_gradient_norm_qpalm_box(
 	 */
 
 	auto x_ = qpresults._x;
-	//auto dx_ = dx.to_eigen();
 
 	auto residual_in_y = residual_in_y_.to_eigen();
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
@@ -303,7 +300,6 @@ auto oldNew_local_saddle_point_box(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		VectorView<T> ze,
-		//VectorView<T> dz_,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> dual_for_eq_,
@@ -372,7 +368,6 @@ auto oldNew_local_saddle_point_box(
 	 */
 
 	auto z_e = ze.to_eigen();
-	//auto dz = dz_.to_eigen();
 
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
@@ -533,17 +528,15 @@ auto oldNew_initial_guess_LS(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		VectorView<T> ze,
-		//VectorView<T> dz,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> dual_for_eq,
 		VectorView<T> primal_residual_eq,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
 
@@ -557,9 +550,6 @@ auto oldNew_initial_guess_LS(
 		VectorViewMut<T> _tmp2_u,
 		VectorViewMut<T> _tmp2_l,
 		VectorViewMut<T> _tmp3_local_saddle_point
-
-		//std::vector<T>& alphas
-
 
 		) -> T {
 	/*
@@ -644,7 +634,6 @@ auto oldNew_initial_guess_LS(
 	T machine_inf = std::numeric_limits<T>::infinity();
 
 	auto z_e = ze.to_eigen();
-	//auto dz_ = dz.to_eigen().eval();
 
 	T alpha(1.);
 
@@ -676,7 +665,6 @@ auto oldNew_initial_guess_LS(
 	// 1.1 add solutions of equations C(x+alpha dx)-u +ze/mu_in = 0 and C(x+alpha
 	// dx)-l +ze/mu_in = 0
 
-	//auto Cdx = Cdx_.to_eigen();
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
 
@@ -716,7 +704,6 @@ auto oldNew_initial_guess_LS(
 						qpresults,
 						qpwork,
 						ze,
-						//dz_,
 						residual_in_z_u_,
 						residual_in_z_l_,
 						dual_for_eq,
@@ -727,7 +714,7 @@ auto oldNew_initial_guess_LS(
 						tmp_l,
 						aux_u,
 						aux_l,
-						res,
+						//res,
 
 						_active_set_l,
 						_active_set_u,
@@ -735,7 +722,8 @@ auto oldNew_initial_guess_LS(
 
 						);
 				qpwork._active_part_z.setZero();
-				res.setZero();
+				//res.setZero();
+				qpwork._rhs.setZero();
 				tmp_u.setZero();
 				tmp_l.setZero();
 				aux_u.setZero();
@@ -781,7 +769,6 @@ auto oldNew_initial_guess_LS(
 					qpresults,
 					qpwork,
 					ze,
-					//dz,
 					residual_in_z_u_,
 					residual_in_z_l_,
 					dual_for_eq,
@@ -880,7 +867,6 @@ auto oldNew_correction_guess_LS(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 
-		//VectorView<T> dx,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
@@ -1004,7 +990,6 @@ auto oldNew_correction_guess_LS(
 							qpmodel,
 							qpresults,
 							qpwork,
-							//dx,
 							alpha_,
 							VectorView<T>{from_eigen, residual_in_y},
 							VectorView<T>{from_eigen, residual_in_z_u},
@@ -1048,7 +1033,6 @@ auto oldNew_correction_guess_LS(
 					qpmodel,
 					qpresults,
 					qpwork,
-					//dx,
 					alpha_last_neg,
 					VectorView<T>{from_eigen, residual_in_y},
 					VectorView<T>{from_eigen, residual_in_z_u},
@@ -1088,7 +1072,6 @@ void oldNew_active_set_change(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		OldNew_Qpworkspace<T>& qpwork
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug
 		) {
 
 	/*
@@ -1137,8 +1120,7 @@ void oldNew_active_set_change(
 	 * It returns finally the new_bijection_map, for which
 	 * new_bijection_map(n_in) = n_c_f
 	 */
-			
-	//auto new_active_set = new_active_set_.to_eigen();
+
 	qpwork._dw_aug.setZero();
 	
 	isize n_c_f = qpresults._n_c;
