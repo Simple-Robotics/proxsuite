@@ -602,15 +602,12 @@ T oldNew_initial_guess(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& prim_in_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& prim_in_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dual_for_eq,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& d_dual_for_eq,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& Cdx_,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& d_primal_residual_eq,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug,
 
         const bool VERBOSE,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& rhs,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& active_part_z,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
@@ -631,7 +628,7 @@ T oldNew_initial_guess(
 
 		VectorViewMut<T> _err,
 
-		std::vector<T>& alphas,
+		//std::vector<T>& alphas,
 
 		std::string str,
 
@@ -690,7 +687,7 @@ T oldNew_initial_guess(
 			isize inner_pb_dim = qpmodel._dim + qpmodel._n_eq + num_active_inequalities;
 
 			rhs.setZero();
-			active_part_z.setZero();
+			qpwork._active_part_z.setZero();
             qp::line_search::oldNew_active_set_change(
 								qpmodel,
 								qpresults,
@@ -736,14 +733,14 @@ T oldNew_initial_guess(
 				if (i < qpresults._n_c) {
 					//dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
 					
-					active_part_z(j) = dw_aug(qpmodel._dim + qpmodel._n_eq + i);
+					qpwork._active_part_z(j) = dw_aug(qpmodel._dim + qpmodel._n_eq + i);
 					
 				} else {
 					//dw_aug_(j + dim + n_eq) = -z_(j);
-					active_part_z(j) = -qpresults._z(j);
+					qpwork._active_part_z(j) = -qpresults._z(j);
 				}
 			}
-			dw_aug.tail(qpmodel._n_in) = active_part_z ;
+			dw_aug.tail(qpmodel._n_in) = qpwork._active_part_z ;
 
 			
 			prim_in_u.noalias() += (z_e*qpresults._mu_in_inv) ; 
@@ -768,13 +765,10 @@ T oldNew_initial_guess(
 						VectorView<T>{from_eigen,dw_aug.tail(qpmodel._n_in)},
 						VectorView<T>{from_eigen,prim_in_l},
 						VectorView<T>{from_eigen,prim_in_u},
-						//VectorView<T>{from_eigen,Cdx_},
-						//VectorView<T>{from_eigen,d_dual_for_eq},
 						VectorView<T>{from_eigen,dual_for_eq},
-						//VectorView<T>{from_eigen,d_primal_residual_eq},
 						VectorView<T>{from_eigen,primal_residual_eq},
 
-						active_part_z,
+						//active_part_z,
 						tmp_u,
 						tmp_l,
 						aux_u,
@@ -791,9 +785,9 @@ T oldNew_initial_guess(
 						_tmp_d3,
 						_tmp2_u,
 						_tmp2_l,
-						_tmp3_local_saddle_point,
+						_tmp3_local_saddle_point
 						
-						alphas
+						//alphas
 
 			);
 			
@@ -872,7 +866,7 @@ T oldNew_correction_guess(
 
 		VectorViewMut<T> err_,
 
-		std::vector<T>& alphas,
+		//std::vector<T>& alphas,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 
@@ -914,11 +908,7 @@ T oldNew_correction_guess(
 											checkNoAlias
 			);
 			T alpha_step = 1;
-			/*
-			Hdx.noalias() = qpwork._h_scaled * dw_aug.head(qpmodel._dim) ; 
-			Adx.noalias() = qpwork._a_scaled * dw_aug.head(qpmodel._dim) ; 
-			Cdx.noalias() = qpwork._c_scaled * dw_aug.head(qpmodel._dim) ; 
-			*/
+
 			qpwork._d_dual_for_eq.noalias() = qpwork._h_scaled * dw_aug.head(qpmodel._dim) ; 
 			qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * dw_aug.head(qpmodel._dim) ; 
 			qpwork._Cdx.noalias() = qpwork._c_scaled * dw_aug.head(qpmodel._dim) ; 
@@ -946,7 +936,7 @@ T oldNew_correction_guess(
 										_tmp_a0_l,
 										_tmp_b0_l,
 
-										alphas,
+										//alphas,
 
 										aux_u
 						
@@ -961,10 +951,8 @@ T oldNew_correction_guess(
 			qpresults._x.noalias()+= (alpha_step *dw_aug.head(qpmodel._dim)) ; 
 			z_pos.noalias() += (alpha_step *qpwork._Cdx) ;
 			z_neg.noalias() += (alpha_step *qpwork._Cdx); 
-			//residual_in_y.noalias() += (alpha_step * Adx);
 			residual_in_y.noalias() += alpha_step * qpwork._d_primal_residual_eq;
  			qpresults._y.noalias() = qpresults._mu_eq *  residual_in_y  ;
-			//dual_for_eq.noalias() += (alpha_step * ( qpresults._mu_eq * qpwork._a_scaled.transpose() * Adx + qpresults._rho * dw_aug.head(qpmodel._dim) + Hdx  )) ;
 			dual_for_eq.noalias() += (alpha_step * ( qpresults._mu_eq * qpwork._a_scaled.transpose() * qpwork._d_primal_residual_eq + qpresults._rho * dw_aug.head(qpmodel._dim) +  qpwork._d_dual_for_eq));
 			for (isize j = 0 ; j < qpmodel._n_in; ++j){
 				qpresults._z(j) = qpresults._mu_in*(max2(z_pos(j),T(0)) + std::min(z_neg(j),T(0))); 
@@ -1017,10 +1005,7 @@ QpSolveStats oldNew_qpSolve( //
 
 	Eigen::Matrix<T, Eigen::Dynamic, 1> dw_aug(qpmodel._n_total);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> rhs(qpmodel._n_total);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_dual_for_eq(qpmodel._dim);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> Cdx_(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> d_primal_residual_eq(qpmodel._dim);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> active_part_z(qpmodel._n_in);
 
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_u(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_l(qpmodel._n_in);
@@ -1045,8 +1030,8 @@ QpSolveStats oldNew_qpSolve( //
 	RowMat test(2,2); // test it is full of nan for debug
 	std::cout << "test " << test << std::endl;
 
-	std::vector<T> alphas;
-	alphas.reserve( 3*qpmodel._n_in );
+	//std::vector<T> alphas;
+	//alphas.reserve( 3*qpmodel._n_in );
 
 	T primal_feasibility_rhs_1_eq = infty_norm(qpmodel._b);
     T primal_feasibility_rhs_1_in_u = infty_norm(qpmodel._u);
@@ -1252,14 +1237,11 @@ QpSolveStats oldNew_qpSolve( //
 							primal_residual_in_scaled_u,
 							primal_residual_in_scaled_l,
 							dual_residual_scaled,
-							//d_dual_for_eq,
-							//Cdx_,
-							//d_primal_residual_eq,
 							dw_aug,
 
 							VERBOSE,
 							rhs,
-							active_part_z,
+							//active_part_z,
 
 							tmp_u,
 							tmp_l,
@@ -1279,7 +1261,7 @@ QpSolveStats oldNew_qpSolve( //
 							VectorViewMut<T>{from_eigen,tmp3_local_saddle_point},
 
 							VectorViewMut<T>{from_eigen,err},
-							alphas,
+							//alphas,
 							
 							str,
 							chekNoAlias
@@ -1357,7 +1339,7 @@ QpSolveStats oldNew_qpSolve( //
 
 						VectorViewMut<T>{from_eigen,err},
 
-						alphas,
+						//alphas,
 
 						aux_u,
 
