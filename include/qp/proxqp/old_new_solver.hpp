@@ -556,11 +556,9 @@ T oldNew_initial_guess(
 
         const bool VERBOSE,
 
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
 
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
@@ -697,11 +695,9 @@ T oldNew_initial_guess(
 						VectorView<T>{from_eigen,prim_in_u},
 						VectorView<T>{from_eigen,dual_for_eq},
 						VectorView<T>{from_eigen,primal_residual_eq},
-						//tmp_u,
-						//tmp_l,
-						aux_u,
-						aux_l,
-						dz_p,
+						//aux_u,
+						//aux_l,
+						//dz_p,
 						_tmp_d2_u,
 						_tmp_d2_l,
 						_tmp_d3,
@@ -764,13 +760,11 @@ T oldNew_correction_guess(
 		VectorViewMut<T> _tmp2,
 		VectorViewMut<T> _tmp3,
 		VectorViewMut<T> _tmp4,
-		//VectorViewMut<T> _tmp_u,
-		//VectorViewMut<T> _tmp_l,
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
 		VectorViewMut<T> _tmp_b0_l,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		std::string str,
 		const bool checkNoAlias
 		){
@@ -816,13 +810,11 @@ T oldNew_correction_guess(
 										residual_in_y,
 										z_pos,
 										z_neg,
-										//_tmp_u,
-										//_tmp_l,
 										_tmp_a0_u,
 										_tmp_b0_u,
 										_tmp_a0_l,
-										_tmp_b0_l,
-										aux_u
+										_tmp_b0_l
+										//aux_u
 						
 				) ;
 			}
@@ -887,11 +879,11 @@ QpSolveStats oldNew_qpSolve( //
 	/// 3/ structure préallouée QPData, QPSettings, QPResults
 	/// 5/ load maros problems from c++ parser
 
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_u(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_l(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_u(qpmodel._dim);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_l(qpmodel._dim);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> dz_p(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> aux_u(qpmodel._dim);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> aux_l(qpmodel._dim);
+	
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> dz_p(qpmodel._n_in);
+	
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp1(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp3(qpmodel._dim);
@@ -1101,11 +1093,9 @@ QpSolveStats oldNew_qpSolve( //
 							primal_residual_in_scaled_l,
 							dual_residual_scaled,
 							VERBOSE,
-							//tmp_u,
-							//tmp_l,
-							aux_u,
-							aux_l,
-							dz_p,
+							//aux_u,
+							//aux_l,
+							//dz_p,
 							VectorViewMut<T>{from_eigen,tmp_d2_u},
 							VectorViewMut<T>{from_eigen,tmp_d2_l},
 							VectorViewMut<T>{from_eigen,tmp_d3},
@@ -1166,13 +1156,11 @@ QpSolveStats oldNew_qpSolve( //
 						VectorViewMut<T>{from_eigen,tmp2},
 						VectorViewMut<T>{from_eigen,tmp3},
 						VectorViewMut<T>{from_eigen,tmp4},
-						//VectorViewMut<T>{from_eigen,tmp_u},
-						//VectorViewMut<T>{from_eigen,tmp_l},
 						VectorViewMut<T>{from_eigen,tmp_d2_u},
 						VectorViewMut<T>{from_eigen,tmp2_u},
 						VectorViewMut<T>{from_eigen,tmp_d2_l},
 						VectorViewMut<T>{from_eigen,tmp2_l},
-						aux_u,
+						//aux_u,
 						str,
 						chekNoAlias
 			);
