@@ -21,7 +21,6 @@ auto oldNew_gradient_norm_computation_box(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		VectorView<T> ze,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& dz,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> dual_for_eq_,
@@ -30,12 +29,11 @@ auto oldNew_gradient_norm_computation_box(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
+		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l
 
-		VectorViewMut<isize> _active_set_l,
-		VectorViewMut<isize> _active_set_u,
-		VectorViewMut<isize> _inactive_set
+		//VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<isize> _active_set_u,
+		//VectorViewMut<isize> _inactive_set
 
 		) -> T {
 
@@ -82,7 +80,6 @@ auto oldNew_gradient_norm_computation_box(
 	qpwork._active_part_z.setZero();
 	aux_u.setZero();
 	aux_l.setZero();
-	//res.setZero();
 	qpwork._rhs.setZero();
 	// define active set
 	tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
@@ -103,25 +100,25 @@ auto oldNew_gradient_norm_computation_box(
 		}
 	}
 
-	auto active_set_u = _active_set_u.to_eigen();
-	auto active_set_l = _active_set_l.to_eigen();
-	auto inactive_set = _inactive_set.to_eigen();
+	//auto active_set_u = _active_set_u.to_eigen();
+	//auto active_set_l = _active_set_l.to_eigen();
+	//auto inactive_set = _inactive_set.to_eigen();
 
-	inactive_set.setZero();
-	active_set_u.setZero();
+	qpwork._inactive_set.setZero();
+	qpwork._active_set_u.setZero();
 	isize i_u = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
-			active_set_u(i_u) = k;
+			qpwork._active_set_u(i_u) = k;
 			i_u += 1;
 		}
 	}
 
-	active_set_l.setZero();
+	qpwork._active_set_l.setZero();
 	isize i_l = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
-			active_set_l(i_l) = k;
+			qpwork._active_set_l(i_l) = k;
 			i_l += 1;
 		}
 	}
@@ -129,7 +126,7 @@ auto oldNew_gradient_norm_computation_box(
 	isize i_inact = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			inactive_set(i_inact) = k;
+			qpwork._inactive_set(i_inact) = k;
 			i_inact += 1;
 		}
 	}
@@ -137,13 +134,13 @@ auto oldNew_gradient_norm_computation_box(
 	// form the gradient
 	qpwork._active_part_z.noalias() = z_e + alpha * qpwork._dw_aug.tail(qpmodel._n_in);
 	for (isize k = 0; k < num_active_u; ++k) {
-		if (qpwork._active_part_z(active_set_u(k)) < T(0.)) {
-			qpwork._active_part_z(active_set_u(k)) = T(0.);
+		if (qpwork._active_part_z(qpwork._active_set_u(k)) < T(0.)) {
+			qpwork._active_part_z(qpwork._active_set_u(k)) = T(0.);
 		}
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		if (qpwork._active_part_z(active_set_l(k)) > T(0.)) {
-			qpwork._active_part_z(active_set_l(k)) = T(0.);
+		if (qpwork._active_part_z(qpwork._active_set_l(k)) > T(0.)) {
+			qpwork._active_part_z(qpwork._active_set_l(k)) = T(0.);
 		}
 	}
 
@@ -151,29 +148,29 @@ auto oldNew_gradient_norm_computation_box(
 	aux_u.setZero();
 	for (isize k = 0; k < num_active_u; ++k) {
 		qpwork._rhs.topRows(qpmodel._dim).noalias() +=
-				qpwork._active_part_z(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
-		aux_u.noalias()+= qpwork._active_part_z(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
+				qpwork._active_part_z(qpwork._active_set_u(k)) * qpwork._c_scaled.row(qpwork._active_set_u(k));
+		aux_u.noalias()+= qpwork._active_part_z(qpwork._active_set_u(k)) * qpwork._c_scaled.row(qpwork._active_set_u(k));
 	}
 
 	aux_l.setZero();
 	for (isize k = 0; k < num_active_l; ++k) {
 		qpwork._rhs.topRows(qpmodel._dim).noalias() +=
-				qpwork._active_part_z(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
-		aux_l.noalias() += qpwork._active_part_z(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
+				qpwork._active_part_z(qpwork._active_set_l(k)) * qpwork._c_scaled.row(qpwork._active_set_l(k));
+		aux_l.noalias() += qpwork._active_part_z(qpwork._active_set_l(k)) * qpwork._c_scaled.row(qpwork._active_set_l(k));
 	}
 
 	qpwork._rhs.middleRows(qpmodel._dim, qpmodel._n_eq).noalias() = primal_residual_eq + alpha * qpwork._d_primal_residual_eq;
 	for (isize k = 0; k < num_active_u; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + k) =
-				tmp_u(active_set_u(k)) - qpwork._active_part_z(active_set_u(k)) * qpresults._mu_in_inv;
+				tmp_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + k) =
-				tmp_l(active_set_l(k)) - qpwork._active_part_z(active_set_l(k)) * qpresults._mu_in_inv;
+				tmp_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + num_active_l + k) =
-				qpwork._active_part_z(inactive_set(k));
+				qpwork._active_part_z(qpwork._inactive_set(k));
 	}
 
 	return qpwork._rhs.squaredNorm();
@@ -190,8 +187,8 @@ auto oldNew_gradient_norm_qpalm_box(
 		VectorView<T> residual_in_z_l_,
 		VectorViewMut<T> _tmp_u,
 		VectorViewMut<T> _tmp_l,
-		VectorViewMut<isize> _active_set_u,
-		VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<isize> _active_set_u,
+		//VectorViewMut<isize> _active_set_l,
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
@@ -241,21 +238,21 @@ auto oldNew_gradient_norm_qpalm_box(
 		}
 	}
 
-	auto active_set_u = _active_set_u.to_eigen();
-	auto active_set_l = _active_set_l.to_eigen();
-	active_set_u.setZero();
-	active_set_l.setZero();
+	//auto active_set_u = _active_set_u.to_eigen();
+	//auto active_set_l = _active_set_l.to_eigen();
+	qpwork._active_set_u.setZero();
+	qpwork._active_set_l.setZero();
 
 	isize i = 0;
 	isize j = 0;
 
 	for (isize k = 0; k < qpmodel._n_in; ++k) {  
 		if (qpwork._l_active_set_n_u(k)) {
-			active_set_u(i) = k;
+			qpwork._active_set_u(i) = k;
 			i += 1;
 		}
 		if (qpwork._l_active_set_n_l(k)) {
-			active_set_l(j) = k;
+			qpwork._active_set_l(j) = k;
 			j += 1;
 		}
 	}
@@ -273,12 +270,12 @@ auto oldNew_gradient_norm_qpalm_box(
 	tmp_b0_l.setZero();
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		tmp_a0_u(k) = qpwork._Cdx(active_set_u(k));
-		tmp_b0_u(k) = residual_in_z_u(active_set_u(k));
+		tmp_a0_u(k) = qpwork._Cdx(qpwork._active_set_u(k));
+		tmp_b0_u(k) = residual_in_z_u(qpwork._active_set_u(k));
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		tmp_a0_l(k) = qpwork._Cdx(active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(active_set_l(k));
+		tmp_a0_l(k) = qpwork._Cdx(qpwork._active_set_l(k));
+		tmp_b0_l(k) = residual_in_z_l(qpwork._active_set_l(k));
 	}
 
 	T a = qpwork._dw_aug.head(qpmodel._dim).dot(qpwork._d_dual_for_eq) + qpresults._mu_eq * (qpwork._d_primal_residual_eq).squaredNorm() +
@@ -310,9 +307,9 @@ auto oldNew_local_saddle_point_box(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 
-		VectorViewMut<isize> _active_set_l,
-		VectorViewMut<isize> _active_set_u,
-		VectorViewMut<isize> _inactive_set,
+		//VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<isize> _active_set_u,
+		//VectorViewMut<isize> _inactive_set,
 
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
@@ -392,33 +389,32 @@ auto oldNew_local_saddle_point_box(
 		}
 	}
 
-	auto active_set_u = _active_set_u.to_eigen();
-
-	active_set_u.setZero();
+	//auto active_set_u = _active_set_u.to_eigen();
+	qpwork._active_set_u.setZero();
 
 	isize i_u = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) >= T(0.)) {
-			active_set_u(i_u) = k;
+			qpwork._active_set_u(i_u) = k;
 			i_u += 1;
 		}
 	}
-	auto active_set_l = _active_set_l.to_eigen();
-	active_set_l.setZero();
+	//auto active_set_l = _active_set_l.to_eigen();
+	qpwork._active_set_l.setZero();
 
 	isize i_l = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_l(k) <= T(0.)) {
-			active_set_l(i_l) = k;
+			qpwork._active_set_l(i_l) = k;
 			i_l += 1;
 		}
 	}
-	auto inactive_set = _inactive_set.to_eigen();
-	inactive_set.setZero();
+	//auto inactive_set = _inactive_set.to_eigen();
+	qpwork._inactive_set.setZero();
 	isize i_inact = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
 		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
-			inactive_set(i_inact) = k;
+			qpwork._inactive_set(i_inact) = k;
 			i_inact += 1;
 		}
 	}
@@ -429,19 +425,19 @@ auto oldNew_local_saddle_point_box(
 	dz_p = qpwork._dw_aug.tail(qpmodel._n_in);
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		T test = z_e(active_set_u(k)) + alpha * qpwork._dw_aug.tail(qpmodel._n_in)(active_set_u(k));
+		T test = z_e(qpwork._active_set_u(k)) + alpha * qpwork._dw_aug.tail(qpmodel._n_in)(qpwork._active_set_u(k));
 		//T test = qpwork._ze(active_set_u(k)) + alpha * dz(active_set_u(k));
 		if (test < 0) {
-			qpwork._active_part_z(active_set_u(k)) = 0;
-			dz_p(active_set_u(k)) = 0;
+			qpwork._active_part_z(qpwork._active_set_u(k)) = 0;
+			dz_p(qpwork._active_set_u(k)) = 0;
 		}
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		T test2 = z_e(active_set_l(k)) + alpha * qpwork._dw_aug.tail(qpmodel._n_in)(active_set_l(k));
+		T test2 = z_e(qpwork._active_set_l(k)) + alpha * qpwork._dw_aug.tail(qpmodel._n_in)(qpwork._active_set_l(k));
 		//T test2 = qpwork._ze(active_set_l(k)) + alpha * dz(active_set_l(k));
 		if (test2 > 0) {
-			qpwork._active_part_z(active_set_l(k)) = 0;
-			dz_p(active_set_l(k)) = 0;
+			qpwork._active_part_z(qpwork._active_set_l(k)) = 0;
+			dz_p(qpwork._active_set_l(k)) = 0;
 		}
 	}
 	// a0 computation
@@ -463,16 +459,16 @@ auto oldNew_local_saddle_point_box(
 	aux_l = dual_for_eq;
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		aux_u.noalias() += dz_p(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
-		tmp_d2_u(k) = qpwork._Cdx(active_set_u(k)) - dz_p(active_set_u(k)) * qpresults._mu_in_inv;
+		aux_u.noalias() += dz_p(qpwork._active_set_u(k)) * qpwork._c_scaled.row(qpwork._active_set_u(k));
+		tmp_d2_u(k) = qpwork._Cdx(qpwork._active_set_u(k)) - dz_p(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		aux_u.noalias() += dz_p(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
-		tmp_d2_l(k) = qpwork._Cdx(active_set_l(k)) - dz_p(active_set_l(k)) * qpresults._mu_in_inv;
+		aux_u.noalias() += dz_p(qpwork._active_set_l(k)) * qpwork._c_scaled.row(qpwork._active_set_l(k));
+		tmp_d2_l(k) = qpwork._Cdx(qpwork._active_set_l(k)) - dz_p(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
 	}
 
 	for (isize k = 0; k < num_inactive; ++k) {
-		tmp_d3(k) = dz_p(inactive_set(k));
+		tmp_d3(k) = dz_p(qpwork._inactive_set(k));
 	}
 
 	T a0 = aux_u.squaredNorm() + tmp_d2_u.squaredNorm() +
@@ -480,15 +476,15 @@ auto oldNew_local_saddle_point_box(
 	       qpwork._d_primal_residual_eq.squaredNorm();
 	// b0 computation
 	for (isize k = 0; k < num_active_u; ++k) {
-		aux_l.noalias()  += qpwork._active_part_z(active_set_u(k)) * qpwork._c_scaled.row(active_set_u(k));
-		tmp2_u(k) = residual_in_z_u(active_set_u(k)) - qpwork._active_part_z(active_set_u(k)) * qpresults._mu_in_inv;
+		aux_l.noalias()  += qpwork._active_part_z(qpwork._active_set_u(k)) * qpwork._c_scaled.row(qpwork._active_set_u(k));
+		tmp2_u(k) = residual_in_z_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		aux_l.noalias() += qpwork._active_part_z(active_set_l(k)) * qpwork._c_scaled.row(active_set_l(k));
-		tmp2_l(k) = residual_in_z_l(active_set_l(k)) - qpwork._active_part_z(active_set_l(k)) * qpresults._mu_in_inv;
+		aux_l.noalias() += qpwork._active_part_z(qpwork._active_set_l(k)) * qpwork._c_scaled.row(qpwork._active_set_l(k));
+		tmp2_l(k) = residual_in_z_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		tmp3(k) = qpwork._active_part_z(inactive_set(k));
+		tmp3(k) = qpwork._active_part_z(qpwork._inactive_set(k));
 	}
 
 	T b0 =  (aux_u.dot(aux_l) + tmp_d2_u.dot(tmp2_u) +
@@ -536,13 +532,11 @@ auto oldNew_initial_guess_LS(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& res,
-
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
 
-		VectorViewMut<isize> _active_set_l,
-		VectorViewMut<isize> _active_set_u,
-		VectorViewMut<isize> _inactive_set,
+		//VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<isize> _active_set_u,
+		//VectorViewMut<isize> _inactive_set,
 
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
@@ -713,16 +707,14 @@ auto oldNew_initial_guess_LS(
 						tmp_u,
 						tmp_l,
 						aux_u,
-						aux_l,
-						//res,
+						aux_l
 
-						_active_set_l,
-						_active_set_u,
-						_inactive_set
+						//_active_set_l,
+						//_active_set_u,
+						//_inactive_set
 
 						);
 				qpwork._active_part_z.setZero();
-				//res.setZero();
 				qpwork._rhs.setZero();
 				tmp_u.setZero();
 				tmp_l.setZero();
@@ -779,9 +771,9 @@ auto oldNew_initial_guess_LS(
 					tmp_u,
 					tmp_l,
 					
-					_active_set_l,
-					_active_set_u,
-					_inactive_set,
+					//_active_set_l,
+					//_active_set_u,
+					//_inactive_set,
 
 					_tmp_d2_u,
 					_tmp_d2_l,
@@ -873,8 +865,8 @@ auto oldNew_correction_guess_LS(
 
 		VectorViewMut<T> _tmp_u,
 		VectorViewMut<T> _tmp_l,
-		VectorViewMut<isize> _active_set_u,
-		VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<isize> _active_set_u,
+		//VectorViewMut<isize> _active_set_l,
 
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
@@ -882,7 +874,6 @@ auto oldNew_correction_guess_LS(
 		VectorViewMut<T> _tmp_b0_l,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u
-
 
 		) -> T {
 
@@ -997,8 +988,8 @@ auto oldNew_correction_guess_LS(
 							
 							_tmp_u,
 							_tmp_l,
-							_active_set_u,
-							_active_set_l,
+							//_active_set_u,
+							//_active_set_l,
 
 							_tmp_a0_u,
 							_tmp_b0_u,
@@ -1040,8 +1031,8 @@ auto oldNew_correction_guess_LS(
 
 					_tmp_u,
 					_tmp_l,
-					_active_set_u,
-					_active_set_l,
+					//_active_set_u,
+					//_active_set_l,
 
 					_tmp_a0_u,
 					_tmp_b0_u,
