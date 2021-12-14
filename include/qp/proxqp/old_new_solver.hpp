@@ -41,7 +41,6 @@ void oldNew_refactorize(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-
 		T rho_new
 		) {
 		
@@ -557,15 +556,11 @@ T oldNew_initial_guess(
 
         const bool VERBOSE,
 
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
-
-		//VectorViewMut<isize> _active_set_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _inactive_set,
 
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
@@ -597,9 +592,7 @@ T oldNew_initial_guess(
 			/*
 			qpwork._ruiz.unscale_dual_in_place_in(
 							VectorViewMut<T>{from_eigen, qpwork._ze}); 
-			
 			prim_in_u.noalias() += ( qpwork._ze*qpresults._mu_in_inv) ; 
-
 			prim_in_l.noalias() += ( qpwork._ze*qpresults._mu_in_inv) ; 
 			*/
 			qpwork._l_active_set_n_u = (prim_in_u.array() >= 0.).matrix();
@@ -704,16 +697,11 @@ T oldNew_initial_guess(
 						VectorView<T>{from_eigen,prim_in_u},
 						VectorView<T>{from_eigen,dual_for_eq},
 						VectorView<T>{from_eigen,primal_residual_eq},
-						tmp_u,
-						tmp_l,
+						//tmp_u,
+						//tmp_l,
 						aux_u,
 						aux_l,
 						dz_p,
-
-						//_active_set_l,
-						//_active_set_u,
-						//_inactive_set,
-
 						_tmp_d2_u,
 						_tmp_d2_l,
 						_tmp_d3,
@@ -776,10 +764,8 @@ T oldNew_correction_guess(
 		VectorViewMut<T> _tmp2,
 		VectorViewMut<T> _tmp3,
 		VectorViewMut<T> _tmp4,
-		VectorViewMut<T> _tmp_u,
-		VectorViewMut<T> _tmp_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<T> _tmp_u,
+		//VectorViewMut<T> _tmp_l,
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
@@ -807,7 +793,6 @@ T oldNew_correction_guess(
 											qpmodel,
 											qpresults,
 											qpwork,
-
 											eps_int,
 											z_pos,
 											z_neg,
@@ -831,10 +816,8 @@ T oldNew_correction_guess(
 										residual_in_y,
 										z_pos,
 										z_neg,
-										_tmp_u,
-										_tmp_l,
-										//_active_set_u,
-										//_active_set_l,
+										//_tmp_u,
+										//_tmp_l,
 										_tmp_a0_u,
 										_tmp_b0_u,
 										_tmp_a0_l,
@@ -904,8 +887,8 @@ QpSolveStats oldNew_qpSolve( //
 	/// 3/ structure préallouée QPData, QPSettings, QPResults
 	/// 5/ load maros problems from c++ parser
 
-	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_u(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_l(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_u(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_l(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_u(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> aux_l(qpmodel._dim);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> dz_p(qpmodel._n_in);
@@ -919,9 +902,6 @@ QpSolveStats oldNew_qpSolve( //
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_u(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_l(qpmodel._n_in);
 	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp3_local_saddle_point(qpmodel._n_in);
-	//Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_l(qpmodel._n_in);
-	//Eigen::Matrix<isize, Eigen::Dynamic, 1> active_set_u(qpmodel._n_in);
-	//Eigen::Matrix<isize, Eigen::Dynamic, 1> inactive_set(qpmodel._n_in);
 
 	RowMat test(2,2); // test it is full of nan for debug
 	std::cout << "test " << test << std::endl;
@@ -1081,7 +1061,6 @@ QpSolveStats oldNew_qpSolve( //
 						qpmodel,
 						qpresults,
 						qpwork,
-
 						rho_new
 						);
 
@@ -1122,14 +1101,11 @@ QpSolveStats oldNew_qpSolve( //
 							primal_residual_in_scaled_l,
 							dual_residual_scaled,
 							VERBOSE,
-							tmp_u,
-							tmp_l,
+							//tmp_u,
+							//tmp_l,
 							aux_u,
 							aux_l,
 							dz_p,
-							//VectorViewMut<isize>{from_eigen,active_set_l},
-							//VectorViewMut<isize>{from_eigen,active_set_u},
-							//VectorViewMut<isize>{from_eigen,inactive_set},
 							VectorViewMut<T>{from_eigen,tmp_d2_u},
 							VectorViewMut<T>{from_eigen,tmp_d2_l},
 							VectorViewMut<T>{from_eigen,tmp_d3},
@@ -1190,10 +1166,8 @@ QpSolveStats oldNew_qpSolve( //
 						VectorViewMut<T>{from_eigen,tmp2},
 						VectorViewMut<T>{from_eigen,tmp3},
 						VectorViewMut<T>{from_eigen,tmp4},
-						VectorViewMut<T>{from_eigen,tmp_u},
-						VectorViewMut<T>{from_eigen,tmp_l},
-						//VectorViewMut<isize>{from_eigen,active_set_u},
-						//VectorViewMut<isize>{from_eigen,active_set_l},
+						//VectorViewMut<T>{from_eigen,tmp_u},
+						//VectorViewMut<T>{from_eigen,tmp_l},
 						VectorViewMut<T>{from_eigen,tmp_d2_u},
 						VectorViewMut<T>{from_eigen,tmp2_u},
 						VectorViewMut<T>{from_eigen,tmp_d2_l},

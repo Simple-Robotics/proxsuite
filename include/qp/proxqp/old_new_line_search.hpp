@@ -26,15 +26,10 @@ auto oldNew_gradient_norm_computation_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> primal_residual_eq_,
 		T alpha,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l
-
-		//VectorViewMut<isize> _active_set_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _inactive_set
-
 		) -> T {
 
 	/*
@@ -82,33 +77,29 @@ auto oldNew_gradient_norm_computation_box(
 	aux_l.setZero();
 	qpwork._rhs.setZero();
 	// define active set
-	tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
-	tmp_l.noalias() = residual_in_z_l + alpha * qpwork._Cdx;
+	qpwork._tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
+	qpwork._tmp_l.noalias() = residual_in_z_l + alpha * qpwork._Cdx;
 	
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
+		if (qpwork._tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
-		if (tmp_l(k) <= T(0.)) {
+		if (qpwork._tmp_l(k) <= T(0.)) {
 			num_active_l += 1;
 		}
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+		if (qpwork._tmp_u(k) < T(0.) && qpwork._tmp_l(k) > T(0.)) {
 			num_inactive += 1;
 		}
 	}
-
-	//auto active_set_u = _active_set_u.to_eigen();
-	//auto active_set_l = _active_set_l.to_eigen();
-	//auto inactive_set = _inactive_set.to_eigen();
 
 	qpwork._inactive_set.setZero();
 	qpwork._active_set_u.setZero();
 	isize i_u = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
+		if (qpwork._tmp_u(k) >= T(0.)) {
 			qpwork._active_set_u(i_u) = k;
 			i_u += 1;
 		}
@@ -117,7 +108,7 @@ auto oldNew_gradient_norm_computation_box(
 	qpwork._active_set_l.setZero();
 	isize i_l = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_l(k) <= T(0.)) {
+		if (qpwork._tmp_l(k) <= T(0.)) {
 			qpwork._active_set_l(i_l) = k;
 			i_l += 1;
 		}
@@ -125,7 +116,7 @@ auto oldNew_gradient_norm_computation_box(
 
 	isize i_inact = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+		if (qpwork._tmp_u(k) < T(0.) && qpwork._tmp_l(k) > T(0.)) {
 			qpwork._inactive_set(i_inact) = k;
 			i_inact += 1;
 		}
@@ -162,11 +153,11 @@ auto oldNew_gradient_norm_computation_box(
 	qpwork._rhs.middleRows(qpmodel._dim, qpmodel._n_eq).noalias() = primal_residual_eq + alpha * qpwork._d_primal_residual_eq;
 	for (isize k = 0; k < num_active_u; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + k) =
-				tmp_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
+				qpwork._tmp_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + k) =
-				tmp_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
+				qpwork._tmp_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
 		qpwork._rhs(qpmodel._dim + qpmodel._n_eq + num_active_u + num_active_l + k) =
@@ -185,10 +176,8 @@ auto oldNew_gradient_norm_qpalm_box(
 		VectorView<T> residual_in_y_,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
-		VectorViewMut<T> _tmp_u,
-		VectorViewMut<T> _tmp_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _active_set_l,
+		//VectorViewMut<T> _tmp_u,
+		//VectorViewMut<T> _tmp_l,
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
@@ -219,13 +208,13 @@ auto oldNew_gradient_norm_qpalm_box(
 
 	// define active set
 
-	auto tmp_u = _tmp_u.to_eigen();
-	auto tmp_l = _tmp_l.to_eigen();
+	//auto tmp_u = _tmp_u.to_eigen();
+	//auto tmp_l = _tmp_l.to_eigen();
 
-	tmp_u.noalias() = residual_in_z_u + qpwork._Cdx * alpha;
-	tmp_l.noalias() = residual_in_z_l + qpwork._Cdx * alpha;
-	qpwork._l_active_set_n_u = tmp_u.array() > 0;
-	qpwork._l_active_set_n_l = tmp_l.array() < 0;
+	qpwork._tmp_u.noalias() = residual_in_z_u + qpwork._Cdx * alpha;
+	qpwork._tmp_l.noalias() = residual_in_z_l + qpwork._Cdx * alpha;
+	qpwork._l_active_set_n_u = qpwork._tmp_u.array() > 0;
+	qpwork._l_active_set_n_l = qpwork._tmp_l.array() < 0;
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
@@ -238,8 +227,6 @@ auto oldNew_gradient_norm_qpalm_box(
 		}
 	}
 
-	//auto active_set_u = _active_set_u.to_eigen();
-	//auto active_set_l = _active_set_l.to_eigen();
 	qpwork._active_set_u.setZero();
 	qpwork._active_set_l.setZero();
 
@@ -290,7 +277,6 @@ auto oldNew_gradient_norm_qpalm_box(
 	return a * alpha + b;
 }
 
-
 template <typename T>
 auto oldNew_local_saddle_point_box(
 		qp::Qpdata<T>& qpmodel,
@@ -302,25 +288,17 @@ auto oldNew_local_saddle_point_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> primal_residual_eq_,
 		T& alpha,
-
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
-
-		//VectorViewMut<isize> _active_set_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _inactive_set,
-
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
 		VectorViewMut<T> _tmp_d3,
 		VectorViewMut<T> _tmp2_u,
 		VectorViewMut<T> _tmp2_l,
 		VectorViewMut<T> _tmp3_local_saddle_point,
-
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l
-
 		) -> T {
 	/*
 	 * the function returns the unique minimum of the positive second order
@@ -371,49 +349,46 @@ auto oldNew_local_saddle_point_box(
 	auto dual_for_eq = dual_for_eq_.to_eigen().eval();
 	auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
-	tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
-	tmp_l.noalias() = residual_in_z_l + alpha * qpwork._Cdx;
+	qpwork._tmp_u.noalias() = residual_in_z_u + alpha * qpwork._Cdx;
+	qpwork._tmp_l.noalias() = residual_in_z_l + alpha * qpwork._Cdx;
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	isize num_inactive = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
+		if (qpwork._tmp_u(k) >= T(0.)) {
 			num_active_u += 1;
 		}
-		if (tmp_l(k) <= T(0.)) {
+		if (qpwork._tmp_l(k) <= T(0.)) {
 			num_active_l += 1;
 		}
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+		if (qpwork._tmp_u(k) < T(0.) && qpwork._tmp_l(k) > T(0.)) {
 			num_inactive += 1;
 		}
 	}
 
-	//auto active_set_u = _active_set_u.to_eigen();
 	qpwork._active_set_u.setZero();
 
 	isize i_u = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) >= T(0.)) {
+		if (qpwork._tmp_u(k) >= T(0.)) {
 			qpwork._active_set_u(i_u) = k;
 			i_u += 1;
 		}
 	}
-	//auto active_set_l = _active_set_l.to_eigen();
 	qpwork._active_set_l.setZero();
 
 	isize i_l = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_l(k) <= T(0.)) {
+		if (qpwork._tmp_l(k) <= T(0.)) {
 			qpwork._active_set_l(i_l) = k;
 			i_l += 1;
 		}
 	}
-	//auto inactive_set = _inactive_set.to_eigen();
 	qpwork._inactive_set.setZero();
 	isize i_inact = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (tmp_u(k) < T(0.) && tmp_l(k) > T(0.)) {
+		if (qpwork._tmp_u(k) < T(0.) && qpwork._tmp_l(k) > T(0.)) {
 			qpwork._inactive_set(i_inact) = k;
 			i_inact += 1;
 		}
@@ -528,23 +503,17 @@ auto oldNew_initial_guess_LS(
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> dual_for_eq,
 		VectorView<T> primal_residual_eq,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
-		Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_u,
+		//Eigen::Matrix<T, Eigen::Dynamic, 1>& tmp_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dz_p,
-
-		//VectorViewMut<isize> _active_set_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _inactive_set,
-
 		VectorViewMut<T> _tmp_d2_u,
 		VectorViewMut<T> _tmp_d2_l,
 		VectorViewMut<T> _tmp_d3,
 		VectorViewMut<T> _tmp2_u,
 		VectorViewMut<T> _tmp2_l,
 		VectorViewMut<T> _tmp3_local_saddle_point
-
 		) -> T {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
@@ -703,21 +672,15 @@ auto oldNew_initial_guess_LS(
 						dual_for_eq,
 						primal_residual_eq,
 						alpha_,
-
-						tmp_u,
-						tmp_l,
+						//tmp_u,
+						//tmp_l,
 						aux_u,
 						aux_l
-
-						//_active_set_l,
-						//_active_set_u,
-						//_inactive_set
-
 						);
 				qpwork._active_part_z.setZero();
 				qpwork._rhs.setZero();
-				tmp_u.setZero();
-				tmp_l.setZero();
+				qpwork._tmp_u.setZero();
+				qpwork._tmp_l.setZero();
 				aux_u.setZero();
 				aux_l.setZero();
 
@@ -766,25 +729,17 @@ auto oldNew_initial_guess_LS(
 					dual_for_eq,
 					primal_residual_eq,
 					alpha_,
-
 					dz_p,
-					tmp_u,
-					tmp_l,
-					
-					//_active_set_l,
-					//_active_set_u,
-					//_inactive_set,
-
+					//tmp_u,
+					//tmp_l,
 					_tmp_d2_u,
 					_tmp_d2_l,
 					_tmp_d3,
 					_tmp2_u,
 					_tmp2_l,
 					_tmp3_local_saddle_point,
-
 					aux_u,
 					aux_l
-					
 					);
 
 			// 3.4 if the argmin is within the interval [alpha[i],alpha[i+1]] is
@@ -858,23 +813,16 @@ auto oldNew_correction_guess_LS(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
-
-		VectorViewMut<T> _tmp_u,
-		VectorViewMut<T> _tmp_l,
-		//VectorViewMut<isize> _active_set_u,
-		//VectorViewMut<isize> _active_set_l,
-
+		//VectorViewMut<T> _tmp_u,
+		//VectorViewMut<T> _tmp_l,
 		VectorViewMut<T> _tmp_a0_u,
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
 		VectorViewMut<T> _tmp_b0_l,
-
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u
-
 		) -> T {
 
 	/*
@@ -985,19 +933,13 @@ auto oldNew_correction_guess_LS(
 							VectorView<T>{from_eigen, residual_in_y},
 							VectorView<T>{from_eigen, residual_in_z_u},
 							VectorView<T>{from_eigen, residual_in_z_l},
-							
-							_tmp_u,
-							_tmp_l,
-							//_active_set_u,
-							//_active_set_l,
-
+							//_tmp_u,
+							//_tmp_l,
 							_tmp_a0_u,
 							_tmp_b0_u,
 							_tmp_a0_l,
 							_tmp_b0_l,
-
 							aux_u
-
 							);
 
 					if (gr < T(0)) {
@@ -1028,19 +970,13 @@ auto oldNew_correction_guess_LS(
 					VectorView<T>{from_eigen, residual_in_y},
 					VectorView<T>{from_eigen, residual_in_z_u},
 					VectorView<T>{from_eigen, residual_in_z_l},
-
-					_tmp_u,
-					_tmp_l,
-					//_active_set_u,
-					//_active_set_l,
-
+					//_tmp_u,
+					//_tmp_l,
 					_tmp_a0_u,
 					_tmp_b0_u,
 					_tmp_a0_l,
 					_tmp_b0_l, 
-
 					aux_u
-
 					);
 			last_neg_grad = gr;
 		}
