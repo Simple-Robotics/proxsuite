@@ -1175,7 +1175,7 @@ void oldNew_active_set_change(
 		qp::Qpresults<T>& qpresults,
 		OldNew_Qpworkspace<T>& qpwork,
 		VectorView<bool> new_active_set_,
-		ldlt::Ldlt<T>& ldl,
+		//ldlt::Ldlt<T>& ldl,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug) {
 
 	/*
@@ -1238,7 +1238,7 @@ void oldNew_active_set_change(
 		if (qpwork._current_bijection_map(i) < qpresults._n_c) {
 			if (!new_active_set(i)) {
 				// delete current_bijection_map(i)
-				ldl.delete_at(qpwork._new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
+				qpwork._ldl.delete_at(qpwork._new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
 
 				for (isize j = 0; j < qpmodel._n_in; j++) {
 					if (qpwork._new_bijection_map(j) > qpwork._new_bijection_map(i)) {
@@ -1262,7 +1262,7 @@ void oldNew_active_set_change(
 				dw_aug.setZero();
 				dw_aug.head(qpmodel._dim) = qpwork._c_scaled.row(i);
 				dw_aug(qpmodel._dim + qpmodel._n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
-				ldl.insert_at(qpmodel._n_eq + qpmodel._dim + n_c_f, dw_aug.head(n_c_f+1+qpmodel._n_eq+qpmodel._dim));
+				qpwork._ldl.insert_at(qpmodel._n_eq + qpmodel._dim + n_c_f, dw_aug.head(n_c_f+1+qpmodel._n_eq+qpmodel._dim));
 
 				for (isize j = 0; j < qpmodel._n_in; j++) {
 					if (qpwork._new_bijection_map(j) < qpwork._new_bijection_map(i) &&

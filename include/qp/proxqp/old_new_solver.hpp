@@ -43,7 +43,7 @@ void oldNew_refactorize(
 		qp::OldNew_Qpworkspace<T>& qpwork,
 
 		T rho_new,
-		ldlt::Ldlt<T>& ldl,
+		//ldlt::Ldlt<T>& ldl,
 		VectorViewMut<T> dw_aug_
 		) {
 		
@@ -51,14 +51,14 @@ void oldNew_refactorize(
 	dw_aug.setZero();
 	qpwork._kkt.diagonal().head(qpmodel._dim).array() += rho_new - qpresults._rho; 
 	qpwork._kkt.diagonal().segment(qpmodel._dim,qpmodel._n_eq).array() = -qpresults._mu_eq_inv; 
-	ldl.factorize(qpwork._kkt);
+	qpwork._ldl.factorize(qpwork._kkt);
 
 	for (isize j = 0; j < qpresults._n_c; ++j) {
 		for (isize i = 0; i < qpmodel._n_in; ++i) {
 			if (j == qpwork._current_bijection_map(i)) {
 					dw_aug.head(qpmodel._dim) = qpwork._c_scaled.row(i);
 					dw_aug(qpmodel._dim + qpmodel._n_eq + j) = - qpresults._mu_in_inv; // mu_in stores the inverse of mu_in
-					ldl.insert_at(qpmodel._n_eq + qpmodel._dim + j, dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c));
+					qpwork._ldl.insert_at(qpmodel._n_eq + qpmodel._dim + j, dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c));
 					dw_aug(qpmodel._dim + qpmodel._n_eq + j) = T(0);
 			}
 		}
@@ -70,7 +70,8 @@ template <typename T>
 void oldNew_mu_update(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		ldlt::Ldlt<T>& ldl,
+		qp::OldNew_Qpworkspace<T>& qpwork,
+		//ldlt::Ldlt<T>& ldl,
 		VectorViewMut<T>  dw_aug_,
 		T mu_eq_new_inv,
 		T mu_in_new_inv) {
@@ -83,7 +84,7 @@ void oldNew_mu_update(
 
 		for (isize i = 0; i < qpmodel._n_eq; i++) {
 			dw_aug(qpmodel._dim + i) = T(1);
-			ldl.rank_one_update(dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
+			qpwork._ldl.rank_one_update(dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
 			dw_aug(qpmodel._dim + i) = T(0);
 		}
 	}
@@ -91,7 +92,7 @@ void oldNew_mu_update(
 		diff = qpresults._mu_in_inv - mu_in_new_inv; // mu stores the inverse of mu
 		for (isize i = 0; i < qpresults._n_c; i++) {
 			dw_aug(qpmodel._dim + qpmodel._n_eq + i) = T(1);
-			ldl.rank_one_update(dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
+			qpwork._ldl.rank_one_update(dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
 			dw_aug(qpmodel._dim + qpmodel._n_eq + i) = T(0);
 		}
 	}
@@ -163,7 +164,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 		
 		T eps,
 		isize inner_pb_dim,
-        ldlt::Ldlt<T>& ldl,
+        //ldlt::Ldlt<T>& ldl,
         const bool VERBOSE,
 		VectorViewMut<T> _err,
 		isize it_,
@@ -179,7 +180,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 
 	dw_aug.head(inner_pb_dim) = rhs.head(inner_pb_dim);
 	
-	ldl.solve_in_place(dw_aug.head(inner_pb_dim));
+	qpwork._ldl.solve_in_place(dw_aug.head(inner_pb_dim));
 
 	if (chekNoAlias){
 		std::cout << "-----------before computing residual" << std::endl;
@@ -223,7 +224,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 			break;
 		} 
 		++it;
-		ldl.solve_in_place( err.head(inner_pb_dim));
+		qpwork._ldl.solve_in_place( err.head(inner_pb_dim));
 		dw_aug.head(inner_pb_dim).noalias() +=  err.head(inner_pb_dim);
 
 		err.head(inner_pb_dim).setZero();
@@ -274,16 +275,16 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 						qpwork,
 
 						qpresults._rho,
-						ldl,
+						//ldl,
 						VectorViewMut<T>{from_eigen,dw_aug}
 						);
 			
-			std::cout << " ldl.reconstructed_matrix() - Htot " << infty_norm(ldl.reconstructed_matrix() - Htot)<< std::endl;
+			std::cout << " ldl.reconstructed_matrix() - Htot " << infty_norm(qpwork._ldl.reconstructed_matrix() - Htot)<< std::endl;
 		}
 		it = 0;
 		dw_aug.head(inner_pb_dim) = rhs.head(inner_pb_dim);
 
-		ldl.solve_in_place(dw_aug.head(inner_pb_dim));
+		qpwork._ldl.solve_in_place(dw_aug.head(inner_pb_dim));
 
 		qp::detail::oldNew_iterative_residual<T>(
 					qpmodel,
@@ -306,7 +307,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 				break;
 			}
 			++it;
-			ldl.solve_in_place( err.head(inner_pb_dim) );
+			qpwork._ldl.solve_in_place( err.head(inner_pb_dim) );
 			dw_aug.head(inner_pb_dim).noalias()  +=  err.head(inner_pb_dim);
   
 			err.head(inner_pb_dim).setZero();
@@ -346,7 +347,7 @@ void oldNew_BCL_update(
 		T& bcl_eta_in,
 
 		VectorViewMut<T> dw_aug_,
-		ldlt::Ldlt<T>& ldl,
+		//ldlt::Ldlt<T>& ldl,
 		T bcl_eta_ext_init,
 		T eps_in_min
 		){
@@ -378,7 +379,8 @@ void oldNew_BCL_update(
 			qp::detail::oldNew_mu_update(
 				qpmodel,
 				qpresults,
-				ldl,
+				qpwork,
+				//ldl,
 				dw_aug_,
 				new_bcl_mu_eq_inv,
 				new_bcl_mu_in_inv);
@@ -546,7 +548,7 @@ void oldNew_newton_step_new(
 		Eigen::Matrix<bool, Eigen::Dynamic, 1>& active_inequalities,
 
         Eigen::Matrix<T,Eigen::Dynamic,1>& dw_aug,
-        ldlt::Ldlt<T>& ldl,
+        //ldlt::Ldlt<T>& ldl,
         const bool VERBOSE,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& rhs,
 		VectorViewMut<T> err_,
@@ -577,7 +579,7 @@ void oldNew_newton_step_new(
 					qpresults,
 					qpwork,
                     VectorView<bool>{from_eigen,active_inequalities},
-                    ldl,
+                    //ldl,
                     dw_aug);
 
 		auto err = err_.to_eigen();
@@ -591,7 +593,7 @@ void oldNew_newton_step_new(
                     VectorViewMut<T>{from_eigen,dw_aug},
                     eps,
                     inner_pb_dim,
-                    ldl,
+                    //ldl,
                     VERBOSE,
 					VectorViewMut<T>{from_eigen,err.head(inner_pb_dim)},
 					isize(1),
@@ -623,7 +625,7 @@ T oldNew_initial_guess(
 		Eigen::Matrix<bool, Eigen::Dynamic, 1>& active_inequalities,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug,
 
-        ldlt::Ldlt<T>& ldl,
+        //ldlt::Ldlt<T>& ldl,
         const bool VERBOSE,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& rhs,
@@ -713,7 +715,7 @@ T oldNew_initial_guess(
 								qpresults,
 								qpwork,
                                 VectorView<bool>{from_eigen,active_inequalities},
-                                ldl,
+                                //ldl,
                                 dw_aug);
 			
 			rhs.head(qpmodel._dim).noalias() = -dual_for_eq ;
@@ -742,7 +744,7 @@ T oldNew_initial_guess(
                     VectorViewMut<T>{from_eigen,dw_aug},
                     eps_int,
                     inner_pb_dim,
-                    ldl,
+                    //ldl,
                     VERBOSE,
 					VectorViewMut<T>{from_eigen,err_iter.head(inner_pb_dim)},
 					isize(2),
@@ -875,7 +877,7 @@ T oldNew_correction_guess(
 		Eigen::Matrix<bool,Eigen::Dynamic,1>& active_inequalities,
 
         Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug,
-        ldlt::Ldlt<T>& ldl,
+        //ldlt::Ldlt<T>& ldl,
         const bool VERBOSE,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& rhs,
 
@@ -934,7 +936,7 @@ T oldNew_correction_guess(
 											l_active_set_n_l,
 											active_inequalities,
                                             dw_aug,
-                                            ldl,
+                                            //ldl,
                                             VERBOSE,
 											rhs,
 											err_,
@@ -1109,7 +1111,8 @@ QpSolveStats oldNew_qpSolve( //
 	qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
 	qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
 
-	ldlt::Ldlt<T> ldl{decompose, qpwork._kkt};
+	//ldlt::Ldlt<T> ldl{decompose, qpwork._kkt};
+	qpwork._ldl.factorize(qpwork._kkt);
 	rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 	rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
 	
@@ -1123,7 +1126,7 @@ QpSolveStats oldNew_qpSolve( //
         VectorViewMut<T>{from_eigen,dw_aug},
 		bcl_eta_in,
 		qpmodel._dim+qpmodel._n_eq,
-        ldl,
+        //ldl,
         VERBOSE,
 		VectorViewMut<T>{from_eigen,err.head(qpmodel._dim+qpmodel._n_eq)},
 		isize(0),
@@ -1237,7 +1240,7 @@ QpSolveStats oldNew_qpSolve( //
 						qpwork,
 
 						rho_new,
-						ldl,
+						//ldl,
 						VectorViewMut<T>{from_eigen,dw_aug}
 						);
 
@@ -1287,7 +1290,7 @@ QpSolveStats oldNew_qpSolve( //
 							active_inequalities,
 							dw_aug,
 
-							ldl,
+							//ldl,
 							VERBOSE,
 							rhs,
 							active_part_z,
@@ -1371,7 +1374,7 @@ QpSolveStats oldNew_qpSolve( //
 						active_inequalities,
 
                         dw_aug,
-                        ldl,
+                        //ldl,
                         VERBOSE,
 						rhs,
 
@@ -1436,7 +1439,7 @@ QpSolveStats oldNew_qpSolve( //
 					bcl_eta_in,
 
 					VectorViewMut<T>{from_eigen,dw_aug},
-					ldl,
+					//ldl,
 					bcl_eta_ext_init,
 					eps_in_min
 		);
@@ -1463,7 +1466,8 @@ QpSolveStats oldNew_qpSolve( //
 			qp::detail::oldNew_mu_update(
 				qpmodel,
 				qpresults,
-				ldl,
+				qpwork,
+				//ldl,
 				VectorViewMut<T>{from_eigen,dw_aug},
 				qpsettings._cold_reset_mu_eq_inv,
 				qpsettings._cold_reset_mu_in_inv);
