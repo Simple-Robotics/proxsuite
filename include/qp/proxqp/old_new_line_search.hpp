@@ -468,7 +468,7 @@ auto oldNew_local_saddle_point_box(
 
 
 template <typename T>
-auto oldNew_initial_guess_LS(
+void oldNew_initial_guess_LS(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -478,10 +478,7 @@ auto oldNew_initial_guess_LS(
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> dual_for_eq,
 		VectorView<T> primal_residual_eq
-		//VectorViewMut<T> _tmp2_u,
-		//VectorViewMut<T> _tmp2_l,
-		//VectorViewMut<T> _tmp3_local_saddle_point
-		) -> T {
+		) {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
 	 * (dx,dy,dz) the fonction gives one optimal alpha minimizing the L2 norm
@@ -565,7 +562,7 @@ auto oldNew_initial_guess_LS(
 
 	auto z_e = ze.to_eigen();
 
-	T alpha(1.);
+	qpwork._alpha = T(1.);
 
 	T alpha_n(1.);
 	T gr_n(1.);
@@ -753,27 +750,24 @@ auto oldNew_initial_guess_LS(
 		// function
 
 		if (gr_interval <= gr_n){
-			alpha = alpha_interval; 
+			qpwork._alpha = alpha_interval; 
 		}else{
-			alpha = alpha_n;
+			qpwork._alpha = alpha_n;
 		}
 	}
 
-	return alpha;
 }
 
 
 template <typename T>
-auto oldNew_correction_guess_LS(
+void oldNew_correction_guess_LS(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l
-		//VectorViewMut<T> _tmp_b0_u,
-		//VectorViewMut<T> _tmp_b0_l
-		) -> T {
+		){
 
 	/*
 	 * The function follows the algorithm designed by qpalm
@@ -822,7 +816,7 @@ auto oldNew_correction_guess_LS(
 
 	auto x_ = qpresults._x;
 
-	T alpha(1.);
+	qpwork._alpha = T(1.);
 	T alpha_(1.);
 
 	qpwork._alphas.clear();
@@ -883,8 +877,6 @@ auto oldNew_correction_guess_LS(
 							VectorView<T>{from_eigen, residual_in_y},
 							VectorView<T>{from_eigen, residual_in_z_u},
 							VectorView<T>{from_eigen, residual_in_z_l}
-							//_tmp_b0_u,
-							//_tmp_b0_l
 							);
 
 					if (gr < T(0)) {
@@ -915,8 +907,6 @@ auto oldNew_correction_guess_LS(
 					VectorView<T>{from_eigen, residual_in_y},
 					VectorView<T>{from_eigen, residual_in_z_u},
 					VectorView<T>{from_eigen, residual_in_z_l}
-					//_tmp_b0_u,
-					//_tmp_b0_l 
 					);
 			last_neg_grad = gr;
 		}
@@ -927,11 +917,10 @@ auto oldNew_correction_guess_LS(
 		 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi'
 		 * is an affine function in alpha
 		 */
-		alpha = alpha_last_neg - last_neg_grad *
+		qpwork._alpha = alpha_last_neg - last_neg_grad *
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
 	}	
-	return alpha;
 }
 
 template <typename T>
