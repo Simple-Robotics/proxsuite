@@ -661,8 +661,6 @@ auto oldNew_initial_guess_LS(
 						dual_for_eq,
 						primal_residual_eq,
 						alpha_
-						//aux_u,
-						//aux_l
 						);
 				qpwork._active_part_z.setZero();
 				qpwork._rhs.setZero();
@@ -716,15 +714,12 @@ auto oldNew_initial_guess_LS(
 					dual_for_eq,
 					primal_residual_eq,
 					alpha_,
-					//dz_p,
 					_tmp_d2_u,
 					_tmp_d2_l,
 					_tmp_d3,
 					_tmp2_u,
 					_tmp2_l,
 					_tmp3_local_saddle_point
-					//aux_u,
-					//aux_l
 					);
 
 			// 3.4 if the argmin is within the interval [alpha[i],alpha[i+1]] is
@@ -805,7 +800,6 @@ auto oldNew_correction_guess_LS(
 		VectorViewMut<T> _tmp_b0_u,
 		VectorViewMut<T> _tmp_a0_l,
 		VectorViewMut<T> _tmp_b0_l
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u
 		) -> T {
 
 	/*
@@ -920,7 +914,6 @@ auto oldNew_correction_guess_LS(
 							_tmp_b0_u,
 							_tmp_a0_l,
 							_tmp_b0_l
-							//aux_u
 							);
 
 					if (gr < T(0)) {
@@ -955,7 +948,6 @@ auto oldNew_correction_guess_LS(
 					_tmp_b0_u,
 					_tmp_a0_l,
 					_tmp_b0_l 
-					//aux_u
 					);
 			last_neg_grad = gr;
 		}
