@@ -44,15 +44,14 @@ void oldNew_refactorize(
 
 		T rho_new,
 		ldlt::Ldlt<T>& ldl,
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& kkt,
 		VectorViewMut<T> dw_aug_
 		) {
 		
 	auto dw_aug = dw_aug_.to_eigen();
 	dw_aug.setZero();
-	kkt.diagonal().head(qpmodel._dim).array() += rho_new - qpresults._rho; 
-	kkt.diagonal().segment(qpmodel._dim,qpmodel._n_eq).array() = -qpresults._mu_eq_inv; 
-	ldl.factorize(kkt);
+	qpwork._kkt.diagonal().head(qpmodel._dim).array() += rho_new - qpresults._rho; 
+	qpwork._kkt.diagonal().segment(qpmodel._dim,qpmodel._n_eq).array() = -qpresults._mu_eq_inv; 
+	ldl.factorize(qpwork._kkt);
 
 	for (isize j = 0; j < qpresults._n_c; ++j) {
 		for (isize i = 0; i < qpmodel._n_in; ++i) {
@@ -167,7 +166,6 @@ void oldNew_iterative_solve_with_permut_fact_new( //
         ldlt::Ldlt<T>& ldl,
         const bool VERBOSE,
 		VectorViewMut<T> _err,
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& kkt,
 		isize it_,
 		std::string str,
 		const bool chekNoAlias
@@ -256,8 +254,8 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 
 			Htot.setZero();
 			
-			kkt.diagonal().segment(qpmodel._dim,qpmodel._n_eq).array() = -qpresults._mu_eq_inv; 
-			Htot.topLeftCorner(qpmodel._dim+qpmodel._n_eq, qpmodel._dim+qpmodel._n_eq) = kkt;
+			qpwork._kkt.diagonal().segment(qpmodel._dim,qpmodel._n_eq).array() = -qpresults._mu_eq_inv; 
+			Htot.topLeftCorner(qpmodel._dim+qpmodel._n_eq, qpmodel._dim+qpmodel._n_eq) = qpwork._kkt;
 
 			Htot.diagonal().segment(qpmodel._dim+qpmodel._n_eq,qpresults._n_c).array() = -qpresults._mu_in_inv; 
 
@@ -277,7 +275,6 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 
 						qpresults._rho,
 						ldl,
-						kkt,
 						VectorViewMut<T>{from_eigen,dw_aug}
 						);
 			
@@ -556,7 +553,6 @@ void oldNew_newton_step_new(
         const bool VERBOSE,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& rhs,
 		VectorViewMut<T> err_,
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& kkt,
 		std::string str,
 		const bool chekNoAlias
 	){
@@ -601,7 +597,6 @@ void oldNew_newton_step_new(
                     ldl,
                     VERBOSE,
 					VectorViewMut<T>{from_eigen,err.head(inner_pb_dim)},
-					kkt,
 					isize(1),
 					str,
 					chekNoAlias
@@ -656,7 +651,6 @@ T oldNew_initial_guess(
 		VectorViewMut<T> _tmp3_local_saddle_point,
 
 		VectorViewMut<T> _err,
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& kkt,
 
 		std::vector<T>& alphas,
 
@@ -755,7 +749,6 @@ T oldNew_initial_guess(
                     ldl,
                     VERBOSE,
 					VectorViewMut<T>{from_eigen,err_iter.head(inner_pb_dim)},
-					kkt,
 					isize(2),
 					str,
 					chekNoAlias
@@ -906,7 +899,6 @@ T oldNew_correction_guess(
 		VectorViewMut<T> _tmp_b0_l,
 
 		VectorViewMut<T> err_,
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& kkt,
 
 		std::vector<T>& alphas,
 
@@ -950,7 +942,6 @@ T oldNew_correction_guess(
                                             VERBOSE,
 											rhs,
 											err_,
-											kkt,
 											str,
 											checkNoAlias
 			);
@@ -1087,9 +1078,6 @@ QpSolveStats oldNew_qpSolve( //
 	std::vector<T> alphas;
 	alphas.reserve( 3*qpmodel._n_in );
 
-    RowMat kkt(qpmodel._dim+qpmodel._n_eq,qpmodel._dim+qpmodel._n_eq);
-
-
 	T primal_feasibility_rhs_1_eq = infty_norm(qpmodel._b);
     T primal_feasibility_rhs_1_in_u = infty_norm(qpmodel._u);
     T primal_feasibility_rhs_1_in_l = infty_norm(qpmodel._l);
@@ -1119,14 +1107,14 @@ QpSolveStats oldNew_qpSolve( //
 	
 	////
 
-	kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
-	kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
-	kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
-	kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
-	kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
-	kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
+	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
+	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
+	qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
+	qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
+	qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
+	qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
 
-	ldlt::Ldlt<T> ldl{decompose, kkt};
+	ldlt::Ldlt<T> ldl{decompose, qpwork._kkt};
 	rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 	rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
 	
@@ -1143,7 +1131,6 @@ QpSolveStats oldNew_qpSolve( //
         ldl,
         VERBOSE,
 		VectorViewMut<T>{from_eigen,err.head(qpmodel._dim+qpmodel._n_eq)},
-		kkt,
 		isize(0),
 		str,
 		chekNoAlias
@@ -1258,7 +1245,6 @@ QpSolveStats oldNew_qpSolve( //
 
 						rho_new,
 						ldl,
-						kkt,
 						VectorViewMut<T>{from_eigen,dw_aug}
 						);
 
@@ -1332,8 +1318,6 @@ QpSolveStats oldNew_qpSolve( //
 							VectorViewMut<T>{from_eigen,tmp3_local_saddle_point},
 
 							VectorViewMut<T>{from_eigen,err},
-							kkt,
-
 							alphas,
 							
 							str,
@@ -1415,7 +1399,6 @@ QpSolveStats oldNew_qpSolve( //
 						VectorViewMut<T>{from_eigen,tmp2_l},
 
 						VectorViewMut<T>{from_eigen,err},
-						kkt,
 
 						alphas,
 
