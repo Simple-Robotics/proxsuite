@@ -216,8 +216,8 @@ auto oldNew_gradient_norm_qpalm_box(
 		VectorViewMut<T> _tmp_a0_l,
 		VectorViewMut<T> _tmp_b0_l,
 
-		Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_u,
-		Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_l,
+		//Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_u,
+		//Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_l,
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u
 
@@ -256,16 +256,16 @@ auto oldNew_gradient_norm_qpalm_box(
 
 	tmp_u.noalias() = residual_in_z_u + Cdx * alpha;
 	tmp_l.noalias() = residual_in_z_l + Cdx * alpha;
-	l_active_set_n_u = tmp_u.array() > 0;
-	l_active_set_n_l = tmp_l.array() < 0;
+	qpwork._l_active_set_n_u = tmp_u.array() > 0;
+	qpwork._l_active_set_n_l = tmp_l.array() < 0;
 
 	isize num_active_u = 0;
 	isize num_active_l = 0;
 	for (isize k = 0; k < qpmodel._n_in; ++k) {
-		if (l_active_set_n_u(k)) {
+		if (qpwork._l_active_set_n_u(k)) {
 			num_active_u += 1;
 		}
-		if (l_active_set_n_l(k)) {
+		if (qpwork._l_active_set_n_l(k)) {
 			num_active_l += 1;
 		}
 	}
@@ -279,11 +279,11 @@ auto oldNew_gradient_norm_qpalm_box(
 	isize j = 0;
 
 	for (isize k = 0; k < qpmodel._n_in; ++k) {  
-		if (l_active_set_n_u(k)) {
+		if (qpwork._l_active_set_n_u(k)) {
 			active_set_u(i) = k;
 			i += 1;
 		}
-		if (l_active_set_n_l(k)) {
+		if (qpwork._l_active_set_n_l(k)) {
 			active_set_l(j) = k;
 			j += 1;
 		}
@@ -959,8 +959,8 @@ auto oldNew_correction_guess_LS(
 		VectorViewMut<T> _tmp_a0_l,
 		VectorViewMut<T> _tmp_b0_l,
 
-		Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_u,
-		Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_l,
+		//Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_u,
+		//Eigen::Matrix<bool,Eigen::Dynamic,1>& l_active_set_n_l,
 
 		std::vector<T>& alphas,
 
@@ -1096,8 +1096,8 @@ auto oldNew_correction_guess_LS(
 							_tmp_a0_l,
 							_tmp_b0_l,
 
-							l_active_set_n_u,
-							l_active_set_n_l,
+							//l_active_set_n_u,
+							//l_active_set_n_l,
 
 							aux_u
 
@@ -1147,8 +1147,8 @@ auto oldNew_correction_guess_LS(
 					_tmp_a0_l,
 					_tmp_b0_l, 
 
-					l_active_set_n_u,
-					l_active_set_n_l,
+					//l_active_set_n_u,
+					//l_active_set_n_l,
 
 					aux_u
 
@@ -1174,7 +1174,7 @@ void oldNew_active_set_change(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		OldNew_Qpworkspace<T>& qpwork,
-		VectorView<bool> new_active_set_,
+		//VectorView<bool> new_active_set_,
 		//ldlt::Ldlt<T>& ldl,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dw_aug) {
 
@@ -1225,7 +1225,7 @@ void oldNew_active_set_change(
 	 * new_bijection_map(n_in) = n_c_f
 	 */
 			
-	auto new_active_set = new_active_set_.to_eigen();
+	//auto new_active_set = new_active_set_.to_eigen();
 	dw_aug.setZero();
 	
 	isize n_c_f = qpresults._n_c;
@@ -1236,7 +1236,7 @@ void oldNew_active_set_change(
 	T mu_in_inv_neg = -qpresults._mu_in_inv;
 	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (qpwork._current_bijection_map(i) < qpresults._n_c) {
-			if (!new_active_set(i)) {
+			if (!qpwork._active_inequalities(i)) {
 				// delete current_bijection_map(i)
 				qpwork._ldl.delete_at(qpwork._new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
 
@@ -1255,7 +1255,7 @@ void oldNew_active_set_change(
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
 	for (isize i = 0; i < qpmodel._n_in; i++) {
-		if (new_active_set(i)) {
+		if (qpwork._active_inequalities(i)) {
 			if (qpwork._new_bijection_map(i) >= n_c_f) {
 				// add at the end
 				
