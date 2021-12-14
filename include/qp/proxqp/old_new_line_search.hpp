@@ -26,8 +26,6 @@ auto oldNew_gradient_norm_computation_box(
 		VectorView<T> dual_for_eq_,
 		VectorView<T> primal_residual_eq_,
 		T alpha
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u,
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_l
 		) -> T {
 
 	/*
@@ -173,12 +171,9 @@ auto oldNew_gradient_norm_qpalm_box(
 		T alpha,
 		VectorView<T> residual_in_y_,
 		VectorView<T> residual_in_z_u_,
-		VectorView<T> residual_in_z_l_,
-		//VectorViewMut<T> _tmp_a0_u,
-		VectorViewMut<T> _tmp_b0_u,
-		//VectorViewMut<T> _tmp_a0_l,
-		VectorViewMut<T> _tmp_b0_l
-		//Eigen::Matrix<T, Eigen::Dynamic, 1>& aux_u
+		VectorView<T> residual_in_z_l_
+		//VectorViewMut<T> _tmp_b0_u,
+		//VectorViewMut<T> _tmp_b0_l
 		) -> T {
 
 	/*
@@ -239,25 +234,21 @@ auto oldNew_gradient_norm_qpalm_box(
 
 	// coefficient computation
 
-	//auto tmp_a0_u = _tmp_a0_u.to_eigen();
 	qpwork._tmp_d2_u.setZero();
-	auto tmp_b0_u = _tmp_b0_u.to_eigen();
-	tmp_b0_u.setZero();
+	//auto tmp_b0_u = _tmp_b0_u.to_eigen();
+	qpwork._tmp2_u.setZero();
 
-	//auto tmp_a0_l = _tmp_a0_l.to_eigen();
 	qpwork._tmp_d2_l.setZero();
-	auto tmp_b0_l = _tmp_b0_l.to_eigen();
-	tmp_b0_l.setZero();
+	//auto tmp_b0_l = _tmp_b0_l.to_eigen();
+	qpwork._tmp2_l.setZero();
 
 	for (isize k = 0; k < num_active_u; ++k) {
-		//tmp_a0_u(k) = qpwork._Cdx(qpwork._active_set_u(k));
-		tmp_b0_u(k) = residual_in_z_u(qpwork._active_set_u(k));
+		qpwork._tmp2_u(k) = residual_in_z_u(qpwork._active_set_u(k));
 		qpwork._tmp_d2_u(k) = qpwork._Cdx(qpwork._active_set_u(k));
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
-		//tmp_a0_l(k) = qpwork._Cdx(qpwork._active_set_l(k));
 		qpwork._tmp_d2_l(k) = qpwork._Cdx(qpwork._active_set_l(k));
-		tmp_b0_l(k) = residual_in_z_l(qpwork._active_set_l(k));
+		qpwork._tmp2_l(k) = residual_in_z_l(qpwork._active_set_l(k));
 	}
 
 	T a = qpwork._dw_aug.head(qpmodel._dim).dot(qpwork._d_dual_for_eq) + qpresults._mu_eq * (qpwork._d_primal_residual_eq).squaredNorm() +
@@ -267,7 +258,7 @@ auto oldNew_gradient_norm_qpalm_box(
 	qpwork._aux_u = qpresults._rho * (x_ - qpwork._xe) + qpwork._g_scaled;
 	T b = x_.dot(qpwork._d_dual_for_eq) + (qpwork._aux_u).dot( qpwork._dw_aug.head(qpmodel._dim)) +
 	      qpresults._mu_eq * (qpwork._d_primal_residual_eq).dot(residual_in_y) +
-	      qpresults._mu_in * (qpwork._tmp_d2_l.dot(tmp_b0_l) + qpwork._tmp_d2_u.dot(tmp_b0_u));
+	      qpresults._mu_in * (qpwork._tmp_d2_l.dot(qpwork._tmp2_l) + qpwork._tmp_d2_u.dot(qpwork._tmp2_u));
 
 	return a * alpha + b;
 }
@@ -282,13 +273,10 @@ auto oldNew_local_saddle_point_box(
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> dual_for_eq_,
 		VectorView<T> primal_residual_eq_,
-		T& alpha,
-		//VectorViewMut<T> _tmp_d2_u,
-		//VectorViewMut<T> _tmp_d2_l,
-		//VectorViewMut<T> _tmp_d3,
-		VectorViewMut<T> _tmp2_u,
-		VectorViewMut<T> _tmp2_l,
-		VectorViewMut<T> _tmp3_local_saddle_point
+		T& alpha
+		//VectorViewMut<T> _tmp2_u,
+		//VectorViewMut<T> _tmp2_l,
+		//VectorViewMut<T> _tmp3_local_saddle_point
 		) -> T {
 	/*
 	 * the function returns the unique minimum of the positive second order
@@ -407,18 +395,15 @@ auto oldNew_local_saddle_point_box(
 	}
 	// a0 computation
 	
-	//auto tmp_d2_u = _tmp_d2_u.to_eigen();
 	qpwork._tmp_d2_u.setZero();
-	//auto tmp_d2_l = _tmp_d2_l.to_eigen();
 	qpwork._tmp_d2_l.setZero();
-	//auto tmp_d3 = _tmp_d3.to_eigen();
 	qpwork._tmp_d3.setZero();
-	auto tmp2_u = _tmp2_u.to_eigen();
-	tmp2_u.setZero();
-	auto tmp2_l = _tmp2_l.to_eigen();
-	tmp2_l.setZero();
-	auto tmp3 = _tmp3_local_saddle_point.to_eigen();
-	tmp3.setZero();
+	//auto tmp2_u = _tmp2_u.to_eigen();
+	qpwork._tmp2_u.setZero();
+	//auto tmp2_l = _tmp2_l.to_eigen();
+	qpwork._tmp2_l.setZero();
+	//auto tmp3 = _tmp3_local_saddle_point.to_eigen();
+	qpwork._tmp3_local_saddle_point.setZero();
 
 	qpwork._aux_u = qpwork._d_dual_for_eq;
 	qpwork._aux_l = dual_for_eq;
@@ -442,24 +427,24 @@ auto oldNew_local_saddle_point_box(
 	// b0 computation
 	for (isize k = 0; k < num_active_u; ++k) {
 		qpwork._aux_l.noalias()  += qpwork._active_part_z(qpwork._active_set_u(k)) * qpwork._c_scaled.row(qpwork._active_set_u(k));
-		tmp2_u(k) = residual_in_z_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
+		qpwork._tmp2_u(k) = residual_in_z_u(qpwork._active_set_u(k)) - qpwork._active_part_z(qpwork._active_set_u(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_active_l; ++k) {
 		qpwork._aux_l.noalias() += qpwork._active_part_z(qpwork._active_set_l(k)) * qpwork._c_scaled.row(qpwork._active_set_l(k));
-		tmp2_l(k) = residual_in_z_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
+		qpwork._tmp2_l(k) = residual_in_z_l(qpwork._active_set_l(k)) - qpwork._active_part_z(qpwork._active_set_l(k)) * qpresults._mu_in_inv;
 	}
 	for (isize k = 0; k < num_inactive; ++k) {
-		tmp3(k) = qpwork._active_part_z(qpwork._inactive_set(k));
+		qpwork._tmp3_local_saddle_point(k) = qpwork._active_part_z(qpwork._inactive_set(k));
 	}
 
-	T b0 =  (qpwork._aux_u.dot(qpwork._aux_l) + qpwork._tmp_d2_u.dot(tmp2_u) +
-	           qpwork._tmp_d2_l.dot(tmp2_l) + tmp3.dot(qpwork._tmp_d3) +
+	T b0 =  (qpwork._aux_u.dot(qpwork._aux_l) + qpwork._tmp_d2_u.dot(qpwork._tmp2_u) +
+	           qpwork._tmp_d2_l.dot(qpwork._tmp2_l) + qpwork._tmp3_local_saddle_point.dot(qpwork._tmp_d3) +
 	            primal_residual_eq.dot(qpwork._d_primal_residual_eq));
 
 	// c0 computation
 
-	T c0 = qpwork._aux_l.squaredNorm() + tmp2_u.squaredNorm() + tmp3.squaredNorm() +
-	       tmp2_l.squaredNorm() + primal_residual_eq.squaredNorm();
+	T c0 = qpwork._aux_l.squaredNorm() + qpwork._tmp2_u.squaredNorm() + qpwork._tmp3_local_saddle_point.squaredNorm() +
+	       qpwork._tmp2_l.squaredNorm() + primal_residual_eq.squaredNorm();
 
 	// derivation of the loss function value and corresponding argmin alpha
 
@@ -492,13 +477,10 @@ auto oldNew_initial_guess_LS(
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> dual_for_eq,
-		VectorView<T> primal_residual_eq,
-		//VectorViewMut<T> _tmp_d2_u,
-		//VectorViewMut<T> _tmp_d2_l,
-		//VectorViewMut<T> _tmp_d3,
-		VectorViewMut<T> _tmp2_u,
-		VectorViewMut<T> _tmp2_l,
-		VectorViewMut<T> _tmp3_local_saddle_point
+		VectorView<T> primal_residual_eq
+		//VectorViewMut<T> _tmp2_u,
+		//VectorViewMut<T> _tmp2_l,
+		//VectorViewMut<T> _tmp3_local_saddle_point
 		) -> T {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
@@ -709,13 +691,10 @@ auto oldNew_initial_guess_LS(
 					residual_in_z_l_,
 					dual_for_eq,
 					primal_residual_eq,
-					alpha_,
-					//_tmp_d2_u,
-					//_tmp_d2_l,
-					//_tmp_d3,
-					_tmp2_u,
-					_tmp2_l,
-					_tmp3_local_saddle_point
+					alpha_
+					//_tmp2_u,
+					//_tmp2_l,
+					//_tmp3_local_saddle_point
 					);
 
 			// 3.4 if the argmin is within the interval [alpha[i],alpha[i+1]] is
@@ -791,11 +770,9 @@ auto oldNew_correction_guess_LS(
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
-		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l,
-		//VectorViewMut<T> _tmp_a0_u,
-		VectorViewMut<T> _tmp_b0_u,
-		//VectorViewMut<T> _tmp_a0_l,
-		VectorViewMut<T> _tmp_b0_l
+		Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l
+		//VectorViewMut<T> _tmp_b0_u,
+		//VectorViewMut<T> _tmp_b0_l
 		) -> T {
 
 	/*
@@ -905,11 +882,9 @@ auto oldNew_correction_guess_LS(
 							alpha_,
 							VectorView<T>{from_eigen, residual_in_y},
 							VectorView<T>{from_eigen, residual_in_z_u},
-							VectorView<T>{from_eigen, residual_in_z_l},
-							//_tmp_a0_u,
-							_tmp_b0_u,
-							//_tmp_a0_l,
-							_tmp_b0_l
+							VectorView<T>{from_eigen, residual_in_z_l}
+							//_tmp_b0_u,
+							//_tmp_b0_l
 							);
 
 					if (gr < T(0)) {
@@ -939,11 +914,9 @@ auto oldNew_correction_guess_LS(
 					alpha_last_neg,
 					VectorView<T>{from_eigen, residual_in_y},
 					VectorView<T>{from_eigen, residual_in_z_u},
-					VectorView<T>{from_eigen, residual_in_z_l},
-					//_tmp_a0_u,
-					_tmp_b0_u,
-					//_tmp_a0_l,
-					_tmp_b0_l 
+					VectorView<T>{from_eigen, residual_in_z_l}
+					//_tmp_b0_u,
+					//_tmp_b0_l 
 					);
 			last_neg_grad = gr;
 		}

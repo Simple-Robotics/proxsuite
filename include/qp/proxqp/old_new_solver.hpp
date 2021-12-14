@@ -552,12 +552,9 @@ T oldNew_initial_guess(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& prim_in_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dual_for_eq,
         const bool VERBOSE,
-		//VectorViewMut<T> _tmp_d2_u,
-		//VectorViewMut<T> _tmp_d2_l,
-		//VectorViewMut<T> _tmp_d3,
-		VectorViewMut<T> _tmp2_u,
-		VectorViewMut<T> _tmp2_l,
-		VectorViewMut<T> _tmp3_local_saddle_point,
+		//VectorViewMut<T> _tmp2_u,
+		//VectorViewMut<T> _tmp2_l,
+		//VectorViewMut<T> _tmp3_local_saddle_point,
 		std::string str,
 		const bool chekNoAlias
 		){
@@ -684,13 +681,10 @@ T oldNew_initial_guess(
 						VectorView<T>{from_eigen,prim_in_l},
 						VectorView<T>{from_eigen,prim_in_u},
 						VectorView<T>{from_eigen,dual_for_eq},
-						VectorView<T>{from_eigen,primal_residual_eq},
-						//_tmp_d2_u,
-						//_tmp_d2_l,
-						//_tmp_d3,
-						_tmp2_u,
-						_tmp2_l,
-						_tmp3_local_saddle_point
+						VectorView<T>{from_eigen,primal_residual_eq}
+						//_tmp2_u,
+						//_tmp2_l,
+						//_tmp3_local_saddle_point
 			);
 			
 			std::cout << "alpha from initial guess " << alpha_step << std::endl;
@@ -743,10 +737,8 @@ T oldNew_correction_guess(
 		Eigen::Matrix<T,Eigen::Dynamic,1>& z_neg,
 		Eigen::Matrix<T,Eigen::Dynamic,1>& dual_for_eq,
         const bool VERBOSE,
-		//VectorViewMut<T> _tmp_a0_u,
-		VectorViewMut<T> _tmp_b0_u,
-		//VectorViewMut<T> _tmp_a0_l,
-		VectorViewMut<T> _tmp_b0_l,
+		//VectorViewMut<T> _tmp_b0_u,
+		//VectorViewMut<T> _tmp_b0_l,
 		std::string str,
 		const bool checkNoAlias
 		){
@@ -787,11 +779,9 @@ T oldNew_correction_guess(
 										qpwork,
 										residual_in_y,
 										z_pos,
-										z_neg,
-										//_tmp_a0_u,
-										_tmp_b0_u,
-										//_tmp_a0_l,
-										_tmp_b0_l
+										z_neg
+										//_tmp_b0_u,
+										//_tmp_b0_l
 				) ;
 			}
 			if (infty_norm(alpha_step * qpwork._dw_aug.head(qpmodel._dim))< 1.E-11){
@@ -855,12 +845,9 @@ QpSolveStats oldNew_qpSolve( //
 	/// 3/ structure préallouée QPData, QPSettings, QPResults
 	/// 5/ load maros problems from c++ parser
 
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d2_u(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d2_l(qpmodel._n_in);
-	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp_d3(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_u(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_l(qpmodel._n_in);
-	Eigen::Matrix<T, Eigen::Dynamic, 1> tmp3_local_saddle_point(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_u(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp2_l(qpmodel._n_in);
+	//Eigen::Matrix<T, Eigen::Dynamic, 1> tmp3_local_saddle_point(qpmodel._n_in);
 
 	RowMat test(2,2); // test it is full of nan for debug
 	std::cout << "test " << test << std::endl;
@@ -1060,12 +1047,9 @@ QpSolveStats oldNew_qpSolve( //
 							primal_residual_in_scaled_l,
 							dual_residual_scaled,
 							VERBOSE,
-							//VectorViewMut<T>{from_eigen,tmp_d2_u},
-							//VectorViewMut<T>{from_eigen,tmp_d2_l},
-							//VectorViewMut<T>{from_eigen,tmp_d3},
-							VectorViewMut<T>{from_eigen,tmp2_u},
-							VectorViewMut<T>{from_eigen,tmp2_l},
-							VectorViewMut<T>{from_eigen,tmp3_local_saddle_point},
+							//VectorViewMut<T>{from_eigen,tmp2_u},
+							//VectorViewMut<T>{from_eigen,tmp2_l},
+							//VectorViewMut<T>{from_eigen,tmp3_local_saddle_point},
 							str,
 							chekNoAlias
 
@@ -1116,10 +1100,8 @@ QpSolveStats oldNew_qpSolve( //
 						primal_residual_in_scaled_l,
 						dual_residual_scaled,
                         VERBOSE,
-						//VectorViewMut<T>{from_eigen,tmp_d2_u},
-						VectorViewMut<T>{from_eigen,tmp2_u},
-						//VectorViewMut<T>{from_eigen,tmp_d2_l},
-						VectorViewMut<T>{from_eigen,tmp2_l},
+						//VectorViewMut<T>{from_eigen,tmp2_u},
+						//VectorViewMut<T>{from_eigen,tmp2_l},
 						str,
 						chekNoAlias
 			);
