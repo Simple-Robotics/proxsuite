@@ -20,7 +20,6 @@ auto oldNew_gradient_norm_computation_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> ze,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> dual_for_eq_,
@@ -264,15 +263,11 @@ auto oldNew_local_saddle_point_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> ze,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> dual_for_eq_,
 		VectorView<T> primal_residual_eq_,
 		T& alpha
-		//VectorViewMut<T> _tmp2_u,
-		//VectorViewMut<T> _tmp2_l,
-		//VectorViewMut<T> _tmp3_local_saddle_point
 		) -> T {
 	/*
 	 * the function returns the unique minimum of the positive second order
@@ -315,8 +310,6 @@ auto oldNew_local_saddle_point_box(
 	 * the function returns the L2 norm of the merit function evaluated at the
 	 * argmin value found
 	 */
-
-	//auto z_e = ze.to_eigen();
 
 	auto residual_in_z_u = residual_in_z_u_.to_eigen();
 	auto residual_in_z_l = residual_in_z_l_.to_eigen();
@@ -369,7 +362,6 @@ auto oldNew_local_saddle_point_box(
 	}
 	
 	// form the gradient
-	//qpwork._active_part_z = z_e;
 	qpwork._active_part_z = qpwork._ze;
 	qpwork._dz_p = qpwork._dw_aug.tail(qpmodel._n_in);
 
@@ -442,9 +434,7 @@ auto oldNew_local_saddle_point_box(
 	T res(0.);
 
 	if (a0 != 0.) {
-		//alpha = (-b0 / (2 * a0));
 		alpha = -b0 / a0 ;
-		//res = a0 * pow(alpha, T(2)) + b0 * alpha + c0;
 		res = alpha * ( a0 * alpha + 2. * b0) + c0;
 	} else if (b0 != 0) {
 		alpha = (-c0 / (b0));
@@ -464,7 +454,6 @@ void oldNew_initial_guess_LS(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> ze,
 		VectorView<T> residual_in_z_l_,
 		VectorView<T> residual_in_z_u_,
 		VectorView<T> dual_for_eq,
@@ -570,9 +559,7 @@ void oldNew_initial_guess_LS(
 	// 1.1 add solutions of equation z+alpha dz = 0
 	
 	for (isize i = 0; i < qpmodel._n_in; i++) {
-		//if (std::abs(z_e(i)) != 0.) {
 		if (std::abs(qpwork._ze(i)) != 0.) {
-			//alpha_ = -z_e(i) / (qpwork._dw_aug.tail(qpmodel._n_in)(i) + machine_eps);
 			alpha_ = -qpwork._ze(i) / (qpwork._dw_aug.tail(qpmodel._n_in)(i) + machine_eps);
 			if (std::abs(alpha_)< qpsettings._R){
 				qpwork._alphas.push_back(alpha_);
@@ -621,7 +608,6 @@ void oldNew_initial_guess_LS(
 						qpmodel,
 						qpresults,
 						qpwork,
-						//ze,
 						residual_in_z_u_,
 						residual_in_z_l_,
 						dual_for_eq,
@@ -674,7 +660,6 @@ void oldNew_initial_guess_LS(
 					qpmodel,
 					qpresults,
 					qpwork,
-					//ze,
 					residual_in_z_u_,
 					residual_in_z_l_,
 					dual_for_eq,

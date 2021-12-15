@@ -571,12 +571,7 @@ T oldNew_initial_guess(
 			prim_in_u.noalias() += (z_e*qpresults._mu_in_inv) ; 
 
 			prim_in_l.noalias() += (z_e*qpresults._mu_in_inv) ; 
-			/*
-			qpwork._ruiz.unscale_dual_in_place_in(
-							VectorViewMut<T>{from_eigen, qpwork._ze}); 
-			prim_in_u.noalias() += ( qpwork._ze*qpresults._mu_in_inv) ; 
-			prim_in_l.noalias() += ( qpwork._ze*qpresults._mu_in_inv) ; 
-			*/
+
 			qpwork._l_active_set_n_u = (prim_in_u.array() >= 0.).matrix();
 			qpwork._l_active_set_n_l = (prim_in_l.array() <= 0.).matrix();
 
@@ -585,11 +580,7 @@ T oldNew_initial_guess(
 			
 			prim_in_u.noalias() -= (z_e*qpresults._mu_in_inv) ; 
 			prim_in_l.noalias() -= (z_e*qpresults._mu_in_inv) ; 
-			
-			/*
-			prim_in_u.noalias() -= (qpwork._ze*qpresults._mu_in_inv) ; 
-			prim_in_l.noalias() -= (qpwork._ze*qpresults._mu_in_inv) ; 
-			*/
+
 			qpwork._ruiz.scale_primal_residual_in_place_in(
 							VectorViewMut<T>{from_eigen, prim_in_u});
 			qpwork._ruiz.scale_primal_residual_in_place_in(
@@ -597,10 +588,7 @@ T oldNew_initial_guess(
 			
 			qpwork._ruiz.scale_dual_in_place_in(
 							VectorViewMut<T>{from_eigen, z_e});
-			/*
-			qpwork._ruiz.scale_dual_in_place_in(
-							VectorViewMut<T>{from_eigen, qpwork._ze});
-			*/
+
 			isize num_active_inequalities = qpwork._active_inequalities.count();
 			isize inner_pb_dim = qpmodel._dim + qpmodel._n_eq + num_active_inequalities;
 
@@ -644,12 +632,8 @@ T oldNew_initial_guess(
 			for (isize j = 0; j < qpmodel._n_in; ++j) {
 				isize i = qpwork._current_bijection_map(j);
 				if (i < qpresults._n_c) {
-					//dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
-					
 					qpwork._active_part_z(j) = qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i);
-					
 				} else {
-					//dw_aug_(j + dim + n_eq) = -z_(j);
 					qpwork._active_part_z(j) = -qpresults._z(j);
 				}
 			}
@@ -658,24 +642,17 @@ T oldNew_initial_guess(
 			
 			prim_in_u.noalias() += (z_e*qpresults._mu_in_inv) ; 
 			prim_in_l.noalias() += (z_e*qpresults._mu_in_inv) ; 
-			/*
-			prim_in_u.noalias() += (qpwork._ze*qpresults._mu_in_inv) ; 
-			prim_in_l.noalias() += (qpwork._ze*qpresults._mu_in_inv) ; 
-			*/
 
 			qpwork._d_primal_residual_eq.noalias() = (qpwork._a_scaled*qpwork._dw_aug.topRows(qpmodel._dim)- qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq) * qpresults._mu_eq_inv).eval() ;
 			qpwork._d_dual_for_eq.noalias() = (qpwork._h_scaled*qpwork._dw_aug.topRows(qpmodel._dim)+qpwork._a_scaled.transpose()*qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq)+qpresults._rho*qpwork._dw_aug.topRows(qpmodel._dim)).eval() ;
 			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.topRows(qpmodel._dim) ;
 			dual_for_eq.noalias() -= qpwork._c_scaled.transpose()*z_e ; 
-			//dual_for_eq.noalias() -= qpwork._c_scaled.transpose()*qpwork._ze ; 
 
 			qp::line_search::oldNew_initial_guess_LS(
 						qpsettings,
 						qpmodel,
 						qpresults,
 						qpwork,
-						//VectorView<T>{from_eigen,qpwork._ze},
-						//ze.as_const(),
 						VectorView<T>{from_eigen,prim_in_l},
 						VectorView<T>{from_eigen,prim_in_u},
 						VectorView<T>{from_eigen,dual_for_eq},
