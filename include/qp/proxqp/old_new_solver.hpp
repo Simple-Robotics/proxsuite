@@ -552,9 +552,6 @@ T oldNew_initial_guess(
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& prim_in_l,
 		Eigen::Matrix<T, Eigen::Dynamic, 1>& dual_for_eq,
         const bool VERBOSE,
-		//VectorViewMut<T> _tmp2_u,
-		//VectorViewMut<T> _tmp2_l,
-		//VectorViewMut<T> _tmp3_local_saddle_point,
 		std::string str,
 		const bool chekNoAlias
 		){
@@ -670,14 +667,15 @@ T oldNew_initial_guess(
 			qpwork._d_dual_for_eq.noalias() = (qpwork._h_scaled*qpwork._dw_aug.topRows(qpmodel._dim)+qpwork._a_scaled.transpose()*qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq)+qpresults._rho*qpwork._dw_aug.topRows(qpmodel._dim)).eval() ;
 			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.topRows(qpmodel._dim) ;
 			dual_for_eq.noalias() -= qpwork._c_scaled.transpose()*z_e ; 
-			//dual_for_eq.noalias() -= C_.transpose()*qpwork._ze ; 
+			//dual_for_eq.noalias() -= qpwork._c_scaled.transpose()*qpwork._ze ; 
 
 			qp::line_search::oldNew_initial_guess_LS(
 						qpsettings,
 						qpmodel,
 						qpresults,
 						qpwork,
-						ze.as_const(),
+						//VectorView<T>{from_eigen,qpwork._ze},
+						//ze.as_const(),
 						VectorView<T>{from_eigen,prim_in_l},
 						VectorView<T>{from_eigen,prim_in_u},
 						VectorView<T>{from_eigen,dual_for_eq},
@@ -868,7 +866,6 @@ QpSolveStats oldNew_qpSolve( //
 	qpwork._dual_feasibility_rhs_2 = infty_norm(qpmodel._g);
 	qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
 	
-
 	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
 	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
 	qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
@@ -1013,12 +1010,10 @@ QpSolveStats oldNew_qpSolve( //
 			}
 		}
 		
-		
 		qpwork._xe = qpresults._x.eval(); 
 		qpwork._ye = qpresults._y.eval(); 
 		qpwork._ze = qpresults._z.eval(); 
 		
-
 		const bool do_initial_guess_fact = (primal_feasibility_lhs < qpsettings._eps_IG || qpmodel._n_in == 0 ) ;
 
 		T err_in(0.);
