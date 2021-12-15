@@ -368,35 +368,12 @@ void oldNew_global_primal_residual(
 				qpwork._primal_residual_eq_scaled.noalias() = qpwork._a_scaled * qpresults._x;
     
 				qpwork._primal_residual_in_scaled_u.noalias() = qpwork._c_scaled * qpresults._x;
-				qpwork._primal_residual_in_scaled_l = qpwork._primal_residual_in_scaled_u;
-
 
 				qpwork._ruiz.unscale_primal_residual_in_place_eq(VectorViewMut<T>{from_eigen, qpwork._primal_residual_eq_scaled});
 				primal_feasibility_eq_rhs_0 = infty_norm(qpwork._primal_residual_eq_scaled);
 				qpwork._ruiz.unscale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._primal_residual_in_scaled_u});
 				primal_feasibility_in_rhs_0 = infty_norm(qpwork._primal_residual_in_scaled_u);
 
-
-				/*
-				{
-					qpwork._residual_scaled_tmp.middleRows(qpmodel._dim,qpmodel._n_eq) = qpwork._primal_residual_eq_scaled;
-                    qpwork._residual_scaled_tmp.bottomRows(qpmodel._n_in) = qpwork._primal_residual_in_scaled_u;
-					qpwork._ruiz.unscale_primal_residual_in_place_eq(
-							VectorViewMut<T>{from_eigen, qpwork._residual_scaled_tmp.middleRows(qpmodel._dim,qpmodel._n_eq)});
-                    qpwork._ruiz.unscale_primal_residual_in_place_in(
-							VectorViewMut<T>{from_eigen, qpwork._residual_scaled_tmp.bottomRows(qpmodel._n_in)});
-					primal_feasibility_eq_rhs_0 = infty_norm(qpwork._residual_scaled_tmp.middleRows(qpmodel._dim,qpmodel._n_eq));
-                    primal_feasibility_in_rhs_0 = infty_norm(qpwork._residual_scaled_tmp.bottomRows(qpmodel._n_in));
-				}
-
-				qpwork._primal_residual_eq_scaled -= qpwork._b_scaled;
-                qpwork._primal_residual_in_scaled_u -= qpwork._u_scaled ;
-                qpwork._primal_residual_in_scaled_l -= qpwork._l_scaled ;
-				
-
-				qpwork._primal_residual_in_scaled_u = detail::positive_part(qpwork._primal_residual_in_scaled_u);
-                qpwork._primal_residual_in_scaled_l = detail::negative_part(qpwork._primal_residual_in_scaled_l);
-				*/
 				qpwork._primal_residual_in_scaled_l.noalias() = detail::positive_part(qpwork._primal_residual_in_scaled_u -qpmodel._u)+detail::negative_part(qpwork._primal_residual_in_scaled_u-qpmodel._l);
 				qpwork._primal_residual_eq_scaled.noalias() -= qpmodel._b ; 
 
@@ -404,21 +381,6 @@ void oldNew_global_primal_residual(
 				primal_feasibility_eq_lhs = infty_norm(qpwork._primal_residual_eq_scaled);
                 primal_feasibility_lhs = max2(primal_feasibility_eq_lhs,primal_feasibility_in_lhs);
 
-				/*
-				qpwork._ruiz.unscale_primal_residual_in_place_eq(
-						VectorViewMut<T>{from_eigen, qpwork._primal_residual_eq_scaled});
-				primal_feasibility_eq_lhs = infty_norm(qpwork._primal_residual_eq_scaled);
-
-				qpwork._ruiz.scale_primal_residual_in_place_eq(
-						VectorViewMut<T>{from_eigen, qpwork._primal_residual_eq_scaled});
-				qpwork._ruiz.unscale_primal_residual_in_place_in(
-						VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_u});
-                qpwork._ruiz.unscale_primal_residual_in_place_in(
-						VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_l});
-				
-                primal_feasibility_in_lhs = max2(infty_norm(qpwork._primal_residual_in_scaled_l),infty_norm(qpwork._primal_residual_in_scaled_u));
-                primal_feasibility_lhs = max2(primal_feasibility_eq_lhs,primal_feasibility_in_lhs);
-				*/
 				qpwork._ruiz.scale_primal_residual_in_place_eq(VectorViewMut<T>{from_eigen, qpwork._primal_residual_eq_scaled});
 }
 
@@ -523,9 +485,6 @@ void oldNew_newton_step_new(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		T eps,
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& z_pos,
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& z_neg,
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& dual_for_eq,
         const bool VERBOSE,
 		std::string str,
 		const bool chekNoAlias
@@ -584,20 +543,15 @@ T oldNew_initial_guess(
 		){
 
 			auto z_e = ze.to_eigen().eval();
-			qpwork._primal_residual_in_scaled_u.noalias() =  (qpwork._c_scaled*qpresults._x-qpwork._u_scaled) ; 
-			qpwork._primal_residual_in_scaled_l.noalias() = (qpwork._c_scaled*qpresults._x-qpwork._l_scaled) ; 
 
-			qpwork._ruiz.unscale_primal_residual_in_place_in(
-							VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_u});
-			qpwork._ruiz.unscale_primal_residual_in_place_in(
-							VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_l});
-			
 			qpwork._ruiz.unscale_dual_in_place_in(
 							VectorViewMut<T>{from_eigen, z_e}); 
 			
-			qpwork._primal_residual_in_scaled_u.noalias() += (z_e*qpresults._mu_in_inv) ; 
+			qpwork._primal_residual_in_scaled_u.noalias() += (z_e*qpresults._mu_in_inv) ;  // contains now unscaled(Cx+ze/mu_in)
 
-			qpwork._primal_residual_in_scaled_l.noalias() += (z_e*qpresults._mu_in_inv) ; 
+			qpwork._primal_residual_in_scaled_l.noalias() = qpwork._primal_residual_in_scaled_u;
+			qpwork._primal_residual_in_scaled_u.noalias() -= qpmodel._u;
+			qpwork._primal_residual_in_scaled_l.noalias() -= qpmodel._l;
 
 			qpwork._l_active_set_n_u = (qpwork._primal_residual_in_scaled_u.array() >= 0.).matrix();
 			qpwork._l_active_set_n_l = (qpwork._primal_residual_in_scaled_l.array() <= 0.).matrix();
@@ -860,9 +814,6 @@ QpSolveStats oldNew_qpSolve( //
 				primal_feasibility_in_rhs_0,
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs
-				//primal_residual_eq_scaled,
-				//primal_residual_in_scaled_u,
-				//primal_residual_in_scaled_l
 		);
 		qp::detail::oldNew_global_dual_residual(
 			qpmodel,
@@ -872,7 +823,6 @@ QpSolveStats oldNew_qpSolve( //
 			dual_feasibility_rhs_0,
 			dual_feasibility_rhs_1,
         	dual_feasibility_rhs_3
-			//dual_residual_scaled
 		);
 		
 		std::cout << "---------------it : " << iter << " primal residual : " << primal_feasibility_lhs << " dual residual : " << dual_feasibility_lhs << std::endl;
@@ -976,7 +926,8 @@ QpSolveStats oldNew_qpSolve( //
 			qpwork._primal_residual_eq_scaled.noalias()  += (qpwork._ye*qpresults._mu_eq_inv); // Axe-b+ye/mu_eq
 			qpwork._primal_residual_eq_scaled.noalias()  -= (qpresults._y*qpresults._mu_eq_inv);
 
-			qpwork._primal_residual_in_scaled_u.noalias()  = qpwork._c_scaled * qpresults._x + qpwork._ze*qpresults._mu_in_inv;
+			qpwork._ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_u}); // contains now scaled(Cx) 
+			qpwork._primal_residual_in_scaled_u.noalias() += qpwork._ze*qpresults._mu_in_inv; // contains now scaled(Cx+ze/mu_in)
 			qpwork._primal_residual_in_scaled_l.noalias()  = qpwork._primal_residual_in_scaled_u ;
 			qpwork._primal_residual_in_scaled_u.noalias()  -= qpwork._u_scaled;
 			qpwork._primal_residual_in_scaled_l.noalias()  -= qpwork._l_scaled;
@@ -1013,12 +964,6 @@ QpSolveStats oldNew_qpSolve( //
 						primal_feasibility_in_rhs_0,
 						primal_feasibility_eq_lhs,
 						primal_feasibility_in_lhs
-						//primal_residual_eq_scaled,
-						//primal_residual_in_scaled_u,
-						//primal_residual_in_scaled_l
-						//primal_residual_eq_unscaled,
-						//primal_residual_in_l_unscaled,
-						//primal_residual_in_u_unscaled
 		);
 
 		qp::detail::oldNew_BCL_update(
@@ -1027,9 +972,6 @@ QpSolveStats oldNew_qpSolve( //
 					qpresults,
 					qpwork,
 					primal_feasibility_lhs_new,
-					//VectorViewMut<T>{from_eigen,primal_residual_in_scaled_u},
-					//VectorViewMut<T>{from_eigen,primal_residual_in_scaled_l},
-					//VectorViewMut<T>{from_eigen,primal_residual_eq_scaled},
 					bcl_eta_ext,
 					bcl_eta_in,
 					bcl_eta_ext_init,
@@ -1048,8 +990,6 @@ QpSolveStats oldNew_qpSolve( //
 			dual_feasibility_rhs_0,
 			dual_feasibility_rhs_1,
         	dual_feasibility_rhs_3
-			//dual_residual_scaled
-			//dual_residual_unscaled
 		);
 
 		if ((primal_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && (dual_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && qpresults._mu_in >= 1.E5){
