@@ -147,10 +147,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		T eps,
 		isize inner_pb_dim,
-        const bool VERBOSE,
-		isize it_,
-		std::string str,
-		const bool chekNoAlias
+        const bool VERBOSE
         ){
 
 	qpwork._err.setZero();
@@ -159,7 +156,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 	qpwork._dw_aug.head(inner_pb_dim) = qpwork._rhs.head(inner_pb_dim);
 	
 	qpwork._ldl.solve_in_place(qpwork._dw_aug.head(inner_pb_dim));
-
+	/*
 	if (chekNoAlias){
 		std::cout << "-----------before computing residual" << std::endl;
 		saveData("rhs_before"+std::to_string(it_)+str,qpwork._rhs);
@@ -169,6 +166,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 		std::cout << "dw_aug_" << qpwork._dw_aug << std::endl;
 		std::cout << "_err" << qpwork._err << std::endl;
 	}
+	*/
 
 
 	qp::detail::oldNew_iterative_residual<T>( 
@@ -179,6 +177,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 					it_,
 					str,
 					chekNoAlias);
+	/*
 	if (chekNoAlias){
 		std::cout << "-----------after computing residual" << std::endl;
 		std::cout << "rhs_" << qpwork._rhs << std::endl;
@@ -188,6 +187,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 		saveData("dw_aug_after"+std::to_string(it_)+str,qpwork._rhs);
 		saveData("_err_after"+std::to_string(it_)+str,qpwork._err);
 	}
+	*/
 
 	++it;
 	if (VERBOSE){
@@ -521,10 +521,7 @@ void oldNew_newton_step_new(
 					qpwork,
                     eps,
                     inner_pb_dim,
-                    VERBOSE,
-					isize(1),
-					str,
-					chekNoAlias
+                    VERBOSE
 					);
 
 }
@@ -537,9 +534,7 @@ T oldNew_initial_guess(
 		qp::OldNew_Qpworkspace<T>& qpwork,
         VectorViewMut<T> ze,
 		T eps_int,
-        const bool VERBOSE,
-		std::string str,
-		const bool chekNoAlias
+        const bool VERBOSE
 		){
 
 			auto z_e = ze.to_eigen().eval();
@@ -603,10 +598,7 @@ T oldNew_initial_guess(
 					qpwork,
                     eps_int,
                     inner_pb_dim,
-                    VERBOSE,
-					isize(2),
-					str,
-					chekNoAlias
+                    VERBOSE
 					);
 			
 			// use active_part_z as a temporary variable to permut back dw_aug newton step
@@ -677,9 +669,7 @@ T oldNew_correction_guess(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		T eps_int,
-        const bool VERBOSE,
-		std::string str,
-		const bool checkNoAlias
+        const bool VERBOSE
 		){
 
 		T err_in = 1.e6;
@@ -697,9 +687,7 @@ T oldNew_correction_guess(
 											qpresults,
 											qpwork,
 											eps_int,
-                                            VERBOSE,
-											str,
-											checkNoAlias
+                                            VERBOSE
 			);
 
 			qpwork._d_dual_for_eq.noalias() = qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
@@ -719,25 +707,29 @@ T oldNew_correction_guess(
 				break;
 			}
 			
-			qpresults._x.noalias()+= (qpwork._alpha *qpwork._dw_aug.head(qpmodel._dim)) ; 
+			qpresults._x.noalias() += (qpwork._alpha *qpwork._dw_aug.head(qpmodel._dim)) ; 
 			qpwork._primal_residual_in_scaled_u.noalias() += (qpwork._alpha *qpwork._Cdx) ;
 			qpwork._primal_residual_in_scaled_l.noalias() += (qpwork._alpha *qpwork._Cdx); 
 			qpwork._primal_residual_eq_scaled.noalias() += qpwork._alpha * qpwork._d_primal_residual_eq;
  			qpresults._y.noalias() = qpresults._mu_eq *  qpwork._primal_residual_eq_scaled  ;
-			qpwork._dual_residual_scaled.noalias() += (qpwork._alpha * ( qpresults._mu_eq * qpwork._a_scaled.transpose() * qpwork._d_primal_residual_eq + qpresults._rho * qpwork._dw_aug.head(qpmodel._dim) +  qpwork._d_dual_for_eq));
 			for (isize j = 0 ; j < qpmodel._n_in; ++j){
 				qpresults._z(j) = qpresults._mu_in*(max2(qpwork._primal_residual_in_scaled_u(j),T(0)) + std::min(qpwork._primal_residual_in_scaled_l(j),T(0))); 
 			}
 
-			qpwork._tmp1.noalias() = qpwork._h_scaled *qpresults._x ;
+			qpwork._tmp1.noalias() = qpwork._h_scaled *qpresults._x ; // see if optimization possible with += qpwork._d_dual_for_eq or replace tmp1 by qpwork._d_dual_for_eq
+			T rhs_c = max2(qpwork._correction_guess_rhs_g,infty_norm(qpwork._tmp1)) ;
 			qpwork._tmp2.noalias() = qpwork._a_scaled.transpose() * ( qpresults._y );
+			rhs_c = max2(rhs_c,infty_norm(qpwork._tmp2));
 			qpwork._tmp3.noalias() = qpwork._c_scaled.transpose() * ( qpresults._z )   ; 
-			qpwork._tmp4.noalias() = qpwork._tmp1 + qpwork._tmp2 + qpwork._tmp3  + qpwork._g_scaled + qpresults._rho* (qpresults._x-qpwork._xe) ;
+			rhs_c = max2(rhs_c,infty_norm(qpwork._tmp3));
+			qpwork._dual_residual_scaled.noalias() = qpwork._tmp1 + qpwork._tmp2 + qpwork._g_scaled + qpresults._rho* (qpresults._x-qpwork._xe) ; // _dual_residual_scaled must not contain CTz part for line search exact calculation
+			qpwork._tmp3.noalias() += qpwork._dual_residual_scaled;
+			rhs_c += 1.;
 
-			err_in = infty_norm(  qpwork._tmp4  );
-			std::cout << "---it in " << iter << " projection norm " << err_in << " alpha " << qpwork._alpha << " rhs " << eps_int * (1. + max2(max2(max2(infty_norm(qpwork._tmp1), infty_norm(qpwork._tmp2)), infty_norm(qpwork._tmp3)), qpwork._correction_guess_rhs_g))   <<  std::endl;
+			err_in = infty_norm(  qpwork._tmp3  );
+			std::cout << "---it in " << iter << " projection norm " << err_in << " alpha " << qpwork._alpha << " rhs " << eps_int * rhs_c  <<  std::endl;
 
-			if (err_in<= eps_int * (1. + max2(max2(max2(infty_norm(qpwork._tmp1), infty_norm(qpwork._tmp2)), infty_norm(qpwork._tmp3)), qpwork._correction_guess_rhs_g) )  ){
+			if (err_in<= eps_int * rhs_c  ){
 				qpresults._n_tot +=iter+1;
 				break;
 			}
@@ -752,9 +744,7 @@ QpSolveStats oldNew_qpSolve( //
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
-		std::string str,
-		const bool chekNoAlias = false) {
+		qp::OldNew_Qpworkspace<T>& qpwork) {
 
 	using namespace ldlt::tags;
     static constexpr Layout layout = rowmajor;
@@ -899,9 +889,7 @@ QpSolveStats oldNew_qpSolve( //
 							qpwork,
 							VectorViewMut<T>{from_eigen,qpwork._ze},
 							bcl_eta_in,
-							VERBOSE,
-							str,
-							chekNoAlias
+							VERBOSE
 
 			);
 			qpresults._n_tot +=1;

@@ -20,10 +20,6 @@ auto oldNew_gradient_norm_computation_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> residual_in_z_u_,
-		//VectorView<T> residual_in_z_l_,
-		//VectorView<T> dual_for_eq_,
-		//VectorView<T> primal_residual_eq_,
 		T alpha
 		) -> T {
 
@@ -60,16 +56,10 @@ auto oldNew_gradient_norm_computation_box(
 	 * inactive_inequalities = ~active_inequalities
 	 */
 
-	//auto residual_in_z_u = residual_in_z_u_.to_eigen();
-	//auto residual_in_z_l = residual_in_z_l_.to_eigen();
-	//auto dual_for_eq = dual_for_eq_.to_eigen();
-	//auto primal_residual_eq = primal_residual_eq_.to_eigen();
-
 	qpwork._active_part_z.setZero();
 	qpwork._aux_u.setZero();
 	qpwork._aux_l.setZero();
 	qpwork._rhs.setZero();
-	// define active set
 	qpwork._tmp_u.noalias() = qpwork._primal_residual_in_scaled_u + alpha * qpwork._Cdx;
 	qpwork._tmp_l.noalias() = qpwork._primal_residual_in_scaled_l + alpha * qpwork._Cdx;
 	
@@ -166,9 +156,6 @@ auto oldNew_gradient_norm_qpalm_box(
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
 		T alpha
-		//VectorView<T> residual_in_y_,
-		//VectorView<T> residual_in_z_u_,
-		//VectorView<T> residual_in_z_l_
 		) -> T {
 
 	/*
@@ -185,14 +172,6 @@ auto oldNew_gradient_norm_qpalm_box(
 	 * Below are computed its coefficient a0 and b0
 	 * in order to compute the desired gradient a0 * alpha + b0
 	 */
-
-	auto x_ = qpresults._x;
-
-	//auto residual_in_y = residual_in_y_.to_eigen();
-	//auto residual_in_z_u = residual_in_z_u_.to_eigen();
-	//auto residual_in_z_l = residual_in_z_l_.to_eigen();
-
-	// define active set
 
 	qpwork._tmp_u.noalias() = qpwork._primal_residual_in_scaled_u + qpwork._Cdx * alpha;
 	qpwork._tmp_l.noalias() = qpwork._primal_residual_in_scaled_l + qpwork._Cdx * alpha;
@@ -248,8 +227,8 @@ auto oldNew_gradient_norm_qpalm_box(
 	      qpresults._mu_in * (qpwork._tmp_d2_u.squaredNorm() + qpwork._tmp_d2_l.squaredNorm()) +
 	      qpresults._rho *  qpwork._dw_aug.head(qpmodel._dim).squaredNorm();
 
-	qpwork._aux_u.noalias() = qpresults._rho * (x_ - qpwork._xe) + qpwork._g_scaled;
-	T b = x_.dot(qpwork._d_dual_for_eq) + (qpwork._aux_u).dot( qpwork._dw_aug.head(qpmodel._dim)) +
+	qpwork._aux_u.noalias() = qpresults._rho * ( qpresults._x - qpwork._xe) + qpwork._g_scaled;
+	T b =  qpresults._x.dot(qpwork._d_dual_for_eq) + (qpwork._aux_u).dot( qpwork._dw_aug.head(qpmodel._dim)) +
 	      qpresults._mu_eq * (qpwork._d_primal_residual_eq).dot(qpwork._primal_residual_eq_scaled) +
 	      qpresults._mu_in * (qpwork._tmp_d2_l.dot(qpwork._tmp2_l) + qpwork._tmp_d2_u.dot(qpwork._tmp2_u));
 
@@ -261,10 +240,6 @@ auto oldNew_local_saddle_point_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork,
-		//VectorView<T> residual_in_z_u_,
-		//VectorView<T> residual_in_z_l_,
-		//VectorView<T> dual_for_eq_,
-		//VectorView<T> primal_residual_eq_,
 		T& alpha
 		) -> T {
 	/*
@@ -308,11 +283,6 @@ auto oldNew_local_saddle_point_box(
 	 * the function returns the L2 norm of the merit function evaluated at the
 	 * argmin value found
 	 */
-
-	//auto residual_in_z_u = residual_in_z_u_.to_eigen();
-	//auto residual_in_z_l = residual_in_z_l_.to_eigen();
-	//auto dual_for_eq = dual_for_eq_.to_eigen().eval();
-	//auto primal_residual_eq = primal_residual_eq_.to_eigen();
 
 	qpwork._tmp_u.noalias() = qpwork._primal_residual_in_scaled_u + alpha * qpwork._Cdx;
 	qpwork._tmp_l.noalias() = qpwork._primal_residual_in_scaled_l + alpha * qpwork._Cdx;
@@ -735,9 +705,6 @@ void oldNew_correction_guess_LS(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::OldNew_Qpworkspace<T>& qpwork
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_y,
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_u,
-		//Eigen::Matrix<T,Eigen::Dynamic,1>& residual_in_z_l
 		){
 
 	/*
