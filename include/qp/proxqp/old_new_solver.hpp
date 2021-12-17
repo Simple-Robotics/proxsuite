@@ -424,21 +424,6 @@ T oldNew_SaddlePoint(
 
 			err = max2(err,infty_norm(qpwork._active_part_z));
 
-			/*
-			T prim_in_e(0.);
-
-			for (isize i = 0 ; i< qpmodel._n_in ; i=i+1){ // try vectorize it 
-				if (qpresults._z(i) >0.){
-					prim_in_e = max2(prim_in_e,std::abs(qpwork._primal_residual_in_scaled_u(i)));
-				}else if (qpresults._z(i) < 0.){
-					prim_in_e = max2(prim_in_e,std::abs(qpwork._primal_residual_in_scaled_l(i)));
-				}else{
-					prim_in_e = max2(prim_in_e,max2(qpwork._primal_residual_in_scaled_u(i),T(0.))) ;
-					prim_in_e = max2(prim_in_e, std::abs(std::min(qpwork._primal_residual_in_scaled_l(i),T(0.))));
-				}
-			}
-			err = max2(err,prim_in_e);
-			*/
 			return err;
 }
 
@@ -596,18 +581,6 @@ T oldNew_initial_guess(
 
 			qpresults._x.noalias() += (qpwork._alpha * qpwork._dw_aug.topRows(qpmodel._dim)) ; 
 			qpresults._y.noalias() += (qpwork._alpha * qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq)) ; 
-
-			/*
-			for (isize i = 0; i< qpmodel._n_in ; ++i){ // try vectorization
-				if (qpwork._l_active_set_n_u(i)){
-					qpresults._z(i) = std::max(qpresults._z(i)+qpwork._alpha*qpwork._dw_aug(qpmodel._dim+qpmodel._n_eq+i),T(0.)) ; 
-				}else if (qpwork._l_active_set_n_l(i)){
-					qpresults._z(i) = std::min(qpresults._z(i)+qpwork._alpha*qpwork._dw_aug(qpmodel._dim+qpmodel._n_eq+i),T(0.)) ; 
-				} else{
-					qpresults._z(i) += qpwork._alpha*qpwork._dw_aug(qpmodel._dim+qpmodel._n_eq+i) ; 
-				}
-			}
-			*/
 
 			qpwork._active_part_z.noalias() = qpresults._z+qpwork._alpha*qpwork._dw_aug.tail(qpmodel._n_in);
 			qpwork._tmp_u.noalias() = (qpwork._active_part_z.array() > T(0.)).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
