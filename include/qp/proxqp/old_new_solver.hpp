@@ -296,7 +296,13 @@ void oldNew_BCL_update(
 		T& bcl_eta_in,
 
 		T bcl_eta_ext_init,
-		T eps_in_min
+		T eps_in_min,
+
+		T& new_bcl_mu_in,
+		T& new_bcl_mu_eq,
+		T& new_bcl_mu_in_inv,
+		T& new_bcl_mu_eq_inv
+		
 		){
 		
 		if (primal_feasibility_lhs <= bcl_eta_ext) {
@@ -307,29 +313,14 @@ void oldNew_BCL_update(
 			std::cout << "bad step"<< std::endl; 
 			qpresults._y = qpwork._ye;
 			qpresults._z = qpwork._ze;
-			T new_bcl_mu_in(std::min(qpresults._mu_in * qpsettings._mu_update_factor, qpsettings._mu_max_in));
-			T new_bcl_mu_eq(std::min(qpresults._mu_eq * qpsettings._mu_update_factor, qpsettings._mu_max_eq));
-			T new_bcl_mu_in_inv(max2(qpresults._mu_in_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_in_inv)); // mu stores the inverse of mu
-			T new_bcl_mu_eq_inv(max2(qpresults._mu_eq_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_eq_inv)); // mu stores the inverse of mu
+			
+			new_bcl_mu_in = std::min(qpresults._mu_in * qpsettings._mu_update_factor, qpsettings._mu_max_in);
+			new_bcl_mu_eq = std::min(qpresults._mu_eq * qpsettings._mu_update_factor, qpsettings._mu_max_eq);
+			new_bcl_mu_in_inv = max2(qpresults._mu_in_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_in_inv); // mu stores the inverse of mu
+			new_bcl_mu_eq_inv = max2(qpresults._mu_eq_inv * qpsettings._mu_update_inv_factor, qpsettings._mu_max_eq_inv); // mu stores the inverse of mu
 
-
-			if (qpresults._mu_in != new_bcl_mu_in || qpresults._mu_eq != new_bcl_mu_eq) {
-					{
-					++qpresults._n_mu_change;
-					}
-			}	
-			qp::detail::oldNew_mu_update(
-				qpmodel,
-				qpresults,
-				qpwork,
-				new_bcl_mu_eq_inv,
-				new_bcl_mu_in_inv);
-			qpresults._mu_eq = new_bcl_mu_eq;
-			qpresults._mu_in = new_bcl_mu_in;
-			qpresults._mu_eq_inv = new_bcl_mu_eq_inv;
-			qpresults._mu_in_inv = new_bcl_mu_in_inv;
-			bcl_eta_ext = bcl_eta_ext_init * pow(qpresults._mu_in_inv, qpsettings._alpha_bcl);
-			bcl_eta_in = max2(  qpresults._mu_in_inv  ,eps_in_min);
+			bcl_eta_ext = bcl_eta_ext_init * pow(new_bcl_mu_in_inv, qpsettings._alpha_bcl);
+			bcl_eta_in = max2(  new_bcl_mu_in_inv ,eps_in_min);
 	}
 }
 
@@ -891,6 +882,11 @@ QpSolveStats oldNew_qpSolve( //
 			}
 		}
 
+		T new_bcl_mu_in(qpresults._mu_in);
+		T new_bcl_mu_eq(qpresults._mu_eq);
+		T new_bcl_mu_in_inv(qpresults._mu_in_inv);
+		T new_bcl_mu_eq_inv(qpresults._mu_eq_inv);
+
 		qp::detail::oldNew_BCL_update(
 					qpsettings,
 					qpmodel,
@@ -900,7 +896,13 @@ QpSolveStats oldNew_qpSolve( //
 					bcl_eta_ext,
 					bcl_eta_in,
 					bcl_eta_ext_init,
-					eps_in_min
+					eps_in_min,
+
+					new_bcl_mu_in,
+					new_bcl_mu_eq,
+					new_bcl_mu_in_inv,
+					new_bcl_mu_eq_inv
+
 		);
 
 		// COLD RESTART
@@ -920,20 +922,45 @@ QpSolveStats oldNew_qpSolve( //
 		if ((primal_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && (dual_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && qpresults._mu_in >= 1.E5){
 			std::cout << "cold restart" << std::endl;
 
+			/*
 			qp::detail::oldNew_mu_update(
 				qpmodel,
 				qpresults,
 				qpwork,
 				qpsettings._cold_reset_mu_eq_inv,
 				qpsettings._cold_reset_mu_in_inv);
-			
+
 			qpresults._mu_in = qpsettings._cold_reset_mu_in;
 			qpresults._mu_eq = qpsettings._cold_reset_mu_eq;
 			qpresults._mu_in_inv = qpsettings._cold_reset_mu_in_inv;
 			qpresults._mu_eq_inv = qpsettings._cold_reset_mu_eq_inv;
 			qpresults._n_mu_change+=1;
+			*/
+
+			new_bcl_mu_in = qpsettings._cold_reset_mu_in;
+			new_bcl_mu_eq = qpsettings._cold_reset_mu_eq;
+			new_bcl_mu_in_inv = qpsettings._cold_reset_mu_in_inv;
+			new_bcl_mu_eq_inv = qpsettings._cold_reset_mu_eq_inv;
 
 		}
+
+		/// effective mu upddate
+
+		if (qpresults._mu_in != new_bcl_mu_in || qpresults._mu_eq != new_bcl_mu_eq) {
+					{
+					++qpresults._n_mu_change;
+					}
+			}	
+			qp::detail::oldNew_mu_update(
+				qpmodel,
+				qpresults,
+				qpwork,
+				new_bcl_mu_eq_inv,
+				new_bcl_mu_in_inv);
+			qpresults._mu_eq = new_bcl_mu_eq;
+			qpresults._mu_in = new_bcl_mu_in;
+			qpresults._mu_eq_inv = new_bcl_mu_eq_inv;
+			qpresults._mu_in_inv = new_bcl_mu_in_inv;
 			
 	}
 	
