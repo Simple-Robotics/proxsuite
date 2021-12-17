@@ -83,29 +83,17 @@ public:
     T _correction_guess_rhs_g;
     T _alpha;
 
-    ///// Supplementary auxiliary variable : TODO : optimize by reducing their number
+    Vec _dual_residual_scaled;
+    Vec _primal_residual_eq_scaled;
+    Vec _primal_residual_in_scaled_u;
+    Vec _primal_residual_in_scaled_l;
 
-	Vec _residual_scaled;
-	Vec _residual_scaled_tmp;
-	Vec _residual_unscaled;
 	Vec _tmp_u;
 	Vec _tmp_l;
-	Vec _aux_u;
-	Vec _aux_l;
-	Vec _dz_p;
+
 	Vec _tmp1;
 	Vec _tmp2;
 	Vec _tmp3;
-	Vec _tmp4;
-	Vec _tmp_d2_u;
-	Vec _tmp_d2_l;
-	Vec _tmp_d3;
-	Vec _tmp2_u;
-	Vec _tmp2_l;
-	Vec _tmp3_local_saddle_point;
-	VecISize _active_set_l;
-	VecISize _active_set_u;
-	VecISize _inactive_set;
 
 	OldNew_Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
@@ -135,27 +123,16 @@ public:
                 _rhs(dim+n_eq+n_in),
                 _err(dim+n_eq+n_in),
 
-                _residual_scaled(dim+n_eq+n_in),
-                _residual_scaled_tmp(dim+n_eq+2*n_in),
-                _residual_unscaled(dim+n_eq+2*n_in),
+                _dual_residual_scaled(dim),
+                _primal_residual_eq_scaled(n_eq),
+                _primal_residual_in_scaled_u(n_in),
+                _primal_residual_in_scaled_l(n_in),
+
                 _tmp_u(n_in),
                 _tmp_l(n_in),
-                _aux_u(dim),
-                _aux_l(dim),
-                _dz_p(n_in),
                 _tmp1(dim),
                 _tmp2(dim),
                 _tmp3(dim),
-                _tmp4(dim),
-                _tmp_d2_u(n_in),
-                _tmp_d2_l(n_in),
-                _tmp_d3(n_in),
-                _tmp2_u(n_in),
-                _tmp2_l(n_in),
-                _tmp3_local_saddle_point(n_in),
-                _active_set_l(n_in),
-                _active_set_u(n_in),
-                _inactive_set(n_in)
 
             {
                     _alphas.reserve( 3*n_in );
@@ -189,29 +166,17 @@ public:
                     _correction_guess_rhs_g = 0;
                     _alpha = 0.;
 
-                    _residual_scaled.setZero();
-                    _residual_scaled_tmp.setZero();
-                    _residual_unscaled.setZero();
+                    _dual_residual_scaled.setZero();
+                    _primal_residual_eq_scaled.setZero();
+                    _primal_residual_in_scaled_u.setZero();
+                    _primal_residual_in_scaled_l.setZero();
+
                     _tmp_u.setZero();
                     _tmp_l.setZero();
-                    _aux_u.setZero();
-                    _aux_l.setZero();
-                    _dz_p.setZero();
                     _tmp1.setZero();
                     _tmp2.setZero();
                     _tmp3.setZero();
-                    _tmp4.setZero();
-                    _tmp_d2_u.setZero();
-                    _tmp_d2_l.setZero();
-                    _tmp_d3.setZero();
-                    _tmp2_u.setZero();
-                    _tmp2_l.setZero();
-                    _tmp3_local_saddle_point.setZero();
-                    _active_set_l.setZero();
-                    _active_set_u.setZero();
-                    _inactive_set.setZero();
-
-                    
+   
             }
 
         
