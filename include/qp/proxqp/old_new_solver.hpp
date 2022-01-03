@@ -161,35 +161,12 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 	qpwork._dw_aug.head(inner_pb_dim) = qpwork._rhs.head(inner_pb_dim);
 	
 	qpwork._ldl.solve_in_place(qpwork._dw_aug.head(inner_pb_dim));
-	/*
-	if (chekNoAlias){
-		std::cout << "-----------before computing residual" << std::endl;
-		saveData("rhs_before"+std::to_string(it_)+str,qpwork._rhs);
-		saveData("dw_aug_before"+std::to_string(it_)+str,qpwork._rhs);
-		saveData("_err_before"+std::to_string(it_)+str,qpwork._err);
-		std::cout << "rhs_" << qpwork._rhs << std::endl;
-		std::cout << "dw_aug_" << qpwork._dw_aug << std::endl;
-		std::cout << "_err" << qpwork._err << std::endl;
-	}
-	*/
-
 
 	qp::detail::oldNew_iterative_residual<T>( 
 					qpmodel,
 					qpresults,
 					qpwork,
                     inner_pb_dim);
-	/*
-	if (chekNoAlias){
-		std::cout << "-----------after computing residual" << std::endl;
-		std::cout << "rhs_" << qpwork._rhs << std::endl;
-		std::cout << "dw_aug_" << qpwork._dw_aug << std::endl;
-		std::cout << "_err" << qpwork._err << std::endl;
-		saveData("rhs_after"+std::to_string(it_)+str,qpwork._rhs);
-		saveData("dw_aug_after"+std::to_string(it_)+str,qpwork._rhs);
-		saveData("_err_after"+std::to_string(it_)+str,qpwork._err);
-	}
-	*/
 
 	++it;
 	if (VERBOSE){
@@ -228,22 +205,23 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 			Htot.topLeftCorner(qpmodel._dim+qpmodel._n_eq, qpmodel._dim+qpmodel._n_eq) = qpwork._kkt;
 
 			Htot.diagonal().segment(qpmodel._dim+qpmodel._n_eq,qpresults._n_c).array() = -qpresults._mu_in_inv; 
-
 			for (isize i = 0; i< qpmodel._n_in ; ++i){
 					
 					isize j = qpwork._current_bijection_map(i);
 					if (j<qpresults._n_c){
 						Htot.block(j+qpmodel._dim+qpmodel._n_eq,0,1,qpmodel._dim) = qpwork._c_scaled.row(i) ; 
-						Htot.block(0,j+qpmodel._dim+qpmodel._n_eq,qpmodel._dim,1) = qpwork._c_scaled.row(i) ; 
+						Htot.block(0,j+qpmodel._dim+qpmodel._n_eq,qpmodel._dim,1) = qpwork._c_scaled.transpose().col(i) ; 
 					}
 			}
-			
+			/*
 			oldNew_refactorize(
 						qpmodel,
 						qpresults,
 						qpwork,
 						qpresults._rho
 						);
+			*/
+			qpwork._ldl.factorize(Htot);
 			
 			std::cout << " ldl.reconstructed_matrix() - Htot " << infty_norm(qpwork._ldl.reconstructed_matrix() - Htot)<< std::endl;
 		}
@@ -627,7 +605,6 @@ T oldNew_correction_guess(
 			qpwork._d_dual_for_eq.noalias() = qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 			qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 			qpwork._Cdx.noalias() = qpwork._c_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
-
 			if (qpmodel._n_in > 0){
 				qp::line_search::oldNew_correction_guess_LS(
 										qpmodel,
@@ -646,7 +623,6 @@ T oldNew_correction_guess(
 			qpwork._primal_residual_in_scaled_l.noalias() += (qpwork._alpha *qpwork._Cdx); 
 			qpwork._primal_residual_eq_scaled.noalias() += qpwork._alpha * qpwork._d_primal_residual_eq;
  			qpresults._y.noalias() = qpresults._mu_eq *  qpwork._primal_residual_eq_scaled  ;
-
 			qpresults._z.noalias() =  (qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l)) *  qpresults._mu_in;
 
 			// see if optimization possible with += qpwork._d_dual_for_eq or replace tmp1 by qpwork._d_dual_for_eq
@@ -698,8 +674,8 @@ QpSolveStats oldNew_qpSolve( //
 	//// 4/ malloc for no allocation
 	/// 5/ load maros problems from c++ parser
 
-	RowMat test(2,2); // test it is full of nan for debug
-	std::cout << "test " << test << std::endl;
+	//RowMat test(2,2); // test it is full of nan for debug
+	//std::cout << "test " << test << std::endl;
 
 	T primal_feasibility_eq_rhs_0(0);
 	T primal_feasibility_in_rhs_0(0);
@@ -921,21 +897,6 @@ QpSolveStats oldNew_qpSolve( //
 
 		if ((primal_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && (dual_feasibility_lhs_new / max2(primal_feasibility_lhs,machine_eps) >= 1.) && qpresults._mu_in >= 1.E5){
 			std::cout << "cold restart" << std::endl;
-
-			/*
-			qp::detail::oldNew_mu_update(
-				qpmodel,
-				qpresults,
-				qpwork,
-				qpsettings._cold_reset_mu_eq_inv,
-				qpsettings._cold_reset_mu_in_inv);
-
-			qpresults._mu_in = qpsettings._cold_reset_mu_in;
-			qpresults._mu_eq = qpsettings._cold_reset_mu_eq;
-			qpresults._mu_in_inv = qpsettings._cold_reset_mu_in_inv;
-			qpresults._mu_eq_inv = qpsettings._cold_reset_mu_eq_inv;
-			qpresults._n_mu_change+=1;
-			*/
 
 			new_bcl_mu_in = qpsettings._cold_reset_mu_in;
 			new_bcl_mu_eq = qpsettings._cold_reset_mu_eq;
