@@ -45,9 +45,9 @@ public:
 
     ///// Initial variable loading
 
-    Vec _xe;
-    Vec _ye;
-    Vec _ze;
+    Vec _x_prev;
+    Vec _y_prev; 
+    Vec _z_prev; 
 
     ///// KKT system storage
     ColMat _kkt;
@@ -56,15 +56,15 @@ public:
     VecISize _current_bijection_map;
     VecISize _new_bijection_map;
 
-    VecBool _l_active_set_n_u;
-    VecBool _l_active_set_n_l;
+    VecBool _active_set_up; 
+    VecBool _active_set_low; 
     VecBool _active_inequalities;
 
     //// First order residuals for line search
     
-	Vec _d_dual_for_eq;
+	Vec _Hdx; 
 	Vec _Cdx;
-	Vec _d_primal_residual_eq;
+	Vec _Adx; 
 
     Vec _active_part_z;
     std::vector<T> _alphas;
@@ -85,15 +85,15 @@ public:
 
     Vec _dual_residual_scaled;
     Vec _primal_residual_eq_scaled;
-    Vec _primal_residual_in_scaled_u;
-    Vec _primal_residual_in_scaled_l;
+    Vec _primal_residual_in_scaled_up; 
+    Vec _primal_residual_in_scaled_low; 
 
-	Vec _tmp_u;
-	Vec _tmp_l;
+	Vec _primal_residual_in_scaled_up_plus_alphaCdx; 
+	Vec _primal_residual_in_scaled_low_plus_alphaCdx; 
 
-	Vec _tmp1;
-	Vec _tmp2;
-	Vec _tmp3;
+	Vec _CTz;
+	Vec _tmp2; // erase
+	Vec _tmp3; // erase
 
 	OldNew_Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
@@ -106,18 +106,18 @@ public:
                 _b_scaled(n_eq),
                 _u_scaled(n_in),
                 _l_scaled(n_in),
-                _xe(dim),
-                _ye(n_eq),
-                _ze(n_in),
+                _x_prev(dim),
+                _y_prev(n_eq),
+                _z_prev(n_in),
                 _kkt(dim+n_eq,dim+n_eq),
                 _current_bijection_map(n_in),
                 _new_bijection_map(n_in),
-                _l_active_set_n_u(n_in),
-                _l_active_set_n_l(n_in),
+                _active_set_up(n_in),
+                _active_set_low(n_in),
                 _active_inequalities(n_in),
-                _d_dual_for_eq(dim),
+                _Hdx(dim),
                 _Cdx(n_in),
-                _d_primal_residual_eq(n_eq),
+                _Adx(n_eq),
                 _active_part_z(n_in),
                 _dw_aug(dim+n_eq+n_in),
                 _rhs(dim+n_eq+n_in),
@@ -125,14 +125,14 @@ public:
 
                 _dual_residual_scaled(dim),
                 _primal_residual_eq_scaled(n_eq),
-                _primal_residual_in_scaled_u(n_in),
-                _primal_residual_in_scaled_l(n_in),
+                _primal_residual_in_scaled_up(n_in),
+                _primal_residual_in_scaled_low(n_in),
 
-                _tmp_u(n_in),
-                _tmp_l(n_in),
-                _tmp1(dim),
+                _primal_residual_in_scaled_up_plus_alphaCdx(n_in),
+                _primal_residual_in_scaled_low_plus_alphaCdx(n_in),
+                _CTz(dim),
                 _tmp2(dim),
-                _tmp3(dim),
+                _tmp3(dim)
 
             {
                     _alphas.reserve( 3*n_in );
@@ -143,17 +143,17 @@ public:
                     _b_scaled.setZero();
                     _u_scaled.setZero();
                     _l_scaled.setZero();
-                    _xe.setZero();
-                    _ye.setZero();
-                    _ze.setZero();
+                    _x_prev.setZero();
+                    _y_prev.setZero();
+                    _z_prev.setZero();
                     _kkt.setZero();
                     for (isize i = 0; i < n_in; i++) {
                         _current_bijection_map(i) = i;
                         _new_bijection_map(i) = i;
                     }
-                    _d_dual_for_eq.setZero();
+                    _Hdx.setZero();
                     _Cdx.setZero();
-                    _d_primal_residual_eq.setZero();
+                    _Adx.setZero();
                     _active_part_z.setZero();
                     _dw_aug.setZero();
                     _rhs.setZero();
@@ -168,12 +168,12 @@ public:
 
                     _dual_residual_scaled.setZero();
                     _primal_residual_eq_scaled.setZero();
-                    _primal_residual_in_scaled_u.setZero();
-                    _primal_residual_in_scaled_l.setZero();
+                    _primal_residual_in_scaled_up.setZero();
+                    _primal_residual_in_scaled_low.setZero();
 
-                    _tmp_u.setZero();
-                    _tmp_l.setZero();
-                    _tmp1.setZero();
+                    _primal_residual_in_scaled_up_plus_alphaCdx.setZero();
+                    _primal_residual_in_scaled_low_plus_alphaCdx.setZero();
+                    _CTz.setZero();
                     _tmp2.setZero();
                     _tmp3.setZero();
    
