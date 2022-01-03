@@ -8,7 +8,7 @@
 namespace qp {
 
 template <typename T>
-struct OldNew_Qpworkspace {
+struct Qpworkspace {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
@@ -95,7 +95,7 @@ public:
 	Vec _tmp2; // erase
 	Vec _tmp3; // erase
 
-	OldNew_Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
+	Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 _ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
                 _ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc

@@ -5,14 +5,10 @@
 #include <ldlt/update.hpp>
 
 #include <qp/views.hpp>
-#include <qp/old_new_QPWorkspace.hpp>
+#include <qp/QPWorkspace.hpp>
 
-#include <qp/proxqp/in_solver.hpp>
-#include <qp/proxqp/old_solver.hpp>
-#include <qp/proxqp/old_new_solver.hpp>
+#include <qp/proxqp/solver.hpp>
 #include <qp/utils.hpp>
-#include <qp/qpalm/qpalm.hpp>
-#include <qp/osqp/osqp.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <fmt/chrono.h>
 
@@ -81,7 +77,7 @@ template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 template <typename T, Layout L>
-auto initial_guess_line_search_box( //
+auto initial_guess_line_search( //
 		VecRef<T> x,
 		VecRef<T> ye,
 		VecRef<T> ze,
@@ -96,7 +92,7 @@ auto initial_guess_line_search_box( //
 		MatRef<T, L> C,
 		VecRef<T> u,
 		VecRef<T> l) -> T {
-	return line_search::initial_guess_line_search_box(
+	return line_search::initial_guess_line_search(
 			{from_eigen, x.eval()},
 			{from_eigen, ye.eval()},
 			{from_eigen, ze.eval()},
@@ -116,7 +112,7 @@ auto initial_guess_line_search_box( //
 }
 
 template <typename T, Layout L>
-auto correction_guess_line_search_box( //
+auto correction_guess_line_search( //
 		VecRef<T> x,
 		VecRef<T> xe,
 		VecRef<T> ye,
@@ -132,7 +128,7 @@ auto correction_guess_line_search_box( //
 		MatRef<T, L> C,
 		VecRef<T> u,
 		VecRef<T> l) -> T {
-	return line_search::correction_guess_line_search_box(
+	return line_search::correction_guess_line_search(
 			{from_eigen, x.eval()},
 			{from_eigen, xe.eval()},
 			{from_eigen, ye.eval()},
@@ -618,14 +614,14 @@ T transition_algebra_after_LS_CG(
 
 
 template <typename T>
-void gradient_norm_qpalm_box(
+void gradient_norm_qpalm(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
 		T alpha,
 		T& gr){
 
-		gr = line_search::gradient_norm_qpalm_box(
+		gr = line_search::gradient_norm_qpalm(
 							qpwork,
 							qpresults,
 							qpmodel,
@@ -681,14 +677,14 @@ void transition_algebra_after_IG_LS(
 }
 
 template <typename T>
-void local_saddle_point_box(
+void local_saddle_point(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
 		T& alpha,
 		T& gr) {
 
-			gr = line_search::local_saddle_point_box(
+			gr = line_search::local_saddle_point(
 					qpwork,
 					qpresults,
 					qpmodel,
@@ -696,14 +692,14 @@ void local_saddle_point_box(
 };
 
 template <typename T>
-void gradient_norm_computation_box(
+void gradient_norm_computation(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
 		T alpha,
 		T& grad_norm) {
 
-		grad_norm = qp::line_search::gradient_norm_computation_box(
+		grad_norm = qp::line_search::gradient_norm_computation(
 						qpwork,
 						qpresults,
 						qpmodel,
@@ -871,11 +867,11 @@ INRIA LDLT decomposition
 	constexpr auto c = rowmajor;
  
  	m.def(
-			"initial_guess_line_search_box",
-			&qp::pybind11::initial_guess_line_search_box<f32, c>);
+			"initial_guess_line_search",
+			&qp::pybind11::initial_guess_line_search<f32, c>);
 	m.def(
-			"initial_guess_line_search_box",
-			&qp::pybind11::initial_guess_line_search_box<f64, c>);
+			"initial_guess_line_search",
+			&qp::pybind11::initial_guess_line_search<f64, c>);
 
  	m.def(
 			"iterative_solve_with_permut_fact",
@@ -885,11 +881,11 @@ INRIA LDLT decomposition
 			&ldlt::pybind11::iterative_solve_with_permut_fact<f64, c>);
 
 	m.def(
-			"correction_guess_line_search_box",
-			&qp::pybind11::correction_guess_line_search_box<f32, c>);
+			"correction_guess_line_search",
+			&qp::pybind11::correction_guess_line_search<f32, c>);
 	m.def(
-			"correction_guess_line_search_box",
-			&qp::pybind11::correction_guess_line_search_box<f64, c>);
+			"correction_guess_line_search",
+			&qp::pybind11::correction_guess_line_search<f64, c>);
 
 
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f32, c>);
@@ -915,14 +911,14 @@ INRIA LDLT decomposition
 	m.def("newton_step_fact", &qp::pybind11::newton_step_fact<f64>);
 	m.def("correction_guess_LS", &qp::pybind11::correction_guess_LS<f32>);
 	m.def("correction_guess_LS", &qp::pybind11::correction_guess_LS<f64>);
-	m.def("gradient_norm_qpalm_box", &qp::pybind11::gradient_norm_qpalm_box<f32>);
-	m.def("gradient_norm_qpalm_box", &qp::pybind11::gradient_norm_qpalm_box<f64>);
+	m.def("gradient_norm_qpalm", &qp::pybind11::gradient_norm_qpalm<f32>);
+	m.def("gradient_norm_qpalm", &qp::pybind11::gradient_norm_qpalm<f64>);
 	m.def("initial_guess_LS", &qp::pybind11::initial_guess_LS<f32>);
 	m.def("initial_guess_LS", &qp::pybind11::initial_guess_LS<f64>);
-	m.def("local_saddle_point_box", &qp::pybind11::local_saddle_point_box<f32>);
-	m.def("local_saddle_point_box", &qp::pybind11::local_saddle_point_box<f64>);
-	m.def("gradient_norm_computation_box", &qp::pybind11::gradient_norm_computation_box<f32>);
-	m.def("gradient_norm_computation_box", &qp::pybind11::gradient_norm_computation_box<f64>);
+	m.def("local_saddle_point", &qp::pybind11::local_saddle_point<f32>);
+	m.def("local_saddle_point", &qp::pybind11::local_saddle_point<f64>);
+	m.def("gradient_norm_computation", &qp::pybind11::gradient_norm_computation<f32>);
+	m.def("gradient_norm_computation", &qp::pybind11::gradient_norm_computation<f64>);
 	m.def("transition_algebra", &qp::pybind11::transition_algebra<f32>);
 	m.def("transition_algebra", &qp::pybind11::transition_algebra<f64>);
 

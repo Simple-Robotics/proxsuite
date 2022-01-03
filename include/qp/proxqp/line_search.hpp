@@ -16,7 +16,7 @@ namespace line_search {
 
 
 template <typename T>
-auto gradient_norm_computation_box(
+auto gradient_norm_computation(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
@@ -78,7 +78,7 @@ auto gradient_norm_computation_box(
 }
 
 template <typename T>
-auto gradient_norm_qpalm_box(
+auto gradient_norm_qpalm(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
@@ -124,7 +124,7 @@ auto gradient_norm_qpalm_box(
 }
 
 template <typename T>
-auto local_saddle_point_box(
+auto local_saddle_point(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
@@ -300,7 +300,7 @@ void initial_guess_LS(
 	 * 2.1/ it sorts the alpha nodes
 	 *
 	 * 2.2/ for each "node" it derives the L2 norm of the vector to minimize
-	 * (see function: gradient_norm_computation_box) and stores it
+	 * (see function: gradient_norm_computation) and stores it
 	 *
 	 * 3/ it defines all intervals on which the active set is constant
 	 * 3.1/ it  define intervals (for ex with n+1 nodes):
@@ -317,7 +317,7 @@ void initial_guess_LS(
 	 *
 	 * 3.3/ on this interval the merit function is a second order polynomial in
 	 * alpha
-	 * the function "local_saddle_point_box" derives the exact minimum and
+	 * the function "local_saddle_point" derives the exact minimum and
 	 * corresponding merif function L2 norm (for this minimum
 	 *
 	 * 3.4/ if the argmin is within the interval [alpha[i],alpha[i+1]] is
@@ -334,7 +334,7 @@ void initial_guess_LS(
 	qpwork._alpha = T(1.);
 
 	T alpha_n(1.);
-	T gr_n = line_search::gradient_norm_computation_box(
+	T gr_n = line_search::gradient_norm_computation(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -394,7 +394,7 @@ void initial_guess_LS(
 			if (std::abs(alpha_) < T(1.e6)) {
 				
 				// calcul de la norm du gradient du noeud
-				T grad_norm = line_search::gradient_norm_computation_box(
+				T grad_norm = line_search::gradient_norm_computation(
 						qpmodel,
 						qpresults,
 						qpwork,
@@ -422,7 +422,7 @@ void initial_guess_LS(
 			// 3.2 : it derives the mean node (alpha[i]+alpha[i+1])/2
 			// the corresponding active sets active_inequalities_u and
 			// active_inequalities_l cap ze and dz is derived through function
-			// local_saddle_point_box
+			// local_saddle_point
 
 			if (i == -1){
 				alpha_ = qpwork._alphas[0] - T(0.5);
@@ -434,9 +434,9 @@ void initial_guess_LS(
 
 			// 3.3 on this interval the merit function is a second order
 			// polynomial in alpha
-			// the function "local_saddle_point_box" derives the exact minimum
+			// the function "local_saddle_point" derives the exact minimum
 			// and corresponding merit function L2 norm (for this minimum)
-			T associated_grad_2_norm = line_search::local_saddle_point_box(
+			T associated_grad_2_norm = line_search::local_saddle_point(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -531,7 +531,7 @@ void correction_guess_LS(
 	 * For each positive alpha compute the first derivative of
 	 * phi(alpha) = [proximal augmented lagrangian of the subproblem evaluated
 	 *               at x_k + alpha dx]
-	 * using function "gradient_norm_qpalm_box"
+	 * using function "gradient_norm_qpalm"
 	 * By construction for alpha = 0,
 	 *   phi'(alpha) <= 0
 	 *   and phi'(alpha) goes to infinity with alpha
@@ -547,7 +547,7 @@ void correction_guess_LS(
 	 * loop, then do
 	 *   last_alpha_neg = 0
 	 *   last_grad_neg = phi'(0)
-	 * using function "gradient_norm_qpalm_box"
+	 * using function "gradient_norm_qpalm"
 	 *
 	 * 2.3
 	 * the optimal alpha is within the interval
@@ -603,7 +603,7 @@ void correction_guess_LS(
 					 * For each positive alpha compute the first derivative of
 					 * phi(alpha) = [proximal augmented lagrangian of the
 					 *               subproblem evaluated at x_k + alpha dx]
-					 * using function "gradient_norm_qpalm_box"
+					 * using function "gradient_norm_qpalm"
 					 *
 					 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
 					 * phi'(alpha) goes to infinity with alpha hence it cancels
@@ -615,7 +615,7 @@ void correction_guess_LS(
 					 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 					 * break the loop
 					 */
-					T gr = line_search::gradient_norm_qpalm_box(
+					T gr = line_search::gradient_norm_qpalm(
 							qpmodel,
 							qpresults,
 							qpwork,
@@ -638,11 +638,11 @@ void correction_guess_LS(
 		 * If first_alpha_pos corresponds to the first positive alpha of
 		 * previous loop, then do
 		 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
-		 * "gradient_norm_qpalm_box"
+		 * "gradient_norm_qpalm"
 		 */
 		if (last_neg_grad == T(0)) {
 			alpha_last_neg = T(0);
-			T gr = line_search::gradient_norm_qpalm_box(
+			T gr = line_search::gradient_norm_qpalm(
 					qpmodel,
 					qpresults,
 					qpwork,
