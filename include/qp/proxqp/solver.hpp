@@ -145,7 +145,7 @@ void iterative_residual(
 }
 
 template <typename T>
-void iterative_solve_with_permut_fact_new( //
+void iterative_solve_with_permut_fact( //
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -419,7 +419,7 @@ void newton_step_new(
 					qpwork
 		);
 
-        iterative_solve_with_permut_fact_new( //
+        iterative_solve_with_permut_fact( //
 					qpsettings,
 					qpmodel,
 					qpresults,
@@ -496,7 +496,7 @@ T initial_guess(
 				}
 			}	
 
-            iterative_solve_with_permut_fact_new( //
+            iterative_solve_with_permut_fact( //
 					qpsettings,
 					qpmodel,
 					qpresults,
@@ -655,7 +655,6 @@ QpSolveStats qpSolve( //
     static constexpr auto DYN = Eigen::Dynamic;
 	using RowMat = Eigen::Matrix<T, DYN, DYN, Eigen::RowMajor>;
     const bool VERBOSE = true;
-
 
 	T machine_eps = std::numeric_limits<T>::epsilon();
 

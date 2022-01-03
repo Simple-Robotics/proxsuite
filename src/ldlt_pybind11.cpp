@@ -420,7 +420,7 @@ void QPsetup( //
 	qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 	qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
 	
-    qp::detail::iterative_solve_with_permut_fact_new( //
+    qp::detail::iterative_solve_with_permut_fact( //
 		qpsettings,
 		qpmodel,
 		qpresults,
@@ -471,14 +471,14 @@ void initial_guess_fact( //
 }
 
 template <typename T>
-void iterative_solve_with_permut_fact_new( //
+void iterative_solve_with_permut_fact( //
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpsettings<T>& qpsettings,
 		T eps_int,
 		i64 inner_pb_dim) {
-			 qp::detail::iterative_solve_with_permut_fact_new(
+			 qp::detail::iterative_solve_with_permut_fact(
 				qpwork,
 				qpresults,
 				qpmodel,
@@ -614,7 +614,7 @@ void transition_algebra_before_IG_newton(
 	qpwork._rhs.segment(qpmodel._dim, qpmodel._n_eq) = -qpwork._primal_residual_eq_scaled;
 
 	{
-	detail::iterative_solve_with_permut_fact_new( //
+	detail::iterative_solve_with_permut_fact( //
 			qpwork,
 			qpresults,
 			qpmodel,
@@ -1263,8 +1263,8 @@ INRIA LDLT decomposition
 	m.def("correction_guess", &qp::pybind11::correction_guess<f64>);
 	m.def("initial_guess_fact", &qp::pybind11::initial_guess_fact<f32>);
 	m.def("initial_guess_fact", &qp::pybind11::initial_guess_fact<f64>);
-	m.def("iterative_solve_with_permut_fact_new", &qp::pybind11::iterative_solve_with_permut_fact_new<f32>);
-	m.def("iterative_solve_with_permut_fact_new", &qp::pybind11::iterative_solve_with_permut_fact_new<f64>);
+	m.def("iterative_solve_with_permut_fact", &qp::pybind11::iterative_solve_with_permut_fact<f32>);
+	m.def("iterative_solve_with_permut_fact", &qp::pybind11::iterative_solve_with_permut_fact<f64>);
 	m.def("BCL_update_fact", &qp::pybind11::BCL_update_fact<f32>);
 	m.def("BCL_update_fact", &qp::pybind11::BCL_update_fact<f64>);
 	m.def("global_primal_residual", &qp::pybind11::global_primal_residual<f32>);
