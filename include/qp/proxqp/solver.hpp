@@ -37,10 +37,10 @@ namespace detail {
 
 
 template <typename T>
-void oldNew_refactorize(
+void refactorize(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T rho_new
 		) {
 		
@@ -63,10 +63,10 @@ void oldNew_refactorize(
 }
 
 template <typename T>
-void oldNew_mu_update(
+void mu_update(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T mu_eq_new_inv,
 		T mu_in_new_inv) {
 	T diff = 0;
@@ -92,10 +92,10 @@ void oldNew_mu_update(
 }
 
 template <typename T>
-void oldNew_iterative_residual(
+void iterative_residual(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		isize inner_pb_dim) {
  
 
@@ -145,11 +145,11 @@ void oldNew_iterative_residual(
 }
 
 template <typename T>
-void oldNew_iterative_solve_with_permut_fact_new( //
+void iterative_solve_with_permut_fact_new( //
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T eps,
 		isize inner_pb_dim,
         const bool VERBOSE
@@ -162,7 +162,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 	
 	qpwork._ldl.solve_in_place(qpwork._dw_aug.head(inner_pb_dim));
 
-	qp::detail::oldNew_iterative_residual<T>( 
+	qp::detail::iterative_residual<T>( 
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -181,7 +181,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 		qpwork._dw_aug.head(inner_pb_dim).noalias() +=  qpwork._err.head(inner_pb_dim);
 
 		qpwork._err.head(inner_pb_dim).setZero();
-		qp::detail::oldNew_iterative_residual<T>(
+		qp::detail::iterative_residual<T>(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -213,14 +213,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 						Htot.block(0,j+qpmodel._dim+qpmodel._n_eq,qpmodel._dim,1) = qpwork._c_scaled.transpose().col(i) ; 
 					}
 			}
-			/*
-			oldNew_refactorize(
-						qpmodel,
-						qpresults,
-						qpwork,
-						qpresults._rho
-						);
-			*/
+
 			qpwork._ldl.factorize(Htot);
 			
 			std::cout << " ldl.reconstructed_matrix() - Htot " << infty_norm(qpwork._ldl.reconstructed_matrix() - Htot)<< std::endl;
@@ -230,7 +223,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 
 		qpwork._ldl.solve_in_place(qpwork._dw_aug.head(inner_pb_dim));
 
-		qp::detail::oldNew_iterative_residual<T>(
+		qp::detail::iterative_residual<T>(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -248,7 +241,7 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 			qpwork._dw_aug.head(inner_pb_dim).noalias()  +=  qpwork._err.head(inner_pb_dim);
   
 			qpwork._err.head(inner_pb_dim).setZero();
-			qp::detail::oldNew_iterative_residual<T>(
+			qp::detail::iterative_residual<T>(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -264,11 +257,11 @@ void oldNew_iterative_solve_with_permut_fact_new( //
 
 
 template <typename T>
-void oldNew_BCL_update(
+void BCL_update(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T& primal_feasibility_lhs,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
@@ -303,10 +296,10 @@ void oldNew_BCL_update(
 }
 
 template <typename T>
-void oldNew_global_primal_residual(
+void global_primal_residual(
 			qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
-			qp::OldNew_Qpworkspace<T>& qpwork,
+			qp::Qpworkspace<T>& qpwork,
 			T& primal_feasibility_lhs,
 			T& primal_feasibility_eq_rhs_0,
         	T& primal_feasibility_in_rhs_0,
@@ -334,10 +327,10 @@ void oldNew_global_primal_residual(
 
 
 template <typename T>
-void oldNew_global_dual_residual(
+void global_dual_residual(
 			qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
-			qp::OldNew_Qpworkspace<T>& qpwork,
+			qp::Qpworkspace<T>& qpwork,
 			T& dual_feasibility_lhs,
 			T& dual_feasibility_rhs_0,
 			T& dual_feasibility_rhs_1,
@@ -371,10 +364,10 @@ void oldNew_global_dual_residual(
 
 
 template<typename T> 
-T oldNew_SaddlePoint(
+T SaddlePoint(
 			qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
-			qp::OldNew_Qpworkspace<T>& qpwork
+			qp::Qpworkspace<T>& qpwork
 			){
 
 			qpwork._primal_residual_in_scaled_up.noalias() -=  (qpresults._z*qpresults._mu_in_inv); 
@@ -398,11 +391,11 @@ T oldNew_SaddlePoint(
 
 
 template<typename T>
-void oldNew_newton_step_new(
+void newton_step_new(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T eps,
         const bool VERBOSE
 	){
@@ -420,13 +413,13 @@ void oldNew_newton_step_new(
 
 		qpwork._rhs.topRows(qpmodel._dim).noalias() -=  qpwork._dual_residual_scaled ;
 
-        qp::line_search::oldNew_active_set_change(
+        qp::line_search::active_set_change(
 					qpmodel,
 					qpresults,
 					qpwork
 		);
 
-        oldNew_iterative_solve_with_permut_fact_new( //
+        iterative_solve_with_permut_fact_new( //
 					qpsettings,
 					qpmodel,
 					qpresults,
@@ -439,11 +432,11 @@ void oldNew_newton_step_new(
 }
 
 template<typename T>
-T oldNew_initial_guess(
+T initial_guess(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
         VectorViewMut<T> ze,
 		T eps_int,
         const bool VERBOSE
@@ -482,7 +475,7 @@ T oldNew_initial_guess(
 
 			qpwork._rhs.setZero();
 			qpwork._active_part_z.setZero();
-            qp::line_search::oldNew_active_set_change(
+            qp::line_search::active_set_change(
 								qpmodel,
 								qpresults,
 								qpwork
@@ -503,7 +496,7 @@ T oldNew_initial_guess(
 				}
 			}	
 
-            oldNew_iterative_solve_with_permut_fact_new( //
+            iterative_solve_with_permut_fact_new( //
 					qpsettings,
 					qpmodel,
 					qpresults,
@@ -533,7 +526,7 @@ T oldNew_initial_guess(
 			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.topRows(qpmodel._dim) ; // idem
 			qpwork._dual_residual_scaled.noalias() -= qpwork._c_scaled.transpose()*z_e ; 
 
-			qp::line_search::oldNew_initial_guess_LS(
+			qp::line_search::initial_guess_LS(
 						qpsettings,
 						qpmodel,
 						qpresults,
@@ -564,7 +557,7 @@ T oldNew_initial_guess(
 			qpwork._dual_residual_scaled.noalias() += qpwork._alpha* (qpwork._Hdx) ;
 			qpwork._dw_aug.setZero();
 			// TODO try for acceleration with a rhs relative error inside
-			T err_saddle_point = oldNew_SaddlePoint(
+			T err_saddle_point = SaddlePoint(
 				qpmodel,
 				qpresults,
 				qpwork
@@ -575,11 +568,11 @@ T oldNew_initial_guess(
 
 
 template<typename T>
-T oldNew_correction_guess(
+T correction_guess(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T eps_int,
         const bool VERBOSE
 		){
@@ -593,7 +586,7 @@ T oldNew_correction_guess(
 				break;
 			}
 			
-			qp::detail::oldNew_newton_step_new<T>(
+			qp::detail::newton_step_new<T>(
 											qpsettings,
 											qpmodel,
 											qpresults,
@@ -606,7 +599,7 @@ T oldNew_correction_guess(
 			qpwork._Adx.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 			qpwork._Cdx.noalias() = qpwork._c_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 			if (qpmodel._n_in > 0){
-				qp::line_search::oldNew_correction_guess_LS(
+				qp::line_search::correction_guess_LS(
 										qpmodel,
 										qpresults,
 										qpwork
@@ -651,11 +644,11 @@ T oldNew_correction_guess(
 }
 
 template <typename T>
-QpSolveStats oldNew_qpSolve( //
+QpSolveStats qpSolve( //
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork) {
+		qp::Qpworkspace<T>& qpwork) {
 
 	using namespace ldlt::tags;
     static constexpr Layout layout = rowmajor;
@@ -695,7 +688,7 @@ QpSolveStats oldNew_qpSolve( //
 
 		// compute primal residual
 
-		qp::detail::oldNew_global_primal_residual(
+		qp::detail::global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -705,7 +698,7 @@ QpSolveStats oldNew_qpSolve( //
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs
 		);
-		qp::detail::oldNew_global_dual_residual(
+		qp::detail::global_dual_residual(
 			qpmodel,
 			qpresults,
 			qpwork,
@@ -728,7 +721,7 @@ QpSolveStats oldNew_qpSolve( //
 			if (dual_feasibility_lhs >= qpsettings._refactor_dual_feasibility_threshold && qpresults._rho != qpsettings._refactor_rho_threshold){
 
 				T rho_new(qpsettings._refactor_rho_threshold);
-				oldNew_refactorize(
+				refactorize(
 						qpmodel,
 						qpresults,
 						qpwork,
@@ -757,7 +750,7 @@ QpSolveStats oldNew_qpSolve( //
 
 		if (do_initial_guess_fact){
 
-			err_in = qp::detail::oldNew_initial_guess<T>(
+			err_in = qp::detail::initial_guess<T>(
 							qpsettings,
 							qpmodel,
 							qpresults,
@@ -806,7 +799,7 @@ QpSolveStats oldNew_qpSolve( //
 
 		if (do_correction_guess){
 			
-			err_in = qp::detail::oldNew_correction_guess(
+			err_in = qp::detail::correction_guess(
 						qpsettings,
 						qpmodel,
 						qpresults,
@@ -819,7 +812,7 @@ QpSolveStats oldNew_qpSolve( //
 		
 		T primal_feasibility_lhs_new(primal_feasibility_lhs) ; 
 
-		qp::detail::oldNew_global_primal_residual(
+		qp::detail::global_primal_residual(
 						qpmodel,
 						qpresults,
 						qpwork,
@@ -835,7 +828,7 @@ QpSolveStats oldNew_qpSolve( //
 		if (is_primal_feasible){
 			T dual_feasibility_lhs_new(dual_feasibility_lhs) ; 
 		
-			qp::detail::oldNew_global_dual_residual(
+			qp::detail::global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -863,7 +856,7 @@ QpSolveStats oldNew_qpSolve( //
 		T new_bcl_mu_in_inv(qpresults._mu_in_inv);
 		T new_bcl_mu_eq_inv(qpresults._mu_eq_inv);
 
-		qp::detail::oldNew_BCL_update(
+		qp::detail::BCL_update(
 					qpsettings,
 					qpmodel,
 					qpresults,
@@ -885,7 +878,7 @@ QpSolveStats oldNew_qpSolve( //
 		
 		T dual_feasibility_lhs_new(dual_feasibility_lhs) ; 
 		
-		qp::detail::oldNew_global_dual_residual(
+		qp::detail::global_dual_residual(
 			qpmodel,
 			qpresults,
 			qpwork,
@@ -912,7 +905,7 @@ QpSolveStats oldNew_qpSolve( //
 					++qpresults._n_mu_change;
 					}
 			}	
-			qp::detail::oldNew_mu_update(
+			qp::detail::mu_update(
 				qpmodel,
 				qpresults,
 				qpwork,

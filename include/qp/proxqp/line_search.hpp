@@ -16,10 +16,10 @@ namespace line_search {
 
 
 template <typename T>
-auto oldNew_gradient_norm_computation_box(
+auto gradient_norm_computation_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T alpha
 		) -> T {
 
@@ -78,10 +78,10 @@ auto oldNew_gradient_norm_computation_box(
 }
 
 template <typename T>
-auto oldNew_gradient_norm_qpalm_box(
+auto gradient_norm_qpalm_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T alpha
 		) -> T {
 
@@ -124,10 +124,10 @@ auto oldNew_gradient_norm_qpalm_box(
 }
 
 template <typename T>
-auto oldNew_local_saddle_point_box(
+auto local_saddle_point_box(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		T& alpha
 		) -> T {
 	/*
@@ -244,11 +244,11 @@ auto oldNew_local_saddle_point_box(
 
 
 template <typename T>
-void oldNew_initial_guess_LS(
+void initial_guess_LS(
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork
+		qp::Qpworkspace<T>& qpwork
 		) {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
@@ -334,7 +334,7 @@ void oldNew_initial_guess_LS(
 	qpwork._alpha = T(1.);
 
 	T alpha_n(1.);
-	T gr_n = line_search::oldNew_gradient_norm_computation_box(
+	T gr_n = line_search::gradient_norm_computation_box(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -394,7 +394,7 @@ void oldNew_initial_guess_LS(
 			if (std::abs(alpha_) < T(1.e6)) {
 				
 				// calcul de la norm du gradient du noeud
-				T grad_norm = line_search::oldNew_gradient_norm_computation_box(
+				T grad_norm = line_search::gradient_norm_computation_box(
 						qpmodel,
 						qpresults,
 						qpwork,
@@ -436,7 +436,7 @@ void oldNew_initial_guess_LS(
 			// polynomial in alpha
 			// the function "local_saddle_point_box" derives the exact minimum
 			// and corresponding merit function L2 norm (for this minimum)
-			T associated_grad_2_norm = line_search::oldNew_local_saddle_point_box(
+			T associated_grad_2_norm = line_search::local_saddle_point_box(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -509,10 +509,10 @@ void oldNew_initial_guess_LS(
 
 
 template <typename T>
-void oldNew_correction_guess_LS(
+void correction_guess_LS(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork
+		qp::Qpworkspace<T>& qpwork
 		){
 
 	/*
@@ -615,7 +615,7 @@ void oldNew_correction_guess_LS(
 					 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 					 * break the loop
 					 */
-					T gr = line_search::oldNew_gradient_norm_qpalm_box(
+					T gr = line_search::gradient_norm_qpalm_box(
 							qpmodel,
 							qpresults,
 							qpwork,
@@ -642,7 +642,7 @@ void oldNew_correction_guess_LS(
 		 */
 		if (last_neg_grad == T(0)) {
 			alpha_last_neg = T(0);
-			T gr = line_search::oldNew_gradient_norm_qpalm_box(
+			T gr = line_search::gradient_norm_qpalm_box(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -664,10 +664,10 @@ void oldNew_correction_guess_LS(
 }
 
 template <typename T>
-void oldNew_active_set_change(
+void active_set_change(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		OldNew_Qpworkspace<T>& qpwork
+		Qpworkspace<T>& qpwork
 		) {
 
 	/*

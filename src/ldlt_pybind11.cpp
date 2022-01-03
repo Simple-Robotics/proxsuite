@@ -420,7 +420,7 @@ void QPsetup( //
 	qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 	qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
 	
-    qp::detail::oldNew_iterative_solve_with_permut_fact_new( //
+    qp::detail::iterative_solve_with_permut_fact_new( //
 		qpsettings,
 		qpmodel,
 		qpresults,
@@ -957,7 +957,7 @@ void oldNewQPsolve(
 		qp::Qpsettings<T>& qpsettings,
 		VecRefMut<T> res_iter){
 			
-			qp::detail::QpSolveStats res = qp::detail::oldNew_qpSolve( //
+			qp::detail::QpSolveStats res = qp::detail::qpSolve( //
 								qpsettings,
 								qpmodel,
 								qpresults,
