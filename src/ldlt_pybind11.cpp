@@ -347,7 +347,7 @@ void QPsetup( //
 		VecRef<T> l,
 		qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		T eps_abs,
 		T eps_rel,
@@ -953,7 +953,7 @@ template <typename T,Layout L>
 void oldNewQPsolve(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
-		qp::OldNew_Qpworkspace<T>& qpwork,
+		qp::Qpworkspace<T>& qpwork,
 		qp::Qpsettings<T>& qpsettings,
 		VecRefMut<T> res_iter){
 			
@@ -1106,108 +1106,50 @@ INRIA LDLT decomposition
 	using namespace qp;
 	// using namespace preconditioner;
 	//constexpr auto c = colmajor;
-	::pybind11::class_<qp::OldNew_Qpworkspace<f64>>(m, "OldNew_Qpworkspace")
-        .def(::pybind11::init<i64, i64, i64 &>()) // constructor
-        // read-write public data member
-        //.def_readwrite("_ruiz", &qp::Qpworkspace<f64>::_ruiz)
-		//.def_readonly("_ldl", &qp::Qpworkspace<f64>::_ldl)
-		.def_readwrite("_h_scaled", &qp::OldNew_Qpworkspace<f64>::_h_scaled)
-		.def_readwrite("_g_scaled", &qp::OldNew_Qpworkspace<f64>::_g_scaled)
-		.def_readwrite("_a_scaled", &qp::OldNew_Qpworkspace<f64>::_a_scaled)
-		.def_readwrite("_c_scaled", &qp::OldNew_Qpworkspace<f64>::_c_scaled) 
-		.def_readwrite("_b_scaled", &qp::OldNew_Qpworkspace<f64>::_b_scaled) 
-		.def_readwrite("_u_scaled", &qp::OldNew_Qpworkspace<f64>::_u_scaled) 
-		.def_readwrite("_l_scaled", &qp::OldNew_Qpworkspace<f64>::_l_scaled) 
-		.def_readwrite("_xe", &qp::OldNew_Qpworkspace<f64>::_xe) 
-		.def_readwrite("_ye", &qp::OldNew_Qpworkspace<f64>::_ye) 
-		.def_readwrite("_ze", &qp::OldNew_Qpworkspace<f64>::_ze) 
-		.def_readwrite("_kkt", &qp::OldNew_Qpworkspace<f64>::_kkt) 
-		.def_readwrite("_current_bijection_map", &qp::OldNew_Qpworkspace<f64>::_current_bijection_map)
-		.def_readwrite("_new_bijection_map", &qp::OldNew_Qpworkspace<f64>::_new_bijection_map)
-		.def_readwrite("_l_active_set_n_u", &qp::OldNew_Qpworkspace<f64>::_l_active_set_n_u)
-		.def_readwrite("_l_active_set_n_l", &qp::OldNew_Qpworkspace<f64>::_l_active_set_n_l) 
-		.def_readwrite("_active_inequalities", &qp::OldNew_Qpworkspace<f64>::_active_inequalities)
-		.def_readwrite("_d_dual_for_eq", &qp::OldNew_Qpworkspace<f64>::_d_dual_for_eq)
-		.def_readwrite("_Cdx", &qp::OldNew_Qpworkspace<f64>::_Cdx)
-		.def_readwrite("_d_primal_residual_eq", &qp::OldNew_Qpworkspace<f64>::_d_primal_residual_eq)
-		.def_readwrite("_active_part_z", &qp::OldNew_Qpworkspace<f64>::_active_part_z)
-		.def_readwrite("_alphas", &qp::OldNew_Qpworkspace<f64>::_alphas) 
-		.def_readwrite("_dw_aug", &qp::OldNew_Qpworkspace<f64>::_dw_aug) 
-		.def_readwrite("_rhs", &qp::OldNew_Qpworkspace<f64>::_rhs)
-		.def_readwrite("_err", &qp::OldNew_Qpworkspace<f64>::_err) 
-		.def_readwrite("_primal_feasibility_rhs_1_eq", &qp::OldNew_Qpworkspace<f64>::_primal_feasibility_rhs_1_eq)
-		.def_readwrite("_primal_feasibility_rhs_1_in_u", &qp::OldNew_Qpworkspace<f64>::_primal_feasibility_rhs_1_in_u) 
-		.def_readwrite("_primal_feasibility_rhs_1_in_l", &qp::OldNew_Qpworkspace<f64>::_primal_feasibility_rhs_1_in_l) 
-		.def_readwrite("_dual_feasibility_rhs_2", &qp::OldNew_Qpworkspace<f64>::_dual_feasibility_rhs_2)
-		.def_readwrite("_correction_guess_rhs_g", &qp::OldNew_Qpworkspace<f64>::_correction_guess_rhs_g)
-		.def_readwrite("_alpha", &qp::OldNew_Qpworkspace<f64>::_alpha)
-		.def_readwrite("_dual_residual_scaled", &qp::OldNew_Qpworkspace<f64>::_dual_residual_scaled)
-		.def_readwrite("_primal_residual_eq_scaled", &qp::OldNew_Qpworkspace<f64>::_primal_residual_eq_scaled)
-		.def_readwrite("_primal_residual_in_scaled_u", &qp::OldNew_Qpworkspace<f64>::_primal_residual_in_scaled_u)
-		.def_readwrite("_primal_residual_in_scaled_l", &qp::OldNew_Qpworkspace<f64>::_primal_residual_in_scaled_l)
-		.def_readwrite("_tmp_u", &qp::OldNew_Qpworkspace<f64>::_tmp_u)
-		.def_readwrite("_tmp_l", &qp::OldNew_Qpworkspace<f64>::_tmp_l)
-		.def_readwrite("_tmp1", &qp::OldNew_Qpworkspace<f64>::_tmp1) 
-		.def_readwrite("_tmp2", &qp::OldNew_Qpworkspace<f64>::_tmp2)
-		.def_readwrite("_tmp3", &qp::OldNew_Qpworkspace<f64>::_tmp3);
-
-
 	::pybind11::class_<qp::Qpworkspace<f64>>(m, "Qpworkspace")
         .def(::pybind11::init<i64, i64, i64 &>()) // constructor
         // read-write public data member
         //.def_readwrite("_ruiz", &qp::Qpworkspace<f64>::_ruiz)
 		//.def_readonly("_ldl", &qp::Qpworkspace<f64>::_ldl)
 		.def_readwrite("_h_scaled", &qp::Qpworkspace<f64>::_h_scaled)
-
 		.def_readwrite("_g_scaled", &qp::Qpworkspace<f64>::_g_scaled)
 		.def_readwrite("_a_scaled", &qp::Qpworkspace<f64>::_a_scaled)
 		.def_readwrite("_c_scaled", &qp::Qpworkspace<f64>::_c_scaled) 
 		.def_readwrite("_b_scaled", &qp::Qpworkspace<f64>::_b_scaled) 
 		.def_readwrite("_u_scaled", &qp::Qpworkspace<f64>::_u_scaled) 
 		.def_readwrite("_l_scaled", &qp::Qpworkspace<f64>::_l_scaled) 
-
-		.def_readwrite("_xe", &qp::Qpworkspace<f64>::_xe) 
-		.def_readwrite("_ye", &qp::Qpworkspace<f64>::_ye) 
-		.def_readwrite("_ze", &qp::Qpworkspace<f64>::_ze) 
-
+		.def_readwrite("_xe", &qp::Qpworkspace<f64>::_x_prev) 
+		.def_readwrite("_ye", &qp::Qpworkspace<f64>::_y_prev) 
+		.def_readwrite("_ze", &qp::Qpworkspace<f64>::_z_prev) 
 		.def_readwrite("_kkt", &qp::Qpworkspace<f64>::_kkt) 
-
 		.def_readwrite("_current_bijection_map", &qp::Qpworkspace<f64>::_current_bijection_map)
 		.def_readwrite("_new_bijection_map", &qp::Qpworkspace<f64>::_new_bijection_map)
-
-		.def_readwrite("_l_active_set_n_u", &qp::Qpworkspace<f64>::_l_active_set_n_u)
-		.def_readwrite("_l_active_set_n_l", &qp::Qpworkspace<f64>::_l_active_set_n_l) 
+		.def_readwrite("_l_active_set_up", &qp::Qpworkspace<f64>::_l_active_set_up)
+		.def_readwrite("_l_active_set_low", &qp::Qpworkspace<f64>::_l_active_set_low) 
 		.def_readwrite("_active_inequalities", &qp::Qpworkspace<f64>::_active_inequalities)
-
-		.def_readwrite("_d_dual_for_eq", &qp::Qpworkspace<f64>::_d_dual_for_eq)
+		.def_readwrite("_Hdx", &qp::Qpworkspace<f64>::_Hdx)
 		.def_readwrite("_Cdx", &qp::Qpworkspace<f64>::_Cdx)
-		.def_readwrite("_d_primal_residual_eq", &qp::Qpworkspace<f64>::_d_primal_residual_eq)
-
-		.def_readwrite("_residual_in_z_u_plus_alpha", &qp::Qpworkspace<f64>::_residual_in_z_u_plus_alpha)
-		.def_readwrite("_residual_in_z_l_plus_alpha", &qp::Qpworkspace<f64>::_residual_in_z_l_plus_alpha) 
-
+		.def_readwrite("_Adx", &qp::Qpworkspace<f64>::_Adx)
 		.def_readwrite("_active_part_z", &qp::Qpworkspace<f64>::_active_part_z)
-		.def_readwrite("alphas", &qp::Qpworkspace<f64>::alphas) 
-
+		.def_readwrite("_alphas", &qp::Qpworkspace<f64>::_alphas) 
 		.def_readwrite("_dw_aug", &qp::Qpworkspace<f64>::_dw_aug) 
 		.def_readwrite("_rhs", &qp::Qpworkspace<f64>::_rhs)
 		.def_readwrite("_err", &qp::Qpworkspace<f64>::_err) 
-
-		.def_readwrite("_primal_residual_eq_scaled", &qp::Qpworkspace<f64>::_primal_residual_eq_scaled)
-		.def_readwrite("_primal_residual_in_scaled_u", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_u)
-		.def_readwrite("_primal_residual_in_scaled_l", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_l) 
-
-		.def_readwrite("_Hx", &qp::Qpworkspace<f64>::_Hx)
-		.def_readwrite("_ATy", &qp::Qpworkspace<f64>::_ATy)
-		.def_readwrite("_CTz", &qp::Qpworkspace<f64>::_CTz)
-		.def_readwrite("_dual_residual_scaled", &qp::Qpworkspace<f64>::_dual_residual_scaled)
-
 		.def_readwrite("_primal_feasibility_rhs_1_eq", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_eq)
 		.def_readwrite("_primal_feasibility_rhs_1_in_u", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_u) 
 		.def_readwrite("_primal_feasibility_rhs_1_in_l", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_l) 
 		.def_readwrite("_dual_feasibility_rhs_2", &qp::Qpworkspace<f64>::_dual_feasibility_rhs_2)
 		.def_readwrite("_correction_guess_rhs_g", &qp::Qpworkspace<f64>::_correction_guess_rhs_g)
-		.def_readwrite("_alpha", &qp::Qpworkspace<f64>::_alpha);
+		.def_readwrite("_alpha", &qp::Qpworkspace<f64>::_alpha)
+		.def_readwrite("_dual_residual_scaled", &qp::Qpworkspace<f64>::_dual_residual_scaled)
+		.def_readwrite("_primal_residual_eq_scaled", &qp::Qpworkspace<f64>::_primal_residual_eq_scaled)
+		.def_readwrite("_primal_residual_in_scaled_up", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_up)
+		.def_readwrite("_primal_residual_in_scaled_low", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_low)
+		.def_readwrite("_primal_residual_in_scaled_up_plus_alphaCdx", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_up_plus_alphaCdx)
+		.def_readwrite("_primal_residual_in_scaled_low_plus_alphaCdx", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_low_plus_alphaCdx)
+		.def_readwrite("_CTz", &qp::Qpworkspace<f64>::_CTz) 
+		.def_readwrite("_tmp2", &qp::Qpworkspace<f64>::_tmp2)
+		.def_readwrite("_tmp3", &qp::Qpworkspace<f64>::_tmp3);
 
 	::pybind11::class_<qp::Qpresults<f64>>(m, "Qpresults")
         .def(::pybind11::init<i64, i64, i64 &>()) // constructor
