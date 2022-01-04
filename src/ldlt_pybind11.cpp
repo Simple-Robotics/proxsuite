@@ -16,6 +16,9 @@
 #include <pybind11/eigen.h>
 
 
+#include <qp/proxqp/old_solver.hpp>
+
+
 namespace ldlt {
 namespace pybind11 {
 
@@ -76,6 +79,7 @@ using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
+/*
 template <typename T, Layout L>
 auto initial_guess_line_search( //
 		VecRef<T> x,
@@ -146,6 +150,61 @@ auto correction_guess_line_search( //
 					{from_eigen, u.eval()},
 					{from_eigen, l.eval()},
 			});
+}
+*/
+
+template <typename T,Layout L>
+void oldQPsolve( //
+		VecRefMut<T> x,
+		VecRefMut<T> y,
+        VecRefMut<T> z,
+		MatRef<T, L> H,
+		VecRef<T> g,
+		MatRef<T, L> A,
+		VecRef<T> b,
+		MatRef<T, L> C,
+		VecRef<T> u,
+		VecRef<T> l,
+		isize max_iter,
+		isize max_iter_in,
+		VecRefMut<T> res_iter,
+		T eps_abs,
+		T eps_rel){
+			
+			isize dim = H.eval().rows();
+			isize n_eq = A.eval().rows();
+			isize n_in = C.eval().rows();
+			auto ruiz = qp::preconditioner::RuizEquilibration<T>{
+				dim,
+				n_eq+n_in,
+			};
+			qp::detail::QpSolveStats res = qp::detail::old_qpSolve( //
+								{from_eigen,x},
+								{from_eigen,y},
+								{from_eigen,z},
+								QpViewBox<T>{
+									{from_eigen, H.eval()},
+									{from_eigen, g.eval()},
+									{from_eigen, A.eval()},
+									{from_eigen, b.eval()},
+									{from_eigen, C.eval()},
+									{from_eigen, u.eval()},
+									{from_eigen, l.eval()},
+								},
+								max_iter,
+								max_iter_in,
+								eps_abs,
+								eps_rel,
+								LDLT_FWD(ruiz));
+			
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "n_ext : " <<  res.n_ext << std::endl;
+			std::cout << "n_tot : " <<  res.n_tot << std::endl;
+			std::cout << "mu updates : " <<  res.n_mu_updates << std::endl;
+
+			res_iter(0) = res.n_ext;
+			res_iter(1) = res.n_tot;
+			res_iter(2) = res.n_mu_updates;
 }
 
 template <typename T, Layout L>
@@ -249,7 +308,7 @@ void QPsetup( //
 
 }
 
-
+/*
 template <typename T>
 void correction_guess( //
 		qp::Qpworkspace<T>& qpwork,
@@ -519,6 +578,7 @@ void correction_guess_LS(
 								qpmodel);
 };
 
+
 template <typename T>
 void transition_algebra(
 		qp::Qpworkspace<T>& qpwork,
@@ -535,11 +595,11 @@ void transition_algebra(
 
 		if (do_initial_guess_fact && err_in >= bcl_eta_in ) {
 
-			/*
-			* ATy contains : Hx_new + rho*(x_new-xe) + ATy_new
-			* _primal_residual_eq_scaled contains : Ax_new - b -(y_new-ye)//mu_eq
-			* Hence ATy becomes below as wanted : Hx_new + rho*(x_new-xe) + mu_eq * AT(Ax_new-b + ye/mu_eq)
-			*/
+			//
+			// ATy contains : Hx_new + rho*(x_new-xe) + ATy_new
+			// _primal_residual_eq_scaled contains : Ax_new - b -(y_new-ye)//mu_eq
+			// Hence ATy becomes below as wanted : Hx_new + rho*(x_new-xe) + mu_eq * AT(Ax_new-b + ye/mu_eq)
+			//
 			qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
 			qpwork._Hx.noalias() += qpwork._alpha * qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim);
 			qpwork._ATy.noalias() +=  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults._mu_eq ; //mu stores mu
@@ -706,7 +766,7 @@ void gradient_norm_computation(
 						alpha);
 
 };
-
+*/
 
 template <typename T,Layout L>
 void oldNewQPsolve(
@@ -770,8 +830,8 @@ INRIA LDLT decomposition
 		.def_readwrite("_kkt", &qp::Qpworkspace<f64>::_kkt) 
 		.def_readwrite("_current_bijection_map", &qp::Qpworkspace<f64>::_current_bijection_map)
 		.def_readwrite("_new_bijection_map", &qp::Qpworkspace<f64>::_new_bijection_map)
-		.def_readwrite("_l_active_set_up", &qp::Qpworkspace<f64>::_l_active_set_up)
-		.def_readwrite("_l_active_set_low", &qp::Qpworkspace<f64>::_l_active_set_low) 
+		.def_readwrite("_active_set_up", &qp::Qpworkspace<f64>::_active_set_up)
+		.def_readwrite("_active_set_low", &qp::Qpworkspace<f64>::_active_set_low) 
 		.def_readwrite("_active_inequalities", &qp::Qpworkspace<f64>::_active_inequalities)
 		.def_readwrite("_Hdx", &qp::Qpworkspace<f64>::_Hdx)
 		.def_readwrite("_Cdx", &qp::Qpworkspace<f64>::_Cdx)
@@ -865,7 +925,7 @@ INRIA LDLT decomposition
 
 
 	constexpr auto c = rowmajor;
- 
+	/*
  	m.def(
 			"initial_guess_line_search",
 			&qp::pybind11::initial_guess_line_search<f32, c>);
@@ -887,12 +947,16 @@ INRIA LDLT decomposition
 			"correction_guess_line_search",
 			&qp::pybind11::correction_guess_line_search<f64, c>);
 
-
+	*/
+	m.def("oldQPsolve", &qp::pybind11::oldQPsolve<f32, c>);
+	m.def("oldQPsolve", &qp::pybind11::oldQPsolve<f64, c>);
+	
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f32, c>);
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f64, c>);
 
 	m.def("QPsetup", &qp::pybind11::QPsetup<f32, c>);
 	m.def("QPsetup", &qp::pybind11::QPsetup<f64, c>);
+	/*
 	m.def("correction_guess", &qp::pybind11::correction_guess<f32>);
 	m.def("correction_guess", &qp::pybind11::correction_guess<f64>);
 	m.def("initial_guess_fact", &qp::pybind11::initial_guess_fact<f32>);
@@ -930,7 +994,7 @@ INRIA LDLT decomposition
 	m.def("transition_algebra_before_IG_newton", &qp::pybind11::transition_algebra_before_IG_newton<f64>);
 	m.def("transition_algebra_after_IG_LS", &qp::pybind11::transition_algebra_after_IG_LS<f32>);
 	m.def("transition_algebra_after_IG_LS", &qp::pybind11::transition_algebra_after_IG_LS<f64>);
-
+	*/
 
 	m.attr("__version__") = "dev";
 }

@@ -3,6 +3,10 @@
 
 #include "ldlt/views.hpp"
 #include "qp/views.hpp"
+#include "qp/QPData.hpp"
+#include "qp/QPResults.hpp"
+#include "qp/QPWorkspace.hpp"
+#include "qp/QPSettings.hpp"
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -13,7 +17,6 @@ inline namespace tags {
 using namespace ldlt::tags;
 }
 namespace line_search {
-
 
 template <typename T>
 auto gradient_norm_computation(
@@ -222,7 +225,6 @@ auto local_saddle_point(
 	b0 += qpwork._rhs.tail(qpmodel._n_in).dot(qpwork._active_part_z);
 	c0 += qpwork._rhs.tail(qpmodel._n_in).squaredNorm(); // z_inact squared
 
-	
 	b0 *= 2;
 
 	// derivation of the loss function value and corresponding argmin alpha
@@ -230,7 +232,7 @@ auto local_saddle_point(
 
 	if (a0 != 0) {
 		alpha = (-b0 / (2 * a0));
-		res = a0 * qp::detail::square(alpha) + b0 * alpha + c0;
+		res = (a0 * alpha + b0) * alpha + c0;
 	} else if (b0 != 0) {
 		alpha = (-c0 / (b0));
 		res = b0 * alpha + c0;
@@ -241,7 +243,6 @@ auto local_saddle_point(
 
 	return res;
 }
-
 
 template <typename T>
 void initial_guess_LS(
