@@ -92,8 +92,8 @@ public:
 	Vec _primal_residual_in_scaled_low_plus_alphaCdx; 
 
 	Vec _CTz;
-	Vec _tmp2; // erase
-	Vec _tmp3; // erase
+	//Vec _tmp2; // erase
+	//Vec _tmp3; // erase
 
 	Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
@@ -130,9 +130,9 @@ public:
 
                 _primal_residual_in_scaled_up_plus_alphaCdx(n_in),
                 _primal_residual_in_scaled_low_plus_alphaCdx(n_in),
-                _CTz(dim),
-                _tmp2(dim),
-                _tmp3(dim)
+                _CTz(dim)
+                //_tmp2(dim),
+                //_tmp3(dim)
 
             {
                     _alphas.reserve( 3*n_in );
@@ -174,8 +174,8 @@ public:
                     _primal_residual_in_scaled_up_plus_alphaCdx.setZero();
                     _primal_residual_in_scaled_low_plus_alphaCdx.setZero();
                     _CTz.setZero();
-                    _tmp2.setZero();
-                    _tmp3.setZero();
+                    //_tmp2.setZero();
+                    //_tmp3.setZero();
    
             }
 

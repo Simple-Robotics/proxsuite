@@ -336,15 +336,15 @@ void global_dual_residual(
 			qpwork._dual_residual_scaled.noalias()+=qpwork._CTz;
 			qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen, qpwork._CTz});
 			dual_feasibility_rhs_0 = infty_norm(qpwork._CTz);
-			qpwork._tmp2.noalias() = qpwork._a_scaled.transpose() * qpresults._y;
-			qpwork._dual_residual_scaled.noalias() += qpwork._tmp2; 
-			qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen, qpwork._tmp2});
-			dual_feasibility_rhs_1 = infty_norm(qpwork._tmp2);
+			qpwork._CTz.noalias() = qpwork._a_scaled.transpose() * qpresults._y;
+			qpwork._dual_residual_scaled.noalias() += qpwork._CTz; 
+			qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen, qpwork._CTz});
+			dual_feasibility_rhs_1 = infty_norm(qpwork._CTz);
 
-			qpwork._tmp3.noalias() = qpwork._c_scaled.transpose() * qpresults._z;
-			qpwork._dual_residual_scaled.noalias() += qpwork._tmp3; 
-			qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._tmp3});
-			dual_feasibility_rhs_3 = infty_norm(qpwork._tmp3);
+			qpwork._CTz.noalias() = qpwork._c_scaled.transpose() * qpresults._z;
+			qpwork._dual_residual_scaled.noalias() += qpwork._CTz; 
+			qpwork._ruiz.unscale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._CTz});
+			dual_feasibility_rhs_3 = infty_norm(qpwork._CTz);
 
 			qpwork._ruiz.unscale_dual_residual_in_place(
 					VectorViewMut<T>{from_eigen, qpwork._dual_residual_scaled});
@@ -590,12 +590,12 @@ T correction_guess(
 			// see if optimization possible with += qpwork._Hdx or replace tmp1 by qpwork._Hdx
 			qpwork._dual_residual_scaled.noalias() = qpwork._h_scaled *qpresults._x ;
 			T rhs_c = max2(qpwork._correction_guess_rhs_g,infty_norm(qpwork._dual_residual_scaled)) ;
-			qpwork._tmp2.noalias() = qpwork._a_scaled.transpose() * ( qpresults._y );
-			qpwork._dual_residual_scaled.noalias()+= qpwork._tmp2;
-			rhs_c = max2(rhs_c,infty_norm(qpwork._tmp2));
-			qpwork._tmp3.noalias() = qpwork._c_scaled.transpose() * ( qpresults._z )   ; 
-			qpwork._dual_residual_scaled.noalias()+= qpwork._tmp3;
-			rhs_c = max2(rhs_c,infty_norm(qpwork._tmp3));
+			qpwork._CTz.noalias() = qpwork._a_scaled.transpose() * ( qpresults._y );
+			qpwork._dual_residual_scaled.noalias()+= qpwork._CTz;
+			rhs_c = max2(rhs_c,infty_norm(qpwork._CTz));
+			qpwork._CTz.noalias() = qpwork._c_scaled.transpose() * ( qpresults._z )   ; 
+			qpwork._dual_residual_scaled.noalias()+= qpwork._CTz;
+			rhs_c = max2(rhs_c,infty_norm(qpwork._CTz));
 			qpwork._dual_residual_scaled.noalias() +=  qpwork._g_scaled + qpresults._rho* (qpresults._x-qpwork._x_prev) ; 
 			rhs_c += 1.;
 
@@ -806,15 +806,15 @@ QpSolveStats qpSolve( //
 				dual_feasibility_rhs_3
 			);
 
-			is_dual_feasible =dual_feasibility_lhs <=(qpsettings._eps_abs + qpsettings._eps_rel * max2( max2(   dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+			is_dual_feasible = dual_feasibility_lhs_new <=(qpsettings._eps_abs + qpsettings._eps_rel * max2( max2(   dual_feasibility_rhs_3, dual_feasibility_rhs_0),
 													max2( dual_feasibility_rhs_1, qpwork._dual_feasibility_rhs_2)) );
 
 			if (is_dual_feasible){
-				{
+				
 				qpwork._ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,qpresults._x}); 
 				qpwork._ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{from_eigen,qpresults._y});
 				qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpresults._z});
-				}
+				
 				return {qpresults._n_ext, qpresults._n_mu_change,qpresults._n_tot};
 			}
 		}
