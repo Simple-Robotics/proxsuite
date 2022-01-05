@@ -167,6 +167,7 @@ void iterative_solve_with_permut_fact( //
 		std::cout << "infty_norm(res) " << qp::infty_norm( qpwork._err.head(inner_pb_dim)) << std::endl;
 	}
 	while (infty_norm( qpwork._err.head(inner_pb_dim)) >= eps) {
+
 		if (it >= qpsettings._nb_iterative_refinement) {
 			break;
 		} 
@@ -185,7 +186,8 @@ void iterative_solve_with_permut_fact( //
 			std::cout << "infty_norm(res) " << qp::infty_norm(qpwork._err.head(inner_pb_dim)) << std::endl;
 		}
 	}
-	if (qp::infty_norm(qpwork._err.head(inner_pb_dim))>= std::max(eps,qpsettings._eps_refact)){
+
+	if (infty_norm( qpwork._err.head(inner_pb_dim))>= std::max(eps,qpsettings._eps_refact)){
 		{
 			
 			LDLT_MULTI_WORKSPACE_MEMORY(
@@ -226,7 +228,9 @@ void iterative_solve_with_permut_fact( //
 		if (VERBOSE){
 			std::cout << "infty_norm(res) " << qp::infty_norm( qpwork._err.head(inner_pb_dim)) << std::endl;
 		}
-		while (infty_norm( qpwork._err.head(inner_pb_dim)) >= eps) {
+		while ( infty_norm( qpwork._err.head(inner_pb_dim)) >= eps) {
+
+
 			if (it >= qpsettings._nb_iterative_refinement) {
 				break;
 			}
@@ -493,9 +497,11 @@ T initial_guess(
 			qpwork._dw_aug.tail(qpmodel._n_in) = qpwork._active_part_z ;
 			qpwork._primal_residual_in_scaled_up.noalias() += (z_e*qpresults._mu_in_inv) ; 
 			qpwork._primal_residual_in_scaled_low.noalias() += (z_e*qpresults._mu_in_inv) ; 
-			qpwork._Adx.noalias() = (qpwork._a_scaled*qpwork._dw_aug.topRows(qpmodel._dim)- qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq) * qpresults._mu_eq_inv).eval() ; // try optimization
-			qpwork._Hdx.noalias() = (qpwork._h_scaled*qpwork._dw_aug.topRows(qpmodel._dim)+qpwork._a_scaled.transpose()*qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq)+qpresults._rho*qpwork._dw_aug.topRows(qpmodel._dim)).eval() ; // idem
-			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.topRows(qpmodel._dim) ; // idem
+			qpwork._Adx.noalias() = (qpwork._a_scaled*qpwork._dw_aug.topRows(qpmodel._dim)- qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq) * qpresults._mu_eq_inv).eval() ; // try 1st optimization : qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq);
+			qpwork._Hdx.noalias() = (qpwork._h_scaled*qpwork._dw_aug.topRows(qpmodel._dim)+qpwork._a_scaled.transpose()*qpwork._dw_aug.middleRows(qpmodel._dim,qpmodel._n_eq)+qpresults._rho*qpwork._dw_aug.topRows(qpmodel._dim)).eval() ; // try 2nd vectorized with tail of error for dz_I : = qpwork._dual_residual_scaled-qpwork._c_scaled.transpose()*dz_I
+			// qpwork._err.tail(qpmodel._n_in).noalias() = (qpwork._active_inequalities).select(qpwork._active_part_z , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+			// qpwork._Hdx.noalias() = qpwork._dual_residual_scaled-qpwork._c_scaled.transpose()*qpwork._err.tail(qpmodel._n_in);
+			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.topRows(qpmodel._dim) ; 
 			qpwork._dual_residual_scaled.noalias() -= qpwork._c_scaled.transpose()*z_e ; 
 			qp::line_search::initial_guess_LS(
 						qpsettings,
@@ -523,13 +529,13 @@ T initial_guess(
 			qpwork._dw_aug.setZero();
 			// TODO try for acceleration with a rhs relative error inside
 
-			T err_saddle_point(1.);
-			if (std::abs(qpwork._alpha)>1.E-10){
-				err_saddle_point = SaddlePoint(
+			T err_saddle_point = SaddlePoint(
 					qpmodel,
 					qpresults,
 					qpwork
 				);
+			if (std::abs(qpwork._alpha)<1.E-10){
+				err_saddle_point = 1.;
 			}
 			
 			return err_saddle_point;
@@ -565,7 +571,7 @@ T correction_guess(
 			);
 
 			qpwork._Hdx.noalias() = qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
-			qpwork._Adx.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
+			qpwork._Adx.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim) ; // try replacing it by qpresults._mu_eq * qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
 			qpwork._Cdx.noalias() = qpwork._c_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 			if (qpmodel._n_in > 0){
 				qp::line_search::correction_guess_LS(
@@ -587,7 +593,6 @@ T correction_guess(
  			qpresults._y.noalias() = qpresults._mu_eq *  qpwork._primal_residual_eq_scaled  ;
 			qpresults._z.noalias() =  (qp::detail::positive_part(qpwork._primal_residual_in_scaled_up) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_low)) *  qpresults._mu_in;
 
-			// see if optimization possible with += qpwork._Hdx or replace tmp1 by qpwork._Hdx
 			qpwork._dual_residual_scaled.noalias() = qpwork._h_scaled *qpresults._x ;
 			T rhs_c = max2(qpwork._correction_guess_rhs_g,infty_norm(qpwork._dual_residual_scaled)) ;
 			qpwork._CTz.noalias() = qpwork._a_scaled.transpose() * ( qpresults._y );
@@ -676,6 +681,11 @@ QpSolveStats qpSolve( //
         	dual_feasibility_rhs_3
 		);
 		
+		T new_bcl_mu_in(qpresults._mu_in);
+		T new_bcl_mu_eq(qpresults._mu_eq);
+		T new_bcl_mu_in_inv(qpresults._mu_in_inv);
+		T new_bcl_mu_eq_inv(qpresults._mu_eq_inv);
+
 		std::cout << "---------------it : " << iter << " primal residual : " << primal_feasibility_lhs << " dual residual : " << dual_feasibility_lhs << std::endl;
 		std::cout << "bcl_eta_ext : " << bcl_eta_ext << " bcl_eta_in : " << bcl_eta_in <<  " rho : " << qpresults._rho << " bcl_mu_eq : " << qpresults._mu_eq << " bcl_mu_in : " << qpresults._mu_in <<std::endl;
 
@@ -686,7 +696,8 @@ QpSolveStats qpSolve( //
 
 		if (is_primal_feasible){
 			
-			if (dual_feasibility_lhs >= qpsettings._refactor_dual_feasibility_threshold && qpresults._rho != qpsettings._refactor_rho_threshold && false){
+
+			if (dual_feasibility_lhs >= qpsettings._refactor_dual_feasibility_threshold && qpresults._rho != qpsettings._refactor_rho_threshold){
 
 				T rho_new(qpsettings._refactor_rho_threshold);
 				refactorize(
@@ -694,7 +705,7 @@ QpSolveStats qpSolve( //
 						qpresults,
 						qpwork,
 						rho_new
-						);
+				);
 
 				qpresults._rho = rho_new;
 			}
@@ -818,11 +829,6 @@ QpSolveStats qpSolve( //
 				return {qpresults._n_ext, qpresults._n_mu_change,qpresults._n_tot};
 			}
 		}
-
-		T new_bcl_mu_in(qpresults._mu_in);
-		T new_bcl_mu_eq(qpresults._mu_eq);
-		T new_bcl_mu_in_inv(qpresults._mu_in_inv);
-		T new_bcl_mu_eq_inv(qpresults._mu_eq_inv);
 
 		qp::detail::BCL_update(
 					qpsettings,

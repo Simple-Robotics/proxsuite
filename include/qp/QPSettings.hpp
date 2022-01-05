@@ -43,7 +43,7 @@ public:
 
 	Qpsettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
                T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
-               T mu_max_eq=1e6, T mu_max_in=1e6, T mu_max_eq_inv=1e-6,T mu_max_in_inv=1e-6,
+               T mu_max_eq=1e9, T mu_max_in=1e8, T mu_max_eq_inv=1e-9,T mu_max_in_inv=1e-8,
                T mu_update_factor=10, T mu_update_inv_factor=0.1,
                T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
                T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
