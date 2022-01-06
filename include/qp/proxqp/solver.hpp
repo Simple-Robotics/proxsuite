@@ -750,20 +750,20 @@ QpSolveStats qpSolve( //
 		
 		if ((do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel._n_in != 0)){
 
-			qpwork._dual_residual_scaled.noalias() += -qpwork._c_scaled.transpose()*qpresults._z ; // contains now Hx* + rho(x*-xe) + g + ATy*
-			qpwork._dual_residual_scaled.noalias() += qpresults._mu_eq * qpwork._a_scaled.transpose()*qpwork._primal_residual_eq_scaled ; // contains now Hx* + rho(x*-xe) + g + AT(ye+mu_eq*(Ax*-b))
-			qpwork._primal_residual_eq_scaled.noalias()  += (qpresults._y*qpresults._mu_eq_inv); // contains now Ax*-b + ye/mu_eq
-			qpwork._primal_residual_in_scaled_up.noalias()  += (qpresults._z*qpresults._mu_in_inv);// contains now Cx*-u + ze/mu_eq
-			qpwork._primal_residual_in_scaled_low.noalias() += (qpresults._z*qpresults._mu_in_inv); // contains now Cx*-l + ze/mu_eq
+			qpwork._dual_residual_scaled.noalias() += -qpwork._c_scaled.transpose()*qpresults._z ; // contains now Hx* + rho(x*-x_prev) + g + ATy*
+			qpwork._dual_residual_scaled.noalias() += qpresults._mu_eq * qpwork._a_scaled.transpose()*qpwork._primal_residual_eq_scaled ; // contains now Hx* + rho(x*-x_prev) + g + AT(ye+mu_eq*(Ax*-b))
+			qpwork._primal_residual_eq_scaled.noalias()  += (qpresults._y*qpresults._mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
+			qpwork._primal_residual_in_scaled_up.noalias()  += (qpresults._z*qpresults._mu_in_inv);// contains now Cx*-u + z_prev/mu_eq
+			qpwork._primal_residual_in_scaled_low.noalias() += (qpresults._z*qpresults._mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
 
 			qpwork._active_part_z.noalias() = qpresults._mu_in*( qp::detail::positive_part(qpwork._primal_residual_in_scaled_up) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_low) );
 			qpwork._dual_residual_scaled.noalias() +=  qpwork._c_scaled.transpose() * qpwork._active_part_z  ;// contains now Hx + g + AT(y + mu(Ax-b)) + CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
 
 		}
-		if (!do_initial_guess_fact && qpmodel._n_in != 0){ // y=ye, x=xe, 
+		if (!do_initial_guess_fact && qpmodel._n_in != 0){ // y=y_prev, x=x_prev, 
 
 			qpwork._ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_up}); // contains now scaled(Cx) 
-			qpwork._primal_residual_in_scaled_up.noalias() += qpwork._z_prev*qpresults._mu_in_inv; // contains now scaled(Cx+ze/mu_in)
+			qpwork._primal_residual_in_scaled_up.noalias() += qpwork._z_prev*qpresults._mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
 			qpwork._primal_residual_in_scaled_low.noalias()  = qpwork._primal_residual_in_scaled_up ;
 			qpwork._primal_residual_in_scaled_up.noalias()  -= qpwork._u_scaled;
 			qpwork._primal_residual_in_scaled_low.noalias()  -= qpwork._l_scaled;

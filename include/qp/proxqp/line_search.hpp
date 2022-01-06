@@ -225,16 +225,18 @@ auto local_saddle_point(
 	b0 += qpwork._rhs.tail(qpmodel._n_in).dot(qpwork._active_part_z);
 	c0 += qpwork._rhs.tail(qpmodel._n_in).squaredNorm(); // z_inact squared
 
-	b0 *= 2;
+	//b0 *= 2;
 
 	// derivation of the loss function value and corresponding argmin alpha
 	T res = 0;
 
 	if (a0 != 0) {
-		alpha = (-b0 / (2 * a0));
-		res = (a0 * alpha + b0) * alpha + c0;
+		//alpha = (-b0 / (2 * a0));
+		//res = (a0 * alpha + b0) * alpha + c0;
+		alpha = -b0 /  a0;
+		res = (a0 * alpha + 2*b0) * alpha + c0;
 	} else if (b0 != 0) {
-		alpha = (-c0 / (b0));
+		alpha = -c0 / b0;
 		res = b0 * alpha + c0;
 	} else {
 		alpha = 0;
