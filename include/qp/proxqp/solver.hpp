@@ -118,11 +118,6 @@ void iterative_residual(
  
 
 	qpwork._err.head(inner_pb_dim).noalias()  = qpwork._rhs.head(inner_pb_dim);
-	/*
-	if (chekNoAlias){
-		saveData("_err_after_copy"+std::to_string(it_)+str,qpwork._err.eval());
-	}
-	*/
 	qpwork._err.head(qpmodel._dim).noalias()  -= qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim);
     qpwork._err.head(qpmodel._dim).noalias()  -= qpresults._rho * qpwork._dw_aug.head(qpmodel._dim);
     qpwork._err.head(qpmodel._dim).noalias()  -= qpwork._a_scaled.transpose() * qpwork._dw_aug.segment(qpmodel._dim, qpmodel._n_eq);
@@ -150,6 +145,7 @@ void iterative_solve_with_permut_fact( //
 
 	qpwork._err.setZero();
 	i32 it = 0;
+	i32 it_stability = 0;
 
 	qpwork._dw_aug.head(inner_pb_dim) = qpwork._rhs.head(inner_pb_dim);
 	
@@ -162,6 +158,7 @@ void iterative_solve_with_permut_fact( //
                     inner_pb_dim);
 
 	++it;
+	T prev_err = infty_norm( qpwork._err.head(inner_pb_dim));
 	if (qpsettings._VERBOSE){
 		std::cout << "infty_norm(res) " << qp::infty_norm( qpwork._err.head(inner_pb_dim)) << std::endl;
 	}
@@ -170,6 +167,7 @@ void iterative_solve_with_permut_fact( //
 		if (it >= qpsettings._nb_iterative_refinement) {
 			break;
 		} 
+
 		++it;
 		qpwork._ldl.solve_in_place( qpwork._err.head(inner_pb_dim));
 		qpwork._dw_aug.head(inner_pb_dim).noalias() +=  qpwork._err.head(inner_pb_dim);
@@ -181,10 +179,23 @@ void iterative_solve_with_permut_fact( //
 					qpwork,
                     inner_pb_dim);
 
+		if (infty_norm( qpwork._err.head(inner_pb_dim))>prev_err){
+			it_stability+=1;
+			
+		}else{
+			it_stability = 0;
+		}
+		if (it_stability==2){
+			break;
+		}
+		prev_err = infty_norm( qpwork._err.head(inner_pb_dim));
+
 		if (qpsettings._VERBOSE){
 			std::cout << "infty_norm(res) " << qp::infty_norm(qpwork._err.head(inner_pb_dim)) << std::endl;
 		}
+		
 	}
+	
 
 	if (infty_norm( qpwork._err.head(inner_pb_dim))>= std::max(eps,qpsettings._eps_refact)){
 		{
@@ -230,6 +241,8 @@ void iterative_solve_with_permut_fact( //
 			//std::cout << " ldl.reconstructed_matrix() - Htot " << infty_norm(qpwork._ldl.reconstructed_matrix() - Htot)<< std::endl;
 		}
 		it = 0;
+		it_stability = 0;
+		
 		qpwork._dw_aug.head(inner_pb_dim) = qpwork._rhs.head(inner_pb_dim);
 
 		qpwork._ldl.solve_in_place(qpwork._dw_aug.head(inner_pb_dim));
@@ -239,6 +252,8 @@ void iterative_solve_with_permut_fact( //
 					qpresults,
 					qpwork,
                     inner_pb_dim);
+		
+		prev_err = infty_norm( qpwork._err.head(inner_pb_dim));
 		++it;
 		if (qpsettings._VERBOSE){
 			std::cout << "infty_norm(res) " << qp::infty_norm( qpwork._err.head(inner_pb_dim)) << std::endl;
@@ -259,6 +274,18 @@ void iterative_solve_with_permut_fact( //
 					qpresults,
 					qpwork,
                     inner_pb_dim);
+
+			if (infty_norm( qpwork._err.head(inner_pb_dim))>prev_err){
+				it_stability+=1;
+				
+			}else{
+				it_stability = 0;
+			}
+			if (it_stability==2){
+				break;
+			}
+			prev_err = infty_norm( qpwork._err.head(inner_pb_dim));
+
 
 			if (qpsettings._VERBOSE){
 				std::cout << "infty_norm(res) " << qp::infty_norm(qpwork._err.head(inner_pb_dim)) << std::endl;
