@@ -561,10 +561,11 @@ void correction_guess_LS(
 	 *                          (first_pos_grad - last_neg_grad);
 	 */
 
+
+	
 	T machine_eps = std::numeric_limits<T>::epsilon();
 
-	auto x_ = qpresults._x;
-
+	
 	qpwork._alpha = T(1.);
 	T alpha_(1.);
 
@@ -581,6 +582,7 @@ void correction_guess_LS(
 		}
 	}
 
+	
 	isize n_alpha = qpwork._alphas.size();
 
 	if (n_alpha!=0) {
@@ -664,6 +666,8 @@ void correction_guess_LS(
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
 	}	
+
+	
 }
 
 template <typename T>
@@ -732,6 +736,7 @@ void active_set_change(
 		if (qpwork._current_bijection_map(i) < qpresults._n_c) {
 			if (!qpwork._active_inequalities(i)) {
 				// delete current_bijection_map(i)
+
 				qpwork._ldl.delete_at(qpwork._new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
 
 				for (isize j = 0; j < qpmodel._n_in; j++) {
