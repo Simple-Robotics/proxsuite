@@ -33,6 +33,7 @@ public:
 
     //// timings
     T _timing;
+    T _objValue;
 
 	Qpresults( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
@@ -56,6 +57,7 @@ public:
                 _n_mu_change = 0;
                 _n_c = 0;
                 _timing = 0.;
+                _objValue =0.;
                 }
     
     void clearResults(){
@@ -74,6 +76,8 @@ public:
         _n_mu_change = 0;
         _n_c = 0;
         _timing = 0.;
+        _objValue =0.;
+
     }
 };
 

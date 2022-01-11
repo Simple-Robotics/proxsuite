@@ -220,18 +220,23 @@ void QPsetup( //
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
-		T eps_abs,
-		T eps_rel,
-		T mu_max_eq,
-		T mu_max_in,
-		T R,
-		T eps_IG,
-		T eps_refact,
-		isize nb_it_refinement,
-		isize max_iter,
-		isize max_iter_in,
-		const bool VERBOSE) {
 
+		T eps_abs = 1.e-9,
+		T eps_rel = 0,
+		const bool VERBOSE = true
+		/*
+		T mu_max_eq=1.e9,
+		T mu_max_in=1.e8,
+		T R=5,
+		T eps_IG=1.e-2,
+		T eps_refact=1.e-6,
+		isize nb_it_refinement=10,
+		isize max_iter=10000,
+		isize max_iter_in = 1500
+		*/
+		) {
+
+	/*
 	qpsettings._max_iter = max_iter;
 	qpsettings._max_iter_in = max_iter_in;
 	qpsettings._mu_max_eq = mu_max_eq;
@@ -241,9 +246,11 @@ void QPsetup( //
 	qpsettings._R = R;
 	qpsettings._eps_IG = eps_IG;
 	qpsettings._eps_refact = eps_refact;
+	*/
 	qpsettings._eps_abs = eps_abs;
 	qpsettings._eps_rel = eps_rel;
-	qpsettings._nb_iterative_refinement = nb_it_refinement;
+	//qpsettings._nb_iterative_refinement = nb_it_refinement;
+	qpsettings._VERBOSE = VERBOSE;
 
 	qpmodel._H = H.eval();
 	qpmodel._g = g.eval();
@@ -297,14 +304,126 @@ void QPsetup( //
 		qpresults,
 		qpwork,
 		T(1),
-		qpmodel._dim+qpmodel._n_eq,
-        VERBOSE
+		qpmodel._dim+qpmodel._n_eq
         );
 	
 	qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
 	qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
 	
 	qpwork._dw_aug.setZero();
+
+}
+
+template <typename T, Layout L>
+void QPupdateMatrice( //
+		MatRef<T, L> H,
+		MatRef<T, L> A,
+		MatRef<T, L> C,
+		qp::Qpsettings<T>& qpsettings,
+		qp::Qpdata<T>& qpmodel,
+		qp::Qpworkspace<T>& qpwork,
+		qp::Qpresults<T>& qpresults,
+		const bool update = false
+		) {
+
+		// update matrices
+
+		qpmodel._H = H.eval();
+		qpmodel._A = A.eval();
+		qpmodel._C = C.eval();
+
+		qpwork._h_scaled = qpmodel._H;
+		qpwork._g_scaled = qpmodel._g;
+		qpwork._a_scaled = qpmodel._A;
+		qpwork._b_scaled = qpmodel._b;
+		qpwork._c_scaled = qpmodel._C;
+		qpwork._u_scaled = qpmodel._u;
+		qpwork._l_scaled = qpmodel._l;
+
+		qp::QpViewBoxMut<T> qp_scaled{
+				{from_eigen,qpwork._h_scaled},
+				{from_eigen,qpwork._g_scaled},
+				{from_eigen,qpwork._a_scaled},
+				{from_eigen,qpwork._b_scaled},
+				{from_eigen,qpwork._c_scaled},
+				{from_eigen,qpwork._u_scaled},
+				{from_eigen,qpwork._l_scaled}
+		};
+
+		qpwork._ruiz.scale_qp_in_place(qp_scaled,VectorViewMut<T>{from_eigen,qpwork._dw_aug});
+		qpwork._dw_aug.setZero();
+
+		// re update all other variables
+		if (update){
+			qpresults.clearResults();
+		}
+
+		// perform warm start
+
+		qpwork._primal_feasibility_rhs_1_eq = infty_norm(qpmodel._b);
+		qpwork._primal_feasibility_rhs_1_in_u = infty_norm(qpmodel._u);
+		qpwork._primal_feasibility_rhs_1_in_l = infty_norm(qpmodel._l);
+		qpwork._dual_feasibility_rhs_2 = infty_norm(qpmodel._g);
+		qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
+		
+		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
+		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
+		qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
+		qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
+		qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
+		qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
+
+		qpwork._ldl.factorize(qpwork._kkt);
+		qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
+		qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
+		
+		qp::detail::iterative_solve_with_permut_fact( //
+			qpsettings,
+			qpmodel,
+			qpresults,
+			qpwork,
+			T(1),
+			qpmodel._dim+qpmodel._n_eq
+			);
+		
+		qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
+		qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
+		
+		qpwork._dw_aug.setZero();
+
+}
+
+template <typename T>
+void QPupdateVectors( //
+		VecRef<T> g,
+		VecRef<T> b,
+		VecRef<T> u,
+		VecRef<T> l,
+		qp::Qpsettings<T>& qpsettings,
+		qp::Qpdata<T>& qpmodel,
+		qp::Qpworkspace<T>& qpwork,
+		qp::Qpresults<T>& qpresults,
+		const bool update = false
+		) {
+
+		// update vectors
+
+		qpmodel._g = g.eval();
+		qpmodel._b = b.eval();
+		qpmodel._u = u.eval();
+		qpmodel._l = l.eval();
+
+		qpwork._g_scaled = qpmodel._g;
+		qpwork._b_scaled = qpmodel._b;
+		qpwork._u_scaled = qpmodel._u;
+		qpwork._l_scaled = qpmodel._l;
+
+		qpwork._ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen,qpwork._g_scaled});
+		qpwork._scale_dual_in_place_eq(VectorViewMut<T>{from_eigen,qpwork._b_scaled});
+		qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._u_scaled});
+		qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._l_scaled});
+
+		// re update all other variables --> no need for warm start (reuse previous one ?) ? to finish 
 
 }
 
@@ -773,25 +892,28 @@ void oldNewQPsolve(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
-		qp::Qpsettings<T>& qpsettings,
-		VecRefMut<T> res_iter){
+		qp::Qpsettings<T>& qpsettings){
 			
+			auto start = std::chrono::high_resolution_clock::now();
 			qp::detail::QpSolveStats res = qp::detail::qpSolve( //
 								qpsettings,
 								qpmodel,
 								qpresults,
 								qpwork);
+			auto stop = std::chrono::high_resolution_clock::now();
+    		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+			
+			qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ; 
 
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "n_ext : " <<  res.n_ext << std::endl;
-			std::cout << "n_tot : " <<  res.n_tot << std::endl;
-			std::cout << "mu updates : " <<  res.n_mu_updates << std::endl;
+			std::cout << "n_ext : " <<  qpresults._n_ext << std::endl;
+			std::cout << "n_tot : " <<  qpresults._n_tot << std::endl;
+			std::cout << "mu updates : " <<  qpresults._n_mu_change << std::endl;
+			std::cout << "objValue : " << qpresults._objValue << std::endl;
+			qpresults._timing = duration.count();
+			std::cout << "duration.count() : " << qpresults._timing << std::endl;
 
-			res_iter(0) = res.n_ext;
-			res_iter(1) = res.n_tot;
-			res_iter(2) = res.n_mu_updates;
-}
-
+		}
 
 } // namespace pybind11
 } // namespace qp
@@ -853,9 +975,9 @@ INRIA LDLT decomposition
 		.def_readwrite("_primal_residual_in_scaled_low", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_low)
 		.def_readwrite("_primal_residual_in_scaled_up_plus_alphaCdx", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_up_plus_alphaCdx)
 		.def_readwrite("_primal_residual_in_scaled_low_plus_alphaCdx", &qp::Qpworkspace<f64>::_primal_residual_in_scaled_low_plus_alphaCdx)
-		.def_readwrite("_CTz", &qp::Qpworkspace<f64>::_CTz) 
-		.def_readwrite("_tmp2", &qp::Qpworkspace<f64>::_tmp2)
-		.def_readwrite("_tmp3", &qp::Qpworkspace<f64>::_tmp3);
+		.def_readwrite("_CTz", &qp::Qpworkspace<f64>::_CTz);
+		//.def_readwrite("_tmp2", &qp::Qpworkspace<f64>::_tmp2)
+		//.def_readwrite("_tmp3", &qp::Qpworkspace<f64>::_tmp3);
 
 	::pybind11::class_<qp::Qpresults<f64>>(m, "Qpresults")
         .def(::pybind11::init<i64, i64, i64 &>()) // constructor
@@ -872,7 +994,10 @@ INRIA LDLT decomposition
 		.def_readwrite("_rho", &qp::Qpresults<f64>::_rho) 
 		.def_readwrite("_n_tot", &qp::Qpresults<f64>::_n_tot) 
 		.def_readwrite("_n_ext", &qp::Qpresults<f64>::_n_ext) 
+		.def_readwrite("_timing", &qp::Qpresults<f64>::_timing) 
+		.def_readwrite("_objValue", &qp::Qpresults<f64>::_objValue) 
 		.def_readwrite("_n_mu_change", &qp::Qpresults<f64>::_n_mu_change);
+
 
 	::pybind11::class_<qp::Qpsettings<f64>>(m, "Qpsettings")
         .def(::pybind11::init()) // constructor
@@ -954,6 +1079,9 @@ INRIA LDLT decomposition
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f32, c>);
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f64, c>);
 
+	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
+	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
+	
 	m.def("QPsetup", &qp::pybind11::QPsetup<f32, c>);
 	m.def("QPsetup", &qp::pybind11::QPsetup<f64, c>);
 	/*
