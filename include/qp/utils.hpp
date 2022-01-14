@@ -29,12 +29,6 @@ namespace detail {
 	static_assert(true, ".")
 
 template <typename T>
-auto positive_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template <typename T>
-auto negative_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
-template <typename T>
 auto square(T const& expr)
 	LDLT_DEDUCE_RET(expr*expr);
 
@@ -47,7 +41,7 @@ void refactorize(
 		T rho_new
 		) {
 
-	qpwork._kkt.diagonal().array() += rho_new - qpresults._rho; 
+	qpwork._kkt.diagonal().array() += rho_new - qpresults._rho;
 	qpwork._ldl.factorize(qpwork._kkt);
 
 	if (qpresults._n_c == 0) {
@@ -132,7 +126,7 @@ void global_primal_residual(
 	qpwork._ruiz.unscale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._primal_residual_in_scaled_u});
 	primal_feasibility_in_rhs_0 = infty_norm( qpwork._primal_residual_in_scaled_u);
 
-	
+
 	qpwork._primal_residual_eq_scaled -= qpmodel._b;
 	qpwork._primal_residual_in_scaled_l =
 			detail::positive_part(qpwork._primal_residual_in_scaled_u - qpmodel._u) +

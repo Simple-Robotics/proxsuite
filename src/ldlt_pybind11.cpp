@@ -15,10 +15,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
-
-#include <qp/proxqp/old_solver.hpp>
-
-
 namespace ldlt {
 namespace pybind11 {
 
@@ -153,60 +149,6 @@ auto correction_guess_line_search( //
 }
 */
 
-template <typename T,Layout L>
-void oldQPsolve( //
-		VecRefMut<T> x,
-		VecRefMut<T> y,
-        VecRefMut<T> z,
-		MatRef<T, L> H,
-		VecRef<T> g,
-		MatRef<T, L> A,
-		VecRef<T> b,
-		MatRef<T, L> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		isize max_iter,
-		isize max_iter_in,
-		VecRefMut<T> res_iter,
-		T eps_abs,
-		T eps_rel){
-			
-			isize dim = H.eval().rows();
-			isize n_eq = A.eval().rows();
-			isize n_in = C.eval().rows();
-			auto ruiz = qp::preconditioner::RuizEquilibration<T>{
-				dim,
-				n_eq+n_in,
-			};
-			qp::detail::QpSolveStats res = qp::detail::old_qpSolve( //
-								{from_eigen,x},
-								{from_eigen,y},
-								{from_eigen,z},
-								QpViewBox<T>{
-									{from_eigen, H.eval()},
-									{from_eigen, g.eval()},
-									{from_eigen, A.eval()},
-									{from_eigen, b.eval()},
-									{from_eigen, C.eval()},
-									{from_eigen, u.eval()},
-									{from_eigen, l.eval()},
-								},
-								max_iter,
-								max_iter_in,
-								eps_abs,
-								eps_rel,
-								LDLT_FWD(ruiz));
-			
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "n_ext : " <<  res.n_ext << std::endl;
-			std::cout << "n_tot : " <<  res.n_tot << std::endl;
-			std::cout << "mu updates : " <<  res.n_mu_updates << std::endl;
-
-			res_iter(0) = res.n_ext;
-			res_iter(1) = res.n_tot;
-			res_iter(2) = res.n_mu_updates;
-}
-
 template <typename T, Layout L>
 void QPsetup( //
 		MatRef<T, L> H,
@@ -286,9 +228,9 @@ void QPsetup( //
     qpwork._primal_feasibility_rhs_1_in_l = infty_norm(qpmodel._l);
 	qpwork._dual_feasibility_rhs_2 = infty_norm(qpmodel._g);
 	qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
-	
+
 	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
-	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
+	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;
 	qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
 	qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
 	qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
@@ -297,7 +239,7 @@ void QPsetup( //
 	qpwork._ldl.factorize(qpwork._kkt);
 	qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 	qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
-	
+
     qp::detail::iterative_solve_with_permut_fact( //
 		qpsettings,
 		qpmodel,
@@ -306,10 +248,10 @@ void QPsetup( //
 		T(1),
 		qpmodel._dim+qpmodel._n_eq
         );
-	
+
 	qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
 	qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
-	
+
 	qpwork._dw_aug.setZero();
 
 }
@@ -365,9 +307,9 @@ void QPupdateMatrice( //
 		qpwork._primal_feasibility_rhs_1_in_l = infty_norm(qpmodel._l);
 		qpwork._dual_feasibility_rhs_2 = infty_norm(qpmodel._g);
 		qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
-		
+
 		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
-		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;	
+		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;
 		qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
 		qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
 		qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
@@ -376,7 +318,7 @@ void QPupdateMatrice( //
 		qpwork._ldl.factorize(qpwork._kkt);
 		qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
 		qpwork._rhs.segment(qpmodel._dim,qpmodel._n_eq) = qpwork._b_scaled;
-		
+
 		qp::detail::iterative_solve_with_permut_fact( //
 			qpsettings,
 			qpmodel,
@@ -385,10 +327,10 @@ void QPupdateMatrice( //
 			T(1),
 			qpmodel._dim+qpmodel._n_eq
 			);
-		
+
 		qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
 		qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
-		
+
 		qpwork._dw_aug.setZero();
 
 }
@@ -423,7 +365,7 @@ void QPupdateVectors( //
 		qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._u_scaled});
 		qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpwork._l_scaled});
 
-		// re update all other variables --> no need for warm start (reuse previous one ?) ? to finish 
+		// re update all other variables --> no need for warm start (reuse previous one ?) ? to finish
 
 }
 
@@ -551,7 +493,7 @@ void transition_algebra_before_IG_newton(
 	){
 
 	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._dual_residual_scaled});
-	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._CTz});	
+	qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._CTz});
 
 	qpwork._primal_residual_in_scaled_l = qpwork._primal_residual_in_scaled_u;
 	qpwork._primal_residual_in_scaled_u -= qpmodel._u;
@@ -599,7 +541,7 @@ void transition_algebra_before_IG_newton(
 			qpwork._rhs.head(qpmodel._dim).noalias() += qpresults._z(i) * qpwork._c_scaled.row(i); // add CTze_inactif to rhs.head(dim)
 		}
 	}
-	
+
 	qpwork._rhs.head(qpmodel._dim) = -qpwork._dual_residual_scaled; // rhs.head(dim) contains now : -(Hxe + g + ATye + CTze_actif)
 	qpwork._rhs.segment(qpmodel._dim, qpmodel._n_eq) = -qpwork._primal_residual_eq_scaled;
 
@@ -619,7 +561,7 @@ void transition_algebra_before_IG_newton(
 		isize j = qpwork._current_bijection_map(i);
 		if (j < qpresults._n_c) {
 			if (qpwork._l_active_set_n_u(i)) {
-				qpwork._d_dual_for_eq.noalias() -= qpwork._dw_aug(j + qpmodel._dim + qpmodel._n_eq) * qpwork._c_scaled.row(i); 
+				qpwork._d_dual_for_eq.noalias() -= qpwork._dw_aug(j + qpmodel._dim + qpmodel._n_eq) * qpwork._c_scaled.row(i);
 			} else if (qpwork._l_active_set_n_l(i)) {
 				qpwork._d_dual_for_eq.noalias() -= qpwork._dw_aug(j + qpmodel._dim + qpmodel._n_eq) * qpwork._c_scaled.row(i);
 			}
@@ -632,10 +574,10 @@ void transition_algebra_before_IG_newton(
 		if (i < qpresults._n_c) {
 			//dw_aug_(j + dim + n_eq) = dw(dim + n_eq + i);
 			//cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
-			
+
 			qpwork._active_part_z(j) = qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i);
 			qpwork._Cdx(j) = qpwork._rhs(i + qpmodel._dim + qpmodel._n_eq) + qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i) * qpresults._mu_in_inv; // mu stores the inverse of mu
-			
+
 		} else {
 			//dw_aug_(j + dim + n_eq) = -z_(j);
 			qpwork._active_part_z(j) = -qpresults._z(j);
@@ -651,7 +593,7 @@ void transition_algebra_before_IG_newton(
 	qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim);
 
 	qpwork._dual_residual_scaled -= qpwork._CTz; // contains now Hxe+g+ATye
-	
+
 }
 
 
@@ -661,7 +603,7 @@ T saddle_point(
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpsettings<T>& qpsettings){
-		
+
 		T res = qp::detail::saddle_point(
 			qpwork,
 			qpresults,
@@ -707,7 +649,7 @@ void transition_algebra(
 		T primal_feasibility_lhs,
 		T bcl_eta_in,
 		T err_in){
-		
+
 		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings._eps_IG || qpmodel._n_in == 0;
 		bool do_correction_guess = (!do_initial_guess_fact && qpmodel._n_in != 0) ||
 		                           (do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel._n_in != 0) ;
@@ -736,7 +678,7 @@ void transition_algebra(
 			qpwork._primal_residual_eq_scaled.noalias()  += qpwork._ye * qpresults._mu_eq_inv;//mu stores the inverse of mu
 			qpwork._ATy.noalias() =  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults._mu_eq ; //mu stores mu
 			qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
-			
+
 			qpwork._primal_residual_in_scaled_u.noalias()  += qpwork._ze * qpresults._mu_in_inv;//mu stores the inverse of mu
 			qpwork._primal_residual_in_scaled_l = qpwork._primal_residual_in_scaled_u;
 			qpwork._primal_residual_in_scaled_u -= qpwork._u_scaled;
@@ -755,7 +697,7 @@ template <typename T>
 void transition_algebra_before_LS_CG(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpdata<T>& qpmodel){
-		
+
 		qpwork._d_dual_for_eq.noalias() = qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim);
 		//qpwork._d_primal_residual_eq.noalias() = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq) * qpresults._mu_eq_inv; // by definition Adx = dy / mu : seems unprecise
 		qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim);
@@ -768,7 +710,7 @@ T transition_algebra_after_LS_CG(
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel){
-		
+
 		qpresults._x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
 
 		qpwork._primal_residual_in_scaled_u.noalias() += qpwork._alpha * qpwork._Cdx;
@@ -782,7 +724,7 @@ T transition_algebra_after_LS_CG(
 		qpresults._z =  (qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l)) *  qpresults._mu_in; //mu stores mu
 		T rhs_c = std::max(qpwork._correction_guess_rhs_g, infty_norm( qpwork._Hx));
 		rhs_c = std::max(rhs_c, infty_norm(qpwork._ATy));
-		qpwork._dual_residual_scaled.noalias() = qpwork._c_scaled.transpose() * qpresults._z ; 
+		qpwork._dual_residual_scaled.noalias() = qpwork._c_scaled.transpose() * qpresults._z ;
 		rhs_c = std::max(rhs_c, infty_norm(qpwork._dual_residual_scaled));
 		qpwork._dual_residual_scaled.noalias() += qpwork._Hx + qpwork._g_scaled + qpwork._ATy + qpresults._rho * (qpresults._x - qpwork._xe);
 		std::cout << "rhs_c " << rhs_c  << std::endl;
@@ -819,7 +761,7 @@ void initial_guess_LS(
 				qpresults,
 				qpmodel,
 				qpsettings);
-			
+
 };
 
 template <typename T>
@@ -838,7 +780,7 @@ void transition_algebra_after_IG_LS(
 	qpresults._x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
 	qpresults._y.noalias() += qpwork._alpha * qpwork._dw_aug.segment(qpmodel._dim, qpmodel._n_eq);
 
-	
+
 	qpwork._active_part_z = qpresults._z + qpwork._alpha * qpwork._dw_aug.tail(qpmodel._n_in) ;
 
 	qpwork._residual_in_z_u_plus_alpha = (qpwork._active_part_z.array() > 0).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
@@ -847,7 +789,7 @@ void transition_algebra_after_IG_LS(
 	qpresults._z = (qpwork._l_active_set_n_u).select(qpwork._residual_in_z_u_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) +
 				   (qpwork._l_active_set_n_l).select(qpwork._residual_in_z_l_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) +
 				   (!qpwork._l_active_set_n_l.array() && !qpwork._l_active_set_n_u.array()).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) ;
-	
+
 	qpwork._primal_residual_eq_scaled.noalias() += qpwork._alpha * qpwork._d_primal_residual_eq;
 	qpwork._dual_residual_scaled.noalias() += qpwork._alpha * qpwork._d_dual_for_eq;
 
@@ -893,7 +835,7 @@ void oldNewQPsolve(
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpsettings<T>& qpsettings){
-			
+
 			auto start = std::chrono::high_resolution_clock::now();
 			qp::detail::QpSolveStats res = qp::detail::qpSolve( //
 								qpsettings,
@@ -902,8 +844,8 @@ void oldNewQPsolve(
 								qpwork);
 			auto stop = std::chrono::high_resolution_clock::now();
     		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-			
-			qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ; 
+
+			qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
 
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
 			std::cout << "n_ext : " <<  qpresults._n_ext << std::endl;
@@ -942,30 +884,30 @@ INRIA LDLT decomposition
 		.def_readwrite("_h_scaled", &qp::Qpworkspace<f64>::_h_scaled)
 		.def_readwrite("_g_scaled", &qp::Qpworkspace<f64>::_g_scaled)
 		.def_readwrite("_a_scaled", &qp::Qpworkspace<f64>::_a_scaled)
-		.def_readwrite("_c_scaled", &qp::Qpworkspace<f64>::_c_scaled) 
-		.def_readwrite("_b_scaled", &qp::Qpworkspace<f64>::_b_scaled) 
-		.def_readwrite("_u_scaled", &qp::Qpworkspace<f64>::_u_scaled) 
-		.def_readwrite("_l_scaled", &qp::Qpworkspace<f64>::_l_scaled) 
-		.def_readwrite("_xe", &qp::Qpworkspace<f64>::_x_prev) 
-		.def_readwrite("_ye", &qp::Qpworkspace<f64>::_y_prev) 
-		.def_readwrite("_ze", &qp::Qpworkspace<f64>::_z_prev) 
-		.def_readwrite("_kkt", &qp::Qpworkspace<f64>::_kkt) 
+		.def_readwrite("_c_scaled", &qp::Qpworkspace<f64>::_c_scaled)
+		.def_readwrite("_b_scaled", &qp::Qpworkspace<f64>::_b_scaled)
+		.def_readwrite("_u_scaled", &qp::Qpworkspace<f64>::_u_scaled)
+		.def_readwrite("_l_scaled", &qp::Qpworkspace<f64>::_l_scaled)
+		.def_readwrite("_xe", &qp::Qpworkspace<f64>::_x_prev)
+		.def_readwrite("_ye", &qp::Qpworkspace<f64>::_y_prev)
+		.def_readwrite("_ze", &qp::Qpworkspace<f64>::_z_prev)
+		.def_readwrite("_kkt", &qp::Qpworkspace<f64>::_kkt)
 		.def_readwrite("_current_bijection_map", &qp::Qpworkspace<f64>::_current_bijection_map)
 		.def_readwrite("_new_bijection_map", &qp::Qpworkspace<f64>::_new_bijection_map)
 		.def_readwrite("_active_set_up", &qp::Qpworkspace<f64>::_active_set_up)
-		.def_readwrite("_active_set_low", &qp::Qpworkspace<f64>::_active_set_low) 
+		.def_readwrite("_active_set_low", &qp::Qpworkspace<f64>::_active_set_low)
 		.def_readwrite("_active_inequalities", &qp::Qpworkspace<f64>::_active_inequalities)
 		.def_readwrite("_Hdx", &qp::Qpworkspace<f64>::_Hdx)
 		.def_readwrite("_Cdx", &qp::Qpworkspace<f64>::_Cdx)
 		.def_readwrite("_Adx", &qp::Qpworkspace<f64>::_Adx)
 		.def_readwrite("_active_part_z", &qp::Qpworkspace<f64>::_active_part_z)
-		.def_readwrite("_alphas", &qp::Qpworkspace<f64>::_alphas) 
-		.def_readwrite("_dw_aug", &qp::Qpworkspace<f64>::_dw_aug) 
+		.def_readwrite("_alphas", &qp::Qpworkspace<f64>::_alphas)
+		.def_readwrite("_dw_aug", &qp::Qpworkspace<f64>::_dw_aug)
 		.def_readwrite("_rhs", &qp::Qpworkspace<f64>::_rhs)
-		.def_readwrite("_err", &qp::Qpworkspace<f64>::_err) 
+		.def_readwrite("_err", &qp::Qpworkspace<f64>::_err)
 		.def_readwrite("_primal_feasibility_rhs_1_eq", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_eq)
-		.def_readwrite("_primal_feasibility_rhs_1_in_u", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_u) 
-		.def_readwrite("_primal_feasibility_rhs_1_in_l", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_l) 
+		.def_readwrite("_primal_feasibility_rhs_1_in_u", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_u)
+		.def_readwrite("_primal_feasibility_rhs_1_in_l", &qp::Qpworkspace<f64>::_primal_feasibility_rhs_1_in_l)
 		.def_readwrite("_dual_feasibility_rhs_2", &qp::Qpworkspace<f64>::_dual_feasibility_rhs_2)
 		.def_readwrite("_correction_guess_rhs_g", &qp::Qpworkspace<f64>::_correction_guess_rhs_g)
 		.def_readwrite("_alpha", &qp::Qpworkspace<f64>::_alpha)
@@ -986,16 +928,16 @@ INRIA LDLT decomposition
 		.def_readwrite("_x", &qp::Qpresults<f64>::_x)
 		.def_readwrite("_y", &qp::Qpresults<f64>::_y)
 		.def_readwrite("_z", &qp::Qpresults<f64>::_z)
-		.def_readwrite("_n_c", &qp::Qpresults<f64>::_n_c) 
-		.def_readwrite("_mu_eq", &qp::Qpresults<f64>::_mu_eq) 
-		.def_readwrite("_mu_eq_inv", &qp::Qpresults<f64>::_mu_eq_inv) 
-		.def_readwrite("_mu_in", &qp::Qpresults<f64>::_mu_in) 
-		.def_readwrite("_mu_in_inv", &qp::Qpresults<f64>::_mu_in_inv) 
-		.def_readwrite("_rho", &qp::Qpresults<f64>::_rho) 
-		.def_readwrite("_n_tot", &qp::Qpresults<f64>::_n_tot) 
-		.def_readwrite("_n_ext", &qp::Qpresults<f64>::_n_ext) 
-		.def_readwrite("_timing", &qp::Qpresults<f64>::_timing) 
-		.def_readwrite("_objValue", &qp::Qpresults<f64>::_objValue) 
+		.def_readwrite("_n_c", &qp::Qpresults<f64>::_n_c)
+		.def_readwrite("_mu_eq", &qp::Qpresults<f64>::_mu_eq)
+		.def_readwrite("_mu_eq_inv", &qp::Qpresults<f64>::_mu_eq_inv)
+		.def_readwrite("_mu_in", &qp::Qpresults<f64>::_mu_in)
+		.def_readwrite("_mu_in_inv", &qp::Qpresults<f64>::_mu_in_inv)
+		.def_readwrite("_rho", &qp::Qpresults<f64>::_rho)
+		.def_readwrite("_n_tot", &qp::Qpresults<f64>::_n_tot)
+		.def_readwrite("_n_ext", &qp::Qpresults<f64>::_n_ext)
+		.def_readwrite("_timing", &qp::Qpresults<f64>::_timing)
+		.def_readwrite("_objValue", &qp::Qpresults<f64>::_objValue)
 		.def_readwrite("_n_mu_change", &qp::Qpresults<f64>::_n_mu_change);
 
 
@@ -1006,30 +948,30 @@ INRIA LDLT decomposition
 		.def_readwrite("_alpha_bcl", &qp::Qpsettings<f64>::_alpha_bcl)
 		.def_readwrite("_beta_bcl", &qp::Qpsettings<f64>::_beta_bcl)
 		.def_readwrite("_refactor_dual_feasibility_threshold", &qp::Qpsettings<f64>::_refactor_dual_feasibility_threshold)
-		.def_readwrite("_refactor_rho_threshold", &qp::Qpsettings<f64>::_refactor_rho_threshold) 
-		.def_readwrite("_refactor_rho_update_factor", &qp::Qpsettings<f64>::_refactor_rho_update_factor) 
-		.def_readwrite("_mu_max_eq", &qp::Qpsettings<f64>::_mu_max_eq) 
-		.def_readwrite("_mu_max_in", &qp::Qpsettings<f64>::_mu_max_in) 
-		.def_readwrite("_mu_max_eq_inv", &qp::Qpsettings<f64>::_mu_max_eq_inv) 
-		.def_readwrite("_mu_max_in_inv", &qp::Qpsettings<f64>::_mu_max_in_inv) 
+		.def_readwrite("_refactor_rho_threshold", &qp::Qpsettings<f64>::_refactor_rho_threshold)
+		.def_readwrite("_refactor_rho_update_factor", &qp::Qpsettings<f64>::_refactor_rho_update_factor)
+		.def_readwrite("_mu_max_eq", &qp::Qpsettings<f64>::_mu_max_eq)
+		.def_readwrite("_mu_max_in", &qp::Qpsettings<f64>::_mu_max_in)
+		.def_readwrite("_mu_max_eq_inv", &qp::Qpsettings<f64>::_mu_max_eq_inv)
+		.def_readwrite("_mu_max_in_inv", &qp::Qpsettings<f64>::_mu_max_in_inv)
 		.def_readwrite("_mu_update_factor", &qp::Qpsettings<f64>::_mu_update_factor)
-		.def_readwrite("_mu_update_inv_factor", &qp::Qpsettings<f64>::_mu_update_inv_factor) 
+		.def_readwrite("_mu_update_inv_factor", &qp::Qpsettings<f64>::_mu_update_inv_factor)
 
-		.def_readwrite("_cold_reset_mu_eq", &qp::Qpsettings<f64>::_cold_reset_mu_eq) 
-		.def_readwrite("_cold_reset_mu_in", &qp::Qpsettings<f64>::_cold_reset_mu_in) 
+		.def_readwrite("_cold_reset_mu_eq", &qp::Qpsettings<f64>::_cold_reset_mu_eq)
+		.def_readwrite("_cold_reset_mu_in", &qp::Qpsettings<f64>::_cold_reset_mu_in)
 		.def_readwrite("_cold_reset_mu_eq_inv", &qp::Qpsettings<f64>::_cold_reset_mu_eq_inv)
 
-		.def_readwrite("_cold_reset_mu_in_inv", &qp::Qpsettings<f64>::_cold_reset_mu_in_inv) 
-		.def_readwrite("_max_iter", &qp::Qpsettings<f64>::_max_iter) 
+		.def_readwrite("_cold_reset_mu_in_inv", &qp::Qpsettings<f64>::_cold_reset_mu_in_inv)
+		.def_readwrite("_max_iter", &qp::Qpsettings<f64>::_max_iter)
 		.def_readwrite("_max_iter_in", &qp::Qpsettings<f64>::_max_iter_in)
 
-		.def_readwrite("_eps_abs", &qp::Qpsettings<f64>::_eps_abs) 
-		.def_readwrite("_eps_rel", &qp::Qpsettings<f64>::_eps_rel) 
+		.def_readwrite("_eps_abs", &qp::Qpsettings<f64>::_eps_abs)
+		.def_readwrite("_eps_rel", &qp::Qpsettings<f64>::_eps_rel)
 		.def_readwrite("_err_IG", &qp::Qpsettings<f64>::_eps_IG)
 		.def_readwrite("_R", &qp::Qpsettings<f64>::_R)
 		.def_readwrite("_nb_iterative_refinement", &qp::Qpsettings<f64>::_nb_iterative_refinement)
 		.def_readwrite("_VERBOSE", &qp::Qpsettings<f64>::_VERBOSE);
-	
+
 	::pybind11::class_<qp::Qpdata<f64>>(m, "Qpdata")
         //.def(::pybind11::init()) // constructor
 		.def(::pybind11::init<i64, i64, i64 &>()) // constructor
@@ -1038,13 +980,13 @@ INRIA LDLT decomposition
 		.def_readonly("_H", &qp::Qpdata<f64>::_H)
 		.def_readonly("_g", &qp::Qpdata<f64>::_g)
 		.def_readonly("_A", &qp::Qpdata<f64>::_A)
-		.def_readonly("_b", &qp::Qpdata<f64>::_b) 
-		.def_readonly("_C", &qp::Qpdata<f64>::_C) 
-		.def_readonly("_u", &qp::Qpdata<f64>::_u) 
-		.def_readonly("_l", &qp::Qpdata<f64>::_l) 
-		.def_readonly("_dim", &qp::Qpdata<f64>::_dim) 
-		.def_readonly("_n_eq", &qp::Qpdata<f64>::_n_eq) 
-		.def_readonly("_n_in", &qp::Qpdata<f64>::_n_in) 
+		.def_readonly("_b", &qp::Qpdata<f64>::_b)
+		.def_readonly("_C", &qp::Qpdata<f64>::_C)
+		.def_readonly("_u", &qp::Qpdata<f64>::_u)
+		.def_readonly("_l", &qp::Qpdata<f64>::_l)
+		.def_readonly("_dim", &qp::Qpdata<f64>::_dim)
+		.def_readonly("_n_eq", &qp::Qpdata<f64>::_n_eq)
+		.def_readonly("_n_in", &qp::Qpdata<f64>::_n_in)
 		.def_readonly("_n_total", &qp::Qpdata<f64>::_n_total);
 
 
@@ -1073,15 +1015,12 @@ INRIA LDLT decomposition
 			&qp::pybind11::correction_guess_line_search<f64, c>);
 
 	*/
-	m.def("oldQPsolve", &qp::pybind11::oldQPsolve<f32, c>);
-	m.def("oldQPsolve", &qp::pybind11::oldQPsolve<f64, c>);
-	
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f32, c>);
 	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f64, c>);
 
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
-	
+
 	m.def("QPsetup", &qp::pybind11::QPsetup<f32, c>);
 	m.def("QPsetup", &qp::pybind11::QPsetup<f64, c>);
 	/*

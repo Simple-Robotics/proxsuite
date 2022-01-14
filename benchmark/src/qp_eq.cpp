@@ -1,4 +1,3 @@
-#include <qp/eq_solver.hpp>
 #include <qp/precond/ruiz.hpp>
 
 #include <numeric>

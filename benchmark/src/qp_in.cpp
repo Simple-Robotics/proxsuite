@@ -1,4 +1,3 @@
-#include <qp/proxqp/in_solver.hpp>
 #include <qp/precond/ruiz.hpp>
 
 #include <numeric>
@@ -32,10 +31,10 @@ auto main() -> int {
 	Vec y = Vec::Zero(n_eq);
     Vec z = Vec::Zero(n_in);
 
-    // allocating all needed variables 
+    // allocating all needed variables
 
     qp::Qpsettings<Scalar> qpsettings{};
-    
+
     qp::Qpdata<Scalar> qpmodel{qp_problem.H,
                                qp_problem.g,
                                qp_problem.A,
@@ -43,7 +42,7 @@ auto main() -> int {
                                qp_problem.C,
                                qp_problem.u,
                                qp_problem.l};
-    
+
     auto x_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, x};
     auto y_view = ldlt::VectorViewMut<Scalar>{ldlt::from_eigen, y};
     auto z_view = ldlt::VectorViewMut<Scalar> {ldlt::from_eigen, z};
@@ -55,17 +54,17 @@ auto main() -> int {
     isize n_iter(10000);
     #endif
     qp::Qpworkspace<Scalar> qpwork{dim, n_eq, n_in};
-    
+
     qp::Qpresults<Scalar> qpresults{dim,n_eq,n_in};
 
-    
+
     auto start = high_resolution_clock::now();
     qp::detail::qpSolve( //
             qpmodel,
             qpwork,
             qpresults,
             qpsettings);
-    
+
     for (isize i=0;i<n_iter;i++){
         qpresults.clearResults();
         qp::detail::qpSolve( //
@@ -74,7 +73,7 @@ auto main() -> int {
             qpresults,
             qpsettings);
     }
-    
+
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
 
@@ -94,5 +93,5 @@ auto main() -> int {
     Vec dua_res = qp_problem.H * qpresults._x  + qp_problem.g + qp_problem.A.transpose() * qpresults._y + qp_problem.C.transpose()* qpresults._z;
 
     std::cout << "dual residual : " <<  dua_res.template lpNorm<Eigen::Infinity>() << std::endl;
-    
+
 }
