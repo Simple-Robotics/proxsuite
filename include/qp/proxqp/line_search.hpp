@@ -114,7 +114,7 @@ auto gradient_norm_qpalm(
 	// derive Cdx_act
 	qpwork._err.tail(qpmodel._n_in).noalias() = ((qpwork._primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)) || (qpwork._primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)) ).select(qpwork._Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
 
-	a+= qpresults._mu_in * qpwork._err.tail(qpmodel._n_in).squaredNorm();
+	a += qpresults._mu_in * qpwork._err.tail(qpmodel._n_in).squaredNorm();
 
 	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
 	qpwork._active_part_z.noalias() = (qpwork._primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)).select(qpwork._primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
@@ -331,8 +331,8 @@ void initial_guess_LS(
 	 * Otherwise, it returns the node minimizing the most the merit function
 	 */
 
-	T machine_eps = std::numeric_limits<T>::epsilon();
-	T machine_inf = std::numeric_limits<T>::infinity();
+	const T machine_eps = std::numeric_limits<T>::epsilon();
+	const T machine_inf = std::numeric_limits<T>::infinity();
 
 	qpwork._alpha = T(1.);
 
@@ -394,7 +394,7 @@ void initial_guess_LS(
 
 		for (isize i=0;i<n_alpha;++i) {
 			alpha_ = qpwork._alphas[i];
-			if (std::abs(alpha_) < T(1.e6)) {
+			if (std::abs(alpha_) < 1.e6) { // TODO(Antoine): remove
 				
 				// calcul de la norm du gradient du noeud
 				T grad_norm = line_search::gradient_norm_computation(
@@ -428,11 +428,11 @@ void initial_guess_LS(
 			// local_saddle_point
 
 			if (i == -1){
-				alpha_ = qpwork._alphas[0] - T(0.5);
+				alpha_ = qpwork._alphas[0] - 0.5;
 			} else if (i==n_alpha-1){
-				alpha_ = qpwork._alphas[n_alpha-1] +  T(0.5);
+				alpha_ = qpwork._alphas[n_alpha-1] +  0.5;
 			} else{
-				alpha_ = (qpwork._alphas[i] + qpwork._alphas[i + 1]) * T(0.5);
+				alpha_ = (qpwork._alphas[i] + qpwork._alphas[i + 1]) * 0.5;
 			}
 
 			// 3.3 on this interval the merit function is a second order
@@ -563,10 +563,10 @@ void correction_guess_LS(
 
 
 	
-	T machine_eps = std::numeric_limits<T>::epsilon();
+	const T machine_eps = std::numeric_limits<T>::epsilon();
 
 	
-	qpwork._alpha = T(1.);
+	qpwork._alpha = T(1);
 	T alpha_(1.);
 
 	qpwork._alphas.clear();
