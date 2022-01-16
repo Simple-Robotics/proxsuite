@@ -830,7 +830,7 @@ void gradient_norm_computation(
 */
 
 template <typename T,Layout L>
-void oldNewQPsolve(
+void QPsolve(
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
@@ -844,8 +844,6 @@ void oldNewQPsolve(
 								qpwork);
 			auto stop = std::chrono::high_resolution_clock::now();
     		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-			qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
 
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
 			std::cout << "n_ext : " <<  qpresults._n_ext << std::endl;
@@ -1015,8 +1013,8 @@ INRIA LDLT decomposition
 			&qp::pybind11::correction_guess_line_search<f64, c>);
 
 	*/
-	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f32, c>);
-	m.def("oldNewQPsolve", &qp::pybind11::oldNewQPsolve<f64, c>);
+	m.def("QPsolve", &qp::pybind11::QPsolve<f32, c>);
+	m.def("QPsolve", &qp::pybind11::QPsolve<f64, c>);
 
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
