@@ -81,7 +81,7 @@ auto gradient_norm_computation(
 }
 
 template <typename T>
-auto gradient_norm_qpalm(
+auto gradient_norm(
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
@@ -534,7 +534,7 @@ void correction_guess_LS(
 	 * For each positive alpha compute the first derivative of
 	 * phi(alpha) = [proximal augmented lagrangian of the subproblem evaluated
 	 *               at x_k + alpha dx]
-	 * using function "gradient_norm_qpalm"
+	 * using function "gradient_norm"
 	 * By construction for alpha = 0,
 	 *   phi'(alpha) <= 0
 	 *   and phi'(alpha) goes to infinity with alpha
@@ -550,7 +550,7 @@ void correction_guess_LS(
 	 * loop, then do
 	 *   last_alpha_neg = 0
 	 *   last_grad_neg = phi'(0)
-	 * using function "gradient_norm_qpalm"
+	 * using function "gradient_norm"
 	 *
 	 * 2.3
 	 * the optimal alpha is within the interval
@@ -610,7 +610,7 @@ void correction_guess_LS(
 					 * For each positive alpha compute the first derivative of
 					 * phi(alpha) = [proximal augmented lagrangian of the
 					 *               subproblem evaluated at x_k + alpha dx]
-					 * using function "gradient_norm_qpalm"
+					 * using function "gradient_norm"
 					 *
 					 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
 					 * phi'(alpha) goes to infinity with alpha hence it cancels
@@ -622,7 +622,7 @@ void correction_guess_LS(
 					 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 					 * break the loop
 					 */
-					T gr = line_search::gradient_norm_qpalm(
+					T gr = line_search::gradient_norm(
 							qpmodel,
 							qpresults,
 							qpwork,
@@ -645,11 +645,11 @@ void correction_guess_LS(
 		 * If first_alpha_pos corresponds to the first positive alpha of
 		 * previous loop, then do
 		 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
-		 * "gradient_norm_qpalm"
+		 * "gradient_norm"
 		 */
 		if (last_neg_grad == T(0)) {
 			alpha_last_neg = T(0);
-			T gr = line_search::gradient_norm_qpalm(
+			T gr = line_search::gradient_norm(
 					qpmodel,
 					qpresults,
 					qpwork,
