@@ -29,19 +29,19 @@ public:
     using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
     ///// Equilibrator
-    qp::preconditioner::RuizEquilibration<T> _ruiz;
+    qp::preconditioner::RuizEquilibration<T> ruiz;
 
     ///// Cholesky Factorization
-    ldlt::Ldlt<T> _ldl;
+    ldlt::Ldlt<T> ldl;
 
     ///// QP STORAGE
-    ColMat _h_scaled;
-    Vec _g_scaled;
-    ColMat _a_scaled;
-    ColMat _c_scaled;
-    Vec _b_scaled;
-    Vec _u_scaled;
-    Vec _l_scaled;
+    ColMat h_scaled;
+    Vec g_scaled;
+    ColMat a_scaled;
+    ColMat c_scaled;
+    Vec b_scaled;
+    Vec u_scaled;
+    Vec l_scaled;
 
     ///// Initial variable loading
 
@@ -49,126 +49,126 @@ public:
     Vec y_prev; 
     Vec z_prev; 
 
-    ///// KKT system storage
-    ColMat _kkt;
+    ///// KKT system storage 
+    ColMat kkt;
 
     //// Active set & permutation vector 
-    VecISize _current_bijection_map;
-    VecISize _new_bijection_map;
+    VecISize current_bijection_map;
+    VecISize new_bijection_map;
 
-    VecBool _active_set_up; 
-    VecBool _active_set_low; 
-    VecBool _active_inequalities;
+    VecBool active_set_up; 
+    VecBool active_set_low; 
+    VecBool active_inequalities;
 
     //// First order residuals for line search
     
-	Vec _Hdx; 
-	Vec _Cdx;
-	Vec _Adx; 
+	Vec Hdx; 
+	Vec Cdx;
+	Vec Adx; 
 
-    Vec _active_part_z;
-    std::vector<T> _alphas;
+    Vec active_part_z;
+    std::vector<T> alphas;
 
     ///// Newton variables
-    Vec _dw_aug;
-    Vec _rhs;
-    Vec _err;
+    Vec dw_aug;
+    Vec rhs;
+    Vec err;
     
     //// Relative residuals constants
 
-    T _primal_feasibility_rhs_1_eq;
-    T _primal_feasibility_rhs_1_in_u;
-    T _primal_feasibility_rhs_1_in_l;
-    T _dual_feasibility_rhs_2;
-    T _correction_guess_rhs_g;
-    T _alpha;
+    T primal_feasibility_rhs_1_eq;
+    T primal_feasibility_rhs_1_in_u;
+    T primal_feasibility_rhs_1_in_l;
+    T dual_feasibility_rhs_2;
+    T correction_guess_rhs_g;
+    T alpha;
 
-    Vec _dual_residual_scaled;
-    Vec _primal_residual_eq_scaled;
-    Vec _primal_residual_in_scaled_up; 
-    Vec _primal_residual_in_scaled_low; 
+    Vec dual_residual_scaled;
+    Vec primal_residual_eq_scaled;
+    Vec primal_residual_in_scaled_up; 
+    Vec primal_residual_in_scaled_low; 
 
-	Vec _primal_residual_in_scaled_up_plus_alphaCdx; 
-	Vec _primal_residual_in_scaled_low_plus_alphaCdx; 
-	Vec _CTz;
+	Vec primal_residual_in_scaled_up_plus_alphaCdx; 
+	Vec primal_residual_in_scaled_low_plus_alphaCdx; 
+	Vec CTz;
 
 	Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
-                _ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
-                _ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc
-                _h_scaled(dim, dim),
-				_g_scaled(dim),
-				_a_scaled(n_eq,dim),
-				_c_scaled(n_in,dim),
-                _b_scaled(n_eq),
-                _u_scaled(n_in),
-                _l_scaled(n_in),
+                ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
+                ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc
+                h_scaled(dim, dim),
+				g_scaled(dim),
+				a_scaled(n_eq,dim),
+				c_scaled(n_in,dim),
+                b_scaled(n_eq),
+                u_scaled(n_in),
+                l_scaled(n_in),
                 x_prev(dim),
                 y_prev(n_eq),
                 z_prev(n_in),
-                _kkt(dim+n_eq,dim+n_eq),
-                _current_bijection_map(n_in),
-                _new_bijection_map(n_in),
-                _active_set_up(n_in),
-                _active_set_low(n_in),
-                _active_inequalities(n_in),
-                _Hdx(dim),
-                _Cdx(n_in),
-                _Adx(n_eq),
-                _active_part_z(n_in),
-                _dw_aug(dim+n_eq+n_in),
-                _rhs(dim+n_eq+n_in),
-                _err(dim+n_eq+n_in),
+                kkt(dim+n_eq,dim+n_eq),
+                current_bijection_map(n_in),
+                new_bijection_map(n_in),
+                active_set_up(n_in),
+                active_set_low(n_in),
+                active_inequalities(n_in),
+                Hdx(dim),
+                Cdx(n_in),
+                Adx(n_eq),
+                active_part_z(n_in),
+                dw_aug(dim+n_eq+n_in),
+                rhs(dim+n_eq+n_in),
+                err(dim+n_eq+n_in),
 
-                _dual_residual_scaled(dim),
-                _primal_residual_eq_scaled(n_eq),
-                _primal_residual_in_scaled_up(n_in),
-                _primal_residual_in_scaled_low(n_in),
+                dual_residual_scaled(dim),
+                primal_residual_eq_scaled(n_eq),
+                primal_residual_in_scaled_up(n_in),
+                primal_residual_in_scaled_low(n_in),
 
-                _primal_residual_in_scaled_up_plus_alphaCdx(n_in),
-                _primal_residual_in_scaled_low_plus_alphaCdx(n_in),
-                _CTz(dim)
+                primal_residual_in_scaled_up_plus_alphaCdx(n_in),
+                primal_residual_in_scaled_low_plus_alphaCdx(n_in),
+                CTz(dim)
 
             {
-                    _alphas.reserve( 3*n_in );
-                    _h_scaled.setZero();
-                    _g_scaled.setZero();
-                    _a_scaled.setZero();
-                    _c_scaled.setZero();
-                    _b_scaled.setZero();
-                    _u_scaled.setZero();
-                    _l_scaled.setZero();
+                    alphas.reserve( 3*n_in );
+                    h_scaled.setZero();
+                    g_scaled.setZero();
+                    a_scaled.setZero();
+                    c_scaled.setZero();
+                    b_scaled.setZero();
+                    u_scaled.setZero();
+                    l_scaled.setZero();
                     x_prev.setZero();
                     y_prev.setZero();
                     z_prev.setZero();
-                    _kkt.setZero();
+                    kkt.setZero();
                     for (isize i = 0; i < n_in; i++) {
-                        _current_bijection_map(i) = i;
-                        _new_bijection_map(i) = i;
+                        current_bijection_map(i) = i;
+                        new_bijection_map(i) = i;
                     }
-                    _Hdx.setZero();
-                    _Cdx.setZero();
-                    _Adx.setZero();
-                    _active_part_z.setZero();
-                    _dw_aug.setZero();
-                    _rhs.setZero();
-                    _err.setZero();
+                    Hdx.setZero();
+                    Cdx.setZero();
+                    Adx.setZero();
+                    active_part_z.setZero();
+                    dw_aug.setZero();
+                    rhs.setZero();
+                    err.setZero();
 
-                    _primal_feasibility_rhs_1_eq = 0;
-                    _primal_feasibility_rhs_1_in_u = 0;
-                    _primal_feasibility_rhs_1_in_l = 0;
-                    _dual_feasibility_rhs_2 = 0;
-                    _correction_guess_rhs_g = 0;
-                    _alpha = 0.;
+                    primal_feasibility_rhs_1_eq = 0;
+                    primal_feasibility_rhs_1_in_u = 0;
+                    primal_feasibility_rhs_1_in_l = 0;
+                    dual_feasibility_rhs_2 = 0;
+                    correction_guess_rhs_g = 0;
+                    alpha = 0.;
 
-                    _dual_residual_scaled.setZero();
-                    _primal_residual_eq_scaled.setZero();
-                    _primal_residual_in_scaled_up.setZero();
-                    _primal_residual_in_scaled_low.setZero();
+                    dual_residual_scaled.setZero();
+                    primal_residual_eq_scaled.setZero();
+                    primal_residual_in_scaled_up.setZero();
+                    primal_residual_in_scaled_low.setZero();
 
-                    _primal_residual_in_scaled_up_plus_alphaCdx.setZero();
-                    _primal_residual_in_scaled_low_plus_alphaCdx.setZero();
-                    _CTz.setZero();
+                    primal_residual_in_scaled_up_plus_alphaCdx.setZero();
+                    primal_residual_in_scaled_low_plus_alphaCdx.setZero();
+                    CTz.setZero();
             }
 
         
