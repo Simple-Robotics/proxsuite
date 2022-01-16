@@ -56,7 +56,7 @@ struct QpSolveStats {
 
 template <typename T>
 void refactorize(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T rho_new
@@ -82,7 +82,7 @@ void refactorize(
 
 template <typename T>
 void mu_update(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T mu_eq_new_inv,
@@ -111,7 +111,7 @@ void mu_update(
 
 template <typename T>
 void iterative_residual(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		isize inner_pb_dim) {
@@ -135,8 +135,8 @@ void iterative_residual(
 
 template <typename T>
 void iterative_solve_with_permut_fact( //
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T eps,
@@ -298,8 +298,8 @@ void iterative_solve_with_permut_fact( //
 
 template <typename T>
 void BCL_update(
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T& primal_feasibility_lhs,
@@ -342,7 +342,7 @@ void BCL_update(
 
 template <typename T>
 void global_primal_residual(
-			qp::Qpdata<T>& qpmodel,
+			const qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
 			qp::Qpworkspace<T>& qpwork,
 			T& primal_feasibility_lhs,
@@ -373,7 +373,7 @@ void global_primal_residual(
 
 template <typename T>
 void global_dual_residual(
-			qp::Qpdata<T>& qpmodel,
+			const qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
 			qp::Qpworkspace<T>& qpwork,
 			T& dual_feasibility_lhs,
@@ -410,7 +410,7 @@ void global_dual_residual(
 
 template<typename T> 
 T SaddlePoint(
-			qp::Qpdata<T>& qpmodel,
+			const qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
 			qp::Qpworkspace<T>& qpwork
 			){
@@ -441,8 +441,8 @@ T SaddlePoint(
 
 template<typename T>
 void newton_step_new(
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T eps
@@ -475,8 +475,8 @@ void newton_step_new(
 
 template<typename T>
 T initial_guess(
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
         VectorViewMut<T> ze,
@@ -588,8 +588,8 @@ T initial_guess(
 
 template<typename T>
 T correction_guess(
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T eps_int
@@ -669,8 +669,8 @@ T correction_guess(
 
 template <typename T>
 QpSolveStats qpSolve( //
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork) {
 
@@ -783,7 +783,7 @@ QpSolveStats qpSolve( //
 				qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpresults._z});
 
 				qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
-				
+
 				return {qpresults._n_ext, qpresults._n_mu_change,qpresults._n_tot};
 			}
 		}

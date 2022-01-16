@@ -20,7 +20,7 @@ namespace line_search {
 
 template <typename T>
 auto gradient_norm_computation(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T alpha
@@ -82,7 +82,7 @@ auto gradient_norm_computation(
 
 template <typename T>
 auto gradient_norm_qpalm(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T alpha
@@ -128,7 +128,7 @@ auto gradient_norm_qpalm(
 
 template <typename T>
 auto local_saddle_point(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
 		T& alpha
@@ -248,8 +248,8 @@ auto local_saddle_point(
 
 template <typename T>
 void initial_guess_LS(
-		qp::Qpsettings<T>& qpsettings,
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpsettings<T>& qpsettings,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork
 		) {
@@ -513,7 +513,7 @@ void initial_guess_LS(
 
 template <typename T>
 void correction_guess_LS(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork
 		){
@@ -674,7 +674,7 @@ void correction_guess_LS(
 
 template <typename T>
 void active_set_change(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		Qpworkspace<T>& qpwork
 		) {
