@@ -11,14 +11,14 @@ struct Qpdata {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
-	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
+	using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
     ///// QP STORAGE
-    ColMat H;
+    Mat H;
     Vec  g;
-    ColMat  A;
-    ColMat  C;
+    Mat  A;
+    Mat  C;
     Vec  b;
     Vec  u;
     Vec  l;

@@ -13,14 +13,14 @@ public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
 
-	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
+	using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	using VecMap = Eigen::Map<Vec const>;
 	using VecMapMut = Eigen::Map<Vec>;
 
-    using MatMap = Eigen::Map<ColMat const>;
-	using MatMapMut = Eigen::Map<ColMat>;
+    using MatMap = Eigen::Map<Mat const>;
+	using MatMapMut = Eigen::Map<Mat>;
 
 	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
     using VecISize = Eigen::Matrix<isize, DYN, 1>;
@@ -35,10 +35,10 @@ public:
     ldlt::Ldlt<T> ldl;
 
     ///// QP STORAGE
-    ColMat h_scaled;
+    Mat h_scaled;
     Vec g_scaled;
-    ColMat a_scaled;
-    ColMat c_scaled;
+    Mat a_scaled;
+    Mat c_scaled;
     Vec b_scaled;
     Vec u_scaled;
     Vec l_scaled;
@@ -50,7 +50,7 @@ public:
     Vec z_prev; 
 
     ///// KKT system storage 
-    ColMat kkt;
+    Mat kkt;
 
     //// Active set & permutation vector 
     VecISize current_bijection_map;
