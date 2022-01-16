@@ -390,33 +390,30 @@ void initial_guess_LS(
 		n_alpha = qpwork._alphas.size();
 		// 2.2/ for each node active set and associated gradient are computed
 
-		bool first(true);
+		bool first_grad(true);
 
 		for (isize i=0;i<n_alpha;++i) {
 			alpha_ = qpwork._alphas[i];
-			if (std::abs(alpha_) < 1.e6) { // TODO(Antoine): remove
-				
-				// calcul de la norm du gradient du noeud
-				T grad_norm = line_search::gradient_norm_computation(
-						qpmodel,
-						qpresults,
-						qpwork,
-						alpha_
-						);
+			// calcul de la norm du gradient du noeud
+			T grad_norm = line_search::gradient_norm_computation(
+					qpmodel,
+					qpresults,
+					qpwork,
+					alpha_
+					);
 
-				if (first){
+			if (first_grad){
+				alpha_n = alpha_;
+				gr_n = grad_norm;
+				first_grad = false;
+			}else{
+				if (grad_norm<gr_n){
 					alpha_n = alpha_;
 					gr_n = grad_norm;
-					first = false;
-				}else{
-					if (grad_norm<gr_n){
-						alpha_n = alpha_;
-						gr_n = grad_norm;
-					}
-				} 
+				}
 			} 
 		}
-		first = true;
+		first_grad = true;
 		//////////STEP 3 ////////////
 		// 3.1 : define intervals with alphas
 
@@ -452,8 +449,8 @@ void initial_guess_LS(
 			if (i == -1) {
 				if (alpha_ <= qpwork._alphas[0]) {
 					
-					if (first){
-						first = false;
+					if (first_grad){
+						first_grad = false;
 						alpha_interval = alpha_ ;
 						gr_interval = associated_grad_2_norm;
 					} else{
@@ -466,8 +463,8 @@ void initial_guess_LS(
 			} else if (i == n_alpha-1) {
 				if (alpha_ >= qpwork._alphas[n_alpha - 1]) {
 					
-					if (first){
-						first = false;
+					if (first_grad){
+						first_grad = false;
 						alpha_interval = alpha_ ;
 						gr_interval = associated_grad_2_norm;
 					} else{
@@ -480,8 +477,8 @@ void initial_guess_LS(
 			} else {
 				if (alpha_ <= qpwork._alphas[i + 1] && qpwork._alphas[i] <= alpha_) {
 					
-					if (first){
-						first = false;
+					if (first_grad){
+						first_grad = false;
 						alpha_interval = alpha_ ;
 						gr_interval = associated_grad_2_norm;
 					} else{

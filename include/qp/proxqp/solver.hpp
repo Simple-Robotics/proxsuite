@@ -668,7 +668,7 @@ T correction_guess(
 }
 
 template <typename T>
-QpSolveStats qpSolve( //
+void qpSolve( //
 		const qp::Qpsettings<T>& qpsettings,
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -783,8 +783,8 @@ QpSolveStats qpSolve( //
 				qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpresults._z});
 
 				qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
+				break;
 
-				return {qpresults._n_ext, qpresults._n_mu_change,qpresults._n_tot};
 			}
 		}
 		
@@ -897,7 +897,7 @@ QpSolveStats qpSolve( //
 				qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen,qpresults._z});
 
 				qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
-				return {qpresults._n_ext, qpresults._n_mu_change,qpresults._n_tot};
+				break;
 			}
 		}
 		
@@ -971,7 +971,7 @@ QpSolveStats qpSolve( //
 	
 	//::Eigen::internal::set_is_malloc_allowed(true);
 	qpresults._objValue = (0.5 * qpmodel._H * qpresults._x + qpmodel._g).dot(qpresults._x) ;
-	return {qpsettings._max_iter, qpresults._n_mu_change, qpresults._n_tot};
+
 }
 
 

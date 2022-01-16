@@ -837,7 +837,7 @@ void QPsolve(
 		qp::Qpsettings<T>& qpsettings){
 
 			auto start = std::chrono::high_resolution_clock::now();
-			qp::detail::QpSolveStats res = qp::detail::qpSolve( //
+			qp::detail::qpSolve( //
 								qpsettings,
 								qpmodel,
 								qpresults,
