@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_Qpsettings_HPP_VCVSK3EOS
-#define INRIA_LDLT_Qpsettings_HPP_VCVSK3EOS
+#ifndef INRIA_LDLT_QPSettings_HPP_VCVSK3EOS
+#define INRIA_LDLT_QPSettings_HPP_VCVSK3EOS
 
 #include <Eigen/Core>
 #include "ldlt/views.hpp"
@@ -7,7 +7,7 @@
 namespace qp {
 
 template <typename T>
-struct Qpsettings {
+struct QPSettings {
 public:
 
     T alpha_bcl;
@@ -40,7 +40,7 @@ public:
 
     bool verbose;
 
-	Qpsettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
+	QPSettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
                T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
                T mu_max_eq=1e9, T mu_max_in=1e8, T mu_max_eq_inv=1e-9,T mu_max_in_inv=1e-8,
                T mu_update_factor=10, T mu_update_inv_factor=0.1,
@@ -87,4 +87,4 @@ public:
 
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_Qpsettings_HPP_VCVSK3EOS */
+#endif /* end of include guard INRIA_LDLT_QPSettings_HPP_VCVSK3EOS */

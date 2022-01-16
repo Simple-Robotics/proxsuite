@@ -20,9 +20,9 @@ namespace line_search {
 
 template <typename T>
 auto gradient_norm_computation(
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpworkspace<T>& qpwork,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
 		T alpha
 		) -> T {
 
@@ -68,7 +68,7 @@ auto gradient_norm_computation(
 	// stores [qpwork.active_part_z]_act
 	qpwork.err.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	// use it to derive CT [qpwork.active_part_z]_act
-	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.c_scaled.transpose() * qpwork.err.tail(qpmodel.n_in) ;
+	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.C_scaled.transpose() * qpwork.err.tail(qpmodel.n_in) ;
 	// define [qpwork.active_part_z]_act / mu_in
 	qpwork.err.tail(qpmodel.n_in) *= qpresults.mu_in_inv;
 
@@ -82,9 +82,9 @@ auto gradient_norm_computation(
 
 template <typename T>
 auto gradient_norm(
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpworkspace<T>& qpwork,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
 		T alpha
 		) -> T {
 
@@ -128,9 +128,9 @@ auto gradient_norm(
 
 template <typename T>
 auto local_saddle_point(
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpworkspace<T>& qpwork,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
 		T& alpha
 		) -> T {
 	/*
@@ -193,7 +193,7 @@ auto local_saddle_point(
 	// derive dz_act
 	qpwork.rhs.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.dw_aug.tail(qpmodel.n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	/// use it to compute CT*dz_act
-	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
+	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.C_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
 	// derive Cdx_act
 	qpwork.err.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)) ).select(qpwork.Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	// derive [Cdx-dz/mu_in]_act
@@ -208,7 +208,7 @@ auto local_saddle_point(
 	// derive z_act
 	qpwork.rhs.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.z_prev, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	/// use it to compute CT*z_act
-	qpwork.CTz.noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
+	qpwork.CTz.noalias() += qpwork.C_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
 	c0 += qpwork.CTz.squaredNorm();
 	b0 += qpwork.rhs.head(qpmodel.dim).dot(qpwork.CTz); // d_dual + CT*dz_act dot dual + CT*z_act
 	// derive vector [Cx-u+(ze-z_act)/mu]_+ + [Cx-l+(ze-z_act)/mu]--
@@ -248,10 +248,10 @@ auto local_saddle_point(
 
 template <typename T>
 void initial_guess_ls(
-		const qp::Qpsettings<T>& qpsettings,
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpworkspace<T>& qpwork
+		const qp::QPSettings<T>& QPSettings,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork
 		) {
 	/*
 	 * Considering the following qp = (H, g, A, b, C, u,l) and a Newton step
@@ -357,7 +357,7 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.z_prev(i)) != 0.) {
 			alpha_ = -qpwork.z_prev(i) / (qpwork.dw_aug.tail(qpmodel.n_in)(i) + machine_eps);
-			if (std::abs(alpha_)< qpsettings.R){
+			if (std::abs(alpha_)< QPSettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 		}
@@ -369,11 +369,11 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.Cdx(i)) != 0) {
 			alpha_= -qpwork.primal_residual_in_scaled_up(i) / (qpwork.Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < qpsettings.R){
+			if (std::abs(alpha_) < QPSettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 			alpha_ = -qpwork.primal_residual_in_scaled_low(i) / (qpwork.Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < qpsettings.R){
+			if (std::abs(alpha_) < QPSettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 		}
@@ -510,9 +510,9 @@ void initial_guess_ls(
 
 template <typename T>
 void correction_guess_ls(
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpworkspace<T>& qpwork
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork
 		){
 
 	/*
@@ -671,9 +671,9 @@ void correction_guess_ls(
 
 template <typename T>
 void active_set_change(
-		const qp::Qpdata<T>& qpmodel,
-		qp::Qpresults<T>& qpresults,
-		Qpworkspace<T>& qpwork
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		QPWorkspace<T>& qpwork
 		) {
 
 	/*
@@ -758,7 +758,7 @@ void active_set_change(
 				// add at the end
 				
 				qpwork.dw_aug.setZero();
-				qpwork.dw_aug.head(qpmodel.dim) = qpwork.c_scaled.row(i);
+				qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
 				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
 				qpwork.ldl.insert_at(qpmodel.n_eq + qpmodel.dim + n_c_f, qpwork.dw_aug.head(n_c_f+1+qpmodel.n_eq+qpmodel.dim));
 

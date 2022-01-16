@@ -44,9 +44,9 @@ auto square(T const& expr)
 
 template <typename T>
 void refactorize(
-		qp::Qpworkspace<T>& qpwork,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpdata<T>& qpmodel,
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& qpresults,
+		qp::QPData<T>& qpmodel,
 		T rho_new
 		) {
 
@@ -72,9 +72,9 @@ void refactorize(
 
 template <typename T>
 void mu_update(
-		qp::Qpworkspace<T>& qpwork,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpdata<T>& qpmodel,
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& qpresults,
+		qp::QPData<T>& qpmodel,
 		T mu_eq_new_inv,
 		T mu_in_new_inv) {
 	T diff = T(0);
@@ -120,9 +120,9 @@ void global_primal_residual(
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
-		qp::Qpworkspace<T>& qpwork,
-		qp::Qpresults<T>& qpresults,
-		qp::Qpdata<T>& qpmodel
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& qpresults,
+		qp::QPData<T>& qpmodel
 		) {
 
 	//LDLT_DECL_SCOPE_TIMER("in solver", "primal residual", T);
@@ -161,8 +161,8 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,
 		T& dual_feasibility_rhs_3,
-		qp::Qpworkspace<T>& qpwork,
-		qp::Qpresults<T>& qpresults
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& qpresults
 		) {
 
 	/*

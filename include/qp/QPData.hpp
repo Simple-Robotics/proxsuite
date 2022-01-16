@@ -7,7 +7,7 @@
 namespace qp {
 
 template <typename T>
-struct Qpdata {
+struct QPData {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
@@ -29,7 +29,7 @@ public:
     isize n_in;
     isize n_total;
 
-    Qpdata(isize _dim, isize _n_eq, isize _n_in):
+    QPData(isize _dim, isize _n_eq, isize _n_in):
                     H(_dim, _dim),
                     g(_dim),
                     A(_n_eq,_dim),

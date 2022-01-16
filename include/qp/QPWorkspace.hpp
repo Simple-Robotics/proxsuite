@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_OLD_NEW_QPWORKSPACE_HPP_VCVSK3EOS
-#define INRIA_LDLT_OLD_NEW_QPWORKSPACE_HPP_VCVSK3EOS
+#ifndef INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
+#define INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
 
 #include <Eigen/Core>
 #include "ldlt/views.hpp"
@@ -8,7 +8,7 @@
 namespace qp {
 
 template <typename T>
-struct Qpworkspace {
+struct QPWorkspace {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
@@ -35,10 +35,10 @@ public:
     ldlt::Ldlt<T> ldl;
 
     ///// QP STORAGE
-    Mat h_scaled;
+    Mat H_scaled;
     Vec g_scaled;
-    Mat a_scaled;
-    Mat c_scaled;
+    Mat A_scaled;
+    Mat C_scaled;
     Vec b_scaled;
     Vec u_scaled;
     Vec l_scaled;
@@ -92,14 +92,14 @@ public:
 	Vec primal_residual_in_scaled_low_plus_alphaCdx; 
 	Vec CTz;
 
-	Qpworkspace( isize dim=0, isize n_eq=0, isize n_in=0)
+	QPWorkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
                 ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc
-                h_scaled(dim, dim),
+                H_scaled(dim, dim),
 				g_scaled(dim),
-				a_scaled(n_eq,dim),
-				c_scaled(n_in,dim),
+				A_scaled(n_eq,dim),
+				C_scaled(n_in,dim),
                 b_scaled(n_eq),
                 u_scaled(n_in),
                 l_scaled(n_in),
@@ -131,10 +131,10 @@ public:
 
             {
                     alphas.reserve( 3*n_in );
-                    h_scaled.setZero();
+                    H_scaled.setZero();
                     g_scaled.setZero();
-                    a_scaled.setZero();
-                    c_scaled.setZero();
+                    A_scaled.setZero();
+                    C_scaled.setZero();
                     b_scaled.setZero();
                     u_scaled.setZero();
                     l_scaled.setZero();
@@ -176,4 +176,4 @@ public:
 
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_OLD_NEW_QPWORKSPACE_HPP_VCVSK3EOS */
+#endif /* end of include guard INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS */

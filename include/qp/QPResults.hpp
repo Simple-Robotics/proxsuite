@@ -7,7 +7,7 @@
 namespace qp {
 
 template <typename T>
-struct Qpresults {
+struct QPResults {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
@@ -35,7 +35,7 @@ public:
     T timing;
     T objValue;
 
-	Qpresults( isize dim=0, isize n_eq=0, isize n_in=0)
+	QPResults( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 x(dim),
                 y(n_eq),
