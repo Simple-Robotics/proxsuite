@@ -209,11 +209,11 @@ void QPsetup( //
 	qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
 
 	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
-	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;
+	qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults.rho;
 	qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
 	qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
 	qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
-	qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
+	qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults.mu_eq_inv); // mu stores the inverse of mu
 
 	qpwork._ldl.factorize(qpwork._kkt);
 	qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
@@ -228,8 +228,8 @@ void QPsetup( //
 		qpmodel._dim+qpmodel._n_eq
         );
 
-	qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
-	qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
+	qpresults.x = qpwork._dw_aug.head(qpmodel._dim);
+	qpresults.y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
 
 	qpwork._dw_aug.setZero();
 
@@ -288,11 +288,11 @@ void QPupdateMatrice( //
 		qpwork._correction_guess_rhs_g = infty_norm(qpwork._g_scaled);
 
 		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim) = qpwork._h_scaled ;
-		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults._rho;
+		qpwork._kkt.topLeftCorner(qpmodel._dim, qpmodel._dim).diagonal().array() += qpresults.rho;
 		qpwork._kkt.block(0, qpmodel._dim, qpmodel._dim, qpmodel._n_eq) = qpwork._a_scaled.transpose();
 		qpwork._kkt.block(qpmodel._dim, 0, qpmodel._n_eq, qpmodel._dim) = qpwork._a_scaled;
 		qpwork._kkt.bottomRightCorner(qpmodel._n_eq, qpmodel._n_eq).setZero();
-		qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults._mu_eq_inv); // mu stores the inverse of mu
+		qpwork._kkt.diagonal().segment(qpmodel._dim, qpmodel._n_eq).setConstant(-qpresults.mu_eq_inv); // mu stores the inverse of mu
 
 		qpwork._ldl.factorize(qpwork._kkt);
 		qpwork._rhs.head(qpmodel._dim) = -qpwork._g_scaled;
@@ -307,8 +307,8 @@ void QPupdateMatrice( //
 			qpmodel._dim+qpmodel._n_eq
 			);
 
-		qpresults._x = qpwork._dw_aug.head(qpmodel._dim);
-		qpresults._y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
+		qpresults.x = qpwork._dw_aug.head(qpmodel._dim);
+		qpresults.y = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq);
 
 		qpwork._dw_aug.setZero();
 
@@ -478,23 +478,23 @@ void transition_algebra_before_IG_newton(
 	qpwork._primal_residual_in_scaled_u -= qpmodel._u;
 	qpwork._primal_residual_in_scaled_l -= qpmodel._l;
 
-	qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork._ze});
-	qpwork._primal_residual_in_scaled_u += qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
-	qpwork._primal_residual_in_scaled_l += qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
+	qpwork._ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.ze});
+	qpwork._primal_residual_in_scaled_u += qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
+	qpwork._primal_residual_in_scaled_l += qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
 
 	qpwork._l_active_set_n_u.array() = (qpwork._primal_residual_in_scaled_u .array() >= 0);
 	qpwork._l_active_set_n_l.array() = (qpwork._primal_residual_in_scaled_l.array() <= 0);
 
 	qpwork._active_inequalities = qpwork._l_active_set_n_u || qpwork._l_active_set_n_l;
 
-	qpwork._primal_residual_in_scaled_u -= qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
-	qpwork._primal_residual_in_scaled_l -= qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
+	qpwork._primal_residual_in_scaled_u -= qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
+	qpwork._primal_residual_in_scaled_l -= qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
 
 	qpwork._ruiz.scale_primal_residual_in_place_in(
 			VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_u});
 	qpwork._ruiz.scale_primal_residual_in_place_in(
 			VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_l});
-	qpwork._ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork._ze});
+	qpwork._ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.ze});
 	// rescale value
 	isize num_active_inequalities = qpwork._active_inequalities.count();
 	isize inner_pb_dim = qpmodel._dim + qpmodel._n_eq + num_active_inequalities;
@@ -517,7 +517,7 @@ void transition_algebra_before_IG_newton(
 				qpwork._rhs(j + qpmodel._dim + qpmodel._n_eq) = -qpwork._primal_residual_in_scaled_l(i);
 			}
 		} else {
-			qpwork._rhs.head(qpmodel._dim).noalias() += qpresults._z(i) * qpwork._c_scaled.row(i); // add CTze_inactif to rhs.head(dim)
+			qpwork._rhs.head(qpmodel._dim).noalias() += qpresults.z(i) * qpwork._c_scaled.row(i); // add CTze_inactif to rhs.head(dim)
 		}
 	}
 
@@ -555,18 +555,18 @@ void transition_algebra_before_IG_newton(
 			//cdx_(j) = rhs(i + dim + n_eq) + dw(dim + n_eq + i) / mu_in;
 
 			qpwork._active_part_z(j) = qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i);
-			qpwork._Cdx(j) = qpwork._rhs(i + qpmodel._dim + qpmodel._n_eq) + qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i) * qpresults._mu_in_inv; // mu stores the inverse of mu
+			qpwork._Cdx(j) = qpwork._rhs(i + qpmodel._dim + qpmodel._n_eq) + qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i) * qpresults.mu_in_inv; // mu stores the inverse of mu
 
 		} else {
 			//dw_aug_(j + dim + n_eq) = -z_(j);
-			qpwork._active_part_z(j) = -qpresults._z(j);
+			qpwork._active_part_z(j) = -qpresults.z(j);
 			qpwork._Cdx(j) = qpwork._c_scaled.row(j).dot(qpwork._dw_aug.head(qpmodel._dim));
 		}
 	}
 	qpwork._dw_aug.tail(qpmodel._n_in) = qpwork._active_part_z ;
 
-	qpwork._primal_residual_in_scaled_u += qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
-	qpwork._primal_residual_in_scaled_l += qpwork._ze * qpresults._mu_in_inv; // mu stores the inverse of mu
+	qpwork._primal_residual_in_scaled_u += qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
+	qpwork._primal_residual_in_scaled_l += qpwork.ze * qpresults.mu_in_inv; // mu stores the inverse of mu
 
 	//qpwork._d_primal_residual_eq = qpwork._rhs.segment(qpmodel._dim, qpmodel._n_eq); // By definition of linear system solution // seems unprecise
 	qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim);
@@ -642,30 +642,30 @@ void transition_algebra(
 			//
 			qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
 			qpwork._Hx.noalias() += qpwork._alpha * qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim);
-			qpwork._ATy.noalias() +=  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults._mu_eq ; //mu stores mu
-			qpwork._primal_residual_eq_scaled.noalias() += qpresults._y * qpresults._mu_eq_inv ; // contains now Ax_new - b + ye/mu_eq
+			qpwork._ATy.noalias() +=  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults.mu_eq ; //mu stores mu
+			qpwork._primal_residual_eq_scaled.noalias() += qpresults.y * qpresults.mu_eq_inv ; // contains now Ax_new - b + ye/mu_eq
 			qpwork._active_part_z = qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l);
 			qpwork._dual_residual_scaled.noalias() = qpwork._ATy;
-			qpwork._dual_residual_scaled.noalias() +=  qpwork._c_scaled.transpose() * qpwork._active_part_z * qpresults._mu_in ; //mu stores mu  // used for newton step at first iteration
+			qpwork._dual_residual_scaled.noalias() +=  qpwork._c_scaled.transpose() * qpwork._active_part_z * qpresults.mu_in ; //mu stores mu  // used for newton step at first iteration
 
-			qpwork._primal_residual_in_scaled_u.noalias() += qpresults._z * qpresults._mu_in_inv; //mu stores the inverse of mu
-			qpwork._primal_residual_in_scaled_l.noalias() += qpresults._z * qpresults._mu_in_inv; //mu stores the inverse of mu
+			qpwork._primal_residual_in_scaled_u.noalias() += qpresults.z * qpresults.mu_in_inv; //mu stores the inverse of mu
+			qpwork._primal_residual_in_scaled_l.noalias() += qpresults.z * qpresults.mu_in_inv; //mu stores the inverse of mu
 		}
 		if (!do_initial_guess_fact ) {
 
 			qpwork._ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{from_eigen, qpwork._primal_residual_in_scaled_u}); // primal_residual_in_scaled_u contains Cx unscaled from global primal residual
-			qpwork._primal_residual_eq_scaled.noalias()  += qpwork._ye * qpresults._mu_eq_inv;//mu stores the inverse of mu
-			qpwork._ATy.noalias() =  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults._mu_eq ; //mu stores mu
+			qpwork._primal_residual_eq_scaled.noalias()  += qpwork.ye * qpresults.mu_eq_inv;//mu stores the inverse of mu
+			qpwork._ATy.noalias() =  (qpwork._a_scaled.transpose() * qpwork._primal_residual_eq_scaled) * qpresults.mu_eq ; //mu stores mu
 			qpwork._ruiz.scale_dual_residual_in_place(VectorViewMut<T>{from_eigen,qpwork._Hx});
 
-			qpwork._primal_residual_in_scaled_u.noalias()  += qpwork._ze * qpresults._mu_in_inv;//mu stores the inverse of mu
+			qpwork._primal_residual_in_scaled_u.noalias()  += qpwork.ze * qpresults.mu_in_inv;//mu stores the inverse of mu
 			qpwork._primal_residual_in_scaled_l = qpwork._primal_residual_in_scaled_u;
 			qpwork._primal_residual_in_scaled_u -= qpwork._u_scaled;
 			qpwork._primal_residual_in_scaled_l -= qpwork._l_scaled;
 			qpwork._dual_residual_scaled.noalias() = qpwork._Hx + qpwork._ATy + qpwork._g_scaled;
-			qpwork._dual_residual_scaled.noalias() += qpresults._rho * (qpresults._x - qpwork._xe);
+			qpwork._dual_residual_scaled.noalias() += qpresults._rho * (qpresults.x - qpwork.xe);
 			qpwork._active_part_z = qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l);
-			qpwork._dual_residual_scaled.noalias() +=  qpwork._c_scaled.transpose() * qpwork._active_part_z * qpresults._mu_in ; //mu stores mu  // used for newton step at first iteration
+			qpwork._dual_residual_scaled.noalias() +=  qpwork._c_scaled.transpose() * qpwork._active_part_z * qpresults.mu_in ; //mu stores mu  // used for newton step at first iteration
 
 		}
 
@@ -678,7 +678,7 @@ void transition_algebra_before_LS_CG(
 		qp::Qpdata<T>& qpmodel){
 
 		qpwork._d_dual_for_eq.noalias() = qpwork._h_scaled * qpwork._dw_aug.head(qpmodel._dim);
-		//qpwork._d_primal_residual_eq.noalias() = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq) * qpresults._mu_eq_inv; // by definition Adx = dy / mu : seems unprecise
+		//qpwork._d_primal_residual_eq.noalias() = qpwork._dw_aug.segment(qpmodel._dim,qpmodel._n_eq) * qpresults.mu_eq_inv; // by definition Adx = dy / mu : seems unprecise
 		qpwork._d_primal_residual_eq.noalias() = qpwork._a_scaled * qpwork._dw_aug.head(qpmodel._dim);
 		qpwork._Cdx.noalias() = qpwork._c_scaled * qpwork._dw_aug.head(qpmodel._dim);
 
@@ -690,22 +690,22 @@ T transition_algebra_after_LS_CG(
 		qp::Qpresults<T>& qpresults,
 		qp::Qpdata<T>& qpmodel){
 
-		qpresults._x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
+		qpresults.x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
 
 		qpwork._primal_residual_in_scaled_u.noalias() += qpwork._alpha * qpwork._Cdx;
 		qpwork._primal_residual_in_scaled_l.noalias() += qpwork._alpha * qpwork._Cdx;
 		qpwork._primal_residual_eq_scaled.noalias() += qpwork._alpha * qpwork._d_primal_residual_eq;
-		qpresults._y.noalias() = qpwork._primal_residual_eq_scaled * qpresults._mu_eq; //mu stores mu
+		qpresults.y.noalias() = qpwork._primal_residual_eq_scaled * qpresults.mu_eq; //mu stores mu
 
 		qpwork._Hx.noalias() += qpwork._alpha * qpwork._d_dual_for_eq ; // stores Hx
-		qpwork._ATy.noalias() = (qpwork._a_scaled).transpose() * qpresults._y ;
+		qpwork._ATy.noalias() = (qpwork._a_scaled).transpose() * qpresults.y ;
 
-		qpresults._z =  (qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l)) *  qpresults._mu_in; //mu stores mu
+		qpresults.z =  (qp::detail::positive_part(qpwork._primal_residual_in_scaled_u) + qp::detail::negative_part(qpwork._primal_residual_in_scaled_l)) *  qpresults.mu_in; //mu stores mu
 		T rhs_c = std::max(qpwork._correction_guess_rhs_g, infty_norm( qpwork._Hx));
 		rhs_c = std::max(rhs_c, infty_norm(qpwork._ATy));
-		qpwork._dual_residual_scaled.noalias() = qpwork._c_scaled.transpose() * qpresults._z ;
+		qpwork._dual_residual_scaled.noalias() = qpwork._c_scaled.transpose() * qpresults.z ;
 		rhs_c = std::max(rhs_c, infty_norm(qpwork._dual_residual_scaled));
-		qpwork._dual_residual_scaled.noalias() += qpwork._Hx + qpwork._g_scaled + qpwork._ATy + qpresults._rho * (qpresults._x - qpwork._xe);
+		qpwork._dual_residual_scaled.noalias() += qpwork._Hx + qpwork._g_scaled + qpwork._ATy + qpresults._rho * (qpresults.x - qpwork.xe);
 		std::cout << "rhs_c " << rhs_c  << std::endl;
 		T err_in = infty_norm(qpwork._dual_residual_scaled);
 		return err_in;
@@ -756,16 +756,16 @@ void transition_algebra_after_IG_LS(
 	qpwork._l_active_set_n_l = (qpwork._primal_residual_in_scaled_l.array() <= 0).matrix();
 	qpwork._active_inequalities = qpwork._l_active_set_n_u || qpwork._l_active_set_n_l;
 
-	qpresults._x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
-	qpresults._y.noalias() += qpwork._alpha * qpwork._dw_aug.segment(qpmodel._dim, qpmodel._n_eq);
+	qpresults.x.noalias() += qpwork._alpha * qpwork._dw_aug.head(qpmodel._dim);
+	qpresults.y.noalias() += qpwork._alpha * qpwork._dw_aug.segment(qpmodel._dim, qpmodel._n_eq);
 
 
-	qpwork._active_part_z = qpresults._z + qpwork._alpha * qpwork._dw_aug.tail(qpmodel._n_in) ;
+	qpwork._active_part_z = qpresults.z + qpwork._alpha * qpwork._dw_aug.tail(qpmodel._n_in) ;
 
 	qpwork._residual_in_z_u_plus_alpha = (qpwork._active_part_z.array() > 0).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
 	qpwork._residual_in_z_l_plus_alpha = (qpwork._active_part_z.array() < 0).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
 
-	qpresults._z = (qpwork._l_active_set_n_u).select(qpwork._residual_in_z_u_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) +
+	qpresults.z = (qpwork._l_active_set_n_u).select(qpwork._residual_in_z_u_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) +
 				   (qpwork._l_active_set_n_l).select(qpwork._residual_in_z_l_plus_alpha, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) +
 				   (!qpwork._l_active_set_n_l.array() && !qpwork._l_active_set_n_u.array()).select(qpwork._active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) ;
 
@@ -825,12 +825,12 @@ void QPsolve(
     		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "n_ext : " <<  qpresults._n_ext << std::endl;
-			std::cout << "n_tot : " <<  qpresults._n_tot << std::endl;
-			std::cout << "mu updates : " <<  qpresults._n_mu_change << std::endl;
-			std::cout << "objValue : " << qpresults._objValue << std::endl;
-			qpresults._timing = duration.count();
-			std::cout << "duration.count() : " << qpresults._timing << std::endl;
+			std::cout << "n_ext : " <<  qpresults.n_ext << std::endl;
+			std::cout << "n_tot : " <<  qpresults.n_tot << std::endl;
+			std::cout << "mu updates : " <<  qpresults.n_mu_change << std::endl;
+			std::cout << "objValue : " << qpresults.objValue << std::endl;
+			qpresults.timing = duration.count();
+			std::cout << "timing : " << qpresults.timing << std::endl;
 
 		}
 
@@ -865,9 +865,9 @@ INRIA LDLT decomposition
 		.def_readwrite("_b_scaled", &qp::Qpworkspace<f64>::_b_scaled)
 		.def_readwrite("_u_scaled", &qp::Qpworkspace<f64>::_u_scaled)
 		.def_readwrite("_l_scaled", &qp::Qpworkspace<f64>::_l_scaled)
-		.def_readwrite("_xe", &qp::Qpworkspace<f64>::_x_prev)
-		.def_readwrite("_ye", &qp::Qpworkspace<f64>::_y_prev)
-		.def_readwrite("_ze", &qp::Qpworkspace<f64>::_z_prev)
+		.def_readwrite("x_prev", &qp::Qpworkspace<f64>::x_prev)
+		.def_readwrite("y_prev", &qp::Qpworkspace<f64>::y_prev)
+		.def_readwrite("z_prev", &qp::Qpworkspace<f64>::z_prev)
 		.def_readwrite("_kkt", &qp::Qpworkspace<f64>::_kkt)
 		.def_readwrite("_current_bijection_map", &qp::Qpworkspace<f64>::_current_bijection_map)
 		.def_readwrite("_new_bijection_map", &qp::Qpworkspace<f64>::_new_bijection_map)
@@ -902,20 +902,20 @@ INRIA LDLT decomposition
         .def(::pybind11::init<i64, i64, i64 &>()) // constructor
         // read-write public data member
 
-		.def_readwrite("_x", &qp::Qpresults<f64>::_x)
-		.def_readwrite("_y", &qp::Qpresults<f64>::_y)
-		.def_readwrite("_z", &qp::Qpresults<f64>::_z)
-		.def_readwrite("_n_c", &qp::Qpresults<f64>::_n_c)
-		.def_readwrite("_mu_eq", &qp::Qpresults<f64>::_mu_eq)
-		.def_readwrite("_mu_eq_inv", &qp::Qpresults<f64>::_mu_eq_inv)
-		.def_readwrite("_mu_in", &qp::Qpresults<f64>::_mu_in)
-		.def_readwrite("_mu_in_inv", &qp::Qpresults<f64>::_mu_in_inv)
-		.def_readwrite("_rho", &qp::Qpresults<f64>::_rho)
-		.def_readwrite("_n_tot", &qp::Qpresults<f64>::_n_tot)
-		.def_readwrite("_n_ext", &qp::Qpresults<f64>::_n_ext)
-		.def_readwrite("_timing", &qp::Qpresults<f64>::_timing)
-		.def_readwrite("_objValue", &qp::Qpresults<f64>::_objValue)
-		.def_readwrite("_n_mu_change", &qp::Qpresults<f64>::_n_mu_change);
+		.def_readwrite("x", &qp::Qpresults<f64>::x)
+		.def_readwrite("y", &qp::Qpresults<f64>::y)
+		.def_readwrite("z", &qp::Qpresults<f64>::z)
+		.def_readwrite("n_c", &qp::Qpresults<f64>::n_c)
+		.def_readwrite("mu_eq", &qp::Qpresults<f64>::mu_eq)
+		.def_readwrite("mu_eq_inv", &qp::Qpresults<f64>::mu_eq_inv)
+		.def_readwrite("mu_in", &qp::Qpresults<f64>::mu_in)
+		.def_readwrite("mu_in_inv", &qp::Qpresults<f64>::mu_in_inv)
+		.def_readwrite("rho", &qp::Qpresults<f64>::rho)
+		.def_readwrite("n_tot", &qp::Qpresults<f64>::n_tot)
+		.def_readwrite("n_ext", &qp::Qpresults<f64>::n_ext)
+		.def_readwrite("timing", &qp::Qpresults<f64>::timing)
+		.def_readwrite("objValue", &qp::Qpresults<f64>::objValue)
+		.def_readwrite("n_mu_change", &qp::Qpresults<f64>::n_mu_change);
 
 
 	::pybind11::class_<qp::Qpsettings<f64>>(m, "Qpsettings")

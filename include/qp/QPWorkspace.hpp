@@ -45,9 +45,9 @@ public:
 
     ///// Initial variable loading
 
-    Vec _x_prev;
-    Vec _y_prev; 
-    Vec _z_prev; 
+    Vec x_prev;
+    Vec y_prev; 
+    Vec z_prev; 
 
     ///// KKT system storage
     ColMat _kkt;
@@ -103,9 +103,9 @@ public:
                 _b_scaled(n_eq),
                 _u_scaled(n_in),
                 _l_scaled(n_in),
-                _x_prev(dim),
-                _y_prev(n_eq),
-                _z_prev(n_in),
+                x_prev(dim),
+                y_prev(n_eq),
+                z_prev(n_in),
                 _kkt(dim+n_eq,dim+n_eq),
                 _current_bijection_map(n_in),
                 _new_bijection_map(n_in),
@@ -138,9 +138,9 @@ public:
                     _b_scaled.setZero();
                     _u_scaled.setZero();
                     _l_scaled.setZero();
-                    _x_prev.setZero();
-                    _y_prev.setZero();
-                    _z_prev.setZero();
+                    x_prev.setZero();
+                    y_prev.setZero();
+                    z_prev.setZero();
                     _kkt.setZero();
                     for (isize i = 0; i < n_in; i++) {
                         _current_bijection_map(i) = i;
