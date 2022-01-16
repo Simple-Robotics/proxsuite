@@ -61,20 +61,20 @@ auto gradient_norm_computation(
 
 	qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_up + alpha * qpwork.Cdx;
 	qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_low + alpha * qpwork.Cdx;
-	qpwork.active_part_z.noalias() = qpwork.z_prev + alpha * qpwork.dw_aug.tail(qpmodel._n_in);
-	qpwork.rhs.head(qpmodel._dim).noalias() = qpwork.dual_residual_scaled + alpha * qpwork.Hdx;
-	qpwork.rhs.segment(qpmodel._dim, qpmodel._n_eq).noalias() = qpwork.primal_residual_eq_scaled + alpha * qpwork.Adx;
+	qpwork.active_part_z.noalias() = qpwork.z_prev + alpha * qpwork.dw_aug.tail(qpmodel.n_in);
+	qpwork.rhs.head(qpmodel.dim).noalias() = qpwork.dual_residual_scaled + alpha * qpwork.Hdx;
+	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq).noalias() = qpwork.primal_residual_eq_scaled + alpha * qpwork.Adx;
 	
 	// stores [qpwork.active_part_z]_act
-	qpwork.err.tail(qpmodel._n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.err.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	// use it to derive CT [qpwork.active_part_z]_act
-	qpwork.rhs.head(qpmodel._dim).noalias() += qpwork.c_scaled.transpose() * qpwork.err.tail(qpmodel._n_in) ;
+	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.c_scaled.transpose() * qpwork.err.tail(qpmodel.n_in) ;
 	// define [qpwork.active_part_z]_act / mu_in
-	qpwork.err.tail(qpmodel._n_in) *= qpresults.mu_in_inv;
+	qpwork.err.tail(qpmodel.n_in) *= qpresults.mu_in_inv;
 
-	qpwork.rhs.tail(qpmodel._n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
-							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
-							- (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) && qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.)).select(qpwork.active_part_z , qpwork.err.tail(qpmodel._n_in)) ;
+	qpwork.rhs.tail(qpmodel.n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
+							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
+							- (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) && qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.)).select(qpwork.active_part_z , qpwork.err.tail(qpmodel.n_in)) ;
 
 
 	return qpwork.rhs.squaredNorm();
@@ -106,21 +106,21 @@ auto gradient_norm(
 	qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_up + qpwork.Cdx * alpha;
 	qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
 
-	T a( qpwork.dw_aug.head(qpmodel._dim).dot(qpwork.Hdx) + qpresults.mu_eq * (qpwork.Adx).squaredNorm()+qpresults.rho *  qpwork.dw_aug.head(qpmodel._dim).squaredNorm()    );
-	qpwork.err.head(qpmodel._dim).noalias() = qpresults.rho * ( qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
-	T b( qpresults.x.dot(qpwork.Hdx) + (qpwork.err.head(qpmodel._dim)).dot( qpwork.dw_aug.head(qpmodel._dim)) +
+	T a( qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) + qpresults.mu_eq * (qpwork.Adx).squaredNorm()+qpresults.rho *  qpwork.dw_aug.head(qpmodel.dim).squaredNorm()    );
+	qpwork.err.head(qpmodel.dim).noalias() = qpresults.rho * ( qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
+	T b( qpresults.x.dot(qpwork.Hdx) + (qpwork.err.head(qpmodel.dim)).dot( qpwork.dw_aug.head(qpmodel.dim)) +
 	     qpresults.mu_eq * (qpwork.Adx).dot(qpwork.primal_residual_eq_scaled) ) ; 
 
 	// derive Cdx_act
-	qpwork.err.tail(qpmodel._n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)) ).select(qpwork.Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.err.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)) ).select(qpwork.Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 
-	a += qpresults.mu_in * qpwork.err.tail(qpmodel._n_in).squaredNorm();
+	a += qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).squaredNorm();
 
 	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
-	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
-							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in)) ; 
+	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
+							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) ; 
 
-	b+=  qpresults.mu_in * qpwork.active_part_z.dot(qpwork.err.tail(qpmodel._n_in));
+	b+=  qpresults.mu_in * qpwork.active_part_z.dot(qpwork.err.tail(qpmodel.n_in));
 	
 
 	return a * alpha + b;
@@ -177,7 +177,7 @@ auto local_saddle_point(
 
 	qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_up + alpha * qpwork.Cdx;
 	qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() = qpwork.primal_residual_in_scaled_low + alpha * qpwork.Cdx;
-	qpwork.active_part_z.noalias() = (qpwork.z_prev + alpha * qpwork.dw_aug.tail(qpmodel._n_in));
+	qpwork.active_part_z.noalias() = (qpwork.z_prev + alpha * qpwork.dw_aug.tail(qpmodel.n_in));
 	
 	// a0 computation
 
@@ -185,45 +185,45 @@ auto local_saddle_point(
 	T b0(qpwork.primal_residual_eq_scaled.dot(qpwork.Adx));
 	T c0(qpwork.primal_residual_eq_scaled.squaredNorm());
 
-	qpwork.rhs.head(qpmodel._dim) = qpwork.Hdx;
+	qpwork.rhs.head(qpmodel.dim) = qpwork.Hdx;
 	qpwork.CTz = qpwork.dual_residual_scaled;
 
 	///// derive ||[Cdx-dz/mu_in]_act||**2 with act = C(x+alpha*dx)-u+ze/mu > 0 or C(x+alpha*dx)-ze/mu <0 and with dz_act = 0 iff [z+alpha*dz]_Iu <0 or [z+alpha*dz]_Il >0
 	
 	// derive dz_act
-	qpwork.rhs.tail(qpmodel._n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.dw_aug.tail(qpmodel._n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.rhs.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.dw_aug.tail(qpmodel.n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	/// use it to compute CT*dz_act
-	qpwork.rhs.head(qpmodel._dim).noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel._n_in);
+	qpwork.rhs.head(qpmodel.dim).noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
 	// derive Cdx_act
-	qpwork.err.tail(qpmodel._n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)) ).select(qpwork.Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.err.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)) ).select(qpwork.Cdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	// derive [Cdx-dz/mu_in]_act
-	qpwork.err.tail(qpmodel._n_in).noalias() -= qpwork.rhs.tail(qpmodel._n_in) * qpresults.mu_in_inv;
+	qpwork.err.tail(qpmodel.n_in).noalias() -= qpwork.rhs.tail(qpmodel.n_in) * qpresults.mu_in_inv;
 
-	a0 += qpwork.rhs.head(qpmodel._dim).squaredNorm();
-	a0 += qpwork.err.tail(qpmodel._n_in).squaredNorm();
+	a0 += qpwork.rhs.head(qpmodel.dim).squaredNorm();
+	a0 += qpwork.err.tail(qpmodel.n_in).squaredNorm();
 	// dz_inact
-	qpwork.rhs.tail(qpmodel._n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.dw_aug.tail(qpmodel._n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
-	a0 += qpwork.rhs.tail(qpmodel._n_in).squaredNorm();
+	qpwork.rhs.tail(qpmodel.n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.dw_aug.tail(qpmodel.n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
+	a0 += qpwork.rhs.tail(qpmodel.n_in).squaredNorm();
 
 	// derive z_act
-	qpwork.rhs.tail(qpmodel._n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.z_prev, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.rhs.tail(qpmodel.n_in).noalias() = ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.) && qpwork.active_part_z.array()>T(0.)) || (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.) && qpwork.active_part_z.array()<T(0.)) ).select(qpwork.z_prev, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	/// use it to compute CT*z_act
-	qpwork.CTz.noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel._n_in);
+	qpwork.CTz.noalias() += qpwork.c_scaled.transpose() * qpwork.rhs.tail(qpmodel.n_in);
 	c0 += qpwork.CTz.squaredNorm();
-	b0 += qpwork.rhs.head(qpmodel._dim).dot(qpwork.CTz); // d_dual + CT*dz_act dot dual + CT*z_act
+	b0 += qpwork.rhs.head(qpmodel.dim).dot(qpwork.CTz); // d_dual + CT*dz_act dot dual + CT*z_act
 	// derive vector [Cx-u+(ze-z_act)/mu]_+ + [Cx-l+(ze-z_act)/mu]--
-	qpwork.rhs.tail(qpmodel._n_in) *= qpresults.mu_in_inv;
-	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
-							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in))
-							- qpwork.rhs.tail(qpmodel._n_in) ; 
+	qpwork.rhs.tail(qpmodel.n_in) *= qpresults.mu_in_inv;
+	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() >= T(0.)).select(qpwork.primal_residual_in_scaled_up , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
+							+ (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() <= T(0.)).select(qpwork.primal_residual_in_scaled_low , Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
+							- qpwork.rhs.tail(qpmodel.n_in) ; 
 	c0 += qpwork.active_part_z.squaredNorm();
-	b0 += qpwork.err.tail(qpmodel._n_in).dot(qpwork.active_part_z) ; // [Cdx-dz/mu_in]_act dot [Cx-u+(ze-z_act)/mu]_+ + [Cx-l+(ze-z_act)/mu]--
+	b0 += qpwork.err.tail(qpmodel.n_in).dot(qpwork.active_part_z) ; // [Cdx-dz/mu_in]_act dot [Cx-u+(ze-z_act)/mu]_+ + [Cx-l+(ze-z_act)/mu]--
 	// derive z_inact
-	qpwork.rhs.tail(qpmodel._n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.z_prev, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
+	qpwork.rhs.tail(qpmodel.n_in).noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.z_prev, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	// derive dz_inact
-	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.dw_aug.tail(qpmodel._n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel._n_in));
-	b0 += qpwork.rhs.tail(qpmodel._n_in).dot(qpwork.active_part_z);
-	c0 += qpwork.rhs.tail(qpmodel._n_in).squaredNorm(); // z_inact squared
+	qpwork.active_part_z.noalias() = (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() < T(0.) || qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() > T(0.) ).select(qpwork.dw_aug.tail(qpmodel.n_in), Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
+	b0 += qpwork.rhs.tail(qpmodel.n_in).dot(qpwork.active_part_z);
+	c0 += qpwork.rhs.tail(qpmodel.n_in).squaredNorm(); // z_inact squared
 
 	//b0 *= 2;
 
@@ -354,9 +354,9 @@ void initial_guess_ls(
 
 	// 1.1 add solutions of equation z+alpha dz = 0
 	
-	for (isize i = 0; i < qpmodel._n_in; i++) {
+	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.z_prev(i)) != 0.) {
-			alpha_ = -qpwork.z_prev(i) / (qpwork.dw_aug.tail(qpmodel._n_in)(i) + machine_eps);
+			alpha_ = -qpwork.z_prev(i) / (qpwork.dw_aug.tail(qpmodel.n_in)(i) + machine_eps);
 			if (std::abs(alpha_)< qpsettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
@@ -366,7 +366,7 @@ void initial_guess_ls(
 	// 1.1 add solutions of equations C(x+alpha dx)-u +ze/mu_in = 0 and C(x+alpha
 	// dx)-l +ze/mu_in = 0
 
-	for (isize i = 0; i < qpmodel._n_in; i++) {
+	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.Cdx(i)) != 0) {
 			alpha_= -qpwork.primal_residual_in_scaled_up(i) / (qpwork.Cdx(i) + machine_eps);
 			if (std::abs(alpha_) < qpsettings.R){
@@ -574,7 +574,7 @@ void correction_guess_ls(
 
 	// IF NAN DO SOMETHING --> investigate why there is nan and how to fix it (alpha=1?)
 
-	for (isize i = 0; i < qpmodel._n_in; i++) {
+	for (isize i = 0; i < qpmodel.n_in; i++) {
 		
 		if (qpwork.Cdx(i) != 0.) {
 			qpwork.alphas.push_back(-qpwork.primal_residual_in_scaled_up(i) / (qpwork.Cdx(i) + machine_eps));
@@ -731,20 +731,20 @@ void active_set_change(
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
 	T mu_in_inv_neg = -qpresults.mu_in_inv;
-	for (isize i = 0; i < qpmodel._n_in; i++) {
+	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (qpwork.current_bijection_map(i) < qpresults.n_c) {
 			if (!qpwork.active_inequalities(i)) {
 				// delete current_bijection_map(i)
 
-				qpwork.ldl.delete_at(qpwork.new_bijection_map(i) + qpmodel._dim + qpmodel._n_eq);
+				qpwork.ldl.delete_at(qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq);
 
-				for (isize j = 0; j < qpmodel._n_in; j++) {
+				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) > qpwork.new_bijection_map(i)) {
 						qpwork.new_bijection_map(j) -= 1;    
 					}
 				}
 				n_c_f -= 1;
-				qpwork.new_bijection_map(i) = qpmodel._n_in - 1;
+				qpwork.new_bijection_map(i) = qpmodel.n_in - 1;
 
 			}
 		} 
@@ -752,17 +752,17 @@ void active_set_change(
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
-	for (isize i = 0; i < qpmodel._n_in; i++) {
+	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (qpwork.active_inequalities(i)) {
 			if (qpwork.new_bijection_map(i) >= n_c_f) {
 				// add at the end
 				
 				qpwork.dw_aug.setZero();
-				qpwork.dw_aug.head(qpmodel._dim) = qpwork.c_scaled.row(i);
-				qpwork.dw_aug(qpmodel._dim + qpmodel._n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
-				qpwork.ldl.insert_at(qpmodel._n_eq + qpmodel._dim + n_c_f, qpwork.dw_aug.head(n_c_f+1+qpmodel._n_eq+qpmodel._dim));
+				qpwork.dw_aug.head(qpmodel.dim) = qpwork.c_scaled.row(i);
+				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
+				qpwork.ldl.insert_at(qpmodel.n_eq + qpmodel.dim + n_c_f, qpwork.dw_aug.head(n_c_f+1+qpmodel.n_eq+qpmodel.dim));
 
-				for (isize j = 0; j < qpmodel._n_in; j++) {
+				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) < qpwork.new_bijection_map(i) &&
 						qpwork.new_bijection_map(j) >= n_c_f) {
 						qpwork.new_bijection_map(j) += 1;
