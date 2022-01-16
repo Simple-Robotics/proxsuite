@@ -440,7 +440,7 @@ T SaddlePoint(
 
 
 template<typename T>
-void newton_step_new(
+void newton_step(
 		const qp::Qpsettings<T>& qpsettings,
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -604,7 +604,7 @@ T correction_guess(
 				break;
 			}
 			
-			qp::detail::newton_step_new<T>(
+			qp::detail::newton_step<T>(
 											qpsettings,
 											qpmodel,
 											qpresults,
