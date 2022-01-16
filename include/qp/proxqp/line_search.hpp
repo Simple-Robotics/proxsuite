@@ -357,7 +357,7 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (std::abs(qpwork._z_prev(i)) != 0.) {
 			alpha_ = -qpwork._z_prev(i) / (qpwork._dw_aug.tail(qpmodel._n_in)(i) + machine_eps);
-			if (std::abs(alpha_)< qpsettings._R){
+			if (std::abs(alpha_)< qpsettings.R){
 				qpwork._alphas.push_back(alpha_);
 			}
 		}
@@ -369,11 +369,11 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel._n_in; i++) {
 		if (std::abs(qpwork._Cdx(i)) != 0) {
 			alpha_= -qpwork._primal_residual_in_scaled_up(i) / (qpwork._Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < qpsettings._R){
+			if (std::abs(alpha_) < qpsettings.R){
 				qpwork._alphas.push_back(alpha_);
 			}
 			alpha_ = -qpwork._primal_residual_in_scaled_low(i) / (qpwork._Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < qpsettings._R){
+			if (std::abs(alpha_) < qpsettings.R){
 				qpwork._alphas.push_back(alpha_);
 			}
 		}

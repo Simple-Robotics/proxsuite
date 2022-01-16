@@ -166,33 +166,12 @@ void QPsetup( //
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
 		const bool VERBOSE = true
-		/*
-		T mu_max_eq=1.e9,
-		T mu_max_in=1.e8,
-		T R=5,
-		T eps_IG=1.e-2,
-		T eps_refact=1.e-6,
-		isize nb_it_refinement=10,
-		isize max_iter=10000,
-		isize max_iter_in = 1500
-		*/
+
 		) {
 
-	/*
-	qpsettings._max_iter = max_iter;
-	qpsettings._max_iter_in = max_iter_in;
-	qpsettings._mu_max_eq = mu_max_eq;
-	qpsettings._mu_max_eq_inv = T(1)/mu_max_eq;
-	qpsettings._mu_max_in = mu_max_in;
-	qpsettings._mu_max_in_inv = T(1)/mu_max_in;
-	qpsettings._R = R;
-	qpsettings._eps_IG = eps_IG;
-	qpsettings._eps_refact = eps_refact;
-	*/
-	qpsettings._eps_abs = eps_abs;
-	qpsettings._eps_rel = eps_rel;
-	//qpsettings._nb_iterative_refinement = nb_it_refinement;
-	qpsettings._VERBOSE = VERBOSE;
+	qpsettings.eps_abs = eps_abs;
+	qpsettings.eps_rel = eps_rel;
+	qpsettings.verbose = VERBOSE;
 
 	qpmodel._H = H.eval();
 	qpmodel._g = g.eval();
@@ -261,7 +240,7 @@ void QPupdateMatrice( //
 		MatRef<T, L> H,
 		MatRef<T, L> A,
 		MatRef<T, L> C,
-		qp::Qpsettings<T>& qpsettings,
+		const qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
@@ -341,7 +320,7 @@ void QPupdateVectors( //
 		VecRef<T> b,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::Qpsettings<T>& qpsettings,
+		const qp::Qpsettings<T>& qpsettings,
 		qp::Qpdata<T>& qpmodel,
 		qp::Qpworkspace<T>& qpwork,
 		qp::Qpresults<T>& qpresults,
@@ -650,7 +629,7 @@ void transition_algebra(
 		T bcl_eta_in,
 		T err_in){
 
-		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings._eps_IG || qpmodel._n_in == 0;
+		const bool do_initial_guess_fact = primal_feasibility_lhs < qpsettings.eps_IG || qpmodel._n_in == 0;
 		bool do_correction_guess = (!do_initial_guess_fact && qpmodel._n_in != 0) ||
 		                           (do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel._n_in != 0) ;
 
@@ -831,10 +810,10 @@ void gradient_norm_computation(
 
 template <typename T,Layout L>
 void QPsolve(
-		qp::Qpdata<T>& qpmodel,
+		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork,
-		qp::Qpsettings<T>& qpsettings){
+		const qp::Qpsettings<T>& qpsettings){
 
 			auto start = std::chrono::high_resolution_clock::now();
 			qp::detail::qp_solve( //
@@ -943,32 +922,31 @@ INRIA LDLT decomposition
         .def(::pybind11::init()) // constructor
         // read-write public data member
 
-		.def_readwrite("_alpha_bcl", &qp::Qpsettings<f64>::_alpha_bcl)
-		.def_readwrite("_beta_bcl", &qp::Qpsettings<f64>::_beta_bcl)
-		.def_readwrite("_refactor_dual_feasibility_threshold", &qp::Qpsettings<f64>::_refactor_dual_feasibility_threshold)
-		.def_readwrite("_refactor_rho_threshold", &qp::Qpsettings<f64>::_refactor_rho_threshold)
-		.def_readwrite("_refactor_rho_update_factor", &qp::Qpsettings<f64>::_refactor_rho_update_factor)
-		.def_readwrite("_mu_max_eq", &qp::Qpsettings<f64>::_mu_max_eq)
-		.def_readwrite("_mu_max_in", &qp::Qpsettings<f64>::_mu_max_in)
-		.def_readwrite("_mu_max_eq_inv", &qp::Qpsettings<f64>::_mu_max_eq_inv)
-		.def_readwrite("_mu_max_in_inv", &qp::Qpsettings<f64>::_mu_max_in_inv)
-		.def_readwrite("_mu_update_factor", &qp::Qpsettings<f64>::_mu_update_factor)
-		.def_readwrite("_mu_update_inv_factor", &qp::Qpsettings<f64>::_mu_update_inv_factor)
+		.def_readwrite("alpha_bcl", &qp::Qpsettings<f64>::alpha_bcl)
+		.def_readwrite("beta_bcl", &qp::Qpsettings<f64>::beta_bcl)
+		.def_readwrite("refactor_dual_feasibility_threshold", &qp::Qpsettings<f64>::refactor_dual_feasibility_threshold)
+		.def_readwrite("refactor_rho_threshold", &qp::Qpsettings<f64>::refactor_rho_threshold)
+		.def_readwrite("mu_max_eq", &qp::Qpsettings<f64>::mu_max_eq)
+		.def_readwrite("mu_max_in", &qp::Qpsettings<f64>::mu_max_in)
+		.def_readwrite("mu_max_eq_inv", &qp::Qpsettings<f64>::mu_max_eq_inv)
+		.def_readwrite("mu_max_in_inv", &qp::Qpsettings<f64>::mu_max_in_inv)
+		.def_readwrite("mu_update_factor", &qp::Qpsettings<f64>::mu_update_factor)
+		.def_readwrite("mu_update_inv_factor", &qp::Qpsettings<f64>::mu_update_inv_factor)
 
-		.def_readwrite("_cold_reset_mu_eq", &qp::Qpsettings<f64>::_cold_reset_mu_eq)
-		.def_readwrite("_cold_reset_mu_in", &qp::Qpsettings<f64>::_cold_reset_mu_in)
-		.def_readwrite("_cold_reset_mu_eq_inv", &qp::Qpsettings<f64>::_cold_reset_mu_eq_inv)
+		.def_readwrite("cold_reset_mu_eq", &qp::Qpsettings<f64>::cold_reset_mu_eq)
+		.def_readwrite("cold_reset_mu_in", &qp::Qpsettings<f64>::cold_reset_mu_in)
+		.def_readwrite("cold_reset_mu_eq_inv", &qp::Qpsettings<f64>::cold_reset_mu_eq_inv)
 
-		.def_readwrite("_cold_reset_mu_in_inv", &qp::Qpsettings<f64>::_cold_reset_mu_in_inv)
-		.def_readwrite("_max_iter", &qp::Qpsettings<f64>::_max_iter)
-		.def_readwrite("_max_iter_in", &qp::Qpsettings<f64>::_max_iter_in)
+		.def_readwrite("cold_reset_mu_in_inv", &qp::Qpsettings<f64>::cold_reset_mu_in_inv)
+		.def_readwrite("max_iter", &qp::Qpsettings<f64>::max_iter)
+		.def_readwrite("max_iter_in", &qp::Qpsettings<f64>::max_iter_in)
 
-		.def_readwrite("_eps_abs", &qp::Qpsettings<f64>::_eps_abs)
-		.def_readwrite("_eps_rel", &qp::Qpsettings<f64>::_eps_rel)
-		.def_readwrite("_err_IG", &qp::Qpsettings<f64>::_eps_IG)
-		.def_readwrite("_R", &qp::Qpsettings<f64>::_R)
-		.def_readwrite("_nb_iterative_refinement", &qp::Qpsettings<f64>::_nb_iterative_refinement)
-		.def_readwrite("_VERBOSE", &qp::Qpsettings<f64>::_VERBOSE);
+		.def_readwrite("eps_abs", &qp::Qpsettings<f64>::eps_abs)
+		.def_readwrite("eps_rel", &qp::Qpsettings<f64>::eps_rel)
+		.def_readwrite("_err_IG", &qp::Qpsettings<f64>::eps_IG)
+		.def_readwrite("R", &qp::Qpsettings<f64>::R)
+		.def_readwrite("nb_iterative_refinement", &qp::Qpsettings<f64>::nb_iterative_refinement)
+		.def_readwrite("verbose", &qp::Qpsettings<f64>::verbose);
 
 	::pybind11::class_<qp::Qpdata<f64>>(m, "Qpdata")
         //.def(::pybind11::init()) // constructor
