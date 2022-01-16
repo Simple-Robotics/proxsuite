@@ -247,7 +247,7 @@ auto local_saddle_point(
 }
 
 template <typename T>
-void initial_guess_LS(
+void initial_guess_ls(
 		const qp::Qpsettings<T>& qpsettings,
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -509,7 +509,7 @@ void initial_guess_LS(
 
 
 template <typename T>
-void correction_guess_LS(
+void correction_guess_ls(
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
 		qp::Qpworkspace<T>& qpwork

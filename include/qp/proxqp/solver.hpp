@@ -14,7 +14,7 @@
 #include<fstream>
 
 template <typename Derived>
-void saveData(const std::string & filename, const Eigen::MatrixBase<Derived> & mat)
+void save_data(const std::string & filename, const Eigen::MatrixBase<Derived> & mat)
 {
     //https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
     const static Eigen::IOFormat CSVFormat(Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n");
@@ -297,7 +297,7 @@ void iterative_solve_with_permut_fact( //
 
 
 template <typename T>
-void BCL_update(
+void bcl_update(
 		const qp::Qpsettings<T>& qpsettings,
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -547,7 +547,7 @@ T initial_guess(
 			qpwork._Cdx.noalias() = qpwork._c_scaled*qpwork._dw_aug.head(qpmodel._dim) ; 
 			qpwork._dual_residual_scaled.noalias() -= qpwork._c_scaled.transpose()*ze.to_eigen() ; 
 
-			qp::line_search::initial_guess_LS(
+			qp::line_search::initial_guess_ls(
 						qpsettings,
 						qpmodel,
 						qpresults,
@@ -619,7 +619,7 @@ T correction_guess(
 			qpwork._Cdx.noalias() = qpwork._c_scaled * qpwork._dw_aug.head(qpmodel._dim) ; 
 
 			if (qpmodel._n_in > 0){
-				qp::line_search::correction_guess_LS(
+				qp::line_search::correction_guess_ls(
 										qpmodel,
 										qpresults,
 										qpwork
@@ -668,7 +668,7 @@ T correction_guess(
 }
 
 template <typename T>
-void qpSolve( //
+void qp_solve( //
 		const qp::Qpsettings<T>& qpsettings,
 		const qp::Qpdata<T>& qpmodel,
 		qp::Qpresults<T>& qpresults,
@@ -902,7 +902,7 @@ void qpSolve( //
 		}
 		
 
-		qp::detail::BCL_update(
+		qp::detail::bcl_update(
 					qpsettings,
 					qpmodel,
 					qpresults,
