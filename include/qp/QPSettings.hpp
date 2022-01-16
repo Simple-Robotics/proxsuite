@@ -47,8 +47,8 @@ public:
                T mu_update_factor=10, T mu_update_inv_factor=0.1,
                T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
                T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
-               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-4, T R=10.,
-               isize max_iter=1000,isize max_iter_in=2500,
+               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-2, T R=5.,
+               isize max_iter=10000,isize max_iter_in=1500,
                isize nb_iterative_refinement=10,T eps_refact=1.e-6,
                bool VERBOSE = false)
                 {

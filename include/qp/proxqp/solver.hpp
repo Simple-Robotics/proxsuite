@@ -740,15 +740,26 @@ QpSolveStats qpSolve( //
 		T new_bcl_mu_in_inv(qpresults._mu_in_inv);
 		T new_bcl_mu_eq_inv(qpresults._mu_eq_inv);
 
+		T rhs_pri(qpsettings._eps_abs);
+		if (qpsettings._eps_rel !=0){
+			rhs_pri+= qpsettings._eps_rel * max2(  max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),  max2(max2( qpwork._primal_feasibility_rhs_1_eq, qpwork._primal_feasibility_rhs_1_in_u ),qpwork._primal_feasibility_rhs_1_in_l ) );
+		}
+		bool is_primal_feasible = primal_feasibility_lhs <= rhs_pri;
+
+		T rhs_dua(qpsettings._eps_abs );
+		if (qpsettings._eps_rel !=0){
+			rhs_dua+=qpsettings._eps_rel * max2( max2(   dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+													max2( dual_feasibility_rhs_1, qpwork._dual_feasibility_rhs_2)) ;
+		}
+
+		bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
+		
 		if (qpsettings._VERBOSE){
 			std::cout << "---------------it : " << iter << " primal residual : " << primal_feasibility_lhs << " dual residual : " << dual_feasibility_lhs << std::endl;
 			std::cout << "bcl_eta_ext : " << bcl_eta_ext << " bcl_eta_in : " << bcl_eta_in <<  " rho : " << qpresults._rho << " bcl_mu_eq : " << qpresults._mu_eq << " bcl_mu_in : " << qpresults._mu_in <<std::endl;
+			std::cout << "qpsettings._eps_abs " << qpsettings._eps_abs << "  qpsettings._eps_rel *rhs " <<  qpsettings._eps_rel * max2(  max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),  max2(max2( qpwork._primal_feasibility_rhs_1_eq, qpwork._primal_feasibility_rhs_1_in_u ),qpwork._primal_feasibility_rhs_1_in_l ) ) << std::endl;
+			std::cout << "is_primal_feasible " << is_primal_feasible << " is_dual_feasible " << is_dual_feasible << std::endl;
 		}
-		bool is_primal_feasible = primal_feasibility_lhs <= (qpsettings._eps_abs + qpsettings._eps_rel * max2(  max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),  max2(max2( qpwork._primal_feasibility_rhs_1_eq, qpwork._primal_feasibility_rhs_1_in_u ),qpwork._primal_feasibility_rhs_1_in_l ) ));
-
-		bool is_dual_feasible = dual_feasibility_lhs <=(qpsettings._eps_abs + qpsettings._eps_rel * max2( max2(   dual_feasibility_rhs_3, dual_feasibility_rhs_0),
-													max2( dual_feasibility_rhs_1, qpwork._dual_feasibility_rhs_2)) );
-
 		if (is_primal_feasible){
 			
 			if (dual_feasibility_lhs >= qpsettings._refactor_dual_feasibility_threshold && qpresults._rho != qpsettings._refactor_rho_threshold){

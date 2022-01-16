@@ -10,9 +10,7 @@ template <typename T>
 struct Qpdata {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
-
     enum { layout = Eigen::RowMajor };
-
 	using ColMat = Eigen::Matrix<T, DYN, DYN, layout>;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
@@ -40,7 +38,6 @@ public:
                     _u(n_in),
                     _l(n_in)
     {
-
                     _dim = dim;
                     _n_eq = n_eq;
                     _n_in = n_in;
@@ -53,9 +50,7 @@ public:
                     _b.setZero();
                     _u.setZero();
                     _l.setZero();
-
     }
-
 };
 
 } // namespace qp

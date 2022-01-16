@@ -1,5 +1,5 @@
 #include <numeric>
-#include <matioCpp/matioCpp.h>
+#include "matioCpp/matioCpp.h"
 
 #include <Eigen/Core>
 

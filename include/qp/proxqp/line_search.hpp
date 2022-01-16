@@ -575,7 +575,10 @@ void correction_guess_LS(
 	// 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
 	// dx)-u +ze/mu_in = 0
 
+	// IF NAN DO SOMETHING --> investigate why there is nan and how to fix it (alpha=1?)
+
 	for (isize i = 0; i < qpmodel._n_in; i++) {
+		
 		if (qpwork._Cdx(i) != 0.) {
 			qpwork._alphas.push_back(-qpwork._primal_residual_in_scaled_up(i) / (qpwork._Cdx(i) + machine_eps));
 			qpwork._alphas.push_back(-qpwork._primal_residual_in_scaled_low(i) / (qpwork._Cdx(i) + machine_eps));
@@ -598,7 +601,6 @@ void correction_guess_LS(
 		T alpha_last_neg = 0;
 		T first_pos_grad = 0;
 		T alpha_first_pos = 0;
-
 		for (isize i = 0;i<n_alpha;++i){
 			alpha_ = qpwork._alphas[i];
 			if (alpha_ > machine_eps) {
@@ -665,7 +667,7 @@ void correction_guess_LS(
 		qpwork._alpha = alpha_last_neg - last_neg_grad *
 		                             (alpha_first_pos - alpha_last_neg) /
 		                             (first_pos_grad - last_neg_grad);
-	}	
+	}
 
 	
 }

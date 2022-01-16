@@ -17,8 +17,11 @@ add_executable(.bench.qp_in src/qp_in.cpp)
 target_link_libraries(.bench.qp_in ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
 find_package(matioCpp REQUIRED)
-add_executable(parser src/parser.cpp)
-target_link_libraries(parser PRIVATE matioCpp::matioCpp CONAN_PKG::eigen inria_ldlt)
+add_executable(bench-parser src/parser.cpp)
+target_include_directories(bench-parser SYSTEM PUBLIC "${matioCpp_INCLUDE_DIRS}")
+target_link_libraries(bench-parser PUBLIC CONAN_PKG::eigen inria_ldlt matioCpp::matioCpp)
+get_target_property(PARSER_INCLUDE_DIR bench-parser INCLUDE_DIRECTORIES)
+MESSAGE(STATUS "PARSER_INCLUDE_DIR: e${PARSER_INCLUDE_DIR}e")
 
 add_executable(.bench.osqp src/osqp.cpp)
 target_link_libraries(

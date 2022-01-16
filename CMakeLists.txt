@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(inria_ldlt CXX)
 
+set(CMAKE_VERBOSE_MAKEFILE TRUE)
+
 get_directory_property(has_parent PARENT_DIRECTORY)
 if(has_parent)
   set(top_level FALSE)
@@ -17,6 +19,7 @@ else()
 endif()
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 SET(CMAKE_SKIP_RPATH FALSE)
@@ -110,7 +113,7 @@ if(ENABLE_TESTING)
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
   target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
-
+  
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
@@ -125,6 +128,7 @@ target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::eigen CONAN_PKG::fmt)
 set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
+  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
   find_package(Python3 COMPONENTS Interpreter Development)
   add_subdirectory(external/pybind11)
   #pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
