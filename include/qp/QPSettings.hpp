@@ -10,36 +10,35 @@ template <typename T>
 struct Qpsettings {
 public:
 
-    T _alpha_bcl;
-    T _beta_bcl;
+    T alpha_bcl;
+    T beta_bcl;
 
-	T _refactor_dual_feasibility_threshold;
-	T _refactor_rho_threshold;
-	T _refactor_rho_update_factor;
+	T refactor_dual_feasibility_threshold;
+	T refactor_rho_threshold;
 
-	T _mu_max_eq;
-    T _mu_max_in;
-	T _mu_max_eq_inv;
-    T _mu_max_in_inv;
+	T mu_max_eq;
+    T mu_max_in;
+	T mu_max_eq_inv;
+    T mu_max_in_inv;
 
-    T _mu_update_factor;
-    T _mu_update_inv_factor;
+    T mu_update_factor;
+    T mu_update_inv_factor;
 
-	T _cold_reset_mu_eq;
-	T _cold_reset_mu_in;
-	T _cold_reset_mu_eq_inv;
-	T _cold_reset_mu_in_inv;
+	T cold_reset_mu_eq;
+	T cold_reset_mu_in;
+	T cold_reset_mu_eq_inv;
+	T cold_reset_mu_in_inv;
 
-	isize _max_iter;
-	isize _max_iter_in;
-	T _eps_abs;
-	T _eps_rel;
-	T _eps_IG;
-	T _R;
-    T _eps_refact;
-    isize _nb_iterative_refinement;
+	isize max_iter;
+	isize max_iter_in;
+	T eps_abs;
+	T eps_rel;
+	T eps_IG;
+	T R;
+    T eps_refact;
+    isize nb_iterative_refinement;
 
-    bool _VERBOSE;
+    bool verbose;
 
 	Qpsettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
                T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
@@ -47,41 +46,41 @@ public:
                T mu_update_factor=10, T mu_update_inv_factor=0.1,
                T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
                T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
-               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-2, T R=5.,
+               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-2, T r=5.,
                isize max_iter=10000,isize max_iter_in=1500,
                isize nb_iterative_refinement=10,T eps_refact=1.e-6,
                bool VERBOSE = false)
                 {
         
-                    _alpha_bcl=alpha_bcl;
-                    _beta_bcl=beta_bcl;
+                    alpha_bcl=alpha_bcl;
+                    beta_bcl=beta_bcl;
 
-                    _refactor_dual_feasibility_threshold=refactor_dual_feasibility_threshold;
-                    _refactor_rho_threshold=refactor_rho_threshold;
-                    _refactor_rho_update_factor=refactor_rho_update_factor;
+                    refactor_dual_feasibility_threshold=refactor_dual_feasibility_threshold;
+                    refactor_rho_threshold=refactor_rho_threshold;
+                    refactor_rho_update_factor=refactor_rho_update_factor;
 
-                    _mu_max_eq=mu_max_eq;
-                    _mu_max_in=mu_max_in;
-                    _mu_max_eq_inv=mu_max_eq_inv;
-                    _mu_max_in_inv=mu_max_in_inv;
-                    _mu_update_factor=mu_update_factor;
-                    _mu_update_inv_factor=mu_update_inv_factor;
+                    mu_max_eq=mu_max_eq;
+                    mu_max_in=mu_max_in;
+                    mu_max_eq_inv=mu_max_eq_inv;
+                    mu_max_in_inv=mu_max_in_inv;
+                    mu_update_factor=mu_update_factor;
+                    mu_update_inv_factor=mu_update_inv_factor;
 
-                    _cold_reset_mu_eq=cold_reset_mu_eq;
-                    _cold_reset_mu_in=cold_reset_mu_in;
-                    _cold_reset_mu_eq_inv=cold_reset_mu_eq_inv;
-                    _cold_reset_mu_in_inv=cold_reset_mu_in_inv;
+                    cold_reset_mu_eq=cold_reset_mu_eq;
+                    cold_reset_mu_in=cold_reset_mu_in;
+                    cold_reset_mu_eq_inv=cold_reset_mu_eq_inv;
+                    cold_reset_mu_in_inv=cold_reset_mu_in_inv;
 
-                    _eps_abs=eps_abs;
-                    _eps_rel=eps_rel;
-                    _eps_IG=err_IG;
-                    _R=R;
-                    _eps_refact = eps_refact;
+                    eps_abs=eps_abs;
+                    eps_rel=eps_rel;
+                    eps_IG=err_IG;
+                    R=r;
+                    eps_refact = eps_refact;
 
-                    _max_iter=max_iter;
-                    _max_iter_in=max_iter_in;
-                    _nb_iterative_refinement=nb_iterative_refinement;
-                    _VERBOSE=VERBOSE;
+                    max_iter=max_iter;
+                    max_iter_in=max_iter_in;
+                    nb_iterative_refinement=nb_iterative_refinement;
+                    verbose=VERBOSE;
                 }
     
 };
