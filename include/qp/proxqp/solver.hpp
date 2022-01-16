@@ -409,7 +409,7 @@ void global_dual_residual(
 
 
 template<typename T> 
-T SaddlePoint(
+T compute_primal_dual_residual(
 			const qp::Qpdata<T>& qpmodel,
 			qp::Qpresults<T>& qpresults,
 			qp::Qpworkspace<T>& qpwork
@@ -574,7 +574,7 @@ T initial_guess(
 			qpwork._dual_residual_scaled.noalias() += qpwork._alpha* (qpwork._Hdx) ;
 			qpwork._dw_aug.setZero();
 
-			T err_saddle_point = SaddlePoint( 
+			T err_saddle_point = compute_primal_dual_residual( 
 					qpmodel,
 					qpresults,
 					qpwork
