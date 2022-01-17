@@ -248,7 +248,7 @@ auto local_saddle_point(
 
 template <typename T>
 void initial_guess_ls(
-		const qp::QPSettings<T>& QPSettings,
+		const qp::QPSettings<T>& qpsettings,
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
 		qp::QPWorkspace<T>& qpwork
@@ -357,7 +357,7 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.z_prev(i)) != 0.) {
 			alpha_ = -qpwork.z_prev(i) / (qpwork.dw_aug.tail(qpmodel.n_in)(i) + machine_eps);
-			if (std::abs(alpha_)< QPSettings.R){
+			if (std::abs(alpha_)< qpsettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 		}
@@ -369,11 +369,11 @@ void initial_guess_ls(
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (std::abs(qpwork.Cdx(i)) != 0) {
 			alpha_= -qpwork.primal_residual_in_scaled_up(i) / (qpwork.Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < QPSettings.R){
+			if (std::abs(alpha_) < qpsettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 			alpha_ = -qpwork.primal_residual_in_scaled_low(i) / (qpwork.Cdx(i) + machine_eps);
-			if (std::abs(alpha_) < QPSettings.R){
+			if (std::abs(alpha_) < qpsettings.R){
 				qpwork.alphas.push_back(alpha_);
 			}
 		}

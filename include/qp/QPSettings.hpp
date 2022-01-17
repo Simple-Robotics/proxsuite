@@ -40,46 +40,45 @@ public:
 
     bool verbose;
 
-	QPSettings(T alpha_bcl=0.1,T beta_bcl=0.9,T refactor_dual_feasibility_threshold=1e-2,
-               T refactor_rho_threshold=1e-7, T refactor_rho_update_factor=0.1,
-               T mu_max_eq=1e9, T mu_max_in=1e8, T mu_max_eq_inv=1e-9,T mu_max_in_inv=1e-8,
-               T mu_update_factor=10, T mu_update_inv_factor=0.1,
-               T cold_reset_mu_eq=1.1, T cold_reset_mu_in=1.1,
-               T cold_reset_mu_eq_inv=1./1.1, T cold_reset_mu_in_inv=1./1.1,
-               T eps_abs=1.e-9,T eps_rel=0.,T err_IG=1.e-2, T r=5.,
-               isize max_iter=10000,isize max_iter_in=1500,
-               isize nb_iterative_refinement=10,T eps_refact=1.e-6,
+	QPSettings(T alpha_bcl_=0.1,T beta_bcl_=0.9,T refactor_dual_feasibility_threshold_=1e-2,
+               T refactor_rho_threshold_=1e-7,
+               T mu_max_eq_=1e9, T mu_max_in_=1e8, T mu_max_eq_inv_=1e-9,T mu_max_in_inv_=1e-8,
+               T mu_update_factor_=10, T mu_update_inv_factor_=0.1,
+               T cold_reset_mu_eq_=1.1, T cold_reset_mu_in_=1.1,
+               T cold_reset_mu_eq_inv_=1./1.1, T cold_reset_mu_in_inv_=1./1.1,
+               T eps_abs_=1.e-9,T eps_rel_=0.,T err_IG_=1.e-2, T r=5.,
+               isize max_iter_=10000,isize max_iter_in_=1500,
+               isize nb_iterative_refinement_=10,T eps_refact_=1.e-6,
                bool VERBOSE = false)
                 {
         
-                    alpha_bcl=alpha_bcl;
-                    beta_bcl=beta_bcl;
+                    alpha_bcl=alpha_bcl_;
+                    beta_bcl=beta_bcl_;
 
-                    refactor_dual_feasibility_threshold=refactor_dual_feasibility_threshold;
-                    refactor_rho_threshold=refactor_rho_threshold;
-                    refactor_rho_update_factor=refactor_rho_update_factor;
+                    refactor_dual_feasibility_threshold=refactor_dual_feasibility_threshold_;
+                    refactor_rho_threshold=refactor_rho_threshold_;
 
-                    mu_max_eq=mu_max_eq;
-                    mu_max_in=mu_max_in;
-                    mu_max_eq_inv=mu_max_eq_inv;
-                    mu_max_in_inv=mu_max_in_inv;
-                    mu_update_factor=mu_update_factor;
-                    mu_update_inv_factor=mu_update_inv_factor;
+                    mu_max_eq=mu_max_eq_;
+                    mu_max_in=mu_max_in_;
+                    mu_max_eq_inv=mu_max_eq_inv_;
+                    mu_max_in_inv=mu_max_in_inv_;
+                    mu_update_factor=mu_update_factor_;
+                    mu_update_inv_factor=mu_update_inv_factor_;
 
-                    cold_reset_mu_eq=cold_reset_mu_eq;
-                    cold_reset_mu_in=cold_reset_mu_in;
-                    cold_reset_mu_eq_inv=cold_reset_mu_eq_inv;
-                    cold_reset_mu_in_inv=cold_reset_mu_in_inv;
+                    cold_reset_mu_eq=cold_reset_mu_eq_;
+                    cold_reset_mu_in=cold_reset_mu_in_;
+                    cold_reset_mu_eq_inv=cold_reset_mu_eq_inv_;
+                    cold_reset_mu_in_inv=cold_reset_mu_in_inv_;
 
-                    eps_abs=eps_abs;
-                    eps_rel=eps_rel;
-                    eps_IG=err_IG;
+                    eps_abs=eps_abs_;
+                    eps_rel=eps_rel_;
+                    eps_IG=err_IG_;
                     R=r;
-                    eps_refact = eps_refact;
+                    eps_refact = eps_refact_;
 
-                    max_iter=max_iter;
-                    max_iter_in=max_iter_in;
-                    nb_iterative_refinement=nb_iterative_refinement;
+                    max_iter=max_iter_;
+                    max_iter_in=max_iter_in_;
+                    nb_iterative_refinement=nb_iterative_refinement_;
                     verbose=VERBOSE;
                 }
     
