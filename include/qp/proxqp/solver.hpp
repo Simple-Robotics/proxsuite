@@ -408,25 +408,75 @@ T compute_primal_dual_residual(
 			qp::QPWorkspace<T>& qpwork
 			){
 
-			qpwork.primal_residual_in_scaled_up.noalias() -= (qpresults.z*qpresults.mu_in_inv); 
-			qpwork.primal_residual_in_scaled_low.noalias() -= (qpresults.z*qpresults.mu_in_inv) ; 
-			T prim_eq_e = infty_norm(qpwork.primal_residual_eq_scaled) ; 
-			qpwork.dual_residual_scaled.noalias() += (qpwork.C_scaled.transpose()*qpresults.z);
-			T dual_e = infty_norm(qpwork.dual_residual_scaled);
-			T err = max2(prim_eq_e,dual_e);
-
+			/*
 			qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() 
-			= qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) 
-			+ qp::detail::negative_part(qpwork.primal_residual_in_scaled_low);
+			= qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) ; // [Cx-u+z_prev/mu_in]+
+			qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() 
+			= qp::detail::negative_part(qpwork.primal_residual_in_scaled_low); // [Cx-l+z_prev/mu_in]-
+
+			qpwork.active_set_up.array()  = ( qpresults.z.array() == T(0));
+			qpwork.active_part_z.noalias() = (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))  ;
+			T err = max2(err,infty_norm(qpwork.active_part_z)); //  ||[Cx-u+z_prev/mu_in]+_[z=0]||
+			std::cout << " ||[Cx-u+z_prev/mu_in]+_[z=0]|| " << infty_norm(qpwork.active_part_z)  << std::endl;
+			qpwork.active_part_z.noalias() = (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_low_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))  ;
+			std::cout << " ||[[Cx-l+z_prev/mu_in]-]+_[z=0]|| " << infty_norm(qpwork.active_part_z)  << std::endl;
+			err = max2(err,infty_norm(qpwork.active_part_z)); // max of previous and ||[[Cx-l+z_prev/mu_in]-]+_[z=0]||
+
+			qpwork.primal_residual_in_scaled_up.noalias() -= (qpresults.z*qpresults.mu_in_inv);  // contains now Cx-u-(z-z_prev)/mu
+			qpwork.primal_residual_in_scaled_low.noalias() -= (qpresults.z*qpresults.mu_in_inv) ; // contains now  Cx-l-(z-z_prev)/mu
+			T prim_eq_e = infty_norm(qpwork.primal_residual_eq_scaled) ;  // ||Ax-b-(y-y_prev)/mu||
+			std::cout<< " prim_eq_e " << prim_eq_e<< std::endl;
+			err = max2(err,prim_eq_e);
+			qpwork.dual_residual_scaled.noalias() += (qpwork.C_scaled.transpose()*qpresults.z);  // contains now Hx + rho(x-xprev) + g + Aty + Ctz
+			T dual_e = infty_norm(qpwork.dual_residual_scaled);
+			std::cout << "dual_e " << dual_e << std::endl;
+			err = max2(err,dual_e);
+
+			/// typo should compute || [Cx-l+z_k/mu_in]-|| + || [Cx-u+z_k/mu_in]+||
+
+			//qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() 
+			//= qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) 
+			//+ qp::detail::negative_part(qpwork.primal_residual_in_scaled_low);
 
 			qpwork.active_set_up.array()  = ( qpresults.z.array() > T(0));
 			qpwork.active_set_low.array() = ( qpresults.z.array() < T(0));
+
+			//qpwork.active_part_z.noalias() 
+			//= (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) 
+			//+ (qpwork.active_set_low).select(qpwork.primal_residual_in_scaled_low, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) 
+			//+ (!qpwork.active_set_low.array() && !qpwork.active_set_up.array()).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
+			//err = max2(err,infty_norm(qpwork.active_part_z));
+
+			qpwork.active_part_z.noalias() 
+			= (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) 
+			+ (qpwork.active_set_low).select(qpwork.primal_residual_in_scaled_low, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))  ; // contains [Cx-u-(z-z_prev)/mu]_[z>0] + [Cx-l-(z-z_prev)/mu]_[z<0] + 0_[z==0]
+			err = max2(err,infty_norm(qpwork.active_part_z));
+			std::cout << "|| [Cx-u-(z-z_prev)/mu]_[z>0] + [Cx-l-(z-z_prev)/mu]_[z<0] + 0_[z==0] || " << infty_norm(qpwork.active_part_z) << std::endl;
+			*/
+			
+			qpwork.active_set_up.array() = qpwork.primal_residual_in_scaled_up.array()>=T(0) ;//Cx-u+z_prev/mu_in>=0
+			qpwork.active_set_low.array() = qpwork.primal_residual_in_scaled_low.array()<=T(0) ;//Cx-l+z_prev/mu_in<=0
+			qpwork.active_inequalities.noalias() = qpwork.active_set_up || qpwork.active_set_low ; 
+			qpwork.primal_residual_in_scaled_up.noalias() -= (qpresults.z*qpresults.mu_in_inv);  // contains now Cx-u-(z-z_prev)/mu
+			qpwork.primal_residual_in_scaled_low.noalias() -= (qpresults.z*qpresults.mu_in_inv) ; // contains now  Cx-l-(z-z_prev)/mu
+
 			qpwork.active_part_z.noalias() 
 			= (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) 
 			+ (qpwork.active_set_low).select(qpwork.primal_residual_in_scaled_low, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) 
-			+ (!qpwork.active_set_low.array() && !qpwork.active_set_up.array()).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
+			+ (!qpwork.active_inequalities.array()).select(qpresults.z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) ;
 
-			err = max2(err,infty_norm(qpwork.active_part_z));
+			T err = infty_norm(qpwork.active_part_z);
+
+			std::cout << "prim_in_e " << err << std::endl;
+
+			T prim_eq_e = infty_norm(qpwork.primal_residual_eq_scaled) ;  // ||Ax-b-(y-y_prev)/mu||
+			std::cout<< " prim_eq_e " << prim_eq_e<< std::endl;
+			err = max2(err,prim_eq_e);
+			qpwork.dual_residual_scaled.noalias() += (qpwork.C_scaled.transpose()*qpresults.z);  // contains now Hx + rho(x-xprev) + g + Aty + Ctz
+			T dual_e = infty_norm(qpwork.dual_residual_scaled);
+			std::cout << "dual_e " << dual_e << std::endl;
+			err = max2(err,dual_e);
+
 
 			return err;
 }
@@ -481,8 +531,8 @@ T initial_guess(
 				qpwork.primal_residual_in_scaled_low = qpwork.primal_residual_in_scaled_up;
 				qpwork.primal_residual_in_scaled_up -= qpmodel.u;
 				qpwork.primal_residual_in_scaled_low -= qpmodel.l;
-				qpwork.active_set_up.array() = (qpwork.primal_residual_in_scaled_up.array() >= 0.);
-				qpwork.active_set_low.array() = (qpwork.primal_residual_in_scaled_low.array() <= 0.); // TODO(Antoine): check <= or <
+				qpwork.active_set_up.array() = (qpwork.primal_residual_in_scaled_up.array() >= 0.); // Cx-u + zk/mu >= 0
+				qpwork.active_set_low.array() = (qpwork.primal_residual_in_scaled_low.array() <= 0.); // Cx-l + zk/mu <= 0 --> NB : disjoint if both == 0 as by assumption u>l
 				qpwork.active_inequalities = qpwork.active_set_up || qpwork.active_set_low ;   
 				qpwork.primal_residual_in_scaled_up.noalias() -= (ze.to_eigen()*qpresults.mu_in_inv) ; 
 				qpwork.primal_residual_in_scaled_low.noalias() -= (ze.to_eigen()*qpresults.mu_in_inv) ; 
@@ -541,7 +591,7 @@ T initial_guess(
 				qpwork.primal_residual_in_scaled_up.noalias() += (ze.to_eigen()*qpresults.mu_in_inv) ; 
 				qpwork.primal_residual_in_scaled_low.noalias() += (ze.to_eigen()*qpresults.mu_in_inv) ; 
 				qpwork.Cdx.noalias() = qpwork.C_scaled*qpwork.dw_aug.head(qpmodel.dim) ; 
-				qpwork.dual_residual_scaled.noalias() -= qpwork.C_scaled.transpose()*ze.to_eigen() ; 
+				qpwork.dual_residual_scaled.noalias() -= qpwork.C_scaled.transpose()*ze.to_eigen() ; // contains now Hx_prev + g + Aty_prev
 			}
 
 			qpwork.Adx.noalias() = (qpwork.A_scaled*qpwork.dw_aug.head(qpmodel.dim)- qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq) * qpresults.mu_eq_inv).eval() ; 
@@ -570,14 +620,14 @@ T initial_guess(
 				qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() = (qpwork.active_part_z.array() < T(0.)).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 				qpresults.z.noalias() = (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) +
 					(qpwork.active_set_low).select(qpwork.primal_residual_in_scaled_low_plus_alphaCdx, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) +
-					(!qpwork.active_set_low.array() && !qpwork.active_set_up.array()).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) ;
+					(!qpwork.active_inequalities.array()).select(qpwork.active_part_z, Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in)) ;
 			}
 
 			qpresults.x.noalias() += (qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim)) ; 
 			qpresults.y.noalias() += (qpwork.alpha * qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq)) ; 
 
-			qpwork.primal_residual_eq_scaled.noalias() += (qpwork.alpha*qpwork.Adx);
-			qpwork.dual_residual_scaled.noalias() += qpwork.alpha* (qpwork.Hdx) ;
+			qpwork.primal_residual_eq_scaled.noalias() += (qpwork.alpha*qpwork.Adx); // contains now Ax-b - (y-y_prev)/mu
+			qpwork.dual_residual_scaled.noalias() += qpwork.alpha* (qpwork.Hdx) ;  // contains now Hx + rho(x-xprev) + g + Aty
 			qpwork.dw_aug.setZero();
 
 			T err_saddle_point = compute_primal_dual_residual( 

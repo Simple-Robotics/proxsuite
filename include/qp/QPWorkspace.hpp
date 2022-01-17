@@ -171,6 +171,28 @@ public:
                     CTz.setZero();
             }
 
+    void reset_results(){
+
+        Hdx.setZero();
+        Cdx.setZero();
+        Adx.setZero();
+        active_part_z.setZero();
+        dw_aug.setZero();
+        rhs.setZero();
+        err.setZero();
+
+        alpha = 1.;
+
+        dual_residual_scaled.setZero();
+        primal_residual_eq_scaled.setZero();
+        primal_residual_in_scaled_up.setZero();
+        primal_residual_in_scaled_low.setZero();
+
+        primal_residual_in_scaled_up_plus_alphaCdx.setZero();
+        primal_residual_in_scaled_low_plus_alphaCdx.setZero();
+        CTz.setZero();
+
+    }
         
 };
 

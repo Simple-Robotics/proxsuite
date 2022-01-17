@@ -60,7 +60,7 @@ public:
                 objValue =0.;
                 }
     
-    void clearResults(){
+    void reset_results(){
         x.setZero();
         y.setZero();
         z.setZero();

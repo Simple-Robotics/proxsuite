@@ -277,7 +277,7 @@ void QPupdateMatrice( //
 
 		// re update all other variables
 		if (update){
-			QPResults.clearResults();
+			QPResults.reset_results();
 		}
 
 		// perform warm start
@@ -814,51 +814,88 @@ void QPsolve(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& QPResults,
 		qp::QPWorkspace<T>& qpwork,
-		const qp::QPSettings<T>& QPSettings){
+		const qp::QPSettings<T>& qpsettings){
 
 			auto start = std::chrono::high_resolution_clock::now();
 			qp::detail::qp_solve( //
-								QPSettings,
+								qpsettings,
 								qpmodel,
 								QPResults,
 								qpwork);
 			auto stop = std::chrono::high_resolution_clock::now();
     		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "n_ext : " <<  QPResults.n_ext << std::endl;
-			std::cout << "n_tot : " <<  QPResults.n_tot << std::endl;
-			std::cout << "mu updates : " <<  QPResults.n_mu_change << std::endl;
-			std::cout << "objValue : " << QPResults.objValue << std::endl;
 			QPResults.timing = duration.count();
-			std::cout << "timing : " << QPResults.timing << std::endl;
+
+			if (qpsettings.verbose){
+				std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+				std::cout << "n_ext : " <<  QPResults.n_ext << std::endl;
+				std::cout << "n_tot : " <<  QPResults.n_tot << std::endl;
+				std::cout << "mu updates : " <<  QPResults.n_mu_change << std::endl;
+				std::cout << "objValue : " << QPResults.objValue << std::endl;
+				std::cout << "timing : " << QPResults.timing << std::endl;
+			}
 
 		}
+
+template <typename T>
+void QPreset(
+		const qp::QPData<T>& qpmodel,
+		const qp::QPSettings<T>& qpsettings,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork){
+			
+			qpwork.kkt.diagonal().head(qpmodel.dim).array() -= qpresults.rho; 
+			qpresults.reset_results();
+			qpwork.reset_results();
+
+			qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
+			qpwork.kkt.diagonal().segment(qpmodel.dim,qpmodel.n_eq).array() = -qpresults.mu_eq_inv; 
+			qpwork.ldl.factorize(qpwork.kkt);
+
+			qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+			qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq) = qpwork.b_scaled;
+
+			qp::detail::iterative_solve_with_permut_fact( //
+				qpsettings,
+				qpmodel,
+				qpresults,
+				qpwork,
+				T(1),
+				qpmodel.dim+qpmodel.n_eq
+				);
+
+			qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+			qpresults.y = qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq);
+
+			qpwork.dw_aug.setZero();
+
+		}
+
 
 
 template <typename T,Layout L>
 void QPsolveEq(
 		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& QPResults,
+		qp::QPResults<T>& qpresults,
 		qp::QPWorkspace<T>& qpwork,
-		const qp::QPSettings<T>& QPSettings){
+		const qp::QPSettings<T>& qpsettings){
 
 			auto start = std::chrono::high_resolution_clock::now();
 			qp::detail::qp_solve_eq( //
-								QPSettings,
+								qpsettings,
 								qpmodel,
-								QPResults,
+								qpresults,
 								qpwork);
 			auto stop = std::chrono::high_resolution_clock::now();
     		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "n_ext : " <<  QPResults.n_ext << std::endl;
-			std::cout << "n_tot : " <<  QPResults.n_tot << std::endl;
-			std::cout << "mu updates : " <<  QPResults.n_mu_change << std::endl;
-			std::cout << "objValue : " << QPResults.objValue << std::endl;
-			QPResults.timing = duration.count();
-			std::cout << "timing : " << QPResults.timing << std::endl;
+			std::cout << "n_ext : " <<  qpresults.n_ext << std::endl;
+			std::cout << "n_tot : " <<  qpresults.n_tot << std::endl;
+			std::cout << "mu updates : " <<  qpresults.n_mu_change << std::endl;
+			std::cout << "objValue : " << qpresults.objValue << std::endl;
+			qpresults.timing = duration.count();
+			std::cout << "timing : " << qpresults.timing << std::endl;
 
 		}
 
@@ -1029,6 +1066,10 @@ INRIA LDLT decomposition
 
 	m.def("QPsetup", &qp::pybind11::QPsetup<f32, c>);
 	m.def("QPsetup", &qp::pybind11::QPsetup<f64, c>);
+
+	m.def("QPreset", &qp::pybind11::QPreset<f32>);
+	m.def("QPreset", &qp::pybind11::QPreset<f64>);
+
 	/*
 	m.def("correction_guess", &qp::pybind11::correction_guess<f32>);
 	m.def("correction_guess", &qp::pybind11::correction_guess<f64>);
