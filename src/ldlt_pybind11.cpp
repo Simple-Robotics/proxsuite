@@ -8,6 +8,7 @@
 #include <qp/QPWorkspace.hpp>
 
 #include <qp/proxqp/solver.hpp>
+#include <qp/proxqp/solver_eq.hpp>
 #include <qp/utils.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <fmt/chrono.h>
@@ -834,6 +835,34 @@ void QPsolve(
 
 		}
 
+
+template <typename T,Layout L>
+void QPsolveEq(
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& QPResults,
+		qp::QPWorkspace<T>& qpwork,
+		const qp::QPSettings<T>& QPSettings){
+
+			auto start = std::chrono::high_resolution_clock::now();
+			qp::detail::qp_solve_eq( //
+								QPSettings,
+								qpmodel,
+								QPResults,
+								qpwork);
+			auto stop = std::chrono::high_resolution_clock::now();
+    		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "n_ext : " <<  QPResults.n_ext << std::endl;
+			std::cout << "n_tot : " <<  QPResults.n_tot << std::endl;
+			std::cout << "mu updates : " <<  QPResults.n_mu_change << std::endl;
+			std::cout << "objValue : " << QPResults.objValue << std::endl;
+			QPResults.timing = duration.count();
+			std::cout << "timing : " << QPResults.timing << std::endl;
+
+		}
+
+
 } // namespace pybind11
 } // namespace qp
 
@@ -991,6 +1020,9 @@ INRIA LDLT decomposition
 	*/
 	m.def("QPsolve", &qp::pybind11::QPsolve<f32, c>);
 	m.def("QPsolve", &qp::pybind11::QPsolve<f64, c>);
+
+	m.def("QPsolveEq", &qp::pybind11::QPsolveEq<f32, c>);
+	m.def("QPsolveEq", &qp::pybind11::QPsolveEq<f64, c>);
 
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);

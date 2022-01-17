@@ -105,6 +105,9 @@ if(APPLE)
   set(CMAKE_SKIP_RPATH FALSE CACHE BOOL "rpaths" FORCE)
 endif(APPLE)
 
+#add_subdirectory(external/block-ldlt)
+#target_link_libraries(inria_ldlt PUBLIC block-ldlt)
+
 # Conan dependencies
 if(ENABLE_TESTING)
 

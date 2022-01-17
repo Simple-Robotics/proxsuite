@@ -159,7 +159,7 @@ public:
                     primal_feasibility_rhs_1_in_l = 0;
                     dual_feasibility_rhs_2 = 0;
                     correction_guess_rhs_g = 0;
-                    alpha = 0.;
+                    alpha = 1.;
 
                     dual_residual_scaled.setZero();
                     primal_residual_eq_scaled.setZero();

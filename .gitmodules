@@ -10,3 +10,6 @@
 [submodule "external/qpalm"]
 	path = external/qpalm
 	url = https://github.com/Benny44/QPALM_vLADEL
+[submodule "external/block-ldlt"]
+	path = external/block-ldlt
+	url = https://github.com/kitegi/block-ldlt.git
