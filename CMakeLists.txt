@@ -116,7 +116,6 @@ if(ENABLE_TESTING)
 endif()
 
 target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
-set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(inria_ldlt INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN)
