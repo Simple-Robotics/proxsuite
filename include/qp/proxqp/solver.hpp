@@ -59,7 +59,7 @@ void refactorize(
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 			-qpresults.mu_eq_inv;
 	{
-		LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
+		veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
 		qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
 	}
 
@@ -71,7 +71,7 @@ void refactorize(
 						-qpresults.mu_in_inv; // mu_in stores the inverse of mu_in
 				{
 					isize insert_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
-					LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::insert_at_req(insert_dim));
+					veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
 					qpwork.ldl.insert_at(
 							qpmodel.n_eq + qpmodel.dim + j,
 							qpwork.dw_aug.head(insert_dim),
@@ -94,7 +94,7 @@ void mu_update(
 	T diff = 0;
 
 	isize total_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
-	LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::rank_one_update_req(total_dim));
+	veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
 
 	qpwork.dw_aug.head(qpmodel.dim + qpmodel.n_eq + qpresults.n_c).setZero();
 	if (qpmodel.n_eq > 0) {
@@ -167,7 +167,7 @@ void iterative_solve_with_permut_fact( //
 
 	qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
 
-	LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::solve_in_place_req(inner_pb_dim));
+	veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
 	qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), LDLT_FWD(stack));
 
 	qp::detail::iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
@@ -241,11 +241,7 @@ void iterative_solve_with_permut_fact( //
 			qpwork.dw_aug.setZero();
 			qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 					-qpresults.mu_eq_inv;
-			{
-				LDLT_MAKE_STACK(
-						factor_stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-				qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(factor_stack));
-			}
+			qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
 
 			for (isize j = 0; j < qpresults.n_c; ++j) {
 				for (isize i = 0; i < qpmodel.n_in; ++i) {
@@ -255,7 +251,6 @@ void iterative_solve_with_permut_fact( //
 								-qpresults.mu_in_inv; // mu_in stores the inverse of mu_in
 						{
 							isize insert_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
-							LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::insert_at_req(insert_dim));
 							qpwork.ldl.insert_at(
 									qpmodel.n_eq + qpmodel.dim + j,
 									qpwork.dw_aug.head(insert_dim),
