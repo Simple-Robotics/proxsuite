@@ -533,18 +533,13 @@ T compute_primal_dual_residual(
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
 	T err = infty_norm(qpwork.active_part_z);
-
-	std::cout << "prim_in_e " << err << std::endl;
-
 	T prim_eq_e =
 			infty_norm(qpwork.primal_residual_eq_scaled); // ||Ax-b-(y-y_prev)/mu||
-	std::cout << " prim_eq_e " << prim_eq_e << std::endl;
 	err = max2(err, prim_eq_e);
 	qpwork.dual_residual_scaled.noalias() +=
 			(qpwork.C_scaled.transpose() *
 	     qpresults.z); // contains now Hx + rho(x-xprev) + g + Aty + Ctz
 	T dual_e = infty_norm(qpwork.dual_residual_scaled);
-	std::cout << "dual_e " << dual_e << std::endl;
 	err = max2(err, dual_e);
 
 	return err;
