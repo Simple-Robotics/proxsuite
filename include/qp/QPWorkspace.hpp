@@ -2,7 +2,8 @@
 #define INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
 
 #include <Eigen/Core>
-#include "ldlt/views.hpp"
+#include <ldlt/ldlt.hpp>
+#include <ldlt/views.hpp>
 #include <qp/precond/ruiz.hpp>
 
 namespace qp {
@@ -95,7 +96,7 @@ public:
 	QPWorkspace( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 ruiz(qp::preconditioner::RuizEquilibration<T>{dim,n_eq + n_in}),
-                ldl(ldlt::reserve_uninit, dim+n_eq), // old version with alloc
+                ldl{}, // old version with alloc
                 H_scaled(dim, dim),
 				g_scaled(dim),
 				A_scaled(n_eq,dim),
@@ -130,6 +131,7 @@ public:
                 CTz(dim)
 
             {
+ldl.reserve_uninit(dim+n_eq + n_in);
                     alphas.reserve( 3*n_in );
                     H_scaled.setZero();
                     g_scaled.setZero();

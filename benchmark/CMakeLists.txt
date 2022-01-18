@@ -1,14 +1,6 @@
 include_directories(include)
 
-set(LDLT_BENCH_LIBS
-    inria_ldlt
-    inria_ldlt_util
-)
-
-add_executable(.bench.factorize src/factorize.cpp)
-target_link_libraries(.bench.factorize ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
-add_executable(.bench.rank_update src/rank_update.cpp)
-target_link_libraries(.bench.rank_update ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
+set(LDLT_BENCH_LIBS inria_ldlt inria_ldlt_util)
 
 add_executable(.bench.qp_eq src/qp_eq.cpp)
 target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
@@ -16,12 +8,10 @@ target_link_libraries(.bench.qp_eq ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 add_executable(.bench.qp_in src/qp_in.cpp)
 target_link_libraries(.bench.qp_in ${LDLT_BENCH_LIBS} CONAN_PKG::benchmark)
 
-find_package(matioCpp REQUIRED)
 add_executable(bench-parser src/parser.cpp)
-target_include_directories(bench-parser SYSTEM PUBLIC "${matioCpp_INCLUDE_DIRS}")
-target_link_libraries(bench-parser PUBLIC CONAN_PKG::eigen inria_ldlt matioCpp::matioCpp)
+target_link_libraries(bench-parser PUBLIC CONAN_PKG::eigen inria_ldlt)
 get_target_property(PARSER_INCLUDE_DIR bench-parser INCLUDE_DIRECTORIES)
-MESSAGE(STATUS "PARSER_INCLUDE_DIR: e${PARSER_INCLUDE_DIR}e")
+message(STATUS "PARSER_INCLUDE_DIR: e${PARSER_INCLUDE_DIR}e")
 
 add_executable(.bench.osqp src/osqp.cpp)
 target_link_libraries(

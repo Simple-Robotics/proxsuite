@@ -762,7 +762,11 @@ void active_set_change(
 				qpwork.dw_aug.setZero();
 				qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
 				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) = mu_in_inv_neg; // mu stores the inverse of mu
-				qpwork.ldl.insert_at(qpmodel.n_eq + qpmodel.dim + n_c_f, qpwork.dw_aug.head(n_c_f+1+qpmodel.n_eq+qpmodel.dim));
+        {
+          isize insert_dim = n_c_f+1+qpmodel.n_eq+qpmodel.dim;
+          LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::insert_at_req(insert_dim));
+          qpwork.ldl.insert_at(qpmodel.n_eq + qpmodel.dim + n_c_f, qpwork.dw_aug.head(insert_dim), LDLT_FWD(stack));
+        }
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) < qpwork.new_bijection_map(i) &&

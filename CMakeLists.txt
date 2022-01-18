@@ -61,22 +61,10 @@ if(ENABLE_TESTING)
   include(cmake/extra_local_settings.cmake)
 endif()
 
-add_library(
-  inria_ldlt
-  SHARED
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f32.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/eigen_f64.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/factorize.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/update.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/solve.cpp
-  #${CMAKE_CURRENT_SOURCE_DIR}/test/src/cnpy.cpp
-)
-target_compile_options(inria_ldlt PRIVATE "-march=native")
+add_library(inria_ldlt INTERFACE)
+target_compile_options(inria_ldlt INTERFACE "-march=native")
 target_include_directories(
-  inria_ldlt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/
-)
-target_include_directories(
-  inria_ldlt SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/simde/
+  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
 add_library(inria_ldlt_util STATIC test/src/util_f64.cpp test/src/util_f32.cpp)
@@ -105,33 +93,33 @@ if(APPLE)
   set(CMAKE_SKIP_RPATH FALSE CACHE BOOL "rpaths" FORCE)
 endif(APPLE)
 
-#add_subdirectory(external/block-ldlt)
-#target_link_libraries(inria_ldlt PUBLIC block-ldlt)
+add_subdirectory(external/block-ldlt)
+target_link_libraries(inria_ldlt INTERFACE block-ldlt)
 
 # Conan dependencies
 if(ENABLE_TESTING)
 
-  target_compile_definitions(inria_ldlt PUBLIC EIGEN_RUNTIME_NO_MALLOC)
-  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
+  target_compile_definitions(inria_ldlt INTERFACE EIGEN_RUNTIME_NO_MALLOC)
+  target_compile_definitions(inria_ldlt INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN)
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
-  target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::fmt CONAN_PKG::mpfr)
+  target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::fmt CONAN_PKG::mpfr)
   
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
-  target_link_libraries(inria_ldlt PUBLIC project_options project_warnings)
+  target_link_libraries(inria_ldlt INTERFACE project_options project_warnings)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
 endif()
 
-target_link_libraries(inria_ldlt PUBLIC CONAN_PKG::eigen CONAN_PKG::fmt)
+target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 set_property(TARGET inria_ldlt PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
-  target_compile_definitions(inria_ldlt PUBLIC EIGEN_INITIALIZE_MATRICES_BY_NAN)
+  target_compile_definitions(inria_ldlt INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN)
   find_package(Python3 COMPONENTS Interpreter Development)
   add_subdirectory(external/pybind11)
   #pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
@@ -144,7 +132,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 
   STRING(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
   MESSAGE(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
-  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt pybind11::module)
+  target_link_libraries(inria_ldlt_py PUBLIC block-ldlt inria_ldlt pybind11::module)
   set_target_properties(inria_ldlt_py PROPERTIES
     BUILD_RPATH ${CMAKE_BUILD_RPATH}
     PREFIX ""
