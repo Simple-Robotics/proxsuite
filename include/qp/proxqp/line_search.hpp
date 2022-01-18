@@ -500,10 +500,8 @@ void initial_guess_ls(
 
 		if (gr_interval <= gr_n){
 			qpwork.alpha = alpha_interval; 
-			std::cout << " optimal gr " << gr_interval << std::endl;
 		}else{
 			qpwork.alpha = alpha_n;
-			std::cout << " optimal gr " << gr_n << std::endl;
 		}
 	}
 
