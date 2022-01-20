@@ -147,7 +147,6 @@ auto correction_guess_line_search( //
           {from_eigen, l.eval()},
       });
 }
-*/
 
 template <typename T, Layout L>
 void QPsetup( //
@@ -239,6 +238,9 @@ void QPsetup( //
 
 	qpwork.dw_aug.setZero();
 }
+*/
+
+
 
 template <typename T, Layout L>
 void QPupdateMatrice( //
@@ -980,7 +982,7 @@ INRIA LDLT decomposition
 	using namespace ldlt;
 	using namespace qp;
 	// using namespace preconditioner;
-	// constexpr auto c = colmajor;
+	//constexpr auto c = colmajor;
 	::pybind11::class_<qp::QPWorkspace<f64>>(m, "QPWorkspace")
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
 																							 // read-write public data member
@@ -1156,8 +1158,8 @@ INRIA LDLT decomposition
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
 
-	m.def("QPsetup", &qp::pybind11::QPsetup<f32, c>);
-	m.def("QPsetup", &qp::pybind11::QPsetup<f64, c>);
+	m.def("QPsetup", &qp::detail::QPsetup<f32, c>);
+	m.def("QPsetup", &qp::detail::QPsetup<f64, c>);
 
 	m.def("QPreset", &qp::pybind11::QPreset<f32>);
 	m.def("QPreset", &qp::pybind11::QPreset<f64>);
