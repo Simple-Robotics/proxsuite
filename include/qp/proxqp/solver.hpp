@@ -752,7 +752,7 @@ T correction_guess(
 			qp::line_search::correction_guess_ls(qpmodel, qpresults, qpwork);
 		}
 
-		if (infty_norm(qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim)) < 1.E-11) {
+		if (infty_norm(qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim)) < 1.E-11 && iter >0) {
 			qpresults.n_tot += iter + 1;
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(alpha_step * dx) "
