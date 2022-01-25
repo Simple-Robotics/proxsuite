@@ -652,12 +652,18 @@ void correction_guess_ls(
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 
 		if (qpwork.Cdx(i) != 0.) {
-			qpwork.alphas.push_back(
-					-qpwork.primal_residual_in_scaled_up(i) /
-					(qpwork.Cdx(i) + machine_eps));
-			qpwork.alphas.push_back(
-					-qpwork.primal_residual_in_scaled_low(i) /
-					(qpwork.Cdx(i) + machine_eps));
+			alpha_ = -qpwork.primal_residual_in_scaled_up(i) /
+					(qpwork.Cdx(i) + machine_eps);
+			if (alpha_>machine_eps){
+				qpwork.alphas.push_back(
+					alpha_);
+			}
+			alpha_ = -qpwork.primal_residual_in_scaled_low(i) /
+					(qpwork.Cdx(i) + machine_eps);
+			if (alpha_>machine_eps){
+				qpwork.alphas.push_back(
+					alpha_);
+			}
 		}
 	}
 
@@ -680,35 +686,33 @@ void correction_guess_ls(
 		T alpha_first_pos = 0;
 		for (isize i = 0; i < n_alpha; ++i) {
 			alpha_ = qpwork.alphas[i];
-			if (alpha_ > machine_eps) {
 
-				/*
-				 * 2.1
-				 * For each positive alpha compute the first derivative of
-				 * phi(alpha) = [proximal augmented lagrangian of the
-				 *               subproblem evaluated at x_k + alpha dx]
-				 * using function "gradient_norm"
-				 *
-				 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
-				 * phi'(alpha) goes to infinity with alpha hence it cancels
-				 * uniquely at one optimal alpha*
-				 *
-				 * while phi'(alpha)<=0 store the derivative (noted
-				 * last_grad_neg) and alpha (last_alpha_neg
-				 * the first time phi'(alpha) > 0 store the derivative
-				 * (noted first_grad_pos) and alpha (first_alpha_pos), and
-				 * break the loop
-				 */
-				T gr = line_search::gradient_norm(qpmodel, qpresults, qpwork, alpha_);
+			/*
+				* 2.1
+				* For each positive alpha compute the first derivative of
+				* phi(alpha) = [proximal augmented lagrangian of the
+				*               subproblem evaluated at x_k + alpha dx]
+				* using function "gradient_norm"
+				*
+				* (By construction for alpha = 0,  phi'(alpha) <= 0 and
+				* phi'(alpha) goes to infinity with alpha hence it cancels
+				* uniquely at one optimal alpha*
+				*
+				* while phi'(alpha)<=0 store the derivative (noted
+				* last_grad_neg) and alpha (last_alpha_neg
+				* the first time phi'(alpha) > 0 store the derivative
+				* (noted first_grad_pos) and alpha (first_alpha_pos), and
+				* break the loop
+				*/
+			T gr = line_search::gradient_norm(qpmodel, qpresults, qpwork, alpha_);
 
-				if (gr < T(0)) {
-					alpha_last_neg = alpha_;
-					last_neg_grad = gr;
-				} else {
-					first_pos_grad = gr;
-					alpha_first_pos = alpha_;
-					break;
-				}
+			if (gr < T(0)) {
+				alpha_last_neg = alpha_;
+				last_neg_grad = gr;
+			} else {
+				first_pos_grad = gr;
+				alpha_first_pos = alpha_;
+				break;
 			}
 		}
 

@@ -217,16 +217,12 @@ void iterative_solve_with_permut_fact( //
 			qpmodel.dim+qpmodel.n_eq+qpresults.n_c),LDLT_CACHELINE_BYTES, T)
 			  );
 			auto Htot = _htot.to_eigen().eval();
-
 			Htot.setZero();
-
 			qpwork.kkt.diagonal().segment(qpmodel.dim,qpmodel.n_eq).array() =
 			-qpresults.mu_eq_inv; Htot.topLeftCorner(qpmodel.dim+qpmodel.n_eq,
 			qpmodel.dim+qpmodel.n_eq) = qpwork.kkt;
-
 			Htot.diagonal().segment(qpmodel.dim+qpmodel.n_eq,qpresults.n_c).array() =
 			-qpresults.mu_in_inv; for (isize i = 0; i< qpmodel.n_in ; ++i){
-
 			    isize j = qpwork.current_bijection_map(i);
 			    if (j<qpresults.n_c){
 			      Htot.block(j+qpmodel.dim+qpmodel.n_eq,0,1,qpmodel.dim) =
@@ -235,7 +231,6 @@ void iterative_solve_with_permut_fact( //
 			qpwork.C_scaled.transpose().col(i) ;
 			    }
 			}
-
 			qpwork.ldl.factorize(Htot);
 			*/
 			qpwork.dw_aug.setZero();
@@ -450,7 +445,6 @@ T compute_primal_dual_residual(
 	qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias()
 	= qp::detail::negative_part(qpwork.primal_residual_in_scaled_low); //
 	[Cx-l+z_prev/mu_in]-
-
 	qpwork.active_set_up.array()  = ( qpresults.z.array() == T(0));
 	qpwork.active_part_z.noalias() =
 	(qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx,
@@ -464,7 +458,6 @@ T compute_primal_dual_residual(
 	||[[Cx-l+z_prev/mu_in]-]+_[z=0]|| " << infty_norm(qpwork.active_part_z)  <<
 	std::endl; err = max2(err,infty_norm(qpwork.active_part_z)); // max of
 	previous and ||[[Cx-l+z_prev/mu_in]-]+_[z=0]||
-
 	qpwork.primal_residual_in_scaled_up.noalias() -=
 	(qpresults.z*qpresults.mu_in_inv);  // contains now Cx-u-(z-z_prev)/mu
 	qpwork.primal_residual_in_scaled_low.noalias() -=
@@ -475,16 +468,12 @@ T compute_primal_dual_residual(
 	(qpwork.C_scaled.transpose()*qpresults.z);  // contains now Hx + rho(x-xprev)
 	+ g + Aty + Ctz T dual_e = infty_norm(qpwork.dual_residual_scaled); std::cout
 	<< "dual_e " << dual_e << std::endl; err = max2(err,dual_e);
-
 	/// typo should compute || [Cx-l+z_k/mu_in]-|| + || [Cx-u+z_k/mu_in]+||
-
 	//qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias()
 	//= qp::detail::positive_part(qpwork.primal_residual_in_scaled_up)
 	//+ qp::detail::negative_part(qpwork.primal_residual_in_scaled_low);
-
 	qpwork.active_set_up.array()  = ( qpresults.z.array() > T(0));
 	qpwork.active_set_low.array() = ( qpresults.z.array() < T(0));
-
 	//qpwork.active_part_z.noalias()
 	//= (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up,
 	Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
@@ -494,7 +483,6 @@ T compute_primal_dual_residual(
 	!qpwork.active_set_up.array()).select(qpwork.primal_residual_in_scaled_up_plus_alphaCdx,
 	Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in));
 	//err = max2(err,infty_norm(qpwork.active_part_z));
-
 	qpwork.active_part_z.noalias()
 	= (qpwork.active_set_up).select(qpwork.primal_residual_in_scaled_up,
 	Eigen::Matrix<T,Eigen::Dynamic,1>::Zero(qpmodel.n_in))
@@ -1184,41 +1172,44 @@ void qp_solve( //
 			(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
 }
 
-template <typename T, Layout L>
-using MatRef = Eigen::Ref<
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
+template <typename T>
+using SparseMat = Eigen::SparseMatrix<T,1>;
 template <typename T>
 using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
 
-template <typename T, Layout L>
+template <typename T>
 void QPsetup( //
-		MatRef<T, L> H,
-		VecRef<T> g,
-		MatRef<T, L> A,
-		VecRef<T> b,
-		MatRef<T, L> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		qp::QPSettings<T>& QPSettings,
-		qp::QPData<T>& qpmodel,
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults,
+                const SparseMat<T>& H,
+                VecRef<T> g,
+                const SparseMat<T>& A,
+                VecRef<T> b,
+                const SparseMat<T>& C,
+                VecRef<T> u,
+                VecRef<T> l,
+                qp::QPSettings<T>& QPSettings,
+                qp::QPData<T>& qpmodel,
+                qp::QPWorkspace<T>& qpwork,
+                qp::QPResults<T>& QPResults,
 
-		T eps_abs = 1.e-9,
-		T eps_rel = 0,
-		const bool VERBOSE = true
+                T eps_abs = 1.e-9,
+                T eps_rel = 0,
+                const bool VERBOSE = true
 
 ) {
+
 
 	QPSettings.eps_abs = eps_abs;
 	QPSettings.eps_rel = eps_rel;
 	QPSettings.verbose = VERBOSE;
 
-	qpmodel.H = H.eval();
+	qpmodel.H = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(H.eval());
+	//qpmodel.H = Eigen::MatrixXd(H);
 	qpmodel.g = g.eval();
-	qpmodel.A = A.eval();
+	qpmodel.A = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(A.eval());
+	//qpmodel.A = Eigen::MatrixXd(A);
 	qpmodel.b = b.eval();
-	qpmodel.C = C.eval();
+	//qpmodel.C = Eigen::MatrixXd(C);
+	qpmodel.C = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(C.eval());
 	qpmodel.u = u.eval();
 	qpmodel.l = l.eval();
 

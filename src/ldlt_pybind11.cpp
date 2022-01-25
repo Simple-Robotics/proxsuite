@@ -1101,7 +1101,7 @@ INRIA LDLT decomposition
 
 			.def_readwrite("eps_abs", &qp::QPSettings<f64>::eps_abs)
 			.def_readwrite("eps_rel", &qp::QPSettings<f64>::eps_rel)
-			.def_readwrite("_err_IG", &qp::QPSettings<f64>::eps_IG)
+			.def_readwrite("eps_IG", &qp::QPSettings<f64>::eps_IG)
 			.def_readwrite("R", &qp::QPSettings<f64>::R)
 			.def_readwrite(
 					"nb_iterative_refinement",
