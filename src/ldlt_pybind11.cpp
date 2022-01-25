@@ -1158,8 +1158,8 @@ INRIA LDLT decomposition
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
 
-	m.def("QPsetup", &qp::detail::QPsetup<f32, c>);
-	m.def("QPsetup", &qp::detail::QPsetup<f64, c>);
+	m.def("QPsetup", &qp::detail::QPsetup<f32>);
+	m.def("QPsetup", &qp::detail::QPsetup<f64>);
 
 	m.def("QPreset", &qp::pybind11::QPreset<f32>);
 	m.def("QPreset", &qp::pybind11::QPreset<f64>);

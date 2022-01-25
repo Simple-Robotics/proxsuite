@@ -9,7 +9,7 @@
 #include "ldlt/update.hpp"
 #include "qp/proxqp/line_search.hpp"
 #include <cmath>
-
+#include <Eigen/Sparse>
 #include <iostream>
 #include <fstream>
 
