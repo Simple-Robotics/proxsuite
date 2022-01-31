@@ -207,7 +207,7 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 
 template <typename Scalar>
 auto sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
-		->  Mat<Scalar, colmajor>  {
+		-> Mat<Scalar, colmajor> {
 	auto H = Mat<Scalar, colmajor>(n, n);
 	H.setZero();
 
@@ -220,8 +220,10 @@ auto sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
 			}
 		}
 	}
-	
-	H = H * H.transpose(); // safe no aliasing https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
+
+	H = H *
+	    H.transpose(); // safe no aliasing
+	                   // https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
 	H.diagonal().array() += rho;
 
 	return H;
@@ -243,11 +245,10 @@ auto sparse_matrix_rand(isize nrows, isize ncols, double p)
 	return A;
 }
 
-
 template <typename Scalar>
 auto sparse_matrix_rand_not_compressed(isize nrows, isize ncols, double p)
-		->  Mat<Scalar, colmajor>{
-	auto A =  Mat<Scalar, colmajor>(nrows, ncols);
+		-> Mat<Scalar, colmajor> {
+	auto A = Mat<Scalar, colmajor>(nrows, ncols);
 	A.setZero();
 	for (isize i = 0; i < nrows; ++i) {
 		for (isize j = 0; j < ncols; ++j) {
@@ -403,7 +404,8 @@ struct Qp {
 
 	enum { layout = Eigen::RowMajor };
 
-	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, layout> MatrixType;
+	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, layout>
+			MatrixType;
 	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1> VectorType;
 
 	MatrixType H;
@@ -416,16 +418,22 @@ struct Qp {
 
 	VectorType solution;
 
-	template<typename Matrix_H, typename Vector_g, typename Matrix_A, typename Vector_b, typename Matrix_C, typename Vector_u, typename Vector_l> 
+	template <
+			typename Matrix_H,
+			typename Vector_g,
+			typename Matrix_A,
+			typename Vector_b,
+			typename Matrix_C,
+			typename Vector_u,
+			typename Vector_l>
 	Qp(FromData /*tag*/,
-	   const Eigen::MatrixBase<Matrix_H> & H_,
-	   const Eigen::MatrixBase<Vector_g> & g_,
-	   const Eigen::MatrixBase<Matrix_A> & A_,
-	   const Eigen::MatrixBase<Vector_b> & b_,
-	   const Eigen::MatrixBase<Matrix_C> & C_,
-	   const Eigen::MatrixBase<Vector_u> & u_,
-	   const Eigen::MatrixBase<Vector_l> & l_
-	   ) noexcept
+	   const Eigen::MatrixBase<Matrix_H>& H_,
+	   const Eigen::MatrixBase<Vector_g>& g_,
+	   const Eigen::MatrixBase<Matrix_A>& A_,
+	   const Eigen::MatrixBase<Vector_b>& b_,
+	   const Eigen::MatrixBase<Matrix_C>& C_,
+	   const Eigen::MatrixBase<Vector_u>& u_,
+	   const Eigen::MatrixBase<Vector_l>& l_) noexcept
 			: H(H_),
 				g(g_),
 				A(A_),
@@ -440,8 +448,8 @@ struct Qp {
 		ldlt::isize n_eq = ldlt::isize(A.rows());
 
 		auto kkt_mat =
-				Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
-						dim + n_eq, dim + n_eq);
+		    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
+		        dim + n_eq, dim + n_eq);
 
 		kkt_mat.topLeftCorner(dim, dim) = H;
 		kkt_mat.topRightCorner(dim, n_eq) = A.transpose();
@@ -459,6 +467,7 @@ struct Qp {
 				g(dim),
 				A(ldlt_test::rand::matrix_rand<Scalar>(n_eq, dim)),
 				b(n_eq),
+				C(0, dim),
 				solution(ldlt_test::rand::vector_rand<Scalar>(dim + n_eq)) {
 
 		// 1/2 (x-sol)T H (x-sol)
@@ -471,44 +480,47 @@ struct Qp {
 	}
 
 	Qp(RandomWithDimAndNin /*tag*/, ldlt::isize dim, double sparsity_factor)
-			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(dim, Scalar(1e-2), sparsity_factor)),
-			  g(ldlt_test::rand::vector_rand<Scalar>(dim)),
-			  A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(0, dim, sparsity_factor)),
-			  b(0),
-			  C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(ldlt::isize(dim/2), dim, sparsity_factor)),
-			  u(ldlt::isize(dim/2)),
-			  l(ldlt::isize(dim/2)) {
-	
-			ldlt::isize n_in = ldlt::isize(dim/2);
-			
-			auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
-			auto delta = Vec<Scalar>(n_in);
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+						dim, Scalar(1e-2), sparsity_factor)),
+				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
+				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				b(0),
+				C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						ldlt::isize(dim / 2), dim, sparsity_factor)),
+				u(ldlt::isize(dim / 2)),
+				l(ldlt::isize(dim / 2)) {
 
-			for (ldlt::isize i = 0; i < n_in; ++i) {
-				delta(i) = ldlt_test::rand::uniform_rand();
-			}
+		ldlt::isize n_in = ldlt::isize(dim / 2);
 
-			u = C * x_sol + delta ;
-			l.setZero();
-			l.array() -= 1.e30;
-			/*
-			sparsity = (n**2*sparsity_factor + 2 * n * n_in*sparsity_factor +  n_in) / (n+n_in)**2
+		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+		auto delta = Vec<Scalar>(n_in);
 
-			H_ = sparse.random(n, n, density=sparsity_factor,
-							data_rvs=np.random.randn,
-							format='csc')
-			H_ = H_.dot(H_.T).tocsc() + 1e-02 * sparse.eye(n)
-			g_ = np.random.randn(n)
-			C_ = sparse.random(n_in, n, density=sparsity_factor,
-									data_rvs=np.random.randn,
-									format='csc')
-			x_sol = np.random.randn(n)  # Create fictitious solution
-			delta = np.random.rand(n_in)
-			u_ = C_@x_sol + delta
-			#l_ = - np.inf * np.ones(n_in)
-			l_ = - 1.e30 * np.ones(n_in)
-			*/
+		for (ldlt::isize i = 0; i < n_in; ++i) {
+			delta(i) = ldlt_test::rand::uniform_rand();
+		}
 
+		u = C * x_sol + delta;
+		l.setZero();
+		l.array() -= 1.e30;
+		/*
+		sparsity = (n**2*sparsity_factor + 2 * n * n_in*sparsity_factor +  n_in) /
+		(n+n_in)**2
+
+		H_ = sparse.random(n, n, density=sparsity_factor,
+		        data_rvs=np.random.randn,
+		        format='csc')
+		H_ = H_.dot(H_.T).tocsc() + 1e-02 * sparse.eye(n)
+		g_ = np.random.randn(n)
+		C_ = sparse.random(n_in, n, density=sparsity_factor,
+		            data_rvs=np.random.randn,
+		            format='csc')
+		x_sol = np.random.randn(n)  # Create fictitious solution
+		delta = np.random.rand(n_in)
+		u_ = C_@x_sol + delta
+		#l_ = - np.inf * np.ones(n_in)
+		l_ = - 1.e30 * np.ones(n_in)
+		*/
 	}
 
 	auto as_view() -> qp::QpView<Scalar> {

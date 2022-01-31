@@ -4,8 +4,29 @@
 #include "ldlt/views.hpp"
 
 namespace qp {
-	
+
 namespace detail {
+
+struct EigenAllowAlloc {
+	bool alloc_was_allowed;
+	EigenAllowAlloc(EigenAllowAlloc&&) = delete;
+	EigenAllowAlloc(EigenAllowAlloc const&) = delete;
+	auto operator=(EigenAllowAlloc&&) -> EigenAllowAlloc& = delete;
+	auto operator=(EigenAllowAlloc const&) -> EigenAllowAlloc& = delete;
+
+#if defined(EIGEN_RUNTIME_NO_MALLOC)
+	EigenAllowAlloc() noexcept
+			: alloc_was_allowed(Eigen::internal::is_malloc_allowed()) {
+		Eigen::internal::set_is_malloc_allowed(true);
+	}
+	~EigenAllowAlloc() noexcept {
+		Eigen::internal::set_is_malloc_allowed(alloc_was_allowed);
+	}
+#else
+	EigenAllowAlloc() = default;
+#endif
+};
+
 using namespace ldlt::detail;
 } // namespace detail
 

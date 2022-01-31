@@ -1,111 +1,57 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <qp/eq_solver.hpp>
+#include <qp/proxqp/solver.hpp>
 #include <qp/precond/ruiz.hpp>
+#include <qp/precond/identity.hpp>
+#include <veg/util/dbg.hpp>
 #include <util.hpp>
 
 using namespace ldlt;
 
-using Scalar = long double;
-
-DOCTEST_TEST_CASE("qp: random") {
-	isize dim = 30;
-	isize n_eq = 6;
-
-	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
-
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> primal_init(dim);
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_init(n_eq);
-	primal_init.setZero();
-	primal_init = -qp.H.llt().solve(qp.g);
-	dual_init.setZero();
-
-	Scalar eps_abs = Scalar(1e-10);
-	{
-		EigenNoAlloc _{};
-		qp::detail::solve_qp( //
-				{from_eigen, primal_init},
-				{from_eigen, dual_init},
-				qp.as_view(),
-				200,
-				eps_abs,
-				0,
-				qp::preconditioner::IdentityPrecond{});
-	}
-
-	DOCTEST_CHECK(
-			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
-	DOCTEST_CHECK(
-			(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init)
-					.lpNorm<Eigen::Infinity>() <= eps_abs);
-}
-
-DOCTEST_TEST_CASE("qp: ruiz preconditioner") {
-	isize dim = 30;
-	isize n_eq = 6;
-
-	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
-
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> primal_init(dim);
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_init(n_eq);
-	primal_init.setZero();
-	primal_init = -qp.H.llt().solve(qp.g);
-	dual_init.setZero();
-
-	Scalar eps_abs = Scalar(1e-10);
-	{
-		auto ruiz = qp::preconditioner::RuizEquilibration<Scalar>{
-				dim,
-				n_eq,
-		};
-		EigenNoAlloc _{};
-		qp::detail::solve_qp( //
-				{from_eigen, primal_init},
-				{from_eigen, dual_init},
-				qp.as_view(),
-				200,
-				eps_abs,
-				0,
-				LDLT_FWD(ruiz));
-	}
-
-	DOCTEST_CHECK(
-			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
-	DOCTEST_CHECK(
-			(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init)
-					.lpNorm<Eigen::Infinity>() <= eps_abs);
-}
+using T = double;
 
 DOCTEST_TEST_CASE("qp: start from solution") {
 	isize dim = 30;
 	isize n_eq = 6;
+	isize n_in = 0;
 
-	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
+	Qp<T> qp{random_with_dim_and_n_eq, dim, n_eq};
 
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> primal_init(dim);
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_init(n_eq);
+	Eigen::Matrix<T, Eigen::Dynamic, 1> primal_init(dim);
+	Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init(n_eq);
 	primal_init = qp.solution.topRows(dim);
 	dual_init = qp.solution.bottomRows(n_eq);
 
-	Scalar eps_abs = Scalar(1e-10);
-	auto iter = [&] {
+	T eps_abs = T(1e-10);
+
+	qp::QPSettings<T> settings;
+	qp::QPData<T> data(dim, n_eq, n_in);
+	qp::QPResults<T> results{dim, n_eq, n_in};
+	qp::QPWorkspace<T> work{dim, n_eq, n_in};
+
+	results.x = primal_init;
+	results.y = dual_init;
+
+	qp::detail::QPsetup_dense<T>( //
+			qp.H,
+			qp.g,
+			qp.A,
+			qp.b,
+			qp.C,
+			qp.u,
+			qp.l,
+			settings,
+			data,
+			work,
+			results);
+	{
 		EigenNoAlloc _{};
-		return qp::detail::solve_qp( //
-				{from_eigen, primal_init},
-				{from_eigen, dual_init},
-				qp.as_view(),
-				200,
-				eps_abs,
-				0,
-				qp::preconditioner::IdentityPrecond{});
-	}();
+		qp::detail::qp_solve(settings, data, results, work);
+	}
 
+	DOCTEST_CHECK((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
 	DOCTEST_CHECK(
-			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
-	DOCTEST_CHECK(
-			(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init)
+			(qp.H * results.x + qp.g + qp.A.transpose() * results.y)
 					.lpNorm<Eigen::Infinity>() <= eps_abs);
-
-	DOCTEST_CHECK(iter.n_iters == 0);
 }

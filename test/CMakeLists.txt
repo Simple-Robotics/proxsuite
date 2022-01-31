@@ -8,13 +8,12 @@ add_library(libcnpy OBJECT src/cnpy.cpp)
 target_link_libraries(libcnpy CONAN_PKG::eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 
-return()
 set(LDLT_TEST_LIBS
     inria_ldlt
     backward_cpp_main
     doctest_main
     libcnpy
-    libinria_ldlt_util
+    inria_ldlt_util
 )
 
 macro(ldlt_test testname testpath)
@@ -24,25 +23,8 @@ macro(ldlt_test testname testpath)
   set(LDLT_TEST_LIST ${LDLT_TEST_LIST} ${testname})
 endmacro()
 
-ldlt_test(.test.permute.compute src/permutation_compute.cpp)
-ldlt_test(.test.permute.apply src/permutation_apply.cpp)
-ldlt_test(.test.permute.insert src/ldlt_insert.cpp)
-ldlt_test(.test.permute.delete src/ldlt_delete.cpp)
-ldlt_test(.test.factorize.roundtrip src/ldlt_roundtrip.cpp)
-ldlt_test(.test.solve src/solve.cpp)
-ldlt_test(.test.permute.solve src/permutation_solve.cpp)
-ldlt_test(.test.update.roundtrip src/update_roundtrip.cpp)
-ldlt_test(.test.mu_update.roundtrip src/mu_update_roundtrip.cpp)
-ldlt_test(.test.delete src/delete.cpp)
-ldlt_test(.test.append src/append.cpp)
-ldlt_test(.test.ldlt_wrapper.solve src/ldlt_wrapper_solve.cpp)
-
 ldlt_test(.test.precond.ruiz src/precond_ruiz.cpp)
 ldlt_test(.test.qp_eq.cpp src/qp_eq.cpp)
-
-add_executable(.test.add_with_permut.cpp src/row_add_with_permut.cpp)
-doctest_discover_tests(.test.add_with_permut.cpp)
-target_link_libraries(.test.add_with_permut.cpp ${LDLT_TEST_LIBS})
 
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt

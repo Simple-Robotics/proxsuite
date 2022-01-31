@@ -147,9 +147,11 @@ void iterative_residual(
 		}
 	}
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() -=
-			(qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim) -
-	     qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) *
-	         qpresults.mu_eq_inv); // mu stores the inverse of mu
+			qpwork.A_scaled *
+			qpwork.dw_aug.head(qpmodel.dim); // mu stores the inverse of mu
+	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) +=
+			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) *
+			qpresults.mu_eq_inv; // mu stores the inverse of mu
 }
 
 template <typename T>
@@ -653,10 +655,10 @@ T initial_guess(
 				ze.to_eigen(); // contains now Hx_prev + g + Aty_prev
 	}
 
-	qpwork.Adx.noalias() =
-			(qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim) -
-	     qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.mu_eq_inv)
-					.eval();
+	qpwork.Adx =
+			-qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.mu_eq_inv;
+	qpwork.Adx.noalias() += qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim);
+
 	qpwork.Hdx.noalias() = qpwork.H_scaled * qpwork.dw_aug.head(qpmodel.dim) +
 	                       qpwork.A_scaled.transpose() *
 	                           qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
@@ -752,7 +754,8 @@ T correction_guess(
 			qp::line_search::correction_guess_ls(qpmodel, qpresults, qpwork);
 		}
 
-		if (infty_norm(qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim)) < 1.E-11 && iter >0) {
+		if (infty_norm(qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim)) < 1.E-11 &&
+		    iter > 0) {
 			qpresults.n_tot += iter + 1;
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(alpha_step * dx) "
@@ -942,8 +945,11 @@ void qp_solve( //
 				qpwork.ruiz.unscale_dual_in_place_in(
 						VectorViewMut<T>{from_eigen, qpresults.z});
 
-				qpresults.objValue =
-						(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+				{
+					EigenAllowAlloc _{};
+					qpresults.objValue =
+							(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+				}
 				break;
 			}
 		}
@@ -1100,8 +1106,11 @@ void qp_solve( //
 				qpwork.ruiz.unscale_dual_in_place_in(
 						VectorViewMut<T>{from_eigen, qpresults.z});
 
-				qpresults.objValue =
-						(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+				{
+					EigenAllowAlloc _{};
+					qpresults.objValue =
+							(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+				}
 				break;
 			}
 		}
@@ -1167,49 +1176,59 @@ void qp_solve( //
 		qpresults.mu_in_inv = new_bcl_mu_in_inv;
 	}
 
-	//::Eigen::internal::set_is_malloc_allowed(true);
-	qpresults.objValue =
-			(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+	{
+		EigenAllowAlloc _{};
+		qpresults.objValue =
+				(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
+	}
 }
 
 template <typename T>
-using SparseMat = Eigen::SparseMatrix<T,1>;
+using SparseMat = Eigen::SparseMatrix<T, 1>;
 template <typename T>
 using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
-
 template <typename T>
-void QPsetup( //
-                const SparseMat<T>& H,
-                VecRef<T> g,
-                const SparseMat<T>& A,
-                VecRef<T> b,
-                const SparseMat<T>& C,
-                VecRef<T> u,
-                VecRef<T> l,
-                qp::QPSettings<T>& QPSettings,
-                qp::QPData<T>& qpmodel,
-                qp::QPWorkspace<T>& qpwork,
-                qp::QPResults<T>& QPResults,
+using MatRef =
+		Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> const>;
 
-                T eps_abs = 1.e-9,
-                T eps_rel = 0,
-                const bool VERBOSE = true
+template <typename Mat, typename T>
+void QPsetup_generic( //
+		Mat const& H,
+		VecRef<T> g,
+		Mat const& A,
+		VecRef<T> b,
+		Mat const& C,
+		VecRef<T> u,
+		VecRef<T> l,
+		qp::QPSettings<T>& QPSettings,
+		qp::QPData<T>& qpmodel,
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& QPResults,
+
+		T eps_abs = 1.e-9,
+		T eps_rel = 0,
+		const bool VERBOSE = true
 
 ) {
-
 
 	QPSettings.eps_abs = eps_abs;
 	QPSettings.eps_rel = eps_rel;
 	QPSettings.verbose = VERBOSE;
 
-	qpmodel.H = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(H.eval());
-	//qpmodel.H = Eigen::MatrixXd(H);
+	qpmodel.H = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+					H.eval());
+	// qpmodel.H = Eigen::MatrixXd(H);
 	qpmodel.g = g.eval();
-	qpmodel.A = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(A.eval());
-	//qpmodel.A = Eigen::MatrixXd(A);
+	qpmodel.A = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+					A.eval());
+	// qpmodel.A = Eigen::MatrixXd(A);
 	qpmodel.b = b.eval();
-	//qpmodel.C = Eigen::MatrixXd(C);
-	qpmodel.C = Eigen::Matrix<T,Eigen::Dynamic, Eigen::Dynamic,to_eigen_layout(rowmajor)>(C.eval());
+	// qpmodel.C = Eigen::MatrixXd(C);
+	qpmodel.C = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+					C.eval());
 	qpmodel.u = u.eval();
 	qpmodel.l = l.eval();
 
@@ -1251,10 +1270,10 @@ void QPsetup( //
 			.segment(qpmodel.dim, qpmodel.n_eq)
 			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
 
-{
-    LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-    qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
-  }
+	{
+		LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
+		qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
+	}
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
@@ -1270,6 +1289,78 @@ void QPsetup( //
 	QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
 	qpwork.dw_aug.setZero();
+}
+
+template <typename T>
+void QPsetup_dense( //
+		MatRef<T> H,
+		VecRef<T> g,
+		MatRef<T> A,
+		VecRef<T> b,
+		MatRef<T> C,
+		VecRef<T> u,
+		VecRef<T> l,
+		qp::QPSettings<T>& QPSettings,
+		qp::QPData<T>& qpmodel,
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& QPResults,
+
+		T eps_abs = 1.e-9,
+		T eps_rel = 0,
+		const bool VERBOSE = true
+
+) {
+	detail::QPsetup_generic(
+			H,
+			g,
+			A,
+			b,
+			C,
+			u,
+			l,
+			QPSettings,
+			qpmodel,
+			qpwork,
+			QPResults,
+			eps_abs,
+			eps_rel,
+			VERBOSE);
+}
+
+template <typename T>
+void QPsetup( //
+		const SparseMat<T>& H,
+		VecRef<T> g,
+		const SparseMat<T>& A,
+		VecRef<T> b,
+		const SparseMat<T>& C,
+		VecRef<T> u,
+		VecRef<T> l,
+		qp::QPSettings<T>& QPSettings,
+		qp::QPData<T>& qpmodel,
+		qp::QPWorkspace<T>& qpwork,
+		qp::QPResults<T>& QPResults,
+
+		T eps_abs = 1.e-9,
+		T eps_rel = 0,
+		const bool VERBOSE = true
+
+) {
+	detail::QPsetup_generic(
+			H,
+			g,
+			A,
+			b,
+			C,
+			u,
+			l,
+			QPSettings,
+			qpmodel,
+			qpwork,
+			QPResults,
+			eps_abs,
+			eps_rel,
+			VERBOSE);
 }
 
 } // namespace detail
