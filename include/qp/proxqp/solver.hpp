@@ -1271,9 +1271,10 @@ void QPsetup_generic( //
 			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
 
 	{
-		LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-		qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
-	}
+    LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
+    qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
+  	}
+	
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
@@ -1289,6 +1290,7 @@ void QPsetup_generic( //
 	QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
 	qpwork.dw_aug.setZero();
+	
 }
 
 template <typename T>
