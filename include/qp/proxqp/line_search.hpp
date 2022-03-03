@@ -162,6 +162,88 @@ auto gradient_norm(
 	return a * alpha + b;
 }
 
+
+template <typename T>
+auto primal_dual_gradient_norm(
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
+		T alpha) -> T {
+
+	/*
+	 * the function computes the first derivative of the proximal augmented
+	 * lagrangian of the problem at outer step k and inner step l
+	 *
+	 * phi(alpha) = f(x_l+alpha dx) + rho/2 |x_l + alpha dx - x_k|**2
+	 *              + mu_eq/2 (|A(x_l+alpha dx)-d+y_k/mu_eq|**2)
+	 *              + mu_eq * nu /2 (|A(x_l+alpha dx)-d+y_k/mu_eq - (y_l+alpha dy) |**2)
+	 *              + mu_in/2 ( | [C(x_l+alpha dx) - u + z_k/mu_in]_+ |**2
+	 *                         +| [C(x_l+alpha dx) - l + z_k/mu_in]_- |**2
+	 *                         )
+	 * 				+ mu_in * nu / 2 ( | [C(x_l+alpha dx) - u + z_k/mu_in]_+ + [C(x_l+alpha dx) - l + z_k/mu_in]_- - (z+alpha dz)/mu_in |**2
+	 * with f(x) = 0.5 * x^THx + g^Tx
+	 * phi is a second order polynomial in alpha.
+	 * Below are computed its coefficient a0 and b0
+	 * in order to compute the desired gradient a0 * alpha + b0
+	 */
+
+	qpwork.primal_residual_in_scaled_up_plus_alphaCdx.noalias() =
+			qpwork.primal_residual_in_scaled_up + qpwork.Cdx * alpha;
+	qpwork.primal_residual_in_scaled_low_plus_alphaCdx.noalias() =
+			qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
+
+	T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
+	    qpresults.mu_eq * (qpwork.Adx).squaredNorm() +
+	    qpresults.rho * qpwork.dw_aug.head(qpmodel.dim).squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 
+	
+	qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).noalias() = qpwork.Adx - qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq) * qpresults.mu_eq_inv ; 
+	a+= qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).squaredNorm() * qpresults.mu_eq * qpresults.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 
+	qpwork.err.head(qpmodel.dim).noalias() =
+			qpresults.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
+	T b(qpresults.x.dot(qpwork.Hdx) +
+	    (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
+	    qpresults.mu_eq * (qpwork.Adx).dot(qpwork.primal_residual_eq_scaled)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq)
+	
+	qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq).noalias() =  qpwork.primal_residual_eq_scaled - qpresults.y * qpresults.mu_eq_inv ; 
+	b += qpresults.nu * qpresults.mu_eq * qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).dot(qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq)) ; // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
+	
+	// derive Cdx_act
+	qpwork.err.tail(qpmodel.n_in).noalias() =
+			((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)) ||
+	     (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)))
+					.select(
+							qpwork.Cdx,
+							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
+
+	a += qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 + 1./mu_in * norm(Cdx_act)**2
+
+	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
+	qpwork.active_part_z.noalias() =
+			(qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.))
+					.select(
+							qpwork.primal_residual_in_scaled_up,
+							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in)) +
+			(qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.))
+					.select(
+							qpwork.primal_residual_in_scaled_low,
+							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
+
+	b += qpresults.mu_in * qpwork.active_part_z.dot(qpwork.err.tail(qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + 1./mu_in * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--)
+
+	// derive Cdx_act - dz/mu_in 
+	qpwork.err.tail(qpmodel.n_in).noalias() -= qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.mu_in_inv;
+	// derive [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]-- -z/mu_in
+	qpwork.active_part_z.noalias() -= qpresults.z * qpresults.mu_in_inv ;
+
+	// contains now a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 + 1./mu_in * norm(Cdx_act)**2 + nu/mu_in * norm(Cdx_act-dz/mu_in)**2
+	a+= qpresults.nu * qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).squaredNorm();
+	// contains now b =  dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + 1./mu_in * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--) + nu/mu_in (Cdx_act-dz/mu_in).dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]-- - z/mu_in)
+	b+= qpresults.nu * qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).dot(qpwork.active_part_z);
+
+	return a * alpha + b;
+}
+
+
 template <typename T>
 auto local_saddle_point(
 		const qp::QPData<T>& qpmodel,
@@ -739,8 +821,166 @@ void correction_guess_ls(
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
+		std::cout << " alpha_last_neg " << alpha_last_neg << " last_neg_grad " << last_neg_grad << " alpha_first_pos " <<  alpha_first_pos << " first_pos_grad " << first_pos_grad << std::endl;
 	}
 }
+
+template <typename T>
+void primal_dual_ls(
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork) {
+
+	/*
+	 * The function follows the algorithm designed by qpalm
+	 * (see algorithm 2 : https://arxiv.org/pdf/1911.02934.pdf)
+	 *
+	 * To do so it does the following step
+	 * 1/
+	 * 1.1/ Store solutions of equations
+	 * C(x+alpha dx) - l + ze/mu_in = 0
+	 * C(x+alpha dx) - u + ze/mu_in = 0
+	 *
+	 * 1.2/ Sort the alpha
+	 * 2/
+	 * 2.1
+	 * For each positive alpha compute the first derivative of
+	 * phi(alpha) = [proximal primal dual augmented lagrangian of the subproblem evaluated
+	 *               at x_k + alpha dx, y_k + alpha dy, z_k + alpha dz]
+	 * using function "gradient_norm"
+	 * By construction for alpha = 0,
+	 *   phi'(alpha) <= 0
+	 *   and phi'(alpha) goes to infinity with alpha
+	 * hence it cancels uniquely at one optimal alpha*
+	 *
+	 * while phi'(alpha)<=0 store the derivative (noted last_grad_neg) and
+	 * alpha (last_alpha_neg)
+	 * the first time phi'(alpha) > 0 store the derivative (noted
+	 * first_grad_pos) and alpha (first_alpha_pos), and break the loo
+	 *
+	 * 2.2
+	 * If first_alpha_pos corresponds to the first positive alpha of previous
+	 * loop, then do
+	 *   last_alpha_neg = 0
+	 *   last_grad_neg = phi'(0)
+	 * using function "gradient_norm"
+	 *
+	 * 2.3
+	 * the optimal alpha is within the interval
+	 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi' is
+	 * an affine function in alph
+	 * alpha* = alpha_last_neg
+	 *        - last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+	 *                          (first_pos_grad - last_neg_grad);
+	 */
+
+	const T machine_eps = std::numeric_limits<T>::epsilon();
+
+	qpwork.alpha = T(1);
+	T alpha_(1.);
+
+	qpwork.alphas.clear();
+
+	///////// STEP 1 /////////
+	// 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
+	// dx)-u +ze/mu_in = 0
+
+	// IF NAN DO SOMETHING --> investigate why there is nan and how to fix it
+	// (alpha=1?)
+
+	for (isize i = 0; i < qpmodel.n_in; i++) {
+
+		if (qpwork.Cdx(i) != 0.) {
+			alpha_ = -qpwork.primal_residual_in_scaled_up(i) /
+					(qpwork.Cdx(i) + machine_eps);
+			if (alpha_>machine_eps){
+				qpwork.alphas.push_back(
+					alpha_);
+			}
+			alpha_ = -qpwork.primal_residual_in_scaled_low(i) /
+					(qpwork.Cdx(i) + machine_eps);
+			if (alpha_>machine_eps){
+				qpwork.alphas.push_back(
+					alpha_);
+			}
+		}
+	}
+
+	isize n_alpha = qpwork.alphas.size();
+
+	if (n_alpha != 0) {
+		// 1.2 sort the alphas
+
+		std::sort(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha);
+		qpwork.alphas.erase(
+				std::unique(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha),
+				qpwork.alphas.begin() + n_alpha);
+		n_alpha = qpwork.alphas.size();
+
+		////////// STEP 2 ///////////
+
+		T last_neg_grad = 0;
+		T alpha_last_neg = 0;
+		T first_pos_grad = 0;
+		T alpha_first_pos = 0;
+		for (isize i = 0; i < n_alpha; ++i) {
+			alpha_ = qpwork.alphas[i];
+
+			/*
+				* 2.1
+				* For each positive alpha compute the first derivative of
+				* phi(alpha) = [proximal augmented lagrangian of the
+				*               subproblem evaluated at x_k + alpha dx]
+				* using function "gradient_norm"
+				*
+				* (By construction for alpha = 0,  phi'(alpha) <= 0 and
+				* phi'(alpha) goes to infinity with alpha hence it cancels
+				* uniquely at one optimal alpha*
+				*
+				* while phi'(alpha)<=0 store the derivative (noted
+				* last_grad_neg) and alpha (last_alpha_neg
+				* the first time phi'(alpha) > 0 store the derivative
+				* (noted first_grad_pos) and alpha (first_alpha_pos), and
+				* break the loop
+				*/
+			T gr = line_search::primal_dual_gradient_norm(qpmodel, qpresults, qpwork, alpha_);
+
+			if (gr < T(0)) {
+				alpha_last_neg = alpha_;
+				last_neg_grad = gr;
+			} else {
+				first_pos_grad = gr;
+				alpha_first_pos = alpha_;
+				break;
+			}
+		}
+
+		/*
+		 * 2.2
+		 * If first_alpha_pos corresponds to the first positive alpha of
+		 * previous loop, then do
+		 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
+		 * "gradient_norm"
+		 */
+		if (last_neg_grad == T(0)) {
+			alpha_last_neg = T(0);
+			T gr = line_search::primal_dual_gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_last_neg);
+			last_neg_grad = gr;
+		}
+
+		/*
+		 * 2.3
+		 * the optimal alpha is within the interval
+		 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi'
+		 * is an affine function in alpha
+		 */
+		qpwork.alpha = alpha_last_neg - last_neg_grad *
+		                                    (alpha_first_pos - alpha_last_neg) /
+		                                    (first_pos_grad - last_neg_grad);
+	}
+}
+
 
 template <typename T>
 void active_set_change(

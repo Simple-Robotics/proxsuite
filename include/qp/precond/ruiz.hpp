@@ -11,6 +11,8 @@
 
 #include <Eigen/Core>
 
+#include <iostream>
+
 namespace qp {
 enum struct Symmetry {
 	general,
@@ -184,7 +186,7 @@ auto ruiz_scale_qp_in_place( //
 			// LDLT_DECL_SCOPE_TIMER("ruiz equilibration", "normalization", T);
 
 			// normalize A and C
-			A = delta.middleRows(n, n_eq).asDiagonal() * A *
+			A = delta.segment(n, n_eq).asDiagonal() * A *
 			    delta.head(n).asDiagonal();
 			C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
 			// normalize vectors

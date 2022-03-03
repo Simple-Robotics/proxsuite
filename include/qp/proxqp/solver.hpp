@@ -536,6 +536,27 @@ T compute_primal_dual_residual(
 }
 
 template <typename T>
+T compute_inner_loop_saddle_point(
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork) {
+
+	qpwork.active_part_z.noalias() = qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
+		     qp::detail::negative_part(qpwork.primal_residual_in_scaled_low) -  qpresults.z*qpresults.mu_in_inv; // contains now : [Cx-u+z_prev/mu_in]+ + [Cx-l+z_prev/mu_in]- - z/mu_in
+
+	T err = infty_norm(qpwork.active_part_z);
+	qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).noalias() = qpwork.primal_residual_eq_scaled - qpwork.y_prev * qpresults.mu_eq_inv ;  // contains now Ax-b-(y-y_prev)/mu
+	T prim_eq_e = infty_norm(qpwork.err.segment(qpmodel.dim,qpmodel.n_eq)); // ||Ax-b-(y-y_prev)/mu||
+	err = max2(err, prim_eq_e);
+	T dual_e = infty_norm(qpwork.dual_residual_scaled); // contains ||Hx + rho(x-xprev) + g + Aty + Ctz||
+	err = max2(err, dual_e);
+
+
+
+	return err;
+}
+
+template <typename T>
 void newton_step(
 		const qp::QPSettings<T>& qpsettings,
 		const qp::QPData<T>& qpmodel,
@@ -563,6 +584,74 @@ void newton_step(
 			qpwork,
 			eps,
 			inner_pb_dim);
+}
+
+template <typename T>
+void primal_dual_semi_smooth_newton_step(
+		const qp::QPSettings<T>& qpsettings,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
+		T eps) {
+
+	/* MUST BE
+	*  dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z 
+	*  primal_residual_eq_scaled = Ax-b+1./mu_eq (y_prev)
+	*  primal_residual_in_scaled_up = Cx-u+1./mu_in(z_prev)
+	*  primal_residual_in_scaled_low = Cx-l+1./mu_in(z_prev)
+	*/
+	
+	qpwork.active_set_up.array() =
+			(qpwork.primal_residual_in_scaled_up.array() > 0);
+	qpwork.active_set_low.array() =
+			(qpwork.primal_residual_in_scaled_low.array() < 0);
+	qpwork.active_inequalities = qpwork.active_set_up || qpwork.active_set_low;
+	isize numactive_inequalities = qpwork.active_inequalities.count();
+	isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + numactive_inequalities;
+	qpwork.rhs.setZero();
+	qpwork.dw_aug.setZero();
+	qpwork.rhs.head(qpmodel.dim).noalias() = -qpwork.dual_residual_scaled;
+	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq).noalias() = -qpwork.primal_residual_eq_scaled+qpresults.y*qpresults.mu_eq_inv;
+	for (isize i = 0; i < qpmodel.n_in; i++) {
+		isize j = qpwork.current_bijection_map(i);
+		if (j < numactive_inequalities) {
+			if (qpwork.active_set_up(i)) {
+				qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+						-qpwork.primal_residual_in_scaled_up(i) + qpresults.z(i) * qpresults.mu_in_inv ;
+			} else if (qpwork.active_set_low(i)) {
+				qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+						-qpwork.primal_residual_in_scaled_low(i) + qpresults.z(i) * qpresults.mu_in_inv ;
+			}
+		} else {
+			qpwork.rhs.head(qpmodel.dim).noalias() +=
+					qpresults.z(i) *
+					qpwork.C_scaled.row(i); // unactive unrelevant columns
+		}
+	}	
+ 
+	qp::line_search::active_set_change(qpmodel, qpresults, qpwork);
+
+	iterative_solve_with_permut_fact( //
+			qpsettings,
+			qpmodel,
+			qpresults,
+			qpwork,
+			eps,
+			inner_pb_dim);
+	
+	// use active_part_z as a temporary variable to derive unpermutted dz step
+	for (isize j = 0; j < qpmodel.n_in; ++j) {
+		isize i = qpwork.current_bijection_map(j);
+		if (i < qpresults.n_c) {
+			qpwork.active_part_z(j) = qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + i);
+		} else {
+			qpwork.active_part_z(j) = -qpresults.z(j);
+		}
+	}
+	qpwork.dw_aug.tail(qpmodel.n_in) = qpwork.active_part_z;
+
+	//std::cout << "primal dual newton step " << qpwork.dw_aug << std::endl;
+	
 }
 
 template <typename T>
@@ -806,6 +895,103 @@ T correction_guess(
 }
 
 template <typename T>
+T primal_dual_newton_semi_smooth(
+		const qp::QPSettings<T>& qpsettings,
+		const qp::QPData<T>& qpmodel,
+		qp::QPResults<T>& qpresults,
+		qp::QPWorkspace<T>& qpwork,
+		T eps_int) {
+
+	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
+	*  dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z 
+	*  primal_residual_eq_scaled = Ax-b+1./mu_eq (y_prev)
+	*  primal_residual_in_scaled_up = Cx-u+1./mu_in(z_prev)
+	*  primal_residual_in_scaled_low = Cx-l+1./mu_in(z_prev)
+	*/
+
+	T err_in = 1.e6;
+
+	for (i64 iter = 0; iter <= qpsettings.max_iter_in; ++iter) {
+
+		if (iter == qpsettings.max_iter_in) {
+			qpresults.n_tot += qpsettings.max_iter_in;
+			break;
+		}
+
+		qp::detail::primal_dual_semi_smooth_newton_step<T>(qpsettings, qpmodel, qpresults, qpwork, eps_int);
+
+		qpwork.Hdx.noalias() = qpwork.H_scaled * qpwork.dw_aug.head(qpmodel.dim);
+		qpwork.Adx.noalias() =
+				qpwork.A_scaled *
+				qpwork.dw_aug.head(
+						qpmodel.dim); // try replacing it by qpresults.mu_eq *
+		                      // qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq);
+		qpwork.Cdx.noalias() = qpwork.C_scaled * qpwork.dw_aug.head(qpmodel.dim);
+
+		if (qpmodel.n_in > 0) {
+			qp::line_search::primal_dual_ls(qpmodel, qpresults, qpwork);
+		}
+
+		if (infty_norm(qpwork.alpha * qpwork.dw_aug) < 1.E-11 &&
+		    iter > 0) {
+			qpresults.n_tot += iter + 1;
+			if (qpsettings.verbose) {
+				std::cout << "infty_norm(alpha_step * dx) "
+									<< infty_norm(qpwork.alpha * qpwork.dw_aug)
+									<< std::endl;
+			}
+			break;
+		}
+
+		qpresults.x.noalias() += (qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim));
+		qpwork.primal_residual_in_scaled_up.noalias() +=
+				(qpwork.alpha * qpwork.Cdx); // contains now :  C(x+alpha dx)-u + z_prev/mu_in
+		qpwork.primal_residual_in_scaled_low.noalias() +=
+				(qpwork.alpha * qpwork.Cdx); // contains now :  C(x+alpha dx)-l + z_prev/mu_in
+		qpwork.primal_residual_eq_scaled.noalias() += qpwork.alpha * qpwork.Adx; // contains now :  A(x+alpha dx)-b + y_prev/mu_in
+		qpresults.y.noalias()  += (qpwork.alpha * qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq)) ;
+		qpresults.z.noalias()  += (qpwork.alpha * qpwork.dw_aug.tail(qpmodel.n_in));
+
+		qpwork.dual_residual_scaled.noalias() = qpwork.H_scaled * qpresults.x;
+		
+		//T rhs_c = max2(
+		//		qpwork.correction_guess_rhs_g, infty_norm(qpwork.dual_residual_scaled));
+		
+		qpwork.dual_residual_scaled.noalias() += qpwork.g_scaled + qpresults.rho * (qpresults.x - qpwork.x_prev);
+
+		qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * (qpresults.y);
+		qpwork.dual_residual_scaled.noalias() += qpwork.CTz;
+		//rhs_c = max2(rhs_c, infty_norm(qpwork.CTz));
+
+		qpwork.CTz.noalias() = qpwork.C_scaled.transpose() * (qpresults.z); 
+		qpwork.dual_residual_scaled.noalias() += qpwork.CTz; // contains now : Hx + rho (x-x_prev) + A.Ty + C.T z
+		//rhs_c = max2(rhs_c, infty_norm(qpwork.CTz));
+		/*
+		qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).noalias() = qpwork.primal_residual_eq_scaled + qpwork.b_scaled ; // A(x+alpha dx) + y_prev/mu_in
+		rhs_c = max2(rhs_c, infty_norm(qpwork.err.segment(qpmodel.dim,qpmodel.n_eq)));
+		rhs_c = max2(rhs_c, qpwork.correction_guess_rhs_b ) ; 
+
+		qpwork.err.tail(qpmodel.n_in).noalias() = qpwork.primal_residual_in_scaled_up + qpwork.u_scaled ; // C(x+alpha dx) + z_prev/mu_in
+		rhs_c = max2(rhs_c, infty_norm(qpwork.err.tail(qpmodel.n_in)));
+		rhs_c += 1.;
+		*/
+		err_in = compute_inner_loop_saddle_point(qpmodel,qpresults,qpwork);
+
+		if (qpsettings.verbose) {
+			std::cout << "---it in " << iter << " projection norm " << err_in
+								<< " alpha " << qpwork.alpha << std::endl;
+		}
+
+		if (err_in <= eps_int ) {
+			qpresults.n_tot += iter + 1;
+			break;
+		}
+	}
+
+	return err_in;
+}
+
+template <typename T>
 void qp_solve( //
 		const qp::QPSettings<T>& qpsettings,
 		const qp::QPData<T>& qpmodel,
@@ -986,35 +1172,53 @@ void qp_solve( //
 		}
 
 		if ((do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel.n_in != 0)) {
+			if (qpsettings.pmm){
+				// pmm version starting from x*
+				qpwork.dual_residual_scaled.noalias() +=
+						-qpwork.C_scaled.transpose() *
+						qpresults.z; // contains now Hx* + rho(x*-x_prev) + g + ATy*
+				qpwork.dual_residual_scaled.noalias() +=
+						qpresults.mu_eq * qpwork.A_scaled.transpose() *
+						qpwork.primal_residual_eq_scaled; // contains now Hx* + rho(x*-x_prev)
+													// + g + AT(ye+mu_eq*(Ax*-b))
+				qpwork.primal_residual_eq_scaled.noalias() +=
+						(qpresults.y *
+					qpresults.mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
+				qpwork.primal_residual_in_scaled_up.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-u + z_prev/mu_eq
+				qpwork.primal_residual_in_scaled_low.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
 
-			qpwork.dual_residual_scaled.noalias() +=
-					-qpwork.C_scaled.transpose() *
-					qpresults.z; // contains now Hx* + rho(x*-x_prev) + g + ATy*
-			qpwork.dual_residual_scaled.noalias() +=
-					qpresults.mu_eq * qpwork.A_scaled.transpose() *
-					qpwork.primal_residual_eq_scaled; // contains now Hx* + rho(x*-x_prev)
-			                                      // + g + AT(ye+mu_eq*(Ax*-b))
-			qpwork.primal_residual_eq_scaled.noalias() +=
-					(qpresults.y *
-			     qpresults.mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
-			qpwork.primal_residual_in_scaled_up.noalias() +=
-					(qpresults.z *
-			     qpresults.mu_in_inv); // contains now Cx*-u + z_prev/mu_eq
-			qpwork.primal_residual_in_scaled_low.noalias() +=
-					(qpresults.z *
-			     qpresults.mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
-
-			qpwork.active_part_z.noalias() =
-					qpresults.mu_in *
-					(qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
-			     qp::detail::negative_part(qpwork.primal_residual_in_scaled_low));
-			qpwork.dual_residual_scaled.noalias() +=
-					qpwork.C_scaled.transpose() *
-					qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
-			                          // CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
+				qpwork.active_part_z.noalias() =
+						qpresults.mu_in *
+						(qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
+					qp::detail::negative_part(qpwork.primal_residual_in_scaled_low));
+				qpwork.dual_residual_scaled.noalias() +=
+						qpwork.C_scaled.transpose() *
+						qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
+										// CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
+			}else{
+				/* START FROM x = x* ; y = y* ; z = z*
+				*  dual_residual_scaled = Hx* + rho * (x*-x_prev) + A.T y* + C.T z*
+				*  primal_residual_eq_scaled = Ax*-b+1./mu_eq (y_prev)
+				*  primal_residual_in_scaled_up = Cx*-u+1./mu_in(z_prev)
+				*  primal_residual_in_scaled_low = Cx*-l+1./mu_in(z_prev)
+				*/
+				qpwork.primal_residual_eq_scaled.noalias() +=
+						(qpresults.y *
+					qpresults.mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
+				qpwork.primal_residual_in_scaled_up.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-u + z_prev/mu_eq
+				qpwork.primal_residual_in_scaled_low.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
+			}
 		}
 		if (!do_initial_guess_fact && qpmodel.n_in != 0) { // y=y_prev, x=x_prev,
-
+			if (qpsettings.pmm){
 			qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
 					from_eigen,
 					qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
@@ -1041,12 +1245,36 @@ void qp_solve( //
 					qpwork.C_scaled.transpose() *
 					qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
 			                          // CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
+			}else{
+				// primal dual version from gil and robinson
+
+				// dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z as x = x_prev
+				qpwork.primal_residual_eq_scaled.noalias() +=
+						(qpresults.y * qpresults.mu_eq_inv); // contains now Ax-b+1./mu_eq (y_prev) as y = y_prev
+				qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
+						from_eigen,
+						qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
+				qpwork.primal_residual_in_scaled_up.noalias() +=
+						qpwork.z_prev *
+						qpresults.mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
+				qpwork.primal_residual_in_scaled_low =
+						qpwork.primal_residual_in_scaled_up;
+				qpwork.primal_residual_in_scaled_up -= qpwork.u_scaled; // contains now scaled(Cx-u+z_prev/mu_in)
+				qpwork.primal_residual_in_scaled_low -= qpwork.l_scaled; // contains now scaled(Cx-l+z_prev/mu_in)
+			}
 		}
 
 		if (do_correction_guess) {
-
-			err_in = qp::detail::correction_guess(
+			
+			if (qpsettings.pmm){
+				std::cout << " I use PMM " << std::endl;
+				err_in = qp::detail::correction_guess(
 					qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
+			}else{
+				std::cout << " I use PDMM " << std::endl;
+				err_in = qp::detail:: primal_dual_newton_semi_smooth(qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
+			}
+			
 			if (qpsettings.verbose) {
 				std::cout << " error from correction guess : " << err_in << std::endl;
 			}
@@ -1207,13 +1435,15 @@ void QPsetup_generic( //
 
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
-		const bool VERBOSE = true
+		const bool VERBOSE = true,
+		const bool PMM = true
 
 ) {
 
 	QPSettings.eps_abs = eps_abs;
 	QPSettings.eps_rel = eps_rel;
 	QPSettings.verbose = VERBOSE;
+	QPSettings.pmm = PMM;
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
@@ -1258,6 +1488,7 @@ void QPsetup_generic( //
 	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
 	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
 	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
+	qpwork.correction_guess_rhs_b = infty_norm(qpwork.b_scaled);
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
@@ -1268,7 +1499,7 @@ void QPsetup_generic( //
 	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
 	qpwork.kkt.diagonal()
 			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
+			.setConstant(-QPResults.mu_eq_inv);
 
 	{
     LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
@@ -1277,6 +1508,9 @@ void QPsetup_generic( //
 	
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+
+	//std::cout << "-qpwork.g_scaled " << -qpwork.g_scaled << std::endl;
+	//std::cout << "qpwork.b_scaled " << qpwork.b_scaled << std::endl;
 
 	qp::detail::iterative_solve_with_permut_fact( //
 			QPSettings,
@@ -1289,7 +1523,28 @@ void QPsetup_generic( //
 	QPResults.x = qpwork.dw_aug.head(qpmodel.dim);
 	QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
+	LDLT_MULTI_WORKSPACE_MEMORY((_htot,Uninit, Mat(qpmodel.dim+qpmodel.n_eq, qpmodel.dim+qpmodel.n_eq),LDLT_CACHELINE_BYTES, T));
+	auto Htot = _htot.to_eigen().eval();
+	Htot.setZero();
+	Htot.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+	Htot.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() += QPResults.rho;
+	Htot.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) = qpwork.A_scaled.transpose();
+	Htot.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
+	Htot.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
+	Htot.diagonal().segment(qpmodel.dim, qpmodel.n_eq).setConstant(-QPResults.mu_eq_inv);
+
+
+	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+	//std::cout << " norm(Htot * dw -  rhs) " << infty_norm(Htot * qpwork.dw_aug.head(qpmodel.dim+qpmodel.n_eq) - qpwork.rhs.head(qpmodel.dim+qpmodel.n_eq)) << std::endl;
+
+	//std::cout<< "Htot " << Htot << std::endl;
+
+	//std::cout << "x ws " << QPResults.x << std::endl;
+	//std::cout << "y ws " << QPResults.y << std::endl;
+
 	qpwork.dw_aug.setZero();
+	qpwork.rhs.setZero();
 	
 }
 
@@ -1309,8 +1564,8 @@ void QPsetup_dense( //
 
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
-		const bool VERBOSE = true
-
+		const bool VERBOSE = true,
+		const bool PMM = true
 ) {
 	detail::QPsetup_generic(
 			H,
@@ -1326,7 +1581,8 @@ void QPsetup_dense( //
 			QPResults,
 			eps_abs,
 			eps_rel,
-			VERBOSE);
+			VERBOSE,
+			PMM);
 }
 
 template <typename T>
@@ -1345,7 +1601,8 @@ void QPsetup( //
 
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
-		const bool VERBOSE = true
+		const bool VERBOSE = true,
+		const bool PMM = true
 
 ) {
 	detail::QPsetup_generic(
@@ -1362,7 +1619,8 @@ void QPsetup( //
 			QPResults,
 			eps_abs,
 			eps_rel,
-			VERBOSE);
+			VERBOSE,
+			PMM);
 }
 
 } // namespace detail

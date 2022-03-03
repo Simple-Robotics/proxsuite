@@ -25,6 +25,7 @@ public:
     T mu_in;
     T mu_in_inv;
     T rho;
+    T nu;
 
     ///// iteration count
     isize n_tot;
@@ -51,6 +52,7 @@ public:
 	            mu_eq = 1e3 ;
 	            mu_in_inv = 1e-1;
 	            mu_in = 1e1;
+                nu = 1.;
 
                 n_tot = 0;
                 n_ext = 0;
@@ -58,6 +60,7 @@ public:
                 n_c = 0;
                 timing = 0.;
                 objValue =0.;
+                
                 }
     
     void reset_results(){
@@ -70,6 +73,7 @@ public:
         mu_eq = 1e3 ;
         mu_in_inv = 1e-1;
         mu_in = 1e1;
+        nu = 1.;
 
         n_tot = 0;
         n_ext = 0;

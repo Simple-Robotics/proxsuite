@@ -84,6 +84,7 @@ public:
 	T primal_feasibility_rhs_1_in_l;
 	T dual_feasibility_rhs_2;
 	T correction_guess_rhs_g;
+	T correction_guess_rhs_b;
 	T alpha;
 
 	Vec dual_residual_scaled;
@@ -170,6 +171,7 @@ public:
 		primal_feasibility_rhs_1_in_l = 0;
 		dual_feasibility_rhs_2 = 0;
 		correction_guess_rhs_g = 0;
+		correction_guess_rhs_b = 0;
 		alpha = 1.;
 
 		dual_residual_scaled.setZero();
@@ -182,7 +184,7 @@ public:
 		CTz.setZero();
 	}
 
-	void reset_results() {
+	void reset_results(isize n_in = 0) {
 
 		Hdx.setZero();
 		Cdx.setZero();
@@ -202,6 +204,16 @@ public:
 		primal_residual_in_scaled_up_plus_alphaCdx.setZero();
 		primal_residual_in_scaled_low_plus_alphaCdx.setZero();
 		CTz.setZero();
+
+		x_prev.setZero();
+		y_prev.setZero();
+		z_prev.setZero();
+
+		for (isize i = 0; i < n_in; i++) {
+			current_bijection_map(i) = i;
+			new_bijection_map(i) = i;
+		}
+
 	}
 };
 

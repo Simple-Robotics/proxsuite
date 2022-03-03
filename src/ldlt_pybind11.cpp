@@ -912,7 +912,7 @@ void QPreset(
 
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() -= qpresults.rho;
 	qpresults.reset_results();
-	qpwork.reset_results();
+	qpwork.reset_results(qpmodel.n_in);
 
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
@@ -937,6 +937,7 @@ void QPreset(
 	qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
 	qpwork.dw_aug.setZero();
+	qpwork.rhs.setZero();
 }
 
 template <typename T, Layout L>
@@ -1075,9 +1076,8 @@ INRIA LDLT decomposition
 
 			.def_readwrite("alpha_bcl", &qp::QPSettings<f64>::alpha_bcl)
 			.def_readwrite("beta_bcl", &qp::QPSettings<f64>::beta_bcl)
-			.def_readwrite(
-					"refactor_dual_feasibility_threshold",
-					&qp::QPSettings<f64>::refactor_dual_feasibility_threshold)
+			.def_readwrite("refactor_dual_feasibility_threshold", &qp::QPSettings<f64>::refactor_dual_feasibility_threshold)
+			.def_readwrite("pmm", &qp::QPSettings<f64>::pmm)
 			.def_readwrite(
 					"refactor_rho_threshold",
 					&qp::QPSettings<f64>::refactor_rho_threshold)
