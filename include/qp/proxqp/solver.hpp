@@ -1172,7 +1172,27 @@ void qp_solve( //
 		}
 
 		if ((do_initial_guess_fact && err_in >= bcl_eta_in && qpmodel.n_in != 0)) {
-			if (qpsettings.pmm){
+
+			switch (qpsettings.solvingMethod) {
+			case InnerLoopSolvingMethod::pdal:{
+				/* START FROM x = x* ; y = y* ; z = z*
+				*  dual_residual_scaled = Hx* + rho * (x*-x_prev) + A.T y* + C.T z*
+				*  primal_residual_eq_scaled = Ax*-b+1./mu_eq (y_prev)
+				*  primal_residual_in_scaled_up = Cx*-u+1./mu_in(z_prev)
+				*  primal_residual_in_scaled_low = Cx*-l+1./mu_in(z_prev)
+				*/
+				qpwork.primal_residual_eq_scaled.noalias() +=
+						(qpresults.y *
+					qpresults.mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
+				qpwork.primal_residual_in_scaled_up.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-u + z_prev/mu_eq
+				qpwork.primal_residual_in_scaled_low.noalias() +=
+						(qpresults.z *
+					qpresults.mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
+				break;
+			}
+			case InnerLoopSolvingMethod::pmm: {
 				// pmm version starting from x*
 				qpwork.dual_residual_scaled.noalias() +=
 						-qpwork.C_scaled.transpose() *
@@ -1199,53 +1219,15 @@ void qp_solve( //
 						qpwork.C_scaled.transpose() *
 						qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
 										// CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
-			}else{
-				/* START FROM x = x* ; y = y* ; z = z*
-				*  dual_residual_scaled = Hx* + rho * (x*-x_prev) + A.T y* + C.T z*
-				*  primal_residual_eq_scaled = Ax*-b+1./mu_eq (y_prev)
-				*  primal_residual_in_scaled_up = Cx*-u+1./mu_in(z_prev)
-				*  primal_residual_in_scaled_low = Cx*-l+1./mu_in(z_prev)
-				*/
-				qpwork.primal_residual_eq_scaled.noalias() +=
-						(qpresults.y *
-					qpresults.mu_eq_inv); // contains now Ax*-b + y_prev/mu_eq
-				qpwork.primal_residual_in_scaled_up.noalias() +=
-						(qpresults.z *
-					qpresults.mu_in_inv); // contains now Cx*-u + z_prev/mu_eq
-				qpwork.primal_residual_in_scaled_low.noalias() +=
-						(qpresults.z *
-					qpresults.mu_in_inv); // contains now Cx*-l + z_prev/mu_eq
+				break;
+			}
 			}
 		}
 		if (!do_initial_guess_fact && qpmodel.n_in != 0) { // y=y_prev, x=x_prev,
-			if (qpsettings.pmm){
-			qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
-					from_eigen,
-					qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
-			qpwork.primal_residual_in_scaled_up.noalias() +=
-					qpwork.z_prev *
-					qpresults.mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
-			qpwork.primal_residual_in_scaled_low =
-					qpwork.primal_residual_in_scaled_up;
-			qpwork.primal_residual_in_scaled_up -= qpwork.u_scaled;
-			qpwork.primal_residual_in_scaled_low -= qpwork.l_scaled;
+			
+			switch (qpsettings.solvingMethod) {
+			case InnerLoopSolvingMethod::pdal:{
 
-			qpwork.dual_residual_scaled.noalias() +=
-					qpresults.mu_eq * qpwork.A_scaled.transpose() *
-					qpwork.primal_residual_eq_scaled; // contains now Hx + g + AT(y +
-			                                      // mu(Ax-b)) + CTz
-			qpwork.primal_residual_eq_scaled.noalias() +=
-					(qpresults.y * qpresults.mu_eq_inv);
-			qpwork.active_part_z.noalias() =
-					qpresults.mu_in *
-					(qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
-			     qp::detail::negative_part(qpwork.primal_residual_in_scaled_low));
-			qpwork.active_part_z -= qpresults.z;
-			qpwork.dual_residual_scaled.noalias() +=
-					qpwork.C_scaled.transpose() *
-					qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
-			                          // CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
-			}else{
 				// primal dual version from gil and robinson
 
 				// dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z as x = x_prev
@@ -1261,20 +1243,56 @@ void qp_solve( //
 						qpwork.primal_residual_in_scaled_up;
 				qpwork.primal_residual_in_scaled_up -= qpwork.u_scaled; // contains now scaled(Cx-u+z_prev/mu_in)
 				qpwork.primal_residual_in_scaled_low -= qpwork.l_scaled; // contains now scaled(Cx-l+z_prev/mu_in)
+
+			}
+			case InnerLoopSolvingMethod::pmm:{
+
+				qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
+						from_eigen,
+						qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
+				qpwork.primal_residual_in_scaled_up.noalias() +=
+						qpwork.z_prev *
+						qpresults.mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
+				qpwork.primal_residual_in_scaled_low =
+						qpwork.primal_residual_in_scaled_up;
+				qpwork.primal_residual_in_scaled_up -= qpwork.u_scaled;
+				qpwork.primal_residual_in_scaled_low -= qpwork.l_scaled;
+
+				qpwork.dual_residual_scaled.noalias() +=
+						qpresults.mu_eq * qpwork.A_scaled.transpose() *
+						qpwork.primal_residual_eq_scaled; // contains now Hx + g + AT(y +
+													// mu(Ax-b)) + CTz
+				qpwork.primal_residual_eq_scaled.noalias() +=
+						(qpresults.y * qpresults.mu_eq_inv);
+				qpwork.active_part_z.noalias() =
+						qpresults.mu_in *
+						(qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
+					qp::detail::negative_part(qpwork.primal_residual_in_scaled_low));
+				qpwork.active_part_z -= qpresults.z;
+				qpwork.dual_residual_scaled.noalias() +=
+						qpwork.C_scaled.transpose() *
+						qpwork.active_part_z; // contains now Hx + g + AT(y + mu(Ax-b)) +
+										// CT([z+mu(Cx-u)]+ + [z+mu(Cx-l)]-)
+
+			}
 			}
 		}
 
 		if (do_correction_guess) {
 			
-			if (qpsettings.pmm){
+			switch (qpsettings.solvingMethod) {
+			case InnerLoopSolvingMethod::pdal:{
+				std::cout << " I use PDMM " << std::endl;
+				err_in = qp::detail:: primal_dual_newton_semi_smooth(qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
+				break;
+			}
+			case InnerLoopSolvingMethod::pmm: {
 				std::cout << " I use PMM " << std::endl;
 				err_in = qp::detail::correction_guess(
 					qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
-			}else{
-				std::cout << " I use PDMM " << std::endl;
-				err_in = qp::detail:: primal_dual_newton_semi_smooth(qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
+				break;
 			}
-			
+			}
 			if (qpsettings.verbose) {
 				std::cout << " error from correction guess : " << err_in << std::endl;
 			}
@@ -1443,8 +1461,12 @@ void QPsetup_generic( //
 	QPSettings.eps_abs = eps_abs;
 	QPSettings.eps_rel = eps_rel;
 	QPSettings.verbose = VERBOSE;
-	QPSettings.pmm = PMM;
-
+	if(PMM){
+		QPSettings.solvingMethod = InnerLoopSolvingMethod::pmm;
+	}else{
+		QPSettings.solvingMethod = InnerLoopSolvingMethod::pdal;
+	}
+	 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
 					H.eval());

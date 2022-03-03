@@ -1077,7 +1077,7 @@ INRIA LDLT decomposition
 			.def_readwrite("alpha_bcl", &qp::QPSettings<f64>::alpha_bcl)
 			.def_readwrite("beta_bcl", &qp::QPSettings<f64>::beta_bcl)
 			.def_readwrite("refactor_dual_feasibility_threshold", &qp::QPSettings<f64>::refactor_dual_feasibility_threshold)
-			.def_readwrite("pmm", &qp::QPSettings<f64>::pmm)
+			//.def_readwrite("pmm", &qp::QPSettings<f64>::pmm)
 			.def_readwrite(
 					"refactor_rho_threshold",
 					&qp::QPSettings<f64>::refactor_rho_threshold)
