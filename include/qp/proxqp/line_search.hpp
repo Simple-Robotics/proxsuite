@@ -194,18 +194,18 @@ auto primal_dual_gradient_norm(
 
 	T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
 	    qpresults.mu_eq * (qpwork.Adx).squaredNorm() +
-	    qpresults.rho * qpwork.dw_aug.head(qpmodel.dim).squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 
+	    qpresults.rho * qpwork.dw_aug.head(qpmodel.dim).squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (mu_eq) * norm(Adx)**2 
 	
 	qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).noalias() = qpwork.Adx - qpwork.dw_aug.segment(qpmodel.dim,qpmodel.n_eq) * qpresults.mu_eq_inv ; 
-	a+= qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).squaredNorm() * qpresults.mu_eq * qpresults.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 
+	a+= qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).squaredNorm() * qpresults.mu_eq * qpresults.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (mu_eq) * norm(Adx)**2 + nu*mu_eq * norm(Adx-dy*mu_eq_inv)**2 
 	qpwork.err.head(qpmodel.dim).noalias() =
 			qpresults.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
 	T b(qpresults.x.dot(qpwork.Hdx) +
 	    (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
-	    qpresults.mu_eq * (qpwork.Adx).dot(qpwork.primal_residual_eq_scaled)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq)
+	    qpresults.mu_eq * (qpwork.Adx).dot(qpwork.primal_residual_eq_scaled)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq * Adx.dot(res_eq)
 	
 	qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq).noalias() =  qpwork.primal_residual_eq_scaled - qpresults.y * qpresults.mu_eq_inv ; 
-	b += qpresults.nu * qpresults.mu_eq * qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).dot(qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq)) ; // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
+	b += qpresults.nu * qpresults.mu_eq * qpwork.err.segment(qpmodel.dim,qpmodel.n_eq).dot(qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq)) ; // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq * Adx.dot(res_eq) + nu*mu_eq * (Adx-dy*mu_eq_inv).dot(res_eq-y*mu_eq_inv)
 	
 	// derive Cdx_act
 	qpwork.err.tail(qpmodel.n_in).noalias() =
@@ -215,7 +215,7 @@ auto primal_dual_gradient_norm(
 							qpwork.Cdx,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	a += qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) * norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 + 1./mu_in * norm(Cdx_act)**2
+	a += qpresults.mu_in * qpwork.err.tail(qpmodel.n_in).squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (mu_eq) * norm(Adx)**2 + nu*mu_eq * norm(Adx-dy*mu_eq_inv)**2 + mu_in * norm(Cdx_act)**2
 
 	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
 	qpwork.active_part_z.noalias() =
@@ -228,7 +228,7 @@ auto primal_dual_gradient_norm(
 							qpwork.primal_residual_in_scaled_low,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	b += qpresults.mu_in * qpwork.active_part_z.dot(qpwork.err.tail(qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq * Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + 1./mu_in * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--)
+	b += qpresults.mu_in * qpwork.active_part_z.dot(qpwork.err.tail(qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq * Adx.dot(res_eq) + nu*mu_eq * (Adx-dy*mu_eq_inv).dot(res_eq-y*mu_eq_inv) + mu_in * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--)
 
 	// derive Cdx_act - dz/mu_in 
 	qpwork.err.tail(qpmodel.n_in).noalias() -= qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.mu_in_inv;
@@ -821,8 +821,31 @@ void correction_guess_ls(
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
-		std::cout << " alpha_last_neg " << alpha_last_neg << " last_neg_grad " << last_neg_grad << " alpha_first_pos " <<  alpha_first_pos << " first_pos_grad " << first_pos_grad << std::endl;
+		//std::cout << " alpha_last_neg " << alpha_last_neg << " last_neg_grad " << last_neg_grad << " alpha_first_pos " <<  alpha_first_pos << " first_pos_grad " << first_pos_grad << std::endl;
+	}else{
+
+		T alpha_last_neg(0);
+		T last_neg_grad = line_search::gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_last_neg);
+
+		T alpha_first_pos(1);
+		T first_pos_grad = line_search::gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_first_pos);
+        for (isize i = 0; i < 4; ++i) {
+            if (first_pos_grad >T(0)){
+				break;
+			}
+			alpha_first_pos *= 10;
+            first_pos_grad = line_search::gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_first_pos);
+            
+		}
+
+		qpwork.alpha = alpha_last_neg - last_neg_grad *
+		                                    (alpha_first_pos - alpha_last_neg) /
+		                                    (first_pos_grad - last_neg_grad);
 	}
+
 }
 
 template <typename T>
@@ -975,10 +998,40 @@ void primal_dual_ls(
 		 * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi'
 		 * is an affine function in alpha
 		 */
+		
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
+		//T gr_f = line_search::primal_dual_gradient_norm(
+		//			qpmodel, qpresults, qpwork, qpwork.alpha);
+		
+		//std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad " << last_neg_grad << " alpha_first_pos " << alpha_first_pos << " first_pos_grad " << first_pos_grad << " alpha_final " <<   <<" gr_final " <<  gr_f << std::endl;
 	}
+	else{
+
+		T alpha_last_neg(0);
+		T last_neg_grad = line_search::primal_dual_gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_last_neg);
+
+		T alpha_first_pos(1);
+		T first_pos_grad = line_search::primal_dual_gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_first_pos);
+        for (isize i = 0; i < 4; ++i) {
+            if (first_pos_grad >T(0)){
+				break;
+			}
+			alpha_first_pos *= 10;
+            first_pos_grad = line_search::primal_dual_gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_first_pos);
+            
+		}
+
+		qpwork.alpha = alpha_last_neg - last_neg_grad *
+		                                    (alpha_first_pos - alpha_last_neg) /
+		                                    (first_pos_grad - last_neg_grad);
+
+	}
+	
 }
 
 
