@@ -1127,6 +1127,9 @@ void active_set_change(
 
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+
 	T mu_in_inv_neg = -qpresults.mu_in_inv;
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (qpwork.current_bijection_map(i) < qpresults.n_c) {
@@ -1137,11 +1140,7 @@ void active_set_change(
 						qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq,
 				};
 
-				{
-					veg::dynstack::DynStackMut stack{
-							veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-					qpwork.ldl.delete_at(indices, 1, stack);
-				}
+				qpwork.ldl.delete_at(indices, 1, stack);
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) > qpwork.new_bijection_map(i)) {
@@ -1156,24 +1155,29 @@ void active_set_change(
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
 
+	auto _planned_to_add =
+			stack.make_new_for_overwrite(veg::Tag<isize>{}, qpmodel.n_in).unwrap();
+	auto planned_to_add = _planned_to_add.ptr_mut();
+
+	isize planned_to_add_count = 0;
+
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (qpwork.active_inequalities(i)) {
 			if (qpwork.new_bijection_map(i) >= n_c_f) {
 				// add at the end
+				planned_to_add[planned_to_add_count] = i;
+				++planned_to_add_count;
 
-				qpwork.dw_aug.setZero();
-				qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
-				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) =
-						mu_in_inv_neg; // mu stores the inverse of mu
-				{
-					isize insert_dim = n_c_f + 1 + qpmodel.n_eq + qpmodel.dim;
-					veg::dynstack::DynStackMut stack{
-							veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-					qpwork.ldl.insert_block_at(
-							qpmodel.n_eq + qpmodel.dim + n_c_f,
-							qpwork.dw_aug.head(insert_dim),
-							stack);
-				}
+				// qpwork.dw_aug.setZero();
+				// qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
+				// qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) =
+				// 		mu_in_inv_neg; // mu stores the inverse of mu
+
+				// isize insert_dim = n_c_f + 1 + qpmodel.n_eq + qpmodel.dim;
+				// qpwork.ldl.insert_block_at(
+				// 		qpmodel.n_eq + qpmodel.dim + n_c_f,
+				// 		qpwork.dw_aug.head(insert_dim),
+				// 		stack);
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) < qpwork.new_bijection_map(i) &&
@@ -1186,6 +1190,22 @@ void active_set_change(
 			}
 		}
 	}
+	{
+		isize n = qpmodel.dim;
+		isize n_eq = qpmodel.n_eq;
+		LDLT_TEMP_MAT_UNINIT(
+				T, new_cols, n + n_eq + n_c_f, planned_to_add_count, stack);
+
+		for (isize k = 0; k < planned_to_add_count; ++k) {
+			isize index = planned_to_add[k];
+			auto col = new_cols.col(k);
+			col.head(n) = (qpwork.C_scaled.row(index));
+			col.tail(n_eq + n_c_f).setZero();
+			col[n + n_eq + qpresults.n_c + k] = -qpresults.mu_in_inv;
+		}
+    qpwork.ldl.insert_block_at(n + n_eq + qpresults.n_c, new_cols, stack);
+	}
+
 	qpresults.n_c = n_c_f;
 	qpwork.current_bijection_map = qpwork.new_bijection_map;
 	qpwork.dw_aug.setZero();
