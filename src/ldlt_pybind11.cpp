@@ -150,97 +150,95 @@ auto correction_guess_line_search( //
 
 template <typename T, Layout L>
 void QPsetup( //
-		MatRef<T, L> H,
-		VecRef<T> g,
-		MatRef<T, L> A,
-		VecRef<T> b,
-		MatRef<T, L> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		qp::QPSettings<T>& QPSettings,
-		qp::QPData<T>& qpmodel,
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults,
+    MatRef<T, L> H,
+    VecRef<T> g,
+    MatRef<T, L> A,
+    VecRef<T> b,
+    MatRef<T, L> C,
+    VecRef<T> u,
+    VecRef<T> l,
+    qp::QPSettings<T>& QPSettings,
+    qp::QPData<T>& qpmodel,
+    qp::QPWorkspace<T>& qpwork,
+    qp::QPResults<T>& QPResults,
 
-		T eps_abs = 1.e-9,
-		T eps_rel = 0,
-		const bool VERBOSE = true
+    T eps_abs = 1.e-9,
+    T eps_rel = 0,
+    const bool VERBOSE = true
 
 ) {
 
-	QPSettings.eps_abs = eps_abs;
-	QPSettings.eps_rel = eps_rel;
-	QPSettings.verbose = VERBOSE;
+  QPSettings.eps_abs = eps_abs;
+  QPSettings.eps_rel = eps_rel;
+  QPSettings.verbose = VERBOSE;
 
-	qpmodel.H = H.eval();
-	qpmodel.g = g.eval();
-	qpmodel.A = A.eval();
-	qpmodel.b = b.eval();
-	qpmodel.C = C.eval();
-	qpmodel.u = u.eval();
-	qpmodel.l = l.eval();
+  qpmodel.H = H.eval();
+  qpmodel.g = g.eval();
+  qpmodel.A = A.eval();
+  qpmodel.b = b.eval();
+  qpmodel.C = C.eval();
+  qpmodel.u = u.eval();
+  qpmodel.l = l.eval();
 
-	qpwork.H_scaled = qpmodel.H;
-	qpwork.g_scaled = qpmodel.g;
-	qpwork.A_scaled = qpmodel.A;
-	qpwork.b_scaled = qpmodel.b;
-	qpwork.C_scaled = qpmodel.C;
-	qpwork.u_scaled = qpmodel.u;
-	qpwork.l_scaled = qpmodel.l;
+  qpwork.H_scaled = qpmodel.H;
+  qpwork.g_scaled = qpmodel.g;
+  qpwork.A_scaled = qpmodel.A;
+  qpwork.b_scaled = qpmodel.b;
+  qpwork.C_scaled = qpmodel.C;
+  qpwork.u_scaled = qpmodel.u;
+  qpwork.l_scaled = qpmodel.l;
 
-	qp::QpViewBoxMut<T> qp_scaled{
-			{from_eigen, qpwork.H_scaled},
-			{from_eigen, qpwork.g_scaled},
-			{from_eigen, qpwork.A_scaled},
-			{from_eigen, qpwork.b_scaled},
-			{from_eigen, qpwork.C_scaled},
-			{from_eigen, qpwork.u_scaled},
-			{from_eigen, qpwork.l_scaled}};
+  qp::QpViewBoxMut<T> qp_scaled{
+      {from_eigen, qpwork.H_scaled},
+      {from_eigen, qpwork.g_scaled},
+      {from_eigen, qpwork.A_scaled},
+      {from_eigen, qpwork.b_scaled},
+      {from_eigen, qpwork.C_scaled},
+      {from_eigen, qpwork.u_scaled},
+      {from_eigen, qpwork.l_scaled}};
 
-	qpwork.ruiz.scale_qp_in_place(
-			qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
-	qpwork.dw_aug.setZero();
+  qpwork.ruiz.scale_qp_in_place(
+      qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
+  qpwork.dw_aug.setZero();
 
-	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
+  qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
+  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
+  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+  qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
+  qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			QPResults.rho;
-	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
-			qpwork.A_scaled.transpose();
-	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
-	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
-	qpwork.kkt.diagonal()
-			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
+  qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+  qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
+      QPResults.rho;
+  qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
+      qpwork.A_scaled.transpose();
+  qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
+  qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
+  qpwork.kkt.diagonal()
+      .segment(qpmodel.dim, qpmodel.n_eq)
+      .setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
 
 {
     LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
     qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
   }
-	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+  qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
-	qp::detail::iterative_solve_with_permut_fact( //
-			QPSettings,
-			qpmodel,
-			QPResults,
-			qpwork,
-			T(1),
-			qpmodel.dim + qpmodel.n_eq);
+  qp::detail::iterative_solve_with_permut_fact( //
+      QPSettings,
+      qpmodel,
+      QPResults,
+      qpwork,
+      T(1),
+      qpmodel.dim + qpmodel.n_eq);
 
-	QPResults.x = qpwork.dw_aug.head(qpmodel.dim);
-	QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+  QPResults.x = qpwork.dw_aug.head(qpmodel.dim);
+  QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
-	qpwork.dw_aug.setZero();
+  qpwork.dw_aug.setZero();
 }
 */
-
-
 
 template <typename T, Layout L>
 void QPupdateMatrice( //
@@ -304,10 +302,11 @@ void QPupdateMatrice( //
 			.segment(qpmodel.dim, qpmodel.n_eq)
 			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
 
-  {
-    LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-    qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
-  }
+	{
+		LDLT_MAKE_STACK(
+				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
+		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
+	}
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
@@ -917,10 +916,11 @@ void QPreset(
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 			-qpresults.mu_eq_inv;
-{
-    LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-    qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
-  }
+	{
+		LDLT_MAKE_STACK(
+				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
+		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
+	}
 
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
@@ -983,12 +983,12 @@ INRIA LDLT decomposition
 	using namespace ldlt;
 	using namespace qp;
 	// using namespace preconditioner;
-	//constexpr auto c = colmajor;
+	// constexpr auto c = colmajor;
 	::pybind11::class_<qp::QPWorkspace<f64>>(m, "QPWorkspace")
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
-																							 // read-write public data member
-	    //.def_readwrite("ruiz", &qp::QPWorkspace<f64>::ruiz)
-			//.def_readonly("ldl", &qp::QPWorkspace<f64>::ldl)
+	                                             // read-write public data member
+			//.def_readwrite("ruiz", &qp::QPWorkspace<f64>::ruiz)
+	    //.def_readonly("ldl", &qp::QPWorkspace<f64>::ldl)
 			.def_readwrite("H_scaled", &qp::QPWorkspace<f64>::H_scaled)
 			.def_readwrite("g_scaled", &qp::QPWorkspace<f64>::g_scaled)
 			.def_readwrite("A_scaled", &qp::QPWorkspace<f64>::A_scaled)
@@ -1053,7 +1053,7 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::QPResults<f64>>(m, "QPResults")
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
-																							 // read-write public data member
+	                                             // read-write public data member
 
 			.def_readwrite("x", &qp::QPResults<f64>::x)
 			.def_readwrite("y", &qp::QPResults<f64>::y)
@@ -1072,11 +1072,13 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::QPSettings<f64>>(m, "QPSettings")
 			.def(::pybind11::init()) // constructor
-															 // read-write public data member
+	                             // read-write public data member
 
 			.def_readwrite("alpha_bcl", &qp::QPSettings<f64>::alpha_bcl)
 			.def_readwrite("beta_bcl", &qp::QPSettings<f64>::beta_bcl)
-			.def_readwrite("refactor_dual_feasibility_threshold", &qp::QPSettings<f64>::refactor_dual_feasibility_threshold)
+			.def_readwrite(
+					"refactor_dual_feasibility_threshold",
+					&qp::QPSettings<f64>::refactor_dual_feasibility_threshold)
 			//.def_readwrite("pmm", &qp::QPSettings<f64>::pmm)
 			.def_readwrite(
 					"refactor_rho_threshold",

@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <ldlt/ldlt.hpp>
 #include <ldlt/views.hpp>
+#include <dense-ldlt/ldlt.hpp>
 #include <veg/vec.hpp>
 #include <qp/precond/ruiz.hpp>
 
@@ -34,7 +35,7 @@ public:
 	qp::preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
-	ldlt::Ldlt<T> ldl{};
+	dense_ldlt::Ldlt<T> ldl{};
 	veg::Vec<unsigned char> ldl_stack;
 
 	///// QP STORAGE
@@ -137,9 +138,10 @@ public:
 		ldl.reserve_uninit(dim + n_eq + n_in);
 		ldl_stack.resize_for_overwrite(
 				veg::dynstack::StackReq(
-						ldlt::Ldlt<T>::factor_req(dim + n_eq + n_in) |
-						ldlt::Ldlt<T>::insert_at_req(dim + n_eq + n_in) |
-						ldlt::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
+						dense_ldlt::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
+            // TODO: Implement this
+						// dense_ldlt::Ldlt<T>::insert_at_req(dim + n_eq + n_in) |
+						dense_ldlt::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
 						.alloc_req());
 
 		alphas.reserve(3 * n_in);

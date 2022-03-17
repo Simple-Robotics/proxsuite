@@ -1133,8 +1133,15 @@ void active_set_change(
 			if (!qpwork.active_inequalities(i)) {
 				// delete current_bijection_map(i)
 
-				qpwork.ldl.delete_at(
-						qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq);
+				isize indices[] = {
+						qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq,
+				};
+
+				{
+					veg::dynstack::DynStackMut stack{
+							veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+					qpwork.ldl.delete_at(indices, 1, stack);
+				}
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) > qpwork.new_bijection_map(i)) {
@@ -1160,11 +1167,12 @@ void active_set_change(
 						mu_in_inv_neg; // mu stores the inverse of mu
 				{
 					isize insert_dim = n_c_f + 1 + qpmodel.n_eq + qpmodel.dim;
-					veg::dynstack::DynStackMut stack{veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-					qpwork.ldl.insert_at(
+					veg::dynstack::DynStackMut stack{
+							veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+					qpwork.ldl.insert_block_at(
 							qpmodel.n_eq + qpmodel.dim + n_c_f,
 							qpwork.dw_aug.head(insert_dim),
-							LDLT_FWD(stack));
+							stack);
 				}
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
