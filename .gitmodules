@@ -13,3 +13,6 @@
 [submodule "external/block-ldlt"]
 	path = external/block-ldlt
 	url = https://github.com/kitegi/block-ldlt.git
+[submodule "external/dense-ldlt"]
+	path = external/dense-ldlt
+	url = https://github.com/Simple-Robotics/dense-ldlt-v2.git

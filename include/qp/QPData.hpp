@@ -2,7 +2,7 @@
 #define INRIA_LDLT_QPData_HPP_VCVSK3EOS
 
 #include <Eigen/Core>
-#include "ldlt/views.hpp"
+//#include "ldlt/views.hpp"
 
 namespace qp {
 

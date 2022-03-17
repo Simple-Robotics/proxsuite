@@ -1,11 +1,11 @@
 #ifndef INRIA_LDLT_RUIZ_HPP_XXCS7AMRS
 #define INRIA_LDLT_RUIZ_HPP_XXCS7AMRS
 
-#include "ldlt/detail/tags.hpp"
-#include "ldlt/detail/macros.hpp"
-#include "ldlt/detail/simd.hpp"
-#include "ldlt/views.hpp"
-#include "ldlt/detail/meta.hpp"
+//#include "ldlt/detail/tags.hpp"
+//#include "ldlt/detail/macros.hpp"
+//#include "ldlt/detail/simd.hpp"
+//#include "ldlt/views.hpp"
+//#include "ldlt/detail/meta.hpp"
 #include "qp/views.hpp"
 #include <ostream>
 

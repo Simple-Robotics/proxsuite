@@ -1,7 +1,7 @@
 #ifndef INRIA_LDLT_VIEWS_HPP_COA7NGHVS
 #define INRIA_LDLT_VIEWS_HPP_COA7NGHVS
 
-#include "ldlt/views.hpp"
+//#include "ldlt/views.hpp"
 
 namespace qp {
 
@@ -27,9 +27,9 @@ struct EigenAllowAlloc {
 #endif
 };
 
-using namespace ldlt::detail;
+//using namespace ldlt::detail;
 } // namespace detail
-
+/*
 using ldlt::Layout;
 using ldlt::i32;
 using ldlt::i64;
@@ -43,6 +43,7 @@ using ldlt::LdltViewMut;
 using ldlt::LdltView;
 using ldlt::colmajor;
 using ldlt::rowmajor;
+*/
 
 template <typename T>
 struct QpView {

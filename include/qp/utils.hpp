@@ -1,13 +1,13 @@
 #ifndef INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
 #define INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
 
-#include "ldlt/views.hpp"
-#include <ldlt/ldlt.hpp>
+//#include "ldlt/views.hpp"
+//#include <ldlt/ldlt.hpp>
 #include "qp/views.hpp"
-#include "ldlt/factorize.hpp"
-#include "ldlt/detail/meta.hpp"
-#include "ldlt/solve.hpp"
-#include "ldlt/update.hpp"
+//#include "ldlt/factorize.hpp"
+//#include "ldlt/detail/meta.hpp"
+//#include "ldlt/solve.hpp"
+//#include "ldlt/update.hpp"
 #include <qp/QPWorkspace.hpp>
 #include <qp/QPData.hpp>
 #include <qp/QPResults.hpp>

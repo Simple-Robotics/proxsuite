@@ -1,8 +1,8 @@
 #ifndef INRIA_LDLT_OLD_NEW_LINE_SEARCH_HPP_2TUXO5DFS
 #define INRIA_LDLT_OLD_NEW_LINE_SEARCH_HPP_2TUXO5DFS
 
-#include "ldlt/views.hpp"
-#include "qp/views.hpp"
+//#include "ldlt/views.hpp"
+//#include "qp/views.hpp"
 #include "qp/QPData.hpp"
 #include "qp/QPResults.hpp"
 #include "qp/QPWorkspace.hpp"
@@ -1101,8 +1101,8 @@ void active_set_change(
 			if (!qpwork.active_inequalities(i)) {
 				// delete current_bijection_map(i)
 
-				qpwork.ldl.delete_at(
-						qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq);
+				/////!\ TO CHANGE
+				//qpwork.ldl.delete_at(qpwork.new_bijection_map(i) + qpmodel.dim + qpmodel.n_eq);
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {
 					if (qpwork.new_bijection_map(j) > qpwork.new_bijection_map(i)) {
@@ -1128,11 +1128,9 @@ void active_set_change(
 						mu_in_inv_neg; // mu stores the inverse of mu
 				{
 					isize insert_dim = n_c_f + 1 + qpmodel.n_eq + qpmodel.dim;
-					veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
-					qpwork.ldl.insert_at(
-							qpmodel.n_eq + qpmodel.dim + n_c_f,
-							qpwork.dw_aug.head(insert_dim),
-							LDLT_FWD(stack));
+					/////!\ TO CHANGE
+					//veg::dynstack::DynStackMut stack{qpwork.ldl_stack.as_mut()};
+					//qpwork.ldl.insert_at(qpmodel.n_eq + qpmodel.dim + n_c_f,qpwork.dw_aug.head(insert_dim),LDLT_FWD(stack));
 				}
 
 				for (isize j = 0; j < qpmodel.n_in; j++) {

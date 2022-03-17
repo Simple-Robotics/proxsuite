@@ -1,13 +1,13 @@
 #ifndef INRIA_LDLT_OLD_NEW_SOLVER_EQ_HPP_HDWGZKCLS
 #define INRIA_LDLT_OLD_NEW_SOLVER_EQ_HPP_HDWGZKCLS
 
-#include <ldlt/ldlt.hpp>
+//#include <ldlt/ldlt.hpp>
 #include "qp/views.hpp"
 #include "qp/proxqp/solver.hpp"
-#include "ldlt/factorize.hpp"
-#include "ldlt/detail/meta.hpp"
-#include "ldlt/solve.hpp"
-#include "ldlt/update.hpp"
+//#include "ldlt/factorize.hpp"
+//#include "ldlt/detail/meta.hpp"
+//#include "ldlt/solve.hpp"
+//#include "ldlt/update.hpp"
 #include <cmath>
 
 #include <iostream>
@@ -15,7 +15,7 @@
 
 namespace qp {
 inline namespace tags {
-using namespace ldlt::tags;
+//using namespace ldlt::tags;
 }
 
 
@@ -74,7 +74,7 @@ void qp_solve_eq( //
 		qp::QPResults<T>& qpresults,
 		qp::QPWorkspace<T>& qpwork) {
 
-	using namespace ldlt::tags;
+	//using namespace ldlt::tags;
 
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
     static constexpr Layout layout = rowmajor;

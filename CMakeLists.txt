@@ -98,8 +98,8 @@ if(APPLE)
   )
 endif(APPLE)
 
-add_subdirectory(external/block-ldlt)
-target_link_libraries(inria_ldlt INTERFACE block-ldlt)
+#add_subdirectory(external/block-ldlt)
+#target_link_libraries(inria_ldlt INTERFACE block-ldlt)
 
 # Conan dependencies
 if(ENABLE_TESTING)
@@ -123,6 +123,13 @@ if(ENABLE_TESTING)
 endif()
 
 target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
+
+#find_package(dense-ldlt REQUIRED)
+add_subdirectory(external/dense-ldlt-v2)
+# Declare the imported target as a build requirement using PRIVATE, where
+# project_target is a target created in the consuming project
+target_link_libraries(inria_ldlt INTERFACE dense-ldlt::dense-ldlt)
+
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(
