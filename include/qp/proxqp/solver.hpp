@@ -87,7 +87,7 @@ void refactorize(
 	}
 	qpwork.dw_aug.setZero();
 }
-
+/*
 template <typename T>
 void mu_update(
 		const qp::QPData<T>& qpmodel,
@@ -130,6 +130,32 @@ void mu_update(
 			qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + i) = T(0);
 		}
 	}
+}
+*/
+template <typename T>
+void mu_update(
+        const qp::QPData<T>& qpmodel,
+        qp::QPResults<T>& qpresults,
+        qp::QPWorkspace<T>& qpwork,
+        T mu_eq_new_inv,
+        T mu_in_new_inv) {
+    veg::dynstack::DynStackMut stack{
+            veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+
+    isize n = qpmodel.dim;
+    isize n_eq = qpmodel.n_eq;
+    isize n_c = qpresults.n_c;
+
+    if ((n_eq + n_c) == 0) {
+        return;
+    }
+
+    LDLT_TEMP_MAT(T, rank_update_w, n + n_eq + n_c, n_eq + n_c, stack);
+    LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
+    rank_update_w.bottomRows(n_eq + n_c).diagonal().setConstant(1);
+    rank_update_alpha.head(n_eq).setConstant(qpresults.mu_eq_inv - mu_eq_new_inv);
+    rank_update_alpha.tail(n_c).setConstant(qpresults.mu_in_inv - mu_in_new_inv);
+    qpwork.ldl.rank_r_update(rank_update_w, rank_update_alpha, stack);
 }
 
 template <typename T>
