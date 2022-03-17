@@ -750,7 +750,7 @@ T primal_dual_newton_semi_smooth(
 		qpwork.Cdx.noalias() = qpwork.C_scaled * qpwork.dw_aug.head(qpmodel.dim);
 
 		if (qpmodel.n_in > 0) {
-			qp::line_search::primal_dual_ls(qpmodel, qpresults, qpwork);
+			qp::line_search::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
 		}
 
 		if (infty_norm(qpwork.alpha * qpwork.dw_aug) < 1.E-11 && iter > 0) {

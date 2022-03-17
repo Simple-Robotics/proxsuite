@@ -142,7 +142,8 @@ template <typename T>
 void primal_dual_ls(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork) {
+		qp::QPWorkspace<T>& qpwork,
+		const qp::QPSettings<T>& qpsettings) {
 
 	/*
 	 * The function follows the algorithm designed by qpalm
@@ -286,16 +287,42 @@ void primal_dual_ls(
 		 * is an affine function in alpha
 		 */
 
+
+		if (first_pos_grad == T(0) && alpha_first_pos == T(0)){
+			if (qpsettings.verbose){
+				std::cout << "alpha first pos never updated, try to found one" << std::endl;
+			}
+
+			alpha_first_pos = T(1);
+			first_pos_grad = line_search::primal_dual_gradient_norm(
+					qpmodel, qpresults, qpwork, alpha_first_pos);
+			if (qpsettings.verbose){
+				std::cout << "alpha_first_pos " << alpha_first_pos << " first_pos_grad " << first_pos_grad << std::endl; 
+			}
+			for (isize i = 0; i < 8; ++i) {
+				if (first_pos_grad > T(0)) {
+					break;
+				}
+				alpha_first_pos *= 10;
+				first_pos_grad = line_search::primal_dual_gradient_norm(
+						qpmodel, qpresults, qpwork, alpha_first_pos);
+				if (qpsettings.verbose){
+					std::cout << "alpha_first_pos " << alpha_first_pos << " first_pos_grad " << first_pos_grad << std::endl; 
+				}
+			}
+
+		}
+
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
-		// T gr_f = line_search::primal_dual_gradient_norm(
-		//			qpmodel, qpresults, qpwork, qpwork.alpha);
+		
 
-		// std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad " <<
-		// last_neg_grad << " alpha_first_pos " << alpha_first_pos << "
-		// first_pos_grad " << first_pos_grad << " alpha_final " <<   <<" gr_final "
-		// <<  gr_f << std::endl;
+		if (qpsettings.verbose){
+			T gr_f = line_search::primal_dual_gradient_norm(qpmodel, qpresults, qpwork, qpwork.alpha);
+			std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad " <<last_neg_grad << " alpha_first_pos " << alpha_first_pos << "first_pos_grad " << first_pos_grad << " alpha_final " <<  qpwork.alpha  <<" gr_final " <<  gr_f << std::endl;
+		}
+		
 	} else {
 
 		T alpha_last_neg(0);
@@ -317,6 +344,11 @@ void primal_dual_ls(
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
+		if (qpsettings.verbose){
+			std::cout<< " try finding positive grad " << std::endl;
+			T gr_f = line_search::primal_dual_gradient_norm(qpmodel, qpresults, qpwork, qpwork.alpha);
+			std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad " <<last_neg_grad << " alpha_first_pos " << alpha_first_pos << "first_pos_grad " << first_pos_grad << " alpha_final " <<  qpwork.alpha  <<" gr_final "<<  gr_f << std::endl;
+		}
 	}
 }
 
