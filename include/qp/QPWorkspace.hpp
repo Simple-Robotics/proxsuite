@@ -139,8 +139,8 @@ public:
 		ldl_stack.resize_for_overwrite(
 				veg::dynstack::StackReq(
 						dense_ldlt::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
-            // TODO: Implement this
-						// dense_ldlt::Ldlt<T>::insert_at_req(dim + n_eq + n_in) |
+						(dense_ldlt::temp_mat_req(veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
+		         dense_ldlt::Ldlt<T>::insert_block_at_req(dim + n_eq + n_in, n_in)) |
 						dense_ldlt::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
 						.alloc_req());
 
@@ -215,7 +215,6 @@ public:
 			current_bijection_map(i) = i;
 			new_bijection_map(i) = i;
 		}
-
 	}
 };
 
