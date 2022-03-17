@@ -1161,6 +1161,7 @@ void active_set_change(
 
 	isize planned_to_add_count = 0;
 
+	isize n_c = n_c_f;
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		if (qpwork.active_inequalities(i)) {
 			if (qpwork.new_bijection_map(i) >= n_c_f) {
@@ -1201,9 +1202,9 @@ void active_set_change(
 			auto col = new_cols.col(k);
 			col.head(n) = (qpwork.C_scaled.row(index));
 			col.tail(n_eq + n_c_f).setZero();
-			col[n + n_eq + qpresults.n_c + k] = -qpresults.mu_in_inv;
+			col[n + n_eq + n_c + k] = -qpresults.mu_in_inv;
 		}
-    qpwork.ldl.insert_block_at(n + n_eq + qpresults.n_c, new_cols, stack);
+		qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
 	}
 
 	qpresults.n_c = n_c_f;
