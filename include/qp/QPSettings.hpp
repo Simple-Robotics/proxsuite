@@ -54,7 +54,7 @@ public:
                T cold_reset_mu_eq_inv_=1./1.1, T cold_reset_mu_in_inv_=1./1.1,
                T eps_abs_=1.e-9,T eps_rel_=0.,T err_IG_=1.e-2, T r=5.,
                isize max_iter_=10000,isize max_iter_in_=1500,
-               isize nb_iterative_refinement_=10,T eps_refact_=1.e-6,
+               isize nb_iterative_refinement_=10,T eps_refact_=1.e-6, //before eps_refact_=1.e-6
                bool VERBOSE = false,InnerLoopSolvingMethod SolvingMethod = InnerLoopSolvingMethod::pmm)
                 {
         

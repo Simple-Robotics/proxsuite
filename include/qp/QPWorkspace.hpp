@@ -144,7 +144,7 @@ public:
 						dense_ldlt::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
 						.alloc_req());
 
-		alphas.reserve(3 * n_in);
+		alphas.reserve(2 * n_in);
 		H_scaled.setZero();
 		g_scaled.setZero();
 		A_scaled.setZero();
