@@ -1,9 +1,9 @@
-//#include <ldlt/ldlt.hpp>
-//#include <ldlt/factorize.hpp>
-//#include <ldlt/solve.hpp>
-//#include <ldlt/update.hpp>
+#include <ldlt/ldlt.hpp>
+#include <ldlt/factorize.hpp>
+#include <ldlt/solve.hpp>
+#include <ldlt/update.hpp>
 
-//#include <qp/views.hpp>
+#include <qp/views.hpp>
 #include <qp/QPWorkspace.hpp>
 
 #include <qp/proxqp/solver.hpp>
