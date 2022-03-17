@@ -145,7 +145,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
   string(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
   message(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
   target_link_libraries(
-    inria_ldlt_py PUBLIC block-ldlt inria_ldlt pybind11::module
+    inria_ldlt_py PUBLIC inria_ldlt pybind11::module
   )
   set_target_properties(
     inria_ldlt_py

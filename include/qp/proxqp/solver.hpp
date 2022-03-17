@@ -239,6 +239,14 @@ void iterative_solve_with_permut_fact( //
 			}
 			qpwork.ldl.factorize(Htot);
 			*/
+
+			refactorize(
+				qpmodel,
+				qpresults,
+				qpwork,
+				qpresults.rho);
+
+			/*
 			qpwork.dw_aug.setZero();
 			qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 					-qpresults.mu_eq_inv;
@@ -261,8 +269,9 @@ void iterative_solve_with_permut_fact( //
 					}
 				}
 			}
+			
 			qpwork.dw_aug.setZero();
-
+			*/
 			// std::cout << " ldl.reconstructed_matrix() - Htot " <<
 			// infty_norm(qpwork.ldl.reconstructed_matrix() - Htot)<< std::endl;
 		}
