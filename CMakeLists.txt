@@ -19,7 +19,7 @@ else()
 endif()
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC")
+set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(CMAKE_SKIP_RPATH FALSE)

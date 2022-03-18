@@ -8,6 +8,7 @@
 #include <fmt/ostream.h>
 
 using namespace qp;
+using T = double;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
@@ -85,7 +86,7 @@ char const* files[] = {
 };
 
 struct MarosMeszarosQp {
-	using Mat = Eigen::SparseMatrix<double, Eigen::ColMajor, mat_int32_t>;
+	using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, mat_int32_t>;
 	using Vec = Eigen::VectorXd;
 
 	std::string filename;
@@ -120,7 +121,7 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 
 		auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
 		auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
-		auto vptr = static_cast<double const*>(ptr->data);         // NOLINT
+		auto vptr = static_cast<T const*>(ptr->data);              // NOLINT
 
 		Mat out;
 		out.resize(nrows, ncols);
@@ -132,7 +133,7 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 			for (isize p = col_start; p < col_end; ++p) {
 
 				isize i = iptr[p];
-				double v = vptr[p];
+				T v = vptr[p];
 
 				out.insert(i, j) = v;
 			}
@@ -148,7 +149,7 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 		veg::unused(_mat_var_cleanup);
 
 		VEG_ASSERT(int(mat_var->data_type) == int(matio_types::MAT_T_DOUBLE));
-		auto const* ptr = static_cast<double const*>(mat_var->data);
+		auto const* ptr = static_cast<T const*>(mat_var->data);
 
 		auto view = Eigen::Map<Vec const>{
 				ptr,
@@ -171,13 +172,39 @@ TEST_CASE("maros meszaros wip") {
 	for (auto const* file : files) {
 		auto qp = load_qp(file);
 		isize n = qp.P.rows();
+		isize n_eq = 0;
 		isize n_in = qp.A.rows();
 
+		bool skip = n > 1000 || n_in > 1000;
 		::fmt::print(
 				"path: {}, n: {}, n:_in: {}.{}\n",
 				qp.filename,
 				n,
 				n_in,
-				(n > 1000 || n_in > 1000) ? "skipping" : "");
+				skip ? "skipping" : "");
+
+		if (!skip) {
+			QPSettings<T> settings;
+			QPData<T> data{n, n_eq, n_in};
+			QPResults<T> results{n, n_eq, n_in};
+			QPWorkspace<T> work{n, n_eq, n_in};
+
+			Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> A{n_eq, n};
+			Eigen::Matrix<T, Eigen::Dynamic, 1> b{n_eq};
+
+			auto H = qp.P.toDense();
+			auto C = qp.A.toDense();
+			auto g = qp.q;
+			auto u = qp.u;
+			auto l = qp.l;
+
+			results.x.setZero();
+			results.y.setZero();
+			results.z.setZero();
+
+			detail::QPsetup_dense<T>(
+					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
+			detail::qp_solve(settings, data, results, work);
+		}
 	}
 }
