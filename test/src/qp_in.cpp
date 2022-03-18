@@ -204,6 +204,14 @@ TEST_CASE("maros meszaros wip") {
 			detail::QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
 			detail::qp_solve(settings, data, results, work);
+			auto& x = results.x;
+			auto& y = results.y;
+			auto& z = results.z;
+			auto& eps = settings.eps_abs;
+
+			CHECK((H * x + g + A.transpose() * y + C.transpose() * z).norm() < eps);
+			CHECK((C * x - l).minCoeff() > -eps);
+			CHECK((C * x - u).maxCoeff() < eps);
 		}
 	}
 }
