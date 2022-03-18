@@ -11,7 +11,6 @@ using namespace qp;
 using T = double;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
 char const* files[] = {
 		MAROS_MESZAROS_DIR "AUG2D.mat",    MAROS_MESZAROS_DIR "AUG2DC.mat",
