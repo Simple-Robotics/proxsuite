@@ -1,14 +1,6 @@
-#include <doctest.h>
-#include <util.hpp>
-#include <matio.h>
-#include <iostream>
-#include <Eigen/SparseCore>
+#include <maros_meszaros.hpp>
+#include <benchmark/benchmark.h>
 #include <qp/proxqp/solver.hpp>
-#include <fmt/core.h>
-#include <fmt/ostream.h>
-
-using namespace qp;
-using T = double;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -84,134 +76,68 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-struct MarosMeszarosQp {
-	using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, mat_int32_t>;
-	using Vec = Eigen::VectorXd;
+using namespace qp;
 
-	std::string filename;
+void bench_maros_meszaros(benchmark::State& s, char const* file) {
+	using T = double;
 
-	Mat P;
-	Vec q;
-	Mat A;
-	Vec l;
-	Vec u;
-};
+	auto qp = load_qp(file);
+	isize n = qp.P.rows();
+	isize n_in = qp.A.rows();
+	bool skip = n > 1000 || n_in > 1000;
+	isize n_eq = 0;
 
-auto load_qp(char const* filename) -> MarosMeszarosQp {
-	using Mat = MarosMeszarosQp::Mat;
-	using Vec = MarosMeszarosQp::Vec;
+	if (!skip) {
 
-	mat_t* mat_fp = Mat_Open(filename, MAT_ACC_RDONLY);
-	VEG_ASSERT(mat_fp != nullptr);
-	auto&& _mat_fp_cleanup = veg::defer([&] { Mat_Close(mat_fp); });
-	veg::unused(_mat_fp_cleanup);
+		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> A{n_eq, n};
+		Eigen::Matrix<T, Eigen::Dynamic, 1> b{n_eq};
 
-	auto load_mat = [&](char const* name) -> Mat {
-		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
-		VEG_ASSERT(mat_var != nullptr);
-		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
-		veg::unused(_mat_var_cleanup);
+		auto H = qp.P.toDense();
+		auto C = qp.A.toDense();
+		auto g = qp.q;
+		auto u = qp.u;
+		auto l = qp.l;
 
-		VEG_ASSERT(int(mat_var->class_type) == int(matio_classes::MAT_C_SPARSE));
-		auto const* ptr = static_cast<mat_sparse_t const*>(mat_var->data);
+		for (auto _ : s) {
+      s.PauseTiming();
 
-		isize nrows = isize(mat_var->dims[0]);
-		isize ncols = isize(mat_var->dims[1]);
-
-		auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
-		auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
-		auto vptr = static_cast<T const*>(ptr->data);              // NOLINT
-
-		Mat out;
-		out.resize(nrows, ncols);
-		out.reserve(ptr->nzmax);
-		for (isize j = 0; j < ncols; ++j) {
-			isize col_start = optr[j];
-			isize col_end = optr[j + 1];
-
-			for (isize p = col_start; p < col_end; ++p) {
-
-				isize i = iptr[p];
-				T v = vptr[p];
-
-				out.insert(i, j) = v;
-			}
-		}
-
-		return out;
-	};
-
-	auto load_vec = [&](char const* name) -> Vec {
-		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
-		VEG_ASSERT(mat_var != nullptr);
-		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
-		veg::unused(_mat_var_cleanup);
-
-		VEG_ASSERT(int(mat_var->data_type) == int(matio_types::MAT_T_DOUBLE));
-		auto const* ptr = static_cast<T const*>(mat_var->data);
-
-		auto view = Eigen::Map<Vec const>{
-				ptr,
-				long(mat_var->dims[0]),
-		};
-		return view;
-	};
-
-	return {
-			filename,
-			load_mat("P"),
-			load_vec("q"),
-			load_mat("A"),
-			load_vec("l"),
-			load_vec("u"),
-	};
-}
-
-TEST_CASE("maros meszaros wip") {
-	for (auto const* file : files) {
-		auto qp = load_qp(file);
-		isize n = qp.P.rows();
-		isize n_eq = 0;
-		isize n_in = qp.A.rows();
-
-		bool skip = n > 1000 || n_in > 1000;
-		::fmt::print(
-				"path: {}, n: {}, n:_in: {}.{}\n",
-				qp.filename,
-				n,
-				n_in,
-				skip ? "skipping" : "");
-
-		if (!skip) {
 			QPSettings<T> settings;
 			QPData<T> data{n, n_eq, n_in};
 			QPResults<T> results{n, n_eq, n_in};
 			QPWorkspace<T> work{n, n_eq, n_in};
-
-			Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> A{n_eq, n};
-			Eigen::Matrix<T, Eigen::Dynamic, 1> b{n_eq};
-
-			auto H = qp.P.toDense();
-			auto C = qp.A.toDense();
-			auto g = qp.q;
-			auto u = qp.u;
-			auto l = qp.l;
-
 			results.x.setZero();
 			results.y.setZero();
 			results.z.setZero();
-
 			detail::QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
-			detail::qp_solve(settings, data, results, work);
-			auto& x = results.x;
-			auto& y = results.y;
-			auto& z = results.z;
-			auto& eps = settings.eps_abs;
 
-			CHECK((H * x + g + A.transpose() * y + C.transpose() * z).norm() < eps);
-			CHECK((C * x - l).minCoeff() > -eps);
-			CHECK((C * x - u).maxCoeff() < eps);
+      s.ResumeTiming();
+			detail::qp_solve(settings, data, results, work);
+		}
+	} else {
+		for (auto _ : s) {
 		}
 	}
+}
+
+auto main(int argc, char** argv) -> int {
+	::benchmark::Initialize(&argc, argv);
+	if (::benchmark::ReportUnrecognizedArguments(argc, argv)) {
+		return 1;
+	}
+
+	for (auto const* file : files) {
+		auto qp = load_qp(file);
+		isize n = qp.P.rows();
+		isize n_in = qp.A.rows();
+		bool skip = n > 1000 || n_in > 1000;
+
+		if (!skip) {
+			benchmark::RegisterBenchmark(
+					file + (sizeof(MAROS_MESZAROS_DIR) - 1), bench_maros_meszaros, file);
+		}
+	}
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::Shutdown();
+	return 0;
 }

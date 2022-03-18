@@ -1,0 +1,89 @@
+#include <Eigen/SparseCore>
+#include <matio.h>
+#include <string>
+#include <veg/util/assert.hpp>
+
+struct MarosMeszarosQp {
+	using Mat = Eigen::SparseMatrix<double, Eigen::ColMajor, mat_int32_t>;
+	using Vec = Eigen::VectorXd;
+
+	std::string filename;
+
+	Mat P;
+	Vec q;
+	Mat A;
+	Vec l;
+	Vec u;
+};
+
+auto load_qp(char const* filename) -> MarosMeszarosQp {
+	using Mat = MarosMeszarosQp::Mat;
+	using Vec = MarosMeszarosQp::Vec;
+
+	mat_t* mat_fp = Mat_Open(filename, MAT_ACC_RDONLY);
+	VEG_ASSERT(mat_fp != nullptr);
+	auto&& _mat_fp_cleanup = veg::defer([&] { Mat_Close(mat_fp); });
+	veg::unused(_mat_fp_cleanup);
+
+	auto load_mat = [&](char const* name) -> Mat {
+		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
+		VEG_ASSERT(mat_var != nullptr);
+		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
+		veg::unused(_mat_var_cleanup);
+
+		VEG_ASSERT(int(mat_var->class_type) == int(matio_classes::MAT_C_SPARSE));
+		auto const* ptr = static_cast<mat_sparse_t const*>(mat_var->data);
+
+		using veg::isize;
+
+		isize nrows = isize(mat_var->dims[0]);
+		isize ncols = isize(mat_var->dims[1]);
+
+		auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
+		auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
+		auto vptr = static_cast<double const*>(ptr->data);         // NOLINT
+
+		Mat out;
+		out.resize(nrows, ncols);
+		out.reserve(ptr->nzmax);
+		for (isize j = 0; j < ncols; ++j) {
+			isize col_start = optr[j];
+			isize col_end = optr[j + 1];
+
+			for (isize p = col_start; p < col_end; ++p) {
+
+				isize i = iptr[p];
+				double v = vptr[p];
+
+				out.insert(i, j) = v;
+			}
+		}
+
+		return out;
+	};
+
+	auto load_vec = [&](char const* name) -> Vec {
+		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
+		VEG_ASSERT(mat_var != nullptr);
+		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
+		veg::unused(_mat_var_cleanup);
+
+		VEG_ASSERT(int(mat_var->data_type) == int(matio_types::MAT_T_DOUBLE));
+		auto const* ptr = static_cast<double const*>(mat_var->data);
+
+		auto view = Eigen::Map<Vec const>{
+				ptr,
+				long(mat_var->dims[0]),
+		};
+		return view;
+	};
+
+	return {
+			filename,
+			load_mat("P"),
+			load_vec("q"),
+			load_mat("A"),
+			load_vec("l"),
+			load_vec("u"),
+	};
+}
