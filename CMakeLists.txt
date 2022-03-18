@@ -79,6 +79,7 @@ set(CONAN_REQUIRES eigen/3.3.7 fmt/8.0.0)
 if(ENABLE_TESTING)
   set(CONAN_REQUIRES
       ${CONAN_REQUIRES}
+      matio/1.5.21
       # MIT License
       backward-cpp/1.6
       #

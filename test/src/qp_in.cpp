@@ -1,51 +1,183 @@
 #include <doctest.h>
-#include <Eigen/Core>
-#include <Eigen/Cholesky>
-#include "qp/views.hpp"
-#include <qp/in_solver.hpp>
-#include <qp/precond/ruiz.hpp>
 #include <util.hpp>
+#include <matio.h>
+#include <iostream>
+#include <Eigen/SparseCore>
+#include <qp/proxqp/solver.hpp>
+#include <fmt/core.h>
+#include <fmt/ostream.h>
 
-using namespace ldlt;
+using namespace qp;
 
-using Scalar = long double;
+#define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
-DOCTEST_TEST_CASE("qp: random") {
-	isize dim = 30;
-	isize n_eq = 6;
-    isize n_in = 6;
-	isize max_it = 200;
-	isize max_it_in = 2500;
+char const* files[] = {
+		MAROS_MESZAROS_DIR "AUG2D.mat",    MAROS_MESZAROS_DIR "AUG2DC.mat",
+		MAROS_MESZAROS_DIR "AUG2DCQP.mat", MAROS_MESZAROS_DIR "AUG2DQP.mat",
+		MAROS_MESZAROS_DIR "AUG3D.mat",    MAROS_MESZAROS_DIR "AUG3DC.mat",
+		MAROS_MESZAROS_DIR "AUG3DCQP.mat", MAROS_MESZAROS_DIR "AUG3DQP.mat",
+		MAROS_MESZAROS_DIR "BOYD1.mat",    MAROS_MESZAROS_DIR "BOYD2.mat",
+		MAROS_MESZAROS_DIR "CONT-050.mat", MAROS_MESZAROS_DIR "CONT-100.mat",
+		MAROS_MESZAROS_DIR "CONT-101.mat", MAROS_MESZAROS_DIR "CONT-200.mat",
+		MAROS_MESZAROS_DIR "CONT-201.mat", MAROS_MESZAROS_DIR "CONT-300.mat",
+		MAROS_MESZAROS_DIR "CVXQP1_L.mat", MAROS_MESZAROS_DIR "CVXQP1_M.mat",
+		MAROS_MESZAROS_DIR "CVXQP1_S.mat", MAROS_MESZAROS_DIR "CVXQP2_L.mat",
+		MAROS_MESZAROS_DIR "CVXQP2_M.mat", MAROS_MESZAROS_DIR "CVXQP2_S.mat",
+		MAROS_MESZAROS_DIR "CVXQP3_L.mat", MAROS_MESZAROS_DIR "CVXQP3_M.mat",
+		MAROS_MESZAROS_DIR "CVXQP3_S.mat", MAROS_MESZAROS_DIR "DPKLO1.mat",
+		MAROS_MESZAROS_DIR "DTOC3.mat",    MAROS_MESZAROS_DIR "DUAL1.mat",
+		MAROS_MESZAROS_DIR "DUAL2.mat",    MAROS_MESZAROS_DIR "DUAL3.mat",
+		MAROS_MESZAROS_DIR "DUAL4.mat",    MAROS_MESZAROS_DIR "DUALC1.mat",
+		MAROS_MESZAROS_DIR "DUALC2.mat",   MAROS_MESZAROS_DIR "DUALC5.mat",
+		MAROS_MESZAROS_DIR "DUALC8.mat",   MAROS_MESZAROS_DIR "EXDATA.mat",
+		MAROS_MESZAROS_DIR "GENHS28.mat",  MAROS_MESZAROS_DIR "GOULDQP2.mat",
+		MAROS_MESZAROS_DIR "GOULDQP3.mat", MAROS_MESZAROS_DIR "HS118.mat",
+		MAROS_MESZAROS_DIR "HS21.mat",     MAROS_MESZAROS_DIR "HS268.mat",
+		MAROS_MESZAROS_DIR "HS35.mat",     MAROS_MESZAROS_DIR "HS35MOD.mat",
+		MAROS_MESZAROS_DIR "HS51.mat",     MAROS_MESZAROS_DIR "HS52.mat",
+		MAROS_MESZAROS_DIR "HS53.mat",     MAROS_MESZAROS_DIR "HS76.mat",
+		MAROS_MESZAROS_DIR "HUES-MOD.mat", MAROS_MESZAROS_DIR "HUESTIS.mat",
+		MAROS_MESZAROS_DIR "KSIP.mat",     MAROS_MESZAROS_DIR "LASER.mat",
+		MAROS_MESZAROS_DIR "LISWET1.mat",  MAROS_MESZAROS_DIR "LISWET10.mat",
+		MAROS_MESZAROS_DIR "LISWET11.mat", MAROS_MESZAROS_DIR "LISWET12.mat",
+		MAROS_MESZAROS_DIR "LISWET2.mat",  MAROS_MESZAROS_DIR "LISWET3.mat",
+		MAROS_MESZAROS_DIR "LISWET4.mat",  MAROS_MESZAROS_DIR "LISWET5.mat",
+		MAROS_MESZAROS_DIR "LISWET6.mat",  MAROS_MESZAROS_DIR "LISWET7.mat",
+		MAROS_MESZAROS_DIR "LISWET8.mat",  MAROS_MESZAROS_DIR "LISWET9.mat",
+		MAROS_MESZAROS_DIR "LOTSCHD.mat",  MAROS_MESZAROS_DIR "MOSARQP1.mat",
+		MAROS_MESZAROS_DIR "MOSARQP2.mat", MAROS_MESZAROS_DIR "POWELL20.mat",
+		MAROS_MESZAROS_DIR "PRIMAL1.mat",  MAROS_MESZAROS_DIR "PRIMAL2.mat",
+		MAROS_MESZAROS_DIR "PRIMAL3.mat",  MAROS_MESZAROS_DIR "PRIMAL4.mat",
+		MAROS_MESZAROS_DIR "PRIMALC1.mat", MAROS_MESZAROS_DIR "PRIMALC2.mat",
+		MAROS_MESZAROS_DIR "PRIMALC5.mat", MAROS_MESZAROS_DIR "PRIMALC8.mat",
+		MAROS_MESZAROS_DIR "Q25FV47.mat",  MAROS_MESZAROS_DIR "QADLITTL.mat",
+		MAROS_MESZAROS_DIR "QAFIRO.mat",   MAROS_MESZAROS_DIR "QBANDM.mat",
+		MAROS_MESZAROS_DIR "QBEACONF.mat", MAROS_MESZAROS_DIR "QBORE3D.mat",
+		MAROS_MESZAROS_DIR "QBRANDY.mat",  MAROS_MESZAROS_DIR "QCAPRI.mat",
+		MAROS_MESZAROS_DIR "QE226.mat",    MAROS_MESZAROS_DIR "QETAMACR.mat",
+		MAROS_MESZAROS_DIR "QFFFFF80.mat", MAROS_MESZAROS_DIR "QFORPLAN.mat",
+		MAROS_MESZAROS_DIR "QGFRDXPN.mat", MAROS_MESZAROS_DIR "QGROW15.mat",
+		MAROS_MESZAROS_DIR "QGROW22.mat",  MAROS_MESZAROS_DIR "QGROW7.mat",
+		MAROS_MESZAROS_DIR "QISRAEL.mat",  MAROS_MESZAROS_DIR "QPCBLEND.mat",
+		MAROS_MESZAROS_DIR "QPCBOEI1.mat", MAROS_MESZAROS_DIR "QPCBOEI2.mat",
+		MAROS_MESZAROS_DIR "QPCSTAIR.mat", MAROS_MESZAROS_DIR "QPILOTNO.mat",
+		MAROS_MESZAROS_DIR "QPTEST.mat",   MAROS_MESZAROS_DIR "QRECIPE.mat",
+		MAROS_MESZAROS_DIR "QSC205.mat",   MAROS_MESZAROS_DIR "QSCAGR25.mat",
+		MAROS_MESZAROS_DIR "QSCAGR7.mat",  MAROS_MESZAROS_DIR "QSCFXM1.mat",
+		MAROS_MESZAROS_DIR "QSCFXM2.mat",  MAROS_MESZAROS_DIR "QSCFXM3.mat",
+		MAROS_MESZAROS_DIR "QSCORPIO.mat", MAROS_MESZAROS_DIR "QSCRS8.mat",
+		MAROS_MESZAROS_DIR "QSCSD1.mat",   MAROS_MESZAROS_DIR "QSCSD6.mat",
+		MAROS_MESZAROS_DIR "QSCSD8.mat",   MAROS_MESZAROS_DIR "QSCTAP1.mat",
+		MAROS_MESZAROS_DIR "QSCTAP2.mat",  MAROS_MESZAROS_DIR "QSCTAP3.mat",
+		MAROS_MESZAROS_DIR "QSEBA.mat",    MAROS_MESZAROS_DIR "QSHARE1B.mat",
+		MAROS_MESZAROS_DIR "QSHARE2B.mat", MAROS_MESZAROS_DIR "QSHELL.mat",
+		MAROS_MESZAROS_DIR "QSHIP04L.mat", MAROS_MESZAROS_DIR "QSHIP04S.mat",
+		MAROS_MESZAROS_DIR "QSHIP08L.mat", MAROS_MESZAROS_DIR "QSHIP08S.mat",
+		MAROS_MESZAROS_DIR "QSHIP12L.mat", MAROS_MESZAROS_DIR "QSHIP12S.mat",
+		MAROS_MESZAROS_DIR "QSIERRA.mat",  MAROS_MESZAROS_DIR "QSTAIR.mat",
+		MAROS_MESZAROS_DIR "QSTANDAT.mat", MAROS_MESZAROS_DIR "S268.mat",
+		MAROS_MESZAROS_DIR "STADAT1.mat",  MAROS_MESZAROS_DIR "STADAT2.mat",
+		MAROS_MESZAROS_DIR "STADAT3.mat",  MAROS_MESZAROS_DIR "STCQP1.mat",
+		MAROS_MESZAROS_DIR "STCQP2.mat",   MAROS_MESZAROS_DIR "TAME.mat",
+		MAROS_MESZAROS_DIR "UBH1.mat",     MAROS_MESZAROS_DIR "VALUES.mat",
+		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
+};
 
-	QpBox<Scalar> qp{random_with_dim_and_n_eq_and_n_in, dim, n_eq,n_in};
+struct MarosMeszarosQp {
+	using Mat = Eigen::SparseMatrix<double, Eigen::ColMajor, mat_int32_t>;
+	using Vec = Eigen::VectorXd;
 
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> primal_init(dim);
-	Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_init_eq(n_eq);
-    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dual_init_in(n_in);
-	primal_init.setZero();
-	primal_init = -qp.H.llt().solve(qp.g);
-	dual_init_eq.setZero();
-    dual_init_in.setZero();
+	std::string filename;
 
-	Scalar eps_abs = Scalar(1e-9);
-	Scalar eps_rel = Scalar(0);
-	{
-		EigenNoAlloc _{};
-		qp::detail::solve_qp_in( //
-				VectorViewMut<Scalar>{from_eigen, primal_init},
-				VectorViewMut<Scalar>{from_eigen, dual_init_eq},
-                VectorViewMut<Scalar>{from_eigen, dual_init_in},
-				qp.as_view_box(),
-				max_it,
-				max_it_in,
-				eps_abs,
-				eps_rel,
-				qp::preconditioner::IdentityPrecond{});
+	Mat P;
+	Vec q;
+	Mat A;
+	Vec l;
+	Vec u;
+};
+
+auto load_qp(char const* filename) -> MarosMeszarosQp {
+	using Mat = MarosMeszarosQp::Mat;
+	using Vec = MarosMeszarosQp::Vec;
+
+	mat_t* mat_fp = Mat_Open(filename, MAT_ACC_RDONLY);
+	VEG_ASSERT(mat_fp != nullptr);
+	auto&& _mat_fp_cleanup = veg::defer([&] { Mat_Close(mat_fp); });
+	veg::unused(_mat_fp_cleanup);
+
+	auto load_mat = [&](char const* name) -> Mat {
+		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
+		VEG_ASSERT(mat_var != nullptr);
+		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
+		veg::unused(_mat_var_cleanup);
+
+		VEG_ASSERT(int(mat_var->class_type) == int(matio_classes::MAT_C_SPARSE));
+		auto const* ptr = static_cast<mat_sparse_t const*>(mat_var->data);
+
+		isize nrows = isize(mat_var->dims[0]);
+		isize ncols = isize(mat_var->dims[1]);
+
+		auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
+		auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
+		auto vptr = static_cast<double const*>(ptr->data);         // NOLINT
+
+		Mat out;
+		out.resize(nrows, ncols);
+		out.reserve(ptr->nzmax);
+		for (isize j = 0; j < ncols; ++j) {
+			isize col_start = optr[j];
+			isize col_end = optr[j + 1];
+
+			for (isize p = col_start; p < col_end; ++p) {
+
+				isize i = iptr[p];
+				double v = vptr[p];
+
+				out.insert(i, j) = v;
+			}
+		}
+
+		return out;
+	};
+
+	auto load_vec = [&](char const* name) -> Vec {
+		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
+		VEG_ASSERT(mat_var != nullptr);
+		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
+		veg::unused(_mat_var_cleanup);
+
+		VEG_ASSERT(int(mat_var->data_type) == int(matio_types::MAT_T_DOUBLE));
+		auto const* ptr = static_cast<double const*>(mat_var->data);
+
+		auto view = Eigen::Map<Vec const>{
+				ptr,
+				long(mat_var->dims[0]),
+		};
+		return view;
+	};
+
+	return {
+			filename,
+			load_mat("P"),
+			load_vec("q"),
+			load_mat("A"),
+			load_vec("l"),
+			load_vec("u"),
+	};
+}
+
+TEST_CASE("maros meszaros wip") {
+	for (auto const* file : files) {
+		auto qp = load_qp(file);
+		isize n = qp.P.rows();
+		isize n_in = qp.A.rows();
+
+		::fmt::print(
+				"path: {}, n: {}, n:_in: {}.{}\n",
+				qp.filename,
+				n,
+				n_in,
+				(n > 1000 || n_in > 1000) ? "skipping" : "");
 	}
-
-	DOCTEST_CHECK(
-			(qp.A * primal_init - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
-	DOCTEST_CHECK(
-			(qp.H * primal_init + qp.g + qp.A.transpose() * dual_init_eq + qp.C.transpose() * dual_init_in)
-					.lpNorm<Eigen::Infinity>() <= eps_abs);
 }
