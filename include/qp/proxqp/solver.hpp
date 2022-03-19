@@ -150,12 +150,23 @@ void mu_update(
 		return;
 	}
 
-	LDLT_TEMP_MAT(T, rank_update_w, n + n_eq + n_c, n_eq + n_c, stack);
 	LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
-	rank_update_w.bottomRows(n_eq + n_c).diagonal().setConstant(1);
 	rank_update_alpha.head(n_eq).setConstant(qpresults.mu_eq_inv - mu_eq_new_inv);
 	rank_update_alpha.tail(n_c).setConstant(qpresults.mu_in_inv - mu_in_new_inv);
-	qpwork.ldl.rank_r_update(rank_update_w, rank_update_alpha, stack);
+
+	{
+		auto _indices =
+				stack.make_new_for_overwrite(veg::Tag<isize>{}, n_eq + n_c).unwrap();
+		isize* indices = _indices.ptr_mut();
+		for (isize k = 0; k < n_eq; ++k) {
+			indices[k] = n + k;
+		}
+		for (isize k = 0; k < n_c; ++k) {
+			indices[n_eq + k] = n + n_eq + k;
+		}
+		qpwork.ldl.diagonal_update_clobber_indices(
+				indices, n_eq + n_c, rank_update_alpha, stack);
+	}
 }
 
 template <typename T>

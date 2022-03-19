@@ -138,10 +138,21 @@ public:
 		ldl.reserve_uninit(dim + n_eq + n_in);
 		ldl_stack.resize_for_overwrite(
 				veg::dynstack::StackReq(
+
 						dense_ldlt::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
+
+						(dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_eq + n_in) &
+		         veg::dynstack::StackReq{
+								 isize{sizeof(isize)} * (n_eq + n_in), alignof(isize)} &
+		         dense_ldlt::Ldlt<T>::diagonal_update_req(
+								 dim + n_eq + n_in, n_eq + n_in)) |
+
 						(dense_ldlt::temp_mat_req(veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
-		         dense_ldlt::Ldlt<T>::insert_block_at_req(dim + n_eq + n_in, n_in)) |
+		         dense_ldlt::Ldlt<T>::insert_block_at_req(
+								 dim + n_eq + n_in, n_in)) |
+
 						dense_ldlt::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
+
 						.alloc_req());
 
 		alphas.reserve(2 * n_in);
