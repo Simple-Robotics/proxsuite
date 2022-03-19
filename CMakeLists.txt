@@ -19,7 +19,9 @@ else()
 endif()
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS
+    "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
+)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(CMAKE_SKIP_RPATH FALSE)
@@ -145,9 +147,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 
   string(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
   message(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
-  target_link_libraries(
-    inria_ldlt_py PUBLIC inria_ldlt pybind11::module
-  )
+  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt pybind11::module)
   set_target_properties(
     inria_ldlt_py
     PROPERTIES BUILD_RPATH ${CMAKE_BUILD_RPATH}
@@ -157,6 +157,11 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 endif()
 
 if(ENABLE_TESTING)
+  set(EXTRA_CXX_FLAGS
+      $ENV{EXTRA_CXX_FLAGS}
+      CACHE STRING "extra compiler flags for development"
+  )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_FLAGS}")
   enable_testing()
   add_subdirectory(test)
 endif()
