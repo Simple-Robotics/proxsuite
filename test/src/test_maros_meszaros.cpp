@@ -85,31 +85,34 @@ TEST_CASE("maros meszaros wip") {
 	for (auto const* file : files) {
 		auto qp = load_qp(file);
 		isize n = qp.P.rows();
-		isize n_eq = 0;
-		isize n_in = qp.A.rows();
+		isize n_eq_in = qp.A.rows();
 
-		bool skip = n > 1000 || n_in > 1000;
+		bool skip = n > 1000 || n_eq_in > 1000;
 		::fmt::print(
-				"path: {}, n: {}, n:_in: {}.{}\n",
+				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
 				qp.filename,
 				n,
-				n_in,
+				n_eq_in,
 				skip ? "skipping" : "");
 
 		if (!skip) {
+
+			auto preprocessed = preprocess_qp(qp);
+			auto& H = preprocessed.H;
+			auto& A = preprocessed.A;
+			auto& C = preprocessed.C;
+			auto& g = preprocessed.g;
+			auto& b = preprocessed.b;
+			auto& u = preprocessed.u;
+			auto& l = preprocessed.l;
+
+			isize n_eq = A.rows();
+			isize n_in = C.rows();
+
 			QPSettings<T> settings;
 			QPData<T> data{n, n_eq, n_in};
 			QPResults<T> results{n, n_eq, n_in};
 			QPWorkspace<T> work{n, n_eq, n_in};
-
-			Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> A{n_eq, n};
-			Eigen::Matrix<T, Eigen::Dynamic, 1> b{n_eq};
-
-			auto H = qp.P.toDense();
-			auto C = qp.A.toDense();
-			auto g = qp.q;
-			auto u = qp.u;
-			auto l = qp.l;
 
 			results.x.setZero();
 			results.y.setZero();
@@ -123,7 +126,9 @@ TEST_CASE("maros meszaros wip") {
 			auto& z = results.z;
 			auto& eps = settings.eps_abs;
 
-			CHECK((H * x + g + A.transpose() * y + C.transpose() * z).norm() < eps);
+			CHECK(
+					infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) < eps);
+			CHECK(infty_norm(A * x - b) > -eps);
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
 		}

@@ -83,23 +83,25 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 
 	auto qp = load_qp(file);
 	isize n = qp.P.rows();
-	isize n_in = qp.A.rows();
-	bool skip = n > 1000 || n_in > 1000;
-	isize n_eq = 0;
+	isize n_eq_in = qp.A.rows();
+	bool skip = n > 1000 || n_eq_in > 1000;
 
 	if (!skip) {
 
-		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> A{n_eq, n};
-		Eigen::Matrix<T, Eigen::Dynamic, 1> b{n_eq};
+		auto preprocessed = preprocess_qp(qp);
+		auto& H = preprocessed.H;
+		auto& A = preprocessed.A;
+		auto& C = preprocessed.C;
+		auto& g = preprocessed.g;
+		auto& b = preprocessed.b;
+		auto& u = preprocessed.u;
+		auto& l = preprocessed.l;
 
-		auto H = qp.P.toDense();
-		auto C = qp.A.toDense();
-		auto g = qp.q;
-		auto u = qp.u;
-		auto l = qp.l;
+		isize n_eq = A.rows();
+		isize n_in = C.rows();
 
 		for (auto _ : s) {
-      s.PauseTiming();
+			s.PauseTiming();
 
 			QPSettings<T> settings;
 			QPData<T> data{n, n_eq, n_in};
@@ -111,7 +113,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			detail::QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
 
-      s.ResumeTiming();
+			s.ResumeTiming();
 			detail::qp_solve(settings, data, results, work);
 		}
 	} else {
@@ -129,8 +131,8 @@ auto main(int argc, char** argv) -> int {
 	for (auto const* file : files) {
 		auto qp = load_qp(file);
 		isize n = qp.P.rows();
-		isize n_in = qp.A.rows();
-		bool skip = n > 1000 || n_in > 1000;
+		isize n_eq_in = qp.A.rows();
+		bool skip = n > 1000 || n_eq_in > 1000;
 
 		if (!skip) {
 			benchmark::RegisterBenchmark(

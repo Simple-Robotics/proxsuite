@@ -87,3 +87,60 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 			load_vec("u"),
 	};
 }
+
+struct PreprocessedQp {
+	using Mat = MarosMeszarosQp::Mat::DenseMatrixType;
+	using Vec = MarosMeszarosQp::Vec;
+
+	Mat H;
+	Mat A;
+	Mat C;
+	Vec g;
+	Vec b;
+	Vec u;
+	Vec l;
+};
+
+auto preprocess_qp(MarosMeszarosQp& qp) -> PreprocessedQp {
+	using Mat = MarosMeszarosQp::Mat;
+	using Vec = MarosMeszarosQp::Vec;
+	using veg::isize;
+
+	auto eq = qp.l.array().cwiseEqual(qp.u.array()).eval();
+
+	isize n = qp.P.rows();
+	isize n_eq = eq.count();
+	isize n_in = eq.rows() - n_eq;
+
+	Mat::DenseMatrixType A{n_eq, n};
+	Vec b{n_eq};
+
+	Mat::DenseMatrixType C{n_in, n};
+	Vec u{n_in};
+	Vec l{n_in};
+
+	isize eq_idx = 0;
+	isize in_idx = 0;
+	for (isize i = 0; i < eq.rows(); ++i) {
+		if (eq[i]) {
+			A.row(eq_idx) = qp.A.row(i);
+			b[eq_idx] = qp.l[i];
+			++eq_idx;
+		} else {
+			C.row(in_idx) = qp.A.row(i);
+			l[in_idx] = qp.l[i];
+			u[in_idx] = qp.u[i];
+			++in_idx;
+		}
+	}
+
+	return {
+			qp.P.toDense(),
+			VEG_FWD(A),
+			VEG_FWD(C),
+			VEG_FWD(qp.q),
+			VEG_FWD(b),
+			VEG_FWD(u),
+			VEG_FWD(l),
+	};
+}
