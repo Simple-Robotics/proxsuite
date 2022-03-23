@@ -471,17 +471,6 @@ void active_set_change(
 					planned_to_add[planned_to_add_count] = i;
 					++planned_to_add_count;
 
-					// qpwork.dw_aug.setZero();
-					// qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
-					// qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + n_c_f) =
-					//     mu_in_inv_neg; // mu stores the inverse of mu
-
-					// isize insert_dim = n_c_f + 1 + qpmodel.n_eq + qpmodel.dim;
-					// qpwork.ldl.insert_block_at(
-					//     qpmodel.n_eq + qpmodel.dim + n_c_f,
-					//     qpwork.dw_aug.head(insert_dim),
-					//     stack);
-
 					for (isize j = 0; j < qpmodel.n_in; j++) {
 						if (qpwork.new_bijection_map(j) < qpwork.new_bijection_map(i) &&
 						    qpwork.new_bijection_map(j) >= n_c_f) {
