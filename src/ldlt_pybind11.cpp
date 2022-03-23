@@ -7,7 +7,6 @@
 #include <qp/QPWorkspace.hpp>
 
 #include <qp/proxqp/solver.hpp>
-#include <qp/proxqp/solver_eq.hpp>
 #include <qp/utils.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <fmt/chrono.h>
@@ -74,171 +73,6 @@ template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
-
-/*
-template <typename T, Layout L>
-auto initial_guess_line_search( //
-    VecRef<T> x,
-    VecRef<T> ye,
-    VecRef<T> ze,
-    VecRef<T> dw,
-    T mu_eq,
-    T mu_in,
-    T rho,
-    MatRef<T, L> H,
-    VecRef<T> g,
-    MatRef<T, L> A,
-    VecRef<T> b,
-    MatRef<T, L> C,
-    VecRef<T> u,
-    VecRef<T> l) -> T {
-  return line_search::initial_guess_line_search(
-      {from_eigen, x.eval()},
-      {from_eigen, ye.eval()},
-      {from_eigen, ze.eval()},
-      {from_eigen, dw.eval()},
-      mu_eq,
-      mu_in,
-      rho,
-      QpViewBox<T>{
-          {from_eigen, H.eval()},
-          {from_eigen, g.eval()},
-          {from_eigen, A.eval()},
-          {from_eigen, b.eval()},
-          {from_eigen, C.eval()},
-          {from_eigen, u.eval()},
-          {from_eigen, l.eval()},
-      });
-}
-
-template <typename T, Layout L>
-auto correction_guess_line_search( //
-    VecRef<T> x,
-    VecRef<T> xe,
-    VecRef<T> ye,
-    VecRef<T> ze,
-    VecRef<T> dx,
-    T mu_eq,
-    T mu_in,
-    T rho,
-    MatRef<T, L> H,
-    VecRef<T> g,
-    MatRef<T, L> A,
-    VecRef<T> b,
-    MatRef<T, L> C,
-    VecRef<T> u,
-    VecRef<T> l) -> T {
-  return line_search::correction_guess_line_search(
-      {from_eigen, x.eval()},
-      {from_eigen, xe.eval()},
-      {from_eigen, ye.eval()},
-      {from_eigen, ze.eval()},
-      {from_eigen, dx.eval()},
-      mu_eq,
-      mu_in,
-      rho,
-      QpViewBox<T>{
-          {from_eigen, H.eval()},
-          {from_eigen, g.eval()},
-          {from_eigen, A.eval()},
-          {from_eigen, b.eval()},
-          {from_eigen, C.eval()},
-          {from_eigen, u.eval()},
-          {from_eigen, l.eval()},
-      });
-}
-
-template <typename T, Layout L>
-void QPsetup( //
-    MatRef<T, L> H,
-    VecRef<T> g,
-    MatRef<T, L> A,
-    VecRef<T> b,
-    MatRef<T, L> C,
-    VecRef<T> u,
-    VecRef<T> l,
-    qp::QPSettings<T>& QPSettings,
-    qp::QPData<T>& qpmodel,
-    qp::QPWorkspace<T>& qpwork,
-    qp::QPResults<T>& QPResults,
-
-    T eps_abs = 1.e-9,
-    T eps_rel = 0,
-    const bool VERBOSE = true
-
-) {
-
-  QPSettings.eps_abs = eps_abs;
-  QPSettings.eps_rel = eps_rel;
-  QPSettings.verbose = VERBOSE;
-
-  qpmodel.H = H.eval();
-  qpmodel.g = g.eval();
-  qpmodel.A = A.eval();
-  qpmodel.b = b.eval();
-  qpmodel.C = C.eval();
-  qpmodel.u = u.eval();
-  qpmodel.l = l.eval();
-
-  qpwork.H_scaled = qpmodel.H;
-  qpwork.g_scaled = qpmodel.g;
-  qpwork.A_scaled = qpmodel.A;
-  qpwork.b_scaled = qpmodel.b;
-  qpwork.C_scaled = qpmodel.C;
-  qpwork.u_scaled = qpmodel.u;
-  qpwork.l_scaled = qpmodel.l;
-
-  qp::QpViewBoxMut<T> qp_scaled{
-      {from_eigen, qpwork.H_scaled},
-      {from_eigen, qpwork.g_scaled},
-      {from_eigen, qpwork.A_scaled},
-      {from_eigen, qpwork.b_scaled},
-      {from_eigen, qpwork.C_scaled},
-      {from_eigen, qpwork.u_scaled},
-      {from_eigen, qpwork.l_scaled}};
-
-  qpwork.ruiz.scale_qp_in_place(
-      qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
-  qpwork.dw_aug.setZero();
-
-  qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
-  qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-  qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
-
-  qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-  qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-      QPResults.rho;
-  qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
-      qpwork.A_scaled.transpose();
-  qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
-  qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
-  qpwork.kkt.diagonal()
-      .segment(qpmodel.dim, qpmodel.n_eq)
-      .setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
-
-{
-    LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-    qpwork.ldl.factor(qpwork.kkt, LDLT_FWD(stack));
-  }
-  qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-
-  qp::detail::iterative_solve_with_permut_fact( //
-      QPSettings,
-      qpmodel,
-      QPResults,
-      qpwork,
-      T(1),
-      qpmodel.dim + qpmodel.n_eq);
-
-  QPResults.x = qpwork.dw_aug.head(qpmodel.dim);
-  QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-
-  qpwork.dw_aug.setZero();
-}
-*/
 
 template <typename T, Layout L>
 void QPupdateMatrice( //
@@ -940,32 +774,6 @@ void QPreset(
 	qpwork.rhs.setZero();
 }
 
-template <typename T, Layout L>
-void QPsolveEq(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
-		const qp::QPSettings<T>& qpsettings) {
-
-	auto start = std::chrono::high_resolution_clock::now();
-	qp::detail::qp_solve_eq( //
-			qpsettings,
-			qpmodel,
-			qpresults,
-			qpwork);
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-	std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-	std::cout << "n_ext : " << qpresults.n_ext << std::endl;
-	std::cout << "n_tot : " << qpresults.n_tot << std::endl;
-	std::cout << "mu updates : " << qpresults.n_mu_change << std::endl;
-	std::cout << "objValue : " << qpresults.objValue << std::endl;
-	qpresults.timing = duration.count();
-	std::cout << "timing : " << qpresults.timing << std::endl;
-}
-
 } // namespace pybind11
 } // namespace qp
 
@@ -982,13 +790,9 @@ INRIA LDLT decomposition
   )pbdoc";
 	using namespace ldlt;
 	using namespace qp;
-	// using namespace preconditioner;
-	// constexpr auto c = colmajor;
 	::pybind11::class_<qp::QPWorkspace<f64>>(m, "QPWorkspace")
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
 	                                             // read-write public data member
-			//.def_readwrite("ruiz", &qp::QPWorkspace<f64>::ruiz)
-	    //.def_readonly("ldl", &qp::QPWorkspace<f64>::ldl)
 			.def_readwrite("H_scaled", &qp::QPWorkspace<f64>::H_scaled)
 			.def_readwrite("g_scaled", &qp::QPWorkspace<f64>::g_scaled)
 			.def_readwrite("A_scaled", &qp::QPWorkspace<f64>::A_scaled)
@@ -1111,7 +915,6 @@ INRIA LDLT decomposition
 			.def_readwrite("verbose", &qp::QPSettings<f64>::verbose);
 
 	::pybind11::class_<qp::QPData<f64>>(m, "QPData")
-			//.def(::pybind11::init()) // constructor
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
 	                                             // read-write public data member
 
@@ -1128,34 +931,9 @@ INRIA LDLT decomposition
 			.def_readonly("n_total", &qp::QPData<f64>::n_total);
 
 	constexpr auto c = rowmajor;
-	/*
-	m.def(
-	    "initial_guess_line_search",
-	    &qp::pybind11::initial_guess_line_search<f32, c>);
-	m.def(
-	    "initial_guess_line_search",
-	    &qp::pybind11::initial_guess_line_search<f64, c>);
 
-	m.def(
-	    "iterative_solve_with_permut_fact",
-	    &ldlt::pybind11::iterative_solve_with_permut_fact<f32, c>);
-	m.def(
-	    "iterative_solve_with_permut_fact",
-	    &ldlt::pybind11::iterative_solve_with_permut_fact<f64, c>);
-
-	m.def(
-	    "correction_guess_line_search",
-	    &qp::pybind11::correction_guess_line_search<f32, c>);
-	m.def(
-	    "correction_guess_line_search",
-	    &qp::pybind11::correction_guess_line_search<f64, c>);
-
-	*/
 	m.def("QPsolve", &qp::pybind11::QPsolve<f32, c>);
 	m.def("QPsolve", &qp::pybind11::QPsolve<f64, c>);
-
-	m.def("QPsolveEq", &qp::pybind11::QPsolveEq<f32, c>);
-	m.def("QPsolveEq", &qp::pybind11::QPsolveEq<f64, c>);
 
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f32, c>);
 	m.def("QPupdateMatrice", &qp::pybind11::QPupdateMatrice<f64, c>);
@@ -1165,58 +943,6 @@ INRIA LDLT decomposition
 
 	m.def("QPreset", &qp::pybind11::QPreset<f32>);
 	m.def("QPreset", &qp::pybind11::QPreset<f64>);
-
-	/*
-	m.def("correction_guess", &qp::pybind11::correction_guess<f32>);
-	m.def("correction_guess", &qp::pybind11::correction_guess<f64>);
-	m.def("initial_guess_fact", &qp::pybind11::initial_guess_fact<f32>);
-	m.def("initial_guess_fact", &qp::pybind11::initial_guess_fact<f64>);
-	m.def("iterative_solve_with_permut_fact",
-	&qp::pybind11::iterative_solve_with_permut_fact<f32>);
-	m.def("iterative_solve_with_permut_fact",
-	&qp::pybind11::iterative_solve_with_permut_fact<f64>);
-	m.def("BCL_update_fact", &qp::pybind11::BCL_update_fact<f32>);
-	m.def("BCL_update_fact", &qp::pybind11::BCL_update_fact<f64>);
-	m.def("global_primal_residual", &qp::pybind11::global_primal_residual<f32>);
-	m.def("global_primal_residual", &qp::pybind11::global_primal_residual<f64>);
-	m.def("global_dual_residual", &qp::pybind11::global_dual_residual<f32>);
-	m.def("global_dual_residual", &qp::pybind11::global_dual_residual<f64>);
-	m.def("saddle_point", &qp::pybind11::saddle_point<f32>);
-	m.def("saddle_point", &qp::pybind11::saddle_point<f64>);
-	m.def("newton_step_fact", &qp::pybind11::newton_step_fact<f32>);
-	m.def("newton_step_fact", &qp::pybind11::newton_step_fact<f64>);
-	m.def("correction_guess_LS", &qp::pybind11::correction_guess_LS<f32>);
-	m.def("correction_guess_LS", &qp::pybind11::correction_guess_LS<f64>);
-	m.def("gradient_norm_qpalm", &qp::pybind11::gradient_norm_qpalm<f32>);
-	m.def("gradient_norm_qpalm", &qp::pybind11::gradient_norm_qpalm<f64>);
-	m.def("initial_guess_LS", &qp::pybind11::initial_guess_LS<f32>);
-	m.def("initial_guess_LS", &qp::pybind11::initial_guess_LS<f64>);
-	m.def("local_saddle_point", &qp::pybind11::local_saddle_point<f32>);
-	m.def("local_saddle_point", &qp::pybind11::local_saddle_point<f64>);
-	m.def("gradient_norm_computation",
-	&qp::pybind11::gradient_norm_computation<f32>);
-	m.def("gradient_norm_computation",
-	&qp::pybind11::gradient_norm_computation<f64>); m.def("transition_algebra",
-	&qp::pybind11::transition_algebra<f32>); m.def("transition_algebra",
-	&qp::pybind11::transition_algebra<f64>);
-
-	m.def("transition_algebra_before_LS_CG",
-	&qp::pybind11::transition_algebra_before_LS_CG<f32>);
-	m.def("transition_algebra_before_LS_CG",
-	&qp::pybind11::transition_algebra_before_LS_CG<f64>);
-	m.def("transition_algebra_after_LS_CG",
-	&qp::pybind11::transition_algebra_after_LS_CG<f32>);
-	m.def("transition_algebra_after_LS_CG",
-	&qp::pybind11::transition_algebra_after_LS_CG<f64>);
-	m.def("transition_algebra_before_IG_newton",
-	&qp::pybind11::transition_algebra_before_IG_newton<f32>);
-	m.def("transition_algebra_before_IG_newton",
-	&qp::pybind11::transition_algebra_before_IG_newton<f64>);
-	m.def("transition_algebra_after_IG_LS",
-	&qp::pybind11::transition_algebra_after_IG_LS<f32>);
-	m.def("transition_algebra_after_IG_LS",
-	&qp::pybind11::transition_algebra_after_IG_LS<f64>);
-	*/
 
 	m.attr("__version__") = "dev";
 }
