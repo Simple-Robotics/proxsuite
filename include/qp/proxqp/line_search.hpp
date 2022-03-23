@@ -452,6 +452,9 @@ void active_set_change(
 		}
 		std::sort(planned_to_delete, planned_to_delete + planned_to_delete_count);
 		qpwork.ldl.delete_at(planned_to_delete, planned_to_delete_count, stack);
+    if (planned_to_delete_count > 0) {
+      qpwork.constraints_changed = true;
+    }
 	}
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
@@ -497,6 +500,9 @@ void active_set_change(
 			}
 			qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
 		}
+    if (planned_to_add_count > 0) {
+      qpwork.constraints_changed = true;
+    }
 	}
 
 	qpresults.n_c = n_c_f;

@@ -97,6 +97,8 @@ public:
 	Vec primal_residual_in_scaled_low_plus_alphaCdx;
 	Vec CTz;
 
+	bool constraints_changed;
+
 	QPWorkspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
 				ruiz(qp::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
@@ -132,7 +134,8 @@ public:
 
 				primal_residual_in_scaled_up_plus_alphaCdx(n_in),
 				primal_residual_in_scaled_low_plus_alphaCdx(n_in),
-				CTz(dim)
+				CTz(dim),
+				constraints_changed(false)
 
 	{
 		ldl.reserve_uninit(dim + n_eq + n_in);

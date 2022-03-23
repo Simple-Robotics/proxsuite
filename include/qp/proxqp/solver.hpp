@@ -56,35 +56,58 @@ void refactorize(
 		qp::QPWorkspace<T>& qpwork,
 		T rho_new) {
 
+	if (!qpwork.constraints_changed && rho_new == qpresults.rho) {
+		return;
+	}
+
 	qpwork.dw_aug.setZero();
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() += rho_new - qpresults.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 			-qpresults.mu_eq_inv;
-	{
-		veg::dynstack::DynStackMut stack{
-				veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-		qpwork.ldl.factorize(qpwork.kkt, stack);
-	}
 
-	for (isize j = 0; j < qpresults.n_c; ++j) {
-		for (isize i = 0; i < qpmodel.n_in; ++i) {
-			if (j == qpwork.current_bijection_map(i)) {
-				qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
-				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) =
-						-qpresults.mu_in_inv; // mu_in stores the inverse of mu_in
-				{
-					isize insert_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
-					veg::dynstack::DynStackMut stack{
-							veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-					qpwork.ldl.insert_block_at(
-							qpmodel.n_eq + qpmodel.dim + j,
-							qpwork.dw_aug.head(insert_dim),
-							stack);
-				}
-				qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) = T(0);
-			}
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	qpwork.ldl.factorize(qpwork.kkt, stack);
+
+	isize n = qpmodel.dim;
+	isize n_eq = qpmodel.n_eq;
+	isize n_in = qpmodel.n_in;
+	isize n_c = qpresults.n_c;
+
+	LDLT_TEMP_MAT(T, new_cols, n + n_eq + n_c, n_c, stack);
+
+	for (isize i = 0; i < n_in; ++i) {
+		isize j = qpwork.current_bijection_map[i];
+		if (j < n_c) {
+			auto col = new_cols.col(j);
+			col.head(n) = qpwork.C_scaled.row(i);
+			col.segment(n, n_eq + n_c).setZero();
+			col(n + n_eq + j) = -qpresults.mu_in_inv;
 		}
 	}
+  qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
+
+	// for (isize j = 0; j < qpresults.n_c; ++j) {
+	// 	for (isize i = 0; i < qpmodel.n_in; ++i) {
+	// 		if (j == qpwork.current_bijection_map(i)) {
+	// 			qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
+	// 			qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) =
+	// 					-qpresults.mu_in_inv; // mu_in stores the inverse of mu_in
+	// 			{
+	// 				isize insert_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
+	// 				veg::dynstack::DynStackMut stack{
+	// 						veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	// 				qpwork.ldl.insert_block_at(
+	// 						qpmodel.n_eq + qpmodel.dim + j,
+	// 						qpwork.dw_aug.head(insert_dim),
+	// 						stack);
+	// 			}
+	// 			qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) = T(0);
+	// 		}
+	// 	}
+	// }
+	qpwork.constraints_changed = false;
+
 	qpwork.dw_aug.setZero();
 }
 
@@ -123,6 +146,8 @@ void mu_update(
 		qpwork.ldl.diagonal_update_clobber_indices(
 				indices, n_eq + n_c, rank_update_alpha, stack);
 	}
+
+	qpwork.constraints_changed = true;
 }
 
 template <typename T>
@@ -133,8 +158,6 @@ void iterative_residual(
 		isize inner_pb_dim) {
 
 	qpwork.err.head(inner_pb_dim).noalias() = qpwork.rhs.head(inner_pb_dim);
-	// qpwork.err.head(qpmodel.dim).noalias() -= qpwork.H_scaled *
-	// qpwork.dw_aug.head(qpmodel.dim);
 
 	qpwork.err.head(qpmodel.dim).noalias() -=
 			qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
