@@ -18,11 +18,18 @@ using namespace ldlt::tags;
 namespace line_search {
 
 template <typename T>
+struct PrimalDualGradResult {
+	T a;
+	T b;
+	T grad;
+};
+
+template <typename T>
 auto primal_dual_gradient_norm(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
 		qp::QPWorkspace<T>& qpwork,
-		T alpha) -> T {
+		T alpha) -> PrimalDualGradResult<T> {
 
 	/*
 	 * the function computes the first derivative of the proximal augmented
@@ -135,7 +142,11 @@ auto primal_dual_gradient_norm(
 	b += qpresults.nu * qpresults.mu_in *
 	     qpwork.err.tail(qpmodel.n_in).dot(qpwork.active_part_z);
 
-	return a * alpha + b;
+	return {
+			a,
+			b,
+			a * alpha + b,
+	};
 }
 
 template <typename T>
@@ -218,68 +229,84 @@ void primal_dual_ls(
 
 	isize n_alpha = qpwork.alphas.size();
 
-	if (n_alpha != 0) {
-		// 1.2 sort the alphas
+	// 1.2 sort the alphas
 
-		std::sort(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha);
-		qpwork.alphas.erase(
-				std::unique(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha),
-				qpwork.alphas.begin() + n_alpha);
-		n_alpha = qpwork.alphas.size();
+	std::sort(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha);
+	qpwork.alphas.erase(
+			std::unique( //
+					qpwork.alphas.begin(),
+					qpwork.alphas.begin() + n_alpha),
+			qpwork.alphas.begin() + n_alpha);
 
-		////////// STEP 2 ///////////
+	n_alpha = qpwork.alphas.size();
 
-		T last_neg_grad = 0;
-		T alpha_last_neg = 0;
-		T first_pos_grad = 0;
-		T alpha_first_pos = 0;
-		for (isize i = 0; i < n_alpha; ++i) {
-			alpha_ = qpwork.alphas[i];
+	////////// STEP 2 ///////////
+	auto infty = std::numeric_limits<T>::infinity();
 
-			/*
-			 * 2.1
-			 * For each positive alpha compute the first derivative of
-			 * phi(alpha) = [proximal augmented lagrangian of the
-			 *               subproblem evaluated at x_k + alpha dx]
-			 * using function "gradient_norm"
-			 *
-			 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
-			 * phi'(alpha) goes to infinity with alpha hence it cancels
-			 * uniquely at one optimal alpha*
-			 *
-			 * while phi'(alpha)<=0 store the derivative (noted
-			 * last_grad_neg) and alpha (last_alpha_neg
-			 * the first time phi'(alpha) > 0 store the derivative
-			 * (noted first_grad_pos) and alpha (first_alpha_pos), and
-			 * break the loop
-			 */
-			T gr = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, alpha_);
-
-			if (gr < T(0)) {
-				alpha_last_neg = alpha_;
-				last_neg_grad = gr;
-			} else {
-				first_pos_grad = gr;
-				alpha_first_pos = alpha_;
-				break;
-			}
-		}
+	T last_neg_grad = 0;
+	T alpha_last_neg = 0;
+	T first_pos_grad = 0;
+	T alpha_first_pos = infty;
+	for (isize i = 0; i < n_alpha; ++i) {
+		alpha_ = qpwork.alphas[i];
 
 		/*
-		 * 2.2
-		 * If first_alpha_pos corresponds to the first positive alpha of
-		 * previous loop, then do
-		 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
-		 * "gradient_norm"
+		 * 2.1
+		 * For each positive alpha compute the first derivative of
+		 * phi(alpha) = [proximal augmented lagrangian of the
+		 *               subproblem evaluated at x_k + alpha dx]
+		 * using function "gradient_norm"
+		 *
+		 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
+		 * phi'(alpha) goes to infinity with alpha hence it cancels
+		 * uniquely at one optimal alpha*
+		 *
+		 * while phi'(alpha)<=0 store the derivative (noted
+		 * last_grad_neg) and alpha (last_alpha_neg
+		 * the first time phi'(alpha) > 0 store the derivative
+		 * (noted first_grad_pos) and alpha (first_alpha_pos), and
+		 * break the loop
 		 */
-		if (last_neg_grad == T(0)) {
-			alpha_last_neg = T(0);
-			T gr = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, alpha_last_neg);
-			last_neg_grad = gr;
-		}
+		T gr = line_search::primal_dual_gradient_norm(
+							 qpmodel, qpresults, qpwork, alpha_)
+		           .grad;
 
+		if (gr < T(0)) {
+			alpha_last_neg = alpha_;
+			last_neg_grad = gr;
+		} else {
+			first_pos_grad = gr;
+			alpha_first_pos = alpha_;
+			break;
+		}
+	}
+
+	/*
+	 * 2.2
+	 * If first_alpha_pos corresponds to the first positive alpha of
+	 * previous loop, then do
+	 * last_alpha_neg = 0 and last_grad_neg = phi'(0) using function
+	 * "gradient_norm"
+	 */
+	if (alpha_last_neg == T(0)) {
+		last_neg_grad = line_search::primal_dual_gradient_norm(
+												qpmodel, qpresults, qpwork, alpha_last_neg)
+		                    .grad;
+	}
+	if (first_pos_grad == infty) {
+		/*
+		 * 2.3
+		 * the optimal alpha is within the interval
+		 * [last_alpha_neg, +∞)
+		 */
+		PrimalDualGradResult<T> res = line_search::primal_dual_gradient_norm(
+				qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
+		auto& a = res.a;
+		auto& b = res.b;
+		// grad = a * alpha + b
+		// grad = 0 => alpha = -b/a
+		qpwork.alpha = -b / a;
+	} else {
 		/*
 		 * 2.3
 		 * the optimal alpha is within the interval
@@ -287,76 +314,9 @@ void primal_dual_ls(
 		 * is an affine function in alpha
 		 */
 
-		if (first_pos_grad == T(0) && alpha_first_pos == T(0)) {
-			if (qpsettings.verbose) {
-				std::cout << "alpha first pos never updated, try to found one"
-									<< std::endl;
-			}
-
-			alpha_first_pos = T(1);
-			first_pos_grad = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, alpha_first_pos);
-			if (qpsettings.verbose) {
-				std::cout << "alpha_first_pos " << alpha_first_pos << " first_pos_grad "
-									<< first_pos_grad << std::endl;
-			}
-			for (isize i = 0; i < 8; ++i) {
-				if (first_pos_grad > T(0)) {
-					break;
-				}
-				alpha_first_pos *= 10;
-				first_pos_grad = line_search::primal_dual_gradient_norm(
-						qpmodel, qpresults, qpwork, alpha_first_pos);
-				if (qpsettings.verbose) {
-					std::cout << "alpha_first_pos " << alpha_first_pos
-										<< " first_pos_grad " << first_pos_grad << std::endl;
-				}
-			}
-		}
-
 		qpwork.alpha = alpha_last_neg - last_neg_grad *
 		                                    (alpha_first_pos - alpha_last_neg) /
 		                                    (first_pos_grad - last_neg_grad);
-
-		if (qpsettings.verbose) {
-			T gr_f = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, qpwork.alpha);
-			std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad "
-								<< last_neg_grad << " alpha_first_pos " << alpha_first_pos
-								<< "first_pos_grad " << first_pos_grad << " alpha_final "
-								<< qpwork.alpha << " gr_final " << gr_f << std::endl;
-		}
-
-	} else {
-
-		T alpha_last_neg(0);
-		T last_neg_grad = line_search::primal_dual_gradient_norm(
-				qpmodel, qpresults, qpwork, alpha_last_neg);
-
-		T alpha_first_pos(1);
-		T first_pos_grad = line_search::primal_dual_gradient_norm(
-				qpmodel, qpresults, qpwork, alpha_first_pos);
-		for (isize i = 0; i < 4; ++i) {
-			if (first_pos_grad > T(0)) {
-				break;
-			}
-			alpha_first_pos *= 10;
-			first_pos_grad = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, alpha_first_pos);
-		}
-
-		qpwork.alpha = alpha_last_neg - last_neg_grad *
-		                                    (alpha_first_pos - alpha_last_neg) /
-		                                    (first_pos_grad - last_neg_grad);
-		if (qpsettings.verbose) {
-			std::cout << " try finding positive grad " << std::endl;
-			T gr_f = line_search::primal_dual_gradient_norm(
-					qpmodel, qpresults, qpwork, qpwork.alpha);
-			std::cout << "alpha_last_neg " << alpha_last_neg << " last_neg_grad "
-								<< last_neg_grad << " alpha_first_pos " << alpha_first_pos
-								<< "first_pos_grad " << first_pos_grad << " alpha_final "
-								<< qpwork.alpha << " gr_final " << gr_f << std::endl;
-		}
 	}
 }
 
@@ -452,9 +412,9 @@ void active_set_change(
 		}
 		std::sort(planned_to_delete, planned_to_delete + planned_to_delete_count);
 		qpwork.ldl.delete_at(planned_to_delete, planned_to_delete_count, stack);
-    if (planned_to_delete_count > 0) {
-      qpwork.constraints_changed = true;
-    }
+		if (planned_to_delete_count > 0) {
+			qpwork.constraints_changed = true;
+		}
 	}
 
 	// ajout au nouvel active set, suppression pour le nouvel unactive set
@@ -500,9 +460,9 @@ void active_set_change(
 			}
 			qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
 		}
-    if (planned_to_add_count > 0) {
-      qpwork.constraints_changed = true;
-    }
+		if (planned_to_add_count > 0) {
+			qpwork.constraints_changed = true;
+		}
 	}
 
 	qpresults.n_c = n_c_f;
