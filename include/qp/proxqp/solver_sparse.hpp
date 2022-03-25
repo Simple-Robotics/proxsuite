@@ -307,6 +307,7 @@ auto ruiz_scale_qp_in_place( //
 		S.array() *= delta.array();
 		c *= gamma;
 	}
+  return c;
 }
 } // namespace detail
 
