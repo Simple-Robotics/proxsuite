@@ -125,9 +125,8 @@ endif()
 target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 
 add_subdirectory(external/dense-ldlt)
-# Declare the imported target as a build requirement using PRIVATE, where
-# project_target is a target created in the consuming project
-target_link_libraries(inria_ldlt INTERFACE dense-ldlt::dense-ldlt)
+add_subdirectory(external/sparse-ldlt)
+target_link_libraries(inria_ldlt INTERFACE dense-ldlt::dense-ldlt sparse-ldlt)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(

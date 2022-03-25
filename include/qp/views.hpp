@@ -139,7 +139,23 @@ struct infty_norm {
 		}
 	}
 };
+struct sqrt {
+	template <typename T>
+	auto operator()(T x) const -> T {
+		using std::sqrt;
+		return sqrt(x);
+	}
+};
+struct fabs {
+	template <typename T>
+	auto operator()(T x) const -> T {
+		using std::fabs;
+		return fabs(x);
+	}
+};
 } // namespace nb
+LDLT_DEFINE_NIEBLOID(fabs);
+LDLT_DEFINE_NIEBLOID(sqrt);
 LDLT_DEFINE_NIEBLOID(pow);
 LDLT_DEFINE_NIEBLOID(infty_norm);
 } // namespace qp

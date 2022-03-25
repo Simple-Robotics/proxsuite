@@ -21,16 +21,6 @@ enum struct Symmetry {
 };
 
 namespace detail {
-namespace nb {
-struct sqrt {
-	template <typename T>
-	auto operator()(T x) const -> T {
-		using std::sqrt;
-		return sqrt(x);
-	}
-};
-} // namespace nb
-LDLT_DEFINE_NIEBLOID(sqrt);
 
 template <typename T>
 auto ruiz_scale_qp_in_place( //
@@ -58,8 +48,8 @@ auto ruiz_scale_qp_in_place( //
 	 * compute equilibration parameters and scale in place the qp following
 	 * algorithm 1 at
 	 * https://sharelatex.irisa.fr/project/6100343e095d2649760f5631
-   *
-   * modified: removed g in gamma computation
+	 *
+	 * modified: removed g in gamma computation
 	 */
 
 	isize n = qp.H.rows;
@@ -126,6 +116,7 @@ auto ruiz_scale_qp_in_place( //
 
 			for (isize k = 0; k < n_eq; ++k) {
 				T aux = sqrt(infty_norm(A.row(k)));
+				// TODO: remove the first branch?
 				if (aux < machine_eps) {
 					delta(n + k) = T(1);
 				} else {
@@ -134,6 +125,7 @@ auto ruiz_scale_qp_in_place( //
 			}
 			for (isize k = 0; k < n_in; ++k) {
 				T aux = sqrt(infty_norm(C.row(k)));
+				// TODO: remove the first branch?
 				if (aux < machine_eps) {
 					delta(k + n + n_eq) = T(1);
 				} else {
