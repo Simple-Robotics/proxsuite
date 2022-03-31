@@ -756,22 +756,24 @@ void QPreset(
 		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
 	}
 
-	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+	if (qpsettings.warm_start){
+		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
-	qp::detail::iterative_solve_with_permut_fact( //
-			qpsettings,
-			qpmodel,
-			qpresults,
-			qpwork,
-			T(1),
-			qpmodel.dim + qpmodel.n_eq);
+		qp::detail::iterative_solve_with_permut_fact( //
+				qpsettings,
+				qpmodel,
+				qpresults,
+				qpwork,
+				T(1),
+				qpmodel.dim + qpmodel.n_eq);
 
-	qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-	qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 
-	qpwork.dw_aug.setZero();
-	qpwork.rhs.setZero();
+		qpwork.dw_aug.setZero();
+		qpwork.rhs.setZero();
+	}
 }
 
 } // namespace pybind11
@@ -912,6 +914,7 @@ INRIA LDLT decomposition
 			.def_readwrite(
 					"nb_iterative_refinement",
 					&qp::QPSettings<f64>::nb_iterative_refinement)
+			.def_readwrite("warm_start", &qp::QPSettings<f64>::warm_start)
 			.def_readwrite("verbose", &qp::QPSettings<f64>::verbose);
 
 	::pybind11::class_<qp::QPData<f64>>(m, "QPData")

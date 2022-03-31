@@ -293,7 +293,7 @@ void primal_dual_ls(
 												qpmodel, qpresults, qpwork, alpha_last_neg)
 		                    .grad;
 	}
-	if (first_pos_grad == infty) {
+	if (alpha_first_pos == infty) {
 		/*
 		 * 2.3
 		 * the optimal alpha is within the interval

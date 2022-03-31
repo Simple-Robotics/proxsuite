@@ -984,13 +984,14 @@ void QPsetup_generic( //
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
 		const bool VERBOSE = true,
-		const bool PMM = true
+		const bool warm_start = true
 
 ) {
 
 	QPSettings.eps_abs = eps_abs;
 	QPSettings.eps_rel = eps_rel;
 	QPSettings.verbose = VERBOSE;
+	QPSettings.warm_start = warm_start;
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
@@ -1056,54 +1057,25 @@ void QPsetup_generic( //
 		qpwork.ldl.factorize(qpwork.kkt, stack);
 	}
 
-	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-
 	// std::cout << "-qpwork.g_scaled " << -qpwork.g_scaled << std::endl;
 	// std::cout << "qpwork.b_scaled " << qpwork.b_scaled << std::endl;
+	if (QPSettings.warm_start){
 
-	qp::detail::iterative_solve_with_permut_fact( //
-			QPSettings,
-			qpmodel,
-			QPResults,
-			qpwork,
-			T(1),
-			qpmodel.dim + qpmodel.n_eq);
+		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+		qp::detail::iterative_solve_with_permut_fact( //
+				QPSettings,
+				qpmodel,
+				QPResults,
+				qpwork,
+				T(1),
+				qpmodel.dim + qpmodel.n_eq);
 
-	QPResults.x = qpwork.dw_aug.head(qpmodel.dim);
-	QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-	/*
-	LDLT_MULTI_WORKSPACE_MEMORY(
-	    (_htot,
-	     Uninit,
-	     Mat(qpmodel.dim + qpmodel.n_eq, qpmodel.dim + qpmodel.n_eq),
-	     LDLT_CACHELINE_BYTES,
-	     T));
-	auto Htot = _htot.to_eigen().eval();
-	Htot.setZero();
-	//Htot.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	Htot.topLeftCorner(qpmodel.dim, qpmodel.dim).template
-	triangularView<Eigen::Lower>() = qpwork.H_scaled.template
-	triangularView<Eigen::Lower>(); Htot.topLeftCorner(qpmodel.dim,
-	qpmodel.dim).diagonal().array() += QPResults.rho;
-	//Htot.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq)
-	=qpwork.A_scaled.transpose(); Htot.block(qpmodel.dim, 0, qpmodel.n_eq,
-	qpmodel.dim) = qpwork.A_scaled; Htot.bottomRightCorner(qpmodel.n_eq,
-	qpmodel.n_eq).setZero(); Htot.diagonal() .segment(qpmodel.dim, qpmodel.n_eq)
-	    .setConstant(-QPResults.mu_eq_inv);
-
-	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-	// std::cout << " norm(Htot * dw -  rhs) " << infty_norm(Htot *
-	// qpwork.dw_aug.head(qpmodel.dim+qpmodel.n_eq) -
-	// qpwork.rhs.head(qpmodel.dim+qpmodel.n_eq)) << std::endl;
-
-	// std::cout<< "Htot " << Htot << std::endl;
-
-	// std::cout << "x ws " << QPResults.x << std::endl;
-	// std::cout << "y ws " << QPResults.y << std::endl;
-	*/
-	qpwork.dw_aug.setZero();
+		QPResults.x = qpwork.dw_aug.head(qpmodel.dim); // test with no warm start
+		QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq); // test with no warm start
+		qpwork.dw_aug.setZero();
+	}
+	
 	qpwork.rhs.setZero();
 }
 
@@ -1124,7 +1096,7 @@ void QPsetup_dense( //
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
 		const bool VERBOSE = true,
-		const bool PMM = true) {
+		const bool warm_start = true) {
 	detail::QPsetup_generic(
 			H,
 			g,
@@ -1140,7 +1112,7 @@ void QPsetup_dense( //
 			eps_abs,
 			eps_rel,
 			VERBOSE,
-			PMM);
+			warm_start);
 }
 
 template <typename T>
@@ -1160,7 +1132,7 @@ void QPsetup( //
 		T eps_abs = 1.e-9,
 		T eps_rel = 0,
 		const bool VERBOSE = true,
-		const bool PMM = true
+		const bool warm_start = true
 
 ) {
 	detail::QPsetup_generic(
@@ -1178,7 +1150,7 @@ void QPsetup( //
 			eps_abs,
 			eps_rel,
 			VERBOSE,
-			PMM);
+			warm_start);
 }
 
 } // namespace detail

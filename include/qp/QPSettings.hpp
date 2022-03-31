@@ -44,7 +44,7 @@ public:
     isize nb_iterative_refinement;
 
     bool verbose;
-    InnerLoopSolvingMethod solvingMethod;
+    bool warm_start;
 
 	QPSettings(T alpha_bcl_=0.1,T beta_bcl_=0.9,T refactor_dual_feasibility_threshold_=1e-2,
                T refactor_rho_threshold_=1e-7,
@@ -55,7 +55,7 @@ public:
                T eps_abs_=1.e-9,T eps_rel_=0.,T err_IG_=1.e-2, T r=5.,
                isize max_iter_=10000,isize max_iter_in_=1500,
                isize nb_iterative_refinement_=10,T eps_refact_=1.e-6, //before eps_refact_=1.e-6
-               bool VERBOSE = false,InnerLoopSolvingMethod SolvingMethod = InnerLoopSolvingMethod::pmm)
+               bool VERBOSE = false,bool warm_start = true)
                 {
         
                     alpha_bcl=alpha_bcl_;
@@ -86,7 +86,7 @@ public:
                     max_iter_in=max_iter_in_;
                     nb_iterative_refinement=nb_iterative_refinement_;
                     verbose=VERBOSE;
-                    solvingMethod = SolvingMethod;
+                    warm_start = warm_start;
                 }
     
 };
