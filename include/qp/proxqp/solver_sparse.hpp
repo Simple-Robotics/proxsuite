@@ -174,35 +174,36 @@ auto ruiz_scale_qp_in_place( //
 			++iter;
 		}
 
-		auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
-		auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
-		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
-
 		// norm_infty of each column of A (resp. C), i.e.,
 		// each row of AT (resp. CT)
-		T* a_infty_norm = _a_infty_norm.ptr_mut();
-		T* c_infty_norm = _c_infty_norm.ptr_mut();
-		T* h_infty_norm = _h_infty_norm.ptr_mut();
+		{
+			auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+			auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+			auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+			T* a_infty_norm = _a_infty_norm.ptr_mut();
+			T* c_infty_norm = _c_infty_norm.ptr_mut();
+			T* h_infty_norm = _h_infty_norm.ptr_mut();
 
-		detail::rowwise_infty_norm(a_infty_norm, qp.AT.as_const());
-		detail::rowwise_infty_norm(c_infty_norm, qp.CT.as_const());
-		switch (sym) {
-		case Symmetry::LOWER: {
-			detail::colwise_infty_norm_symlo(h_infty_norm, qp.H.as_const());
-			break;
-		}
-		case Symmetry::UPPER: {
-			detail::colwise_infty_norm_symhi(h_infty_norm, qp.H.as_const());
-			break;
-		}
-		}
+			detail::rowwise_infty_norm(a_infty_norm, qp.AT.as_const());
+			detail::rowwise_infty_norm(c_infty_norm, qp.CT.as_const());
+			switch (sym) {
+			case Symmetry::LOWER: {
+				detail::colwise_infty_norm_symlo(h_infty_norm, qp.H.as_const());
+				break;
+			}
+			case Symmetry::UPPER: {
+				detail::colwise_infty_norm_symhi(h_infty_norm, qp.H.as_const());
+				break;
+			}
+			}
 
-		for (isize j = 0; j < n; ++j) {
-			delta(j) = T(1) / (machine_eps + sqrt(std::max({
-																					 h_infty_norm[j],
-																					 a_infty_norm[j],
-																					 c_infty_norm[j],
-																			 })));
+			for (isize j = 0; j < n; ++j) {
+				delta(j) = T(1) / (machine_eps + sqrt(std::max({
+																						 h_infty_norm[j],
+																						 a_infty_norm[j],
+																						 c_infty_norm[j],
+																				 })));
+			}
 		}
 		using namespace sparse_ldlt::util;
 		for (usize j = 0; j < usize(n_eq); ++j) {
@@ -243,7 +244,7 @@ auto ruiz_scale_qp_in_place( //
 				usize i = zero_extend(ATi[p]);
 				T& aji = ATx[p];
 				T delta_i = delta(isize(i));
-				aji = (delta_i * delta_j) * aji;
+				aji = delta_i * (aji * delta_j);
 			}
 		}
 
@@ -258,15 +259,9 @@ auto ruiz_scale_qp_in_place( //
 				usize i = zero_extend(CTi[p]);
 				T& cji = CTx[p];
 				T delta_i = delta(isize(i));
-				cji = (delta_i * delta_j) * cji;
+				cji = delta_i * (cji * delta_j);
 			}
 		}
-
-		// normalize vectors
-		qp.g.to_eigen().array() *= delta.head(n).array();
-		qp.b.to_eigen().array() *= delta.segment(n, n_eq).array();
-		qp.l.to_eigen().array() *= delta.tail(n_in).array();
-		qp.u.to_eigen().array() *= delta.tail(n_in).array();
 
 		// normalize H
 		switch (sym) {
@@ -284,7 +279,11 @@ auto ruiz_scale_qp_in_place( //
 						if (i < j) {
 							break;
 						}
-						Hx[p] *= delta_j * delta(isize(i));
+						Hx[p] = delta_j * Hx[p] * delta(isize(i));
+
+						if (p <= col_start) {
+							break;
+						}
 					}
 				}
 			}
@@ -301,14 +300,23 @@ auto ruiz_scale_qp_in_place( //
 					if (i > j) {
 						break;
 					}
-					Hx[p] *= delta_j * delta(isize(i));
+					Hx[p] = delta_j * Hx[p] * delta(isize(i));
 				}
 			}
 			break;
 		}
 		}
 
+		// normalize vectors
+		qp.g.to_eigen().array() *= delta.head(n).array();
+		qp.b.to_eigen().array() *= delta.segment(n, n_eq).array();
+		qp.l.to_eigen().array() *= delta.tail(n_in).array();
+		qp.u.to_eigen().array() *= delta.tail(n_in).array();
+
 		// additional normalization
+		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+		T* h_infty_norm = _h_infty_norm.ptr_mut();
+
 		switch (sym) {
 		case Symmetry::LOWER: {
 			detail::colwise_infty_norm_symlo(h_infty_norm, qp.H.as_const());

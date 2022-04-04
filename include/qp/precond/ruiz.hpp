@@ -82,34 +82,34 @@ auto ruiz_scale_qp_in_place( //
 			for (isize k = 0; k < n; ++k) {
 				switch (sym) {
 				case Symmetry::upper: { // upper triangular part
-					delta(k) = T(1) / (sqrt(max2(
-																 infty_norm(H.row(k).tail(n - k)), //
-																 max2(                             //
-																		 infty_norm(A.col(k)),
-																		 infty_norm(C.col(k))))) +
+					delta(k) = T(1) / (sqrt(std::max({
+																 infty_norm(H.col(k).head(k)),
+																 infty_norm(H.row(k).tail(n - k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
+														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::lower: { // lower triangular part
-					delta(k) = T(1) / (sqrt(max2(
-																 infty_norm(H.col(k).tail(n - k)), //
-																 max2(                             //
-																		 infty_norm(A.col(k)),
-																		 infty_norm(C.col(k))))) +
+					delta(k) = T(1) / (sqrt(std::max({
+																 infty_norm(H.row(k).head(k)),
+																 infty_norm(H.col(k).tail(n - k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
+														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::general: {
-					delta(k) = T(1) / (sqrt(max2(
-																 infty_norm(H.col(k)), //
-																 max2(                 //
-																		 infty_norm(A.col(k)),
-																		 infty_norm(C.col(k))))) +
+					delta(k) = T(1) / (sqrt(std::max({
+																 infty_norm(H.col(k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
+														 })) +
 					                   machine_eps);
 
 					break;
-				}
-				default: {
 				}
 				}
 			}
