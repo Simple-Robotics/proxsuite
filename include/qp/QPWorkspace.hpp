@@ -2,7 +2,6 @@
 #define INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
 
 #include <Eigen/Core>
-#include <ldlt/ldlt.hpp>
 #include <ldlt/views.hpp>
 #include <dense-ldlt/ldlt.hpp>
 #include <veg/vec.hpp>

@@ -3,10 +3,10 @@
 
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
-#include "ldlt/detail/simd.hpp"
 #include "ldlt/views.hpp"
 #include "ldlt/detail/meta.hpp"
 #include "qp/views.hpp"
+#include <dense-ldlt/core.hpp>
 #include <ostream>
 
 #include <Eigen/Core>
@@ -116,21 +116,11 @@ auto ruiz_scale_qp_in_place( //
 
 			for (isize k = 0; k < n_eq; ++k) {
 				T aux = sqrt(infty_norm(A.row(k)));
-				// TODO: remove the first branch?
-				if (aux < machine_eps) {
-					delta(n + k) = T(1);
-				} else {
-					delta(n + k) = T(1) / (aux + machine_eps);
-				}
+				delta(n + k) = T(1) / (aux + machine_eps);
 			}
 			for (isize k = 0; k < n_in; ++k) {
 				T aux = sqrt(infty_norm(C.row(k)));
-				// TODO: remove the first branch?
-				if (aux < machine_eps) {
-					delta(k + n + n_eq) = T(1);
-				} else {
-					delta(k + n + n_eq) = T(1) / (aux + machine_eps);
-				}
+				delta(k + n + n_eq) = T(1) / (aux + machine_eps);
 			}
 		}
 		{
@@ -256,17 +246,22 @@ struct RuizEquilibration {
 		*logger_ptr << " c : " << c << "\n\n";
 	}
 
+	static auto
+	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
+			-> veg::dynstack::StackReq {
+		return dense_ldlt::temp_vec_req(tag, n + n_eq + n_in);
+	}
+
 	// H_new = c * head @ H @ head
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
-	void scale_qp_in_place(
-			QpViewBoxMut<T> qp, VectorViewMut<T> tmp_delta_preallocated) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp, veg::dynstack::DynStackMut stack) {
 		delta.setOnes();
-		tmp_delta_preallocated.to_eigen().setZero();
+		LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
 		c = detail::ruiz_scale_qp_in_place(
 				{ldlt::from_eigen, delta},
-				tmp_delta_preallocated,
+				{ldlt::from_eigen, tmp_delta},
 				logger_ptr,
 				qp,
 				epsilon,

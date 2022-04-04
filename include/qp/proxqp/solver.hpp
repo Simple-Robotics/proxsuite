@@ -1,17 +1,13 @@
 #ifndef INRIA_LDLT_OLD_NEW_SOLVER_HPP_HDWGZKCLS
 #define INRIA_LDLT_OLD_NEW_SOLVER_HPP_HDWGZKCLS
 
-#include <ldlt/ldlt.hpp>
 #include "qp/views.hpp"
-#include "ldlt/factorize.hpp"
-#include "ldlt/detail/meta.hpp"
-#include "ldlt/solve.hpp"
-#include "ldlt/update.hpp"
 #include "qp/proxqp/line_search.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>
 #include <fstream>
+#include <veg/util/dynstack_alloc.hpp>
 
 #include <dense-ldlt/ldlt.hpp>
 
@@ -85,7 +81,7 @@ void refactorize(
 			col(n + n_eq + j) = -qpresults.mu_in_inv;
 		}
 	}
-  qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
+	qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
 
 	// for (isize j = 0; j < qpresults.n_c; ++j) {
 	// 	for (isize i = 0; i < qpmodel.n_in; ++i) {
@@ -1027,8 +1023,9 @@ void QPsetup_generic( //
 			{from_eigen, qpwork.u_scaled},
 			{from_eigen, qpwork.l_scaled}};
 
-	qpwork.ruiz.scale_qp_in_place(
-			qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
 	qpwork.dw_aug.setZero();
 
 	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
@@ -1039,9 +1036,6 @@ void QPsetup_generic( //
 	qpwork.correction_guess_rhs_b = infty_norm(qpwork.b_scaled);
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	// qpwork.kkt.topLeftCorner(qpmodel.dim,qpmodel.dim).template
-	// triangularView<Eigen::Lower>() = qpwork.H_scaled.template
-	// triangularView<Eigen::Lower>();
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
 			QPResults.rho;
 	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
@@ -1052,14 +1046,11 @@ void QPsetup_generic( //
 			.segment(qpmodel.dim, qpmodel.n_eq)
 			.setConstant(-QPResults.mu_eq_inv);
 
-	{
-		LDLT_MAKE_STACK(stack, ldlt::Ldlt<T>::factor_req(qpwork.kkt.rows()));
-		qpwork.ldl.factorize(qpwork.kkt, stack);
-	}
+	qpwork.ldl.factorize(qpwork.kkt, stack);
 
 	// std::cout << "-qpwork.g_scaled " << -qpwork.g_scaled << std::endl;
 	// std::cout << "qpwork.b_scaled " << qpwork.b_scaled << std::endl;
-	if (QPSettings.warm_start){
+	if (QPSettings.warm_start) {
 
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
@@ -1072,10 +1063,11 @@ void QPsetup_generic( //
 				qpmodel.dim + qpmodel.n_eq);
 
 		QPResults.x = qpwork.dw_aug.head(qpmodel.dim); // test with no warm start
-		QPResults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq); // test with no warm start
+		QPResults.y = qpwork.dw_aug.segment(
+				qpmodel.dim, qpmodel.n_eq); // test with no warm start
 		qpwork.dw_aug.setZero();
 	}
-	
+
 	qpwork.rhs.setZero();
 }
 

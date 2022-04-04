@@ -4,7 +4,6 @@
 #include <veg/util/assert.hpp>
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
-#include "ldlt/detail/simd.hpp"
 #include "ldlt/detail/meta.hpp"
 #include <Eigen/Core>
 #include <cstdint>
@@ -15,26 +14,15 @@
 #include <veg/memory/dynamic_stack.hpp>
 
 namespace ldlt {
+using veg::isize;
+using veg::usize;
+using veg::u32;
+using veg::i32;
+using veg::i64;
+using veg::u64;
+using f32 = float;
+using f64 = double;
 namespace detail {
-
-template <typename T>
-using should_vectorize = std::integral_constant<
-		bool,                           //
-		(std::is_same<T, f32>::value || //
-     std::is_same<T, f64>::value)   //
-		>;
-
-template <typename T>
-auto _adjusted_stride(isize n) noexcept -> isize {
-	isize simd_stride = (SIMDE_NATURAL_VECTOR_SIZE / 8) / isize{alignof(T)};
-	return detail::should_vectorize<T>::value
-	           ? (n + simd_stride - 1) / simd_stride * simd_stride
-	           : n;
-}
-template <typename T>
-auto _align() noexcept -> isize {
-	return isize(alignof(T)) * detail::_adjusted_stride<T>(1);
-}
 
 struct NoCopy {
 	NoCopy() = default;
@@ -170,101 +158,6 @@ inline auto prev_aligned(void* ptr, usize align) noexcept -> void* {
 	return VoidPtr(BytePtr(ptr) + detail::bytes_to_prev_aligned(ptr, align));
 }
 
-constexpr usize align_simd = (SIMDE_NATURAL_VECTOR_SIZE / 8U);
-constexpr usize align_cacheline = 64;
-constexpr usize align_simd_and_cacheline = max2(align_simd, align_cacheline);
-
-template <typename T>
-struct SimdCachelineAlignStep {
-	static constexpr isize value =
-			isize(max2(usize(1), align_simd_and_cacheline / alignof(T)));
-};
-
-namespace malloca_tags {
-struct Impl {};
-struct Init {};
-struct Uninit {};
-} // namespace malloca_tags
-
-template <typename T>
-struct ManagedArrayBase {
-	struct Inner {
-		T* data;
-		usize n;
-	} _;
-
-	LDLT_INLINE
-	ManagedArrayBase(malloca_tags::Uninit /*tag*/, Inner inner) : _{inner} {
-		_.data = ::new (static_cast<void*>(_.data)) T[_.n];
-	}
-	LDLT_INLINE
-	ManagedArrayBase(malloca_tags::Init /*tag*/, Inner inner) : _{inner} {
-		_.data = ::new (static_cast<void*>(_.data)) T[_.n]{};
-	}
-
-	~ManagedArrayBase() = default;
-	ManagedArrayBase(ManagedArrayBase const&) = delete;
-	ManagedArrayBase(ManagedArrayBase&&) = delete;
-	auto operator=(ManagedArrayBase const&) -> ManagedArrayBase& = delete;
-	auto operator=(ManagedArrayBase&&) -> ManagedArrayBase& = delete;
-};
-
-template <typename T, bool = std::is_trivially_destructible<T>::value>
-struct ManagedArray : ManagedArrayBase<T> {
-	using ManagedArrayBase<T>::ManagedArrayBase;
-};
-
-template <typename T>
-struct ManagedArray<T, false> : ManagedArrayBase<T> {
-	using ManagedArrayBase<T>::ManagedArrayBase;
-
-	~ManagedArray() {
-		T* data = ManagedArrayBase<T>::_.data;
-		usize n = ManagedArrayBase<T>::_.n;
-
-		if (data == nullptr) {
-			return;
-		}
-
-		usize i = n;
-		while (true) {
-			--i;
-			data[i].~T();
-			if (i == 0) {
-				break;
-			}
-		}
-	}
-
-	ManagedArray(ManagedArray const&) = delete;
-	ManagedArray(ManagedArray&&) = delete;
-	auto operator=(ManagedArray const&) -> ManagedArray& = delete;
-	auto operator=(ManagedArray&&) -> ManagedArray& = delete;
-};
-
-struct ManagedMalloca {
-	struct Inner {
-		void* malloca_ptr;
-		usize nbytes;
-	} _;
-
-	~ManagedMalloca() {
-		if (_.nbytes < usize{LDLT_MAX_STACK_ALLOC_SIZE}) {
-#if LDLT_HAS_ALLOCA
-			LDLT_FREEA(_.malloca_ptr);
-#endif
-		} else {
-			std::free(_.malloca_ptr);
-		}
-	}
-	ManagedMalloca(malloca_tags::Uninit /*tag*/, Inner inner) noexcept
-			: _{inner} {}
-
-	ManagedMalloca(ManagedMalloca const&) = delete;
-	ManagedMalloca(ManagedMalloca&&) = delete;
-	auto operator=(ManagedMalloca const&) -> ManagedMalloca& = delete;
-	auto operator=(ManagedMalloca&&) -> ManagedMalloca& = delete;
-};
 } // namespace detail
 
 enum struct Layout : unsigned char {
@@ -303,17 +196,6 @@ struct ElementAccess<Layout::colmajor> {
 	LDLT_INLINE static constexpr auto
 	offset(T* ptr, isize row, isize col, isize outer_stride) noexcept -> T* {
 		return ptr + (usize(row) + usize(col) * usize(outer_stride));
-	}
-
-	template <usize N, typename T>
-	LDLT_INLINE static auto
-	load_col_pack(T const* ptr, isize /*outer_stride*/) noexcept -> Pack<T, N> {
-		return Pack<T, N>::load_unaligned(ptr);
-	}
-	template <usize N, typename T>
-	LDLT_INLINE static void
-	store_col_pack(T* ptr, Pack<T, N> pack, isize /*outer_stride*/) noexcept {
-		return pack.store_unaligned(ptr);
 	}
 
 	using NextRowStride = Eigen::Stride<0, 0>;

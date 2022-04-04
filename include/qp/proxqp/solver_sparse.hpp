@@ -1,11 +1,13 @@
 #ifndef INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 #define INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 
+#include <dense-ldlt/core.hpp>
 #include <sparse_ldlt/core.hpp>
 #include <sparse_ldlt/factorize.hpp>
 #include <sparse_ldlt/update.hpp>
 #include <sparse_ldlt/rowmod.hpp>
 #include <qp/views.hpp>
+#include <iostream>
 
 namespace qp {
 using veg::isize;
@@ -24,7 +26,7 @@ struct QpView {
 
 template <typename T, typename I>
 struct QpViewMut {
-	sparse_ldlt::MatMut<T, T> H;
+	sparse_ldlt::MatMut<T, I> H;
 	sparse_ldlt::DenseVecMut<T> g;
 	sparse_ldlt::MatMut<T, I> AT;
 	sparse_ldlt::DenseVecMut<T> b;
@@ -45,7 +47,7 @@ struct QpViewMut {
 	}
 };
 
-namespace preconditionner {
+namespace preconditioner {
 enum struct Symmetry {
 	LOWER,
 	UPPER,
@@ -56,8 +58,8 @@ template <typename T, typename I>
 void rowwise_infty_norm(T* row_norm, sparse_ldlt::MatRef<T, I> m) {
 	using namespace sparse_ldlt::util;
 
-	I* mi = m.row_indices().ptr();
-	T* mx = m.values().ptr();
+	I const* mi = m.row_indices().ptr();
+	T const* mx = m.values().ptr();
 
 	for (usize j = 0; j < usize(m.ncols()); ++j) {
 		auto col_start = m.col_start(j);
@@ -75,8 +77,8 @@ template <typename T, typename I>
 void colwise_infty_norm_symhi(T* col_norm, sparse_ldlt::MatRef<T, I> h) {
 	using namespace sparse_ldlt::util;
 
-	I* hi = h.row_indices().ptr();
-	T* hx = h.values().ptr();
+	I const* hi = h.row_indices().ptr();
+	T const* hx = h.values().ptr();
 
 	for (usize j = 0; j < usize(h.ncols()); ++j) {
 		auto col_start = h.col_start(j);
@@ -103,8 +105,8 @@ template <typename T, typename I>
 void colwise_infty_norm_symlo(T* col_norm, sparse_ldlt::MatRef<T, I> h) {
 	using namespace sparse_ldlt::util;
 
-	I* hi = h.row_indices().ptr();
-	T* hx = h.values().ptr();
+	I const* hi = h.row_indices().ptr();
+	T const* hx = h.values().ptr();
 
 	for (usize j = 0; j < usize(h.ncols()); ++j) {
 		auto col_start = h.col_start(j);
@@ -172,15 +174,14 @@ auto ruiz_scale_qp_in_place( //
 			++iter;
 		}
 
-		auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n);
-		auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n);
-		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n);
+		auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+		auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
 
 		// norm_infty of each column of A (resp. C), i.e.,
 		// each row of AT (resp. CT)
 		T* a_infty_norm = _a_infty_norm.ptr_mut();
 		T* c_infty_norm = _c_infty_norm.ptr_mut();
-
 		T* h_infty_norm = _h_infty_norm.ptr_mut();
 
 		detail::rowwise_infty_norm(a_infty_norm, qp.AT.as_const());
@@ -211,11 +212,11 @@ auto ruiz_scale_qp_in_place( //
 			usize col_end = qp.AT.col_end(j);
 
 			for (usize p = col_start; p < col_end; ++p) {
-				T aji = ATx[p];
+				T aji = fabs(ATx[p]);
 				a_row_norm = std::max(a_row_norm, aji);
 			}
 
-			delta(n + j) = T(1) / (machine_eps + sqrt(a_row_norm));
+			delta(n + isize(j)) = T(1) / (machine_eps + sqrt(a_row_norm));
 		}
 
 		for (usize j = 0; j < usize(n_in); ++j) {
@@ -224,17 +225,43 @@ auto ruiz_scale_qp_in_place( //
 			usize col_end = qp.CT.col_end(j);
 
 			for (usize p = col_start; p < col_end; ++p) {
-				T cji = CTx[p];
+				T cji = fabs(CTx[p]);
 				c_row_norm = std::max(c_row_norm, cji);
 			}
 
-			delta(n + n_eq + j) = T(1) / (machine_eps + sqrt(c_row_norm));
+			delta(n + n_eq + isize(j)) = T(1) / (machine_eps + sqrt(c_row_norm));
 		}
 
-		// normalize A and C
-		qp.AT = delta.head(n).asDiagonal() * qp.AT *
-		        delta.segment(n, n_eq).asDiagonal();
-		qp.CT = delta.head(n).asDiagonal() * qp.CT * delta.tail(n_in).asDiagonal();
+		// normalize A
+		for (usize j = 0; j < usize(n_eq); ++j) {
+			usize col_start = qp.AT.col_start(j);
+			usize col_end = qp.AT.col_end(j);
+
+			T delta_j = delta(n + isize(j));
+
+			for (usize p = col_start; p < col_end; ++p) {
+				usize i = zero_extend(ATi[p]);
+				T& aji = ATx[p];
+				T delta_i = delta(isize(i));
+				aji = (delta_i * delta_j) * aji;
+			}
+		}
+
+		// normalize C
+		for (usize j = 0; j < usize(n_in); ++j) {
+			usize col_start = qp.CT.col_start(j);
+			usize col_end = qp.CT.col_end(j);
+
+			T delta_j = delta(n + n_eq + isize(j));
+
+			for (usize p = col_start; p < col_end; ++p) {
+				usize i = zero_extend(CTi[p]);
+				T& cji = CTx[p];
+				T delta_i = delta(isize(i));
+				cji = (delta_i * delta_j) * cji;
+			}
+		}
+
 		// normalize vectors
 		qp.g.to_eigen().array() *= delta.head(n).array();
 		qp.b.to_eigen().array() *= delta.segment(n, n_eq).array();
@@ -247,7 +274,7 @@ auto ruiz_scale_qp_in_place( //
 			for (usize j = 0; j < usize(n); ++j) {
 				usize col_start = qp.H.col_start(j);
 				usize col_end = qp.H.col_end(j);
-				T delta_j = delta(j);
+				T delta_j = delta(isize(j));
 
 				if (col_end > col_start) {
 					usize p = col_end;
@@ -257,7 +284,7 @@ auto ruiz_scale_qp_in_place( //
 						if (i < j) {
 							break;
 						}
-						Hx[p] *= delta_j * delta(i);
+						Hx[p] *= delta_j * delta(isize(i));
 					}
 				}
 			}
@@ -267,14 +294,14 @@ auto ruiz_scale_qp_in_place( //
 			for (usize j = 0; j < usize(n); ++j) {
 				usize col_start = qp.H.col_start(j);
 				usize col_end = qp.H.col_end(j);
-				T delta_j = delta(j);
+				T delta_j = delta(isize(j));
 
 				for (usize p = col_start; p < col_end; ++p) {
 					usize i = zero_extend(Hi[p]);
 					if (i > j) {
 						break;
 					}
-					Hx[p] *= delta_j * delta(i);
+					Hx[p] *= delta_j * delta(isize(i));
 				}
 			}
 			break;
@@ -307,7 +334,7 @@ auto ruiz_scale_qp_in_place( //
 		S.array() *= delta.array();
 		c *= gamma;
 	}
-  return c;
+	return c;
 }
 } // namespace detail
 
@@ -337,18 +364,22 @@ struct RuizEquilibration {
 				sym(sym_),
 				logger_ptr(logger) {}
 
-	void scale_qp_in_place(
-			QpViewMut<T, I> qp, VectorViewMut<T> tmp_delta_preallocated) {
+	static auto
+	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
+			-> veg::dynstack::StackReq {
+		return dense_ldlt::temp_vec_req(tag, n + n_eq + n_in) &
+		       veg::dynstack::StackReq{isize{sizeof(T)} * (3 * n), alignof(T)};
+	}
+
+	void scale_qp_in_place(QpViewMut<T, I> qp, veg::dynstack::DynStackMut stack) {
 		delta.setOnes();
-		tmp_delta_preallocated.to_eigen().setZero();
-		c = detail::ruiz_scale_qp_in_place(
+		c = detail::ruiz_scale_qp_in_place( //
 				{ldlt::from_eigen, delta},
-				tmp_delta_preallocated,
-				logger_ptr,
 				qp,
 				epsilon,
 				max_iter,
-				sym);
+				sym,
+				stack);
 	}
 
 	// modifies variables in place
@@ -420,7 +451,7 @@ struct RuizEquilibration {
 	}
 };
 
-} // namespace preconditionner
+} // namespace preconditioner
 } // namespace sparse
 } // namespace qp
 
