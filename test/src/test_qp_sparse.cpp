@@ -42,7 +42,7 @@ TEST_CASE("qp random test") {
 
 	sparse::QpWorkspace<T, I> work;
 	QPSettings<T> settings;
-	sparse::qp_setup(work, qp);
+	sparse::qp_setup(work, qp, ruiz);
 
 	Eigen::Matrix<T, -1, 1> x(n);
 	Eigen::Matrix<T, -1, 1> y(n_eq);
@@ -56,7 +56,7 @@ TEST_CASE("qp random test") {
 			{ldlt::from_eigen, y},
 			{ldlt::from_eigen, z},
 			work,
-			ruiz,
 			settings,
+			ruiz,
 			qp);
 }

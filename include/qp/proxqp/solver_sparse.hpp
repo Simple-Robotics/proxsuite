@@ -377,7 +377,7 @@ struct RuizEquilibration {
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
 		return dense_ldlt::temp_vec_req(tag, n + n_eq + n_in) &
-		       veg::dynstack::StackReq{isize{sizeof(T)} * (3 * n), alignof(T)};
+		       veg::dynstack::StackReq::with_len(tag, 3 * n);
 	}
 
 	void scale_qp_in_place(QpViewMut<T, I> qp, veg::dynstack::DynStackMut stack) {
@@ -486,11 +486,13 @@ struct QpWorkspace {
 			};
 		}
 
-		void setup_impl(QpView<T, I> qp) {
+		void setup_impl(QpView<T, I> qp, veg::dynstack::StackReq precond_req) {
 			using namespace veg::dynstack;
 			using namespace sparse_ldlt::util;
 
-			veg::Tag<I> tag;
+			using SR = StackReq;
+			veg::Tag<I> itag;
+			veg::Tag<T> xtag;
 
 			isize n = qp.H.nrows();
 			isize n_eq = qp.AT.ncols();
@@ -548,15 +550,14 @@ struct QpWorkspace {
 				insert_submatrix(qp.CT, false);
 			}
 
-			StackReq req{isize{sizeof(I)} * n_tot, alignof(I)};
-
-			storage.resize_for_overwrite(                   //
-					(req & sparse_ldlt::factorize_symbolic_req( //
-										 tag,                             //
-										 n_tot,                           //
-										 nnz_tot,                         //
-										 sparse_ldlt::Ordering::amd))     //
-							.alloc_req()                            //
+			storage.resize_for_overwrite( //
+					(StackReq::with_len(itag, n_tot) &
+			     sparse_ldlt::factorize_symbolic_req( //
+							 itag,                            //
+							 n_tot,                           //
+							 nnz_tot,                         //
+							 sparse_ldlt::Ordering::amd))     //
+							.alloc_req()                      //
 			);
 
 			ldl_col_ptrs.resize_for_overwrite(n_tot + 1);
@@ -564,24 +565,51 @@ struct QpWorkspace {
 
 			DynStackMut stack = stack_mut();
 
-			auto _etree = stack.make_new_for_overwrite(tag, n_tot).unwrap();
-			auto etree = _etree.as_mut();
+			{
+				auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
+				auto etree = _etree.as_mut();
 
-			sparse_ldlt::factorize_symbolic_col_counts( //
-					ldl_col_ptrs.as_mut(),
-					etree,
-					perm_inv.as_mut(),
-					{},
-					{
-							sparse_ldlt::from_raw_parts,
-							n_tot,
-							n_tot,
-							nnz_tot,
-							kkt_col_ptrs.as_ref(),
-							kkt_row_indices.as_ref(),
-							{},
-					},
-					stack);
+				sparse_ldlt::factorize_symbolic_col_counts( //
+						ldl_col_ptrs.as_mut(),
+						etree,
+						perm_inv.as_mut(),
+						{},
+						{
+								sparse_ldlt::from_raw_parts,
+								n_tot,
+								n_tot,
+								nnz_tot,
+								kkt_col_ptrs.as_ref(),
+								kkt_row_indices.as_ref(),
+								{},
+						},
+						stack);
+			}
+
+			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
+			auto req = SR::and_(veg::init_list({
+										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n),    // g_scaled
+										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_eq), // b_scaled
+										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // l_scaled
+										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // u_scaled
+								 })) &
+			           (precond_req | // scale_qp_in_place
+			            (SR::and_(veg::init_list({
+											 SR::with_len(itag, n_tot), // etree
+											 SR::with_len(itag, n_tot), // ldl nnz counts
+											 SR::with_len(itag, lnnz),  // ldl row indices
+											 SR::with_len(xtag, lnnz),  // ldl values
+									 })) &
+			             (SR::with_len(xtag, n_tot) &
+			              sparse_ldlt::factorize_numeric_req(
+												xtag,
+												itag,
+												n_tot,
+												nnz_tot,
+												sparse_ldlt::Ordering::user_provided)) // diag
+			             ));
+
+			storage.resize_for_overwrite(req.alloc_req());
 		}
 	} _;
 
@@ -623,9 +651,12 @@ struct QpWorkspace {
 	}
 };
 
-template <typename T, typename I>
-void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp) {
-	work._.setup_impl(qp);
+template <typename T, typename I, typename P>
+void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp, P& precond) {
+	isize n = qp.H.nrows();
+	isize n_eq = qp.AT.ncols();
+	isize n_in = qp.CT.ncols();
+	work._.setup_impl(qp, P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 }
 
 template <typename T, typename I, typename P>
@@ -634,18 +665,20 @@ void qp_solve(
 		VectorViewMut<T> y,
 		VectorViewMut<T> z,
 		QpWorkspace<T, I>& work,
-		P& precond,
 		QPSettings<T> const& settings,
+		P& precond,
 		QpView<T, I> qp) {
 
 	using namespace sparse_ldlt::tags;
 	using namespace veg::literals;
+	namespace util = sparse_ldlt::util;
 
-	auto stack = work.stack_mut();
+	veg::dynstack::DynStackMut stack = work.stack_mut();
 
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
+	isize n_tot = n + n_eq + n_in;
 
 	sparse_ldlt::MatMut<T, I> kkt = work.kkt_mut();
 
@@ -715,6 +748,27 @@ void qp_solve(
 	T primal_feasibility_rhs_1_in_u = infty_norm(qp.u.to_eigen());
 	T primal_feasibility_rhs_1_in_l = infty_norm(qp.l.to_eigen());
 	T dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());
+
+	auto ldl_col_ptrs = work.ldl_col_ptrs();
+	auto max_lnnz = isize(util::zero_extend(ldl_col_ptrs[n_tot]));
+
+	veg::Tag<I> itag;
+	veg::Tag<T> xtag;
+
+	auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
+	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
+	auto _ldl_row_indices = stack.make_new_for_overwrite(itag, max_lnnz).unwrap();
+	auto _ldl_values = stack.make_new_for_overwrite(xtag, max_lnnz).unwrap();
+
+	veg::SliceMut<I> etree = _etree.as_mut();
+	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
+	veg::SliceMut<I> ldl_row_indices = _ldl_row_indices.as_mut();
+	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
+
+	{
+		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
+		T* diag = _diag.ptr_mut();
+	}
 }
 } // namespace sparse
 } // namespace qp
