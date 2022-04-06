@@ -7,6 +7,7 @@
 #include <sparse_ldlt/update.hpp>
 #include <sparse_ldlt/rowmod.hpp>
 #include <qp/views.hpp>
+#include <qp/QPSettings.hpp>
 #include <iostream>
 
 namespace qp {
@@ -460,6 +461,190 @@ struct RuizEquilibration {
 };
 
 } // namespace preconditioner
+
+template <typename T, typename I>
+using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
+template <typename T>
+using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+
+template <typename T, typename I>
+struct QpWorkspace {
+
+	struct {
+		veg::Vec<veg::mem::byte> storage;
+		veg::Vec<I> kkt_col_ptrs;
+		veg::Vec<I> kkt_row_indices;
+		veg::Vec<T> kkt_values;
+
+		veg::Vec<I> ldl_col_ptrs;
+		veg::Vec<I> perm_inv;
+
+		auto stack_mut() -> veg::dynstack::DynStackMut {
+			return {
+					veg::from_slice_mut,
+					storage.as_mut(),
+			};
+		}
+
+		void setup_impl(QpView<T, I> qp) {
+			using namespace veg::dynstack;
+			using namespace sparse_ldlt::util;
+
+			veg::Tag<I> tag;
+
+			isize n = qp.H.nrows();
+			isize n_eq = qp.AT.ncols();
+			isize n_in = qp.CT.ncols();
+			isize n_tot = n + n_eq + n_in;
+
+			isize nnz_tot = qp.H.nnz() + qp.AT.nnz() + qp.CT.nnz();
+
+			// form the full kkt matrix
+			// assuming H, AT, CT are sorted
+			// and H is upper triangular
+			{
+				kkt_col_ptrs.resize_for_overwrite(n_tot + 1);
+				kkt_row_indices.resize_for_overwrite(nnz_tot);
+				kkt_values.resize_for_overwrite(nnz_tot);
+
+				I* kktp = kkt_col_ptrs.ptr_mut();
+				I* kkti = kkt_row_indices.ptr_mut();
+				T* kktx = kkt_values.ptr_mut();
+
+				kktp[0] = 0;
+				usize col = 0;
+				usize pos = 0;
+
+				auto insert_submatrix = [&](sparse_ldlt::MatRef<T, I> m,
+				                            bool assert_sym_hi) -> void {
+					I const* mi = m.row_indices().ptr();
+					T const* mx = m.values().ptr();
+					usize ncols = m.ncols();
+
+					for (usize j = 0; j < ncols; ++j) {
+						usize col_start = m.col_start(j);
+						usize col_end = m.col_end(j);
+
+						kktp[col + 1] = kktp[col] + (col_end - col_start);
+						++col;
+
+						for (usize p = col_start; p < col_end; ++p) {
+							usize i = zero_extend(mi[p]);
+							if (assert_sym_hi) {
+								VEG_ASSERT(i <= j);
+							}
+
+							kkti[pos] = i;
+							kktx[pos] = mx[p];
+
+							++pos;
+						}
+					}
+				};
+
+				insert_submatrix(qp.H, true);
+				insert_submatrix(qp.AT, false);
+				insert_submatrix(qp.CT, false);
+			}
+
+			StackReq req{isize{sizeof(I)} * n_tot, alignof(I)};
+
+			storage.resize_for_overwrite(                   //
+					(req & sparse_ldlt::factorize_symbolic_req( //
+										 tag,                             //
+										 n_tot,                           //
+										 nnz_tot,                         //
+										 sparse_ldlt::Ordering::amd))     //
+							.alloc_req()                            //
+			);
+
+			ldl_col_ptrs.resize_for_overwrite(n_tot + 1);
+			perm_inv.resize_for_overwrite(n_tot);
+
+			DynStackMut stack = stack_mut();
+
+			auto _etree = stack.make_new_for_overwrite(tag, n_tot).unwrap();
+			auto etree = _etree.as_mut();
+
+			sparse_ldlt::MatRef<T, I> x;
+			sparse_ldlt::factorize_symbolic_col_counts( //
+					ldl_col_ptrs.as_mut(),
+					etree,
+					perm_inv.as_mut(),
+					{},
+					{
+							sparse_ldlt::from_raw_parts,
+							n_tot,
+							n_tot,
+							nnz_tot,
+							kkt_col_ptrs.as_mut(),
+							kkt_row_indices.as_mut(),
+							{},
+							kkt_values.as_mut(),
+					},
+					stack);
+		}
+	} _;
+
+	QpWorkspace() = default;
+
+	auto ldl_col_ptrs() const -> veg::Slice<I> { return _.ldl_col_ptrs.as_ref(); }
+	auto ldl_col_ptrs_mut() -> veg::SliceMut<I> {
+		return _.ldl_col_ptrs.as_mut();
+	}
+	auto stack_mut() -> veg::dynstack::DynStackMut { return _.stack_mut(); }
+};
+
+template <typename T, typename I>
+void qp_setup(QpWorkspace<T, I>& workspace, QpView<T, I> qp) {
+	workspace._.setup_impl(qp);
+}
+
+template <typename T, typename I, typename P>
+void qp_solve( //
+		VectorViewMut<T> x,
+		VectorViewMut<T> y,
+		VectorViewMut<T> z,
+		QpWorkspace<T, I>& workspace,
+		P const& precond,
+		QPSettings<T> const& settings,
+		QpView<T, I> qp) {
+
+	using namespace sparse_ldlt::tags;
+  auto stack = workspace.stack_mut();
+
+	isize n = qp.H.nrows();
+	isize n_eq = qp.AT.ncols();
+	isize n_in = qp.CT.ncols();
+
+	sparse_ldlt::MatMut<T, I> kkt;
+
+	Mat<T, I> H_scaled = qp.H.to_eigen();
+	Mat<T, I> AT_scaled = qp.AT.to_eigen();
+	Mat<T, I> CT_scaled = qp.CT.to_eigen();
+
+	LDLT_TEMP_VEC(T, g_scaled, n, stack);
+	LDLT_TEMP_VEC(T, b_scaled, n_eq, stack);
+	LDLT_TEMP_VEC(T, l_scaled, n_in, stack);
+	LDLT_TEMP_VEC(T, u_scaled, n_in, stack);
+
+	QpViewMut<T, I> qp_scaled = {
+			{from_eigen, H_scaled},
+			{from_eigen, g_scaled},
+			{from_eigen, AT_scaled},
+			{from_eigen, b_scaled},
+			{from_eigen, CT_scaled},
+			{from_eigen, l_scaled},
+			{from_eigen, u_scaled},
+	};
+
+	precond.scale_qp_in_place(qp_scaled, stack);
+
+	T primal_feasibility_rhs_1_eq = infty_norm(qp.b);
+	T primal_feasibility_rhs_1_in_u = infty_norm(qp.u);
+	T primal_feasibility_rhs_1_in_l = infty_norm(qp.l);
+	T dual_feasibility_rhs_2 = infty_norm(qp.g);
+}
 } // namespace sparse
 } // namespace qp
 

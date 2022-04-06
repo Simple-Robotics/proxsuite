@@ -990,21 +990,15 @@ void QPsetup_generic( //
 	QPSettings.warm_start = warm_start;
 
 	qpmodel.H = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-					H.eval());
-	// qpmodel.H = Eigen::MatrixXd(H);
-	qpmodel.g = g.eval();
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
+	qpmodel.g = g;
 	qpmodel.A = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-					A.eval());
-	// qpmodel.A = Eigen::MatrixXd(A);
-	qpmodel.b = b.eval();
-	// qpmodel.C = Eigen::MatrixXd(C);
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
+	qpmodel.b = b;
 	qpmodel.C = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-					C.eval());
-	qpmodel.u = u.eval();
-	qpmodel.l = l.eval();
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
+	qpmodel.u = u;
+	qpmodel.l = l;
 
 	qpwork.H_scaled = qpmodel.H;
 	qpwork.g_scaled = qpmodel.g;
@@ -1024,7 +1018,9 @@ void QPsetup_generic( //
 			{from_eigen, qpwork.l_scaled}};
 
 	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
 	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
 	qpwork.dw_aug.setZero();
 
@@ -1032,8 +1028,6 @@ void QPsetup_generic( //
 	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
 	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
 	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
-	qpwork.correction_guess_rhs_b = infty_norm(qpwork.b_scaled);
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
@@ -1048,8 +1042,6 @@ void QPsetup_generic( //
 
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
-	// std::cout << "-qpwork.g_scaled " << -qpwork.g_scaled << std::endl;
-	// std::cout << "qpwork.b_scaled " << qpwork.b_scaled << std::endl;
 	if (QPSettings.warm_start) {
 
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
