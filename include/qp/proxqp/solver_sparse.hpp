@@ -595,19 +595,24 @@ struct QpWorkspace {
 								 })) &
 			           (precond_req | // scale_qp_in_place
 			            (SR::and_(veg::init_list({
+											 SR::with_len(itag, n_tot), // perm
 											 SR::with_len(itag, n_tot), // etree
 											 SR::with_len(itag, n_tot), // ldl nnz counts
 											 SR::with_len(itag, lnnz),  // ldl row indices
 											 SR::with_len(xtag, lnnz),  // ldl values
 									 })) &
-			             (SR::with_len(xtag, n_tot) &
-			              sparse_ldlt::factorize_numeric_req(
-												xtag,
+			             (sparse_ldlt::factorize_symbolic_req( // symbolic ldl
 												itag,
 												n_tot,
 												nnz_tot,
-												sparse_ldlt::Ordering::user_provided)) // diag
-			             ));
+												sparse_ldlt::Ordering::user_provided) |
+			              (SR::with_len(xtag, n_tot) &         // diag
+			               sparse_ldlt::factorize_numeric_req( // numeric ldl
+												 xtag,
+												 itag,
+												 n_tot,
+												 nnz_tot,
+												 sparse_ldlt::Ordering::user_provided)))));
 
 			storage.resize_for_overwrite(req.alloc_req());
 		}
@@ -755,10 +760,17 @@ void qp_solve(
 	veg::Tag<I> itag;
 	veg::Tag<T> xtag;
 
+	auto _perm = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _ldl_row_indices = stack.make_new_for_overwrite(itag, max_lnnz).unwrap();
 	auto _ldl_values = stack.make_new_for_overwrite(xtag, max_lnnz).unwrap();
+
+	veg::Slice<I> perm_inv = work._.perm_inv.as_ref();
+	veg::SliceMut<I> perm = _etree.as_mut();
+	for (isize i = 0; i < n_tot; ++i) {
+		perm[util::zero_extend(perm_inv[i])];
+	}
 
 	veg::SliceMut<I> etree = _etree.as_mut();
 	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
@@ -766,6 +778,17 @@ void qp_solve(
 	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
 
 	{
+    // FIXME:
+    // use only active kkt columns
+    // store kkt in uncompressed format
+		sparse_ldlt::factorize_symbolic_non_zeros(
+				ldl_nnz_counts,
+				etree,
+				work._.perm_inv.as_mut(),
+				perm,
+				kkt.symbolic(),
+				stack);
+
 		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
 		T* diag = _diag.ptr_mut();
 	}
