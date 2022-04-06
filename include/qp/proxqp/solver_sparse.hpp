@@ -519,13 +519,14 @@ struct QpWorkspace {
 				                            bool assert_sym_hi) -> void {
 					I const* mi = m.row_indices().ptr();
 					T const* mx = m.values().ptr();
-					usize ncols = m.ncols();
+					isize ncols = m.ncols();
 
-					for (usize j = 0; j < ncols; ++j) {
+					for (usize j = 0; j < usize(ncols); ++j) {
 						usize col_start = m.col_start(j);
 						usize col_end = m.col_end(j);
 
-						kktp[col + 1] = kktp[col] + (col_end - col_start);
+						kktp[col + 1] =
+								checked_non_negative_plus(kktp[col], I(col_end - col_start));
 						++col;
 
 						for (usize p = col_start; p < col_end; ++p) {
@@ -534,7 +535,7 @@ struct QpWorkspace {
 								VEG_ASSERT(i <= j);
 							}
 
-							kkti[pos] = i;
+							kkti[pos] = veg::nb::narrow<I>{}(i);
 							kktx[pos] = mx[p];
 
 							++pos;
@@ -566,7 +567,6 @@ struct QpWorkspace {
 			auto _etree = stack.make_new_for_overwrite(tag, n_tot).unwrap();
 			auto etree = _etree.as_mut();
 
-			sparse_ldlt::MatRef<T, I> x;
 			sparse_ldlt::factorize_symbolic_col_counts( //
 					ldl_col_ptrs.as_mut(),
 					etree,
@@ -577,10 +577,9 @@ struct QpWorkspace {
 							n_tot,
 							n_tot,
 							nnz_tot,
-							kkt_col_ptrs.as_mut(),
-							kkt_row_indices.as_mut(),
+							kkt_col_ptrs.as_ref(),
+							kkt_row_indices.as_ref(),
 							{},
-							kkt_values.as_mut(),
 					},
 					stack);
 		}
@@ -593,57 +592,129 @@ struct QpWorkspace {
 		return _.ldl_col_ptrs.as_mut();
 	}
 	auto stack_mut() -> veg::dynstack::DynStackMut { return _.stack_mut(); }
+
+	auto kkt() const -> sparse_ldlt::MatMut<T, I> {
+		auto n_tot = _.kkt_col_ptrs.len() - 1;
+		auto nnz = isize(sparse_ldlt::util::zero_extend(_.kkt_col_ptrs[n_tot]));
+		return {
+				sparse_ldlt::from_raw_parts,
+				n_tot,
+				n_tot,
+				nnz,
+				_.kkt_col_ptrs.as_ref(),
+				_.kkt_row_indices.as_ref(),
+				{},
+				_.kkt_values.as_ref(),
+		};
+	}
+	auto kkt_mut() -> sparse_ldlt::MatMut<T, I> {
+		auto n_tot = _.kkt_col_ptrs.len() - 1;
+		auto nnz = isize(sparse_ldlt::util::zero_extend(_.kkt_col_ptrs[n_tot]));
+		return {
+				sparse_ldlt::from_raw_parts,
+				n_tot,
+				n_tot,
+				nnz,
+				_.kkt_col_ptrs.as_mut(),
+				_.kkt_row_indices.as_mut(),
+				{},
+				_.kkt_values.as_mut(),
+		};
+	}
 };
 
 template <typename T, typename I>
-void qp_setup(QpWorkspace<T, I>& workspace, QpView<T, I> qp) {
-	workspace._.setup_impl(qp);
+void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp) {
+	work._.setup_impl(qp);
 }
 
 template <typename T, typename I, typename P>
-void qp_solve( //
+void qp_solve(
 		VectorViewMut<T> x,
 		VectorViewMut<T> y,
 		VectorViewMut<T> z,
-		QpWorkspace<T, I>& workspace,
-		P const& precond,
+		QpWorkspace<T, I>& work,
+		P& precond,
 		QPSettings<T> const& settings,
 		QpView<T, I> qp) {
 
 	using namespace sparse_ldlt::tags;
-  auto stack = workspace.stack_mut();
+	using namespace veg::literals;
+
+	auto stack = work.stack_mut();
 
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
 
-	sparse_ldlt::MatMut<T, I> kkt;
+	sparse_ldlt::MatMut<T, I> kkt = work.kkt_mut();
 
-	Mat<T, I> H_scaled = qp.H.to_eigen();
-	Mat<T, I> AT_scaled = qp.AT.to_eigen();
-	Mat<T, I> CT_scaled = qp.CT.to_eigen();
+	sparse_ldlt::MatMut<T, I> H_scaled = {
+			sparse_ldlt::from_raw_parts,
+			n,
+			n,
+			qp.H.nnz(),
+			kkt.col_ptrs_mut().split_at_mut(n + 1)[0_c],
+			kkt.row_indices_mut(),
+			{},
+			kkt.values_mut(),
+	};
 
-	LDLT_TEMP_VEC(T, g_scaled, n, stack);
-	LDLT_TEMP_VEC(T, b_scaled, n_eq, stack);
-	LDLT_TEMP_VEC(T, l_scaled, n_in, stack);
-	LDLT_TEMP_VEC(T, u_scaled, n_in, stack);
+	sparse_ldlt::MatMut<T, I> AT_scaled = {
+			sparse_ldlt::from_raw_parts,
+			n,
+			n_eq,
+			qp.AT.nnz(),
+			kkt.col_ptrs_mut() //
+					.split_at_mut(n)[1_c]
+					.split_at_mut(n_eq + 1)[0_c],
+			kkt.row_indices_mut(),
+			{},
+			kkt.values_mut(),
+	};
+
+	sparse_ldlt::MatMut<T, I> CT_scaled = {
+			sparse_ldlt::from_raw_parts,
+			n,
+			n_in,
+			qp.CT.nnz(),
+			kkt.col_ptrs_mut() //
+					.split_at_mut(n + n_eq)[1_c]
+					.split_at_mut(n_in + 1)[0_c],
+			kkt.row_indices_mut(),
+			{},
+			kkt.values_mut(),
+	};
+
+	auto H_scaled_e = H_scaled.to_eigen();
+	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
+	auto AT_scaled_e = AT_scaled.to_eigen();
+	LDLT_TEMP_VEC_UNINIT(T, b_scaled_e, n_eq, stack);
+	auto CT_scaled_e = CT_scaled.to_eigen();
+	LDLT_TEMP_VEC_UNINIT(T, l_scaled_e, n_in, stack);
+	LDLT_TEMP_VEC_UNINIT(T, u_scaled_e, n_in, stack);
+
+	g_scaled_e = qp.g.to_eigen();
+	b_scaled_e = qp.b.to_eigen();
+	l_scaled_e = qp.l.to_eigen();
+	u_scaled_e = qp.u.to_eigen();
 
 	QpViewMut<T, I> qp_scaled = {
-			{from_eigen, H_scaled},
-			{from_eigen, g_scaled},
-			{from_eigen, AT_scaled},
-			{from_eigen, b_scaled},
-			{from_eigen, CT_scaled},
-			{from_eigen, l_scaled},
-			{from_eigen, u_scaled},
+			H_scaled,
+			{from_eigen, g_scaled_e},
+			AT_scaled,
+			{from_eigen, b_scaled_e},
+			CT_scaled,
+			{from_eigen, l_scaled_e},
+			{from_eigen, u_scaled_e},
 	};
 
 	precond.scale_qp_in_place(qp_scaled, stack);
 
-	T primal_feasibility_rhs_1_eq = infty_norm(qp.b);
-	T primal_feasibility_rhs_1_in_u = infty_norm(qp.u);
-	T primal_feasibility_rhs_1_in_l = infty_norm(qp.l);
-	T dual_feasibility_rhs_2 = infty_norm(qp.g);
+	T primal_feasibility_rhs_1_eq = infty_norm(qp.b.to_eigen());
+	T primal_feasibility_rhs_1_in_u = infty_norm(qp.u.to_eigen());
+	T primal_feasibility_rhs_1_in_l = infty_norm(qp.l.to_eigen());
+	T dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());
 }
 } // namespace sparse
 } // namespace qp

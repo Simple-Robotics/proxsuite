@@ -104,6 +104,8 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			s.PauseTiming();
 
 			QPSettings<T> settings;
+      settings.verbose = false;
+
 			QPData<T> data{n, n_eq, n_in};
 			QPResults<T> results{n, n_eq, n_in};
 			QPWorkspace<T> work{n, n_eq, n_in};
@@ -111,7 +113,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			results.y.setZero();
 			results.z.setZero();
 			detail::QPsetup_dense<T>(
-					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
+					H, g, A, b, C, u, l, settings, data, work, results);
 
 			s.ResumeTiming();
 			detail::qp_solve(settings, data, results, work);

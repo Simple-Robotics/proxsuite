@@ -110,6 +110,8 @@ TEST_CASE("maros meszaros wip") {
 			isize n_in = C.rows();
 
 			QPSettings<T> settings;
+      settings.verbose = false;
+
 			QPData<T> data{n, n_eq, n_in};
 			QPResults<T> results{n, n_eq, n_in};
 			QPWorkspace<T> work{n, n_eq, n_in};
@@ -119,7 +121,7 @@ TEST_CASE("maros meszaros wip") {
 			results.z.setZero();
 
 			detail::QPsetup_dense<T>(
-					H, g, A, b, C, u, l, settings, data, work, results, 1e-9, 0, false);
+					H, g, A, b, C, u, l, settings, data, work, results);
 			detail::qp_solve(settings, data, results, work);
 			auto& x = results.x;
 			auto& y = results.y;

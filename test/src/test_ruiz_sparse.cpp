@@ -1,6 +1,3 @@
-#define EIGEN_DEFAULT_IO_FORMAT                                                \
-	IOFormat { 17 }
-
 #include <qp/proxqp/solver_sparse.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <util.hpp>

@@ -975,19 +975,7 @@ void QPsetup_generic( //
 		qp::QPSettings<T>& QPSettings,
 		qp::QPData<T>& qpmodel,
 		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults,
-
-		T eps_abs = 1.e-9,
-		T eps_rel = 0,
-		const bool VERBOSE = true,
-		const bool warm_start = true
-
-) {
-
-	QPSettings.eps_abs = eps_abs;
-	QPSettings.eps_rel = eps_rel;
-	QPSettings.verbose = VERBOSE;
-	QPSettings.warm_start = warm_start;
+		qp::QPResults<T>& QPResults) {
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
@@ -1043,7 +1031,6 @@ void QPsetup_generic( //
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
 	if (QPSettings.warm_start) {
-
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 		qp::detail::iterative_solve_with_permut_fact( //
@@ -1075,28 +1062,11 @@ void QPsetup_dense( //
 		qp::QPSettings<T>& QPSettings,
 		qp::QPData<T>& qpmodel,
 		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults,
+		qp::QPResults<T>& QPResults
 
-		T eps_abs = 1.e-9,
-		T eps_rel = 0,
-		const bool VERBOSE = true,
-		const bool warm_start = true) {
+) {
 	detail::QPsetup_generic(
-			H,
-			g,
-			A,
-			b,
-			C,
-			u,
-			l,
-			QPSettings,
-			qpmodel,
-			qpwork,
-			QPResults,
-			eps_abs,
-			eps_rel,
-			VERBOSE,
-			warm_start);
+			H, g, A, b, C, u, l, QPSettings, qpmodel, qpwork, QPResults);
 }
 
 template <typename T>
@@ -1111,30 +1081,9 @@ void QPsetup( //
 		qp::QPSettings<T>& QPSettings,
 		qp::QPData<T>& qpmodel,
 		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults,
-
-		T eps_abs = 1.e-9,
-		T eps_rel = 0,
-		const bool VERBOSE = true,
-		const bool warm_start = true
-
-) {
+		qp::QPResults<T>& QPResults) {
 	detail::QPsetup_generic(
-			H,
-			g,
-			A,
-			b,
-			C,
-			u,
-			l,
-			QPSettings,
-			qpmodel,
-			qpwork,
-			QPResults,
-			eps_abs,
-			eps_rel,
-			VERBOSE,
-			warm_start);
+			H, g, A, b, C, u, l, QPSettings, qpmodel, qpwork, QPResults);
 }
 
 } // namespace detail
