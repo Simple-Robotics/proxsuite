@@ -761,6 +761,7 @@ void qp_solve(
 	veg::Tag<T> xtag;
 
 	auto _perm = stack.make_new_for_overwrite(itag, n_tot).unwrap();
+	auto _kkt_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _ldl_row_indices = stack.make_new_for_overwrite(itag, max_lnnz).unwrap();
@@ -768,29 +769,74 @@ void qp_solve(
 
 	veg::Slice<I> perm_inv = work._.perm_inv.as_ref();
 	veg::SliceMut<I> perm = _etree.as_mut();
+
+	// compute perm from perm_inv
 	for (isize i = 0; i < n_tot; ++i) {
-		perm[util::zero_extend(perm_inv[i])];
+		perm[util::zero_extend(perm_inv[i])] = I(i);
 	}
+
+	veg::SliceMut<I> kkt_nnz_counts = _kkt_nnz_counts.as_mut();
+
+	// H and A are always active
+	for (isize j = 0; j < n + n_eq; ++j) {
+		kkt_nnz_counts[j] = kkt.col_end(j) - kkt.col_start(j);
+	}
+	// ineq constraints initially inactive
+	for (isize j = 0; j < n_in; ++j) {
+		kkt_nnz_counts[n + n_eq + j] = 0;
+	}
+
+	sparse_ldlt::MatMut<T, I> kkt_active = {
+			sparse_ldlt::from_raw_parts,
+			n_tot,
+			n_tot,
+			qp.H.nnz() + qp.AT.nnz(),
+			kkt.col_ptrs_mut(),
+			kkt.row_indices_mut(),
+			kkt_nnz_counts,
+			kkt.values_mut(),
+	};
 
 	veg::SliceMut<I> etree = _etree.as_mut();
 	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
 	veg::SliceMut<I> ldl_row_indices = _ldl_row_indices.as_mut();
 	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
 
+	T rho = 1e-6;
+	T mu_eq = 1e3;
+	T mu_in = 1e1;
+
 	{
-    // FIXME:
-    // use only active kkt columns
-    // store kkt in uncompressed format
 		sparse_ldlt::factorize_symbolic_non_zeros(
 				ldl_nnz_counts,
 				etree,
 				work._.perm_inv.as_mut(),
-				perm,
+				perm.as_const(),
 				kkt.symbolic(),
 				stack);
 
 		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
 		T* diag = _diag.ptr_mut();
+
+		for (isize i = 0; i < n; ++i) {
+			diag[i] = rho;
+		}
+		for (isize i = 0; i < n_eq; ++i) {
+			diag[n + i] = -1 / mu_eq;
+		}
+		for (isize i = 0; i < n_in; ++i) {
+			diag[(n + n_eq) + i] = -1 / mu_in;
+		}
+
+		sparse_ldlt::factorize_numeric(
+				ldl_values.ptr_mut(),
+				ldl_row_indices.ptr_mut(),
+				diag,
+				ldl_col_ptrs,
+				etree.as_const(),
+				perm_inv,
+				kkt_active.as_const(),
+				stack);
 	}
 }
 } // namespace sparse
