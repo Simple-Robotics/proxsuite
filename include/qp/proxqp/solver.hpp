@@ -631,8 +631,6 @@ void qp_solve( //
 
 	//::Eigen::internal::set_is_malloc_allowed(false);
 
-	const T machine_eps = std::numeric_limits<T>::epsilon();
-
 	T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
 	T bcl_eta_in(1);
@@ -907,12 +905,9 @@ void qp_solve( //
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3);
 
-		if ((primal_feasibility_lhs_new /
-		         (primal_feasibility_lhs) >=
-		     1.) &&
-		    (dual_feasibility_lhs_new / (primal_feasibility_lhs) >=
-		     1.) &&
-		    qpresults.mu_in >= 1.E5) {
+		if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
+		    dual_feasibility_lhs_new >= dual_feasibility_lhs &&
+		    qpresults.mu_in >= T(1e5)) {
 
 			if (qpsettings.verbose) {
 				std::cout << "cold restart" << std::endl;
