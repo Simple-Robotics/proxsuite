@@ -12,7 +12,7 @@
 	url = https://github.com/Benny44/QPALM_vLADEL
 [submodule "external/dense-ldlt"]
 	path = external/dense-ldlt
-	url = https://github.com/Simple-Robotics/dense-ldlt-v2.git
+	url = git@github.com:Simple-Robotics/dense-ldlt.git
 [submodule "external/sparse-ldlt"]
 	path = external/sparse-ldlt
-	url = https://github.com/Simple-Robotics/sparse-ldlt.git
+	url = git@github.com:Simple-Robotics/sparse-ldlt.git
