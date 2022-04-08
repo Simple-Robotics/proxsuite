@@ -110,11 +110,13 @@ TEST_CASE("maros meszaros wip") {
 			isize n_in = C.rows();
 
 			QPSettings<T> settings;
-      settings.verbose = false;
+			settings.verbose = false;
 
 			QPData<T> data{n, n_eq, n_in};
 			QPResults<T> results{n, n_eq, n_in};
 			QPWorkspace<T> work{n, n_eq, n_in};
+
+			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
 			results.x.setZero();
 			results.y.setZero();

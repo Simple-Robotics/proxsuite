@@ -87,9 +87,6 @@ if(ENABLE_TESTING)
       #
       # Apache-2.0
       benchmark/1.6.0
-      #
-      # LGPL v3
-      mpfr/4.1.0
   )
   set(CONAN_OPTIONS)
 endif(ENABLE_TESTING)
@@ -110,7 +107,7 @@ if(ENABLE_TESTING)
   )
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
-  target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::fmt CONAN_PKG::mpfr)
+  target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::fmt)
 
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)

@@ -14,11 +14,13 @@ TEST_CASE("qp random test") {
 	isize n_eq = 1;
 	isize n_in = 2;
 
-	auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), 0.5);
+	double p = 0.25;
+
+	auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
 	auto g = ldlt_test::rand::vector_rand<T>(n);
-	auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, 0.5);
+	auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, p);
 	auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-	auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, 0.5);
+	auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, p);
 	auto l = ldlt_test::rand::vector_rand<T>(n_in);
 	auto u = ldlt_test::rand::vector_rand<T>(n_in);
 

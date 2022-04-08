@@ -160,6 +160,8 @@ void iterative_residual(
 			qpwork.dw_aug.head(qpmodel.dim);
 	qpwork.err.head(qpmodel.dim).noalias() -=
 			qpresults.rho * qpwork.dw_aug.head(qpmodel.dim);
+
+	// PERF: fuse {A, C}_scaled multiplication operations
 	qpwork.err.head(qpmodel.dim).noalias() -=
 			qpwork.A_scaled.transpose() *
 			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
@@ -361,7 +363,7 @@ void global_primal_residual(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_in_scaled_up});
 	primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
 
-	qpwork.primal_residual_in_scaled_low.noalias() =
+	qpwork.primal_residual_in_scaled_low =
 			detail::positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
 			detail::negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
 	qpwork.primal_residual_eq_scaled -= qpmodel.b;
@@ -386,7 +388,6 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_3) {
 
 	qpwork.dual_residual_scaled = qpwork.g_scaled;
-	// qpwork.CTz.noalias() = qpwork.H_scaled * qpresults.x;
 	qpwork.CTz.noalias() =
 			qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
 	qpwork.dual_residual_scaled += qpwork.CTz;
@@ -415,19 +416,19 @@ void global_dual_residual(
 };
 
 template <typename T>
-T compute_inner_loop_saddle_point(
+auto compute_inner_loop_saddle_point(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork) {
+		qp::QPWorkspace<T>& qpwork) -> T {
 
-	qpwork.active_part_z.noalias() =
+	qpwork.active_part_z =
 			qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
 			qp::detail::negative_part(qpwork.primal_residual_in_scaled_low) -
 			qpresults.z * qpresults.mu_in_inv; // contains now : [Cx-u+z_prev/mu_in]+
 	                                       // + [Cx-l+z_prev/mu_in]- - z/mu_in
 
 	T err = infty_norm(qpwork.active_part_z);
-	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() =
+	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.primal_residual_eq_scaled -
 			qpresults.y * qpresults.mu_eq_inv; // contains now Ax-b-(y-y_prev)/mu
 	T prim_eq_e = infty_norm(
@@ -471,10 +472,10 @@ void primal_dual_semi_smooth_newton_step(
 
 	qp::line_search::active_set_change(qpmodel, qpresults, qpwork);
 
-	qpwork.rhs.head(qpmodel.dim).noalias() = -qpwork.dual_residual_scaled;
+	qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
 	// std::cout << " qpwork.rhs head before activation " <<
 	// qpwork.rhs.head(qpmodel.dim) << std::endl;
-	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq).noalias() =
+	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
 			-qpwork.primal_residual_eq_scaled + qpresults.y * qpresults.mu_eq_inv;
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 		isize j = qpwork.current_bijection_map(i);
@@ -489,7 +490,7 @@ void primal_dual_semi_smooth_newton_step(
 						qpresults.z(i) * qpresults.mu_in_inv;
 			}
 		} else {
-			qpwork.rhs.head(qpmodel.dim).noalias() +=
+			qpwork.rhs.head(qpmodel.dim) +=
 					qpresults.z(i) *
 					qpwork.C_scaled.row(i); // unactive unrelevant columns
 		}
@@ -545,7 +546,6 @@ T primal_dual_newton_semi_smooth(
 		qp::detail::primal_dual_semi_smooth_newton_step<T>(
 				qpsettings, qpmodel, qpresults, qpwork, eps_int);
 
-		// qpwork.Hdx.noalias() = qpwork.H_scaled * qpwork.dw_aug.head(qpmodel.dim);
 		qpwork.Hdx.noalias() =
 				qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
 				qpwork.dw_aug.head(qpmodel.dim);
@@ -569,32 +569,31 @@ T primal_dual_newton_semi_smooth(
 			break;
 		}
 
-		qpresults.x.noalias() += (qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim));
-		qpwork.primal_residual_in_scaled_up.noalias() +=
+		qpresults.x += (qpwork.alpha * qpwork.dw_aug.head(qpmodel.dim));
+		qpwork.primal_residual_in_scaled_up +=
 				(qpwork.alpha *
 		     qpwork.Cdx); // contains now :  C(x+alpha dx)-u + z_prev/mu_in
-		qpwork.primal_residual_in_scaled_low.noalias() +=
+		qpwork.primal_residual_in_scaled_low +=
 				(qpwork.alpha *
 		     qpwork.Cdx); // contains now :  C(x+alpha dx)-l + z_prev/mu_in
-		qpwork.primal_residual_eq_scaled.noalias() +=
+		qpwork.primal_residual_eq_scaled +=
 				qpwork.alpha *
 				qpwork.Adx; // contains now :  A(x+alpha dx)-b + y_prev/mu_in
-		qpresults.y.noalias() +=
+		qpresults.y +=
 				(qpwork.alpha * qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq));
-		qpresults.z.noalias() += (qpwork.alpha * qpwork.dw_aug.tail(qpmodel.n_in));
+		qpresults.z += (qpwork.alpha * qpwork.dw_aug.tail(qpmodel.n_in));
 
-		// qpwork.dual_residual_scaled.noalias() = qpwork.H_scaled * qpresults.x;
 		qpwork.dual_residual_scaled.noalias() =
 				qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
 
-		qpwork.dual_residual_scaled.noalias() +=
+		qpwork.dual_residual_scaled +=
 				qpwork.g_scaled + qpresults.rho * (qpresults.x - qpwork.x_prev);
 
 		qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * (qpresults.y);
-		qpwork.dual_residual_scaled.noalias() += qpwork.CTz;
+		qpwork.dual_residual_scaled += qpwork.CTz;
 
 		qpwork.CTz.noalias() = qpwork.C_scaled.transpose() * (qpresults.z);
-		qpwork.dual_residual_scaled.noalias() +=
+		qpwork.dual_residual_scaled +=
 				qpwork.CTz; // contains now : Hx + rho (x-x_prev) + A.Ty + C.T z
 
 		err_in = compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
@@ -648,7 +647,6 @@ void qp_solve( //
 	T primal_feasibility_eq_lhs(0);
 	T primal_feasibility_in_lhs(0);
 	T dual_feasibility_lhs(0);
-	isize saturation(0);
 
 	for (i64 iter = 0; iter <= qpsettings.max_iter; ++iter) {
 
@@ -659,6 +657,7 @@ void qp_solve( //
 
 		// compute primal residual
 
+		// PERF: fuse matrix product computations in global_{primal, dual}_residual
 		qp::detail::global_primal_residual(
 				qpmodel,
 				qpresults,
@@ -782,14 +781,14 @@ void qp_solve( //
 		// dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z as x =
 		// x_prev
 		// std::cout << " intermediate algebra PDAL no IG " << std::endl;
-		qpwork.primal_residual_eq_scaled.noalias() +=
+		qpwork.primal_residual_eq_scaled +=
 				(qpwork.y_prev *
 		     qpresults
 		         .mu_eq_inv); // contains now Ax-b+1./mu_eq * y_prev as y = y_prev
 		qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
 				from_eigen,
 				qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
-		qpwork.primal_residual_in_scaled_up.noalias() +=
+		qpwork.primal_residual_in_scaled_up +=
 				qpwork.z_prev *
 				qpresults.mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
 		qpwork.primal_residual_in_scaled_low = qpwork.primal_residual_in_scaled_up;
@@ -909,9 +908,9 @@ void qp_solve( //
 				dual_feasibility_rhs_3);
 
 		if ((primal_feasibility_lhs_new /
-		         max2(primal_feasibility_lhs, machine_eps) >=
+		         (primal_feasibility_lhs) >=
 		     1.) &&
-		    (dual_feasibility_lhs_new / max2(primal_feasibility_lhs, machine_eps) >=
+		    (dual_feasibility_lhs_new / (primal_feasibility_lhs) >=
 		     1.) &&
 		    qpresults.mu_in >= 1.E5) {
 
@@ -1030,7 +1029,7 @@ void QPsetup_generic( //
 
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
-	if (QPSettings.warm_start) {
+	if (!QPSettings.warm_start) {
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 		qp::detail::iterative_solve_with_permut_fact( //

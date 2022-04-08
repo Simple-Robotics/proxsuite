@@ -67,7 +67,7 @@ public:
 			isize nb_iterative_refinement_ = 10,
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
 			bool VERBOSE = false,
-			bool warm_start = true)
+			bool warm_start = false)
 			: alpha_bcl(alpha_bcl_),
 				beta_bcl(beta_bcl_),
 				refactor_dual_feasibility_threshold(
