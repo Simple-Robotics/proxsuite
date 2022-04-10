@@ -76,13 +76,15 @@ auto primal_dual_gradient_norm(
 	    qpresults.mu_eq *
 	        (qpwork.Adx)
 	            .dot(
-									qpwork.primal_residual_eq_scaled)); // contains now: b =
-	                                                    // dx.dot(H.dot(x) +
-	                                                    // rho*(x-xe) +  g)  +
-	                                                    // mu_eq * Adx.dot(res_eq)
+									qpwork.primal_residual_eq_scaled +
+									qpresults.y *
+											qpresults.mu_eq_inv)); // contains now: b =
+	                                           // dx.dot(H.dot(x) +
+	                                           // rho*(x-xe) +  g)  +
+	                                           // mu_eq * Adx.dot(res_eq)
 
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq).noalias() =
-			qpwork.primal_residual_eq_scaled - qpresults.y * qpresults.mu_eq_inv;
+			qpwork.primal_residual_eq_scaled;
 	b += qpresults.nu * qpresults.mu_eq *
 	     qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
 	         .dot(qpwork.rhs.segment(
