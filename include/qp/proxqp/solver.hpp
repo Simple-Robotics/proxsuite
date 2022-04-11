@@ -297,7 +297,7 @@ void bcl_update(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
 		qp::QPWorkspace<T>& qpwork,
-		T& primal_feasibility_lhs,
+		T& primal_feasibility_lhs_new,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
 
@@ -311,7 +311,7 @@ void bcl_update(
 
 ) {
 
-	if (primal_feasibility_lhs <= bcl_eta_ext) {
+	if (primal_feasibility_lhs_new <= bcl_eta_ext) {
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}

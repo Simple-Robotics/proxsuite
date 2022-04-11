@@ -587,32 +587,39 @@ struct QpWorkspace {
 			}
 
 			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
-			auto req = SR::and_(veg::init_list({
-										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n),    // g_scaled
-										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_eq), // b_scaled
-										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // l_scaled
-										 dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // u_scaled
-								 })) &
-			           (precond_req | // scale_qp_in_place
-			            (SR::and_(veg::init_list({
-											 SR::with_len(itag, n_tot), // perm
-											 SR::with_len(itag, n_tot), // etree
-											 SR::with_len(itag, n_tot), // ldl nnz counts
-											 SR::with_len(itag, lnnz),  // ldl row indices
-											 SR::with_len(xtag, lnnz),  // ldl values
-									 })) &
-			             (sparse_ldlt::factorize_symbolic_req( // symbolic ldl
-												itag,
-												n_tot,
-												nnz_tot,
-												sparse_ldlt::Ordering::user_provided) |
-			              (SR::with_len(xtag, n_tot) &         // diag
-			               sparse_ldlt::factorize_numeric_req( // numeric ldl
-												 xtag,
-												 itag,
-												 n_tot,
-												 nnz_tot,
-												 sparse_ldlt::Ordering::user_provided)))));
+			auto refactorize_req =
+					(sparse_ldlt::factorize_symbolic_req( // symbolic ldl
+							 itag,
+							 n_tot,
+							 nnz_tot,
+							 sparse_ldlt::Ordering::user_provided) |
+			     (SR::with_len(xtag, n_tot) &         // diag
+			      sparse_ldlt::factorize_numeric_req( // numeric ldl
+								xtag,
+								itag,
+								n_tot,
+								nnz_tot,
+								sparse_ldlt::Ordering::user_provided)));
+
+			auto req = //
+					SR::and_(veg::init_list({
+							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n),    // g_scaled
+							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_eq), // b_scaled
+							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // l_scaled
+							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // u_scaled
+
+							SR::or_(veg::init_list({
+									precond_req,
+									SR::and_(veg::init_list({
+											SR::with_len(itag, n_tot), // perm
+											SR::with_len(itag, n_tot), // etree
+											SR::with_len(itag, n_tot), // ldl nnz counts
+											SR::with_len(itag, lnnz),  // ldl row indices
+											SR::with_len(xtag, lnnz),  // ldl values
+											refactorize_req,
+									})),
+							})),
+					}));
 
 			storage.resize_for_overwrite(req.alloc_req());
 		}
@@ -708,7 +715,7 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 } // namespace detail
 
 template <typename T, typename I, typename P>
-void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp, P& precond) {
+void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp, P& /*precond*/) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
@@ -853,12 +860,31 @@ void qp_solve(
 	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
 	veg::SliceMut<I> ldl_row_indices = _ldl_row_indices.as_mut();
 	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
+	sparse_ldlt::MatMut<T, I> ldl = {
+			sparse_ldlt::from_raw_parts,
+			n_tot,
+			n_tot,
+			0,
+			ldl_col_ptrs,
+			ldl_row_indices,
+			ldl_nnz_counts,
+			ldl_values,
+	};
 
 	T rho = 1e-6;
 	T mu_eq = 1e3;
 	T mu_in = 1e1;
 
-	{
+	// rho = 0;
+	// mu_eq = std::numeric_limits<T>::infinity();
+	// mu_in = std::numeric_limits<T>::infinity();
+
+	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
+	T bcl_eta_ext = bcl_eta_ext_init;
+	T bcl_eta_in(1);
+	T eps_in_min = std::min(settings.eps_abs, T(1e-9));
+
+	auto refactorize = [&]() -> void {
 		sparse_ldlt::factorize_symbolic_non_zeros(
 				ldl_nnz_counts,
 				etree,
@@ -877,7 +903,7 @@ void qp_solve(
 			diag[n + i] = -1 / mu_eq;
 		}
 		for (isize i = 0; i < n_in; ++i) {
-			diag[(n + n_eq) + i] = -1 / mu_in;
+			diag[(n + n_eq) + i] = 1;
 		}
 
 		sparse_ldlt::factorize_numeric(
@@ -889,24 +915,14 @@ void qp_solve(
 				perm_inv,
 				kkt_active.as_const(),
 				stack);
-	}
-
-	isize ldl_nnz = 0;
-	for (isize i = 0; i < n_tot; ++i) {
-		ldl_nnz =
-				util::checked_non_negative_plus(ldl_nnz, isize(ldl_nnz_counts[i]));
-	}
-
-	sparse_ldlt::MatMut<T, I> ldl = {
-			sparse_ldlt::from_raw_parts,
-			n_tot,
-			n_tot,
-			ldl_nnz,
-			ldl_col_ptrs,
-			ldl_row_indices,
-			ldl_nnz_counts,
-			ldl_values,
+		isize ldl_nnz = 0;
+		for (isize i = 0; i < n_tot; ++i) {
+			ldl_nnz =
+					util::checked_non_negative_plus(ldl_nnz, isize(ldl_nnz_counts[i]));
+		}
+		ldl._set_nnz(ldl_nnz);
 	};
+	refactorize();
 
 	auto x_e = x.to_eigen();
 	auto y_e = y.to_eigen();
@@ -938,6 +954,9 @@ void qp_solve(
 			sol_e[i] = work[isize(zx(perm_inv[i]))];
 		}
 	};
+	auto ldl_solve_in_place = [&](VectorViewMut<T> rhs) {
+		ldl_solve(rhs, rhs.as_const());
+	};
 
 	if (!settings.warm_start) {
 		LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
@@ -946,201 +965,309 @@ void qp_solve(
 		rhs.segment(n, n_eq) = b_scaled_e;
 		rhs.segment(n + n_eq, n_in).setZero();
 
-		ldl_solve({ldlt::from_eigen, rhs}, {ldlt::from_eigen, rhs});
-
+		ldl_solve_in_place({ldlt::from_eigen, rhs});
 		x_e = rhs.head(n);
 		y_e = rhs.segment(n, n_eq);
 		z_e = rhs.segment(n + n_eq, n_in);
 	}
 
 	for (isize iter = 0; iter < settings.max_iter; ++iter) {
-
-		T primal_feasibility_eq_rhs_0;
-		T primal_feasibility_in_rhs_0;
-
-		T dual_feasibility_rhs_0(0);
-		T dual_feasibility_rhs_1(0);
-		T dual_feasibility_rhs_3(0);
-
-		LDLT_TEMP_VEC_UNINIT(T, primal_residual_eq_scaled, n_eq, stack);
-		LDLT_TEMP_VEC_UNINIT(T, primal_residual_in_scaled_lo, n_in, stack);
-		LDLT_TEMP_VEC_UNINIT(T, primal_residual_in_scaled_up, n_in, stack);
-
-		LDLT_TEMP_VEC_UNINIT(T, dual_residual_scaled, n, stack);
-
-		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto unscaled_primal_residual = [&]() -> T {
-			primal_residual_eq_scaled.noalias() = A_scaled_e * x_e;
-			primal_residual_in_scaled_up.noalias() = C_scaled_e * x_e;
-
-			precond.unscale_primal_residual_in_place_eq(
-					{ldlt::from_eigen, primal_residual_eq_scaled});
-
-			primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
-
-			precond.unscale_primal_residual_in_place_in(
-					{ldlt::from_eigen, primal_residual_in_scaled_up});
-			primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
-
-			auto b = qp.b.to_eigen();
-			auto l = qp.l.to_eigen();
-			auto u = qp.u.to_eigen();
-			primal_residual_in_scaled_lo =
-					detail::positive_part(primal_residual_in_scaled_up - u) +
-					detail::negative_part(primal_residual_in_scaled_up - l);
-
-			primal_residual_eq_scaled -= b;
-			T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);
-			T primal_feasibility_in_lhs = infty_norm(primal_residual_in_scaled_lo);
-			T primal_feasibility_lhs =
-					std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
-
-			// scaled Ax - b
-			precond.scale_primal_residual_in_place_eq(
-					{ldlt::from_eigen, primal_residual_eq_scaled});
-			// scaled Cx
-			precond.scale_primal_residual_in_place_in(
-					{ldlt::from_eigen, primal_residual_in_scaled_up});
-
-			return primal_feasibility_lhs;
-		};
-		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto unscaled_dual_residual = [&]() -> T {
-			LDLT_TEMP_VEC_UNINIT(T, Hx, n, stack);
-			dual_residual_scaled = g_scaled_e;
-
-			{
-				Hx.setZero();
-				detail::noalias_symhiv_add(Hx, H_scaled_e, x_e);
-				dual_residual_scaled += Hx;
-
-				precond.unscale_dual_residual_in_place({ldlt::from_eigen, Hx});
-				dual_feasibility_rhs_0 = infty_norm(Hx);
-			}
-
-			{
-				auto ATy = Hx;
-				ATy.setZero();
-				ATy.noalias() += A_scaled_e.transpose() * y_e;
-
-				dual_residual_scaled += ATy;
-
-				precond.unscale_dual_residual_in_place({ldlt::from_eigen, ATy});
-				dual_feasibility_rhs_1 = infty_norm(ATy);
-			}
-
-			{
-				auto CTz = Hx;
-				CTz.setZero();
-				CTz.noalias() += C_scaled_e.transpose() * z_e;
-
-				dual_residual_scaled += CTz;
-
-				precond.unscale_dual_residual_in_place({ldlt::from_eigen, CTz});
-				dual_feasibility_rhs_3 = infty_norm(CTz);
-			}
-
-			precond.unscale_dual_residual_in_place(
-					{ldlt::from_eigen, dual_residual_scaled});
-			T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
-			precond.scale_dual_residual_in_place(
-					{ldlt::from_eigen, dual_residual_scaled});
-			return dual_feasibility_lhs;
-		};
-		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto is_primal_feasible = [&](T primal_feasibility_lhs) -> bool {
-			T rhs_pri = settings.eps_abs;
-			if (settings.eps_rel != 0) {
-				rhs_pri += settings.eps_rel * std::max({
-																					primal_feasibility_eq_rhs_0,
-																					primal_feasibility_in_rhs_0,
-																					primal_feasibility_rhs_1_eq,
-																					primal_feasibility_rhs_1_in_l,
-																					primal_feasibility_rhs_1_in_u,
-																			});
-			}
-			return primal_feasibility_lhs <= rhs_pri;
-		};
-		auto is_dual_feasible = [&](T dual_feasibility_lhs) -> bool {
-			T rhs_dua = settings.eps_abs;
-			if (settings.eps_rel != 0) {
-				rhs_dua += settings.eps_rel * std::max({
-																					dual_feasibility_rhs_0,
-																					dual_feasibility_rhs_1,
-																					dual_feasibility_rhs_2,
-																					dual_feasibility_rhs_3,
-																			});
-			}
-
-			return dual_feasibility_lhs <= rhs_dua;
-		};
-		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-		T primal_feasibility_lhs = unscaled_primal_residual();
-		T dual_feasibility_lhs = unscaled_dual_residual();
-
 		T new_bcl_mu_eq = mu_eq;
 		T new_bcl_mu_in = mu_in;
 
-		if (is_primal_feasible(primal_feasibility_lhs) &&
-		    is_dual_feasible(dual_feasibility_lhs)) {
-			break;
+		{
+			T primal_feasibility_eq_rhs_0;
+			T primal_feasibility_in_rhs_0;
+
+			T dual_feasibility_rhs_0(0);
+			T dual_feasibility_rhs_1(0);
+			T dual_feasibility_rhs_3(0);
+
+			LDLT_TEMP_VEC_UNINIT(T, primal_residual_eq_scaled, n_eq, stack);
+			LDLT_TEMP_VEC_UNINIT(T, primal_residual_in_scaled_lo, n_in, stack);
+			LDLT_TEMP_VEC_UNINIT(T, primal_residual_in_scaled_up, n_in, stack);
+
+			LDLT_TEMP_VEC_UNINIT(T, dual_residual_scaled, n, stack);
+
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			auto unscaled_primal_residual = [&]() -> T {
+				primal_residual_eq_scaled.noalias() = A_scaled_e * x_e;
+				primal_residual_in_scaled_up.noalias() = C_scaled_e * x_e;
+
+				precond.unscale_primal_residual_in_place_eq(
+						{ldlt::from_eigen, primal_residual_eq_scaled});
+
+				primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
+
+				precond.unscale_primal_residual_in_place_in(
+						{ldlt::from_eigen, primal_residual_in_scaled_up});
+				primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
+
+				auto b = qp.b.to_eigen();
+				auto l = qp.l.to_eigen();
+				auto u = qp.u.to_eigen();
+				primal_residual_in_scaled_lo =
+						detail::positive_part(primal_residual_in_scaled_up - u) +
+						detail::negative_part(primal_residual_in_scaled_up - l);
+
+				primal_residual_eq_scaled -= b;
+				T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);
+				T primal_feasibility_in_lhs = infty_norm(primal_residual_in_scaled_lo);
+				T primal_feasibility_lhs =
+						std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
+
+				// scaled Ax - b
+				precond.scale_primal_residual_in_place_eq(
+						{ldlt::from_eigen, primal_residual_eq_scaled});
+				// scaled Cx
+				precond.scale_primal_residual_in_place_in(
+						{ldlt::from_eigen, primal_residual_in_scaled_up});
+
+				return primal_feasibility_lhs;
+			};
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			auto unscaled_dual_residual = [&]() -> T {
+				LDLT_TEMP_VEC_UNINIT(T, Hx, n, stack);
+				dual_residual_scaled = g_scaled_e;
+
+				{
+					Hx.setZero();
+					detail::noalias_symhiv_add(Hx, H_scaled_e, x_e);
+					dual_residual_scaled += Hx;
+
+					precond.unscale_dual_residual_in_place({ldlt::from_eigen, Hx});
+					dual_feasibility_rhs_0 = infty_norm(Hx);
+				}
+
+				{
+					auto ATy = Hx;
+					ATy.setZero();
+					ATy.noalias() += A_scaled_e.transpose() * y_e;
+
+					dual_residual_scaled += ATy;
+
+					precond.unscale_dual_residual_in_place({ldlt::from_eigen, ATy});
+					dual_feasibility_rhs_1 = infty_norm(ATy);
+				}
+
+				{
+					auto CTz = Hx;
+					CTz.setZero();
+					CTz.noalias() += C_scaled_e.transpose() * z_e;
+
+					dual_residual_scaled += CTz;
+
+					precond.unscale_dual_residual_in_place({ldlt::from_eigen, CTz});
+					dual_feasibility_rhs_3 = infty_norm(CTz);
+				}
+
+				precond.unscale_dual_residual_in_place(
+						{ldlt::from_eigen, dual_residual_scaled});
+				T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
+				precond.scale_dual_residual_in_place(
+						{ldlt::from_eigen, dual_residual_scaled});
+				return dual_feasibility_lhs;
+			};
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			auto is_primal_feasible = [&](T primal_feasibility_lhs) -> bool {
+				T rhs_pri = settings.eps_abs;
+				if (settings.eps_rel != 0) {
+					rhs_pri += settings.eps_rel * std::max({
+																						primal_feasibility_eq_rhs_0,
+																						primal_feasibility_in_rhs_0,
+																						primal_feasibility_rhs_1_eq,
+																						primal_feasibility_rhs_1_in_l,
+																						primal_feasibility_rhs_1_in_u,
+																				});
+				}
+				return primal_feasibility_lhs <= rhs_pri;
+			};
+			auto is_dual_feasible = [&](T dual_feasibility_lhs) -> bool {
+				T rhs_dua = settings.eps_abs;
+				if (settings.eps_rel != 0) {
+					rhs_dua += settings.eps_rel * std::max({
+																						dual_feasibility_rhs_0,
+																						dual_feasibility_rhs_1,
+																						dual_feasibility_rhs_2,
+																						dual_feasibility_rhs_3,
+																				});
+				}
+
+				return dual_feasibility_lhs <= rhs_dua;
+			};
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+			T primal_feasibility_lhs = unscaled_primal_residual();
+			T dual_feasibility_lhs = unscaled_dual_residual();
+
+			if (is_primal_feasible(primal_feasibility_lhs) &&
+			    is_dual_feasible(dual_feasibility_lhs)) {
+				break;
+			}
+
+			LDLT_TEMP_VEC_UNINIT(T, x_prev_e, n, stack);
+			LDLT_TEMP_VEC_UNINIT(T, y_prev_e, n_eq, stack);
+			LDLT_TEMP_VEC_UNINIT(T, z_prev_e, n_in, stack);
+
+			x_prev_e = x_e;
+			y_prev_e = y_e;
+			z_prev_e = z_e;
+
+			// Cx + 1/mu_in * z_prev
+			primal_residual_in_scaled_up += 1 / mu_in * z_prev_e;
+			primal_residual_in_scaled_lo = primal_residual_in_scaled_up;
+
+			// Cx - l + 1/mu_in * z_prev
+			primal_residual_in_scaled_lo -= l_scaled_e;
+
+			// Cx - u + 1/mu_in * z_prev
+			primal_residual_in_scaled_up -= u_scaled_e;
+
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			auto primal_dual_newton_semi_smooth = [&]() -> void {
+				for (isize iter_inner = 0; iter_inner < settings.max_iter_in;
+				     ++iter_inner) {
+					LDLT_TEMP_VEC(T, dw, n_tot, stack);
+
+					// primal_dual_semi_smooth_newton_step
+					{
+						LDLT_TEMP_VEC_UNINIT(bool, active_set_lo, n_in, stack);
+						LDLT_TEMP_VEC_UNINIT(bool, active_set_up, n_in, stack);
+						LDLT_TEMP_VEC_UNINIT(bool, active_inequalities, n_in, stack);
+						auto rhs = dw;
+
+						active_set_lo.array() = primal_residual_in_scaled_lo.array() <= 0;
+						active_set_up.array() = primal_residual_in_scaled_up.array() <= 0;
+						active_inequalities = active_set_lo || active_set_up;
+						isize n_c_new = active_inequalities.count();
+						veg::unused(n_c_new);
+
+						// active set change
+						if (n_in > 0) {
+							VEG_UNIMPLEMENTED();
+						}
+
+						rhs.head(n) = -dual_residual_scaled;
+						rhs.segment(n, n_eq) = -primal_residual_eq_scaled;
+
+						for (isize i = 0; i < n_in; ++i) {
+							if (active_set_up(i)) {
+								rhs(n + n_eq + i) =
+										1 / mu_in * z_e(i) - primal_residual_in_scaled_up(i);
+							} else if (active_set_lo(i)) {
+								rhs(n + n_eq + i) =
+										1 / mu_in * z_e(i) - primal_residual_in_scaled_lo(i);
+							} else {
+								rhs(n + n_eq + i) = -z_e(i);
+								rhs.head(n) += z_e(i) * C_scaled_e.row(i);
+							}
+						}
+
+						ldl_solve_in_place({ldlt::from_eigen, rhs});
+					}
+
+					T alpha = 1;
+					if (alpha * infty_norm(dw) < 1e-11 && iter > 0) {
+						return;
+					}
+
+					auto dx = dw.head(n);
+					auto dy = dw.segment(n, n_eq);
+					auto dz = dw.segment(n + n_eq, n_in);
+
+					x_e += alpha * dx;
+					y_e += alpha * dy;
+					z_e += alpha * dz;
+
+					LDLT_TEMP_VEC(T, Hdx, n, stack);
+					LDLT_TEMP_VEC(T, Adx, n_eq, stack);
+					LDLT_TEMP_VEC(T, Cdx, n_in, stack);
+
+					LDLT_TEMP_VEC(T, ATdy, n, stack);
+					LDLT_TEMP_VEC(T, CTdz, n, stack);
+
+					detail::noalias_symhiv_add(Hdx, H_scaled_e, dx);
+					Adx.noalias() += A_scaled_e * dx;
+					ATdy.noalias() += A_scaled_e.transpose() * dy;
+					Cdx.noalias() += C_scaled_e * dx;
+					CTdz.noalias() += C_scaled_e.transpose() * dz;
+
+					dual_residual_scaled += alpha * (Hdx + ATdy + CTdz) + rho * dx;
+					primal_residual_eq_scaled += alpha * (Adx - 1 / mu_eq * y_e);
+					primal_residual_in_scaled_lo += alpha * Cdx;
+					primal_residual_in_scaled_up += alpha * Cdx;
+
+					T err_in = std::max({
+							infty_norm(
+									detail::negative_part(primal_residual_in_scaled_lo) +
+									detail::positive_part(primal_residual_in_scaled_up) -
+									1 / mu_in * z_e),
+							infty_norm(primal_residual_eq_scaled),
+							infty_norm(dual_residual_scaled),
+					});
+					if (err_in <= bcl_eta_in) {
+						return;
+					}
+				}
+			};
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+			primal_dual_newton_semi_smooth();
+
+			T primal_feasibility_lhs_new = unscaled_primal_residual();
+			T dual_feasibility_lhs_new = unscaled_dual_residual();
+			if (is_primal_feasible(primal_feasibility_lhs_new) &&
+			    is_dual_feasible(dual_feasibility_lhs_new)) {
+				break;
+			}
+
+			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+			auto bcl_update = [&]() -> void {
+				if (primal_feasibility_lhs_new <= bcl_eta_ext) {
+					bcl_eta_ext *= 1 / pow(mu_in, settings.beta_bcl);
+					bcl_eta_in = std::max(bcl_eta_in / mu_in, eps_in_min);
+				} else {
+					y_e = y_prev_e;
+					z_e = z_prev_e;
+					new_bcl_mu_in =
+							std::min(mu_in * settings.mu_update_factor, settings.mu_max_in);
+					new_bcl_mu_eq =
+							std::min(mu_eq * settings.mu_update_factor, settings.mu_max_eq);
+					bcl_eta_ext =
+							bcl_eta_ext_init / pow(new_bcl_mu_in, settings.alpha_bcl);
+					bcl_eta_in = 1 / std::max(new_bcl_mu_in, eps_in_min);
+				}
+			};
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			bcl_update();
+
+			dual_feasibility_lhs_new = unscaled_dual_residual();
+
+			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
+			    dual_feasibility_lhs_new >= primal_feasibility_lhs &&   //
+			    mu_in >= 1.E5) {
+				new_bcl_mu_in = settings.cold_reset_mu_in;
+				new_bcl_mu_eq = settings.cold_reset_mu_eq;
+			}
 		}
 
-		LDLT_TEMP_VEC_UNINIT(T, x_prev_e, n, stack);
-		LDLT_TEMP_VEC_UNINIT(T, y_prev_e, n_eq, stack);
-		LDLT_TEMP_VEC_UNINIT(T, z_prev_e, n_in, stack);
-
-		x_prev_e = x_e;
-		y_prev_e = y_e;
-		z_prev_e = z_e;
-
-		// Ax - b + 1/mu_eq * y_prev
-		primal_residual_eq_scaled += 1 / mu_eq * y_prev_e;
-
-		// Cx + 1/mu_in * z_prev
-		primal_residual_in_scaled_up += 1 / mu_in * z_prev_e;
-		primal_residual_in_scaled_lo = primal_residual_in_scaled_up;
-
-		// Cx - l + 1/mu_in * z_prev
-		primal_residual_in_scaled_lo -= l_scaled_e;
-
-		// Cx - u + 1/mu_in * z_prev
-		primal_residual_in_scaled_up -= u_scaled_e;
-
 		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto primal_dual_newton_semi_smooth = [&]() -> T { VEG_UNIMPLEMENTED(); };
+		auto mu_update = [&]() -> void { refactorize(); };
 		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-		T err_in = primal_dual_newton_semi_smooth();
-		veg::unused(err_in);
-
-		T primal_feasibility_lhs_new = unscaled_primal_residual();
-		T dual_feasibility_lhs_new = unscaled_dual_residual();
-		if (is_primal_feasible(primal_feasibility_lhs_new) &&
-		    is_dual_feasible(dual_feasibility_lhs_new)) {
-			break;
-		}
-
-		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto bcl_update = [&]() -> void { VEG_UNIMPLEMENTED(); };
-		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-		dual_feasibility_lhs_new = unscaled_dual_residual();
-		T const machine_eps = std::numeric_limits<T>::epsilon();
-
-		if ((primal_feasibility_lhs_new /
-		         std::max(primal_feasibility_lhs, machine_eps) >=
-		     1.) &&
-		    (dual_feasibility_lhs_new /
-		         std::max(primal_feasibility_lhs, machine_eps) >=
-		     1.) &&
-		    mu_in >= 1.E5) {
+		if (mu_in != new_bcl_mu_in || mu_eq != new_bcl_mu_eq) {
+			mu_update();
+			mu_eq = new_bcl_mu_eq;
+			mu_in = new_bcl_mu_in;
 		}
 	}
+
+	precond.unscale_primal_in_place({ldlt::from_eigen, x_e});
+	precond.unscale_dual_in_place_eq({ldlt::from_eigen, y_e});
+	precond.unscale_dual_in_place_in({ldlt::from_eigen, z_e});
 }
 } // namespace sparse
 } // namespace qp
