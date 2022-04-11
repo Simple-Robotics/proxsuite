@@ -587,27 +587,31 @@ struct QpWorkspace {
 			}
 
 			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
-			auto refactorize_req =
-					(sparse_ldlt::factorize_symbolic_req( // symbolic ldl
-							 itag,
-							 n_tot,
-							 nnz_tot,
-							 sparse_ldlt::Ordering::user_provided) |
-			     (SR::with_len(xtag, n_tot) &         // diag
-			      sparse_ldlt::factorize_numeric_req( // numeric ldl
-								xtag,
-								itag,
-								n_tot,
-								nnz_tot,
-								sparse_ldlt::Ordering::user_provided)));
+			auto refactorize_req = SR::or_(veg::init_list({
+					sparse_ldlt::factorize_symbolic_req( // symbolic ldl
+							itag,
+							n_tot,
+							nnz_tot,
+							sparse_ldlt::Ordering::user_provided),
+					SR::and_(veg::init_list({
+							SR::with_len(xtag, n_tot),          // diag
+							sparse_ldlt::factorize_numeric_req( // numeric ldl
+									xtag,
+									itag,
+									n_tot,
+									nnz_tot,
+									sparse_ldlt::Ordering::user_provided),
+					})),
+			}));
 
 			auto req = //
 					SR::and_(veg::init_list({
-							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n),    // g_scaled
-							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_eq), // b_scaled
-							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // l_scaled
-							dense_ldlt::temp_vec_req(veg::Tag<T>{}, n_in), // u_scaled
-
+							dense_ldlt::temp_vec_req(xtag, n),                // g_scaled
+							dense_ldlt::temp_vec_req(xtag, n_eq),             // b_scaled
+							dense_ldlt::temp_vec_req(xtag, n_in),             // l_scaled
+							dense_ldlt::temp_vec_req(xtag, n_in),             // u_scaled
+							dense_ldlt::temp_vec_req(veg::Tag<bool>{}, n_in), // active constr
+							refactorize_req,
 							SR::or_(veg::init_list({
 									precond_req,
 									SR::and_(veg::init_list({
@@ -825,6 +829,7 @@ void qp_solve(
 	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 	auto _ldl_row_indices = stack.make_new_for_overwrite(itag, max_lnnz).unwrap();
 	auto _ldl_values = stack.make_new_for_overwrite(xtag, max_lnnz).unwrap();
+	auto _active_constraints = stack.make_new(veg::Tag<bool>{}, n_in).unwrap();
 
 	veg::Slice<I> perm_inv = work._.perm_inv.as_ref();
 	veg::SliceMut<I> perm = _perm.as_mut();
@@ -860,6 +865,8 @@ void qp_solve(
 	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
 	veg::SliceMut<I> ldl_row_indices = _ldl_row_indices.as_mut();
 	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
+	veg::SliceMut<bool> active_constraints = _active_constraints.as_mut();
+
 	sparse_ldlt::MatMut<T, I> ldl = {
 			sparse_ldlt::from_raw_parts,
 			n_tot,
@@ -874,10 +881,6 @@ void qp_solve(
 	T rho = 1e-6;
 	T mu_eq = 1e3;
 	T mu_in = 1e1;
-
-	// rho = 0;
-	// mu_eq = std::numeric_limits<T>::infinity();
-	// mu_in = std::numeric_limits<T>::infinity();
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
@@ -903,7 +906,7 @@ void qp_solve(
 			diag[n + i] = -1 / mu_eq;
 		}
 		for (isize i = 0; i < n_in; ++i) {
-			diag[(n + n_eq) + i] = 1;
+			diag[(n + n_eq) + i] = active_constraints[i] ? -1 / mu_in : T(1);
 		}
 
 		sparse_ldlt::factorize_numeric(
@@ -1142,12 +1145,28 @@ void qp_solve(
 						active_set_lo.array() = primal_residual_in_scaled_lo.array() <= 0;
 						active_set_up.array() = primal_residual_in_scaled_up.array() <= 0;
 						active_inequalities = active_set_lo || active_set_up;
-						isize n_c_new = active_inequalities.count();
-						veg::unused(n_c_new);
 
 						// active set change
 						if (n_in > 0) {
-							VEG_UNIMPLEMENTED();
+							for (isize i = 0; i < n_in; ++i) {
+								bool was_active = active_constraints[i];
+								active_constraints[i] = active_inequalities[i];
+								bool is_active = active_constraints[i];
+								isize idx = n + n_eq + i;
+
+								usize col_nnz =
+										zx(kkt.col_end(usize(idx))) - zx(kkt.col_start(usize(idx)));
+
+								if (is_active && !was_active) {
+									kkt_active.nnz_per_col_mut()[idx] = I(col_nnz);
+									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
+								} else if (!is_active && was_active) {
+									kkt_active.nnz_per_col_mut()[idx] = 0;
+									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
+								}
+							}
+							veg::dbg(active_constraints);
+							refactorize();
 						}
 
 						rhs.head(n) = -dual_residual_scaled;
@@ -1169,18 +1188,9 @@ void qp_solve(
 						ldl_solve_in_place({ldlt::from_eigen, rhs});
 					}
 
-					T alpha = 1;
-					if (alpha * infty_norm(dw) < 1e-11 && iter > 0) {
-						return;
-					}
-
 					auto dx = dw.head(n);
 					auto dy = dw.segment(n, n_eq);
 					auto dz = dw.segment(n + n_eq, n_in);
-
-					x_e += alpha * dx;
-					y_e += alpha * dy;
-					z_e += alpha * dz;
 
 					LDLT_TEMP_VEC(T, Hdx, n, stack);
 					LDLT_TEMP_VEC(T, Adx, n_eq, stack);
@@ -1194,6 +1204,107 @@ void qp_solve(
 					ATdy.noalias() += A_scaled_e.transpose() * dy;
 					Cdx.noalias() += C_scaled_e * dx;
 					CTdz.noalias() += C_scaled_e.transpose() * dz;
+
+					T alpha = 1;
+					// primal dual line search
+					if (n_in > 0) {
+						LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
+						isize alphas_count = 0;
+
+						for (isize i = 0; i < n_in; ++i) {
+							T alpha_candidates[2] = {
+									primal_residual_in_scaled_lo(i) / Cdx(i),
+									primal_residual_in_scaled_up(i) / Cdx(i),
+							};
+
+							for (auto alpha_candidate : alpha_candidates) {
+								if (alpha_candidate > 0) {
+									alphas[alphas_count] = alpha_candidate;
+									++alphas_count;
+								}
+							}
+						}
+						std::sort(alphas.data(), alphas.data() + alphas_count);
+						alphas_count =
+								std::unique(alphas.data(), alphas.data() + alphas_count) -
+								alphas.data();
+
+						auto infty = std::numeric_limits<T>::infinity();
+
+						T last_neg_grad = 0;
+						T alpha_last_neg = 0;
+						T first_pos_grad = 0;
+						T alpha_first_pos = infty;
+
+						struct PrimalDualGradResult {
+							T a;
+							T b;
+							T grad;
+						};
+
+						auto primal_dual_gradient_norm = [&](T x) -> PrimalDualGradResult {
+							LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n, stack);
+							LDLT_TEMP_VEC_UNINIT(T, tmp_up, n, stack);
+							tmp_lo = primal_residual_in_scaled_lo + x * Cdx;
+							tmp_up = primal_residual_in_scaled_up + x * Cdx;
+
+							T nu = 1;
+
+							T a = dx.dot(Hdx) +               //
+							      mu_eq * Adx.squaredNorm() + //
+							      rho * dx.squaredNorm() +    //
+							      1 / mu_eq * nu * (mu_eq * Adx - dy).squaredNorm();
+
+							T b = x_e.dot(Hdx) +                                     //
+							      (rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +    //
+							      Adx.dot(mu_eq * primal_residual_eq_scaled + y_e) + //
+							      nu * primal_residual_eq_scaled.dot(mu_eq * Adx - dy);
+
+							VEG_UNIMPLEMENTED();
+
+							return {
+									a,
+									b,
+									a * alpha + b,
+							};
+						};
+
+						for (isize i = 0; i < alphas_count; ++i) {
+							T alpha_cur = alphas(i);
+							T gr = primal_dual_gradient_norm(alpha_cur).grad;
+
+							if (gr < 0) {
+								alpha_last_neg = alpha_cur;
+								last_neg_grad = gr;
+							} else {
+								first_pos_grad = gr;
+								alpha_first_pos = alpha_cur;
+								break;
+							}
+						}
+
+						if (alpha_last_neg == T(0)) {
+							last_neg_grad = primal_dual_gradient_norm(alpha_last_neg).grad;
+
+							if (alpha_first_pos == infty) {
+								PrimalDualGradResult res =
+										primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+								alpha = -res.b / res.a;
+							} else {
+								alpha = alpha_last_neg -
+								        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+								            (first_pos_grad - last_neg_grad);
+							}
+						}
+					}
+
+					if (alpha * infty_norm(dw) < 1e-11 && iter > 0) {
+						return;
+					}
+
+					x_e += alpha * dx;
+					y_e += alpha * dy;
+					z_e += alpha * dz;
 
 					dual_residual_scaled += alpha * (Hdx + ATdy + CTdz) + rho * dx;
 					primal_residual_eq_scaled += alpha * (Adx - 1 / mu_eq * y_e);
