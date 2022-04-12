@@ -736,7 +736,6 @@ void qp_solve(
 		P& precond,
 		QpView<T, I> qp) {
 
-	using namespace sparse_ldlt::tags;
 	using namespace veg::literals;
 	namespace util = sparse_ldlt::util;
 	auto zx = util::zero_extend;
@@ -802,12 +801,12 @@ void qp_solve(
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
-			{from_eigen, g_scaled_e},
+			{sparse_ldlt::from_eigen, g_scaled_e},
 			AT_scaled,
-			{from_eigen, b_scaled_e},
+			{sparse_ldlt::from_eigen, b_scaled_e},
 			CT_scaled,
-			{from_eigen, l_scaled_e},
-			{from_eigen, u_scaled_e},
+			{sparse_ldlt::from_eigen, l_scaled_e},
+			{sparse_ldlt::from_eigen, u_scaled_e},
 	};
 
 	precond.scale_qp_in_place(qp_scaled, stack);
