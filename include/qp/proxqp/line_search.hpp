@@ -241,6 +241,10 @@ void primal_dual_ls(
 			qpwork.alphas.begin() + n_alpha);
 
 	n_alpha = qpwork.alphas.size();
+	if (n_alpha == 0 || qpwork.alphas[0] > 1) {
+		qpwork.alpha = 1;
+    return;
+	}
 
 	////////// STEP 2 ///////////
 	auto infty = std::numeric_limits<T>::infinity();

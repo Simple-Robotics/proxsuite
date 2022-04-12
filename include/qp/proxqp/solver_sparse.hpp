@@ -460,6 +460,43 @@ struct RuizEquilibration {
 	}
 };
 
+template <typename T, typename I>
+struct Identity {
+
+	static auto scale_qp_in_place_req(
+			veg::Tag<T> /*tag*/, isize /*n*/, isize /*n_eq*/, isize /*n_in*/)
+			-> veg::dynstack::StackReq {
+		return {0, 1};
+	}
+
+	void scale_qp_in_place(
+			QpViewMut<T, I> /*qp*/, veg::dynstack::DynStackMut /*stack*/) {}
+
+	// modifies variables in place
+	void scale_primal_in_place(VectorViewMut<T> /*primal*/) {}
+	void scale_dual_in_place(VectorViewMut<T> /*dual*/) {}
+
+	void scale_dual_in_place_eq(VectorViewMut<T> /*dual*/) {}
+	void scale_dual_in_place_in(VectorViewMut<T> /*dual*/) {}
+
+	void unscale_primal_in_place(VectorViewMut<T> /*primal*/) {}
+	void unscale_dual_in_place(VectorViewMut<T> /*dual*/) {}
+
+	void unscale_dual_in_place_eq(VectorViewMut<T> /*dual*/) {}
+
+	void unscale_dual_in_place_in(VectorViewMut<T> /*dual*/) {}
+	// modifies residuals in place
+	void scale_primal_residual_in_place(VectorViewMut<T> /*primal*/) {}
+
+	void scale_primal_residual_in_place_eq(VectorViewMut<T> /*primal_eq*/) {}
+	void scale_primal_residual_in_place_in(VectorViewMut<T> /*primal_in*/) {}
+	void scale_dual_residual_in_place(VectorViewMut<T> /*dual*/) {}
+	void unscale_primal_residual_in_place(VectorViewMut<T> /*primal*/) {}
+	void unscale_primal_residual_in_place_eq(VectorViewMut<T> /*primal_eq*/) {}
+	void unscale_primal_residual_in_place_in(VectorViewMut<T> /*primal_in*/) {}
+	void unscale_dual_residual_in_place(VectorViewMut<T> /*dual*/) {}
+};
+
 } // namespace preconditioner
 
 template <typename T, typename I>
@@ -1227,97 +1264,98 @@ void qp_solve(
 								std::unique(alphas.data(), alphas.data() + alphas_count) -
 								alphas.data();
 
-						auto infty = std::numeric_limits<T>::infinity();
+						if (alphas_count > 0 && alphas[0] <= 1) {
+							auto infty = std::numeric_limits<T>::infinity();
 
-						T last_neg_grad = 0;
-						T alpha_last_neg = 0;
-						T first_pos_grad = 0;
-						T alpha_first_pos = infty;
+							T last_neg_grad = 0;
+							T alpha_last_neg = 0;
+							T first_pos_grad = 0;
+							T alpha_first_pos = infty;
 
-						struct PrimalDualGradResult {
-							T a;
-							T b;
-							T grad;
-							VEG_REFLECT(PrimalDualGradResult, a, b, grad);
-						};
-
-						auto primal_dual_gradient_norm =
-								[&](T alpha_cur) -> PrimalDualGradResult {
-							LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
-							LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
-							{
-								LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
-								LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
-
-								auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
-
-								tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
-								tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
-								Cdx_active = (tmp_lo.array() < 0 || tmp_up.array() > 0)
-								                 .select(Cdx, zero);
-								active_part_z =
-										(tmp_lo.array() < 0)
-												.select(primal_residual_in_scaled_lo, zero) +
-										(tmp_up.array() > 0)
-												.select(primal_residual_in_scaled_up, zero);
-							}
-
-							T nu = 1;
-
-							T a = dx.dot(Hdx) +                                   //
-							      rho * dx.squaredNorm() +                        //
-							      mu_eq * Adx.squaredNorm() +                     //
-							      mu_in * Cdx_active.squaredNorm() +              //
-							      nu / mu_eq * (mu_eq * Adx - dy).squaredNorm() + //
-							      nu / mu_in * (mu_in * Cdx_active - dz).squaredNorm();
-
-							T b = x_e.dot(Hdx) +                                         //
-							      (rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +        //
-							      Adx.dot(mu_eq * primal_residual_eq_scaled + y_e) +     //
-							      mu_in * Cdx_active.dot(active_part_z) +                //
-							      nu * primal_residual_eq_scaled.dot(mu_eq * Adx - dy) + //
-							      nu * (active_part_z - 1 / mu_in * z_e)
-							               .dot(mu_in * Cdx_active - dz);
-
-							return {
-									a,
-									b,
-									a * alpha_cur + b,
+							struct PrimalDualGradResult {
+								T a;
+								T b;
+								T grad;
 							};
-						};
 
-						for (isize i = 0; i < alphas_count; ++i) {
-							T alpha_cur = alphas[i];
-							T gr = primal_dual_gradient_norm(alpha_cur).grad;
+							auto primal_dual_gradient_norm =
+									[&](T alpha_cur) -> PrimalDualGradResult {
+								LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
+								LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
+								{
+									LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
+									LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
 
-							if (gr < 0) {
-								alpha_last_neg = alpha_cur;
-								last_neg_grad = gr;
-							} else {
-								first_pos_grad = gr;
-								alpha_first_pos = alpha_cur;
-								break;
+									auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
+
+									tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
+									tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
+									Cdx_active = (tmp_lo.array() < 0 || tmp_up.array() > 0)
+									                 .select(Cdx, zero);
+									active_part_z =
+											(tmp_lo.array() < 0)
+													.select(primal_residual_in_scaled_lo, zero) +
+											(tmp_up.array() > 0)
+													.select(primal_residual_in_scaled_up, zero);
+								}
+
+								T nu = 1;
+
+								T a = dx.dot(Hdx) +                                   //
+								      rho * dx.squaredNorm() +                        //
+								      mu_eq * Adx.squaredNorm() +                     //
+								      mu_in * Cdx_active.squaredNorm() +              //
+								      nu / mu_eq * (mu_eq * Adx - dy).squaredNorm() + //
+								      nu / mu_in * (mu_in * Cdx_active - dz).squaredNorm();
+
+								T b = x_e.dot(Hdx) +                                         //
+								      (rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +        //
+								      Adx.dot(mu_eq * primal_residual_eq_scaled + y_e) +     //
+								      mu_in * Cdx_active.dot(active_part_z) +                //
+								      nu * primal_residual_eq_scaled.dot(mu_eq * Adx - dy) + //
+								      nu * (active_part_z - 1 / mu_in * z_e)
+								               .dot(mu_in * Cdx_active - dz);
+
+								return {
+										a,
+										b,
+										a * alpha_cur + b,
+								};
+							};
+
+							for (isize i = 0; i < alphas_count; ++i) {
+								T alpha_cur = alphas[i];
+								T gr = primal_dual_gradient_norm(alpha_cur).grad;
+
+								if (gr < 0) {
+									alpha_last_neg = alpha_cur;
+									last_neg_grad = gr;
+								} else {
+									first_pos_grad = gr;
+									alpha_first_pos = alpha_cur;
+									break;
+								}
 							}
-						}
 
-						if (alpha_last_neg == T(0)) {
-							last_neg_grad = primal_dual_gradient_norm(alpha_last_neg).grad;
-						}
-						if (!(last_neg_grad <= 0)) {
-							last_neg_grad = 0;
-						}
+							if (alpha_last_neg == T(0)) {
+								last_neg_grad = primal_dual_gradient_norm(alpha_last_neg).grad;
+							}
+							if (!(last_neg_grad <= 0)) {
+								last_neg_grad = 0;
+							}
 
-						if (alpha_first_pos == infty) {
-							PrimalDualGradResult res =
-									primal_dual_gradient_norm(2 * alpha_last_neg + 1);
-							alpha = -res.b / res.a;
-						} else {
-							alpha = alpha_last_neg - last_neg_grad *
-							                             (alpha_first_pos - alpha_last_neg) /
-							                             (first_pos_grad - last_neg_grad);
-						}
-						if (!(alpha >= 0)) {
-							alpha = 1;
+							if (alpha_first_pos == infty) {
+								PrimalDualGradResult res =
+										primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+								alpha = -res.b / res.a;
+							} else {
+								alpha = alpha_last_neg -
+								        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+								            (first_pos_grad - last_neg_grad);
+							}
+							if (!(alpha >= 0)) {
+								alpha = 1;
+							}
 						}
 					}
 
