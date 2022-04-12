@@ -164,11 +164,8 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 	auto H = SparseMat<Scalar>(n, n);
 
 	for (isize i = 0; i < n; ++i) {
-		auto urandom = rand::uniform_rand();
-		if (urandom < p) {
-			auto random = Scalar(rand::normal_rand());
-			H.insert(i, i) = random;
-		}
+		auto random = Scalar(rand::normal_rand());
+		H.insert(i, i) = random;
 	}
 
 	for (isize i = 0; i < n; ++i) {
@@ -197,6 +194,9 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 	// min + rho = (max - min) / (cond - 1)
 	// rho = (max - min)/(cond - 1) - min
 	Scalar rho = (max - min) / (cond - 1) - min;
+	if (max == min) {
+		rho += 1;
+	}
 
 	for (isize i = 0; i < n; ++i) {
 		H.coeffRef(i, i) += rho;
