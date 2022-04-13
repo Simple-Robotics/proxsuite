@@ -14,6 +14,14 @@ namespace qp {
 using veg::isize;
 
 namespace sparse {
+template <typename T>
+struct PrimalDualGradResult {
+	T a;
+	T b;
+	T grad;
+	VEG_REFLECT(PrimalDualGradResult, a, b, grad);
+};
+
 template <typename T, typename I>
 struct QpView {
 	sparse_ldlt::MatRef<T, I> H;
@@ -914,9 +922,9 @@ void qp_solve(
 			ldl_values,
 	};
 
-	T rho = 1e-6;
-	T mu_eq = 1e3;
-	T mu_in = 1e1;
+	T rho = T(1e-6);
+	T mu_eq = T(1e3);
+	T mu_in = T(1e1);
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
@@ -956,7 +964,7 @@ void qp_solve(
 		}
 		return diff;
 	};
-  veg::unused(reconstruction_error);
+	veg::unused(reconstruction_error);
 
 	auto refactorize = [&]() -> void {
 		sparse_ldlt::factorize_symbolic_non_zeros(
@@ -1332,124 +1340,120 @@ void qp_solve(
 					T alpha = 1;
 					// primal dual line search
 					if (n_in > 0) {
-						LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
-						isize alphas_count = 0;
-						const T machine_eps = std::numeric_limits<T>::epsilon();
+						auto primal_dual_gradient_norm =
+								[&](T alpha_cur) -> PrimalDualGradResult<T> {
+							LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
+							LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
+							{
+								LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
+								LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
 
-						for (isize i = 0; i < n_in; ++i) {
-							T alpha_candidates[2] = {
-									primal_residual_in_scaled_lo(i) / (Cdx(i) + machine_eps),
-									primal_residual_in_scaled_up(i) / (Cdx(i) + machine_eps),
-							};
+								auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
 
-							for (auto alpha_candidate : alpha_candidates) {
-								if (alpha_candidate > machine_eps) {
-									alphas[alphas_count] = alpha_candidate;
-									++alphas_count;
-								}
+								tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
+								tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
+								Cdx_active = (tmp_lo.array() < 0 || tmp_up.array() > 0)
+								                 .select(Cdx, zero);
+								active_part_z =
+										(tmp_lo.array() < 0)
+												.select(primal_residual_in_scaled_lo, zero) +
+										(tmp_up.array() > 0)
+												.select(primal_residual_in_scaled_up, zero);
 							}
-						}
-						std::sort(alphas.data(), alphas.data() + alphas_count);
-						alphas_count =
-								std::unique(alphas.data(), alphas.data() + alphas_count) -
-								alphas.data();
 
-						if (alphas_count > 0 && alphas[0] <= 1) {
-							auto infty = std::numeric_limits<T>::infinity();
+							T nu = 1;
 
-							T last_neg_grad = 0;
-							T alpha_last_neg = 0;
-							T first_pos_grad = 0;
-							T alpha_first_pos = infty;
+							T a = dx.dot(Hdx) +                                   //
+							      rho * dx.squaredNorm() +                        //
+							      mu_eq * Adx.squaredNorm() +                     //
+							      mu_in * Cdx_active.squaredNorm() +              //
+							      nu / mu_eq * (mu_eq * Adx - dy).squaredNorm() + //
+							      nu / mu_in * (mu_in * Cdx_active - dz).squaredNorm();
 
-							struct PrimalDualGradResult {
-								T a;
-								T b;
-								T grad;
+							T b = x_e.dot(Hdx) +                                         //
+							      (rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +        //
+							      Adx.dot(mu_eq * primal_residual_eq_scaled + y_e) +     //
+							      mu_in * Cdx_active.dot(active_part_z) +                //
+							      nu * primal_residual_eq_scaled.dot(mu_eq * Adx - dy) + //
+							      nu * (active_part_z - 1 / mu_in * z_e)
+							               .dot(mu_in * Cdx_active - dz);
+
+							return {
+									a,
+									b,
+									a * alpha_cur + b,
 							};
+						};
 
-							auto primal_dual_gradient_norm =
-									[&](T alpha_cur) -> PrimalDualGradResult {
-								LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
-								LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
-								{
-									LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
-									LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
+						if (primal_dual_gradient_norm(0).grad >= 0) {
+							alpha = 0;
+						} else {
+							LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
+							isize alphas_count = 0;
 
-									auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
-
-									tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
-									tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
-									Cdx_active = (tmp_lo.array() < 0 || tmp_up.array() > 0)
-									                 .select(Cdx, zero);
-									active_part_z =
-											(tmp_lo.array() < 0)
-													.select(primal_residual_in_scaled_lo, zero) +
-											(tmp_up.array() > 0)
-													.select(primal_residual_in_scaled_up, zero);
-								}
-
-								T nu = 1;
-
-								T a = dx.dot(Hdx) +                                   //
-								      rho * dx.squaredNorm() +                        //
-								      mu_eq * Adx.squaredNorm() +                     //
-								      mu_in * Cdx_active.squaredNorm() +              //
-								      nu / mu_eq * (mu_eq * Adx - dy).squaredNorm() + //
-								      nu / mu_in * (mu_in * Cdx_active - dz).squaredNorm();
-
-								T b = x_e.dot(Hdx) +                                         //
-								      (rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +        //
-								      Adx.dot(mu_eq * primal_residual_eq_scaled + y_e) +     //
-								      mu_in * Cdx_active.dot(active_part_z) +                //
-								      nu * primal_residual_eq_scaled.dot(mu_eq * Adx - dy) + //
-								      nu * (active_part_z - 1 / mu_in * z_e)
-								               .dot(mu_in * Cdx_active - dz);
-
-								return {
-										a,
-										b,
-										a * alpha_cur + b,
+							for (isize i = 0; i < n_in; ++i) {
+								T alpha_candidates[2] = {
+										-primal_residual_in_scaled_lo(i) / (Cdx(i)),
+										-primal_residual_in_scaled_up(i) / (Cdx(i)),
 								};
-							};
 
-							for (isize i = 0; i < alphas_count; ++i) {
-								T alpha_cur = alphas[i];
-								T gr = primal_dual_gradient_norm(alpha_cur).grad;
-
-								if (gr < 0) {
-									alpha_last_neg = alpha_cur;
-									last_neg_grad = gr;
-								} else {
-									first_pos_grad = gr;
-									alpha_first_pos = alpha_cur;
-									break;
+								for (auto alpha_candidate : alpha_candidates) {
+									if (alpha_candidate > 0) {
+										alphas[alphas_count] = alpha_candidate;
+										++alphas_count;
+									}
 								}
 							}
+							std::sort(alphas.data(), alphas.data() + alphas_count);
+							alphas_count =
+									std::unique(alphas.data(), alphas.data() + alphas_count) -
+									alphas.data();
 
-							if (alpha_last_neg == T(0)) {
-								last_neg_grad = primal_dual_gradient_norm(alpha_last_neg).grad;
-							}
-							if (!(last_neg_grad <= 0)) {
-								last_neg_grad = 0;
-							}
+							if (alphas_count > 0 && alphas[0] <= 1) {
+								auto infty = std::numeric_limits<T>::infinity();
 
-							if (alpha_first_pos == infty) {
-								PrimalDualGradResult res =
-										primal_dual_gradient_norm(2 * alpha_last_neg + 1);
-								alpha = -res.b / res.a;
-							} else {
-								alpha = alpha_last_neg -
-								        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
-								            (first_pos_grad - last_neg_grad);
-							}
-							if (!(alpha >= 0)) {
-								alpha = 1;
+								T last_neg_grad = 0;
+								T alpha_last_neg = 0;
+								T first_pos_grad = 0;
+								T alpha_first_pos = infty;
+
+								{
+									for (isize i = 0; i < alphas_count; ++i) {
+										T alpha_cur = alphas[i];
+										T gr = primal_dual_gradient_norm(alpha_cur).grad;
+
+										if (gr < 0) {
+											alpha_last_neg = alpha_cur;
+											last_neg_grad = gr;
+										} else {
+											first_pos_grad = gr;
+											alpha_first_pos = alpha_cur;
+											break;
+										}
+									}
+
+									if (alpha_last_neg == 0) {
+										last_neg_grad =
+												primal_dual_gradient_norm(alpha_last_neg).grad;
+									}
+
+									if (alpha_first_pos == infty) {
+										PrimalDualGradResult<T> res =
+												primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+										alpha = -res.b / res.a;
+									} else {
+										alpha = alpha_last_neg -
+										        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+										            (first_pos_grad - last_neg_grad);
+										if (alpha_last_neg == 0 && alpha_first_pos < 1) {
+											alpha = alpha_first_pos;
+										}
+									}
+								}
 							}
 						}
 					}
-
-					if (alpha * infty_norm(dw) < 1e-11 && iter > 0) {
+					if (alpha * infty_norm(dw) < T(1e-11) && iter > 0) {
 						return;
 					}
 
@@ -1463,12 +1467,12 @@ void qp_solve(
 					primal_residual_in_scaled_up += alpha * Cdx;
 
 					T err_in = std::max({
-							infty_norm(
+							(infty_norm(
 									detail::negative_part(primal_residual_in_scaled_lo) +
 									detail::positive_part(primal_residual_in_scaled_up) -
-									1 / mu_in * z_e),
-							infty_norm(primal_residual_eq_scaled),
-							infty_norm(dual_residual_scaled),
+									1 / mu_in * z_e)),
+							(infty_norm(primal_residual_eq_scaled)),
+							(infty_norm(dual_residual_scaled)),
 					});
 					if (err_in <= bcl_eta_in) {
 						return;

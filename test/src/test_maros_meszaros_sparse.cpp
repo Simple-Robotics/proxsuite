@@ -159,8 +159,8 @@ TEST_CASE("maros meszaros wip") {
 					eps);
 			CHECK(infty_norm(AT.transpose() * x - b) <= eps);
 			if (n_in > 0) {
-				CHECK((CT.transpose() * x - l).minCoeff() > -1e-9);
-				CHECK((CT.transpose() * x - u).maxCoeff() < 1e-9);
+				CHECK((CT.transpose() * x - l).minCoeff() > -eps);
+				CHECK((CT.transpose() * x - u).maxCoeff() < eps);
 			}
 		}
 	}
