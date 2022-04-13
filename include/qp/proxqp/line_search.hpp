@@ -243,7 +243,7 @@ void primal_dual_ls(
 	n_alpha = qpwork.alphas.size();
 	if (n_alpha == 0 || qpwork.alphas[0] > 1) {
 		qpwork.alpha = 1;
-    return;
+		return;
 	}
 
 	////////// STEP 2 ///////////

@@ -923,6 +923,26 @@ void qp_solve(
 	T bcl_eta_in(1);
 	T eps_in_min = std::min(settings.eps_abs, T(1e-9));
 
+	using DMat = Eigen::Matrix<T, -1, -1>;
+	auto inner_reconstructed_matrix = [&]() -> DMat {
+		auto ldl_dense = ldl.to_eigen().toDense();
+		auto l = DMat(ldl_dense.template triangularView<Eigen::UnitLower>());
+		auto lt = l.transpose();
+		auto d = ldl_dense.diagonal().asDiagonal();
+		auto mat = DMat(l * d * lt);
+		return mat;
+	};
+	auto reconstructed_matrix = [&]() -> DMat {
+		auto mat = inner_reconstructed_matrix();
+		auto mat_backup = mat;
+		for (isize i = 0; i < n_tot; ++i) {
+			for (isize j = 0; j < n_tot; ++j) {
+				mat(i, j) = mat_backup(perm_inv[i], perm_inv[j]);
+			}
+		}
+		return mat;
+	};
+
 	auto refactorize = [&]() -> void {
 		sparse_ldlt::factorize_symbolic_non_zeros(
 				ldl_nnz_counts,
@@ -966,26 +986,6 @@ void qp_solve(
 	auto x_e = x.to_eigen();
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
-
-	using DMat = Eigen::Matrix<T, -1, -1>;
-	auto inner_reconstructed_matrix = [&]() -> DMat {
-		auto ldl_dense = ldl.to_eigen().toDense();
-		auto l = DMat(ldl_dense.template triangularView<Eigen::UnitLower>());
-		auto lt = l.transpose();
-		auto d = ldl_dense.diagonal().asDiagonal();
-		auto mat = DMat(l * d * lt);
-		return mat;
-	};
-	auto reconstructed_matrix = [&]() -> DMat {
-		auto mat = inner_reconstructed_matrix();
-		auto mat_backup = mat;
-		for (isize i = 0; i < n_tot; ++i) {
-			for (isize j = 0; j < n_tot; ++j) {
-				mat(i, j) = mat_backup(perm_inv[i], perm_inv[j]);
-			}
-		}
-		return mat;
-	};
 
 	auto ldl_solve = [&](VectorViewMut<T> sol, VectorView<T> rhs) -> void {
 		LDLT_TEMP_VEC_UNINIT(T, work, n_tot, stack);
@@ -1035,7 +1035,7 @@ void qp_solve(
 			auto sol_y = sol_e.segment(n, n_eq);
 			auto sol_z = sol_e.tail(n_in);
 
-			err.setZero();
+			err = -rhs_e;
 
 			if (solve_iter > 0) {
 				detail::noalias_symhiv_add(err_x, H_scaled_e, sol_x);
@@ -1052,8 +1052,6 @@ void qp_solve(
 					err_z[i] += (active_constraints[i] ? -1 / mu_in : T(1)) * sol_z[i];
 				}
 			}
-
-			err -= rhs_e;
 
 			ldl_solve({ldlt::from_eigen, err}, {ldlt::from_eigen, err});
 
@@ -1244,33 +1242,40 @@ void qp_solve(
 					{
 						LDLT_TEMP_VEC_UNINIT(bool, active_set_lo, n_in, stack);
 						LDLT_TEMP_VEC_UNINIT(bool, active_set_up, n_in, stack);
-						LDLT_TEMP_VEC_UNINIT(bool, active_inequalities, n_in, stack);
+						LDLT_TEMP_VEC_UNINIT(bool, new_active_constraints, n_in, stack);
 						auto rhs = dw;
 
 						active_set_lo.array() = primal_residual_in_scaled_lo.array() <= 0;
 						active_set_up.array() = primal_residual_in_scaled_up.array() >= 0;
-						active_inequalities = active_set_lo || active_set_up;
+						new_active_constraints = active_set_lo || active_set_up;
 
 						// active set change
 						if (n_in > 0) {
+							bool constraints_changed = false;
+
 							for (isize i = 0; i < n_in; ++i) {
 								bool was_active = active_constraints[i];
-								active_constraints[i] = active_inequalities[i];
-								bool is_active = active_constraints[i];
+								bool is_active = new_active_constraints[i];
+
+								active_constraints[i] = new_active_constraints[i];
 								isize idx = n + n_eq + i;
 
 								usize col_nnz =
 										zx(kkt.col_end(usize(idx))) - zx(kkt.col_start(usize(idx)));
 
 								if (is_active && !was_active) {
+									constraints_changed = true;
 									kkt_active.nnz_per_col_mut()[idx] = I(col_nnz);
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
 								} else if (!is_active && was_active) {
+									constraints_changed = true;
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
 								}
 							}
-							refactorize();
+							if (constraints_changed) {
+								refactorize();
+							}
 						}
 
 						rhs.head(n) = -dual_residual_scaled;
@@ -1314,15 +1319,16 @@ void qp_solve(
 					if (n_in > 0) {
 						LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
 						isize alphas_count = 0;
+						const T machine_eps = std::numeric_limits<T>::epsilon();
 
 						for (isize i = 0; i < n_in; ++i) {
 							T alpha_candidates[2] = {
-									primal_residual_in_scaled_lo(i) / Cdx(i),
-									primal_residual_in_scaled_up(i) / Cdx(i),
+									primal_residual_in_scaled_lo(i) / (Cdx(i) + machine_eps),
+									primal_residual_in_scaled_up(i) / (Cdx(i) + machine_eps),
 							};
 
 							for (auto alpha_candidate : alpha_candidates) {
-								if (alpha_candidate > 0) {
+								if (alpha_candidate > machine_eps) {
 									alphas[alphas_count] = alpha_candidate;
 									++alphas_count;
 								}

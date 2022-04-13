@@ -574,7 +574,6 @@ T primal_dual_newton_semi_smooth(
 			qp::line_search::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
 		}
 		auto alpha = qpwork.alpha;
-		// VEG_ASSERT(alpha >= 0);
 
 		if (infty_norm(alpha * qpwork.dw_aug) < 1.E-11 && iter > 0) {
 			qpresults.n_tot += iter + 1;

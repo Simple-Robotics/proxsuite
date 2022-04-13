@@ -87,7 +87,8 @@ TEST_CASE("maros meszaros wip") {
 		isize n = qp.P.rows();
 		isize n_eq_in = qp.A.rows();
 
-		bool skip = n > 1000 || n_eq_in > 1000;
+		bool skip = n > 1000 || n_eq_in > 1000 ||
+		            std::strcmp(file, MAROS_MESZAROS_DIR "QBANDM.mat") != 0;
 		::fmt::print(
 				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
 				qp.filename,
