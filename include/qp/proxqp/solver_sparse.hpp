@@ -943,6 +943,20 @@ void qp_solve(
 		return mat;
 	};
 
+	auto reconstruction_error = [&]() -> DMat {
+		auto diff = DMat(
+				reconstructed_matrix() -
+				DMat(DMat(kkt_active.to_eigen())
+		             .template selfadjointView<Eigen::Upper>()));
+		diff.diagonal().head(n).array() -= rho;
+		diff.diagonal().segment(n, n_eq).array() -= -1 / mu_eq;
+		for (isize i = 0; i < n_in; ++i) {
+			diff.diagonal()[n + n_eq + i] -=
+					active_constraints[i] ? -1 / mu_in : T(1);
+		}
+		return diff;
+	};
+
 	auto refactorize = [&]() -> void {
 		sparse_ldlt::factorize_symbolic_non_zeros(
 				ldl_nnz_counts,
