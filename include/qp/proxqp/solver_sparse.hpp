@@ -967,6 +967,26 @@ void qp_solve(
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
 
+	using DMat = Eigen::Matrix<T, -1, -1>;
+	auto inner_reconstructed_matrix = [&]() -> DMat {
+		auto ldl_dense = ldl.to_eigen().toDense();
+		auto l = DMat(ldl_dense.template triangularView<Eigen::UnitLower>());
+		auto lt = l.transpose();
+		auto d = ldl_dense.diagonal().asDiagonal();
+		auto mat = DMat(l * d * lt);
+		return mat;
+	};
+	auto reconstructed_matrix = [&]() -> DMat {
+		auto mat = inner_reconstructed_matrix();
+		auto mat_backup = mat;
+		for (isize i = 0; i < n_tot; ++i) {
+			for (isize j = 0; j < n_tot; ++j) {
+				mat(i, j) = mat_backup(perm_inv[i], perm_inv[j]);
+			}
+		}
+		return mat;
+	};
+
 	auto ldl_solve = [&](VectorViewMut<T> sol, VectorView<T> rhs) -> void {
 		LDLT_TEMP_VEC_UNINIT(T, work, n_tot, stack);
 
@@ -993,8 +1013,57 @@ void qp_solve(
 			sol_e[i] = work[isize(zx(perm_inv[i]))];
 		}
 	};
+
+	auto ldl_iter_solve_noalias = [&](VectorViewMut<T> sol,
+	                                  VectorView<T> rhs) -> void {
+		auto rhs_e = rhs.to_eigen();
+		auto sol_e = sol.to_eigen();
+
+		sol_e.setZero();
+
+		LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
+
+		auto C_active = (kkt_active.to_eigen().topRightCorner(n, n_in)).transpose();
+
+		for (isize solve_iter = 0; solve_iter < 10; ++solve_iter) {
+
+			auto err_x = err.head(n);
+			auto err_y = err.segment(n, n_eq);
+			auto err_z = err.tail(n_in);
+
+			auto sol_x = sol_e.head(n);
+			auto sol_y = sol_e.segment(n, n_eq);
+			auto sol_z = sol_e.tail(n_in);
+
+			err.setZero();
+
+			if (solve_iter > 0) {
+				detail::noalias_symhiv_add(err_x, H_scaled_e, sol_x);
+				err_x += rho * sol_x;
+				err_x.noalias() += A_scaled_e.transpose() * sol_y;
+				err_x.noalias() += C_active.transpose() * sol_z;
+
+				err_y.noalias() += A_scaled_e * sol_x;
+				err_y += (-1 / mu_eq) * sol_y;
+
+				err_z.noalias() += C_active * sol_x;
+
+				for (isize i = 0; i < n_in; ++i) {
+					err_z[i] += (active_constraints[i] ? -1 / mu_in : T(1)) * sol_z[i];
+				}
+			}
+
+			err -= rhs_e;
+
+			ldl_solve({ldlt::from_eigen, err}, {ldlt::from_eigen, err});
+
+			sol_e -= err;
+		}
+	};
 	auto ldl_solve_in_place = [&](VectorViewMut<T> rhs) {
-		ldl_solve(rhs, rhs.as_const());
+		LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
+		ldl_iter_solve_noalias({ldlt::from_eigen, tmp}, rhs.as_const());
+		rhs.to_eigen() = tmp;
 	};
 
 	if (!settings.warm_start) {
@@ -1169,7 +1238,7 @@ void qp_solve(
 			auto primal_dual_newton_semi_smooth = [&]() -> void {
 				for (isize iter_inner = 0; iter_inner < settings.max_iter_in;
 				     ++iter_inner) {
-					LDLT_TEMP_VEC(T, dw, n_tot, stack);
+					LDLT_TEMP_VEC_UNINIT(T, dw, n_tot, stack);
 
 					// primal_dual_semi_smooth_newton_step
 					{
