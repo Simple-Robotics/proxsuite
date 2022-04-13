@@ -956,6 +956,7 @@ void qp_solve(
 		}
 		return diff;
 	};
+  veg::unused(reconstruction_error);
 
 	auto refactorize = [&]() -> void {
 		sparse_ldlt::factorize_symbolic_non_zeros(
