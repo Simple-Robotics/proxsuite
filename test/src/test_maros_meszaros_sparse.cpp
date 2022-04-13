@@ -99,7 +99,7 @@ TEST_CASE("maros meszaros wip") {
 
 		if (!skip) {
 
-			auto preprocessed = preprocess_qp_sparse(qp_raw);
+			auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
 			auto& H = preprocessed.H;
 			auto& AT = preprocessed.AT;
 			auto& CT = preprocessed.CT;
@@ -122,6 +122,7 @@ TEST_CASE("maros meszaros wip") {
 					{sparse_ldlt::from_eigen, l},
 					{sparse_ldlt::from_eigen, u},
 			};
+
 			qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
 					n,
 					n_eq + n_in,

@@ -2,6 +2,7 @@
 #include <matio.h>
 #include <string>
 #include <veg/util/assert.hpp>
+#include <iostream>
 
 struct MarosMeszarosQp {
 	using Mat = Eigen::SparseMatrix<double, Eigen::ColMajor, mat_int32_t>;
@@ -158,7 +159,7 @@ auto preprocess_qp(MarosMeszarosQp& qp) -> PreprocessedQp {
 	};
 }
 
-auto preprocess_qp_sparse(MarosMeszarosQp& qp) -> PreprocessedQpSparse {
+auto preprocess_qp_sparse(MarosMeszarosQp&& qp) -> PreprocessedQpSparse {
 	using Mat = MarosMeszarosQp::Mat;
 	using Vec = MarosMeszarosQp::Vec;
 	using veg::isize;
@@ -169,6 +170,8 @@ auto preprocess_qp_sparse(MarosMeszarosQp& qp) -> PreprocessedQpSparse {
 	isize n_eq = eq.count();
 	isize n_in = eq.rows() - n_eq;
 
+  qp.A = Mat(qp.A.transpose());
+
 	Mat AT{n, n_eq};
 	Vec b{n_eq};
 
@@ -178,18 +181,20 @@ auto preprocess_qp_sparse(MarosMeszarosQp& qp) -> PreprocessedQpSparse {
 
 	isize eq_idx = 0;
 	isize in_idx = 0;
-	for (isize i = 0; i < eq.rows(); ++i) {
+	for (isize i = 0; i < n_eq + n_in; ++i) {
 		if (eq[i]) {
-			AT.col(eq_idx) = qp.A.row(i);
+			AT.col(eq_idx) = qp.A.col(i);
 			b[eq_idx] = qp.l[i];
 			++eq_idx;
 		} else {
-			CT.col(in_idx) = qp.A.row(i);
+			CT.col(in_idx) = qp.A.col(i);
 			l[in_idx] = qp.l[i];
 			u[in_idx] = qp.u[i];
 			++in_idx;
 		}
 	}
+  AT.makeCompressed();
+  CT.makeCompressed();
 
 	return {
 			qp.P.triangularView<Eigen::Upper>(),
