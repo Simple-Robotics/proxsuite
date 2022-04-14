@@ -1048,7 +1048,10 @@ void qp_solve(
 
 		auto C_active = (kkt_active.to_eigen().topRightCorner(n, n_in)).transpose();
 
-		for (isize solve_iter = 0; solve_iter < 10; ++solve_iter) {
+		T prev_err_norm = std::numeric_limits<T>::infinity();
+
+		for (isize solve_iter = 0; solve_iter < settings.nb_iterative_refinement;
+		     ++solve_iter) {
 
 			auto err_x = err.head(n);
 			auto err_y = err.segment(n, n_eq);
@@ -1075,6 +1078,12 @@ void qp_solve(
 					err_z[i] += (active_constraints[i] ? -1 / mu_in : T(1)) * sol_z[i];
 				}
 			}
+
+			T err_norm = infty_norm(err_z);
+			if (err_norm > prev_err_norm) {
+				break;
+			}
+      prev_err_norm = err_norm;
 
 			ldl_solve({ldlt::from_eigen, err}, {ldlt::from_eigen, err});
 
