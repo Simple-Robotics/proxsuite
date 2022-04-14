@@ -1385,69 +1385,65 @@ void qp_solve(
 							};
 						};
 
-						if (primal_dual_gradient_norm(0).grad >= 0) {
-							alpha = 0;
-						} else {
-							LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
-							isize alphas_count = 0;
+						LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
+						isize alphas_count = 0;
 
-							for (isize i = 0; i < n_in; ++i) {
-								T alpha_candidates[2] = {
-										-primal_residual_in_scaled_lo(i) / (Cdx(i)),
-										-primal_residual_in_scaled_up(i) / (Cdx(i)),
-								};
+						for (isize i = 0; i < n_in; ++i) {
+							T alpha_candidates[2] = {
+									-primal_residual_in_scaled_lo(i) / (Cdx(i)),
+									-primal_residual_in_scaled_up(i) / (Cdx(i)),
+							};
 
-								for (auto alpha_candidate : alpha_candidates) {
-									if (alpha_candidate > 0) {
-										alphas[alphas_count] = alpha_candidate;
-										++alphas_count;
-									}
+							for (auto alpha_candidate : alpha_candidates) {
+								if (alpha_candidate > 0) {
+									alphas[alphas_count] = alpha_candidate;
+									++alphas_count;
 								}
 							}
-							std::sort(alphas.data(), alphas.data() + alphas_count);
-							alphas_count =
-									std::unique(alphas.data(), alphas.data() + alphas_count) -
-									alphas.data();
+						}
+						std::sort(alphas.data(), alphas.data() + alphas_count);
+						alphas_count =
+								std::unique(alphas.data(), alphas.data() + alphas_count) -
+								alphas.data();
 
-							if (alphas_count > 0 && alphas[0] <= 1) {
-								auto infty = std::numeric_limits<T>::infinity();
+						if (alphas_count > 0 && alphas[0] <= 1) {
+							auto infty = std::numeric_limits<T>::infinity();
 
-								T last_neg_grad = 0;
-								T alpha_last_neg = 0;
-								T first_pos_grad = 0;
-								T alpha_first_pos = infty;
+							T last_neg_grad = 0;
+							T alpha_last_neg = 0;
+							T first_pos_grad = 0;
+							T alpha_first_pos = infty;
 
-								{
-									for (isize i = 0; i < alphas_count; ++i) {
-										T alpha_cur = alphas[i];
-										T gr = primal_dual_gradient_norm(alpha_cur).grad;
+							{
+								for (isize i = 0; i < alphas_count; ++i) {
+									T alpha_cur = alphas[i];
+									T gr = primal_dual_gradient_norm(alpha_cur).grad;
 
-										if (gr < 0) {
-											alpha_last_neg = alpha_cur;
-											last_neg_grad = gr;
-										} else {
-											first_pos_grad = gr;
-											alpha_first_pos = alpha_cur;
-											break;
-										}
-									}
-
-									if (alpha_last_neg == 0) {
-										last_neg_grad =
-												primal_dual_gradient_norm(alpha_last_neg).grad;
-									}
-
-									if (alpha_first_pos == infty) {
-										PrimalDualGradResult<T> res =
-												primal_dual_gradient_norm(2 * alpha_last_neg + 1);
-										alpha = -res.b / res.a;
+									if (gr < 0) {
+										alpha_last_neg = alpha_cur;
+										last_neg_grad = gr;
 									} else {
-										alpha = alpha_last_neg -
-										        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
-										            (first_pos_grad - last_neg_grad);
-										if (alpha_last_neg == 0 && alpha_first_pos < 1) {
-											alpha = alpha_first_pos;
-										}
+										first_pos_grad = gr;
+										alpha_first_pos = alpha_cur;
+										break;
+									}
+								}
+
+								if (alpha_last_neg == 0) {
+									last_neg_grad =
+											primal_dual_gradient_norm(alpha_last_neg).grad;
+								}
+
+								if (alpha_first_pos == infty) {
+									PrimalDualGradResult<T> res =
+											primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+									alpha = -res.b / res.a;
+								} else {
+									alpha = alpha_last_neg -
+									        last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+									            (first_pos_grad - last_neg_grad);
+									if (alpha_last_neg == 0 && alpha_first_pos < 1) {
+										alpha = alpha_first_pos;
 									}
 								}
 							}
@@ -1461,7 +1457,7 @@ void qp_solve(
 					y_e += alpha * dy;
 					z_e += alpha * dz;
 
-					dual_residual_scaled += alpha * (Hdx + ATdy + CTdz) + rho * dx;
+					dual_residual_scaled += alpha * (Hdx + ATdy + CTdz + rho * dx);
 					primal_residual_eq_scaled += alpha * (Adx - 1 / mu_eq * dy);
 					primal_residual_in_scaled_lo += alpha * Cdx;
 					primal_residual_in_scaled_up += alpha * Cdx;
