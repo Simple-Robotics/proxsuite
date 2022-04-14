@@ -1285,6 +1285,7 @@ void qp_solve(
 						if (n_in > 0) {
 							bool removed = false;
 							bool added = false;
+              veg::unused(removed, added);
 
 							for (isize i = 0; i < n_in; ++i) {
 								bool was_active = active_constraints[i];
@@ -1331,9 +1332,6 @@ void qp_solve(
 											sparse_ldlt::delete_row(ldl, etree, perm_inv, idx, stack);
 									active_constraints[i] = new_active_constraints[i];
 								}
-							}
-							if (added || removed) {
-								refactorize();
 							}
 						}
 
@@ -1557,9 +1555,9 @@ void qp_solve(
 		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 		if (mu_in != new_bcl_mu_in || mu_eq != new_bcl_mu_eq) {
-			mu_update();
 			mu_eq = new_bcl_mu_eq;
 			mu_in = new_bcl_mu_in;
+			mu_update();
 		}
 	}
 
