@@ -721,24 +721,152 @@ auto negative_part(T const& expr)
 		VEG_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
 template <typename T, typename I>
-void noalias_gevmmv_add_impl( //
+VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 		ldlt::VectorViewMut<T> out_l,
 		ldlt::VectorViewMut<T> out_r,
 		sparse_ldlt::MatRef<T, I> a,
 		ldlt::VectorView<T> in_l,
 		ldlt::VectorView<T> in_r) {
-	out_l.to_eigen().noalias() += a.to_eigen().transpose() * in_l.to_eigen();
-	out_r.to_eigen().noalias() += a.to_eigen() * in_r.to_eigen();
+	VEG_ASSERT_ALL_OF /* NOLINT */ (
+			a.nrows() == out_r.dim,
+			a.ncols() == in_r.dim,
+			a.ncols() == out_l.dim,
+			a.nrows() == in_l.dim);
+	// equivalent to
+	// out_r.to_eigen().noalias() += a.to_eigen() * in_r.to_eigen();
+	// out_l.to_eigen().noalias() += a.to_eigen().transpose() * in_l.to_eigen();
+
+	auto* ai = a.row_indices().ptr();
+	auto* ax = a.values().ptr();
+	auto n = a.ncols();
+
+	for (usize j = 0; j < usize(n); ++j) {
+		usize col_start = a.col_start(j);
+		usize col_end = a.col_end(j);
+
+		T acc0 = 0;
+		T acc1 = 0;
+		T acc2 = 0;
+		T acc3 = 0;
+
+		T in_rj = in_r(isize(j));
+
+		usize pcount = col_end - col_start;
+
+		usize p = col_start;
+
+		auto zx = sparse_ldlt::util::zero_extend;
+
+		for (; p < col_start + pcount / 4 * 4; p += 4) {
+			auto i0 = isize(zx(ai[p + 0]));
+			auto i1 = isize(zx(ai[p + 1]));
+			auto i2 = isize(zx(ai[p + 2]));
+			auto i3 = isize(zx(ai[p + 3]));
+
+			T ai0j = ax[p + 0];
+			T ai1j = ax[p + 1];
+			T ai2j = ax[p + 2];
+			T ai3j = ax[p + 3];
+
+			out_r(i0) += ai0j * in_rj;
+			out_r(i1) += ai1j * in_rj;
+			out_r(i2) += ai2j * in_rj;
+			out_r(i3) += ai3j * in_rj;
+
+			acc0 += ai0j * in_l(i0);
+			acc1 += ai1j * in_l(i1);
+			acc2 += ai2j * in_l(i2);
+			acc3 += ai3j * in_l(i3);
+		}
+
+		for (; p < col_end; ++p) {
+			auto i = isize(zx(ai[p]));
+
+			T aij = ax[p];
+			out_r(i) += aij * in_rj;
+			acc0 += aij * in_l(i);
+		}
+
+		acc0 = ((acc0 + acc1) + (acc2 + acc3));
+		out_l(isize(j)) += acc0;
+	}
 }
 
 template <typename T, typename I>
-void noalias_symhiv_add_impl( //
+VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		ldlt::VectorViewMut<T> out,
 		sparse_ldlt::MatRef<T, I> a,
 		ldlt::VectorView<T> in) {
-	out.to_eigen().noalias() +=
-			a.to_eigen().template selfadjointView<Eigen::Upper>() * //
-			in.to_eigen();
+	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
+			a.nrows() == a.ncols(),
+			a.nrows() == out.dim,
+			a.ncols() == in.dim);
+	// equivalent to
+	// out.to_eigen().noalias() +=
+	// 		a.to_eigen().template selfadjointView<Eigen::Upper>() * in.to_eigen();
+
+	auto* ai = a.row_indices().ptr();
+	auto* ax = a.values().ptr();
+	auto n = a.ncols();
+
+	for (usize j = 0; j < usize(n); ++j) {
+		usize col_start = a.col_start(j);
+		usize col_end = a.col_end(j);
+
+		if (col_start == col_end) {
+			continue;
+		}
+
+		T acc0 = 0;
+		T acc1 = 0;
+		T acc2 = 0;
+		T acc3 = 0;
+
+		T in_j = in(isize(j));
+
+		usize pcount = col_end - col_start;
+
+		auto zx = sparse_ldlt::util::zero_extend;
+
+		if (zx(ai[col_end - 1]) == j) {
+			T ajj = ax[col_end - 1];
+			out(isize(j)) += ajj * in_j;
+			pcount -= 1;
+		}
+
+		usize p = col_start;
+
+		for (; p < col_start + pcount / 4 * 4; p += 4) {
+			auto i0 = isize(zx(ai[p + 0]));
+			auto i1 = isize(zx(ai[p + 1]));
+			auto i2 = isize(zx(ai[p + 2]));
+			auto i3 = isize(zx(ai[p + 3]));
+
+			T ai0j = ax[p + 0];
+			T ai1j = ax[p + 1];
+			T ai2j = ax[p + 2];
+			T ai3j = ax[p + 3];
+
+			out(i0) += ai0j * in_j;
+			out(i1) += ai1j * in_j;
+			out(i2) += ai2j * in_j;
+			out(i3) += ai3j * in_j;
+
+			acc0 += ai0j * in(i0);
+			acc1 += ai1j * in(i1);
+			acc2 += ai2j * in(i2);
+			acc3 += ai3j * in(i3);
+		}
+		for (; p < col_start + pcount; ++p) {
+			auto i = isize(zx(ai[p]));
+
+			T aij = ax[p];
+			out(i) += aij * in_j;
+			acc0 += aij * in(i);
+		}
+		acc0 = ((acc0 + acc1) + (acc2 + acc3));
+		out(isize(j)) += acc0;
+	}
 }
 
 /// noalias general vector matrix matrix vector add
@@ -1047,6 +1175,26 @@ void qp_solve(
 		LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
 
 		auto C_active = (kkt_active.to_eigen().topRightCorner(n, n_in)).transpose();
+		sparse_ldlt::MatRef<T, I> CT_active{
+				sparse_ldlt::from_raw_parts,
+				n,
+				n_in,
+				0, // nnz not used
+				{
+						veg::unsafe,
+						veg::from_raw_parts,
+						kkt_active.col_ptrs().ptr() + n + n_eq,
+						n_in + 1,
+				},
+				kkt.row_indices(),
+				{
+						veg::unsafe,
+						veg::from_raw_parts,
+						kkt_active.nnz_per_col().ptr() + n + n_eq,
+						n_in,
+				},
+				kkt.values(),
+		};
 
 		T prev_err_norm = std::numeric_limits<T>::infinity();
 
@@ -1066,13 +1214,17 @@ void qp_solve(
 			if (solve_iter > 0) {
 				detail::noalias_symhiv_add(err_x, H_scaled_e, sol_x);
 				err_x += rho * sol_x;
-				err_x.noalias() += A_scaled_e.transpose() * sol_y;
-				err_x.noalias() += C_active.transpose() * sol_z;
+				detail::noalias_gevmmv_add(
+						err_y, err_x, AT_scaled.to_eigen(), sol_x, sol_y);
+				detail::noalias_gevmmv_add(
+						err_z, err_x, CT_active.to_eigen(), sol_x, sol_z);
 
-				err_y.noalias() += A_scaled_e * sol_x;
+				// err_x.noalias() += A_scaled_e.transpose() * sol_y;
+				// err_y.noalias() += A_scaled_e * sol_x;
+				// err_x.noalias() += C_active.transpose() * sol_z;
+				// err_z.noalias() += C_active * sol_x;
+
 				err_y += (-1 / mu_eq) * sol_y;
-
-				err_z.noalias() += C_active * sol_x;
 
 				for (isize i = 0; i < n_in; ++i) {
 					err_z[i] += (active_constraints[i] ? -1 / mu_in : T(1)) * sol_z[i];
@@ -1285,7 +1437,7 @@ void qp_solve(
 						if (n_in > 0) {
 							bool removed = false;
 							bool added = false;
-              veg::unused(removed, added);
+							veg::unused(removed, added);
 
 							for (isize i = 0; i < n_in; ++i) {
 								bool was_active = active_constraints[i];
