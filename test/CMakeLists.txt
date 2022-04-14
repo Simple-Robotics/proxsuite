@@ -51,6 +51,7 @@ ldlt_test(test.sparse.qp src/test_qp_sparse.cpp)
 ldlt_test(test.sparse.maros_meszaros src/test_maros_meszaros_sparse.cpp)
 
 ldlt_bench(bench.maros_meszaros src/bench_maros_meszaros.cpp)
+ldlt_bench(bench.sparse.maros_meszaros src/bench_maros_meszaros_sparse.cpp)
 
 target_compile_definitions(
   bench.maros_meszaros PUBLIC PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
@@ -60,6 +61,9 @@ target_compile_definitions(
 )
 target_compile_definitions(
   test.sparse.maros_meszaros PUBLIC PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
+)
+target_compile_definitions(
+  bench.sparse.maros_meszaros PUBLIC PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
 )
 target_compile_definitions(
   test.qp_eq.py
