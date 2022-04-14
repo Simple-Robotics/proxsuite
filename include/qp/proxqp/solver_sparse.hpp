@@ -1083,7 +1083,7 @@ void qp_solve(
 			if (err_norm > prev_err_norm) {
 				break;
 			}
-      prev_err_norm = err_norm;
+			prev_err_norm = err_norm;
 
 			ldl_solve({ldlt::from_eigen, err}, {ldlt::from_eigen, err});
 
@@ -1283,29 +1283,56 @@ void qp_solve(
 
 						// active set change
 						if (n_in > 0) {
-							bool constraints_changed = false;
+							bool removed = false;
+							bool added = false;
 
 							for (isize i = 0; i < n_in; ++i) {
 								bool was_active = active_constraints[i];
 								bool is_active = new_active_constraints[i];
 
-								active_constraints[i] = new_active_constraints[i];
 								isize idx = n + n_eq + i;
 
 								usize col_nnz =
 										zx(kkt.col_end(usize(idx))) - zx(kkt.col_start(usize(idx)));
 
 								if (is_active && !was_active) {
-									constraints_changed = true;
+									added = true;
+
 									kkt_active.nnz_per_col_mut()[idx] = I(col_nnz);
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
+
+									sparse_ldlt::VecRef<T, I> new_col{
+											sparse_ldlt::from_raw_parts,
+											n_tot,
+											{
+													veg::unsafe,
+													veg::from_raw_parts,
+													kkt.row_indices().ptr() +
+															zx(kkt.col_start(usize(idx))),
+													isize(col_nnz),
+											},
+											{
+													veg::unsafe,
+													veg::from_raw_parts,
+													kkt.values().ptr() + zx(kkt.col_start(usize(idx))),
+													isize(col_nnz),
+											},
+									};
+
+									ldl = sparse_ldlt::add_row(
+											ldl, etree, perm_inv, idx, new_col, -1 / mu_in, stack);
+									active_constraints[i] = new_active_constraints[i];
+
 								} else if (!is_active && was_active) {
-									constraints_changed = true;
+									removed = true;
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
+									ldl =
+											sparse_ldlt::delete_row(ldl, etree, perm_inv, idx, stack);
+									active_constraints[i] = new_active_constraints[i];
 								}
 							}
-							if (constraints_changed) {
+							if (added || removed) {
 								refactorize();
 							}
 						}

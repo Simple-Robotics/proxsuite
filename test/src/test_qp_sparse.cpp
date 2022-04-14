@@ -12,6 +12,7 @@ using namespace sparse_ldlt::tags;
 TEST_CASE("random ruiz") {
 
 	for (auto const& dims : {
+					 veg::tuplify(2, 0, 2),
 					 veg::tuplify(50, 0, 0),
 					 veg::tuplify(50, 25, 0),
 					 veg::tuplify(50, 0, 25),
@@ -85,6 +86,7 @@ TEST_CASE("random id") {
 	for (auto const& dims : {
 					 veg::tuplify(50, 0, 0),
 					 veg::tuplify(50, 25, 0),
+					 veg::tuplify(10, 0, 10),
 					 veg::tuplify(50, 0, 25),
 					 veg::tuplify(50, 10, 25),
 			 }) {
