@@ -1393,7 +1393,10 @@ void qp_solve(
 			T primal_feasibility_lhs = unscaled_primal_residual();
 			T dual_feasibility_lhs = unscaled_dual_residual();
 
-			std::cout << "-------- outer iteration: " << iter << " primal residual " << primal_feasibility_lhs << " dual residual " << dual_feasibility_lhs << " mu_in " << mu_in << " bcl_eta_ext " << bcl_eta_ext << " bcl_eta_in " << bcl_eta_in << std::endl;
+			std::cout << "-------- outer iteration: " << iter << " primal residual "
+								<< primal_feasibility_lhs << " dual residual "
+								<< dual_feasibility_lhs << " mu_in " << mu_in << " bcl_eta_ext "
+								<< bcl_eta_ext << " bcl_eta_in " << bcl_eta_in << std::endl;
 			if (is_primal_feasible(primal_feasibility_lhs) &&
 			    is_dual_feasible(dual_feasibility_lhs)) {
 				break;
@@ -1423,7 +1426,8 @@ void qp_solve(
 				     ++iter_inner) {
 					LDLT_TEMP_VEC_UNINIT(T, dw, n_tot, stack);
 
-					std::cout << "-------------------starting inner loop solve in place " << std::endl;
+					std::cout << "-------------------starting inner loop solve in place "
+										<< std::endl;
 					// primal_dual_semi_smooth_newton_step
 					{
 						LDLT_TEMP_VEC_UNINIT(bool, active_set_lo, n_in, stack);
@@ -1507,7 +1511,8 @@ void qp_solve(
 
 						ldl_solve_in_place({ldlt::from_eigen, rhs});
 					}
-					std::cout << "-------------------finished inner loop solve in place " << std::endl;
+					std::cout << "-------------------finished inner loop solve in place "
+										<< std::endl;
 					auto dx = dw.head(n);
 					auto dy = dw.segment(n, n_eq);
 					auto dz = dw.segment(n + n_eq, n_in);
@@ -1527,7 +1532,8 @@ void qp_solve(
 
 					T alpha = 1;
 					// primal dual line search
-					std::cout << "-------------------starting inner loop line search " << std::endl;
+					std::cout << "-------------------starting inner loop line search "
+										<< std::endl;
 					if (n_in > 0) {
 						auto primal_dual_gradient_norm =
 								[&](T alpha_cur) -> PrimalDualGradResult<T> {
@@ -1641,7 +1647,8 @@ void qp_solve(
 					if (alpha * infty_norm(dw) < T(1e-11) && iter > 0) {
 						return;
 					}
-					std::cout << "-------------------finished inner loop line search " << std::endl;
+					std::cout << "-------------------finished inner loop line search "
+										<< std::endl;
 
 					x_e += alpha * dx;
 					y_e += alpha * dy;
@@ -1660,7 +1667,9 @@ void qp_solve(
 							(infty_norm(primal_residual_eq_scaled)),
 							(infty_norm(dual_residual_scaled)),
 					});
-					std::cout << "--inner iter " << iter_inner << " iner error " << err_in << " alpha " << alpha << " infty_norm(dw) " << infty_norm(dw) << std::endl;
+					std::cout << "--inner iter " << iter_inner << " iner error " << err_in
+										<< " alpha " << alpha << " infty_norm(dw) "
+										<< infty_norm(dw) << std::endl;
 					if (err_in <= bcl_eta_in) {
 						return;
 					}

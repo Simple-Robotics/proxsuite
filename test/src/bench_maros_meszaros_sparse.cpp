@@ -86,25 +86,23 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 	isize n = qp_raw.P.rows();
 	isize n_eq_in = qp_raw.A.rows();
 	bool skip = n > 1000 || n_eq_in > 1000;
-	
 
 	if (!skip) {
 
-			auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
-			auto& H = preprocessed.H;
-			auto& AT = preprocessed.AT;
-			auto& CT = preprocessed.CT;
-			auto& g = preprocessed.g;
-			auto& b = preprocessed.b;
-			auto& u = preprocessed.u;
-			auto& l = preprocessed.l;
+		auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
+		auto& H = preprocessed.H;
+		auto& AT = preprocessed.AT;
+		auto& CT = preprocessed.CT;
+		auto& g = preprocessed.g;
+		auto& b = preprocessed.b;
+		auto& u = preprocessed.u;
+		auto& l = preprocessed.l;
 
-			isize n_eq = AT.cols();
-			isize n_in = CT.cols();
-
+		isize n_eq = AT.cols();
+		isize n_in = CT.cols();
 
 		for (auto _ : s) {
-      s.PauseTiming();
+			s.PauseTiming();
 			sparse::QpView<T, I> qp = {
 					{sparse_ldlt::from_eigen, H},
 					{sparse_ldlt::from_eigen, g},
@@ -134,7 +132,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			z.setZero();
 
 			sparse::qp_setup(work, qp, ruiz);
-      s.ResumeTiming();
+			s.ResumeTiming();
 			sparse::qp_solve(
 					{ldlt::from_eigen, x},
 					{ldlt::from_eigen, y},
