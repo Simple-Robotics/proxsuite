@@ -1120,6 +1120,7 @@ void qp_solve(
 				ldl_values.ptr_mut(),
 				ldl_row_indices.ptr_mut(),
 				diag,
+				perm.ptr(),
 				ldl_col_ptrs.as_const(),
 				etree.as_const(),
 				perm_inv,
