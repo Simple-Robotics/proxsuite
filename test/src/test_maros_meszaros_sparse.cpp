@@ -88,7 +88,8 @@ TEST_CASE("maros meszaros wip") {
 		isize n = qp_raw.P.rows();
 		isize n_eq_in = qp_raw.A.rows();
 
-		bool skip = n > 1000 || n_eq_in > 1000;
+		bool skip = (n <= 1000 || n>10000 || n_eq_in <= 1000 || n_eq_in>10000);
+		//bool skip = std::strcmp(file, MAROS_MESZAROS_DIR "QGFRDXPN.mat") != 0;
 		::fmt::print(
 				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
 				qp_raw.filename,
@@ -131,6 +132,9 @@ TEST_CASE("maros meszaros wip") {
 			};
 
 			QPSettings<T> settings;
+			settings.max_iter = 1.E6;
+			settings.mu_max_in = 1.E9;
+			settings.mu_max_eq = 1.E9;
 			sparse::QpWorkspace<T, I> work;
 
 			Eigen::Matrix<T, -1, 1> x(n);

@@ -86,7 +86,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 	isize n = qp_raw.P.rows();
 	isize n_eq_in = qp_raw.A.rows();
 	bool skip = n > 1000 || n_eq_in > 1000;
-
+	
 
 	if (!skip) {
 
