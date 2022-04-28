@@ -2,7 +2,7 @@
 #include <qp/QPWorkspace.hpp>
 
 #include <qp/proxqp/solver.hpp>
-#include <qp/osqp/osqp.hpp>
+//#include <qp/osqp/osqp.hpp>
 #include <qp/utils.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <fmt/chrono.h>
@@ -796,7 +796,7 @@ void QPreset(
 		qpwork.rhs.setZero();
 	}
 }
-
+/*
 template <typename T>
 void OSQPsolve(
 		const qp::QPData<T>& qpmodel,
@@ -847,13 +847,7 @@ void OSQPreset(
 	qpwork.kkt.diagonal()
 			.segment(qpmodel.n_eq+qpmodel.dim, qpmodel.n_in)
 			.setConstant(-qpresults.mu_in_inv);
-	/*
-	{
-		LDLT_MAKE_STACK(
-				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
-		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
-	}
-	*/
+
 	veg::dynstack::DynStackMut stack{
 			veg::from_slice_mut,
 			qpwork.ldl_stack.as_mut(),
@@ -862,6 +856,7 @@ void OSQPreset(
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
 }
+*/
 
 } // namespace pybind11
 } // namespace qp
@@ -1020,7 +1015,7 @@ INRIA LDLT decomposition
 			.def_readonly("n_in", &qp::QPData<f64>::n_in)
 			.def_readonly("n_total", &qp::QPData<f64>::n_total);
 
-
+	/*
 	::pybind11::class_<qp::OSQPWorkspace<f64>>(m, "OSQPWorkspace")
 			.def(::pybind11::init<i64, i64, i64&>()) // constructor
 	                                             // read-write public data member
@@ -1103,7 +1098,7 @@ INRIA LDLT decomposition
 			.def_readwrite("adaptive_rho_fraction", &qp::OSQPSettings<f64>::adaptive_rho_fraction)
 			.def_readwrite("check_termination", &qp::OSQPSettings<f64>::check_termination)
 			.def_readwrite("verbose", &qp::OSQPSettings<f64>::verbose);
-
+	*/
 	constexpr auto c = rowmajor;
 
 	m.def("QPsolve", &qp::pybind11::QPsolve<f32, c>);
@@ -1117,7 +1112,7 @@ INRIA LDLT decomposition
 
 	m.def("QPreset", &qp::pybind11::QPreset<f32>);
 	m.def("QPreset", &qp::pybind11::QPreset<f64>);
-
+	/*
 	m.def("OSQPsolve", &qp::pybind11::OSQPsolve<f32>);
 	m.def("OSQPsolve", &qp::pybind11::OSQPsolve<f64>);
 
@@ -1126,6 +1121,6 @@ INRIA LDLT decomposition
 
 	m.def("OSQPreset", &qp::pybind11::OSQPreset<f32>);
 	m.def("OSQPreset", &qp::pybind11::OSQPreset<f64>);
-
+	*/
 	m.attr("__version__") = "dev";
 }
