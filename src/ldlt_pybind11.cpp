@@ -1,18 +1,17 @@
-#include <ldlt/ldlt.hpp>
-#include <ldlt/factorize.hpp>
-#include <ldlt/solve.hpp>
-#include <ldlt/update.hpp>
-
 #include <qp/views.hpp>
 #include <qp/QPWorkspace.hpp>
 
 #include <qp/proxqp/solver.hpp>
+#include <qp/osqp/osqp.hpp>
 #include <qp/utils.hpp>
 #include <qp/precond/ruiz.hpp>
 #include <fmt/chrono.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+
+#include <veg/util/dynstack_alloc.hpp>
+#include <dense-ldlt/ldlt.hpp>
 
 namespace ldlt {
 namespace pybind11 {
@@ -29,6 +28,7 @@ using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
 template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
+/*
 template <typename T, Layout L>
 void iterative_solve_with_permut_fact( //
 		VecRef<T> rhs,
@@ -52,6 +52,7 @@ void iterative_solve_with_permut_fact( //
 		res = (mat * sol - rhs);
 	}
 }
+*/
 
 } // namespace pybind11
 } // namespace ldlt
@@ -59,7 +60,7 @@ void iterative_solve_with_permut_fact( //
 namespace qp {
 namespace pybind11 {
 
-using namespace ldlt;
+using namespace ldlt::tags;
 template <typename T, Layout L>
 using MatRef = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
@@ -108,8 +109,14 @@ void QPupdateMatrice( //
 			{from_eigen, qpwork.u_scaled},
 			{from_eigen, qpwork.l_scaled}};
 
-	qpwork.ruiz.scale_qp_in_place(
-			qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
+	//qpwork.ruiz.scale_qp_in_place(
+	//		qp_scaled, VectorViewMut<T>{from_eigen, qpwork.dw_aug});
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
+
 	qpwork.dw_aug.setZero();
 
 	// re update all other variables
@@ -136,11 +143,16 @@ void QPupdateMatrice( //
 			.segment(qpmodel.dim, qpmodel.n_eq)
 			.setConstant(-QPResults.mu_eq_inv); // mu stores the inverse of mu
 
+	/* OLD VERSION
 	{
 		LDLT_MAKE_STACK(
 				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
 		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
 	}
+	*/
+
+	qpwork.ldl.factorize(qpwork.kkt, stack);
+
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
@@ -750,11 +762,20 @@ void QPreset(
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 			-qpresults.mu_eq_inv;
+	
+	/*
 	{
 		LDLT_MAKE_STACK(
 				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
 		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
 	}
+
+	*/
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+	qpwork.ldl.factorize(qpwork.kkt, stack);
 
 	if (qpsettings.warm_start){
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
@@ -774,6 +795,72 @@ void QPreset(
 		qpwork.dw_aug.setZero();
 		qpwork.rhs.setZero();
 	}
+}
+
+template <typename T>
+void OSQPsolve(
+		const qp::QPData<T>& qpmodel,
+		qp::OSQPResults<T>& QPResults,
+		qp::OSQPWorkspace<T>& qpwork,
+		const qp::OSQPSettings<T>& qpsettings) {
+
+	auto start = std::chrono::high_resolution_clock::now();
+	qp::detail::osqpSolve( //
+			qpmodel,
+			QPResults,
+			qpwork,
+			qpsettings
+			);
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	QPResults.timing = duration.count();
+
+	if (qpsettings.verbose) {
+		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+		std::cout << "n_tot : " << QPResults.n_tot << std::endl;
+		std::cout << "mu updates : " << QPResults.n_mu_change << std::endl;
+		std::cout << "objValue : " << QPResults.objValue << std::endl;
+		std::cout << "timing : " << QPResults.timing << std::endl;
+		std::cout << "dual residual exiting biding " << infty_norm(qpmodel.H * QPResults.x + qpmodel.g + qpmodel.A.transpose() * QPResults.y.head(qpmodel.n_eq) + qpmodel.C.transpose() * QPResults.y.tail(qpmodel.n_in)) << std::endl;
+		std::cout << "primal residual exiting biding " << std::max(infty_norm(detail::positive_part(qpmodel.C * QPResults.x - qpmodel.u) + detail::negative_part(qpmodel.C * QPResults.x - qpmodel.l)), infty_norm(qpmodel.A * QPResults.x-qpmodel.b)) << std::endl;
+	}
+
+}
+
+
+template <typename T>
+void OSQPreset(
+		const qp::QPData<T>& qpmodel,
+		const qp::OSQPSettings<T>& qpsettings,
+		qp::OSQPResults<T>& qpresults,
+		qp::OSQPWorkspace<T>& qpwork) {
+
+	//qpwork.kkt.diagonal().head(qpmodel.dim).array() -= qpresults.rho;
+	qpresults.reset_results();
+	qpwork.reset_results(qpmodel.n_in);
+
+	//qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
+	qpwork.kkt.diagonal()
+			.segment(qpmodel.dim, qpmodel.n_eq)
+			.setConstant(-qpresults.mu_eq_inv);
+	qpwork.kkt.diagonal()
+			.segment(qpmodel.n_eq+qpmodel.dim, qpmodel.n_in)
+			.setConstant(-qpresults.mu_in_inv);
+	/*
+	{
+		LDLT_MAKE_STACK(
+				stack, dense_ldlt::Ldlt<T>::factorize_req(qpwork.kkt.rows()));
+		qpwork.ldl.factorize(qpwork.kkt, LDLT_FWD(stack));
+	}
+	*/
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+
+	qpwork.ldl.factorize(qpwork.kkt, stack);
+
 }
 
 } // namespace pybind11
@@ -933,6 +1020,90 @@ INRIA LDLT decomposition
 			.def_readonly("n_in", &qp::QPData<f64>::n_in)
 			.def_readonly("n_total", &qp::QPData<f64>::n_total);
 
+
+	::pybind11::class_<qp::OSQPWorkspace<f64>>(m, "OSQPWorkspace")
+			.def(::pybind11::init<i64, i64, i64&>()) // constructor
+	                                             // read-write public data member
+			.def_readwrite("H_scaled", &qp::OSQPWorkspace<f64>::H_scaled)
+			.def_readwrite("g_scaled", &qp::OSQPWorkspace<f64>::g_scaled)
+			.def_readwrite("A_scaled", &qp::OSQPWorkspace<f64>::A_scaled)
+			.def_readwrite("C_scaled", &qp::OSQPWorkspace<f64>::C_scaled)
+			.def_readwrite("b_scaled", &qp::OSQPWorkspace<f64>::b_scaled)
+			.def_readwrite("u_scaled", &qp::OSQPWorkspace<f64>::u_scaled)
+			.def_readwrite("l_scaled", &qp::OSQPWorkspace<f64>::l_scaled)
+			.def_readwrite("x_prev", &qp::OSQPWorkspace<f64>::x_prev)
+			.def_readwrite("y_prev", &qp::OSQPWorkspace<f64>::y_prev)
+			.def_readwrite("z_prev", &qp::OSQPWorkspace<f64>::z_prev)
+			.def_readwrite("kkt", &qp::OSQPWorkspace<f64>::kkt)
+			.def_readwrite("dw_aug", &qp::OSQPWorkspace<f64>::dw)
+			.def_readwrite("rhs", &qp::OSQPWorkspace<f64>::rhs)
+			.def_readwrite("err", &qp::OSQPWorkspace<f64>::err)
+			.def_readwrite("err", &qp::OSQPWorkspace<f64>::tmp)
+			.def_readwrite(
+					"dual_residual_scaled", &qp::OSQPWorkspace<f64>::dual_residual_scaled)
+			.def_readwrite(
+					"primal_residual_eq_scaled",
+					&qp::OSQPWorkspace<f64>::primal_residual_eq_scaled)
+			.def_readwrite(
+					"primal_residual_in_scaled_up",
+					&qp::OSQPWorkspace<f64>::primal_residual_in_scaled_up)
+			.def_readwrite(
+					"primal_residual_in_scaled_low",
+					&qp::OSQPWorkspace<f64>::primal_residual_in_scaled_low)
+			.def_readwrite("CTz", &qp::OSQPWorkspace<f64>::CTz);
+
+
+	::pybind11::class_<qp::OSQPResults<f64>>(m, "OSQPResults")
+			.def(::pybind11::init<i64, i64, i64&>()) // constructor
+	                                             // read-write public data member
+
+			.def_readwrite("x", &qp::OSQPResults<f64>::x)
+			.def_readwrite("y", &qp::OSQPResults<f64>::y)
+			.def_readwrite("z", &qp::OSQPResults<f64>::z)
+			.def_readwrite("mu_eq", &qp::OSQPResults<f64>::mu_eq)
+			.def_readwrite("mu_eq_inv", &qp::OSQPResults<f64>::mu_eq_inv)
+			.def_readwrite("mu_in", &qp::OSQPResults<f64>::mu_in)
+			.def_readwrite("mu_in_inv", &qp::OSQPResults<f64>::mu_in_inv)
+			.def_readwrite("rho", &qp::OSQPResults<f64>::rho)
+			.def_readwrite("n_tot", &qp::OSQPResults<f64>::n_tot)
+			.def_readwrite("timing", &qp::OSQPResults<f64>::timing)
+			.def_readwrite("objValue", &qp::OSQPResults<f64>::objValue)
+			.def_readwrite("freq_mu_update", &qp::OSQPResults<f64>::freq_mu_update)
+			.def_readwrite("kappa", &qp::OSQPResults<f64>::kappa)
+			.def_readwrite("n_mu_change", &qp::OSQPResults<f64>::n_mu_change);
+
+	::pybind11::class_<qp::OSQPSettings<f64>>(m, "OSQPSettings")
+			.def(::pybind11::init()) // constructor
+	                             // read-write public data member
+			.def_readwrite(
+					"refactor_dual_feasibility_threshold",
+					&qp::OSQPSettings<f64>::refactor_dual_feasibility_threshold)
+			//.def_readwrite("pmm", &qp::QPSettings<f64>::pmm)
+			.def_readwrite("refactor_rho_threshold",&qp::OSQPSettings<f64>::refactor_rho_threshold)
+			.def_readwrite("mu_max_eq", &qp::OSQPSettings<f64>::mu_max_eq)
+			.def_readwrite("mu_max_in", &qp::OSQPSettings<f64>::mu_max_in)
+			.def_readwrite("mu_max_eq_inv", &qp::OSQPSettings<f64>::mu_max_eq_inv)
+			.def_readwrite("mu_max_in_inv", &qp::OSQPSettings<f64>::mu_max_in_inv)
+			.def_readwrite("mu_update_factor", &qp::OSQPSettings<f64>::mu_update_factor)
+			.def_readwrite("mu_update_inv_factor", &qp::OSQPSettings<f64>::mu_update_inv_factor)
+			.def_readwrite("cold_reset_mu_eq", &qp::OSQPSettings<f64>::cold_reset_mu_eq)
+			.def_readwrite("cold_reset_mu_in", &qp::OSQPSettings<f64>::cold_reset_mu_in)
+			.def_readwrite("cold_reset_mu_eq_inv", &qp::OSQPSettings<f64>::cold_reset_mu_eq_inv)
+			.def_readwrite("cold_reset_mu_in_inv", &qp::OSQPSettings<f64>::cold_reset_mu_in_inv)
+			.def_readwrite("max_iter", &qp::OSQPSettings<f64>::max_iter)
+			.def_readwrite("eps_abs", &qp::OSQPSettings<f64>::eps_abs)
+			.def_readwrite("eps_rel", &qp::OSQPSettings<f64>::eps_rel)
+			.def_readwrite("alpha", &qp::OSQPSettings<f64>::alpha)
+			.def_readwrite("nb_iterative_refinement",&qp::OSQPSettings<f64>::nb_iterative_refinement)
+			.def_readwrite("warm_start", &qp::OSQPSettings<f64>::warm_start)
+			.def_readwrite("simplify", &qp::OSQPSettings<f64>::simplify)
+			.def_readwrite("max_mu_update", &qp::OSQPSettings<f64>::max_mu_update)
+			.def_readwrite("mu_update_fact_bound", &qp::OSQPSettings<f64>::mu_update_fact_bound)
+			.def_readwrite("epsilon_k", &qp::OSQPSettings<f64>::epsilon_k)
+			.def_readwrite("adaptive_rho_fraction", &qp::OSQPSettings<f64>::adaptive_rho_fraction)
+			.def_readwrite("check_termination", &qp::OSQPSettings<f64>::check_termination)
+			.def_readwrite("verbose", &qp::OSQPSettings<f64>::verbose);
+
 	constexpr auto c = rowmajor;
 
 	m.def("QPsolve", &qp::pybind11::QPsolve<f32, c>);
@@ -946,6 +1117,15 @@ INRIA LDLT decomposition
 
 	m.def("QPreset", &qp::pybind11::QPreset<f32>);
 	m.def("QPreset", &qp::pybind11::QPreset<f64>);
+
+	m.def("OSQPsolve", &qp::pybind11::OSQPsolve<f32>);
+	m.def("OSQPsolve", &qp::pybind11::OSQPsolve<f64>);
+
+	m.def("OSQPsetup", &qp::detail::OSQPsetup<f32>);
+	m.def("OSQPsetup", &qp::detail::OSQPsetup<f64>);
+
+	m.def("OSQPreset", &qp::pybind11::OSQPreset<f32>);
+	m.def("OSQPreset", &qp::pybind11::OSQPreset<f64>);
 
 	m.attr("__version__") = "dev";
 }

@@ -749,29 +749,6 @@ void qp_solve( //
 			}
 			if (is_dual_feasible) {
 
-				qpwork.ruiz.unscale_primal_in_place(
-						VectorViewMut<T>{from_eigen, qpresults.x});
-				qpwork.ruiz.unscale_dual_in_place_eq(
-						VectorViewMut<T>{from_eigen, qpresults.y});
-				qpwork.ruiz.unscale_dual_in_place_in(
-						VectorViewMut<T>{from_eigen, qpresults.z});
-
-				{
-					// EigenAllowAlloc _{};
-					// T result = 0;
-					for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
-						qpresults.objValue +=
-								0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
-						qpresults.objValue +=
-								qpresults.x(j) *
-								T(qpmodel.H.col(j)
-						          .tail(qpmodel.dim - j - 1)
-						          .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
-					}
-					qpresults.objValue += (qpmodel.g).dot(qpresults.x);
-					// qpresults.objValue =
-					//		(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
-				}
 				break;
 			}
 		}
@@ -847,28 +824,6 @@ void qp_solve( //
 
 			if (is_dual_feasible) {
 
-				qpwork.ruiz.unscale_primal_in_place(
-						VectorViewMut<T>{from_eigen, qpresults.x});
-				qpwork.ruiz.unscale_dual_in_place_eq(
-						VectorViewMut<T>{from_eigen, qpresults.y});
-				qpwork.ruiz.unscale_dual_in_place_in(
-						VectorViewMut<T>{from_eigen, qpresults.z});
-
-				{
-					// EigenAllowAlloc _{};
-					// qpresults.objValue =
-					//		(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
-					for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
-						qpresults.objValue +=
-								0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
-						qpresults.objValue +=
-								qpresults.x(j) *
-								T(qpmodel.H.col(j)
-						          .tail(qpmodel.dim - j - 1)
-						          .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
-					}
-					qpresults.objValue += (qpmodel.g).dot(qpresults.x);
-				}
 				break;
 			}
 		}
@@ -931,6 +886,13 @@ void qp_solve( //
 		qpresults.mu_eq_inv = new_bcl_mu_eq_inv;
 		qpresults.mu_in_inv = new_bcl_mu_in_inv;
 	}
+
+	qpwork.ruiz.unscale_primal_in_place(
+			VectorViewMut<T>{from_eigen, qpresults.x});
+	qpwork.ruiz.unscale_dual_in_place_eq(
+			VectorViewMut<T>{from_eigen, qpresults.y});
+	qpwork.ruiz.unscale_dual_in_place_in(
+			VectorViewMut<T>{from_eigen, qpresults.z});
 
 	{
 		// EigenAllowAlloc _{};
