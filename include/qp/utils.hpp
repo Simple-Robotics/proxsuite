@@ -1,13 +1,7 @@
 #ifndef INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
 #define INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
 
-//#include "ldlt/views.hpp"
-//#include <ldlt/ldlt.hpp>
 #include "qp/views.hpp"
-//#include "ldlt/factorize.hpp"
-//#include "ldlt/detail/meta.hpp"
-//#include "ldlt/solve.hpp"
-//#include "ldlt/update.hpp"
 #include <qp/QPWorkspace.hpp>
 #include <qp/QPData.hpp>
 #include <qp/QPResults.hpp>
@@ -20,85 +14,6 @@ using namespace ldlt::tags;
 }
 
 namespace detail {
-
-/*
-#define LDLT_DEDUCE_RET(...)                                                   \
-	noexcept(noexcept(__VA_ARGS__))                                              \
-			->typename std::remove_const<decltype(__VA_ARGS__)>::type {              \
-		return __VA_ARGS__;                                                        \
-	}                                                                            \
-	static_assert(true, ".")
-
-
-template <typename T>
-auto positive_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template <typename T>
-auto negative_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
-*/
-template <typename T>
-auto square(T const& expr)
-	LDLT_DEDUCE_RET(expr*expr);
-
-
-template <typename T>
-void refactorize(
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& qpresults,
-		qp::QPData<T>& qpmodel,
-		T rho_new
-		) {
-
-	qpwork._kkt.diagonal().array() += rho_new - qpresults._rho;
-	qpwork._ldl.factorize(qpwork._kkt);
-
-	if (qpresults._n_c == 0) {
-		return;
-	}
-
-	for (isize j = 0; j < qpresults._n_c; ++j) {
-		for (isize i = 0; i < qpmodel._n_in; ++i) {
-			if (j == qpwork._current_bijection_map(i)) {
-				qpwork._dw_aug.head(qpmodel._dim) = qpwork._c_scaled.row(i);
-				qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + j) = - qpresults._mu_in; // mu_in stores the inverse of mu_in
-				qpwork._ldl.insert_at(qpmodel._n_eq + qpmodel._dim + j, qpwork._dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c));
-				qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + j) = T(0);
-			}
-		}
-	}
-}
-
-
-template <typename T>
-void mu_update(
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& qpresults,
-		qp::QPData<T>& qpmodel,
-		T mu_eq_new_inv,
-		T mu_in_new_inv) {
-	T diff = T(0);
-
-	qpwork._dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c).setZero();
-	if (qpmodel._n_eq > 0) {
-		diff = qpresults._mu_eq_inv -  mu_eq_new_inv; // mu stores the inverse of mu
-
-		for (isize i = 0; i < qpmodel._n_eq; i++) {
-			qpwork._dw_aug(qpmodel._dim + i) = T(1);
-			qpwork._ldl.rank_one_update(qpwork._dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
-			qpwork._dw_aug(qpmodel._dim + i) = T(0);
-		}
-	}
-	if (qpresults._n_c > 0) {
-		diff = qpresults._mu_in_inv - mu_in_new_inv; // mu stores the inverse of mu
-		for (isize i = 0; i < qpresults._n_c; i++) {
-			qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i) = T(1);
-			qpwork._ldl.rank_one_update(qpwork._dw_aug.head(qpmodel._dim+qpmodel._n_eq+qpresults._n_c), diff);
-			qpwork._dw_aug(qpmodel._dim + qpmodel._n_eq + i) = T(0);
-		}
-	}
-}
-
 
 // COMPUTES:
 // primal_residual_eq_scaled = scaled(Ax - b)
