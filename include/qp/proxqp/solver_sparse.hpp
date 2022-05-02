@@ -9,6 +9,8 @@
 #include <qp/views.hpp>
 #include <qp/QPSettings.hpp>
 #include <iostream>
+#include <Eigen/IterativeLinearSolvers>
+#include <unsupported/Eigen/IterativeSolvers>
 
 namespace qp {
 using veg::isize;
@@ -515,7 +517,7 @@ using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 template <typename T, typename I>
 struct QpWorkspace {
 
-	struct {
+	struct /* NOLINT */ {
 		veg::Vec<veg::mem::byte> storage;
 		veg::Vec<I> kkt_col_ptrs;
 		veg::Vec<I> kkt_row_indices;
@@ -523,6 +525,7 @@ struct QpWorkspace {
 
 		veg::Vec<I> ldl_col_ptrs;
 		veg::Vec<I> perm_inv;
+		bool do_ldlt;
 
 		auto stack_mut() -> veg::dynstack::DynStackMut {
 			return {
@@ -610,65 +613,170 @@ struct QpWorkspace {
 
 			DynStackMut stack = stack_mut();
 
+			bool overflow = false;
 			{
 				auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
 				auto etree = _etree.as_mut();
 
-				sparse_ldlt::factorize_symbolic_col_counts( //
-						ldl_col_ptrs.as_mut(),
+				using namespace veg::literals;
+				auto kkt_sym = sparse_ldlt::SymbolicMatRef<I>{
+						sparse_ldlt::from_raw_parts,
+						n_tot,
+						n_tot,
+						nnz_tot,
+						kkt_col_ptrs.as_ref(),
+						kkt_row_indices.as_ref(),
+						{},
+				};
+				sparse_ldlt::factorize_symbolic_non_zeros( //
+						ldl_col_ptrs.as_mut().split_at_mut(1)[1_c],
 						etree,
 						perm_inv.as_mut(),
 						{},
-						{
-								sparse_ldlt::from_raw_parts,
-								n_tot,
-								n_tot,
-								nnz_tot,
-								kkt_col_ptrs.as_ref(),
-								kkt_row_indices.as_ref(),
-								{},
-						},
+						kkt_sym,
 						stack);
+
+				auto pcol_ptrs = ldl_col_ptrs.as_mut().ptr_mut();
+				pcol_ptrs[0] = I(0);
+
+				using veg::u64;
+				u64 acc = 0;
+
+				for (usize i = 0; i < usize(n_tot); ++i) {
+					acc += u64(zero_extend(pcol_ptrs[i + 1]));
+					if (acc != u64(I(acc))) {
+						overflow = true;
+					}
+					pcol_ptrs[(i + 1)] = I(acc);
+				}
 			}
 
 			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
-			auto refactorize_req = SR::or_(veg::init_list({
-					sparse_ldlt::factorize_symbolic_req( // symbolic ldl
-							itag,
-							n_tot,
-							nnz_tot,
-							sparse_ldlt::Ordering::user_provided),
-					SR::and_(veg::init_list({
-							SR::with_len(xtag, n_tot),          // diag
-							sparse_ldlt::factorize_numeric_req( // numeric ldl
-									xtag,
-									itag,
-									n_tot,
-									nnz_tot,
-									sparse_ldlt::Ordering::user_provided),
-					})),
-			}));
+
+			// if ldlt much sparser than kkt
+			// do_ldlt = !overflow && lnnz < (100 * nnz_tot);
+			do_ldlt = !overflow && lnnz < 10000000;
+
+#define ALL_OF(...)                                                            \
+	::veg::dynstack::StackReq::and_(::veg::init_list(__VA_ARGS__))
+#define ANY_OF(...)                                                            \
+	::veg::dynstack::StackReq::or_(::veg::init_list(__VA_ARGS__))
+
+			auto refactorize_req =
+					do_ldlt ? ANY_OF({
+												sparse_ldlt::factorize_symbolic_req( // symbolic ldl
+														itag,
+														n_tot,
+														nnz_tot,
+														sparse_ldlt::Ordering::user_provided),
+												ALL_OF({
+														SR::with_len(xtag, n_tot),          // diag
+														sparse_ldlt::factorize_numeric_req( // numeric ldl
+																xtag,
+																itag,
+																n_tot,
+																nnz_tot,
+																sparse_ldlt::Ordering::user_provided),
+												}),
+										})
+									: ALL_OF({
+												SR::with_len(itag, 0),
+												SR::with_len(xtag, 0),
+										});
+
+			auto x_vec = [&](isize n) noexcept -> StackReq {
+				return dense_ldlt::temp_vec_req(xtag, n);
+			};
+
+			auto ldl_solve_in_place_req = ALL_OF({
+					x_vec(n_tot), // tmp
+					x_vec(n_tot), // err
+					x_vec(n_tot), // work
+			});
+
+			auto unscaled_dual_residual_req = x_vec(n); // Hx
+			auto line_search_req = ALL_OF({
+					x_vec(2 * n_in), // alphas
+					x_vec(n),        // Cdx_active
+					x_vec(n_in),     // active_part_z
+					x_vec(n_in),     // tmp_lo
+					x_vec(n_in),     // tmp_up
+			});
+			auto primal_dual_newton_semi_smooth_req = ALL_OF({
+					x_vec(n_tot), // dw
+					ANY_OF({
+							ldl_solve_in_place_req,
+							ALL_OF({
+									SR::with_len(veg::Tag<bool>{}, n_in), // active_set_lo
+									SR::with_len(veg::Tag<bool>{}, n_in), // active_set_up
+									SR::with_len(
+											veg::Tag<bool>{}, n_in), // new_active_constraints
+									(do_ldlt && n_in > 0)
+											? ANY_OF({
+														sparse_ldlt::add_row_req(
+																xtag, itag, n_tot, false, n, n_tot),
+														sparse_ldlt::delete_row_req(
+																xtag, itag, n_tot, n_tot),
+												})
+											: refactorize_req,
+							}),
+							ALL_OF({
+									x_vec(n),    // Hdx
+									x_vec(n_eq), // Adx
+									x_vec(n_in), // Cdx
+									x_vec(n),    // ATdy
+									x_vec(n),    // CTdz
+							}),
+					}),
+					line_search_req,
+			});
+
+			auto iter_req = ANY_OF({
+					ALL_OF(
+							{x_vec(n_eq), // primal_residual_eq_scaled
+			         x_vec(n_in), // primal_residual_in_scaled_lo
+			         x_vec(n_in), // primal_residual_in_scaled_up
+			         x_vec(n_in), // primal_residual_in_scaled_up
+			         x_vec(n),    // dual_residual_scaled
+			         ANY_OF({
+									 unscaled_dual_residual_req,
+									 ALL_OF({
+											 x_vec(n),    // x_prev
+											 x_vec(n_eq), // y_prev
+											 x_vec(n_in), // z_prev
+											 primal_dual_newton_semi_smooth_req,
+									 }),
+							 })}),
+					refactorize_req, // mu_update
+			});
 
 			auto req = //
-					SR::and_(veg::init_list({
-							dense_ldlt::temp_vec_req(xtag, n),                // g_scaled
-							dense_ldlt::temp_vec_req(xtag, n_eq),             // b_scaled
-							dense_ldlt::temp_vec_req(xtag, n_in),             // l_scaled
-							dense_ldlt::temp_vec_req(xtag, n_in),             // u_scaled
-							dense_ldlt::temp_vec_req(veg::Tag<bool>{}, n_in), // active constr
+					ALL_OF({
+							x_vec(n),                             // g_scaled
+							x_vec(n_eq),                          // b_scaled
+							x_vec(n_in),                          // l_scaled
+							x_vec(n_in),                          // u_scaled
+							SR::with_len(veg::Tag<bool>{}, n_in), // active constr
+							SR::with_len(itag, n_tot),            // kkt nnz counts
 							refactorize_req,
-							SR::or_(veg::init_list({
+							ANY_OF({
 									precond_req,
-									SR::and_(veg::init_list({
-											SR::with_len(itag, n_tot), // perm
-											SR::with_len(itag, n_tot), // etree
-											SR::with_len(itag, n_tot), // ldl nnz counts
-											SR::with_len(itag, lnnz),  // ldl row indices
-											SR::with_len(xtag, lnnz),  // ldl values
-											refactorize_req,
-									})),
-							})),
-					}));
+									ALL_OF({
+											do_ldlt ? ALL_OF({
+																		SR::with_len(itag, n_tot), // perm
+																		SR::with_len(itag, n_tot), // etree
+																		SR::with_len(itag, n_tot), // ldl nnz counts
+																		SR::with_len(itag, lnnz), // ldl row indices
+																		SR::with_len(xtag, lnnz), // ldl values
+																})
+															: ALL_OF({
+																		SR::with_len(itag, 0),
+																		SR::with_len(xtag, 0),
+																}),
+											iter_req,
+									}),
+							}),
+					});
 
 			storage.resize_for_overwrite(req.alloc_req());
 		}
@@ -676,11 +784,15 @@ struct QpWorkspace {
 
 	QpWorkspace() = default;
 
-	auto ldl_col_ptrs() const -> veg::Slice<I> { return _.ldl_col_ptrs.as_ref(); }
+	auto ldl_col_ptrs() const -> veg::Slice<I> {
+		return _.ldl_col_ptrs.as_ref();
+	}
 	auto ldl_col_ptrs_mut() -> veg::SliceMut<I> {
 		return _.ldl_col_ptrs.as_mut();
 	}
-	auto stack_mut() -> veg::dynstack::DynStackMut { return _.stack_mut(); }
+	auto stack_mut() -> veg::dynstack::DynStackMut {
+		return _.stack_mut();
+	}
 
 	auto kkt() const -> sparse_ldlt::MatMut<T, I> {
 		auto n_tot = _.kkt_col_ptrs.len() - 1;
@@ -889,6 +1001,45 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 			{sparse_ldlt::from_eigen, a},
 			{ldlt::from_eigen, in});
 }
+
+template <typename T, typename I>
+struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
+	struct Raw /* NOLINT */ {
+		sparse_ldlt::MatRef<T, I> kkt_active;
+		veg::Slice<bool> active_constraints;
+		isize n;
+		isize n_eq;
+		isize n_in;
+		T rho;
+		T mu_eq;
+		T mu_in;
+	} _;
+
+	AugmentedKkt /* NOLINT */ (Raw raw) noexcept : _{raw} {}
+
+	using Scalar = T;
+	using RealScalar = T;
+	using StorageIndex = I;
+	enum {
+		ColsAtCompileTime = Eigen::Dynamic,
+		MaxColsAtCompileTime = Eigen::Dynamic,
+		IsRowMajor = false,
+	};
+
+	auto rows() const noexcept -> isize { return _.n + _.n_eq + _.n_in; }
+	auto cols() const noexcept -> isize { return rows(); }
+	template <typename Rhs>
+	auto operator*(Eigen::MatrixBase<Rhs> const& x) const
+			-> Eigen::Product<AugmentedKkt, Rhs, Eigen::AliasFreeProduct> {
+		return Eigen::Product< //
+				AugmentedKkt,
+				Rhs,
+				Eigen::AliasFreeProduct>{
+				*this,
+				x.derived(),
+		};
+	}
+};
 } // namespace detail
 
 template <typename T, typename I, typename P>
@@ -995,20 +1146,29 @@ void qp_solve(
 	veg::Tag<I> itag;
 	veg::Tag<T> xtag;
 
-	auto _perm = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-	auto _kkt_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-	auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-	auto _ldl_row_indices = stack.make_new_for_overwrite(itag, max_lnnz).unwrap();
-	auto _ldl_values = stack.make_new_for_overwrite(xtag, max_lnnz).unwrap();
 	auto _active_constraints = stack.make_new(veg::Tag<bool>{}, n_in).unwrap();
+	auto _kkt_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
+
+	bool do_ldlt = work._.do_ldlt;
+
+	isize ldlt_ntot = do_ldlt ? n_tot : 0;
+	isize ldlt_lnnz = do_ldlt ? max_lnnz : 0;
+
+	auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
+	auto _etree = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
+	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
+	auto _ldl_row_indices =
+			stack.make_new_for_overwrite(itag, ldlt_lnnz).unwrap();
+	auto _ldl_values = stack.make_new_for_overwrite(xtag, ldlt_lnnz).unwrap();
 
 	veg::Slice<I> perm_inv = work._.perm_inv.as_ref();
 	veg::SliceMut<I> perm = _perm.as_mut();
 
-	// compute perm from perm_inv
-	for (isize i = 0; i < n_tot; ++i) {
-		perm[isize(zx(perm_inv[i]))] = I(i);
+	if (do_ldlt) {
+		// compute perm from perm_inv
+		for (isize i = 0; i < n_tot; ++i) {
+			perm[isize(zx(perm_inv[i]))] = I(i);
+		}
 	}
 
 	veg::SliceMut<I> kkt_nnz_counts = _kkt_nnz_counts.as_mut();
@@ -1021,6 +1181,12 @@ void qp_solve(
 	for (isize j = 0; j < n_in; ++j) {
 		kkt_nnz_counts[n + n_eq + j] = 0;
 	}
+
+	Eigen::MINRES<
+			detail::AugmentedKkt<T, I>,
+			Eigen::Upper | Eigen::Lower,
+			Eigen::IdentityPreconditioner>
+			iterative_solver;
 
 	sparse_ldlt::MatMut<T, I> kkt_active = {
 			sparse_ldlt::from_raw_parts,
@@ -1046,13 +1212,24 @@ void qp_solve(
 			0,
 			ldl_col_ptrs,
 			ldl_row_indices,
-			ldl_nnz_counts,
+			do_ldlt ? ldl_nnz_counts : veg::SliceMut<I>{},
 			ldl_values,
 	};
 
 	T rho = T(1e-6);
 	T mu_eq = T(1e3);
 	T mu_in = T(1e1);
+
+	detail::AugmentedKkt<T, I> aug_kkt{{
+			kkt_active.as_const(),
+			active_constraints.as_const(),
+			n,
+			n_eq,
+			n_in,
+			rho,
+			mu_eq,
+			mu_in,
+	}};
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
@@ -1061,6 +1238,7 @@ void qp_solve(
 
 	using DMat = Eigen::Matrix<T, -1, -1>;
 	auto inner_reconstructed_matrix = [&]() -> DMat {
+		VEG_ASSERT(do_ldlt);
 		auto ldl_dense = ldl.to_eigen().toDense();
 		auto l = DMat(ldl_dense.template triangularView<Eigen::UnitLower>());
 		auto lt = l.transpose();
@@ -1095,43 +1273,57 @@ void qp_solve(
 	veg::unused(reconstruction_error);
 
 	auto refactorize = [&]() -> void {
-		sparse_ldlt::factorize_symbolic_non_zeros(
-				ldl_nnz_counts,
-				etree,
-				work._.perm_inv.as_mut(),
-				perm.as_const(),
-				kkt_active.symbolic(),
-				stack);
+		if (do_ldlt) {
+			sparse_ldlt::factorize_symbolic_non_zeros(
+					ldl_nnz_counts,
+					etree,
+					work._.perm_inv.as_mut(),
+					perm.as_const(),
+					kkt_active.symbolic(),
+					stack);
 
-		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
-		T* diag = _diag.ptr_mut();
+			auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
+			T* diag = _diag.ptr_mut();
 
-		for (isize i = 0; i < n; ++i) {
-			diag[i] = rho;
-		}
-		for (isize i = 0; i < n_eq; ++i) {
-			diag[n + i] = -1 / mu_eq;
-		}
-		for (isize i = 0; i < n_in; ++i) {
-			diag[(n + n_eq) + i] = active_constraints[i] ? -1 / mu_in : T(1);
-		}
+			for (isize i = 0; i < n; ++i) {
+				diag[i] = rho;
+			}
+			for (isize i = 0; i < n_eq; ++i) {
+				diag[n + i] = -1 / mu_eq;
+			}
+			for (isize i = 0; i < n_in; ++i) {
+				diag[(n + n_eq) + i] = active_constraints[i] ? -1 / mu_in : T(1);
+			}
 
-		sparse_ldlt::factorize_numeric(
-				ldl_values.ptr_mut(),
-				ldl_row_indices.ptr_mut(),
-				diag,
-				perm.ptr(),
-				ldl_col_ptrs.as_const(),
-				etree.as_const(),
-				perm_inv,
-				kkt_active.as_const(),
-				stack);
-		isize ldl_nnz = 0;
-		for (isize i = 0; i < n_tot; ++i) {
-			ldl_nnz =
-					util::checked_non_negative_plus(ldl_nnz, isize(ldl_nnz_counts[i]));
+			sparse_ldlt::factorize_numeric(
+					ldl_values.ptr_mut(),
+					ldl_row_indices.ptr_mut(),
+					diag,
+					perm.ptr(),
+					ldl_col_ptrs.as_const(),
+					etree.as_const(),
+					perm_inv,
+					kkt_active.as_const(),
+					stack);
+			isize ldl_nnz = 0;
+			for (isize i = 0; i < n_tot; ++i) {
+				ldl_nnz =
+						util::checked_non_negative_plus(ldl_nnz, isize(ldl_nnz_counts[i]));
+			}
+			ldl._set_nnz(ldl_nnz);
+		} else {
+			aug_kkt = {{
+					kkt_active.as_const(),
+					active_constraints.as_const(),
+					n,
+					n_eq,
+					n_in,
+					rho,
+					mu_eq,
+					mu_in,
+			}};
+			iterative_solver.compute(aug_kkt);
 		}
-		ldl._set_nnz(ldl_nnz);
 	};
 	refactorize();
 
@@ -1141,37 +1333,47 @@ void qp_solve(
 
 	auto ldl_solve = [&](VectorViewMut<T> sol, VectorView<T> rhs) -> void {
 		LDLT_TEMP_VEC_UNINIT(T, work, n_tot, stack);
-
 		auto rhs_e = rhs.to_eigen();
 		auto sol_e = sol.to_eigen();
 
-		for (isize i = 0; i < n_tot; ++i) {
-			work[i] = rhs_e[isize(zx(perm[i]))];
-		}
+		if (do_ldlt) {
 
-		sparse_ldlt::dense_lsolve<T, I>( //
-				{sparse_ldlt::from_eigen, work},
-				ldl.as_const());
+			for (isize i = 0; i < n_tot; ++i) {
+				work[i] = rhs_e[isize(zx(perm[i]))];
+			}
 
-		for (isize i = 0; i < n_tot; ++i) {
-			work[i] /= ldl_values[isize(zx(ldl_col_ptrs[i]))];
-		}
+			sparse_ldlt::dense_lsolve<T, I>( //
+					{sparse_ldlt::from_eigen, work},
+					ldl.as_const());
 
-		sparse_ldlt::dense_ltsolve<T, I>( //
-				{sparse_ldlt::from_eigen, work},
-				ldl.as_const());
+			for (isize i = 0; i < n_tot; ++i) {
+				work[i] /= ldl_values[isize(zx(ldl_col_ptrs[i]))];
+			}
 
-		for (isize i = 0; i < n_tot; ++i) {
-			sol_e[i] = work[isize(zx(perm_inv[i]))];
+			sparse_ldlt::dense_ltsolve<T, I>( //
+					{sparse_ldlt::from_eigen, work},
+					ldl.as_const());
+
+			for (isize i = 0; i < n_tot; ++i) {
+				sol_e[i] = work[isize(zx(perm_inv[i]))];
+			}
+		} else {
+			work = iterative_solver.solve(rhs_e);
+			sol_e = work;
 		}
 	};
 
 	auto ldl_iter_solve_noalias = [&](VectorViewMut<T> sol,
-	                                  VectorView<T> rhs) -> void {
+	                                  VectorView<T> rhs,
+	                                  VectorView<T> init_guess) -> void {
 		auto rhs_e = rhs.to_eigen();
 		auto sol_e = sol.to_eigen();
 
-		sol_e.setZero();
+		if (init_guess.dim == sol.dim) {
+			sol_e = init_guess.to_eigen();
+		} else {
+			sol_e.setZero();
+		}
 
 		LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
 
@@ -1213,27 +1415,16 @@ void qp_solve(
 			err = -rhs_e;
 
 			if (solve_iter > 0) {
-				detail::noalias_symhiv_add(err_x, H_scaled_e, sol_x);
+				detail::noalias_symhiv_add(err, kkt_active.to_eigen(), sol_e);
 				err_x += rho * sol_x;
-				detail::noalias_gevmmv_add(
-						err_y, err_x, AT_scaled.to_eigen(), sol_x, sol_y);
-				detail::noalias_gevmmv_add(
-						err_z, err_x, CT_active.to_eigen(), sol_x, sol_z);
-
-				// err_x.noalias() += A_scaled_e.transpose() * sol_y;
-				// err_y.noalias() += A_scaled_e * sol_x;
-				// err_x.noalias() += C_active.transpose() * sol_z;
-				// err_z.noalias() += C_active * sol_x;
-
 				err_y += (-1 / mu_eq) * sol_y;
-
 				for (isize i = 0; i < n_in; ++i) {
 					err_z[i] += (active_constraints[i] ? -1 / mu_in : T(1)) * sol_z[i];
 				}
 			}
 
-			T err_norm = infty_norm(err_z);
-			if (err_norm > prev_err_norm) {
+			T err_norm = infty_norm(err);
+			if (err_norm > prev_err_norm / T(2)) {
 				break;
 			}
 			prev_err_norm = err_norm;
@@ -1243,20 +1434,23 @@ void qp_solve(
 			sol_e -= err;
 		}
 	};
-	auto ldl_solve_in_place = [&](VectorViewMut<T> rhs) {
+
+	auto ldl_solve_in_place = [&](VectorViewMut<T> rhs,
+	                              VectorView<T> init_guess) {
 		LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
-		ldl_iter_solve_noalias({ldlt::from_eigen, tmp}, rhs.as_const());
+		ldl_iter_solve_noalias({ldlt::from_eigen, tmp}, rhs.as_const(), init_guess);
 		rhs.to_eigen() = tmp;
 	};
 
 	if (!settings.warm_start) {
 		LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
+		LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
 
 		rhs.head(n) = -g_scaled_e;
 		rhs.segment(n, n_eq) = b_scaled_e;
 		rhs.segment(n + n_eq, n_in).setZero();
 
-		ldl_solve_in_place({ldlt::from_eigen, rhs});
+		ldl_solve_in_place({ldlt::from_eigen, rhs}, {ldlt::from_eigen, no_guess});
 		x_e = rhs.head(n);
 		y_e = rhs.segment(n, n_eq);
 		z_e = rhs.segment(n + n_eq, n_in);
@@ -1409,6 +1603,7 @@ void qp_solve(
 			LDLT_TEMP_VEC_UNINIT(T, x_prev_e, n, stack);
 			LDLT_TEMP_VEC_UNINIT(T, y_prev_e, n_eq, stack);
 			LDLT_TEMP_VEC_UNINIT(T, z_prev_e, n_in, stack);
+			LDLT_TEMP_VEC(T, dw_prev, n_tot, stack);
 
 			x_prev_e = x_e;
 			y_prev_e = y_e;
@@ -1467,35 +1662,45 @@ void qp_solve(
 									kkt_active.nnz_per_col_mut()[idx] = I(col_nnz);
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
 
-									sparse_ldlt::VecRef<T, I> new_col{
-											sparse_ldlt::from_raw_parts,
-											n_tot,
-											{
-													veg::unsafe,
-													veg::from_raw_parts,
-													kkt.row_indices().ptr() +
-															zx(kkt.col_start(usize(idx))),
-													isize(col_nnz),
-											},
-											{
-													veg::unsafe,
-													veg::from_raw_parts,
-													kkt.values().ptr() + zx(kkt.col_start(usize(idx))),
-													isize(col_nnz),
-											},
-									};
+									if (do_ldlt) {
+										sparse_ldlt::VecRef<T, I> new_col{
+												sparse_ldlt::from_raw_parts,
+												n_tot,
+												{
+														veg::unsafe,
+														veg::from_raw_parts,
+														kkt.row_indices().ptr() +
+																zx(kkt.col_start(usize(idx))),
+														isize(col_nnz),
+												},
+												{
+														veg::unsafe,
+														veg::from_raw_parts,
+														kkt.values().ptr() + zx(kkt.col_start(usize(idx))),
+														isize(col_nnz),
+												},
+										};
 
-									ldl = sparse_ldlt::add_row(
-											ldl, etree, perm_inv, idx, new_col, -1 / mu_in, stack);
+										ldl = sparse_ldlt::add_row(
+												ldl, etree, perm_inv, idx, new_col, -1 / mu_in, stack);
+									}
 									active_constraints[i] = new_active_constraints[i];
 
 								} else if (!is_active && was_active) {
 									removed = true;
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
-									ldl =
-											sparse_ldlt::delete_row(ldl, etree, perm_inv, idx, stack);
+									if (do_ldlt) {
+										ldl = sparse_ldlt::delete_row(
+												ldl, etree, perm_inv, idx, stack);
+									}
 									active_constraints[i] = new_active_constraints[i];
+								}
+							}
+
+							if (!do_ldlt) {
+								if (removed || added) {
+									refactorize();
 								}
 							}
 						}
@@ -1516,7 +1721,8 @@ void qp_solve(
 							}
 						}
 
-						ldl_solve_in_place({ldlt::from_eigen, rhs});
+						ldl_solve_in_place(
+								{ldlt::from_eigen, rhs}, {ldlt::from_eigen, dw_prev});
 					}
 					if (settings.verbose) {
 						std::cout
@@ -1748,5 +1954,60 @@ void qp_solve(
 }
 } // namespace sparse
 } // namespace qp
+
+namespace Eigen {
+namespace internal {
+template <typename T, typename I>
+struct traits<qp::sparse::detail::AugmentedKkt<T, I>>
+		: Eigen::internal::traits<Eigen::SparseMatrix<T, Eigen::ColMajor, I>> {};
+
+template <typename Rhs, typename T, typename I>
+struct generic_product_impl<
+		qp::sparse::detail::AugmentedKkt<T, I>,
+		Rhs,
+		SparseShape,
+		DenseShape,
+		GemvProduct>
+		: generic_product_impl_base<
+					qp::sparse::detail::AugmentedKkt<T, I>,
+					Rhs,
+					generic_product_impl<qp::sparse::detail::AugmentedKkt<T, I>, Rhs>> {
+	using Mat_ = qp::sparse::detail::AugmentedKkt<T, I>;
+
+	using Scalar = typename Product<Mat_, Rhs>::Scalar;
+
+	template <typename Dst>
+	static void scaleAndAddTo(
+			Dst& dst, Mat_ const& lhs, Rhs const& rhs, Scalar const& alpha) {
+		using veg::isize;
+
+		VEG_ASSERT(alpha == Scalar(1));
+		qp::sparse::detail::noalias_symhiv_add(
+				dst, lhs._.kkt_active.to_eigen(), rhs);
+
+		{
+			isize n = lhs._.n;
+			isize n_eq = lhs._.n_eq;
+			isize n_in = lhs._.n_in;
+
+			auto dst_x = dst.head(n);
+			auto dst_y = dst.segment(n, n_eq);
+			auto dst_z = dst.tail(n_in);
+
+			auto rhs_x = rhs.head(n);
+			auto rhs_y = rhs.segment(n, n_eq);
+			auto rhs_z = rhs.tail(n_in);
+
+			dst_x += lhs._.rho * rhs_x;
+			dst_y += (-1 / lhs._.mu_eq) * rhs_y;
+			for (isize i = 0; i < n_in; ++i) {
+				dst_z[i] +=
+						(lhs._.active_constraints[i] ? -1 / lhs._.mu_in : T(1)) * rhs_z[i];
+			}
+		}
+	}
+};
+} // namespace internal
+} // namespace Eigen
 
 #endif /* end of include guard INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS */

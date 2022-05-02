@@ -88,7 +88,7 @@ TEST_CASE("maros meszaros wip") {
 		isize n = qp_raw.P.rows();
 		isize n_eq_in = qp_raw.A.rows();
 
-		bool skip = (n > 10000 || n_eq_in > 10000);
+		bool skip = false;
 		::fmt::print(
 				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
 				qp_raw.filename,
@@ -131,7 +131,7 @@ TEST_CASE("maros meszaros wip") {
 			};
 
 			QPSettings<T> settings;
-      settings.verbose = true;
+      settings.verbose = false;
 			settings.max_iter = 1.E6;
 			settings.mu_max_in = 1.E9;
 			settings.mu_max_eq = 1.E9;
