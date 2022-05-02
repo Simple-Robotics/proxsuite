@@ -398,7 +398,6 @@ struct constant {
 } // namespace ldlt
 
 LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
-LDLT_DEFINE_TAG(random_with_dim_and_n_in, RandomWithDimAndNin);
 LDLT_DEFINE_TAG(random_with_dim_and_neq_and_n_in, RandomWithDimNeqNin);
 LDLT_DEFINE_TAG(random_with_dim_and_n_in_and_box_constraints, RandomWithDimNinBoxConstraints);
 LDLT_DEFINE_TAG(random_with_dim_and_n_in_not_strongly_convex, RandomWithDimNinNotStronglyConvex);

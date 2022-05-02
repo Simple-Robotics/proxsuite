@@ -11,7 +11,7 @@ using namespace ldlt;
 
 using T = double;
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality constraints and increasing dimension") {
+DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and inequality constraints and increasing dimension") {
 
 	std::cout << "---testing sparse random strongly convex qp with equality and inequality constraints and increasing dimension---" << std::endl;
 	double  sparsity_factor = 0.15;
@@ -41,10 +41,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality constrai
 				data,
 				work,
 				results);
-		//{
-		//EigenNoAlloc _{};
+
 		qp::detail::qp_solve(settings, data, results, work);
-		//}
 		T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::detail::positive_part(qp.C * results.x - qp.u) + qp::detail::negative_part(qp.C * results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y + qp.C.transpose() * results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
@@ -88,10 +86,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality constrai
 				data,
 				work,
 				results);
-		//{
-		//EigenNoAlloc _{};
+
 		qp::detail::qp_solve(settings, data, results, work);
-		//}
 		T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::detail::positive_part(qp.C * results.x - qp.u) + qp::detail::negative_part(qp.C * results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y + qp.C.transpose() * results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
@@ -134,10 +130,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality constrai
 				data,
 				work,
 				results);
-		//{
-		//EigenNoAlloc _{};
+
 		qp::detail::qp_solve(settings, data, results, work);
-		//}
 		T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::detail::positive_part(qp.C * results.x - qp.u) + qp::detail::negative_part(qp.C * results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y + qp.C.transpose() * results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
@@ -161,7 +155,6 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality c
 		isize n_in (2* m);
 		isize n_eq (0);
 		Qp<T> qp{random_with_dim_and_n_in_degenerate, dim, m, sparsity_factor,strong_convexity_factor};
-		//std::cout << "C " << qp.C << std::endl;
 		qp::QPSettings<T> settings;
 		settings.eps_abs = eps_abs;
 		settings.verbose = false;
@@ -181,10 +174,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality c
 				data,
 				work,
 				results);
-		//{
-		//EigenNoAlloc _{};
+
 		qp::detail::qp_solve(settings, data, results, work);
-		//}
 		T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::detail::positive_part(qp.C * results.x - qp.u) + qp::detail::negative_part(qp.C * results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y + qp.C.transpose() * results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
