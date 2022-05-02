@@ -45,6 +45,7 @@ add_dependencies(test.qp_eq.py test.qp_eq.py.generated_problems)
 
 ldlt_test(test.precond.ruiz src/precond_ruiz.cpp)
 ldlt_test(test.qp_eq.cpp src/qp_eq.cpp)
+ldlt_test(test.qp_with_eq_and_in.cpp src/qp_with_eq_and_in.cpp)
 ldlt_test(test.maros_meszaros src/test_maros_meszaros.cpp)
 ldlt_test(test.sparse.ruiz src/test_ruiz_sparse.cpp)
 ldlt_test(test.sparse.qp src/test_qp_sparse.cpp)
