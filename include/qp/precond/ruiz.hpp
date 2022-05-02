@@ -46,8 +46,7 @@ auto ruiz_scale_qp_in_place( //
 	static constexpr T machine_eps = std::numeric_limits<T>::epsilon();
 	/*
 	 * compute equilibration parameters and scale in place the qp following
-	 * algorithm 1 at
-	 * https://sharelatex.irisa.fr/project/6100343e095d2649760f5631
+	 * algorithm 
 	 *
 	 * modified: removed g in gamma computation
 	 */
@@ -277,8 +276,7 @@ struct RuizEquilibration {
 		/*
 		 * scaled_qp is scaled, whereas first qp is not
 		 * the procedure computes as well equilibration parameters using default
-		 * parameters following algorithm 1 at
-		 * https://sharelatex.irisa.fr/project/6100343e095d2649760f5631
+		 * parameters
 		 */
 
 		scaled_qp.H.to_eigen() = qp.H.to_eigen();

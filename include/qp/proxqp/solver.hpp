@@ -3,27 +3,14 @@
 
 #include "qp/views.hpp"
 #include "qp/proxqp/line_search.hpp"
+#include "qp/utils.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>
 #include <fstream>
 #include <veg/util/dynstack_alloc.hpp>
-
 #include <dense-ldlt/ldlt.hpp>
 
-template <typename Derived>
-void save_data(
-		const std::string& filename, const Eigen::MatrixBase<Derived>& mat) {
-	// https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
-	const static Eigen::IOFormat CSVFormat(
-			Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n");
-
-	std::ofstream file(filename);
-	if (file.is_open()) {
-		file << mat.format(CSVFormat);
-		file.close();
-	}
-}
 
 namespace qp {
 inline namespace tags {
@@ -31,19 +18,6 @@ using namespace ldlt::tags;
 }
 
 namespace detail {
-
-#define LDLT_DEDUCE_RET(...)                                                   \
-	noexcept(noexcept(__VA_ARGS__))                                              \
-			->typename std::remove_const<decltype(__VA_ARGS__)>::type {              \
-		return __VA_ARGS__;                                                        \
-	}                                                                            \
-	static_assert(true, ".")
-template <typename T>
-auto positive_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template <typename T>
-auto negative_part(T const& expr)
-		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
 template <typename T>
 void refactorize(
@@ -323,79 +297,6 @@ void bcl_update(
 }
 
 template <typename T>
-void global_primal_residual(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
-		T& primal_feasibility_lhs,
-		T& primal_feasibility_eq_rhs_0,
-		T& primal_feasibility_in_rhs_0,
-		T& primal_feasibility_eq_lhs,
-		T& primal_feasibility_in_lhs) {
-
-	qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
-	qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
-
-	qpwork.ruiz.unscale_primal_residual_in_place_eq(
-			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
-	primal_feasibility_eq_rhs_0 = infty_norm(qpwork.primal_residual_eq_scaled);
-	qpwork.ruiz.unscale_primal_residual_in_place_in(
-			VectorViewMut<T>{from_eigen, qpwork.primal_residual_in_scaled_up});
-	primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
-
-	qpwork.primal_residual_in_scaled_low =
-			detail::positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
-			detail::negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
-	qpwork.primal_residual_eq_scaled -= qpmodel.b;
-
-	primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
-	primal_feasibility_eq_lhs = infty_norm(qpwork.primal_residual_eq_scaled);
-	primal_feasibility_lhs =
-			max2(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
-
-	qpwork.ruiz.scale_primal_residual_in_place_eq(
-			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
-}
-
-template <typename T>
-void global_dual_residual(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
-		T& dual_feasibility_lhs,
-		T& dual_feasibility_rhs_0,
-		T& dual_feasibility_rhs_1,
-		T& dual_feasibility_rhs_3) {
-
-	qpwork.dual_residual_scaled = qpwork.g_scaled;
-	qpwork.CTz.noalias() =
-			qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
-	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, qpwork.CTz});
-	dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
-	qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
-	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, qpwork.CTz});
-	dual_feasibility_rhs_1 = infty_norm(qpwork.CTz);
-
-	qpwork.CTz.noalias() = qpwork.C_scaled.transpose() * qpresults.z;
-	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, qpwork.CTz});
-	dual_feasibility_rhs_3 = infty_norm(qpwork.CTz);
-
-	qpwork.ruiz.unscale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
-
-	dual_feasibility_lhs = infty_norm(qpwork.dual_residual_scaled);
-
-	qpwork.ruiz.scale_dual_residual_in_place(
-			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
-};
-
-template <typename T>
 auto compute_inner_loop_saddle_point(
 		const qp::QPData<T>& qpmodel,
 		qp::QPResults<T>& qpresults,
@@ -638,7 +539,7 @@ void qp_solve( //
 		// compute primal residual
 
 		// PERF: fuse matrix product computations in global_{primal, dual}_residual
-		global_primal_residual(
+		qp::detail::global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -648,7 +549,7 @@ void qp_solve( //
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs);
 
-		global_dual_residual(
+		qp::detail::global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -755,7 +656,7 @@ void qp_solve( //
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
-		global_primal_residual(
+		qp::detail::global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -780,7 +681,7 @@ void qp_solve( //
 		if (is_primal_feasible) {
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-			global_dual_residual(
+			qp::detail::global_dual_residual(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -826,7 +727,7 @@ void qp_solve( //
 
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-		global_dual_residual(
+		qp::detail::global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
