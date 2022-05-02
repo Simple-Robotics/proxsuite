@@ -214,17 +214,18 @@ auto sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
 	for (isize i = 0; i < n; ++i) {
 		for (isize j = 0; j < n; ++j) {
 			auto urandom = rand::uniform_rand();
-			if (urandom < p) {
+			if (urandom < p / 2) {
 				auto random = Scalar(rand::normal_rand());
 				H(i, j) = random;
 			}
 		}
 	}
 
-	H = H *
-	    H.transpose(); // safe no aliasing
-	                   // https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
-	H.diagonal().array() += rho;
+	H = ((H + H.transpose())*0.5).eval() ; // safe no aliasing : https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
+	//H.array() /= 2.;
+	Vec<Scalar> eigh = H.template selfadjointView<Eigen::Upper>().eigenvalues();
+	Scalar min = eigh.minCoeff();
+	H.diagonal().array() += (rho + abs(min));
 
 	return H;
 }
@@ -398,6 +399,12 @@ struct constant {
 
 LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
 LDLT_DEFINE_TAG(random_with_dim_and_n_in, RandomWithDimAndNin);
+LDLT_DEFINE_TAG(random_with_dim_and_neq_and_n_in, RandomWithDimNeqNin);
+LDLT_DEFINE_TAG(random_with_dim_and_n_in_and_box_constraints, RandomWithDimNinBoxConstraints);
+LDLT_DEFINE_TAG(random_with_dim_and_n_in_not_strongly_convex, RandomWithDimNinNotStronglyConvex);
+LDLT_DEFINE_TAG(random_with_dim_and_n_in_degenerate, RandomWithDimNinDegenerateStronglyConvex);
+
+
 LDLT_DEFINE_TAG(from_data, FromData);
 template <typename Scalar>
 struct Qp {
@@ -479,19 +486,17 @@ struct Qp {
 		b.noalias() = A * primal_solution;
 	}
 
-	Qp(RandomWithDimAndNin /*tag*/, ldlt::isize dim, double sparsity_factor)
+	Qp(RandomWithDimNeqNin /*tag*/, ldlt::isize dim, ldlt::isize n_eq, ldlt::isize n_in, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim, Scalar(1e-2), sparsity_factor)),
+						dim,strong_convexity_factor, sparsity_factor)),
 				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-						0, dim, sparsity_factor)),
-				b(0),
+						n_eq, dim, sparsity_factor)),
+				b(n_eq),
 				C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-						ldlt::isize(dim / 2), dim, sparsity_factor)),
-				u(ldlt::isize(dim / 2)),
-				l(ldlt::isize(dim / 2)) {
-
-		ldlt::isize n_in = ldlt::isize(dim / 2);
+						n_in, dim, sparsity_factor)),
+				u(n_in),
+				l(n_in) {
 
 		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
 		auto delta = Vec<Scalar>(n_in);
@@ -501,26 +506,87 @@ struct Qp {
 		}
 
 		u = C * x_sol + delta;
+		b = A * x_sol ;
 		l.setZero();
-		l.array() -= 1.e30;
-		/*
-		sparsity = (n**2*sparsity_factor + 2 * n * n_in*sparsity_factor +  n_in) /
-		(n+n_in)**2
+		l.array() -= 1.e20;
+	}
 
-		H_ = sparse.random(n, n, density=sparsity_factor,
-		        data_rvs=np.random.randn,
-		        format='csc')
-		H_ = H_.dot(H_.T).tocsc() + 1e-02 * sparse.eye(n)
-		g_ = np.random.randn(n)
-		C_ = sparse.random(n_in, n, density=sparsity_factor,
-		            data_rvs=np.random.randn,
-		            format='csc')
-		x_sol = np.random.randn(n)  # Create fictitious solution
-		delta = np.random.rand(n_in)
-		u_ = C_@x_sol + delta
-		#l_ = - np.inf * np.ones(n_in)
-		l_ = - 1.e30 * np.ones(n_in)
-		*/
+
+	Qp(RandomWithDimNinBoxConstraints /*tag*/, ldlt::isize dim, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+						dim,strong_convexity_factor, sparsity_factor)),
+				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
+				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				b(0),
+				C(Mat<Scalar, ldlt::colmajor>(dim, dim)),
+				u(dim),
+				l(dim) {
+
+		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+		auto delta = Vec<Scalar>(dim);
+
+		for (ldlt::isize i = 0; i < dim; ++i) {
+			delta(i) = ldlt_test::rand::uniform_rand();
+		}
+		C.setZero() ; 
+		C.diagonal().array() += 1;
+		u = x_sol + delta;
+		l = x_sol - delta ;
+	}
+
+	Qp(RandomWithDimNinNotStronglyConvex /*tag*/, ldlt::isize dim, ldlt::isize n_in, double sparsity_factor)
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+						dim,Scalar(0), sparsity_factor)),
+				g(dim),
+				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				b(0),
+				C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						n_in, dim, sparsity_factor)),
+				u(n_in),
+				l(n_in) {
+
+		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+		auto z_sol = ldlt_test::rand::vector_rand<Scalar>(n_in);
+		auto delta = Vec<Scalar>(n_in);
+
+		for (ldlt::isize i = 0; i < n_in; ++i) {
+			delta(i) = ldlt_test::rand::uniform_rand();
+		}
+		auto Cx =  C * x_sol;
+		u = Cx + delta;
+		b = A * x_sol ;
+		l = Cx - delta ;
+		g = -(H * x_sol + C.transpose() * z_sol) ; 
+	}
+
+	Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/, ldlt::isize dim, ldlt::isize n_in, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+						dim,strong_convexity_factor, sparsity_factor)),
+				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
+				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				b(0),
+				C(Mat<Scalar, ldlt::colmajor>(2*n_in, dim)),
+				u(2*n_in),
+				l(2*n_in) {
+
+		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+		auto delta = Vec<Scalar>(2*n_in);
+
+		auto C_ = ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						n_in, dim, sparsity_factor);
+		C.setZero();
+		C.block(0, 0, n_in, dim) = C_ ; 
+		C.block(n_in, 0, n_in, dim) = C_;
+
+		for (ldlt::isize i = 0; i < 2*n_in; ++i) {
+			delta(i) = ldlt_test::rand::uniform_rand();
+		}
+		u = C * x_sol + delta;
+		l.setZero();
+		l.array() -= 1.e20;
 	}
 
 	auto as_view() -> qp::QpView<Scalar> {
