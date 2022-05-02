@@ -398,6 +398,7 @@ struct constant {
 } // namespace ldlt
 
 LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
+LDLT_DEFINE_TAG(random_unconstrained, RandomUnconstrained);
 LDLT_DEFINE_TAG(random_with_dim_and_neq_and_n_in, RandomWithDimNeqNin);
 LDLT_DEFINE_TAG(random_with_dim_and_n_in_and_box_constraints, RandomWithDimNinBoxConstraints);
 LDLT_DEFINE_TAG(random_with_dim_and_n_in_not_strongly_convex, RandomWithDimNinNotStronglyConvex);
@@ -510,6 +511,19 @@ struct Qp {
 		l.array() -= 1.e20;
 	}
 
+	Qp(RandomUnconstrained /*tag*/, ldlt::isize dim, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+						dim,strong_convexity_factor, sparsity_factor)),
+				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
+				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				b(0),
+				C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+						0, dim, sparsity_factor)),
+				u(0),
+				l(0) {
+
+	}
 
 	Qp(RandomWithDimNinBoxConstraints /*tag*/, ldlt::isize dim, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
