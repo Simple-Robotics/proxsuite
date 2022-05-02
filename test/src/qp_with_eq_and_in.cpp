@@ -210,7 +210,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and incre
 
 		qp::detail::QPsetup_dense<T>( //
 				qp.H,
-				qp.g,
+				qp.g, 
 				qp.A,
 				qp.b,
 				qp.C,

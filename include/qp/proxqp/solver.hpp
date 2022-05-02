@@ -83,25 +83,6 @@ void refactorize(
 	}
 	qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
 
-	// for (isize j = 0; j < qpresults.n_c; ++j) {
-	// 	for (isize i = 0; i < qpmodel.n_in; ++i) {
-	// 		if (j == qpwork.current_bijection_map(i)) {
-	// 			qpwork.dw_aug.head(qpmodel.dim) = qpwork.C_scaled.row(i);
-	// 			qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) =
-	// 					-qpresults.mu_in_inv; // mu_in stores the inverse of mu_in
-	// 			{
-	// 				isize insert_dim = qpmodel.dim + qpmodel.n_eq + qpresults.n_c;
-	// 				veg::dynstack::DynStackMut stack{
-	// 						veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
-	// 				qpwork.ldl.insert_block_at(
-	// 						qpmodel.n_eq + qpmodel.dim + j,
-	// 						qpwork.dw_aug.head(insert_dim),
-	// 						stack);
-	// 			}
-	// 			qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) = T(0);
-	// 		}
-	// 	}
-	// }
 	qpwork.constraints_changed = false;
 
 	qpwork.dw_aug.setZero();
@@ -463,8 +444,6 @@ void primal_dual_semi_smooth_newton_step(
 	qpwork.active_inequalities = qpwork.active_set_up || qpwork.active_set_low;
 	isize numactive_inequalities = qpwork.active_inequalities.count();
 
-	// std::cout << "numactive_inequalities " << numactive_inequalities<<
-	// std::endl;
 	isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + numactive_inequalities;
 	qpwork.rhs.setZero();
 	qpwork.dw_aug.setZero();
@@ -472,8 +451,7 @@ void primal_dual_semi_smooth_newton_step(
 	qp::line_search::active_set_change(qpmodel, qpresults, qpwork);
 
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
-	// std::cout << " qpwork.rhs head before activation " <<
-	// qpwork.rhs.head(qpmodel.dim) << std::endl;
+
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
 			-qpwork.primal_residual_eq_scaled;
 	for (isize i = 0; i < qpmodel.n_in; i++) {
@@ -494,7 +472,6 @@ void primal_dual_semi_smooth_newton_step(
 					qpwork.C_scaled.row(i); // unactive unrelevant columns
 		}
 	}
-	// std::cout << " qpwork.rhs " << qpwork.rhs<< std::endl;
 
 	iterative_solve_with_permut_fact( //
 			qpsettings,
@@ -515,7 +492,6 @@ void primal_dual_semi_smooth_newton_step(
 	}
 	qpwork.dw_aug.tail(qpmodel.n_in) = qpwork.active_part_z;
 
-	// std::cout << "primal dual newton step " << qpwork.dw_aug << std::endl;
 }
 
 template <typename T>
@@ -662,7 +638,7 @@ void qp_solve( //
 		// compute primal residual
 
 		// PERF: fuse matrix product computations in global_{primal, dual}_residual
-		qp::detail::global_primal_residual(
+		global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -672,7 +648,7 @@ void qp_solve( //
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs);
 
-		qp::detail::global_dual_residual(
+		global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -779,7 +755,7 @@ void qp_solve( //
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
-		qp::detail::global_primal_residual(
+		global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -804,7 +780,7 @@ void qp_solve( //
 		if (is_primal_feasible) {
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-			qp::detail::global_dual_residual(
+			global_dual_residual(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -828,7 +804,7 @@ void qp_solve( //
 			}
 		}
 
-		qp::detail::bcl_update(
+		bcl_update(
 				qpsettings,
 				qpmodel,
 				qpresults,
@@ -850,7 +826,7 @@ void qp_solve( //
 
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-		qp::detail::global_dual_residual(
+		global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -877,7 +853,7 @@ void qp_solve( //
 
 		if (qpresults.mu_in != new_bcl_mu_in || qpresults.mu_eq != new_bcl_mu_eq) {
 			{ ++qpresults.n_mu_change; }
-			qp::detail::mu_update(
+			mu_update(
 					qpmodel, qpresults, qpwork, new_bcl_mu_eq_inv, new_bcl_mu_in_inv);
 		}
 
@@ -896,8 +872,6 @@ void qp_solve( //
 
 	{
 		// EigenAllowAlloc _{};
-		// qpresults.objValue =
-		//		(0.5 * qpmodel.H * qpresults.x + qpmodel.g).dot(qpresults.x);
 		for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
 			qpresults.objValue +=
 					0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
@@ -996,9 +970,9 @@ void QPsetup_generic( //
 				T(1),
 				qpmodel.dim + qpmodel.n_eq);
 
-		QPResults.x = qpwork.dw_aug.head(qpmodel.dim); // test with no warm start
+		QPResults.x = qpwork.dw_aug.head(qpmodel.dim); 
 		QPResults.y = qpwork.dw_aug.segment(
-				qpmodel.dim, qpmodel.n_eq); // test with no warm start
+				qpmodel.dim, qpmodel.n_eq); 
 		qpwork.dw_aug.setZero();
 	}
 
