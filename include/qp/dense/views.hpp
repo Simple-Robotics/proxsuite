@@ -7,11 +7,11 @@
 #include <type_traits>
 #include <Eigen/Core>
 
-#define LDLT_CONCEPT(...) VEG_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
+#define LDLT_CONCEPT(...) VEG_CONCEPT_MACRO(::qp::concepts, __VA_ARGS__)
 #define LDLT_CHECK_CONCEPT(...)                                                \
-	VEG_CHECK_CONCEPT_MACRO(::ldlt::concepts, __VA_ARGS__)
+	VEG_CHECK_CONCEPT_MACRO(::qp::concepts, __VA_ARGS__)
 
-namespace ldlt {
+namespace qp {
 using usize = decltype(sizeof(0));
 namespace detail {
 template <typename Fn>
@@ -25,7 +25,7 @@ struct FnInfo<auto(Args...)->Ret_> {
 } // namespace detail
 
 #define LDLT_IMPL_GET_PARAM(Fn, Idx)                                           \
-	typename ::ldlt::detail::FnInfo<decltype Fn /* NOLINT */>::template Arg<(Idx)>,
+	typename ::qp::detail::FnInfo<decltype Fn /* NOLINT */>::template Arg<(Idx)>,
 
 #define LDLT_IMPL_GET_PARAMS_0(NParams, ...)                                   \
 	__VEG_PP_TUPLE_FOR_EACH(                                                     \
@@ -42,9 +42,9 @@ struct FnInfo<auto(Args...)->Ret_> {
 #define LDLT_EXPLICIT_TPL_DEF(NParams, ...)                                    \
 	template auto __VA_ARGS__(                                                   \
 			LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                               \
-					typename ::ldlt::detail::FnInfo<                                     \
+					typename ::qp::detail::FnInfo<                                     \
 							decltype(__VA_ARGS__)>::template Arg<(NParams)-1>)               \
-			->typename ::ldlt::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
+			->typename ::qp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
 	extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 
@@ -771,7 +771,7 @@ public:
 		return trans().col(r);
 	}
 	VEG_INLINE auto trans() const noexcept
-			-> MatrixView<T, ldlt::flip_layout(L)> {
+			-> MatrixView<T, qp::flip_layout(L)> {
 		return {
 				from_ptr_rows_cols_stride,
 				data,
@@ -867,7 +867,7 @@ public:
 		return trans().col(r);
 	}
 	VEG_INLINE auto trans() const noexcept
-			-> MatrixViewMut<T, ldlt::flip_layout(L)> {
+			-> MatrixViewMut<T, qp::flip_layout(L)> {
 		return {
 				from_ptr_rows_cols_stride,
 				data,
@@ -1137,12 +1137,12 @@ void noalias_mul_sub_tr_lo(
 }
 
 } // namespace detail
-} // namespace ldlt
+} // namespace qp
 
 template <typename T>
-struct veg::fmt::Debug<ldlt::StridedVectorView<T>> {
+struct veg::fmt::Debug<qp::StridedVectorView<T>> {
 	static void
-	to_string(fmt::BufferMut out, Ref<ldlt::StridedVectorView<T>> vec) {
+	to_string(fmt::BufferMut out, Ref<qp::StridedVectorView<T>> vec) {
 		out.append_literal("Vec ");
 		_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
 
@@ -1154,32 +1154,32 @@ struct veg::fmt::Debug<ldlt::StridedVectorView<T>> {
 	}
 };
 template <typename T>
-struct veg::fmt::Debug<ldlt::StridedVectorViewMut<T>> {
+struct veg::fmt::Debug<qp::StridedVectorViewMut<T>> {
 	static void
-	to_string(fmt::BufferMut out, Ref<ldlt::StridedVectorViewMut<T>> vec) {
+	to_string(fmt::BufferMut out, Ref<qp::StridedVectorViewMut<T>> vec) {
 		dbg_to(VEG_FWD(out), ref(vec.get().as_const()));
 	}
 };
 
 template <typename T>
-struct veg::fmt::Debug<ldlt::VectorView<T>> {
-	static void to_string(fmt::BufferMut out, Ref<ldlt::VectorView<T>> vec) {
+struct veg::fmt::Debug<qp::VectorView<T>> {
+	static void to_string(fmt::BufferMut out, Ref<qp::VectorView<T>> vec) {
 		dbg_to(
 				VEG_FWD(out),
-				ref(ldlt::StridedVectorView<T>{
-						ldlt::from_ptr_size_stride, vec.get().data, vec.get().dim, 1}));
+				ref(qp::StridedVectorView<T>{
+						qp::from_ptr_size_stride, vec.get().data, vec.get().dim, 1}));
 	}
 };
 template <typename T>
-struct veg::fmt::Debug<ldlt::VectorViewMut<T>> {
-	static void to_string(fmt::BufferMut out, Ref<ldlt::VectorViewMut<T>> vec) {
+struct veg::fmt::Debug<qp::VectorViewMut<T>> {
+	static void to_string(fmt::BufferMut out, Ref<qp::VectorViewMut<T>> vec) {
 		dbg_to(VEG_FWD(out), ref(vec.get().as_const()));
 	}
 };
 
-template <typename T, ldlt::Layout L>
-struct veg::fmt::Debug<ldlt::MatrixView<T, L>> {
-	static void to_string(fmt::BufferMut out, Ref<ldlt::MatrixView<T, L>> mat) {
+template <typename T, qp::Layout L>
+struct veg::fmt::Debug<qp::MatrixView<T, L>> {
+	static void to_string(fmt::BufferMut out, Ref<qp::MatrixView<T, L>> mat) {
 		out.append_literal("Vec ");
 		_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
 
@@ -1192,17 +1192,17 @@ struct veg::fmt::Debug<ldlt::MatrixView<T, L>> {
 		}
 	}
 };
-template <typename T, ldlt::Layout L>
-struct veg::fmt::Debug<ldlt::MatrixViewMut<T, L>> {
+template <typename T, qp::Layout L>
+struct veg::fmt::Debug<qp::MatrixViewMut<T, L>> {
 	static void
-	to_string(fmt::BufferMut out, Ref<ldlt::MatrixViewMut<T, L>> mat) {
+	to_string(fmt::BufferMut out, Ref<qp::MatrixViewMut<T, L>> mat) {
 		dbg_to(VEG_FWD(out), ref(mat.get().as_const()));
 	}
 };
 
 template <typename T>
-struct veg::fmt::Debug<ldlt::LdltView<T>> {
-	static void to_string(fmt::BufferMut out, Ref<ldlt::LdltView<T>> ld) {
+struct veg::fmt::Debug<qp::LdltView<T>> {
+	static void to_string(fmt::BufferMut out, Ref<qp::LdltView<T>> ld) {
 		out.append_literal("Ldlt ");
 		_detail::_fmt::DbgStructScope _0{VEG_FWD(out)};
 		out.append_ln();
@@ -1227,8 +1227,8 @@ struct veg::fmt::Debug<ldlt::LdltView<T>> {
 };
 
 template <typename T>
-struct veg::fmt::Debug<ldlt::LdltViewMut<T>> {
-	static void to_string(fmt::BufferMut out, Ref<ldlt::LdltViewMut<T>> ld) {
+struct veg::fmt::Debug<qp::LdltViewMut<T>> {
+	static void to_string(fmt::BufferMut out, Ref<qp::LdltViewMut<T>> ld) {
 		dbg_to(VEG_FWD(out), ref(ld.get().as_const()));
 	}
 };
@@ -1256,22 +1256,6 @@ struct EigenAllowAlloc {
 	EigenAllowAlloc() = default;
 #endif
 };
-
-using namespace ldlt::detail;
-
-using ldlt::Layout;
-using ldlt::i32;
-using ldlt::i64;
-using ldlt::isize;
-using ldlt::usize;
-using ldlt::MatrixViewMut;
-using ldlt::MatrixView;
-using ldlt::VectorViewMut;
-using ldlt::VectorView;
-using ldlt::LdltViewMut;
-using ldlt::LdltView;
-using ldlt::colmajor;
-using ldlt::rowmajor;
 
 template <typename T>
 struct QpView {

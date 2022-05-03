@@ -47,4 +47,4 @@ auto to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float> {
 } // namespace osqp
 } // namespace ldlt_test
 
-LDLT_EXPLICIT_TPL_DEF(1, mat_cast<ldlt::f64, long double>);
+LDLT_EXPLICIT_TPL_DEF(1, mat_cast<qp::f64, long double>);

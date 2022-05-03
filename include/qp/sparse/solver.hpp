@@ -18,8 +18,6 @@ namespace sparse {
 using veg::isize;
 using veg::usize;
 using veg::i64;
-using dense::VectorView;
-using dense::VectorViewMut;
 using dense::infty_norm;
 
 template <typename T>
@@ -399,7 +397,7 @@ struct RuizEquilibration {
 	void scale_qp_in_place(QpViewMut<T, I> qp, veg::dynstack::DynStackMut stack) {
 		delta.setOnes();
 		c = detail::ruiz_scale_qp_in_place( //
-				{ldlt::from_eigen, delta},
+				{qp::from_eigen, delta},
 				qp,
 				epsilon,
 				max_iter,
@@ -659,7 +657,7 @@ struct QpWorkspace {
 
 			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
 
-			// if ldlt much sparser than kkt
+			// if qp much sparser than kkt
 			// do_ldlt = !overflow && lnnz < (100 * nnz_tot);
 			do_ldlt = !overflow && lnnz < 10000000;
 
@@ -840,11 +838,11 @@ auto negative_part(T const& expr)
 
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_gevmmv_add_impl( //
-		ldlt::VectorViewMut<T> out_l,
-		ldlt::VectorViewMut<T> out_r,
+		qp::VectorViewMut<T> out_l,
+		qp::VectorViewMut<T> out_r,
 		sparse_ldlt::MatRef<T, I> a,
-		ldlt::VectorView<T> in_l,
-		ldlt::VectorView<T> in_r) {
+		qp::VectorView<T> in_l,
+		qp::VectorView<T> in_r) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ (
 			a.nrows() == out_r.dim,
 			a.ncols() == in_r.dim,
@@ -912,9 +910,9 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
-		ldlt::VectorViewMut<T> out,
+		qp::VectorViewMut<T> out,
 		sparse_ldlt::MatRef<T, I> a,
-		ldlt::VectorView<T> in) {
+		qp::VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
 			a.nrows() == out.dim,
@@ -992,20 +990,20 @@ template <typename OutL, typename OutR, typename A, typename InL, typename InR>
 void noalias_gevmmv_add(
 		OutL&& out_l, OutR&& out_r, A const& a, InL const& in_l, InR const& in_r) {
 	detail::noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
-			{ldlt::from_eigen, out_l},
-			{ldlt::from_eigen, out_r},
+			{qp::from_eigen, out_l},
+			{qp::from_eigen, out_r},
 			{sparse_ldlt::from_eigen, a},
-			{ldlt::from_eigen, in_l},
-			{ldlt::from_eigen, in_r});
+			{qp::from_eigen, in_l},
+			{qp::from_eigen, in_r});
 }
 
 /// noalias symmetric (hi) matrix vector add
 template <typename Out, typename A, typename In>
 void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
-			{ldlt::from_eigen, out},
+			{qp::from_eigen, out},
 			{sparse_ldlt::from_eigen, a},
-			{ldlt::from_eigen, in});
+			{qp::from_eigen, in});
 }
 
 template <typename T, typename I>
@@ -1233,7 +1231,7 @@ auto unscaled_primal_dual_residual(
 		detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
 		dual_residual_scaled += tmp;
 
-		precond.unscale_dual_residual_in_place({ldlt::from_eigen, tmp});
+		precond.unscale_dual_residual_in_place({qp::from_eigen, tmp});
 		dual_feasibility_rhs_0 = infty_norm(tmp);
 	}
 
@@ -1247,7 +1245,7 @@ auto unscaled_primal_dual_residual(
 
 		dual_residual_scaled += ATy;
 
-		precond.unscale_dual_residual_in_place({ldlt::from_eigen, ATy});
+		precond.unscale_dual_residual_in_place({qp::from_eigen, ATy});
 		dual_feasibility_rhs_1 = infty_norm(ATy);
 	}
 
@@ -1261,17 +1259,17 @@ auto unscaled_primal_dual_residual(
 
 		dual_residual_scaled += CTz;
 
-		precond.unscale_dual_residual_in_place({ldlt::from_eigen, CTz});
+		precond.unscale_dual_residual_in_place({qp::from_eigen, CTz});
 		dual_feasibility_rhs_3 = infty_norm(CTz);
 	}
 
 	precond.unscale_primal_residual_in_place_eq(
-			{ldlt::from_eigen, primal_residual_eq_scaled});
+			{qp::from_eigen, primal_residual_eq_scaled});
 
 	primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
 
 	precond.unscale_primal_residual_in_place_in(
-			{ldlt::from_eigen, primal_residual_in_scaled_up});
+			{qp::from_eigen, primal_residual_in_scaled_up});
 	primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
 
 	auto b = qp.b.to_eigen();
@@ -1289,16 +1287,15 @@ auto unscaled_primal_dual_residual(
 
 	// scaled Ax - b
 	precond.scale_primal_residual_in_place_eq(
-			{ldlt::from_eigen, primal_residual_eq_scaled});
+			{qp::from_eigen, primal_residual_eq_scaled});
 	// scaled Cx
 	precond.scale_primal_residual_in_place_in(
-			{ldlt::from_eigen, primal_residual_in_scaled_up});
+			{qp::from_eigen, primal_residual_in_scaled_up});
 
 	precond.unscale_dual_residual_in_place(
-			{ldlt::from_eigen, dual_residual_scaled});
+			{qp::from_eigen, dual_residual_scaled});
 	T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
-	precond.scale_dual_residual_in_place(
-			{ldlt::from_eigen, dual_residual_scaled});
+	precond.scale_dual_residual_in_place({qp::from_eigen, dual_residual_scaled});
 
 	return veg::tuplify(primal_feasibility_lhs, dual_feasibility_lhs);
 }
@@ -1640,7 +1637,7 @@ void qp_solve(
 			}
 			prev_err_norm = err_norm;
 
-			ldl_solve({ldlt::from_eigen, err}, {ldlt::from_eigen, err});
+			ldl_solve({qp::from_eigen, err}, {qp::from_eigen, err});
 
 			sol_e -= err;
 		}
@@ -1649,7 +1646,7 @@ void qp_solve(
 	auto ldl_solve_in_place = [&](VectorViewMut<T> rhs,
 	                              VectorView<T> init_guess) {
 		LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
-		ldl_iter_solve_noalias({ldlt::from_eigen, tmp}, rhs.as_const(), init_guess);
+		ldl_iter_solve_noalias({qp::from_eigen, tmp}, rhs.as_const(), init_guess);
 		rhs.to_eigen() = tmp;
 	};
 
@@ -1661,7 +1658,7 @@ void qp_solve(
 		rhs.segment(n, n_eq) = b_scaled_e;
 		rhs.segment(n + n_eq, n_in).setZero();
 
-		ldl_solve_in_place({ldlt::from_eigen, rhs}, {ldlt::from_eigen, no_guess});
+		ldl_solve_in_place({qp::from_eigen, rhs}, {qp::from_eigen, no_guess});
 		x_e = rhs.head(n);
 		y_e = rhs.segment(n, n_eq);
 		z_e = rhs.segment(n + n_eq, n_in);
@@ -1869,7 +1866,7 @@ void qp_solve(
 						}
 
 						ldl_solve_in_place(
-								{ldlt::from_eigen, rhs}, {ldlt::from_eigen, dw_prev});
+								{qp::from_eigen, rhs}, {qp::from_eigen, dw_prev});
 					}
 					if (settings.verbose) {
 						std::cout
@@ -2127,9 +2124,9 @@ void qp_solve(
 		}
 	}
 
-	precond.unscale_primal_in_place({ldlt::from_eigen, x_e});
-	precond.unscale_dual_in_place_eq({ldlt::from_eigen, y_e});
-	precond.unscale_dual_in_place_in({ldlt::from_eigen, z_e});
+	precond.unscale_primal_in_place({qp::from_eigen, x_e});
+	precond.unscale_dual_in_place_eq({qp::from_eigen, y_e});
+	precond.unscale_dual_in_place_in({qp::from_eigen, z_e});
 }
 } // namespace sparse
 } // namespace qp

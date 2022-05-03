@@ -11,12 +11,7 @@
 #include <veg/util/dynstack_alloc.hpp>
 #include <dense-ldlt/ldlt.hpp>
 
-
 namespace qp {
-inline namespace tags {
-using namespace ldlt::tags;
-}
-
 namespace dense {
 
 template <typename T>
@@ -163,8 +158,8 @@ void iterative_solve_with_permut_fact( //
 	++it;
 	T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
 	if (qpsettings.verbose) {
-		std::cout << "infty_norm(res) "
-							<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
+		std::cout << "infty_norm(res) " << infty_norm(qpwork.err.head(inner_pb_dim))
+							<< std::endl;
 	}
 	while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
@@ -223,8 +218,7 @@ void iterative_solve_with_permut_fact( //
 			qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
 			qpwork.err.head(inner_pb_dim).setZero();
-			iterative_residual<T>(
-					qpmodel, qpresults, qpwork, inner_pb_dim);
+			iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
 
 			if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
 				it_stability += 1;
@@ -265,13 +259,12 @@ void bcl_update(
 		T& new_bcl_mu_eq_inv
 
 ) {
-
 	if (primal_feasibility_lhs_new <= bcl_eta_ext) {
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}
 		bcl_eta_ext = bcl_eta_ext * pow(qpresults.mu_in_inv, qpsettings.beta_bcl);
-		bcl_eta_in = max2(bcl_eta_in * qpresults.mu_in_inv, eps_in_min);
+		bcl_eta_in = std::max(bcl_eta_in * qpresults.mu_in_inv, eps_in_min);
 	} else {
 		if (qpsettings.verbose) {
 			std::cout << "bad step" << std::endl;
@@ -284,15 +277,15 @@ void bcl_update(
 				qpresults.mu_in * qpsettings.mu_update_factor, qpsettings.mu_max_in);
 		new_bcl_mu_eq = std::min(
 				qpresults.mu_eq * qpsettings.mu_update_factor, qpsettings.mu_max_eq);
-		new_bcl_mu_in_inv = max2(
+		new_bcl_mu_in_inv = std::max(
 				qpresults.mu_in_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_in_inv); // mu stores the inverse of mu
-		new_bcl_mu_eq_inv = max2(
+		new_bcl_mu_eq_inv = std::max(
 				qpresults.mu_eq_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_eq_inv); // mu stores the inverse of mu
 		bcl_eta_ext =
 				bcl_eta_ext_init * pow(new_bcl_mu_in_inv, qpsettings.alpha_bcl);
-		bcl_eta_in = max2(new_bcl_mu_in_inv, eps_in_min);
+		bcl_eta_in = std::max(new_bcl_mu_in_inv, eps_in_min);
 	}
 }
 
@@ -314,11 +307,11 @@ auto compute_inner_loop_saddle_point(
 
 	T prim_eq_e = infty_norm(
 			qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)); // ||Ax-b-(y-y_prev)/mu||
-	err = max2(err, prim_eq_e);
+	err = std::max(err, prim_eq_e);
 	T dual_e =
 			infty_norm(qpwork.dual_residual_scaled); // contains ||Hx + rho(x-xprev) +
 	                                             // g + Aty + Ctz||
-	err = max2(err, dual_e);
+	err = std::max(err, dual_e);
 
 	return err;
 }
@@ -392,7 +385,6 @@ void primal_dual_semi_smooth_newton_step(
 		}
 	}
 	qpwork.dw_aug.tail(qpmodel.n_in) = qpwork.active_part_z;
-
 }
 
 template <typename T>
@@ -448,7 +440,8 @@ T primal_dual_newton_semi_smooth(
 		CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
 
 		if (qpmodel.n_in > 0) {
-			qp::dense::linesearch::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
+			qp::dense::linesearch::primal_dual_ls(
+					qpmodel, qpresults, qpwork, qpsettings);
 		}
 		auto alpha = qpwork.alpha;
 
@@ -478,8 +471,7 @@ T primal_dual_newton_semi_smooth(
 		qpwork.dual_residual_scaled +=
 				alpha * (qpresults.rho * dx + Hdx + ATdy + CTdz);
 
-		err_in =
-				dense::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
+		err_in = dense::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
 
 		if (qpsettings.verbose) {
 			std::cout << "---it in " << iter << " projection norm " << err_in
@@ -501,8 +493,6 @@ void qp_solve( //
 		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork) {
-
-	using namespace ldlt::tags;
 
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
@@ -567,10 +557,10 @@ void qp_solve( //
 		if (qpsettings.eps_rel != 0) {
 			rhs_pri +=
 					qpsettings.eps_rel *
-					max2(
-							max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
-							max2(
-									max2(
+					std::max(
+							std::max(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
+							std::max(
+									std::max(
 											qpwork.primal_feasibility_rhs_1_eq,
 											qpwork.primal_feasibility_rhs_1_in_u),
 									qpwork.primal_feasibility_rhs_1_in_l));
@@ -581,9 +571,9 @@ void qp_solve( //
 		if (qpsettings.eps_rel != 0) {
 			rhs_dua +=
 					qpsettings.eps_rel *
-					max2(
-							max2(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
-							max2(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2));
+					std::max(
+							std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+							std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2));
 		}
 
 		bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
@@ -599,12 +589,12 @@ void qp_solve( //
 			std::cout << "qpsettings.eps_abs " << qpsettings.eps_abs
 								<< "  qpsettings.eps_rel *rhs "
 								<< qpsettings.eps_rel *
-											 max2(
-													 max2(
+											 std::max(
+													 std::max(
 															 primal_feasibility_eq_rhs_0,
 															 primal_feasibility_in_rhs_0),
-													 max2(
-															 max2(
+													 std::max(
+															 std::max(
 																	 qpwork.primal_feasibility_rhs_1_eq,
 																	 qpwork.primal_feasibility_rhs_1_in_u),
 															 qpwork.primal_feasibility_rhs_1_in_l))
@@ -670,10 +660,10 @@ void qp_solve( //
 				primal_feasibility_lhs_new <=
 				(qpsettings.eps_abs +
 		     qpsettings.eps_rel *
-		         max2(
-								 max2(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
-								 max2(
-										 max2(
+		         std::max(
+								 std::max(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0),
+								 std::max(
+										 std::max(
 												 qpwork.primal_feasibility_rhs_1_eq,
 												 qpwork.primal_feasibility_rhs_1_in_u),
 										 qpwork.primal_feasibility_rhs_1_in_l)));
@@ -694,9 +684,9 @@ void qp_solve( //
 					dual_feasibility_lhs_new <=
 					(qpsettings.eps_abs +
 			     qpsettings.eps_rel *
-			         max2(
-									 max2(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
-									 max2(
+			         std::max(
+									 std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+									 std::max(
 											 dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
 			if (is_dual_feasible) {
@@ -871,9 +861,8 @@ void QPsetup_generic( //
 				T(1),
 				qpmodel.dim + qpmodel.n_eq);
 
-		qpresults.x = qpwork.dw_aug.head(qpmodel.dim); 
-		qpresults.y = qpwork.dw_aug.segment(
-				qpmodel.dim, qpmodel.n_eq); 
+		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 		qpwork.dw_aug.setZero();
 	}
 

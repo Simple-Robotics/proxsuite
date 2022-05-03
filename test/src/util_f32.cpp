@@ -18,4 +18,4 @@ LDLT_EXPLICIT_TPL_DEF(3, sparse_positive_definite_rand<f32>);
 } // namespace ldlt_test
 
 LDLT_EXPLICIT_TPL_DEF(2, matmul_impl<long double>);
-LDLT_EXPLICIT_TPL_DEF(1, mat_cast<ldlt::f32, long double>);
+LDLT_EXPLICIT_TPL_DEF(1, mat_cast<qp::f32, long double>);

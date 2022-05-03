@@ -11,11 +11,7 @@
 #include <fstream>
 
 namespace qp {
-inline namespace tags {
-using namespace ldlt::tags;
-}
 namespace dense {
-
 namespace linesearch {
 
 template <typename T>

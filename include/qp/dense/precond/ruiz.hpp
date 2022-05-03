@@ -42,7 +42,7 @@ auto ruiz_scale_qp_in_place( //
 	static constexpr T machine_eps = std::numeric_limits<T>::epsilon();
 	/*
 	 * compute equilibration parameters and scale in place the qp following
-	 * algorithm 
+	 * algorithm
 	 *
 	 * modified: removed g in gamma computation
 	 */
@@ -59,10 +59,10 @@ auto ruiz_scale_qp_in_place( //
 
 	while (qp::dense::infty_norm((1 - delta.array()).matrix()) > epsilon) {
 		if (logger_ptr != nullptr) {
-			*logger_ptr                                     //
-					<< "j : "                                   //
-					<< iter                                     //
-					<< " ; error : "                            //
+			*logger_ptr                                                //
+					<< "j : "                                              //
+					<< iter                                                //
+					<< " ; error : "                                       //
 					<< qp::dense::infty_norm((1 - delta.array()).matrix()) //
 					<< "\n\n";
 		}
@@ -170,7 +170,7 @@ auto ruiz_scale_qp_in_place( //
 				for (isize j = 0; j < n; ++j) {
 					tmp += qp::dense::infty_norm(H.row(j).tail(n - j));
 				}
-				gamma = 1 / max2(tmp / T(n), T(1));
+				gamma = 1 / std::max(tmp / T(n), T(1));
 				break;
 			}
 			case Symmetry::lower: {
@@ -179,14 +179,15 @@ auto ruiz_scale_qp_in_place( //
 				for (isize j = 0; j < n; ++j) {
 					tmp += qp::dense::infty_norm(H.col(j).tail(n - j));
 				}
-				gamma = 1 / max2(tmp / T(n), T(1));
+				gamma = 1 / std::max(tmp / T(n), T(1));
 				break;
 			}
 			case Symmetry::general: {
 				// all matrix
 				gamma =
 						1 /
-						max2(T(1), (H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+						std::max(
+								T(1), (H.colwise().template lpNorm<Eigen::Infinity>()).mean());
 				break;
 			}
 			default:
@@ -255,8 +256,8 @@ struct RuizEquilibration {
 		delta.setOnes();
 		LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
 		c = detail::ruiz_scale_qp_in_place(
-				{ldlt::from_eigen, delta},
-				{ldlt::from_eigen, tmp_delta},
+				{qp::from_eigen, delta},
+				{qp::from_eigen, tmp_delta},
 				logger_ptr,
 				qp,
 				epsilon,

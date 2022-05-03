@@ -11,10 +11,6 @@
 #include <type_traits>
 
 namespace qp {
-inline namespace tags {
-using namespace ldlt::tags;
-}
-
 namespace dense {
 
 template <typename Derived>
@@ -87,7 +83,7 @@ void global_primal_residual(
 	primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
 	primal_feasibility_eq_lhs = infty_norm(qpwork.primal_residual_eq_scaled);
 	primal_feasibility_lhs =
-			max2(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
+			std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
 
 	qpwork.ruiz.scale_primal_residual_in_place_eq(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
