@@ -7,9 +7,7 @@
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <utility>
-#include <ldlt/views.hpp>
 #include <qp/dense/views.hpp>
-#include <ldlt/detail/meta.hpp>
 #include <map>
 
 using c_int = long long;
@@ -221,8 +219,10 @@ auto sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
 		}
 	}
 
-	H = ((H + H.transpose())*0.5).eval() ; // safe no aliasing : https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
-	//H.array() /= 2.;
+	H = ((H + H.transpose()) * 0.5)
+	        .eval(); // safe no aliasing :
+	                 // https://eigen.tuxfamily.org/dox/group__TopicAliasing.html
+	// H.array() /= 2.;
 	Vec<Scalar> eigh = H.template selfadjointView<Eigen::Upper>().eigenvalues();
 	Scalar min = eigh.minCoeff();
 	H.diagonal().array() += (rho + abs(min));
@@ -275,59 +275,7 @@ LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f64>);
 LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f64>);
 LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f64>);
 } // namespace rand
-using ldlt::detail::Duration;
-using ldlt::detail::Clock;
 using ldlt::usize;
-
-template <typename T>
-struct BenchResult {
-	Duration duration;
-	T result;
-};
-
-template <typename Fn>
-auto bench_for_n(usize n, Fn fn) -> BenchResult<decltype(fn())> {
-	auto begin = Clock::now();
-
-	auto result = fn();
-
-	for (usize i = 1; i < n; ++i) {
-		result = fn();
-	}
-
-	auto end = Clock::now();
-	return {
-			(end - begin) / n,
-			LDLT_FWD(result),
-	};
-}
-
-template <typename Fn>
-auto bench_for(Duration d, Fn fn) -> BenchResult<decltype(fn())> {
-	namespace time = std::chrono;
-	using DurationF64 = time::duration<double, std::ratio<1>>;
-
-	auto elapsed = Duration(0);
-	usize n_runs = 1;
-
-	while (true) {
-		auto res = ldlt_test::bench_for_n(n_runs, fn);
-		elapsed = res.duration;
-		if (elapsed > d) {
-			return res;
-		}
-
-		if ((elapsed * n_runs) > time::microseconds{100}) {
-			break;
-		}
-		n_runs *= 2;
-	}
-
-	auto d_f64 = time::duration_cast<DurationF64>(d);
-	auto elapsed_f64 = time::duration_cast<DurationF64>(elapsed);
-	double ratio = (d_f64 / elapsed_f64);
-	return ldlt_test::bench_for_n(usize(std::ceil(ratio)), fn);
-}
 
 namespace osqp {
 auto to_sparse(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
@@ -373,47 +321,27 @@ auto matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
 	return ::matmul(::matmul(a, b), c);
 }
 
-namespace ldlt {
-namespace detail {
-template <typename... Ts>
-using type_sequence = meta_::type_sequence<Ts...>*;
-
-template <typename T>
-struct type_list_ith_elem_impl;
-
-template <usize I, typename List>
-using typeseq_ith =
-		typename type_list_ith_elem_impl<List>::template ith_elem<I>;
-
-template <typename... Ts>
-struct type_list_ith_elem_impl<type_sequence<Ts...>> {
-	template <usize I>
-	using ith_elem = ith<I, Ts...>;
-};
-template <typename T, T Val>
-struct constant {
-	static constexpr T value = Val;
-};
-} // namespace detail
-} // namespace ldlt
-
-LDLT_DEFINE_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
-LDLT_DEFINE_TAG(random_unconstrained, RandomUnconstrained);
-LDLT_DEFINE_TAG(random_with_dim_and_neq_and_n_in, RandomWithDimNeqNin);
-LDLT_DEFINE_TAG(random_with_dim_and_n_in_and_box_constraints, RandomWithDimNinBoxConstraints);
-LDLT_DEFINE_TAG(random_with_dim_and_n_in_not_strongly_convex, RandomWithDimNinNotStronglyConvex);
-LDLT_DEFINE_TAG(random_with_dim_and_n_in_degenerate, RandomWithDimNinDegenerateStronglyConvex);
-
-
-LDLT_DEFINE_TAG(from_data, FromData);
+VEG_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
+VEG_TAG(random_unconstrained, RandomUnconstrained);
+VEG_TAG(random_with_dim_and_neq_and_n_in, RandomWithDimNeqNin);
+VEG_TAG(
+		random_with_dim_and_n_in_and_box_constraints,
+		RandomWithDimNinBoxConstraints);
+VEG_TAG(
+		random_with_dim_and_n_in_not_strongly_convex,
+		RandomWithDimNinNotStronglyConvex);
+VEG_TAG(
+		random_with_dim_and_n_in_degenerate,
+		RandomWithDimNinDegenerateStronglyConvex);
+VEG_TAG(from_data, FromData);
 template <typename Scalar>
 struct Qp {
 
 	enum { layout = Eigen::RowMajor };
 
-	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, layout>
-			MatrixType;
-	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1> VectorType;
+	using MatrixType =
+			Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, layout>;
+	using VectorType = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
 
 	MatrixType H;
 	VectorType g;
@@ -486,9 +414,14 @@ struct Qp {
 		b.noalias() = A * primal_solution;
 	}
 
-	Qp(RandomWithDimNeqNin /*tag*/, ldlt::isize dim, ldlt::isize n_eq, ldlt::isize n_in, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+	Qp(RandomWithDimNeqNin /*tag*/,
+	   ldlt::isize dim,
+	   ldlt::isize n_eq,
+	   ldlt::isize n_in,
+	   double sparsity_factor,
+	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim,strong_convexity_factor, sparsity_factor)),
+						dim, strong_convexity_factor, sparsity_factor)),
 				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						n_eq, dim, sparsity_factor)),
@@ -506,14 +439,17 @@ struct Qp {
 		}
 
 		u = C * x_sol + delta;
-		b = A * x_sol ;
+		b = A * x_sol;
 		l.setZero();
 		l.array() -= 1.e20;
 	}
 
-	Qp(RandomUnconstrained /*tag*/, ldlt::isize dim, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+	Qp(RandomUnconstrained /*tag*/,
+	   ldlt::isize dim,
+	   double sparsity_factor,
+	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim,strong_convexity_factor, sparsity_factor)),
+						dim, strong_convexity_factor, sparsity_factor)),
 				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
@@ -521,13 +457,14 @@ struct Qp {
 				C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
 				u(0),
-				l(0) {
+				l(0) {}
 
-	}
-
-	Qp(RandomWithDimNinBoxConstraints /*tag*/, ldlt::isize dim, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+	Qp(RandomWithDimNinBoxConstraints /*tag*/,
+	   ldlt::isize dim,
+	   double sparsity_factor,
+	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim,strong_convexity_factor, sparsity_factor)),
+						dim, strong_convexity_factor, sparsity_factor)),
 				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
@@ -542,15 +479,18 @@ struct Qp {
 		for (ldlt::isize i = 0; i < dim; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
-		C.setZero() ; 
+		C.setZero();
 		C.diagonal().array() += 1;
 		u = x_sol + delta;
-		l = x_sol - delta ;
+		l = x_sol - delta;
 	}
 
-	Qp(RandomWithDimNinNotStronglyConvex /*tag*/, ldlt::isize dim, ldlt::isize n_in, double sparsity_factor)
+	Qp(RandomWithDimNinNotStronglyConvex /*tag*/,
+	   ldlt::isize dim,
+	   ldlt::isize n_in,
+	   double sparsity_factor)
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim,Scalar(0), sparsity_factor)),
+						dim, Scalar(0), sparsity_factor)),
 				g(dim),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
@@ -567,34 +507,38 @@ struct Qp {
 		for (ldlt::isize i = 0; i < n_in; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
-		auto Cx =  C * x_sol;
+		auto Cx = C * x_sol;
 		u = Cx + delta;
-		b = A * x_sol ;
-		l = Cx - delta ;
-		g = -(H * x_sol + C.transpose() * z_sol) ; 
+		b = A * x_sol;
+		l = Cx - delta;
+		g = -(H * x_sol + C.transpose() * z_sol);
 	}
 
-	Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/, ldlt::isize dim, ldlt::isize n_in, double sparsity_factor,Scalar strong_convexity_factor = Scalar(1e-2))
+	Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/,
+	   ldlt::isize dim,
+	   ldlt::isize n_in,
+	   double sparsity_factor,
+	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
-						dim,strong_convexity_factor, sparsity_factor)),
+						dim, strong_convexity_factor, sparsity_factor)),
 				g(ldlt_test::rand::vector_rand<Scalar>(dim)),
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
 				b(0),
-				C(Mat<Scalar, ldlt::colmajor>(2*n_in, dim)),
-				u(2*n_in),
-				l(2*n_in) {
+				C(Mat<Scalar, ldlt::colmajor>(2 * n_in, dim)),
+				u(2 * n_in),
+				l(2 * n_in) {
 
 		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
-		auto delta = Vec<Scalar>(2*n_in);
+		auto delta = Vec<Scalar>(2 * n_in);
 
 		auto C_ = ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-						n_in, dim, sparsity_factor);
+				n_in, dim, sparsity_factor);
 		C.setZero();
-		C.block(0, 0, n_in, dim) = C_ ; 
+		C.block(0, 0, n_in, dim) = C_;
 		C.block(n_in, 0, n_in, dim) = C_;
 
-		for (ldlt::isize i = 0; i < 2*n_in; ++i) {
+		for (ldlt::isize i = 0; i < 2 * n_in; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
 		u = C * x_sol + delta;
@@ -631,8 +575,12 @@ struct EigenNoAlloc {
 	auto operator=(EigenNoAlloc const&) -> EigenNoAlloc& = delete;
 
 #if defined(EIGEN_RUNTIME_NO_MALLOC)
-	EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(false); }
-	~EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(true); }
+	EigenNoAlloc() noexcept {
+		Eigen::internal::set_is_malloc_allowed(false);
+	}
+	~EigenNoAlloc() noexcept {
+		Eigen::internal::set_is_malloc_allowed(true);
+	}
 #else
 	EigenNoAlloc() = default;
 #endif

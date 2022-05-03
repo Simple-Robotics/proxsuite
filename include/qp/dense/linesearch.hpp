@@ -1,7 +1,6 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
 
-#include "ldlt/views.hpp"
 #include "qp/dense/views.hpp"
 #include "qp/dense/Data.hpp"
 #include "qp/Results.hpp"
@@ -221,28 +220,28 @@ void primal_dual_ls(
 			alpha_ = -qpwork.primal_residual_in_scaled_up(i) /
 			         (qpwork.Cdx(i) + machine_eps);
 			if (alpha_ > machine_eps) {
-				qpwork.alphas.push_back(alpha_);
+				qpwork.alphas.push(alpha_);
 			}
 			alpha_ = -qpwork.primal_residual_in_scaled_low(i) /
 			         (qpwork.Cdx(i) + machine_eps);
 			if (alpha_ > machine_eps) {
-				qpwork.alphas.push_back(alpha_);
+				qpwork.alphas.push(alpha_);
 			}
 		}
 	}
 
-	isize n_alpha = qpwork.alphas.size();
+	isize n_alpha = qpwork.alphas.len();
 
 	// 1.2 sort the alphas
 
-	std::sort(qpwork.alphas.begin(), qpwork.alphas.begin() + n_alpha);
-	qpwork.alphas.erase(
-			std::unique( //
-					qpwork.alphas.begin(),
-					qpwork.alphas.begin() + n_alpha),
-			qpwork.alphas.begin() + n_alpha);
+	std::sort(qpwork.alphas.ptr_mut(), qpwork.alphas.ptr_mut() + n_alpha);
+	isize new_len = std::unique( //
+										 qpwork.alphas.ptr_mut(),
+										 qpwork.alphas.ptr_mut() + n_alpha) -
+	               qpwork.alphas.ptr_mut();
+	qpwork.alphas.resize(new_len);
 
-	n_alpha = qpwork.alphas.size();
+	n_alpha = qpwork.alphas.len();
 
 	if (n_alpha == 0 || qpwork.alphas[0] > 1) {
 		qpwork.alpha = 1;
@@ -276,9 +275,7 @@ void primal_dual_ls(
 		 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 		 * break the loop
 		 */
-		T gr = primal_dual_gradient_norm(
-							 qpmodel, qpresults, qpwork, alpha_)
-		           .grad;
+		T gr = primal_dual_gradient_norm(qpmodel, qpresults, qpwork, alpha_).grad;
 
 		if (gr < T(0)) {
 			alpha_last_neg = alpha_;
@@ -298,9 +295,9 @@ void primal_dual_ls(
 	 * "gradient_norm"
 	 */
 	if (alpha_last_neg == T(0)) {
-		last_neg_grad = primal_dual_gradient_norm(
-												qpmodel, qpresults, qpwork, alpha_last_neg)
-		                    .grad;
+		last_neg_grad =
+				primal_dual_gradient_norm(qpmodel, qpresults, qpwork, alpha_last_neg)
+						.grad;
 	}
 	if (alpha_first_pos == infty) {
 		/*

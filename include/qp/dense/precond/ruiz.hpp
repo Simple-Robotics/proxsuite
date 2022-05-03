@@ -1,10 +1,6 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
 
-#include "ldlt/detail/tags.hpp"
-#include "ldlt/detail/macros.hpp"
-#include "ldlt/views.hpp"
-#include "ldlt/detail/meta.hpp"
 #include "qp/dense/views.hpp"
 #include <dense-ldlt/core.hpp>
 #include <ostream>

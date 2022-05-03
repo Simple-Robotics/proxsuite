@@ -67,7 +67,7 @@ void global_primal_residual(
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
 		T& primal_feasibility_eq_lhs,
-		T& primal_feasibility_in_lhs){
+		T& primal_feasibility_in_lhs) {
 
 	qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
 	qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
@@ -136,8 +136,6 @@ void global_dual_residual(
 	qpwork.ruiz.scale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
 }
-
-
 
 } // namespace dense
 } // namespace qp

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
+#include <veg/vec.hpp>
 
 namespace qp {
 namespace sparse {

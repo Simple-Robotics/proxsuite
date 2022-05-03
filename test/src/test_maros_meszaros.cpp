@@ -2,7 +2,7 @@
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <fmt/core.h>
-#include <qp/proxqp/solver.hpp>
+#include <qp/dense/solver.hpp>
 
 using namespace qp;
 
@@ -109,12 +109,12 @@ TEST_CASE("maros meszaros wip") {
 			isize n_eq = A.rows();
 			isize n_in = C.rows();
 
-			QPSettings<T> settings;
+			Settings<T> settings;
 			settings.verbose = false;
 
-			QPData<T> data{n, n_eq, n_in};
-			QPResults<T> results{n, n_eq, n_in};
-			QPWorkspace<T> work{n, n_eq, n_in};
+			dense::Data<T> data{n, n_eq, n_in};
+			Results<T> results{n, n_eq, n_in};
+			dense::Workspace<T> work{n, n_eq, n_in};
 
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
@@ -122,17 +122,18 @@ TEST_CASE("maros meszaros wip") {
 			results.y.setZero();
 			results.z.setZero();
 
-			detail::QPsetup_dense<T>(
+			dense::QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results);
-			detail::qp_solve(settings, data, results, work);
+			dense::qp_solve(settings, data, results, work);
 			auto& x = results.x;
 			auto& y = results.y;
 			auto& z = results.z;
 			auto& eps = settings.eps_abs;
 
 			CHECK(
-					infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) < eps);
-			CHECK(infty_norm(A * x - b) > -eps);
+					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
+					eps);
+			CHECK(dense::infty_norm(A * x - b) > -eps);
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
 		}

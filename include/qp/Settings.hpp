@@ -2,10 +2,10 @@
 #define PROXSUITE_INCLUDE_QP_SETTINGS_HPP
 
 #include <Eigen/Core>
-#include "ldlt/views.hpp"
+#include <qp/dense/views.hpp>
 
 namespace qp {
-using ldlt::isize;
+using veg::isize;
 
 template <typename T>
 struct Settings {

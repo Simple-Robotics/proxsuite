@@ -1,9 +1,8 @@
 //#ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
 //#define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
-#pragma once 
+#pragma once
 
 #include <Eigen/Core>
-#include <ldlt/views.hpp>
 #include <dense-ldlt/ldlt.hpp>
 #include <veg/vec.hpp>
 #include <qp/dense/precond/ruiz.hpp>
@@ -71,7 +70,7 @@ public:
 	Vec Adx;
 
 	Vec active_part_z;
-	std::vector<T> alphas;
+	veg::Vec<T> alphas;
 
 	///// Newton variables
 	Vec dw_aug;
