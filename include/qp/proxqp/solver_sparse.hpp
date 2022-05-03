@@ -1217,10 +1217,7 @@ auto unscaled_primal_dual_residual(
 		T dual_feasibility_rhs_3,
 		P& precond,
 		QpView<T, I> qp,
-		sparse_ldlt::MatRef<T, I> H_scaled,
-		sparse_ldlt::MatRef<T, I> AT_scaled,
-		sparse_ldlt::MatRef<T, I> CT_scaled,
-		VecMap<T> g_scaled_e,
+		QpView<T, I> qp_scaled,
 		VecMap<T> x_e,
 		VecMap<T> y_e,
 		VecMap<T> z_e,
@@ -1228,11 +1225,11 @@ auto unscaled_primal_dual_residual(
 	isize n = x_e.rows();
 
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
-	dual_residual_scaled = g_scaled_e;
+	dual_residual_scaled = qp_scaled.g.to_eigen();
 
 	{
 		tmp.setZero();
-		detail::noalias_symhiv_add(tmp, H_scaled.to_eigen(), x_e);
+		detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
 		dual_residual_scaled += tmp;
 
 		precond.unscale_dual_residual_in_place({ldlt::from_eigen, tmp});
@@ -1245,7 +1242,7 @@ auto unscaled_primal_dual_residual(
 		primal_residual_eq_scaled.setZero();
 
 		detail::noalias_gevmmv_add(
-				primal_residual_eq_scaled, ATy, AT_scaled.to_eigen(), x_e, y_e);
+				primal_residual_eq_scaled, ATy, qp_scaled.AT.to_eigen(), x_e, y_e);
 
 		dual_residual_scaled += ATy;
 
@@ -1259,7 +1256,7 @@ auto unscaled_primal_dual_residual(
 		primal_residual_in_scaled_up.setZero();
 
 		detail::noalias_gevmmv_add(
-				primal_residual_in_scaled_up, CTz, CT_scaled.to_eigen(), x_e, z_e);
+				primal_residual_in_scaled_up, CTz, qp_scaled.CT.to_eigen(), x_e, z_e);
 
 		dual_residual_scaled += CTz;
 
@@ -1734,10 +1731,7 @@ void qp_solve(
 							dual_feasibility_rhs_3,
 							precond,
 							qp,
-							H_scaled.as_const(),
-							AT_scaled.as_const(),
-							CT_scaled.as_const(),
-							detail::vec(g_scaled_e),
+							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
 							detail::vec(z_e),
@@ -1896,8 +1890,8 @@ void qp_solve(
 					LDLT_TEMP_VEC(T, CTdz, n, stack);
 
 					detail::noalias_symhiv_add(Hdx, H_scaled_e, dx);
-          detail::noalias_gevmmv_add(Adx, ATdy, AT_scaled.to_eigen(), dx, dy);
-          detail::noalias_gevmmv_add(Cdx, CTdz, CT_scaled.to_eigen(), dx, dz);
+					detail::noalias_gevmmv_add(Adx, ATdy, AT_scaled.to_eigen(), dx, dy);
+					detail::noalias_gevmmv_add(Cdx, CTdz, CT_scaled.to_eigen(), dx, dz);
 
 					T alpha = 1;
 					// primal dual line search
@@ -2068,10 +2062,7 @@ void qp_solve(
 							dual_feasibility_rhs_3,
 							precond,
 							qp,
-							H_scaled.as_const(),
-							AT_scaled.as_const(),
-							CT_scaled.as_const(),
-							detail::vec(g_scaled_e),
+							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
 							detail::vec(z_e),
@@ -2116,15 +2107,12 @@ void qp_solve(
 							dual_feasibility_rhs_3,
 							precond,
 							qp,
-							H_scaled.as_const(),
-							AT_scaled.as_const(),
-							CT_scaled.as_const(),
-							detail::vec(g_scaled_e),
+							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
-      veg::unused(_);
+			veg::unused(_);
 
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
 			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //
