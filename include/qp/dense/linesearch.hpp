@@ -2,7 +2,7 @@
 #define PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
 
 #include "ldlt/views.hpp"
-#include "qp/dense/dense-views.hpp"
+#include "qp/dense/views.hpp"
 #include "qp/dense/Data.hpp"
 #include "qp/Results.hpp"
 #include "qp/dense/Workspace.hpp"

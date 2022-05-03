@@ -1,9 +1,9 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
 
-#include "qp/dense/dense-views.hpp"
+#include "qp/dense/views.hpp"
 #include "qp/dense/linesearch.hpp"
-#include "qp/dense/dense-utils.hpp"
+#include "qp/dense/utils.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>

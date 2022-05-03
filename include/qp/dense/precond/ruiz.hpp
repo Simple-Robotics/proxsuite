@@ -5,8 +5,7 @@
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/views.hpp"
 #include "ldlt/detail/meta.hpp"
-#include "qp/dense/dense-views.hpp"
-//#include "qp/dense/dense-utils.hpp"
+#include "qp/dense/views.hpp"
 #include <dense-ldlt/core.hpp>
 #include <ostream>
 

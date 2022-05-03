@@ -1,7 +1,7 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP
 
-#include "qp/dense/dense-views.hpp"
+#include "qp/dense/views.hpp"
 
 namespace qp {
 namespace dense{

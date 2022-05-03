@@ -1,7 +1,7 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
 
-#include "qp/dense/dense-views.hpp"
+#include "qp/dense/views.hpp"
 #include "qp/dense/Workspace.hpp"
 #include <qp/dense/Data.hpp>
 #include <qp/Results.hpp>
