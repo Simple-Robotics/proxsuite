@@ -1896,10 +1896,8 @@ void qp_solve(
 					LDLT_TEMP_VEC(T, CTdz, n, stack);
 
 					detail::noalias_symhiv_add(Hdx, H_scaled_e, dx);
-					Adx.noalias() += A_scaled_e * dx;
-					ATdy.noalias() += A_scaled_e.transpose() * dy;
-					Cdx.noalias() += C_scaled_e * dx;
-					CTdz.noalias() += C_scaled_e.transpose() * dz;
+          detail::noalias_gevmmv_add(Adx, ATdy, AT_scaled.to_eigen(), dx, dy);
+          detail::noalias_gevmmv_add(Cdx, CTdz, CT_scaled.to_eigen(), dx, dz);
 
 					T alpha = 1;
 					// primal dual line search
