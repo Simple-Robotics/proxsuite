@@ -1,13 +1,13 @@
-#ifndef INRIA_LDLT_QPData_HPP_VCVSK3EOS
-#define INRIA_LDLT_QPData_HPP_VCVSK3EOS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_DATA_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_DATA_HPP
 
 #include <Eigen/Core>
-//#include "ldlt/views.hpp"
 
 namespace qp {
 
+namespace dense {
 template <typename T>
-struct QPData {
+struct Data {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
     enum { layout = Eigen::RowMajor };
@@ -29,7 +29,7 @@ public:
     isize n_in;
     isize n_total;
 
-    QPData(isize _dim, isize _n_eq, isize _n_in):
+    Data(isize _dim, isize _n_eq, isize _n_in):
                     H(_dim, _dim),
                     g(_dim),
                     A(_n_eq,_dim),
@@ -53,6 +53,7 @@ public:
     }
 };
 
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_QPData_HPP_VCVSK3EOS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_DATA_HPP */

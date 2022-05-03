@@ -1,11 +1,11 @@
-#ifndef INRIA_LDLT_VIEWS_HPP_COA7NGHVS
-#define INRIA_LDLT_VIEWS_HPP_COA7NGHVS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
 
 #include "ldlt/views.hpp"
 
 namespace qp {
 
-namespace detail {
+namespace dense {
 
 struct EigenAllowAlloc {
 	bool alloc_was_allowed;
@@ -28,7 +28,7 @@ struct EigenAllowAlloc {
 };
 
 using namespace ldlt::detail;
-} // namespace detail
+
 using ldlt::Layout;
 using ldlt::i32;
 using ldlt::i64;
@@ -158,6 +158,7 @@ LDLT_DEFINE_NIEBLOID(fabs);
 LDLT_DEFINE_NIEBLOID(sqrt);
 LDLT_DEFINE_NIEBLOID(pow);
 LDLT_DEFINE_NIEBLOID(infty_norm);
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_VIEWS_HPP_COA7NGHVS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP */

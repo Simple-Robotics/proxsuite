@@ -8,7 +8,7 @@
 #include <Eigen/QR>
 #include <utility>
 #include <ldlt/views.hpp>
-#include <qp/views.hpp>
+#include <qp/dense/dense-views.hpp>
 #include <ldlt/detail/meta.hpp>
 #include <map>
 
@@ -602,7 +602,7 @@ struct Qp {
 		l.array() -= 1.e20;
 	}
 
-	auto as_view() -> qp::QpView<Scalar> {
+	auto as_view() -> qp::dense::QpView<Scalar> {
 		return {
 				{ldlt::from_eigen, H},
 				{ldlt::from_eigen, g},
@@ -612,7 +612,7 @@ struct Qp {
 				{ldlt::from_ptr_size, nullptr, 0},
 		};
 	}
-	auto as_mut() -> qp::QpViewMut<Scalar> {
+	auto as_mut() -> qp::dense::QpViewMut<Scalar> {
 		return {
 				{ldlt::from_eigen, H},
 				{ldlt::from_eigen, g},

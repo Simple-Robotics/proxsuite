@@ -1,13 +1,13 @@
-#ifndef INRIA_LDLT_QPResults_HPP_VCVSK3EOS
-#define INRIA_LDLT_QPResults_HPP_VCVSK3EOS
+#ifndef PROXSUITE_INCLUDE_QP_RESULTS_HPP
+#define PROXSUITE_INCLUDE_QP_RESULTS_HPP
 
 #include <Eigen/Core>
-//#include "ldlt/views.hpp"
 
 namespace qp {
+using ldlt::isize;
 
 template <typename T>
-struct QPResults {
+struct Results {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
@@ -36,7 +36,7 @@ public:
     T timing;
     T objValue;
 
-	QPResults( isize dim=0, isize n_eq=0, isize n_in=0)
+	Results( isize dim=0, isize n_eq=0, isize n_in=0)
 			: //
                 x(dim),
                 y(n_eq),
@@ -87,4 +87,4 @@ public:
 
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_QPResults_HPP_VCVSK3EOS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_RESULTS_HPP */

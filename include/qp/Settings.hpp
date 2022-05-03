@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_QPSettings_HPP_VCVSK3EOS
-#define INRIA_LDLT_QPSettings_HPP_VCVSK3EOS
+#ifndef PROXSUITE_INCLUDE_QP_SETTINGS_HPP
+#define PROXSUITE_INCLUDE_QP_SETTINGS_HPP
 
 #include <Eigen/Core>
 #include "ldlt/views.hpp"
@@ -7,10 +7,8 @@
 namespace qp {
 using ldlt::isize;
 
-enum struct InnerLoopSolvingMethod { pmm, pdal };
-
 template <typename T>
-struct QPSettings {
+struct Settings {
 public:
 	T alpha_bcl;
 	T beta_bcl;
@@ -43,7 +41,7 @@ public:
 	bool verbose;
 	bool warm_start;
 
-	QPSettings(
+	Settings(
 			T alpha_bcl_ = 0.1,
 			T beta_bcl_ = 0.9,
 			T refactor_dual_feasibility_threshold_ = 1e-2,
@@ -97,4 +95,4 @@ public:
 
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_QPSettings_HPP_VCVSK3EOS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_SETTINGS_HPP */

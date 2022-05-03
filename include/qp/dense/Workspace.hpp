@@ -1,16 +1,17 @@
-#ifndef INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
-#define INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS
+//#ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
+//#define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
+#pragma once 
 
 #include <Eigen/Core>
 #include <ldlt/views.hpp>
 #include <dense-ldlt/ldlt.hpp>
 #include <veg/vec.hpp>
-#include <qp/precond/ruiz.hpp>
+#include <qp/dense/precond/ruiz.hpp>
 
 namespace qp {
-
+namespace dense {
 template <typename T>
-struct QPWorkspace {
+struct Workspace {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	enum { layout = Eigen::RowMajor };
@@ -31,7 +32,7 @@ public:
 	using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 	///// Equilibrator
-	qp::preconditioner::RuizEquilibration<T> ruiz;
+	qp::dense::preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
 	dense_ldlt::Ldlt<T> ldl{};
@@ -98,9 +99,9 @@ public:
 
 	bool constraints_changed;
 
-	QPWorkspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
+	Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
-				ruiz(qp::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
+				ruiz(qp::dense::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
 				ldl{}, // old version with alloc
 				H_scaled(dim, dim),
 				g_scaled(dim),
@@ -230,7 +231,7 @@ public:
 		}
 	}
 };
-
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_OLD_NEW_QPWorkspace_HPP_VCVSK3EOS */
+//#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */
