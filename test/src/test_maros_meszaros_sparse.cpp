@@ -88,7 +88,7 @@ TEST_CASE("maros meszaros wip") {
 		isize n = qp_raw.P.rows();
 		isize n_eq_in = qp_raw.A.rows();
 
-		bool skip = false;
+		bool skip = (n > 1000 || n_eq_in > 1000);
 		::fmt::print(
 				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
 				qp_raw.filename,
@@ -130,8 +130,7 @@ TEST_CASE("maros meszaros wip") {
 					qp::sparse::preconditioner::Symmetry::UPPER,
 			};
 
-			QPSettings<T> settings;
-      settings.verbose = false;
+			Settings<T> settings;
 			settings.max_iter = 1.E6;
 			settings.mu_max_in = 1.E9;
 			settings.mu_max_eq = 1.E9;
@@ -157,10 +156,10 @@ TEST_CASE("maros meszaros wip") {
 			auto& eps = settings.eps_abs;
 
 			CHECK(
-					infty_norm(
+					qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
 					eps);
-			CHECK(infty_norm(AT.transpose() * x - b) <= eps);
+			CHECK(qp::dense::infty_norm(AT.transpose() * x - b) <= eps);
 			if (n_in > 0) {
 				CHECK((CT.transpose() * x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * x - u).maxCoeff() < eps);

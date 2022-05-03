@@ -6,16 +6,21 @@
 #include <sparse_ldlt/factorize.hpp>
 #include <sparse_ldlt/update.hpp>
 #include <sparse_ldlt/rowmod.hpp>
-#include <qp/views.hpp>
-#include <qp/QPSettings.hpp>
+#include <qp/dense/views.hpp>
+#include <qp/Settings.hpp>
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 
 namespace qp {
-using veg::isize;
-
 namespace sparse {
+using veg::isize;
+using veg::usize;
+using veg::i64;
+using dense::VectorView;
+using dense::VectorViewMut;
+using dense::infty_norm;
+
 template <typename T>
 struct PrimalDualGradResult {
 	T a;
@@ -1315,7 +1320,7 @@ void qp_solve(
 		VectorViewMut<T> y,
 		VectorViewMut<T> z,
 		QpWorkspace<T, I>& work,
-		QPSettings<T> const& settings,
+		Settings<T> const& settings,
 		P& precond,
 		QpView<T, I> qp) {
 
@@ -2121,6 +2126,7 @@ void qp_solve(
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
+      veg::unused(_);
 
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
 			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //

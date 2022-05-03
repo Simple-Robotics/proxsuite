@@ -121,7 +121,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 					qp::sparse::preconditioner::Symmetry::UPPER,
 			};
 
-			QPSettings<T> settings;
+			Settings<T> settings;
 			sparse::QpWorkspace<T, I> work;
 
 			Eigen::Matrix<T, -1, 1> x(n);

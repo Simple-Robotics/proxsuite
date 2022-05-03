@@ -8,7 +8,7 @@
 #include <Eigen/QR>
 #include <utility>
 #include <ldlt/views.hpp>
-#include <qp/dense/dense-views.hpp>
+#include <qp/dense/views.hpp>
 #include <ldlt/detail/meta.hpp>
 #include <map>
 
