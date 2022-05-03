@@ -251,7 +251,7 @@ INRIA LDLT decomposition
 	using namespace ldlt;
 	using namespace qp;
 	::pybind11::class_<qp::dense::Workspace<f64>>(m, "Workspace")
-			.def(::pybind11::init<i64, i64, i64&>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>()) // constructor
 	                                             // read-write public data member
 			.def_readwrite("H_scaled", &qp::dense::Workspace<f64>::H_scaled)
 			.def_readwrite("g_scaled", &qp::dense::Workspace<f64>::g_scaled)
@@ -316,7 +316,7 @@ INRIA LDLT decomposition
 			.def_readwrite("CTz", &qp::dense::Workspace<f64>::CTz);
 
 	::pybind11::class_<qp::Results<f64>>(m, "Results")
-			.def(::pybind11::init<i64, i64, i64&>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>()) // constructor
 	                                             // read-write public data member
 
 			.def_readwrite("x", &qp::Results<f64>::x)
@@ -375,7 +375,7 @@ INRIA LDLT decomposition
 			.def_readwrite("verbose", &qp::Settings<f64>::verbose);
 
 	::pybind11::class_<qp::dense::Data<f64>>(m, "Data")
-			.def(::pybind11::init<i64, i64, i64&>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>()) // constructor
 	                                             // read-write public data member
 
 			.def_readonly("H", &qp::dense::Data<f64>::H)
