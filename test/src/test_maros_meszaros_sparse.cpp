@@ -2,7 +2,7 @@
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <fmt/core.h>
-#include <qp/proxqp/solver_sparse.hpp>
+#include <qp/sparse/solver.hpp>
 
 using namespace qp;
 

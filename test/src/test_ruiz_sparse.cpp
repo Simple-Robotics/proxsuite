@@ -1,5 +1,5 @@
-#include <qp/proxqp/solver_sparse.hpp>
-#include <qp/precond/ruiz.hpp>
+#include <qp/sparse/solver.hpp>
+#include <qp/dense/precond/ruiz.hpp>
 #include <util.hpp>
 #include <doctest.h>
 #include <veg/util/dynstack_alloc.hpp>
@@ -45,7 +45,7 @@ TEST_CASE("upper part") {
 			10,
 			qp::sparse::preconditioner::Symmetry::UPPER,
 	};
-	qp::preconditioner::RuizEquilibration<T> ruiz_dense{
+  qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
 			n,
 			n_eq + n_in,
 			1e-3,
@@ -126,7 +126,7 @@ TEST_CASE("lower part") {
 			10,
 			qp::sparse::preconditioner::Symmetry::LOWER,
 	};
-	qp::preconditioner::RuizEquilibration<T> ruiz_dense{
+	qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
 			n,
 			n_eq + n_in,
 			1e-3,
