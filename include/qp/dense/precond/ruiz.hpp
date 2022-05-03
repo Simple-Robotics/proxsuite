@@ -1,11 +1,12 @@
-#ifndef INRIA_LDLT_RUIZ_HPP_XXCS7AMRS
-#define INRIA_LDLT_RUIZ_HPP_XXCS7AMRS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
 
 #include "ldlt/detail/tags.hpp"
 #include "ldlt/detail/macros.hpp"
 #include "ldlt/views.hpp"
 #include "ldlt/detail/meta.hpp"
-#include "qp/views.hpp"
+#include "qp/dense/dense-views.hpp"
+//#include "qp/dense/dense-utils.hpp"
 #include <dense-ldlt/core.hpp>
 #include <ostream>
 
@@ -19,7 +20,7 @@ enum struct Symmetry {
 	lower,
 	upper,
 };
-
+namespace dense {
 namespace detail {
 
 template <typename T>
@@ -27,7 +28,7 @@ auto ruiz_scale_qp_in_place( //
 		VectorViewMut<T> delta_,
 		VectorViewMut<T> tmp_delta_preallocated,
 		std::ostream* logger_ptr,
-		qp::QpViewBoxMut<T> qp,
+		qp::dense::QpViewBoxMut<T> qp,
 		T epsilon,
 		isize max_iter,
 		Symmetry sym) -> T {
@@ -61,13 +62,13 @@ auto ruiz_scale_qp_in_place( //
 
 	i64 iter = 1;
 
-	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
+	while (qp::dense::infty_norm((1 - delta.array()).matrix()) > epsilon) {
 		if (logger_ptr != nullptr) {
 			*logger_ptr                                     //
 					<< "j : "                                   //
 					<< iter                                     //
 					<< " ; error : "                            //
-					<< infty_norm((1 - delta.array()).matrix()) //
+					<< qp::dense::infty_norm((1 - delta.array()).matrix()) //
 					<< "\n\n";
 		}
 		if (iter == max_iter) {
@@ -82,29 +83,29 @@ auto ruiz_scale_qp_in_place( //
 				switch (sym) {
 				case Symmetry::upper: { // upper triangular part
 					delta(k) = T(1) / (sqrt(std::max({
-																 infty_norm(H.col(k).head(k)),
-																 infty_norm(H.row(k).tail(n - k)),
-																 infty_norm(A.col(k)),
-																 infty_norm(C.col(k)),
+																 qp::dense::infty_norm(H.col(k).head(k)),
+																 qp::dense::infty_norm(H.row(k).tail(n - k)),
+																 qp::dense::infty_norm(A.col(k)),
+																 qp::dense::infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::lower: { // lower triangular part
 					delta(k) = T(1) / (sqrt(std::max({
-																 infty_norm(H.row(k).head(k)),
-																 infty_norm(H.col(k).tail(n - k)),
-																 infty_norm(A.col(k)),
-																 infty_norm(C.col(k)),
+																 qp::dense::infty_norm(H.row(k).head(k)),
+																 qp::dense::infty_norm(H.col(k).tail(n - k)),
+																 qp::dense::infty_norm(A.col(k)),
+																 qp::dense::infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::general: {
 					delta(k) = T(1) / (sqrt(std::max({
-																 infty_norm(H.col(k)),
-																 infty_norm(A.col(k)),
-																 infty_norm(C.col(k)),
+																 qp::dense::infty_norm(H.col(k)),
+																 qp::dense::infty_norm(A.col(k)),
+																 qp::dense::infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 
@@ -114,11 +115,11 @@ auto ruiz_scale_qp_in_place( //
 			}
 
 			for (isize k = 0; k < n_eq; ++k) {
-				T aux = sqrt(infty_norm(A.row(k)));
+				T aux = sqrt(qp::dense::infty_norm(A.row(k)));
 				delta(n + k) = T(1) / (aux + machine_eps);
 			}
 			for (isize k = 0; k < n_in; ++k) {
-				T aux = sqrt(infty_norm(C.row(k)));
+				T aux = sqrt(qp::dense::infty_norm(C.row(k)));
 				delta(k + n + n_eq) = T(1) / (aux + machine_eps);
 			}
 		}
@@ -172,7 +173,7 @@ auto ruiz_scale_qp_in_place( //
 				// upper triangular part
 				T tmp = T(0);
 				for (isize j = 0; j < n; ++j) {
-					tmp += infty_norm(H.row(j).tail(n - j));
+					tmp += qp::dense::infty_norm(H.row(j).tail(n - j));
 				}
 				gamma = 1 / max2(tmp / T(n), T(1));
 				break;
@@ -181,7 +182,7 @@ auto ruiz_scale_qp_in_place( //
 				// lower triangular part
 				T tmp = T(0);
 				for (isize j = 0; j < n; ++j) {
-					tmp += infty_norm(H.col(j).tail(n - j));
+					tmp += qp::dense::infty_norm(H.col(j).tail(n - j));
 				}
 				gamma = 1 / max2(tmp / T(n), T(1));
 				break;
@@ -358,7 +359,7 @@ struct RuizEquilibration {
 };
 
 } // namespace preconditioner
-
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_RUIZ_HPP_XXCS7AMRS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP */

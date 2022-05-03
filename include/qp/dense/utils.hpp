@@ -1,10 +1,12 @@
-#ifndef INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
-#define INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
 
-#include "qp/views.hpp"
-#include <qp/QPWorkspace.hpp>
-#include <qp/QPData.hpp>
-#include <qp/QPResults.hpp>
+#include "qp/dense/dense-views.hpp"
+#include "qp/dense/Workspace.hpp"
+#include <qp/dense/Data.hpp>
+#include <qp/Results.hpp>
+#include <iostream>
+#include <fstream>
 #include <cmath>
 #include <type_traits>
 
@@ -13,7 +15,7 @@ inline namespace tags {
 using namespace ldlt::tags;
 }
 
-namespace detail {
+namespace dense {
 
 template <typename Derived>
 void save_data(
@@ -58,14 +60,14 @@ auto negative_part(T const& expr)
 
 template <typename T>
 void global_primal_residual(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const Data<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
 		T& primal_feasibility_eq_lhs,
-		T& primal_feasibility_in_lhs) {
+		T& primal_feasibility_in_lhs){
 
 	qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
 	qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
@@ -78,8 +80,8 @@ void global_primal_residual(
 	primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
 
 	qpwork.primal_residual_in_scaled_low =
-			detail::positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
-			detail::negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
+			positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
+			negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
 	qpwork.primal_residual_eq_scaled -= qpmodel.b;
 
 	primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
@@ -99,9 +101,9 @@ void global_primal_residual(
 // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 template <typename T>
 void global_dual_residual(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T& dual_feasibility_lhs,
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,
@@ -133,9 +135,11 @@ void global_dual_residual(
 
 	qpwork.ruiz.scale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
-};
+}
 
-} // namespace detail
+
+
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_UTILS_SOLVER_HPP_HDWGZKCLS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP */

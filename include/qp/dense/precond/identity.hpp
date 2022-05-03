@@ -1,9 +1,10 @@
-#ifndef INRIA_LDLT_IDENTITY_HPP_V2BH4W5SS
-#define INRIA_LDLT_IDENTITY_HPP_V2BH4W5SS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP
 
-#include "qp/views.hpp"
+#include "qp/dense/dense-views.hpp"
 
 namespace qp {
+namespace dense{
 namespace preconditioner {
 struct IdentityPrecond {
 	template <typename T>
@@ -38,6 +39,7 @@ struct IdentityPrecond {
 	void unscale_dual_residual_in_place(VectorViewMut<T> /*y*/) const noexcept {}
 };
 } // namespace preconditioner
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_IDENTITY_HPP_V2BH4W5SS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP */

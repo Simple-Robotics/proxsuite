@@ -1,6 +1,0 @@
-module qp {
-  header "views.hpp"
-  header "precond/ruiz.hpp"
-  header "eq_solver.hpp"
-  export *
-}

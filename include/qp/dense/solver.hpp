@@ -1,9 +1,9 @@
-#ifndef INRIA_LDLT_OLD_NEW_SOLVER_HPP_HDWGZKCLS
-#define INRIA_LDLT_OLD_NEW_SOLVER_HPP_HDWGZKCLS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
 
-#include "qp/views.hpp"
-#include "qp/proxqp/line_search.hpp"
-#include "qp/utils.hpp"
+#include "qp/dense/dense-views.hpp"
+#include "qp/dense/linesearch.hpp"
+#include "qp/dense/dense-utils.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>
@@ -17,13 +17,13 @@ inline namespace tags {
 using namespace ldlt::tags;
 }
 
-namespace detail {
+namespace dense {
 
 template <typename T>
 void refactorize(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T rho_new) {
 
 	if (!qpwork.constraints_changed && rho_new == qpresults.rho) {
@@ -64,9 +64,9 @@ void refactorize(
 
 template <typename T>
 void mu_update(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T mu_eq_new_inv,
 		T mu_in_new_inv) {
 	veg::dynstack::DynStackMut stack{
@@ -103,9 +103,9 @@ void mu_update(
 
 template <typename T>
 void iterative_residual(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		isize inner_pb_dim) {
 
 	qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
@@ -142,10 +142,10 @@ void iterative_residual(
 
 template <typename T>
 void iterative_solve_with_permut_fact( //
-		const qp::QPSettings<T>& qpsettings,
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::Settings<T>& qpsettings,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T eps,
 		isize inner_pb_dim) {
 
@@ -158,13 +158,13 @@ void iterative_solve_with_permut_fact( //
 			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 	qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-	qp::detail::iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+	iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
 
 	++it;
 	T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
 	if (qpsettings.verbose) {
 		std::cout << "infty_norm(res) "
-							<< qp::infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
+							<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 	}
 	while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
@@ -177,7 +177,7 @@ void iterative_solve_with_permut_fact( //
 		qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
 		qpwork.err.head(inner_pb_dim).setZero();
-		qp::detail::iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+		iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
 
 		if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
 			it_stability += 1;
@@ -192,7 +192,7 @@ void iterative_solve_with_permut_fact( //
 
 		if (qpsettings.verbose) {
 			std::cout << "infty_norm(res) "
-								<< qp::infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
+								<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 		}
 	}
 
@@ -205,13 +205,13 @@ void iterative_solve_with_permut_fact( //
 		qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
 		qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-		qp::detail::iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+		iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
 
 		preverr = infty_norm(qpwork.err.head(inner_pb_dim));
 		++it;
 		if (qpsettings.verbose) {
 			std::cout << "infty_norm(res) "
-								<< qp::infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
+								<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 		}
 		while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
@@ -223,7 +223,7 @@ void iterative_solve_with_permut_fact( //
 			qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
 			qpwork.err.head(inner_pb_dim).setZero();
-			qp::detail::iterative_residual<T>(
+			iterative_residual<T>(
 					qpmodel, qpresults, qpwork, inner_pb_dim);
 
 			if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
@@ -239,7 +239,7 @@ void iterative_solve_with_permut_fact( //
 
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(res) "
-									<< qp::infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
+									<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 			}
 		}
 	}
@@ -248,10 +248,10 @@ void iterative_solve_with_permut_fact( //
 
 template <typename T>
 void bcl_update(
-		const qp::QPSettings<T>& qpsettings,
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::Settings<T>& qpsettings,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T& primal_feasibility_lhs_new,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
@@ -298,13 +298,13 @@ void bcl_update(
 
 template <typename T>
 auto compute_inner_loop_saddle_point(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork) -> T {
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork) -> T {
 
 	qpwork.active_part_z =
-			qp::detail::positive_part(qpwork.primal_residual_in_scaled_up) +
-			qp::detail::negative_part(qpwork.primal_residual_in_scaled_low) -
+			qp::dense::positive_part(qpwork.primal_residual_in_scaled_up) +
+			qp::dense::negative_part(qpwork.primal_residual_in_scaled_low) -
 			qpresults.z * qpresults.mu_in_inv; // contains now : [Cx-u+z_prev/mu_in]+
 	                                       // + [Cx-l+z_prev/mu_in]- - z/mu_in
 
@@ -325,10 +325,10 @@ auto compute_inner_loop_saddle_point(
 
 template <typename T>
 void primal_dual_semi_smooth_newton_step(
-		const qp::QPSettings<T>& qpsettings,
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::Settings<T>& qpsettings,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T eps) {
 
 	/* MUST BE
@@ -349,7 +349,7 @@ void primal_dual_semi_smooth_newton_step(
 	qpwork.rhs.setZero();
 	qpwork.dw_aug.setZero();
 
-	qp::line_search::active_set_change(qpmodel, qpresults, qpwork);
+	qp::dense::linesearch::active_set_change(qpmodel, qpresults, qpwork);
 
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
 
@@ -397,10 +397,10 @@ void primal_dual_semi_smooth_newton_step(
 
 template <typename T>
 T primal_dual_newton_semi_smooth(
-		const qp::QPSettings<T>& qpsettings,
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::Settings<T>& qpsettings,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T eps_int) {
 
 	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
@@ -418,7 +418,7 @@ T primal_dual_newton_semi_smooth(
 			qpresults.n_tot += qpsettings.max_iter_in;
 			break;
 		}
-		qp::detail::primal_dual_semi_smooth_newton_step<T>(
+		primal_dual_semi_smooth_newton_step<T>(
 				qpsettings, qpmodel, qpresults, qpwork, eps_int);
 
 		veg::dynstack::DynStackMut stack{
@@ -448,7 +448,7 @@ T primal_dual_newton_semi_smooth(
 		CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
 
 		if (qpmodel.n_in > 0) {
-			qp::line_search::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
+			qp::dense::linesearch::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
 		}
 		auto alpha = qpwork.alpha;
 
@@ -479,7 +479,7 @@ T primal_dual_newton_semi_smooth(
 				alpha * (qpresults.rho * dx + Hdx + ATdy + CTdz);
 
 		err_in =
-				detail::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
+				dense::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
 
 		if (qpsettings.verbose) {
 			std::cout << "---it in " << iter << " projection norm " << err_in
@@ -497,10 +497,10 @@ T primal_dual_newton_semi_smooth(
 
 template <typename T>
 void qp_solve( //
-		const qp::QPSettings<T>& qpsettings,
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork) {
+		const qp::Settings<T>& qpsettings,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork) {
 
 	using namespace ldlt::tags;
 
@@ -539,7 +539,7 @@ void qp_solve( //
 		// compute primal residual
 
 		// PERF: fuse matrix product computations in global_{primal, dual}_residual
-		qp::detail::global_primal_residual(
+		qp::dense::global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -549,7 +549,7 @@ void qp_solve( //
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs);
 
-		qp::detail::global_dual_residual(
+		qp::dense::global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -648,7 +648,7 @@ void qp_solve( //
 		qpwork.primal_residual_in_scaled_low -=
 				qpwork.l_scaled; // contains now scaled(Cx-l+z_prev/mu_in)
 
-		T err_in = qp::detail::primal_dual_newton_semi_smooth(
+		T err_in = primal_dual_newton_semi_smooth(
 				qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
 		if (qpsettings.verbose) {
 			std::cout << " inner loop residual : " << err_in << std::endl;
@@ -656,7 +656,7 @@ void qp_solve( //
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
-		qp::detail::global_primal_residual(
+		qp::dense::global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -681,7 +681,7 @@ void qp_solve( //
 		if (is_primal_feasible) {
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-			qp::detail::global_dual_residual(
+			qp::dense::global_dual_residual(
 					qpmodel,
 					qpresults,
 					qpwork,
@@ -727,7 +727,7 @@ void qp_solve( //
 
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-		qp::detail::global_dual_residual(
+		qp::dense::global_dual_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -802,10 +802,10 @@ void QPsetup_generic( //
 		Mat const& C,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::QPSettings<T>& QPSettings,
-		qp::QPData<T>& qpmodel,
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults) {
+		qp::Settings<T>& qpsettings,
+		qp::dense::Data<T>& qpmodel,
+		qp::dense::Workspace<T>& qpwork,
+		qp::Results<T>& qpresults) {
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
@@ -826,7 +826,7 @@ void QPsetup_generic( //
 	qpwork.u_scaled = qpmodel.u;
 	qpwork.l_scaled = qpmodel.l;
 
-	qp::QpViewBoxMut<T> qp_scaled{
+	qp::dense::QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
 			{from_eigen, qpwork.g_scaled},
 			{from_eigen, qpwork.A_scaled},
@@ -849,30 +849,30 @@ void QPsetup_generic( //
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			QPResults.rho;
+			qpresults.rho;
 	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
 			qpwork.A_scaled.transpose();
 	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
 	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
 	qpwork.kkt.diagonal()
 			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-QPResults.mu_eq_inv);
+			.setConstant(-qpresults.mu_eq_inv);
 
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
-	if (!QPSettings.warm_start) {
+	if (!qpsettings.warm_start) {
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-		qp::detail::iterative_solve_with_permut_fact( //
-				QPSettings,
+		iterative_solve_with_permut_fact( //
+				qpsettings,
 				qpmodel,
-				QPResults,
+				qpresults,
 				qpwork,
 				T(1),
 				qpmodel.dim + qpmodel.n_eq);
 
-		QPResults.x = qpwork.dw_aug.head(qpmodel.dim); 
-		QPResults.y = qpwork.dw_aug.segment(
+		qpresults.x = qpwork.dw_aug.head(qpmodel.dim); 
+		qpresults.y = qpwork.dw_aug.segment(
 				qpmodel.dim, qpmodel.n_eq); 
 		qpwork.dw_aug.setZero();
 	}
@@ -889,14 +889,14 @@ void QPsetup_dense( //
 		MatRef<T> C,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::QPSettings<T>& QPSettings,
-		qp::QPData<T>& qpmodel,
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults
+		qp::Settings<T>& qpsettings,
+		qp::dense::Data<T>& qpmodel,
+		qp::dense::Workspace<T>& qpwork,
+		qp::Results<T>& qpresults
 
 ) {
-	detail::QPsetup_generic(
-			H, g, A, b, C, u, l, QPSettings, qpmodel, qpwork, QPResults);
+	dense::QPsetup_generic(
+			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
 
 template <typename T>
@@ -908,16 +908,16 @@ void QPsetup( //
 		const SparseMat<T>& C,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::QPSettings<T>& QPSettings,
-		qp::QPData<T>& qpmodel,
-		qp::QPWorkspace<T>& qpwork,
-		qp::QPResults<T>& QPResults) {
-	detail::QPsetup_generic(
-			H, g, A, b, C, u, l, QPSettings, qpmodel, qpwork, QPResults);
+		qp::Settings<T>& qpsettings,
+		qp::dense::Data<T>& qpmodel,
+		qp::dense::Workspace<T>& qpwork,
+		qp::Results<T>& qpresults) {
+	dense::QPsetup_generic(
+			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
 
-} // namespace detail
+} // namespace dense
 
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_OLD_NEW_SOLVER_HPP_HDWGZKCLS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP */

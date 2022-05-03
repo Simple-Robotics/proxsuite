@@ -1,12 +1,12 @@
-#ifndef INRIA_LDLT_OLD_NEW_LINE_SEARCH_HPP_2TUXO5DFS
-#define INRIA_LDLT_OLD_NEW_LINE_SEARCH_HPP_2TUXO5DFS
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
 
 #include "ldlt/views.hpp"
-#include "qp/views.hpp"
-#include "qp/QPData.hpp"
-#include "qp/QPResults.hpp"
-#include "qp/QPWorkspace.hpp"
-#include "qp/QPSettings.hpp"
+#include "qp/dense/dense-views.hpp"
+#include "qp/dense/Data.hpp"
+#include "qp/Results.hpp"
+#include "qp/dense/Workspace.hpp"
+#include "qp/Settings.hpp"
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -15,7 +15,9 @@ namespace qp {
 inline namespace tags {
 using namespace ldlt::tags;
 }
-namespace line_search {
+namespace dense {
+
+namespace linesearch {
 
 template <typename T>
 struct PrimalDualGradResult {
@@ -27,9 +29,9 @@ struct PrimalDualGradResult {
 
 template <typename T>
 auto primal_dual_gradient_norm(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
 		T alpha) -> PrimalDualGradResult<T> {
 
 	/*
@@ -154,14 +156,13 @@ auto primal_dual_gradient_norm(
 
 template <typename T>
 void primal_dual_ls(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		qp::QPWorkspace<T>& qpwork,
-		const qp::QPSettings<T>& qpsettings) {
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		qp::dense::Workspace<T>& qpwork,
+		const qp::Settings<T>& qpsettings) {
 
 	/*
-	 * The function follows the algorithm designed by qpalm
-	 * (see algorithm 2 : https://arxiv.org/pdf/1911.02934.pdf)
+	 * The function follows the algorithm
 	 *
 	 * To do so it does the following step
 	 * 1/
@@ -275,7 +276,7 @@ void primal_dual_ls(
 		 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 		 * break the loop
 		 */
-		T gr = line_search::primal_dual_gradient_norm(
+		T gr = primal_dual_gradient_norm(
 							 qpmodel, qpresults, qpwork, alpha_)
 		           .grad;
 
@@ -297,7 +298,7 @@ void primal_dual_ls(
 	 * "gradient_norm"
 	 */
 	if (alpha_last_neg == T(0)) {
-		last_neg_grad = line_search::primal_dual_gradient_norm(
+		last_neg_grad = primal_dual_gradient_norm(
 												qpmodel, qpresults, qpwork, alpha_last_neg)
 		                    .grad;
 	}
@@ -307,7 +308,7 @@ void primal_dual_ls(
 		 * the optimal alpha is within the interval
 		 * [last_alpha_neg, +∞)
 		 */
-		PrimalDualGradResult<T> res = line_search::primal_dual_gradient_norm(
+		PrimalDualGradResult<T> res = primal_dual_gradient_norm(
 				qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
 		auto& a = res.a;
 		auto& b = res.b;
@@ -330,9 +331,9 @@ void primal_dual_ls(
 
 template <typename T>
 void active_set_change(
-		const qp::QPData<T>& qpmodel,
-		qp::QPResults<T>& qpresults,
-		QPWorkspace<T>& qpwork) {
+		const qp::dense::Data<T>& qpmodel,
+		qp::Results<T>& qpresults,
+		Workspace<T>& qpwork) {
 
 	/*
 	 * arguments
@@ -478,7 +479,8 @@ void active_set_change(
 	qpwork.dw_aug.setZero();
 }
 
-} // namespace line_search
+} // namespace linesearch
+} // namespace dense
 } // namespace qp
 
-#endif /* end of include guard INRIA_LDLT_OLD_NEW_LINE_SEARCH_HPP_2TUXO5DFS */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP */
