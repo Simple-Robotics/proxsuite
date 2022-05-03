@@ -34,14 +34,14 @@ auto primal_dual_gradient_norm(
 	 * lagrangian of the problem at outer step k and inner step l
 	 *
 	 * phi(alpha) = f(x_l+alpha dx) + rho/2 |x_l + alpha dx - x_k|**2
-	 *              + mu_eq/2 (|A(x_l+alpha dx)-d+y_k/mu_eq|**2)
-	 *              + mu_eq * nu /2 (|A(x_l+alpha dx)-d+y_k/mu_eq - (y_l+alpha dy)
+	 *              + mu_eq_inv/2 (|A(x_l+alpha dx)-d+y_k * mu_eq|**2)
+	 *              + mu_eq_inv * nu /2 (|A(x_l+alpha dx)-d+y_k * mu_eq - (y_l+alpha dy)
 	 * |**2)
-	 *              + mu_in/2 ( | [C(x_l+alpha dx) - u + z_k/mu_in]_+ |**2
-	 *                         +| [C(x_l+alpha dx) - l + z_k/mu_in]_- |**2
+	 *              + mu_in_inv/2 ( | [C(x_l+alpha dx) - u + z_k * mu_in]_+ |**2
+	 *                         +| [C(x_l+alpha dx) - l + z_k * mu_in]_- |**2
 	 *                         )
-	 * 				+ mu_in * nu / 2 ( | [C(x_l+alpha dx) - u + z_k/mu_in]_+ +
-	 * [C(x_l+alpha dx) - l + z_k/mu_in]_- - (z+alpha dz)/mu_in |**2 with f(x) =
+	 * 				+ mu_in_inv * nu / 2 ( | [C(x_l+alpha dx) - u + z_k * mu_in]_+ +
+	 * [C(x_l+alpha dx) - l + z_k * mu_in]_- - (z+alpha dz) * mu_in |**2 with f(x) =
 	 * 0.5 * x^THx + g^Tx phi is a second order polynomial in alpha. Below are
 	 * computed its coefficient a0 and b0 in order to compute the desired gradient
 	 * a0 * alpha + b0
@@ -53,43 +53,42 @@ auto primal_dual_gradient_norm(
 			qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
 
 	T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
-	    qpresults.mu_eq * (qpwork.Adx).squaredNorm() +
+	    qpresults.mu_eq_inv * (qpwork.Adx).squaredNorm() +
 	    qpresults.rho *
 	        qpwork.dw_aug.head(qpmodel.dim)
 	            .squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho *
-	                             // norm(dx)**2 + (mu_eq) * norm(Adx)**2
+	                             // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2
 
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.Adx -
-			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.mu_eq_inv;
+			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.mu_eq;
 	a += qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).squaredNorm() *
-	     qpresults.mu_eq *
-	     qpresults
-	         .nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
-	              // (mu_eq) * norm(Adx)**2 + nu*mu_eq * norm(Adx-dy*mu_eq_inv)**2
+	     qpresults.mu_eq_inv *
+	     qpresults.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
+	              // (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2
 	qpwork.err.head(qpmodel.dim) =
 			qpresults.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
 	T b(qpresults.x.dot(qpwork.Hdx) +
 	    (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
-	    qpresults.mu_eq *
+	    qpresults.mu_eq_inv *
 	        (qpwork.Adx)
 	            .dot(
 									qpwork.primal_residual_eq_scaled +
 									qpresults.y *
-											qpresults.mu_eq_inv)); // contains now: b =
+											qpresults.mu_eq)); // contains now: b =
 	                                           // dx.dot(H.dot(x) +
 	                                           // rho*(x-xe) +  g)  +
-	                                           // mu_eq * Adx.dot(res_eq)
+	                                           // mu_eq_inv * Adx.dot(res_eq)
 
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.primal_residual_eq_scaled;
-	b += qpresults.nu * qpresults.mu_eq *
+	b += qpresults.nu * qpresults.mu_eq_inv *
 	     qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
 	         .dot(qpwork.rhs.segment(
 							 qpmodel.dim,
 							 qpmodel.n_eq)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe)
-	                             // +  g)  + mu_eq * Adx.dot(res_eq) + nu*mu_eq *
-	                             // (Adx-dy*mu_eq_inv).dot(res_eq-y*mu_eq_inv)
+	                             // +  g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+	                             // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
 
 	// derive Cdx_act
 	qpwork.err.tail(qpmodel.n_in) =
@@ -99,11 +98,11 @@ auto primal_dual_gradient_norm(
 							qpwork.Cdx,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	a += qpresults.mu_in *
+	a += qpresults.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in)
 	         .squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho *
-	                         // norm(dx)**2 + (mu_eq) * norm(Adx)**2 + nu*mu_eq *
-	                         // norm(Adx-dy*mu_eq_inv)**2 + mu_in *
+	                         // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv *
+	                         // norm(Adx-dy*mu_eq)**2 + mu_in *
 	                         // norm(Cdx_act)**2
 
 	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
@@ -117,29 +116,29 @@ auto primal_dual_gradient_norm(
 							qpwork.primal_residual_in_scaled_low,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	b += qpresults.mu_in *
+	b += qpresults.mu_in_inv *
 	     qpwork.active_part_z.dot(qpwork.err.tail(
 					 qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +
-	                         // g)  + mu_eq * Adx.dot(res_eq) + nu*mu_eq *
-	                         // (Adx-dy*mu_eq_inv).dot(res_eq-y*mu_eq_inv) + mu_in
-	                         // * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--)
+	                         // g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+	                         // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in
+	                         // * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze*mu_in]--)
 
-	// derive Cdx_act - dz/mu_in
+	// derive Cdx_act - dz*mu_in
 	qpwork.err.tail(qpmodel.n_in) -=
-			qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.mu_in_inv;
-	// derive [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]-- -z/mu_in
-	qpwork.active_part_z -= qpresults.z * qpresults.mu_in_inv;
+			qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.mu_in;
+	// derive [Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]-- -z*mu_in
+	qpwork.active_part_z -= qpresults.z * qpresults.mu_in;
 
-	// contains now a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (1./mu_eq) *
-	// norm(Adx)**2 + nu/mu_eq * norm(Adx-dy*mu_eq)**2 + 1./mu_in *
-	// norm(Cdx_act)**2 + nu/mu_in * norm(Cdx_act-dz/mu_in)**2
-	a += qpresults.nu * qpresults.mu_in *
+	// contains now a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (mu_eq_inv) *
+	// norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2 + mu_in_inv *
+	// norm(Cdx_act)**2 + nu*mu_in_inv * norm(Cdx_act-dz*mu_in)**2
+	a += qpresults.nu * qpresults.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in).squaredNorm();
-	// contains now b =  dx.dot(H.dot(x) + rho*(x-xe) +  g)  + 1./mu_eq *
-	// Adx.dot(res_eq) + nu/mu_eq * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + 1./mu_in
-	// * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--) + nu/mu_in
-	// (Cdx_act-dz/mu_in).dot([Cx-u+ze/mu]_+ + [Cx-l+ze/mu]-- - z/mu_in)
-	b += qpresults.nu * qpresults.mu_in *
+	// contains now b =  dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq_inv *
+	// Adx.dot(res_eq) + nu*mu_eq_inv * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in_inv
+	// * Cdx_act.dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]--) + nu*mu_in_inv
+	// (Cdx_act-dz*mu_in).dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]-- - z*mu_in)
+	b += qpresults.nu * qpresults.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in).dot(qpwork.active_part_z);
 
 	return {
@@ -332,8 +331,8 @@ void active_set_change(
 	 * arguments
 	 * 1/ new_active_set : a vector which contains new active set of the
 	 * problem, namely if
-	 * new_active_set_u = Cx_k-u +z_k/mu_in>= 0
-	 * new_active_set_l = Cx_k-l +z_k/mu_in<=
+	 * new_active_set_u = Cx_k-u +z_k*mu_in>= 0
+	 * new_active_set_l = Cx_k-l +z_k*mu_in<=
 	 * then new_active_set = new_active_set_u OR new_active_set_
 	 *
 	 * 2/ current_bijection_map : a vector for which each entry corresponds to
@@ -392,7 +391,6 @@ void active_set_change(
 		isize* planned_to_delete = _planned_to_delete.ptr_mut();
 		isize planned_to_delete_count = 0;
 
-		T mu_in_inv_neg = -qpresults.mu_in_inv;
 		for (isize i = 0; i < qpmodel.n_in; i++) {
 			if (qpwork.current_bijection_map(i) < qpresults.n_c) {
 				if (!qpwork.active_inequalities(i)) {
@@ -427,7 +425,7 @@ void active_set_change(
 		auto planned_to_add = _planned_to_add.ptr_mut();
 
 		isize planned_to_add_count = 0;
-
+		T mu_in_neg = -qpresults.mu_in;
 		isize n_c = n_c_f;
 		for (isize i = 0; i < qpmodel.n_in; i++) {
 			if (qpwork.active_inequalities(i)) {
@@ -458,7 +456,7 @@ void active_set_change(
 				auto col = new_cols.col(k);
 				col.head(n) = (qpwork.C_scaled.row(index));
 				col.tail(n_eq + n_c_f).setZero();
-				col[n + n_eq + n_c + k] = -qpresults.mu_in_inv;
+				col[n + n_eq + n_c + k] = mu_in_neg;
 			}
 			qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
 		}

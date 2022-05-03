@@ -33,8 +33,6 @@ public:
 	isize max_iter_in;
 	T eps_abs;
 	T eps_rel;
-	T eps_IG;
-	T R;
 	T eps_refact;
 	isize nb_iterative_refinement;
 
@@ -46,20 +44,18 @@ public:
 			T beta_bcl_ = 0.9,
 			T refactor_dual_feasibility_threshold_ = 1e-2,
 			T refactor_rho_threshold_ = 1e-7,
-			T mu_max_eq_ = 1e9,
-			T mu_max_in_ = 1e8,
-			T mu_max_eq_inv_ = 1e-9,
-			T mu_max_in_inv_ = 1e-8,
-			T mu_update_factor_ = 10,
-			T mu_update_inv_factor_ = 0.1,
-			T cold_reset_mu_eq_ = 1.1,
-			T cold_reset_mu_in_ = 1.1,
-			T cold_reset_mu_eq_inv_ = 1. / 1.1,
-			T cold_reset_mu_in_inv_ = 1. / 1.1,
+			T mu_max_eq_ = 1e-9,
+			T mu_max_in_ = 1e-8,
+			T mu_max_eq_inv_ = 1e9,
+			T mu_max_in_inv_ = 1e8,
+			T mu_update_factor_ = 0.1,
+			T mu_update_inv_factor_ = 10,
+			T cold_reset_mu_eq_ = 1./1.1,
+			T cold_reset_mu_in_ = 1./1.1,
+			T cold_reset_mu_eq_inv_ = 1.1,
+			T cold_reset_mu_in_inv_ = 1.1,
 			T eps_abs_ = 1.e-9,
 			T eps_rel_ = 0.,
-			T err_IG_ = 1.e-2,
-			T r = 5.,
 			isize max_iter_ = 10000,
 			isize max_iter_in_ = 1500,
 			isize nb_iterative_refinement_ = 10,
@@ -85,8 +81,6 @@ public:
 				max_iter_in(max_iter_in_),
 				eps_abs(eps_abs_),
 				eps_rel(eps_rel_),
-				eps_IG(err_IG_),
-				R(r),
 				eps_refact(eps_refact_),
 				nb_iterative_refinement(nb_iterative_refinement_),
 				verbose(VERBOSE),

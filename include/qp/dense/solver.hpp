@@ -28,7 +28,7 @@ void refactorize(
 	qpwork.dw_aug.setZero();
 	qpwork.kkt.diagonal().head(qpmodel.dim).array() += rho_new - qpresults.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
-			-qpresults.mu_eq_inv;
+			-qpresults.mu_eq;
 
 	veg::dynstack::DynStackMut stack{
 			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
@@ -40,14 +40,14 @@ void refactorize(
 	isize n_c = qpresults.n_c;
 
 	LDLT_TEMP_MAT(T, new_cols, n + n_eq + n_c, n_c, stack);
-
+	T mu_in_neg = -qpresults.mu_in;
 	for (isize i = 0; i < n_in; ++i) {
 		isize j = qpwork.current_bijection_map[i];
 		if (j < n_c) {
 			auto col = new_cols.col(j);
 			col.head(n) = qpwork.C_scaled.row(i);
 			col.segment(n, n_eq + n_c).setZero();
-			col(n + n_eq + j) = -qpresults.mu_in_inv;
+			col(n + n_eq + j) = mu_in_neg;
 		}
 	}
 	qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
@@ -62,8 +62,8 @@ void mu_update(
 		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
-		T mu_eq_new_inv,
-		T mu_in_new_inv) {
+		T mu_eq_new,
+		T mu_in_new) {
 	veg::dynstack::DynStackMut stack{
 			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 
@@ -76,8 +76,8 @@ void mu_update(
 	}
 
 	LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
-	rank_update_alpha.head(n_eq).setConstant(qpresults.mu_eq_inv - mu_eq_new_inv);
-	rank_update_alpha.tail(n_c).setConstant(qpresults.mu_in_inv - mu_in_new_inv);
+	rank_update_alpha.head(n_eq).setConstant(qpresults.mu_eq - mu_eq_new);
+	rank_update_alpha.tail(n_c).setConstant(qpresults.mu_in - mu_in_new);
 
 	{
 		auto _indices =
@@ -124,15 +124,15 @@ void iterative_residual(
 			qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
 					(qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
 			     qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
-			         qpresults.mu_in_inv); // mu stores the inverse of mu
+			         qpresults.mu_in);
 		}
 	}
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() -=
 			qpwork.A_scaled *
-			qpwork.dw_aug.head(qpmodel.dim); // mu stores the inverse of mu
+			qpwork.dw_aug.head(qpmodel.dim);
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) +=
 			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) *
-			qpresults.mu_eq_inv; // mu stores the inverse of mu
+			qpresults.mu_eq;
 }
 
 template <typename T>
@@ -263,8 +263,8 @@ void bcl_update(
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}
-		bcl_eta_ext = bcl_eta_ext * pow(qpresults.mu_in_inv, qpsettings.beta_bcl);
-		bcl_eta_in = std::max(bcl_eta_in * qpresults.mu_in_inv, eps_in_min);
+		bcl_eta_ext = bcl_eta_ext * pow(qpresults.mu_in, qpsettings.beta_bcl);
+		bcl_eta_in = std::max(bcl_eta_in * qpresults.mu_in, eps_in_min);
 	} else {
 		if (qpsettings.verbose) {
 			std::cout << "bad step" << std::endl;
@@ -273,19 +273,19 @@ void bcl_update(
 		qpresults.y = qpwork.y_prev;
 		qpresults.z = qpwork.z_prev;
 
-		new_bcl_mu_in = std::min(
+		new_bcl_mu_in = std::max(
 				qpresults.mu_in * qpsettings.mu_update_factor, qpsettings.mu_max_in);
-		new_bcl_mu_eq = std::min(
+		new_bcl_mu_eq = std::max(
 				qpresults.mu_eq * qpsettings.mu_update_factor, qpsettings.mu_max_eq);
-		new_bcl_mu_in_inv = std::max(
+		new_bcl_mu_in_inv = std::min(
 				qpresults.mu_in_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_in_inv); // mu stores the inverse of mu
-		new_bcl_mu_eq_inv = std::max(
+		new_bcl_mu_eq_inv = std::min(
 				qpresults.mu_eq_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_eq_inv); // mu stores the inverse of mu
 		bcl_eta_ext =
-				bcl_eta_ext_init * pow(new_bcl_mu_in_inv, qpsettings.alpha_bcl);
-		bcl_eta_in = std::max(new_bcl_mu_in_inv, eps_in_min);
+				bcl_eta_ext_init * pow(new_bcl_mu_in, qpsettings.alpha_bcl);
+		bcl_eta_in = std::max(new_bcl_mu_in, eps_in_min);
 	}
 }
 
@@ -298,8 +298,8 @@ auto compute_inner_loop_saddle_point(
 	qpwork.active_part_z =
 			qp::dense::positive_part(qpwork.primal_residual_in_scaled_up) +
 			qp::dense::negative_part(qpwork.primal_residual_in_scaled_low) -
-			qpresults.z * qpresults.mu_in_inv; // contains now : [Cx-u+z_prev/mu_in]+
-	                                       // + [Cx-l+z_prev/mu_in]- - z/mu_in
+			qpresults.z * qpresults.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+	                                       // + [Cx-l+z_prev*mu_in]- - z*mu_in
 
 	T err = infty_norm(qpwork.active_part_z);
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
@@ -326,9 +326,9 @@ void primal_dual_semi_smooth_newton_step(
 
 	/* MUST BE
 	 *  dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z
-	 *  primal_residual_eq_scaled = Ax-b+1./mu_eq (y_prev-y)
-	 *  primal_residual_in_scaled_up = Cx-u+1./mu_in(z_prev)
-	 *  primal_residual_in_scaled_low = Cx-l+1./mu_in(z_prev)
+	 *  primal_residual_eq_scaled = Ax-b+mu_eq (y_prev-y)
+	 *  primal_residual_in_scaled_up = Cx-u+mu_in(z_prev)
+	 *  primal_residual_in_scaled_low = Cx-l+mu_in(z_prev)
 	 */
 
 	qpwork.active_set_up.array() =
@@ -354,11 +354,11 @@ void primal_dual_semi_smooth_newton_step(
 			if (qpwork.active_set_up(i)) {
 				qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
 						-qpwork.primal_residual_in_scaled_up(i) +
-						qpresults.z(i) * qpresults.mu_in_inv;
+						qpresults.z(i) * qpresults.mu_in;
 			} else if (qpwork.active_set_low(i)) {
 				qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
 						-qpwork.primal_residual_in_scaled_low(i) +
-						qpresults.z(i) * qpresults.mu_in_inv;
+						qpresults.z(i) * qpresults.mu_in;
 			}
 		} else {
 			qpwork.rhs.head(qpmodel.dim) +=
@@ -397,9 +397,9 @@ T primal_dual_newton_semi_smooth(
 
 	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
 	 *  dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z
-	 *  primal_residual_eq_scaled = Ax-b+1./mu_eq (y_prev-y)
-	 *  primal_residual_in_scaled_up = Cx-u+1./mu_in(z_prev)
-	 *  primal_residual_in_scaled_low = Cx-l+1./mu_in(z_prev)
+	 *  primal_residual_eq_scaled = Ax-b+mu_eq (y_prev-y)
+	 *  primal_residual_in_scaled_up = Cx-u+mu_in(z_prev)
+	 *  primal_residual_in_scaled_low = Cx-l+mu_in(z_prev)
 	 */
 
 	T err_in = 1.e6;
@@ -456,14 +456,14 @@ T primal_dual_newton_semi_smooth(
 
 		qpresults.x += alpha * dx;
 
-		// contains now :  C(x+alpha dx)-u + z_prev/mu_in
+		// contains now :  C(x+alpha dx)-u + z_prev * mu_in
 		qpwork.primal_residual_in_scaled_up += alpha * Cdx;
 
-		// contains now :  C(x+alpha dx)-l + z_prev/mu_in
+		// contains now :  C(x+alpha dx)-l + z_prev * mu_in
 		qpwork.primal_residual_in_scaled_low += alpha * Cdx;
 
 		qpwork.primal_residual_eq_scaled +=
-				alpha * (Adx - qpresults.mu_eq_inv * dy);
+				alpha * (Adx - qpresults.mu_eq * dy);
 
 		qpresults.y += alpha * dy;
 		qpresults.z += alpha * dz;
@@ -631,12 +631,12 @@ void qp_solve( //
 				qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
 		qpwork.primal_residual_in_scaled_up +=
 				qpwork.z_prev *
-				qpresults.mu_in_inv; // contains now scaled(Cx+z_prev/mu_in)
+				qpresults.mu_in; // contains now scaled(Cx+z_prev*mu_in)
 		qpwork.primal_residual_in_scaled_low = qpwork.primal_residual_in_scaled_up;
 		qpwork.primal_residual_in_scaled_up -=
-				qpwork.u_scaled; // contains now scaled(Cx-u+z_prev/mu_in)
+				qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
 		qpwork.primal_residual_in_scaled_low -=
-				qpwork.l_scaled; // contains now scaled(Cx-l+z_prev/mu_in)
+				qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
 
 		T err_in = primal_dual_newton_semi_smooth(
 				qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
@@ -728,7 +728,7 @@ void qp_solve( //
 
 		if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
 		    dual_feasibility_lhs_new >= dual_feasibility_lhs &&
-		    qpresults.mu_in >= T(1e5)) {
+		    qpresults.mu_in <= T(1e-5)) {
 
 			if (qpsettings.verbose) {
 				std::cout << "cold restart" << std::endl;
@@ -745,7 +745,7 @@ void qp_solve( //
 		if (qpresults.mu_in != new_bcl_mu_in || qpresults.mu_eq != new_bcl_mu_eq) {
 			{ ++qpresults.n_mu_change; }
 			mu_update(
-					qpmodel, qpresults, qpwork, new_bcl_mu_eq_inv, new_bcl_mu_in_inv);
+					qpmodel, qpresults, qpwork, new_bcl_mu_eq, new_bcl_mu_in);
 		}
 
 		qpresults.mu_eq = new_bcl_mu_eq;
@@ -846,7 +846,7 @@ void QPsetup_generic( //
 	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
 	qpwork.kkt.diagonal()
 			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-qpresults.mu_eq_inv);
+			.setConstant(-qpresults.mu_eq);
 
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 

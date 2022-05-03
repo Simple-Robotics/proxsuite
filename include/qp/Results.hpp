@@ -39,48 +39,51 @@ public:
 
 	Results(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
-				x(dim),
-				y(n_eq),
-				z(n_in) {
+                x(dim),
+                y(n_eq),
+                z(n_in)
+                {
+        
+                x.setZero();
+                y.setZero();
+                z.setZero();
 
-		x.setZero();
-		y.setZero();
-		z.setZero();
+                rho = 1e-6;
+	            mu_eq_inv = 1e3;
+	            mu_eq = 1e-3 ;
+	            mu_in_inv = 1e1;
+	            mu_in = 1e-1;
+                nu = 1.;
 
-		rho = 1e-6;
-		mu_eq_inv = 1e-3;
-		mu_eq = 1e3;
-		mu_in_inv = 1e-1;
-		mu_in = 1e1;
-		nu = 1.;
+                n_tot = 0;
+                n_ext = 0;
+                n_mu_change = 0;
+                n_c = 0;
+                timing = 0.;
+                objValue =0.;
+                
+                }
+    
+    void reset_results(){
+        x.setZero();
+        y.setZero();
+        z.setZero();
 
-		n_tot = 0;
-		n_ext = 0;
-		n_mu_change = 0;
-		n_c = 0;
-		timing = 0.;
-		objValue = 0.;
-	}
+        rho = 1e-6;
+        mu_eq_inv = 1e3;
+        mu_eq = 1e-3 ;
+        mu_in_inv = 1e1;
+        mu_in = 1e-1;
+        nu = 1.;
 
-	void reset_results() {
-		x.setZero();
-		y.setZero();
-		z.setZero();
+        n_tot = 0;
+        n_ext = 0;
+        n_mu_change = 0;
+        n_c = 0;
+        timing = 0.;
+        objValue =0.;
 
-		rho = 1e-6;
-		mu_eq_inv = 1e-3;
-		mu_eq = 1e3;
-		mu_in_inv = 1e-1;
-		mu_in = 1e1;
-		nu = 1.;
-
-		n_tot = 0;
-		n_ext = 0;
-		n_mu_change = 0;
-		n_c = 0;
-		timing = 0.;
-		objValue = 0.;
-	}
+    }
 };
 
 } // namespace qp

@@ -15,10 +15,10 @@
 namespace ldlt {
 namespace pybind11 {
 
-template <typename T, Layout L>
+template <typename T, qp::Layout L>
 using MatRef = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
-template <typename T, Layout L>
+template <typename T, qp::Layout L>
 using MatRefMut = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)>>;
 
@@ -33,11 +33,11 @@ using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 namespace qp {
 namespace pybind11 {
 
-using namespace ldlt::tags;
-template <typename T, ldlt::Layout L>
+using namespace qp::tags;
+template <typename T, qp::Layout L>
 using MatRef = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)> const>;
-template <typename T, ldlt::Layout L>
+template <typename T, qp::Layout L>
 using MatRefMut = Eigen::Ref<
 		Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(L)>>;
 
@@ -48,7 +48,7 @@ using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-template <typename T, ldlt::Layout L>
+template <typename T, qp::Layout L>
 void QPupdateMatrice( //
 		MatRef<T, L> H,
 		MatRef<T, L> A,
@@ -158,14 +158,14 @@ void QPupdateVectors( //
 	qpwork.l_scaled = qpmodel.l;
 
 	qpwork.ruiz.scale_primal_in_place(
-			qp::dense::VectorViewMut<T>{from_eigen, qpwork.g_scaled});
-	qpwork._scale_dual_in_place_eq(qp::dense::VectorViewMut<T>{from_eigen, qpwork.b_scaled});
-	qpwork._scale_dual_in_place_in(qp::dense::VectorViewMut<T>{from_eigen, qpwork.u_scaled});
-	qpwork._scale_dual_in_place_in(qp::dense::VectorViewMut<T>{from_eigen, qpwork.l_scaled});
+			qp::VectorViewMut<T>{from_eigen, qpwork.g_scaled});
+	qpwork._scale_dual_in_place_eq(qp::VectorViewMut<T>{from_eigen, qpwork.b_scaled});
+	qpwork._scale_dual_in_place_in(qp::VectorViewMut<T>{from_eigen, qpwork.u_scaled});
+	qpwork._scale_dual_in_place_in(qp::VectorViewMut<T>{from_eigen, qpwork.l_scaled});
 
 }
 
-template <typename T, ldlt::Layout L>
+template <typename T, qp::Layout L>
 void QPsolve(
 		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
@@ -366,8 +366,6 @@ INRIA LDLT decomposition
 
 			.def_readwrite("eps_abs", &qp::Settings<f64>::eps_abs)
 			.def_readwrite("eps_rel", &qp::Settings<f64>::eps_rel)
-			.def_readwrite("eps_IG", &qp::Settings<f64>::eps_IG)
-			.def_readwrite("R", &qp::Settings<f64>::R)
 			.def_readwrite(
 					"nb_iterative_refinement",
 					&qp::Settings<f64>::nb_iterative_refinement)

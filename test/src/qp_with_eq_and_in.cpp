@@ -7,8 +7,6 @@
 #include <veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace ldlt;
-
 using T = double;
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and inequality constraints and increasing dimension") {
@@ -16,10 +14,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and inequality
 	std::cout << "---testing sparse random strongly convex qp with equality and inequality constraints and increasing dimension---" << std::endl;
 	double  sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
-	for (isize dim = 10; dim < 1000; dim+=100) {
+	for (qp::isize dim = 10; dim < 1000; dim+=100) {
 
-		isize n_eq (dim / 4);
-		isize n_in (dim / 4);
+		qp::isize n_eq (dim / 4);
+		qp::isize n_in (dim / 4);
 		T strong_convexity_factor(1.e-2);
 		Qp<T> qp{random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor, strong_convexity_factor};
 		qp::Settings<T> settings;
@@ -61,10 +59,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality constrai
 	std::cout << "---testing sparse random strongly convex qp with box inequality constraints and increasing dimension---" << std::endl;
 	double  sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
-	for (isize dim = 10; dim < 1000; dim+=100) {
+	for (qp::isize dim = 10; dim < 1000; dim+=100) {
 
-		isize n_eq (0);
-		isize n_in (dim);
+		qp::isize n_eq (0);
+		qp::isize n_in (dim);
 		T strong_convexity_factor(1.e-2);
 		Qp<T> qp{random_with_dim_and_n_in_and_box_constraints, dim, sparsity_factor, strong_convexity_factor};
 		qp::Settings<T> settings;
@@ -107,9 +105,9 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality constrai
 	double  sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	T strong_convexity_factor(0.);
-	for (isize dim = 10; dim < 1000; dim+=100) {
-		isize n_in (dim / 2);
-		isize n_eq (0);
+	for (qp::isize dim = 10; dim < 1000; dim+=100) {
+		qp::isize n_in (dim / 2);
+		qp::isize n_eq (0);
 		Qp<T> qp{random_with_dim_and_n_in_not_strongly_convex, dim, n_in, sparsity_factor};
 		qp::Settings<T> settings;
 		settings.eps_abs = eps_abs;
@@ -150,10 +148,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality c
 	double  sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	T strong_convexity_factor(1e-2);
-	for (isize dim = 10; dim < 1000; dim+=100) {
-		isize m(dim / 4);
-		isize n_in (2* m);
-		isize n_eq (0);
+	for (qp::isize dim = 10; dim < 1000; dim+=100) {
+		qp::isize m(dim / 4);
+		qp::isize n_in (2* m);
+		qp::isize n_eq (0);
 		Qp<T> qp{random_with_dim_and_n_in_degenerate, dim, m, sparsity_factor,strong_convexity_factor};
 		qp::Settings<T> settings;
 		settings.eps_abs = eps_abs;
@@ -194,9 +192,9 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and incre
 	double  sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	T strong_convexity_factor(0.);
-	for (isize dim = 10; dim < 1000; dim+=100) {
-		isize n_in (dim / 2);
-		isize n_eq (0);
+	for (qp::isize dim = 10; dim < 1000; dim+=100) {
+		qp::isize n_in (dim / 2);
+		qp::isize n_eq (0);
 		Qp<T> qp{random_with_dim_and_n_in_not_strongly_convex, dim, n_in, sparsity_factor};
 		qp.H.setZero();
 		auto z_sol = ldlt_test::rand::vector_rand<T>(n_in);

@@ -12,6 +12,7 @@
 	VEG_CHECK_CONCEPT_MACRO(::qp::concepts, __VA_ARGS__)
 
 namespace qp {
+
 using usize = decltype(sizeof(0));
 namespace detail {
 template <typename Fn>
