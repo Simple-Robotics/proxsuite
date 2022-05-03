@@ -657,19 +657,19 @@ struct QpWorkspace {
 			// do_ldlt = !overflow && lnnz < (100 * nnz_tot);
 			do_ldlt = !overflow && lnnz < 10000000;
 
-#define ALL_OF(...)                                                            \
+#define PROX_QP_ALL_OF(...)                                                    \
 	::veg::dynstack::StackReq::and_(::veg::init_list(__VA_ARGS__))
-#define ANY_OF(...)                                                            \
+#define PROX_QP_ANY_OF(...)                                                    \
 	::veg::dynstack::StackReq::or_(::veg::init_list(__VA_ARGS__))
 
 			auto refactorize_req =
-					do_ldlt ? ANY_OF({
+					do_ldlt ? PROX_QP_ANY_OF({
 												sparse_ldlt::factorize_symbolic_req( // symbolic ldl
 														itag,
 														n_tot,
 														nnz_tot,
 														sparse_ldlt::Ordering::user_provided),
-												ALL_OF({
+												PROX_QP_ALL_OF({
 														SR::with_len(xtag, n_tot),          // diag
 														sparse_ldlt::factorize_numeric_req( // numeric ldl
 																xtag,
@@ -679,7 +679,7 @@ struct QpWorkspace {
 																sparse_ldlt::Ordering::user_provided),
 												}),
 										})
-									: ALL_OF({
+									: PROX_QP_ALL_OF({
 												SR::with_len(itag, 0),
 												SR::with_len(xtag, 0),
 										});
@@ -688,31 +688,31 @@ struct QpWorkspace {
 				return dense_ldlt::temp_vec_req(xtag, n);
 			};
 
-			auto ldl_solve_in_place_req = ALL_OF({
+			auto ldl_solve_in_place_req = PROX_QP_ALL_OF({
 					x_vec(n_tot), // tmp
 					x_vec(n_tot), // err
 					x_vec(n_tot), // work
 			});
 
-			auto unscaled_dual_residual_req = x_vec(n); // Hx
-			auto line_search_req = ALL_OF({
+			auto unscaled_primal_dual_residual_req = x_vec(n); // Hx
+			auto line_search_req = PROX_QP_ALL_OF({
 					x_vec(2 * n_in), // alphas
 					x_vec(n),        // Cdx_active
 					x_vec(n_in),     // active_part_z
 					x_vec(n_in),     // tmp_lo
 					x_vec(n_in),     // tmp_up
 			});
-			auto primal_dual_newton_semi_smooth_req = ALL_OF({
+			auto primal_dual_newton_semi_smooth_req = PROX_QP_ALL_OF({
 					x_vec(n_tot), // dw
-					ANY_OF({
+					PROX_QP_ANY_OF({
 							ldl_solve_in_place_req,
-							ALL_OF({
+							PROX_QP_ALL_OF({
 									SR::with_len(veg::Tag<bool>{}, n_in), // active_set_lo
 									SR::with_len(veg::Tag<bool>{}, n_in), // active_set_up
 									SR::with_len(
 											veg::Tag<bool>{}, n_in), // new_active_constraints
 									(do_ldlt && n_in > 0)
-											? ANY_OF({
+											? PROX_QP_ANY_OF({
 														sparse_ldlt::add_row_req(
 																xtag, itag, n_tot, false, n, n_tot),
 														sparse_ldlt::delete_row_req(
@@ -720,7 +720,7 @@ struct QpWorkspace {
 												})
 											: refactorize_req,
 							}),
-							ALL_OF({
+							PROX_QP_ALL_OF({
 									x_vec(n),    // Hdx
 									x_vec(n_eq), // Adx
 									x_vec(n_in), // Cdx
@@ -731,16 +731,16 @@ struct QpWorkspace {
 					line_search_req,
 			});
 
-			auto iter_req = ANY_OF({
-					ALL_OF(
+			auto iter_req = PROX_QP_ANY_OF({
+					PROX_QP_ALL_OF(
 							{x_vec(n_eq), // primal_residual_eq_scaled
 			         x_vec(n_in), // primal_residual_in_scaled_lo
 			         x_vec(n_in), // primal_residual_in_scaled_up
 			         x_vec(n_in), // primal_residual_in_scaled_up
 			         x_vec(n),    // dual_residual_scaled
-			         ANY_OF({
-									 unscaled_dual_residual_req,
-									 ALL_OF({
+			         PROX_QP_ANY_OF({
+									 unscaled_primal_dual_residual_req,
+									 PROX_QP_ALL_OF({
 											 x_vec(n),    // x_prev
 											 x_vec(n_eq), // y_prev
 											 x_vec(n_in), // z_prev
@@ -751,7 +751,7 @@ struct QpWorkspace {
 			});
 
 			auto req = //
-					ALL_OF({
+					PROX_QP_ALL_OF({
 							x_vec(n),                             // g_scaled
 							x_vec(n_eq),                          // b_scaled
 							x_vec(n_in),                          // l_scaled
@@ -759,17 +759,17 @@ struct QpWorkspace {
 							SR::with_len(veg::Tag<bool>{}, n_in), // active constr
 							SR::with_len(itag, n_tot),            // kkt nnz counts
 							refactorize_req,
-							ANY_OF({
+							PROX_QP_ANY_OF({
 									precond_req,
-									ALL_OF({
-											do_ldlt ? ALL_OF({
+									PROX_QP_ALL_OF({
+											do_ldlt ? PROX_QP_ALL_OF({
 																		SR::with_len(itag, n_tot), // perm
 																		SR::with_len(itag, n_tot), // etree
 																		SR::with_len(itag, n_tot), // ldl nnz counts
 																		SR::with_len(itag, lnnz), // ldl row indices
 																		SR::with_len(xtag, lnnz), // ldl values
 																})
-															: ALL_OF({
+															: PROX_QP_ALL_OF({
 																		SR::with_len(itag, 0),
 																		SR::with_len(xtag, 0),
 																}),
@@ -1040,6 +1040,265 @@ struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 		};
 	}
 };
+
+template <typename T>
+using VecMapMut = Eigen::Map<
+		Eigen::Matrix<T, Eigen::Dynamic, 1>,
+		Eigen::Unaligned,
+		Eigen::Stride<Eigen::Dynamic, 1>>;
+template <typename T>
+using VecMap = Eigen::Map<
+		Eigen::Matrix<T, Eigen::Dynamic, 1> const,
+		Eigen::Unaligned,
+		Eigen::Stride<Eigen::Dynamic, 1>>;
+
+template <typename V>
+auto vec(V const& v) -> VecMap<typename V::Scalar> {
+	static_assert(V::InnerStrideAtCompileTime == 1, ".");
+	return {
+			v.data(),
+			v.rows(),
+			v.cols(),
+			Eigen::Stride<Eigen::Dynamic, 1>{
+					v.outerStride(),
+					v.innerStride(),
+			},
+	};
+}
+
+template <typename V>
+auto vec_mut(V&& v) -> VecMapMut<typename veg::uncvref_t<V>::Scalar> {
+	static_assert(veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
+	return {
+			v.data(),
+			v.rows(),
+			v.cols(),
+			Eigen::Stride<Eigen::Dynamic, 1>{
+					v.outerStride(),
+					v.innerStride(),
+			},
+	};
+}
+
+template <typename T, typename I>
+auto middle_cols(
+		sparse_ldlt::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
+		-> sparse_ldlt::MatRef<T, I> {
+	VEG_ASSERT(start < mat.ncols());
+	VEG_ASSERT(ncols <= mat.ncols() - start);
+	return {
+			sparse_ldlt::from_raw_parts,
+			mat.nrows(),
+			ncols,
+			nnz,
+			veg::Slice<I>{
+					veg::unsafe,
+					veg::from_raw_parts,
+					mat.col_ptrs().ptr() + start,
+					ncols + 1,
+			},
+			mat.row_indices(),
+			mat.is_compressed() ? veg::Slice<I>{} : veg::Slice<I>{
+					veg::unsafe,
+					veg::from_raw_parts,
+					mat.nnz_per_col().ptr() + start,
+					ncols,
+			},
+			mat.values(),
+	};
+}
+
+template <typename T, typename I>
+auto middle_cols_mut(
+		sparse_ldlt::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
+		-> sparse_ldlt::MatMut<T, I> {
+	VEG_ASSERT(start < mat.ncols());
+	VEG_ASSERT(ncols <= mat.ncols() - start);
+	return {
+			sparse_ldlt::from_raw_parts,
+			mat.nrows(),
+			ncols,
+			nnz,
+			veg::SliceMut<I>{
+					veg::unsafe,
+					veg::from_raw_parts,
+					mat.col_ptrs_mut().ptr_mut() + start,
+					ncols + 1,
+			},
+			mat.row_indices_mut(),
+			mat.is_compressed() ? veg::SliceMut<I>{} : veg::SliceMut<I>{
+					veg::unsafe,
+					veg::from_raw_parts,
+					mat.nnz_per_col_mut().ptr_mut() + start,
+					ncols,
+			},
+			mat.values_mut(),
+	};
+}
+
+template <typename T, typename I>
+auto top_rows_unchecked(
+		veg::Unsafe /*unsafe*/, sparse_ldlt::MatRef<T, I> mat, isize nrows)
+		-> sparse_ldlt::MatRef<T, I> {
+	VEG_ASSERT(nrows <= mat.nrows());
+	return {
+			sparse_ldlt::from_raw_parts,
+			nrows,
+			mat.ncols(),
+			mat.nnz(),
+			mat.col_ptrs(),
+			mat.row_indices(),
+			mat.nnz_per_col(),
+			mat.values(),
+	};
+}
+
+template <typename T, typename I>
+auto top_rows_mut_unchecked(
+		veg::Unsafe /*unsafe*/, sparse_ldlt::MatMut<T, I> mat, isize nrows)
+		-> sparse_ldlt::MatMut<T, I> {
+	VEG_ASSERT(nrows <= mat.nrows());
+	return {
+			sparse_ldlt::from_raw_parts,
+			nrows,
+			mat.ncols(),
+			mat.nnz(),
+			mat.col_ptrs_mut(),
+			mat.row_indices_mut(),
+			mat.nnz_per_col_mut(),
+			mat.values_mut(),
+	};
+}
+
+template <typename T, typename I>
+auto ct_active(
+		isize n, isize n_eq, isize n_in, sparse_ldlt::MatRef<T, I> kkt_active)
+		-> sparse_ldlt::MatRef<T, I> {
+	if (kkt_active.is_compressed()) {
+	} else {
+		return {
+				sparse_ldlt::from_raw_parts,
+				n,
+				n_in,
+				0, // nnz not used
+				{
+						veg::unsafe,
+						veg::from_raw_parts,
+						kkt_active.col_ptrs().ptr() + n + n_eq,
+						n_in + 1,
+				},
+				kkt_active.row_indices(),
+				{
+						veg::unsafe,
+						veg::from_raw_parts,
+						kkt_active.nnz_per_col().ptr() + n + n_eq,
+						n_in,
+				},
+				kkt_active.values(),
+		};
+	}
+}
+
+template <typename T, typename I, typename P>
+auto unscaled_primal_dual_residual(
+		VecMapMut<T> primal_residual_eq_scaled,
+		VecMapMut<T> primal_residual_in_scaled_lo,
+		VecMapMut<T> primal_residual_in_scaled_up,
+		VecMapMut<T> dual_residual_scaled,
+		T& primal_feasibility_eq_rhs_0,
+		T& primal_feasibility_in_rhs_0,
+		T dual_feasibility_rhs_0,
+		T dual_feasibility_rhs_1,
+		T dual_feasibility_rhs_3,
+		P& precond,
+		QpView<T, I> qp,
+		sparse_ldlt::MatRef<T, I> H_scaled,
+		sparse_ldlt::MatRef<T, I> AT_scaled,
+		sparse_ldlt::MatRef<T, I> CT_scaled,
+		VecMap<T> g_scaled_e,
+		VecMap<T> x_e,
+		VecMap<T> y_e,
+		VecMap<T> z_e,
+		veg::dynstack::DynStackMut stack) -> veg::Tuple<T, T> {
+	isize n = x_e.rows();
+
+	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
+	dual_residual_scaled = g_scaled_e;
+
+	{
+		tmp.setZero();
+		detail::noalias_symhiv_add(tmp, H_scaled.to_eigen(), x_e);
+		dual_residual_scaled += tmp;
+
+		precond.unscale_dual_residual_in_place({ldlt::from_eigen, tmp});
+		dual_feasibility_rhs_0 = infty_norm(tmp);
+	}
+
+	{
+		auto ATy = tmp;
+		ATy.setZero();
+		primal_residual_eq_scaled.setZero();
+
+		detail::noalias_gevmmv_add(
+				primal_residual_eq_scaled, ATy, AT_scaled.to_eigen(), x_e, y_e);
+
+		dual_residual_scaled += ATy;
+
+		precond.unscale_dual_residual_in_place({ldlt::from_eigen, ATy});
+		dual_feasibility_rhs_1 = infty_norm(ATy);
+	}
+
+	{
+		auto CTz = tmp;
+		CTz.setZero();
+		primal_residual_in_scaled_up.setZero();
+
+		detail::noalias_gevmmv_add(
+				primal_residual_in_scaled_up, CTz, CT_scaled.to_eigen(), x_e, z_e);
+
+		dual_residual_scaled += CTz;
+
+		precond.unscale_dual_residual_in_place({ldlt::from_eigen, CTz});
+		dual_feasibility_rhs_3 = infty_norm(CTz);
+	}
+
+	precond.unscale_primal_residual_in_place_eq(
+			{ldlt::from_eigen, primal_residual_eq_scaled});
+
+	primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
+
+	precond.unscale_primal_residual_in_place_in(
+			{ldlt::from_eigen, primal_residual_in_scaled_up});
+	primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
+
+	auto b = qp.b.to_eigen();
+	auto l = qp.l.to_eigen();
+	auto u = qp.u.to_eigen();
+	primal_residual_in_scaled_lo =
+			detail::positive_part(primal_residual_in_scaled_up - u) +
+			detail::negative_part(primal_residual_in_scaled_up - l);
+
+	primal_residual_eq_scaled -= b;
+	T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);
+	T primal_feasibility_in_lhs = infty_norm(primal_residual_in_scaled_lo);
+	T primal_feasibility_lhs =
+			std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
+
+	// scaled Ax - b
+	precond.scale_primal_residual_in_place_eq(
+			{ldlt::from_eigen, primal_residual_eq_scaled});
+	// scaled Cx
+	precond.scale_primal_residual_in_place_in(
+			{ldlt::from_eigen, primal_residual_in_scaled_up});
+
+	precond.unscale_dual_residual_in_place(
+			{ldlt::from_eigen, dual_residual_scaled});
+	T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
+	precond.scale_dual_residual_in_place(
+			{ldlt::from_eigen, dual_residual_scaled});
+
+	return veg::tuplify(primal_feasibility_lhs, dual_feasibility_lhs);
+}
 } // namespace detail
 
 template <typename T, typename I, typename P>
@@ -1073,42 +1332,16 @@ void qp_solve(
 
 	sparse_ldlt::MatMut<T, I> kkt = work.kkt_mut();
 
-	sparse_ldlt::MatMut<T, I> H_scaled = {
-			sparse_ldlt::from_raw_parts,
-			n,
-			n,
-			qp.H.nnz(),
-			kkt.col_ptrs_mut().split_at_mut(n + 1)[0_c],
-			kkt.row_indices_mut(),
-			{},
-			kkt.values_mut(),
-	};
+	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
-	sparse_ldlt::MatMut<T, I> AT_scaled = {
-			sparse_ldlt::from_raw_parts,
-			n,
-			n_eq,
-			qp.AT.nnz(),
-			kkt.col_ptrs_mut() //
-					.split_at_mut(n)[1_c]
-					.split_at_mut(n_eq + 1)[0_c],
-			kkt.row_indices_mut(),
-			{},
-			kkt.values_mut(),
-	};
+	sparse_ldlt::MatMut<T, I> H_scaled =
+			detail::middle_cols_mut(kkt_top_n_rows, 0, n, qp.H.nnz());
 
-	sparse_ldlt::MatMut<T, I> CT_scaled = {
-			sparse_ldlt::from_raw_parts,
-			n,
-			n_in,
-			qp.CT.nnz(),
-			kkt.col_ptrs_mut() //
-					.split_at_mut(n + n_eq)[1_c]
-					.split_at_mut(n_in + 1)[0_c],
-			kkt.row_indices_mut(),
-			{},
-			kkt.values_mut(),
-	};
+	sparse_ldlt::MatMut<T, I> AT_scaled =
+			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, qp.AT.nnz());
+
+	sparse_ldlt::MatMut<T, I> CT_scaled =
+			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, qp.CT.nnz());
 
 	auto H_scaled_e = H_scaled.to_eigen();
 	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
@@ -1377,28 +1610,6 @@ void qp_solve(
 
 		LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
 
-		auto C_active = (kkt_active.to_eigen().topRightCorner(n, n_in)).transpose();
-		sparse_ldlt::MatRef<T, I> CT_active{
-				sparse_ldlt::from_raw_parts,
-				n,
-				n_in,
-				0, // nnz not used
-				{
-						veg::unsafe,
-						veg::from_raw_parts,
-						kkt_active.col_ptrs().ptr() + n + n_eq,
-						n_in + 1,
-				},
-				kkt.row_indices(),
-				{
-						veg::unsafe,
-						veg::from_raw_parts,
-						kkt_active.nnz_per_col().ptr() + n + n_eq,
-						n_in,
-				},
-				kkt.values(),
-		};
-
 		T prev_err_norm = std::numeric_limits<T>::infinity();
 
 		for (isize solve_iter = 0; solve_iter < settings.nb_iterative_refinement;
@@ -1475,88 +1686,6 @@ void qp_solve(
 			LDLT_TEMP_VEC_UNINIT(T, dual_residual_scaled, n, stack);
 
 			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-			auto unscaled_primal_residual = [&]() -> T {
-				primal_residual_eq_scaled.noalias() = A_scaled_e * x_e;
-				primal_residual_in_scaled_up.noalias() = C_scaled_e * x_e;
-
-				precond.unscale_primal_residual_in_place_eq(
-						{ldlt::from_eigen, primal_residual_eq_scaled});
-
-				primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
-
-				precond.unscale_primal_residual_in_place_in(
-						{ldlt::from_eigen, primal_residual_in_scaled_up});
-				primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
-
-				auto b = qp.b.to_eigen();
-				auto l = qp.l.to_eigen();
-				auto u = qp.u.to_eigen();
-				primal_residual_in_scaled_lo =
-						detail::positive_part(primal_residual_in_scaled_up - u) +
-						detail::negative_part(primal_residual_in_scaled_up - l);
-
-				primal_residual_eq_scaled -= b;
-				T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);
-				T primal_feasibility_in_lhs = infty_norm(primal_residual_in_scaled_lo);
-				T primal_feasibility_lhs =
-						std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
-
-				// scaled Ax - b
-				precond.scale_primal_residual_in_place_eq(
-						{ldlt::from_eigen, primal_residual_eq_scaled});
-				// scaled Cx
-				precond.scale_primal_residual_in_place_in(
-						{ldlt::from_eigen, primal_residual_in_scaled_up});
-
-				return primal_feasibility_lhs;
-			};
-			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-			auto unscaled_dual_residual = [&]() -> T {
-				LDLT_TEMP_VEC_UNINIT(T, Hx, n, stack);
-				dual_residual_scaled = g_scaled_e;
-
-				{
-					Hx.setZero();
-					detail::noalias_symhiv_add(Hx, H_scaled_e, x_e);
-					dual_residual_scaled += Hx;
-
-					precond.unscale_dual_residual_in_place({ldlt::from_eigen, Hx});
-					dual_feasibility_rhs_0 = infty_norm(Hx);
-				}
-
-				{
-					auto ATy = Hx;
-					ATy.setZero();
-					ATy.noalias() += A_scaled_e.transpose() * y_e;
-
-					dual_residual_scaled += ATy;
-
-					precond.unscale_dual_residual_in_place({ldlt::from_eigen, ATy});
-					dual_feasibility_rhs_1 = infty_norm(ATy);
-				}
-
-				{
-					auto CTz = Hx;
-					CTz.setZero();
-					CTz.noalias() += C_scaled_e.transpose() * z_e;
-
-					dual_residual_scaled += CTz;
-
-					precond.unscale_dual_residual_in_place({ldlt::from_eigen, CTz});
-					dual_feasibility_rhs_3 = infty_norm(CTz);
-				}
-
-				precond.unscale_dual_residual_in_place(
-						{ldlt::from_eigen, dual_residual_scaled});
-				T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
-				precond.scale_dual_residual_in_place(
-						{ldlt::from_eigen, dual_residual_scaled});
-				return dual_feasibility_lhs;
-			};
-			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 			auto is_primal_feasible = [&](T primal_feasibility_lhs) -> bool {
 				T rhs_pri = settings.eps_abs;
 				if (settings.eps_rel != 0) {
@@ -1585,8 +1714,29 @@ void qp_solve(
 			};
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-			T primal_feasibility_lhs = unscaled_primal_residual();
-			T dual_feasibility_lhs = unscaled_dual_residual();
+			VEG_BIND(
+					auto,
+					(primal_feasibility_lhs, dual_feasibility_lhs),
+					detail::unscaled_primal_dual_residual(
+							primal_residual_eq_scaled,
+							primal_residual_in_scaled_lo,
+							primal_residual_in_scaled_up,
+							dual_residual_scaled,
+							primal_feasibility_eq_rhs_0,
+							primal_feasibility_in_rhs_0,
+							dual_feasibility_rhs_0,
+							dual_feasibility_rhs_1,
+							dual_feasibility_rhs_3,
+							precond,
+							qp,
+							H_scaled.as_const(),
+							AT_scaled.as_const(),
+							CT_scaled.as_const(),
+							detail::vec(g_scaled_e),
+							detail::vec(x_e),
+							detail::vec(y_e),
+							detail::vec(z_e),
+							stack));
 
 			if (settings.verbose) {
 				std::cout << "-------- outer iteration: " << iter << " primal residual "
@@ -1900,8 +2050,29 @@ void qp_solve(
 
 			primal_dual_newton_semi_smooth();
 
-			T primal_feasibility_lhs_new = unscaled_primal_residual();
-			T dual_feasibility_lhs_new = unscaled_dual_residual();
+			VEG_BIND(
+					auto,
+					(primal_feasibility_lhs_new, dual_feasibility_lhs_new),
+					detail::unscaled_primal_dual_residual(
+							primal_residual_eq_scaled,
+							primal_residual_in_scaled_lo,
+							primal_residual_in_scaled_up,
+							dual_residual_scaled,
+							primal_feasibility_eq_rhs_0,
+							primal_feasibility_in_rhs_0,
+							dual_feasibility_rhs_0,
+							dual_feasibility_rhs_1,
+							dual_feasibility_rhs_3,
+							precond,
+							qp,
+							H_scaled.as_const(),
+							AT_scaled.as_const(),
+							CT_scaled.as_const(),
+							detail::vec(g_scaled_e),
+							detail::vec(x_e),
+							detail::vec(y_e),
+							detail::vec(z_e),
+							stack));
 			if (is_primal_feasible(primal_feasibility_lhs_new) &&
 			    is_dual_feasible(dual_feasibility_lhs_new)) {
 				break;
@@ -1927,10 +2098,32 @@ void qp_solve(
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 			bcl_update();
 
-			dual_feasibility_lhs_new = unscaled_dual_residual();
+			VEG_BIND(
+					auto,
+					(_, dual_feasibility_lhs_new_2),
+					detail::unscaled_primal_dual_residual(
+							primal_residual_eq_scaled,
+							primal_residual_in_scaled_lo,
+							primal_residual_in_scaled_up,
+							dual_residual_scaled,
+							primal_feasibility_eq_rhs_0,
+							primal_feasibility_in_rhs_0,
+							dual_feasibility_rhs_0,
+							dual_feasibility_rhs_1,
+							dual_feasibility_rhs_3,
+							precond,
+							qp,
+							H_scaled.as_const(),
+							AT_scaled.as_const(),
+							CT_scaled.as_const(),
+							detail::vec(g_scaled_e),
+							detail::vec(x_e),
+							detail::vec(y_e),
+							detail::vec(z_e),
+							stack));
 
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
-			    dual_feasibility_lhs_new >= primal_feasibility_lhs &&   //
+			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //
 			    mu_in >= 1.E5) {
 				new_bcl_mu_in = settings.cold_reset_mu_in;
 				new_bcl_mu_eq = settings.cold_reset_mu_eq;
