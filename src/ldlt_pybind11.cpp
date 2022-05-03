@@ -12,7 +12,7 @@
 #include <veg/util/dynstack_alloc.hpp>
 #include <dense-ldlt/ldlt.hpp>
 
-namespace ldlt {
+namespace qp {
 namespace pybind11 {
 
 template <typename T, qp::Layout L>
@@ -28,7 +28,7 @@ template <typename T>
 using VecRefMut = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1>>;
 
 } // namespace pybind11
-} // namespace ldlt
+} // namespace qp
 
 namespace qp {
 namespace pybind11 {
@@ -158,11 +158,10 @@ void QPupdateVectors( //
 	qpwork.l_scaled = qpmodel.l;
 
 	qpwork.ruiz.scale_primal_in_place(
-			qp::VectorViewMut<T>{from_eigen, qpwork.g_scaled});
-	qpwork._scale_dual_in_place_eq(qp::VectorViewMut<T>{from_eigen, qpwork.b_scaled});
-	qpwork._scale_dual_in_place_in(qp::VectorViewMut<T>{from_eigen, qpwork.u_scaled});
-	qpwork._scale_dual_in_place_in(qp::VectorViewMut<T>{from_eigen, qpwork.l_scaled});
-
+			VectorViewMut<T>{from_eigen, qpwork.g_scaled});
+	qpwork._scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpwork.b_scaled});
+	qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.u_scaled});
+	qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.l_scaled});
 }
 
 template <typename T, qp::Layout L>
@@ -214,7 +213,7 @@ void QPreset(
 	};
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
-	if (qpsettings.warm_start){
+	if (qpsettings.warm_start) {
 		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
 		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
 
@@ -248,11 +247,10 @@ INRIA LDLT decomposition
 
      factorize
   )pbdoc";
-	using namespace ldlt;
 	using namespace qp;
 	::pybind11::class_<qp::dense::Workspace<f64>>(m, "Workspace")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                             // read-write public data member
+	                                            // read-write public data member
 			.def_readwrite("H_scaled", &qp::dense::Workspace<f64>::H_scaled)
 			.def_readwrite("g_scaled", &qp::dense::Workspace<f64>::g_scaled)
 			.def_readwrite("A_scaled", &qp::dense::Workspace<f64>::A_scaled)
@@ -265,13 +263,16 @@ INRIA LDLT decomposition
 			.def_readwrite("z_prev", &qp::dense::Workspace<f64>::z_prev)
 			.def_readwrite("kkt", &qp::dense::Workspace<f64>::kkt)
 			.def_readwrite(
-					"current_bijection_map", &qp::dense::Workspace<f64>::current_bijection_map)
+					"current_bijection_map",
+					&qp::dense::Workspace<f64>::current_bijection_map)
 			.def_readwrite(
 					"new_bijection_map", &qp::dense::Workspace<f64>::new_bijection_map)
 			.def_readwrite("active_set_up", &qp::dense::Workspace<f64>::active_set_up)
-			.def_readwrite("active_set_low", &qp::dense::Workspace<f64>::active_set_low)
 			.def_readwrite(
-					"active_inequalities", &qp::dense::Workspace<f64>::active_inequalities)
+					"active_set_low", &qp::dense::Workspace<f64>::active_set_low)
+			.def_readwrite(
+					"active_inequalities",
+					&qp::dense::Workspace<f64>::active_inequalities)
 			.def_readwrite("Hdx", &qp::dense::Workspace<f64>::Hdx)
 			.def_readwrite("Cdx", &qp::dense::Workspace<f64>::Cdx)
 			.def_readwrite("Adx", &qp::dense::Workspace<f64>::Adx)
@@ -297,7 +298,8 @@ INRIA LDLT decomposition
 					&qp::dense::Workspace<f64>::correction_guess_rhs_g)
 			.def_readwrite("alpha", &qp::dense::Workspace<f64>::alpha)
 			.def_readwrite(
-					"dual_residual_scaled", &qp::dense::Workspace<f64>::dual_residual_scaled)
+					"dual_residual_scaled",
+					&qp::dense::Workspace<f64>::dual_residual_scaled)
 			.def_readwrite(
 					"primal_residual_eq_scaled",
 					&qp::dense::Workspace<f64>::primal_residual_eq_scaled)
@@ -309,15 +311,17 @@ INRIA LDLT decomposition
 					&qp::dense::Workspace<f64>::primal_residual_in_scaled_low)
 			.def_readwrite(
 					"primal_residual_in_scaled_up_plus_alphaCdx",
-					&qp::dense::Workspace<f64>::primal_residual_in_scaled_up_plus_alphaCdx)
+					&qp::dense::Workspace<
+							f64>::primal_residual_in_scaled_up_plus_alphaCdx)
 			.def_readwrite(
 					"primal_residual_in_scaled_low_plus_alphaCdx",
-					&qp::dense::Workspace<f64>::primal_residual_in_scaled_low_plus_alphaCdx)
+					&qp::dense::Workspace<
+							f64>::primal_residual_in_scaled_low_plus_alphaCdx)
 			.def_readwrite("CTz", &qp::dense::Workspace<f64>::CTz);
 
 	::pybind11::class_<qp::Results<f64>>(m, "Results")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                             // read-write public data member
+	                                            // read-write public data member
 
 			.def_readwrite("x", &qp::Results<f64>::x)
 			.def_readwrite("y", &qp::Results<f64>::y)
@@ -344,8 +348,7 @@ INRIA LDLT decomposition
 					"refactor_dual_feasibility_threshold",
 					&qp::Settings<f64>::refactor_dual_feasibility_threshold)
 			.def_readwrite(
-					"refactor_rho_threshold",
-					&qp::Settings<f64>::refactor_rho_threshold)
+					"refactor_rho_threshold", &qp::Settings<f64>::refactor_rho_threshold)
 			.def_readwrite("mu_max_eq", &qp::Settings<f64>::mu_max_eq)
 			.def_readwrite("mu_max_in", &qp::Settings<f64>::mu_max_in)
 			.def_readwrite("mu_max_eq_inv", &qp::Settings<f64>::mu_max_eq_inv)
@@ -374,7 +377,7 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::dense::Data<f64>>(m, "Data")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                             // read-write public data member
+	                                            // read-write public data member
 
 			.def_readonly("H", &qp::dense::Data<f64>::H)
 			.def_readonly("g", &qp::dense::Data<f64>::g)
