@@ -1,8 +1,8 @@
-#include <qp/dense/dense-views.hpp>
+#include <qp/dense/views.hpp>
 #include <qp/dense/Workspace.hpp>
 
 #include <qp/dense/solver.hpp>
-#include <qp/dense/dense-utils.hpp>
+#include <qp/dense/utils.hpp>
 #include <qp/dense/precond/ruiz.hpp>
 #include <fmt/chrono.h>
 
