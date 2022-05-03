@@ -1345,11 +1345,8 @@ void qp_solve(
 	sparse_ldlt::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, qp.CT.nnz());
 
-	auto H_scaled_e = H_scaled.to_eigen();
 	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
-	auto A_scaled_e = AT_scaled.to_eigen().transpose();
 	LDLT_TEMP_VEC_UNINIT(T, b_scaled_e, n_eq, stack);
-	auto C_scaled_e = CT_scaled.to_eigen().transpose();
 	LDLT_TEMP_VEC_UNINIT(T, l_scaled_e, n_in, stack);
 	LDLT_TEMP_VEC_UNINIT(T, u_scaled_e, n_in, stack);
 
@@ -1866,7 +1863,7 @@ void qp_solve(
 										1 / mu_in * z_e(i) - primal_residual_in_scaled_lo(i);
 							} else {
 								rhs(n + n_eq + i) = -z_e(i);
-								rhs.head(n) += z_e(i) * C_scaled_e.row(i);
+								rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
 							}
 						}
 
@@ -1889,7 +1886,7 @@ void qp_solve(
 					LDLT_TEMP_VEC(T, ATdy, n, stack);
 					LDLT_TEMP_VEC(T, CTdz, n, stack);
 
-					detail::noalias_symhiv_add(Hdx, H_scaled_e, dx);
+					detail::noalias_symhiv_add(Hdx, H_scaled.to_eigen(), dx);
 					detail::noalias_gevmmv_add(Adx, ATdy, AT_scaled.to_eigen(), dx, dy);
 					detail::noalias_gevmmv_add(Cdx, CTdz, CT_scaled.to_eigen(), dx, dz);
 
@@ -2122,14 +2119,10 @@ void qp_solve(
 			}
 		}
 
-		// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-		auto mu_update = [&]() -> void { refactorize(); };
-		// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 		if (mu_in != new_bcl_mu_in || mu_eq != new_bcl_mu_eq) {
 			mu_eq = new_bcl_mu_eq;
 			mu_in = new_bcl_mu_in;
-			mu_update();
+			refactorize();
 		}
 	}
 
