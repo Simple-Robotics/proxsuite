@@ -65,6 +65,77 @@ struct veg::mem::Alloc<dense_ldlt::_detail::SimdAlignedSystemAlloc> {
 
 namespace dense_ldlt {
 
+/*!
+ * Wrapper class that handles an allocated LDLT decomposition,
+ * with an applied permutation.  
+ * When provided with a matrix `A`, this internally stores a lower triangular
+ * matrix with unit diagonal `L`, a vector `D`, and a permutation `P` such that
+ * `A = P.T L diag(D) L.T P`.
+ *
+ * Example usage:
+ * ```cpp
+#include <dense-ldlt/ldlt.hpp>
+#include <veg/util/dynstack_alloc.hpp>
+
+auto main() -> int {
+	constexpr auto DYN = Eigen::Dynamic;
+	using Matrix = Eigen::Matrix<double, DYN, DYN>;
+	using Vector = Eigen::Matrix<double, DYN, 1>;
+	using Ldlt = dense_ldlt::Ldlt<double>;
+	using veg::dynstack::StackReq;
+
+	// allocate a matrix `a`
+	auto a0 = Matrix{
+			2,
+			2,
+	};
+
+	// workspace memory requirements
+	auto req =
+			Ldlt::factorize_req(2) |          // initial factorization of dim 2
+			Ldlt::insert_block_at_req(2, 1) | // or 1 insertion to matrix of dim 2
+			Ldlt::delete_at_req(3, 2) |       // or 2 deletions from matrix of dim 3
+			Ldlt::solve_in_place_req(1);      // or solve in place with dim 1
+
+	VEG_MAKE_STACK(stack, req);
+
+	Ldlt ldl;
+
+	// fill up the lower triangular part
+	// matrix is
+	// 1.0 2.0
+	// 2.0 3.0
+	a0(0, 0) = 1.0;
+	a0(1, 0) = 2.0;
+	a0(1, 1) = 3.0;
+
+	ldl.factorize(a0, stack);
+
+	// add one column at the index 1
+	// matrix is
+	// 1.0 4.0 2.0
+	// 4.0 5.0 6.0
+	// 2.0 6.0 3.0
+	auto c = Matrix{3, 1};
+	c(0, 0) = 4.0;
+	c(1, 0) = 5.0;
+	c(2, 0) = 6.0;
+	ldl.insert_block_at(1, c, stack);
+
+	// then delete two rows and columns at indices 0 and 2
+	// matrix is
+	// 5.0
+	veg::isize const indices[] = {0, 2};
+	ldl.delete_at(indices, 2, stack);
+
+	auto rhs = Vector{1};
+	rhs[0] = 5.0;
+
+	ldl.solve_in_place(rhs, stack);
+	VEG_ASSERT(rhs[0] == 1.0);
+}
+ * ```
+ */
 template <typename T>
 struct Ldlt {
 private:
@@ -132,8 +203,18 @@ private:
 	// - dim < stride
 	// - ld_storage.len() >= dim * stride
 public:
+	/*!
+	 * Default constructor, initialized with a `0×0` empty matrix.
+	 */
 	Ldlt() = default;
 
+	/*!
+	 * Reserves enough internal storage for a matrix `A` of size at least
+	 * `cap×cap`.  
+	 * This operation invalidates the existing decomposition.
+   *
+   * @param cap new capacity
+	 */
 	void reserve_uninit(isize cap) noexcept {
 		static_assert(VEG_CONCEPT(nothrow_constructible<T>), ".");
 
@@ -151,6 +232,13 @@ public:
 		stride = new_stride;
 	}
 
+	/*!
+	 * Reserves enough internal storage for a matrix `A` of size at least
+	 * `cap×cap`.  
+	 * This operation preserves the existing decomposition.
+   *
+   * @param cap new capacity
+	 */
 	void reserve(isize cap) noexcept {
 		auto new_stride = adjusted_stride(cap);
 		if (cap <= stride && cap * new_stride <= ld_storage.len()) {
@@ -176,6 +264,13 @@ public:
 		stride = new_stride;
 	}
 
+	/*!
+	 * Returns the memory storage requirements for performing a rank `k` update
+   * on a matrix with size at most `n×n`, with `k ≤ r`.
+   *
+   * @param n maximum dimension of the matrix
+   * @param r maximum number of simultaneous rank updates
+	 */
 	static auto rank_r_update_req(isize n, isize r) noexcept
 			-> veg::dynstack::StackReq {
 		auto w_req = veg::dynstack::StackReq{
@@ -189,6 +284,13 @@ public:
 		return w_req & alpha_req;
 	}
 
+	/*!
+	 * Returns the memory storage requirements for deleting at most `r` rows and columns
+   * from a matrix with size at most `n×n`.
+   *
+   * @param n maximum dimension of the matrix
+   * @param r maximum number of rows to be deleted
+	 */
 	static auto delete_at_req(isize n, isize r) noexcept
 			-> veg::dynstack::StackReq {
 		return veg::dynstack::StackReq{
@@ -198,6 +300,15 @@ public:
 		       dense_ldlt::ldlt_delete_rows_and_cols_req(veg::Tag<T>{}, n, r);
 	}
 
+	/*!
+   * Given an LDLT decomposition for a matrix `A`, this computes the decomposition
+   * for the matrix `A` with `r` columns and rows removed, as indicated by the indices
+   * `indices[0], ..., indices[r-1]`.
+   * 
+   * @param indices pointer to the array of indices to be deleted
+   * @param r number of the indices to be deleted
+   * @param stack workspace memory stack
+	 */
 	void
 	delete_at(isize const* indices, isize r, veg::dynstack::DynStackMut stack) {
 		if (r == 0) {
@@ -210,7 +321,7 @@ public:
 
 		auto _indices_actual =
 				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
-		auto indices_actual = _indices_actual.ptr_mut();
+		auto* indices_actual = _indices_actual.ptr_mut();
 
 		for (isize k = 0; k < r; ++k) {
 			indices_actual[k] = perm_inv[indices[k]];
@@ -258,6 +369,13 @@ public:
 		return pos;
 	}
 
+	/*!
+	 * Returns the memory storage requirements for inserting at most `r` rows and columns
+   * from a matrix with size at most `n×n`.
+   *
+   * @param n maximum dimension of the matrix
+   * @param r maximum number of rows to be inserted
+	 */
 	static auto insert_block_at_req(isize n, isize r) noexcept
 			-> veg::dynstack::StackReq {
 		using veg::dynstack::StackReq;
@@ -268,6 +386,14 @@ public:
 		       dense_ldlt::ldlt_insert_rows_and_cols_req(veg::Tag<T>{}, n, r);
 	}
 
+	/*!
+   * Given an LDLT decomposition for a matrix `A`, this computes the decomposition
+   * for the matrix `A` with extra `r` columns and rows from `a` added at the index `i`.
+   *
+   * @param i index where the block should be inserted
+   * @param a matrix of the new columns that are inserted
+   * @param stack workspace memory stack
+	 */
 	void insert_block_at(
 			isize i, Eigen::Ref<ColMat const> a, veg::dynstack::DynStackMut stack) {
 
@@ -312,6 +438,13 @@ public:
 				ld_col_mut(), i_actual, permuted_a, stack);
 	}
 
+	/*!
+	 * Returns the memory storage requirements for a diagonal subsection update with
+   * size at most `r`, in a matrix with size at most `n×n`.
+   *
+   * @param n maximum dimension of the matrix
+   * @param r maximum size of diagonal subsection that gets updated
+	 */
 	static auto diagonal_update_req(isize n, isize r) noexcept
 			-> veg::dynstack::StackReq {
 		using veg::dynstack::StackReq;
@@ -330,6 +463,17 @@ public:
 		return algo_req & w_req & alpha_req;
 	}
 
+	/*!
+   * Given an LDLT decomposition for a matrix `A`, this computes the decomposition
+   * for the matrix `A` with the vector `alpha` added to a diagonal subset, as specified
+   * by the provided indices.
+   *
+   * The values pointed at by `indices` are unspecified after a call to this function.
+   *
+   * @param indices pointer to the array of indices of diagonal elements that are updated
+   * @param r number of the indices to be updated
+   * @param stack workspace memory stack
+	 */
 	void diagonal_update_clobber_indices( //
 			isize* indices,
 			isize r,
@@ -344,8 +488,8 @@ public:
 				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
 		auto _sorted_indices =
 				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
-		auto positions = _positions.ptr_mut();
-		auto sorted_indices = _sorted_indices.ptr_mut();
+		auto* positions = _positions.ptr_mut();
+		auto* sorted_indices = _sorted_indices.ptr_mut();
 
 		for (isize k = 0; k < r; ++k) {
 			indices[k] = perm_inv[indices[k]];
@@ -385,6 +529,14 @@ public:
 				});
 	}
 
+	/*!
+   * Given an LDLT decomposition for a matrix `A`, this computes the decomposition
+   * for the rank-updated matrix `A + w×diag(alpha)×w.T`
+   *
+   * @param w rank update matrix
+   * @param alpha rank update diagonal vector
+   * @param stack workspace memory stack
+	 */
 	void rank_r_update( //
 			Eigen::Ref<ColMat const> w,
 			Eigen::Ref<Vec const> alpha,
@@ -414,6 +566,9 @@ public:
 		dense_ldlt::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
 	}
 
+  /*!
+   * Returns the dimension of the stored decomposition.
+   */
 	auto dim() const noexcept -> isize { return perm.len(); }
 
 	auto ld_col() const noexcept -> Eigen::Map< //
@@ -483,6 +638,12 @@ public:
 	auto p() -> Perm { return {VecMapISize(perm.ptr(), dim())}; }
 	auto pt() -> Perm { return {VecMapISize(perm_inv.ptr(), dim())}; }
 
+	/*!
+	 * Returns the memory storage requirements for a factorization of a matrix
+   * of size at most `n×n`
+   *
+   * @param n maximum dimension of the matrix
+	 */
 	static auto factorize_req(isize n) -> veg::dynstack::StackReq {
 		return veg::dynstack::StackReq{
 							 n * adjusted_stride(n) * isize{sizeof(T)},
@@ -490,6 +651,15 @@ public:
 					 } |
 		       dense_ldlt::factorize_req(veg::Tag<T>{}, n);
 	}
+
+  /*!
+   * Computes the decomposition of a given matrix `A`.  
+   * The matrix is interpreted as a symmetric matrix and only
+   * the lower triangular part of `A` is accessed.
+   *
+   * @param mat matrix whose decomposition should be computed
+   * @param stack workspace memory stack
+   */
 	void factorize(
 			Eigen::Ref<ColMat const> mat /* NOLINT */,
 			veg::dynstack::DynStackMut stack) {
@@ -520,12 +690,25 @@ public:
 		dense_ldlt::factorize(ld_col_mut(), stack);
 	}
 
+  /*!
+	 * Returns the memory storage requirements for solving a linear system
+   * with a decomposition of dimension at most `n`
+   *
+   * @param n maximum dimension of the matrix
+   */
 	static auto solve_in_place_req(isize n) -> veg::dynstack::StackReq {
 		return {
 				n * isize{sizeof(T)},
 				_detail::align<T>(),
 		};
 	}
+
+  /*!
+	 * Solves the system `A×x = rhs`, and stores the result in `rhs`.
+   *
+   * @param rhs right hand side of the linear system
+   * @param stack workspace memory stack
+   */
 	void
 	solve_in_place(Eigen::Ref<Vec> rhs, veg::dynstack::DynStackMut stack) const {
 		isize n = rhs.rows();
