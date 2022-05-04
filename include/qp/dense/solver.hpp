@@ -482,6 +482,35 @@ T primal_dual_newton_semi_smooth(
 			qpresults.n_tot += iter + 1;
 			break;
 		}
+
+		// compute primal and dual infeasibility criteria
+		bool is_primal_infeasible = qp::dense::global_primal_residual_infeasibility(
+					VectorViewMut<T>{from_eigen,ATdy},
+					VectorViewMut<T>{from_eigen,CTdz}, 
+					VectorViewMut<T>{from_eigen,dx},
+					VectorViewMut<T>{from_eigen,dy},
+					VectorViewMut<T>{from_eigen,dz},
+					qpwork,
+					qpsettings
+		);
+
+		bool is_dual_infeasible = qp::dense::global_dual_residual_infeasibility(
+					VectorViewMut<T>{from_eigen,Adx},
+					VectorViewMut<T>{from_eigen,Cdx}, 
+					VectorViewMut<T>{from_eigen,Hdx},
+					VectorViewMut<T>{from_eigen,dx},
+					qpwork,
+					qpsettings,
+					qpmodel
+		);
+
+		if (is_primal_infeasible){
+			qpresults.status = PROXQP_PRIMAL_INFEASIBLE;
+			break;
+		}else if (is_dual_infeasible){
+			qpresults.status = PROXQP_DUAL_INFEASIBLE;
+			break;
+		}
 	}
 
 	return err_in;
@@ -642,6 +671,9 @@ void qp_solve( //
 				qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
 		if (qpsettings.verbose) {
 			std::cout << " inner loop residual : " << err_in << std::endl;
+		}
+		if (qpresults.status == PROXQP_PRIMAL_INFEASIBLE || qpresults.status == PROXQP_DUAL_INFEASIBLE){
+			break;
 		}
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);

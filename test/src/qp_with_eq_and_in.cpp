@@ -159,7 +159,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality c
 		qp::dense::Data<T> data(dim, n_eq, n_in);
 		qp::Results<T> results{dim, n_eq, n_in};
 		qp::dense::Workspace<T> work{dim, n_eq, n_in};
-
+	    
 		qp::dense::QPsetup_dense<T>( //
 				qp.H,
 				qp.g,

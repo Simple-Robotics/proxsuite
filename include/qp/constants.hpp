@@ -5,6 +5,8 @@
 
 namespace qp {
 using veg::isize;
+
+// STATUS CONSTANTS
 const isize PROXQP_SOLVED = 1;
 const isize PROXQP_SOLVED_INACCURATE = 2;
 const isize PROXQP_MAX_ITER_REACHED = -2;
@@ -16,6 +18,7 @@ const isize PROXQP_SIGINT = -5;
 const isize PROXQP_TIME_LIMIT_REACHED = -6;
 const isize PROXQP_UNSOLVED = -10;
 const isize PROXQP_NON_CVX = -7;
+
 } // namespace qp
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_CONSTANTS_HPP */

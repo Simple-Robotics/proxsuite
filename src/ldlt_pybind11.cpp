@@ -328,14 +328,13 @@ INRIA LDLT decomposition
 			.def_readwrite("z", &qp::Results<f64>::z)
 			.def_readwrite("n_c", &qp::Results<f64>::n_c)
 			.def_readwrite("mu_eq", &qp::Results<f64>::mu_eq)
-			.def_readwrite("mu_eq_inv", &qp::Results<f64>::mu_eq_inv)
 			.def_readwrite("mu_in", &qp::Results<f64>::mu_in)
-			.def_readwrite("mu_in_inv", &qp::Results<f64>::mu_in_inv)
 			.def_readwrite("rho", &qp::Results<f64>::rho)
 			.def_readwrite("n_tot", &qp::Results<f64>::n_tot)
 			.def_readwrite("n_ext", &qp::Results<f64>::n_ext)
 			.def_readwrite("timing", &qp::Results<f64>::timing)
 			.def_readwrite("objValue", &qp::Results<f64>::objValue)
+			.def_readwrite("status", &qp::Results<f64>::status)
 			.def_readwrite("n_mu_change", &qp::Results<f64>::n_mu_change);
 
 	::pybind11::class_<qp::Settings<f64>>(m, "Settings")
@@ -351,24 +350,19 @@ INRIA LDLT decomposition
 					"refactor_rho_threshold", &qp::Settings<f64>::refactor_rho_threshold)
 			.def_readwrite("mu_max_eq", &qp::Settings<f64>::mu_max_eq)
 			.def_readwrite("mu_max_in", &qp::Settings<f64>::mu_max_in)
-			.def_readwrite("mu_max_eq_inv", &qp::Settings<f64>::mu_max_eq_inv)
-			.def_readwrite("mu_max_in_inv", &qp::Settings<f64>::mu_max_in_inv)
 			.def_readwrite("mu_update_factor", &qp::Settings<f64>::mu_update_factor)
-			.def_readwrite(
-					"mu_update_inv_factor", &qp::Settings<f64>::mu_update_inv_factor)
 
 			.def_readwrite("cold_reset_mu_eq", &qp::Settings<f64>::cold_reset_mu_eq)
 			.def_readwrite("cold_reset_mu_in", &qp::Settings<f64>::cold_reset_mu_in)
-			.def_readwrite(
-					"cold_reset_mu_eq_inv", &qp::Settings<f64>::cold_reset_mu_eq_inv)
-
-			.def_readwrite(
-					"cold_reset_mu_in_inv", &qp::Settings<f64>::cold_reset_mu_in_inv)
 			.def_readwrite("max_iter", &qp::Settings<f64>::max_iter)
 			.def_readwrite("max_iter_in", &qp::Settings<f64>::max_iter_in)
 
 			.def_readwrite("eps_abs", &qp::Settings<f64>::eps_abs)
 			.def_readwrite("eps_rel", &qp::Settings<f64>::eps_rel)
+
+			.def_readwrite("eps_primal_inf", &qp::Settings<f64>::eps_primal_inf)
+			.def_readwrite("eps_dual_inf", &qp::Settings<f64>::eps_dual_inf)
+
 			.def_readwrite(
 					"nb_iterative_refinement",
 					&qp::Settings<f64>::nb_iterative_refinement)
