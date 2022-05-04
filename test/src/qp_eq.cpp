@@ -98,7 +98,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints an
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.n_tot << std::endl;
+		std::cout << "total number of iteration: " << results.iter << std::endl;
 	}
 }
 
@@ -145,6 +145,6 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and l
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.n_tot << std::endl;
+		std::cout << "total number of iteration: " << results.iter << std::endl;
 	}
 }

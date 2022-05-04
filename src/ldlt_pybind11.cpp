@@ -180,15 +180,17 @@ void QPsolve(
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration =
 			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.timing = duration.count();
+	qpresults.solve_time = duration.count();
+	qpresults.run_time = qpresults.solve_time + qpresults.setup_time;
 
 	if (qpsettings.verbose) {
 		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-		std::cout << "n_ext : " << qpresults.n_ext << std::endl;
-		std::cout << "n_tot : " << qpresults.n_tot << std::endl;
-		std::cout << "mu updates : " << qpresults.n_mu_change << std::endl;
+		std::cout << "iter_ext : " << qpresults.iter_ext << std::endl;
+		std::cout << "iter : " << qpresults.iter << std::endl;
+		std::cout << "mu updates : " << qpresults.mu_updates << std::endl;
+		std::cout << "rho_updates : " << qpresults.rho_updates << std::endl;
 		std::cout << "objValue : " << qpresults.objValue << std::endl;
-		std::cout << "timing : " << qpresults.timing << std::endl;
+		std::cout << "solve_time : " << qpresults.solve_time << std::endl;
 	}
 }
 
@@ -330,12 +332,17 @@ INRIA LDLT decomposition
 			.def_readwrite("mu_eq", &qp::Results<f64>::mu_eq)
 			.def_readwrite("mu_in", &qp::Results<f64>::mu_in)
 			.def_readwrite("rho", &qp::Results<f64>::rho)
-			.def_readwrite("n_tot", &qp::Results<f64>::n_tot)
-			.def_readwrite("n_ext", &qp::Results<f64>::n_ext)
-			.def_readwrite("timing", &qp::Results<f64>::timing)
+			.def_readwrite("iter", &qp::Results<f64>::iter)
+			.def_readwrite("iter_ext", &qp::Results<f64>::iter_ext)
+			.def_readwrite("run_time", &qp::Results<f64>::run_time)
+			.def_readwrite("setup_time", &qp::Results<f64>::setup_time)
+			.def_readwrite("solve_time", &qp::Results<f64>::solve_time)
+			.def_readwrite("pri_res", &qp::Results<f64>::pri_res)
+			.def_readwrite("dua_res", &qp::Results<f64>::dua_res)
 			.def_readwrite("objValue", &qp::Results<f64>::objValue)
 			.def_readwrite("status", &qp::Results<f64>::status)
-			.def_readwrite("n_mu_change", &qp::Results<f64>::n_mu_change);
+			.def_readwrite("rho_updates", &qp::Results<f64>::rho_updates)
+			.def_readwrite("mu_updates", &qp::Results<f64>::mu_updates);
 
 	::pybind11::class_<qp::Settings<f64>>(m, "Settings")
 			.def(::pybind11::init()) // constructor

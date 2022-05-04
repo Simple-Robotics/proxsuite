@@ -10,6 +10,7 @@
 #include <fstream>
 #include <veg/util/dynstack_alloc.hpp>
 #include <dense-ldlt/ldlt.hpp>
+#include <fmt/chrono.h>
 
 namespace qp {
 namespace dense {
@@ -407,7 +408,7 @@ T primal_dual_newton_semi_smooth(
 	for (i64 iter = 0; iter <= qpsettings.max_iter_in; ++iter) {
 
 		if (iter == qpsettings.max_iter_in) {
-			qpresults.n_tot += qpsettings.max_iter_in;
+			qpresults.iter += qpsettings.max_iter_in+1;
 			break;
 		}
 		primal_dual_semi_smooth_newton_step<T>(
@@ -446,7 +447,7 @@ T primal_dual_newton_semi_smooth(
 		auto alpha = qpwork.alpha;
 
 		if (infty_norm(alpha * qpwork.dw_aug) < 1.E-11 && iter > 0) {
-			qpresults.n_tot += iter + 1;
+			qpresults.iter += iter + 1;
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(alpha_step * dx) "
 									<< infty_norm(alpha * qpwork.dw_aug) << std::endl;
@@ -479,7 +480,7 @@ T primal_dual_newton_semi_smooth(
 		}
 
 		if (err_in <= eps_int) {
-			qpresults.n_tot += iter + 1;
+			qpresults.iter += iter + 1;
 			break;
 		}
 
@@ -550,7 +551,7 @@ void qp_solve( //
 
 	for (i64 iter = 0; iter <= qpsettings.max_iter; ++iter) {
 
-		qpresults.n_ext += 1;
+		qpresults.iter_ext += 1;
 		if (iter == qpsettings.max_iter) {
 			break;
 		}
@@ -576,6 +577,8 @@ void qp_solve( //
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3);
+		qpresults.pri_res = primal_feasibility_lhs;
+		qpresults.dua_res = dual_feasibility_lhs;
 
 		T new_bcl_mu_in(qpresults.mu_in);
 		T new_bcl_mu_eq(qpresults.mu_eq);
@@ -640,6 +643,7 @@ void qp_solve( //
 				T rho_new(qpsettings.refactor_rho_threshold);
 
 				refactorize(qpmodel, qpresults, qpwork, rho_new);
+				qpresults.rho_updates+=1;
 
 				qpresults.rho = rho_new;
 			}
@@ -699,10 +703,10 @@ void qp_solve( //
 												 qpwork.primal_feasibility_rhs_1_eq,
 												 qpwork.primal_feasibility_rhs_1_in_u),
 										 qpwork.primal_feasibility_rhs_1_in_l)));
-
+		qpresults.pri_res = primal_feasibility_lhs_new;
 		if (is_primal_feasible) {
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
-
+			
 			qp::dense::global_dual_residual(
 					qpmodel,
 					qpresults,
@@ -711,7 +715,8 @@ void qp_solve( //
 					dual_feasibility_rhs_0,
 					dual_feasibility_rhs_1,
 					dual_feasibility_rhs_3);
-
+			qpresults.dua_res = dual_feasibility_lhs_new;
+			
 			is_dual_feasible =
 					dual_feasibility_lhs_new <=
 					(qpsettings.eps_abs +
@@ -757,6 +762,7 @@ void qp_solve( //
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
 				dual_feasibility_rhs_3);
+		qpresults.dua_res = dual_feasibility_lhs_new;
 
 		if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
 		    dual_feasibility_lhs_new >= dual_feasibility_lhs &&
@@ -775,7 +781,7 @@ void qp_solve( //
 		/// effective mu upddate
 
 		if (qpresults.mu_in != new_bcl_mu_in || qpresults.mu_eq != new_bcl_mu_eq) {
-			{ ++qpresults.n_mu_change; }
+			{ ++qpresults.mu_updates; }
 			mu_update(
 					qpmodel, qpresults, qpwork, new_bcl_mu_eq, new_bcl_mu_in);
 		}
@@ -829,6 +835,7 @@ void QPsetup_generic( //
 		qp::dense::Workspace<T>& qpwork,
 		qp::Results<T>& qpresults) {
 
+	auto start = std::chrono::high_resolution_clock::now();
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
 	qpmodel.g = g;
@@ -899,6 +906,9 @@ void QPsetup_generic( //
 	}
 
 	qpwork.rhs.setZero();
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	qpresults.setup_time = duration.count();
 }
 
 template <typename T>

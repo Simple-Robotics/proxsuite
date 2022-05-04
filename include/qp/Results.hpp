@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
 #include "qp/constants.hpp"
+
 namespace qp {
 using veg::isize;
 
@@ -13,16 +14,11 @@ public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
-	////// SOLUTION STATUS
-
-	isize status;
-
 	///// SOLUTION STORAGE
 
 	Vec x;
 	Vec y;
 	Vec z;
-	isize n_c; // final number of active inequalities
 
 	///// final proximal regularization parameters
 	T mu_eq;
@@ -33,13 +29,22 @@ public:
 	T nu;
 
 	///// iteration count
-	isize n_tot;
-	isize n_ext;
-	isize n_mu_change;
+	isize iter;
+	isize iter_ext;
+	isize mu_updates;
+    isize rho_updates;
+    isize n_c; // final number of active inequalities
+    isize status;
 
 	//// timings
-	T timing;
+    T setup_time;
+    T solve_time;
+	T run_time;
 	T objValue;
+    T pri_res;
+    T dua_res;
+
+    ////// SOLUTION STATUS
 
 	Results(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
@@ -59,12 +64,17 @@ public:
 	            mu_in = 1e-1;
                 nu = 1.;
 
-                n_tot = 0;
-                n_ext = 0;
-                n_mu_change = 0;
+                iter = 0;
+                iter_ext = 0;
+                mu_updates = 0;
+                rho_updates = 0;
                 n_c = 0;
-                timing = 0.;
+                run_time = 0.;
+                setup_time = 0.;
+                solve_time =0.;
                 objValue =0.;
+                pri_res = 0.;
+                dua_res = 0.;
 
 				status = PROXQP_MAX_ITER_REACHED;
                 
@@ -82,11 +92,14 @@ public:
         mu_in = 1e-1;
         nu = 1.;
 
-        n_tot = 0;
-        n_ext = 0;
-        n_mu_change = 0;
+        iter = 0;
+        iter_ext = 0;
+        mu_updates = 0;
+        rho_updates = 0;
         n_c = 0;
-        timing = 0.;
+        run_time = 0.;
+        setup_time = 0.;
+        solve_time =0.;
         objValue =0.;
 
 		status = PROXQP_MAX_ITER_REACHED;
