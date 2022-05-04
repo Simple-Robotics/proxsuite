@@ -2,10 +2,10 @@
 #define INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 
 #include <dense-ldlt/core.hpp>
-#include <sparse_ldlt/core.hpp>
-#include <sparse_ldlt/factorize.hpp>
-#include <sparse_ldlt/update.hpp>
-#include <sparse_ldlt/rowmod.hpp>
+#include <sparse-ldlt/core.hpp>
+#include <sparse-ldlt/factorize.hpp>
+#include <sparse-ldlt/update.hpp>
+#include <sparse-ldlt/rowmod.hpp>
 #include <qp/dense/views.hpp>
 #include <qp/Settings.hpp>
 #include <iostream>

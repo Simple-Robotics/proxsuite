@@ -1,7 +1,7 @@
 #ifndef SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 #define SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 
-#include "sparse_ldlt/core.hpp"
+#include "sparse-ldlt/core.hpp"
 #include <veg/tuple.hpp>
 #include <algorithm>
 
@@ -75,7 +75,7 @@ auto merge_second_col_into_first( //
 				break;
 			}
 
-			insert_pos_ptr[insert_count] = index_first;
+			insert_pos_ptr[insert_count] = I(index_first);
 			difference[insert_count] = current_second;
 			++insert_count;
 			++index_second;
@@ -190,7 +190,7 @@ auto rank1_update(
 			id_perm ? w.row_indices() : _w_permuted_indices.as_ref();
 	if (!id_perm) {
 		I* pw_permuted_indices = _w_permuted_indices.ptr_mut();
-		for (usize k = 0; k < w.nnz(); ++k) {
+		for (usize k = 0; k < usize(w.nnz()); ++k) {
 			usize i = util::zero_extend(w.row_indices().ptr()[k]);
 			pw_permuted_indices[k] = perm_inv.ptr()[i];
 		}
@@ -198,9 +198,10 @@ auto rank1_update(
 	}
 
 	auto sx = util::sign_extend;
+	auto zx = util::zero_extend;
 	// symbolic update
 	{
-		usize current_col = w_permuted_indices[0];
+		usize current_col = zx(w_permuted_indices[0]);
 
 		auto _difference =
 				stack.make_new_for_overwrite(tag, isize(n - current_col)).unwrap();
@@ -211,10 +212,10 @@ auto rank1_update(
 		I* difference = _difference.ptr_mut();
 
 		while (true) {
-			usize old_parent = sx(etree[current_col]);
+			usize old_parent = sx(etree[isize(current_col)]);
 
-			usize current_ptr_idx = util::zero_extend(ld.col_ptrs()[current_col]);
-			usize next_ptr_idx = util::zero_extend(ld.col_ptrs()[current_col + 1]);
+			usize current_ptr_idx = zx(ld.col_ptrs()[isize(current_col)]);
+			usize next_ptr_idx = zx(ld.col_ptrs()[isize(current_col) + 1]);
 
 			VEG_BIND(
 					auto,
@@ -223,21 +224,21 @@ auto rank1_update(
 							difference,
 							ld.values_mut().ptr_mut() + (current_ptr_idx + 1),
 							ld.row_indices_mut().ptr_mut() + (current_ptr_idx + 1),
-							next_ptr_idx - current_ptr_idx,
-							ld.nnz_per_col()[current_col] - 1,
+							isize(next_ptr_idx - current_ptr_idx),
+							isize(zx(ld.nnz_per_col()[isize(current_col)])) - 1,
 							merge_col,
-							current_col,
+							I(current_col),
 							true,
 							stack));
 
 			(void)_;
 			ld._set_nnz(
 					ld.nnz() + new_current_col.len() + 1 -
-					isize(ld.nnz_per_col()[current_col]));
-			ld.nnz_per_col_mut()[current_col] = I(new_current_col.len() + 1);
+					isize(ld.nnz_per_col()[isize(current_col)]));
+			ld.nnz_per_col_mut()[isize(current_col)] = I(new_current_col.len() + 1);
 
 			usize new_parent =
-					(new_current_col.len() == 0) ? usize(-1) : new_current_col[0];
+					(new_current_col.len() == 0) ? usize(-1) : sx(new_current_col[0]);
 
 			if (new_parent == usize(-1)) {
 				break;
@@ -249,7 +250,7 @@ auto rank1_update(
 			} else {
 				merge_col = new_current_col.as_const();
 				difference = _difference.ptr_mut();
-				etree[current_col] = I(new_parent);
+				etree[isize(current_col)] = I(new_parent);
 			}
 
 			current_col = new_parent;
@@ -258,24 +259,24 @@ auto rank1_update(
 
 	// numerical update
 	{
-		usize first_col = w_permuted_indices[0];
-		auto _work = stack.make_new_for_overwrite(veg::Tag<T>{}, n).unwrap();
+		usize first_col = zx(w_permuted_indices[0]);
+		auto _work = stack.make_new_for_overwrite(veg::Tag<T>{}, isize(n)).unwrap();
 		T* pwork = _work.ptr_mut();
 
-		for (usize col = first_col; col != usize(-1); col = sx(etree[col])) {
+		for (usize col = first_col; col != usize(-1); col = sx(etree[isize(col)])) {
 			pwork[col] = 0;
 		}
-		for (usize p = 0; p < w.nnz(); ++p) {
+		for (usize p = 0; p < usize(w.nnz()); ++p) {
 			pwork
-					[id_perm ? w.row_indices()[p]
-			             : (util::zero_extend(perm_inv[w.row_indices()[p]]))] =
-							w.values()[p];
+					[id_perm ? zx(w.row_indices()[isize(p)])
+			             : zx(perm_inv[w.row_indices()[isize(p)]])] =
+							w.values()[isize(p)];
 		}
 
 		I const* pldi = ld.row_indices().ptr();
 		T* pldx = ld.values_mut().ptr_mut();
 
-		for (usize col = first_col; col != usize(-1); col = sx(etree[col])) {
+		for (usize col = first_col; col != usize(-1); col = sx(etree[isize(col)])) {
 			auto col_start = ld.col_start(col);
 			auto col_end = ld.col_end(col);
 

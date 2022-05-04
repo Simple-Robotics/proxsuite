@@ -1,7 +1,7 @@
 #ifndef SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 #define SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 
-#include "sparse_ldlt/core.hpp"
+#include "sparse-ldlt/core.hpp"
 #include <Eigen/OrderingMethods>
 
 namespace sparse_ldlt {
@@ -170,7 +170,7 @@ void transpose_symbolic( //
 			auto i = util::zero_extend(pai[p]);
 			auto q = util::zero_extend(work[i]);
 
-			pati[q] = j;
+			pati[q] = I(j);
 			util::wrapping_inc(mut(work[i]));
 		}
 	}
@@ -289,7 +289,7 @@ VEG_INLINE void etree( //
 	auto pai = a.row_indices().ptr();
 
 	auto pparent = parent.ptr_mut();
-	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, n).unwrap();
+	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, isize(n)).unwrap();
 	auto pancestors = _work.as_mut().ptr_mut();
 
 	// for each column of a
@@ -394,7 +394,7 @@ VEG_NODISCARD VEG_INLINE auto ereach(
 
 			// can't overwrite top of the stack since elements of s are unique
 			// and s is large enough to hold all the nodes
-			s[len] = I(i);
+			s[isize(len)] = I(i);
 			util::wrapping_inc(mut(len));
 
 			// mark node i as reached
@@ -418,7 +418,7 @@ VEG_NODISCARD VEG_INLINE auto ereach(
 	pmarked[k_] = false;
 
 	// [top, end[
-	return s.split_at_mut(top)[1_c];
+	return s.split_at_mut(isize(top))[1_c];
 }
 } // namespace _detail
 
@@ -437,7 +437,7 @@ VEG_INLINE auto postorder_depth_first_search( //
 	auto ppost = post.ptr_mut();
 
 	usize top = 0;
-	pstack[0] = root;
+	pstack[0] = I(root);
 
 	// stack is non empty
 	while (top != usize(-1)) {
@@ -478,7 +478,8 @@ void postorder(SliceMut<I> post, Slice<I> parent, DynStackMut stack) noexcept {
 
 	usize n = usize(parent.len());
 
-	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * n).unwrap();
+	auto _work =
+			stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * isize(n)).unwrap();
 	I* pwork = _work.as_mut().ptr_mut();
 
 	I* pstack = pwork;
@@ -496,17 +497,17 @@ void postorder(SliceMut<I> post, Slice<I> parent, DynStackMut stack) noexcept {
 		usize j = n - 1 - _j;
 
 		// if not a root node
-		if (parent[j] != I(-1)) {
+		if (parent[isize(j)] != I(-1)) {
 			// next child of this node is the previous first child
-			pnext_child[j] = pfirst_child[util::zero_extend(parent[j])];
+			pnext_child[j] = pfirst_child[util::zero_extend(parent[isize(j)])];
 			// set this node to be the new first child
-			pfirst_child[util::zero_extend(parent[j])] = j;
+			pfirst_child[util::zero_extend(parent[isize(j)])] = I(j);
 		}
 	}
 
 	usize start_index = 0;
 	for (usize root = 0; root < n; ++root) {
-		if (parent[root] == I(-1)) {
+		if (parent[isize(root)] == I(-1)) {
 			start_index = _detail::postorder_depth_first_search(
 					post, root, start_index, pstack, pfirst_child, pnext_child);
 		}
@@ -602,10 +603,11 @@ void column_counts(
 			a.ncols() == n,
 			counts.len() == n);
 	auto _at_work =
-			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * n + a.nnz()).unwrap();
+			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz())
+					.unwrap();
 	auto pat_work = _at_work.ptr_mut();
 	pat_work[0] = 0;
-	pat_work[n] = a.nnz();
+	pat_work[n] = I(a.nnz());
 
 	SymbolicMatMut<I> at{
 			from_raw_parts,
@@ -711,9 +713,9 @@ void column_counts(
 
 	// sum up the deltas
 	for (usize j = 0; j < n; ++j) {
-		if (parent[j] != I(-1)) {
-			pcounts[util::zero_extend(parent[j])] = util::wrapping_plus(
-					pcounts[util::zero_extend(parent[j])], pcounts[j]);
+		if (parent[isize(j)] != I(-1)) {
+			pcounts[util::zero_extend(parent[isize(j)])] = util::wrapping_plus(
+					pcounts[util::zero_extend(parent[isize(j)])], pcounts[j]);
 		}
 	}
 }
@@ -763,7 +765,7 @@ void inv_perm(SliceMut<I> perm_inv, Slice<I> perm) noexcept {
 	auto pperm = perm.ptr();
 	auto pperm_inv = perm_inv.ptr_mut();
 	for (usize i = 0; i < n; ++i) {
-		pperm_inv[util::zero_extend(pperm[i])] = i;
+		pperm_inv[util::zero_extend(pperm[i])] = I(i);
 	}
 }
 
@@ -849,7 +851,7 @@ void symmetric_permute_symbolic(
 				usize new_min = new_i < new_j ? new_i : new_j;
 
 				auto row_idx = pcurrent_row_index[new_max];
-				pnew_ai[row_idx] = new_min;
+				pnew_ai[row_idx] = I(new_min);
 				pcurrent_row_index[new_max] = util::wrapping_plus(row_idx, I(1));
 			}
 		}
@@ -898,7 +900,7 @@ void symmetric_permute(
 				usize new_min = new_i < new_j ? new_i : new_j;
 
 				auto row_idx = pcurrent_row_index[new_max];
-				pnew_ai[row_idx] = new_min;
+				pnew_ai[row_idx] = I(new_min);
 				pnew_ax[row_idx] = pold_ax[p];
 				pcurrent_row_index[new_max] = util::wrapping_plus(row_idx, I(1));
 			}
@@ -1016,7 +1018,7 @@ void factorize_symbolic_non_zeros(
 
 	if (!id_perm) {
 		_permuted_a_col_ptrs.as_mut()[0] = 0;
-		_permuted_a_col_ptrs.as_mut()[n] = I(a.nnz());
+		_permuted_a_col_ptrs.as_mut()[isize(n)] = I(a.nnz());
 		SymbolicMatMut<I> permuted_a{
 				from_raw_parts,
 				isize(n),
@@ -1201,7 +1203,7 @@ void factorize_numeric( //
 				_ereach_stack_storage.as_mut(),
 				permuted_a.symbolic(),
 				etree,
-				iter,
+				isize(iter),
 				_marked.ptr_mut());
 
 		auto pereach_stack = ereach_stack.ptr();
@@ -1232,7 +1234,7 @@ void factorize_numeric( //
 		px[iter] = 0;
 
 		for (usize q = 0; q < usize(ereach_stack.len()); ++q) {
-			usize j = pereach_stack[q];
+			usize j = util::zero_extend(pereach_stack[q]);
 			auto col_start = util::zero_extend(plp[j]);
 			auto row_idx = util::zero_extend(pcurrent_row_index[j]) + 1;
 
@@ -1251,13 +1253,13 @@ void factorize_numeric( //
 
 			d -= lkj * xj;
 
-			pli[row_idx] = iter;
+			pli[row_idx] = I(iter);
 			plx[row_idx] = lkj;
 			pcurrent_row_index[j] = I(row_idx);
 		}
 		{
 			auto col_start = util::zero_extend(plp[iter]);
-			pli[col_start] = iter;
+			pli[col_start] = I(iter);
 			plx[col_start] = d;
 		}
 	}

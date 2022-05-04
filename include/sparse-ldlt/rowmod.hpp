@@ -1,7 +1,7 @@
 #ifndef SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 #define SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 
-#include "sparse_ldlt/update.hpp"
+#include "sparse-ldlt/update.hpp"
 #include <algorithm>
 
 namespace sparse_ldlt {
@@ -60,7 +60,7 @@ auto delete_row(
 			ld._set_nnz(ld.nnz() - 1);
 
 			// adjust the parent of j in the elimination tree if necessary
-			if (petree[j] == permuted_pos) {
+			if (petree[j] == I(permuted_pos)) {
 				VEG_ASSERT(it_pos == 0);
 				if (pldnz[j] > 1) {
 					petree[j] = *it;
@@ -176,7 +176,7 @@ auto add_row(
 		// copy and sort permuted row indices
 		if (!id_perm) {
 			I* pnew_col_permuted_indices = _new_col_permuted_indices.ptr_mut();
-			for (usize k = 0; k < new_col.nnz(); ++k) {
+			for (usize k = 0; k < usize(new_col.nnz()); ++k) {
 				usize i = zx(new_col.row_indices().ptr()[k]);
 				pnew_col_permuted_indices[k] = perm_inv.ptr()[i];
 			}
@@ -206,8 +206,8 @@ auto add_row(
 		{
 			auto _visited =
 					stack.make_new(veg::Tag<bool>{}, isize(permuted_pos)).unwrap();
-			auto visited = _visited.ptr_mut();
-			for (usize p = 0; p < new_col.nnz(); ++p) {
+			bool* visited = _visited.ptr_mut();
+			for (usize p = 0; p < usize(new_col.nnz()); ++p) {
 				auto j = zx(new_col_permuted_indices.ptr()[p]);
 				if (j >= permuted_pos) {
 					break;
@@ -231,7 +231,7 @@ auto add_row(
 				}
 			}
 		}
-    std::sort(pl12_nnz_pattern, pl12_nnz_pattern + l12_nnz_pattern_count);
+		std::sort(pl12_nnz_pattern, pl12_nnz_pattern + l12_nnz_pattern_count);
 
 		// zero the elements in the non-zero pattern of the solution (new k-th row)
 		for (usize p = 0; p < l12_nnz_pattern_count; ++p) {
@@ -241,7 +241,7 @@ auto add_row(
 		// insert the rhs of the k-th row triangular system in the top part of the
 		// storage, and the bottom part of the added column in the bottom part of
 		// the storage
-		for (usize p = 0; p < new_col.nnz(); ++p) {
+		for (usize p = 0; p < usize(new_col.nnz()); ++p) {
 			auto j = zx(new_col.row_indices().ptr()[p]);
 			auto permuted_j = id_perm ? j : zx(perm_inv.ptr()[j]);
 			plx2_storage[permuted_j] = new_col.values().ptr()[p];
@@ -251,8 +251,7 @@ auto add_row(
 			if (permuted_j > permuted_pos) {
 				usize nz = zx(pldnz[permuted_pos]);
 				VEG_ASSERT(nz < (zx(pldp[permuted_pos + 1]) - zx(pldp[permuted_pos])));
-
-				pldi[zx(pldp[permuted_pos]) + nz] = permuted_j;
+				pldi[zx(pldp[permuted_pos]) + nz] = I(permuted_j);
 				++pldnz[permuted_pos];
 				ld._set_nnz(ld.nnz() + 1);
 			}
@@ -287,16 +286,17 @@ auto add_row(
 									pldi + (zx(pldp[j]) + 1),
 									isize(zx(pldnz[j])) - 1,
 							},
-							permuted_pos,
+							I(permuted_pos),
 							false,
 							stack));
 			(void)_;
+			(void)new_current_col;
 
 			// update column and global non-zero count
 			pldnz[permuted_pos] += I(computed_difference.len());
 			ld._set_nnz(ld.nnz() + computed_difference.len());
 
-			for (usize q = 0; q < (computed_difference.len()); ++q) {
+			for (usize q = 0; q < usize(computed_difference.len()); ++q) {
 				plx2_storage[zx(computed_difference.ptr()[q])] = 0;
 			}
 
@@ -329,7 +329,7 @@ auto add_row(
 			// if it is the first element, update the elimination tree so that k is
 			// the new parent of column j
 			if (it == (pldi + col_start + 1)) {
-				etree.ptr_mut()[j] = permuted_pos;
+				etree.ptr_mut()[j] = I(permuted_pos);
 			}
 
 			// shift the row indices  up by one position to provide enough space for
@@ -349,7 +349,7 @@ auto add_row(
 					usize((pldi + col_end) - it) * sizeof(T));
 
 			// insert the new row index k
-			*it = permuted_pos;
+			*it = I(permuted_pos);
 			// insert the new corresponding value
 			*(pldx + (it - pldi)) = l12_elem / d;
 			// update the non-zero count
