@@ -1,20 +1,26 @@
-find_package(Doxygen REQUIRED)
+find_package(Doxygen)
 
-# Find all the public headers
-get_target_property(
-  PROXSUITE_PUBLIC_HEADER_DIR inria_ldlt INTERFACE_INCLUDE_DIRECTORIES
-)
-file(GLOB_RECURSE PROXSUITE_PUBLIC_HEADERS ${PROXSUITE_PUBLIC_HEADER_DIR}/*.hpp)
+if(DOXYGEN_FOUND)
+  get_target_property(
+    PROXSUITE_PUBLIC_HEADER_DIR inria_ldlt INTERFACE_INCLUDE_DIRECTORIES
+  )
+  file(GLOB_RECURSE PROXSUITE_PUBLIC_HEADERS
+       ${PROXSUITE_PUBLIC_HEADER_DIR}/*.hpp
+  )
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/../docs/Doxyfile.in)
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-set(DOXYGEN_INDEX_FILE ${CMAKE_CURRENT_SOURCE_DIR}/html/index.html)
+  configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
 
-add_custom_command(
-  OUTPUT ${DOXYGEN_INDEX_FILE}
-  DEPENDS ${PROXSUITE_PUBLIC_HEADERS}
-  COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  MAIN_DEPENDENCY Doxyfile
-  COMMENT "Generating docs"
-)
-
-add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
+  add_custom_target(
+    Doxygen ALL
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+    DEPENDS ${PROXSUITE_PUBLIC_HEADERS}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating docs"
+    MAIN_DEPENDENCY Doxyfile
+    VERBATIM
+  )
+else(DOXYGEN_FOUND)
+  message("Doxygen need to be installed to generate the doxygen documentation")
+endif(DOXYGEN_FOUND)
