@@ -1,3 +1,5 @@
+/** \file */
+
 #ifndef INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 #define INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 
@@ -985,10 +987,10 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 	}
 }
 
-/// noalias general vector matrix matrix vector add
 template <typename OutL, typename OutR, typename A, typename InL, typename InR>
 void noalias_gevmmv_add(
 		OutL&& out_l, OutR&& out_r, A const& a, InL const& in_l, InR const& in_r) {
+	// noalias general vector matrix matrix vector add
 	detail::noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out_l},
 			{qp::from_eigen, out_r},
@@ -997,9 +999,9 @@ void noalias_gevmmv_add(
 			{qp::from_eigen, in_r});
 }
 
-/// noalias symmetric (hi) matrix vector add
 template <typename Out, typename A, typename In>
 void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
+	// noalias symmetric (hi) matrix vector add
 	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out},
 			{sparse_ldlt::from_eigen, a},

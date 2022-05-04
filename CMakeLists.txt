@@ -69,6 +69,7 @@ endif()
 
 add_library(inria_ldlt INTERFACE)
 target_compile_options(inria_ldlt INTERFACE "-march=native")
+target_include_directories(inria_ldlt INTERFACE external/simde/)
 target_include_directories(
   inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
@@ -123,7 +124,6 @@ target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 
 add_subdirectory(external/veg)
 target_link_libraries(inria_ldlt INTERFACE veg::veg)
-target_include_directories(inria_ldlt INTERFACE external/simde/)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(
@@ -160,4 +160,5 @@ if(ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_FLAGS}")
   enable_testing()
   add_subdirectory(test)
+  add_subdirectory(docs)
 endif()
