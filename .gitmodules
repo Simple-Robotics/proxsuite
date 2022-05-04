@@ -10,9 +10,6 @@
 [submodule "external/qpalm"]
 	path = external/qpalm
 	url = https://github.com/Benny44/QPALM_vLADEL
-[submodule "external/dense-ldlt"]
-	path = external/dense-ldlt
-	url = git@github.com:Simple-Robotics/dense-ldlt.git
-[submodule "external/sparse-ldlt"]
-	path = external/sparse-ldlt
-	url = git@github.com:Simple-Robotics/sparse-ldlt.git
+[submodule "external/veg"]
+	path = external/veg
+	url = https://github.com/kitegi/veg.git

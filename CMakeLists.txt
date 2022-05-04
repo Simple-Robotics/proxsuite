@@ -121,9 +121,9 @@ endif()
 
 target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 
-add_subdirectory(external/dense-ldlt)
-add_subdirectory(external/sparse-ldlt)
-target_link_libraries(inria_ldlt INTERFACE dense-ldlt::dense-ldlt sparse-ldlt)
+add_subdirectory(external/veg)
+target_link_libraries(inria_ldlt INTERFACE veg::veg)
+target_include_directories(inria_ldlt INTERFACE external/simde/)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(
