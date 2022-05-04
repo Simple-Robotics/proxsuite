@@ -1,6 +1,5 @@
-//#ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
-//#define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
-#pragma once
+#ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
+#define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
 
 #include <Eigen/Core>
 #include <dense-ldlt/ldlt.hpp>
@@ -233,4 +232,4 @@ public:
 } // namespace dense
 } // namespace qp
 
-//#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */

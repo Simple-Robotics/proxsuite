@@ -615,7 +615,7 @@ void qp_solve( //
 				qpresults.rho = rho_new;
 			}
 			if (is_dual_feasible) {
-
+				qpresults.status = PROXQP_SOLVED;
 				break;
 			}
 		}
@@ -690,7 +690,7 @@ void qp_solve( //
 											 dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
 			if (is_dual_feasible) {
-
+				qpresults.status = PROXQP_SOLVED;
 				break;
 			}
 		}

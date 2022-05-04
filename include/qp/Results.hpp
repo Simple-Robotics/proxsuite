@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
-
+#include "qp/constants.hpp"
 namespace qp {
 using veg::isize;
 
@@ -12,6 +12,10 @@ struct Results {
 public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
+
+	////// SOLUTION STATUS
+
+	isize status;
 
 	///// SOLUTION STORAGE
 
@@ -61,6 +65,8 @@ public:
                 n_c = 0;
                 timing = 0.;
                 objValue =0.;
+
+				status = PROXQP_MAX_ITER_REACHED;
                 
                 }
     
@@ -82,6 +88,8 @@ public:
         n_c = 0;
         timing = 0.;
         objValue =0.;
+
+		status = PROXQP_MAX_ITER_REACHED;
 
     }
 };
