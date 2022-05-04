@@ -2075,10 +2075,10 @@ void qp_solve(
 				} else {
 					y_e = y_prev_e;
 					z_e = z_prev_e;
-					new_bcl_mu_in =
-							std::min(mu_in * settings.mu_update_factor, settings.mu_max_in);
-					new_bcl_mu_eq =
-							std::min(mu_eq * settings.mu_update_factor, settings.mu_max_eq);
+					new_bcl_mu_in = std::min(
+							mu_in * settings.mu_update_inv_factor, settings.mu_max_in_inv);
+					new_bcl_mu_eq = std::min(
+							mu_eq * settings.mu_update_inv_factor, settings.mu_max_eq_inv);
 					bcl_eta_ext =
 							bcl_eta_ext_init / pow(new_bcl_mu_in, settings.alpha_bcl);
 					bcl_eta_in = 1 / std::max(new_bcl_mu_in, eps_in_min);
@@ -2112,8 +2112,8 @@ void qp_solve(
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
 			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //
 			    mu_in >= 1.E5) {
-				new_bcl_mu_in = settings.cold_reset_mu_in;
-				new_bcl_mu_eq = settings.cold_reset_mu_eq;
+				new_bcl_mu_in = settings.cold_reset_mu_in_inv;
+				new_bcl_mu_eq = settings.cold_reset_mu_eq_inv;
 			}
 		}
 
