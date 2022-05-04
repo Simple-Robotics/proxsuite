@@ -9,7 +9,7 @@ namespace qp {
 using veg::isize;
 
 template <typename T>
-struct Info{
+struct Info {
 	///// final proximal regularization parameters
 	T mu_eq;
 	T mu_eq_inv;
@@ -22,18 +22,17 @@ struct Info{
 	isize iter;
 	isize iter_ext;
 	isize mu_updates;
-    isize rho_updates;
-    isize n_c; // final number of active inequalities
-    isize status;
+	isize rho_updates;
+	isize n_c; // final number of active inequalities
+	isize status;
 
 	//// timings
-    T setup_time;
-    T solve_time;
+	T setup_time;
+	T solve_time;
 	T run_time;
 	T objValue;
-    T pri_res;
-    T dua_res;
-
+	T pri_res;
+	T dua_res;
 };
 
 template <typename T>
@@ -48,67 +47,61 @@ public:
 	Vec y;
 	Vec z;
 
-    Info<T> info;
+	Info<T> info;
 
-    ////// SOLUTION STATUS
+	////// SOLUTION STATUS
 
 	Results(isize dim = 0, isize n_eq = 0, isize n_in = 0)
-			: //
-                x(dim),
-                y(n_eq),
-                z(n_in)
-                {
-        
-                x.setZero();
-                y.setZero();
-                z.setZero();
+			: x(dim), y(n_eq), z(n_in) {
 
-                info.rho = 1e-6;
-	            info.mu_eq_inv = 1e3;
-	            info.mu_eq = 1e-3 ;
-	            info.mu_in_inv = 1e1;
-	            info.mu_in = 1e-1;
-                info.nu = 1.;
-                info.iter = 0;
-                info.iter_ext = 0;
-                info.mu_updates = 0;
-                info.rho_updates = 0;
-                info.n_c = 0;
-                info.run_time = 0.;
-                info.setup_time = 0.;
-                info.solve_time =0.;
-                info.objValue =0.;
-                info.pri_res = 0.;
-                info.dua_res = 0.;
-				info.status = PROXQP_MAX_ITER_REACHED;
+		x.setZero();
+		y.setZero();
+		z.setZero();
 
-                }
-    
-    void reset_results(){
-        x.setZero();
-        y.setZero();
-        z.setZero();
+		info.rho = 1e-6;
+		info.mu_eq_inv = 1e3;
+		info.mu_eq = 1e-3;
+		info.mu_in_inv = 1e1;
+		info.mu_in = 1e-1;
+		info.nu = 1.;
+		info.iter = 0;
+		info.iter_ext = 0;
+		info.mu_updates = 0;
+		info.rho_updates = 0;
+		info.n_c = 0;
+		info.run_time = 0.;
+		info.setup_time = 0.;
+		info.solve_time = 0.;
+		info.objValue = 0.;
+		info.pri_res = 0.;
+		info.dua_res = 0.;
+		info.status = PROXQP_MAX_ITER_REACHED;
+	}
 
-        info.rho = 1e-6;
-        info.mu_eq_inv = 1e3;
-        info.mu_eq = 1e-3 ;
-        info.mu_in_inv = 1e1;
-        info.mu_in = 1e-1;
-        info.nu = 1.;
-        info.iter = 0;
-        info.iter_ext = 0;
-        info.mu_updates = 0;
-        info.rho_updates = 0;
-        info.n_c = 0;
-        info.run_time = 0.;
-        info.setup_time = 0.;
-        info.solve_time =0.;
-        info.objValue =0.;
-        info.pri_res = 0.;
-        info.dua_res = 0.;
-        info.status = PROXQP_MAX_ITER_REACHED;
+	void reset_results() {
+		x.setZero();
+		y.setZero();
+		z.setZero();
 
-    }
+		info.rho = 1e-6;
+		info.mu_eq_inv = 1e3;
+		info.mu_eq = 1e-3;
+		info.mu_in_inv = 1e1;
+		info.mu_in = 1e-1;
+		info.nu = 1.;
+		info.iter = 0;
+		info.iter_ext = 0;
+		info.mu_updates = 0;
+		info.rho_updates = 0;
+		info.n_c = 0;
+		info.run_time = 0.;
+		info.setup_time = 0.;
+		info.solve_time = 0.;
+		info.objValue = 0.;
+		info.pri_res = 0.;
+		info.dua_res = 0.;
+		info.status = PROXQP_MAX_ITER_REACHED;
+	}
 };
 
 } // namespace qp

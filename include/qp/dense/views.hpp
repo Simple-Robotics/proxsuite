@@ -43,8 +43,8 @@ struct FnInfo<auto(Args...)->Ret_> {
 #define LDLT_EXPLICIT_TPL_DEF(NParams, ...)                                    \
 	template auto __VA_ARGS__(                                                   \
 			LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                               \
-					typename ::qp::detail::FnInfo<                                     \
-							decltype(__VA_ARGS__)>::template Arg<(NParams)-1>)               \
+					typename ::qp::detail::FnInfo<decltype(__VA_ARGS__)>::template Arg<( \
+							NParams)-1>)                                                     \
 			->typename ::qp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
 	extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
@@ -771,8 +771,7 @@ public:
 			-> veg::meta::if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>> {
 		return trans().col(r);
 	}
-	VEG_INLINE auto trans() const noexcept
-			-> MatrixView<T, qp::flip_layout(L)> {
+	VEG_INLINE auto trans() const noexcept -> MatrixView<T, qp::flip_layout(L)> {
 		return {
 				from_ptr_rows_cols_stride,
 				data,
@@ -1142,8 +1141,7 @@ void noalias_mul_sub_tr_lo(
 
 template <typename T>
 struct veg::fmt::Debug<qp::StridedVectorView<T>> {
-	static void
-	to_string(fmt::BufferMut out, Ref<qp::StridedVectorView<T>> vec) {
+	static void to_string(fmt::BufferMut out, Ref<qp::StridedVectorView<T>> vec) {
 		out.append_literal("Vec ");
 		_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
 
@@ -1195,8 +1193,7 @@ struct veg::fmt::Debug<qp::MatrixView<T, L>> {
 };
 template <typename T, qp::Layout L>
 struct veg::fmt::Debug<qp::MatrixViewMut<T, L>> {
-	static void
-	to_string(fmt::BufferMut out, Ref<qp::MatrixViewMut<T, L>> mat) {
+	static void to_string(fmt::BufferMut out, Ref<qp::MatrixViewMut<T, L>> mat) {
 		dbg_to(VEG_FWD(out), ref(mat.get().as_const()));
 	}
 };

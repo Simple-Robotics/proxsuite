@@ -53,8 +53,8 @@ public:
 			T mu_max_in_inv_ = 1e8,
 			T mu_update_factor_ = 0.1,
 			T mu_update_inv_factor_ = 10,
-			T cold_reset_mu_eq_ = 1./1.1,
-			T cold_reset_mu_in_ = 1./1.1,
+			T cold_reset_mu_eq_ = 1. / 1.1,
+			T cold_reset_mu_in_ = 1. / 1.1,
 			T cold_reset_mu_eq_inv_ = 1.1,
 			T cold_reset_mu_in_inv_ = 1.1,
 			T eps_abs_ = 1.e-9,
@@ -91,8 +91,7 @@ public:
 				verbose(VERBOSE),
 				warm_start(warm_start),
 				eps_primal_inf(eps_primal_inf),
-				eps_dual_inf(eps_dual_inf)
-				 {}
+				eps_dual_inf(eps_dual_inf) {}
 };
 
 } // namespace qp

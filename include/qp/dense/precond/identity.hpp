@@ -4,7 +4,7 @@
 #include "qp/dense/views.hpp"
 
 namespace qp {
-namespace dense{
+namespace dense {
 namespace preconditioner {
 struct IdentityPrecond {
 	template <typename T>
@@ -42,4 +42,5 @@ struct IdentityPrecond {
 } // namespace dense
 } // namespace qp
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP */
+#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP \
+        */

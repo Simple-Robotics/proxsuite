@@ -5,6 +5,7 @@
 #include "qp/dense/Workspace.hpp"
 #include <qp/dense/Data.hpp>
 #include <qp/Results.hpp>
+#include <qp/Settings.hpp>
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -101,85 +102,85 @@ void global_primal_residual(
 template <typename T>
 bool global_primal_residual_infeasibility(
 		VectorViewMut<T> ATdy,
-		VectorViewMut<T> CTdz, 
+		VectorViewMut<T> CTdz,
 		VectorViewMut<T> dx,
 		VectorViewMut<T> dy,
 		VectorViewMut<T> dz,
 		Workspace<T>& qpwork,
-		const Settings<T>& qpsettings
-		) {
+		const Settings<T>& qpsettings) {
 
-		qpwork.ruiz.unscale_dual_residual_in_place(ATdy);
-		qpwork.ruiz.unscale_dual_residual_in_place(CTdz);
-		T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
-		T in_inf = positive_part(dz.to_eigen()).dot(qpwork.u_scaled) - positive_part(-dz.to_eigen()).dot(qpwork.l_scaled);
-		qpwork.ruiz.unscale_dual_in_place_eq(dy);
-		qpwork.ruiz.unscale_dual_in_place_in(dz); 
+	qpwork.ruiz.unscale_dual_residual_in_place(ATdy);
+	qpwork.ruiz.unscale_dual_residual_in_place(CTdz);
+	T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
+	T in_inf = positive_part(dz.to_eigen()).dot(qpwork.u_scaled) -
+	           positive_part(-dz.to_eigen()).dot(qpwork.l_scaled);
+	qpwork.ruiz.unscale_dual_in_place_eq(dy);
+	qpwork.ruiz.unscale_dual_in_place_in(dz);
 
-		T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
-		T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
+	T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
+	T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
 
-		bool res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y && infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
-		return res;
+	bool res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
+	           infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
+	return res;
 }
 
 // The problem is dual infeasible if one of the conditions hold:
 //
 // FIRST
 // ||unscaled(Adx)|| <= eps_d_inf ||unscaled(dx)||
-// unscaled(Cdx)_i \in [-eps_d_inf,eps_d_inf] ||unscaled(dx)|| if u_i and l_i are finite
-// 					or >= -eps_d_inf||unscaled(dx)|| if u_i = +inf
-// 					or <= eps_d_inf||unscaled(dx)|| if l_i = -inf
+// unscaled(Cdx)_i \in [-eps_d_inf,eps_d_inf] ||unscaled(dx)|| if u_i and l_i
+// are finite 					or >= -eps_d_inf||unscaled(dx)|| if u_i = +inf 					or <=
+// eps_d_inf||unscaled(dx)|| if l_i = -inf
 //
 // SECOND
-//		
-// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c eps_d_inf  ||unscaled(dx)|| 
-// or 
-// dx^THdx <= -c eps_d_inf^2 dx 
-// the variables in entry are changed in place
+//
+// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c
+// eps_d_inf  ||unscaled(dx)|| or dx^THdx <= -c eps_d_inf^2 dx the variables in
+// entry are changed in place
 
 template <typename T>
 bool global_dual_residual_infeasibility(
 		VectorViewMut<T> Adx,
-		VectorViewMut<T> Cdx, 
+		VectorViewMut<T> Cdx,
 		VectorViewMut<T> Hdx,
 		VectorViewMut<T> dx,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings,
-		const Data<T>& qpmodel
-		) {
+		const Data<T>& qpmodel) {
 
-		T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
-		qpwork.ruiz.unscale_dual_residual_in_place(Hdx);
-		qpwork.ruiz.unscale_primal_residual_in_place_eq(Adx);
-		qpwork.ruiz.unscale_primal_residual_in_place_in(Cdx);
-		T gdx = (dx.to_eigen()).dot(qpwork.g_scaled);
-		qpwork.ruiz.unscale_primal_in_place(dx);
+	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
+	qpwork.ruiz.unscale_dual_residual_in_place(Hdx);
+	qpwork.ruiz.unscale_primal_residual_in_place_eq(Adx);
+	qpwork.ruiz.unscale_primal_residual_in_place_in(Cdx);
+	T gdx = (dx.to_eigen()).dot(qpwork.g_scaled);
+	qpwork.ruiz.unscale_primal_in_place(dx);
 
-		T bound = infty_norm(dx.to_eigen()) * qpsettings.eps_dual_inf;
-		T bound_neg = -bound;
+	T bound = infty_norm(dx.to_eigen()) * qpsettings.eps_dual_inf;
+	T bound_neg = -bound;
 
-		bool first_cond = infty_norm(Adx.to_eigen()) <= bound; 
+	bool first_cond = infty_norm(Adx.to_eigen()) <= bound;
 
-		for (i64 iter = 0; iter < qpmodel.n_in; ++iter){
-			T Cdx_i = Cdx.to_eigen()[iter];
-			if (qpwork.u_scaled[iter] <= 1.E20 && qpwork.l_scaled[iter]>= -1.E20){
-				first_cond = first_cond && Cdx_i <= bound && Cdx_i >= bound_neg;
-			}else if (qpwork.u_scaled[iter]>1.E20){
-				first_cond = first_cond && Cdx_i >= bound_neg;
-			}else if (qpwork.l_scaled[iter]<-1.E20){
-				first_cond = first_cond && Cdx_i <= bound;
-			}
+	for (i64 iter = 0; iter < qpmodel.n_in; ++iter) {
+		T Cdx_i = Cdx.to_eigen()[iter];
+		if (qpwork.u_scaled[iter] <= 1.E20 && qpwork.l_scaled[iter] >= -1.E20) {
+			first_cond = first_cond && Cdx_i <= bound && Cdx_i >= bound_neg;
+		} else if (qpwork.u_scaled[iter] > 1.E20) {
+			first_cond = first_cond && Cdx_i >= bound_neg;
+		} else if (qpwork.l_scaled[iter] < -1.E20) {
+			first_cond = first_cond && Cdx_i <= bound;
 		}
+	}
 
-		bound *= qpwork.ruiz.c;
-		bound_neg *= qpwork.ruiz.c;
-		bool second_cond_alt1 = infty_norm(Hdx.to_eigen()) <= bound  && gdx <= bound_neg ;
-		bound_neg *= qpsettings.eps_dual_inf;
-		bool second_cond_alt2 = dxHdx <= bound_neg;
+	bound *= qpwork.ruiz.c;
+	bound_neg *= qpwork.ruiz.c;
+	bool second_cond_alt1 =
+			infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
+	bound_neg *= qpsettings.eps_dual_inf;
+	bool second_cond_alt2 = dxHdx <= bound_neg;
 
-		bool res = first_cond && (second_cond_alt1 || second_cond_alt2);
-		return res;
+	bool res = first_cond && (second_cond_alt1 || second_cond_alt2);
+	return res;
 }
 
 // dual_feasibility_lhs = norm(dual_residual_scaled)
