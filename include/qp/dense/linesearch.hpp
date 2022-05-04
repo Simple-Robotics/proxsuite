@@ -53,36 +53,36 @@ auto primal_dual_gradient_norm(
 			qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
 
 	T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
-	    qpresults.mu_eq_inv * (qpwork.Adx).squaredNorm() +
-	    qpresults.rho *
+	    qpresults.info.mu_eq_inv * (qpwork.Adx).squaredNorm() +
+	    qpresults.info.rho *
 	        qpwork.dw_aug.head(qpmodel.dim)
 	            .squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho *
 	                             // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2
 
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.Adx -
-			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.mu_eq;
+			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.info.mu_eq;
 	a += qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).squaredNorm() *
-	     qpresults.mu_eq_inv *
-	     qpresults.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
+	     qpresults.info.mu_eq_inv *
+	     qpresults.info.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
 	              // (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2
 	qpwork.err.head(qpmodel.dim) =
-			qpresults.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
+			qpresults.info.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
 	T b(qpresults.x.dot(qpwork.Hdx) +
 	    (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
-	    qpresults.mu_eq_inv *
+	    qpresults.info.mu_eq_inv *
 	        (qpwork.Adx)
 	            .dot(
 									qpwork.primal_residual_eq_scaled +
 									qpresults.y *
-											qpresults.mu_eq)); // contains now: b =
+											qpresults.info.mu_eq)); // contains now: b =
 	                                           // dx.dot(H.dot(x) +
 	                                           // rho*(x-xe) +  g)  +
 	                                           // mu_eq_inv * Adx.dot(res_eq)
 
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.primal_residual_eq_scaled;
-	b += qpresults.nu * qpresults.mu_eq_inv *
+	b += qpresults.info.nu * qpresults.info.mu_eq_inv *
 	     qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
 	         .dot(qpwork.rhs.segment(
 							 qpmodel.dim,
@@ -98,7 +98,7 @@ auto primal_dual_gradient_norm(
 							qpwork.Cdx,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	a += qpresults.mu_in_inv *
+	a += qpresults.info.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in)
 	         .squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho *
 	                         // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv *
@@ -116,7 +116,7 @@ auto primal_dual_gradient_norm(
 							qpwork.primal_residual_in_scaled_low,
 							Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
 
-	b += qpresults.mu_in_inv *
+	b += qpresults.info.mu_in_inv *
 	     qpwork.active_part_z.dot(qpwork.err.tail(
 					 qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +
 	                         // g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
@@ -125,20 +125,20 @@ auto primal_dual_gradient_norm(
 
 	// derive Cdx_act - dz*mu_in
 	qpwork.err.tail(qpmodel.n_in) -=
-			qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.mu_in;
+			qpwork.dw_aug.tail(qpmodel.n_in) * qpresults.info.mu_in;
 	// derive [Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]-- -z*mu_in
-	qpwork.active_part_z -= qpresults.z * qpresults.mu_in;
+	qpwork.active_part_z -= qpresults.z * qpresults.info.mu_in;
 
 	// contains now a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 + (mu_eq_inv) *
 	// norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2 + mu_in_inv *
 	// norm(Cdx_act)**2 + nu*mu_in_inv * norm(Cdx_act-dz*mu_in)**2
-	a += qpresults.nu * qpresults.mu_in_inv *
+	a += qpresults.info.nu * qpresults.info.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in).squaredNorm();
 	// contains now b =  dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq_inv *
 	// Adx.dot(res_eq) + nu*mu_eq_inv * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in_inv
 	// * Cdx_act.dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]--) + nu*mu_in_inv
 	// (Cdx_act-dz*mu_in).dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]-- - z*mu_in)
-	b += qpresults.nu * qpresults.mu_in_inv *
+	b += qpresults.info.nu * qpresults.info.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in).dot(qpwork.active_part_z);
 
 	return {
@@ -376,7 +376,7 @@ void active_set_change(
 
 	qpwork.dw_aug.setZero();
 
-	isize n_c_f = qpresults.n_c;
+	isize n_c_f = qpresults.info.n_c;
 	qpwork.new_bijection_map = qpwork.current_bijection_map;
 
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
@@ -392,7 +392,7 @@ void active_set_change(
 		isize planned_to_delete_count = 0;
 
 		for (isize i = 0; i < qpmodel.n_in; i++) {
-			if (qpwork.current_bijection_map(i) < qpresults.n_c) {
+			if (qpwork.current_bijection_map(i) < qpresults.info.n_c) {
 				if (!qpwork.active_inequalities(i)) {
 					// delete current_bijection_map(i)
 
@@ -425,7 +425,7 @@ void active_set_change(
 		auto planned_to_add = _planned_to_add.ptr_mut();
 
 		isize planned_to_add_count = 0;
-		T mu_in_neg = -qpresults.mu_in;
+		T mu_in_neg = -qpresults.info.mu_in;
 		isize n_c = n_c_f;
 		for (isize i = 0; i < qpmodel.n_in; i++) {
 			if (qpwork.active_inequalities(i)) {
@@ -465,7 +465,7 @@ void active_set_change(
 		}
 	}
 
-	qpresults.n_c = n_c_f;
+	qpresults.info.n_c = n_c_f;
 	qpwork.current_bijection_map = qpwork.new_bijection_map;
 	qpwork.dw_aug.setZero();
 }
