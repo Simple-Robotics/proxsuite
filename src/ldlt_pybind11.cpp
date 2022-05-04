@@ -105,14 +105,14 @@ void QPupdateMatrice( //
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			qpresults.rho;
+			qpresults.info.rho;
 	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
 			qpwork.A_scaled.transpose();
 	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
 	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
 	qpwork.kkt.diagonal()
 			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-qpresults.mu_eq_inv); // mu stores the inverse of mu
+			.setConstant(-qpresults.info.mu_eq); // mu stores the inverse of mu
 
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
@@ -180,17 +180,17 @@ void QPsolve(
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration =
 			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.solve_time = duration.count();
-	qpresults.run_time = qpresults.solve_time + qpresults.setup_time;
+	qpresults.info.solve_time = duration.count();
+	qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
 
 	if (qpsettings.verbose) {
 		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-		std::cout << "iter_ext : " << qpresults.iter_ext << std::endl;
-		std::cout << "iter : " << qpresults.iter << std::endl;
-		std::cout << "mu updates : " << qpresults.mu_updates << std::endl;
-		std::cout << "rho_updates : " << qpresults.rho_updates << std::endl;
-		std::cout << "objValue : " << qpresults.objValue << std::endl;
-		std::cout << "solve_time : " << qpresults.solve_time << std::endl;
+		std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
+		std::cout << "iter : " << qpresults.info.iter << std::endl;
+		std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
+		std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
+		std::cout << "objValue : " << qpresults.info.objValue << std::endl;
+		std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
 	}
 }
 
@@ -201,13 +201,13 @@ void QPreset(
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork) {
 
-	qpwork.kkt.diagonal().head(qpmodel.dim).array() -= qpresults.rho;
+	qpwork.kkt.diagonal().head(qpmodel.dim).array() -= qpresults.info.rho;
 	qpresults.reset_results();
 	qpwork.reset_results(qpmodel.n_in);
 
-	qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.rho;
+	qpwork.kkt.diagonal().head(qpmodel.dim).array() += qpresults.info.rho;
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
-			-qpresults.mu_eq_inv;
+			-qpresults.info.mu_eq;
 
 	veg::dynstack::DynStackMut stack{
 			veg::from_slice_mut,
@@ -321,6 +321,24 @@ INRIA LDLT decomposition
 							f64>::primal_residual_in_scaled_low_plus_alphaCdx)
 			.def_readwrite("CTz", &qp::dense::Workspace<f64>::CTz);
 
+	::pybind11::class_<qp::Info<f64>>(m, "info")
+			.def(::pybind11::init()) 
+			.def_readwrite("n_c", &qp::Info<f64>::n_c)
+			.def_readwrite("mu_eq", &qp::Info<f64>::mu_eq)
+			.def_readwrite("mu_in", &qp::Info<f64>::mu_in)
+			.def_readwrite("rho", &qp::Info<f64>::rho)
+			.def_readwrite("iter", &qp::Info<f64>::iter)
+			.def_readwrite("iter_ext", &qp::Info<f64>::iter_ext)
+			.def_readwrite("run_time", &qp::Info<f64>::run_time)
+			.def_readwrite("setup_time", &qp::Info<f64>::setup_time)
+			.def_readwrite("solve_time", &qp::Info<f64>::solve_time)
+			.def_readwrite("pri_res", &qp::Info<f64>::pri_res)
+			.def_readwrite("dua_res", &qp::Info<f64>::dua_res)
+			.def_readwrite("objValue", &qp::Info<f64>::objValue)
+			.def_readwrite("status", &qp::Info<f64>::status)
+			.def_readwrite("rho_updates", &qp::Info<f64>::rho_updates)
+			.def_readwrite("mu_updates", &qp::Info<f64>::mu_updates);
+
 	::pybind11::class_<qp::Results<f64>>(m, "Results")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 	                                            // read-write public data member
@@ -328,21 +346,7 @@ INRIA LDLT decomposition
 			.def_readwrite("x", &qp::Results<f64>::x)
 			.def_readwrite("y", &qp::Results<f64>::y)
 			.def_readwrite("z", &qp::Results<f64>::z)
-			.def_readwrite("n_c", &qp::Results<f64>::n_c)
-			.def_readwrite("mu_eq", &qp::Results<f64>::mu_eq)
-			.def_readwrite("mu_in", &qp::Results<f64>::mu_in)
-			.def_readwrite("rho", &qp::Results<f64>::rho)
-			.def_readwrite("iter", &qp::Results<f64>::iter)
-			.def_readwrite("iter_ext", &qp::Results<f64>::iter_ext)
-			.def_readwrite("run_time", &qp::Results<f64>::run_time)
-			.def_readwrite("setup_time", &qp::Results<f64>::setup_time)
-			.def_readwrite("solve_time", &qp::Results<f64>::solve_time)
-			.def_readwrite("pri_res", &qp::Results<f64>::pri_res)
-			.def_readwrite("dua_res", &qp::Results<f64>::dua_res)
-			.def_readwrite("objValue", &qp::Results<f64>::objValue)
-			.def_readwrite("status", &qp::Results<f64>::status)
-			.def_readwrite("rho_updates", &qp::Results<f64>::rho_updates)
-			.def_readwrite("mu_updates", &qp::Results<f64>::mu_updates);
+			.def_readwrite("info", &qp::Results<f64>::info);
 
 	::pybind11::class_<qp::Settings<f64>>(m, "Settings")
 			.def(::pybind11::init()) // constructor
