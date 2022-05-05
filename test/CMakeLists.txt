@@ -9,10 +9,10 @@ target_link_libraries(libcnpy CONAN_PKG::eigen)
 target_link_libraries(backward_cpp_main CONAN_PKG::backward-cpp)
 
 set(LDLT_TEST_LIBS
-    inria_ldlt
+    prox-suite
     backward_cpp_main
     libcnpy
-    inria_ldlt_util
+    prox-suite-util
     CONAN_PKG::benchmark
     CONAN_PKG::matio
 )

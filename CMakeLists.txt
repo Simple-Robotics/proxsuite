@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(inria_ldlt CXX)
+project(prox-suite CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
@@ -67,16 +67,16 @@ if(ENABLE_TESTING)
   include(cmake/extra_local_settings.cmake)
 endif()
 
-add_library(inria_ldlt INTERFACE)
-target_compile_options(inria_ldlt INTERFACE "-march=native")
-target_include_directories(inria_ldlt INTERFACE external/simde/)
+add_library(prox-suite INTERFACE)
+target_compile_options(prox-suite INTERFACE "-march=native")
+target_include_directories(prox-suite INTERFACE external/simde/)
 target_include_directories(
-  inria_ldlt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  prox-suite INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
-add_library(inria_ldlt_util STATIC test/src/util_f64.cpp test/src/util_f32.cpp)
-target_include_directories(inria_ldlt_util PUBLIC test/include)
-target_link_libraries(inria_ldlt_util inria_ldlt)
+add_library(prox-suite-util STATIC test/src/util_f64.cpp test/src/util_f32.cpp)
+target_include_directories(prox-suite-util PUBLIC test/include)
+target_link_libraries(prox-suite-util prox-suite)
 
 set(CONAN_REQUIRES eigen/3.3.7 fmt/8.0.0)
 if(ENABLE_TESTING)
@@ -102,37 +102,37 @@ endif(APPLE)
 # Conan dependencies
 if(ENABLE_TESTING)
 
-  target_compile_definitions(inria_ldlt INTERFACE EIGEN_RUNTIME_NO_MALLOC)
+  target_compile_definitions(prox-suite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
   target_compile_definitions(
-    inria_ldlt INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
+    prox-suite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
   )
   add_subdirectory(external/osqp)
   add_subdirectory(external/qpalm)
-  target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::fmt)
+  target_link_libraries(prox-suite INTERFACE CONAN_PKG::fmt)
 
   find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
-  target_link_libraries(inria_ldlt INTERFACE project_options project_warnings)
+  target_link_libraries(prox-suite INTERFACE project_options project_warnings)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
 endif()
 
-target_link_libraries(inria_ldlt INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
+target_link_libraries(prox-suite INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 
 add_subdirectory(external/veg)
-target_link_libraries(inria_ldlt INTERFACE veg::veg)
+target_link_libraries(prox-suite INTERFACE veg::veg)
 
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(
-    inria_ldlt INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
+    prox-suite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
   )
   find_package(Python3 COMPONENTS Interpreter Development)
   add_subdirectory(external/pybind11)
-  # pybind11_add_module(inria_ldlt_py src/ldlt_pybind11.cpp)
-  add_library(inria_ldlt_py MODULE src/ldlt_pybind11.cpp)
+  # pybind11_add_module(prox-suite-py src/ldlt_pybind11.cpp)
+  add_library(prox-suite-py MODULE src/ldlt_pybind11.cpp)
 
   execute_process(
     COMMAND
@@ -143,9 +143,9 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 
   string(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
   message(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
-  target_link_libraries(inria_ldlt_py PUBLIC inria_ldlt pybind11::module)
+  target_link_libraries(prox-suite-py PUBLIC prox-suite pybind11::module)
   set_target_properties(
-    inria_ldlt_py
+    prox-suite-py
     PROPERTIES BUILD_RPATH ${CMAKE_BUILD_RPATH}
                PREFIX ""
                SUFFIX "${PYTHON_EXT_SUFFIX}"
