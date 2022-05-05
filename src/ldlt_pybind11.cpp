@@ -238,12 +238,12 @@ void QPreset(
 } // namespace pybind11
 } // namespace qp
 
-PYBIND11_MODULE(inria_ldlt_py, m) {
+PYBIND11_MODULE(prox_suite_py, m) {
 	m.doc() = R"pbdoc(
 INRIA LDLT decomposition
 ------------------------
 
-  .. currentmodule:: inria_ldlt
+  .. currentmodule:: prox_suite
   .. autosummary::
      :toctree: _generate
 
