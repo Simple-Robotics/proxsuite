@@ -49,7 +49,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and inequality
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.iter << std::endl;
+		std::cout << "total number of iteration: " << results.info.iter << std::endl;
 	}
 }
 
@@ -94,7 +94,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality constrai
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.iter << std::endl;
+		std::cout << "total number of iteration: " << results.info.iter << std::endl;
 	}
 }
 
@@ -138,7 +138,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality constrai
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.iter << std::endl;
+		std::cout << "total number of iteration: " << results.info.iter << std::endl;
 	}
 }
 
@@ -182,7 +182,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality c
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.iter << std::endl;
+		std::cout << "total number of iteration: " << results.info.iter << std::endl;
 	}
 }
 
@@ -228,6 +228,6 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and incre
 		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
 		std::cout << "dual residual: "  << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.iter << std::endl;
+		std::cout << "total number of iteration: " << results.info.iter << std::endl;
 	}
 }
