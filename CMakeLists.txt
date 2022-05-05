@@ -131,8 +131,7 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
   )
   find_package(Python3 COMPONENTS Interpreter Development)
   add_subdirectory(external/pybind11)
-  # pybind11_add_module(prox-suite-py src/ldlt_pybind11.cpp)
-  add_library(prox-suite-py MODULE src/ldlt_pybind11.cpp)
+  add_library(prox_suite_py MODULE src/ldlt_pybind11.cpp)
 
   execute_process(
     COMMAND
@@ -143,9 +142,9 @@ if(INRIA_LDLT_PYTHON_BINDINGS)
 
   string(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
   message(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
-  target_link_libraries(prox-suite-py PUBLIC prox-suite pybind11::module)
+  target_link_libraries(prox_suite_py PUBLIC prox-suite pybind11::module)
   set_target_properties(
-    prox-suite-py
+    prox_suite_py
     PROPERTIES BUILD_RPATH ${CMAKE_BUILD_RPATH}
                PREFIX ""
                SUFFIX "${PYTHON_EXT_SUFFIX}"
