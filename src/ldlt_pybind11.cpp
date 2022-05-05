@@ -10,7 +10,7 @@
 #include <pybind11/eigen.h>
 
 #include <veg/util/dynstack_alloc.hpp>
-#include <dense-ldlt/ldlt.hpp>
+#include <linearsolver/dense/ldlt.hpp>
 
 namespace qp {
 namespace pybind11 {
@@ -181,7 +181,8 @@ void QPsolve(
 	auto duration =
 			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	qpresults.info.solve_time = duration.count();
-	qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
+	qpresults.info.run_time =
+			qpresults.info.solve_time + qpresults.info.setup_time;
 
 	if (qpsettings.verbose) {
 		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
@@ -252,7 +253,7 @@ INRIA LDLT decomposition
 	using namespace qp;
 	::pybind11::class_<qp::dense::Workspace<f64>>(m, "Workspace")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                            // read-write public data member
+																							// read-write public data member
 			.def_readwrite("H_scaled", &qp::dense::Workspace<f64>::H_scaled)
 			.def_readwrite("g_scaled", &qp::dense::Workspace<f64>::g_scaled)
 			.def_readwrite("A_scaled", &qp::dense::Workspace<f64>::A_scaled)
@@ -322,7 +323,7 @@ INRIA LDLT decomposition
 			.def_readwrite("CTz", &qp::dense::Workspace<f64>::CTz);
 
 	::pybind11::class_<qp::Info<f64>>(m, "info")
-			.def(::pybind11::init()) 
+			.def(::pybind11::init())
 			.def_readwrite("n_c", &qp::Info<f64>::n_c)
 			.def_readwrite("mu_eq", &qp::Info<f64>::mu_eq)
 			.def_readwrite("mu_in", &qp::Info<f64>::mu_in)
@@ -341,7 +342,7 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::Results<f64>>(m, "Results")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                            // read-write public data member
+																							// read-write public data member
 
 			.def_readwrite("x", &qp::Results<f64>::x)
 			.def_readwrite("y", &qp::Results<f64>::y)
@@ -350,7 +351,7 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::Settings<f64>>(m, "Settings")
 			.def(::pybind11::init()) // constructor
-	                             // read-write public data member
+															 // read-write public data member
 
 			.def_readwrite("alpha_bcl", &qp::Settings<f64>::alpha_bcl)
 			.def_readwrite("beta_bcl", &qp::Settings<f64>::beta_bcl)
@@ -382,7 +383,7 @@ INRIA LDLT decomposition
 
 	::pybind11::class_<qp::dense::Data<f64>>(m, "Data")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-	                                            // read-write public data member
+																							// read-write public data member
 
 			.def_readonly("H", &qp::dense::Data<f64>::H)
 			.def_readonly("g", &qp::dense::Data<f64>::g)

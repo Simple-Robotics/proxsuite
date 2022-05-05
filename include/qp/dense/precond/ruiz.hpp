@@ -2,7 +2,7 @@
 #define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
 
 #include "qp/dense/views.hpp"
-#include <dense-ldlt/core.hpp>
+#include <linearsolver/dense/core.hpp>
 #include <ostream>
 
 #include <Eigen/Core>
@@ -245,7 +245,7 @@ struct RuizEquilibration {
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
-		return dense_ldlt::temp_vec_req(tag, n + n_eq + n_in);
+		return linearsolver::dense::temp_vec_req(tag, n + n_eq + n_in);
 	}
 
 	// H_new = c * head @ H @ head

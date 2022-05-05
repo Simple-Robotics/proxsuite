@@ -18,7 +18,8 @@
 					.Make(                                                               \
 							::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                       \
 							(Rows),                                                          \
-							::dense_ldlt::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>())     \
+							::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(     \
+									Type)>())                                                    \
 					.unwrap();                                                           \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type), ::Eigen::Dynamic, 1>,       \
@@ -37,14 +38,15 @@
 	::veg::isize LDLT_ID(rows) = (Rows);                                         \
 	::veg::isize LDLT_ID(cols) = (Cols);                                         \
 	::veg::isize LDLT_ID(stride) =                                               \
-			::dense_ldlt::_detail::adjusted_stride<__VEG_PP_REMOVE_PAREN(Type)>(     \
-					LDLT_ID(rows));                                                      \
+			::linearsolver::dense::_detail::adjusted_stride<__VEG_PP_REMOVE_PAREN(   \
+					Type)>(LDLT_ID(rows));                                               \
 	auto LDLT_ID(vec_storage) =                                                  \
 			(Stack)                                                                  \
 					.Make(                                                               \
 							::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                       \
 							LDLT_ID(stride) * LDLT_ID(cols),                                 \
-							::dense_ldlt::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>())     \
+							::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(     \
+									Type)>())                                                    \
 					.unwrap();                                                           \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<                                                         \
@@ -74,7 +76,8 @@
 #define LDLT_TEMP_MAT_UNINIT(Type, Name, Rows, Cols, Stack)                    \
 	__LDLT_TEMP_MAT_IMPL(Type, Name, Rows, Cols, Stack, make_new_for_overwrite)
 
-namespace dense_ldlt {
+namespace linearsolver {
+namespace dense {
 using veg::usize;
 using veg::isize;
 using veg::u32;
@@ -759,6 +762,7 @@ auto temp_vec_req(veg::Tag<T> /*tag*/, isize rows) noexcept
 			_detail::align<T>(),
 	};
 }
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 #endif /* end of include guard DENSE_LDLT_CORE_HPP_JOITF1PQS */

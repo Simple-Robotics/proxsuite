@@ -3,7 +3,7 @@
 #ifndef INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 #define INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 
-#include <dense-ldlt/core.hpp>
+#include <linearsolver/dense/core.hpp>
 #include <sparse-ldlt/core.hpp>
 #include <sparse-ldlt/factorize.hpp>
 #include <sparse-ldlt/update.hpp>
@@ -392,7 +392,7 @@ struct RuizEquilibration {
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
-		return dense_ldlt::temp_vec_req(tag, n + n_eq + n_in) &
+		return linearsolver::dense::temp_vec_req(tag, n + n_eq + n_in) &
 		       veg::dynstack::StackReq::with_len(tag, 3 * n);
 	}
 
@@ -691,7 +691,7 @@ struct QpWorkspace {
 										});
 
 			auto x_vec = [&](isize n) noexcept -> StackReq {
-				return dense_ldlt::temp_vec_req(xtag, n);
+				return linearsolver::dense::temp_vec_req(xtag, n);
 			};
 
 			auto ldl_solve_in_place_req = PROX_QP_ALL_OF({

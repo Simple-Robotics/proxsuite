@@ -1,13 +1,14 @@
 #ifndef DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
 #define DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
 
-#include "dense-ldlt/core.hpp"
-#include "dense-ldlt/update.hpp"
-#include "dense-ldlt/factorize.hpp"
+#include "linearsolver/dense/core.hpp"
+#include "linearsolver/dense/update.hpp"
+#include "linearsolver/dense/factorize.hpp"
 #include <algorithm>
 #include <veg/memory/dynamic_stack.hpp>
 
-namespace dense_ldlt {
+namespace linearsolver {
+namespace dense {
 namespace _detail {
 
 template <typename Mat>
@@ -220,7 +221,7 @@ void ldlt_insert_rows_and_cols_impl(
 		util::noalias_mul_add(l21, l20, d0xl10T, T(-1));
 	}
 
-	dense_ldlt::factorize(ld11, stack);
+	linearsolver::dense::factorize(ld11, stack);
 	util::trans(ld11) //
 			.template triangularView<Eigen::UnitUpper>()
 			.template solveInPlace<Eigen::OnTheRight>(l21);
@@ -278,7 +279,7 @@ void ldlt_delete_rows_and_cols_sort_indices( //
 template <typename T>
 auto ldlt_insert_rows_and_cols_req(veg::Tag<T> tag, isize n, isize r) noexcept
 		-> veg::dynstack::StackReq {
-	auto factorize_req = dense_ldlt::factorize_req(tag, r);
+	auto factorize_req = linearsolver::dense::factorize_req(tag, r);
 
 	auto w_req = veg::dynstack::StackReq{
 			_detail::adjusted_stride<T>(n) * r * isize{sizeof(T)},
@@ -298,6 +299,7 @@ void ldlt_insert_rows_and_cols(
 	_detail::ldlt_insert_rows_and_cols_impl(
 			util::to_view_dyn(ld), pos, util::to_view_dyn_rows(a_1), stack);
 }
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 #endif /* end of include guard DENSE_LDLT_MODIFY_HPP_LBIRIX9AS */

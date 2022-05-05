@@ -1,10 +1,11 @@
 #ifndef DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 #define DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 
-#include "dense-ldlt/core.hpp"
+#include "linearsolver/dense/core.hpp"
 #include <Eigen/Core>
 
-namespace dense_ldlt {
+namespace linearsolver {
+namespace dense {
 namespace _detail {
 template <typename Mat, typename Rhs>
 void solve_impl(Mat ld, Rhs rhs) {
@@ -21,6 +22,7 @@ template <typename Mat, typename Rhs>
 void solve(Mat const& mat, Rhs&& rhs) {
 	_detail::solve_impl(util::to_view(mat), util::to_view_dyn_rows(rhs));
 }
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 #endif /* end of include guard DENSE_LDLT_SOLVE_HPP_PXM02T7QS */

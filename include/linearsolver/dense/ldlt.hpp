@@ -1,13 +1,14 @@
 #ifndef DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 #define DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 
-#include "dense-ldlt/factorize.hpp"
-#include "dense-ldlt/update.hpp"
-#include "dense-ldlt/modify.hpp"
-#include "dense-ldlt/solve.hpp"
+#include "linearsolver/dense/factorize.hpp"
+#include "linearsolver/dense/update.hpp"
+#include "linearsolver/dense/modify.hpp"
+#include "linearsolver/dense/solve.hpp"
 #include <veg/vec.hpp>
 
-namespace dense_ldlt {
+namespace linearsolver {
+namespace dense {
 namespace _detail {
 struct SimdAlignedSystemAlloc {
 	friend auto operator==(
@@ -17,13 +18,15 @@ struct SimdAlignedSystemAlloc {
 	}
 };
 } // namespace _detail
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 template <>
-struct veg::mem::Alloc<dense_ldlt::_detail::SimdAlignedSystemAlloc> {
+struct veg::mem::Alloc<linearsolver::dense::_detail::SimdAlignedSystemAlloc> {
 	static constexpr usize min_align = SIMDE_NATURAL_VECTOR_SIZE / 8;
 
-	using RefMut = veg::RefMut<dense_ldlt::_detail::SimdAlignedSystemAlloc>;
+	using RefMut =
+			veg::RefMut<linearsolver::dense::_detail::SimdAlignedSystemAlloc>;
 
 	VEG_INLINE static auto adjusted_layout(Layout l) noexcept -> Layout {
 		if (l.align < min_align) {
@@ -63,8 +66,8 @@ struct veg::mem::Alloc<dense_ldlt::_detail::SimdAlignedSystemAlloc> {
 	}
 };
 
-namespace dense_ldlt {
-
+namespace linearsolver {
+namespace dense {
 /*!
  * Wrapper class that handles an allocated LDLT decomposition,
  * with an applied permutation.  
@@ -74,14 +77,14 @@ namespace dense_ldlt {
  *
  * Example usage:
  * ```cpp
-#include <dense-ldlt/ldlt.hpp>
+#include <linearsolver/dense/ldlt.hpp>
 #include <veg/util/dynstack_alloc.hpp>
 
 auto main() -> int {
 	constexpr auto DYN = Eigen::Dynamic;
 	using Matrix = Eigen::Matrix<double, DYN, DYN>;
 	using Vector = Eigen::Matrix<double, DYN, 1>;
-	using Ldlt = dense_ldlt::Ldlt<double>;
+	using Ldlt = linearsolver::dense::Ldlt<double>;
 	using veg::dynstack::StackReq;
 
 	// allocate a matrix `a`
@@ -297,7 +300,8 @@ public:
 							 r * isize{sizeof(isize)},
 							 alignof(isize),
 					 } &
-		       dense_ldlt::ldlt_delete_rows_and_cols_req(veg::Tag<T>{}, n, r);
+		       linearsolver::dense::ldlt_delete_rows_and_cols_req(
+							 veg::Tag<T>{}, n, r);
 	}
 
 	/*!
@@ -327,7 +331,7 @@ public:
 			indices_actual[k] = perm_inv[indices[k]];
 		}
 
-		dense_ldlt::ldlt_delete_rows_and_cols_sort_indices( //
+		linearsolver::dense::ldlt_delete_rows_and_cols_sort_indices( //
 				ld_col_mut(),
 				indices_actual,
 				r,
@@ -383,7 +387,8 @@ public:
 							 isize{sizeof(T)} * (adjusted_stride(n + r) * r),
 							 _detail::align<T>(),
 					 } &
-		       dense_ldlt::ldlt_insert_rows_and_cols_req(veg::Tag<T>{}, n, r);
+		       linearsolver::dense::ldlt_insert_rows_and_cols_req(
+							 veg::Tag<T>{}, n, r);
 	}
 
 	/*!
@@ -434,7 +439,7 @@ public:
 			}
 		}
 
-		dense_ldlt::ldlt_insert_rows_and_cols(
+		linearsolver::dense::ldlt_insert_rows_and_cols(
 				ld_col_mut(), i_actual, permuted_a, stack);
 	}
 
@@ -516,7 +521,7 @@ public:
 			_w(sorted_indices[k] - first, k) = 1;
 		}
 
-		dense_ldlt::_detail::rank_r_update_clobber_w_impl(
+		linearsolver::dense::_detail::rank_r_update_clobber_w_impl(
 				util::submatrix(ld_col_mut(), first, first, n, n),
 				_w.data(),
 				_w.outerStride(),
@@ -563,10 +568,10 @@ public:
 			}
 		}
 
-		dense_ldlt::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
+		linearsolver::dense::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
 	}
 
-  /*!
+	/*!
    * Returns the dimension of the stored decomposition.
    */
 	auto dim() const noexcept -> isize { return perm.len(); }
@@ -649,10 +654,10 @@ public:
 							 n * adjusted_stride(n) * isize{sizeof(T)},
 							 _detail::align<T>(),
 					 } |
-		       dense_ldlt::factorize_req(veg::Tag<T>{}, n);
+		       linearsolver::dense::factorize_req(veg::Tag<T>{}, n);
 	}
 
-  /*!
+	/*!
    * Computes the decomposition of a given matrix `A`.  
    * The matrix is interpreted as a symmetric matrix and only
    * the lower triangular part of `A` is accessed.
@@ -671,7 +676,7 @@ public:
 		perm_inv.resize_for_overwrite(n);
 		maybe_sorted_diag.resize_for_overwrite(n);
 
-		dense_ldlt::_detail::compute_permutation( //
+		linearsolver::dense::_detail::compute_permutation( //
 				perm.ptr_mut(),
 				perm_inv.ptr_mut(),
 				util::diagonal(mat));
@@ -679,7 +684,7 @@ public:
 		{
 			LDLT_TEMP_MAT_UNINIT(T, work, n, n, stack);
 			ld_col_mut() = mat;
-			dense_ldlt::_detail::apply_permutation_tri_lower(
+			linearsolver::dense::_detail::apply_permutation_tri_lower(
 					ld_col_mut(), work, perm.ptr());
 		}
 
@@ -687,10 +692,10 @@ public:
 			maybe_sorted_diag[i] = ld_col()(i, i);
 		}
 
-		dense_ldlt::factorize(ld_col_mut(), stack);
+		linearsolver::dense::factorize(ld_col_mut(), stack);
 	}
 
-  /*!
+	/*!
 	 * Returns the memory storage requirements for solving a linear system
    * with a decomposition of dimension at most `n`
    *
@@ -703,7 +708,7 @@ public:
 		};
 	}
 
-  /*!
+	/*!
 	 * Solves the system `A×x = rhs`, and stores the result in `rhs`.
    *
    * @param rhs right hand side of the linear system
@@ -718,7 +723,7 @@ public:
 			work[i] = rhs[perm[i]];
 		}
 
-		dense_ldlt::solve(ld_col(), work);
+		linearsolver::dense::solve(ld_col(), work);
 
 		for (isize i = 0; i < n; ++i) {
 			rhs[i] = work[perm_inv[i]];
@@ -751,6 +756,7 @@ public:
 		return A;
 	}
 };
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 #endif /* end of include guard DENSE_LDLT_LDLT_HPP_6MGYLBRCS */

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <veg/util/dynstack_alloc.hpp>
-#include <dense-ldlt/ldlt.hpp>
+#include <linearsolver/dense/ldlt.hpp>
 #include <chrono>
 
 namespace qp {

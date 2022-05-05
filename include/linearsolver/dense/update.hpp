@@ -1,9 +1,10 @@
 #ifndef DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
 #define DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
 
-#include "dense-ldlt/core.hpp"
+#include "linearsolver/dense/core.hpp"
 
-namespace dense_ldlt {
+namespace linearsolver {
+namespace dense {
 namespace _detail {
 inline auto bytes_to_prev_aligned(void* ptr, usize align) noexcept -> isize {
 	using UPtr = std::uintptr_t;
@@ -283,6 +284,7 @@ void rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha) {
 			alpha.data(),
 			_detail::ConstantR{r});
 }
-} // namespace dense_ldlt
+} // namespace dense
+} // namespace linearsolver
 
 #endif /* end of include guard DENSE_LDLT_UPDATE_HPP_PEVXUDLIS */
