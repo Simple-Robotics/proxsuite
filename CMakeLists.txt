@@ -46,7 +46,7 @@ if(APPLE) # Ensure that the policy if is only applied on OSX systems
 endif(APPLE)
 
 if(ENABLE_DOCS_ONLY)
-  add_subdirectory("docs")
+  add_subdirectory(doc)
   return()
 endif()
 
@@ -160,5 +160,5 @@ if(ENABLE_TESTING)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_FLAGS}")
   enable_testing()
   add_subdirectory(test)
-  add_subdirectory(docs)
+  add_subdirectory(doc)
 endif()

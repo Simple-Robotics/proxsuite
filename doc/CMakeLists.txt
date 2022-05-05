@@ -1,5 +1,8 @@
 find_package(Doxygen)
 
+message(STATUS AAAAAAAAAAAAAAA)
+message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
+
 if(DOXYGEN_FOUND)
   get_target_property(
     PROXSUITE_PUBLIC_HEADER_DIR prox-suite INTERFACE_INCLUDE_DIRECTORIES
@@ -7,7 +10,7 @@ if(DOXYGEN_FOUND)
   file(GLOB_RECURSE PROXSUITE_PUBLIC_HEADERS
        ${PROXSUITE_PUBLIC_HEADER_DIR}/*.hpp
   )
-  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/../docs/Doxyfile.in)
+  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/../doc/Doxyfile.in)
   set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
   configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
