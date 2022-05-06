@@ -172,7 +172,7 @@ void update_lower_bound(
             VecRef<T> l_){
     qpmodel.l = l_.eval();
     qpwork.l_scaled = qpmodel.l;
-    qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.l_scaled});
+    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.l_scaled});
 };
 template <typename T>
 void update_upper_bound(
@@ -181,7 +181,7 @@ void update_upper_bound(
             VecRef<T> u_){
     qpmodel.u = u_.eval();
     qpwork.u_scaled = qpmodel.u;
-    qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.u_scaled});
+    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.u_scaled});
 };
 template <typename T>
 void update_equality_bound(
@@ -190,7 +190,7 @@ void update_equality_bound(
             VecRef<T> b_){
     qpmodel.b = b_.eval();
     qpwork.b_scaled = qpmodel.b;
-    qpwork._scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.b_scaled});
+    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.b_scaled});
 };
 template <typename T>
 void update_matrices(dense::Data<T>& qpmodel,
@@ -230,11 +230,11 @@ void update_matrices(dense::Data<T>& qpmodel,
 template <typename T>
 void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, T rho_new, T mu_eq_new, T mu_in_new){
     // TODO: use std::optional for matrices argument
-    results.rho = rho_new;
-    results.mu_eq = mu_eq_new;
-    results.mu_eq_inv = T(1)/mu_eq_new;
-    results.mu_in = mu_in_new;
-    results.mu_in_inv = T(1)/mu_in_new;
+    results.info.rho = rho_new;
+    results.info.mu_eq = mu_eq_new;
+    results.info.mu_eq_inv = T(1)/mu_eq_new;
+    results.info.mu_in = mu_in_new;
+    results.info.mu_in_inv = T(1)/mu_in_new;
     initial_guess(work,settings,qpmodel,results);
 };
 template<typename T>
@@ -316,7 +316,7 @@ public:
     }
     void update_prox_parameter(T rho_new, T mu_eq_new, T mu_in_new){
         // TODO use std optional 
-        update_proximal_parameters(results,work,settings,rho_new, mu_eq_new, mu_in_new);
+        update_proximal_parameters(results,work,settings,data,rho_new, mu_eq_new, mu_in_new);
     };
     void warm_sart(VecRef<T> x_wm,
                VecRef<T> y_wm,
@@ -326,6 +326,7 @@ public:
     void cleanup(){
         results.reset_results();
         work.reset_workspace();
+        initial_guess(work,settings,data,results);
     }
 };
 

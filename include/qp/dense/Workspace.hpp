@@ -199,7 +199,7 @@ public:
 		CTz.setZero();
 	}
 
-	void reset_results(isize n_in = 0) {
+	void reset_workspace(isize n_in = 0) {
 
 		Hdx.setZero();
 		Cdx.setZero();
