@@ -17,9 +17,9 @@ namespace dense {
 
 template <typename T>
 void refactorize(
-		const qp::dense::Data<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Data<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T rho_new) {
 
 	if (!qpwork.constraints_changed && rho_new == qpresults.info.rho) {
