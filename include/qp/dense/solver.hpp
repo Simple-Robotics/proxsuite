@@ -678,6 +678,10 @@ void qp_solve( //
 		}
 		if (qpresults.info.status == PROXQP_PRIMAL_INFEASIBLE ||
 		    qpresults.info.status == PROXQP_DUAL_INFEASIBLE) {
+			// certificate of infeasibility
+			qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+			qpresults.y = qpwork.dw_aug.segment(qpmodel.dim,qpmodel.dim+qpmodel.n_eq);
+			qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
 			break;
 		}
 
@@ -923,10 +927,10 @@ void QPsetup_dense( //
 		MatRef<T> C,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::Settings<T>& qpsettings,
-		qp::dense::Data<T>& qpmodel,
-		qp::dense::Workspace<T>& qpwork,
-		qp::Results<T>& qpresults
+		Settings<T>& qpsettings,
+		Data<T>& qpmodel,
+		Workspace<T>& qpwork,
+		Results<T>& qpresults
 
 ) {
 	dense::QPsetup_generic(
@@ -942,10 +946,10 @@ void QPsetup( //
 		const SparseMat<T>& C,
 		VecRef<T> u,
 		VecRef<T> l,
-		qp::Settings<T>& qpsettings,
-		qp::dense::Data<T>& qpmodel,
-		qp::dense::Workspace<T>& qpwork,
-		qp::Results<T>& qpresults) {
+		Settings<T>& qpsettings,
+		Data<T>& qpmodel,
+		Workspace<T>& qpwork,
+		Results<T>& qpresults) {
 	dense::QPsetup_generic(
 			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
