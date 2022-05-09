@@ -262,15 +262,6 @@ void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings
         results.info.mu_in = mu_in_new.value();
         results.info.mu_in_inv = T(1)/results.info.mu_in;
     }
-
-    work.H_scaled = qpmodel.H ;
-    work.g_scaled = qpmodel.g;
-    work.A_scaled = qpmodel.A;
-    work.b_scaled = qpmodel.b;
-    work.C_scaled = qpmodel.C;
-    work.u_scaled = qpmodel.u;
-    work.l_scaled = qpmodel.l;
-    initial_guess(work,settings,qpmodel,results);
 };
 template<typename T>
 void warm_starting(VecRef<T> x_wm,
@@ -296,23 +287,47 @@ public:
     QP(isize _dim, isize _n_eq, isize _n_in):data(_dim, _n_eq, _n_in),work(_dim, _n_eq, _n_in),settings(),results(_dim, _n_eq, _n_in){
     }
 
-    void setup_dense_matrices(MatRef<T> H,
-		VecRef<T> g,
-		MatRef<T> A,
-		VecRef<T> b,
-		MatRef<T> C,
-		VecRef<T> u,
-		VecRef<T> l){
-            setup_dense(H,g,A,b,C,u,l,settings,data,work,results);
+    void setup_dense_matrices(tl::optional<MatRef<T>> H,
+		tl::optional<VecRef<T>> g,
+		tl::optional<MatRef<T>> A,
+		tl::optional<VecRef<T>> b,
+		tl::optional<MatRef<T>> C,
+		tl::optional<VecRef<T>> u,
+		tl::optional<VecRef<T>> l){
+
+            if (H == tl::nullopt && g==tl::nullopt && A == tl::nullopt && b == tl::nullopt && C ==tl::nullopt && u == tl::nullopt && l ==tl::nullopt){
+                // if all = tl::nullopt -> use previous setup
+                setup_dense(MatRef<T>(data.H),VecRef<T>(data.g),MatRef<T>(data.A),VecRef<T>(data.b),MatRef<T>(data.C),VecRef<T>(data.u),VecRef<T>(data.l),settings,data,work,results);
+            }else if (H != tl::nullopt && g!=tl::nullopt && A != tl::nullopt && b != tl::nullopt && C !=tl::nullopt && u != tl::nullopt && l !=tl::nullopt){
+                // if all != tl::nullopt -> initial setup
+                setup_dense(H.value(),g.value(),A.value(),b.value(),C.value(),u.value(),l.value(),settings,data,work,results);
+            } else{
+                // some input are not equal to tl::nullopt -> do first an update 
+                update(H,g,A,b,C,u,l);
+            }
         };
-    void setup_sparse_matrices(const SparseMat<T>& H,
-		VecRef<T> g,
-		const SparseMat<T>& A,
-		VecRef<T> b,
-		const SparseMat<T>& C,
-		VecRef<T> u,
-		VecRef<T> l){
-            setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
+    void setup_sparse_matrices(const tl::optional<SparseMat<T>> H,
+		tl::optional<VecRef<T>> g,
+		const tl::optional<SparseMat<T>> A,
+		tl::optional<VecRef<T>> b,
+		const tl::optional<SparseMat<T>> C,
+		tl::optional<VecRef<T>> u,
+		tl::optional<VecRef<T>> l){
+
+            if (H == tl::nullopt && g==tl::nullopt && A == tl::nullopt && b == tl::nullopt && C ==tl::nullopt && u == tl::nullopt && l ==tl::nullopt){
+                // if all = tl::nullopt -> use previous setup
+                setup_generic(MatRef<T>(data.H),VecRef<T>(data.g),MatRef<T>(data.A),VecRef<T>(data.b),MatRef<T>(data.C),VecRef<T>(data.u),VecRef<T>(data.l),settings,data,work,results);
+            }else if (H != tl::nullopt && g!=tl::nullopt && A != tl::nullopt && b != tl::nullopt && C !=tl::nullopt && u != tl::nullopt && l !=tl::nullopt){
+                // if all != tl::nullopt -> initial setup
+                setup_sparse(H.value(),g.value(),A.value(),b.value(),C.value(),u.value(),l.value(),settings,data,work,results);
+            } else{
+                // some inputs are not equal to tl::nullopt -> do first an update 
+                data.H = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H.value());
+                data.A = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A.value());
+                data.C = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C.value());
+                update(tl::nullopt,g,tl::nullopt,b,tl::nullopt,u,l);
+            }
+            //setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
         };
 
     void solve(){
