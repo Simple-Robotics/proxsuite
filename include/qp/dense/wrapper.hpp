@@ -116,6 +116,7 @@ void initial_guess(dense::Workspace<T>& qpwork,
                    Settings<T>& qpsettings,
                    dense::Data<T>& qpmodel,
                    Results<T>& qpresults){
+    
 	qp::dense::QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
 			{from_eigen, qpwork.g_scaled},
@@ -249,11 +250,26 @@ void setup_sparse( //
 template <typename T>
 void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
     // TODO: use std::optional for matrices argument
-    results.info.rho = rho_new;
-    results.info.mu_eq = mu_eq_new;
-    results.info.mu_eq_inv = T(1)/mu_eq_new;
-    results.info.mu_in = mu_in_new;
-    results.info.mu_in_inv = T(1)/mu_in_new;
+    
+    if (rho_new!=tl::nullopt){
+        results.info.rho = rho_new.value();
+    }
+    if (mu_eq_new != tl::nullopt){
+        results.info.mu_eq = mu_eq_new.value();
+        results.info.mu_eq_inv = T(1)/results.info.mu_eq ;
+    }
+    if (mu_in_new != tl::nullopt){
+        results.info.mu_in = mu_in_new.value();
+        results.info.mu_in_inv = T(1)/results.info.mu_in;
+    }
+
+    work.H_scaled = qpmodel.H ;
+    work.g_scaled = qpmodel.g;
+    work.A_scaled = qpmodel.A;
+    work.b_scaled = qpmodel.b;
+    work.C_scaled = qpmodel.C;
+    work.u_scaled = qpmodel.u;
+    work.l_scaled = qpmodel.l;
     initial_guess(work,settings,qpmodel,results);
 };
 template<typename T>
@@ -389,7 +405,6 @@ public:
 
     }
     void update_prox_parameter(tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
-        // TODO use std optional 
         update_proximal_parameters(results,work,settings,data,rho_new, mu_eq_new, mu_in_new);
     };
     void warm_sart(VecRef<T> x_wm,
@@ -400,7 +415,6 @@ public:
     void cleanup(){
         results.reset_results();
         work.reset_workspace();
-        initial_guess(work,settings,data,results);
     }
 };
 
