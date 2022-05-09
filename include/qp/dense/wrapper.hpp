@@ -249,7 +249,6 @@ void setup_sparse( //
 
 template <typename T>
 void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
-    // TODO: use std::optional for matrices argument
     
     if (rho_new!=tl::nullopt){
         results.info.rho = rho_new.value();
@@ -264,14 +263,26 @@ void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings
     }
 };
 template<typename T>
-void warm_starting(VecRef<T> x_wm,
-               VecRef<T> y_wm,
-               VecRef<T> z_wm,
-               Results<T>& results){
-    // TODO: use std::optional for matrices argument
-    results.x = x_wm.eval();
-    results.y = y_wm.eval();
-    results.z = z_wm.eval();
+void warm_starting(tl::optional<VecRef<T>> x_wm,
+               tl::optional<VecRef<T>> y_wm,
+               tl::optional<VecRef<T>> z_wm,
+               Results<T>& results,
+               Settings<T>& settings){
+    bool real_wm = false;
+    if (x_wm!=tl::nullopt){
+        results.x = x_wm.value().eval();
+        real_wm = true;
+    }
+    if (y_wm!=tl::nullopt){
+        results.y = y_wm.value().eval();
+        real_wm = true;
+    }
+    if (z_wm!=tl::nullopt){
+        results.z = z_wm.value().eval();
+    }
+    if (real_wm){
+        settings.warm_start = true;
+    }
 };
 
 ///// QP object
@@ -422,10 +433,10 @@ public:
     void update_prox_parameter(tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
         update_proximal_parameters(results,work,settings,data,rho_new, mu_eq_new, mu_in_new);
     };
-    void warm_sart(VecRef<T> x_wm,
-               VecRef<T> y_wm,
-               VecRef<T> z_wm){
-        warm_starting(x_wm,y_wm,z_wm,results);
+    void warm_sart(tl::optional<VecRef<T>> x_wm,
+               tl::optional<VecRef<T>> y_wm,
+               tl::optional<VecRef<T>> z_wm){
+        warm_starting(x_wm,y_wm,z_wm,results,settings);
     };
     void cleanup(){
         results.reset_results();
