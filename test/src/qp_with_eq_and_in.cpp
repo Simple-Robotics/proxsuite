@@ -1,9 +1,6 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-//#include <qp/dense/solver.hpp>
-//#include <qp/dense/precond/ruiz.hpp>
-//#include <qp/dense/precond/identity.hpp>
 #include <qp/dense/dense.hpp>
 #include <veg/util/dbg.hpp>
 #include <util.hpp>

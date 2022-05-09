@@ -51,7 +51,7 @@ ldlt_test(test.maros_meszaros src/test_maros_meszaros.cpp)
 ldlt_test(test.sparse.ruiz src/test_ruiz_sparse.cpp)
 ldlt_test(test.sparse.qp src/test_qp_sparse.cpp)
 ldlt_test(test.sparse.maros_meszaros src/test_maros_meszaros_sparse.cpp)
-
+ldlt_test(test.qp_update_api src/test_qp_update_api.cpp)
 ldlt_bench(bench.maros_meszaros src/bench_maros_meszaros.cpp)
 ldlt_bench(bench.sparse.maros_meszaros src/bench_maros_meszaros_sparse.cpp)
 

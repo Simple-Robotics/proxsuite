@@ -1,13 +1,96 @@
+/**
+ * @file wrapper.hpp 
+*/
+
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP
+#include <tl/optional.hpp>
 #include <qp/Results.hpp>
 #include <qp/Settings.hpp>
 #include <qp/dense/solver.hpp>
 #include <chrono>
 
+
 namespace qp{
 namespace dense {
+/*!
+ * Wrapper class for using proxsuite API with dense backend,
+ * for solving linearly constrained convex QP, using the ProxQp algorithm.  
+ * More, precisely, when provided with such QP problem (will it be sparse or dense) : 
+ * 
+ * \begin{equation}
+ * \begin{aligned}
+ * \min_{x} \frac{1}{2}x^THx + g^Tx \\
+ * Ax = b \\
+ * l\leq Cx \leq u
+ * \end{aligned}
+ * \end{equation}
+ * the solver will provide a global solution satisfying the KKT conditions
+ *
+ * Example usage:
+ * ```cpp
+#include <linearsolver/dense/ldlt.hpp>
+#include <veg/util/dynstack_alloc.hpp>
 
+auto main() -> int {
+	constexpr auto DYN = Eigen::Dynamic;
+	using Matrix = Eigen::Matrix<double, DYN, DYN>;
+	using Vector = Eigen::Matrix<double, DYN, 1>;
+	using Ldlt = linearsolver::dense::Ldlt<double>;
+	using veg::dynstack::StackReq;
+
+	// allocate a matrix `a`
+	auto a0 = Matrix{
+			2,
+			2,
+	};
+
+	// workspace memory requirements
+	auto req =
+			Ldlt::factorize_req(2) |          // initial factorization of dim 2
+			Ldlt::insert_block_at_req(2, 1) | // or 1 insertion to matrix of dim 2
+			Ldlt::delete_at_req(3, 2) |       // or 2 deletions from matrix of dim 3
+			Ldlt::solve_in_place_req(1);      // or solve in place with dim 1
+
+	VEG_MAKE_STACK(stack, req);
+
+	Ldlt ldl;
+
+	// fill up the lower triangular part
+	// matrix is
+	// 1.0 2.0
+	// 2.0 3.0
+	a0(0, 0) = 1.0;
+	a0(1, 0) = 2.0;
+	a0(1, 1) = 3.0;
+
+	ldl.factorize(a0, stack);
+
+	// add one column at the index 1
+	// matrix is
+	// 1.0 4.0 2.0
+	// 4.0 5.0 6.0
+	// 2.0 6.0 3.0
+	auto c = Matrix{3, 1};
+	c(0, 0) = 4.0;
+	c(1, 0) = 5.0;
+	c(2, 0) = 6.0;
+	ldl.insert_block_at(1, c, stack);
+
+	// then delete two rows and columns at indices 0 and 2
+	// matrix is
+	// 5.0
+	veg::isize const indices[] = {0, 2};
+	ldl.delete_at(indices, 2, stack);
+
+	auto rhs = Vector{1};
+	rhs[0] = 5.0;
+
+	ldl.solve_in_place(rhs, stack);
+	VEG_ASSERT(rhs[0] == 1.0);
+}
+ * ```
+ */
 static constexpr auto DYN = Eigen::Dynamic;
 enum { layout = Eigen::RowMajor };
 template <typename T>
@@ -22,6 +105,12 @@ template <typename T>
 using Vec = Eigen::Matrix<T, DYN, 1>;
 
 /////// SETUP ////////
+/*!
+    * initializes the linear solver and the parameters x, y and z (if warm_start=false in the settings)
+*
+* @param qpwork solver workspace
+* @param qpsettings solver settings
+    */
 template <typename T>
 void initial_guess(dense::Workspace<T>& qpwork,
                    Settings<T>& qpsettings,
@@ -156,79 +245,9 @@ void setup_sparse( //
 }
 
 ////// UPDATES ///////
-template <typename T>
-void update_lin_cost(
-        dense::Data<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
-        VecRef<T> g_){
-    qpmodel.g = g_.eval();
-    qpwork.g_scaled = qpmodel.g;
-    qpwork.ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpwork.g_scaled});
-};
-template <typename T>
-void update_lower_bound(
-            dense::Data<T>& qpmodel,
-		    dense::Workspace<T>& qpwork,
-            VecRef<T> l_){
-    qpmodel.l = l_.eval();
-    qpwork.l_scaled = qpmodel.l;
-    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.l_scaled});
-};
-template <typename T>
-void update_upper_bound(
-            dense::Data<T>& qpmodel,
-		    dense::Workspace<T>& qpwork,
-            VecRef<T> u_){
-    qpmodel.u = u_.eval();
-    qpwork.u_scaled = qpmodel.u;
-    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.u_scaled});
-};
-template <typename T>
-void update_equality_bound(
-            dense::Data<T>& qpmodel,
-		    dense::Workspace<T>& qpwork,
-            VecRef<T> b_){
-    qpmodel.b = b_.eval();
-    qpwork.b_scaled = qpmodel.b;
-    qpwork.ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpwork.b_scaled});
-};
-template <typename T>
-void update_matrices(dense::Data<T>& qpmodel,
-		    dense::Workspace<T>& qpwork,
-            Settings<T>& qpsettings,
-            Results<T>& qpresults,
-            MatRef<T> H_,
-            MatRef<T> A_,
-            MatRef<T> C_){
-    // TODO: use std::optional for matrices argument
-    qpmodel.H = H_.eval();
-    qpmodel.A = A_.eval();
-    qpmodel.C = C_.eval();
-    qpwork.H_scaled = qpmodel.H;
-    qpwork.A_scaled = qpmodel.A;
-    qpwork.C_scaled = qpmodel.C;
-
-    qp::dense::QpViewBoxMut<T> qp_scaled{
-			{from_eigen, qpwork.H_scaled},
-			{from_eigen, qpwork.g_scaled},
-			{from_eigen, qpwork.A_scaled},
-			{from_eigen, qpwork.b_scaled},
-			{from_eigen, qpwork.C_scaled},
-			{from_eigen, qpwork.u_scaled},
-			{from_eigen, qpwork.l_scaled}};
-
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
-			qpwork.ldl_stack.as_mut(),
-	};
-	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
-	qpwork.dw_aug.setZero();
-	qpresults.reset_results(); // re update all other variables
-    initial_guess(qpwork,qpsettings,qpmodel,qpresults);
-};
 
 template <typename T>
-void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, T rho_new, T mu_eq_new, T mu_in_new){
+void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
     // TODO: use std::optional for matrices argument
     results.info.rho = rho_new;
     results.info.mu_eq = mu_eq_new;
@@ -306,15 +325,70 @@ public:
         }
     };
 
-    void update(MatRef<T> H_, VecRef<T> g_, MatRef<T> A_, VecRef<T> b_, MatRef<T> C_, VecRef<T> u_, VecRef<T> l_){
-        // TODO use std optional 
-        update_matrices(data, work, settings,results, H_, A_, C_);
-        update_lin_cost(data,work,g_);
-        update_equality_bound(data,work,b_);
-        update_upper_bound(data,work,u_);
-        update_lower_bound(data,work,l_);
+    void update( tl::optional<MatRef<T>> H_, tl::optional<VecRef<T>> g_, tl::optional<MatRef<T>> A_, tl::optional<VecRef<T>> b_, tl::optional<MatRef<T>> C_, tl::optional<VecRef<T>> u_, tl::optional<VecRef<T>> l_){
+        bool reset_bijection_map(true);
+        results.reset_results();
+        work.reset_workspace(data.n_in,reset_bijection_map);
+        if (g_!=tl::nullopt){
+            data.g = g_.value().eval();
+            work.g_scaled = data.g;
+        } else{
+            work.g_scaled = data.g;
+        }
+        if (b_ != tl::nullopt){
+            data.b = b_.value().eval();
+            work.b_scaled = data.b;
+        }else{
+            work.b_scaled = data.b;
+        }
+        if (u_!=tl::nullopt){
+            data.u = u_.value().eval();
+            work.u_scaled = data.u;
+        }else{
+            work.u_scaled = data.u ; 
+        }
+        if (l_!=tl::nullopt){
+            data.l = l_.value().eval();
+            work.l_scaled = data.l;
+        }{
+            work.l_scaled = data.l;
+        }
+        if (H_ != tl::nullopt){
+            if (A_ != tl::nullopt){
+                if (C_!= tl::nullopt){
+                    data.H = H_.value().eval();
+                    data.A = A_.value().eval();
+                    data.C = C_.value().eval();
+                }else {
+                    //update_matrices(data, work, settings,results, H_, A_, MatrixView<T,rowmajor>{from_eigen,data.C});
+                    //update_matrices(data, work, settings,results, H_, A_, tl::optional<MatRef<T>>(data.C));
+                    data.H = H_.value().eval();
+                    data.A = A_.value().eval();
+                }
+            } else if (C_!= tl::nullopt){
+                    data.H = H_.value().eval();
+                    data.A = A_.value().eval();
+            } else{
+                data.H = H_.value().eval();
+            }
+        } else if (A_ != tl::nullopt){
+                if (C_!= tl::nullopt){
+                    data.A = A_.value().eval();
+                    data.C = C_.value().eval();
+                }else {
+                    data.A = A_.value().eval();
+                }
+        } else if (C_!= tl::nullopt){
+            data.C = C_.value().eval();
+        }
+    work.H_scaled = data.H;
+    work.C_scaled = data.C;
+    work.A_scaled = data.A;
+
+    initial_guess(work,settings,data,results);
+
     }
-    void update_prox_parameter(T rho_new, T mu_eq_new, T mu_in_new){
+    void update_prox_parameter(tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
         // TODO use std optional 
         update_proximal_parameters(results,work,settings,data,rho_new, mu_eq_new, mu_in_new);
     };

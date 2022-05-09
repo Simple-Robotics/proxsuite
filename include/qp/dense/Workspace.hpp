@@ -199,8 +199,15 @@ public:
 		CTz.setZero();
 	}
 
-	void reset_workspace(isize n_in = 0) {
+	void reset_workspace(isize n_in = 0, bool reset_bijection_map = true) {
 
+		H_scaled.setZero();
+		g_scaled.setZero();
+		A_scaled.setZero();
+		C_scaled.setZero();
+		b_scaled.setZero();
+		u_scaled.setZero();
+		l_scaled.setZero();
 		Hdx.setZero();
 		Cdx.setZero();
 		Adx.setZero();
