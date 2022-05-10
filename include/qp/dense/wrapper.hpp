@@ -13,20 +13,281 @@
 
 namespace qp{
 namespace dense {
+static constexpr auto DYN = Eigen::Dynamic;
+enum { layout = Eigen::RowMajor };
+template <typename T>
+using SparseMat = Eigen::SparseMatrix<T, 1>;
+template <typename T>
+using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
+template <typename T>
+using MatRef =Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
+template <typename T>
+using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
+template <typename T>
+using Vec = Eigen::Matrix<T, DYN, 1>;
+
+/////// SETUP ////////
 /*!
- * Wrapper class for using proxsuite API with dense backend,
- * for solving linearly constrained convex QP, using the ProxQp algorithm.  
- * More, precisely, when provided with such QP problem (will it be sparse or dense) : 
+* Setup the linear solver and the parameters x, y and z (through warm starting or default values if warm_start=false in the settings)
+*
+* @param qpwork solver workspace
+* @param qpsettings solver settings
+* @param qpmodel solver model
+* @param qpresults solver result 
+*/
+template <typename T>
+void initial_guess(dense::Workspace<T>& qpwork,
+                   Settings<T>& qpsettings,
+                   dense::Data<T>& qpmodel,
+                   Results<T>& qpresults){
+    
+	qp::dense::QpViewBoxMut<T> qp_scaled{
+			{from_eigen, qpwork.H_scaled},
+			{from_eigen, qpwork.g_scaled},
+			{from_eigen, qpwork.A_scaled},
+			{from_eigen, qpwork.b_scaled},
+			{from_eigen, qpwork.C_scaled},
+			{from_eigen, qpwork.u_scaled},
+			{from_eigen, qpwork.l_scaled}};
+
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
+	qpwork.dw_aug.setZero();
+
+	qpwork.primal_feasibility_rhs_1_eq = dense::infty_norm(qpmodel.b);
+	qpwork.primal_feasibility_rhs_1_in_u = dense::infty_norm(qpmodel.u);
+	qpwork.primal_feasibility_rhs_1_in_l = dense::infty_norm(qpmodel.l);
+	qpwork.dual_feasibility_rhs_2 = dense::infty_norm(qpmodel.g);
+    qpwork.correction_guess_rhs_g = qp::dense::infty_norm(qpwork.g_scaled);
+
+	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
+			qpresults.info.rho;
+	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
+			qpwork.A_scaled.transpose();
+	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
+	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
+	qpwork.kkt.diagonal()
+			.segment(qpmodel.dim, qpmodel.n_eq)
+			.setConstant(-qpresults.info.mu_eq);
+
+	qpwork.ldl.factorize(qpwork.kkt, stack);
+
+	if (!qpsettings.warm_start) {
+		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+		iterative_solve_with_permut_fact( //
+				qpsettings,
+				qpmodel,
+				qpresults,
+				qpwork,
+				T(1),
+				qpmodel.dim + qpmodel.n_eq);
+
+		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+		qpwork.dw_aug.setZero();
+        qpwork.rhs.setZero();
+	}
+};
+/*!
+* Setup the QP solver (the linear solver backend being dense).
+*
+* @param H quadratic cost input defining the QP model
+* @param g linear cost input defining the QP model
+* @param A equality constraint matrix input defining the QP model
+* @param b equality constraint vector input defining the QP model
+* @param C inequality constraint matrix input defining the QP model
+* @param u lower inequality constraint vector input defining the QP model
+* @param l lower inequality constraint vector input defining the QP model
+* @param qpwork solver workspace
+* @param qpsettings solver settings
+* @param qpmodel solver model
+* @param qpresults solver result 
+*/
+template <typename Mat, typename T>
+void setup_generic( //
+		Mat const& H,
+		VecRef<T> g,
+		Mat const& A,
+		VecRef<T> b,
+		Mat const& C,
+		VecRef<T> u,
+		VecRef<T> l,
+		Settings<T>& qpsettings,
+		dense::Data<T>& qpmodel,
+		dense::Workspace<T>& qpwork,
+		Results<T>& qpresults) {
+
+	auto start = std::chrono::steady_clock::now();
+	qpmodel.H = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
+	qpmodel.g = g;
+	qpmodel.A = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
+	qpmodel.b = b;
+	qpmodel.C = Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
+	qpmodel.u = u;
+	qpmodel.l = l;
+
+	qpwork.H_scaled = qpmodel.H;
+	qpwork.g_scaled = qpmodel.g;
+	qpwork.A_scaled = qpmodel.A;
+	qpwork.b_scaled = qpmodel.b;
+	qpwork.C_scaled = qpmodel.C;
+	qpwork.u_scaled = qpmodel.u;
+	qpwork.l_scaled = qpmodel.l;
+
+    initial_guess(qpwork,qpsettings,qpmodel,qpresults);
+
+	auto stop = std::chrono::steady_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	qpresults.info.setup_time = duration.count();
+}
+
+/*!
+* Setup the QP solver with dense matrices input (the linear solver backend being dense).
+*
+* @param H quadratic cost input defining the QP model
+* @param g linear cost input defining the QP model
+* @param A equality constraint matrix input defining the QP model
+* @param b equality constraint vector input defining the QP model
+* @param C inequality constraint matrix input defining the QP model
+* @param u lower inequality constraint vector input defining the QP model
+* @param l lower inequality constraint vector input defining the QP model
+* @param qpwork solver workspace
+* @param qpsettings solver settings
+* @param qpmodel solver model
+* @param qpresults solver result 
+*/
+template <typename T>
+void setup_dense( //
+		MatRef<T> H,
+		VecRef<T> g,
+		MatRef<T> A,
+		VecRef<T> b,
+		MatRef<T> C,
+		VecRef<T> u,
+		VecRef<T> l,
+		Settings<T>& qpsettings,
+		dense::Data<T>& qpmodel,
+		dense::Workspace<T>& qpwork,
+		Results<T>& qpresults
+) {
+	setup_generic(
+			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
+}
+
+/*!
+* Setup the QP solver with sparse matrices input (the linear solver backend being dense).
+*
+* @param H quadratic cost input defining the QP model
+* @param g linear cost input defining the QP model
+* @param A equality constraint matrix input defining the QP model
+* @param b equality constraint vector input defining the QP model
+* @param C inequality constraint matrix input defining the QP model
+* @param u lower inequality constraint vector input defining the QP model
+* @param l lower inequality constraint vector input defining the QP model
+* @param qpwork solver workspace
+* @param qpsettings solver settings
+* @param qpmodel solver model
+* @param qpresults solver result 
+*/
+template <typename T>
+void setup_sparse( //
+		const SparseMat<T>& H,
+		VecRef<T> g,
+		const SparseMat<T>& A,
+		VecRef<T> b,
+		const SparseMat<T>& C,
+		VecRef<T> u,
+		VecRef<T> l,
+		Settings<T>& qpsettings,
+		dense::Data<T>& qpmodel,
+		dense::Workspace<T>& qpwork,
+		Results<T>& qpresults) {
+	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
+}
+
+////// UPDATES ///////
+
+/*!
+* Update the proximal parameters of the results object.
+*
+* @param rho_new primal proximal parameter
+* @param mu_eq_new dual equality proximal parameter
+* @param mu_in_new dual inequality proximal parameter
+* @param results solver result 
+*/
+template <typename T>
+void update_proximal_parameters(Results<T>& results, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
+    
+    if (rho_new!=tl::nullopt){
+        results.info.rho = rho_new.value();
+    }
+    if (mu_eq_new != tl::nullopt){
+        results.info.mu_eq = mu_eq_new.value();
+        results.info.mu_eq_inv = T(1)/results.info.mu_eq ;
+    }
+    if (mu_in_new != tl::nullopt){
+        results.info.mu_in = mu_in_new.value();
+        results.info.mu_in_inv = T(1)/results.info.mu_in;
+    }
+};
+/*!
+* Warm start the results primal and dual variables.
+*
+* @param x_wm primal proximal parameter
+* @param y_wm dual equality proximal parameter
+* @param z_wm dual inequality proximal parameter
+* @param results solver result 
+* @param settings solver settings 
+*/
+template<typename T>
+void warm_starting(tl::optional<VecRef<T>> x_wm,
+               tl::optional<VecRef<T>> y_wm,
+               tl::optional<VecRef<T>> z_wm,
+               Results<T>& results,
+               Settings<T>& settings){
+    bool real_wm = false;
+    if (x_wm!=tl::nullopt){
+        results.x = x_wm.value().eval();
+        real_wm = true;
+    }
+    if (y_wm!=tl::nullopt){
+        results.y = y_wm.value().eval();
+        real_wm = true;
+    }
+    if (z_wm!=tl::nullopt){
+        results.z = z_wm.value().eval();
+    }
+    if (real_wm){
+        settings.warm_start = true;
+    }
+};
+/*!
+ * Wrapper class for using proxsuite API with dense backend
+ * for solving linearly constrained convex QP with the ProxQp algorithm.  
+ * More, precisely, when provided with a QP problem (will its matrices be sparse or dense): 
  * 
- * \begin{equation}
- * \begin{aligned}
- * \min_{x} \frac{1}{2}x^THx + g^Tx \\
- * Ax = b \\
- * l\leq Cx \leq u
- * \end{aligned}
- * \end{equation}
- * the solver will provide a global solution satisfying the KKT conditions
- *
+ * \f{eqnarray*}{
+ * \min_{x} &\frac{1}{2}x^THx& + g^Tx \\
+ * Ax &=& b \\
+ * l\leq &Cx& \leq u
+ * \f}
+ * 
+ * the solver will provide a global solution \f$ ( x^* , y^* , z^* ) \f$ satisfying the KKT conditions at the defined absolute precision \f$\epsilon_{\text{abs}}\f$:
+ * 
+ * \f{eqnarray*}{
+ * \| Hx^* + g + A^Ty^* + C^Tz^*\| \leq \epsilon_{\text{abs}} \\
+ * \| Ax^* -b \| \leq \epsilon_{\text{abs}} \\
+ * \| [Cx^* -u]_{+} + [Cx^*-l]_{+} \| \leq \epsilon_{\text{abs}}.
+ * \f}
+ * 
  * Example usage:
  * ```cpp
 #include <linearsolver/dense/ldlt.hpp>
@@ -91,200 +352,6 @@ auto main() -> int {
 }
  * ```
  */
-static constexpr auto DYN = Eigen::Dynamic;
-enum { layout = Eigen::RowMajor };
-template <typename T>
-using SparseMat = Eigen::SparseMatrix<T, 1>;
-template <typename T>
-using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
-template <typename T>
-using MatRef =Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
-template <typename T>
-using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
-template <typename T>
-using Vec = Eigen::Matrix<T, DYN, 1>;
-
-/////// SETUP ////////
-/*!
-    * initializes the linear solver and the parameters x, y and z (if warm_start=false in the settings)
-*
-* @param qpwork solver workspace
-* @param qpsettings solver settings
-    */
-template <typename T>
-void initial_guess(dense::Workspace<T>& qpwork,
-                   Settings<T>& qpsettings,
-                   dense::Data<T>& qpmodel,
-                   Results<T>& qpresults){
-    
-	qp::dense::QpViewBoxMut<T> qp_scaled{
-			{from_eigen, qpwork.H_scaled},
-			{from_eigen, qpwork.g_scaled},
-			{from_eigen, qpwork.A_scaled},
-			{from_eigen, qpwork.b_scaled},
-			{from_eigen, qpwork.C_scaled},
-			{from_eigen, qpwork.u_scaled},
-			{from_eigen, qpwork.l_scaled}};
-
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
-			qpwork.ldl_stack.as_mut(),
-	};
-	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
-	qpwork.dw_aug.setZero();
-
-	qpwork.primal_feasibility_rhs_1_eq = dense::infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = dense::infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = dense::infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = dense::infty_norm(qpmodel.g);
-    qpwork.correction_guess_rhs_g = qp::dense::infty_norm(qpwork.g_scaled);
-
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			qpresults.info.rho;
-	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
-			qpwork.A_scaled.transpose();
-	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
-	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
-	qpwork.kkt.diagonal()
-			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-qpresults.info.mu_eq);
-
-	qpwork.ldl.factorize(qpwork.kkt, stack);
-
-	if (!qpsettings.warm_start) {
-		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-		iterative_solve_with_permut_fact( //
-				qpsettings,
-				qpmodel,
-				qpresults,
-				qpwork,
-				T(1),
-				qpmodel.dim + qpmodel.n_eq);
-
-		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-		qpwork.dw_aug.setZero();
-        qpwork.rhs.setZero();
-	}
-};
-
-template <typename Mat, typename T>
-void setup_generic( //
-		Mat const& H,
-		VecRef<T> g,
-		Mat const& A,
-		VecRef<T> b,
-		Mat const& C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
-		Results<T>& qpresults) {
-
-	auto start = std::chrono::steady_clock::now();
-	qpmodel.H = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
-	qpmodel.g = g;
-	qpmodel.A = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
-	qpmodel.b = b;
-	qpmodel.C = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
-	qpmodel.u = u;
-	qpmodel.l = l;
-
-	qpwork.H_scaled = qpmodel.H;
-	qpwork.g_scaled = qpmodel.g;
-	qpwork.A_scaled = qpmodel.A;
-	qpwork.b_scaled = qpmodel.b;
-	qpwork.C_scaled = qpmodel.C;
-	qpwork.u_scaled = qpmodel.u;
-	qpwork.l_scaled = qpmodel.l;
-
-    initial_guess(qpwork,qpsettings,qpmodel,qpresults);
-
-	auto stop = std::chrono::steady_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.info.setup_time = duration.count();
-}
-
-template <typename T>
-void setup_dense( //
-		MatRef<T> H,
-		VecRef<T> g,
-		MatRef<T> A,
-		VecRef<T> b,
-		MatRef<T> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
-		Results<T>& qpresults
-) {
-	setup_generic(
-			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
-}
-
-template <typename T>
-void setup_sparse( //
-		const SparseMat<T>& H,
-		VecRef<T> g,
-		const SparseMat<T>& A,
-		VecRef<T> b,
-		const SparseMat<T>& C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
-		Results<T>& qpresults) {
-	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
-}
-
-////// UPDATES ///////
-
-template <typename T>
-void update_proximal_parameters(Results<T>& results,Workspace<T>& work, Settings<T>& settings, Data<T>& qpmodel, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
-    
-    if (rho_new!=tl::nullopt){
-        results.info.rho = rho_new.value();
-    }
-    if (mu_eq_new != tl::nullopt){
-        results.info.mu_eq = mu_eq_new.value();
-        results.info.mu_eq_inv = T(1)/results.info.mu_eq ;
-    }
-    if (mu_in_new != tl::nullopt){
-        results.info.mu_in = mu_in_new.value();
-        results.info.mu_in_inv = T(1)/results.info.mu_in;
-    }
-};
-template<typename T>
-void warm_starting(tl::optional<VecRef<T>> x_wm,
-               tl::optional<VecRef<T>> y_wm,
-               tl::optional<VecRef<T>> z_wm,
-               Results<T>& results,
-               Settings<T>& settings){
-    bool real_wm = false;
-    if (x_wm!=tl::nullopt){
-        results.x = x_wm.value().eval();
-        real_wm = true;
-    }
-    if (y_wm!=tl::nullopt){
-        results.y = y_wm.value().eval();
-        real_wm = true;
-    }
-    if (z_wm!=tl::nullopt){
-        results.z = z_wm.value().eval();
-    }
-    if (real_wm){
-        settings.warm_start = true;
-    }
-};
-
 ///// QP object
 template <typename T>
 struct QP {
@@ -430,13 +497,13 @@ public:
     initial_guess(work,settings,data,results);
 
     }
-    void update_prox_parameter(tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
-        update_proximal_parameters(results,work,settings,data,rho_new, mu_eq_new, mu_in_new);
+    void update_prox_parameter(tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in){
+        update_proximal_parameters(results,rho, mu_eq, mu_in);
     };
-    void warm_sart(tl::optional<VecRef<T>> x_wm,
-               tl::optional<VecRef<T>> y_wm,
-               tl::optional<VecRef<T>> z_wm){
-        warm_starting(x_wm,y_wm,z_wm,results,settings);
+    void warm_sart(tl::optional<VecRef<T>> x,
+               tl::optional<VecRef<T>> y,
+               tl::optional<VecRef<T>> z){
+        warm_starting(x,y,z,results,settings);
     };
     void cleanup(){
         results.reset_results();
