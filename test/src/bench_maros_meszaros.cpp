@@ -1,6 +1,7 @@
 #include <maros_meszaros.hpp>
 #include <benchmark/benchmark.h>
-#include <qp/proxqp/solver.hpp>
+#include <qp/dense/solver.hpp>
+#include <util.hpp>
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -103,20 +104,20 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 		for (auto _ : s) {
 			s.PauseTiming();
 
-			QPSettings<T> settings;
+			Settings<T> settings;
       settings.verbose = false;
 
-			QPData<T> data{n, n_eq, n_in};
-			QPResults<T> results{n, n_eq, n_in};
-			QPWorkspace<T> work{n, n_eq, n_in};
+      dense::Data<T> data{n, n_eq, n_in};
+			Results<T> results{n, n_eq, n_in};
+      dense::Workspace<T> work{n, n_eq, n_in};
 			results.x.setZero();
 			results.y.setZero();
 			results.z.setZero();
-			detail::QPsetup_dense<T>(
+			QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results);
 
 			s.ResumeTiming();
-			detail::qp_solve(settings, data, results, work);
+			qp_solve(settings, data, results, work);
 		}
 	} else {
 		for (auto _ : s) {

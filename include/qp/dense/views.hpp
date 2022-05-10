@@ -7,10 +7,12 @@
 #include <type_traits>
 #include <Eigen/Core>
 
-#define LDLT_CONCEPT(...) VEG_CONCEPT_MACRO(::qp::concepts, __VA_ARGS__)
+#define LDLT_CONCEPT(...)                                                      \
+	VEG_CONCEPT_MACRO(::proxsuite::qp::concepts, __VA_ARGS__)
 #define LDLT_CHECK_CONCEPT(...)                                                \
 	VEG_CHECK_CONCEPT_MACRO(::qp::concepts, __VA_ARGS__)
 
+namespace proxsuite {
 namespace qp {
 
 using usize = decltype(sizeof(0));
@@ -1138,10 +1140,12 @@ void noalias_mul_sub_tr_lo(
 
 } // namespace detail
 } // namespace qp
+} // namespace proxsuite
 
 template <typename T>
-struct veg::fmt::Debug<qp::StridedVectorView<T>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::StridedVectorView<T>> vec) {
+struct veg::fmt::Debug<proxsuite::qp::StridedVectorView<T>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::StridedVectorView<T>> vec) {
 		out.append_literal("Vec ");
 		_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
 
@@ -1153,32 +1157,38 @@ struct veg::fmt::Debug<qp::StridedVectorView<T>> {
 	}
 };
 template <typename T>
-struct veg::fmt::Debug<qp::StridedVectorViewMut<T>> {
-	static void
-	to_string(fmt::BufferMut out, Ref<qp::StridedVectorViewMut<T>> vec) {
+struct veg::fmt::Debug<proxsuite::qp::StridedVectorViewMut<T>> {
+	static void to_string(
+			fmt::BufferMut out, Ref<proxsuite::qp::StridedVectorViewMut<T>> vec) {
 		dbg_to(VEG_FWD(out), ref(vec.get().as_const()));
 	}
 };
 
 template <typename T>
-struct veg::fmt::Debug<qp::VectorView<T>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::VectorView<T>> vec) {
+struct veg::fmt::Debug<proxsuite::qp::VectorView<T>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::VectorView<T>> vec) {
 		dbg_to(
 				VEG_FWD(out),
-				ref(qp::StridedVectorView<T>{
-						qp::from_ptr_size_stride, vec.get().data, vec.get().dim, 1}));
+				ref(proxsuite::qp::StridedVectorView<T>{
+						proxsuite::qp::from_ptr_size_stride,
+						vec.get().data,
+						vec.get().dim,
+						1}));
 	}
 };
 template <typename T>
-struct veg::fmt::Debug<qp::VectorViewMut<T>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::VectorViewMut<T>> vec) {
+struct veg::fmt::Debug<proxsuite::qp::VectorViewMut<T>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::VectorViewMut<T>> vec) {
 		dbg_to(VEG_FWD(out), ref(vec.get().as_const()));
 	}
 };
 
-template <typename T, qp::Layout L>
-struct veg::fmt::Debug<qp::MatrixView<T, L>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::MatrixView<T, L>> mat) {
+template <typename T, proxsuite::qp::Layout L>
+struct veg::fmt::Debug<proxsuite::qp::MatrixView<T, L>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::MatrixView<T, L>> mat) {
 		out.append_literal("Vec ");
 		_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
 
@@ -1191,16 +1201,18 @@ struct veg::fmt::Debug<qp::MatrixView<T, L>> {
 		}
 	}
 };
-template <typename T, qp::Layout L>
-struct veg::fmt::Debug<qp::MatrixViewMut<T, L>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::MatrixViewMut<T, L>> mat) {
+template <typename T, proxsuite::qp::Layout L>
+struct veg::fmt::Debug<proxsuite::qp::MatrixViewMut<T, L>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::MatrixViewMut<T, L>> mat) {
 		dbg_to(VEG_FWD(out), ref(mat.get().as_const()));
 	}
 };
 
 template <typename T>
-struct veg::fmt::Debug<qp::LdltView<T>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::LdltView<T>> ld) {
+struct veg::fmt::Debug<proxsuite::qp::LdltView<T>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::LdltView<T>> ld) {
 		out.append_literal("Ldlt ");
 		_detail::_fmt::DbgStructScope _0{VEG_FWD(out)};
 		out.append_ln();
@@ -1225,13 +1237,14 @@ struct veg::fmt::Debug<qp::LdltView<T>> {
 };
 
 template <typename T>
-struct veg::fmt::Debug<qp::LdltViewMut<T>> {
-	static void to_string(fmt::BufferMut out, Ref<qp::LdltViewMut<T>> ld) {
+struct veg::fmt::Debug<proxsuite::qp::LdltViewMut<T>> {
+	static void
+	to_string(fmt::BufferMut out, Ref<proxsuite::qp::LdltViewMut<T>> ld) {
 		dbg_to(VEG_FWD(out), ref(ld.get().as_const()));
 	}
 };
 
-
+namespace proxsuite {
 namespace qp {
 
 namespace dense {
@@ -1373,5 +1386,6 @@ VEG_NIEBLOID(pow);
 VEG_NIEBLOID(infty_norm);
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP */

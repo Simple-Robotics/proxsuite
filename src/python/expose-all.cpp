@@ -3,21 +3,21 @@
 #include <pybind11/eigen.h>
 #include <qp/dense/utils.hpp>
 
-namespace qp{
-
-namespace python{
+namespace proxsuite {
+namespace qp {
+namespace python {
 
 template <typename T>
-void exposeAlgorithm(pybind11::module_ m){
-    qp::dense::python::exposeData<T>(m);
-    //qp::dense::python::exposeWorkspace<T>(m);
-    qp::python::exposeResults<T>(m);
-    qp::python::exposeSettings<T>(m);
-    qp::python::exposeQpObject<T>(m);
+void exposeAlgorithm(pybind11::module_ m) {
+	qp::dense::python::exposeData<T>(m);
+	//qp::dense::python::exposeWorkspace<T>(m);
+	qp::python::exposeResults<T>(m);
+	qp::python::exposeSettings<T>(m);
+	qp::python::exposeQpObject<T>(m);
 }
 
 PYBIND11_MODULE(prox_suite, m) {
-    m.doc() = R"pbdoc(
+	m.doc() = R"pbdoc(
         proxsuite module
     ------------------------
 
@@ -27,10 +27,10 @@ PYBIND11_MODULE(prox_suite, m) {
 
         prox_suite
     )pbdoc";
-    exposeAlgorithm<f64>(m);
+	exposeAlgorithm<f64>(m);
 }
-
 
 } // namespace python
 
 } // namespace qp
+} // namespace proxsuite

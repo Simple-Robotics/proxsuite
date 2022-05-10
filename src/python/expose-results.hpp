@@ -2,13 +2,14 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
+namespace proxsuite {
 namespace qp {
-namespace python{
-template<typename T>
-void exposeResults(pybind11::module_ m){
+namespace python {
+template <typename T>
+void exposeResults(pybind11::module_ m) {
 
 	::pybind11::class_<qp::Info<T>>(m, "info")
-			.def(::pybind11::init()) 
+			.def(::pybind11::init())
 			.def_readwrite("n_c", &qp::Info<T>::n_c)
 			.def_readwrite("mu_eq", &qp::Info<T>::mu_eq)
 			.def_readwrite("mu_in", &qp::Info<T>::mu_in)
@@ -34,3 +35,4 @@ void exposeResults(pybind11::module_ m){
 }
 } //namespace python
 } // namespace qp
+} // namespace proxsuite

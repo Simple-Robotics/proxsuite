@@ -45,7 +45,7 @@ TEST_CASE("upper part") {
 			10,
 			qp::sparse::preconditioner::Symmetry::UPPER,
 	};
-  qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
+	qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
 			n,
 			n_eq + n_in,
 			1e-3,
@@ -57,25 +57,25 @@ TEST_CASE("upper part") {
 
 	ruiz.scale_qp_in_place(
 			{
-					{from_eigen, H_scaled},
-					{from_eigen, g_scaled},
-					{from_eigen, AT_scaled},
-					{from_eigen, b_scaled},
-					{from_eigen, CT_scaled},
-					{from_eigen, l_scaled},
-					{from_eigen, u_scaled},
+					{sparse_ldlt::from_eigen, H_scaled},
+					{sparse_ldlt::from_eigen, g_scaled},
+					{sparse_ldlt::from_eigen, AT_scaled},
+					{sparse_ldlt::from_eigen, b_scaled},
+					{sparse_ldlt::from_eigen, CT_scaled},
+					{sparse_ldlt::from_eigen, l_scaled},
+					{sparse_ldlt::from_eigen, u_scaled},
 			},
 			stack);
 
 	ruiz_dense.scale_qp_in_place(
 			{
-					{ldlt::from_eigen, H_scaled_dense},
-					{ldlt::from_eigen, g_scaled_dense},
-					{ldlt::from_eigen, A_scaled_dense},
-					{ldlt::from_eigen, b_scaled_dense},
-					{ldlt::from_eigen, C_scaled_dense},
-					{ldlt::from_eigen, l_scaled_dense},
-					{ldlt::from_eigen, u_scaled_dense},
+					{qp::from_eigen, H_scaled_dense},
+					{qp::from_eigen, g_scaled_dense},
+					{qp::from_eigen, A_scaled_dense},
+					{qp::from_eigen, b_scaled_dense},
+					{qp::from_eigen, C_scaled_dense},
+					{qp::from_eigen, l_scaled_dense},
+					{qp::from_eigen, u_scaled_dense},
 			},
 			stack);
 
@@ -138,25 +138,25 @@ TEST_CASE("lower part") {
 
 	ruiz.scale_qp_in_place(
 			{
-					{from_eigen, H_scaled},
-					{from_eigen, g_scaled},
-					{from_eigen, AT_scaled},
-					{from_eigen, b_scaled},
-					{from_eigen, CT_scaled},
-					{from_eigen, l_scaled},
-					{from_eigen, u_scaled},
+					{sparse_ldlt::from_eigen, H_scaled},
+					{sparse_ldlt::from_eigen, g_scaled},
+					{sparse_ldlt::from_eigen, AT_scaled},
+					{sparse_ldlt::from_eigen, b_scaled},
+					{sparse_ldlt::from_eigen, CT_scaled},
+					{sparse_ldlt::from_eigen, l_scaled},
+					{sparse_ldlt::from_eigen, u_scaled},
 			},
 			stack);
 
 	ruiz_dense.scale_qp_in_place(
 			{
-					{ldlt::from_eigen, H_scaled_dense},
-					{ldlt::from_eigen, g_scaled_dense},
-					{ldlt::from_eigen, A_scaled_dense},
-					{ldlt::from_eigen, b_scaled_dense},
-					{ldlt::from_eigen, C_scaled_dense},
-					{ldlt::from_eigen, l_scaled_dense},
-					{ldlt::from_eigen, u_scaled_dense},
+					{qp::from_eigen, H_scaled_dense},
+					{qp::from_eigen, g_scaled_dense},
+					{qp::from_eigen, A_scaled_dense},
+					{qp::from_eigen, b_scaled_dense},
+					{qp::from_eigen, C_scaled_dense},
+					{qp::from_eigen, l_scaled_dense},
+					{qp::from_eigen, u_scaled_dense},
 			},
 			stack);
 

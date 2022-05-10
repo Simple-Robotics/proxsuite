@@ -3,7 +3,7 @@
 #include <util.hpp>
 #include <iostream>
 
-using namespace ldlt;
+using namespace qp;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner") {

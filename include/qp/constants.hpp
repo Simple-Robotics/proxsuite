@@ -3,7 +3,7 @@
 
 #include <veg/type_traits/core.hpp>
 
-namespace proxsuite{
+namespace proxsuite {
 namespace qp {
 using veg::isize;
 

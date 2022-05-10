@@ -3,7 +3,7 @@
 
 #include "qp/dense/views.hpp"
 
-namespace proxsuite{
+namespace proxsuite {
 namespace qp {
 namespace dense {
 namespace preconditioner {

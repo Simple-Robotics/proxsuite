@@ -11,7 +11,7 @@
 #include <fmt/core.h>
 #include <util.hpp>
 
-using namespace ldlt;
+using namespace qp;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("qp: test qp loading and solving") {
@@ -49,14 +49,6 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 		Vec primal_init = Vec::Zero(n);
 		Vec dual_init = Vec::Zero(n_eq);
 
-		fmt::print(
-				"-- problem_path   : {}\n"
-				"-- n              : {}\n"
-				"-- n_eq           : {}\n",
-				path,
-				n,
-				n_eq);
-
 		auto iter = [&] {
 			auto ruiz = qp::preconditioner::RuizEquilibration<Scalar>{
 					n,
@@ -64,8 +56,8 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 			};
 			EigenNoAlloc _{};
 			return qp::detail::solve_qp( //
-					{from_eigen, primal_init},
-					{from_eigen, dual_init},
+                                   {qp::from_eigen, primal_init},
+                                   {qp::from_eigen, dual_init},
 					qp.as_view(),
 					200,
 					eps_abs,

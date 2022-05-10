@@ -3,11 +3,12 @@
 #include <pybind11/eigen.h>
 #include <qp/dense/utils.hpp>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 namespace python {
-template<typename T>
-void exposeData(pybind11::module_ m){
+template <typename T>
+void exposeData(pybind11::module_ m) {
 	::pybind11::class_<qp::dense::Data<T>>(m, "Data")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readonly("H", &qp::dense::Data<T>::H)
@@ -25,3 +26,4 @@ void exposeData(pybind11::module_ m){
 } // namespace python
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
