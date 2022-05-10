@@ -5,6 +5,7 @@
 #include <veg/type_traits/core.hpp>
 #include "qp/constants.hpp"
 
+namespace proxsuite {
 namespace qp {
 using veg::isize;
 
@@ -75,7 +76,7 @@ public:
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;
-		info.status = PROXQP_MAX_ITER_REACHED;
+		info.status = proxsuite::qp::PROXQP_MAX_ITER_REACHED;
 	}
 
 	void reset_results() {
@@ -100,10 +101,11 @@ public:
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;
-		info.status = PROXQP_MAX_ITER_REACHED;
+		info.status = proxsuite::qp::PROXQP_MAX_ITER_REACHED;
 	}
 };
 
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_RESULTS_HPP */

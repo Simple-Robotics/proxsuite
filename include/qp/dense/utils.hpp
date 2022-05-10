@@ -11,12 +11,13 @@
 #include <cmath>
 #include <type_traits>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 
 template <typename Derived>
 void save_data(
-		const std::string& filename, const Eigen::MatrixBase<Derived>& mat) {
+		const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat) {
 	// https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
 	const static Eigen::IOFormat CSVFormat(
 			Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n");
@@ -57,9 +58,9 @@ auto negative_part(T const& expr)
 
 template <typename T>
 void global_primal_residual(
-		const Data<T>& qpmodel,
-		Results<T>& qpresults,
-		Workspace<T>& qpwork,
+		const proxsuite::qp::dense::Data<T>& qpmodel,
+		proxsuite::qp::Results<T>& qpresults,
+		proxsuite::qp::dense::Workspace<T>& qpwork,
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
@@ -101,10 +102,10 @@ void global_primal_residual(
 
 template <typename T>
 bool global_primal_residual_infeasibility(
-		VectorViewMut<T> ATdy,
-		VectorViewMut<T> CTdz,
-		VectorViewMut<T> dy,
-		VectorViewMut<T> dz,
+		::qp::VectorViewMut<T> ATdy,
+		::qp::VectorViewMut<T> CTdz,
+		::qp::VectorViewMut<T> dy,
+		::qp::VectorViewMut<T> dz,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings) {
 
@@ -140,10 +141,10 @@ bool global_primal_residual_infeasibility(
 
 template <typename T>
 bool global_dual_residual_infeasibility(
-		VectorViewMut<T> Adx,
-		VectorViewMut<T> Cdx,
-		VectorViewMut<T> Hdx,
-		VectorViewMut<T> dx,
+		::qp::VectorViewMut<T> Adx,
+		::qp::VectorViewMut<T> Cdx,
+		::qp::VectorViewMut<T> Hdx,
+		::qp::VectorViewMut<T> dx,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings,
 		const Data<T>& qpmodel) {
@@ -227,5 +228,6 @@ void global_dual_residual(
 
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP */

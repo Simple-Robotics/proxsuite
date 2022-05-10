@@ -6,6 +6,7 @@
 #include <veg/vec.hpp>
 #include <qp/dense/precond/ruiz.hpp>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 template <typename T>
@@ -30,7 +31,7 @@ public:
 	using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 	///// Equilibrator
-	qp::dense::preconditioner::RuizEquilibration<T> ruiz;
+	proxsuite::qp::dense::preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
 	linearsolver::dense::Ldlt<T> ldl{};
@@ -99,7 +100,7 @@ public:
 
 	Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
-				ruiz(qp::dense::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
+				ruiz(proxsuite::qp::dense::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
 				ldl{}, // old version with alloc
 				H_scaled(dim, dim),
 				g_scaled(dim),
@@ -239,5 +240,6 @@ public:
 };
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */

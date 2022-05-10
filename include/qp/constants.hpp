@@ -3,6 +3,7 @@
 
 #include <veg/type_traits/core.hpp>
 
+namespace proxsuite{
 namespace qp {
 using veg::isize;
 
@@ -20,5 +21,6 @@ const isize PROXQP_UNSOLVED = -10;
 const isize PROXQP_NON_CVX = -7;
 
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_CONSTANTS_HPP */

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 
+namespace proxsuite{
 namespace qp {
 namespace dense {
 namespace linesearch {
@@ -24,9 +25,9 @@ struct PrimalDualGradResult {
 
 template <typename T>
 auto primal_dual_gradient_norm(
-		const qp::dense::Data<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const proxsuite::qp::dense::Data<T>& qpmodel,
+		proxsuite::qp::Results<T>& qpresults,
+		proxsuite::qp::dense::Workspace<T>& qpwork,
 		T alpha) -> PrimalDualGradResult<T> {
 
 	/*
@@ -150,9 +151,9 @@ auto primal_dual_gradient_norm(
 
 template <typename T>
 void primal_dual_ls(
-		const qp::dense::Data<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork) {
+		const proxsuite::qp::dense::Data<T>& qpmodel,
+		proxsuite::qp::Results<T>& qpresults,
+		proxsuite::qp::dense::Workspace<T>& qpwork) {
 
 	/*
 	 * The function follows the algorithm
@@ -322,8 +323,8 @@ void primal_dual_ls(
 
 template <typename T>
 void active_set_change(
-		const qp::dense::Data<T>& qpmodel,
-		qp::Results<T>& qpresults,
+		const proxsuite::qp::dense::Data<T>& qpmodel,
+		proxsuite::qp::Results<T>& qpresults,
 		Workspace<T>& qpwork) {
 
 	/*
@@ -472,5 +473,6 @@ void active_set_change(
 } // namespace linesearch
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP */

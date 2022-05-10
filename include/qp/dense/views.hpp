@@ -1231,6 +1231,7 @@ struct veg::fmt::Debug<qp::LdltViewMut<T>> {
 	}
 };
 
+
 namespace qp {
 
 namespace dense {

@@ -10,7 +10,7 @@
 #include <qp/dense/solver.hpp>
 #include <chrono>
 
-
+namespace proxsuite{
 namespace qp{
 namespace dense {
 static constexpr auto DYN = Eigen::Dynamic;
@@ -512,5 +512,6 @@ public:
 
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP */

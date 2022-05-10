@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <qp/dense/views.hpp>
 
+namespace proxsuite {
 namespace qp {
 using veg::isize;
 
@@ -95,5 +96,6 @@ public:
 };
 
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_SETTINGS_HPP */
