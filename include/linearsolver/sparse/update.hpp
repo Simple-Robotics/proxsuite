@@ -1,11 +1,12 @@
 #ifndef SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 #define SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 
-#include "sparse-ldlt/core.hpp"
+#include "linearsolver/sparse/core.hpp"
 #include <veg/tuple.hpp>
 #include <algorithm>
 
-namespace sparse_ldlt {
+namespace linearsolver {
+namespace sparse {
 template <typename I>
 auto merge_second_col_into_first_req(
 		veg::Tag<I> /*tag*/, isize second_size) noexcept
@@ -158,7 +159,7 @@ auto rank1_update_req( //
 	difference = difference & difference;
 
 	StackReq merge =
-			sparse_ldlt::merge_second_col_into_first_req(veg::Tag<I>{}, n);
+			sparse::merge_second_col_into_first_req(veg::Tag<I>{}, n);
 
 	StackReq numerical_workspace = {n * isize{sizeof(T)}, isize{alignof(T)}};
 
@@ -220,7 +221,7 @@ auto rank1_update(
 			VEG_BIND(
 					auto,
 					(_, new_current_col, computed_difference),
-					sparse_ldlt::merge_second_col_into_first(
+					sparse::merge_second_col_into_first(
 							difference,
 							ld.values_mut().ptr_mut() + (current_ptr_idx + 1),
 							ld.row_indices_mut().ptr_mut() + (current_ptr_idx + 1),
@@ -301,6 +302,7 @@ auto rank1_update(
 
 	return ld;
 }
-} // namespace sparse_ldlt
+} // namespace sparse
+} // namespace linearsolver
 
 #endif /* end of include guard SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS */

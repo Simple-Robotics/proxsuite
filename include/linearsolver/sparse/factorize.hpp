@@ -1,10 +1,11 @@
 #ifndef SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 #define SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 
-#include "sparse-ldlt/core.hpp"
+#include "linearsolver/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
 
-namespace sparse_ldlt {
+namespace linearsolver {
+namespace sparse {
 
 // y += a x
 template <typename T, typename I>
@@ -586,7 +587,7 @@ auto column_counts_req(veg::Tag<I> tag, isize n, isize nnz) noexcept
 						 isize{sizeof(I)} * (1 + 5 * n + nnz),
 						 alignof(I),
 				 } &
-	       sparse_ldlt::transpose_symbolic_req(tag, n);
+	       sparse::transpose_symbolic_req(tag, n);
 }
 
 template <typename I>
@@ -618,7 +619,7 @@ void column_counts(
 			{unsafe, from_raw_parts, pat_work + n + 1, a.nnz()},
 			{},
 	};
-	sparse_ldlt::transpose_symbolic(at, a, stack);
+	sparse::transpose_symbolic(at, a, stack);
 
 	auto patp = at.col_ptrs().ptr();
 	auto pati = at.row_indices().ptr();
@@ -931,7 +932,7 @@ auto factorize_symbolic_req(
 		break;
 	case Ordering::amd:
 		amd_req =
-				StackReq{n * sz, al} & StackReq{sparse_ldlt::amd_req(tag, n, nnz)};
+				StackReq{n * sz, al} & StackReq{sparse::amd_req(tag, n, nnz)};
 		HEDLEY_FALL_THROUGH;
 	case Ordering::user_provided:
 		perm_req = perm_req & StackReq{(n + 1 + nnz) * sz, al};
@@ -943,9 +944,9 @@ auto factorize_symbolic_req(
 	StackReq parent_req = {n * sz, al};
 	StackReq post_req = {n * sz, al};
 
-	StackReq etree_req = sparse_ldlt::etree_req(tag, n);
-	StackReq postorder_req = sparse_ldlt::postorder_req(tag, n);
-	StackReq colcount_req = sparse_ldlt::column_counts_req(tag, n, nnz);
+	StackReq etree_req = sparse::etree_req(tag, n);
+	StackReq postorder_req = sparse::postorder_req(tag, n);
+	StackReq colcount_req = sparse::column_counts_req(tag, n, nnz);
 
 	return amd_req              //
 	       | (perm_req          //
@@ -996,7 +997,7 @@ void factorize_symbolic_non_zeros(
 
 	case Ordering::amd: {
 		auto amd_perm = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
-		sparse_ldlt::amd(amd_perm.as_mut(), a, stack);
+		sparse::amd(amd_perm.as_mut(), a, stack);
 		perm = amd_perm.as_ref();
 	}
 		HEDLEY_FALL_THROUGH;
@@ -1043,12 +1044,12 @@ void factorize_symbolic_non_zeros(
 																							 {},
 																					 };
 
-	sparse_ldlt::etree(etree, permuted_a, stack);
+	sparse::etree(etree, permuted_a, stack);
 
 	auto _post = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
-	sparse_ldlt::postorder(_post.as_mut(), etree.as_const(), stack);
+	sparse::postorder(_post.as_mut(), etree.as_const(), stack);
 
-	sparse_ldlt::column_counts(
+	sparse::column_counts(
 			nnz_per_col, permuted_a, etree.as_const(), _post.as_ref(), stack);
 }
 
@@ -1061,7 +1062,7 @@ void factorize_symbolic_col_counts(
 		SymbolicMatRef<I> a,
 		DynStackMut stack) noexcept {
 
-	sparse_ldlt::factorize_symbolic_non_zeros( //
+	sparse::factorize_symbolic_non_zeros( //
 			col_ptrs.split_at_mut(1)[1_c],
 			etree,
 			perm_inv,
@@ -1264,5 +1265,6 @@ void factorize_numeric( //
 		}
 	}
 }
-} // namespace sparse_ldlt
+} // namespace sparse
+} // namespace linearsolver
 #endif /* end of include guard SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS */

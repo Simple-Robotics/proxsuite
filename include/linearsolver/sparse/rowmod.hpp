@@ -1,17 +1,18 @@
 #ifndef SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 #define SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 
-#include "sparse-ldlt/update.hpp"
+#include "linearsolver/sparse/update.hpp"
 #include <algorithm>
 
-namespace sparse_ldlt {
+namespace linearsolver {
+namespace sparse {
 template <typename T, typename I>
 auto delete_row_req( //
 		veg::Tag<T> /*tag*/,
 		veg::Tag<I> /*tag*/,
 		isize n,
 		isize max_nnz) noexcept -> veg::dynstack::StackReq {
-	return sparse_ldlt::rank1_update_req(
+	return sparse::rank1_update_req(
 			veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
 }
 
@@ -78,7 +79,7 @@ auto delete_row(
 	// step 3: perform rank update
 	isize len =
 			isize(util::zero_extend(ld.nnz_per_col().ptr()[permuted_pos])) - 1;
-	ld = sparse_ldlt::rank1_update( //
+	ld = sparse::rank1_update( //
 			ld,
 			etree,
 			{},
@@ -120,8 +121,8 @@ auto add_row_req( //
 			StackReq{(id_perm ? 0 : nnz) * isize{sizeof(I)}, isize{alignof(I)}};
 	auto pattern_diff = StackReq{n * isize{sizeof(I)}, isize{alignof(I)}};
 	auto merge = merge_second_col_into_first_req(veg::Tag<I>{}, n);
-	auto update = sparse_ldlt::rank1_update_req(
-			veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
+	auto update =
+			sparse::rank1_update_req(veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
 
 	auto req = numerical_work;
 	req = req & permuted_indices;
@@ -274,7 +275,7 @@ auto add_row(
 			VEG_BIND(
 					auto,
 					(_, new_current_col, computed_difference),
-					sparse_ldlt::merge_second_col_into_first(
+					sparse::merge_second_col_into_first(
 							pdifference,
 							static_cast<T*>(nullptr),
 							pldi + (zx(pldp[permuted_pos]) + 1),
@@ -376,7 +377,7 @@ auto add_row(
 	isize len =
 			isize(util::zero_extend(ld.nnz_per_col().ptr()[permuted_pos])) - 1;
 	// perform the rank update with the newly added column
-	sparse_ldlt::rank1_update(
+	sparse::rank1_update(
 			ld,
 			etree,
 			{},
@@ -401,6 +402,7 @@ auto add_row(
 
 	return ld;
 }
-} // namespace sparse_ldlt
+} // namespace sparse
+} // namespace linearsolver
 
 #endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS */

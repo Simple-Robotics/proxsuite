@@ -7,7 +7,7 @@
 using namespace qp;
 using T = double;
 using I = c_int;
-using namespace sparse_ldlt::tags;
+using namespace linearsolver::sparse::tags;
 
 TEST_CASE("upper part") {
 	isize n = 10;
@@ -57,13 +57,13 @@ TEST_CASE("upper part") {
 
 	ruiz.scale_qp_in_place(
 			{
-					{sparse_ldlt::from_eigen, H_scaled},
-					{sparse_ldlt::from_eigen, g_scaled},
-					{sparse_ldlt::from_eigen, AT_scaled},
-					{sparse_ldlt::from_eigen, b_scaled},
-					{sparse_ldlt::from_eigen, CT_scaled},
-					{sparse_ldlt::from_eigen, l_scaled},
-					{sparse_ldlt::from_eigen, u_scaled},
+					{linearsolver::sparse::from_eigen, H_scaled},
+					{linearsolver::sparse::from_eigen, g_scaled},
+					{linearsolver::sparse::from_eigen, AT_scaled},
+					{linearsolver::sparse::from_eigen, b_scaled},
+					{linearsolver::sparse::from_eigen, CT_scaled},
+					{linearsolver::sparse::from_eigen, l_scaled},
+					{linearsolver::sparse::from_eigen, u_scaled},
 			},
 			stack);
 
@@ -138,13 +138,13 @@ TEST_CASE("lower part") {
 
 	ruiz.scale_qp_in_place(
 			{
-					{sparse_ldlt::from_eigen, H_scaled},
-					{sparse_ldlt::from_eigen, g_scaled},
-					{sparse_ldlt::from_eigen, AT_scaled},
-					{sparse_ldlt::from_eigen, b_scaled},
-					{sparse_ldlt::from_eigen, CT_scaled},
-					{sparse_ldlt::from_eigen, l_scaled},
-					{sparse_ldlt::from_eigen, u_scaled},
+					{linearsolver::sparse::from_eigen, H_scaled},
+					{linearsolver::sparse::from_eigen, g_scaled},
+					{linearsolver::sparse::from_eigen, AT_scaled},
+					{linearsolver::sparse::from_eigen, b_scaled},
+					{linearsolver::sparse::from_eigen, CT_scaled},
+					{linearsolver::sparse::from_eigen, l_scaled},
+					{linearsolver::sparse::from_eigen, u_scaled},
 			},
 			stack);
 

@@ -7,11 +7,12 @@
 #include <Eigen/SparseCore>
 
 #define SPARSE_LDLT_CONCEPT(...)                                               \
-	VEG_CONCEPT_MACRO(::sparse_ldlt::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::linearsolver::sparse::concepts, __VA_ARGS__)
 #define SPARSE_LDLT_CHECK_CONCEPT(...)                                         \
-	VEG_CONCEPT_MACRO(::sparse_ldlt::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::linearsolver::sparse::concepts, __VA_ARGS__)
 
-namespace sparse_ldlt {
+namespace linearsolver {
+namespace sparse {
 using veg::dynstack::DynStackMut;
 using namespace veg::literals;
 
@@ -632,15 +633,16 @@ private:
 		T* val;
 	} _;
 };
-} // namespace sparse_ldlt
+} // namespace sparse
+} // namespace linearsolver
 
 namespace veg {
 namespace fmt {
 template <typename T, typename I>
-struct Debug<sparse_ldlt::MatRef<T, I>> {
+struct Debug<linearsolver::sparse::MatRef<T, I>> {
 	static void
-	to_string(BufferMut out, Ref<sparse_ldlt::MatRef<T, I>> r) noexcept {
-		sparse_ldlt::MatRef<T, I> a = r.get();
+	to_string(BufferMut out, Ref<linearsolver::sparse::MatRef<T, I>> r) noexcept {
+		linearsolver::sparse::MatRef<T, I> a = r.get();
 		auto pap = a.col_ptrs().ptr();
 		auto pai = a.row_indices().ptr();
 		auto pax = a.values().ptr();
@@ -657,7 +659,7 @@ struct Debug<sparse_ldlt::MatRef<T, I>> {
 			auto col_end = a.col_end_unchecked(unsafe, j);
 
 			for (isize p = col_start; p < col_end; ++p) {
-				auto i = sparse_ldlt::util::zero_extend(pai[p]);
+				auto i = linearsolver::sparse::util::zero_extend(pai[p]);
 				out.append_ln();
 
 				out.append_literal(u8"row: ");
@@ -676,9 +678,9 @@ struct Debug<sparse_ldlt::MatRef<T, I>> {
 };
 
 template <typename T, typename I>
-struct Debug<sparse_ldlt::MatMut<T, I>> {
+struct Debug<linearsolver::sparse::MatMut<T, I>> {
 	static void
-	to_string(BufferMut out, Ref<sparse_ldlt::MatMut<T, I>> r) noexcept {
+	to_string(BufferMut out, Ref<linearsolver::sparse::MatMut<T, I>> r) noexcept {
 		dbg_to(out, ref(r.get().as_const()));
 	}
 };

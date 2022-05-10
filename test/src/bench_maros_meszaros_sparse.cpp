@@ -105,13 +105,13 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 		for (auto _ : s) {
 			s.PauseTiming();
 			sparse::QpView<T, I> qp = {
-					{sparse_ldlt::from_eigen, H},
-					{sparse_ldlt::from_eigen, g},
-					{sparse_ldlt::from_eigen, AT},
-					{sparse_ldlt::from_eigen, b},
-					{sparse_ldlt::from_eigen, CT},
-					{sparse_ldlt::from_eigen, l},
-					{sparse_ldlt::from_eigen, u},
+					{linearsolver::sparse::from_eigen, H},
+					{linearsolver::sparse::from_eigen, g},
+					{linearsolver::sparse::from_eigen, AT},
+					{linearsolver::sparse::from_eigen, b},
+					{linearsolver::sparse::from_eigen, CT},
+					{linearsolver::sparse::from_eigen, l},
+					{linearsolver::sparse::from_eigen, u},
 			};
 
 			qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{

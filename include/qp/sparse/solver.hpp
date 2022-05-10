@@ -4,10 +4,10 @@
 #define INRIA_LDLT_SOLVER_SPARSE_HPP_YHQF6TYWS
 
 #include <linearsolver/dense/core.hpp>
-#include <sparse-ldlt/core.hpp>
-#include <sparse-ldlt/factorize.hpp>
-#include <sparse-ldlt/update.hpp>
-#include <sparse-ldlt/rowmod.hpp>
+#include <linearsolver/sparse/core.hpp>
+#include <linearsolver/sparse/factorize.hpp>
+#include <linearsolver/sparse/update.hpp>
+#include <linearsolver/sparse/rowmod.hpp>
 #include <qp/dense/views.hpp>
 #include <qp/Settings.hpp>
 #include <iostream>
@@ -33,24 +33,24 @@ struct PrimalDualGradResult {
 
 template <typename T, typename I>
 struct QpView {
-	sparse_ldlt::MatRef<T, I> H;
-	sparse_ldlt::DenseVecRef<T> g;
-	sparse_ldlt::MatRef<T, I> AT;
-	sparse_ldlt::DenseVecRef<T> b;
-	sparse_ldlt::MatRef<T, I> CT;
-	sparse_ldlt::DenseVecRef<T> l;
-	sparse_ldlt::DenseVecRef<T> u;
+	linearsolver::sparse::MatRef<T, I> H;
+	linearsolver::sparse::DenseVecRef<T> g;
+	linearsolver::sparse::MatRef<T, I> AT;
+	linearsolver::sparse::DenseVecRef<T> b;
+	linearsolver::sparse::MatRef<T, I> CT;
+	linearsolver::sparse::DenseVecRef<T> l;
+	linearsolver::sparse::DenseVecRef<T> u;
 };
 
 template <typename T, typename I>
 struct QpViewMut {
-	sparse_ldlt::MatMut<T, I> H;
-	sparse_ldlt::DenseVecMut<T> g;
-	sparse_ldlt::MatMut<T, I> AT;
-	sparse_ldlt::DenseVecMut<T> b;
-	sparse_ldlt::MatMut<T, I> CT;
-	sparse_ldlt::DenseVecMut<T> l;
-	sparse_ldlt::DenseVecMut<T> u;
+	linearsolver::sparse::MatMut<T, I> H;
+	linearsolver::sparse::DenseVecMut<T> g;
+	linearsolver::sparse::MatMut<T, I> AT;
+	linearsolver::sparse::DenseVecMut<T> b;
+	linearsolver::sparse::MatMut<T, I> CT;
+	linearsolver::sparse::DenseVecMut<T> l;
+	linearsolver::sparse::DenseVecMut<T> u;
 
 	auto as_const() noexcept -> QpView<T, I> {
 		return {
@@ -73,8 +73,8 @@ enum struct Symmetry {
 
 namespace detail {
 template <typename T, typename I>
-void rowwise_infty_norm(T* row_norm, sparse_ldlt::MatRef<T, I> m) {
-	using namespace sparse_ldlt::util;
+void rowwise_infty_norm(T* row_norm, linearsolver::sparse::MatRef<T, I> m) {
+	using namespace linearsolver::sparse::util;
 
 	I const* mi = m.row_indices().ptr();
 	T const* mx = m.values().ptr();
@@ -92,8 +92,9 @@ void rowwise_infty_norm(T* row_norm, sparse_ldlt::MatRef<T, I> m) {
 }
 
 template <typename T, typename I>
-void colwise_infty_norm_symhi(T* col_norm, sparse_ldlt::MatRef<T, I> h) {
-	using namespace sparse_ldlt::util;
+void colwise_infty_norm_symhi(
+		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
+	using namespace linearsolver::sparse::util;
 
 	I const* hi = h.row_indices().ptr();
 	T const* hx = h.values().ptr();
@@ -120,8 +121,9 @@ void colwise_infty_norm_symhi(T* col_norm, sparse_ldlt::MatRef<T, I> h) {
 }
 
 template <typename T, typename I>
-void colwise_infty_norm_symlo(T* col_norm, sparse_ldlt::MatRef<T, I> h) {
-	using namespace sparse_ldlt::util;
+void colwise_infty_norm_symlo(
+		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
+	using namespace linearsolver::sparse::util;
 
 	I const* hi = h.row_indices().ptr();
 	T const* hx = h.values().ptr();
@@ -223,7 +225,7 @@ auto ruiz_scale_qp_in_place( //
 																				 })));
 			}
 		}
-		using namespace sparse_ldlt::util;
+		using namespace linearsolver::sparse::util;
 		for (usize j = 0; j < usize(n_eq); ++j) {
 			T a_row_norm = 0;
 			qp.AT.to_eigen();
@@ -543,7 +545,7 @@ struct QpWorkspace {
 
 		void setup_impl(QpView<T, I> qp, veg::dynstack::StackReq precond_req) {
 			using namespace veg::dynstack;
-			using namespace sparse_ldlt::util;
+			using namespace linearsolver::sparse::util;
 
 			using SR = StackReq;
 			veg::Tag<I> itag;
@@ -572,7 +574,7 @@ struct QpWorkspace {
 				usize col = 0;
 				usize pos = 0;
 
-				auto insert_submatrix = [&](sparse_ldlt::MatRef<T, I> m,
+				auto insert_submatrix = [&](linearsolver::sparse::MatRef<T, I> m,
 				                            bool assert_sym_hi) -> void {
 					I const* mi = m.row_indices().ptr();
 					T const* mx = m.values().ptr();
@@ -607,12 +609,12 @@ struct QpWorkspace {
 
 			storage.resize_for_overwrite( //
 					(StackReq::with_len(itag, n_tot) &
-			     sparse_ldlt::factorize_symbolic_req( //
-							 itag,                            //
-							 n_tot,                           //
-							 nnz_tot,                         //
-							 sparse_ldlt::Ordering::amd))     //
-							.alloc_req()                      //
+			     linearsolver::sparse::factorize_symbolic_req( //
+							 itag,                                     //
+							 n_tot,                                    //
+							 nnz_tot,                                  //
+							 linearsolver::sparse::Ordering::amd))     //
+							.alloc_req()                               //
 			);
 
 			ldl_col_ptrs.resize_for_overwrite(n_tot + 1);
@@ -626,8 +628,8 @@ struct QpWorkspace {
 				auto etree = _etree.as_mut();
 
 				using namespace veg::literals;
-				auto kkt_sym = sparse_ldlt::SymbolicMatRef<I>{
-						sparse_ldlt::from_raw_parts,
+				auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
+						linearsolver::sparse::from_raw_parts,
 						n_tot,
 						n_tot,
 						nnz_tot,
@@ -635,7 +637,7 @@ struct QpWorkspace {
 						kkt_row_indices.as_ref(),
 						{},
 				};
-				sparse_ldlt::factorize_symbolic_non_zeros( //
+				linearsolver::sparse::factorize_symbolic_non_zeros( //
 						ldl_col_ptrs.as_mut().split_at_mut(1)[1_c],
 						etree,
 						perm_inv.as_mut(),
@@ -670,26 +672,29 @@ struct QpWorkspace {
 	::veg::dynstack::StackReq::or_(::veg::init_list(__VA_ARGS__))
 
 			auto refactorize_req =
-					do_ldlt ? PROX_QP_ANY_OF({
-												sparse_ldlt::factorize_symbolic_req( // symbolic ldl
+					do_ldlt
+							? PROX_QP_ANY_OF({
+										linearsolver::sparse::
+												factorize_symbolic_req( // symbolic ldl
 														itag,
 														n_tot,
 														nnz_tot,
-														sparse_ldlt::Ordering::user_provided),
-												PROX_QP_ALL_OF({
-														SR::with_len(xtag, n_tot),          // diag
-														sparse_ldlt::factorize_numeric_req( // numeric ldl
+														linearsolver::sparse::Ordering::user_provided),
+										PROX_QP_ALL_OF({
+												SR::with_len(xtag, n_tot), // diag
+												linearsolver::sparse::
+														factorize_numeric_req( // numeric ldl
 																xtag,
 																itag,
 																n_tot,
 																nnz_tot,
-																sparse_ldlt::Ordering::user_provided),
-												}),
-										})
-									: PROX_QP_ALL_OF({
-												SR::with_len(itag, 0),
-												SR::with_len(xtag, 0),
-										});
+																linearsolver::sparse::Ordering::user_provided),
+										}),
+								})
+							: PROX_QP_ALL_OF({
+										SR::with_len(itag, 0),
+										SR::with_len(xtag, 0),
+								});
 
 			auto x_vec = [&](isize n) noexcept -> StackReq {
 				return linearsolver::dense::temp_vec_req(xtag, n);
@@ -720,9 +725,9 @@ struct QpWorkspace {
 											veg::Tag<bool>{}, n_in), // new_active_constraints
 									(do_ldlt && n_in > 0)
 											? PROX_QP_ANY_OF({
-														sparse_ldlt::add_row_req(
+														linearsolver::sparse::add_row_req(
 																xtag, itag, n_tot, false, n, n_tot),
-														sparse_ldlt::delete_row_req(
+														linearsolver::sparse::delete_row_req(
 																xtag, itag, n_tot, n_tot),
 												})
 											: refactorize_req,
@@ -801,11 +806,12 @@ struct QpWorkspace {
 		return _.stack_mut();
 	}
 
-	auto kkt() const -> sparse_ldlt::MatMut<T, I> {
+	auto kkt() const -> linearsolver::sparse::MatMut<T, I> {
 		auto n_tot = _.kkt_col_ptrs.len() - 1;
-		auto nnz = isize(sparse_ldlt::util::zero_extend(_.kkt_col_ptrs[n_tot]));
+		auto nnz =
+				isize(linearsolver::sparse::util::zero_extend(_.kkt_col_ptrs[n_tot]));
 		return {
-				sparse_ldlt::from_raw_parts,
+				linearsolver::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -815,11 +821,12 @@ struct QpWorkspace {
 				_.kkt_values.as_ref(),
 		};
 	}
-	auto kkt_mut() -> sparse_ldlt::MatMut<T, I> {
+	auto kkt_mut() -> linearsolver::sparse::MatMut<T, I> {
 		auto n_tot = _.kkt_col_ptrs.len() - 1;
-		auto nnz = isize(sparse_ldlt::util::zero_extend(_.kkt_col_ptrs[n_tot]));
+		auto nnz =
+				isize(linearsolver::sparse::util::zero_extend(_.kkt_col_ptrs[n_tot]));
 		return {
-				sparse_ldlt::from_raw_parts,
+				linearsolver::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -843,7 +850,7 @@ template <typename T, typename I>
 VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 		qp::VectorViewMut<T> out_l,
 		qp::VectorViewMut<T> out_r,
-		sparse_ldlt::MatRef<T, I> a,
+		linearsolver::sparse::MatRef<T, I> a,
 		qp::VectorView<T> in_l,
 		qp::VectorView<T> in_r) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ (
@@ -874,7 +881,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 
 		usize p = col_start;
 
-		auto zx = sparse_ldlt::util::zero_extend;
+		auto zx = linearsolver::sparse::util::zero_extend;
 
 		for (; p < col_start + pcount / 4 * 4; p += 4) {
 			auto i0 = isize(zx(ai[p + 0]));
@@ -914,7 +921,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		qp::VectorViewMut<T> out,
-		sparse_ldlt::MatRef<T, I> a,
+		linearsolver::sparse::MatRef<T, I> a,
 		qp::VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
@@ -945,7 +952,7 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 
 		usize pcount = col_end - col_start;
 
-		auto zx = sparse_ldlt::util::zero_extend;
+		auto zx = linearsolver::sparse::util::zero_extend;
 
 		if (zx(ai[col_end - 1]) == j) {
 			T ajj = ax[col_end - 1];
@@ -995,7 +1002,7 @@ void noalias_gevmmv_add(
 	detail::noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out_l},
 			{qp::from_eigen, out_r},
-			{sparse_ldlt::from_eigen, a},
+			{linearsolver::sparse::from_eigen, a},
 			{qp::from_eigen, in_l},
 			{qp::from_eigen, in_r});
 }
@@ -1005,14 +1012,14 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
 	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out},
-			{sparse_ldlt::from_eigen, a},
+			{linearsolver::sparse::from_eigen, a},
 			{qp::from_eigen, in});
 }
 
 template <typename T, typename I>
 struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 	struct Raw /* NOLINT */ {
-		sparse_ldlt::MatRef<T, I> kkt_active;
+		linearsolver::sparse::MatRef<T, I> kkt_active;
 		veg::Slice<bool> active_constraints;
 		isize n;
 		isize n_eq;
@@ -1089,12 +1096,12 @@ auto vec_mut(V&& v) -> VecMapMut<typename veg::uncvref_t<V>::Scalar> {
 
 template <typename T, typename I>
 auto middle_cols(
-		sparse_ldlt::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
-		-> sparse_ldlt::MatRef<T, I> {
+		linearsolver::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
+		-> linearsolver::sparse::MatRef<T, I> {
 	VEG_ASSERT(start < mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 	return {
-			sparse_ldlt::from_raw_parts,
+			linearsolver::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -1117,12 +1124,12 @@ auto middle_cols(
 
 template <typename T, typename I>
 auto middle_cols_mut(
-		sparse_ldlt::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
-		-> sparse_ldlt::MatMut<T, I> {
+		linearsolver::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
+		-> linearsolver::sparse::MatMut<T, I> {
 	VEG_ASSERT(start < mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 	return {
-			sparse_ldlt::from_raw_parts,
+			linearsolver::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -1145,11 +1152,11 @@ auto middle_cols_mut(
 
 template <typename T, typename I>
 auto top_rows_unchecked(
-		veg::Unsafe /*unsafe*/, sparse_ldlt::MatRef<T, I> mat, isize nrows)
-		-> sparse_ldlt::MatRef<T, I> {
+		veg::Unsafe /*unsafe*/, linearsolver::sparse::MatRef<T, I> mat, isize nrows)
+		-> linearsolver::sparse::MatRef<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			sparse_ldlt::from_raw_parts,
+			linearsolver::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),
@@ -1162,11 +1169,11 @@ auto top_rows_unchecked(
 
 template <typename T, typename I>
 auto top_rows_mut_unchecked(
-		veg::Unsafe /*unsafe*/, sparse_ldlt::MatMut<T, I> mat, isize nrows)
-		-> sparse_ldlt::MatMut<T, I> {
+		veg::Unsafe /*unsafe*/, linearsolver::sparse::MatMut<T, I> mat, isize nrows)
+		-> linearsolver::sparse::MatMut<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			sparse_ldlt::from_raw_parts,
+			linearsolver::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),
@@ -1179,12 +1186,15 @@ auto top_rows_mut_unchecked(
 
 template <typename T, typename I>
 auto ct_active(
-		isize n, isize n_eq, isize n_in, sparse_ldlt::MatRef<T, I> kkt_active)
-		-> sparse_ldlt::MatRef<T, I> {
+		isize n,
+		isize n_eq,
+		isize n_in,
+		linearsolver::sparse::MatRef<T, I> kkt_active)
+		-> linearsolver::sparse::MatRef<T, I> {
 	if (kkt_active.is_compressed()) {
 	} else {
 		return {
-				sparse_ldlt::from_raw_parts,
+				linearsolver::sparse::from_raw_parts,
 				n,
 				n_in,
 				0, // nnz not used
@@ -1323,7 +1333,7 @@ void qp_solve(
 		QpView<T, I> qp) {
 
 	using namespace veg::literals;
-	namespace util = sparse_ldlt::util;
+	namespace util = linearsolver::sparse::util;
 	auto zx = util::zero_extend;
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
@@ -1333,17 +1343,17 @@ void qp_solve(
 	isize n_in = qp.CT.ncols();
 	isize n_tot = n + n_eq + n_in;
 
-	sparse_ldlt::MatMut<T, I> kkt = work.kkt_mut();
+	linearsolver::sparse::MatMut<T, I> kkt = work.kkt_mut();
 
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
-	sparse_ldlt::MatMut<T, I> H_scaled =
+	linearsolver::sparse::MatMut<T, I> H_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, 0, n, qp.H.nnz());
 
-	sparse_ldlt::MatMut<T, I> AT_scaled =
+	linearsolver::sparse::MatMut<T, I> AT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, qp.AT.nnz());
 
-	sparse_ldlt::MatMut<T, I> CT_scaled =
+	linearsolver::sparse::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, qp.CT.nnz());
 
 	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
@@ -1358,12 +1368,12 @@ void qp_solve(
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
-			{sparse_ldlt::from_eigen, g_scaled_e},
+			{linearsolver::sparse::from_eigen, g_scaled_e},
 			AT_scaled,
-			{sparse_ldlt::from_eigen, b_scaled_e},
+			{linearsolver::sparse::from_eigen, b_scaled_e},
 			CT_scaled,
-			{sparse_ldlt::from_eigen, l_scaled_e},
-			{sparse_ldlt::from_eigen, u_scaled_e},
+			{linearsolver::sparse::from_eigen, l_scaled_e},
+			{linearsolver::sparse::from_eigen, u_scaled_e},
 	};
 
 	precond.scale_qp_in_place(qp_scaled, stack);
@@ -1421,8 +1431,8 @@ void qp_solve(
 			Eigen::IdentityPreconditioner>
 			iterative_solver;
 
-	sparse_ldlt::MatMut<T, I> kkt_active = {
-			sparse_ldlt::from_raw_parts,
+	linearsolver::sparse::MatMut<T, I> kkt_active = {
+			linearsolver::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			qp.H.nnz() + qp.AT.nnz(),
@@ -1438,8 +1448,8 @@ void qp_solve(
 	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
 	veg::SliceMut<bool> active_constraints = _active_constraints.as_mut();
 
-	sparse_ldlt::MatMut<T, I> ldl = {
-			sparse_ldlt::from_raw_parts,
+	linearsolver::sparse::MatMut<T, I> ldl = {
+			linearsolver::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			0,
@@ -1507,7 +1517,7 @@ void qp_solve(
 
 	auto refactorize = [&]() -> void {
 		if (do_ldlt) {
-			sparse_ldlt::factorize_symbolic_non_zeros(
+			linearsolver::sparse::factorize_symbolic_non_zeros(
 					ldl_nnz_counts,
 					etree,
 					work._.perm_inv.as_mut(),
@@ -1528,7 +1538,7 @@ void qp_solve(
 				diag[(n + n_eq) + i] = active_constraints[i] ? -1 / mu_in : T(1);
 			}
 
-			sparse_ldlt::factorize_numeric(
+			linearsolver::sparse::factorize_numeric(
 					ldl_values.ptr_mut(),
 					ldl_row_indices.ptr_mut(),
 					diag,
@@ -1575,16 +1585,16 @@ void qp_solve(
 				work[i] = rhs_e[isize(zx(perm[i]))];
 			}
 
-			sparse_ldlt::dense_lsolve<T, I>( //
-					{sparse_ldlt::from_eigen, work},
+			linearsolver::sparse::dense_lsolve<T, I>( //
+					{linearsolver::sparse::from_eigen, work},
 					ldl.as_const());
 
 			for (isize i = 0; i < n_tot; ++i) {
 				work[i] /= ldl_values[isize(zx(ldl_col_ptrs[i]))];
 			}
 
-			sparse_ldlt::dense_ltsolve<T, I>( //
-					{sparse_ldlt::from_eigen, work},
+			linearsolver::sparse::dense_ltsolve<T, I>( //
+					{linearsolver::sparse::from_eigen, work},
 					ldl.as_const());
 
 			for (isize i = 0; i < n_tot; ++i) {
@@ -1810,8 +1820,8 @@ void qp_solve(
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
 
 									if (do_ldlt) {
-										sparse_ldlt::VecRef<T, I> new_col{
-												sparse_ldlt::from_raw_parts,
+										linearsolver::sparse::VecRef<T, I> new_col{
+												linearsolver::sparse::from_raw_parts,
 												n_tot,
 												{
 														veg::unsafe,
@@ -1828,7 +1838,7 @@ void qp_solve(
 												},
 										};
 
-										ldl = sparse_ldlt::add_row(
+										ldl = linearsolver::sparse::add_row(
 												ldl, etree, perm_inv, idx, new_col, -1 / mu_in, stack);
 									}
 									active_constraints[i] = new_active_constraints[i];
@@ -1838,7 +1848,7 @@ void qp_solve(
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
 									if (do_ldlt) {
-										ldl = sparse_ldlt::delete_row(
+										ldl = linearsolver::sparse::delete_row(
 												ldl, etree, perm_inv, idx, stack);
 									}
 									active_constraints[i] = new_active_constraints[i];
