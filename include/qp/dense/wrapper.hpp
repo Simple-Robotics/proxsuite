@@ -92,7 +92,7 @@ void initial_guess(dense::Workspace<T>& qpwork,
 		qpwork.dw_aug.setZero();
         qpwork.rhs.setZero();
 	}
-};
+}
 /*!
 * Setup the QP solver (the linear solver backend being dense).
 *
@@ -146,7 +146,7 @@ void setup_generic( //
 
 	auto stop = std::chrono::steady_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.info.setup_time = duration.count();
+	qpresults.info.setup_time = T(duration.count());
 }
 
 /*!
@@ -237,7 +237,7 @@ void update_proximal_parameters(Results<T>& results, tl::optional<T> rho_new, tl
         results.info.mu_in = mu_in_new.value();
         results.info.mu_in_inv = T(1)/results.info.mu_in;
     }
-};
+}
 /*!
 * Warm start the results primal and dual variables.
 *
@@ -268,7 +268,7 @@ void warm_starting(tl::optional<VecRef<T>> x_wm,
     if (real_wm){
         settings.warm_start = true;
     }
-};
+}
 /*!
  * Wrapper class for using proxsuite API with dense backend
  * for solving linearly constrained convex QP with the ProxQp algorithm.  
@@ -362,7 +362,7 @@ public:
     Data<T> data;
     Workspace<T> work;
     
-    QP(isize _dim, isize _n_eq, isize _n_in):data(_dim, _n_eq, _n_in),work(_dim, _n_eq, _n_in),settings(),results(_dim, _n_eq, _n_in){
+    QP(isize _dim, isize _n_eq, isize _n_in):results(_dim, _n_eq, _n_in),settings(),data(_dim, _n_eq, _n_in),work(_dim, _n_eq, _n_in){
     }
 
     void setup_dense_matrices(tl::optional<MatRef<T>> H,
@@ -419,9 +419,8 @@ public:
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration =
                 std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        results.info.solve_time = duration.count();
-        results.info.run_time =
-                results.info.solve_time + results.info.setup_time;
+        results.info.solve_time = T(duration.count());
+        results.info.run_time = results.info.solve_time + results.info.setup_time;
 
         if (settings.verbose) {
             std::cout << "------ SOLVER STATISTICS--------" << std::endl;
@@ -435,9 +434,8 @@ public:
     };
 
     void update( tl::optional<MatRef<T>> H_, tl::optional<VecRef<T>> g_, tl::optional<MatRef<T>> A_, tl::optional<VecRef<T>> b_, tl::optional<MatRef<T>> C_, tl::optional<VecRef<T>> u_, tl::optional<VecRef<T>> l_){
-        bool reset_bijection_map(true);
         results.reset_results();
-        work.reset_workspace(data.n_in,reset_bijection_map);
+        work.reset_workspace(data.n_in);
         if (g_!=tl::nullopt){
             data.g = g_.value().eval();
             work.g_scaled = data.g;

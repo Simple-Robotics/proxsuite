@@ -247,7 +247,6 @@ void iterative_solve_with_permut_fact( //
 template <typename T>
 void bcl_update(
 		const qp::Settings<T>& qpsettings,
-		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T& primal_feasibility_lhs_new,
@@ -446,7 +445,7 @@ T primal_dual_newton_semi_smooth(
 
 		if (qpmodel.n_in > 0) {
 			qp::dense::linesearch::primal_dual_ls(
-					qpmodel, qpresults, qpwork, qpsettings);
+					qpmodel, qpresults, qpwork);
 		}
 		auto alpha = qpwork.alpha;
 
@@ -492,7 +491,6 @@ T primal_dual_newton_semi_smooth(
 		bool is_primal_infeasible = qp::dense::global_primal_residual_infeasibility(
 				VectorViewMut<T>{from_eigen, ATdy},
 				VectorViewMut<T>{from_eigen, CTdz},
-				VectorViewMut<T>{from_eigen, dx},
 				VectorViewMut<T>{from_eigen, dy},
 				VectorViewMut<T>{from_eigen, dz},
 				qpwork,
@@ -572,7 +570,6 @@ void qp_solve( //
 				primal_feasibility_in_lhs);
 
 		qp::dense::global_dual_residual(
-				qpmodel,
 				qpresults,
 				qpwork,
 				dual_feasibility_lhs,
@@ -718,7 +715,6 @@ void qp_solve( //
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
 			qp::dense::global_dual_residual(
-					qpmodel,
 					qpresults,
 					qpwork,
 					dual_feasibility_lhs_new,
@@ -744,7 +740,6 @@ void qp_solve( //
 
 		bcl_update(
 				qpsettings,
-				qpmodel,
 				qpresults,
 				qpwork,
 				primal_feasibility_lhs_new,
@@ -765,7 +760,6 @@ void qp_solve( //
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
 		qp::dense::global_dual_residual(
-				qpmodel,
 				qpresults,
 				qpwork,
 				dual_feasibility_lhs_new,
@@ -821,141 +815,6 @@ void qp_solve( //
 		}
 		qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 	}
-}
-
-template <typename T>
-using SparseMat = Eigen::SparseMatrix<T, 1>;
-template <typename T>
-using VecRef = Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, 1> const>;
-template <typename T>
-using MatRef =
-		Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> const>;
-
-template <typename Mat, typename T>
-void QPsetup_generic( //
-		Mat const& H,
-		VecRef<T> g,
-		Mat const& A,
-		VecRef<T> b,
-		Mat const& C,
-		VecRef<T> u,
-		VecRef<T> l,
-		qp::Settings<T>& qpsettings,
-		qp::dense::Data<T>& qpmodel,
-		qp::dense::Workspace<T>& qpwork,
-		qp::Results<T>& qpresults) {
-
-	auto start = std::chrono::steady_clock::now();
-	qpmodel.H = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
-	qpmodel.g = g;
-	qpmodel.A = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
-	qpmodel.b = b;
-	qpmodel.C = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
-	qpmodel.u = u;
-	qpmodel.l = l;
-
-	qpwork.H_scaled = qpmodel.H;
-	qpwork.g_scaled = qpmodel.g;
-	qpwork.A_scaled = qpmodel.A;
-	qpwork.b_scaled = qpmodel.b;
-	qpwork.C_scaled = qpmodel.C;
-	qpwork.u_scaled = qpmodel.u;
-	qpwork.l_scaled = qpmodel.l;
-
-	qp::dense::QpViewBoxMut<T> qp_scaled{
-			{from_eigen, qpwork.H_scaled},
-			{from_eigen, qpwork.g_scaled},
-			{from_eigen, qpwork.A_scaled},
-			{from_eigen, qpwork.b_scaled},
-			{from_eigen, qpwork.C_scaled},
-			{from_eigen, qpwork.u_scaled},
-			{from_eigen, qpwork.l_scaled}};
-
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
-			qpwork.ldl_stack.as_mut(),
-	};
-	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
-	qpwork.dw_aug.setZero();
-
-	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			qpresults.info.rho;
-	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
-			qpwork.A_scaled.transpose();
-	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
-	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
-	qpwork.kkt.diagonal()
-			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-qpresults.info.mu_eq);
-
-	qpwork.ldl.factorize(qpwork.kkt, stack);
-
-	if (!qpsettings.warm_start) {
-		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-		iterative_solve_with_permut_fact( //
-				qpsettings,
-				qpmodel,
-				qpresults,
-				qpwork,
-				T(1),
-				qpmodel.dim + qpmodel.n_eq);
-
-		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-		qpwork.dw_aug.setZero();
-	}
-
-	qpwork.rhs.setZero();
-	auto stop = std::chrono::steady_clock::now();
-	auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.info.setup_time = duration.count();
-}
-
-template <typename T>
-void QPsetup_dense( //
-		MatRef<T> H,
-		VecRef<T> g,
-		MatRef<T> A,
-		VecRef<T> b,
-		MatRef<T> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		Data<T>& qpmodel,
-		Workspace<T>& qpwork,
-		Results<T>& qpresults
-
-) {
-	dense::QPsetup_generic(
-			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
-}
-
-template <typename T>
-void QPsetup( //
-		const SparseMat<T>& H,
-		VecRef<T> g,
-		const SparseMat<T>& A,
-		VecRef<T> b,
-		const SparseMat<T>& C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		Data<T>& qpmodel,
-		Workspace<T>& qpwork,
-		Results<T>& qpresults) {
-	dense::QPsetup_generic(
-			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
 
 } // namespace dense

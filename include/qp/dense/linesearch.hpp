@@ -152,8 +152,7 @@ template <typename T>
 void primal_dual_ls(
 		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
-		const qp::Settings<T>& qpsettings) {
+		qp::dense::Workspace<T>& qpwork) {
 
 	/*
 	 * The function follows the algorithm

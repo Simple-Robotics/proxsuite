@@ -103,7 +103,6 @@ template <typename T>
 bool global_primal_residual_infeasibility(
 		VectorViewMut<T> ATdy,
 		VectorViewMut<T> CTdz,
-		VectorViewMut<T> dx,
 		VectorViewMut<T> dy,
 		VectorViewMut<T> dz,
 		Workspace<T>& qpwork,
@@ -191,7 +190,6 @@ bool global_dual_residual_infeasibility(
 // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 template <typename T>
 void global_dual_residual(
-		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T& dual_feasibility_lhs,

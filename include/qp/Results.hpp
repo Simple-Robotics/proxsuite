@@ -69,9 +69,9 @@ public:
 		info.mu_updates = 0;
 		info.rho_updates = 0;
 		info.n_c = 0;
-		info.run_time = 0.;
-		info.setup_time = 0.;
-		info.solve_time = 0.;
+		info.run_time = 0;
+		info.setup_time = 0;
+		info.solve_time = 0;
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;
@@ -94,9 +94,9 @@ public:
 		info.mu_updates = 0;
 		info.rho_updates = 0;
 		info.n_c = 0;
-		info.run_time = 0.;
-		info.setup_time = 0.;
-		info.solve_time = 0.;
+		info.run_time = 0;
+		info.setup_time = 0;
+		info.solve_time = 0;
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;

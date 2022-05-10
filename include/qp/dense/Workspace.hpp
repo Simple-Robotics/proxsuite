@@ -199,7 +199,7 @@ public:
 		CTz.setZero();
 	}
 
-	void reset_workspace(isize n_in = 0, bool reset_bijection_map = true) {
+	void reset_workspace(isize n_in = 0) {
 
 		H_scaled.setZero();
 		g_scaled.setZero();

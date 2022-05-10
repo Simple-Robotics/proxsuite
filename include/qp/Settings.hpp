@@ -64,9 +64,9 @@ public:
 			isize nb_iterative_refinement_ = 10,
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
 			bool VERBOSE = false,
-			bool warm_start = false,
-			T eps_primal_inf = 1.E-14,
-			T eps_dual_inf = 1.E-14)
+			bool warm_start_ = false,
+			T eps_primal_inf_ = 1.E-14,
+			T eps_dual_inf_ = 1.E-14)
 			: alpha_bcl(alpha_bcl_),
 				beta_bcl(beta_bcl_),
 				refactor_dual_feasibility_threshold(
@@ -89,9 +89,9 @@ public:
 				eps_refact(eps_refact_),
 				nb_iterative_refinement(nb_iterative_refinement_),
 				verbose(VERBOSE),
-				warm_start(warm_start),
-				eps_primal_inf(eps_primal_inf),
-				eps_dual_inf(eps_dual_inf) {}
+				warm_start(warm_start_),
+				eps_primal_inf(eps_primal_inf_),
+				eps_dual_inf(eps_dual_inf_) {}
 };
 
 } // namespace qp
