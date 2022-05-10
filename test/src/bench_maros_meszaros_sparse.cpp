@@ -1,6 +1,7 @@
 #include <maros_meszaros.hpp>
 #include <benchmark/benchmark.h>
 #include <qp/sparse/solver.hpp>
+#include <util.hpp>
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -134,9 +135,9 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			sparse::qp_setup(work, qp, ruiz);
 			s.ResumeTiming();
 			sparse::qp_solve(
-					{ldlt::from_eigen, x},
-					{ldlt::from_eigen, y},
-					{ldlt::from_eigen, z},
+					{qp::from_eigen, x},
+					{qp::from_eigen, y},
+					{qp::from_eigen, z},
 					work,
 					settings,
 					ruiz,

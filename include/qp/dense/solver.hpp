@@ -16,6 +16,7 @@
 #include <linearsolver/dense/ldlt.hpp>
 #include <chrono>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 
@@ -303,7 +304,7 @@ auto compute_inner_loop_saddle_point(
 			qp::dense::positive_part(qpwork.primal_residual_in_scaled_up) +
 			qp::dense::negative_part(qpwork.primal_residual_in_scaled_low) -
 			qpresults.z * qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
-	                                        // + [Cx-l+z_prev*mu_in]- - z*mu_in
+																					// + [Cx-l+z_prev*mu_in]- - z*mu_in
 
 	T err = infty_norm(qpwork.active_part_z);
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
@@ -314,7 +315,7 @@ auto compute_inner_loop_saddle_point(
 	err = std::max(err, prim_eq_e);
 	T dual_e =
 			infty_norm(qpwork.dual_residual_scaled); // contains ||Hx + rho(x-xprev) +
-	                                             // g + Aty + Ctz||
+																							 // g + Aty + Ctz||
 	err = std::max(err, dual_e);
 
 	return err;
@@ -444,8 +445,7 @@ T primal_dual_newton_semi_smooth(
 		CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
 
 		if (qpmodel.n_in > 0) {
-			qp::dense::linesearch::primal_dual_ls(
-					qpmodel, qpresults, qpwork);
+			qp::dense::linesearch::primal_dual_ls(qpmodel, qpresults, qpwork);
 		}
 		auto alpha = qpwork.alpha;
 
@@ -681,7 +681,8 @@ void qp_solve( //
 		    qpresults.info.status == PROXQP_DUAL_INFEASIBLE) {
 			// certificate of infeasibility
 			qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-			qpresults.y = qpwork.dw_aug.segment(qpmodel.dim,qpmodel.dim+qpmodel.n_eq);
+			qpresults.y =
+					qpwork.dw_aug.segment(qpmodel.dim, qpmodel.dim + qpmodel.n_eq);
 			qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
 			break;
 		}
@@ -820,5 +821,6 @@ void qp_solve( //
 } // namespace dense
 
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP */

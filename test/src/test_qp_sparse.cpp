@@ -60,9 +60,9 @@ TEST_CASE("random ruiz") {
 			z.setZero();
 
 			sparse::qp_solve(
-					{ldlt::from_eigen, x},
-					{ldlt::from_eigen, y},
-					{ldlt::from_eigen, z},
+					{qp::from_eigen, x},
+					{qp::from_eigen, y},
+					{qp::from_eigen, z},
 					work,
 					settings,
 					ruiz,
@@ -126,9 +126,9 @@ TEST_CASE("random id") {
 			z.setZero();
 
 			sparse::qp_solve(
-					{ldlt::from_eigen, x},
-					{ldlt::from_eigen, y},
-					{ldlt::from_eigen, z},
+					{qp::from_eigen, x},
+					{qp::from_eigen, y},
+					{qp::from_eigen, z},
 					work,
 					settings,
 					id,

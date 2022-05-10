@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 namespace linesearch {
@@ -57,15 +58,16 @@ auto primal_dual_gradient_norm(
 	    qpresults.info.rho *
 	        qpwork.dw_aug.head(qpmodel.dim)
 	            .squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho *
-	                             // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2
+															 // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2
 
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.Adx -
 			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.info.mu_eq;
 	a += qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).squaredNorm() *
 	     qpresults.info.mu_eq_inv *
-	     qpresults.info.nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
-	              // (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2
+	     qpresults.info
+	         .nu; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
+	// (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2
 	qpwork.err.head(qpmodel.dim) =
 			qpresults.info.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
 	T b(qpresults.x.dot(qpwork.Hdx) +
@@ -74,11 +76,10 @@ auto primal_dual_gradient_norm(
 	        (qpwork.Adx)
 	            .dot(
 									qpwork.primal_residual_eq_scaled +
-									qpresults.y *
-											qpresults.info.mu_eq)); // contains now: b =
-	                                           // dx.dot(H.dot(x) +
-	                                           // rho*(x-xe) +  g)  +
-	                                           // mu_eq_inv * Adx.dot(res_eq)
+									qpresults.y * qpresults.info.mu_eq)); // contains now: b =
+																												// dx.dot(H.dot(x) +
+																												// rho*(x-xe) +  g)  +
+	// mu_eq_inv * Adx.dot(res_eq)
 
 	qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
 			qpwork.primal_residual_eq_scaled;
@@ -87,8 +88,8 @@ auto primal_dual_gradient_norm(
 	         .dot(qpwork.rhs.segment(
 							 qpmodel.dim,
 							 qpmodel.n_eq)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe)
-	                             // +  g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
-	                             // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
+	// +  g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+	// (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
 
 	// derive Cdx_act
 	qpwork.err.tail(qpmodel.n_in) =
@@ -101,9 +102,9 @@ auto primal_dual_gradient_norm(
 	a += qpresults.info.mu_in_inv *
 	     qpwork.err.tail(qpmodel.n_in)
 	         .squaredNorm(); // contains now: a = dx.dot(H.dot(dx)) + rho *
-	                         // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv *
-	                         // norm(Adx-dy*mu_eq)**2 + mu_in *
-	                         // norm(Cdx_act)**2
+	// norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv *
+	// norm(Adx-dy*mu_eq)**2 + mu_in *
+	// norm(Cdx_act)**2
 
 	// derive vector [Cx-u+ze/mu]_+ + [Cx-l+ze/mu]--
 	qpwork.active_part_z =
@@ -119,9 +120,9 @@ auto primal_dual_gradient_norm(
 	b += qpresults.info.mu_in_inv *
 	     qpwork.active_part_z.dot(qpwork.err.tail(
 					 qpmodel.n_in)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +
-	                         // g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
-	                         // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in
-	                         // * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze*mu_in]--)
+	// g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+	// (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in
+	// * Cdx_act.dot([Cx-u+ze/mu]_+ + [Cx-l+ze*mu_in]--)
 
 	// derive Cdx_act - dz*mu_in
 	qpwork.err.tail(qpmodel.n_in) -=
@@ -230,9 +231,9 @@ void primal_dual_ls(
 
 	std::sort(qpwork.alphas.ptr_mut(), qpwork.alphas.ptr_mut() + n_alpha);
 	isize new_len = std::unique( //
-										 qpwork.alphas.ptr_mut(),
-										 qpwork.alphas.ptr_mut() + n_alpha) -
-	               qpwork.alphas.ptr_mut();
+											qpwork.alphas.ptr_mut(),
+											qpwork.alphas.ptr_mut() + n_alpha) -
+	                qpwork.alphas.ptr_mut();
 	qpwork.alphas.resize(new_len);
 
 	n_alpha = qpwork.alphas.len();
@@ -472,5 +473,6 @@ void active_set_change(
 } // namespace linesearch
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP */

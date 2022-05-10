@@ -11,6 +11,7 @@
 #include <cmath>
 #include <type_traits>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 
@@ -227,5 +228,6 @@ void global_dual_residual(
 
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP */

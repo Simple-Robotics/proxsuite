@@ -15,6 +15,7 @@
 #include <unsupported/Eigen/IterativeSolvers>
 #include <veg/vec.hpp>
 
+namespace proxsuite {
 namespace qp {
 namespace sparse {
 using veg::isize;
@@ -2132,25 +2133,28 @@ void qp_solve(
 }
 } // namespace sparse
 } // namespace qp
+} // namespace proxsuite
 
 namespace Eigen {
 namespace internal {
 template <typename T, typename I>
-struct traits<qp::sparse::detail::AugmentedKkt<T, I>>
+struct traits<proxsuite::qp::sparse::detail::AugmentedKkt<T, I>>
 		: Eigen::internal::traits<Eigen::SparseMatrix<T, Eigen::ColMajor, I>> {};
 
 template <typename Rhs, typename T, typename I>
 struct generic_product_impl<
-		qp::sparse::detail::AugmentedKkt<T, I>,
+		proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
 		Rhs,
 		SparseShape,
 		DenseShape,
 		GemvProduct>
 		: generic_product_impl_base<
-					qp::sparse::detail::AugmentedKkt<T, I>,
+					proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
 					Rhs,
-					generic_product_impl<qp::sparse::detail::AugmentedKkt<T, I>, Rhs>> {
-	using Mat_ = qp::sparse::detail::AugmentedKkt<T, I>;
+					generic_product_impl<
+							proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
+							Rhs>> {
+	using Mat_ = proxsuite::qp::sparse::detail::AugmentedKkt<T, I>;
 
 	using Scalar = typename Product<Mat_, Rhs>::Scalar;
 
@@ -2160,7 +2164,7 @@ struct generic_product_impl<
 		using veg::isize;
 
 		VEG_ASSERT(alpha == Scalar(1));
-		qp::sparse::detail::noalias_symhiv_add(
+		proxsuite::qp::sparse::detail::noalias_symhiv_add(
 				dst, lhs._.kkt_active.to_eigen(), rhs);
 
 		{

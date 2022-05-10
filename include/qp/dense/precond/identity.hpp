@@ -3,6 +3,7 @@
 
 #include "qp/dense/views.hpp"
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 namespace preconditioner {
@@ -41,6 +42,7 @@ struct IdentityPrecond {
 } // namespace preconditioner
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_IDENTITY_HPP \
         */

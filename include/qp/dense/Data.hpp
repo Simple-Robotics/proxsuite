@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
 
+namespace proxsuite {
 namespace qp {
 using veg::isize;
 
@@ -56,5 +57,6 @@ public:
 
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_DATA_HPP */

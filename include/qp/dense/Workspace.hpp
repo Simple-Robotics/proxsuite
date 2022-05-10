@@ -6,6 +6,7 @@
 #include <veg/vec.hpp>
 #include <qp/dense/precond/ruiz.hpp>
 
+namespace proxsuite {
 namespace qp {
 namespace dense {
 template <typename T>
@@ -239,5 +240,6 @@ public:
 };
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */

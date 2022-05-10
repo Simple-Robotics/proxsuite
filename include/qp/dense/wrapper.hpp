@@ -10,8 +10,8 @@
 #include <qp/dense/solver.hpp>
 #include <chrono>
 
-
-namespace qp{
+namespace proxsuite {
+namespace qp {
 namespace dense {
 static constexpr auto DYN = Eigen::Dynamic;
 enum { layout = Eigen::RowMajor };
@@ -20,7 +20,7 @@ using SparseMat = Eigen::SparseMatrix<T, 1>;
 template <typename T>
 using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
 template <typename T>
-using MatRef =Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
+using MatRef = Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
 template <typename T>
 using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
 template <typename T>
@@ -36,11 +36,12 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 * @param qpresults solver result 
 */
 template <typename T>
-void initial_guess(dense::Workspace<T>& qpwork,
-                   Settings<T>& qpsettings,
-                   dense::Data<T>& qpmodel,
-                   Results<T>& qpresults){
-    
+void initial_guess(
+		dense::Workspace<T>& qpwork,
+		Settings<T>& qpsettings,
+		dense::Data<T>& qpmodel,
+		Results<T>& qpresults) {
+
 	qp::dense::QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
 			{from_eigen, qpwork.g_scaled},
@@ -61,7 +62,7 @@ void initial_guess(dense::Workspace<T>& qpwork,
 	qpwork.primal_feasibility_rhs_1_in_u = dense::infty_norm(qpmodel.u);
 	qpwork.primal_feasibility_rhs_1_in_l = dense::infty_norm(qpmodel.l);
 	qpwork.dual_feasibility_rhs_2 = dense::infty_norm(qpmodel.g);
-    qpwork.correction_guess_rhs_g = qp::dense::infty_norm(qpwork.g_scaled);
+	qpwork.correction_guess_rhs_g = qp::dense::infty_norm(qpwork.g_scaled);
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
@@ -90,7 +91,7 @@ void initial_guess(dense::Workspace<T>& qpwork,
 		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
 		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
 		qpwork.dw_aug.setZero();
-        qpwork.rhs.setZero();
+		qpwork.rhs.setZero();
 	}
 }
 /*!
@@ -142,10 +143,11 @@ void setup_generic( //
 	qpwork.u_scaled = qpmodel.u;
 	qpwork.l_scaled = qpmodel.l;
 
-    initial_guess(qpwork,qpsettings,qpmodel,qpresults);
+	initial_guess(qpwork, qpsettings, qpmodel, qpresults);
 
 	auto stop = std::chrono::steady_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	qpresults.info.setup_time = T(duration.count());
 }
 
@@ -176,10 +178,8 @@ void setup_dense( //
 		Settings<T>& qpsettings,
 		dense::Data<T>& qpmodel,
 		dense::Workspace<T>& qpwork,
-		Results<T>& qpresults
-) {
-	setup_generic(
-			H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
+		Results<T>& qpresults) {
+	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
 
 /*!
@@ -224,19 +224,23 @@ void setup_sparse( //
 * @param results solver result 
 */
 template <typename T>
-void update_proximal_parameters(Results<T>& results, tl::optional<T> rho_new, tl::optional<T> mu_eq_new, tl::optional<T> mu_in_new){
-    
-    if (rho_new!=tl::nullopt){
-        results.info.rho = rho_new.value();
-    }
-    if (mu_eq_new != tl::nullopt){
-        results.info.mu_eq = mu_eq_new.value();
-        results.info.mu_eq_inv = T(1)/results.info.mu_eq ;
-    }
-    if (mu_in_new != tl::nullopt){
-        results.info.mu_in = mu_in_new.value();
-        results.info.mu_in_inv = T(1)/results.info.mu_in;
-    }
+void update_proximal_parameters(
+		Results<T>& results,
+		tl::optional<T> rho_new,
+		tl::optional<T> mu_eq_new,
+		tl::optional<T> mu_in_new) {
+
+	if (rho_new != tl::nullopt) {
+		results.info.rho = rho_new.value();
+	}
+	if (mu_eq_new != tl::nullopt) {
+		results.info.mu_eq = mu_eq_new.value();
+		results.info.mu_eq_inv = T(1) / results.info.mu_eq;
+	}
+	if (mu_in_new != tl::nullopt) {
+		results.info.mu_in = mu_in_new.value();
+		results.info.mu_in_inv = T(1) / results.info.mu_in;
+	}
 }
 /*!
 * Warm start the results primal and dual variables.
@@ -247,27 +251,28 @@ void update_proximal_parameters(Results<T>& results, tl::optional<T> rho_new, tl
 * @param results solver result 
 * @param settings solver settings 
 */
-template<typename T>
-void warm_starting(tl::optional<VecRef<T>> x_wm,
-               tl::optional<VecRef<T>> y_wm,
-               tl::optional<VecRef<T>> z_wm,
-               Results<T>& results,
-               Settings<T>& settings){
-    bool real_wm = false;
-    if (x_wm!=tl::nullopt){
-        results.x = x_wm.value().eval();
-        real_wm = true;
-    }
-    if (y_wm!=tl::nullopt){
-        results.y = y_wm.value().eval();
-        real_wm = true;
-    }
-    if (z_wm!=tl::nullopt){
-        results.z = z_wm.value().eval();
-    }
-    if (real_wm){
-        settings.warm_start = true;
-    }
+template <typename T>
+void warm_starting(
+		tl::optional<VecRef<T>> x_wm,
+		tl::optional<VecRef<T>> y_wm,
+		tl::optional<VecRef<T>> z_wm,
+		Results<T>& results,
+		Settings<T>& settings) {
+	bool real_wm = false;
+	if (x_wm != tl::nullopt) {
+		results.x = x_wm.value().eval();
+		real_wm = true;
+	}
+	if (y_wm != tl::nullopt) {
+		results.y = y_wm.value().eval();
+		real_wm = true;
+	}
+	if (z_wm != tl::nullopt) {
+		results.z = z_wm.value().eval();
+	}
+	if (real_wm) {
+		settings.warm_start = true;
+	}
 }
 /*!
  * Wrapper class for using proxsuite API with dense backend
@@ -356,161 +361,232 @@ auto main() -> int {
 template <typename T>
 struct QP {
 public:
-    
-    Results<T> results; 
-    Settings<T> settings;
-    Data<T> data;
-    Workspace<T> work;
-    
-    QP(isize _dim, isize _n_eq, isize _n_in):results(_dim, _n_eq, _n_in),settings(),data(_dim, _n_eq, _n_in),work(_dim, _n_eq, _n_in){
-    }
+	Results<T> results;
+	Settings<T> settings;
+	Data<T> data;
+	Workspace<T> work;
 
-    void setup_dense_matrices(tl::optional<MatRef<T>> H,
-		tl::optional<VecRef<T>> g,
-		tl::optional<MatRef<T>> A,
-		tl::optional<VecRef<T>> b,
-		tl::optional<MatRef<T>> C,
-		tl::optional<VecRef<T>> u,
-		tl::optional<VecRef<T>> l){
+	QP(isize _dim, isize _n_eq, isize _n_in)
+			: results(_dim, _n_eq, _n_in),
+				settings(),
+				data(_dim, _n_eq, _n_in),
+				work(_dim, _n_eq, _n_in) {}
 
-            if (H == tl::nullopt && g==tl::nullopt && A == tl::nullopt && b == tl::nullopt && C ==tl::nullopt && u == tl::nullopt && l ==tl::nullopt){
-                // if all = tl::nullopt -> use previous setup
-                setup_dense(MatRef<T>(data.H),VecRef<T>(data.g),MatRef<T>(data.A),VecRef<T>(data.b),MatRef<T>(data.C),VecRef<T>(data.u),VecRef<T>(data.l),settings,data,work,results);
-            }else if (H != tl::nullopt && g!=tl::nullopt && A != tl::nullopt && b != tl::nullopt && C !=tl::nullopt && u != tl::nullopt && l !=tl::nullopt){
-                // if all != tl::nullopt -> initial setup
-                setup_dense(H.value(),g.value(),A.value(),b.value(),C.value(),u.value(),l.value(),settings,data,work,results);
-            } else{
-                // some input are not equal to tl::nullopt -> do first an update 
-                update(H,g,A,b,C,u,l);
-            }
-        };
-    void setup_sparse_matrices(const tl::optional<SparseMat<T>> H,
-		tl::optional<VecRef<T>> g,
-		const tl::optional<SparseMat<T>> A,
-		tl::optional<VecRef<T>> b,
-		const tl::optional<SparseMat<T>> C,
-		tl::optional<VecRef<T>> u,
-		tl::optional<VecRef<T>> l){
+	void setup_dense_matrices(
+			tl::optional<MatRef<T>> H,
+			tl::optional<VecRef<T>> g,
+			tl::optional<MatRef<T>> A,
+			tl::optional<VecRef<T>> b,
+			tl::optional<MatRef<T>> C,
+			tl::optional<VecRef<T>> u,
+			tl::optional<VecRef<T>> l) {
 
-            if (H == tl::nullopt && g==tl::nullopt && A == tl::nullopt && b == tl::nullopt && C ==tl::nullopt && u == tl::nullopt && l ==tl::nullopt){
-                // if all = tl::nullopt -> use previous setup
-                setup_generic(MatRef<T>(data.H),VecRef<T>(data.g),MatRef<T>(data.A),VecRef<T>(data.b),MatRef<T>(data.C),VecRef<T>(data.u),VecRef<T>(data.l),settings,data,work,results);
-            }else if (H != tl::nullopt && g!=tl::nullopt && A != tl::nullopt && b != tl::nullopt && C !=tl::nullopt && u != tl::nullopt && l !=tl::nullopt){
-                // if all != tl::nullopt -> initial setup
-                setup_sparse(H.value(),g.value(),A.value(),b.value(),C.value(),u.value(),l.value(),settings,data,work,results);
-            } else{
-                // some inputs are not equal to tl::nullopt -> do first an update 
-                data.H = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H.value());
-                data.A = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A.value());
-                data.C = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C.value());
-                update(tl::nullopt,g,tl::nullopt,b,tl::nullopt,u,l);
-            }
-            //setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
-        };
+		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
+		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
+		    l == tl::nullopt) {
+			// if all = tl::nullopt -> use previous setup
+			setup_dense(
+					MatRef<T>(data.H),
+					VecRef<T>(data.g),
+					MatRef<T>(data.A),
+					VecRef<T>(data.b),
+					MatRef<T>(data.C),
+					VecRef<T>(data.u),
+					VecRef<T>(data.l),
+					settings,
+					data,
+					work,
+					results);
+		} else if (
+				H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
+				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
+				l != tl::nullopt) {
+			// if all != tl::nullopt -> initial setup
+			setup_dense(
+					H.value(),
+					g.value(),
+					A.value(),
+					b.value(),
+					C.value(),
+					u.value(),
+					l.value(),
+					settings,
+					data,
+					work,
+					results);
+		} else {
+			// some input are not equal to tl::nullopt -> do first an update
+			update(H, g, A, b, C, u, l);
+		}
+	};
+	void setup_sparse_matrices(
+			const tl::optional<SparseMat<T>> H,
+			tl::optional<VecRef<T>> g,
+			const tl::optional<SparseMat<T>> A,
+			tl::optional<VecRef<T>> b,
+			const tl::optional<SparseMat<T>> C,
+			tl::optional<VecRef<T>> u,
+			tl::optional<VecRef<T>> l) {
 
-    void solve(){
+		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
+		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
+		    l == tl::nullopt) {
+			// if all = tl::nullopt -> use previous setup
+			setup_generic(
+					MatRef<T>(data.H),
+					VecRef<T>(data.g),
+					MatRef<T>(data.A),
+					VecRef<T>(data.b),
+					MatRef<T>(data.C),
+					VecRef<T>(data.u),
+					VecRef<T>(data.l),
+					settings,
+					data,
+					work,
+					results);
+		} else if (
+				H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
+				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
+				l != tl::nullopt) {
+			// if all != tl::nullopt -> initial setup
+			setup_sparse(
+					H.value(),
+					g.value(),
+					A.value(),
+					b.value(),
+					C.value(),
+					u.value(),
+					l.value(),
+					settings,
+					data,
+					work,
+					results);
+		} else {
+			// some inputs are not equal to tl::nullopt -> do first an update
+			data.H = Eigen::
+					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+							H.value());
+			data.A = Eigen::
+					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+							A.value());
+			data.C = Eigen::
+					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+							C.value());
+			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
+		}
+		//setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
+	};
 
-        auto start = std::chrono::high_resolution_clock::now();
-        qp_solve( //
-                settings,
-                data,
-                results,
-                work);
-        auto stop = std::chrono::high_resolution_clock::now();
-        auto duration =
-                std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        results.info.solve_time = T(duration.count());
-        results.info.run_time = results.info.solve_time + results.info.setup_time;
+	void solve() {
 
-        if (settings.verbose) {
-            std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-            std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-            std::cout << "iter : " << results.info.iter << std::endl;
-            std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-            std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-            std::cout << "objValue : " << results.info.objValue << std::endl;
-            std::cout << "solve_time : " << results.info.solve_time << std::endl;
-        }
-    };
+		auto start = std::chrono::high_resolution_clock::now();
+		qp_solve( //
+				settings,
+				data,
+				results,
+				work);
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration =
+				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		results.info.solve_time = T(duration.count());
+		results.info.run_time = results.info.solve_time + results.info.setup_time;
 
-    void update( tl::optional<MatRef<T>> H_, tl::optional<VecRef<T>> g_, tl::optional<MatRef<T>> A_, tl::optional<VecRef<T>> b_, tl::optional<MatRef<T>> C_, tl::optional<VecRef<T>> u_, tl::optional<VecRef<T>> l_){
-        results.reset_results();
-        work.reset_workspace(data.n_in);
-        if (g_!=tl::nullopt){
-            data.g = g_.value().eval();
-            work.g_scaled = data.g;
-        } else{
-            work.g_scaled = data.g;
-        }
-        if (b_ != tl::nullopt){
-            data.b = b_.value().eval();
-            work.b_scaled = data.b;
-        }else{
-            work.b_scaled = data.b;
-        }
-        if (u_!=tl::nullopt){
-            data.u = u_.value().eval();
-            work.u_scaled = data.u;
-        }else{
-            work.u_scaled = data.u ; 
-        }
-        if (l_!=tl::nullopt){
-            data.l = l_.value().eval();
-            work.l_scaled = data.l;
-        }{
-            work.l_scaled = data.l;
-        }
-        if (H_ != tl::nullopt){
-            if (A_ != tl::nullopt){
-                if (C_!= tl::nullopt){
-                    data.H = H_.value().eval();
-                    data.A = A_.value().eval();
-                    data.C = C_.value().eval();
-                }else {
-                    //update_matrices(data, work, settings,results, H_, A_, MatrixView<T,rowmajor>{from_eigen,data.C});
-                    //update_matrices(data, work, settings,results, H_, A_, tl::optional<MatRef<T>>(data.C));
-                    data.H = H_.value().eval();
-                    data.A = A_.value().eval();
-                }
-            } else if (C_!= tl::nullopt){
-                    data.H = H_.value().eval();
-                    data.A = A_.value().eval();
-            } else{
-                data.H = H_.value().eval();
-            }
-        } else if (A_ != tl::nullopt){
-                if (C_!= tl::nullopt){
-                    data.A = A_.value().eval();
-                    data.C = C_.value().eval();
-                }else {
-                    data.A = A_.value().eval();
-                }
-        } else if (C_!= tl::nullopt){
-            data.C = C_.value().eval();
-        }
-    work.H_scaled = data.H;
-    work.C_scaled = data.C;
-    work.A_scaled = data.A;
+		if (settings.verbose) {
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
+			std::cout << "iter : " << results.info.iter << std::endl;
+			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
+			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
+			std::cout << "objValue : " << results.info.objValue << std::endl;
+			std::cout << "solve_time : " << results.info.solve_time << std::endl;
+		}
+	};
 
-    initial_guess(work,settings,data,results);
+	void update(
+			tl::optional<MatRef<T>> H_,
+			tl::optional<VecRef<T>> g_,
+			tl::optional<MatRef<T>> A_,
+			tl::optional<VecRef<T>> b_,
+			tl::optional<MatRef<T>> C_,
+			tl::optional<VecRef<T>> u_,
+			tl::optional<VecRef<T>> l_) {
+		results.reset_results();
+		work.reset_workspace(data.n_in);
+		if (g_ != tl::nullopt) {
+			data.g = g_.value().eval();
+			work.g_scaled = data.g;
+		} else {
+			work.g_scaled = data.g;
+		}
+		if (b_ != tl::nullopt) {
+			data.b = b_.value().eval();
+			work.b_scaled = data.b;
+		} else {
+			work.b_scaled = data.b;
+		}
+		if (u_ != tl::nullopt) {
+			data.u = u_.value().eval();
+			work.u_scaled = data.u;
+		} else {
+			work.u_scaled = data.u;
+		}
+		if (l_ != tl::nullopt) {
+			data.l = l_.value().eval();
+			work.l_scaled = data.l;
+		}
+		{ work.l_scaled = data.l; }
+		if (H_ != tl::nullopt) {
+			if (A_ != tl::nullopt) {
+				if (C_ != tl::nullopt) {
+					data.H = H_.value().eval();
+					data.A = A_.value().eval();
+					data.C = C_.value().eval();
+				} else {
+					//update_matrices(data, work, settings,results, H_, A_, MatrixView<T,rowmajor>{from_eigen,data.C});
+					//update_matrices(data, work, settings,results, H_, A_, tl::optional<MatRef<T>>(data.C));
+					data.H = H_.value().eval();
+					data.A = A_.value().eval();
+				}
+			} else if (C_ != tl::nullopt) {
+				data.H = H_.value().eval();
+				data.A = A_.value().eval();
+			} else {
+				data.H = H_.value().eval();
+			}
+		} else if (A_ != tl::nullopt) {
+			if (C_ != tl::nullopt) {
+				data.A = A_.value().eval();
+				data.C = C_.value().eval();
+			} else {
+				data.A = A_.value().eval();
+			}
+		} else if (C_ != tl::nullopt) {
+			data.C = C_.value().eval();
+		}
+		work.H_scaled = data.H;
+		work.C_scaled = data.C;
+		work.A_scaled = data.A;
 
-    }
-    void update_prox_parameter(tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in){
-        update_proximal_parameters(results,rho, mu_eq, mu_in);
-    };
-    void warm_sart(tl::optional<VecRef<T>> x,
-               tl::optional<VecRef<T>> y,
-               tl::optional<VecRef<T>> z){
-        warm_starting(x,y,z,results,settings);
-    };
-    void cleanup(){
-        results.reset_results();
-        work.reset_workspace();
-    }
+		initial_guess(work, settings, data, results);
+	}
+	void update_prox_parameter(
+			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
+		update_proximal_parameters(results, rho, mu_eq, mu_in);
+	};
+	void warm_sart(
+			tl::optional<VecRef<T>> x,
+			tl::optional<VecRef<T>> y,
+			tl::optional<VecRef<T>> z) {
+		warm_starting(x, y, z, results, settings);
+	};
+	void cleanup() {
+		results.reset_results();
+		work.reset_workspace();
+	}
 };
-
 
 } // namespace dense
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP */

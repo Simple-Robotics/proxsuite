@@ -13,6 +13,8 @@
 using c_int = long long;
 using c_float = double;
 
+namespace qp = proxsuite::qp;
+
 template <typename T, qp::Layout L>
 using Mat = Eigen::Matrix<
 		T,

@@ -5,6 +5,7 @@
 #include <veg/type_traits/core.hpp>
 #include "qp/constants.hpp"
 
+namespace proxsuite {
 namespace qp {
 using veg::isize;
 
@@ -105,5 +106,6 @@ public:
 };
 
 } // namespace qp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_RESULTS_HPP */
