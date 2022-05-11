@@ -67,8 +67,7 @@ TEST_CASE("random ruiz") {
 					data,
 					settings,
 					work,
-					ruiz,
-					qp);
+					ruiz);
 			CHECK(
 					qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
@@ -135,8 +134,7 @@ TEST_CASE("random id") {
 					data,
 					settings,
 					work,
-					id,
-					qp);
+					id);
 			CHECK(
 					qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=

@@ -18,9 +18,17 @@ struct Data {
 	isize n_eq;
 	isize n_in;
 
+  isize H_nnz;
+  isize A_nnz;
+  isize C_nnz;
+
 	veg::Vec<I> kkt_col_ptrs;
 	veg::Vec<I> kkt_row_indices;
 	veg::Vec<T> kkt_values;
+  Eigen::Matrix<T, Eigen::Dynamic, 1> g;
+  Eigen::Matrix<T, Eigen::Dynamic, 1> b;
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l;
+  Eigen::Matrix<T, Eigen::Dynamic, 1> u;
 
 	auto kkt() const -> linearsolver::sparse::MatMut<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;

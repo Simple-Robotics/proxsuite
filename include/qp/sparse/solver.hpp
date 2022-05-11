@@ -545,6 +545,18 @@ struct Workspace {
 				QpView<T, I> qp,
 				Data<T, I>& data,
 				veg::dynstack::StackReq precond_req) {
+			data.dim = qp.H.nrows();
+			data.n_eq = qp.AT.ncols();
+			data.n_in = qp.CT.ncols();
+			data.H_nnz = qp.H.nnz();
+			data.A_nnz = qp.AT.nnz();
+			data.C_nnz = qp.CT.nnz();
+
+			data.g = qp.g.to_eigen();
+			data.b = qp.b.to_eigen();
+			data.l = qp.l.to_eigen();
+			data.u = qp.u.to_eigen();
+
 			using namespace veg::dynstack;
 			using namespace linearsolver::sparse::util;
 
@@ -806,7 +818,6 @@ struct Workspace {
 	auto stack_mut() -> veg::dynstack::DynStackMut {
 		return _.stack_mut();
 	}
-
 };
 
 namespace detail {
@@ -1148,7 +1159,7 @@ auto unscaled_primal_dual_residual(
 		T dual_feasibility_rhs_1,
 		T dual_feasibility_rhs_3,
 		P& precond,
-		QpView<T, I> qp,
+		Data<T, I> const& data,
 		QpView<T, I> qp_scaled,
 		VecMap<T> x_e,
 		VecMap<T> y_e,
@@ -1205,9 +1216,9 @@ auto unscaled_primal_dual_residual(
 			{qp::from_eigen, primal_residual_in_scaled_up});
 	primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
 
-	auto b = qp.b.to_eigen();
-	auto l = qp.l.to_eigen();
-	auto u = qp.u.to_eigen();
+	auto b = data.b;
+	auto l = data.l;
+	auto u = data.u;
 	primal_residual_in_scaled_lo =
 			detail::positive_part(primal_residual_in_scaled_up - u) +
 			detail::negative_part(primal_residual_in_scaled_up - l);
@@ -1252,8 +1263,7 @@ void qp_solve(
 		Data<T, I>& data,
 		Settings<T> const& settings,
 		Workspace<T, I>& work,
-		P& precond,
-		QpView<T, I> qp) {
+		P& precond) {
 
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
@@ -1261,9 +1271,9 @@ void qp_solve(
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
 
-	isize n = qp.H.nrows();
-	isize n_eq = qp.AT.ncols();
-	isize n_in = qp.CT.ncols();
+	isize n = data.dim;
+	isize n_eq = data.n_eq;
+	isize n_in = data.n_in;
 	isize n_tot = n + n_eq + n_in;
 
 	linearsolver::sparse::MatMut<T, I> kkt = data.kkt_mut();
@@ -1271,23 +1281,23 @@ void qp_solve(
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
 	linearsolver::sparse::MatMut<T, I> H_scaled =
-			detail::middle_cols_mut(kkt_top_n_rows, 0, n, qp.H.nnz());
+			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
 
 	linearsolver::sparse::MatMut<T, I> AT_scaled =
-			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, qp.AT.nnz());
+			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
 
 	linearsolver::sparse::MatMut<T, I> CT_scaled =
-			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, qp.CT.nnz());
+			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
 	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
 	LDLT_TEMP_VEC_UNINIT(T, b_scaled_e, n_eq, stack);
 	LDLT_TEMP_VEC_UNINIT(T, l_scaled_e, n_in, stack);
 	LDLT_TEMP_VEC_UNINIT(T, u_scaled_e, n_in, stack);
 
-	g_scaled_e = qp.g.to_eigen();
-	b_scaled_e = qp.b.to_eigen();
-	l_scaled_e = qp.l.to_eigen();
-	u_scaled_e = qp.u.to_eigen();
+	g_scaled_e = data.g;
+	b_scaled_e = data.b;
+	l_scaled_e = data.l;
+	u_scaled_e = data.u;
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
@@ -1301,10 +1311,10 @@ void qp_solve(
 
 	precond.scale_qp_in_place(qp_scaled, stack);
 
-	T const primal_feasibility_rhs_1_eq = infty_norm(qp.b.to_eigen());
-	T const primal_feasibility_rhs_1_in_u = infty_norm(qp.u.to_eigen());
-	T const primal_feasibility_rhs_1_in_l = infty_norm(qp.l.to_eigen());
-	T const dual_feasibility_rhs_2 = infty_norm(qp.g.to_eigen());
+	T const primal_feasibility_rhs_1_eq = infty_norm(data.b);
+	T const primal_feasibility_rhs_1_in_u = infty_norm(data.u);
+	T const primal_feasibility_rhs_1_in_l = infty_norm(data.l);
+	T const dual_feasibility_rhs_2 = infty_norm(data.g);
 
 	auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
 	auto max_lnnz = isize(zx(ldl_col_ptrs[n_tot]));
@@ -1358,7 +1368,7 @@ void qp_solve(
 			linearsolver::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
-			qp.H.nnz() + qp.AT.nnz(),
+			data.H_nnz + data.A_nnz,
 			kkt.col_ptrs_mut(),
 			kkt_nnz_counts,
 			kkt.row_indices_mut(),
@@ -1661,7 +1671,7 @@ void qp_solve(
 							dual_feasibility_rhs_1,
 							dual_feasibility_rhs_3,
 							precond,
-							qp,
+							data,
 							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
@@ -1982,7 +1992,7 @@ void qp_solve(
 							dual_feasibility_rhs_1,
 							dual_feasibility_rhs_3,
 							precond,
-							qp,
+							data,
 							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
@@ -2027,7 +2037,7 @@ void qp_solve(
 							dual_feasibility_rhs_1,
 							dual_feasibility_rhs_3,
 							precond,
-							qp,
+							data,
 							qp_scaled.as_const(),
 							detail::vec(x_e),
 							detail::vec(y_e),
