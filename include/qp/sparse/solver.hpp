@@ -76,8 +76,8 @@ template <typename T, typename I>
 void rowwise_infty_norm(T* row_norm, linearsolver::sparse::MatRef<T, I> m) {
 	using namespace linearsolver::sparse::util;
 
-	I const* mi = m.row_indices().ptr();
-	T const* mx = m.values().ptr();
+	I const* mi = m.row_indices();
+	T const* mx = m.values();
 
 	for (usize j = 0; j < usize(m.ncols()); ++j) {
 		auto col_start = m.col_start(j);
@@ -96,8 +96,8 @@ void colwise_infty_norm_symhi(
 		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
 	using namespace linearsolver::sparse::util;
 
-	I const* hi = h.row_indices().ptr();
-	T const* hx = h.values().ptr();
+	I const* hi = h.row_indices();
+	T const* hx = h.values();
 
 	for (usize j = 0; j < usize(h.ncols()); ++j) {
 		auto col_start = h.col_start(j);
@@ -125,8 +125,8 @@ void colwise_infty_norm_symlo(
 		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
 	using namespace linearsolver::sparse::util;
 
-	I const* hi = h.row_indices().ptr();
-	T const* hx = h.values().ptr();
+	I const* hi = h.row_indices();
+	T const* hx = h.values();
 
 	for (usize j = 0; j < usize(h.ncols()); ++j) {
 		auto col_start = h.col_start(j);
@@ -176,14 +176,14 @@ auto ruiz_scale_qp_in_place( //
 
 	LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
-	I* Hi = qp.H.row_indices_mut().ptr_mut();
-	T* Hx = qp.H.values_mut().ptr_mut();
+	I* Hi = qp.H.row_indices_mut();
+	T* Hx = qp.H.values_mut();
 
-	I* ATi = qp.AT.row_indices_mut().ptr_mut();
-	T* ATx = qp.AT.values_mut().ptr_mut();
+	I* ATi = qp.AT.row_indices_mut();
+	T* ATx = qp.AT.values_mut();
 
-	I* CTi = qp.CT.row_indices_mut().ptr_mut();
-	T* CTx = qp.CT.values_mut().ptr_mut();
+	I* CTi = qp.CT.row_indices_mut();
+	T* CTx = qp.CT.values_mut();
 
 	T const machine_eps = std::numeric_limits<T>::epsilon();
 
@@ -524,7 +524,7 @@ template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 template <typename T, typename I>
-struct QpWorkspace {
+struct Workspace {
 
 	struct /* NOLINT */ {
 		veg::Vec<veg::mem::byte> storage;
@@ -576,8 +576,8 @@ struct QpWorkspace {
 
 				auto insert_submatrix = [&](linearsolver::sparse::MatRef<T, I> m,
 				                            bool assert_sym_hi) -> void {
-					I const* mi = m.row_indices().ptr();
-					T const* mx = m.values().ptr();
+					I const* mi = m.row_indices();
+					T const* mx = m.values();
 					isize ncols = m.ncols();
 
 					for (usize j = 0; j < usize(ncols); ++j) {
@@ -625,7 +625,7 @@ struct QpWorkspace {
 			bool overflow = false;
 			{
 				auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-				auto etree = _etree.as_mut();
+				auto etree = _etree.ptr_mut();
 
 				using namespace veg::literals;
 				auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
@@ -633,19 +633,19 @@ struct QpWorkspace {
 						n_tot,
 						n_tot,
 						nnz_tot,
-						kkt_col_ptrs.as_ref(),
-						kkt_row_indices.as_ref(),
-						{},
+						kkt_col_ptrs.ptr(),
+						nullptr,
+						kkt_row_indices.ptr(),
 				};
 				linearsolver::sparse::factorize_symbolic_non_zeros( //
-						ldl_col_ptrs.as_mut().split_at_mut(1)[1_c],
+						ldl_col_ptrs.ptr_mut() + 1,
 						etree,
-						perm_inv.as_mut(),
-						{},
+						perm_inv.ptr_mut(),
+						static_cast<I const*>(nullptr),
 						kkt_sym,
 						stack);
 
-				auto pcol_ptrs = ldl_col_ptrs.as_mut().ptr_mut();
+				auto pcol_ptrs = ldl_col_ptrs.ptr_mut();
 				pcol_ptrs[0] = I(0);
 
 				using veg::u64;
@@ -794,13 +794,13 @@ struct QpWorkspace {
 		}
 	} _;
 
-	QpWorkspace() = default;
+	Workspace() = default;
 
-	auto ldl_col_ptrs() const -> veg::Slice<I> {
-		return _.ldl_col_ptrs.as_ref();
+	auto ldl_col_ptrs() const -> I const* {
+		return _.ldl_col_ptrs.ptr();
 	}
-	auto ldl_col_ptrs_mut() -> veg::SliceMut<I> {
-		return _.ldl_col_ptrs.as_mut();
+	auto ldl_col_ptrs_mut() -> I* {
+		return _.ldl_col_ptrs.ptr_mut();
 	}
 	auto stack_mut() -> veg::dynstack::DynStackMut {
 		return _.stack_mut();
@@ -815,10 +815,10 @@ struct QpWorkspace {
 				n_tot,
 				n_tot,
 				nnz,
-				_.kkt_col_ptrs.as_ref(),
-				_.kkt_row_indices.as_ref(),
-				{},
-				_.kkt_values.as_ref(),
+				_.kkt_col_ptrs.ptr(),
+				nullptr,
+				_.kkt_row_indices.ptr(),
+				_.kkt_values.ptr(),
 		};
 	}
 	auto kkt_mut() -> linearsolver::sparse::MatMut<T, I> {
@@ -830,10 +830,10 @@ struct QpWorkspace {
 				n_tot,
 				n_tot,
 				nnz,
-				_.kkt_col_ptrs.as_mut(),
-				_.kkt_row_indices.as_mut(),
-				{},
-				_.kkt_values.as_mut(),
+				_.kkt_col_ptrs.ptr_mut(),
+				nullptr,
+				_.kkt_row_indices.ptr_mut(),
+				_.kkt_values.ptr_mut(),
 		};
 	}
 };
@@ -862,8 +862,8 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 	// out_r.to_eigen().noalias() += a.to_eigen() * in_r.to_eigen();
 	// out_l.to_eigen().noalias() += a.to_eigen().transpose() * in_l.to_eigen();
 
-	auto* ai = a.row_indices().ptr();
-	auto* ax = a.values().ptr();
+	auto* ai = a.row_indices();
+	auto* ax = a.values();
 	auto n = a.ncols();
 
 	for (usize j = 0; j < usize(n); ++j) {
@@ -931,8 +931,8 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 	// out.to_eigen().noalias() +=
 	// 		a.to_eigen().template selfadjointView<Eigen::Upper>() * in.to_eigen();
 
-	auto* ai = a.row_indices().ptr();
-	auto* ax = a.values().ptr();
+	auto* ai = a.row_indices();
+	auto* ax = a.values();
 	auto n = a.ncols();
 
 	for (usize j = 0; j < usize(n); ++j) {
@@ -1100,24 +1100,15 @@ auto middle_cols(
 		-> linearsolver::sparse::MatRef<T, I> {
 	VEG_ASSERT(start < mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
+
 	return {
 			linearsolver::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
-			veg::Slice<I>{
-					veg::unsafe,
-					veg::from_raw_parts,
-					mat.col_ptrs().ptr() + start,
-					ncols + 1,
-			},
+			mat.col_ptrs() + start,
+			mat.is_compressed() ? nullptr : (mat.nnz_per_col() + start),
 			mat.row_indices(),
-			mat.is_compressed() ? veg::Slice<I>{} : veg::Slice<I>{
-					veg::unsafe,
-					veg::from_raw_parts,
-					mat.nnz_per_col().ptr() + start,
-					ncols,
-			},
 			mat.values(),
 	};
 }
@@ -1133,19 +1124,9 @@ auto middle_cols_mut(
 			mat.nrows(),
 			ncols,
 			nnz,
-			veg::SliceMut<I>{
-					veg::unsafe,
-					veg::from_raw_parts,
-					mat.col_ptrs_mut().ptr_mut() + start,
-					ncols + 1,
-			},
+			mat.col_ptrs_mut() + start,
+			mat.is_compressed() ? nullptr : (mat.nnz_per_col_mut() + start),
 			mat.row_indices_mut(),
-			mat.is_compressed() ? veg::SliceMut<I>{} : veg::SliceMut<I>{
-					veg::unsafe,
-					veg::from_raw_parts,
-					mat.nnz_per_col_mut().ptr_mut() + start,
-					ncols,
-			},
 			mat.values_mut(),
 	};
 }
@@ -1161,8 +1142,8 @@ auto top_rows_unchecked(
 			mat.ncols(),
 			mat.nnz(),
 			mat.col_ptrs(),
-			mat.row_indices(),
 			mat.nnz_per_col(),
+			mat.row_indices(),
 			mat.values(),
 	};
 }
@@ -1178,42 +1159,10 @@ auto top_rows_mut_unchecked(
 			mat.ncols(),
 			mat.nnz(),
 			mat.col_ptrs_mut(),
-			mat.row_indices_mut(),
 			mat.nnz_per_col_mut(),
+			mat.row_indices_mut(),
 			mat.values_mut(),
 	};
-}
-
-template <typename T, typename I>
-auto ct_active(
-		isize n,
-		isize n_eq,
-		isize n_in,
-		linearsolver::sparse::MatRef<T, I> kkt_active)
-		-> linearsolver::sparse::MatRef<T, I> {
-	if (kkt_active.is_compressed()) {
-	} else {
-		return {
-				linearsolver::sparse::from_raw_parts,
-				n,
-				n_in,
-				0, // nnz not used
-				{
-						veg::unsafe,
-						veg::from_raw_parts,
-						kkt_active.col_ptrs().ptr() + n + n_eq,
-						n_in + 1,
-				},
-				kkt_active.row_indices(),
-				{
-						veg::unsafe,
-						veg::from_raw_parts,
-						kkt_active.nnz_per_col().ptr() + n + n_eq,
-						n_in,
-				},
-				kkt_active.values(),
-		};
-	}
 }
 
 template <typename T, typename I, typename P>
@@ -1315,7 +1264,7 @@ auto unscaled_primal_dual_residual(
 } // namespace detail
 
 template <typename T, typename I, typename P>
-void qp_setup(QpWorkspace<T, I>& work, QpView<T, I> qp, P& /*precond*/) {
+void qp_setup(Workspace<T, I>& work, QpView<T, I> qp, P& /*precond*/) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
@@ -1327,7 +1276,7 @@ void qp_solve(
 		VectorViewMut<T> x,
 		VectorViewMut<T> y,
 		VectorViewMut<T> z,
-		QpWorkspace<T, I>& work,
+		Workspace<T, I>& work,
 		Settings<T> const& settings,
 		P& precond,
 		QpView<T, I> qp) {
@@ -1404,8 +1353,8 @@ void qp_solve(
 			stack.make_new_for_overwrite(itag, ldlt_lnnz).unwrap();
 	auto _ldl_values = stack.make_new_for_overwrite(xtag, ldlt_lnnz).unwrap();
 
-	veg::Slice<I> perm_inv = work._.perm_inv.as_ref();
-	veg::SliceMut<I> perm = _perm.as_mut();
+	I const* perm_inv = work._.perm_inv.ptr();
+	I* perm = _perm.ptr_mut();
 
 	if (do_ldlt) {
 		// compute perm from perm_inv
@@ -1414,7 +1363,7 @@ void qp_solve(
 		}
 	}
 
-	veg::SliceMut<I> kkt_nnz_counts = _kkt_nnz_counts.as_mut();
+	I* kkt_nnz_counts = _kkt_nnz_counts.ptr_mut();
 
 	// H and A are always active
 	for (usize j = 0; j < usize(n + n_eq); ++j) {
@@ -1437,15 +1386,15 @@ void qp_solve(
 			n_tot,
 			qp.H.nnz() + qp.AT.nnz(),
 			kkt.col_ptrs_mut(),
-			kkt.row_indices_mut(),
 			kkt_nnz_counts,
+			kkt.row_indices_mut(),
 			kkt.values_mut(),
 	};
 
-	veg::SliceMut<I> etree = _etree.as_mut();
-	veg::SliceMut<I> ldl_nnz_counts = _ldl_nnz_counts.as_mut();
-	veg::SliceMut<I> ldl_row_indices = _ldl_row_indices.as_mut();
-	veg::SliceMut<T> ldl_values = _ldl_values.as_mut();
+	I* etree = _etree.ptr_mut();
+	I* ldl_nnz_counts = _ldl_nnz_counts.ptr_mut();
+	I* ldl_row_indices = _ldl_row_indices.ptr_mut();
+	T* ldl_values = _ldl_values.ptr_mut();
 	veg::SliceMut<bool> active_constraints = _active_constraints.as_mut();
 
 	linearsolver::sparse::MatMut<T, I> ldl = {
@@ -1454,8 +1403,8 @@ void qp_solve(
 			n_tot,
 			0,
 			ldl_col_ptrs,
+			do_ldlt ? ldl_nnz_counts : nullptr,
 			ldl_row_indices,
-			do_ldlt ? ldl_nnz_counts : veg::SliceMut<I>{},
 			ldl_values,
 	};
 
@@ -1520,8 +1469,8 @@ void qp_solve(
 			linearsolver::sparse::factorize_symbolic_non_zeros(
 					ldl_nnz_counts,
 					etree,
-					work._.perm_inv.as_mut(),
-					perm.as_const(),
+					work._.perm_inv.ptr_mut(),
+					perm,
 					kkt_active.symbolic(),
 					stack);
 
@@ -1539,12 +1488,12 @@ void qp_solve(
 			}
 
 			linearsolver::sparse::factorize_numeric(
-					ldl_values.ptr_mut(),
-					ldl_row_indices.ptr_mut(),
+					ldl_values,
+					ldl_row_indices,
 					diag,
-					perm.ptr(),
-					ldl_col_ptrs.as_const(),
-					etree.as_const(),
+					perm,
+					ldl_col_ptrs,
+					etree,
 					perm_inv,
 					kkt_active.as_const(),
 					stack);
@@ -1823,19 +1772,9 @@ void qp_solve(
 										linearsolver::sparse::VecRef<T, I> new_col{
 												linearsolver::sparse::from_raw_parts,
 												n_tot,
-												{
-														veg::unsafe,
-														veg::from_raw_parts,
-														kkt.row_indices().ptr() +
-																zx(kkt.col_start(usize(idx))),
-														isize(col_nnz),
-												},
-												{
-														veg::unsafe,
-														veg::from_raw_parts,
-														kkt.values().ptr() + zx(kkt.col_start(usize(idx))),
-														isize(col_nnz),
-												},
+                        isize(col_nnz),
+												kkt.row_indices() + zx(kkt.col_start(usize(idx))),
+												kkt.values() + zx(kkt.col_start(usize(idx))),
 										};
 
 										ldl = linearsolver::sparse::add_row(

@@ -134,7 +134,7 @@ TEST_CASE("maros meszaros wip") {
 			settings.max_iter = 1.E6;
 			settings.mu_max_in = 1.E9;
 			settings.mu_max_eq = 1.E9;
-			sparse::QpWorkspace<T, I> work;
+			sparse::Workspace<T, I> work;
 
 			Eigen::Matrix<T, -1, 1> x(n);
 			Eigen::Matrix<T, -1, 1> y(n_eq);

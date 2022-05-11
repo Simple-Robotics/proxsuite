@@ -19,8 +19,8 @@ auto delete_row_req( //
 template <typename T, typename I>
 auto delete_row(
 		MatMut<T, I> ld,
-		SliceMut<I> etree,
-		Slice<I> perm_inv,
+		I* etree,
+		I const* perm_inv,
 		isize pos,
 		DynStackMut stack) noexcept(false) -> MatMut<T, I> {
 	// step 1: delete row k from each column
@@ -29,12 +29,12 @@ auto delete_row(
 	// we're actually deleting perm_inv[k], so that k is deleted in the permuted
 	// matrix
 	usize permuted_pos =
-			perm_inv.len() == 0 ? usize(pos) : util::zero_extend(perm_inv[pos]);
+			perm_inv == nullptr ? usize(pos) : util::zero_extend(perm_inv[pos]);
 
-	auto petree = etree.ptr_mut();
-	I* pldi = ld.row_indices_mut().ptr_mut();
-	T* pldx = ld.values_mut().ptr_mut();
-	I* pldnz = ld.nnz_per_col_mut().ptr_mut();
+	auto petree = etree;
+	I* pldi = ld.row_indices_mut();
+	T* pldx = ld.values_mut();
+	I* pldnz = ld.nnz_per_col_mut();
 
 	for (usize j = 0; j < permuted_pos; ++j) {
 		auto col_start = ld.col_start(j) + 1;
@@ -73,36 +73,26 @@ auto delete_row(
 	}
 
 	// step 2: set d_kk = 1
-	T d_old = ld.values().ptr()[ld.col_start(permuted_pos)];
-	ld.values_mut().ptr_mut()[ld.col_start(permuted_pos)] = 1;
+	T d_old = ld.values()[ld.col_start(permuted_pos)];
+	ld.values_mut()[ld.col_start(permuted_pos)] = 1;
 
 	// step 3: perform rank update
-	isize len =
-			isize(util::zero_extend(ld.nnz_per_col().ptr()[permuted_pos])) - 1;
-	ld = sparse::rank1_update( //
+	isize len = isize(util::zero_extend(ld.nnz_per_col()[permuted_pos])) - 1;
+	ld = sparse::rank1_update<T, I>( //
 			ld,
 			etree,
-			{},
+			static_cast<I const*>(nullptr),
 			VecRef<T, I>{
 					from_raw_parts,
 					ld.nrows(),
-					{
-							unsafe,
-							from_raw_parts,
-							pldi + ld.col_start(permuted_pos) + 1,
-							len,
-					},
-					{
-							unsafe,
-							from_raw_parts,
-							pldx + ld.col_start(permuted_pos) + 1,
-							len,
-					},
+					len,
+					pldi + ld.col_start(permuted_pos) + 1,
+					pldx + ld.col_start(permuted_pos) + 1,
 			},
 			d_old,
 			stack);
 	// step 4: delete col k_
-	ld.nnz_per_col_mut().ptr_mut()[permuted_pos] = 1;
+	ld.nnz_per_col_mut()[permuted_pos] = 1;
 	petree[permuted_pos] = I(-1);
 	return ld;
 }
@@ -136,20 +126,20 @@ auto add_row_req( //
 template <typename T, typename I>
 auto add_row(
 		MatMut<T, I> ld,
-		SliceMut<I> etree,
-		Slice<I> perm_inv,
+		I* etree,
+		I const* perm_inv,
 		isize pos,
 		VecRef<T, I> new_col,
 		veg::DoNotDeduce<T> diag_element,
 		DynStackMut stack) noexcept(false) -> MatMut<T, I> {
 	VEG_ASSERT(!ld.is_compressed());
-	bool id_perm = perm_inv.len() == 0;
+	bool id_perm = perm_inv == nullptr;
 	auto zx = util::zero_extend;
 
-	I* pldp = ld.col_ptrs_mut().ptr_mut();
-	I* pldnz = ld.nnz_per_col_mut().ptr_mut();
-	I* pldi = ld.row_indices_mut().ptr_mut();
-	T* pldx = ld.values_mut().ptr_mut();
+	I* pldp = ld.col_ptrs_mut();
+	I* pldnz = ld.nnz_per_col_mut();
+	I* pldi = ld.row_indices_mut();
+	T* pldx = ld.values_mut();
 
 	// actually inserting in the position perm_inv[k] so that row k is added in
 	// the permuted matrix
@@ -172,14 +162,14 @@ auto add_row(
 						.unwrap();
 
 		auto new_col_permuted_indices =
-				id_perm ? new_col.row_indices() : _new_col_permuted_indices.as_ref();
+				id_perm ? new_col.row_indices() : _new_col_permuted_indices.ptr();
 
 		// copy and sort permuted row indices
 		if (!id_perm) {
 			I* pnew_col_permuted_indices = _new_col_permuted_indices.ptr_mut();
 			for (usize k = 0; k < usize(new_col.nnz()); ++k) {
-				usize i = zx(new_col.row_indices().ptr()[k]);
-				pnew_col_permuted_indices[k] = perm_inv.ptr()[i];
+				usize i = zx(new_col.row_indices()[k]);
+				pnew_col_permuted_indices[k] = perm_inv[i];
 			}
 			std::sort(
 					pnew_col_permuted_indices, pnew_col_permuted_indices + new_col.nnz());
@@ -209,7 +199,7 @@ auto add_row(
 					stack.make_new(veg::Tag<bool>{}, isize(permuted_pos)).unwrap();
 			bool* visited = _visited.ptr_mut();
 			for (usize p = 0; p < usize(new_col.nnz()); ++p) {
-				auto j = zx(new_col_permuted_indices.ptr()[p]);
+				auto j = zx(new_col_permuted_indices[p]);
 				if (j >= permuted_pos) {
 					break;
 				}
@@ -225,7 +215,7 @@ auto add_row(
 					pl12_nnz_pattern[l12_nnz_pattern_count] = I(j);
 					++l12_nnz_pattern_count;
 
-					j = util::sign_extend(etree.ptr()[j]);
+					j = util::sign_extend(etree[j]);
 					if (j == usize(-1) || j >= permuted_pos || visited[j]) {
 						break;
 					}
@@ -243,9 +233,9 @@ auto add_row(
 		// storage, and the bottom part of the added column in the bottom part of
 		// the storage
 		for (usize p = 0; p < usize(new_col.nnz()); ++p) {
-			auto j = zx(new_col.row_indices().ptr()[p]);
-			auto permuted_j = id_perm ? j : zx(perm_inv.ptr()[j]);
-			plx2_storage[permuted_j] = new_col.values().ptr()[p];
+			auto j = zx(new_col.row_indices()[p]);
+			auto permuted_j = id_perm ? j : zx(perm_inv[j]);
+			plx2_storage[permuted_j] = new_col.values()[p];
 
 			// add the row indices of the bottom part of the added column, to the
 			// k-th column of L
@@ -330,7 +320,7 @@ auto add_row(
 			// if it is the first element, update the elimination tree so that k is
 			// the new parent of column j
 			if (it == (pldi + col_start + 1)) {
-				etree.ptr_mut()[j] = I(permuted_pos);
+				etree[j] = I(permuted_pos);
 			}
 
 			// shift the row indices  up by one position to provide enough space for
@@ -371,31 +361,21 @@ auto add_row(
 
 	// set the parent of the k-th column of L
 	if (pldnz[permuted_pos] > 1) {
-		etree.ptr_mut()[permuted_pos] = pldi[ld.col_start(permuted_pos) + 1];
+		etree[permuted_pos] = pldi[ld.col_start(permuted_pos) + 1];
 	}
 
-	isize len =
-			isize(util::zero_extend(ld.nnz_per_col().ptr()[permuted_pos])) - 1;
+	isize len = isize(util::zero_extend(ld.nnz_per_col()[permuted_pos])) - 1;
 	// perform the rank update with the newly added column
-	sparse::rank1_update(
+	ld = sparse::rank1_update<T, I>(
 			ld,
 			etree,
-			{},
-			{
+			static_cast<I const*>(nullptr),
+			VecRef<T, I>{
 					from_raw_parts,
 					ld.nrows(),
-					{
-							unsafe,
-							from_raw_parts,
-							pldi + ld.col_start(permuted_pos) + 1,
-							len,
-					},
-					{
-							unsafe,
-							from_raw_parts,
-							pldx + ld.col_start(permuted_pos) + 1,
-							len,
-					},
+					len,
+					pldi + ld.col_start(permuted_pos) + 1,
+					pldx + ld.col_start(permuted_pos) + 1,
 			},
 			-diag_element,
 			stack);

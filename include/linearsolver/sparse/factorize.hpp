@@ -7,60 +7,6 @@
 namespace linearsolver {
 namespace sparse {
 
-// y += a x
-template <typename T, typename I>
-void axpy(DenseVecMut<T> y, MatRef<T, I> a, DenseVecRef<T> x) noexcept(false) {
-	using namespace _detail;
-
-	VEG_ASSERT_ALL_OF( //
-			y.nrows() == a.nrows(),
-			x.nrows() == a.ncols());
-
-	auto py = y.as_slice_mut().ptr_mut();
-	auto px = x.as_slice().ptr();
-	I const* pai = a.row_indices().ptr();
-	T const* pax = a.values().ptr();
-
-	for (usize j = 0; j < usize(a.ncols()); ++j) {
-
-		auto col_start = a.col_start(j);
-		auto col_end = a.col_end(j);
-
-		for (usize p = col_start; p < col_end; ++p) {
-			auto i = util::zero_extend(pai[p]);
-			py[i] += pax[p] * x[j];
-		}
-	}
-}
-
-// y += a.T x
-template <typename T, typename I>
-void atxpy(DenseVecMut<T> y, MatRef<T, I> a, DenseVecRef<T> x) noexcept(false) {
-	using namespace _detail;
-
-	VEG_ASSERT_ALL_OF( //
-			a.is_compressed(),
-			y.nrows() == a.ncols(),
-			x.nrows() == a.nrows());
-
-	auto py = y.as_slice_mut().ptr_mut();
-	auto px = x.as_slice().ptr();
-	I const* pai = a.row_indices().ptr();
-	T const* pax = a.values().ptr();
-
-	for (usize j = 0; j < usize(a.ncols()); ++j) {
-		auto col_start = a.col_start(j);
-		auto col_end = a.col_end(j);
-
-		T sum = 0;
-		for (usize p = col_start; p < col_end; ++p) {
-			auto i = util::zero_extend(pai[p]);
-			sum += pax[p] * px[i];
-		}
-		py[j] += sum;
-	}
-}
-
 template <typename I>
 auto transpose_req(veg::Tag<I> /*tag*/, isize nrows) noexcept
 		-> veg::dynstack::StackReq {
@@ -81,18 +27,18 @@ void transpose( //
 			at.ncols() == a.nrows(),
 			at.nnz() == a.nnz());
 
-	auto pai = a.row_indices().ptr();
-	auto pax = a.values().ptr();
+	auto pai = a.row_indices();
+	auto pax = a.values();
 
-	auto patp = at.col_ptrs_mut().ptr_mut();
-	auto pati = at.row_indices_mut().ptr_mut();
-	auto patx = at.values_mut().ptr_mut();
+	auto patp = at.col_ptrs_mut();
+	auto pati = at.row_indices_mut();
+	auto patx = at.values_mut();
 
 	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols()).unwrap();
-	auto work = _work.as_mut().ptr_mut();
+	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
-	if (a.nnz_per_col().ptr() == nullptr) {
+	if (a.is_compressed()) {
 		for (usize p = 0; p < usize(a.nnz()); ++p) {
 			util::wrapping_inc(mut(work[util::zero_extend(pai[p])]));
 		}
@@ -145,13 +91,13 @@ void transpose_symbolic( //
 			at.ncols() == a.nrows(),
 			at.nnz() == a.nnz());
 
-	auto pai = a.row_indices().ptr();
+	auto pai = a.row_indices();
 
-	auto patp = at.col_ptrs_mut().ptr_mut();
-	auto pati = at.row_indices_mut().ptr_mut();
+	auto patp = at.col_ptrs_mut();
+	auto pati = at.row_indices_mut();
 
 	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols()).unwrap();
-	auto work = _work.as_mut().ptr_mut();
+	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
 	for (usize p = 0; p < usize(a.nnz()); ++p) {
@@ -191,8 +137,8 @@ void dense_lsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 
 	usize n = usize(l.nrows());
 
-	auto pli = l.row_indices().ptr();
-	auto plx = l.values().ptr();
+	auto pli = l.row_indices();
+	auto plx = l.values();
 
 	auto px = x.as_slice_mut().ptr_mut();
 
@@ -223,8 +169,8 @@ void dense_ltsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 
 	usize n = usize(l.nrows());
 
-	auto pli = l.row_indices().ptr();
-	auto plx = l.values().ptr();
+	auto pli = l.row_indices();
+	auto plx = l.values();
 
 	auto px = x.as_slice_mut().ptr_mut();
 
@@ -279,23 +225,20 @@ auto etree_req(veg::Tag<I> /*tag*/, isize n) noexcept
 // triangular part
 template <typename I>
 VEG_INLINE void etree( //
-		SliceMut<I> parent,
+		I* parent,
 		SymbolicMatRef<I> a,
 		DynStackMut stack) noexcept {
 	using namespace _detail;
 
-	VEG_ASSERT(parent.len() == a.ncols());
-
 	usize n = usize(a.ncols());
-	auto pai = a.row_indices().ptr();
+	auto pai = a.row_indices();
 
-	auto pparent = parent.ptr_mut();
 	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, isize(n)).unwrap();
-	auto pancestors = _work.as_mut().ptr_mut();
+	auto pancestors = _work.ptr_mut();
 
 	// for each column of a
 	for (usize k = 0; k < n; ++k) {
-		pparent[k] = I(-1);
+		parent[k] = I(-1);
 		pancestors[k] = I(-1);
 		// assuming elimination subtree T_{k-1} is known, compute T_k
 
@@ -330,7 +273,7 @@ VEG_INLINE void etree( //
 				// the tree
 				// set the parent to k
 				if (next == usize(-1)) {
-					pparent[node] = I(k);
+					parent[node] = I(k);
 					break;
 				}
 				// go to the highest ancestor
@@ -349,26 +292,18 @@ inline auto ereach_req(isize k) noexcept -> veg::dynstack::StackReq {
 // not including the node k itself
 template <typename I>
 VEG_NODISCARD VEG_INLINE auto ereach(
-		SliceMut<I> s,
+		usize& count,
+		I* s,
 		SymbolicMatRef<I> a,
-		Slice<I> parent,
+		I const* parent,
 		isize k,
-		bool* pmarked) noexcept -> SliceMut<I> {
+		bool* pmarked) noexcept -> I* {
 
 	usize n = usize(a.ncols());
 	auto k_ = usize(k);
 
-	VEG_ASSERT_ALL_OF(
-			n > 0,
-			a.nrows() == n,
-			k >= 0,
-			k < n,
-			parent.len() == n,
-			// s big enough to hold all the nodes other than k
-			s.len() + 1 >= k);
-
-	auto pai = a.row_indices().ptr();
-	auto pparent = parent.ptr();
+	auto pai = a.row_indices();
+	auto pparent = parent;
 
 	auto col_start = a.col_start(k_);
 	auto col_end = a.col_end(k_);
@@ -405,8 +340,8 @@ VEG_NODISCARD VEG_INLINE auto ereach(
 
 		// make sure that we can memmove
 		std::memmove( //
-				s.ptr_mut() + (top - len),
-				s.ptr(),
+				s + (top - len),
+				s,
 				usize(len) * sizeof(I));
 
 		// move down the top of the stack
@@ -414,12 +349,13 @@ VEG_NODISCARD VEG_INLINE auto ereach(
 	}
 
 	for (usize q = top; q < n; ++q) {
-		pmarked[s.ptr()[q]] = false;
+		pmarked[s[q]] = false;
 	}
 	pmarked[k_] = false;
 
 	// [top, end[
-	return s.split_at_mut(isize(top))[1_c];
+	count = n - top;
+	return s + top;
 }
 } // namespace _detail
 
@@ -427,15 +363,13 @@ namespace _detail {
 // return the next start_index
 template <typename I>
 VEG_INLINE auto postorder_depth_first_search( //
-		SliceMut<I> post,
+		I* post,
 		usize root,
 		usize start_index,
 		I* pstack,
 		I* pfirst_child,
 		I* pnext_child) noexcept -> usize {
 	using namespace _detail;
-
-	auto ppost = post.ptr_mut();
 
 	usize top = 0;
 	pstack[0] = I(root);
@@ -447,7 +381,7 @@ VEG_INLINE auto postorder_depth_first_search( //
 
 		// no more children
 		if (current_child == usize(-1)) {
-			ppost[start_index] = I(current_node);
+			post[start_index] = I(current_node);
 			++start_index;
 
 			// pop node from the stack
@@ -472,30 +406,26 @@ auto postorder_req(veg::Tag<I> /*tag*/, isize n) noexcept
 }
 
 template <typename I>
-void postorder(SliceMut<I> post, Slice<I> parent, DynStackMut stack) noexcept {
+void postorder(I* post, I const* parent, isize n, DynStackMut stack) noexcept {
 	using namespace _detail;
-
-	VEG_ASSERT(parent.len() == post.len());
-
-	usize n = usize(parent.len());
 
 	auto _work =
 			stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * isize(n)).unwrap();
-	I* pwork = _work.as_mut().ptr_mut();
+	I* pwork = _work.ptr_mut();
 
 	I* pstack = pwork;
 	I* pfirst_child = pstack + n;
 	I* pnext_child = pfirst_child + n;
 
 	// no children are found yet
-	for (usize j = 0; j < n; ++j) {
+	for (usize j = 0; j < usize(n); ++j) {
 		pfirst_child[j] = I(-1);
 	}
 
-	for (usize _j = 0; _j < n; ++_j) {
+	for (usize _j = 0; _j < usize(n); ++_j) {
 		// traverse in reverse order, since the children appear in reverse order
 		// of insertion in the linked list
-		usize j = n - 1 - _j;
+		usize j = usize(n) - 1 - _j;
 
 		// if not a root node
 		if (parent[isize(j)] != I(-1)) {
@@ -507,7 +437,7 @@ void postorder(SliceMut<I> post, Slice<I> parent, DynStackMut stack) noexcept {
 	}
 
 	usize start_index = 0;
-	for (usize root = 0; root < n; ++root) {
+	for (usize root = 0; root < usize(n); ++root) {
 		if (parent[isize(root)] == I(-1)) {
 			start_index = _detail::postorder_depth_first_search(
 					post, root, start_index, pstack, pfirst_child, pnext_child);
@@ -592,17 +522,14 @@ auto column_counts_req(veg::Tag<I> tag, isize n, isize nnz) noexcept
 
 template <typename I>
 void column_counts(
-		SliceMut<I> counts,
+		I* counts,
 		SymbolicMatRef<I> a,
-		Slice<I> parent,
-		Slice<I> post,
+		I const* parent,
+		I const* post,
 		DynStackMut stack) noexcept {
 	// https://youtu.be/uZKJPTo4dZs
 	using namespace _detail;
 	usize n = usize(a.nrows());
-	VEG_ASSERT_ALL_OF( //
-			a.ncols() == n,
-			counts.len() == n);
 	auto _at_work =
 			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz())
 					.unwrap();
@@ -615,27 +542,27 @@ void column_counts(
 			isize(n),
 			isize(n),
 			a.nnz(),
-			{unsafe, from_raw_parts, pat_work, isize(n + 1)},
-			{unsafe, from_raw_parts, pat_work + n + 1, a.nnz()},
-			{},
+			pat_work,
+			nullptr,
+			pat_work + n + 1,
 	};
 	sparse::transpose_symbolic(at, a, stack);
 
-	auto patp = at.col_ptrs().ptr();
-	auto pati = at.row_indices().ptr();
+	auto patp = at.col_ptrs();
+	auto pati = at.row_indices();
 
 	auto pwork = pat_work + n + 1 + a.nnz();
 
-	auto pdelta = counts.ptr_mut();
+	auto pdelta = counts;
 
 	auto pfirst = pwork;
 	auto pmax_first = pwork + n;
 	auto pprev_leaf = pwork + 2 * n;
 	auto pancestor = pwork + 3 * n;
 
-	auto pcounts = counts.ptr_mut();
-	auto ppost = post.ptr();
-	auto pparent = parent.ptr();
+	auto pcounts = counts;
+	auto ppost = post;
+	auto pparent = parent;
 
 	for (usize i = 0; i < 3 * n; ++i) {
 		pwork[i] = I(-1);
@@ -724,20 +651,16 @@ void column_counts(
 template <typename I>
 auto amd_req(veg::Tag<I> /*tag*/, isize /*n*/, isize nnz) noexcept
 		-> veg::dynstack::StackReq {
-	return {nnz * isize(sizeof(char)), alignof(char)};
+	return {nnz * isize{sizeof(char)}, alignof(char)};
 }
 
 template <typename I>
-void amd(SliceMut<I> perm, SymbolicMatRef<I> mat, DynStackMut stack) noexcept {
+void amd(I* perm, SymbolicMatRef<I> mat, DynStackMut stack) noexcept {
 	// TODO: reimplement amd under BSD-3
 	// https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/master/AMD
 
-	isize n = perm.len();
+	isize n = mat.nrows();
 	isize nnz = mat.nnz();
-
-	VEG_ASSERT_ALL_OF( //
-			mat.nrows() == n,
-			mat.ncols() == n);
 
 	Eigen::PermutationMatrix<-1, -1, I> perm_eigen;
 	auto _ = stack.make_new(veg::Tag<char>{}, nnz).unwrap();
@@ -747,26 +670,25 @@ void amd(SliceMut<I> perm, SymbolicMatRef<I> mat, DynStackMut stack) noexcept {
 					n,
 					n,
 					nnz,
-					mat.col_ptrs().ptr(),
-					mat.row_indices().ptr(),
+					mat.col_ptrs(),
+					mat.row_indices(),
 					_.ptr(),
-					mat.nnz_per_col().ptr(),
+					mat.nnz_per_col(),
 			}
 					.template selfadjointView<Eigen::Upper>(),
 
 			perm_eigen);
-	std::memmove(
-			perm.ptr_mut(), perm_eigen.indices().data(), usize(n) * sizeof(I));
+	std::memmove( //
+			perm,
+			perm_eigen.indices().data(),
+			usize(n) * sizeof(I));
 }
 
 namespace _detail {
 template <typename I>
-void inv_perm(SliceMut<I> perm_inv, Slice<I> perm) noexcept {
-	auto n = usize(perm.len());
-	auto pperm = perm.ptr();
-	auto pperm_inv = perm_inv.ptr_mut();
-	for (usize i = 0; i < n; ++i) {
-		pperm_inv[util::zero_extend(pperm[i])] = I(i);
+void inv_perm(I* perm_inv, I const* perm, isize n) noexcept {
+	for (usize i = 0; i < usize(n); ++i) {
+		perm_inv[util::zero_extend(perm[i])] = I(i);
 	}
 }
 
@@ -795,7 +717,7 @@ void symmetric_permute_common(
 		auto col_end = old_a.col_end(old_j);
 
 		for (usize p = col_start; p < col_end; ++p) {
-			usize old_i = util::zero_extend(old_a.row_indices().ptr()[p]);
+			usize old_i = util::zero_extend(old_a.row_indices()[p]);
 
 			if (old_i <= old_j) {
 				usize new_i = util::zero_extend(pperm_inv[old_i]);
@@ -816,21 +738,21 @@ template <typename I>
 void symmetric_permute_symbolic(
 		SymbolicMatMut<I> new_a,
 		SymbolicMatRef<I> old_a,
-		Slice<I> perm_inv,
+		I const* perm_inv,
 		DynStackMut stack) noexcept {
 
-	usize n = usize(perm_inv.len());
+	usize n = usize(new_a.nrows());
 	auto _work = stack.make_new(veg::Tag<I>{}, isize(n)).unwrap();
-	I* pcol_counts = _work.as_mut().ptr_mut();
+	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
-	auto pold_ap = old_a.col_ptrs().ptr();
-	auto pold_ai = old_a.row_indices().ptr();
+	auto pold_ap = old_a.col_ptrs();
+	auto pold_ai = old_a.row_indices();
 
-	auto pnew_ap = new_a.col_ptrs_mut().ptr_mut();
-	auto pnew_ai = new_a.row_indices_mut().ptr_mut();
+	auto pnew_ap = new_a.col_ptrs_mut();
+	auto pnew_ai = new_a.row_indices_mut();
 
-	auto pperm_inv = perm_inv.ptr();
+	auto pperm_inv = perm_inv;
 
 	_detail::symmetric_permute_common(n, pperm_inv, old_a, pnew_ap, pcol_counts);
 
@@ -863,28 +785,28 @@ template <typename T, typename I>
 void symmetric_permute(
 		MatMut<T, I> new_a,
 		MatRef<T, I> old_a,
-		Slice<I> perm_inv,
+		I const* perm_inv,
 		DynStackMut stack) noexcept(VEG_CONCEPT(nothrow_copyable<T>)) {
-	usize n = usize(perm_inv.len());
+	usize n = usize(new_a.nrows());
 	auto _work = stack.make_new(veg::Tag<I>{}, isize(n)).unwrap();
-	I* pcol_counts = _work.as_mut().ptr_mut();
+	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
-	auto pold_ap = old_a.col_ptrs().ptr();
-	auto pold_ai = old_a.row_indices().ptr();
+	auto pold_ap = old_a.col_ptrs();
+	auto pold_ai = old_a.row_indices();
 
-	auto pnew_ap = new_a.col_ptrs_mut().ptr_mut();
-	auto pnew_ai = new_a.row_indices_mut().ptr_mut();
+	auto pnew_ap = new_a.col_ptrs_mut();
+	auto pnew_ai = new_a.row_indices_mut();
 
-	auto pperm_inv = perm_inv.ptr();
+	auto pperm_inv = perm_inv;
 
 	_detail::symmetric_permute_common(
 			n, pperm_inv, old_a.symbolic(), pnew_ap, pcol_counts);
 
 	auto pcurrent_row_index = pcol_counts;
 
-	auto pold_ax = old_a.values().ptr();
-	auto pnew_ax = new_a.values_mut().ptr_mut();
+	auto pold_ax = old_a.values();
+	auto pnew_ax = new_a.values_mut();
 	for (usize old_j = 0; old_j < n; ++old_j) {
 		usize new_j = util::zero_extend(pperm_inv[old_j]);
 
@@ -931,8 +853,7 @@ auto factorize_symbolic_req(
 	case Ordering::natural:
 		break;
 	case Ordering::amd:
-		amd_req =
-				StackReq{n * sz, al} & StackReq{sparse::amd_req(tag, n, nnz)};
+		amd_req = StackReq{n * sz, al} & StackReq{sparse::amd_req(tag, n, nnz)};
 		HEDLEY_FALL_THROUGH;
 	case Ordering::user_provided:
 		perm_req = perm_req & StackReq{(n + 1 + nnz) * sz, al};
@@ -958,30 +879,15 @@ auto factorize_symbolic_req(
 
 template <typename I>
 void factorize_symbolic_non_zeros(
-		SliceMut<I> nnz_per_col,
-		SliceMut<I> etree,
-		SliceMut<I> perm_inv,
-		Slice<I> perm,
+		I* nnz_per_col,
+		I* etree,
+		I* perm_inv,
+		I const* perm,
 		SymbolicMatRef<I> a,
 		DynStackMut stack) noexcept {
-	{
-		isize n = a.ncols();
 
-		VEG_ASSERT_ALL_OF( //
-
-				// perm non empty implies perm_inv non empty
-				((perm_inv.len() == n || perm.len() == 0)),
-				// perm[_inv] either empty or has size n
-				((perm.len() == n || perm.len() == 0)),
-				((perm_inv.len() == n || perm_inv.len() == 0)),
-
-				a.nrows() == n,
-				nnz_per_col.len() == n,
-				etree.len() == n);
-	}
-
-	bool id_perm = perm_inv.len() == 0;
-	bool user_perm = perm.len() != 0;
+	bool id_perm = perm_inv == nullptr;
+	bool user_perm = perm != nullptr;
 
 	Ordering o = user_perm ? Ordering::user_provided
 	             : id_perm ? Ordering::natural
@@ -997,12 +903,12 @@ void factorize_symbolic_non_zeros(
 
 	case Ordering::amd: {
 		auto amd_perm = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
-		sparse::amd(amd_perm.as_mut(), a, stack);
-		perm = amd_perm.as_ref();
+		sparse::amd(amd_perm.ptr_mut(), a, stack);
+		perm = amd_perm.ptr();
 	}
 		HEDLEY_FALL_THROUGH;
 	case Ordering::user_provided: {
-		_detail::inv_perm(perm_inv, perm);
+		_detail::inv_perm(perm_inv, perm, isize(n));
 	}
 	default:
 		break;
@@ -1025,12 +931,11 @@ void factorize_symbolic_non_zeros(
 				isize(n),
 				isize(n),
 				a.nnz(),
-				_permuted_a_col_ptrs.as_mut(),
-				_permuted_a_row_indices.as_mut(),
-				{},
+				_permuted_a_col_ptrs.ptr_mut(),
+				nullptr,
+				_permuted_a_row_indices.ptr_mut(),
 		};
-		_detail::symmetric_permute_symbolic(
-				permuted_a, a, perm_inv.as_const(), stack);
+		_detail::symmetric_permute_symbolic(permuted_a, a, perm_inv, stack);
 	}
 
 	SymbolicMatRef<I> permuted_a = id_perm ? a
@@ -1039,31 +944,29 @@ void factorize_symbolic_non_zeros(
 																							 isize(n),
 																							 isize(n),
 																							 a.nnz(),
-																							 _permuted_a_col_ptrs.as_ref(),
-																							 _permuted_a_row_indices.as_ref(),
-																							 {},
+																							 _permuted_a_col_ptrs.ptr(),
+																							 nullptr,
+																							 _permuted_a_row_indices.ptr(),
 																					 };
 
 	sparse::etree(etree, permuted_a, stack);
 
 	auto _post = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
-	sparse::postorder(_post.as_mut(), etree.as_const(), stack);
-
-	sparse::column_counts(
-			nnz_per_col, permuted_a, etree.as_const(), _post.as_ref(), stack);
+	sparse::postorder(_post.ptr_mut(), etree, isize(n), stack);
+	sparse::column_counts(nnz_per_col, permuted_a, etree, _post.ptr(), stack);
 }
 
 template <typename I>
 void factorize_symbolic_col_counts(
-		SliceMut<I> col_ptrs,
-		SliceMut<I> etree,
-		SliceMut<I> perm_inv,
-		Slice<I> perm,
+		I* col_ptrs,
+		I* etree,
+		I* perm_inv,
+		I const* perm,
 		SymbolicMatRef<I> a,
 		DynStackMut stack) noexcept {
 
 	sparse::factorize_symbolic_non_zeros( //
-			col_ptrs.split_at_mut(1)[1_c],
+			col_ptrs + 1,
 			etree,
 			perm_inv,
 			perm,
@@ -1071,7 +974,7 @@ void factorize_symbolic_col_counts(
 			stack);
 
 	usize n = usize(a.ncols());
-	auto pcol_ptrs = col_ptrs.ptr_mut();
+	auto pcol_ptrs = col_ptrs;
 	pcol_ptrs[0] = I(0);
 	for (usize i = 0; i < n; ++i) {
 		pcol_ptrs[i + 1] =
@@ -1106,38 +1009,21 @@ auto factorize_numeric_req(
 	                   & StackReq{n * isize{sizeof(bool)}, alignof(bool)}))));
 }
 
-template <typename I>
-void col_ptrs_to_nnz_per_col(
-		SliceMut<I> nnz_per_col, Slice<I> col_ptrs) noexcept {
-	VEG_ASSERT(nnz_per_col.len() + 1 == col_ptrs.len());
-	isize n = usize(col_ptrs.len());
-
-	I const* cp = col_ptrs.ptr();
-	for (isize i = 0; i < n; ++i) {
-		nnz_per_col.ptr_mut()[i] = I(cp[i + 1] - cp[i]);
-	}
-}
-
 template <typename T, typename I>
 void factorize_numeric( //
 		T* values,
 		I* row_indices,
 		veg::DoNotDeduce<T const*> diag_to_add,
 		veg::DoNotDeduce<I const*> perm,
-		Slice<I> col_ptrs,
-		Slice<I> etree,
-		Slice<I> perm_inv,
+		I const* col_ptrs,
+		I const* etree,
+		I const* perm_inv,
 		MatRef<T, I> a,
 		DynStackMut stack) noexcept(false) {
 	using namespace _detail;
-	isize n = etree.len();
-	VEG_ASSERT_ALL_OF( //
-			col_ptrs.len() == n + 1,
-			((perm_inv.len() == 0 || perm_inv.len() == n)),
-			a.ncols() == n,
-			a.nrows() == n);
+	isize n = a.nrows();
 
-	bool id_perm = perm_inv.len() == 0;
+	bool id_perm = perm_inv == nullptr;
 
 	veg::Tag<I> tag{};
 
@@ -1160,10 +1046,10 @@ void factorize_numeric( //
 				n,
 				n,
 				a.nnz(),
-				_permuted_a_col_ptrs.as_mut(),
-				_permuted_a_row_indices.as_mut(),
-				{},
-				_permuted_a_values.as_mut(),
+				_permuted_a_col_ptrs.ptr_mut(),
+				nullptr,
+				_permuted_a_row_indices.ptr_mut(),
+				_permuted_a_values.ptr_mut(),
 		};
 		_detail::symmetric_permute(permuted_a, a, perm_inv, stack);
 	}
@@ -1174,21 +1060,21 @@ void factorize_numeric( //
 																					isize(n),
 																					isize(n),
 																					a.nnz(),
-																					_permuted_a_col_ptrs.as_ref(),
-																					_permuted_a_row_indices.as_ref(),
-																					{},
-																					_permuted_a_values.as_ref(),
+																					_permuted_a_col_ptrs.ptr(),
+																					nullptr,
+																					_permuted_a_row_indices.ptr(),
+																					_permuted_a_values.ptr(),
 																			};
 
 	auto _current_row_index = stack.make_new_for_overwrite(tag, n).unwrap();
 	auto _ereach_stack_storage = stack.make_new_for_overwrite(tag, n).unwrap();
 
-	I* pcurrent_row_index = _current_row_index.as_mut().ptr_mut();
-	T* px = _x.as_mut().ptr_mut();
+	I* pcurrent_row_index = _current_row_index.ptr_mut();
+	T* px = _x.ptr_mut();
 
 	std::memcpy( //
 			pcurrent_row_index,
-			col_ptrs.ptr(),
+			col_ptrs,
 			usize(n) * sizeof(I));
 	for (usize i = 0; i < usize(n); ++i) {
 		px[i] = 0;
@@ -1196,21 +1082,23 @@ void factorize_numeric( //
 
 	// compute the iter-th row of L using the iter-th column of permuted_a
 	// the diagonal element is filled with the diagonal of D instead of 1
-	I const* plp = col_ptrs.ptr();
+	I const* plp = col_ptrs;
 
 	auto _marked = stack.make_new(veg::Tag<bool>{}, n).unwrap();
 	for (usize iter = 0; iter < usize(n); ++iter) {
+		usize ereach_count = 0;
 		auto ereach_stack = _detail::ereach(
-				_ereach_stack_storage.as_mut(),
+				ereach_count,
+				_ereach_stack_storage.ptr_mut(),
 				permuted_a.symbolic(),
 				etree,
 				isize(iter),
 				_marked.ptr_mut());
 
-		auto pereach_stack = ereach_stack.ptr();
+		auto pereach_stack = ereach_stack;
 
-		I const* pai = permuted_a.row_indices().ptr();
-		T const* pax = permuted_a.values().ptr();
+		I const* pai = permuted_a.row_indices();
+		T const* pax = permuted_a.values();
 
 		I* pli = row_indices;
 		T* plx = values;
@@ -1234,7 +1122,7 @@ void factorize_numeric( //
 		// zero for next iteration
 		px[iter] = 0;
 
-		for (usize q = 0; q < usize(ereach_stack.len()); ++q) {
+		for (usize q = 0; q < ereach_count; ++q) {
 			usize j = util::zero_extend(pereach_stack[q]);
 			auto col_start = util::zero_extend(plp[j]);
 			auto row_idx = util::zero_extend(pcurrent_row_index[j]) + 1;

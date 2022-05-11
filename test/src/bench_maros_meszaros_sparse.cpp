@@ -123,7 +123,7 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			};
 
 			Settings<T> settings;
-			sparse::QpWorkspace<T, I> work;
+			sparse::Workspace<T, I> work;
 
 			Eigen::Matrix<T, -1, 1> x(n);
 			Eigen::Matrix<T, -1, 1> y(n_eq);

@@ -158,8 +158,7 @@ auto rank1_update_req( //
 	StackReq difference = {n * isize{sizeof(I)}, isize{alignof(I)}};
 	difference = difference & difference;
 
-	StackReq merge =
-			sparse::merge_second_col_into_first_req(veg::Tag<I>{}, n);
+	StackReq merge = sparse::merge_second_col_into_first_req(veg::Tag<I>{}, n);
 
 	StackReq numerical_workspace = {n * isize{sizeof(T)}, isize{alignof(T)}};
 
@@ -169,8 +168,8 @@ auto rank1_update_req( //
 template <typename T, typename I>
 auto rank1_update(
 		MatMut<T, I> ld,
-		SliceMut<I> etree,
-		Slice<I> perm_inv,
+		I* etree,
+		I const* perm_inv,
 		VecRef<T, I> w,
 		veg::DoNotDeduce<T> alpha,
 		DynStackMut stack) noexcept(false) -> MatMut<T, I> {
@@ -182,18 +181,18 @@ auto rank1_update(
 
 	veg::Tag<I> tag;
 	usize n = usize(ld.ncols());
-	bool id_perm = perm_inv.len() == 0;
+	bool id_perm = perm_inv == nullptr;
 
 	auto _w_permuted_indices =
 			stack.make_new_for_overwrite(tag, id_perm ? isize(0) : w.nnz()).unwrap();
 
 	auto w_permuted_indices =
-			id_perm ? w.row_indices() : _w_permuted_indices.as_ref();
+			id_perm ? w.row_indices() : _w_permuted_indices.ptr();
 	if (!id_perm) {
 		I* pw_permuted_indices = _w_permuted_indices.ptr_mut();
 		for (usize k = 0; k < usize(w.nnz()); ++k) {
-			usize i = util::zero_extend(w.row_indices().ptr()[k]);
-			pw_permuted_indices[k] = perm_inv.ptr()[i];
+			usize i = util::zero_extend(w.row_indices()[k]);
+			pw_permuted_indices[k] = perm_inv[i];
 		}
 		std::sort(pw_permuted_indices, pw_permuted_indices + w.nnz());
 	}
@@ -210,6 +209,7 @@ auto rank1_update(
 				stack.make_new_for_overwrite(tag, isize(n - current_col)).unwrap();
 
 		auto merge_col = w_permuted_indices;
+		isize merge_col_len = w.nnz();
 		I* difference = _difference.ptr_mut();
 
 		while (true) {
@@ -223,11 +223,11 @@ auto rank1_update(
 					(_, new_current_col, computed_difference),
 					sparse::merge_second_col_into_first(
 							difference,
-							ld.values_mut().ptr_mut() + (current_ptr_idx + 1),
-							ld.row_indices_mut().ptr_mut() + (current_ptr_idx + 1),
+							ld.values_mut() + (current_ptr_idx + 1),
+							ld.row_indices_mut() + (current_ptr_idx + 1),
 							isize(next_ptr_idx - current_ptr_idx),
 							isize(zx(ld.nnz_per_col()[isize(current_col)])) - 1,
-							merge_col,
+							veg::Slice<I>{unsafe, from_raw_parts, merge_col, merge_col_len},
 							I(current_col),
 							true,
 							stack));
@@ -246,10 +246,12 @@ auto rank1_update(
 			}
 
 			if (new_parent == old_parent) {
-				merge_col = computed_difference.as_const();
+				merge_col = computed_difference.ptr();
+        merge_col_len = computed_difference.len();
 				difference = _difference_backup.ptr_mut();
 			} else {
-				merge_col = new_current_col.as_const();
+				merge_col = new_current_col.ptr();
+				merge_col_len = new_current_col.len();
 				difference = _difference.ptr_mut();
 				etree[isize(current_col)] = I(new_parent);
 			}
@@ -274,8 +276,8 @@ auto rank1_update(
 							w.values()[isize(p)];
 		}
 
-		I const* pldi = ld.row_indices().ptr();
-		T* pldx = ld.values_mut().ptr_mut();
+		I const* pldi = ld.row_indices();
+		T* pldx = ld.values_mut();
 
 		for (usize col = first_col; col != usize(-1); col = sx(etree[isize(col)])) {
 			auto col_start = ld.col_start(col);

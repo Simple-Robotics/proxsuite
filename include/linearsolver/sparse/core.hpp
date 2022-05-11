@@ -105,17 +105,12 @@ VEG_NIEBLOID(zero_extend);
 template <typename T>
 struct DenseVecRef {
 	DenseVecRef() = default;
-	DenseVecRef(FromRawParts /*from_raw_parts*/, Slice<T> data) noexcept
-			: _{
-						data.ptr(),
-						data.len(),
-				} {}
+	DenseVecRef(
+			FromRawParts /*from_raw_parts*/, T const* data, isize len) noexcept
+			: _{data, len} {}
 	template <typename V>
 	DenseVecRef(FromEigen /*from_eigen*/, V const& v) noexcept
-			: _{
-						v.data(),
-						v.rows(),
-				} {
+			: _{v.data(), v.rows()} {
 		static_assert(V::InnerStrideAtCompileTime == 1, ".");
 		static_assert(V::ColsAtCompileTime == 1, ".");
 	}
@@ -145,17 +140,11 @@ private:
 template <typename T>
 struct DenseVecMut {
 	DenseVecMut() = default;
-	DenseVecMut(FromRawParts /*from_raw_parts*/, SliceMut<T> data) noexcept
-			: _{
-						data.ptr_mut(),
-						data.len(),
-				} {}
+	DenseVecMut(FromRawParts /*from_raw_parts*/, T* data, isize len) noexcept
+			: _{data, len} {}
 	template <typename V>
 	DenseVecMut(FromEigen /*from_eigen*/, V&& v) noexcept
-			: _{
-						v.data(),
-						v.rows(),
-				} {
+			: _{v.data(), v.rows()} {
 		static_assert(veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
 		static_assert(veg::uncvref_t<V>::ColsAtCompileTime == 1, ".");
 	}
@@ -178,7 +167,7 @@ struct DenseVecMut {
 	}
 
 	auto as_const() const noexcept -> DenseVecRef<T> {
-		return {from_raw_parts, as_slice()};
+		return {from_raw_parts, _.ptr, _.size};
 	}
 	auto nrows() const noexcept -> isize { return _.size; }
 	auto ncols() const noexcept -> isize { return 1; }
@@ -199,28 +188,17 @@ struct VecRef {
 	VecRef( //
 			FromRawParts /*from_raw_parts*/,
 			isize nrows,
-			Slice<I> row_indices,
-			Slice<T> values)
-			: _{
-						(VEG_ASSERT(row_indices.len() == values.len()),
-	           decltype(_){
-								 nrows,
-								 row_indices.len(),
-								 row_indices.ptr(),
-								 values.ptr(),
-						 }),
-				} {}
+			isize nnz,
+			I const* row_indices,
+			T const* values)
+			: _{nrows, nnz, row_indices, values} {}
 
 	auto nrows() const noexcept -> isize { return _.nrows; }
 	auto ncols() const noexcept -> isize { return 1; }
 	auto nnz() const noexcept -> isize { return _.nnz; }
 
-	auto row_indices() const noexcept -> Slice<I> {
-		return {unsafe, from_raw_parts, _.row, nnz()};
-	}
-	auto values() const noexcept -> Slice<T> {
-		return {unsafe, from_raw_parts, _.val, nnz()};
-	}
+	auto row_indices() const noexcept -> I const* { return _.row; }
+	auto values() const noexcept -> T const* { return _.val; }
 
 private:
 	struct {
@@ -228,52 +206,6 @@ private:
 		isize nnz;
 		I const* row;
 		T const* val;
-	} _;
-};
-
-template <typename T, typename I = isize>
-struct VecMut {
-	VecMut( //
-			FromRawParts /*from_raw_parts*/,
-			isize nrows,
-			Slice<I> row_indices,
-			Slice<T> values)
-			: _{
-						(VEG_ASSERT(row_indices.len() == values.len()),
-	           decltype(_){
-								 nrows,
-								 row_indices.ptr_mut(),
-								 values.ptr_mut(),
-						 }),
-				} {}
-
-	auto nrows() const noexcept -> isize { return _.nrows; }
-	auto ncols() const noexcept -> isize { return 1; }
-	auto nnz() const noexcept -> isize { return _.nnz; }
-
-	auto row_indices() const noexcept -> Slice<I> {
-		return {unsafe, from_raw_parts, _.row, nnz()};
-	}
-	auto values() const noexcept -> Slice<T> {
-		return {unsafe, from_raw_parts, _.val, nnz()};
-	}
-	auto row_indices_mut() noexcept -> SliceMut<I> {
-		return {unsafe, from_raw_parts, _.row, nnz()};
-	}
-	auto values_mut() noexcept -> SliceMut<T> {
-		return {unsafe, from_raw_parts, _.val, nnz()};
-	}
-
-	auto as_const() const noexcept -> VecRef<T, I> {
-		return {from_raw_parts, nrows(), row_indices(), values()};
-	}
-
-private:
-	struct {
-		isize nrows;
-		isize nnz;
-		I* row;
-		T* val;
 	} _;
 };
 
@@ -290,25 +222,15 @@ public:
 	auto nrows() const noexcept -> isize { return _().nrows; }
 	auto ncols() const noexcept -> isize { return _().ncols; }
 	auto nnz() const noexcept -> isize { return _().nnz; }
-	auto max_nnz() const noexcept -> isize { return _().max_nnz; }
 
-	auto col_ptrs() const noexcept -> Slice<I> {
-		return {unsafe, from_raw_parts, _().col, ncols() + 1};
-	}
-	auto row_indices() const noexcept -> Slice<I> {
-		return {unsafe, from_raw_parts, _().row, max_nnz()};
-	}
-	auto nnz_per_col() const noexcept -> Slice<I> {
-		return {
-				unsafe,
-				from_raw_parts,
-				_().nnz_per_col,
-				_().nnz_per_col == nullptr ? isize(0) : ncols(),
-		};
-	}
+	auto col_ptrs() const noexcept -> I const* { return _().col; }
+	auto nnz_per_col() const noexcept -> I const* { return _().nnz_per_col; }
 	auto is_compressed() const noexcept -> bool {
-		return _().nnz_per_col == nullptr;
+		return nnz_per_col() == nullptr;
 	}
+
+	auto row_indices() const noexcept -> I const* { return _().row; }
+
 	auto col_start(usize j) const noexcept -> usize {
 		return VEG_ASSERT(j < ncols()), util::zero_extend(_().col[j]);
 	}
@@ -334,20 +256,9 @@ private:
 	}
 
 public:
-	auto col_ptrs_mut() noexcept -> SliceMut<I> {
-		return {unsafe, from_raw_parts, _().col, this->ncols() + 1};
-	}
-	auto row_indices_mut() noexcept -> SliceMut<I> {
-		return {unsafe, from_raw_parts, _().row, this->max_nnz()};
-	}
-	auto nnz_per_col_mut() noexcept -> SliceMut<I> {
-		return {
-				unsafe,
-				from_raw_parts,
-				_().nnz_per_col,
-				_().nnz_per_col == nullptr ? isize(0) : this->ncols(),
-		};
-	}
+	auto col_ptrs_mut() noexcept -> I* { return _().col; }
+	auto nnz_per_col_mut() noexcept -> I* { return _().nnz_per_col; }
+	auto row_indices_mut() noexcept -> I* { return _().row; }
 };
 } // namespace _detail
 
@@ -359,25 +270,16 @@ struct SymbolicMatRef : _detail::SymbolicMatRefInterface<SymbolicMatRef<I>, I> {
 			isize nrows,
 			isize ncols,
 			isize nnz,
-			Slice<I> col_ptrs,
-			Slice<I> row_indices,
-			Slice<I> nnz_per_col)
+			I const* col_ptrs,
+			I const* nnz_per_col,
+			I const* row_indices)
 			: _{
-						(VEG_ASSERT_ALL_OF( //
-								 nrows >= 0,
-								 ncols >= 0,
-								 col_ptrs.len() == ncols + 1,
-								 ((nnz_per_col.len() == ncols ||
-	                 nnz_per_col.ptr() == nullptr))),
-	           decltype(_){
-								 nrows,
-								 ncols,
-								 nnz,
-								 row_indices.len(),
-								 col_ptrs.ptr(),
-								 row_indices.ptr(),
-								 nnz_per_col.ptr(),
-						 }),
+						nrows,
+						ncols,
+						nnz,
+						col_ptrs,
+						nnz_per_col,
+						row_indices,
 				} {}
 
 private:
@@ -385,10 +287,9 @@ private:
 		isize nrows;
 		isize ncols;
 		isize nnz;
-		isize max_nnz;
 		I const* col;
-		I const* row;
 		I const* nnz_per_col;
+		I const* row;
 	} _;
 };
 template <typename I = isize>
@@ -400,25 +301,16 @@ struct SymbolicMatMut : _detail::SymbolicMatMutInterface<SymbolicMatMut<I>, I> {
 			isize nrows,
 			isize ncols,
 			isize nnz,
-			SliceMut<I> col_ptrs,
-			SliceMut<I> row_indices,
-			SliceMut<I> nnz_per_col)
+			I* col_ptrs,
+			I* nnz_per_col,
+			I* row_indices)
 			: _{
-						(VEG_ASSERT_ALL_OF( //
-								 nrows >= 0,
-								 ncols >= 0,
-								 col_ptrs.len() == ncols + 1,
-								 ((nnz_per_col.len() == ncols ||
-	                 nnz_per_col.ptr() == nullptr))),
-	           decltype(_){
-								 nrows,
-								 ncols,
-								 nnz,
-								 row_indices.len(),
-								 col_ptrs.ptr_mut(),
-								 row_indices.ptr_mut(),
-								 nnz_per_col.ptr_mut(),
-						 }),
+						nrows,
+						ncols,
+						nnz,
+						col_ptrs,
+						nnz_per_col,
+						row_indices,
 				} {}
 
 	auto as_const() const noexcept -> SymbolicMatRef<I> {
@@ -428,8 +320,8 @@ struct SymbolicMatMut : _detail::SymbolicMatMutInterface<SymbolicMatMut<I>, I> {
 				this->ncols(),
 				this->nnz(),
 				this->col_ptrs(),
-				this->row_indices(),
 				this->nnz_per_col(),
+				this->row_indices(),
 		};
 	}
 
@@ -438,10 +330,9 @@ private:
 		isize nrows;
 		isize ncols;
 		isize nnz;
-		isize max_nnz;
 		I* col;
-		I* row;
 		I* nnz_per_col;
+		I* row;
 	} _;
 };
 
@@ -453,27 +344,18 @@ struct MatRef : _detail::SymbolicMatRefInterface<MatRef<T, I>, I> {
 			isize nrows,
 			isize ncols,
 			isize nnz,
-			Slice<I> col_ptrs,
-			Slice<I> row_indices,
-			Slice<I> nnz_per_col,
-			Slice<T> values)
+			I const* col_ptrs,
+			I const* nnz_per_col,
+			I const* row_indices,
+			T const* values)
 			: _{
-						(VEG_ASSERT_ALL_OF( //
-								 nrows >= 0,
-								 ncols >= 0,
-								 col_ptrs.len() == ncols + 1,
-								 ((nnz_per_col.len() == ncols || nnz_per_col.ptr() == nullptr)),
-								 row_indices.len() == values.len()),
-	           decltype(_){
-								 nrows,
-								 ncols,
-								 nnz,
-								 row_indices.len(),
-								 col_ptrs.ptr(),
-								 row_indices.ptr(),
-								 nnz_per_col.ptr(),
-								 values.ptr(),
-						 }),
+						nrows,
+						ncols,
+						nnz,
+						col_ptrs,
+						nnz_per_col,
+						row_indices,
+						values,
 				} {}
 
 	template <typename M>
@@ -482,18 +364,15 @@ struct MatRef : _detail::SymbolicMatRefInterface<MatRef<T, I>, I> {
 						m.rows(),
 						m.cols(),
 						m.nonZeros(),
-						m.outerIndexPtr()[m.cols()],
 						m.outerIndexPtr(),
-						m.innerIndexPtr(),
 						m.innerNonZeroPtr(),
+						m.innerIndexPtr(),
 						m.valuePtr(),
 				} {
 		static_assert(!bool(M::IsRowMajor), ".");
 	};
 
-	auto values() const noexcept -> Slice<T> {
-		return {unsafe, from_raw_parts, _.val, this->max_nnz()};
-	}
+	auto values() const noexcept -> T const* { return _.val; }
 	auto symbolic() const noexcept -> SymbolicMatRef<I> {
 		return {
 				from_raw_parts,
@@ -501,8 +380,8 @@ struct MatRef : _detail::SymbolicMatRefInterface<MatRef<T, I>, I> {
 				this->ncols(),
 				this->nnz(),
 				this->col_ptrs(),
-				this->row_indices(),
 				this->nnz_per_col(),
+				this->row_indices(),
 		};
 	}
 
@@ -516,10 +395,9 @@ private:
 		isize nrows;
 		isize ncols;
 		isize nnz;
-		isize max_nnz;
 		I const* col;
-		I const* row;
 		I const* nnz_per_col;
+		I const* row;
 		T const* val;
 	} _;
 };
@@ -533,27 +411,18 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 			isize nrows,
 			isize ncols,
 			isize nnz,
-			SliceMut<I> col_ptrs,
-			SliceMut<I> row_indices,
-			SliceMut<I> nnz_per_col,
-			SliceMut<T> values)
+			I* col_ptrs,
+			I* nnz_per_col,
+			I* row_indices,
+			T* values)
 			: _{
-						(VEG_ASSERT_ALL_OF( //
-								 nrows >= 0,
-								 ncols >= 0,
-								 col_ptrs.len() == ncols + 1,
-								 ((nnz_per_col.len() == ncols || nnz_per_col.ptr() == nullptr)),
-								 row_indices.len() == values.len()),
-	           decltype(_){
-								 nrows,
-								 ncols,
-								 nnz,
-								 row_indices.len(),
-								 col_ptrs.ptr_mut(),
-								 row_indices.ptr_mut(),
-								 nnz_per_col.ptr_mut(),
-								 values.ptr_mut(),
-						 }),
+						nrows,
+						ncols,
+						nnz,
+						col_ptrs,
+						nnz_per_col,
+						row_indices,
+						values,
 				} {}
 
 	template <typename M>
@@ -562,21 +431,16 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 						m.rows(),
 						m.cols(),
 						m.nonZeros(),
-						m.outerIndexPtr()[m.cols()],
 						m.outerIndexPtr(),
-						m.innerIndexPtr(),
 						m.innerNonZeroPtr(),
+						m.innerIndexPtr(),
 						m.valuePtr(),
 				} {
 		static_assert(!bool(veg::uncvref_t<M>::IsRowMajor), ".");
 	};
 
-	auto values() const noexcept -> Slice<T> {
-		return {unsafe, from_raw_parts, _.val, this->max_nnz()};
-	}
-	auto values_mut() noexcept -> SliceMut<T> {
-		return {unsafe, from_raw_parts, _.val, this->max_nnz()};
-	}
+	auto values() const noexcept -> T const* { return _.val; }
+	auto values_mut() const noexcept -> T* { return _.val; }
 	auto is_compressed() const noexcept -> bool {
 		return _.nnz_per_col == nullptr;
 	}
@@ -588,8 +452,8 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 				this->ncols(),
 				this->nnz(),
 				this->col_ptrs(),
-				this->row_indices(),
 				this->nnz_per_col(),
+				this->row_indices(),
 				this->values(),
 		};
 	}
@@ -600,8 +464,8 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 				this->ncols(),
 				this->nnz(),
 				this->col_ptrs(),
-				this->row_indices(),
 				this->nnz_per_col(),
+				this->row_indices(),
 		};
 	}
 	auto symbolic_mut() const noexcept -> SymbolicMatRef<I> {
@@ -611,8 +475,8 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 				this->ncols(),
 				this->nnz(),
 				this->col_ptrs_mut(),
-				this->row_indices_mut(),
 				this->nnz_per_col_mut(),
+				this->row_indices_mut(),
 		};
 	}
 	auto to_eigen() const noexcept
@@ -626,10 +490,9 @@ private:
 		isize nrows;
 		isize ncols;
 		isize nnz;
-		isize max_nnz;
 		I* col;
-		I* row;
 		I* nnz_per_col;
+		I* row;
 		T* val;
 	} _;
 };
@@ -643,9 +506,9 @@ struct Debug<linearsolver::sparse::MatRef<T, I>> {
 	static void
 	to_string(BufferMut out, Ref<linearsolver::sparse::MatRef<T, I>> r) noexcept {
 		linearsolver::sparse::MatRef<T, I> a = r.get();
-		auto pap = a.col_ptrs().ptr();
-		auto pai = a.row_indices().ptr();
-		auto pax = a.values().ptr();
+		auto pap = a.col_ptrs();
+		auto pai = a.row_indices();
+		auto pax = a.values();
 
 		out.append_literal(u8"matrix of size [");
 		fmt::dbg_to(out, ref(a.nrows()));

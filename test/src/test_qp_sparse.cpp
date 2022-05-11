@@ -48,7 +48,7 @@ TEST_CASE("random ruiz") {
 					qp::sparse::preconditioner::Symmetry::UPPER,
 			};
 
-			sparse::QpWorkspace<T, I> work;
+			sparse::Workspace<T, I> work;
 			Settings<T> settings;
 			sparse::qp_setup(work, qp, ruiz);
 
@@ -114,7 +114,7 @@ TEST_CASE("random id") {
 
 			qp::sparse::preconditioner::Identity<T, I> id;
 
-			sparse::QpWorkspace<T, I> work;
+			sparse::Workspace<T, I> work;
 			Settings<T> settings;
 			sparse::qp_setup(work, qp, id);
 
