@@ -10,10 +10,12 @@
 #include <linearsolver/sparse/rowmod.hpp>
 #include <qp/dense/views.hpp>
 #include <qp/Settings.hpp>
+#include <veg/vec.hpp>
+#include "qp/sparse/data.hpp"
+
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
-#include <veg/vec.hpp>
 
 namespace proxsuite {
 namespace qp {
@@ -528,10 +530,6 @@ struct Workspace {
 
 	struct /* NOLINT */ {
 		veg::Vec<veg::mem::byte> storage;
-		veg::Vec<I> kkt_col_ptrs;
-		veg::Vec<I> kkt_row_indices;
-		veg::Vec<T> kkt_values;
-
 		veg::Vec<I> ldl_col_ptrs;
 		veg::Vec<I> perm_inv;
 		bool do_ldlt;
@@ -543,7 +541,10 @@ struct Workspace {
 			};
 		}
 
-		void setup_impl(QpView<T, I> qp, veg::dynstack::StackReq precond_req) {
+		void setup_impl(
+				QpView<T, I> qp,
+				Data<T, I>& data,
+				veg::dynstack::StackReq precond_req) {
 			using namespace veg::dynstack;
 			using namespace linearsolver::sparse::util;
 
@@ -562,13 +563,13 @@ struct Workspace {
 			// assuming H, AT, CT are sorted
 			// and H is upper triangular
 			{
-				kkt_col_ptrs.resize_for_overwrite(n_tot + 1);
-				kkt_row_indices.resize_for_overwrite(nnz_tot);
-				kkt_values.resize_for_overwrite(nnz_tot);
+				data.kkt_col_ptrs.resize_for_overwrite(n_tot + 1);
+				data.kkt_row_indices.resize_for_overwrite(nnz_tot);
+				data.kkt_values.resize_for_overwrite(nnz_tot);
 
-				I* kktp = kkt_col_ptrs.ptr_mut();
-				I* kkti = kkt_row_indices.ptr_mut();
-				T* kktx = kkt_values.ptr_mut();
+				I* kktp = data.kkt_col_ptrs.ptr_mut();
+				I* kkti = data.kkt_row_indices.ptr_mut();
+				T* kktx = data.kkt_values.ptr_mut();
 
 				kktp[0] = 0;
 				usize col = 0;
@@ -633,9 +634,9 @@ struct Workspace {
 						n_tot,
 						n_tot,
 						nnz_tot,
-						kkt_col_ptrs.ptr(),
+						data.kkt_col_ptrs.ptr(),
 						nullptr,
-						kkt_row_indices.ptr(),
+						data.kkt_row_indices.ptr(),
 				};
 				linearsolver::sparse::factorize_symbolic_non_zeros( //
 						ldl_col_ptrs.ptr_mut() + 1,
@@ -806,36 +807,6 @@ struct Workspace {
 		return _.stack_mut();
 	}
 
-	auto kkt() const -> linearsolver::sparse::MatMut<T, I> {
-		auto n_tot = _.kkt_col_ptrs.len() - 1;
-		auto nnz =
-				isize(linearsolver::sparse::util::zero_extend(_.kkt_col_ptrs[n_tot]));
-		return {
-				linearsolver::sparse::from_raw_parts,
-				n_tot,
-				n_tot,
-				nnz,
-				_.kkt_col_ptrs.ptr(),
-				nullptr,
-				_.kkt_row_indices.ptr(),
-				_.kkt_values.ptr(),
-		};
-	}
-	auto kkt_mut() -> linearsolver::sparse::MatMut<T, I> {
-		auto n_tot = _.kkt_col_ptrs.len() - 1;
-		auto nnz =
-				isize(linearsolver::sparse::util::zero_extend(_.kkt_col_ptrs[n_tot]));
-		return {
-				linearsolver::sparse::from_raw_parts,
-				n_tot,
-				n_tot,
-				nnz,
-				_.kkt_col_ptrs.ptr_mut(),
-				nullptr,
-				_.kkt_row_indices.ptr_mut(),
-				_.kkt_values.ptr_mut(),
-		};
-	}
 };
 
 namespace detail {
@@ -1264,11 +1235,13 @@ auto unscaled_primal_dual_residual(
 } // namespace detail
 
 template <typename T, typename I, typename P>
-void qp_setup(Workspace<T, I>& work, QpView<T, I> qp, P& /*precond*/) {
+void qp_setup(
+		QpView<T, I> qp, Data<T, I>& data, Workspace<T, I>& work, P& /*precond*/) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
-	work._.setup_impl(qp, P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+	work._.setup_impl(
+			qp, data, P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 }
 
 template <typename T, typename I, typename P>
@@ -1276,8 +1249,9 @@ void qp_solve(
 		VectorViewMut<T> x,
 		VectorViewMut<T> y,
 		VectorViewMut<T> z,
-		Workspace<T, I>& work,
+		Data<T, I>& data,
 		Settings<T> const& settings,
+		Workspace<T, I>& work,
 		P& precond,
 		QpView<T, I> qp) {
 
@@ -1292,7 +1266,7 @@ void qp_solve(
 	isize n_in = qp.CT.ncols();
 	isize n_tot = n + n_eq + n_in;
 
-	linearsolver::sparse::MatMut<T, I> kkt = work.kkt_mut();
+	linearsolver::sparse::MatMut<T, I> kkt = data.kkt_mut();
 
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
@@ -1772,7 +1746,7 @@ void qp_solve(
 										linearsolver::sparse::VecRef<T, I> new_col{
 												linearsolver::sparse::from_raw_parts,
 												n_tot,
-                        isize(col_nnz),
+												isize(col_nnz),
 												kkt.row_indices() + zx(kkt.col_start(usize(idx))),
 												kkt.values() + zx(kkt.col_start(usize(idx))),
 										};

@@ -393,12 +393,12 @@ void primal_dual_semi_smooth_newton_step(
 }
 
 template <typename T>
-T primal_dual_newton_semi_smooth(
+auto primal_dual_newton_semi_smooth(
 		const qp::Settings<T>& qpsettings,
 		const qp::dense::Data<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
-		T eps_int) {
+		T eps_int) -> T {
 
 	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
 	 *  dual_residual_scaled = Hx + rho * (x-x_prev) + A.T y + C.T z

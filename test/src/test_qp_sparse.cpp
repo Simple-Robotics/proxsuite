@@ -50,7 +50,8 @@ TEST_CASE("random ruiz") {
 
 			sparse::Workspace<T, I> work;
 			Settings<T> settings;
-			sparse::qp_setup(work, qp, ruiz);
+			sparse::Data<T, I> data;
+			sparse::qp_setup(qp, data, work, ruiz);
 
 			Eigen::Matrix<T, -1, 1> x(n);
 			Eigen::Matrix<T, -1, 1> y(n_eq);
@@ -63,8 +64,9 @@ TEST_CASE("random ruiz") {
 					{qp::from_eigen, x},
 					{qp::from_eigen, y},
 					{qp::from_eigen, z},
-					work,
+					data,
 					settings,
+					work,
 					ruiz,
 					qp);
 			CHECK(
@@ -116,7 +118,8 @@ TEST_CASE("random id") {
 
 			sparse::Workspace<T, I> work;
 			Settings<T> settings;
-			sparse::qp_setup(work, qp, id);
+			sparse::Data<T, I> data;
+			sparse::qp_setup(qp, data, work, id);
 
 			Eigen::Matrix<T, -1, 1> x(n);
 			Eigen::Matrix<T, -1, 1> y(n_eq);
@@ -129,8 +132,9 @@ TEST_CASE("random id") {
 					{qp::from_eigen, x},
 					{qp::from_eigen, y},
 					{qp::from_eigen, z},
-					work,
+					data,
 					settings,
+					work,
 					id,
 					qp);
 			CHECK(

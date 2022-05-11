@@ -135,6 +135,7 @@ TEST_CASE("maros meszaros wip") {
 			settings.mu_max_in = 1.E9;
 			settings.mu_max_eq = 1.E9;
 			sparse::Workspace<T, I> work;
+			sparse::Data<T, I> data;
 
 			Eigen::Matrix<T, -1, 1> x(n);
 			Eigen::Matrix<T, -1, 1> y(n_eq);
@@ -143,14 +144,15 @@ TEST_CASE("maros meszaros wip") {
 			y.setZero();
 			z.setZero();
 
-			sparse::qp_setup(work, qp, ruiz);
+			sparse::qp_setup(qp, data, work, ruiz);
 
 			sparse::qp_solve(
 					{qp::from_eigen, x},
 					{qp::from_eigen, y},
 					{qp::from_eigen, z},
-					work,
+					data,
 					settings,
+					work,
 					ruiz,
 					qp);
 			auto& eps = settings.eps_abs;

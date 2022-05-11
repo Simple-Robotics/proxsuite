@@ -39,11 +39,11 @@ public:
 				C(_n_in, _dim),
 				b(_n_eq),
 				u(_n_in),
-				l(_n_in) {
-		dim = _dim;
-		n_eq = _n_eq;
-		n_in = _n_in;
-		n_total = _dim + _n_eq + _n_in;
+				l(_n_in),
+				dim(_dim),
+				n_eq(_n_eq),
+				n_in(_n_in),
+				n_total(_dim + _n_eq + _n_in) {
 
 		H.setZero();
 		g.setZero();
