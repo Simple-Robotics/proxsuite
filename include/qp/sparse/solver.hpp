@@ -1098,7 +1098,7 @@ template <typename T, typename I>
 auto middle_cols(
 		linearsolver::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
 		-> linearsolver::sparse::MatRef<T, I> {
-	VEG_ASSERT(start < mat.ncols());
+	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 
 	return {
@@ -1117,7 +1117,7 @@ template <typename T, typename I>
 auto middle_cols_mut(
 		linearsolver::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
 		-> linearsolver::sparse::MatMut<T, I> {
-	VEG_ASSERT(start < mat.ncols());
+	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 	return {
 			linearsolver::sparse::from_raw_parts,
