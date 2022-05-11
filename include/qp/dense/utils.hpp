@@ -191,8 +191,8 @@ bool global_dual_residual_infeasibility(
 // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 template <typename T>
 void global_dual_residual(
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T& dual_feasibility_lhs,
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,

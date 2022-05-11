@@ -21,8 +21,8 @@ namespace detail {
 
 template <typename T>
 auto ruiz_scale_qp_in_place( //
-		VectorViewMut<T> delta_,
-		VectorViewMut<T> tmp_delta_preallocated,
+		qp::VectorViewMut<T> delta_,
+		qp::VectorViewMut<T> tmp_delta_preallocated,
 		std::ostream* logger_ptr,
 		qp::dense::QpViewBoxMut<T> qp,
 		T epsilon,

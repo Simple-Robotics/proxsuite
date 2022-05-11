@@ -1,7 +1,6 @@
 #include <maros_meszaros.hpp>
 #include <benchmark/benchmark.h>
-#include <qp/dense/solver.hpp>
-#include <util.hpp>
+#include <qp/dense/dense.hpp>
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -77,7 +76,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-using namespace qp;
+using namespace proxsuite::qp;
 
 void bench_maros_meszaros(benchmark::State& s, char const* file) {
 	using T = double;
@@ -98,14 +97,16 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 		auto& u = preprocessed.u;
 		auto& l = preprocessed.l;
 
+		isize dim = H.rows();
 		isize n_eq = A.rows();
 		isize n_in = C.rows();
 
 		for (auto _ : s) {
 			s.PauseTiming();
 
-			Settings<T> settings;
-      settings.verbose = false;
+			/*
+			QPSettings<T> settings;
+      		settings.verbose = false;
 
       dense::Data<T> data{n, n_eq, n_in};
 			Results<T> results{n, n_eq, n_in};
@@ -113,11 +114,18 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			results.x.setZero();
 			results.y.setZero();
 			results.z.setZero();
-			QPsetup_dense<T>(
+			*/
+			proxsuite::qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+			Qp.setup_dense_matrices(H,g,A,b,C,u,l);
+			Qp.solve();
+			/*
+			detail::QPsetup_dense<T>(
 					H, g, A, b, C, u, l, settings, data, work, results);
 
+			
+			detail::qp_solve(settings, data, results, work);
+			*/
 			s.ResumeTiming();
-			qp_solve(settings, data, results, work);
 		}
 	} else {
 		for (auto _ : s) {

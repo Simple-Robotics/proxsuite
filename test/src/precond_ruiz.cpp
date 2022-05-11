@@ -1,20 +1,24 @@
 #include <doctest.h>
-#include <qp/precond/ruiz.hpp>
-#include <util.hpp>
 #include <iostream>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
+#include <qp/dense/dense.hpp>
+#include <veg/util/dbg.hpp>
+#include <util.hpp>
 
-using namespace qp;
+using namespace proxsuite::qp;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner") {
 	isize dim = 5;
 	isize n_eq = 6;
-	Scalar epsilon = Scalar(1.e-3);
-	i64 max_iter = 20;
+	isize n_in = 0;
 	auto sym = qp::Symmetry::upper; // 0 : upper triangular (by default), 1:
 	                                // lower triangular ; else full matrix
 
-	Qp<Scalar> qp{random_with_dim_and_n_eq, dim, n_eq};
+	Scalar sparsity_factor(0.15);
+	Qp<Scalar> qp{random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor};
+
 	switch (sym) {
 	case qp::Symmetry::upper: {
 		qp.H = qp.H.triangularView<Eigen::Upper>();
@@ -27,25 +31,15 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 	default: {
 	}
 	}
-	Qp<Scalar> scaled_qp = qp;
-	std::cout << "qp.H : " << qp.H << std::endl << std::endl;
-	qp::preconditioner::RuizEquilibration<Scalar> precond{
-			dim,
-			n_eq,
-			epsilon,
-			max_iter,
-			sym,
-	};
 
-	{
-		EigenNoAlloc _{};
-		precond.scale_qp_in_place(scaled_qp.as_mut());
-	}
+	qp::dense::QP<Scalar> Qp{dim,n_eq,n_in}; // creating QP object
+	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+
 	auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
-			precond.delta.head(dim).asDiagonal());
+			Qp.work.ruiz.delta.head(dim).asDiagonal());
 	auto tail = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
-			precond.delta.tail(n_eq).asDiagonal());
-	auto c = precond.c;
+			Qp.work.ruiz.delta.tail(n_eq).asDiagonal());
+	auto c = Qp.work.ruiz.c;
 
 	auto const& H = qp.H;
 	auto const& g = qp.g;
@@ -57,8 +51,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 	auto A_new = (tail * A * head).eval();
 	auto b_new = (tail * b).eval();
 
-	DOCTEST_CHECK((H_new - scaled_qp.H).norm() <= Scalar(1e-10));
-	DOCTEST_CHECK((g_new - scaled_qp.g).norm() <= Scalar(1e-10));
-	DOCTEST_CHECK((A_new - scaled_qp.A).norm() <= Scalar(1e-10));
-	DOCTEST_CHECK((b_new - scaled_qp.b).norm() <= Scalar(1e-10));
+	DOCTEST_CHECK((H_new - Qp.work.H_scaled).norm() <= Scalar(1e-10));
+	DOCTEST_CHECK((g_new - Qp.work.g_scaled).norm() <= Scalar(1e-10));
+	DOCTEST_CHECK((A_new - Qp.work.A_scaled).norm() <= Scalar(1e-10));
+	DOCTEST_CHECK((b_new - Qp.work.b_scaled).norm() <= Scalar(1e-10));
 }

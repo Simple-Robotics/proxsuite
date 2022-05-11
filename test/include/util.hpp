@@ -181,7 +181,7 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 	Mat<Scalar, colmajor> H_dense = H.toDense();
 	Vec<Scalar> eigh =
 			H_dense.template selfadjointView<Eigen::Upper>().eigenvalues();
-
+	
 	Scalar min = eigh.minCoeff();
 	Scalar max = eigh.maxCoeff();
 
@@ -201,6 +201,7 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 	for (isize i = 0; i < n; ++i) {
 		H.coeffRef(i, i) += rho;
 	}
+
 	H.makeCompressed();
 	return H;
 }
@@ -379,23 +380,6 @@ struct Qp {
 				l(l_),
 				solution(H.rows() + A.rows() + C.rows()) {
 
-		/*
-		qp::isize dim = qp::isize(H.rows());
-		qp::isize n_eq = qp::isize(A.rows());
-
-		auto kkt_mat =
-		    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>(
-		        dim + n_eq, dim + n_eq);
-
-		kkt_mat.topLeftCorner(dim, dim) = H;
-		kkt_mat.topRightCorner(dim, n_eq) = A.transpose();
-		kkt_mat.bottomLeftCorner(n_eq, dim) = A;
-		kkt_mat.bottomRightCorner(n_eq, n_eq).setZero();
-
-		solution.topRows(dim) = -g;
-		solution.bottomRows(n_eq) = b;
-		kkt_mat.qp().solveInPlace(solution);
-		*/
 	}
 
 	Qp(RandomWithDimAndNeq /*tag*/, qp::isize dim, qp::isize n_eq)

@@ -823,4 +823,5 @@ void qp_solve( //
 } // namespace qp
 } // namespace proxsuite
 
+
 #endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP */

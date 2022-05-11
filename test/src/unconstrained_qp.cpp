@@ -1,13 +1,11 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <qp/proxqp/solver.hpp>
-#include <qp/precond/ruiz.hpp>
-#include <qp/precond/identity.hpp>
+#include <qp/dense/dense.hpp>
 #include <veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace ldlt;
+using namespace qp;
 
 using T = double;
 
@@ -24,45 +22,21 @@ DOCTEST_TEST_CASE(
 		isize n_eq(0);
 		isize n_in(0);
 		T strong_convexity_factor(1.e-2);
-		Qp<T> qp{
-				random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
-		qp::QPSettings<T> settings;
-		settings.eps_abs = eps_abs;
-		settings.verbose = false;
-		qp::QPData<T> data(dim, n_eq, n_in);
-		qp::QPResults<T> results{dim, n_eq, n_in};
-		qp::QPWorkspace<T> work{dim, n_eq, n_in};
+		Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
+		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+		Qp.settings.eps_abs = eps_abs;
+		Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+		Qp.solve();
 
-		qp::detail::QPsetup_dense<T>( //
-				qp.H,
-				qp.g,
-				qp.A,
-				qp.b,
-				qp.C,
-				qp.u,
-				qp.l,
-				settings,
-				data,
-				work,
-				results);
+		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
+		DOCTEST_CHECK( pri_res <= eps_abs);
+		DOCTEST_CHECK( dua_res <= eps_abs);
 
-		qp::detail::qp_solve(settings, data, results, work);
-		T pri_res = std::max(
-				(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-				(qp::detail::positive_part(qp.C * results.x - qp.u) +
-		     qp::detail::negative_part(qp.C * results.x - qp.l))
-						.lpNorm<Eigen::Infinity>());
-		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
-		             qp.C.transpose() * results.z)
-		                .lpNorm<Eigen::Infinity>();
-		DOCTEST_CHECK(pri_res <= eps_abs);
-		DOCTEST_CHECK(dua_res <= eps_abs);
-
-		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
-							<< " nin: " << n_in << std::endl;
+		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
-		std::cout << "dual residual: " << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.n_tot << std::endl;
+		std::cout << "dual residual: "  << dua_res << std::endl;
+		std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	}
 }
 
@@ -85,43 +59,20 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 		qp.g = -qp.H *
 		       x_sol; // to be dually feasible g must be in the image space of H
 
-		qp::QPSettings<T> settings;
-		settings.eps_abs = eps_abs;
-		settings.verbose = false;
-		qp::QPData<T> data(dim, n_eq, n_in);
-		qp::QPResults<T> results{dim, n_eq, n_in};
-		qp::QPWorkspace<T> work{dim, n_eq, n_in};
+		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+		Qp.settings.eps_abs = eps_abs;
+		Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+		Qp.solve();
 
-		qp::detail::QPsetup_dense<T>( //
-				qp.H,
-				qp.g,
-				qp.A,
-				qp.b,
-				qp.C,
-				qp.u,
-				qp.l,
-				settings,
-				data,
-				work,
-				results);
+		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
+		DOCTEST_CHECK( pri_res <= eps_abs);
+		DOCTEST_CHECK( dua_res <= eps_abs);
 
-		qp::detail::qp_solve(settings, data, results, work);
-		T pri_res = std::max(
-				(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-				(qp::detail::positive_part(qp.C * results.x - qp.u) +
-		     qp::detail::negative_part(qp.C * results.x - qp.l))
-						.lpNorm<Eigen::Infinity>());
-		T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
-		             qp.C.transpose() * results.z)
-		                .lpNorm<Eigen::Infinity>();
-		DOCTEST_CHECK(pri_res <= eps_abs);
-		DOCTEST_CHECK(dua_res <= eps_abs);
-
-		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
-							<< " nin: " << n_in << std::endl;
+		std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
 		std::cout << "primal residual: " << pri_res << std::endl;
-		std::cout << "dual residual: " << dua_res << std::endl;
-		std::cout << "total number of iteration: " << results.n_tot << std::endl;
+		std::cout << "dual residual: "  << dua_res << std::endl;
+		std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	}
 }
 
@@ -131,51 +82,29 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 
-	isize dim(100);
-	isize n_eq(0);
-	isize n_in(0);
-	T strong_convexity_factor(1.E-2);
-	Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
-	qp.H.setZero();
-	qp.H.diagonal().array() += 1;
+    isize dim (100);
+    isize n_eq (0);
+    isize n_in (0);
+    T strong_convexity_factor(1.E-2);
+    Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
+    qp.H.setZero();
+    qp.H.diagonal().array()+= 1;
 
-	qp::QPSettings<T> settings;
-	settings.eps_abs = eps_abs;
-	settings.verbose = false;
-	qp::QPData<T> data(dim, n_eq, n_in);
-	qp::QPResults<T> results{dim, n_eq, n_in};
-	qp::QPWorkspace<T> work{dim, n_eq, n_in};
+	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+	Qp.settings.eps_abs = eps_abs;
+	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+	Qp.solve();
 
-	qp::detail::QPsetup_dense<T>( //
-			qp.H,
-			qp.g,
-			qp.A,
-			qp.b,
-			qp.C,
-			qp.u,
-			qp.l,
-			settings,
-			data,
-			work,
-			results);
+	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK( pri_res <= eps_abs);
+    DOCTEST_CHECK( dua_res <= eps_abs);
 
-	qp::detail::qp_solve(settings, data, results, work);
-	T pri_res = std::max(
-			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::detail::positive_part(qp.C * results.x - qp.u) +
-	     qp::detail::negative_part(qp.C * results.x - qp.l))
-					.lpNorm<Eigen::Infinity>());
-	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
-	             qp.C.transpose() * results.z)
-	                .lpNorm<Eigen::Infinity>();
-	DOCTEST_CHECK(pri_res <= eps_abs);
-	DOCTEST_CHECK(dua_res <= eps_abs);
+    std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
+    std::cout << "primal residual: " << pri_res << std::endl;
+    std::cout << "dual residual: "  << dua_res << std::endl;
+    std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 
-	std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
-						<< " nin: " << n_in << std::endl;
-	std::cout << "primal residual: " << pri_res << std::endl;
-	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << results.n_tot << std::endl;
 }
 
 DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0") {
@@ -184,50 +113,28 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 
-	isize dim(100);
-	isize n_eq(0);
-	isize n_in(0);
-	T strong_convexity_factor(1.E-2);
-	Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
-	qp.H.setZero();
-	qp.H.diagonal().array() += 1;
-	qp.g.setZero();
+    isize dim (100);
+    isize n_eq (0);
+    isize n_in (0);
+    T strong_convexity_factor(1.E-2);
+    Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
+    qp.H.setZero();
+    qp.H.diagonal().array()+= 1;
+    qp.g.setZero();
 
-	qp::QPSettings<T> settings;
-	settings.eps_abs = eps_abs;
-	settings.verbose = false;
-	qp::QPData<T> data(dim, n_eq, n_in);
-	qp::QPResults<T> results{dim, n_eq, n_in};
-	qp::QPWorkspace<T> work{dim, n_eq, n_in};
+	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+	Qp.settings.eps_abs = eps_abs;
+	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+	Qp.solve();
 
-	qp::detail::QPsetup_dense<T>( //
-			qp.H,
-			qp.g,
-			qp.A,
-			qp.b,
-			qp.C,
-			qp.u,
-			qp.l,
-			settings,
-			data,
-			work,
-			results);
+	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK( pri_res <= eps_abs);
+    DOCTEST_CHECK( dua_res <= eps_abs);
 
-	qp::detail::qp_solve(settings, data, results, work);
-	T pri_res = std::max(
-			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::detail::positive_part(qp.C * results.x - qp.u) +
-	     qp::detail::negative_part(qp.C * results.x - qp.l))
-					.lpNorm<Eigen::Infinity>());
-	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
-	             qp.C.transpose() * results.z)
-	                .lpNorm<Eigen::Infinity>();
-	DOCTEST_CHECK(pri_res <= eps_abs);
-	DOCTEST_CHECK(dua_res <= eps_abs);
+    std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq  << " nin: " << n_in << std::endl;
+    std::cout << "primal residual: " << pri_res << std::endl;
+    std::cout << "dual residual: "  << dua_res << std::endl;
+    std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 
-	std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
-						<< " nin: " << n_in << std::endl;
-	std::cout << "primal residual: " << pri_res << std::endl;
-	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << results.n_tot << std::endl;
 }

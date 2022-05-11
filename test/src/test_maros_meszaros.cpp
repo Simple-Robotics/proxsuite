@@ -2,9 +2,9 @@
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <fmt/core.h>
-#include <qp/dense/solver.hpp>
+#include <qp/dense/dense.hpp>
 
-using namespace qp;
+using namespace proxsuite::qp;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -106,29 +106,21 @@ TEST_CASE("maros meszaros wip") {
 			auto& u = preprocessed.u;
 			auto& l = preprocessed.l;
 
+			isize dim = H.rows();
 			isize n_eq = A.rows();
 			isize n_in = C.rows();
 
-			Settings<T> settings;
-			settings.verbose = false;
-
-			dense::Data<T> data{n, n_eq, n_in};
-			Results<T> results{n, n_eq, n_in};
-			dense::Workspace<T> work{n, n_eq, n_in};
-
+			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+			Qp.setup_dense_matrices(H,g,A,b,C,u,l);
+			
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
-			results.x.setZero();
-			results.y.setZero();
-			results.z.setZero();
-
-			dense::QPsetup_dense<T>(
-					H, g, A, b, C, u, l, settings, data, work, results);
-			dense::qp_solve(settings, data, results, work);
-			auto& x = results.x;
-			auto& y = results.y;
-			auto& z = results.z;
-			auto& eps = settings.eps_abs;
+			Qp.solve();
+			auto& x = Qp.results.x;
+			auto& y = Qp.results.y;
+			auto& z = Qp.results.z;
+			
+			auto& eps = Qp.settings.eps_abs;
 
 			CHECK(
 					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
