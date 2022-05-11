@@ -1413,9 +1413,9 @@ void qp_solve(
 			ldl_values,
 	};
 
-	T rho = T(1e-6);
-	T mu_eq = T(1e3);
-	T mu_in = T(1e1);
+	T& rho = results.info.rho;
+	T mu_eq = results.info.mu_eq_inv;
+	T mu_in = results.info.mu_in_inv;
 
 	detail::AugmentedKkt<T, I> aug_kkt{{
 			kkt_active.as_const(),
@@ -1873,7 +1873,7 @@ void qp_solve(
 												.select(primal_residual_in_scaled_up, zero);
 							}
 
-							T nu = 1;
+							T& nu = results.info.nu;
 
 							T a = dx.dot(Hdx) +                                   //
 							      rho * dx.squaredNorm() +                        //
@@ -2084,6 +2084,11 @@ void qp_solve(
 	precond.unscale_primal_in_place({qp::from_eigen, x_e});
 	precond.unscale_dual_in_place_eq({qp::from_eigen, y_e});
 	precond.unscale_dual_in_place_in({qp::from_eigen, z_e});
+
+	results.info.mu_eq_inv = mu_eq;
+	results.info.mu_eq = 1 / mu_eq;
+	results.info.mu_in_inv = mu_in;
+	results.info.mu_in = 1 / mu_in;
 }
 } // namespace sparse
 } // namespace qp
