@@ -12,6 +12,7 @@
 #include <qp/Settings.hpp>
 #include <veg/vec.hpp>
 #include "qp/sparse/data.hpp"
+#include "qp/Results.hpp"
 
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>
@@ -1247,19 +1248,35 @@ auto unscaled_primal_dual_residual(
 
 template <typename T, typename I, typename P>
 void qp_setup(
-		QpView<T, I> qp, Data<T, I>& data, Workspace<T, I>& work, P& /*precond*/) {
+		QpView<T, I> qp,
+		Results<T>& results,
+		Data<T, I>& data,
+		Workspace<T, I>& work,
+		P& /*precond*/) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
+
+	if (results.x.rows() != n) {
+		results.x.resize(n);
+		results.x.setZero();
+	}
+	if (results.y.rows() != n_eq) {
+		results.y.resize(n_eq);
+		results.y.setZero();
+	}
+	if (results.z.rows() != n_in) {
+		results.z.resize(n_in);
+		results.z.setZero();
+	}
+
 	work._.setup_impl(
 			qp, data, P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 }
 
 template <typename T, typename I, typename P>
 void qp_solve(
-		VectorViewMut<T> x,
-		VectorViewMut<T> y,
-		VectorViewMut<T> z,
+		Results<T>& results,
 		Data<T, I>& data,
 		Settings<T> const& settings,
 		Workspace<T, I>& work,
@@ -1275,6 +1292,10 @@ void qp_solve(
 	isize n_eq = data.n_eq;
 	isize n_in = data.n_in;
 	isize n_tot = n + n_eq + n_in;
+
+	VectorViewMut<T> x{qp::from_eigen, results.x};
+	VectorViewMut<T> y{qp::from_eigen, results.y};
+	VectorViewMut<T> z{qp::from_eigen, results.z};
 
 	linearsolver::sparse::MatMut<T, I> kkt = data.kkt_mut();
 

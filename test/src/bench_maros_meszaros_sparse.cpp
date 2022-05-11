@@ -125,25 +125,18 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 			Settings<T> settings;
 			sparse::Workspace<T, I> work;
 			sparse::Data<T, I> data;
+			Results<T> results;
+			auto& x = results.x;
+			auto& y = results.y;
+			auto& z = results.z;
 
-			Eigen::Matrix<T, -1, 1> x(n);
-			Eigen::Matrix<T, -1, 1> y(n_eq);
-			Eigen::Matrix<T, -1, 1> z(n_in);
 			x.setZero();
 			y.setZero();
 			z.setZero();
 
-			sparse::qp_setup(qp, data, work, ruiz);
+			sparse::qp_setup(qp, results, data, work, ruiz);
 			s.ResumeTiming();
-			sparse::qp_solve(
-					{qp::from_eigen, x},
-					{qp::from_eigen, y},
-					{qp::from_eigen, z},
-					data,
-					settings,
-					work,
-					ruiz,
-					qp);
+			sparse::qp_solve(results, data, settings, work, ruiz);
 		}
 	} else {
 		for (auto _ : s) {

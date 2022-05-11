@@ -50,24 +50,19 @@ TEST_CASE("random ruiz") {
 
 			sparse::Workspace<T, I> work;
 			Settings<T> settings;
+			Results<T> results;
 			sparse::Data<T, I> data;
-			sparse::qp_setup(qp, data, work, ruiz);
+			sparse::qp_setup(qp, results, data, work, ruiz);
 
-			Eigen::Matrix<T, -1, 1> x(n);
-			Eigen::Matrix<T, -1, 1> y(n_eq);
-			Eigen::Matrix<T, -1, 1> z(n_in);
+			auto& x = results.x;
+			auto& y = results.y;
+			auto& z = results.z;
+
 			x.setZero();
 			y.setZero();
 			z.setZero();
 
-			sparse::qp_solve(
-					{qp::from_eigen, x},
-					{qp::from_eigen, y},
-					{qp::from_eigen, z},
-					data,
-					settings,
-					work,
-					ruiz);
+			sparse::qp_solve(results, data, settings, work, ruiz);
 			CHECK(
 					qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
@@ -117,24 +112,19 @@ TEST_CASE("random id") {
 
 			sparse::Workspace<T, I> work;
 			Settings<T> settings;
+			Results<T> results;
 			sparse::Data<T, I> data;
-			sparse::qp_setup(qp, data, work, id);
+			sparse::qp_setup(qp, results, data, work, id);
 
-			Eigen::Matrix<T, -1, 1> x(n);
-			Eigen::Matrix<T, -1, 1> y(n_eq);
-			Eigen::Matrix<T, -1, 1> z(n_in);
+			auto& x = results.x;
+			auto& y = results.y;
+			auto& z = results.z;
 			x.setZero();
 			y.setZero();
 			z.setZero();
 
-			sparse::qp_solve(
-					{qp::from_eigen, x},
-					{qp::from_eigen, y},
-					{qp::from_eigen, z},
-					data,
-					settings,
-					work,
-					id);
+			sparse::qp_solve(results, data, settings, work, id);
+
 			CHECK(
 					qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
