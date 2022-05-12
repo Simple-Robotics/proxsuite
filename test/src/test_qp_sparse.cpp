@@ -91,9 +91,9 @@ TEST_CASE("random ruiz using the API") {
 
 		auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
 		auto g = ldlt_test::rand::vector_rand<T>(n);
-		auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n,n_eq, p);
+		auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p);
 		auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-		auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n,n_in, p);
+		auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
 		auto l = ldlt_test::rand::vector_rand<T>(n_in);
 		auto u = (l.array() + 1).matrix().eval();
 
@@ -101,16 +101,16 @@ TEST_CASE("random ruiz using the API") {
 
 			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
-			Qp.setup_sparse_matrices(H,g,AT,b,CT,u,l);
+			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();
 			CHECK(
 					qp::dense::infty_norm(
-							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= 1e-9);
+			CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
 			if (n_in > 0) {
-				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -1e-9);
-				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < 1e-9);
+				CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
+				CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
 			}
 		}
 	}
@@ -193,26 +193,26 @@ TEST_CASE("random id using the API") {
 
 		auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
 		auto g = ldlt_test::rand::vector_rand<T>(n);
-		auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, p);
+		auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p);
 		auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-		auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, p);
+		auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
 		auto l = ldlt_test::rand::vector_rand<T>(n_in);
 		auto u = (l.array() + 1).matrix().eval();
 
 		{
 			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
-			Qp.setup_sparse_matrices(H,g,AT,b,CT,u,l);
+			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();
 
 			CHECK(
 					qp::dense::infty_norm(
-							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= 1e-9);
+			CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
 			if (n_in > 0) {
-				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -1e-9);
-				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < 1e-9);
+				CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
+				CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
 			}
 		}
 	}

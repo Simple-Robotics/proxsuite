@@ -133,20 +133,22 @@ public:
 	void setup_sparse_matrices(
 			const tl::optional<SparseMat<T,I>> H,
 			tl::optional<VecRef<T>> g,
-			const tl::optional<SparseMat<T,I>> AT,
+			const tl::optional<SparseMat<T,I>> A,
 			tl::optional<VecRef<T>> b,
-			const tl::optional<SparseMat<T,I>> CT,
+			const tl::optional<SparseMat<T,I>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
   
         // only initial setup available (if an update of only one)
 
+        SparseMat<T, I> AT = A.value().transpose();
+        SparseMat<T, I> CT = C.value().transpose();
         sparse::QpView<T, I> qp = {
             {linearsolver::sparse::from_eigen, H.value()},
             {linearsolver::sparse::from_eigen, g.value()},
-            {linearsolver::sparse::from_eigen, AT.value()},
+            {linearsolver::sparse::from_eigen, AT},
             {linearsolver::sparse::from_eigen, b.value()},
-            {linearsolver::sparse::from_eigen, CT.value()},
+            {linearsolver::sparse::from_eigen, CT},
             {linearsolver::sparse::from_eigen, l.value()},
             {linearsolver::sparse::from_eigen, u.value()}};
         
@@ -156,45 +158,6 @@ public:
                 data,
                 work,
                 ruiz);
-
-
-        /*
-		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
-		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
-		    l == tl::nullopt) {
-			// if all = tl::nullopt -> use previous setup
-            isize n = data.dim;
-            isize n_eq = data.n_eq;
-            isize n_in = data.n_in;
-            linearsolver::sparse::MatMut<T, I> kkt = data.kkt_mut();
-            auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
-            linearsolver::sparse::MatMut<T, I> H_ =
-                    detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
-            linearsolver::sparse::MatMut<T, I> AT_ =
-                    detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
-            linearsolver::sparse::MatMut<T, I> CT_ =
-                    detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
-
-            sparse::QpView<T, I> qp = {
-                H_.as_const(),
-                {linearsolver::sparse::from_eigen, g},
-                AT_.as_const(),
-                {linearsolver::sparse::from_eigen, b},
-                CT_.as_const(),
-                {linearsolver::sparse::from_eigen, l},
-                {linearsolver::sparse::from_eigen, u}};
-
-			qp_setup(
-                    qp,
-                    results,
-                    data,
-					work,
-                    ruiz);
-		} else {
-        */
-
-
-		
 	};
 
 	void solve() {
@@ -227,7 +190,7 @@ public:
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
-	void warm_sart(
+	void warm_start(
 			tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
