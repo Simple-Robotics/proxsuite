@@ -1,4 +1,5 @@
 #include <qp/dense/wrapper.hpp>
+#include <qp/sparse/wrapper.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
@@ -22,24 +23,14 @@ namespace python {
 template <typename T>
 void exposeQpObject(pybind11::module_ m) {
 
-	//::pybind11::implicitly_convertible<tl::nullopt, ::pybind11::none>();
-	/*
-	pybind11::class_<tl::nullopt_t>(m, "None")
-          .def(py::init<>())
-          .def(py::init<int>())
-          .def(py::init([](pybind11::none const&) { return tl::nullopt{}; }));
-	*/
-
-	//pybind11::implicitly_convertible<pybind11::none, tl::nullopt>();
-
-	::pybind11::class_<proxsuite::qp::dense::QP<T>>(m, "QP")
+	::pybind11::class_<proxsuite::qp::dense::QP<T>>(m, "QP_dense")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readwrite(
 					"results",
 					&qp::dense::QP<T>::results,
 					"class containing the solution or certificate of infeasibility, "
 					"and "
-					"information statistics in a info subclass.")
+					"information statistics in an info subclass.")
 			.def_readwrite(
 					"settings",
 					&qp::dense::QP<T>::settings,
@@ -117,7 +108,7 @@ void exposeQpObject(pybind11::module_ m) {
 			.def(
 					"cleanup",
 					&qp::dense::QP<T>::cleanup,
-					"function used for warm cleaning the workspace and result "
+					"function used for cleaning the workspace and result "
 					"classes.");
 }
 } //namespace python

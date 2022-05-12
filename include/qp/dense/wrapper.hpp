@@ -445,10 +445,10 @@ public:
 					work,
 					results);
 		} else if (
-				H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
+				(H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
-				l != tl::nullopt) {
-			// if all != tl::nullopt -> initial setup
+				l != tl::nullopt) || (H != tl::nullopt) || (A != tl::nullopt) || (C != tl::nullopt)) {
+			// if all != tl::nullopt -> initial setup or re setup as a matrix is involved anyway 
 			setup_sparse(
 					H.value(),
 					g.value(),
@@ -462,19 +462,9 @@ public:
 					work,
 					results);
 		} else {
-			// some inputs are not equal to tl::nullopt -> do first an update 
-			/*
-			data.H = Eigen::
-					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-							H.value());
-			data.A = Eigen::
-					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-							A.value());
-			data.C = Eigen::
-					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-							C.value());
-			*/
-			update(H, g, A, b, C, u, l);
+			// inputs involved are only vectors -> do an update 
+
+			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
 		}
 		//setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
 	};

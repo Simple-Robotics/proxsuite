@@ -1,6 +1,6 @@
 #include <maros_meszaros.hpp>
 #include <benchmark/benchmark.h>
-#include <qp/sparse/solver.hpp>
+#include <qp/sparse/wrapper.hpp>
 #include <util.hpp>
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"

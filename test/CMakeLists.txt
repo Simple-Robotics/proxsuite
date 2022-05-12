@@ -40,8 +40,8 @@ add_custom_target(
   DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
 )
 add_executable(test.qp_eq.py src/qp_eq_py.cpp)
-target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS})
 add_dependencies(test.qp_eq.py test.qp_eq.py.generated_problems)
+target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS} doctest_main)
 
 ldlt_test(test.precond.ruiz src/precond_ruiz.cpp)
 ldlt_test(test.qp_eq.cpp src/qp_eq.cpp)
@@ -52,8 +52,10 @@ ldlt_test(test.sparse.ruiz src/test_ruiz_sparse.cpp)
 ldlt_test(test.sparse.qp src/test_qp_sparse.cpp)
 ldlt_test(test.sparse.maros_meszaros src/test_maros_meszaros_sparse.cpp)
 ldlt_test(test.qp_update_api src/test_qp_update_api.cpp)
+ldlt_test(test.qp_update_api_sparse src/test_qp_update_api_sparse.cpp)
 ldlt_bench(bench.maros_meszaros src/bench_maros_meszaros.cpp)
 ldlt_bench(bench.sparse.maros_meszaros src/bench_maros_meszaros_sparse.cpp)
+
 
 target_compile_definitions(
   bench.maros_meszaros PUBLIC PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
