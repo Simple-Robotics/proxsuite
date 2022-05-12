@@ -41,34 +41,6 @@ struct PrimalDualGradResult {
 };
 
 template <typename T, typename I, typename P>
-void qp_setup(
-		QpView<T, I> qp,
-		Results<T>& results,
-		Data<T, I>& data,
-		Workspace<T, I>& work,
-		P& /*precond*/) {
-	isize n = qp.H.nrows();
-	isize n_eq = qp.AT.ncols();
-	isize n_in = qp.CT.ncols();
-
-	if (results.x.rows() != n) {
-		results.x.resize(n);
-		results.x.setZero();
-	}
-	if (results.y.rows() != n_eq) {
-		results.y.resize(n_eq);
-		results.y.setZero();
-	}
-	if (results.z.rows() != n_in) {
-		results.z.resize(n_in);
-		results.z.setZero();
-	}
-
-	work._.setup_impl(
-			qp, data, P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
-}
-
-template <typename T, typename I, typename P>
 void qp_solve(
 		Results<T>& results,
 		Data<T, I>& data,

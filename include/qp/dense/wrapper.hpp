@@ -462,7 +462,8 @@ public:
 					work,
 					results);
 		} else {
-			// some inputs are not equal to tl::nullopt -> do first an update
+			// some inputs are not equal to tl::nullopt -> do first an update 
+			/*
 			data.H = Eigen::
 					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
 							H.value());
@@ -472,7 +473,8 @@ public:
 			data.C = Eigen::
 					Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
 							C.value());
-			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
+			*/
+			update(H, g, A, b, C, u, l);
 		}
 		//setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
 	};
@@ -533,8 +535,7 @@ public:
 		if (l_ != tl::nullopt) {
 			data.l = l_.value().eval();
 			work.l_scaled = data.l;
-		}
-		{ work.l_scaled = data.l; }
+		} else { work.l_scaled = data.l; }
 		if (H_ != tl::nullopt) {
 			if (A_ != tl::nullopt) {
 				if (C_ != tl::nullopt) {

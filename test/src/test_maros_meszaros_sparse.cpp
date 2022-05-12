@@ -2,7 +2,7 @@
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <fmt/core.h>
-#include <qp/sparse/solver.hpp>
+#include <qp/sparse/wrapper.hpp>
 
 using namespace qp;
 
@@ -158,6 +158,59 @@ TEST_CASE("maros meszaros wip") {
 			if (n_in > 0) {
 				CHECK((CT.transpose() * x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * x - u).maxCoeff() < eps);
+			}
+		}
+	}
+}
+
+TEST_CASE("maros meszaros wip using the API") {
+	using T = double;
+	using I = mat_int32_t;
+	for (auto const* file : files) {
+		auto qp_raw = load_qp(file);
+		isize n = qp_raw.P.rows();
+		isize n_eq_in = qp_raw.A.rows();
+
+		bool skip = (n > 1000 || n_eq_in > 1000);
+		::fmt::print(
+				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
+				qp_raw.filename,
+				n,
+				n_eq_in,
+				skip ? "skipping" : "");
+
+		if (!skip) {
+
+			auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
+			auto& H = preprocessed.H;
+			auto& AT = preprocessed.AT;
+			auto& CT = preprocessed.CT;
+			auto& g = preprocessed.g;
+			auto& b = preprocessed.b;
+			auto& u = preprocessed.u;
+			auto& l = preprocessed.l;
+
+			isize n_eq = AT.cols();
+			isize n_in = CT.cols();
+
+			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
+
+			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
+			Qp.settings.max_iter = 1.E6;
+			Qp.settings.mu_max_in = 1.E9;
+			Qp.settings.mu_max_eq = 1.E9;
+			auto& eps = Qp.settings.eps_abs;
+			Qp.setup_sparse_matrices(H,g,AT,b,CT,u,l);
+			Qp.solve();
+
+			CHECK(
+					qp::dense::infty_norm(
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
+					eps);
+			CHECK(qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
+			if (n_in > 0) {
+				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
+				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 			}
 		}
 	}
