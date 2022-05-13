@@ -7,13 +7,13 @@ namespace proxsuite {
 namespace qp {
 namespace python {
 
-template <typename T>
+template <typename T,typename I>
 void exposeAlgorithm(pybind11::module_ m) {
 	qp::dense::python::exposeData<T>(m);
-	//qp::dense::python::exposeWorkspace<T>(m);
 	qp::python::exposeResults<T>(m);
 	qp::python::exposeSettings<T>(m);
-	qp::python::exposeQpObject<T>(m);
+	qp::python::exposeQpObjectDense<T>(m);
+    qp::python::exposeQpObjectSparse<T,I>(m);
 }
 
 PYBIND11_MODULE(prox_suite, m) {
@@ -27,7 +27,7 @@ PYBIND11_MODULE(prox_suite, m) {
 
         prox_suite
     )pbdoc";
-	exposeAlgorithm<f64>(m);
+	exposeAlgorithm<f64,int32_t>(m);
 }
 
 } // namespace python

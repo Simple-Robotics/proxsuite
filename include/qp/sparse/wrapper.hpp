@@ -116,7 +116,7 @@ void qp_setup(
 }
 ///// QP object
 template <typename T,typename I>
-struct QP_sparse {
+struct QP {
 public:
 	Results<T> results;
 	Settings<T> settings;
@@ -124,7 +124,7 @@ public:
 	Workspace<T,I> work;
     preconditioner::RuizEquilibration<T, I> ruiz;
 
-	QP_sparse(isize _dim, isize _n_eq, isize _n_in)
+	QP(isize _dim, isize _n_eq, isize _n_in)
 			: results(_dim, _n_eq, _n_in),
 				settings(),
 				data(),
@@ -138,13 +138,14 @@ public:
 			const tl::optional<SparseMat<T,I>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-  
+                
+        SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
         // only initial setup available (if an update of only one)
 
         SparseMat<T, I> AT = A.value().transpose();
         SparseMat<T, I> CT = C.value().transpose();
         sparse::QpView<T, I> qp = {
-            {linearsolver::sparse::from_eigen, H.value()},
+            {linearsolver::sparse::from_eigen, H_triu},
             {linearsolver::sparse::from_eigen, g.value()},
             {linearsolver::sparse::from_eigen, AT},
             {linearsolver::sparse::from_eigen, b.value()},

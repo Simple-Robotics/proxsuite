@@ -822,7 +822,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "x_wm :  " << x_wm << std::endl;
 	std::cout << "y_wm :  " << y_wm << std::endl;
 	std::cout << "z_wm :  " << z_wm << std::endl;
-	Qp.warm_sart(x_wm, y_wm, z_wm);
+	Qp.warm_start(x_wm, y_wm, z_wm);
 	Qp.setup_dense_matrices(
 			tl::nullopt,
 			tl::nullopt,

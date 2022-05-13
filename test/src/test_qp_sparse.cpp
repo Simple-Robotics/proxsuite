@@ -99,7 +99,7 @@ TEST_CASE("random ruiz using the API") {
 
 		{
 
-			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
+			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
 			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();
@@ -200,7 +200,7 @@ TEST_CASE("random id using the API") {
 		auto u = (l.array() + 1).matrix().eval();
 
 		{
-			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
+			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
 			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();

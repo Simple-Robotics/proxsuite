@@ -195,7 +195,7 @@ TEST_CASE("maros meszaros wip using the API") {
 
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
-			qp::sparse::QP_sparse<T,I> Qp(n, n_eq, n_in);
+			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.max_iter = 1.E6;
 			Qp.settings.mu_max_in = 1.E9;
 			Qp.settings.mu_max_eq = 1.E9;

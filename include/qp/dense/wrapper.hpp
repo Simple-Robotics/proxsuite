@@ -564,7 +564,7 @@ public:
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
-	void warm_sart(
+	void warm_start(
 			tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {

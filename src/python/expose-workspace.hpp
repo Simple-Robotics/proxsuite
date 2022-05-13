@@ -8,7 +8,7 @@ namespace qp {
 namespace dense {
 namespace python {
 template <typename T>
-void exposeWorkspace(pybind11::module_ m) {
+void exposeWorkspaceDense(pybind11::module_ m) {
 	::pybind11::class_<qp::dense::Workspace<T>>(m, "Workspace")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readwrite("H_scaled", &qp::dense::Workspace<T>::H_scaled)
