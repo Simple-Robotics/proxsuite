@@ -295,65 +295,55 @@ void warm_starting(
  * 
  * Example usage:
  * ```cpp
-#include <linearsolver/dense/ldlt.hpp>
-#include <veg/util/dynstack_alloc.hpp>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
+#include <qp/dense/dense.hpp>
+#include <veg/util/dbg.hpp>
+#include <test/include/util.hpp>
 
+using T = double;
 auto main() -> int {
-	constexpr auto DYN = Eigen::Dynamic;
-	using Matrix = Eigen::Matrix<double, DYN, DYN>;
-	using Vector = Eigen::Matrix<double, DYN, 1>;
-	using Ldlt = linearsolver::dense::Ldlt<double>;
-	using veg::dynstack::StackReq;
 
-	// allocate a matrix `a`
-	auto a0 = Matrix{
-			2,
-			2,
-	};
+	// Generate a random QP problem
+	ldlt_test::rand::set_seed(1);
+	qp::isize dim = 10;
+	qp::isize n_eq(dim / 4);
+	qp::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	T sparsity_factor = 0.15;
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor}; 
+	
+	// Solve the problem
+	qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	Qp.settings.eps_abs = T(1e-9); // choose accuracy needed
+	Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); // setup the QP object
+	Qp.solve(); // solve the problem
 
-	// workspace memory requirements
-	auto req =
-			Ldlt::factorize_req(2) |          // initial factorization of dim 2
-			Ldlt::insert_block_at_req(2, 1) | // or 1 insertion to matrix of dim 2
-			Ldlt::delete_at_req(3, 2) |       // or 2 deletions from matrix of dim 3
-			Ldlt::solve_in_place_req(1);      // or solve in place with dim 1
+	// Verify solution accuracy
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+			qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+					qp.C.transpose() * Qp.results.z)
+					.lpNorm<Eigen::Infinity>();
+	VEG_ASSERT(pri_res <= eps_abs);
+	VEG_ASSERT(dua_res <= eps_abs);
 
-	VEG_MAKE_STACK(stack, req);
-
-	Ldlt ldl;
-
-	// fill up the lower triangular part
-	// matrix is
-	// 1.0 2.0
-	// 2.0 3.0
-	a0(0, 0) = 1.0;
-	a0(1, 0) = 2.0;
-	a0(1, 1) = 3.0;
-
-	ldl.factorize(a0, stack);
-
-	// add one column at the index 1
-	// matrix is
-	// 1.0 4.0 2.0
-	// 4.0 5.0 6.0
-	// 2.0 6.0 3.0
-	auto c = Matrix{3, 1};
-	c(0, 0) = 4.0;
-	c(1, 0) = 5.0;
-	c(2, 0) = 6.0;
-	ldl.insert_block_at(1, c, stack);
-
-	// then delete two rows and columns at indices 0 and 2
-	// matrix is
-	// 5.0
-	veg::isize const indices[] = {0, 2};
-	ldl.delete_at(indices, 2, stack);
-
-	auto rhs = Vector{1};
-	rhs[0] = 5.0;
-
-	ldl.solve_in_place(rhs, stack);
-	VEG_ASSERT(rhs[0] == 1.0);
+	// Some solver statistics
+	std::cout << "------solving qp with dim: " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter
+						<< std::endl;
 }
  * ```
  */
@@ -575,6 +565,117 @@ public:
 		work.reset_workspace();
 	}
 };
+
+template <typename T>
+qp::Results<T> solve(const tl::optional<MatRef<T>> H,
+			tl::optional<VecRef<T>> g,
+			const tl::optional<MatRef<T>> A,
+			tl::optional<VecRef<T>> b,
+			const tl::optional<MatRef<T>> C,
+			tl::optional<VecRef<T>> u,
+			tl::optional<VecRef<T>> l,
+
+			tl::optional<T> eps_abs,
+			tl::optional<T> eps_rel,
+			tl::optional<T> rho,
+			tl::optional<T> mu_eq,
+			tl::optional<T> mu_in,
+			tl::optional<VecRef<T>> x,
+			tl::optional<VecRef<T>> y,
+			tl::optional<VecRef<T>> z,
+			tl::optional<bool> verbose,
+			tl::optional<isize> max_iter,
+			tl::optional<T> alpha_bcl,
+			tl::optional<T> beta_bcl,
+			tl::optional<T> refactor_dual_feasibility_threshold,
+			tl::optional<T> refactor_rho_threshold,
+			tl::optional<T> mu_max_eq,
+			tl::optional<T> mu_max_in,
+			tl::optional<T> mu_update_factor,
+			tl::optional<T> cold_reset_mu_eq,
+			tl::optional<T> cold_reset_mu_in,
+			tl::optional<isize> max_iter_in,
+			tl::optional<T> eps_refact,
+			tl::optional<isize> nb_iterative_refinement,
+			tl::optional<T> eps_primal_inf,
+			tl::optional<T> eps_dual_inf
+			){
+
+	isize n = H.value().rows();
+	isize n_eq = A.value().rows();
+	isize n_in = C.value().rows();
+
+	qp::dense::QP<T> Qp(n, n_eq, n_in);
+	Qp.setup_dense_matrices(H,g,A,b,C,u,l); // symbolic factorisation done here
+
+	Qp.update_prox_parameter(rho,mu_eq,mu_in);
+	Qp.warm_start(x,y,z);
+
+	if (eps_abs != tl::nullopt){
+		Qp.settings.eps_abs = eps_abs.value();
+	}
+	if (eps_rel != tl::nullopt){
+		Qp.settings.eps_rel = eps_rel.value();
+	}
+	if (verbose != tl::nullopt){
+		Qp.settings.verbose = verbose.value();
+	}
+	if (alpha_bcl!=tl::nullopt){
+		Qp.settings.alpha_bcl = alpha_bcl.value();
+	}
+	if (beta_bcl != tl::nullopt){
+		Qp.settings.beta_bcl = beta_bcl.value();
+	}
+	if (refactor_dual_feasibility_threshold!=tl::nullopt){
+		Qp.settings.refactor_dual_feasibility_threshold = refactor_dual_feasibility_threshold.value();
+	}
+	if (refactor_rho_threshold!=tl::nullopt){
+		Qp.settings.refactor_rho_threshold = refactor_rho_threshold.value();
+	}
+	if (mu_max_eq!=tl::nullopt){
+		Qp.settings.mu_max_eq = mu_max_eq.value();
+		Qp.settings.mu_max_eq_inv = T(1)/mu_max_eq.value();
+	}
+	if (mu_max_in!=tl::nullopt){
+		Qp.settings.mu_max_in = mu_max_in.value();
+		Qp.settings.mu_max_in_inv = T(1)/mu_max_in.value();
+	}
+	if (mu_update_factor!=tl::nullopt){
+		Qp.settings.mu_update_factor = mu_update_factor.value();
+		Qp.settings.mu_update_inv_factor = T(1)/mu_update_factor.value();
+	}
+	if (cold_reset_mu_eq!=tl::nullopt){
+		Qp.settings.cold_reset_mu_eq = cold_reset_mu_eq.value();
+		Qp.settings.cold_reset_mu_eq_inv = T(1)/cold_reset_mu_eq.value();
+	}
+	if (cold_reset_mu_in!=tl::nullopt){
+		Qp.settings.cold_reset_mu_in = cold_reset_mu_in.value();
+		Qp.settings.cold_reset_mu_in_inv = T(1)/cold_reset_mu_in.value();
+	}
+	if (max_iter != tl::nullopt){
+		Qp.settings.max_iter = max_iter.value();
+	}
+	if (max_iter_in != tl::nullopt){
+		Qp.settings.max_iter_in = max_iter_in.value();
+	}
+	if (eps_refact != tl::nullopt){
+		Qp.settings.eps_refact = eps_refact.value();
+	}
+	if (nb_iterative_refinement != tl::nullopt){
+		Qp.settings.nb_iterative_refinement = nb_iterative_refinement.value();
+	}
+	if (eps_primal_inf != tl::nullopt){
+		Qp.settings.eps_primal_inf = eps_primal_inf.value();
+	}
+	if (eps_dual_inf != tl::nullopt){
+		Qp.settings.eps_dual_inf = eps_dual_inf.value();
+	}
+
+	Qp.solve(); // numeric facotisation done here
+
+	return Qp.results;
+};
+
 
 } // namespace dense
 } // namespace qp
