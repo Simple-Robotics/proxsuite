@@ -14,6 +14,8 @@ void exposeAlgorithm(pybind11::module_ m) {
 	qp::python::exposeSettings<T>(m);
 	qp::python::exposeQpObjectDense<T>(m);
     qp::python::exposeQpObjectSparse<T,I>(m);
+    //qp::python::solveDenseQp<T>(m);
+    //qp::python::solveSparseQp<T,I>(m);
 }
 
 PYBIND11_MODULE(prox_suite, m) {

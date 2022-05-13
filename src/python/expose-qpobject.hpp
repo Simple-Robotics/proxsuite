@@ -98,7 +98,7 @@ void exposeQpObjectDense(pybind11::module_ m) {
 							tl::nullopt,
 							"dual inequatlity constraint proximal parameter"))
 			.def(
-					"warm_sart",
+					"warm_start",
 					&qp::dense::QP<T>::warm_start,
 					"function used for warm starting the solver with some vectors. The "
 					"user must settup back the solver before using solve method.",
