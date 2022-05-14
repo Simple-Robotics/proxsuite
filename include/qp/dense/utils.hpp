@@ -1,3 +1,6 @@
+/**
+ * @file utils.hpp 
+*/
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
 

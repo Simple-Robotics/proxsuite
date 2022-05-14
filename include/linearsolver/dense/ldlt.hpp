@@ -1,3 +1,4 @@
+/** \file */
 #ifndef DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 #define DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 

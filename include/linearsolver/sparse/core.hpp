@@ -1,3 +1,4 @@
+/** \file */
 #ifndef SPARSE_LDLT_CORE_HPP_TL3ADOGVS
 #define SPARSE_LDLT_CORE_HPP_TL3ADOGVS
 

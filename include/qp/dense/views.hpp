@@ -1,3 +1,6 @@
+/**
+ * @file views.hpp 
+*/
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
 

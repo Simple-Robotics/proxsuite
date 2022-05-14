@@ -13,12 +13,15 @@ namespace python {
 template <typename T>
 void solveDenseQp(pybind11::module_ m) {
 
-    m.def("solve_dense_qp", &qp::dense::solve<T>,"function for solving a dense QP problem. It is possible to setting up solver parameters or warm start it.",
-        pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
+    m.def("solve_dense_qp", &qp::dense::solve<T>,"function for solving a QP problem using dense backend. It is possible to setting up solver parameters or warm start it.",
+        pybind11::arg_v("H_dense", tl::nullopt, "quadratic cost with dense format."),
+        pybind11::arg_v("H_sparse", tl::nullopt, "quadratic cost in sparse format"),
         pybind11::arg_v("g", tl::nullopt, "linear cost"),
-        pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),
+        pybind11::arg_v("A_dense", tl::nullopt, "equality constraint matrix with dense format."),
+        pybind11::arg_v("A_sparse", tl::nullopt, "equality constraint matrix in sparse format"),
         pybind11::arg_v("b", tl::nullopt, "equality constraint vector"),
-        pybind11::arg_v("C", tl::nullopt, "inequality constraint matrix"),
+        pybind11::arg_v("C_dense", tl::nullopt, "inequality constraint matrix with dense format."),
+        pybind11::arg_v("C_sparse", tl::nullopt, "inequality constraint matrix in sparse format"),
         pybind11::arg_v("u", tl::nullopt, "upper inequality constraint vector"),
         pybind11::arg_v("l", tl::nullopt, "lower inequality constraint vector"),
         pybind11::arg_v("eps_abs", tl::nullopt, "absolute accuracy level used for the solver stopping criterion."),
@@ -51,7 +54,7 @@ void solveDenseQp(pybind11::module_ m) {
 template <typename T,typename I>
 void solveSparseQp(pybind11::module_ m) {
 
-    m.def("solve_sparse_qp", &qp::sparse::solve<T,I>,"function for solving a sparse QP problem. It is possible to setting up solver parameters or warm start it.",
+    m.def("solve_sparse_qp", &qp::sparse::solve<T,I>,"function for solving a QP problem with sparse backend. It is possible to setting up solver parameters or warm start it.",
         pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
         pybind11::arg_v("g", tl::nullopt, "linear cost"),
         pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),

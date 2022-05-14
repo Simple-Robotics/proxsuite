@@ -1,3 +1,4 @@
+/** \file */
 #ifndef INRIA_LDLT_DATA_HPP_BUGNS2RTS
 #define INRIA_LDLT_DATA_HPP_BUGNS2RTS
 

@@ -567,14 +567,16 @@ public:
 };
 
 template <typename T>
-qp::Results<T> solve(const tl::optional<MatRef<T>> H,
+qp::Results<T> solve(const tl::optional<MatRef<T>> H_dense,
+			const tl::optional<SparseMat<T>> H_sparse,
 			tl::optional<VecRef<T>> g,
-			const tl::optional<MatRef<T>> A,
+			const tl::optional<MatRef<T>> A_dense,
+			const tl::optional<SparseMat<T>> A_sparse,
 			tl::optional<VecRef<T>> b,
-			const tl::optional<MatRef<T>> C,
+			const tl::optional<MatRef<T>> C_dense,
+			const tl::optional<SparseMat<T>> C_sparse,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l,
-
 			tl::optional<T> eps_abs,
 			tl::optional<T> eps_rel,
 			tl::optional<T> rho,
@@ -600,14 +602,26 @@ qp::Results<T> solve(const tl::optional<MatRef<T>> H,
 			tl::optional<T> eps_primal_inf,
 			tl::optional<T> eps_dual_inf
 			){
-
-	isize n = H.value().rows();
-	isize n_eq = A.value().rows();
-	isize n_in = C.value().rows();
-
+	
+	isize n(0);
+	isize n_eq(0);
+	isize n_in(0);
+	if (H_sparse!=tl::nullopt){
+		n = H_sparse.value().rows();
+		n_eq = A_sparse.value().rows();
+		n_in = C_sparse.value().rows();
+	}else{
+		n = H_dense.value().rows();
+		n_eq = A_dense.value().rows();
+		n_in = C_dense.value().rows();	
+	}
 	qp::dense::QP<T> Qp(n, n_eq, n_in);
-	Qp.setup_dense_matrices(H,g,A,b,C,u,l); // symbolic factorisation done here
-
+	if(H_sparse!=tl::nullopt){
+		Qp.setup_sparse_matrices(H_sparse,g,A_sparse,b,C_sparse,u,l); 
+	}else{
+		Qp.setup_dense_matrices(H_dense,g,A_dense,b,C_dense,u,l); 
+	}
+	
 	Qp.update_prox_parameter(rho,mu_eq,mu_in);
 	Qp.warm_start(x,y,z);
 
@@ -671,7 +685,7 @@ qp::Results<T> solve(const tl::optional<MatRef<T>> H,
 		Qp.settings.eps_dual_inf = eps_dual_inf.value();
 	}
 
-	Qp.solve(); // numeric facotisation done here
+	Qp.solve(); 
 
 	return Qp.results;
 };

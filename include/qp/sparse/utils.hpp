@@ -1,4 +1,3 @@
-
 /** \file */
 
 #ifndef PROXSUITE_QP_SPARSE_UTILS_HPP

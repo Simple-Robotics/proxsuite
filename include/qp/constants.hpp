@@ -1,3 +1,6 @@
+/**
+ * @file constants.hpp 
+*/
 #ifndef PROXSUITE_INCLUDE_QP_CONSTANTS_HPP
 #define PROXSUITE_INCLUDE_QP_CONSTANTS_HPP
 

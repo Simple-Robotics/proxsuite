@@ -1,3 +1,4 @@
+/** \file */
 #ifndef DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 #define DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 

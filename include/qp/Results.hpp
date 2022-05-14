@@ -1,3 +1,6 @@
+/**
+ * @file Results.hpp 
+*/
 #ifndef PROXSUITE_INCLUDE_QP_RESULTS_HPP
 #define PROXSUITE_INCLUDE_QP_RESULTS_HPP
 
