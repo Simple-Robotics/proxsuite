@@ -4,7 +4,7 @@
 #include <fmt/core.h>
 #include <qp/sparse/wrapper.hpp>
 
-using namespace qp;
+using namespace proxsuite::qp;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -80,6 +80,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
+/*
 TEST_CASE("maros meszaros wip") {
 	using T = double;
 	using I = mat_int32_t;
@@ -162,6 +163,7 @@ TEST_CASE("maros meszaros wip") {
 		}
 	}
 }
+*/
 
 TEST_CASE("maros meszaros wip using the API") {
 	using T = double;
@@ -195,19 +197,18 @@ TEST_CASE("maros meszaros wip using the API") {
 
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
-			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+			proxsuite::qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.max_iter = 1.E6;
-			Qp.settings.mu_max_in = 1.E9;
-			Qp.settings.mu_max_eq = 1.E9;
+			Qp.settings.verbose = false;
 			auto& eps = Qp.settings.eps_abs;
 			Qp.setup_sparse_matrices(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			Qp.solve();
 
 			CHECK(
-					qp::dense::infty_norm(
+					proxsuite::qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
 					eps);
-			CHECK(qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
+			CHECK(proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
 			if (n_in > 0) {
 				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);

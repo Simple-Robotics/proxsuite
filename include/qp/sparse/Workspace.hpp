@@ -173,8 +173,8 @@ struct Workspace {
 
 			auto lnnz = isize(zero_extend(ldl_col_ptrs[n_tot]));
 
-			// if qp much sparser than kkt
-			// do_ldlt = !overflow && lnnz < (100 * nnz_tot);
+			// if ldlt is too sparse
+			// do_ldlt = !overflow && lnnz < (10000000);
 			do_ldlt = !overflow && lnnz < 10000000;
 
 #define PROX_QP_ALL_OF(...)                                                    \

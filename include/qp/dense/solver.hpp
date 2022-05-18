@@ -267,7 +267,7 @@ void bcl_update(
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}
-		bcl_eta_ext = bcl_eta_ext * pow(qpresults.info.mu_in, qpsettings.beta_bcl);
+		bcl_eta_ext *= pow(qpresults.info.mu_in, qpsettings.beta_bcl);
 		bcl_eta_in = std::max(bcl_eta_in * qpresults.info.mu_in, eps_in_min);
 	} else {
 		if (qpsettings.verbose) {
@@ -285,10 +285,10 @@ void bcl_update(
 				qpsettings.mu_max_eq);
 		new_bcl_mu_in_inv = std::min(
 				qpresults.info.mu_in_inv * qpsettings.mu_update_inv_factor,
-				qpsettings.mu_max_in_inv); // mu stores the inverse of mu
+				qpsettings.mu_max_in_inv);
 		new_bcl_mu_eq_inv = std::min(
 				qpresults.info.mu_eq_inv * qpsettings.mu_update_inv_factor,
-				qpsettings.mu_max_eq_inv); // mu stores the inverse of mu
+				qpsettings.mu_max_eq_inv);
 		bcl_eta_ext = bcl_eta_ext_init * pow(new_bcl_mu_in, qpsettings.alpha_bcl);
 		bcl_eta_in = std::max(new_bcl_mu_in, eps_in_min);
 	}
