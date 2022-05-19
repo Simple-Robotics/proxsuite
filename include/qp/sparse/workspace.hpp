@@ -14,8 +14,10 @@
 #include "qp/sparse/views.hpp"
 #include "qp/sparse/model.hpp"
 #include "qp/results.hpp"
+#include "qp/sparse/utils.hpp"
 
 #include <iostream>
+#include <memory>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 
@@ -24,13 +26,110 @@ namespace qp {
 namespace sparse {
 
 template <typename T, typename I>
+struct Workspace;
+
+template <typename T, typename I>
+void refactorize(
+		Results<T> const& results,
+		bool do_ldlt,
+		isize n_tot,
+		linearsolver::sparse::MatMut<T, I> kkt_active,
+		veg::SliceMut<bool> active_constraints,
+		Eigen::MINRES<
+				detail::AugmentedKkt<T, I>,
+				Eigen::Upper | Eigen::Lower,
+				Eigen::IdentityPreconditioner>& iterative_solver,
+		Model<T, I> data,
+		I* etree,
+		I* ldl_nnz_counts,
+		I* ldl_row_indices,
+		I* perm_inv,
+		T* ldl_values,
+		I* perm,
+		I* ldl_col_ptrs,
+		veg::dynstack::DynStackMut stack,
+		linearsolver::sparse::MatMut<T, I> ldl,
+		detail::AugmentedKkt<T, I>& aug_kkt,
+		veg::Tag<T>& xtag) {
+	T mu_eq_neg = -results.info.mu_eq;
+	T mu_in_neg = -results.info.mu_in;
+	if (do_ldlt) {
+		linearsolver::sparse::factorize_symbolic_non_zeros(
+				ldl_nnz_counts, etree, perm_inv, perm, kkt_active.symbolic(), stack);
+
+		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
+		T* diag = _diag.ptr_mut();
+
+		for (isize i = 0; i < data.dim; ++i) {
+			diag[i] = results.info.rho;
+		}
+		for (isize i = 0; i < data.n_eq; ++i) {
+			diag[data.dim + i] = mu_eq_neg;
+		}
+		for (isize i = 0; i < data.n_in; ++i) {
+			diag[(data.dim + data.n_eq) + i] =
+					active_constraints[i] ? mu_in_neg : T(1);
+		}
+
+		linearsolver::sparse::factorize_numeric(
+				ldl_values,
+				ldl_row_indices,
+				diag,
+				perm,
+				ldl_col_ptrs,
+				etree,
+				perm_inv,
+				kkt_active.as_const(),
+				stack);
+		isize ldl_nnz = 0;
+		for (isize i = 0; i < n_tot; ++i) {
+			ldl_nnz = linearsolver::sparse::util::checked_non_negative_plus(
+					ldl_nnz, isize(ldl_nnz_counts[i]));
+		}
+		ldl._set_nnz(ldl_nnz);
+	} else {
+		aug_kkt = {
+				{kkt_active.as_const(),
+		     active_constraints.as_const(),
+		     data.dim,
+		     data.n_eq,
+		     data.n_in,
+		     results.info.rho,
+		     results.info.mu_eq_inv,
+		     results.info.mu_in_inv}};
+		iterative_solver.compute(aug_kkt);
+	}
+};
+
+template <typename T, typename I>
 struct Workspace {
 
 	struct /* NOLINT */ {
+		// temporary allocations
 		veg::Vec<veg::mem::byte> storage;
-		veg::Vec<I> ldl_col_ptrs;
-		veg::Vec<I> perm_inv;
 		bool do_ldlt;
+		// persistent allocations
+
+		Eigen::Matrix<T, Eigen::Dynamic, 1> g_scaled;
+		Eigen::Matrix<T, Eigen::Dynamic, 1> b_scaled;
+		Eigen::Matrix<T, Eigen::Dynamic, 1> l_scaled;
+		Eigen::Matrix<T, Eigen::Dynamic, 1> u_scaled;
+		veg::Vec<I> kkt_nnz_counts;
+
+		veg::Vec<I> ldl_col_ptrs;
+		veg::Vec<I> ldl_nnz_counts;
+		veg::Vec<I> ldl_row_indices;
+		veg::Vec<T> ldl_values;
+		veg::Vec<I> perm_inv;
+		veg::Vec<I> etree;
+
+		// stored in unique_ptr because we need a stable address
+		std::unique_ptr<detail::AugmentedKkt<T, I>> matrix_free_kkt;
+		std::unique_ptr<Eigen::MINRES<
+				detail::AugmentedKkt<T, I>,
+				Eigen::Upper | Eigen::Lower,
+				Eigen::IdentityPreconditioner>>
+				matrix_free_solver;
 
 		auto stack_mut() -> veg::dynstack::DynStackMut {
 			return {
@@ -39,9 +138,12 @@ struct Workspace {
 			};
 		}
 
+		template <typename P>
 		void setup_impl(
 				QpView<T, I> qp,
+				Results<T>& results,
 				Model<T, I>& data,
+				P& precond,
 				veg::dynstack::StackReq precond_req) {
 			data.dim = qp.H.nrows();
 			data.n_eq = qp.AT.ncols();
@@ -135,8 +237,8 @@ struct Workspace {
 
 			bool overflow = false;
 			{
-				auto _etree = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-				auto etree = _etree.ptr_mut();
+				etree.resize_for_overwrite(n_tot);
+				auto etree_ptr = etree.ptr_mut();
 
 				using namespace veg::literals;
 				auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
@@ -150,7 +252,7 @@ struct Workspace {
 				};
 				linearsolver::sparse::factorize_symbolic_non_zeros( //
 						ldl_col_ptrs.ptr_mut() + 1,
-						etree,
+						etree_ptr,
 						perm_inv.ptr_mut(),
 						static_cast<I const*>(nullptr),
 						kkt_sym,
@@ -302,6 +404,129 @@ struct Workspace {
 					});
 
 			storage.resize_for_overwrite(req.alloc_req());
+
+			// preconditioner
+			auto kkt = data.kkt_mut();
+			auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
+
+			linearsolver::sparse::MatMut<T, I> H_scaled =
+					detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
+
+			linearsolver::sparse::MatMut<T, I> AT_scaled =
+					detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
+
+			linearsolver::sparse::MatMut<T, I> CT_scaled =
+					detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
+
+			g_scaled = data.g;
+			b_scaled = data.b;
+			l_scaled = data.l;
+			u_scaled = data.u;
+
+			QpViewMut<T, I> qp_scaled = {
+					H_scaled,
+					{linearsolver::sparse::from_eigen, g_scaled},
+					AT_scaled,
+					{linearsolver::sparse::from_eigen, b_scaled},
+					CT_scaled,
+					{linearsolver::sparse::from_eigen, l_scaled},
+					{linearsolver::sparse::from_eigen, u_scaled},
+			};
+			stack = stack_mut();
+			precond.scale_qp_in_place(qp_scaled, stack);
+
+			// initial factorization
+			kkt_nnz_counts.resize_for_overwrite(n_tot);
+
+			// H and A are always active
+			for (usize j = 0; j < usize(n + n_eq); ++j) {
+				kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+			}
+			// ineq constraints initially inactive
+			for (isize j = 0; j < n_in; ++j) {
+				kkt_nnz_counts[n + n_eq + j] = 0;
+			}
+
+			linearsolver::sparse::MatMut<T, I> kkt_active = {
+					linearsolver::sparse::from_raw_parts,
+					n_tot,
+					n_tot,
+					data.H_nnz + data.A_nnz,
+					kkt.col_ptrs_mut(),
+					kkt_nnz_counts.ptr_mut(),
+					kkt.row_indices_mut(),
+					kkt.values_mut(),
+			};
+
+			using MatrixFreeSolver = Eigen::MINRES<
+					detail::AugmentedKkt<T, I>,
+					Eigen::Upper | Eigen::Lower,
+					Eigen::IdentityPreconditioner>;
+			matrix_free_solver = std::unique_ptr<MatrixFreeSolver>{
+					new MatrixFreeSolver,
+			};
+			matrix_free_kkt = std::unique_ptr<detail::AugmentedKkt<T, I>>{
+					new detail::AugmentedKkt<T, I>{
+							{
+									kkt_active.as_const(),
+									{},
+									n,
+									n_eq,
+									n_in,
+									{},
+									{},
+									{},
+							},
+					}};
+
+			auto zx = linearsolver::sparse::util::zero_extend;
+			auto max_lnnz = isize(zx(ldl_col_ptrs[n_tot]));
+			isize ldlt_ntot = do_ldlt ? n_tot : 0;
+			isize ldlt_lnnz = do_ldlt ? max_lnnz : 0;
+
+			ldl_nnz_counts.resize_for_overwrite(ldlt_ntot);
+			ldl_row_indices.resize_for_overwrite(ldlt_lnnz);
+			ldl_values.resize_for_overwrite(ldlt_lnnz);
+
+			auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
+			I* perm = _perm.ptr_mut();
+			if (do_ldlt) {
+				// compute perm from perm_inv
+				for (isize i = 0; i < n_tot; ++i) {
+					perm[isize(zx(perm_inv[i]))] = I(i);
+				}
+			}
+
+			linearsolver::sparse::MatMut<T, I> ldl = {
+					linearsolver::sparse::from_raw_parts,
+					n_tot,
+					n_tot,
+					0,
+					ldl_col_ptrs.ptr_mut(),
+					do_ldlt ? ldl_nnz_counts.ptr_mut() : nullptr,
+					ldl_row_indices.ptr_mut(),
+					ldl_values.ptr_mut(),
+			};
+
+			refactorize(
+					results,
+					do_ldlt,
+					n_tot,
+					kkt_active,
+					results.active_constraints.as_mut(),
+					*matrix_free_solver.get(),
+					data,
+					etree.ptr_mut(),
+					ldl_nnz_counts.ptr_mut(),
+					ldl_row_indices.ptr_mut(),
+					perm_inv.ptr_mut(),
+					ldl_values.ptr_mut(),
+					perm,
+					ldl_col_ptrs.ptr_mut(),
+					stack,
+					ldl,
+					*matrix_free_kkt.get(),
+					xtag);
 		}
 	} _;
 
@@ -318,8 +543,8 @@ struct Workspace {
 	}
 };
 
-}//namespace sparse
-}//namespace qp
-}//namespace proxsuite
+} //namespace sparse
+} //namespace qp
+} //namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_QP_SPARSE_WORKSPACE_HPP */

@@ -14,7 +14,6 @@
 #include "qp/results.hpp"
 #include "qp/sparse/views.hpp"
 #include "qp/sparse/model.hpp"
-#include "qp/sparse/workspace.hpp"
 #include "qp/sparse/preconditioner/ruiz.hpp"
 #include "qp/sparse/preconditioner/identity.hpp"
 
@@ -22,10 +21,9 @@
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 
-
-namespace proxsuite{
+namespace proxsuite {
 namespace qp {
-namespace sparse{
+namespace sparse {
 
 using dense::infty_norm;
 template <typename T, typename I>
@@ -458,8 +456,65 @@ auto unscaled_primal_dual_residual(
 }
 
 } // namespace detail
-} // namespace sparse 
-} // namespace qp 
-} // namespace proxsuite 
+} // namespace sparse
+} // namespace qp
+} // namespace proxsuite
+
+namespace Eigen {
+namespace internal {
+template <typename T, typename I>
+struct traits<proxsuite::qp::sparse::detail::AugmentedKkt<T, I>>
+		: Eigen::internal::traits<Eigen::SparseMatrix<T, Eigen::ColMajor, I>> {};
+
+template <typename Rhs, typename T, typename I>
+struct generic_product_impl<
+		proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
+		Rhs,
+		SparseShape,
+		DenseShape,
+		GemvProduct>
+		: generic_product_impl_base<
+					proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
+					Rhs,
+					generic_product_impl<
+							proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
+							Rhs>> {
+	using Mat_ = proxsuite::qp::sparse::detail::AugmentedKkt<T, I>;
+
+	using Scalar = typename Product<Mat_, Rhs>::Scalar;
+
+	template <typename Dst>
+	static void scaleAndAddTo(
+			Dst& dst, Mat_ const& lhs, Rhs const& rhs, Scalar const& alpha) {
+		using veg::isize;
+
+		VEG_ASSERT(alpha == Scalar(1));
+		proxsuite::qp::sparse::detail::noalias_symhiv_add(
+				dst, lhs._.kkt_active.to_eigen(), rhs);
+
+		{
+			isize n = lhs._.n;
+			isize n_eq = lhs._.n_eq;
+			isize n_in = lhs._.n_in;
+
+			auto dst_x = dst.head(n);
+			auto dst_y = dst.segment(n, n_eq);
+			auto dst_z = dst.tail(n_in);
+
+			auto rhs_x = rhs.head(n);
+			auto rhs_y = rhs.segment(n, n_eq);
+			auto rhs_z = rhs.tail(n_in);
+
+			dst_x += lhs._.rho * rhs_x;
+			dst_y += (-1 / lhs._.mu_eq) * rhs_y;
+			for (isize i = 0; i < n_in; ++i) {
+				dst_z[i] +=
+						(lhs._.active_constraints[i] ? -1 / lhs._.mu_in : T(1)) * rhs_z[i];
+			}
+		}
+	}
+};
+} // namespace internal
+} // namespace Eigen
 
 #endif /* end of include guard PROXSUITE_QP_SPARSE_UTILS_HPP */

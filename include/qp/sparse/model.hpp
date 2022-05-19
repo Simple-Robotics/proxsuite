@@ -31,7 +31,7 @@ struct Model {
   Eigen::Matrix<T, Eigen::Dynamic, 1> l;
   Eigen::Matrix<T, Eigen::Dynamic, 1> u;
 
-	auto kkt() const -> linearsolver::sparse::MatMut<T, I> {
+	auto kkt() const -> linearsolver::sparse::MatRef<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;
 		auto nnz =
 				isize(linearsolver::sparse::util::zero_extend(kkt_col_ptrs[n_tot]));

@@ -6,6 +6,7 @@
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
+#include <veg/vec.hpp>
 #include "qp/status.hpp"
 
 namespace proxsuite {
@@ -49,6 +50,7 @@ struct Results {
 	Vec x;
 	Vec y;
 	Vec z;
+	veg::Vec<bool> active_constraints;
 
 	Info<T> info;
 

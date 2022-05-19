@@ -19,7 +19,6 @@
 #include "qp/sparse/preconditioner/ruiz.hpp"
 #include "qp/sparse/preconditioner/identity.hpp"
 
-
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
@@ -32,19 +31,26 @@ using veg::usize;
 using veg::i64;
 using dense::infty_norm;
 
-
-template <typename T,typename I>
-void ldl_solve(VectorViewMut<T> sol, VectorView<T> rhs,isize n_tot,
-	linearsolver::sparse::MatMut<T, I> ldl, 
-	Eigen::MINRES<detail::AugmentedKkt<T, I>,
-			Eigen::Upper | Eigen::Lower,
-			Eigen::IdentityPreconditioner>&
-			iterative_solver, bool do_ldlt,veg::dynstack::DynStackMut stack,
-			T* ldl_values,I* perm,I*ldl_col_ptrs,I const* perm_inv){
+template <typename T, typename I>
+void ldl_solve(
+		VectorViewMut<T> sol,
+		VectorView<T> rhs,
+		isize n_tot,
+		linearsolver::sparse::MatMut<T, I> ldl,
+		Eigen::MINRES<
+				detail::AugmentedKkt<T, I>,
+				Eigen::Upper | Eigen::Lower,
+				Eigen::IdentityPreconditioner>& iterative_solver,
+		bool do_ldlt,
+		veg::dynstack::DynStackMut stack,
+		T* ldl_values,
+		I* perm,
+		I* ldl_col_ptrs,
+		I const* perm_inv) {
 	LDLT_TEMP_VEC_UNINIT(T, work_, n_tot, stack);
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
-	auto zx = linearsolver::sparse::util::zero_extend; 
+	auto zx = linearsolver::sparse::util::zero_extend;
 
 	if (do_ldlt) {
 
@@ -64,7 +70,7 @@ void ldl_solve(VectorViewMut<T> sol, VectorView<T> rhs,isize n_tot,
 				{linearsolver::sparse::from_eigen, work_},
 				ldl.as_const());
 
-		for (isize i = 0; i < n_tot; ++i) { 
+		for (isize i = 0; i < n_tot; ++i) {
 			sol_e[i] = work_[isize(zx(perm_inv[i]))];
 		}
 	} else {
@@ -73,93 +79,137 @@ void ldl_solve(VectorViewMut<T> sol, VectorView<T> rhs,isize n_tot,
 	}
 };
 
-template <typename T,typename I>
-void ldl_iter_solve_noalias(VectorViewMut<T> sol,
-									VectorView<T> rhs,
-									VectorView<T> init_guess,
-									Results<T> results,
-									Model<T,I> data,
-									isize n_tot,
-									linearsolver::sparse::MatMut<T, I> ldl, 
-	Eigen::MINRES<detail::AugmentedKkt<T, I>,
-			Eigen::Upper | Eigen::Lower,
-			Eigen::IdentityPreconditioner>&
-			iterative_solver, bool do_ldlt,veg::dynstack::DynStackMut stack,T* ldl_values,I* perm,I*ldl_col_ptrs,I const* perm_inv,
-			Settings<T> const& settings,
-			linearsolver::sparse::MatMut<T, I> kkt_active,veg::SliceMut<bool> active_constraints){
-		auto rhs_e = rhs.to_eigen();
-		auto sol_e = sol.to_eigen();
+template <typename T, typename I>
+void ldl_iter_solve_noalias(
+		VectorViewMut<T> sol,
+		VectorView<T> rhs,
+		VectorView<T> init_guess,
+		Results<T> const& results,
+		Model<T, I> const& data,
+		isize n_tot,
+		linearsolver::sparse::MatMut<T, I> ldl,
+		Eigen::MINRES<
+				detail::AugmentedKkt<T, I>,
+				Eigen::Upper | Eigen::Lower,
+				Eigen::IdentityPreconditioner>& iterative_solver,
+		bool do_ldlt,
+		veg::dynstack::DynStackMut stack,
+		T* ldl_values,
+		I* perm,
+		I* ldl_col_ptrs,
+		I const* perm_inv,
+		Settings<T> const& settings,
+		linearsolver::sparse::MatMut<T, I> kkt_active,
+		veg::SliceMut<bool> active_constraints) {
+	auto rhs_e = rhs.to_eigen();
+	auto sol_e = sol.to_eigen();
 
-		if (init_guess.dim == sol.dim) {
-			sol_e = init_guess.to_eigen();
-		} else {
-			sol_e.setZero();
+	if (init_guess.dim == sol.dim) {
+		sol_e = init_guess.to_eigen();
+	} else {
+		sol_e.setZero();
+	}
+
+	LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
+
+	T prev_err_norm = std::numeric_limits<T>::infinity();
+
+	for (isize solve_iter = 0; solve_iter < settings.nb_iterative_refinement;
+	     ++solve_iter) {
+
+		auto err_x = err.head(data.dim);
+		auto err_y = err.segment(data.dim, data.n_eq);
+		auto err_z = err.tail(data.n_in);
+
+		auto sol_x = sol_e.head(data.dim);
+		auto sol_y = sol_e.segment(data.dim, data.n_eq);
+		auto sol_z = sol_e.tail(data.n_in); // removed active set condition
+
+		err = -rhs_e;
+
+		if (solve_iter > 0) {
+			T mu_eq_neg = -results.info.mu_eq;
+			T mu_in_neg = -results.info.mu_in;
+			detail::noalias_symhiv_add(err, kkt_active.to_eigen(), sol_e);
+			err_x += results.info.rho * sol_x;
+			err_y += mu_eq_neg * sol_y;
+			for (isize i = 0; i < data.n_in; ++i) {
+				err_z[i] += (active_constraints[i] ? mu_in_neg : T(1)) * sol_z[i];
+			}
 		}
 
-		LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
-
-		T prev_err_norm = std::numeric_limits<T>::infinity();
-
-		for (isize solve_iter = 0; solve_iter < settings.nb_iterative_refinement;
-				++solve_iter) {
-
-			auto err_x = err.head(data.dim);
-			auto err_y = err.segment(data.dim, data.n_eq);
-			auto err_z = err.tail(data.n_in);
-
-			auto sol_x = sol_e.head(data.dim);
-			auto sol_y = sol_e.segment(data.dim, data.n_eq);
-			auto sol_z = sol_e.tail(data.n_in); // removed active set condition
-
-			err = -rhs_e;
-
-			if (solve_iter > 0) {
-				T mu_eq_neg = -results.info.mu_eq;
-				T mu_in_neg = -results.info.mu_in; 
-				detail::noalias_symhiv_add(err, kkt_active.to_eigen(), sol_e); 
-				err_x += results.info.rho * sol_x;
-				err_y += mu_eq_neg * sol_y;
-				for (isize i = 0; i < data.n_in; ++i) {
-					err_z[i] += (active_constraints[i] ? mu_in_neg : T(1)) * sol_z[i];
-				}
-			}
-
-			T err_norm = infty_norm(err);
-			if (err_norm > prev_err_norm / T(2)) {
-				break;
-			}
-			prev_err_norm = err_norm;
-
-			ldl_solve({qp::from_eigen, err}, {qp::from_eigen, err},n_tot,ldl,iterative_solver,do_ldlt,stack,ldl_values,perm,ldl_col_ptrs,perm_inv);
-
-			sol_e -= err;
+		T err_norm = infty_norm(err);
+		if (err_norm > prev_err_norm / T(2)) {
+			break;
 		}
+		prev_err_norm = err_norm;
+
+		ldl_solve(
+				{qp::from_eigen, err},
+				{qp::from_eigen, err},
+				n_tot,
+				ldl,
+				iterative_solver,
+				do_ldlt,
+				stack,
+				ldl_values,
+				perm,
+				ldl_col_ptrs,
+				perm_inv);
+
+		sol_e -= err;
+	}
 };
 
-
-template<typename T, typename I>
-void ldl_solve_in_place(VectorViewMut<T> rhs,
-						VectorView<T> init_guess,
-						Results<T> results,
-						Model<T,I> data,
-						isize n_tot,
-						linearsolver::sparse::MatMut<T, I> ldl, 
-	Eigen::MINRES<detail::AugmentedKkt<T, I>,
-			Eigen::Upper | Eigen::Lower,
-			Eigen::IdentityPreconditioner>&
-			iterative_solver, bool do_ldlt,veg::dynstack::DynStackMut stack,T* ldl_values,I* perm,I*ldl_col_ptrs,I const* perm_inv,
-			Settings<T> const& settings,
-			linearsolver::sparse::MatMut<T, I> kkt_active,veg::SliceMut<bool> active_constraints) {
+template <typename T, typename I>
+void ldl_solve_in_place(
+		VectorViewMut<T> rhs,
+		VectorView<T> init_guess,
+		Results<T> const& results,
+		Model<T, I> const& data,
+		isize n_tot,
+		linearsolver::sparse::MatMut<T, I> ldl,
+		Eigen::MINRES<
+				detail::AugmentedKkt<T, I>,
+				Eigen::Upper | Eigen::Lower,
+				Eigen::IdentityPreconditioner>& iterative_solver,
+		bool do_ldlt,
+		veg::dynstack::DynStackMut stack,
+		T* ldl_values,
+		I* perm,
+		I* ldl_col_ptrs,
+		I const* perm_inv,
+		Settings<T> const& settings,
+		linearsolver::sparse::MatMut<T, I> kkt_active,
+		veg::SliceMut<bool> active_constraints) {
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
-	ldl_iter_solve_noalias({qp::from_eigen, tmp}, rhs.as_const(), init_guess,results, data, n_tot, ldl, iterative_solver,do_ldlt,stack,ldl_values,perm,ldl_col_ptrs,perm_inv,settings,kkt_active,active_constraints);
+	ldl_iter_solve_noalias(
+			{qp::from_eigen, tmp},
+			rhs.as_const(),
+			init_guess,
+			results,
+			data,
+			n_tot,
+			ldl,
+			iterative_solver,
+			do_ldlt,
+			stack,
+			ldl_values,
+			perm,
+			ldl_col_ptrs,
+			perm_inv,
+			settings,
+			kkt_active,
+			active_constraints);
 	rhs.to_eigen() = tmp;
 };
 
-template<typename T>
+template <typename T>
 using DMat = Eigen::Matrix<T, -1, -1>;
 
-template<typename T, typename I>
-DMat<T> inner_reconstructed_matrix(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt){
+template <typename T, typename I>
+auto inner_reconstructed_matrix(
+		linearsolver::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
 	VEG_ASSERT(do_ldlt);
 	auto ldl_dense = ldl.to_eigen().toDense();
 	auto l = DMat<T>(ldl_dense.template triangularView<Eigen::UnitLower>());
@@ -169,9 +219,13 @@ DMat<T> inner_reconstructed_matrix(linearsolver::sparse::MatMut<T, I> ldl,bool d
 	return mat;
 };
 
-template<typename T,typename I>
-DMat<T> reconstructed_matrix(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt,I const* perm_inv,isize n_tot){
-	auto mat = inner_reconstructed_matrix(ldl,do_ldlt);
+template <typename T, typename I>
+auto reconstructed_matrix(
+		linearsolver::sparse::MatMut<T, I> ldl,
+		bool do_ldlt,
+		I const* perm_inv,
+		isize n_tot) -> DMat<T> {
+	auto mat = inner_reconstructed_matrix(ldl, do_ldlt);
 	auto mat_backup = mat;
 	for (isize i = 0; i < n_tot; ++i) {
 		for (isize j = 0; j < n_tot; ++j) {
@@ -181,101 +235,30 @@ DMat<T> reconstructed_matrix(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt
 	return mat;
 };
 
-template<typename T,typename I>
-DMat<T>  reconstruction_error(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt,I const* perm_inv,Results<T> results,Model<T,I> data,isize n_tot,linearsolver::sparse::MatMut<T, I> kkt_active,veg::SliceMut<bool> active_constraints){
+template <typename T, typename I>
+auto reconstruction_error(
+		linearsolver::sparse::MatMut<T, I> ldl,
+		bool do_ldlt,
+		I const* perm_inv,
+		Results<T> const& results,
+		Model<T, I> const& data,
+		isize n_tot,
+		linearsolver::sparse::MatMut<T, I> kkt_active,
+		veg::SliceMut<bool> active_constraints) -> DMat<T> {
 	T mu_eq_neg = -results.info.mu_eq;
 	T mu_in_neg = -results.info.mu_in;
 	auto diff = DMat<T>(
-			reconstructed_matrix(ldl,do_ldlt,perm_inv,n_tot) -
+			reconstructed_matrix(ldl, do_ldlt, perm_inv, n_tot) -
 			DMat<T>(DMat<T>(kkt_active.to_eigen())
-					.template selfadjointView<Eigen::Upper>()));
+	                .template selfadjointView<Eigen::Upper>()));
 	diff.diagonal().head(data.dim).array() -= results.info.rho;
 	diff.diagonal().segment(data.dim, data.n_eq).array() -= mu_eq_neg;
 	for (isize i = 0; i < data.n_in; ++i) {
-		diff.diagonal()[data.dim + data.n_eq + i] -=  active_constraints[i] ? mu_in_neg : T(1);
+		diff.diagonal()[data.dim + data.n_eq + i] -=
+				active_constraints[i] ? mu_in_neg : T(1);
 	}
 	return diff;
 };
-
-
-template <typename T,typename I>
-void refactorize(Results<T> results,
-				bool do_ldlt,
-				Workspace<T,I> work,
-				isize n_tot,
-				linearsolver::sparse::MatMut<T, I> kkt_active,
-				veg::SliceMut<bool> active_constraints,
-				Eigen::MINRES<detail::AugmentedKkt<T, I>,
-				Eigen::Upper | Eigen::Lower,
-				Eigen::IdentityPreconditioner>& iterative_solver,
-				Model<T,I> data,
-				I* etree,
-				I* ldl_nnz_counts,
-				I* ldl_row_indices,
-				I const* perm_inv,
-				T* ldl_values,
-				I* perm,
-				I* ldl_col_ptrs,
-				veg::dynstack::DynStackMut stack,
-				linearsolver::sparse::MatMut<T, I> ldl,
-				detail::AugmentedKkt<T, I>& aug_kkt,
-				veg::Tag<T>& xtag
-				){
-	T mu_eq_neg = -results.info.mu_eq;
-	T mu_in_neg = -results.info.mu_in;
-	if (do_ldlt) {
-		linearsolver::sparse::factorize_symbolic_non_zeros(
-				ldl_nnz_counts,
-				etree,
-				work._.perm_inv.ptr_mut(),
-				perm,
-				kkt_active.symbolic(),
-				stack);
-
-		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
-		T* diag = _diag.ptr_mut();
-
-		for (isize i = 0; i < data.dim; ++i) {
-			diag[i] = results.info.rho;
-		}
-		for (isize i = 0; i < data.n_eq; ++i) {
-			diag[data.dim + i] = mu_eq_neg;
-		}
-		for (isize i = 0; i < data.n_in; ++i) {
-			diag[(data.dim + data.n_eq) + i] = active_constraints[i] ? mu_in_neg : T(1);
-		}
-
-		linearsolver::sparse::factorize_numeric(
-				ldl_values,
-				ldl_row_indices,
-				diag,
-				perm,
-				ldl_col_ptrs,
-				etree,
-				perm_inv,
-				kkt_active.as_const(),
-				stack);
-		isize ldl_nnz = 0;
-		for (isize i = 0; i < n_tot; ++i) {
-			ldl_nnz =
-					linearsolver::sparse::util::checked_non_negative_plus(ldl_nnz, isize(ldl_nnz_counts[i]));
-		}
-		ldl._set_nnz(ldl_nnz);
-	} else {
-		aug_kkt = {{
-				kkt_active.as_const(),
-				active_constraints.as_const(),
-				data.dim,
-				data.n_eq,
-				data.n_in,
-				results.info.rho,
-				results.info.mu_eq_inv,
-				results.info.mu_in_inv
-		}};
-		iterative_solver.compute(aug_kkt);
-	}
-};
-
 
 template <typename T>
 struct PrimalDualGradResult {
@@ -321,15 +304,10 @@ void qp_solve(
 	linearsolver::sparse::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
-	LDLT_TEMP_VEC_UNINIT(T, g_scaled_e, n, stack);
-	LDLT_TEMP_VEC_UNINIT(T, b_scaled_e, n_eq, stack);
-	LDLT_TEMP_VEC_UNINIT(T, l_scaled_e, n_in, stack);
-	LDLT_TEMP_VEC_UNINIT(T, u_scaled_e, n_in, stack);
-
-	g_scaled_e = data.g;
-	b_scaled_e = data.b;
-	l_scaled_e = data.l;
-	u_scaled_e = data.u;
+	auto& g_scaled_e = work._.g_scaled;
+	auto& b_scaled_e = work._.b_scaled;
+	auto& l_scaled_e = work._.l_scaled;
+	auto& u_scaled_e = work._.u_scaled;
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
@@ -341,35 +319,23 @@ void qp_solve(
 			{linearsolver::sparse::from_eigen, u_scaled_e},
 	};
 
-	precond.scale_qp_in_place(qp_scaled, stack);
-
 	T const primal_feasibility_rhs_1_eq = infty_norm(data.b);
 	T const primal_feasibility_rhs_1_in_u = infty_norm(data.u);
 	T const primal_feasibility_rhs_1_in_l = infty_norm(data.l);
 	T const dual_feasibility_rhs_2 = infty_norm(data.g);
 
 	auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
-	auto max_lnnz = isize(zx(ldl_col_ptrs[n_tot]));
 
 	veg::Tag<I> itag;
 	veg::Tag<T> xtag;
 
-	auto _active_constraints = stack.make_new(veg::Tag<bool>{}, n_in).unwrap();
-	auto _kkt_nnz_counts = stack.make_new_for_overwrite(itag, n_tot).unwrap();
-
 	bool do_ldlt = work._.do_ldlt;
 
 	isize ldlt_ntot = do_ldlt ? n_tot : 0;
-	isize ldlt_lnnz = do_ldlt ? max_lnnz : 0;
 
 	auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
-	auto _etree = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
-	auto _ldl_nnz_counts = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
-	auto _ldl_row_indices =
-			stack.make_new_for_overwrite(itag, ldlt_lnnz).unwrap();
-	auto _ldl_values = stack.make_new_for_overwrite(xtag, ldlt_lnnz).unwrap();
 
-	I const* perm_inv = work._.perm_inv.ptr();
+	I* perm_inv = work._.perm_inv.ptr_mut();
 	I* perm = _perm.ptr_mut();
 
 	if (do_ldlt) {
@@ -379,22 +345,9 @@ void qp_solve(
 		}
 	}
 
-	I* kkt_nnz_counts = _kkt_nnz_counts.ptr_mut();
+	I* kkt_nnz_counts = work._.kkt_nnz_counts.ptr_mut();
 
-	// H and A are always active
-	for (usize j = 0; j < usize(n + n_eq); ++j) {
-		kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
-	}
-	// ineq constraints initially inactive
-	for (isize j = 0; j < n_in; ++j) {
-		kkt_nnz_counts[n + n_eq + j] = 0;
-	}
-
-	Eigen::MINRES<
-			detail::AugmentedKkt<T, I>,
-			Eigen::Upper | Eigen::Lower,
-			Eigen::IdentityPreconditioner>
-			iterative_solver;
+	auto& iterative_solver = *work._.matrix_free_solver.get();
 
 	linearsolver::sparse::MatMut<T, I> kkt_active = {
 			linearsolver::sparse::from_raw_parts,
@@ -407,11 +360,11 @@ void qp_solve(
 			kkt.values_mut(),
 	};
 
-	I* etree = _etree.ptr_mut();
-	I* ldl_nnz_counts = _ldl_nnz_counts.ptr_mut();
-	I* ldl_row_indices = _ldl_row_indices.ptr_mut();
-	T* ldl_values = _ldl_values.ptr_mut();
-	veg::SliceMut<bool> active_constraints = _active_constraints.as_mut();
+	I* etree = work._.etree.ptr_mut();
+	I* ldl_nnz_counts = work._.ldl_nnz_counts.ptr_mut();
+	I* ldl_row_indices = work._.ldl_row_indices.ptr_mut();
+	T* ldl_values = work._.ldl_values.ptr_mut();
+	veg::SliceMut<bool> active_constraints = results.active_constraints.as_mut();
 
 	linearsolver::sparse::MatMut<T, I> ldl = {
 			linearsolver::sparse::from_raw_parts,
@@ -424,42 +377,12 @@ void qp_solve(
 			ldl_values,
 	};
 
-	detail::AugmentedKkt<T, I> aug_kkt{{
-			kkt_active.as_const(),
-			active_constraints.as_const(),
-			n,
-			n_eq,
-			n_in,
-			results.info.rho,
-			results.info.mu_eq_inv,
-			results.info.mu_in_inv
-	}};
+	auto& aug_kkt = *work._.matrix_free_kkt.get();
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
 	T bcl_eta_in(1);
 	T eps_in_min = std::min(settings.eps_abs, T(1e-9));
-
-	refactorize(results,
-				do_ldlt,
-				work,
-				n_tot,
-				kkt_active,
-				active_constraints,
-				iterative_solver,
-				data,
-				etree,
-				ldl_nnz_counts,
-				ldl_row_indices,
-				perm_inv,
-				ldl_values,
-				perm,
-				ldl_col_ptrs,
-				stack,
-				ldl,
-				aug_kkt,
-				xtag
-				);
 
 	auto x_e = x.to_eigen();
 	auto y_e = y.to_eigen();
@@ -473,7 +396,23 @@ void qp_solve(
 		rhs.segment(n, n_eq) = b_scaled_e;
 		rhs.segment(n + n_eq, n_in).setZero();
 
-		ldl_solve_in_place({qp::from_eigen, rhs}, {qp::from_eigen, no_guess},results,data, n_tot, ldl, iterative_solver,do_ldlt,stack,ldl_values,perm,ldl_col_ptrs,perm_inv,settings,kkt_active,active_constraints);
+		ldl_solve_in_place(
+				{qp::from_eigen, rhs},
+				{qp::from_eigen, no_guess},
+				results,
+				data,
+				n_tot,
+				ldl,
+				iterative_solver,
+				do_ldlt,
+				stack,
+				ldl_values,
+				perm,
+				ldl_col_ptrs,
+				perm_inv,
+				settings,
+				kkt_active,
+				active_constraints);
 		x_e = rhs.head(n);
 		y_e = rhs.segment(n, n_eq);
 		z_e = rhs.segment(n + n_eq, n_in);
@@ -591,7 +530,7 @@ void qp_solve(
 				     ++iter_inner) {
 					LDLT_TEMP_VEC_UNINIT(T, dw, n_tot, stack);
 
-					if (iter_inner == settings.max_iter_in-1) {
+					if (iter_inner == settings.max_iter_in - 1) {
 						results.info.iter += settings.max_iter_in;
 						break;
 					}
@@ -642,7 +581,14 @@ void qp_solve(
 												kkt.values() + zx(kkt.col_start(usize(idx))),
 										};
 
-										ldl = linearsolver::sparse::add_row(ldl, etree, perm_inv, idx, new_col, -results.info.mu_in, stack);
+										ldl = linearsolver::sparse::add_row(
+												ldl,
+												etree,
+												perm_inv,
+												idx,
+												new_col,
+												-results.info.mu_in,
+												stack);
 									}
 									active_constraints[i] = new_active_constraints[i];
 
@@ -660,26 +606,25 @@ void qp_solve(
 
 							if (!do_ldlt) {
 								if (removed || added) {
-									refactorize(results,
-										do_ldlt,
-										work,
-										n_tot,
-										kkt_active,
-										active_constraints,
-										iterative_solver,
-										data,
-										etree,
-										ldl_nnz_counts,
-										ldl_row_indices,
-										perm_inv,
-										ldl_values,
-										perm,
-										ldl_col_ptrs,
-										stack,
-										ldl,
-										aug_kkt,
-										xtag
-										);
+									refactorize(
+											results,
+											do_ldlt,
+											n_tot,
+											kkt_active,
+											active_constraints,
+											iterative_solver,
+											data,
+											etree,
+											ldl_nnz_counts,
+											ldl_row_indices,
+											perm_inv,
+											ldl_values,
+											perm,
+											ldl_col_ptrs,
+											stack,
+											ldl,
+											aug_kkt,
+											xtag);
 								}
 							}
 						}
@@ -689,18 +634,34 @@ void qp_solve(
 
 						for (isize i = 0; i < n_in; ++i) {
 							if (active_set_up(i)) {
-								rhs(n + n_eq + i) =
-										results.info.mu_in * z_e(i) - primal_residual_in_scaled_up(i);
+								rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
+								                    primal_residual_in_scaled_up(i);
 							} else if (active_set_lo(i)) {
-								rhs(n + n_eq + i) =
-										results.info.mu_in * z_e(i) - primal_residual_in_scaled_lo(i);
+								rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
+								                    primal_residual_in_scaled_lo(i);
 							} else {
 								rhs(n + n_eq + i) = -z_e(i);
 								rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
 							}
 						}
 
-						ldl_solve_in_place({qp::from_eigen, rhs},{qp::from_eigen, dw_prev},results,data, n_tot, ldl, iterative_solver,do_ldlt,stack,ldl_values,perm,ldl_col_ptrs,perm_inv,settings,kkt_active,active_constraints);
+						ldl_solve_in_place(
+								{qp::from_eigen, rhs},
+								{qp::from_eigen, dw_prev},
+								results,
+								data,
+								n_tot,
+								ldl,
+								iterative_solver,
+								do_ldlt,
+								stack,
+								ldl_values,
+								perm,
+								ldl_col_ptrs,
+								perm_inv,
+								settings,
+								kkt_active,
+								active_constraints);
 					}
 					if (settings.verbose) {
 						std::cout
@@ -750,19 +711,29 @@ void qp_solve(
 												.select(primal_residual_in_scaled_up, zero);
 							}
 
-							T a = dx.dot(Hdx) +                                   //
-							      results.info.rho * dx.squaredNorm() +                        //
-								  results.info.mu_eq_inv * Adx.squaredNorm() + 
-								  + results.info.mu_in_inv * Cdx_active.squaredNorm() + 
-								  results.info.nu * results.info.mu_eq * (results.info.mu_eq_inv * Adx - dy).squaredNorm() + 
-								  results.info.nu * results.info.mu_in * (results.info.mu_in_inv * Cdx_active - dz).squaredNorm();
+							T a =
+									dx.dot(Hdx) +                         //
+									results.info.rho * dx.squaredNorm() + //
+									results.info.mu_eq_inv * Adx.squaredNorm() +
+									+results.info.mu_in_inv * Cdx_active.squaredNorm() +
+									results.info.nu * results.info.mu_eq *
+											(results.info.mu_eq_inv * Adx - dy).squaredNorm() +
+									results.info.nu * results.info.mu_in *
+											(results.info.mu_in_inv * Cdx_active - dz).squaredNorm();
 
-							T b = x_e.dot(Hdx) +                                         //
-							      (results.info.rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) +        //
-								  Adx.dot(results.info.mu_eq_inv * primal_residual_eq_scaled + y_e) +     //
-								  results.info.mu_in_inv * Cdx_active.dot(active_part_z) +                //
-								  results.info.nu * primal_residual_eq_scaled.dot(results.info.mu_eq_inv * Adx - dy) + //
-								  results.info.nu * (active_part_z - results.info.mu_in * z_e).dot(results.info.mu_in_inv * Cdx_active - dz);
+							T b =
+									x_e.dot(Hdx) + //
+									(results.info.rho * (x_e - x_prev_e) + g_scaled_e)
+											.dot(dx) + //
+									Adx.dot(
+											results.info.mu_eq_inv * primal_residual_eq_scaled +
+											y_e) +                                               //
+									results.info.mu_in_inv * Cdx_active.dot(active_part_z) + //
+									results.info.nu * primal_residual_eq_scaled.dot(
+																				results.info.mu_eq_inv * Adx - dy) + //
+									results.info.nu *
+											(active_part_z - results.info.mu_in * z_e)
+													.dot(results.info.mu_in_inv * Cdx_active - dz);
 
 							return {
 									a,
@@ -847,7 +818,8 @@ void qp_solve(
 					y_e += alpha * dy;
 					z_e += alpha * dz;
 
-					dual_residual_scaled += alpha * (Hdx + ATdy + CTdz + results.info.rho * dx);
+					dual_residual_scaled +=
+							alpha * (Hdx + ATdy + CTdz + results.info.rho * dx);
 					primal_residual_eq_scaled += alpha * (Adx - results.info.mu_eq * dy);
 					primal_residual_in_scaled_lo += alpha * Cdx;
 					primal_residual_in_scaled_up += alpha * Cdx;
@@ -910,21 +882,21 @@ void qp_solve(
 					y_e = y_prev_e;
 					z_e = z_prev_e;
 					new_bcl_mu_in = std::max(
-						results.info.mu_in * settings.mu_update_factor,
-						settings.mu_max_in);
+							results.info.mu_in * settings.mu_update_factor,
+							settings.mu_max_in);
 					new_bcl_mu_eq = std::max(
-						results.info.mu_eq * settings.mu_update_factor,
-						settings.mu_max_eq);
-					
-					new_bcl_mu_in_inv = std::min(
-						results.info.mu_in_inv * settings.mu_update_inv_factor,
-						settings.mu_max_in_inv);
-					new_bcl_mu_eq_inv = std::min(
-						results.info.mu_eq_inv * settings.mu_update_inv_factor,
-						settings.mu_max_eq_inv);
-					bcl_eta_ext = bcl_eta_ext_init * pow(new_bcl_mu_in, settings.alpha_bcl);
-					bcl_eta_in = std::max(new_bcl_mu_in, eps_in_min);
+							results.info.mu_eq * settings.mu_update_factor,
+							settings.mu_max_eq);
 
+					new_bcl_mu_in_inv = std::min(
+							results.info.mu_in_inv * settings.mu_update_inv_factor,
+							settings.mu_max_in_inv);
+					new_bcl_mu_eq_inv = std::min(
+							results.info.mu_eq_inv * settings.mu_update_inv_factor,
+							settings.mu_max_eq_inv);
+					bcl_eta_ext =
+							bcl_eta_ext_init * pow(new_bcl_mu_in, settings.alpha_bcl);
+					bcl_eta_in = std::max(new_bcl_mu_in, eps_in_min);
 				}
 			};
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -954,52 +926,48 @@ void qp_solve(
 
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
 			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //
-				results.info.mu_in <=T(1.E-5)
-				) {
+			    results.info.mu_in <= T(1.E-5)) {
 				new_bcl_mu_in = settings.cold_reset_mu_in;
 				new_bcl_mu_eq = settings.cold_reset_mu_eq;
 				new_bcl_mu_in_inv = settings.cold_reset_mu_in_inv;
 				new_bcl_mu_eq_inv = settings.cold_reset_mu_eq_inv;
-
 			}
 		}
 		if (results.info.mu_in != new_bcl_mu_in ||
 		    results.info.mu_eq != new_bcl_mu_eq) {
 			{ ++results.info.mu_updates; }
-			refactorize(results,
-				do_ldlt,
-				work,
-				n_tot,
-				kkt_active,
-				active_constraints,
-				iterative_solver,
-				data,
-				etree,
-				ldl_nnz_counts,
-				ldl_row_indices,
-				perm_inv,
-				ldl_values,
-				perm,
-				ldl_col_ptrs,
-				stack,
-				ldl,
-				aug_kkt,
-				xtag
-				);
+			refactorize(
+					results,
+					do_ldlt,
+					n_tot,
+					kkt_active,
+					active_constraints,
+					iterative_solver,
+					data,
+					etree,
+					ldl_nnz_counts,
+					ldl_row_indices,
+					perm_inv,
+					ldl_values,
+					perm,
+					ldl_col_ptrs,
+					stack,
+					ldl,
+					aug_kkt,
+					xtag);
 		}
 
-	results.info.mu_eq = new_bcl_mu_eq;
-	results.info.mu_in = new_bcl_mu_in;
-	results.info.mu_eq_inv = new_bcl_mu_eq_inv;
-	results.info.mu_in_inv = new_bcl_mu_in_inv;
-
+		results.info.mu_eq = new_bcl_mu_eq;
+		results.info.mu_in = new_bcl_mu_in;
+		results.info.mu_eq_inv = new_bcl_mu_eq_inv;
+		results.info.mu_in_inv = new_bcl_mu_in_inv;
 	}
 
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
 	tmp.setZero();
 	detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
 	precond.unscale_dual_residual_in_place({qp::from_eigen, tmp});
-	
+
 	precond.unscale_primal_in_place({qp::from_eigen, x_e});
 	precond.unscale_dual_in_place_eq({qp::from_eigen, y_e});
 	precond.unscale_dual_in_place_in({qp::from_eigen, z_e});
@@ -1010,62 +978,5 @@ void qp_solve(
 } // namespace sparse
 } // namespace qp
 } // namespace proxsuite
-
-namespace Eigen {
-namespace internal {
-template <typename T, typename I>
-struct traits<proxsuite::qp::sparse::detail::AugmentedKkt<T, I>>
-		: Eigen::internal::traits<Eigen::SparseMatrix<T, Eigen::ColMajor, I>> {};
-
-template <typename Rhs, typename T, typename I>
-struct generic_product_impl<
-		proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
-		Rhs,
-		SparseShape,
-		DenseShape,
-		GemvProduct>
-		: generic_product_impl_base<
-					proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
-					Rhs,
-					generic_product_impl<
-							proxsuite::qp::sparse::detail::AugmentedKkt<T, I>,
-							Rhs>> {
-	using Mat_ = proxsuite::qp::sparse::detail::AugmentedKkt<T, I>;
-
-	using Scalar = typename Product<Mat_, Rhs>::Scalar;
-
-	template <typename Dst>
-	static void scaleAndAddTo(
-			Dst& dst, Mat_ const& lhs, Rhs const& rhs, Scalar const& alpha) {
-		using veg::isize;
-
-		VEG_ASSERT(alpha == Scalar(1));
-		proxsuite::qp::sparse::detail::noalias_symhiv_add(
-				dst, lhs._.kkt_active.to_eigen(), rhs);
-
-		{
-			isize n = lhs._.n;
-			isize n_eq = lhs._.n_eq;
-			isize n_in = lhs._.n_in;
-
-			auto dst_x = dst.head(n);
-			auto dst_y = dst.segment(n, n_eq);
-			auto dst_z = dst.tail(n_in);
-
-			auto rhs_x = rhs.head(n);
-			auto rhs_y = rhs.segment(n, n_eq);
-			auto rhs_z = rhs.tail(n_in);
-
-			dst_x += lhs._.rho * rhs_x;
-			dst_y += (-1 / lhs._.mu_eq) * rhs_y;
-			for (isize i = 0; i < n_in; ++i) {
-				dst_z[i] +=
-						(lhs._.active_constraints[i] ? -1 / lhs._.mu_in : T(1)) * rhs_z[i];
-			}
-		}
-	}
-};
-} // namespace internal
-} // namespace Eigen
 
 #endif /* end of include guard PROXSUITE_QP_SPARSE_SOLVER_HPP */
