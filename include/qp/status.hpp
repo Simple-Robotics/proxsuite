@@ -11,17 +11,12 @@ namespace proxsuite {
 namespace qp {
 
 // STATUS CONSTANTS
-const isize PROXQP_SOLVED = 1;
-const isize PROXQP_SOLVED_INACCURATE = 2;
-const isize PROXQP_MAX_ITER_REACHED = -2;
-const isize PROXQP_PRIMAL_INFEASIBLE = -3;
-const isize PROXQP_PRIMAL_INFEASIBLE_INACCURATE = 3;
-const isize PROXQP_DUAL_INFEASIBLE = -4;
-const isize PROXQP_DUAL_INFEASIBLE_INACCURATE = 4;
-const isize PROXQP_SIGINT = -5;
-const isize PROXQP_TIME_LIMIT_REACHED = -6;
-const isize PROXQP_UNSOLVED = -10;
-const isize PROXQP_NON_CVX = -7;
+enum struct QPSolverOutput{
+	PROXQP_SOLVED,
+	PROXQP_MAX_ITER_REACHED,
+	PROXQP_PRIMAL_INFEASIBLE,
+    PROXQP_DUAL_INFEASIBLE
+};
 
 } // namespace qp
 } // namespace proxsuite

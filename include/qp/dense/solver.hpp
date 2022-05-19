@@ -506,10 +506,10 @@ auto primal_dual_newton_semi_smooth(
 				qpmodel);
 
 		if (is_primal_infeasible) {
-			qpresults.info.status = PROXQP_PRIMAL_INFEASIBLE;
+			qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
 			break;
 		} else if (is_dual_infeasible) {
-			qpresults.info.status = PROXQP_DUAL_INFEASIBLE;
+			qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
 			break;
 		}
 	}
@@ -649,7 +649,7 @@ void qp_solve( //
 				qpresults.info.rho = rho_new;
 			}
 			if (is_dual_feasible) {
-				qpresults.info.status = PROXQP_SOLVED;
+				qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
 				break;
 			}
 		}
@@ -677,8 +677,8 @@ void qp_solve( //
 		if (qpsettings.verbose) {
 			std::cout << " inner loop residual : " << err_in << std::endl;
 		}
-		if (qpresults.info.status == PROXQP_PRIMAL_INFEASIBLE ||
-		    qpresults.info.status == PROXQP_DUAL_INFEASIBLE) {
+		if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
+		    qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
 			// certificate of infeasibility
 			qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
 			qpresults.y =
@@ -734,7 +734,7 @@ void qp_solve( //
 											 dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
 			if (is_dual_feasible) {
-				qpresults.info.status = PROXQP_SOLVED;
+				qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
 				break;
 			}
 		}

@@ -29,7 +29,7 @@ struct Info {
 	isize mu_updates;
 	isize rho_updates;
 	isize n_c; // final number of active inequalities
-	isize status;
+	QPSolverOutput status;
 
 	//// timings
 	T setup_time;
@@ -78,7 +78,7 @@ struct Results {
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;
-		info.status = proxsuite::qp::PROXQP_MAX_ITER_REACHED;
+		info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
 	}
 
 	void cleanup() {
@@ -103,7 +103,7 @@ struct Results {
 		info.objValue = 0.;
 		info.pri_res = 0.;
 		info.dua_res = 0.;
-		info.status = proxsuite::qp::PROXQP_MAX_ITER_REACHED;
+		info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
 	}
 };
 
