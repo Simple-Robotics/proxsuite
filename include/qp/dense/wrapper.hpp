@@ -8,23 +8,12 @@
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
 #include <qp/dense/solver.hpp>
+#include <qp/dense/fwd.hpp>
 #include <chrono>
 
 namespace proxsuite {
 namespace qp {
 namespace dense {
-static constexpr auto DYN = Eigen::Dynamic;
-enum { layout = Eigen::RowMajor };
-template <typename T>
-using SparseMat = Eigen::SparseMatrix<T, 1>;
-template <typename T>
-using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
-template <typename T>
-using MatRef = Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
-template <typename T>
-using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
-template <typename T>
-using Vec = Eigen::Matrix<T, DYN, 1>;
 
 /////// SETUP ////////
 /*!
@@ -176,8 +165,8 @@ void setup_dense( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Model<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
+		Model<T>& qpmodel,
+		Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
@@ -612,7 +601,7 @@ qp::Results<T> solve(const tl::optional<MatRef<T>> H_dense,
 		n_eq = A_dense.value().rows();
 		n_in = C_dense.value().rows();	
 	}
-	qp::dense::QP<T> Qp(n, n_eq, n_in);
+	QP<T> Qp(n, n_eq, n_in);
 	if(H_sparse!=tl::nullopt){
 		Qp.setup_sparse_matrices(H_sparse,g,A_sparse,b,C_sparse,u,l); 
 	}else{

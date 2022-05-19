@@ -1,0 +1,28 @@
+/** \file */
+#ifndef PROXSUITE_QP_DENSE_FWD_HPP
+#define PROXSUITE_QP_DENSE_FWD_HPP
+
+#include <Eigen/Sparse>
+
+namespace proxsuite {
+namespace qp {
+namespace dense {
+
+static constexpr auto DYN = Eigen::Dynamic;
+enum { layout = Eigen::RowMajor };
+template <typename T>
+using SparseMat = Eigen::SparseMatrix<T, 1>;
+template <typename T>
+using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
+template <typename T>
+using MatRef = Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
+template <typename T>
+using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
+template <typename T>
+using Vec = Eigen::Matrix<T, DYN, 1>;
+
+} // namespace dense
+} // namespace qp
+} // namespace proxsuite
+
+#endif /* end of include guard PROXSUITE_QP_DENSE_FWD_HPP */
