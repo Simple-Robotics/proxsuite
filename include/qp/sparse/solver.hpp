@@ -3,6 +3,7 @@
 #ifndef PROXSUITE_QP_SPARSE_SOLVER_HPP
 #define PROXSUITE_QP_SPARSE_SOLVER_HPP
 
+#include <chrono>
 #include <linearsolver/dense/core.hpp>
 #include <linearsolver/sparse/core.hpp>
 #include <linearsolver/sparse/factorize.hpp>
@@ -269,6 +270,8 @@ void qp_solve(
 		Settings<T> const& settings,
 		Workspace<T, I>& work,
 		P& precond) {
+	
+	auto start = std::chrono::steady_clock::now();
 
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
@@ -968,6 +971,23 @@ void qp_solve(
 	tmp *= 0.5;
 	tmp += data.g;
 	results.info.objValue = (tmp).dot(x_e);
+
+	auto stop = std::chrono::steady_clock::now();
+	auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	results.info.solve_time = T(duration.count());
+	results.info.run_time = results.info.solve_time + results.info.setup_time;
+
+	if (settings.verbose) {
+		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+		std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
+		std::cout << "iter : " << results.info.iter << std::endl;
+		std::cout << "mu updates : " << results.info.mu_updates << std::endl;
+		std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
+		std::cout << "objValue : " << results.info.objValue << std::endl;
+		std::cout << "solve_time : " << results.info.solve_time << std::endl;
+	}
+
 }
 } // namespace sparse
 } // namespace qp

@@ -9,7 +9,6 @@
 #include <qp/settings.hpp>
 #include <qp/sparse/fwd.hpp>
 #include <qp/sparse/solver.hpp>
-#include <chrono>
 
 namespace proxsuite {
 namespace qp {
@@ -131,7 +130,7 @@ struct QP {
 				work(),
 				ruiz(_dim, _n_eq + _n_in, 1e-3, 10, preconditioner::Symmetry::UPPER) {}
 
-	void setup_sparse_matrices(
+	void setup(
 			const tl::optional<SparseMat<T, I>> H,
 			tl::optional<VecRef<T>> g,
 			const tl::optional<SparseMat<T, I>> A,
@@ -139,10 +138,9 @@ struct QP {
 			const tl::optional<SparseMat<T, I>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-
+		
+		auto start = std::chrono::steady_clock::now();
 		SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
-		// only initial setup available (if an update of only one)
-
 		SparseMat<T, I> AT = A.value().transpose();
 		SparseMat<T, I> CT = C.value().transpose();
 		sparse::QpView<T, I> qp = {
@@ -153,39 +151,25 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT},
 				{linearsolver::sparse::from_eigen, l.value()},
 				{linearsolver::sparse::from_eigen, u.value()}};
-
 		qp_setup(qp, results, data, work, ruiz);
+		auto stop = std::chrono::steady_clock::now();
+		auto duration =
+				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		results.info.setup_time = T(duration.count());
 	};
 
 	void solve() {
-
-		auto start = std::chrono::high_resolution_clock::now();
 		sparse::qp_solve( //
 				results,
 				data,
 				settings,
 				work,
 				ruiz);
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration =
-				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		results.info.solve_time = T(duration.count());
-		results.info.run_time = results.info.solve_time + results.info.setup_time;
-
-		if (settings.verbose) {
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-			std::cout << "iter : " << results.info.iter << std::endl;
-			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-			std::cout << "objValue : " << results.info.objValue << std::endl;
-			std::cout << "solve_time : " << results.info.solve_time << std::endl;
-		}
 	};
 
-	void update_prox_parameter(
+	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
-		update_proximal_parameters(results, rho, mu_eq, mu_in);
+		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	void warm_start(
 			tl::optional<VecRef<T>> x,

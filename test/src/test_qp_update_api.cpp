@@ -640,7 +640,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "rho :  " << Qp.results.info.rho << std::endl;
 
 	Qp.cleanup();
-	Qp.update_prox_parameter(T(1.e-7), tl::nullopt, tl::nullopt);
+	Qp.update_proximal_parameter(T(1.e-7), tl::nullopt, tl::nullopt);
 	Qp.setup_dense_matrices(
 			tl::nullopt,
 			tl::nullopt,
@@ -723,7 +723,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
 
 	Qp.cleanup();
-	Qp.update_prox_parameter(
+	Qp.update_proximal_parameter(
 			tl::nullopt, T(1.e-2), T(1.e-3)); // after update should redo a setup
 	Qp.setup_dense_matrices(
 			tl::nullopt,

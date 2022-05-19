@@ -134,10 +134,6 @@ void setup_generic( //
 
 	initial_guess(qpwork, qpsettings, qpmodel, qpresults);
 
-	auto stop = std::chrono::steady_clock::now();
-	auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.info.setup_time = T(duration.count());
 }
 
 /*!
@@ -358,7 +354,8 @@ struct QP {
 			tl::optional<MatRef<T>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-
+		
+		auto start =  std::chrono::steady_clock::now();
 		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
@@ -396,6 +393,11 @@ struct QP {
 			// some input are not equal to tl::nullopt -> do first an update
 			update(H, g, A, b, C, u, l);
 		}
+
+		auto stop = std::chrono::steady_clock::now();
+		auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		results.info.setup_time = T(duration.count());
 	};
 	void setup_sparse_matrices(
 			const tl::optional<SparseMat<T>> H,
@@ -405,7 +407,7 @@ struct QP {
 			const tl::optional<SparseMat<T>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-
+		auto start =  std::chrono::steady_clock::now();
 		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
@@ -445,31 +447,19 @@ struct QP {
 			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
 		}
 		//setup_sparse(H,g,A,b,C,u,l,settings,model,work,results);
+		auto stop = std::chrono::steady_clock::now();
+		auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		results.info.setup_time = T(duration.count());
 	};
 
 	void solve() {
 
-		auto start = std::chrono::high_resolution_clock::now();
 		qp_solve( //
 				settings,
 				model,
 				results,
 				work);
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration =
-				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		results.info.solve_time = T(duration.count());
-		results.info.run_time = results.info.solve_time + results.info.setup_time;
-
-		if (settings.verbose) {
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-			std::cout << "iter : " << results.info.iter << std::endl;
-			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-			std::cout << "objValue : " << results.info.objValue << std::endl;
-			std::cout << "solve_time : " << results.info.solve_time << std::endl;
-		}
 	};
 
 	void update(
@@ -536,9 +526,9 @@ struct QP {
 
 		initial_guess(work, settings, model, results);
 	}
-	void update_prox_parameter(
+	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
-		update_proximal_parameters(results, rho, mu_eq, mu_in);
+		proxsuite::qp::dense::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	void warm_start(
 			tl::optional<VecRef<T>> x,

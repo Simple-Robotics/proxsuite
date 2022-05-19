@@ -524,6 +524,7 @@ void qp_solve( //
 		Results<T>& qpresults,
 		Workspace<T>& qpwork) {
 
+	auto start = std::chrono::steady_clock::now();
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
 	  static constexpr auto DYN = Eigen::Dynamic;
@@ -816,6 +817,23 @@ void qp_solve( //
 		}
 		qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 	}
+
+	auto stop = std::chrono::steady_clock::now();
+	auto duration =
+			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	qpresults.info.solve_time = T(duration.count());
+	qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
+
+	if (qpsettings.verbose) {
+		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+		std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
+		std::cout << "iter : " << qpresults.info.iter << std::endl;
+		std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
+		std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
+		std::cout << "objValue : " << qpresults.info.objValue << std::endl;
+		std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
+	}
+
 }
 
 } // namespace dense

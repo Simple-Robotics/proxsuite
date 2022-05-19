@@ -46,7 +46,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         }
         Qp.cleanup();
         Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
-        Qp.update_prox_parameter(T(1.e-7), tl::nullopt, tl::nullopt);
+        Qp.update_proximal_parameter(T(1.e-7), tl::nullopt, tl::nullopt);
         std::cout << "after upating" << std::endl;
         std::cout << "rho :  " << Qp.results.info.rho << std::endl;
 
@@ -103,7 +103,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         }
         Qp.cleanup();
         Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
-        Qp.update_prox_parameter(tl::nullopt, T(1.E-2), T(1.E-3));
+        Qp.update_proximal_parameter(tl::nullopt, T(1.E-2), T(1.E-3));
         std::cout << "after upating" << std::endl;
         std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
         std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;

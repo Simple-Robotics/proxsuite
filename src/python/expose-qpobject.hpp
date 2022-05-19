@@ -84,8 +84,8 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v(
 							"u", tl::nullopt, "upper inequality constraint vector"))
 			.def(
-					"update_prox_parameter",
-					&dense::QP<T>::update_prox_parameter,
+					"update_proximal_parameters",
+					&dense::QP<T>::update_proximal_parameters,
 					"function used for updating proximal parameters of the solver. The "
 					"user must settup back the solver before using solve method.",
 					pybind11::arg_v("rho", tl::nullopt, "primal proximal parameter"),
@@ -128,8 +128,8 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					&sparse::QP<T,I>::settings,
 					"class with settings option of the solver.")
 			.def(
-					"setup_sparse_matrices",
-					&sparse::QP<T,I>::setup_sparse_matrices,
+					"setup",
+					&sparse::QP<T,I>::setup,
 					"function for setting up the solver when passing sparse matrices in "
 					"entry.",
 					pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
@@ -146,8 +146,8 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					&sparse::QP<T,I>::solve,
 					"function used for solving the QP problem.")
 			.def(
-					"update_prox_parameter",
-					&sparse::QP<T,I>::update_prox_parameter,
+					"update_proximal_parameter",
+					&sparse::QP<T,I>::update_proximal_parameter,
 					"function used for updating proximal parameters of the solver. The "
 					"user must settup back the solver before using solve method.",
 					pybind11::arg_v("rho", tl::nullopt, "primal proximal parameter"),
