@@ -37,12 +37,12 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 */
 template <typename T>
 void initial_guess(
-		dense::Workspace<T>& qpwork,
+		Workspace<T>& qpwork,
 		Settings<T>& qpsettings,
-		dense::Model<T>& qpmodel,
+		Model<T>& qpmodel,
 		Results<T>& qpresults) {
 
-	qp::dense::QpViewBoxMut<T> qp_scaled{
+	QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
 			{from_eigen, qpwork.g_scaled},
 			{from_eigen, qpwork.A_scaled},
@@ -58,11 +58,11 @@ void initial_guess(
 	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
 	qpwork.dw_aug.setZero();
 
-	qpwork.primal_feasibility_rhs_1_eq = dense::infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = dense::infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = dense::infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = dense::infty_norm(qpmodel.g);
-	qpwork.correction_guess_rhs_g = qp::dense::infty_norm(qpwork.g_scaled);
+	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
+	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
+	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
+	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
 	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
@@ -119,8 +119,8 @@ void setup_generic( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Model<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
+		Model<T>& qpmodel,
+		Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 
 	auto start = std::chrono::steady_clock::now();
@@ -207,8 +207,8 @@ void setup_sparse( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Model<T>& qpmodel,
-		dense::Workspace<T>& qpwork,
+		Model<T>& qpmodel,
+		Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
@@ -350,7 +350,6 @@ auto main() -> int {
 ///// QP object
 template <typename T>
 struct QP {
-public:
 	Results<T> results;
 	Settings<T> settings;
 	Model<T> model;

@@ -66,9 +66,9 @@ void refactorize(
 
 template <typename T>
 void mu_update(
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T mu_eq_new,
 		T mu_in_new) {
 	veg::dynstack::DynStackMut stack{
@@ -105,9 +105,9 @@ void mu_update(
 
 template <typename T>
 void iterative_residual(
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		isize inner_pb_dim) {
 
 	qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
@@ -142,10 +142,10 @@ void iterative_residual(
 
 template <typename T>
 void iterative_solve_with_permut_fact( //
-		const qp::Settings<T>& qpsettings,
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Settings<T>& qpsettings,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T eps,
 		isize inner_pb_dim) {
 
@@ -247,9 +247,9 @@ void iterative_solve_with_permut_fact( //
 
 template <typename T>
 void bcl_update(
-		const qp::Settings<T>& qpsettings,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Settings<T>& qpsettings,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T& primal_feasibility_lhs_new,
 		T& bcl_eta_ext,
 		T& bcl_eta_in,
@@ -296,13 +296,13 @@ void bcl_update(
 
 template <typename T>
 auto compute_inner_loop_saddle_point(
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork) -> T {
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork) -> T {
 
 	qpwork.active_part_z =
-			qp::dense::positive_part(qpwork.primal_residual_in_scaled_up) +
-			qp::dense::negative_part(qpwork.primal_residual_in_scaled_low) -
+			positive_part(qpwork.primal_residual_in_scaled_up) +
+			negative_part(qpwork.primal_residual_in_scaled_low) -
 			qpresults.z * qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
 																					// + [Cx-l+z_prev*mu_in]- - z*mu_in
 
@@ -323,10 +323,10 @@ auto compute_inner_loop_saddle_point(
 
 template <typename T>
 void primal_dual_semi_smooth_newton_step(
-		const qp::Settings<T>& qpsettings,
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Settings<T>& qpsettings,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T eps) {
 
 	/* MUST BE
@@ -347,7 +347,7 @@ void primal_dual_semi_smooth_newton_step(
 	qpwork.rhs.setZero();
 	qpwork.dw_aug.setZero();
 
-	qp::dense::linesearch::active_set_change(qpmodel, qpresults, qpwork);
+	linesearch::active_set_change(qpmodel, qpresults, qpwork);
 
 	qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
 
@@ -394,10 +394,10 @@ void primal_dual_semi_smooth_newton_step(
 
 template <typename T>
 auto primal_dual_newton_semi_smooth(
-		const qp::Settings<T>& qpsettings,
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork,
+		const Settings<T>& qpsettings,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T eps_int) -> T {
 
 	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
@@ -445,7 +445,7 @@ auto primal_dual_newton_semi_smooth(
 		CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
 
 		if (qpmodel.n_in > 0) {
-			qp::dense::linesearch::primal_dual_ls(qpmodel, qpresults, qpwork);
+			linesearch::primal_dual_ls(qpmodel, qpresults, qpwork);
 		}
 		auto alpha = qpwork.alpha;
 
@@ -488,7 +488,7 @@ auto primal_dual_newton_semi_smooth(
 		}
 
 		// compute primal and dual infeasibility criteria
-		bool is_primal_infeasible = qp::dense::global_primal_residual_infeasibility(
+		bool is_primal_infeasible = global_primal_residual_infeasibility(
 				VectorViewMut<T>{from_eigen, ATdy},
 				VectorViewMut<T>{from_eigen, CTdz},
 				VectorViewMut<T>{from_eigen, dy},
@@ -496,7 +496,7 @@ auto primal_dual_newton_semi_smooth(
 				qpwork,
 				qpsettings);
 
-		bool is_dual_infeasible = qp::dense::global_dual_residual_infeasibility(
+		bool is_dual_infeasible = global_dual_residual_infeasibility(
 				VectorViewMut<T>{from_eigen, Adx},
 				VectorViewMut<T>{from_eigen, Cdx},
 				VectorViewMut<T>{from_eigen, Hdx},
@@ -519,10 +519,10 @@ auto primal_dual_newton_semi_smooth(
 
 template <typename T>
 void qp_solve( //
-		const qp::Settings<T>& qpsettings,
-		const qp::dense::Model<T>& qpmodel,
-		qp::Results<T>& qpresults,
-		qp::dense::Workspace<T>& qpwork) {
+		const Settings<T>& qpsettings,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork) {
 
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
@@ -559,7 +559,7 @@ void qp_solve( //
 		// compute primal residual
 
 		// PERF: fuse matrix product computations in global_{primal, dual}_residual
-		qp::dense::global_primal_residual(
+		global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -569,7 +569,7 @@ void qp_solve( //
 				primal_feasibility_eq_lhs,
 				primal_feasibility_in_lhs);
 
-		qp::dense::global_dual_residual(
+		global_dual_residual(
 				qpresults,
 				qpwork,
 				dual_feasibility_lhs,
@@ -689,7 +689,7 @@ void qp_solve( //
 
 		T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
-		qp::dense::global_primal_residual(
+		global_primal_residual(
 				qpmodel,
 				qpresults,
 				qpwork,
@@ -715,7 +715,7 @@ void qp_solve( //
 		if (is_primal_feasible) {
 			T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-			qp::dense::global_dual_residual(
+			global_dual_residual(
 					qpresults,
 					qpwork,
 					dual_feasibility_lhs_new,
@@ -760,7 +760,7 @@ void qp_solve( //
 
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-		qp::dense::global_dual_residual(
+		global_dual_residual(
 				qpresults,
 				qpwork,
 				dual_feasibility_lhs_new,

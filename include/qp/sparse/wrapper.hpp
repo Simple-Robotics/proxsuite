@@ -117,7 +117,6 @@ void qp_setup(
 ///// QP object
 template <typename T,typename I>
 struct QP {
-public:
 	Results<T> results;
 	Settings<T> settings;
 	Model<T,I> data;

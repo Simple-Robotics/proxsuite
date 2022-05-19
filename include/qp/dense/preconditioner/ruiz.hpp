@@ -24,10 +24,10 @@ namespace detail {
 
 template <typename T>
 auto ruiz_scale_qp_in_place( //
-		qp::VectorViewMut<T> delta_,
-		qp::VectorViewMut<T> tmp_delta_preallocated,
+		VectorViewMut<T> delta_,
+		VectorViewMut<T> tmp_delta_preallocated,
 		std::ostream* logger_ptr,
-		qp::dense::QpViewBoxMut<T> qp,
+		QpViewBoxMut<T> qp,
 		T epsilon,
 		isize max_iter,
 		Symmetry sym) -> T {
@@ -61,13 +61,13 @@ auto ruiz_scale_qp_in_place( //
 
 	i64 iter = 1;
 
-	while (qp::dense::infty_norm((1 - delta.array()).matrix()) > epsilon) {
+	while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
 		if (logger_ptr != nullptr) {
 			*logger_ptr                                                //
 					<< "j : "                                              //
 					<< iter                                                //
 					<< " ; error : "                                       //
-					<< qp::dense::infty_norm((1 - delta.array()).matrix()) //
+					<< infty_norm((1 - delta.array()).matrix()) //
 					<< "\n\n";
 		}
 		if (iter == max_iter) {
@@ -82,29 +82,29 @@ auto ruiz_scale_qp_in_place( //
 				switch (sym) {
 				case Symmetry::upper: { // upper triangular part
 					delta(k) = T(1) / (sqrt(std::max({
-																 qp::dense::infty_norm(H.col(k).head(k)),
-																 qp::dense::infty_norm(H.row(k).tail(n - k)),
-																 qp::dense::infty_norm(A.col(k)),
-																 qp::dense::infty_norm(C.col(k)),
+																 infty_norm(H.col(k).head(k)),
+																 infty_norm(H.row(k).tail(n - k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::lower: { // lower triangular part
 					delta(k) = T(1) / (sqrt(std::max({
-																 qp::dense::infty_norm(H.row(k).head(k)),
-																 qp::dense::infty_norm(H.col(k).tail(n - k)),
-																 qp::dense::infty_norm(A.col(k)),
-																 qp::dense::infty_norm(C.col(k)),
+																 infty_norm(H.row(k).head(k)),
+																 infty_norm(H.col(k).tail(n - k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 					break;
 				}
 				case Symmetry::general: {
 					delta(k) = T(1) / (sqrt(std::max({
-																 qp::dense::infty_norm(H.col(k)),
-																 qp::dense::infty_norm(A.col(k)),
-																 qp::dense::infty_norm(C.col(k)),
+																 infty_norm(H.col(k)),
+																 infty_norm(A.col(k)),
+																 infty_norm(C.col(k)),
 														 })) +
 					                   machine_eps);
 
@@ -114,11 +114,11 @@ auto ruiz_scale_qp_in_place( //
 			}
 
 			for (isize k = 0; k < n_eq; ++k) {
-				T aux = sqrt(qp::dense::infty_norm(A.row(k)));
+				T aux = sqrt(infty_norm(A.row(k)));
 				delta(n + k) = T(1) / (aux + machine_eps);
 			}
 			for (isize k = 0; k < n_in; ++k) {
-				T aux = sqrt(qp::dense::infty_norm(C.row(k)));
+				T aux = sqrt(infty_norm(C.row(k)));
 				delta(k + n + n_eq) = T(1) / (aux + machine_eps);
 			}
 		}

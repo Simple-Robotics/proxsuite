@@ -43,11 +43,11 @@ auto negative_part(T const& expr)
 
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_gevmmv_add_impl( //
-		qp::VectorViewMut<T> out_l,
-		qp::VectorViewMut<T> out_r,
+		VectorViewMut<T> out_l,
+		VectorViewMut<T> out_r,
 		linearsolver::sparse::MatRef<T, I> a,
-		qp::VectorView<T> in_l,
-		qp::VectorView<T> in_r) {
+		VectorView<T> in_l,
+		VectorView<T> in_r) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ (
 			a.nrows() == out_r.dim,
 			a.ncols() == in_r.dim,
@@ -115,9 +115,9 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
-		qp::VectorViewMut<T> out,
+		VectorViewMut<T> out,
 		linearsolver::sparse::MatRef<T, I> a,
-		qp::VectorView<T> in) {
+		VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
 			a.nrows() == out.dim,
@@ -194,7 +194,7 @@ template <typename OutL, typename OutR, typename A, typename InL, typename InR>
 void noalias_gevmmv_add(
 		OutL&& out_l, OutR&& out_r, A const& a, InL const& in_l, InR const& in_r) {
 	// noalias general vector matrix matrix vector add
-	detail::noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
+	noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out_l},
 			{qp::from_eigen, out_r},
 			{linearsolver::sparse::from_eigen, a},
@@ -205,7 +205,7 @@ void noalias_gevmmv_add(
 template <typename Out, typename A, typename In>
 void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
-	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
+	noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{qp::from_eigen, out},
 			{linearsolver::sparse::from_eigen, a},
 			{qp::from_eigen, in});
@@ -385,7 +385,7 @@ auto unscaled_primal_dual_residual(
 
 	{
 		tmp.setZero();
-		detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
+		noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
 		dual_residual_scaled += tmp;
 
 		precond.unscale_dual_residual_in_place({qp::from_eigen, tmp});
@@ -433,8 +433,8 @@ auto unscaled_primal_dual_residual(
 	auto l = data.l;
 	auto u = data.u;
 	primal_residual_in_scaled_lo =
-			detail::positive_part(primal_residual_in_scaled_up - u) +
-			detail::negative_part(primal_residual_in_scaled_up - l);
+			positive_part(primal_residual_in_scaled_up - u) +
+			negative_part(primal_residual_in_scaled_up - l);
 
 	primal_residual_eq_scaled -= b;
 	T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);

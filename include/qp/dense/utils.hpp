@@ -61,9 +61,9 @@ auto negative_part(T const& expr)
 
 template <typename T>
 void global_primal_residual(
-		const proxsuite::qp::dense::Model<T>& qpmodel,
-		proxsuite::qp::Results<T>& qpresults,
-		proxsuite::qp::dense::Workspace<T>& qpwork,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
@@ -105,10 +105,10 @@ void global_primal_residual(
 
 template <typename T>
 bool global_primal_residual_infeasibility(
-		proxsuite::qp::VectorViewMut<T> ATdy,
-		proxsuite::qp::VectorViewMut<T> CTdz,
-		proxsuite::qp::VectorViewMut<T> dy,
-		proxsuite::qp::VectorViewMut<T> dz,
+		VectorViewMut<T> ATdy,
+		VectorViewMut<T> CTdz,
+		VectorViewMut<T> dy,
+		VectorViewMut<T> dz,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings) {
 
@@ -144,10 +144,10 @@ bool global_primal_residual_infeasibility(
 
 template <typename T>
 bool global_dual_residual_infeasibility(
-		proxsuite::qp::VectorViewMut<T> Adx,
-		proxsuite::qp::VectorViewMut<T> Cdx,
-		proxsuite::qp::VectorViewMut<T> Hdx,
-		proxsuite::qp::VectorViewMut<T> dx,
+		VectorViewMut<T> Adx,
+		VectorViewMut<T> Cdx,
+		VectorViewMut<T> Hdx,
+		VectorViewMut<T> dx,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings,
 		const Model<T>& qpmodel) {

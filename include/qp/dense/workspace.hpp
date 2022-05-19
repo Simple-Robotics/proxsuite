@@ -33,7 +33,7 @@ struct Workspace {
 	using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 	///// Equilibrator
-	proxsuite::qp::dense::preconditioner::RuizEquilibration<T> ruiz;
+	preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
 	linearsolver::dense::Ldlt<T> ldl{};
@@ -102,7 +102,7 @@ struct Workspace {
 
 	Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
-				ruiz(proxsuite::qp::dense::preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
+				ruiz(preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
 				ldl{}, // old version with alloc
 				H_scaled(dim, dim),
 				g_scaled(dim),

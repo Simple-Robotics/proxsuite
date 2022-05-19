@@ -26,9 +26,9 @@ struct PrimalDualGradResult {
 
 template <typename T>
 auto primal_dual_gradient_norm(
-		const proxsuite::qp::dense::Model<T>& qpmodel,
-		proxsuite::qp::Results<T>& qpresults,
-		proxsuite::qp::dense::Workspace<T>& qpwork,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
 		T alpha) -> PrimalDualGradResult<T> {
 
 	/*
@@ -152,9 +152,9 @@ auto primal_dual_gradient_norm(
 
 template <typename T>
 void primal_dual_ls(
-		const proxsuite::qp::dense::Model<T>& qpmodel,
-		proxsuite::qp::Results<T>& qpresults,
-		proxsuite::qp::dense::Workspace<T>& qpwork) {
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork) {
 
 	/*
 	 * The function follows the algorithm
@@ -324,8 +324,8 @@ void primal_dual_ls(
 
 template <typename T>
 void active_set_change(
-		const proxsuite::qp::dense::Model<T>& qpmodel,
-		proxsuite::qp::Results<T>& qpresults,
+		const Model<T>& qpmodel,
+		Results<T>& qpresults,
 		Workspace<T>& qpwork) {
 
 	/*
