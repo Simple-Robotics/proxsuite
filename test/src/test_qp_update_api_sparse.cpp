@@ -228,7 +228,7 @@ TEST_CASE("test API proper data and workspace cleanup") {
 			};
 
 			sparse::Workspace<T, I> work;
-			sparse::Data<T, I> data;
+			sparse::Model<T, I> data;
 
             for (isize i = 0; i < 10; i++) {
 

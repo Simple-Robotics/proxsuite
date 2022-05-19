@@ -13,7 +13,7 @@
 #include <veg/vec.hpp>
 #include "qp/results.hpp"
 #include "qp/sparse/views.hpp"
-#include "qp/sparse/data.hpp"
+#include "qp/sparse/model.hpp"
 #include "qp/sparse/workspace.hpp"
 #include "qp/sparse/preconditioner/ruiz.hpp"
 #include "qp/sparse/preconditioner/identity.hpp"
@@ -372,7 +372,7 @@ auto unscaled_primal_dual_residual(
 		T dual_feasibility_rhs_1,
 		T dual_feasibility_rhs_3,
 		P& precond,
-		Data<T, I> const& data,
+		Model<T, I> const& data,
 		QpView<T, I> qp_scaled,
 		VecMap<T> x_e,
 		VecMap<T> y_e,

@@ -91,7 +91,7 @@ template <typename T, typename I, typename P>
 void qp_setup(
 		QpView<T, I> qp,
 		Results<T>& results,
-		Data<T, I>& data,
+		Model<T, I>& data,
 		Workspace<T, I>& work,
 		P& /*precond*/) {
 	isize n = qp.H.nrows();
@@ -120,7 +120,7 @@ struct QP {
 public:
 	Results<T> results;
 	Settings<T> settings;
-	Data<T,I> data;
+	Model<T,I> data;
 	Workspace<T,I> work;
     preconditioner::RuizEquilibration<T, I> ruiz;
 

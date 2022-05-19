@@ -6,7 +6,7 @@
 
 #include "qp/dense/views.hpp"
 #include "qp/dense/workspace.hpp"
-#include <qp/dense/data.hpp>
+#include <qp/dense/model.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
 #include <iostream>
@@ -61,7 +61,7 @@ auto negative_part(T const& expr)
 
 template <typename T>
 void global_primal_residual(
-		const proxsuite::qp::dense::Data<T>& qpmodel,
+		const proxsuite::qp::dense::Model<T>& qpmodel,
 		proxsuite::qp::Results<T>& qpresults,
 		proxsuite::qp::dense::Workspace<T>& qpwork,
 		T& primal_feasibility_lhs,
@@ -150,7 +150,7 @@ bool global_dual_residual_infeasibility(
 		proxsuite::qp::VectorViewMut<T> dx,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings,
-		const Data<T>& qpmodel) {
+		const Model<T>& qpmodel) {
 
 	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
 	qpwork.ruiz.unscale_dual_residual_in_place(Hdx);

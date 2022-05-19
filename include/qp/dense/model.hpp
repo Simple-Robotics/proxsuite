@@ -1,6 +1,6 @@
 /** \file */
-#ifndef PROXSUITE_QP_DENSE_DATA_HPP
-#define PROXSUITE_QP_DENSE_DATA_HPP
+#ifndef PROXSUITE_QP_DENSE_MODEL_HPP
+#define PROXSUITE_QP_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
@@ -11,7 +11,7 @@ using veg::isize;
 
 namespace dense {
 template <typename T>
-struct Data {
+struct Model {
 	static constexpr auto DYN = Eigen::Dynamic;
 	enum { layout = Eigen::RowMajor };
 	using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
@@ -32,7 +32,7 @@ struct Data {
 	isize n_in;
 	isize n_total;
 
-	Data(isize _dim, isize _n_eq, isize _n_in)
+	Model(isize _dim, isize _n_eq, isize _n_in)
 			: H(_dim, _dim),
 				g(_dim),
 				A(_n_eq, _dim),
@@ -59,4 +59,4 @@ struct Data {
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_DATA_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_MODEL_HPP */

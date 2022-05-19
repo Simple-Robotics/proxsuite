@@ -13,7 +13,7 @@
 #include <veg/vec.hpp>
 #include "qp/results.hpp"
 #include "qp/sparse/views.hpp"
-#include "qp/sparse/data.hpp"
+#include "qp/sparse/model.hpp"
 #include "qp/sparse/workspace.hpp"
 #include "qp/sparse/utils.hpp"
 #include "qp/sparse/preconditioner/ruiz.hpp"
@@ -78,7 +78,7 @@ void ldl_iter_solve_noalias(VectorViewMut<T> sol,
 									VectorView<T> rhs,
 									VectorView<T> init_guess,
 									Results<T> results,
-									Data<T,I> data,
+									Model<T,I> data,
 									isize n_tot,
 									linearsolver::sparse::MatMut<T, I> ldl, 
 	Eigen::MINRES<detail::AugmentedKkt<T, I>,
@@ -141,7 +141,7 @@ template<typename T, typename I>
 void ldl_solve_in_place(VectorViewMut<T> rhs,
 						VectorView<T> init_guess,
 						Results<T> results,
-						Data<T,I> data,
+						Model<T,I> data,
 						isize n_tot,
 						linearsolver::sparse::MatMut<T, I> ldl, 
 	Eigen::MINRES<detail::AugmentedKkt<T, I>,
@@ -182,7 +182,7 @@ DMat<T> reconstructed_matrix(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt
 };
 
 template<typename T,typename I>
-DMat<T>  reconstruction_error(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt,I const* perm_inv,Results<T> results,Data<T,I> data,isize n_tot,linearsolver::sparse::MatMut<T, I> kkt_active,veg::SliceMut<bool> active_constraints){
+DMat<T>  reconstruction_error(linearsolver::sparse::MatMut<T, I> ldl,bool do_ldlt,I const* perm_inv,Results<T> results,Model<T,I> data,isize n_tot,linearsolver::sparse::MatMut<T, I> kkt_active,veg::SliceMut<bool> active_constraints){
 	T mu_eq_neg = -results.info.mu_eq;
 	T mu_in_neg = -results.info.mu_in;
 	auto diff = DMat<T>(
@@ -208,7 +208,7 @@ void refactorize(Results<T> results,
 				Eigen::MINRES<detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>& iterative_solver,
-				Data<T,I> data,
+				Model<T,I> data,
 				I* etree,
 				I* ldl_nnz_counts,
 				I* ldl_row_indices,
@@ -288,7 +288,7 @@ struct PrimalDualGradResult {
 template <typename T, typename I, typename P>
 void qp_solve(
 		Results<T>& results,
-		Data<T, I>& data,
+		Model<T, I>& data,
 		Settings<T> const& settings,
 		Workspace<T, I>& work,
 		P& precond) {

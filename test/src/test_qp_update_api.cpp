@@ -72,13 +72,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt,
 			tl::nullopt);
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 
@@ -168,13 +168,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt);
 
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 
@@ -264,13 +264,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt);
 
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 
@@ -360,13 +360,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt);
 
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 
@@ -461,13 +461,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt);
 
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 
@@ -562,13 +562,13 @@ DOCTEST_TEST_CASE(
 	Qp.update(qp.H, tl::nullopt, qp.A, qp.b, tl::nullopt, qp.u, qp.l);
 
 	std::cout << "after upating" << std::endl;
-	std::cout << "H :  " << Qp.data.H << std::endl;
-	std::cout << "g :  " << Qp.data.g << std::endl;
-	std::cout << "A :  " << Qp.data.A << std::endl;
-	std::cout << "b :  " << Qp.data.b << std::endl;
-	std::cout << "C :  " << Qp.data.C << std::endl;
-	std::cout << "u :  " << Qp.data.u << std::endl;
-	std::cout << "l :  " << Qp.data.l << std::endl;
+	std::cout << "H :  " << Qp.model.H << std::endl;
+	std::cout << "g :  " << Qp.model.g << std::endl;
+	std::cout << "A :  " << Qp.model.A << std::endl;
+	std::cout << "b :  " << Qp.model.b << std::endl;
+	std::cout << "C :  " << Qp.model.C << std::endl;
+	std::cout << "u :  " << Qp.model.u << std::endl;
+	std::cout << "l :  " << Qp.model.l << std::endl;
 
 	Qp.solve();
 

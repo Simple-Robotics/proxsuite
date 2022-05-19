@@ -3,7 +3,7 @@
 #define PROXSUITE_QP_DENSE_LINESEARCH_HPP
 
 #include "qp/dense/views.hpp"
-#include "qp/dense/data.hpp"
+#include "qp/dense/model.hpp"
 #include "qp/results.hpp"
 #include "qp/dense/workspace.hpp"
 #include "qp/settings.hpp"
@@ -26,7 +26,7 @@ struct PrimalDualGradResult {
 
 template <typename T>
 auto primal_dual_gradient_norm(
-		const proxsuite::qp::dense::Data<T>& qpmodel,
+		const proxsuite::qp::dense::Model<T>& qpmodel,
 		proxsuite::qp::Results<T>& qpresults,
 		proxsuite::qp::dense::Workspace<T>& qpwork,
 		T alpha) -> PrimalDualGradResult<T> {
@@ -152,7 +152,7 @@ auto primal_dual_gradient_norm(
 
 template <typename T>
 void primal_dual_ls(
-		const proxsuite::qp::dense::Data<T>& qpmodel,
+		const proxsuite::qp::dense::Model<T>& qpmodel,
 		proxsuite::qp::Results<T>& qpresults,
 		proxsuite::qp::dense::Workspace<T>& qpwork) {
 
@@ -324,7 +324,7 @@ void primal_dual_ls(
 
 template <typename T>
 void active_set_change(
-		const proxsuite::qp::dense::Data<T>& qpmodel,
+		const proxsuite::qp::dense::Model<T>& qpmodel,
 		proxsuite::qp::Results<T>& qpresults,
 		Workspace<T>& qpwork) {
 

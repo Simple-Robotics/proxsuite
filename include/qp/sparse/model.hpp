@@ -1,6 +1,6 @@
 /** \file */
-#ifndef PROXSUITE_QP_SPARSE_DATA_HPP
-#define PROXSUITE_QP_SPARSE_DATA_HPP
+#ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
+#define PROXSUITE_QP_SPARSE_MODEL_HPP
 
 #include "linearsolver/sparse/core.hpp"
 #include <veg/vec.hpp>
@@ -14,7 +14,7 @@ using veg::usize;
 using veg::i64;
 
 template <typename T, typename I>
-struct Data {
+struct Model {
 	isize dim;
 	isize n_eq;
 	isize n_in;
@@ -67,4 +67,4 @@ struct Data {
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_DATA_HPP */
+#endif /* end of include guard PROXSUITE_QP_SPARSE_MODEL_HPP */

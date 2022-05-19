@@ -39,7 +39,7 @@ template <typename T>
 void initial_guess(
 		dense::Workspace<T>& qpwork,
 		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
+		dense::Model<T>& qpmodel,
 		Results<T>& qpresults) {
 
 	qp::dense::QpViewBoxMut<T> qp_scaled{
@@ -119,7 +119,7 @@ void setup_generic( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
+		dense::Model<T>& qpmodel,
 		dense::Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 
@@ -176,7 +176,7 @@ void setup_dense( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
+		dense::Model<T>& qpmodel,
 		dense::Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
@@ -207,7 +207,7 @@ void setup_sparse( //
 		VecRef<T> u,
 		VecRef<T> l,
 		Settings<T>& qpsettings,
-		dense::Data<T>& qpmodel,
+		dense::Model<T>& qpmodel,
 		dense::Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
@@ -353,13 +353,13 @@ struct QP {
 public:
 	Results<T> results;
 	Settings<T> settings;
-	Data<T> data;
+	Model<T> model;
 	Workspace<T> work;
 
 	QP(isize _dim, isize _n_eq, isize _n_in)
 			: results(_dim, _n_eq, _n_in),
 				settings(),
-				data(_dim, _n_eq, _n_in),
+				model(_dim, _n_eq, _n_in),
 				work(_dim, _n_eq, _n_in) {}
 
 	void setup_dense_matrices(
@@ -376,15 +376,15 @@ public:
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
 			setup_dense(
-					MatRef<T>(data.H),
-					VecRef<T>(data.g),
-					MatRef<T>(data.A),
-					VecRef<T>(data.b),
-					MatRef<T>(data.C),
-					VecRef<T>(data.u),
-					VecRef<T>(data.l),
+					MatRef<T>(model.H),
+					VecRef<T>(model.g),
+					MatRef<T>(model.A),
+					VecRef<T>(model.b),
+					MatRef<T>(model.C),
+					VecRef<T>(model.u),
+					VecRef<T>(model.l),
 					settings,
-					data,
+					model,
 					work,
 					results);
 		} else if (
@@ -401,7 +401,7 @@ public:
 					u.value(),
 					l.value(),
 					settings,
-					data,
+					model,
 					work,
 					results);
 		} else {
@@ -423,15 +423,15 @@ public:
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
 			setup_generic(
-					MatRef<T>(data.H),
-					VecRef<T>(data.g),
-					MatRef<T>(data.A),
-					VecRef<T>(data.b),
-					MatRef<T>(data.C),
-					VecRef<T>(data.u),
-					VecRef<T>(data.l),
+					MatRef<T>(model.H),
+					VecRef<T>(model.g),
+					MatRef<T>(model.A),
+					VecRef<T>(model.b),
+					MatRef<T>(model.C),
+					VecRef<T>(model.u),
+					VecRef<T>(model.l),
 					settings,
-					data,
+					model,
 					work,
 					results);
 		} else if (
@@ -448,7 +448,7 @@ public:
 					u.value(),
 					l.value(),
 					settings,
-					data,
+					model,
 					work,
 					results);
 		} else {
@@ -456,7 +456,7 @@ public:
 
 			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
 		}
-		//setup_sparse(H,g,A,b,C,u,l,settings,data,work,results);
+		//setup_sparse(H,g,A,b,C,u,l,settings,model,work,results);
 	};
 
 	void solve() {
@@ -464,7 +464,7 @@ public:
 		auto start = std::chrono::high_resolution_clock::now();
 		qp_solve( //
 				settings,
-				data,
+				model,
 				results,
 				work);
 		auto stop = std::chrono::high_resolution_clock::now();
@@ -495,60 +495,58 @@ public:
 		results.cleanup();
 		work.cleanup();
 		if (g_ != tl::nullopt) {
-			data.g = g_.value().eval();
-			work.g_scaled = data.g;
+			model.g = g_.value().eval();
+			work.g_scaled = model.g;
 		} else {
-			work.g_scaled = data.g;
+			work.g_scaled = model.g;
 		}
 		if (b_ != tl::nullopt) {
-			data.b = b_.value().eval();
-			work.b_scaled = data.b;
+			model.b = b_.value().eval();
+			work.b_scaled = model.b;
 		} else {
-			work.b_scaled = data.b;
+			work.b_scaled = model.b;
 		}
 		if (u_ != tl::nullopt) {
-			data.u = u_.value().eval();
-			work.u_scaled = data.u;
+			model.u = u_.value().eval();
+			work.u_scaled = model.u;
 		} else {
-			work.u_scaled = data.u;
+			work.u_scaled = model.u;
 		}
 		if (l_ != tl::nullopt) {
-			data.l = l_.value().eval();
-			work.l_scaled = data.l;
-		} else { work.l_scaled = data.l; }
+			model.l = l_.value().eval();
+			work.l_scaled = model.l;
+		} else { work.l_scaled = model.l; }
 		if (H_ != tl::nullopt) {
 			if (A_ != tl::nullopt) {
 				if (C_ != tl::nullopt) {
-					data.H = H_.value().eval();
-					data.A = A_.value().eval();
-					data.C = C_.value().eval();
+					model.H = H_.value().eval();
+					model.A = A_.value().eval();
+					model.C = C_.value().eval();
 				} else {
-					//update_matrices(data, work, settings,results, H_, A_, MatrixView<T,rowmajor>{from_eigen,data.C});
-					//update_matrices(data, work, settings,results, H_, A_, tl::optional<MatRef<T>>(data.C));
-					data.H = H_.value().eval();
-					data.A = A_.value().eval();
+					model.H = H_.value().eval();
+					model.A = A_.value().eval();
 				}
 			} else if (C_ != tl::nullopt) {
-				data.H = H_.value().eval();
-				data.A = A_.value().eval();
+				model.H = H_.value().eval();
+				model.A = A_.value().eval();
 			} else {
-				data.H = H_.value().eval();
+				model.H = H_.value().eval();
 			}
 		} else if (A_ != tl::nullopt) {
 			if (C_ != tl::nullopt) {
-				data.A = A_.value().eval();
-				data.C = C_.value().eval();
+				model.A = A_.value().eval();
+				model.C = C_.value().eval();
 			} else {
-				data.A = A_.value().eval();
+				model.A = A_.value().eval();
 			}
 		} else if (C_ != tl::nullopt) {
-			data.C = C_.value().eval();
+			model.C = C_.value().eval();
 		}
-		work.H_scaled = data.H;
-		work.C_scaled = data.C;
-		work.A_scaled = data.A;
+		work.H_scaled = model.H;
+		work.C_scaled = model.C;
+		work.A_scaled = model.A;
 
-		initial_guess(work, settings, data, results);
+		initial_guess(work, settings, model, results);
 	}
 	void update_prox_parameter(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {

@@ -22,7 +22,7 @@ namespace dense {
 
 template <typename T>
 void refactorize(
-		const Data<T>& qpmodel,
+		const Model<T>& qpmodel,
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
 		T rho_new) {
@@ -66,7 +66,7 @@ void refactorize(
 
 template <typename T>
 void mu_update(
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T mu_eq_new,
@@ -105,7 +105,7 @@ void mu_update(
 
 template <typename T>
 void iterative_residual(
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		isize inner_pb_dim) {
@@ -143,7 +143,7 @@ void iterative_residual(
 template <typename T>
 void iterative_solve_with_permut_fact( //
 		const qp::Settings<T>& qpsettings,
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T eps,
@@ -296,7 +296,7 @@ void bcl_update(
 
 template <typename T>
 auto compute_inner_loop_saddle_point(
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork) -> T {
 
@@ -324,7 +324,7 @@ auto compute_inner_loop_saddle_point(
 template <typename T>
 void primal_dual_semi_smooth_newton_step(
 		const qp::Settings<T>& qpsettings,
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T eps) {
@@ -395,7 +395,7 @@ void primal_dual_semi_smooth_newton_step(
 template <typename T>
 auto primal_dual_newton_semi_smooth(
 		const qp::Settings<T>& qpsettings,
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork,
 		T eps_int) -> T {
@@ -520,7 +520,7 @@ auto primal_dual_newton_semi_smooth(
 template <typename T>
 void qp_solve( //
 		const qp::Settings<T>& qpsettings,
-		const qp::dense::Data<T>& qpmodel,
+		const qp::dense::Model<T>& qpmodel,
 		qp::Results<T>& qpresults,
 		qp::dense::Workspace<T>& qpwork) {
 

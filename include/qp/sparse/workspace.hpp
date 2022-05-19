@@ -12,7 +12,7 @@
 #include <qp/settings.hpp>
 #include <veg/vec.hpp>
 #include "qp/sparse/views.hpp"
-#include "qp/sparse/data.hpp"
+#include "qp/sparse/model.hpp"
 #include "qp/results.hpp"
 
 #include <iostream>
@@ -41,7 +41,7 @@ struct Workspace {
 
 		void setup_impl(
 				QpView<T, I> qp,
-				Data<T, I>& data,
+				Model<T, I>& data,
 				veg::dynstack::StackReq precond_req) {
 			data.dim = qp.H.nrows();
 			data.n_eq = qp.AT.ncols();

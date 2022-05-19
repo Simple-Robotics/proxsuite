@@ -36,7 +36,7 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					&qp::dense::QP<T>::settings,
 					"class with settings option of the solver.")
 			.def_readwrite(
-					"data", &qp::dense::QP<T>::data, "class containing the QP model")
+					"model", &qp::dense::QP<T>::model, "class containing the QP model")
 			.def(
 					"setup_dense_matrices",
 					&qp::dense::QP<T>::setup_dense_matrices,

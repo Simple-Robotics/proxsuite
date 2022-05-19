@@ -11,7 +11,7 @@
 #include <qp/dense/views.hpp>
 #include <qp/settings.hpp>
 #include <veg/vec.hpp>
-#include "qp/sparse/data.hpp"
+#include "qp/sparse/model.hpp"
 #include "qp/results.hpp"
 
 #include <iostream>
