@@ -13,7 +13,7 @@ namespace python {
 template <typename T>
 void solveDenseQp(pybind11::module_ m) {
 
-    m.def("solve_dense_qp", &qp::dense::solve<T>,"function for solving a QP problem using dense backend. It is possible to setting up solver parameters or warm start it.",
+    m.def("solve_dense_qp", &dense::solve<T>,"function for solving a QP problem using dense backend. It is possible to setting up solver parameters or warm start it.",
         pybind11::arg_v("H_dense", tl::nullopt, "quadratic cost with dense format."),
         pybind11::arg_v("H_sparse", tl::nullopt, "quadratic cost in sparse format"),
         pybind11::arg_v("g", tl::nullopt, "linear cost"),
@@ -54,7 +54,7 @@ void solveDenseQp(pybind11::module_ m) {
 template <typename T,typename I>
 void solveSparseQp(pybind11::module_ m) {
 
-    m.def("solve_sparse_qp", &qp::sparse::solve<T,I>,"function for solving a QP problem with sparse backend. It is possible to setting up solver parameters or warm start it.",
+    m.def("solve_sparse_qp", &sparse::solve<T,I>,"function for solving a QP problem with sparse backend. It is possible to setting up solver parameters or warm start it.",
         pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
         pybind11::arg_v("g", tl::nullopt, "linear cost"),
         pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),
