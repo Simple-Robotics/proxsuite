@@ -5,6 +5,7 @@
 #define PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
 
 #include "qp/dense/views.hpp"
+#include "qp/dense/fwd.hpp"
 #include <linearsolver/dense/core.hpp>
 #include <ostream>
 
@@ -210,8 +211,6 @@ auto ruiz_scale_qp_in_place( //
 } // namespace detail
 
 namespace preconditioner {
-template <typename T>
-using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
 template <typename T>
 struct RuizEquilibration {
@@ -273,7 +272,6 @@ struct RuizEquilibration {
 			QpViewBoxMut<T> scaled_qp,
 			VectorViewMut<T> tmp_delta_preallocated) {
 
-		using namespace detail;
 		/*
 		 * scaled_qp is scaled, whereas first qp is not
 		 * the procedure computes as well equilibration parameters using default

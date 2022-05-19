@@ -14,23 +14,6 @@ namespace qp {
 namespace dense {
 template <typename T>
 struct Workspace {
-	static constexpr auto DYN = Eigen::Dynamic;
-	enum { layout = Eigen::RowMajor };
-
-	using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
-	using Vec = Eigen::Matrix<T, DYN, 1>;
-
-	using VecMap = Eigen::Map<Vec const>;
-	using VecMapMut = Eigen::Map<Vec>;
-
-	using MatMap = Eigen::Map<Mat const>;
-	using MatMapMut = Eigen::Map<Mat>;
-
-	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
-	using VecISize = Eigen::Matrix<isize, DYN, 1>;
-
-	using VecMapBool = Eigen::Map<Eigen::Matrix<bool, DYN, 1> const>;
-	using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 	///// Equilibrator
 	preconditioner::RuizEquilibration<T> ruiz;
@@ -40,22 +23,22 @@ struct Workspace {
 	veg::Vec<unsigned char> ldl_stack;
 
 	///// QP STORAGE
-	Mat H_scaled;
-	Vec g_scaled;
-	Mat A_scaled;
-	Mat C_scaled;
-	Vec b_scaled;
-	Vec u_scaled;
-	Vec l_scaled;
+	Mat<T> H_scaled;
+	Vec<T> g_scaled;
+	Mat<T> A_scaled;
+	Mat<T> C_scaled;
+	Vec<T> b_scaled;
+	Vec<T> u_scaled;
+	Vec<T> l_scaled;
 
 	///// Initial variable loading
 
-	Vec x_prev;
-	Vec y_prev;
-	Vec z_prev;
+	Vec<T> x_prev;
+	Vec<T> y_prev;
+	Vec<T> z_prev;
 
 	///// KKT system storage
-	Mat kkt;
+	Mat<T> kkt;
 
 	//// Active set & permutation vector
 	VecISize current_bijection_map;
@@ -67,17 +50,17 @@ struct Workspace {
 
 	//// First order residuals for line search
 
-	Vec Hdx;
-	Vec Cdx;
-	Vec Adx;
+	Vec<T> Hdx;
+	Vec<T> Cdx;
+	Vec<T> Adx;
 
-	Vec active_part_z;
+	Vec<T> active_part_z;
 	veg::Vec<T> alphas;
 
 	///// Newton variables
-	Vec dw_aug;
-	Vec rhs;
-	Vec err;
+	Vec<T> dw_aug;
+	Vec<T> rhs;
+	Vec<T> err;
 
 	//// Relative residuals constants
 
@@ -89,14 +72,14 @@ struct Workspace {
 	T correction_guess_rhs_b;
 	T alpha;
 
-	Vec dual_residual_scaled;
-	Vec primal_residual_eq_scaled;
-	Vec primal_residual_in_scaled_up;
-	Vec primal_residual_in_scaled_low;
+	Vec<T> dual_residual_scaled;
+	Vec<T> primal_residual_eq_scaled;
+	Vec<T> primal_residual_in_scaled_up;
+	Vec<T> primal_residual_in_scaled_low;
 
-	Vec primal_residual_in_scaled_up_plus_alphaCdx;
-	Vec primal_residual_in_scaled_low_plus_alphaCdx;
-	Vec CTz;
+	Vec<T> primal_residual_in_scaled_up_plus_alphaCdx;
+	Vec<T> primal_residual_in_scaled_low_plus_alphaCdx;
+	Vec<T> CTz;
 
 	bool constraints_changed;
 

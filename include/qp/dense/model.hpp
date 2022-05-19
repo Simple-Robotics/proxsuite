@@ -4,27 +4,23 @@
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
+#include "qp/dense/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {
-using veg::isize;
 
 namespace dense {
 template <typename T>
 struct Model {
-	static constexpr auto DYN = Eigen::Dynamic;
-	enum { layout = Eigen::RowMajor };
-	using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
-	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	///// QP STORAGE
-	Mat H;
-	Vec g;
-	Mat A;
-	Mat C;
-	Vec b;
-	Vec u;
-	Vec l;
+	Mat<T> H;
+	Vec<T> g;
+	Mat<T> A;
+	Mat<T> C;
+	Vec<T> b;
+	Vec<T> u;
+	Vec<T> l;
 
 	///// model size
 	isize dim;
