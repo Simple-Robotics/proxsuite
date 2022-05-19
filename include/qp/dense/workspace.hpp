@@ -7,7 +7,7 @@
 #include <Eigen/Core>
 #include <linearsolver/dense/ldlt.hpp>
 #include <veg/vec.hpp>
-#include <qp/dense/precond/ruiz.hpp>
+#include <qp/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
 namespace qp {

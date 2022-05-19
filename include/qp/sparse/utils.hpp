@@ -15,8 +15,8 @@
 #include "qp/sparse/views.hpp"
 #include "qp/sparse/data.hpp"
 #include "qp/sparse/workspace.hpp"
-#include "qp/sparse/precond/ruiz.hpp"
-#include "qp/sparse/precond/identity.hpp"
+#include "qp/sparse/preconditioner/ruiz.hpp"
+#include "qp/sparse/preconditioner/identity.hpp"
 
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>

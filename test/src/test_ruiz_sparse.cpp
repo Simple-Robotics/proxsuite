@@ -1,5 +1,5 @@
 #include <qp/sparse/solver.hpp>
-#include <qp/dense/precond/ruiz.hpp>
+#include <qp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>
 #include <doctest.h>
 #include <veg/util/dynstack_alloc.hpp>

@@ -324,7 +324,7 @@ struct RuizEquilibration {
 			isize n_,
 			isize n_eq_in,
 			T epsilon_ = T(1e-3),
-			i64 max_iter_ = 10,
+			i64 max_iter_ = 1000,
 			Symmetry sym_ = Symmetry::UPPER,
 			std::ostream* logger = nullptr)
 			: delta(Eigen::Matrix<T, -1, 1>::Ones(n_ + n_eq_in)),
@@ -420,6 +420,7 @@ struct RuizEquilibration {
 	void unscale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() /= delta.head(n).array() * c;
 	}
+
 };
 
 } // namespace preconditioner
