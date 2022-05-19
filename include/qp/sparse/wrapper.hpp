@@ -2,8 +2,8 @@
  * @file wrapper.hpp 
 */
 
-#ifndef PROXSUITE_INCLUDE_QP_SPARSE_WRAPPER_HPP
-#define PROXSUITE_INCLUDE_QP_SPARSE_WRAPPER_HPP
+#ifndef PROXSUITE_QP_SPARSE_WRAPPER_HPP
+#define PROXSUITE_QP_SPARSE_WRAPPER_HPP
 #include <tl/optional.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
@@ -316,4 +316,4 @@ qp::Results<T> solve(const tl::optional<SparseMat<T,I>> H,
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_SPARSE_WRAPPER_HPP */
+#endif /* end of include guard PROXSUITE_QP_SPARSE_WRAPPER_HPP */

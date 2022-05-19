@@ -1,8 +1,8 @@
 /**
  * @file settings.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_SETTINGS_HPP
-#define PROXSUITE_INCLUDE_QP_SETTINGS_HPP
+#ifndef PROXSUITE_QP_SETTINGS_HPP
+#define PROXSUITE_QP_SETTINGS_HPP
 
 #include <Eigen/Core>
 #include <qp/dense/views.hpp>
@@ -101,4 +101,4 @@ public:
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_SETTINGS_HPP */
+#endif /* end of include guard PROXSUITE_QP_SETTINGS_HPP */

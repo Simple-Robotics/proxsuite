@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_OSQP_HPP_PIWYOSFDS
-#define INRIA_LDLT_OSQP_HPP_PIWYOSFDS
+#ifndef PROXSUITE_TEST_OSQP_HPP
+#define PROXSUITE_TEST_OSQP_HPP
 
 #include "util.hpp"
 #include <osqp.h>
@@ -67,4 +67,4 @@ inline auto solve_eq_osqp_sparse(
 
 } // namespace osqp
 } // namespace ldlt_test
-#endif /* end of include guard INRIA_LDLT_OSQP_HPP_PIWYOSFDS */
+#endif /* end of include guard PROXSUITE_TEST_OSQP_HPP */

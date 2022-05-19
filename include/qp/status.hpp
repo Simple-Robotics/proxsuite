@@ -1,8 +1,8 @@
 /**
  * @file constants.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_CONSTANTS_HPP
-#define PROXSUITE_INCLUDE_QP_CONSTANTS_HPP
+#ifndef PROXSUITE_QP_CONSTANTS_HPP
+#define PROXSUITE_QP_CONSTANTS_HPP
 
 #include <veg/type_traits/core.hpp>
 
@@ -26,4 +26,4 @@ const isize PROXQP_NON_CVX = -7;
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_CONSTANTS_HPP */
+#endif /* end of include guard PROXSUITE_QP_CONSTANTS_HPP */

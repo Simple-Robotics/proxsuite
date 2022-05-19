@@ -1,8 +1,8 @@
 /**
  * @file views.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP
+#ifndef PROXSUITE_QP_DENSE_VIEWS_HPP
+#define PROXSUITE_QP_DENSE_VIEWS_HPP
 
 #include <veg/type_traits/core.hpp>
 #include <veg/util/dbg.hpp>
@@ -1391,4 +1391,4 @@ VEG_NIEBLOID(infty_norm);
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_VIEWS_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_VIEWS_HPP */

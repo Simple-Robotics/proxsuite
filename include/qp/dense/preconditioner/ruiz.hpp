@@ -1,8 +1,8 @@
 /**
  * @file ruiz.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP
+#ifndef PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
+#define PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
 
 #include "qp/dense/views.hpp"
 #include <linearsolver/dense/core.hpp>
@@ -363,4 +363,4 @@ struct RuizEquilibration {
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_PRECOND_RUIZ_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP */

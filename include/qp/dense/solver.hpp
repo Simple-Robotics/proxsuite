@@ -2,8 +2,8 @@
  * @file solver.hpp 
 */
 
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP
+#ifndef PROXSUITE_QP_DENSE_SOLVER_HPP
+#define PROXSUITE_QP_DENSE_SOLVER_HPP
 
 #include "qp/dense/views.hpp"
 #include "qp/dense/linesearch.hpp"
@@ -824,4 +824,4 @@ void qp_solve( //
 } // namespace proxsuite
 
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_SOLVER_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_SOLVER_HPP */

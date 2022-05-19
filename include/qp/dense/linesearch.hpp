@@ -1,6 +1,6 @@
 /** \file */
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
+#ifndef PROXSUITE_QP_DENSE_LINESEARCH_HPP
+#define PROXSUITE_QP_DENSE_LINESEARCH_HPP
 
 #include "qp/dense/views.hpp"
 #include "qp/dense/data.hpp"
@@ -476,4 +476,4 @@ void active_set_change(
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_LINESEARCH_HPP */

@@ -1,8 +1,8 @@
 /**
  * @file utils.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP
+#ifndef PROXSUITE_QP_DENSE_UTILS_HPP
+#define PROXSUITE_QP_DENSE_UTILS_HPP
 
 #include "qp/dense/views.hpp"
 #include "qp/dense/workspace.hpp"
@@ -233,4 +233,4 @@ void global_dual_residual(
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_UTILS_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_UTILS_HPP */

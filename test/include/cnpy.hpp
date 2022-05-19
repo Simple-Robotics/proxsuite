@@ -3,8 +3,8 @@
 // license available in LICENSE file, or at
 // http://www.opensource.org/licenses/mit-license.php
 
-#ifndef INRIA_LDLT_CNPY_HPP_TAEAIC6RS
-#define INRIA_LDLT_CNPY_HPP_TAEAIC6RS
+#ifndef PROXSUITE_TEST_CNPY_HPP
+#define PROXSUITE_TEST_CNPY_HPP
 
 #include <memory>
 #include <cstring>
@@ -276,4 +276,4 @@ extern template auto npy_load_vec<double>(std::string const&)
 
 } // namespace cnpy
 
-#endif /* end of include guard INRIA_LDLT_CNPY_HPP_TAEAIC6RS */
+#endif /* end of include guard PROXSUITE_TEST_CNPY_HPP */

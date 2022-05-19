@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_QPALM_HPP_7H6RYKIYS
-#define INRIA_LDLT_QPALM_HPP_7H6RYKIYS
+#ifndef PROXSUITE_TEST_QPALM_HPP
+#define PROXSUITE_TEST_QPALM_HPP
 
 #include "util.hpp"
 #include <qpalm.h>
@@ -76,4 +76,4 @@ inline auto solve_eq_qpalm_sparse(
 };
 } // namespace qpalm
 } // namespace ldlt_test
-#endif /* end of include guard INRIA_LDLT_QPALM_HPP_7H6RYKIYS */
+#endif /* end of include guard PROXSUITE_TEST_QPALM_HPP */

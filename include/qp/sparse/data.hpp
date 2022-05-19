@@ -1,6 +1,6 @@
 /** \file */
-#ifndef INRIA_LDLT_DATA_HPP_BUGNS2RTS
-#define INRIA_LDLT_DATA_HPP_BUGNS2RTS
+#ifndef PROXSUITE_QP_SPARSE_DATA_HPP
+#define PROXSUITE_QP_SPARSE_DATA_HPP
 
 #include "linearsolver/sparse/core.hpp"
 #include <veg/vec.hpp>
@@ -67,4 +67,4 @@ struct Data {
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard INRIA_LDLT_DATA_HPP_BUGNS2RTS */
+#endif /* end of include guard PROXSUITE_QP_SPARSE_DATA_HPP */

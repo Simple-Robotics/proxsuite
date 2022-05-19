@@ -1,8 +1,8 @@
 /**
  * @file workspace.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
-#define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
+#ifndef PROXSUITE_QP_DENSE_WORKSPACE_HPP
+#define PROXSUITE_QP_DENSE_WORKSPACE_HPP
 
 #include <Eigen/Core>
 #include <linearsolver/dense/ldlt.hpp>
@@ -14,7 +14,6 @@ namespace qp {
 namespace dense {
 template <typename T>
 struct Workspace {
-public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	enum { layout = Eigen::RowMajor };
 
@@ -245,4 +244,4 @@ public:
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_QP_DENSE_WORKSPACE_HPP */

@@ -1,5 +1,5 @@
-#ifndef INRIA_LDLT_UTIL_HPP_ZX9HNY5GS
-#define INRIA_LDLT_UTIL_HPP_ZX9HNY5GS
+#ifndef PROXSUITE_TEST_UTIL_HPP
+#define PROXSUITE_TEST_UTIL_HPP
 
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
@@ -571,4 +571,4 @@ struct EigenNoAlloc {
 #endif
 };
 
-#endif /* end of include guard INRIA_LDLT_UTIL_HPP_ZX9HNY5GS */
+#endif /* end of include guard PROXSUITE_TEST_UTIL_HPP */

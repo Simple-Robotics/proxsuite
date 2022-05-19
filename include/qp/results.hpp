@@ -1,8 +1,8 @@
 /**
  * @file results.hpp 
 */
-#ifndef PROXSUITE_INCLUDE_QP_RESULTS_HPP
-#define PROXSUITE_INCLUDE_QP_RESULTS_HPP
+#ifndef PROXSUITE_QP_RESULTS_HPP
+#define PROXSUITE_QP_RESULTS_HPP
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
@@ -41,7 +41,6 @@ struct Info {
 
 template <typename T>
 struct Results {
-public:
 	static constexpr auto DYN = Eigen::Dynamic;
 	using Vec = Eigen::Matrix<T, DYN, 1>;
 
@@ -111,4 +110,4 @@ public:
 } // namespace qp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_INCLUDE_QP_RESULTS_HPP */
+#endif /* end of include guard PROXSUITE_QP_RESULTS_HPP */
