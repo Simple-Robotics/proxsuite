@@ -492,8 +492,8 @@ public:
 			tl::optional<MatRef<T>> C_,
 			tl::optional<VecRef<T>> u_,
 			tl::optional<VecRef<T>> l_) {
-		results.reset_results();
-		work.reset_workspace(data.n_in);
+		results.cleanup();
+		work.cleanup();
 		if (g_ != tl::nullopt) {
 			data.g = g_.value().eval();
 			work.g_scaled = data.g;
@@ -561,8 +561,8 @@ public:
 		warm_starting(x, y, z, results, settings);
 	};
 	void cleanup() {
-		results.reset_results();
-		work.reset_workspace();
+		results.cleanup();
+		work.cleanup();
 	}
 };
 

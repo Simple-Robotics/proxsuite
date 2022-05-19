@@ -198,7 +198,7 @@ public:
 		warm_starting(x, y, z, results, settings);
 	};
 	void cleanup() {
-		results.reset_results();
+		results.cleanup();
 	}
 };
 

@@ -202,8 +202,8 @@ struct Workspace {
 		CTz.setZero();
 	}
 
-	void reset_workspace(isize n_in = 0) {
-
+	void cleanup() {
+		isize n_in = C_scaled.rows();
 		H_scaled.setZero();
 		g_scaled.setZero();
 		A_scaled.setZero();

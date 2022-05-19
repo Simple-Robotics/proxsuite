@@ -81,7 +81,7 @@ struct Results {
 		info.status = proxsuite::qp::PROXQP_MAX_ITER_REACHED;
 	}
 
-	void reset_results() {
+	void cleanup() {
 		x.setZero();
 		y.setZero();
 		z.setZero();
