@@ -7,22 +7,13 @@
 #include <tl/optional.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
+#include <qp/sparse/fwd.hpp>
 #include <qp/sparse/solver.hpp>
 #include <chrono>
 
 namespace proxsuite {
 namespace qp {
 namespace sparse {
-static constexpr auto DYN = Eigen::Dynamic;
-enum { layout = Eigen::RowMajor };
-template <typename T, typename I>
-using SparseMat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
-template <typename T>
-using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
-template <typename T>
-using MatRef = Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
-template <typename T>
-using Vec = Eigen::Matrix<T, DYN, 1>;
 
 ////// SETUP
 ////// UPDATES ///////
@@ -64,7 +55,7 @@ void update_proximal_parameters(
 * @param settings solver settings 
 */
 template <typename T>
-void warm_starting(
+void warm_start(
 		tl::optional<VecRef<T>> x_wm,
 		tl::optional<VecRef<T>> y_wm,
 		tl::optional<VecRef<T>> z_wm,
@@ -200,7 +191,7 @@ struct QP {
 			tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
-		warm_starting(x, y, z, results, settings);
+		proxsuite::qp::sparse::warm_start(x, y, z, results, settings);
 	};
 	void cleanup() { results.cleanup(); }
 };

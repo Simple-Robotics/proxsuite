@@ -3,15 +3,11 @@
 #define PROXSUITE_QP_SPARSE_MODEL_HPP
 
 #include "linearsolver/sparse/core.hpp"
-#include <veg/vec.hpp>
+#include "qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {
 namespace sparse {
-
-using veg::isize;
-using veg::usize;
-using veg::i64;
 
 template <typename T, typename I>
 struct Model {

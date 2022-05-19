@@ -8,10 +8,10 @@
 #include <veg/type_traits/core.hpp>
 #include <veg/vec.hpp>
 #include "qp/status.hpp"
+#include "qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {
-using veg::isize;
 
 template <typename T>
 struct Info {
@@ -42,14 +42,12 @@ struct Info {
 
 template <typename T>
 struct Results {
-	static constexpr auto DYN = Eigen::Dynamic;
-	using Vec = Eigen::Matrix<T, DYN, 1>;
 
 	///// SOLUTION STORAGE
 
-	Vec x;
-	Vec y;
-	Vec z;
+	sparse::Vec<T> x;
+	sparse::Vec<T> y;
+	sparse::Vec<T> z;
 	veg::Vec<bool> active_constraints;
 
 	Info<T> info;

@@ -5,10 +5,10 @@
 #define PROXSUITE_QP_CONSTANTS_HPP
 
 #include <veg/type_traits/core.hpp>
+#include "qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {
-using veg::isize;
 
 // STATUS CONSTANTS
 const isize PROXQP_SOLVED = 1;

@@ -25,12 +25,6 @@ namespace proxsuite {
 namespace qp {
 namespace sparse {
 
-using dense::infty_norm;
-template <typename T, typename I>
-using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
-template <typename T>
-using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
-
 namespace detail {
 template <typename T>
 auto positive_part(T const& expr)

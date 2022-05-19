@@ -6,14 +6,13 @@
 
 #include <Eigen/Core>
 #include <qp/dense/views.hpp>
+#include "qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {
-using veg::isize;
 
 template <typename T>
 struct Settings {
-public:
 	T alpha_bcl;
 	T beta_bcl;
 

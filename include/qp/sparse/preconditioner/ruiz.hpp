@@ -3,6 +3,8 @@
 #ifndef PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
 #define PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
 
+#include "qp/sparse/fwd.hpp"
+
 namespace proxsuite {
 namespace qp {
 namespace sparse {
@@ -12,7 +14,6 @@ enum struct Symmetry {
 	LOWER,
 	UPPER,
 };
-using dense::infty_norm;
 
 namespace detail {
 template <typename T, typename I>

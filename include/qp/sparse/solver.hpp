@@ -12,6 +12,7 @@
 #include <qp/settings.hpp>
 #include <veg/vec.hpp>
 #include "qp/results.hpp"
+#include "qp/sparse/fwd.hpp"
 #include "qp/sparse/views.hpp"
 #include "qp/sparse/model.hpp"
 #include "qp/sparse/workspace.hpp"
@@ -26,10 +27,6 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
-using veg::isize;
-using veg::usize;
-using veg::i64;
-using dense::infty_norm;
 
 template <typename T, typename I>
 void ldl_solve(
@@ -203,9 +200,6 @@ void ldl_solve_in_place(
 			active_constraints);
 	rhs.to_eigen() = tmp;
 };
-
-template <typename T>
-using DMat = Eigen::Matrix<T, -1, -1>;
 
 template <typename T, typename I>
 auto inner_reconstructed_matrix(

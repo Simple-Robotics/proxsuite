@@ -241,7 +241,7 @@ void update_proximal_parameters(
 * @param settings solver settings 
 */
 template <typename T>
-void warm_starting(
+void warm_start(
 		tl::optional<VecRef<T>> x_wm,
 		tl::optional<VecRef<T>> y_wm,
 		tl::optional<VecRef<T>> z_wm,
@@ -544,7 +544,7 @@ struct QP {
 			tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
-		warm_starting(x, y, z, results, settings);
+		proxsuite::qp::dense::warm_start(x, y, z, results, settings);
 	};
 	void cleanup() {
 		results.cleanup();
