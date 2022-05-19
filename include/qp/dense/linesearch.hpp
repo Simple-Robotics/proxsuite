@@ -3,10 +3,10 @@
 #define PROXSUITE_INCLUDE_QP_DENSE_LINESEARCH_HPP
 
 #include "qp/dense/views.hpp"
-#include "qp/dense/Data.hpp"
-#include "qp/Results.hpp"
-#include "qp/dense/Workspace.hpp"
-#include "qp/Settings.hpp"
+#include "qp/dense/data.hpp"
+#include "qp/results.hpp"
+#include "qp/dense/workspace.hpp"
+#include "qp/settings.hpp"
 #include <cmath>
 #include <iostream>
 #include <fstream>

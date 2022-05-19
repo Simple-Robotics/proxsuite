@@ -1,5 +1,5 @@
 /**
- * @file Workspace.hpp 
+ * @file workspace.hpp 
 */
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_WORKSPACE_HPP

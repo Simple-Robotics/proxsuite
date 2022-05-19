@@ -1,4 +1,4 @@
-#include <qp/dense/Workspace.hpp>
+#include <qp/dense/workspace.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <qp/dense/utils.hpp>

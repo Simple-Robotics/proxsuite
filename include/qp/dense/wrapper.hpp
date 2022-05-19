@@ -5,8 +5,8 @@
 #ifndef PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP
 #define PROXSUITE_INCLUDE_QP_DENSE_WRAPPER_HPP
 #include <tl/optional.hpp>
-#include <qp/Results.hpp>
-#include <qp/Settings.hpp>
+#include <qp/results.hpp>
+#include <qp/settings.hpp>
 #include <qp/dense/solver.hpp>
 #include <chrono>
 

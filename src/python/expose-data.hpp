@@ -1,4 +1,4 @@
-#include <qp/dense/Data.hpp>
+#include <qp/dense/data.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <qp/dense/utils.hpp>

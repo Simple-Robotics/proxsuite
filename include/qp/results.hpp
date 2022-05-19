@@ -1,12 +1,12 @@
 /**
- * @file Results.hpp 
+ * @file results.hpp 
 */
 #ifndef PROXSUITE_INCLUDE_QP_RESULTS_HPP
 #define PROXSUITE_INCLUDE_QP_RESULTS_HPP
 
 #include <Eigen/Core>
 #include <veg/type_traits/core.hpp>
-#include "qp/constants.hpp"
+#include "qp/status.hpp"
 
 namespace proxsuite {
 namespace qp {

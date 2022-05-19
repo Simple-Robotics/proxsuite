@@ -7,7 +7,7 @@ using namespace qp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
-
+/*
 TEST_CASE("random ruiz") {
 
 	for (auto const& dims : {
@@ -177,7 +177,7 @@ TEST_CASE("random id") {
 		}
 	}
 }
-
+*/
 TEST_CASE("random id using the API") {
 
 	for (auto const& dims : {
@@ -202,6 +202,7 @@ TEST_CASE("random id using the API") {
 		{
 			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
+			Qp.settings.verbose = true;
 			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();
 

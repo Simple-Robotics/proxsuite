@@ -9,10 +9,10 @@
 #include <linearsolver/sparse/update.hpp>
 #include <linearsolver/sparse/rowmod.hpp>
 #include <qp/dense/views.hpp>
-#include <qp/Settings.hpp>
+#include <qp/settings.hpp>
 #include <veg/vec.hpp>
-#include "qp/sparse/Data.hpp"
-#include "qp/Results.hpp"
+#include "qp/sparse/data.hpp"
+#include "qp/results.hpp"
 
 #include <iostream>
 #include <Eigen/IterativeLinearSolvers>

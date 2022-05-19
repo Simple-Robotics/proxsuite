@@ -1,4 +1,4 @@
-#include <qp/Results.hpp>
+#include <qp/results.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
@@ -28,7 +28,7 @@ void exposeResults(pybind11::module_ m) {
 
 	::pybind11::class_<qp::Results<T>>(m, "Results")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
-			.def_readwrite("x", &qp::Results<T>::x)
+			.def_readwrite("x", &qp::Results<T>::x) 
 			.def_readwrite("y", &qp::Results<T>::y)
 			.def_readwrite("z", &qp::Results<T>::z)
 			.def_readwrite("info", &qp::Results<T>::info);

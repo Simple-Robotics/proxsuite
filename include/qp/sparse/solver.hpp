@@ -9,12 +9,12 @@
 #include <linearsolver/sparse/update.hpp>
 #include <linearsolver/sparse/rowmod.hpp>
 #include <qp/dense/views.hpp>
-#include <qp/Settings.hpp>
+#include <qp/settings.hpp>
 #include <veg/vec.hpp>
-#include "qp/Results.hpp"
+#include "qp/results.hpp"
 #include "qp/sparse/views.hpp"
-#include "qp/sparse/Data.hpp"
-#include "qp/sparse/Workspace.hpp"
+#include "qp/sparse/data.hpp"
+#include "qp/sparse/workspace.hpp"
 #include "qp/sparse/utils.hpp"
 #include "qp/sparse/precond/ruiz.hpp"
 #include "qp/sparse/precond/identity.hpp"
@@ -275,6 +275,7 @@ void refactorize(Results<T> results,
 		iterative_solver.compute(aug_kkt);
 	}
 };
+
 
 template <typename T>
 struct PrimalDualGradResult {

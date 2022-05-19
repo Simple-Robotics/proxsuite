@@ -1,5 +1,5 @@
 /**
- * @file Settings.hpp 
+ * @file settings.hpp 
 */
 #ifndef PROXSUITE_INCLUDE_QP_SETTINGS_HPP
 #define PROXSUITE_INCLUDE_QP_SETTINGS_HPP
