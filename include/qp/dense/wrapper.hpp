@@ -112,7 +112,6 @@ void setup_generic( //
 		Workspace<T>& qpwork,
 		Results<T>& qpresults) {
 
-	auto start = std::chrono::steady_clock::now();
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
 	qpmodel.g = g;
@@ -346,7 +345,7 @@ struct QP {
 				model(_dim, _n_eq, _n_in),
 				work(_dim, _n_eq, _n_in) {}
 
-	void setup_dense_matrices(
+	void setup(
 			tl::optional<MatRef<T>> H,
 			tl::optional<VecRef<T>> g,
 			tl::optional<MatRef<T>> A,
@@ -399,7 +398,7 @@ struct QP {
 			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		results.info.setup_time = T(duration.count());
 	};
-	void setup_sparse_matrices(
+	void setup(
 			const tl::optional<SparseMat<T>> H,
 			tl::optional<VecRef<T>> g,
 			const tl::optional<SparseMat<T>> A,

@@ -38,10 +38,10 @@ void exposeQpObjectDense(pybind11::module_ m) {
 			.def_readwrite(
 					"model", &dense::QP<T>::model, "class containing the QP model")
 			.def(
-					"setup_dense_matrices",
-					&dense::QP<T>::setup_dense_matrices,
-					"function for setting up the solver when passing dense matrices in "
-					"entry.",
+					"setup",
+					static_cast<void (dense::QP<T>::*)(tl::optional<dense::MatRef<T>>,tl::optional<dense::VecRef<T>>,tl::optional<dense::MatRef<T>>,tl::optional<dense::VecRef<T>>,
+														tl::optional<dense::MatRef<T>>,tl::optional<dense::VecRef<T>>,tl::optional<dense::VecRef<T>>)>(&dense::QP<T>::setup),
+					"function for setting up the solver QP model.",
 					pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
 					pybind11::arg_v("g", tl::nullopt, "linear cost"),
 					pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),
@@ -51,12 +51,12 @@ void exposeQpObjectDense(pybind11::module_ m) {
 							"l", tl::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v(
 							"u", tl::nullopt, "upper inequality constraint vector"))
+
 			.def(
-					"setup_sparse_matrices",
-					&dense::QP<T>::setup_sparse_matrices,
-					"function for setting up the solver when passing sparse matrices "
-					"in "
-					"entry.",
+					"setup",
+					static_cast<void (dense::QP<T>::*)(const tl::optional<dense::SparseMat<T>>,tl::optional<dense::VecRef<T>>,const tl::optional<dense::SparseMat<T>>,tl::optional<dense::VecRef<T>>,
+														const tl::optional<dense::SparseMat<T>>,tl::optional<dense::VecRef<T>>,tl::optional<dense::VecRef<T>>)>(&dense::QP<T>::setup),
+					"function for setting up the solver QP model.",
 					pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
 					pybind11::arg_v("g", tl::nullopt, "linear cost"),
 					pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),
@@ -146,8 +146,8 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					&sparse::QP<T,I>::solve,
 					"function used for solving the QP problem.")
 			.def(
-					"update_proximal_parameter",
-					&sparse::QP<T,I>::update_proximal_parameter,
+					"update_proximal_parameters",
+					&sparse::QP<T,I>::update_proximal_parameters,
 					"function used for updating proximal parameters of the solver. The "
 					"user must settup back the solver before using solve method.",
 					pybind11::arg_v("rho", tl::nullopt, "primal proximal parameter"),
