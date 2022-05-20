@@ -5,8 +5,9 @@
 #define PROXSUITE_QP_SETTINGS_HPP
 
 #include <Eigen/Core>
+#include <qp/status.hpp>
 #include <qp/dense/views.hpp>
-#include "qp/sparse/fwd.hpp"
+#include <qp/sparse/fwd.hpp>
 
 namespace proxsuite {
 namespace qp {
@@ -40,7 +41,7 @@ struct Settings {
 	isize nb_iterative_refinement;
 
 	bool verbose;
-	bool warm_start;
+	InitialGuessStatus initial_guess;
 
 	T eps_primal_inf;
 	T eps_dual_inf;
@@ -67,7 +68,7 @@ struct Settings {
 			isize nb_iterative_refinement_ = 10,
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
 			bool VERBOSE = false,
-			bool warm_start_ = false,
+			InitialGuessStatus initial_guess_ = InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
 			T eps_primal_inf_ = 1.E-14,
 			T eps_dual_inf_ = 1.E-14)
 			: alpha_bcl(alpha_bcl_),
@@ -92,7 +93,7 @@ struct Settings {
 				eps_refact(eps_refact_),
 				nb_iterative_refinement(nb_iterative_refinement_),
 				verbose(VERBOSE),
-				warm_start(warm_start_),
+				initial_guess(initial_guess_),
 				eps_primal_inf(eps_primal_inf_),
 				eps_dual_inf(eps_dual_inf_) {}
 };

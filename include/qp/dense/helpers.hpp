@@ -7,6 +7,7 @@
 #include <tl/optional.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
+#include <qp/status.hpp>
 #include <qp/dense/fwd.hpp>
 #include <chrono>
 
@@ -15,6 +16,93 @@ namespace qp {
 namespace dense {
 
 /////// SETUP ////////
+template <typename T>
+void compute_equality_constrained_initial_guess(
+        Workspace<T>& qpwork,
+		Settings<T>& qpsettings,
+		Model<T>& qpmodel,
+		Results<T>& qpresults){
+    
+    qpwork.rhs.setZero();
+    qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+    qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
+    iterative_solve_with_permut_fact( //
+            qpsettings,
+            qpmodel,
+            qpresults,
+            qpwork,
+            T(1),
+            qpmodel.dim + qpmodel.n_eq);
+
+    qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
+    qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+    qpwork.dw_aug.setZero();
+    qpwork.rhs.setZero();
+}
+
+template <typename T>
+void compute_unconstrained_initial_guess(
+        Workspace<T>& qpwork,
+		Model<T>& qpmodel,
+		Results<T>& qpresults){
+    
+    veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+    linearsolver::dense::Ldlt<T> ldl_tmp;
+    ldl_tmp.factorize(qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim),stack);
+    qpwork.rhs.setZero();
+    qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
+    ldl_tmp.solve_in_place(qpwork.rhs.head(qpmodel.dim), stack);
+    qpresults.x = qpwork.rhs.head(qpmodel.dim);
+    qpwork.rhs.setZero();
+}
+
+template <typename T>
+void setup_factorization(Workspace<T>& qpwork,
+		Model<T>& qpmodel,
+		Results<T>& qpresults){
+
+        veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	    };
+
+        qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+        qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
+                qpresults.info.rho;
+        qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
+                qpwork.A_scaled.transpose();
+        qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
+        qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
+        qpwork.kkt.diagonal()
+                .segment(qpmodel.dim, qpmodel.n_eq)
+                .setConstant(-qpresults.info.mu_eq);
+
+        qpwork.ldl.factorize(qpwork.kkt, stack);
+}
+
+template <typename T>
+void setup_equilibration(Workspace<T>& qpwork){
+
+    QpViewBoxMut<T> qp_scaled{
+			{from_eigen, qpwork.H_scaled},
+			{from_eigen, qpwork.g_scaled},
+			{from_eigen, qpwork.A_scaled},
+			{from_eigen, qpwork.b_scaled},
+			{from_eigen, qpwork.C_scaled},
+			{from_eigen, qpwork.u_scaled},
+			{from_eigen, qpwork.l_scaled}};
+
+	veg::dynstack::DynStackMut stack{
+			veg::from_slice_mut,
+			qpwork.ldl_stack.as_mut(),
+	};
+	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
+	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);      
+}
+
 /*!
 * Setup the linear solver and the parameters x, y and z (through warm starting or default values if warm_start=false in the settings)
 *
@@ -30,57 +118,17 @@ void initial_guess(
 		Model<T>& qpmodel,
 		Results<T>& qpresults) {
 
-	QpViewBoxMut<T> qp_scaled{
-			{from_eigen, qpwork.H_scaled},
-			{from_eigen, qpwork.g_scaled},
-			{from_eigen, qpwork.A_scaled},
-			{from_eigen, qpwork.b_scaled},
-			{from_eigen, qpwork.C_scaled},
-			{from_eigen, qpwork.u_scaled},
-			{from_eigen, qpwork.l_scaled}};
+    switch (qpsettings.initial_guess) {
+				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+                    compute_unconstrained_initial_guess(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+                    compute_equality_constrained_initial_guess(qpwork,qpsettings,qpmodel,qpresults);
+                    break;
+                }
+    }  
 
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
-			qpwork.ldl_stack.as_mut(),
-	};
-	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
-	qpwork.dw_aug.setZero();
-
-	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
-
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-	qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
-			qpresults.info.rho;
-	qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
-			qpwork.A_scaled.transpose();
-	qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) = qpwork.A_scaled;
-	qpwork.kkt.bottomRightCorner(qpmodel.n_eq, qpmodel.n_eq).setZero();
-	qpwork.kkt.diagonal()
-			.segment(qpmodel.dim, qpmodel.n_eq)
-			.setConstant(-qpresults.info.mu_eq);
-
-	qpwork.ldl.factorize(qpwork.kkt, stack);
-
-	if (!qpsettings.warm_start) {
-		qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-		qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-		iterative_solve_with_permut_fact( //
-				qpsettings,
-				qpmodel,
-				qpresults,
-				qpwork,
-				T(1),
-				qpmodel.dim + qpmodel.n_eq);
-
-		qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-		qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-		qpwork.dw_aug.setZero();
-		qpwork.rhs.setZero();
-	}
 }
 /*!
 * Setup the QP solver (the linear solver backend being dense).
@@ -98,7 +146,7 @@ void initial_guess(
 * @param qpresults solver result 
 */
 template <typename Mat, typename T>
-void setup_generic( //
+void setup( //
 		Mat const& H,
 		VecRef<T> g,
 		Mat const& A,
@@ -130,6 +178,52 @@ void setup_generic( //
 	qpwork.u_scaled = qpmodel.u;
 	qpwork.l_scaled = qpmodel.l;
 
+	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
+	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
+	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
+
+	switch (qpsettings.initial_guess) {
+				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+					setup_equilibration(qpwork);
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					setup_equilibration(qpwork);
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::COLD_START:{
+					// keep solutions but restart workspace and results
+					qpwork.cleanup();
+					qpresults.cold_start();
+					setup_equilibration(qpwork);
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
+					setup_equilibration(qpwork);
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
+					setup_equilibration(qpwork);
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+                    // keep workspace and results solutions except statistics
+					qpresults.cleanup_statistics();
+                    break;
+                }
+
+	}
+
 	initial_guess(qpwork, qpsettings, qpmodel, qpresults);
 
 }
@@ -148,7 +242,7 @@ void setup_generic( //
 * @param qpsettings solver settings
 * @param qpmodel solver model
 * @param qpresults solver result 
-*/
+
 template <typename T>
 void setup_dense( //
 		MatRef<T> H,
@@ -164,6 +258,7 @@ void setup_dense( //
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
+*/
 
 /*!
 * Setup the QP solver with sparse matrices input (the linear solver backend being dense).
@@ -179,7 +274,7 @@ void setup_dense( //
 * @param qpsettings solver settings
 * @param qpmodel solver model
 * @param qpresults solver result 
-*/
+
 template <typename T>
 void setup_sparse( //
 		const SparseMat<T>& H,
@@ -195,7 +290,7 @@ void setup_sparse( //
 		Results<T>& qpresults) {
 	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
 }
-
+*/
 ////// UPDATES ///////
 
 /*!
@@ -241,21 +336,38 @@ void warm_start(
 		tl::optional<VecRef<T>> z_wm,
 		Results<T>& results,
 		Settings<T>& settings) {
-	bool real_wm = false;
-	if (x_wm != tl::nullopt) {
-		results.x = x_wm.value().eval();
-		real_wm = true;
-	}
-	if (y_wm != tl::nullopt) {
-		results.y = y_wm.value().eval();
-		real_wm = true;
-	}
-	if (z_wm != tl::nullopt) {
-		results.z = z_wm.value().eval();
-	}
-	if (real_wm) {
-		settings.warm_start = true;
-	}
+
+	isize n_eq = results.y.rows();
+	isize n_in = results.z.rows();
+	if (n_eq!=0){
+		if (n_in!=0){
+			if(x_wm != tl::nullopt && y_wm != tl::nullopt && z_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.y = y_wm.value().eval();
+					results.z = z_wm.value().eval();
+			}
+		}else{
+			// n_in= 0
+			if(x_wm != tl::nullopt && y_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.y = y_wm.value().eval();
+			}
+		}
+	}else if (n_in !=0){
+		// n_eq = 0
+		if(x_wm != tl::nullopt && z_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.z = z_wm.value().eval();
+		}
+	} else {
+		// n_eq = 0 and n_in = 0
+		if(x_wm != tl::nullopt ){
+					results.x = x_wm.value().eval();
+		}
+	}	
+
+	settings.initial_guess = InitialGuessStatus::WARM_START;
+
 }
 } // namespace dense
 } // namespace qp

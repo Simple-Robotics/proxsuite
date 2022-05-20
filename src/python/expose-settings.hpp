@@ -1,4 +1,5 @@
 #include <qp/settings.hpp>
+#include <qp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
@@ -7,6 +8,16 @@ namespace qp {
 namespace python {
 template <typename T>
 void exposeSettings(pybind11::module_ m) {
+
+	::pybind11::enum_<InitialGuessStatus>(m, "initial_guess")
+		.value("NO_INITIAL_GUESS", InitialGuessStatus::NO_INITIAL_GUESS)
+		.value("UNCONSTRAINED_INITIAL_GUESS", InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS)
+		.value("EQUALITY_CONSTRAINED_INITIAL_GUESS", InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
+		.value("WARM_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT)
+		.value("WARM_START", InitialGuessStatus::WARM_START)
+		.value("COLD_START", InitialGuessStatus::COLD_START)
+		.export_values();
+
 	::pybind11::class_<Settings<T>>(m, "Settings")
 			.def(::pybind11::init()) // constructor
 			.def_readwrite("alpha_bcl", &Settings<T>::alpha_bcl)
@@ -27,9 +38,8 @@ void exposeSettings(pybind11::module_ m) {
 			.def_readwrite("eps_rel", &Settings<T>::eps_rel)
 			.def_readwrite("eps_primal_inf", &Settings<T>::eps_primal_inf)
 			.def_readwrite("eps_dual_inf", &Settings<T>::eps_dual_inf)
-			.def_readwrite(
-					"nb_iterative_refinement", &Settings<T>::nb_iterative_refinement)
-			.def_readwrite("warm_start", &Settings<T>::warm_start)
+			.def_readwrite("nb_iterative_refinement", &Settings<T>::nb_iterative_refinement)
+			.def_readwrite("initial_guess", &Settings<T>::initial_guess)
 			.def_readwrite("verbose", &Settings<T>::verbose);
 }
 } // namespace python

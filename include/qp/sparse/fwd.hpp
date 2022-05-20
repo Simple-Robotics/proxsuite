@@ -31,7 +31,6 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 template <typename T, typename I>
 using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
 
-
 } // namespace sparse
 } // namespace qp
 } // namespace proxsuite

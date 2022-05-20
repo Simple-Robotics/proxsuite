@@ -201,7 +201,7 @@ TEST_CASE("maros meszaros wip using the API") {
 			Qp.settings.max_iter = 1.E6;
 			Qp.settings.verbose = false;
 			auto& eps = Qp.settings.eps_abs;
-			Qp.setup_sparse_matrices(H,g,AT.transpose(),b,CT.transpose(),u,l);
+			Qp.setup(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			Qp.solve();
 
 			CHECK(

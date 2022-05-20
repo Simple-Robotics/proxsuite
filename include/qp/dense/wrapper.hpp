@@ -112,7 +112,8 @@ struct QP {
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
-			setup_dense(
+			//setup_dense(
+			proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
 					MatRef<T>(model.A),
@@ -129,7 +130,8 @@ struct QP {
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
 				l != tl::nullopt) {
 			// if all != tl::nullopt -> initial setup
-			setup_dense(
+			//setup_dense(
+			proxsuite::qp::dense::setup(
 					H.value(),
 					g.value(),
 					A.value(),
@@ -164,7 +166,8 @@ struct QP {
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
-			setup_generic(
+			//setup_generic(
+			proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
 					MatRef<T>(model.A),
@@ -181,7 +184,8 @@ struct QP {
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
 				l != tl::nullopt) || (H != tl::nullopt) || (A != tl::nullopt) || (C != tl::nullopt)) {
 			// if all != tl::nullopt -> initial setup or re setup as a matrix is involved anyway 
-			setup_sparse(
+			//setup_sparse(
+			proxsuite::qp::dense::setup(
 					H.value(),
 					g.value(),
 					A.value(),
