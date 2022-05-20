@@ -349,12 +349,12 @@ qp::Results<T> solve(const tl::optional<MatRef<T>> H_dense,
 	}
 	QP<T> Qp(n, n_eq, n_in);
 	if(H_sparse!=tl::nullopt){
-		Qp.setup_sparse_matrices(H_sparse,g,A_sparse,b,C_sparse,u,l); 
+		Qp.setup(H_sparse,g,A_sparse,b,C_sparse,u,l); 
 	}else{
-		Qp.setup_dense_matrices(H_dense,g,A_dense,b,C_dense,u,l); 
+		Qp.setup(H_dense,g,A_dense,b,C_dense,u,l); 
 	}
 	
-	Qp.update_prox_parameter(rho,mu_eq,mu_in);
+	Qp.update_proximal_parameters(rho,mu_eq,mu_in);
 	Qp.warm_start(x,y,z);
 
 	if (eps_abs != tl::nullopt){
