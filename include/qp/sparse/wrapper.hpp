@@ -37,7 +37,7 @@ struct QP {
 			const tl::optional<SparseMat<T, I>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-		
+
 		auto start = std::chrono::steady_clock::now();
 		SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
 		SparseMat<T, I> AT = A.value().transpose();
@@ -58,7 +58,7 @@ struct QP {
 	};
 
 	void solve() {
-			qp_solve( //
+		qp_solve( //
 				results,
 				data,
 				settings,
@@ -119,8 +119,7 @@ qp::Results<T> solve(
 	isize n_in = C.value().rows();
 
 	qp::sparse::QP<T, I> Qp(n, n_eq, n_in);
-	Qp.setup(
-			H, g, A, b, C, u, l); // symbolic factorisation done here
+	Qp.setup(H, g, A, b, C, u, l); // symbolic factorisation done here
 
 	Qp.update_proximal_parameters(rho, mu_eq, mu_in);
 	Qp.warm_start(x, y, z);

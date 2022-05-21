@@ -385,7 +385,7 @@ void qp_solve(
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
 
-	if (!settings.initial_guess) {
+	if (settings.initial_guess != InitialGuessStatus::WARM_START) {
 		LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
 		LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
 

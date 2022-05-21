@@ -144,7 +144,8 @@ struct Workspace {
 				Results<T>& results,
 				Model<T, I>& data,
 				P& precond,
-				veg::dynstack::StackReq precond_req) {
+				veg::dynstack::StackReq precond_req,
+				bool update_preconditionner = true) {
 			data.dim = qp.H.nrows();
 			data.n_eq = qp.AT.ncols();
 			data.n_in = qp.CT.ncols();
@@ -433,7 +434,7 @@ struct Workspace {
 					{linearsolver::sparse::from_eigen, u_scaled},
 			};
 			stack = stack_mut();
-			precond.scale_qp_in_place(qp_scaled, stack);
+			precond.scale_qp_in_place(qp_scaled, update_preconditionner, stack);
 
 			// initial factorization
 			kkt_nnz_counts.resize_for_overwrite(n_tot);

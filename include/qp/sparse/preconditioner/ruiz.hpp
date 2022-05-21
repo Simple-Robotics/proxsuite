@@ -343,15 +343,118 @@ struct RuizEquilibration {
 		       veg::dynstack::StackReq::with_len(tag, 3 * n);
 	}
 
-	void scale_qp_in_place(QpViewMut<T, I> qp, veg::dynstack::DynStackMut stack) {
-		delta.setOnes();
-		c = detail::ruiz_scale_qp_in_place( //
-				{qp::from_eigen, delta},
-				qp,
-				epsilon,
-				max_iter,
-				sym,
-				stack);
+	void scale_qp_in_place(
+			QpViewMut<T, I> qp,
+			bool update_preconditionner,
+			veg::dynstack::DynStackMut stack) {
+		if (update_preconditionner) {
+			delta.setOnes();
+			c = detail::ruiz_scale_qp_in_place( //
+					{qp::from_eigen, delta},
+					qp,
+					epsilon,
+					max_iter,
+					sym,
+					stack);
+		} else {
+			using linearsolver::sparse::util::zero_extend;
+
+			isize n = qp.H.nrows();
+			isize n_eq = qp.AT.ncols();
+			isize n_in = qp.CT.ncols();
+
+			I* Hi = qp.H.row_indices_mut();
+			T* Hx = qp.H.values_mut();
+
+			I* ATi = qp.AT.row_indices_mut();
+			T* ATx = qp.AT.values_mut();
+
+			I* CTi = qp.CT.row_indices_mut();
+			T* CTx = qp.CT.values_mut();
+
+			// normalize A
+			for (usize j = 0; j < usize(n_eq); ++j) {
+				usize col_start = qp.AT.col_start(j);
+				usize col_end = qp.AT.col_end(j);
+
+				T delta_j = delta(n + isize(j));
+
+				for (usize p = col_start; p < col_end; ++p) {
+					usize i = zero_extend(ATi[p]);
+					T& aji = ATx[p];
+					T delta_i = delta(isize(i));
+					aji = delta_i * (aji * delta_j);
+				}
+			}
+
+			// normalize C
+			for (usize j = 0; j < usize(n_in); ++j) {
+				usize col_start = qp.CT.col_start(j);
+				usize col_end = qp.CT.col_end(j);
+
+				T delta_j = delta(n + n_eq + isize(j));
+
+				for (usize p = col_start; p < col_end; ++p) {
+					usize i = zero_extend(CTi[p]);
+					T& cji = CTx[p];
+					T delta_i = delta(isize(i));
+					cji = delta_i * (cji * delta_j);
+				}
+			}
+
+			// normalize H
+			switch (sym) {
+			case Symmetry::LOWER: {
+				for (usize j = 0; j < usize(n); ++j) {
+					usize col_start = qp.H.col_start(j);
+					usize col_end = qp.H.col_end(j);
+					T delta_j = delta(isize(j));
+
+					if (col_end > col_start) {
+						usize p = col_end;
+						while (true) {
+							--p;
+							usize i = zero_extend(Hi[p]);
+							if (i < j) {
+								break;
+							}
+							Hx[p] = delta_j * Hx[p] * delta(isize(i));
+
+							if (p <= col_start) {
+								break;
+							}
+						}
+					}
+				}
+				break;
+			}
+			case Symmetry::UPPER: {
+				for (usize j = 0; j < usize(n); ++j) {
+					usize col_start = qp.H.col_start(j);
+					usize col_end = qp.H.col_end(j);
+					T delta_j = delta(isize(j));
+
+					for (usize p = col_start; p < col_end; ++p) {
+						usize i = zero_extend(Hi[p]);
+						if (i > j) {
+							break;
+						}
+						Hx[p] = delta_j * Hx[p] * delta(isize(i));
+					}
+				}
+				break;
+			}
+			}
+
+			// normalize vectors
+			qp.g.to_eigen().array() *= delta.head(n).array();
+			qp.b.to_eigen().array() *= delta.segment(n, n_eq).array();
+			qp.l.to_eigen().array() *= delta.tail(n_in).array();
+			qp.u.to_eigen().array() *= delta.tail(n_in).array();
+
+			qp.g.to_eigen() *= c;
+			qp.H.to_eigen() *= c;
+		}
 	}
 
 	// modifies variables in place
@@ -421,7 +524,6 @@ struct RuizEquilibration {
 	void unscale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() /= delta.head(n).array() * c;
 	}
-
 };
 
 } // namespace preconditioner
