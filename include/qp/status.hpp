@@ -20,11 +20,10 @@ enum struct QPSolverOutput {
 // INITIAL GUESS STATUS
 enum struct InitialGuessStatus {
 	NO_INITIAL_GUESS,
-	UNCONSTRAINED_INITIAL_GUESS,
-	EQUALITY_CONSTRAINED_INITIAL_GUESS,
+	EQUALITY_CONSTRAINED_INITIAL_GUESS, 
 	WARM_START_WITH_PREVIOUS_RESULT,
-	WARM_START,
-	COLD_START
+	WARM_START, // tout refaire pour la KKT avec la partie active de z
+	COLD_START_WITH_PREVIOUS_RESULT // keep solutions + KKT
 };
 
 } // namespace qp

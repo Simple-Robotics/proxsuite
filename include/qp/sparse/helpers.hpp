@@ -119,20 +119,9 @@ void qp_setup(
 	}
 
 	switch (settings.initial_guess) {
-				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
-					results.cleanup(); 
-					work._.setup_impl(
-						qp,
-						results,
-						data,
-						settings,
-						precond,
-						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
-                    break;
-                }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					results.cleanup(); 
-					work._.setup_impl(
+					work.setup_impl(
 						qp,
 						results,
 						data,
@@ -141,11 +130,11 @@ void qp_setup(
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
                     break;
                 }
-                case InitialGuessStatus::COLD_START:{
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
 					//qpwork.cleanup(); equivalent ?
 					results.cold_start();
-					work._.setup_impl(
+					work.setup_impl(
 						qp,
 						results,
 						data,
@@ -157,7 +146,7 @@ void qp_setup(
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
 					//qpwork.cleanup(); equivalent ?
 					results.cleanup(); 
-					work._.setup_impl(
+					work.setup_impl(
 						qp,
 						results,
 						data,
@@ -169,7 +158,7 @@ void qp_setup(
 				case InitialGuessStatus::WARM_START:{
 					//qpwork.cleanup();
 					results.cleanup(); 
-					work._.setup_impl(
+					work.setup_impl(
 						qp,
 						results,
 						data,
