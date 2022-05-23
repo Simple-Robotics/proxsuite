@@ -228,69 +228,6 @@ void setup( //
 
 }
 
-/*!
-* Setup the QP solver with dense matrices input (the linear solver backend being dense).
-*
-* @param H quadratic cost input defining the QP model
-* @param g linear cost input defining the QP model
-* @param A equality constraint matrix input defining the QP model
-* @param b equality constraint vector input defining the QP model
-* @param C inequality constraint matrix input defining the QP model
-* @param u lower inequality constraint vector input defining the QP model
-* @param l lower inequality constraint vector input defining the QP model
-* @param qpwork solver workspace
-* @param qpsettings solver settings
-* @param qpmodel solver model
-* @param qpresults solver result 
-
-template <typename T>
-void setup_dense( //
-		MatRef<T> H,
-		VecRef<T> g,
-		MatRef<T> A,
-		VecRef<T> b,
-		MatRef<T> C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		Model<T>& qpmodel,
-		Workspace<T>& qpwork,
-		Results<T>& qpresults) {
-	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
-}
-*/
-
-/*!
-* Setup the QP solver with sparse matrices input (the linear solver backend being dense).
-*
-* @param H quadratic cost input defining the QP model
-* @param g linear cost input defining the QP model
-* @param A equality constraint matrix input defining the QP model
-* @param b equality constraint vector input defining the QP model
-* @param C inequality constraint matrix input defining the QP model
-* @param u lower inequality constraint vector input defining the QP model
-* @param l lower inequality constraint vector input defining the QP model
-* @param qpwork solver workspace
-* @param qpsettings solver settings
-* @param qpmodel solver model
-* @param qpresults solver result 
-
-template <typename T>
-void setup_sparse( //
-		const SparseMat<T>& H,
-		VecRef<T> g,
-		const SparseMat<T>& A,
-		VecRef<T> b,
-		const SparseMat<T>& C,
-		VecRef<T> u,
-		VecRef<T> l,
-		Settings<T>& qpsettings,
-		Model<T>& qpmodel,
-		Workspace<T>& qpwork,
-		Results<T>& qpresults) {
-	setup_generic(H, g, A, b, C, u, l, qpsettings, qpmodel, qpwork, qpresults);
-}
-*/
 ////// UPDATES ///////
 
 /*!

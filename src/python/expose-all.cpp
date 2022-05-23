@@ -9,13 +9,15 @@ namespace python {
 
 template <typename T,typename I>
 void exposeAlgorithm(pybind11::module_ m) {
-	qp::dense::python::exposeData<T>(m);
+	qp::dense::python::exposeModel<T>(m);
 	qp::python::exposeResults<T>(m);
 	qp::python::exposeSettings<T>(m);
 	qp::python::exposeQpObjectDense<T>(m);
-    qp::python::exposeQpObjectSparse<T,I>(m);
-    qp::python::solveDenseQp<T>(m);
-    qp::python::solveSparseQp<T,I>(m);
+    //qp::python::exposeQpObjectSparse<T,I>(m);
+    //qp::python::solveDenseQp<T>(m);
+    //qp::python::solveSparseQp<T,I>(m);
+    //qp::python::exposeOsqpResults<T>(m);
+    //qp::python::exposeOsqpObjectSparse<T,I>(m); 
 }
 
 PYBIND11_MODULE(prox_suite, m) {

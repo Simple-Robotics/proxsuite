@@ -292,8 +292,8 @@ void qp_solve(
 
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
-	linearsolver::sparse::MatMut<T, I> H_scaled =
-			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
+	linearsolver::sparse::MatMut<T, I> H_scaled = 
+			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz); // où est ajouté rho ? comment changer les options ? le rho etc. ?
 
 	linearsolver::sparse::MatMut<T, I> AT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
@@ -385,34 +385,65 @@ void qp_solve(
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
 
-	if (settings.initial_guess != InitialGuessStatus::WARM_START) {
-		LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
-		LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
+	switch (settings.initial_guess) {
+				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+					// TODO with other linear system to solve
+					LDLT_TEMP_VEC_UNINIT(T, rhs, n, stack);
+					LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
+					rhs = -g_scaled_e;
+					// TO FINISH 
+					x_e = rhs;
+                    break;
+                }
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
+					LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
 
-		rhs.head(n) = -g_scaled_e;
-		rhs.segment(n, n_eq) = b_scaled_e;
-		rhs.segment(n + n_eq, n_in).setZero();
+					rhs.head(n) = -g_scaled_e;
+					rhs.segment(n, n_eq) = b_scaled_e;
+					rhs.segment(n + n_eq, n_in).setZero();
 
-		ldl_solve_in_place(
-				{qp::from_eigen, rhs},
-				{qp::from_eigen, no_guess},
-				results,
-				data,
-				n_tot,
-				ldl,
-				iterative_solver,
-				do_ldlt,
-				stack,
-				ldl_values,
-				perm,
-				ldl_col_ptrs,
-				perm_inv,
-				settings,
-				kkt_active,
-				active_constraints);
-		x_e = rhs.head(n);
-		y_e = rhs.segment(n, n_eq);
-		z_e = rhs.segment(n + n_eq, n_in);
+					ldl_solve_in_place(
+							{qp::from_eigen, rhs},
+							{qp::from_eigen, no_guess},
+							results,
+							data,
+							n_tot,
+							ldl,
+							iterative_solver,
+							do_ldlt,
+							stack,
+							ldl_values,
+							perm,
+							ldl_col_ptrs,
+							perm_inv,
+							settings,
+							kkt_active,
+							active_constraints);
+					x_e = rhs.head(n);
+					y_e = rhs.segment(n, n_eq);
+					z_e = rhs.segment(n + n_eq, n_in);
+                    break;
+                }
+                case InitialGuessStatus::COLD_START:{
+					// keep solutions but restart workspace and results
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+					x_e.setZero();
+					y_e.setZero();
+					z_e.setZero();
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					// keep previous solution
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+                    // keep workspace and results solutions except statistics
+                    break;
+                }
+
 	}
 
 	for (isize iter = 0; iter < settings.max_iter; ++iter) {

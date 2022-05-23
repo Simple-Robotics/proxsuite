@@ -18,7 +18,7 @@ else()
   set(ENABLE_TESTING OFF)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS
     "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
 )

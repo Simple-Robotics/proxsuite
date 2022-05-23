@@ -53,21 +53,38 @@ void warm_start(
 		tl::optional<VecRef<T>> z_wm,
 		Results<T>& results,
 		Settings<T>& settings) {
-	bool real_wm = false;
-	if (x_wm != tl::nullopt) {
-		results.x = x_wm.value().eval();
-		real_wm = true;
-	}
-	if (y_wm != tl::nullopt) {
-		results.y = y_wm.value().eval();
-		real_wm = true;
-	}
-	if (z_wm != tl::nullopt) {
-		results.z = z_wm.value().eval();
-	}
-	if (real_wm) {
-		settings.warm_start = true;
-	}
+
+	isize n_eq = results.y.rows();
+	isize n_in = results.z.rows();
+	if (n_eq!=0){
+		if (n_in!=0){
+			if(x_wm != tl::nullopt && y_wm != tl::nullopt && z_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.y = y_wm.value().eval();
+					results.z = z_wm.value().eval();
+			}
+		}else{
+			// n_in= 0
+			if(x_wm != tl::nullopt && y_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.y = y_wm.value().eval();
+			}
+		}
+	}else if (n_in !=0){
+		// n_eq = 0
+		if(x_wm != tl::nullopt && z_wm != tl::nullopt){
+					results.x = x_wm.value().eval();
+					results.z = z_wm.value().eval();
+		}
+	} else {
+		// n_eq = 0 and n_in = 0
+		if(x_wm != tl::nullopt ){
+					results.x = x_wm.value().eval();
+		}
+	}	
+
+	settings.initial_guess = InitialGuessStatus::WARM_START;
+
 }
 
 template <typename T, typename I, typename P>
