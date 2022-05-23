@@ -255,7 +255,8 @@ struct RuizEquilibration {
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
-	void scale_qp_in_place(QpViewBoxMut<T> qp, veg::dynstack::DynStackMut stack) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp, bool update_preconditionner, veg::dynstack::DynStackMut stack) {
+		/*
 		delta.setOnes();
 		LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
 		c = detail::ruiz_scale_qp_in_place(
@@ -266,6 +267,83 @@ struct RuizEquilibration {
 				epsilon,
 				max_iter,
 				sym);
+		*/
+
+		if (update_preconditionner) {
+			delta.setOnes();
+			LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
+			c = detail::ruiz_scale_qp_in_place(
+				{qp::from_eigen, delta},
+				{qp::from_eigen, tmp_delta},
+				logger_ptr,
+				qp,
+				epsilon,
+				max_iter,
+				sym);
+		} else {
+
+
+			auto H = qp.H.to_eigen();
+			auto g = qp.g.to_eigen();
+			auto A = qp.A.to_eigen();
+			auto b = qp.b.to_eigen();
+			auto C = qp.C.to_eigen();
+			auto u = qp.u.to_eigen();
+			auto l = qp.l.to_eigen();
+			isize n = qp.H.rows;
+			isize n_eq = qp.A.rows;
+			isize n_in = qp.C.rows;
+
+			// normalize A and C
+			A = delta.segment(n, n_eq).asDiagonal() * A * delta.head(n).asDiagonal();
+			C = delta.tail(n_in).asDiagonal() * C * delta.head(n).asDiagonal();
+
+			// normalize H
+			switch (sym) {
+			case Symmetry::upper: {
+				// upper triangular part
+				for (isize j = 0; j < n; ++j) {
+					H.col(j).head(j + 1) *= delta(j);
+				}
+				// normalisation des lignes
+				for (isize i = 0; i < n; ++i) {
+					H.row(i).tail(n - i) *= delta(i);
+				}
+				break;
+			}
+			case Symmetry::lower: {
+				// lower triangular part
+				for (isize j = 0; j < n; ++j) {
+					H.col(j).tail(n - j) *= delta(j);
+				}
+				// normalisation des lignes
+				for (isize i = 0; i < n; ++i) {
+					H.row(i).head(i + 1) *= delta(i);
+				}
+				break;
+			}
+			case Symmetry::general: {
+				// all matrix
+				H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
+				break;
+			}
+			default:
+				break;
+			}
+
+			// normalize vectors
+			g.array() *= delta.head(n).array();
+			b.array() *= delta.segment(n, n_eq).array();
+			l.array() *= delta.tail(n_in).array();
+			u.array() *= delta.tail(n_in).array();
+
+			g *= c;
+			H *= c;
+		}
+
+
+
+
 	}
 	void scale_qp(
 			QpViewBox<T> qp,
