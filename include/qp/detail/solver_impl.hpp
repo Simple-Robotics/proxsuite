@@ -450,7 +450,7 @@ struct Workspace {
 
 namespace detail {
 template <typename T>
-void copy_vector_to_workspace(
+void copy_vector_to_model(
 		veg::Vec<T>& dst, linearsolver::sparse::DenseVecRef<T> src) {
 	isize n = src.nrows();
 	dst.resize_for_overwrite(src.nrows());
@@ -571,13 +571,167 @@ void refactorize(
 		iterative_solver.compute(aug_kkt);
 	}
 }
+
+template <typename T>
+auto ldl_solve_in_place_req(veg::Tag<T> xtag, isize n_tot)
+		-> veg::dynstack::StackReq {
+	return linearsolver::dense::temp_vec_req(xtag, n_tot);
+}
+
+template <typename T, typename I>
+void ldl_solve_in_place(
+		VectorViewMut<T> rhs,
+		Workspace<T, I> const& work,
+		veg::dynstack::DynStackMut stack) {
+	auto zx = linearsolver::sparse::util::zero_extend;
+
+	auto rhs_e = rhs.to_eigen();
+	auto n_tot = rhs_e.rows();
+	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
+
+	if (work.internal.do_ldlt) {
+
+		Ldlt<T, I>& ldlt = work.internal.ldlt;
+
+		linearsolver::sparse::MatRef<T, I> ld = {
+				linearsolver::sparse::from_raw_parts,
+				n_tot,
+				n_tot,
+				0,
+				ldlt.col_ptrs.ptr(),
+				ldlt.nnz_counts.ptr(),
+				ldlt.row_indices.ptr(),
+				ldlt.values.ptr(),
+		};
+
+		I const* perm = work.internal.ldlt.perm.ptr();
+		I const* perm_inv = work.internal.ldlt.perm_inv.ptr();
+
+		for (isize i = 0; i < n_tot; ++i) {
+			tmp[i] = rhs_e[isize(zx(perm[i]))];
+		}
+
+		linearsolver::sparse::dense_lsolve<T, I>(
+				{linearsolver::sparse::from_eigen, tmp}, ld);
+		for (isize i = 0; i < n_tot; ++i) {
+			tmp[i] /= ld.values()[isize(zx(ld.col_ptrs()[i]))];
+		}
+		linearsolver::sparse::dense_ltsolve<T, I>(
+				{linearsolver::sparse::from_eigen, tmp}, ld);
+		for (isize i = 0; i < n_tot; ++i) {
+			rhs_e[i] = tmp[isize(zx(perm_inv[i]))];
+		}
+
+	} else {
+		tmp = work.internal.matrix_free_solver.get()->solve(rhs_e);
+		rhs_e = tmp;
+	}
+}
+
+template <typename T>
+auto ldl_iter_solve_noalias_req(veg::Tag<T> xtag, isize n_tot)
+		-> veg::dynstack::StackReq {
+	return linearsolver::dense::temp_vec_req(xtag, n_tot) &
+	       detail::ldl_solve_in_place_req(xtag, n_tot);
+}
+
+template <typename T, typename I>
+void ldl_iter_solve_noalias(
+		VectorViewMut<T> sol,
+		VectorView<T> rhs,
+		VectorView<T> init_guess,
+		SolverState<T> const& state,
+		Settings<T> const& settings,
+		Workspace<T, I> const& work,
+		linearsolver::sparse::MatRef<T, I> const& kkt_active,
+		bool const* active_constraints,
+		isize n,
+		isize n_eq,
+		isize n_in,
+		veg::dynstack::DynStackMut stack) {
+	auto rhs_e = rhs.to_eigen();
+	auto sol_e = sol.to_eigen();
+
+	isize n_tot = n + n_eq + n_in;
+
+	if (init_guess.dim == n_tot) {
+		sol_e = init_guess.to_eigen();
+	} else {
+		sol_e.setZero();
+	}
+
+	LDLT_TEMP_VEC_UNINIT(T, err, n_tot, stack);
+	T prev_err_norm = std::numeric_limits<T>::infinity();
+
+	for (isize solve_iter = 0; solve_iter < settings.n_iterative_refinement;
+	     ++solve_iter) {
+		auto err_x = err.head(n);
+		auto err_y = err.segment(n, n_eq);
+		auto err_z = err.tail(n_in);
+
+		auto sol_x = sol_e.head(n);
+		auto sol_y = sol_e.segment(n, n_eq);
+		auto sol_z = sol_e.tail(n_in);
+
+		err -= rhs_e;
+		if (solve_iter > 0) {
+			detail::noalias_symhiv_add(err, kkt_active.to_eigen(), sol_e);
+			err_x += state.rho * sol_x;
+			err_y += -state.mu_eq * sol_y;
+			for (isize i = 0; i < n_in; ++i) {
+				err_z[i] += (active_constraints[i] ? -state.mu_in : T(1)) * sol_z[i];
+			}
+		}
+
+		T err_norm = dense::infty_norm(err);
+		if (err_norm > prev_err_norm / T(2.0)) {
+			break;
+		}
+
+		prev_err_norm = err_norm;
+		detail::ldl_solve_in_place({qp::from_eigen, err}, work, stack);
+
+		sol -= err;
+	}
+}
+
+template <typename T, typename I>
+void ldl_iter_solve_in_place(
+		VectorViewMut<T> rhs,
+		VectorView<T> init_guess,
+		SolverState<T> const& state,
+		Settings<T> const& settings,
+		Workspace<T, I> const& work,
+		linearsolver::sparse::MatRef<T, I> const& kkt_active,
+		bool const* active_constraints,
+		isize n,
+		isize n_eq,
+		isize n_in,
+		veg::dynstack::DynStackMut stack) {
+	isize n_tot = n + n_eq + n_in;
+	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
+	detail::ldl_iter_solve_noalias(
+			{qp::from_eigen, tmp},
+			rhs.as_const(),
+			init_guess,
+			state,
+			settings,
+			work,
+			kkt_active,
+			active_constraints,
+			n,
+			n_eq,
+			n_in,
+			stack);
+	rhs.to_eigen() = tmp;
+}
 } // namespace detail
 
 template <typename T, typename I>
 void setup(
+		Results<T>& results,
 		Workspace<T, I>& work,
 		Model<T, I>& model,
-		Results<T>& results,
 		Settings<T> const& settings,
 		QpView<T, I> const& qp) {
 	using namespace veg::dynstack;
@@ -613,10 +767,10 @@ void setup(
 
 	// copy qp vectors
 	{
-		detail::copy_vector_to_workspace(model.g, qp.g);
-		detail::copy_vector_to_workspace(model.b, qp.b);
-		detail::copy_vector_to_workspace(model.l, qp.l);
-		detail::copy_vector_to_workspace(model.u, qp.u);
+		detail::copy_vector_to_model(model.g, qp.g);
+		detail::copy_vector_to_model(model.b, qp.b);
+		detail::copy_vector_to_model(model.l, qp.l);
+		detail::copy_vector_to_model(model.u, qp.u);
 	}
 
 	// copy qp matrices
@@ -763,6 +917,152 @@ void setup(
 				results.active_constraints(),
 				work,
 				stack);
+	}
+}
+
+namespace detail {
+template <typename T>
+struct FeasibilityConstants {
+	T primal_rhs_1_eq;
+	T primal_rhs_1_in_l;
+	T primal_rhs_1_in_u;
+	T dual_rhs_2;
+};
+} // namespace detail
+
+template <typename T, typename I>
+void solve(
+		Results<T>& results,
+		Workspace<T, I>& work,
+		Model<T, I> const& model,
+		Settings<T> const& settings,
+		T const* diag_precond = nullptr) {
+	auto norm = dense::infty_norm;
+
+	veg::dynstack::DynStackMut stack = work.stack_mut();
+	isize n = results.x().rows();
+	isize n_eq = results.y().rows();
+	isize n_in = results.z().rows();
+	isize n_tot = n + n_eq + n_in;
+
+	linearsolver::sparse::MatRef<T, I> kkt = {
+			veg::from_raw_parts,
+			n_tot,
+			n_tot,
+			0, // nnz not used
+			model.kkt.col_ptrs.ptr(),
+			nullptr,
+			model.kkt.row_indices.ptr(),
+			model.kkt.values.ptr(),
+	};
+
+	LDLT_TEMP_VEC_UNINIT(I, kkt_nnz_counts, n_tot, stack);
+
+	// H and A are always active
+	isize H_nnz = 0;
+	isize A_nnz = 0;
+	for (usize j = 0; j < usize(n + n_eq); ++j) {
+		kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+		if (j < usize(n)) {
+			H_nnz += kkt_nnz_counts[isize(j)];
+		} else {
+			A_nnz += kkt_nnz_counts[isize(j)];
+		}
+	}
+
+	isize C_active_nnz = 0;
+	for (isize j = 0; j < n_in; ++j) {
+		auto is_active = results.active_constraints()[j];
+		kkt_nnz_counts[n + n_eq + j] = is_active
+		                                   ? I(kkt.col_end(usize(n + n_eq + j)) -
+		                                       kkt.col_start(usize(n + n_eq + j)))
+		                                   : I(0);
+		C_active_nnz += kkt_nnz_counts[n + n_eq + j];
+	}
+
+	linearsolver::sparse::MatRef<T, I> kkt_active = {
+			linearsolver::sparse::from_raw_parts,
+			n_tot,
+			n_tot,
+			H_nnz + A_nnz + C_active_nnz,
+			kkt.col_ptrs(),
+			kkt_nnz_counts.data(),
+			kkt.row_indices(),
+			kkt.values(),
+	};
+
+	using Map = Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride>;
+
+	auto g = Map{model.g.ptr(), n, 1, Stride{n, 1}};
+	auto b = Map{model.b.ptr(), n_eq, 1, Stride{n_eq, 1}};
+	auto l = Map{model.l.ptr(), n_in, 1, Stride{n_in, 1}};
+	auto u = Map{model.u.ptr(), n_in, 1, Stride{n_in, 1}};
+
+	auto x = results.x_mut();
+	auto y = results.y_mut();
+	auto z = results.z_mut();
+
+	T primal_feasibility_rhs_1_eq;
+	T primal_feasibility_rhs_1_in_l;
+	T primal_feasibility_rhs_1_in_u;
+	T dual_feasibility_rhs_2;
+
+	if (diag_precond == nullptr) {
+		primal_feasibility_rhs_1_eq = norm(b);
+		primal_feasibility_rhs_1_in_l = norm(l);
+		primal_feasibility_rhs_1_in_u = norm(u);
+		dual_feasibility_rhs_2 = norm(g);
+	} else {
+		Map diag = Map{diag_precond, n_tot, 1, Stride{n_tot, 1}};
+
+		primal_feasibility_rhs_1_eq = norm(b.cwiseQuotient(diag.segment(n, n_eq)));
+		primal_feasibility_rhs_1_in_l = norm(l.cwiseQuotient(diag.tail(n_in)));
+		primal_feasibility_rhs_1_in_u = norm(u.cwiseQuotient(diag.tail(n_in)));
+		dual_feasibility_rhs_2 = norm(g.cwiseQuotient(diag.head(n)));
+	}
+
+	{
+		SolutionInit w = settings.warm_start;
+		switch (w) {
+		case SolutionInit::WARM: {
+			// do nothing
+			break;
+		}
+		case SolutionInit::COLD_EQ_CONSTRAINED: {
+			LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
+			LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
+			rhs.head(n) = -g;
+			rhs.segment(n, n_eq) = b;
+			rhs.tail(n_in).setZero();
+
+			detail::ldl_iter_solve_in_place(
+					{qp::from_eigen, rhs},
+					{qp::from_eigen, no_guess},
+					results.internal.state,
+					settings,
+					work,
+					kkt_active,
+					results.active_constraints(),
+					n,
+					n_eq,
+					n_in,
+					stack);
+
+			x = rhs.head(n);
+			y = rhs.segment(n, n_eq);
+			z = rhs.tail(n_in);
+
+			break;
+		}
+		default: {
+			VEG_UNIMPLEMENTED();
+			break;
+		}
+		}
+	}
+
+	for (isize iter_outer = 0; iter_outer < settings.max_iter_outer;
+	     ++iter_outer) {
 	}
 }
 } // namespace sparse
