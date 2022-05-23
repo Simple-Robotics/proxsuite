@@ -93,6 +93,7 @@ void qp_setup(
 		Results<T>& results,
 		Model<T, I>& data,
 		Workspace<T, I>& work,
+		Settings<T>& settings,
 		P& precond) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
@@ -117,12 +118,66 @@ void qp_setup(
 		}
 	}
 
-	work._.setup_impl(
-			qp,
-      results,
-			data,
-			precond,
-			P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+	switch (settings.initial_guess) {
+				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+					work._.setup_impl(
+						qp,
+						results,
+						data,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+                    break;
+                }
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					work._.setup_impl(
+						qp,
+						results,
+						data,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+                    break;
+                }
+                case InitialGuessStatus::COLD_START:{
+					// keep solutions but restart workspace and results
+					//qpwork.cleanup(); equivalent ?
+					results.cold_start();
+					work._.setup_impl(
+						qp,
+						results,
+						data,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+					//qpwork.cleanup(); equivalent ?
+					results.cleanup(); 
+					work._.setup_impl(
+						qp,
+						results,
+						data,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					//qpwork.cleanup();
+					results.cleanup(); 
+					work._.setup_impl(
+						qp,
+						results,
+						data,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+                    // keep workspace and results solutions except statistics
+					results.cleanup_statistics();
+                    break;
+                }
+	}
+	// initial guess done in the solve for the moment
 }
 
 } // namespace sparse

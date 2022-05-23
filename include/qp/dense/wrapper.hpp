@@ -106,13 +106,12 @@ struct QP {
 			tl::optional<MatRef<T>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
-		
+		// dense case
 		auto start =  std::chrono::steady_clock::now();
 		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
-			//setup_dense(
 			proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
@@ -130,7 +129,6 @@ struct QP {
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
 				l != tl::nullopt) {
 			// if all != tl::nullopt -> initial setup
-			//setup_dense(
 			proxsuite::qp::dense::setup(
 					H.value(),
 					g.value(),
@@ -161,12 +159,12 @@ struct QP {
 			const tl::optional<SparseMat<T>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l) {
+		// sparse case
 		auto start =  std::chrono::steady_clock::now();
 		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt) {
 			// if all = tl::nullopt -> use previous setup
-			//setup_generic(
 			proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
@@ -184,7 +182,6 @@ struct QP {
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
 				l != tl::nullopt) || (H != tl::nullopt) || (A != tl::nullopt) || (C != tl::nullopt)) {
 			// if all != tl::nullopt -> initial setup or re setup as a matrix is involved anyway 
-			//setup_sparse(
 			proxsuite::qp::dense::setup(
 					H.value(),
 					g.value(),
@@ -202,7 +199,6 @@ struct QP {
 
 			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
 		}
-		//setup_sparse(H,g,A,b,C,u,l,settings,model,work,results);
 		auto stop = std::chrono::steady_clock::now();
 		auto duration =
 			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);

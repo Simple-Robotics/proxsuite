@@ -50,7 +50,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT},
 				{linearsolver::sparse::from_eigen, l.value()},
 				{linearsolver::sparse::from_eigen, u.value()}};
-		qp_setup(qp, results, data, work, ruiz);
+		qp_setup(qp, results, data, work, settings, ruiz);
 		auto stop = std::chrono::steady_clock::now();
 		auto duration =
 				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);

@@ -293,7 +293,7 @@ void qp_solve(
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
 	linearsolver::sparse::MatMut<T, I> H_scaled = 
-			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz); // où est ajouté rho ? comment changer les options ? le rho etc. ?
+			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
 
 	linearsolver::sparse::MatMut<T, I> AT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
@@ -430,9 +430,7 @@ void qp_solve(
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
-					x_e.setZero();
-					y_e.setZero();
-					z_e.setZero();
+					// already set to zero in the setup
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
@@ -443,7 +441,6 @@ void qp_solve(
                     // keep workspace and results solutions except statistics
                     break;
                 }
-
 	}
 
 	for (isize iter = 0; iter < settings.max_iter; ++iter) {
