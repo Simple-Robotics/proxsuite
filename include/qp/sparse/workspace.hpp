@@ -442,7 +442,6 @@ struct Workspace {
 		stack = stack_mut();
 		precond.scale_qp_in_place(qp_scaled, settings.update_preconditionner, stack);
 
-		// initial factorization
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
 
 		linearsolver::sparse::MatMut<T, I> kkt_active = {
@@ -493,15 +492,6 @@ struct Workspace {
 				ldl.perm[isize(zx(ldl.perm_inv[i]))] = I(i);
 			}
 		}
-
-		refactorize(
-				*this,
-				results,
-				kkt_active,
-				results.active_constraints.as_mut(),
-				data,
-				stack,
-				xtag);
 	}
 
 	Workspace() = default;
