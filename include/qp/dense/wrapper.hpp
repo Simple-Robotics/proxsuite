@@ -6,6 +6,7 @@
 #define PROXSUITE_QP_DENSE_WRAPPER_HPP
 #include <qp/dense/solver.hpp>
 #include <qp/dense/helpers.hpp>
+#include <qp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 
 namespace proxsuite {
@@ -91,12 +92,15 @@ struct QP {
 	Settings<T> settings;
 	Model<T> model;
 	Workspace<T> work;
+	///// Equilibrator
+	preconditioner::RuizEquilibration<T> ruiz;
 
 	QP(isize _dim, isize _n_eq, isize _n_in)
 			: results(_dim, _n_eq, _n_in),
 				settings(),
 				model(_dim, _n_eq, _n_in),
-				work(_dim, _n_eq, _n_in) {}
+				work(_dim, _n_eq, _n_in),
+				ruiz(preconditioner::RuizEquilibration<T>{_dim, _n_eq + _n_in}) {}
 
 	void setup(
 			tl::optional<MatRef<T>> H,
@@ -123,7 +127,8 @@ struct QP {
 					settings,
 					model,
 					work,
-					results);
+					results,
+					ruiz);
 		} else if (
 				H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
@@ -140,7 +145,8 @@ struct QP {
 					settings,
 					model,
 					work,
-					results);
+					results,
+					ruiz);
 		} else {
 			// some input are not equal to tl::nullopt -> do first an update
 			update(H, g, A, b, C, u, l);
@@ -176,7 +182,8 @@ struct QP {
 					settings,
 					model,
 					work,
-					results);
+					results,
+					ruiz);
 		} else if (
 				(H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
 				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
@@ -193,7 +200,8 @@ struct QP {
 					settings,
 					model,
 					work,
-					results);
+					results,
+					ruiz);
 		} else {
 			// inputs involved are only vectors -> do an update 
 
@@ -211,7 +219,8 @@ struct QP {
 				settings,
 				model,
 				results,
-				work);
+				work,
+				ruiz);
 	};
 
 	void update(
@@ -276,7 +285,6 @@ struct QP {
 		work.C_scaled = model.C;
 		work.A_scaled = model.A;
 
-		initial_guess(work, settings, model, results);
 	}
 	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {

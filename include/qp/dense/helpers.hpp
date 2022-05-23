@@ -84,7 +84,7 @@ void setup_factorization(Workspace<T>& qpwork,
 }
 
 template <typename T>
-void setup_equilibration(Workspace<T>& qpwork){
+void setup_equilibration(Workspace<T>& qpwork, preconditioner::RuizEquilibration<T>& ruiz){
 
     QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
@@ -99,7 +99,7 @@ void setup_equilibration(Workspace<T>& qpwork){
 			veg::from_slice_mut,
 			qpwork.ldl_stack.as_mut(),
 	};
-	qpwork.ruiz.scale_qp_in_place(qp_scaled, stack);
+	ruiz.scale_qp_in_place(qp_scaled, stack);
 	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);      
 }
 
@@ -157,7 +157,8 @@ void setup( //
 		Settings<T>& qpsettings,
 		Model<T>& qpmodel,
 		Workspace<T>& qpwork,
-		Results<T>& qpresults) {
+		Results<T>& qpresults,
+		preconditioner::RuizEquilibration<T>& ruiz) {
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
@@ -185,12 +186,12 @@ void setup( //
 
 	switch (qpsettings.initial_guess) {
 				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
-					setup_equilibration(qpwork);
+					setup_equilibration(qpwork, ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-					setup_equilibration(qpwork);
+					setup_equilibration(qpwork, ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
@@ -198,21 +199,21 @@ void setup( //
 					// keep solutions but restart workspace and results
 					qpwork.cleanup();
 					qpresults.cold_start();
-					setup_equilibration(qpwork);
+					setup_equilibration(qpwork,ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
 					qpwork.cleanup();
 					qpresults.cleanup(); 
-					setup_equilibration(qpwork);
+					setup_equilibration(qpwork,ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
 					qpwork.cleanup();
 					qpresults.cleanup(); 
-					setup_equilibration(qpwork);
+					setup_equilibration(qpwork,ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }

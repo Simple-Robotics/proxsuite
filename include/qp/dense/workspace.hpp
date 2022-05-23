@@ -7,16 +7,15 @@
 #include <Eigen/Core>
 #include <linearsolver/dense/ldlt.hpp>
 #include <veg/vec.hpp>
-#include <qp/dense/preconditioner/ruiz.hpp>
+//#include <qp/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
 namespace qp {
 namespace dense {
 template <typename T>
 struct Workspace {
-
-	///// Equilibrator
-	preconditioner::RuizEquilibration<T> ruiz;
+	///// EQUILIBRATOR
+	//preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
 	linearsolver::dense::Ldlt<T> ldl{};
@@ -85,7 +84,7 @@ struct Workspace {
 
 	Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
-				ruiz(preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
+				//ruiz(preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
 				ldl{}, // old version with alloc
 				H_scaled(dim, dim),
 				g_scaled(dim),

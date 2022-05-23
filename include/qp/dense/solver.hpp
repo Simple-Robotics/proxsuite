@@ -398,6 +398,7 @@ auto primal_dual_newton_semi_smooth(
 		const Model<T>& qpmodel,
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
+		preconditioner::RuizEquilibration<T>& ruiz,
 		T eps_int) -> T {
 
 	/* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
@@ -494,7 +495,8 @@ auto primal_dual_newton_semi_smooth(
 				VectorViewMut<T>{from_eigen, dy},
 				VectorViewMut<T>{from_eigen, dz},
 				qpwork,
-				qpsettings);
+				qpsettings,
+				ruiz);
 
 		bool is_dual_infeasible = global_dual_residual_infeasibility(
 				VectorViewMut<T>{from_eigen, Adx},
@@ -503,7 +505,8 @@ auto primal_dual_newton_semi_smooth(
 				VectorViewMut<T>{from_eigen, dx},
 				qpwork,
 				qpsettings,
-				qpmodel);
+				qpmodel,
+				ruiz);
 
 		if (is_primal_infeasible) {
 			qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
@@ -522,7 +525,8 @@ void qp_solve( //
 		const Settings<T>& qpsettings,
 		const Model<T>& qpmodel,
 		Results<T>& qpresults,
-		Workspace<T>& qpwork) {
+		Workspace<T>& qpwork,
+		preconditioner::RuizEquilibration<T>& ruiz) {
 
 	auto start = std::chrono::steady_clock::now();
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
@@ -564,6 +568,7 @@ void qp_solve( //
 				qpmodel,
 				qpresults,
 				qpwork,
+				ruiz,
 				primal_feasibility_lhs,
 				primal_feasibility_eq_rhs_0,
 				primal_feasibility_in_rhs_0,
@@ -573,6 +578,7 @@ void qp_solve( //
 		global_dual_residual(
 				qpresults,
 				qpwork,
+				ruiz,
 				dual_feasibility_lhs,
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
@@ -661,7 +667,7 @@ void qp_solve( //
 
 		// primal dual version from gill and robinson
 
-		qpwork.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
+		ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
 				from_eigen,
 				qpwork.primal_residual_in_scaled_up}); // contains now scaled(Cx)
 		qpwork.primal_residual_in_scaled_up +=
@@ -674,7 +680,7 @@ void qp_solve( //
 				qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
 
 		T err_in = primal_dual_newton_semi_smooth(
-				qpsettings, qpmodel, qpresults, qpwork, bcl_eta_in);
+				qpsettings, qpmodel, qpresults, qpwork, ruiz, bcl_eta_in);
 		if (qpsettings.verbose) {
 			std::cout << " inner loop residual : " << err_in << std::endl;
 		}
@@ -694,6 +700,7 @@ void qp_solve( //
 				qpmodel,
 				qpresults,
 				qpwork,
+				ruiz,
 				primal_feasibility_lhs_new,
 				primal_feasibility_eq_rhs_0,
 				primal_feasibility_in_rhs_0,
@@ -719,6 +726,7 @@ void qp_solve( //
 			global_dual_residual(
 					qpresults,
 					qpwork,
+					ruiz,
 					dual_feasibility_lhs_new,
 					dual_feasibility_rhs_0,
 					dual_feasibility_rhs_1,
@@ -764,6 +772,7 @@ void qp_solve( //
 		global_dual_residual(
 				qpresults,
 				qpwork,
+				ruiz,
 				dual_feasibility_lhs_new,
 				dual_feasibility_rhs_0,
 				dual_feasibility_rhs_1,
@@ -798,11 +807,11 @@ void qp_solve( //
 		qpresults.info.mu_in_inv = new_bcl_mu_in_inv;
 	}
 
-	qpwork.ruiz.unscale_primal_in_place(
+	ruiz.unscale_primal_in_place(
 			VectorViewMut<T>{from_eigen, qpresults.x});
-	qpwork.ruiz.unscale_dual_in_place_eq(
+	ruiz.unscale_dual_in_place_eq(
 			VectorViewMut<T>{from_eigen, qpresults.y});
-	qpwork.ruiz.unscale_dual_in_place_in(
+	ruiz.unscale_dual_in_place_in(
 			VectorViewMut<T>{from_eigen, qpresults.z});
 
 	{

@@ -9,6 +9,7 @@
 #include <qp/dense/model.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
+#include <qp/dense/preconditioner/ruiz.hpp>
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -64,6 +65,7 @@ void global_primal_residual(
 		const Model<T>& qpmodel,
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
+		preconditioner::RuizEquilibration<T>& ruiz,
 		T& primal_feasibility_lhs,
 		T& primal_feasibility_eq_rhs_0,
 		T& primal_feasibility_in_rhs_0,
@@ -73,10 +75,10 @@ void global_primal_residual(
 	qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
 	qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
 
-	qpwork.ruiz.unscale_primal_residual_in_place_eq(
+	ruiz.unscale_primal_residual_in_place_eq(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
 	primal_feasibility_eq_rhs_0 = infty_norm(qpwork.primal_residual_eq_scaled);
-	qpwork.ruiz.unscale_primal_residual_in_place_in(
+	ruiz.unscale_primal_residual_in_place_in(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_in_scaled_up});
 	primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
 
@@ -90,7 +92,7 @@ void global_primal_residual(
 	primal_feasibility_lhs =
 			std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
 
-	qpwork.ruiz.scale_primal_residual_in_place_eq(
+	ruiz.scale_primal_residual_in_place_eq(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
 }
 
@@ -110,15 +112,16 @@ bool global_primal_residual_infeasibility(
 		VectorViewMut<T> dy,
 		VectorViewMut<T> dz,
 		Workspace<T>& qpwork,
-		const Settings<T>& qpsettings) {
+		const Settings<T>& qpsettings,
+		preconditioner::RuizEquilibration<T>& ruiz) {
 
-	qpwork.ruiz.unscale_dual_residual_in_place(ATdy);
-	qpwork.ruiz.unscale_dual_residual_in_place(CTdz);
+	ruiz.unscale_dual_residual_in_place(ATdy);
+	ruiz.unscale_dual_residual_in_place(CTdz);
 	T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
 	T in_inf = positive_part(dz.to_eigen()).dot(qpwork.u_scaled) -
 	           positive_part(-dz.to_eigen()).dot(qpwork.l_scaled);
-	qpwork.ruiz.unscale_dual_in_place_eq(dy);
-	qpwork.ruiz.unscale_dual_in_place_in(dz);
+	ruiz.unscale_dual_in_place_eq(dy);
+	ruiz.unscale_dual_in_place_in(dz);
 
 	T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
 	T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
@@ -150,14 +153,15 @@ bool global_dual_residual_infeasibility(
 		VectorViewMut<T> dx,
 		Workspace<T>& qpwork,
 		const Settings<T>& qpsettings,
-		const Model<T>& qpmodel) {
+		const Model<T>& qpmodel,
+		preconditioner::RuizEquilibration<T>& ruiz) {
 
 	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
-	qpwork.ruiz.unscale_dual_residual_in_place(Hdx);
-	qpwork.ruiz.unscale_primal_residual_in_place_eq(Adx);
-	qpwork.ruiz.unscale_primal_residual_in_place_in(Cdx);
+	ruiz.unscale_dual_residual_in_place(Hdx);
+	ruiz.unscale_primal_residual_in_place_eq(Adx);
+	ruiz.unscale_primal_residual_in_place_in(Cdx);
 	T gdx = (dx.to_eigen()).dot(qpwork.g_scaled);
-	qpwork.ruiz.unscale_primal_in_place(dx);
+	ruiz.unscale_primal_in_place(dx);
 
 	T bound = infty_norm(dx.to_eigen()) * qpsettings.eps_dual_inf;
 	T bound_neg = -bound;
@@ -175,8 +179,8 @@ bool global_dual_residual_infeasibility(
 		}
 	}
 
-	bound *= qpwork.ruiz.c;
-	bound_neg *= qpwork.ruiz.c;
+	bound *= ruiz.c;
+	bound_neg *= ruiz.c;
 	bool second_cond_alt1 =
 			infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
 	bound_neg *= qpsettings.eps_dual_inf;
@@ -196,6 +200,7 @@ template <typename T>
 void global_dual_residual(
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
+		preconditioner::RuizEquilibration<T>& ruiz,
 		T& dual_feasibility_lhs,
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,
@@ -205,27 +210,27 @@ void global_dual_residual(
 	qpwork.CTz.noalias() =
 			qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
 	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
+	ruiz.unscale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.CTz});
 	dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
 	qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
 	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
+	ruiz.unscale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.CTz});
 	dual_feasibility_rhs_1 = infty_norm(qpwork.CTz);
 
 	qpwork.CTz.noalias() = qpwork.C_scaled.transpose() * qpresults.z;
 	qpwork.dual_residual_scaled += qpwork.CTz;
-	qpwork.ruiz.unscale_dual_residual_in_place(
+	ruiz.unscale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.CTz});
 	dual_feasibility_rhs_3 = infty_norm(qpwork.CTz);
 
-	qpwork.ruiz.unscale_dual_residual_in_place(
+	ruiz.unscale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
 
 	dual_feasibility_lhs = infty_norm(qpwork.dual_residual_scaled);
 
-	qpwork.ruiz.scale_dual_residual_in_place(
+	ruiz.scale_dual_residual_in_place(
 			VectorViewMut<T>{from_eigen, qpwork.dual_residual_scaled});
 }
 
