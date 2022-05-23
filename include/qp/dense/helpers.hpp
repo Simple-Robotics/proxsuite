@@ -186,11 +186,15 @@ void setup( //
 
 	switch (qpsettings.initial_guess) {
 				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+					qpwork.cleanup();
+					qpresults.cleanup(); 
 					setup_equilibration(qpwork, qpsettings, ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
 					setup_equilibration(qpwork, qpsettings, ruiz);
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;

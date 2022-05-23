@@ -76,6 +76,7 @@ struct QP {
 			tl::optional<VecRef<T>> z) {
 		proxsuite::qp::sparse::warm_start(x, y, z, results, settings);
 	};
+
 	void cleanup() { results.cleanup(); }
 };
 

@@ -120,6 +120,7 @@ void qp_setup(
 
 	switch (settings.initial_guess) {
 				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
+					results.cleanup(); 
 					work._.setup_impl(
 						qp,
 						results,
@@ -130,6 +131,7 @@ void qp_setup(
                     break;
                 }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					results.cleanup(); 
 					work._.setup_impl(
 						qp,
 						results,

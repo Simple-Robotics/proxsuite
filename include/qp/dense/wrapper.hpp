@@ -231,30 +231,20 @@ struct QP {
 			tl::optional<MatRef<T>> C_,
 			tl::optional<VecRef<T>> u_,
 			tl::optional<VecRef<T>> l_) {
-		results.cleanup();
-		work.cleanup();
+
+		// update the model
 		if (g_ != tl::nullopt) {
 			model.g = g_.value().eval();
-			work.g_scaled = model.g;
-		} else {
-			work.g_scaled = model.g;
-		}
+		} 
 		if (b_ != tl::nullopt) {
 			model.b = b_.value().eval();
-			work.b_scaled = model.b;
-		} else {
-			work.b_scaled = model.b;
 		}
 		if (u_ != tl::nullopt) {
 			model.u = u_.value().eval();
-			work.u_scaled = model.u;
-		} else {
-			work.u_scaled = model.u;
 		}
 		if (l_ != tl::nullopt) {
 			model.l = l_.value().eval();
-			work.l_scaled = model.l;
-		} else { work.l_scaled = model.l; }
+		} 
 		if (H_ != tl::nullopt) {
 			if (A_ != tl::nullopt) {
 				if (C_ != tl::nullopt) {
@@ -281,10 +271,6 @@ struct QP {
 		} else if (C_ != tl::nullopt) {
 			model.C = C_.value().eval();
 		}
-		work.H_scaled = model.H;
-		work.C_scaled = model.C;
-		work.A_scaled = model.A;
-
 	}
 	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
