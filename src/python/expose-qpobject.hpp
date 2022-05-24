@@ -143,7 +143,7 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v(
 							"u", tl::nullopt, "upper inequality constraint vector"),
 					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
-			/* to debug
+			
 			.def(
 					"update",
 					&sparse::QP<T,I>::update,
@@ -159,11 +159,6 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v(
 							"u", tl::nullopt, "upper inequality constraint vector"),
 					pybind11::arg_v("update_preconditioner",false,"update the preconditioner or re-use previous derived for reducing ill-conditioning and speeding up solver execution."))
-			.def(
-					"solve",
-					&sparse::QP<T,I>::solve,
-					"function used for solving the QP problem.")
-			*/
 			
 			.def(
 					"solve",

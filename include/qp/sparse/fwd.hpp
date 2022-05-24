@@ -21,6 +21,7 @@ static constexpr auto DYN = Eigen::Dynamic;
 enum { layout = Eigen::RowMajor };
 template <typename T, typename I>
 using SparseMat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
+//using SparseMat = Eigen::SparseMatrix<T, Eigen::RowMajor, I>;
 template <typename T>
 using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
 template <typename T>
@@ -30,6 +31,7 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 
 template <typename T, typename I>
 using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
+//using Mat = Eigen::SparseMatrix<T, Eigen::RowMajor, I>;
 
 } // namespace sparse
 } // namespace qp

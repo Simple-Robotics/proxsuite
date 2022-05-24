@@ -61,7 +61,7 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
-
+	
 	void update(const tl::optional<SparseMat<T, I>> H_,
 			tl::optional<VecRef<T>> g_,
 			const tl::optional<SparseMat<T, I>> A_,
@@ -106,28 +106,73 @@ struct QP {
 		if (H_ != tl::nullopt) {
 			if (A_ != tl::nullopt) {
 				if (C_ != tl::nullopt) {
-					H_unscaled.to_eigen() = H_.value();
-					AT_unscaled.to_eigen() = A_.value().transpose();
-					CT_unscaled.to_eigen() = C_.value().transpose();
+					bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) ;
+					if (res){
+						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
+					}
+					res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,A_.value().transpose()});
+					if (res){
+						copy(AT_unscaled,{linearsolver::sparse::from_eigen,A_.value().transpose()}); // copy rhs into lhs
+					}
+					res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,C_.value().transpose()});
+					if (res){
+						copy(CT_unscaled,{linearsolver::sparse::from_eigen,C_.value().transpose()}); // copy rhs into lhs
+					}
 				} else {
-					H_unscaled.to_eigen() = H_.value();
-					AT_unscaled.to_eigen() = A_.value().transpose();
+					bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) ;
+					if (res){
+						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
+					}
+					res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,A_.value().transpose()});
+					if (res){
+						copy(AT_unscaled,{linearsolver::sparse::from_eigen,A_.value().transpose()}); // copy rhs into lhs
+					}
+					//H_unscaled.to_eigen() = H_.value();
+					//AT_unscaled.to_eigen() = A_.value().transpose();
 				}
 			} else if (C_ != tl::nullopt) {
-				H_unscaled.to_eigen() = H_.value();
-				CT_unscaled.to_eigen() = C_.value().transpose();
+				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) ;
+				if (res){
+					copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
+				}
+				res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,C_.value().transpose()});
+				if (res){
+					copy(CT_unscaled,{linearsolver::sparse::from_eigen,C_.value().transpose()}); // copy rhs into lhs
+				}
+				//H_unscaled.to_eigen() = H_.value();
+				//CT_unscaled.to_eigen() = C_.value().transpose();
 			} else {
-				H_unscaled.to_eigen() = H_.value();
+				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) ;
+				if (res){
+						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
+				}
+				//H_unscaled.to_eigen() = H_.value();
 			}
 		} else if (A_ != tl::nullopt) {
 			if (C_ != tl::nullopt) {
-				AT_unscaled.to_eigen() = A_.value().transpose();
-				CT_unscaled.to_eigen() = C_.value().transpose();
+				bool res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,A_.value().transpose()});
+				if (res){
+					copy(AT_unscaled,{linearsolver::sparse::from_eigen,A_.value().transpose()}); // copy rhs into lhs
+				}
+				res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,C_.value().transpose()});
+				if (res){
+					copy(CT_unscaled,{linearsolver::sparse::from_eigen,C_.value().transpose()}); // copy rhs into lhs
+				}
+				//AT_unscaled.to_eigen() = A_.value().transpose();
+				//CT_unscaled.to_eigen() = C_.value().transpose();
 			} else {
-				AT_unscaled.to_eigen() = A_.value().transpose();
+				//AT_unscaled.to_eigen() = A_.value().transpose();
+				bool res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,A_.value().transpose()});
+				if (res){
+					copy(AT_unscaled,{linearsolver::sparse::from_eigen,A_.value().transpose()}); // copy rhs into lhs
+				}
 			}
 		} else if (C_ != tl::nullopt) {
-			CT_unscaled.to_eigen() = C_.value().transpose();
+			//CT_unscaled.to_eigen() = C_.value().transpose();
+			bool res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,C_.value().transpose()});
+			if (res){
+					copy(CT_unscaled,{linearsolver::sparse::from_eigen,C_.value().transpose()}); // copy rhs into lhs
+			}
 		}
 
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
@@ -142,6 +187,7 @@ struct QP {
 		qp_setup(qp, results, model, work, settings, ruiz, settings.update_preconditioner); // store model value + performs scaling according to chosen options
 
 	};
+	
 
 	void solve() {
 		
