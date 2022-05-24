@@ -1,5 +1,6 @@
 #include <qp/dense/wrapper.hpp>
 #include <qp/sparse/wrapper.hpp>
+#include <qp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
@@ -142,10 +143,40 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v(
 							"u", tl::nullopt, "upper inequality constraint vector"),
 					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
+			/* to debug
+			.def(
+					"update",
+					&sparse::QP<T,I>::update,
+					"function for updating the model when passing sparse matrices in "
+					"entry.",
+					pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
+					pybind11::arg_v("g", tl::nullopt, "linear cost"),
+					pybind11::arg_v("A", tl::nullopt, "equality constraint matrix"),
+					pybind11::arg_v("b", tl::nullopt, "equality constraint vector"),
+					pybind11::arg_v("C", tl::nullopt, "inequality constraint matrix"),
+					pybind11::arg_v(
+							"l", tl::nullopt, "lower inequality constraint vector"),
+					pybind11::arg_v(
+							"u", tl::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v("update_preconditioner",false,"update the preconditioner or re-use previous derived for reducing ill-conditioning and speeding up solver execution."))
 			.def(
 					"solve",
 					&sparse::QP<T,I>::solve,
 					"function used for solving the QP problem.")
+			*/
+			
+			.def(
+					"solve",
+					static_cast<void (sparse::QP<T,I>::*)()>(&sparse::QP<T,I>::solve),
+					"function used for solving the QP problem, using default parameters.")
+			.def(
+					"solve",
+					static_cast<void (sparse::QP<T,I>::*)(InitialGuessStatus initial_guess_)>(&sparse::QP<T,I>::solve),
+					"function used for solving the QP problem, when passing a initial guess option.")
+			.def(
+					"solve",
+					static_cast<void (sparse::QP<T,I>::*)(tl::optional<sparse::VecRef<T>> x,tl::optional<sparse::VecRef<T>> y,tl::optional<sparse::VecRef<T>> z)>(&sparse::QP<T,I>::solve),
+					"function used for solving the QP problem, when passing a warm start.")
 			.def(
 					"update_proximal_parameters",
 					&sparse::QP<T,I>::update_proximal_parameters,
@@ -160,14 +191,6 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 							"mu_in",
 							tl::nullopt,
 							"dual inequatlity constraint proximal parameter"))
-			.def(
-					"warm_sart",
-					&sparse::QP<T,I>::warm_start,
-					"function used for warm starting the solver with some vectors. The "
-					"user must settup back the solver before using solve method.",
-					pybind11::arg_v("x", tl::nullopt, "primal warm start"),
-					pybind11::arg_v("y", tl::nullopt, "dual equality warm start"),
-					pybind11::arg_v("z", tl::nullopt, "dual inequality warm start"))
 			.def(
 					"cleanup",
 					&sparse::QP<T,I>::cleanup,

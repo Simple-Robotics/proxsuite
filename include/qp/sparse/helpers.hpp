@@ -62,12 +62,14 @@ void warm_start(
 					results.x = x_wm.value().eval();
 					results.y = y_wm.value().eval();
 					results.z = z_wm.value().eval();
+					settings.initial_guess = InitialGuessStatus::WARM_START;
 			}
 		}else{
 			// n_in= 0
 			if(x_wm != tl::nullopt && y_wm != tl::nullopt){
 					results.x = x_wm.value().eval();
 					results.y = y_wm.value().eval();
+					settings.initial_guess = InitialGuessStatus::WARM_START;
 			}
 		}
 	}else if (n_in !=0){
@@ -75,15 +77,17 @@ void warm_start(
 		if(x_wm != tl::nullopt && z_wm != tl::nullopt){
 					results.x = x_wm.value().eval();
 					results.z = z_wm.value().eval();
+					settings.initial_guess = InitialGuessStatus::WARM_START;
 		}
 	} else {
 		// n_eq = 0 and n_in = 0
 		if(x_wm != tl::nullopt ){
 					results.x = x_wm.value().eval();
+					settings.initial_guess = InitialGuessStatus::WARM_START;
 		}
 	}	
 
-	settings.initial_guess = InitialGuessStatus::WARM_START;
+	
 
 }
 

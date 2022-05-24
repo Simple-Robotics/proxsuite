@@ -142,6 +142,29 @@ struct QP {
 	};
 
 	void solve() {
+		
+		qp_solve( //
+				results,
+				model,
+				settings,
+				work,
+				ruiz);
+	};
+
+	void solve(InitialGuessStatus initial_guess_) {
+		settings.initial_guess = initial_guess_;
+		qp_solve( //
+				results,
+				model,
+				settings,
+				work,
+				ruiz);
+	};
+
+	void solve(tl::optional<VecRef<T>> x,
+			tl::optional<VecRef<T>> y,
+			tl::optional<VecRef<T>> z) {
+		proxsuite::qp::sparse::warm_start(x, y, z, results, settings);
 		qp_solve( //
 				results,
 				model,
@@ -154,12 +177,7 @@ struct QP {
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
-	void warm_start(
-			tl::optional<VecRef<T>> x,
-			tl::optional<VecRef<T>> y,
-			tl::optional<VecRef<T>> z) {
-		proxsuite::qp::sparse::warm_start(x, y, z, results, settings);
-	};
+
 
 	void cleanup() { results.cleanup(); }
 };
