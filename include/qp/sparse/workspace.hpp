@@ -8,6 +8,7 @@
 #include <linearsolver/sparse/factorize.hpp>
 #include <linearsolver/sparse/update.hpp>
 #include <linearsolver/sparse/rowmod.hpp>
+#include <qp/timings.hpp>
 #include <qp/dense/views.hpp>
 #include <qp/settings.hpp>
 #include <veg/vec.hpp>
@@ -135,7 +136,7 @@ struct Workspace {
 			bool execute_or_not,
 			P& precond,
 			veg::dynstack::StackReq precond_req) {
-
+		
 		auto& ldl = internal.ldl;
 		
 		auto& storage = internal.storage ;
@@ -498,7 +499,7 @@ struct Workspace {
 			}
 		}
 	}
-
+	Timer<T> timer;
 	Workspace() = default;
 
 	auto ldl_col_ptrs() const -> I const* {

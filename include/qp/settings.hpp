@@ -43,6 +43,7 @@ struct Settings {
 	bool verbose;
 	bool update_preconditioner;
 	bool compute_preconditioner;
+	bool compute_timings;
 	InitialGuessStatus initial_guess;
 
 	T eps_primal_inf;
@@ -73,6 +74,7 @@ struct Settings {
 			InitialGuessStatus initial_guess_ = InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
 			bool update_preconditioner_ = false,
 			bool compute_preconditioner_ = true,
+			bool compute_timings_ = true,
 			T eps_primal_inf_ = 1.E-14,
 			T eps_dual_inf_ = 1.E-14)
 			: alpha_bcl(alpha_bcl_),
@@ -99,6 +101,7 @@ struct Settings {
 				verbose(VERBOSE),
 				update_preconditioner(update_preconditioner_),
 				compute_preconditioner(compute_preconditioner_),
+				compute_timings(compute_timings_),
 				initial_guess(initial_guess_),
 				eps_primal_inf(eps_primal_inf_),
 				eps_dual_inf(eps_dual_inf_) {}

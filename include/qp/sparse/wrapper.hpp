@@ -27,7 +27,9 @@ struct QP {
 				settings(),
 				model(),
 				work(),
-				ruiz(_dim, _n_eq + _n_in, 1e-3, 10, preconditioner::Symmetry::UPPER) {}
+				ruiz(_dim, _n_eq + _n_in, 1e-3, 10, preconditioner::Symmetry::UPPER) {
+			work.timer.stop();
+				}
 
 	void init(
 			const tl::optional<SparseMat<T, I>> H,
@@ -38,10 +40,11 @@ struct QP {
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l,
 			bool compute_preconditioner_=true) {
-
-		auto start = std::chrono::steady_clock::now();
+		if (settings.compute_timings){
+			work.timer.stop();
+			work.timer.start();
+		}
 		settings.compute_preconditioner = compute_preconditioner_;
-		
 		SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
 		SparseMat<T, I> AT = A.value().transpose();
 		SparseMat<T, I> CT = C.value().transpose();
@@ -54,10 +57,9 @@ struct QP {
 				{linearsolver::sparse::from_eigen, l.value()},
 				{linearsolver::sparse::from_eigen, u.value()}};
 		qp_setup(qp, results, model, work, settings, ruiz, settings.compute_preconditioner);
-		auto stop = std::chrono::steady_clock::now();
-		auto duration =
-				std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		results.info.setup_time = T(duration.count());
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
 	};
 
 	void update(const tl::optional<SparseMat<T, I>> H_,

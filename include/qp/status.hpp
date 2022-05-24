@@ -26,6 +26,7 @@ enum struct InitialGuessStatus {
 	COLD_START_WITH_PREVIOUS_RESULT // keep solutions + KKT
 };
 
+
 } // namespace qp
 } // namespace proxsuite
 

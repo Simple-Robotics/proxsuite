@@ -270,9 +270,10 @@ void qp_solve(
 		Settings<T> const& settings,
 		Workspace<T, I>& work,
 		P& precond) {
-	
-	auto start = std::chrono::steady_clock::now();
-
+	if (settings.compute_timings){
+		work.timer.stop();
+		work.timer.start();
+	}
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
 	auto zx = util::zero_extend;
@@ -1054,21 +1055,30 @@ void qp_solve(
 	tmp += data.g;
 	results.info.objValue = (tmp).dot(x_e);
 
-	auto stop = std::chrono::steady_clock::now();
-	auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	results.info.solve_time = T(duration.count());
-	results.info.run_time = results.info.solve_time + results.info.setup_time;
+	if (settings.compute_timings){
+		results.info.solve_time = work.timer.elapsed().user; // in nanoseconds
+		results.info.run_time = results.info.solve_time + results.info.setup_time;
 
-	if (settings.verbose) {
-		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-		std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-		std::cout << "iter : " << results.info.iter << std::endl;
-		std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-		std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-		std::cout << "objValue : " << results.info.objValue << std::endl;
-		std::cout << "solve_time : " << results.info.solve_time << std::endl;
+		if (settings.verbose) {
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
+			std::cout << "iter : " << results.info.iter << std::endl;
+			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
+			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
+			std::cout << "objValue : " << results.info.objValue << std::endl;
+			std::cout << "solve_time : " << results.info.solve_time << std::endl;
+		}
+	}else{
+		if (settings.verbose) {
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
+			std::cout << "iter : " << results.info.iter << std::endl;
+			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
+			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
+			std::cout << "objValue : " << results.info.objValue << std::endl;
+		}
 	}
+
 
 }
 } // namespace sparse
