@@ -124,8 +124,13 @@ void transpose_symbolic( //
 	}
 }
 
-// l is unit lower triangular
-// solve x <- l \ x
+/*!
+ * `l` is unit lower triangular whose diagonal elements are ignored.
+ * Solves `l×y = x` and store the solution in `x`.
+ *
+ * @param x RHS of the system, solution storage.
+ * @param l matrix to be inverted.
+ */
 template <typename T, typename I>
 void dense_lsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 	using namespace _detail;
@@ -156,8 +161,13 @@ void dense_lsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 	}
 }
 
-// l is unit lower triangular
-// solve x <- l.T \ x
+/*!
+ * `l` is unit lower triangular whose diagonal elements are ignored.
+ * Solves `l.T×y = x` and store the solution in `x`.
+ *
+ * @param x RHS of the system, solution storage.
+ * @param l matrix to be inverted.
+ */
 template <typename T, typename I>
 void dense_ltsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 	using namespace _detail;
@@ -215,15 +225,26 @@ void dense_ltsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
 	}
 }
 
+/*!
+ * Computes the stack memory requirements of etree computation.
+ *
+ * @param n dimension of the matrix.
+ */
 template <typename I>
 auto etree_req(veg::Tag<I> /*tag*/, isize n) noexcept
 		-> veg::dynstack::StackReq {
 	return {n * isize{sizeof(I)}, alignof(I)};
 }
 
-// compute the elimination tree of the cholesky factor  of a
-// a is considered symmetric but should only contain terms from the upper
-// triangular part
+/*!
+ * Computes the elimination tree of the cholesky factor  of `a` of size `n`.
+ * `a` is considered symmetric but should only contain terms from the upper
+ * triangular part.
+ *
+ * @param parent pointer to the elimination tree storage, of size `n`.
+ * @param a symbolic structure of the matrix to be factorized.
+ * @param stack temporary allocation stack
+*/
 template <typename I>
 VEG_INLINE void etree( //
 		I* parent,
@@ -400,12 +421,25 @@ VEG_INLINE auto postorder_depth_first_search( //
 }
 } // namespace _detail
 
+/*!
+ * Computes the memory requirements of the postordering of the cholesky factorization.
+ *
+ * @param n dimension of the matrix to be factorized.
+ */
 template <typename I>
 auto postorder_req(veg::Tag<I> /*tag*/, isize n) noexcept
 		-> veg::dynstack::StackReq {
 	return {(3 * n) * isize(sizeof(I)), alignof(I)};
 }
 
+/*!
+ * Computes the postordering of the cholesky factorization of dimension `n`.
+ *
+ * @param post storage for the postordering, of size `n`
+ * @param parent pointer to the elimination tree
+ * @param n dimension of the matrix to be factorized
+ * @param stack temporary allocation stack
+ */
 template <typename I>
 void postorder(I* post, I const* parent, isize n, DynStackMut stack) noexcept {
 	using namespace _detail;
@@ -840,6 +874,13 @@ enum struct Ordering : unsigned char {
 	ENUM_END,
 };
 
+/*!
+ * Computes the stack memory requirements of symbolic factorization.
+ *
+ * @param n dimension of the matrix to be factorized.
+ * @param nnz number of non zeros of the matrix to be factorized.
+ * @param o the kind of permutation that is applied to the matrix before factorization.
+ */
 template <typename I>
 auto factorize_symbolic_req(
 		veg::Tag<I> tag, isize n, isize nnz, Ordering o) noexcept
@@ -878,6 +919,17 @@ auto factorize_symbolic_req(
 	                   & (postorder_req | colcount_req)))));
 }
 
+/*!
+ * Performs symbolic factorization and computed the number of non-zeros in each column of
+ * the cholesky factor of dimension `n`.
+ *
+ * @param nnz_per_col storage for non-zeros per column, of size `n`
+ * @param etree storage for elimination tree, of size `n`
+ * @param perm_inv storage for inverse permutation, of size `n`
+ * @param perm optionally user-provided permutation, either null or of size `n`
+ * @param a matrix to be symbolically factorized
+ * @param stack temporary allocation stack
+ */
 template <typename I>
 void factorize_symbolic_non_zeros(
 		I* nnz_per_col,
@@ -957,6 +1009,17 @@ void factorize_symbolic_non_zeros(
 	sparse::column_counts(nnz_per_col, permuted_a, etree, _post.ptr(), stack);
 }
 
+/*!
+ * Performs symbolic factorization and computed the column pointers for each column of
+ * the cholesky factor of dimension `n`.
+ *
+ * @param col_ptrs storage for column pointers, of size `n + 1`
+ * @param etree storage for elimination tree, of size `n`
+ * @param perm_inv storage for inverse permutation, of size `n`
+ * @param perm optionally user-provided permutation, either null or of size `n`
+ * @param a matrix to be symbolically factorized
+ * @param stack temporary allocation stack
+ */
 template <typename I>
 void factorize_symbolic_col_counts(
 		I* col_ptrs,
@@ -983,6 +1046,13 @@ void factorize_symbolic_col_counts(
 	}
 }
 
+/*!
+ * Computes the stack memory requirements of numerical factorization.
+ *
+ * @param n dimension of the matrix to be factorized.
+ * @param a_nnz number of non zeros of the matrix to be factorized.
+ * @param o the kind of permutation that is applied to the matrix before factorization.
+ */
 template <typename T, typename I>
 auto factorize_numeric_req(
 		veg::Tag<T> /*ttag*/,
@@ -1010,6 +1080,23 @@ auto factorize_numeric_req(
 	                   & StackReq{n * isize{sizeof(bool)}, alignof(bool)}))));
 }
 
+/*!
+ * Performs numerical `LDLT` factorization, assuming the symbolic factorization and column counts
+ * have already been computed. `L` and `D` are stored in the same matrix, with the elements
+ * of `D` replacing the implicit diagonal `1` element of each column of `L`.
+ *
+ * @param values pointer to the values of the factorization
+ * @param row_indices pointer to the row indices of the factorization
+ * @param diag_to_add pointer to a vector that is added to the diagonal of the matrix during
+ * factorization, if `diag_to_add` and `perm` are both non null
+ * @param perm pointer to the pre-computed permutation that is applied to `diag`.
+ * @param col_ptrs pointer to the already computed column pointers
+ * @param etree pointer to the already computed elimination tree
+ * @param perm_inv pointer to the already computed inverse permutation. Must be the inverse of
+ * `perm`
+ * @param a matrix to be factorized
+ * @param stack temporary allocation stack
+ */
 template <typename T, typename I>
 void factorize_numeric( //
 		T* values,
