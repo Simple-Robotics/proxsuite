@@ -301,10 +301,10 @@ void qp_solve(
 	linearsolver::sparse::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
-	auto& g_scaled_e = work._.g_scaled;
-	auto& b_scaled_e = work._.b_scaled;
-	auto& l_scaled_e = work._.l_scaled;
-	auto& u_scaled_e = work._.u_scaled;
+	auto& g_scaled_e = work.internal.g_scaled;
+	auto& b_scaled_e = work.internal.b_scaled;
+	auto& l_scaled_e = work.internal.l_scaled;
+	auto& u_scaled_e = work.internal.u_scaled;
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
@@ -321,18 +321,18 @@ void qp_solve(
 	T const primal_feasibility_rhs_1_in_l = infty_norm(data.l);
 	T const dual_feasibility_rhs_2 = infty_norm(data.g);
 
-	auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
-
+	//auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
+	auto ldl_col_ptrs = work.internal.ldl.col_ptrs.ptr_mut();
 	veg::Tag<I> itag;
 	veg::Tag<T> xtag;
 
-	bool do_ldlt = work._.do_ldlt;
+	bool do_ldlt = work.internal.do_ldlt;
 
 	isize ldlt_ntot = do_ldlt ? n_tot : 0;
 
 	auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
 
-	I* perm_inv = work._.perm_inv.ptr_mut();
+	I* perm_inv = work.internal.ldl.perm_inv.ptr_mut();
 	I* perm = _perm.ptr_mut();
 
 	if (do_ldlt) {
@@ -342,9 +342,88 @@ void qp_solve(
 		}
 	}
 
-	I* kkt_nnz_counts = work._.kkt_nnz_counts.ptr_mut();
+	I* kkt_nnz_counts = work.internal.kkt_nnz_counts.ptr_mut();
 
-	auto& iterative_solver = *work._.matrix_free_solver.get();
+	auto& iterative_solver = *work.internal.matrix_free_solver.get();
+
+	switch (settings.initial_guess) {
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+
+					// H and A are always active
+					for (usize j = 0; j < usize(n + n_eq); ++j) {
+						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+					}
+					// ineq constraints initially inactive
+					for (isize j = 0; j < n_in; ++j) {
+						kkt_nnz_counts[n + n_eq + j] = 0;
+					}
+					break;
+                }
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+					// keep solutions + restart workspace and results except rho and mu 
+					
+					// TODO  : change rho+ mus 
+					// H and A are always active
+					for (usize j = 0; j < usize(n + n_eq); ++j) {
+						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+					}
+					// keep constraints inactive from previous solution
+					for (isize j = 0; j < n_in; ++j) {
+						if (results.z(j)!=0){
+							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+						}else{
+							kkt_nnz_counts[n + n_eq + j] = 0;
+						}
+					}
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+					// already set to zero in the setup
+					// H and A are always active
+					for (usize j = 0; j < usize(n + n_eq); ++j) {
+						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+					}
+					// ineq constraints initially inactive
+					for (isize j = 0; j < n_in; ++j) {
+						kkt_nnz_counts[n + n_eq + j] = 0;
+					}
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					// keep previous solution
+
+					// H and A are always active
+					for (usize j = 0; j < usize(n + n_eq); ++j) {
+						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+					}
+					// keep constraints inactive from previous solution
+					for (isize j = 0; j < n_in; ++j) {
+						if (results.z(j)!=0){
+							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+						}else{
+							kkt_nnz_counts[n + n_eq + j] = 0;
+						}
+					}
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+                    // keep workspace and results solutions except statistics
+					// H and A are always active
+					for (usize j = 0; j < usize(n + n_eq); ++j) {
+						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
+					}
+					// keep constraints inactive from previous solution
+					for (isize j = 0; j < n_in; ++j) {
+						if (results.z(j)!=0){
+							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+						}else{
+							kkt_nnz_counts[n + n_eq + j] = 0;
+						}
+					}
+                    break;
+                }
+	}
+
 
 	linearsolver::sparse::MatMut<T, I> kkt_active = {
 			linearsolver::sparse::from_raw_parts,
@@ -357,10 +436,10 @@ void qp_solve(
 			kkt.values_mut(),
 	};
 
-	I* etree = work._.etree.ptr_mut();
-	I* ldl_nnz_counts = work._.ldl_nnz_counts.ptr_mut();
-	I* ldl_row_indices = work._.ldl_row_indices.ptr_mut();
-	T* ldl_values = work._.ldl_values.ptr_mut();
+	I* etree = work.internal.ldl.etree.ptr_mut();
+	I* ldl_nnz_counts = work.internal.ldl.nnz_counts.ptr_mut();
+	I* ldl_row_indices = work.internal.ldl.row_indices.ptr_mut();
+	T* ldl_values = work.internal.ldl.values.ptr_mut();
 	veg::SliceMut<bool> active_constraints = results.active_constraints.as_mut();
 
 	linearsolver::sparse::MatMut<T, I> ldl = {
@@ -374,7 +453,7 @@ void qp_solve(
 			ldl_values,
 	};
 
-	auto& aug_kkt = *work._.matrix_free_kkt.get();
+	//auto& aug_kkt = *work.internal.matrix_free_kkt.get();
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
@@ -385,16 +464,16 @@ void qp_solve(
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
 
+	sparse::refactorize<T,I>(
+			work,
+			results,
+			kkt_active,
+			active_constraints,
+			data,
+			stack,
+			xtag);
+
 	switch (settings.initial_guess) {
-				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
-					// TODO with other linear system to solve
-					LDLT_TEMP_VEC_UNINIT(T, rhs, n, stack);
-					LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
-					rhs = -g_scaled_e;
-					// TO FINISH 
-					x_e = rhs;
-                    break;
-                }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
 					LDLT_TEMP_VEC_UNINIT(T, no_guess, 0, stack);
@@ -425,7 +504,7 @@ void qp_solve(
 					z_e = rhs.segment(n + n_eq, n_in);
                     break;
                 }
-                case InitialGuessStatus::COLD_START:{
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
                     break;
                 }
@@ -632,23 +711,12 @@ void qp_solve(
 							if (!do_ldlt) {
 								if (removed || added) {
 									refactorize(
+											work,
 											results,
-											do_ldlt,
-											n_tot,
 											kkt_active,
 											active_constraints,
-											iterative_solver,
 											data,
-											etree,
-											ldl_nnz_counts,
-											ldl_row_indices,
-											perm_inv,
-											ldl_values,
-											perm,
-											ldl_col_ptrs,
 											stack,
-											ldl,
-											aug_kkt,
 											xtag);
 								}
 							}
@@ -962,23 +1030,12 @@ void qp_solve(
 		    results.info.mu_eq != new_bcl_mu_eq) {
 			{ ++results.info.mu_updates; }
 			refactorize(
+					work,
 					results,
-					do_ldlt,
-					n_tot,
 					kkt_active,
 					active_constraints,
-					iterative_solver,
 					data,
-					etree,
-					ldl_nnz_counts,
-					ldl_row_indices,
-					perm_inv,
-					ldl_values,
-					perm,
-					ldl_col_ptrs,
 					stack,
-					ldl,
-					aug_kkt,
 					xtag);
 		}
 

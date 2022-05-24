@@ -5,6 +5,7 @@
 #include "linearsolver/sparse/factorize.hpp"
 #include "qp/dense/views.hpp"
 #include "qp/sparse/views.hpp"
+#include "qp/status.hpp"
 
 #include <Eigen/Core>
 #include <linearsolver/dense/core.hpp>
@@ -353,7 +354,8 @@ struct Settings {
 	T eps_refact = T(1e-6);
 	isize n_iterative_refinement = 10;
 
-	SolutionInit warm_start = SolutionInit::COLD_EQ_CONSTRAINED;
+	//SolutionInit warm_start = SolutionInit::COLD_EQ_CONSTRAINED;
+	InitialGuessStatus initial_guess = InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	std::ostream* logger = nullptr;
 
 	T eps_primal_inf = T(1e-14);
