@@ -360,9 +360,8 @@ void qp_solve(
 					break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
-					// keep solutions + restart workspace and results except rho and mu 
-					
-					// TODO  : change rho+ mus 
+					// keep solutions + restart workspace and results except rho and mu : done in setup
+
 					// H and A are always active
 					for (usize j = 0; j < usize(n + n_eq); ++j) {
 						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
@@ -452,8 +451,6 @@ void qp_solve(
 			ldl_row_indices,
 			ldl_values,
 	};
-
-	//auto& aug_kkt = *work.internal.matrix_free_kkt.get();
 
 	T bcl_eta_ext_init = pow(T(0.1), settings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;

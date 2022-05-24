@@ -257,7 +257,7 @@ struct QP {
 				}
 			} else if (C_ != tl::nullopt) {
 				model.H = H_.value().eval();
-				model.A = A_.value().eval();
+				model.C = C_.value().eval();
 			} else {
 				model.H = H_.value().eval();
 			}

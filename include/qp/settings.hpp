@@ -41,7 +41,8 @@ struct Settings {
 	isize nb_iterative_refinement;
 
 	bool verbose;
-	bool update_preconditionner;
+	bool update_preconditioner;
+	bool compute_preconditioner;
 	InitialGuessStatus initial_guess;
 
 	T eps_primal_inf;
@@ -70,7 +71,8 @@ struct Settings {
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
 			bool VERBOSE = false,
 			InitialGuessStatus initial_guess_ = InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-			bool update_preconditionner_ = true,
+			bool update_preconditioner_ = false,
+			bool compute_preconditioner_ = true,
 			T eps_primal_inf_ = 1.E-14,
 			T eps_dual_inf_ = 1.E-14)
 			: alpha_bcl(alpha_bcl_),
@@ -95,7 +97,8 @@ struct Settings {
 				eps_refact(eps_refact_),
 				nb_iterative_refinement(nb_iterative_refinement_),
 				verbose(VERBOSE),
-				update_preconditionner(update_preconditionner_),
+				update_preconditioner(update_preconditioner_),
+				compute_preconditioner(compute_preconditioner_),
 				initial_guess(initial_guess_),
 				eps_primal_inf(eps_primal_inf_),
 				eps_dual_inf(eps_dual_inf_) {}

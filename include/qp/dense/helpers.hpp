@@ -119,10 +119,6 @@ void initial_guess(
 		Results<T>& qpresults) {
 
     switch (qpsettings.initial_guess) {
-				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
-                    compute_unconstrained_initial_guess(qpwork,qpmodel,qpresults);
-                    break;
-                }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
                     compute_equality_constrained_initial_guess(qpwork,qpsettings,qpmodel,qpresults);
                     break;
@@ -185,13 +181,6 @@ void setup( //
 	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
 
 	switch (qpsettings.initial_guess) {
-				case InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS: {
-					qpwork.cleanup();
-					qpresults.cleanup(); 
-					setup_equilibration(qpwork, qpsettings, ruiz);
-    				setup_factorization(qpwork,qpmodel,qpresults);
-                    break;
-                }
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					qpwork.cleanup();
 					qpresults.cleanup(); 
@@ -199,7 +188,7 @@ void setup( //
     				setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
-                case InitialGuessStatus::COLD_START:{
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
 					qpwork.cleanup();
 					qpresults.cold_start();

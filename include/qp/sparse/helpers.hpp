@@ -94,7 +94,8 @@ void qp_setup(
 		Model<T, I>& data,
 		Workspace<T, I>& work,
 		Settings<T>& settings,
-		P& precond) {
+		P& precond,
+		bool execute_preconditioner_or_not) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
@@ -118,6 +119,7 @@ void qp_setup(
 		}
 	}
 
+	// performs scaling according to options chosen + store model value
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					results.cleanup(); 
@@ -125,44 +127,41 @@ void qp_setup(
 						qp,
 						results,
 						data,
-						settings,
+						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
-					//qpwork.cleanup(); equivalent ?
 					results.cold_start();
 					work.setup_impl(
 						qp,
 						results,
 						data,
-						settings,
+						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
-					//qpwork.cleanup(); equivalent ?
 					results.cleanup(); 
 					work.setup_impl(
 						qp,
 						results,
 						data,
-						settings,
+						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
-					//qpwork.cleanup();
 					results.cleanup(); 
 					work.setup_impl(
 						qp,
 						results,
 						data,
-						settings,
+						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
                     break;

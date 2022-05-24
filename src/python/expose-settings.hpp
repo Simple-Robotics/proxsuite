@@ -11,11 +11,10 @@ void exposeSettings(pybind11::module_ m) {
 
 	::pybind11::enum_<InitialGuessStatus>(m, "initial_guess")
 		.value("NO_INITIAL_GUESS", InitialGuessStatus::NO_INITIAL_GUESS)
-		.value("UNCONSTRAINED_INITIAL_GUESS", InitialGuessStatus::UNCONSTRAINED_INITIAL_GUESS)
 		.value("EQUALITY_CONSTRAINED_INITIAL_GUESS", InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 		.value("WARM_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT)
 		.value("WARM_START", InitialGuessStatus::WARM_START)
-		.value("COLD_START", InitialGuessStatus::COLD_START)
+		.value("COLD_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT)
 		.export_values();
 
 	::pybind11::class_<Settings<T>>(m, "Settings")

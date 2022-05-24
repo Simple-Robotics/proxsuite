@@ -128,9 +128,9 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					&sparse::QP<T,I>::settings,
 					"class with settings option of the solver.")
 			.def(
-					"setup",
-					&sparse::QP<T,I>::setup,
-					"function for setting up the solver when passing sparse matrices in "
+					"init",
+					&sparse::QP<T,I>::init,
+					"function for initializing the model when passing sparse matrices in "
 					"entry.",
 					pybind11::arg_v("H", tl::nullopt, "quadratic cost"),
 					pybind11::arg_v("g", tl::nullopt, "linear cost"),
@@ -140,7 +140,8 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v(
 							"l", tl::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v(
-							"u", tl::nullopt, "upper inequality constraint vector"))
+							"u", tl::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
 			.def(
 					"solve",
 					&sparse::QP<T,I>::solve,
