@@ -9,8 +9,8 @@
 #include <linearsolver/sparse/update.hpp>
 #include <linearsolver/sparse/rowmod.hpp>
 #include <qp/timings.hpp>
-#include <qp/dense/views.hpp>
 #include <qp/settings.hpp>
+#include <qp/dense/views.hpp>
 #include <veg/vec.hpp>
 #include "qp/sparse/views.hpp"
 #include "qp/sparse/model.hpp"
@@ -133,6 +133,7 @@ struct Workspace {
 			QpView<T, I> qp,
 			Results<T>& results,
 			Model<T, I>& data,
+			Settings<T>& settings,
 			bool execute_or_not,
 			P& precond,
 			veg::dynstack::StackReq precond_req) {
@@ -446,7 +447,7 @@ struct Workspace {
 				{linearsolver::sparse::from_eigen, u_scaled},
 		};
 		stack = stack_mut();
-		precond.scale_qp_in_place(qp_scaled, execute_or_not, stack);
+		precond.scale_qp_in_place(qp_scaled, settings, execute_or_not, stack);
 
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
 

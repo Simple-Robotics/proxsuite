@@ -48,6 +48,8 @@ struct Settings {
 
 	T eps_primal_inf;
 	T eps_dual_inf;
+	isize preconditioner_max_iter;
+	T preconditioner_accuracy;
 
 	Settings(
 			T alpha_bcl_ = 0.1,
@@ -75,6 +77,8 @@ struct Settings {
 			bool update_preconditioner_ = false,
 			bool compute_preconditioner_ = true,
 			bool compute_timings_ = true,
+			isize preconditioner_max_iter_ = 10,
+			T preconditioner_accuracy_ = 1.e-3,
 			T eps_primal_inf_ = 1.E-14,
 			T eps_dual_inf_ = 1.E-14)
 			: alpha_bcl(alpha_bcl_),
@@ -104,7 +108,9 @@ struct Settings {
 				compute_timings(compute_timings_),
 				initial_guess(initial_guess_),
 				eps_primal_inf(eps_primal_inf_),
-				eps_dual_inf(eps_dual_inf_) {}
+				eps_dual_inf(eps_dual_inf_),
+				preconditioner_max_iter(preconditioner_max_iter_),
+				preconditioner_accuracy(preconditioner_accuracy_) {}
 };
 
 } // namespace qp

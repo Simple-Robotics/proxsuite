@@ -8,7 +8,7 @@ namespace python {
 template <typename T>
 void exposeResults(pybind11::module_ m) {
 
-	::pybind11::class_<Info<T>>(m, "info")
+	::pybind11::class_<Info<T>>(m, "info",pybind11::module_local())
 			.def(::pybind11::init())
 			.def_readwrite("n_c", &Info<T>::n_c)
 			.def_readwrite("mu_eq", &Info<T>::mu_eq)
@@ -26,7 +26,7 @@ void exposeResults(pybind11::module_ m) {
 			.def_readwrite("rho_updates", &Info<T>::rho_updates)
 			.def_readwrite("mu_updates", &Info<T>::mu_updates);
 
-	::pybind11::class_<Results<T>>(m, "Results")
+	::pybind11::class_<Results<T>>(m, "Results",pybind11::module_local())
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readwrite("x", &Results<T>::x) 
 			.def_readwrite("y", &Results<T>::y)

@@ -116,7 +116,7 @@ void exposeQpObjectDense(pybind11::module_ m) {
 template <typename T,typename I>
 void exposeQpObjectSparse(pybind11::module_ m) {
 
-	::pybind11::class_<proxsuite::qp::sparse::QP<T,I>>(m, "QP_sparse")
+	::pybind11::class_<sparse::QP<T,I>>(m, "QP",pybind11::module_local())
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readwrite(
 					"results",

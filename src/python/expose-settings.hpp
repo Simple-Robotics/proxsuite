@@ -9,7 +9,7 @@ namespace python {
 template <typename T>
 void exposeSettings(pybind11::module_ m) {
 
-	::pybind11::enum_<InitialGuessStatus>(m, "initial_guess")
+	::pybind11::enum_<InitialGuessStatus>(m, "initial_guess",pybind11::module_local())
 		.value("NO_INITIAL_GUESS", InitialGuessStatus::NO_INITIAL_GUESS)
 		.value("EQUALITY_CONSTRAINED_INITIAL_GUESS", InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 		.value("WARM_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT)
@@ -17,7 +17,7 @@ void exposeSettings(pybind11::module_ m) {
 		.value("COLD_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT)
 		.export_values();
 
-	::pybind11::class_<Settings<T>>(m, "Settings")
+	::pybind11::class_<Settings<T>>(m, "Settings",pybind11::module_local())
 			.def(::pybind11::init()) // constructor
 			.def_readwrite("alpha_bcl", &Settings<T>::alpha_bcl)
 			.def_readwrite("beta_bcl", &Settings<T>::beta_bcl)
@@ -39,6 +39,11 @@ void exposeSettings(pybind11::module_ m) {
 			.def_readwrite("eps_dual_inf", &Settings<T>::eps_dual_inf)
 			.def_readwrite("nb_iterative_refinement", &Settings<T>::nb_iterative_refinement)
 			.def_readwrite("initial_guess", &Settings<T>::initial_guess)
+			.def_readwrite("preconditioner_accuracy", &Settings<T>::preconditioner_accuracy)
+			.def_readwrite("preconditioner_max_iter", &Settings<T>::preconditioner_max_iter)
+			.def_readwrite("compute_timings", &Settings<T>::compute_timings)
+			.def_readwrite("compute_preconditioner", &Settings<T>::compute_preconditioner)
+			.def_readwrite("update_preconditioner", &Settings<T>::update_preconditioner)
 			.def_readwrite("verbose", &Settings<T>::verbose);
 }
 } // namespace python

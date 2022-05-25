@@ -131,6 +131,7 @@ void qp_setup(
 						qp,
 						results,
 						data,
+						settings,
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
@@ -143,6 +144,7 @@ void qp_setup(
 						qp,
 						results,
 						data,
+						settings,
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
@@ -154,6 +156,7 @@ void qp_setup(
 						qp,
 						results,
 						data,
+						settings,
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
@@ -165,6 +168,7 @@ void qp_setup(
 						qp,
 						results,
 						data,
+						settings,
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
