@@ -9,6 +9,7 @@ using namespace proxsuite::qp;
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
 char const* files[] = {
+		/*
 		MAROS_MESZAROS_DIR "AUG2D.mat",    MAROS_MESZAROS_DIR "AUG2DC.mat",
 		MAROS_MESZAROS_DIR "AUG2DCQP.mat", MAROS_MESZAROS_DIR "AUG2DQP.mat",
 		MAROS_MESZAROS_DIR "AUG3D.mat",    MAROS_MESZAROS_DIR "AUG3DC.mat",
@@ -78,6 +79,8 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "STCQP2.mat",   MAROS_MESZAROS_DIR "TAME.mat",
 		MAROS_MESZAROS_DIR "UBH1.mat",     MAROS_MESZAROS_DIR "VALUES.mat",
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
+		*/
+		MAROS_MESZAROS_DIR "QBRANDY.mat"
 };
 
 /*
@@ -213,6 +216,30 @@ TEST_CASE("maros meszaros wip using the API") {
 				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 			}
+			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
+			T prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
+			T prim_in = std::max(std::abs((CT.transpose() * Qp.results.x - l).minCoeff()),std::abs((CT.transpose() * Qp.results.x - u).maxCoeff()));
+			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
+
+			Qp.update(tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,true);// change nothing, redo the solve
+			Qp.solve();
+
+			CHECK(
+					proxsuite::qp::dense::infty_norm(
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
+					eps);
+			CHECK(proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
+			if (n_in > 0) {
+				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
+				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
+			}
+			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
+
+			prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
+			prim_in = std::max(std::abs((CT.transpose() * Qp.results.x - l).minCoeff()),std::abs((CT.transpose() * Qp.results.x - u).maxCoeff()));
+			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
 		}
 	}
 }

@@ -424,7 +424,6 @@ void qp_solve(
                 }
 	}
 
-
 	linearsolver::sparse::MatMut<T, I> kkt_active = {
 			linearsolver::sparse::from_raw_parts,
 			n_tot,
@@ -461,7 +460,7 @@ void qp_solve(
 	auto x_e = x.to_eigen();
 	auto y_e = y.to_eigen();
 	auto z_e = z.to_eigen();
-
+	std::cout << " OK 1 for solve " << std::endl;
 	sparse::refactorize<T,I>(
 			work,
 			results,
@@ -470,7 +469,7 @@ void qp_solve(
 			data,
 			stack,
 			xtag);
-
+	std::cout << "OK 2 for solve " << std::endl;
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
@@ -519,7 +518,7 @@ void qp_solve(
                     break;
                 }
 	}
-
+	std::cout << "Ok3 for solve" << std::endl;
 	for (isize iter = 0; iter < settings.max_iter; ++iter) {
 
 		results.info.iter_ext += 1;

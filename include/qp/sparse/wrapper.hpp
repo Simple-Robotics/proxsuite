@@ -76,13 +76,13 @@ struct QP {
 		isize n = model.dim;
 		isize n_eq = model.n_eq;
 		isize n_in = model.n_in;
-		isize n_tot = n + n_eq + n_in;
 		linearsolver::sparse::MatMut<T, I> kkt_unscaled = model.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, n);
 
 		linearsolver::sparse::MatMut<T, I> H_unscaled = 
 				detail::middle_cols_mut(kkt_top_n_rows, 0, n, model.H_nnz);
+		//std::cout << " H_unscaled " << H_unscaled.to_eigen() <<  std::endl;
 
 		linearsolver::sparse::MatMut<T, I> AT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, model.A_nnz);
@@ -91,6 +91,7 @@ struct QP {
 				detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, model.C_nnz);
 
 		// update the model
+		/*
 		if (g_ != tl::nullopt) {
 			model.g = g_.value();
 		} 
@@ -155,7 +156,7 @@ struct QP {
 					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 			}
 		}
-
+		*/
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
 		sparse::QpView<T, I> qp = {
 				{linearsolver::sparse::from_eigen, H_triu},
@@ -165,6 +166,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
 				{linearsolver::sparse::from_eigen, model.l},
 				{linearsolver::sparse::from_eigen, model.u}};
+		std::cout << "Ok1 here" << std::endl;
 		qp_setup(qp, results, model, work, settings, ruiz, settings.update_preconditioner); // store model value + performs scaling according to chosen options
 
 	};
