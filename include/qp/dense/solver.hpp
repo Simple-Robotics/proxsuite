@@ -7,6 +7,7 @@
 
 #include "qp/dense/views.hpp"
 #include "qp/dense/linesearch.hpp"
+#include "qp/dense/helpers.hpp"
 #include "qp/dense/utils.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
@@ -520,6 +521,7 @@ auto primal_dual_newton_semi_smooth(
 	return err_in;
 }
 
+
 template <typename T>
 void qp_solve( //
 		const Settings<T>& qpsettings,
@@ -528,7 +530,10 @@ void qp_solve( //
 		Workspace<T>& qpwork,
 		preconditioner::RuizEquilibration<T>& ruiz) {
 
-	auto start = std::chrono::steady_clock::now();
+	if (qpsettings.compute_timings){
+					qpwork.timer.stop();
+					qpwork.timer.start();
+		}
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
 	  static constexpr auto DYN = Eigen::Dynamic;
@@ -538,6 +543,33 @@ void qp_solve( //
 	*/
 
 	//::Eigen::internal::set_is_malloc_allowed(false);
+
+	switch (qpsettings.initial_guess) {
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+    				proxsuite::qp::dense::setup_factorization(qpwork,qpmodel,qpresults);
+					compute_equality_constrained_initial_guess(qpwork,qpsettings,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+					// keep solutions but restart workspace and results
+    				// include active set of the solution /!\ TODO
+					setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					// include active set of the solution /!\ TODO
+    				setup_factorization(qpwork,qpmodel,qpresults);
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+                    // keep workspace and results solutions except statistics
+                    break;
+                }
+	}
 
 	T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
 	T bcl_eta_ext = bcl_eta_ext_init;
@@ -827,20 +859,28 @@ void qp_solve( //
 		qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 	}
 
-	auto stop = std::chrono::steady_clock::now();
-	auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	qpresults.info.solve_time = T(duration.count());
-	qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
+	if (qpsettings.compute_timings){
+		qpresults.info.solve_time = qpwork.timer.elapsed().user; // in nanoseconds
+		qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
 
-	if (qpsettings.verbose) {
-		std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-		std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
-		std::cout << "iter : " << qpresults.info.iter << std::endl;
-		std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
-		std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
-		std::cout << "objValue : " << qpresults.info.objValue << std::endl;
-		std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
+		if (qpsettings.verbose) {
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
+			std::cout << "iter : " << qpresults.info.iter << std::endl;
+			std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
+			std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
+			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
+			std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
+		}
+	}else{
+		if (qpsettings.verbose) {
+			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
+			std::cout << "iter : " << qpresults.info.iter << std::endl;
+			std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
+			std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
+			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
+		}
 	}
 
 }

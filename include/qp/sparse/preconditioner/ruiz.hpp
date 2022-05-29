@@ -347,11 +347,11 @@ struct RuizEquilibration {
 	void scale_qp_in_place(
 			QpViewMut<T, I> qp,
 			Settings<T>& settings,
-			bool update_preconditioner,
+			bool execute_preconditioner,
 			veg::dynstack::DynStackMut stack) {
 		max_iter = settings.preconditioner_max_iter;
 		epsilon = settings.preconditioner_accuracy;
-		if (update_preconditioner) {
+		if (execute_preconditioner) {
 			delta.setOnes();
 			c = detail::ruiz_scale_qp_in_place( //
 					{qp::from_eigen, delta},

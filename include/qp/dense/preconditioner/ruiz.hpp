@@ -255,21 +255,11 @@ struct RuizEquilibration {
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
-	void scale_qp_in_place(QpViewBoxMut<T> qp, bool update_preconditionner, veg::dynstack::DynStackMut stack) {
-		/*
-		delta.setOnes();
-		LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
-		c = detail::ruiz_scale_qp_in_place(
-				{qp::from_eigen, delta},
-				{qp::from_eigen, tmp_delta},
-				logger_ptr,
-				qp,
-				epsilon,
-				max_iter,
-				sym);
-		*/
+	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, Settings<T>& settings, veg::dynstack::DynStackMut stack) {
 
-		if (update_preconditionner) {
+		max_iter = settings.preconditioner_max_iter;
+		epsilon = settings.preconditioner_accuracy;
+		if (execute_preconditioner) {
 			delta.setOnes();
 			LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
 			c = detail::ruiz_scale_qp_in_place(

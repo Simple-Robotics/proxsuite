@@ -6,6 +6,7 @@
 
 #include <Eigen/Core>
 #include <linearsolver/dense/ldlt.hpp>
+#include <qp/timings.hpp>
 #include <veg/vec.hpp>
 //#include <qp/dense/preconditioner/ruiz.hpp>
 
@@ -20,6 +21,7 @@ struct Workspace {
 	///// Cholesky Factorization
 	linearsolver::dense::Ldlt<T> ldl{};
 	veg::Vec<unsigned char> ldl_stack;
+	Timer<T> timer;
 
 	///// QP STORAGE
 	Mat<T> H_scaled;

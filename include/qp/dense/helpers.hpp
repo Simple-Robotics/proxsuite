@@ -19,8 +19,8 @@ namespace dense {
 template <typename T>
 void compute_equality_constrained_initial_guess(
         Workspace<T>& qpwork,
-		Settings<T>& qpsettings,
-		Model<T>& qpmodel,
+		const Settings<T>& qpsettings,
+		const Model<T>& qpmodel,
 		Results<T>& qpresults){
     
     qpwork.rhs.setZero();
@@ -61,7 +61,7 @@ void compute_unconstrained_initial_guess(
 
 template <typename T>
 void setup_factorization(Workspace<T>& qpwork,
-		Model<T>& qpmodel,
+		const Model<T>& qpmodel,
 		Results<T>& qpresults){
 
         veg::dynstack::DynStackMut stack{
@@ -84,7 +84,7 @@ void setup_factorization(Workspace<T>& qpwork,
 }
 
 template <typename T>
-void setup_equilibration(Workspace<T>& qpwork,Settings<T> qpsettings, preconditioner::RuizEquilibration<T>& ruiz){
+void setup_equilibration(Workspace<T>& qpwork, Settings<T>& qpsettings, preconditioner::RuizEquilibration<T>& ruiz, bool execute_preconditioner){
 
     QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
@@ -99,7 +99,7 @@ void setup_equilibration(Workspace<T>& qpwork,Settings<T> qpsettings, preconditi
 			veg::from_slice_mut,
 			qpwork.ldl_stack.as_mut(),
 	};
-	ruiz.scale_qp_in_place(qp_scaled, qpsettings.update_preconditionner, stack);
+	ruiz.scale_qp_in_place(qp_scaled, execute_preconditioner, qpsettings, stack);
 	qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);      
 }
 
@@ -141,6 +141,71 @@ void initial_guess(
 * @param qpmodel solver model
 * @param qpresults solver result 
 */
+
+template <typename Mat,typename T>
+void update(
+			tl::optional<Mat> H_,
+			tl::optional<VecRef<T>> g_,
+			tl::optional<Mat> A_,
+			tl::optional<VecRef<T>> b_,
+			tl::optional<Mat> C_,
+			tl::optional<VecRef<T>> u_,
+			tl::optional<VecRef<T>> l_,
+			Model<T>& model) {
+
+		// update the model
+		if (g_ != tl::nullopt) {
+			model.g = g_.value().eval();
+		} 
+		if (b_ != tl::nullopt) {
+			model.b = b_.value().eval();
+		}
+		if (u_ != tl::nullopt) {
+			model.u = u_.value().eval();
+		}
+		if (l_ != tl::nullopt) {
+			model.l = l_.value().eval();
+		} 
+		if (H_ != tl::nullopt) {
+			if (A_ != tl::nullopt) {
+				if (C_ != tl::nullopt) {
+					model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
+					model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
+					model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
+					//model.H = H_.value().eval();
+					//model.A = A_.value().eval();
+					//model.C = C_.value().eval();
+				} else {
+					model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
+					model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
+
+					//model.H = H_.value().eval();
+					//model.A = A_.value().eval();
+				}
+			} else if (C_ != tl::nullopt) {
+				model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
+				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
+				
+				//model.H = H_.value().eval();
+				//model.C = C_.value().eval();
+			} else {
+				model.H = H_.value().eval();
+			}
+		} else if (A_ != tl::nullopt) {
+			if (C_ != tl::nullopt) {
+				model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
+				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
+
+				//model.A = A_.value().eval();
+				//model.C = C_.value().eval();
+			} else {
+				model.A = A_.value().eval();
+			}
+		} else if (C_ != tl::nullopt) {
+			model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
+			//model.C = C_.value().eval();
+		}
+}
 template <typename Mat, typename T>
 void setup( //
 		Mat const& H,
@@ -154,7 +219,36 @@ void setup( //
 		Model<T>& qpmodel,
 		Workspace<T>& qpwork,
 		Results<T>& qpresults,
-		preconditioner::RuizEquilibration<T>& ruiz) {
+		preconditioner::RuizEquilibration<T>& ruiz,
+		bool execute_preconditioner) {
+
+	switch (qpsettings.initial_guess) {
+                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
+                    break;
+                }
+                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+					// keep solutions but restart workspace and results
+					qpwork.cleanup();
+					qpresults.cold_start();
+                    break;
+                }
+                case InitialGuessStatus::NO_INITIAL_GUESS:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
+                    break;
+                }
+				case InitialGuessStatus::WARM_START:{
+					qpwork.cleanup();
+					qpresults.cleanup(); 
+                    break;
+                }
+                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+					qpresults.cleanup_statistics();
+                    break;
+                }
+	}
 
 	qpmodel.H = Eigen::
 			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
@@ -182,43 +276,33 @@ void setup( //
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-					qpwork.cleanup();
-					qpresults.cleanup(); 
-					setup_equilibration(qpwork, qpsettings, ruiz);
-    				setup_factorization(qpwork,qpmodel,qpresults);
+					setup_equilibration(qpwork, qpsettings, ruiz, execute_preconditioner);
+    				//setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
-					qpwork.cleanup();
-					qpresults.cold_start();
-					setup_equilibration(qpwork, qpsettings, ruiz);
-    				setup_factorization(qpwork,qpmodel,qpresults);
+					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
+    				//setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
-					qpwork.cleanup();
-					qpresults.cleanup(); 
-					setup_equilibration(qpwork, qpsettings, ruiz);
-    				setup_factorization(qpwork,qpmodel,qpresults);
+					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
+    				//setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
-					qpwork.cleanup();
-					qpresults.cleanup(); 
-					setup_equilibration(qpwork, qpsettings, ruiz);
-    				setup_factorization(qpwork,qpmodel,qpresults);
+					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
+    				//setup_factorization(qpwork,qpmodel,qpresults);
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
-					qpresults.cleanup_statistics();
                     break;
                 }
-
 	}
 
-	initial_guess(qpwork, qpsettings, qpmodel, qpresults);
+	//initial_guess(qpwork, qpsettings, qpmodel, qpresults);
 
 }
 

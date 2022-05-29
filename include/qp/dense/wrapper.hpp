@@ -92,7 +92,6 @@ struct QP {
 	Settings<T> settings;
 	Model<T> model;
 	Workspace<T> work;
-	///// Equilibrator
 	preconditioner::RuizEquilibration<T> ruiz;
 
 	QP(isize _dim, isize _n_eq, isize _n_in)
@@ -100,23 +99,131 @@ struct QP {
 				settings(),
 				model(_dim, _n_eq, _n_in),
 				work(_dim, _n_eq, _n_in),
-				ruiz(preconditioner::RuizEquilibration<T>{_dim, _n_eq + _n_in}) {}
+				ruiz(preconditioner::RuizEquilibration<T>{_dim, _n_eq + _n_in}) {
+				work.timer.stop();
+				}
 
-	void setup(
+	void init(
+			MatRef<T> H,
+			VecRef<T> g,
+			MatRef<T> A,
+			VecRef<T> b,
+			MatRef<T> C,
+			VecRef<T> u,
+			VecRef<T> l,
+			bool compute_preconditioner = true) {
+		// dense case
+		if (settings.compute_timings){
+					work.timer.stop();
+					work.timer.start();
+		}
+		/*
+		proxsuite::qp::dense::setup(
+				MatRef<T>(H),
+				VecRef<T>(g),
+				MatRef<T>(A),
+				VecRef<T>(b),
+				MatRef<T>(C),
+				VecRef<T>(u),
+				VecRef<T>(l),
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				compute_preconditioner);
+		*/
+		proxsuite::qp::dense::setup(
+				H,
+				g,
+				A,
+				b,
+				C,
+				u,
+				l,
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				compute_preconditioner);
+
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
+
+	};
+	void init(
+			const SparseMat<T> H,
+			VecRef<T> g,
+			const SparseMat<T> A,
+			VecRef<T> b,
+			const SparseMat<T> C,
+			VecRef<T> u,
+			VecRef<T> l,
+			bool compute_preconditioner = true) {
+		// sparse case
+		if (settings.compute_timings){
+					work.timer.stop();
+					work.timer.start();
+		}
+		/*
+		proxsuite::qp::dense::setup(
+				MatRef<T>(H),
+				VecRef<T>(g),
+				MatRef<T>(A),
+				VecRef<T>(b),
+				MatRef<T>(C),
+				VecRef<T>(u),
+				VecRef<T>(l),
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				compute_preconditioner);
+		*/
+		proxsuite::qp::dense::setup(
+				H,
+				g,
+				A,
+				b,
+				C,
+				u,
+				l,
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				compute_preconditioner);
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
+	};
+
+	void update(
 			tl::optional<MatRef<T>> H,
 			tl::optional<VecRef<T>> g,
 			tl::optional<MatRef<T>> A,
 			tl::optional<VecRef<T>> b,
 			tl::optional<MatRef<T>> C,
 			tl::optional<VecRef<T>> u,
-			tl::optional<VecRef<T>> l) {
+			tl::optional<VecRef<T>> l,
+			bool update_preconditioner = true) {
 		// dense case
-		auto start =  std::chrono::steady_clock::now();
-		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
+		if (settings.compute_timings){
+					work.timer.stop();
+					work.timer.start();
+		}
+
+		bool real_update = !(H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
-		    l == tl::nullopt) {
-			// if all = tl::nullopt -> use previous setup
-			proxsuite::qp::dense::setup(
+		    l == tl::nullopt);
+		if (real_update) {
+			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model);
+		}
+		proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
 					MatRef<T>(model.A),
@@ -128,93 +235,51 @@ struct QP {
 					model,
 					work,
 					results,
-					ruiz);
-		} else if (
-				H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
-				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
-				l != tl::nullopt) {
-			// if all != tl::nullopt -> initial setup
-			proxsuite::qp::dense::setup(
-					H.value(),
-					g.value(),
-					A.value(),
-					b.value(),
-					C.value(),
-					u.value(),
-					l.value(),
-					settings,
-					model,
-					work,
-					results,
-					ruiz);
-		} else {
-			// some input are not equal to tl::nullopt -> do first an update
-			update(H, g, A, b, C, u, l);
+					ruiz,
+					update_preconditioner);
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
-
-		auto stop = std::chrono::steady_clock::now();
-		auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		results.info.setup_time = T(duration.count());
 	};
-	void setup(
+	void update(
 			const tl::optional<SparseMat<T>> H,
 			tl::optional<VecRef<T>> g,
 			const tl::optional<SparseMat<T>> A,
 			tl::optional<VecRef<T>> b,
 			const tl::optional<SparseMat<T>> C,
 			tl::optional<VecRef<T>> u,
-			tl::optional<VecRef<T>> l) {
+			tl::optional<VecRef<T>> l,
+			bool update_preconditioner = true) {
 		// sparse case
-		auto start =  std::chrono::steady_clock::now();
-		if (H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
-		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
-		    l == tl::nullopt) {
-			// if all = tl::nullopt -> use previous setup
-			proxsuite::qp::dense::setup(
-					MatRef<T>(model.H),
-					VecRef<T>(model.g),
-					MatRef<T>(model.A),
-					VecRef<T>(model.b),
-					MatRef<T>(model.C),
-					VecRef<T>(model.u),
-					VecRef<T>(model.l),
-					settings,
-					model,
-					work,
-					results,
-					ruiz);
-		} else if (
-				(H != tl::nullopt && g != tl::nullopt && A != tl::nullopt &&
-				b != tl::nullopt && C != tl::nullopt && u != tl::nullopt &&
-				l != tl::nullopt) || (H != tl::nullopt) || (A != tl::nullopt) || (C != tl::nullopt)) {
-			// if all != tl::nullopt -> initial setup or re setup as a matrix is involved anyway 
-			proxsuite::qp::dense::setup(
-					H.value(),
-					g.value(),
-					A.value(),
-					b.value(),
-					C.value(),
-					u.value(),
-					l.value(),
-					settings,
-					model,
-					work,
-					results,
-					ruiz);
-		} else {
-			// inputs involved are only vectors -> do an update 
-
-			update(tl::nullopt, g, tl::nullopt, b, tl::nullopt, u, l);
+		if (settings.compute_timings){
+					work.timer.stop();
+					work.timer.start();
 		}
-		auto stop = std::chrono::steady_clock::now();
-		auto duration =
-			std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		results.info.setup_time = T(duration.count());
+		bool real_update = !(H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
+		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
+		    l == tl::nullopt);
+		if (real_update) {
+			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model);
+		}
+		proxsuite::qp::dense::setup(
+				MatRef<T>(model.H),
+				VecRef<T>(model.g),
+				MatRef<T>(model.A),
+				VecRef<T>(model.b),
+				MatRef<T>(model.C),
+				VecRef<T>(model.u),
+				VecRef<T>(model.l),
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				update_preconditioner);
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
 	};
-
 	void solve() {
-
 		qp_solve( //
 				settings,
 				model,
@@ -222,65 +287,29 @@ struct QP {
 				work,
 				ruiz);
 	};
-
-	void update(
-			tl::optional<MatRef<T>> H_,
-			tl::optional<VecRef<T>> g_,
-			tl::optional<MatRef<T>> A_,
-			tl::optional<VecRef<T>> b_,
-			tl::optional<MatRef<T>> C_,
-			tl::optional<VecRef<T>> u_,
-			tl::optional<VecRef<T>> l_) {
-
-		// update the model
-		if (g_ != tl::nullopt) {
-			model.g = g_.value().eval();
-		} 
-		if (b_ != tl::nullopt) {
-			model.b = b_.value().eval();
-		}
-		if (u_ != tl::nullopt) {
-			model.u = u_.value().eval();
-		}
-		if (l_ != tl::nullopt) {
-			model.l = l_.value().eval();
-		} 
-		if (H_ != tl::nullopt) {
-			if (A_ != tl::nullopt) {
-				if (C_ != tl::nullopt) {
-					model.H = H_.value().eval();
-					model.A = A_.value().eval();
-					model.C = C_.value().eval();
-				} else {
-					model.H = H_.value().eval();
-					model.A = A_.value().eval();
-				}
-			} else if (C_ != tl::nullopt) {
-				model.H = H_.value().eval();
-				model.C = C_.value().eval();
-			} else {
-				model.H = H_.value().eval();
-			}
-		} else if (A_ != tl::nullopt) {
-			if (C_ != tl::nullopt) {
-				model.A = A_.value().eval();
-				model.C = C_.value().eval();
-			} else {
-				model.A = A_.value().eval();
-			}
-		} else if (C_ != tl::nullopt) {
-			model.C = C_.value().eval();
-		}
-	}
-	void update_proximal_parameters(
-			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
-		proxsuite::qp::dense::update_proximal_parameters(results, rho, mu_eq, mu_in);
+	void solve(InitialGuessStatus initial_guess_) {
+		settings.initial_guess = initial_guess_;
+		qp_solve( //
+				settings,
+				model,
+				results,
+				work,
+				ruiz);
 	};
-	void warm_start(
-			tl::optional<VecRef<T>> x,
+	void solve(tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
 		proxsuite::qp::dense::warm_start(x, y, z, results, settings);
+		qp_solve( //
+				settings,
+				model,
+				results,
+				work,
+				ruiz);
+	};
+	void update_proximal_parameters(
+			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
+		proxsuite::qp::dense::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	void cleanup() {
 		results.cleanup();
