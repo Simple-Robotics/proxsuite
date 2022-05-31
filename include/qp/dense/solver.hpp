@@ -551,9 +551,14 @@ void qp_solve( //
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
-					// keep solutions but restart workspace and results
-    				// include active set of the solution /!\ TODO
+					//!\ TODO in a quicker way
 					setup_factorization(qpwork,qpmodel,qpresults);
+					for (isize i = 0; i < qpmodel.n_in; i++){
+						if (qpresults.z[i]!=0){
+							qpwork.active_inequalities[i] = true;
+						}
+					}
+					linesearch::active_set_change(qpmodel,qpresults,qpwork);
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
@@ -561,8 +566,14 @@ void qp_solve( //
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
-					// include active set of the solution /!\ TODO
+					//!\ TODO in a quicker way
     				setup_factorization(qpwork,qpmodel,qpresults);
+					for (isize i = 0; i < qpmodel.n_in; i++){
+						if (qpresults.z[i]!=0){
+							qpwork.active_inequalities[i] = true;
+						}
+					}
+					linesearch::active_set_change(qpmodel,qpresults,qpwork);
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
