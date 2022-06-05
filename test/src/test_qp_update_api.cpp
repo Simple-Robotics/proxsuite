@@ -929,3 +929,45 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 }
+
+DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test dense init") {
+
+	std::cout << "---testing sparse random strongly convex qp with equality and "
+	             "inequality constraints: test dense init---"
+						<< std::endl;
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	Qp.settings.eps_abs = eps_abs;
+	Qp.init(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.H), qp.g, Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.A), qp.b, Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.C), qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+}
