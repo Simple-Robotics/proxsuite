@@ -102,7 +102,6 @@ struct QP {
 				ruiz(preconditioner::RuizEquilibration<T>{_dim, _n_eq + _n_in}) {
 				work.timer.stop();
 				}
-
 	void init(
 			MatRef<T> H,
 			VecRef<T> g,
@@ -135,7 +134,6 @@ struct QP {
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
-
 	};
 	void init(
 			const SparseMat<T> H,
@@ -169,7 +167,6 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
-
 	void update(
 			const tl::optional<MatRef<T>> H,
 			tl::optional<VecRef<T>> g,
@@ -297,17 +294,7 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
-
 	void solve() {
-		qp_solve( //
-				settings,
-				model,
-				results,
-				work,
-				ruiz);
-	};
-	void solve(InitialGuessStatus initial_guess_) {
-		settings.initial_guess = initial_guess_;
 		qp_solve( //
 				settings,
 				model,
