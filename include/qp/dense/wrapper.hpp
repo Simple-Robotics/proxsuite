@@ -256,7 +256,7 @@ struct QP {
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l,
 			bool update_preconditioner = true) {
-		// treat the case when H, A and C are nullopt, and avoid hence ambiguity through overloading
+		// treat the case when H, A and C are nullopt, in order to avoid ambiguity through overloading
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();

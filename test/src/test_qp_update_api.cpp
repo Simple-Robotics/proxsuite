@@ -732,8 +732,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "before upating" << std::endl;
 	std::cout << "rho :  " << Qp.results.info.rho << std::endl;
 
-	Qp.cleanup();
-	Qp.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt);
+	
 	Qp.update(
 			tl::nullopt,
 			tl::nullopt,
@@ -741,7 +740,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt,
 			tl::nullopt,
 			tl::nullopt,
-			tl::nullopt);
+			tl::nullopt); // restart the problem with default options
+	Qp.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt); // update one parameter of the problem
 	std::cout << "after upating" << std::endl;
 	std::cout << "rho :  " << Qp.results.info.rho << std::endl;
 
@@ -765,7 +765,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 }
-/*
+
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update mu_eq and mu_in") {
 
@@ -775,10 +775,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	qp::isize dim = 10;
-
-	qp::isize n_eq(dim / 4);
-	qp::isize n_in(dim / 4);
+	proxsuite::qp::isize dim = 10;
+	proxsuite::qp::isize n_eq(dim / 4);
+	proxsuite::qp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -788,15 +787,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
-	Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 	Qp.solve();
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -815,10 +814,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
 	std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
 
-	Qp.cleanup();
-	Qp.update_proximal_parameter(
-			tl::nullopt, T(1.e-2), T(1.e-3)); // after update should redo a setup
-	Qp.setup_dense_matrices(
+	Qp.update(
 			tl::nullopt,
 			tl::nullopt,
 			tl::nullopt,
@@ -826,7 +822,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt,
 			tl::nullopt,
 			tl::nullopt);
-
+	Qp.update_proximal_parameters(
+			tl::nullopt, T(1.e-2), T(1.e-3)); // after update should redo a setup
 	std::cout << "after upating" << std::endl;
 	std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
 	std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
@@ -835,8 +832,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -851,7 +848,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 }
-
+/*
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test warm starting") {
 
