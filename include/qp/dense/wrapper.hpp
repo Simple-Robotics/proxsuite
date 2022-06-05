@@ -117,22 +117,6 @@ struct QP {
 					work.timer.stop();
 					work.timer.start();
 		}
-		/*
-		proxsuite::qp::dense::setup(
-				MatRef<T>(H),
-				VecRef<T>(g),
-				MatRef<T>(A),
-				VecRef<T>(b),
-				MatRef<T>(C),
-				VecRef<T>(u),
-				VecRef<T>(l),
-				settings,
-				model,
-				work,
-				results,
-				ruiz,
-				compute_preconditioner);
-		*/
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -167,22 +151,6 @@ struct QP {
 					work.timer.stop();
 					work.timer.start();
 		}
-		/*
-		proxsuite::qp::dense::setup(
-				MatRef<T>(H),
-				VecRef<T>(g),
-				MatRef<T>(A),
-				VecRef<T>(b),
-				MatRef<T>(C),
-				VecRef<T>(u),
-				VecRef<T>(l),
-				settings,
-				model,
-				work,
-				results,
-				ruiz,
-				compute_preconditioner);
-		*/
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -203,11 +171,11 @@ struct QP {
 	};
 
 	void update(
-			tl::optional<MatRef<T>> H,
+			const tl::optional<MatRef<T>> H,
 			tl::optional<VecRef<T>> g,
-			tl::optional<MatRef<T>> A,
+			const tl::optional<MatRef<T>> A,
 			tl::optional<VecRef<T>> b,
-			tl::optional<MatRef<T>> C,
+			const tl::optional<MatRef<T>> C,
 			tl::optional<VecRef<T>> u,
 			tl::optional<VecRef<T>> l,
 			bool update_preconditioner = true) {
@@ -279,6 +247,57 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	void update(
+			const tl::nullopt_t H,
+			tl::optional<VecRef<T>> g,
+			const tl::nullopt_t A,
+			tl::optional<VecRef<T>> b,
+			const tl::nullopt_t C,
+			tl::optional<VecRef<T>> u,
+			tl::optional<VecRef<T>> l,
+			bool update_preconditioner = true) {
+		// treat the case when H, A and C are nullopt, and avoid hence ambiguity through overloading
+		if (settings.compute_timings){
+					work.timer.stop();
+					work.timer.start();
+		}
+		bool real_update = !(g == tl::nullopt &&
+		    b == tl::nullopt && u == tl::nullopt &&
+		    l == tl::nullopt);
+		if (real_update) {
+			// update the model
+			if (g != tl::nullopt) {
+				model.g = g.value().eval();
+			} 
+			if (b != tl::nullopt) {
+				model.b = b.value().eval();
+			}
+			if (u != tl::nullopt) {
+				model.u = u.value().eval();
+			}
+			if (l != tl::nullopt) {
+				model.l = l.value().eval();
+			} 
+		}
+		proxsuite::qp::dense::setup(
+				MatRef<T>(model.H),
+				VecRef<T>(model.g),
+				MatRef<T>(model.A),
+				VecRef<T>(model.b),
+				MatRef<T>(model.C),
+				VecRef<T>(model.u),
+				VecRef<T>(model.l),
+				settings,
+				model,
+				work,
+				results,
+				ruiz,
+				update_preconditioner);
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
+	};
+
 	void solve() {
 		qp_solve( //
 				settings,

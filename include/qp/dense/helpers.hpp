@@ -9,6 +9,7 @@
 #include <qp/settings.hpp>
 #include <qp/status.hpp>
 #include <qp/dense/fwd.hpp>
+#include <qp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 
 namespace proxsuite {
@@ -172,22 +173,13 @@ void update(
 					model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 					model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 					model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
-					//model.H = H_.value().eval();
-					//model.A = A_.value().eval();
-					//model.C = C_.value().eval();
 				} else {
 					model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 					model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
-
-					//model.H = H_.value().eval();
-					//model.A = A_.value().eval();
 				}
 			} else if (C_ != tl::nullopt) {
 				model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
-				
-				//model.H = H_.value().eval();
-				//model.C = C_.value().eval();
 			} else {
 				model.H = H_.value().eval();
 			}
@@ -195,15 +187,11 @@ void update(
 			if (C_ != tl::nullopt) {
 				model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
-
-				//model.A = A_.value().eval();
-				//model.C = C_.value().eval();
 			} else {
 				model.A = A_.value().eval();
 			}
 		} else if (C_ != tl::nullopt) {
 			model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
-			//model.C = C_.value().eval();
 		}
 }
 template <typename Mat, typename T>
