@@ -37,7 +37,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -101,6 +101,33 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -199,6 +226,32 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -297,6 +350,32 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -395,6 +474,32 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -497,6 +602,32 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -595,6 +726,32 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE(
@@ -697,6 +854,32 @@ DOCTEST_TEST_CASE(
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -780,6 +963,34 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt);
+	std::cout << "rho :  " << Qp2.results.info.rho << std::endl;
+	Qp2.solve();
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -865,6 +1076,35 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.update_proximal_parameters(
+			tl::nullopt, T(1.e-2), T(1.e-3)); 
+	Qp2.solve();
+	std::cout << "mu_in :  " << Qp2.results.info.mu_in << std::endl;
+	std::cout << "mu_eq :  " << Qp2.results.info.mu_eq << std::endl;
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -948,6 +1188,34 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	// conter factual check with another QP object starting at the updated model
+	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp2.solve(x_wm,y_wm,z_wm);
+
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	           qp.C.transpose() * Qp2.results.z)
+	              .lpNorm<Eigen::Infinity>();
+	DOCTEST_CHECK(pri_res <= eps_abs);
+	DOCTEST_CHECK(dua_res <= eps_abs);
+
+	std::cout << "------ conter factual check with another QP object starting at the updated model : " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
+						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -1014,11 +1282,11 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			strong_convexity_factor};
 
 	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp.settings.eps_abs = eps_abs;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp.solve();
 
 	T pri_res = std::max(
@@ -1041,10 +1309,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
+	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp2.solve();
 
 	pri_res = std::max(
@@ -1091,10 +1359,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.solve();
 
 	T pri_res = std::max(
@@ -1117,10 +1385,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
+	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp2.solve();
 
 	pri_res = std::max(
@@ -1167,10 +1435,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.solve();
 
 	T pri_res = std::max(
@@ -1276,10 +1544,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.solve();
 
 	T pri_res = std::max(

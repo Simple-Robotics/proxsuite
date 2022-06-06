@@ -271,9 +271,7 @@ void setup( //
 		break;
 	case PreconditionerStatus::KEEP:
 		// keep previous one
-		//if (qpsettings.initial_guess!= InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT){
 		setup_equilibration(qpwork, qpsettings, ruiz, false);
-		//}
 		break;
 	}
 	switch (qpsettings.initial_guess) {
