@@ -51,6 +51,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -99,6 +100,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -145,6 +147,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -195,6 +198,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -241,6 +245,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -291,6 +296,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -337,6 +343,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -387,6 +394,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -432,6 +440,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -487,6 +496,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -532,6 +542,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -583,6 +594,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE(
@@ -630,6 +642,7 @@ DOCTEST_TEST_CASE(
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "H :  " << qp.H << std::endl;
@@ -683,6 +696,7 @@ DOCTEST_TEST_CASE(
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -728,6 +742,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "rho :  " << Qp.results.info.rho << std::endl;
@@ -764,6 +779,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -809,6 +825,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	std::cout << "before upating" << std::endl;
 	std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
@@ -847,6 +864,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -892,6 +910,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	auto x_wm = ldlt_test::rand::vector_rand<T>(dim);
 	auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
@@ -928,6 +947,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -1017,6 +1037,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1040,8 +1061,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
 }
 
@@ -1091,6 +1113,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1114,8 +1137,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
 }
 
@@ -1165,6 +1189,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1207,6 +1232,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
@@ -1221,8 +1247,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -1271,6 +1298,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1313,6 +1341,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
@@ -1327,8 +1356,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -1378,6 +1408,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
 	std::cout << "ruiz vector : " << Qp.ruiz.delta << " ruiz scalar factor " << Qp.ruiz.c << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1400,9 +1431,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
-	std::cout << "ruiz vector : " << Qp2.ruiz.delta << " ruiz scalar factor " << Qp2.ruiz.c << std::endl;				
+	std::cout << "ruiz vector : " << Qp2.ruiz.delta << " ruiz scalar factor " << Qp2.ruiz.c << std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;				
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -1450,6 +1482,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
 	Qp.update(
 			tl::nullopt,
 			tl::nullopt,
@@ -1475,6 +1509,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "dual residual: " << dua_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
@@ -1495,8 +1530,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
 	Qp2.update(
 			tl::nullopt,
@@ -1506,13 +1542,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			tl::nullopt,
 			tl::nullopt,
 			tl::nullopt,false); // use previous preconditioner: should get same result as well
+	Qp2.solve();
 	DOCTEST_CHECK(pri_res <= eps_abs);
 	DOCTEST_CHECK(dua_res <= eps_abs);
 	std::cout << "------using API solving qp without preconditioner derivation: " << dim
 						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
 	std::cout << "primal residual: " << pri_res << std::endl;
 	std::cout << "dual residual: " << dua_res << std::endl;
-	std::cout << "total number of iteration: " << Qp.results.info.iter
+	std::cout << "total number of iteration: " << Qp2.results.info.iter
 						<< std::endl;
-	std::cout << "ruiz vector : " << Qp2.ruiz.delta << " ruiz scalar factor " << Qp2.ruiz.c << std::endl;				
+	std::cout << "ruiz vector : " << Qp2.ruiz.delta << " ruiz scalar factor " << Qp2.ruiz.c << std::endl;	
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;			
 }
