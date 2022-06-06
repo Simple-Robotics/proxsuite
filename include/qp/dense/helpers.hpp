@@ -237,30 +237,31 @@ void setup( //
                     break;
                 }
 	}
+	if (qpsettings.initial_guess!= InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT){
+		qpmodel.H = Eigen::
+				Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
+		qpmodel.g = g;
+		qpmodel.A = Eigen::
+				Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
+		qpmodel.b = b;
+		qpmodel.C = Eigen::
+				Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
+		qpmodel.u = u;
+		qpmodel.l = l;
 
-	qpmodel.H = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H);
-	qpmodel.g = g;
-	qpmodel.A = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A);
-	qpmodel.b = b;
-	qpmodel.C = Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C);
-	qpmodel.u = u;
-	qpmodel.l = l;
+		qpwork.H_scaled = qpmodel.H;
+		qpwork.g_scaled = qpmodel.g;
+		qpwork.A_scaled = qpmodel.A;
+		qpwork.b_scaled = qpmodel.b;
+		qpwork.C_scaled = qpmodel.C;
+		qpwork.u_scaled = qpmodel.u;
+		qpwork.l_scaled = qpmodel.l;
 
-	qpwork.H_scaled = qpmodel.H;
-	qpwork.g_scaled = qpmodel.g;
-	qpwork.A_scaled = qpmodel.A;
-	qpwork.b_scaled = qpmodel.b;
-	qpwork.C_scaled = qpmodel.C;
-	qpwork.u_scaled = qpmodel.u;
-	qpwork.l_scaled = qpmodel.l;
-
-	qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-	qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-	qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
-	qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
+		qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
+		qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
+		qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+		qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
+	}
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -270,8 +271,13 @@ void setup( //
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
-					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
+					setup_equilibration(qpwork, qpsettings, ruiz, execute_preconditioner);
     				//setup_factorization(qpwork,qpmodel,qpresults);
+
+					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
+					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
@@ -286,12 +292,14 @@ void setup( //
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
+
+					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
+					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+
                     break;
                 }
 	}
-
-	//initial_guess(qpwork, qpsettings, qpmodel, qpresults);
-
 }
 
 ////// UPDATES ///////
