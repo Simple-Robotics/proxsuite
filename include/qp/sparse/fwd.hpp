@@ -4,6 +4,7 @@
 
 #include <Eigen/Sparse>
 #include <veg/vec.hpp>
+#include <qp/dense/views.hpp>
 
 namespace proxsuite {
 namespace qp {

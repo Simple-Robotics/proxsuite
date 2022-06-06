@@ -44,7 +44,13 @@ struct QP {
 			work.timer.stop();
 			work.timer.start();
 		}
-		settings.compute_preconditioner = compute_preconditioner_;
+		PreconditionerStatus preconditioner_status;
+		if (compute_preconditioner_){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
+		}
+		//settings.compute_preconditioner = compute_preconditioner_;
 		SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
 		SparseMat<T, I> AT = A.value().transpose();
 		SparseMat<T, I> CT = C.value().transpose();
@@ -56,7 +62,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT},
 				{linearsolver::sparse::from_eigen, l.value()},
 				{linearsolver::sparse::from_eigen, u.value()}};
-		qp_setup(qp, results, model, work, settings, ruiz, settings.compute_preconditioner);
+		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
@@ -70,9 +76,17 @@ struct QP {
 			tl::optional<VecRef<T>> u_,
 			tl::optional<VecRef<T>> l_,
 			bool update_preconditioner_ = false){
-
-		settings.update_preconditioner = update_preconditioner_;
-		
+		if (settings.compute_timings){
+			work.timer.stop();
+			work.timer.start();
+		}
+		//settings.update_preconditioner = update_preconditioner_;
+		PreconditionerStatus preconditioner_status;
+		if (update_preconditioner_){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::KEEP;
+		}
 		isize n = model.dim;
 		isize n_eq = model.n_eq;
 		isize n_in = model.n_in;
@@ -166,14 +180,14 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
 				{linearsolver::sparse::from_eigen, model.l},
 				{linearsolver::sparse::from_eigen, model.u}};
-		std::cout << "Ok1 here" << std::endl;
-		qp_setup(qp, results, model, work, settings, ruiz, settings.update_preconditioner); // store model value + performs scaling according to chosen options
-
+		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status); // store model value + performs scaling according to chosen options
+		if (settings.compute_timings){
+			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+		}
 	};
 	
 
 	void solve() {
-		
 		qp_solve( //
 				results,
 				model,
@@ -181,17 +195,6 @@ struct QP {
 				work,
 				ruiz);
 	};
-
-	void solve(InitialGuessStatus initial_guess_) {
-		settings.initial_guess = initial_guess_;
-		qp_solve( //
-				results,
-				model,
-				settings,
-				work,
-				ruiz);
-	};
-
 	void solve(tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
@@ -208,8 +211,6 @@ struct QP {
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
-
-
 	void cleanup() { results.cleanup(); }
 };
 

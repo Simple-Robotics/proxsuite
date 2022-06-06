@@ -374,7 +374,6 @@ auto unscaled_primal_dual_residual(
 
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
 	dual_residual_scaled = qp_scaled.g.to_eigen();
-
 	{
 		tmp.setZero();
 		noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
@@ -411,10 +410,8 @@ auto unscaled_primal_dual_residual(
 		precond.unscale_dual_residual_in_place({qp::from_eigen, CTz});
 		dual_feasibility_rhs_3 = infty_norm(CTz);
 	}
-
 	precond.unscale_primal_residual_in_place_eq(
 			{qp::from_eigen, primal_residual_eq_scaled});
-
 	primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
 
 	precond.unscale_primal_residual_in_place_in(

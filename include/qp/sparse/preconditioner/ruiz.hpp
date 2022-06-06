@@ -326,7 +326,7 @@ struct RuizEquilibration {
 			isize n_,
 			isize n_eq_in,
 			T epsilon_ = T(1e-3),
-			i64 max_iter_ = 1000,
+			i64 max_iter_ = 10,
 			Symmetry sym_ = Symmetry::UPPER,
 			std::ostream* logger = nullptr)
 			: delta(Eigen::Matrix<T, -1, 1>::Ones(n_ + n_eq_in)),
@@ -335,7 +335,9 @@ struct RuizEquilibration {
 				epsilon(epsilon_),
 				max_iter(max_iter_),
 				sym(sym_),
-				logger_ptr(logger) {}
+				logger_ptr(logger) {
+					delta.setOnes();
+				}
 
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
@@ -362,7 +364,6 @@ struct RuizEquilibration {
 					stack);
 		} else {
 			using linearsolver::sparse::util::zero_extend;
-
 			isize n = qp.H.nrows();
 			isize n_eq = qp.AT.ncols();
 			isize n_in = qp.CT.ncols();

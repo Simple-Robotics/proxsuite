@@ -24,11 +24,11 @@ struct Info {
 	T nu;
 
 	///// iteration count
-	isize iter;
-	isize iter_ext;
-	isize mu_updates;
-	isize rho_updates;
-	isize n_c; // final number of active inequalities
+	sparse::isize iter;
+	sparse::isize iter_ext;
+	sparse::isize mu_updates;
+	sparse::isize rho_updates;
+	sparse::isize n_c; // final number of active inequalities
 	QPSolverOutput status;
 
 	//// timings

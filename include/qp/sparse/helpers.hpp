@@ -99,7 +99,7 @@ void qp_setup(
 		Workspace<T, I>& work,
 		Settings<T>& settings,
 		P& precond,
-		bool execute_preconditioner_or_not) {
+		PreconditionerStatus preconditioner_status) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();
@@ -122,7 +122,20 @@ void qp_setup(
 			results.active_constraints[i] = false;
 		}
 	}
-
+	bool execute_preconditioner_or_not = false;
+	switch (preconditioner_status)
+	{
+	case PreconditionerStatus::EXECUTE:
+		execute_preconditioner_or_not = true;
+		break;
+	case PreconditionerStatus::IDENTITY:
+		execute_preconditioner_or_not = false;
+		break;
+	case PreconditionerStatus::KEEP:
+		// keep previous one
+		execute_preconditioner_or_not = false;
+		break;
+	}
 	// performs scaling according to options chosen + store model value
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -148,6 +161,9 @@ void qp_setup(
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+					precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+					precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+					precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
@@ -177,10 +193,20 @@ void qp_setup(
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
 					results.cleanup_statistics();
+					work.setup_impl(
+						qp,
+						results,
+						data,
+						settings,
+						execute_preconditioner_or_not,
+						precond,
+						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+					precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+					precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+					precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
                     break;
                 }
 	}
-	// initial guess done in the solve for the moment
 }
 
 template <typename T, typename I>
