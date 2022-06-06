@@ -208,7 +208,7 @@ void setup( //
 		Workspace<T>& qpwork,
 		Results<T>& qpresults,
 		preconditioner::RuizEquilibration<T>& ruiz,
-		bool execute_preconditioner) {
+		PreconditionerStatus preconditioner_status) {
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -265,15 +265,35 @@ void setup( //
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-					setup_equilibration(qpwork, qpsettings, ruiz, execute_preconditioner);
-    				//setup_factorization(qpwork,qpmodel,qpresults);
+					switch (preconditioner_status)
+					{
+					case PreconditionerStatus::EXECUTE:
+						setup_equilibration(qpwork, qpsettings, ruiz, true);
+						break;
+					case PreconditionerStatus::IDENTITY:
+						setup_equilibration(qpwork, qpsettings, ruiz, false);
+						break;
+					case PreconditionerStatus::KEEP:
+						// keep previous one
+						break;
+					}
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
-					setup_equilibration(qpwork, qpsettings, ruiz, execute_preconditioner);
-    				//setup_factorization(qpwork,qpmodel,qpresults);
-
+					switch (preconditioner_status)
+					{
+					case PreconditionerStatus::EXECUTE:
+						setup_equilibration(qpwork, qpsettings, ruiz, true);
+						break;
+					case PreconditionerStatus::IDENTITY:
+						setup_equilibration(qpwork, qpsettings, ruiz, false); // do not really have a meaning
+						break;
+					case PreconditionerStatus::KEEP:
+						// keep previous one
+						break;
+					}
+					// unscale warm start from previous problem
 					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
 					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
 					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
@@ -281,18 +301,49 @@ void setup( //
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
-					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
-    				//setup_factorization(qpwork,qpmodel,qpresults);
+					switch (preconditioner_status)
+					{
+					case PreconditionerStatus::EXECUTE:
+						setup_equilibration(qpwork, qpsettings, ruiz, true);
+						break;
+					case PreconditionerStatus::IDENTITY:
+						setup_equilibration(qpwork, qpsettings, ruiz, false);
+						break;
+					case PreconditionerStatus::KEEP:
+						// keep previous one
+						break;
+					}
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
-					setup_equilibration(qpwork, qpsettings, ruiz,execute_preconditioner);
-    				//setup_factorization(qpwork,qpmodel,qpresults);
+					switch (preconditioner_status)
+					{
+					case PreconditionerStatus::EXECUTE:
+						setup_equilibration(qpwork, qpsettings, ruiz, true);
+						break;
+					case PreconditionerStatus::IDENTITY:
+						setup_equilibration(qpwork, qpsettings, ruiz, false);
+						break;
+					case PreconditionerStatus::KEEP:
+						// keep previous one
+						break;
+					}
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
-
+					switch (preconditioner_status)
+					{
+					case PreconditionerStatus::EXECUTE:
+						setup_equilibration(qpwork, qpsettings, ruiz, true);
+						break;
+					case PreconditionerStatus::IDENTITY:
+						setup_equilibration(qpwork, qpsettings, ruiz, false);
+						break;
+					case PreconditionerStatus::KEEP:
+						// keep previous one
+						break;
+					}
 					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
 					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
 					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});

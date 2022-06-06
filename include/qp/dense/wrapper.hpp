@@ -116,6 +116,12 @@ struct QP {
 					work.timer.stop();
 					work.timer.start();
 		}
+		PreconditionerStatus preconditioner_status;
+		if (compute_preconditioner){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
+		}
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -129,7 +135,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				compute_preconditioner);
+				preconditioner_status);
 
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
@@ -149,6 +155,12 @@ struct QP {
 					work.timer.stop();
 					work.timer.start();
 		}
+		PreconditionerStatus preconditioner_status;
+		if (compute_preconditioner){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
+		}
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -162,7 +174,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				compute_preconditioner);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
@@ -181,7 +193,12 @@ struct QP {
 					work.timer.stop();
 					work.timer.start();
 		}
-
+		PreconditionerStatus preconditioner_status;
+		if (update_preconditioner){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::KEEP;
+		}
 		bool real_update = !(H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
 		    l == tl::nullopt);
@@ -201,7 +218,7 @@ struct QP {
 					work,
 					results,
 					ruiz,
-					update_preconditioner);
+					preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
@@ -219,6 +236,12 @@ struct QP {
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
+		}
+		PreconditionerStatus preconditioner_status;
+		if (update_preconditioner){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::KEEP;
 		}
 		bool real_update = !(H == tl::nullopt && g == tl::nullopt && A == tl::nullopt &&
 		    b == tl::nullopt && C == tl::nullopt && u == tl::nullopt &&
@@ -239,7 +262,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				update_preconditioner);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
@@ -257,6 +280,12 @@ struct QP {
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
+		}
+		PreconditionerStatus preconditioner_status;
+		if (update_preconditioner){
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
+		}else{
+			preconditioner_status = proxsuite::qp::PreconditionerStatus::KEEP;
 		}
 		bool real_update = !(g == tl::nullopt &&
 		    b == tl::nullopt && u == tl::nullopt &&
@@ -289,7 +318,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				update_preconditioner);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}

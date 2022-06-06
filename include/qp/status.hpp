@@ -25,6 +25,12 @@ enum struct InitialGuessStatus {
 	WARM_START, // tout refaire pour la KKT avec la partie active de z
 	COLD_START_WITH_PREVIOUS_RESULT // keep solutions + KKT
 };
+// PRECONDITIONER STATUS
+enum struct PreconditionerStatus {
+	EXECUTE,// initialize or update with qp in entry
+	KEEP, // keep previous preconditioner (for update method)
+	IDENTITY // do not execute, hence use identity preconditioner (for init method)
+};
 
 
 } // namespace qp
