@@ -111,7 +111,7 @@ TEST_CASE("maros meszaros wip") {
 			isize n_in = C.rows();
 
 			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
-			Qp.setup(H,g,A,b,C,u,l);
+			Qp.init(H,g,A,b,C,u,l);
 			
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 

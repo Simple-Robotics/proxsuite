@@ -104,27 +104,9 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 		for (auto _ : s) {
 			s.PauseTiming();
 
-			/*
-			QPSettings<T> settings;
-      		settings.verbose = false;
-
-      dense::Data<T> data{n, n_eq, n_in};
-			Results<T> results{n, n_eq, n_in};
-      dense::Workspace<T> work{n, n_eq, n_in};
-			results.x.setZero();
-			results.y.setZero();
-			results.z.setZero();
-			*/
 			proxsuite::qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
-			Qp.setup_dense_matrices(H,g,A,b,C,u,l);
+			Qp.init(H,g,A,b,C,u,l);
 			Qp.solve();
-			/*
-			detail::QPsetup_dense<T>(
-					H, g, A, b, C, u, l, settings, data, work, results);
-
-			
-			detail::qp_solve(settings, data, results, work);
-			*/
 			s.ResumeTiming();
 		}
 	} else {
