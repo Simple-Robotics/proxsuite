@@ -263,6 +263,42 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	}
 }
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update g for unconstrained problem") {
+
+        std::cout << "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no initial guess" << std::endl;
+	for (auto const& dims : {
+					 //veg::tuplify(50, 0, 0),
+					 //veg::tuplify(50, 25, 0),
+					 //veg::tuplify(10, 0, 10),
+					 //veg::tuplify(50, 0, 25),
+					 //veg::tuplify(50, 10, 25),
+                                         veg::tuplify(10, 2, 2)
+			 }) {
+		VEG_BIND(auto const&, (n, n_eq, n_in), dims);
+
+		double p = 0.15;
+
+		auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
+		auto g = ldlt_test::rand::vector_rand<T>(n);
+
+        qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+        Qp.settings.eps_abs = 1.E-9;
+        Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+        Qp.init(H,g,A,b,C,u,l);
+        Qp.solve();
+
+        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
+        T pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
+			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
+        CHECK(dua_res <= 1e-9);
+        CHECK(pri_res <= 1E-9);
+        std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+        std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	}
+}
 /*
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test warm starting --> TO DEBUG") {

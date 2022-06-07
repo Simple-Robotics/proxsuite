@@ -75,10 +75,6 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					"function used for solving the QP problem, using default parameters.")
 			.def(
 					"solve",
-					static_cast<void (dense::QP<T>::*)(InitialGuessStatus initial_guess_)>(&dense::QP<T>::solve),
-					"function used for solving the QP problem, when passing a initial guess option.")
-			.def(
-					"solve",
 					static_cast<void (dense::QP<T>::*)(tl::optional<dense::VecRef<T>> x,tl::optional<dense::VecRef<T>> y,tl::optional<dense::VecRef<T>> z)>(&dense::QP<T>::solve),
 					"function used for solving the QP problem, when passing a warm start.")
 			.def(
@@ -185,10 +181,6 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					"solve",
 					static_cast<void (sparse::QP<T,I>::*)()>(&sparse::QP<T,I>::solve),
 					"function used for solving the QP problem, using default parameters.")
-			.def(
-					"solve",
-					static_cast<void (sparse::QP<T,I>::*)(InitialGuessStatus initial_guess_)>(&sparse::QP<T,I>::solve),
-					"function used for solving the QP problem, when passing a initial guess option.")
 			.def(
 					"solve",
 					static_cast<void (sparse::QP<T,I>::*)(tl::optional<sparse::VecRef<T>> x,tl::optional<sparse::VecRef<T>> y,tl::optional<sparse::VecRef<T>> z)>(&sparse::QP<T,I>::solve),

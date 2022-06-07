@@ -30,10 +30,9 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework") {
 
 	qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
-	Qp.settings.warm_start = true;
-	Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-	Qp.warm_sart(primal_init, dual_init, dual_init_in);
-	Qp.solve();
+	Qp.settings.initial_guess =  proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+	Qp.solve(primal_init, dual_init, dual_init_in);
 
 	DOCTEST_CHECK(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>() <= eps_abs);
@@ -66,7 +65,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
 
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -116,7 +115,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 
 		T pri_res = std::max(

@@ -33,7 +33,7 @@ DOCTEST_TEST_CASE(
 
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 
 		T pri_res = std::max(
@@ -78,7 +78,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
 				strong_convexity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -120,7 +120,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
 				sparsity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -165,7 +165,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
 				strong_convexity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -212,7 +212,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
 		Qp.settings.verbose = false;
-		Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
+		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),

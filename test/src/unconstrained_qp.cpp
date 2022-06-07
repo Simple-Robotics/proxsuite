@@ -25,7 +25,7 @@ DOCTEST_TEST_CASE(
 		Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
 		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+		Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 		Qp.solve();
 
 		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
@@ -61,7 +61,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 
 		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+		Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 		Qp.solve();
 
 		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
@@ -92,7 +92,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random") {
 
 	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
-	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 	Qp.solve();
 
 	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
@@ -124,7 +124,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0") {
 
 	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
-	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 	Qp.solve();
 
 	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
