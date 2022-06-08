@@ -7,7 +7,7 @@ using namespace qp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
-
+/*
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update rho") {
         std::cout << "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho" << std::endl;
@@ -49,26 +49,6 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
-
-        /*
-        Qp.cleanup();
-        Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
-        Qp.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt);
-        std::cout << "after upating" << std::endl;
-        std::cout << "rho :  " << Qp.results.info.rho << std::endl;
-
-        Qp.solve();
-
-        CHECK(
-                qp::dense::infty_norm(
-                        H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
-                1e-9);
-        CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
-        if (n_in > 0) {
-            CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
-            CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
-        }
-        */
 	}
 }
 
@@ -115,27 +95,6 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
-
-        /*
-        Qp.cleanup();
-        Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
-        Qp.update_proximal_parameter(tl::nullopt, T(1.E-2), T(1.E-3));
-        std::cout << "after upating" << std::endl;
-        std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
-        std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
-
-        Qp.solve();
-
-        CHECK(
-                qp::dense::infty_norm(
-                        H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
-                1e-9);
-        CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
-        if (n_in > 0) {
-            CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
-            CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
-        }
-        */
 	}
 }
 TEST_CASE("sparse random strongly convex qp with equality and "
@@ -263,6 +222,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	}
 }
+
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update g for unconstrained problem") {
 
@@ -281,13 +241,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 		auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
 		auto g = ldlt_test::rand::vector_rand<T>(n);
+		auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p);
+                auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+	        auto b = A * x_sol;
+		auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
+		auto l =  C * x_sol; 
+                auto u = (l.array() + 100).matrix().eval();
 
         qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
         Qp.settings.eps_abs = 1.E-9;
         Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
         Qp.init(H,g,A,b,C,u,l);
         Qp.solve();
-
         T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
         T pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
 			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
@@ -297,9 +262,39 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+        g = ldlt_test::rand::vector_rand<T>(n);
+        std::cout << "H before update " << H << std::endl;
+        H *= 2.; // keep same sparsity structure
+        std::cout << "H generated " << H << std::endl;
+        Qp.update(
+        H,
+        g,
+        A,
+        b,
+        C,
+        u,
+        l,false);
+        linearsolver::sparse::MatMut<T, I> kkt_unscaled = Qp.model.kkt_mut_unscaled();
+        auto kkt_top_n_rows = proxsuite::qp::sparse::detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, n);
+
+	linearsolver::sparse::MatMut<T, I> H_unscaled = proxsuite::qp::sparse::detail::middle_cols_mut(kkt_top_n_rows, 0, n, Qp.model.H_nnz);
+        std::cout << " H_unscaled " << H_unscaled.to_eigen() << std::endl;
+        Qp.solve();
+
+        dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
+        pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
+			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
+        CHECK(dua_res <= 1e-9);
+        CHECK(pri_res <= 1E-9);
+        std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+        std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	}
 }
-/*
+*/
+
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test warm starting --> TO DEBUG") {
 
@@ -349,4 +344,3 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	}
 }
-*/

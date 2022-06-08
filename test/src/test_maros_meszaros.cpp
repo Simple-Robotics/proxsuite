@@ -128,6 +128,23 @@ TEST_CASE("maros meszaros wip") {
 			CHECK(dense::infty_norm(A * x - b) > -eps);
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
+
+			Qp.update(tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,true);// change nothing, redo the solve
+			Qp.solve();
+			x = Qp.results.x;
+			y = Qp.results.y;
+			z = Qp.results.z;
+			
+			eps = Qp.settings.eps_abs;
+
+			CHECK(
+					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
+					eps);
+			CHECK(dense::infty_norm(A * x - b) > -eps);
+			CHECK((C * x - l).minCoeff() > -eps);
+			CHECK((C * x - u).maxCoeff() < eps);
+
+
 		}
 	}
 }

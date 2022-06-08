@@ -346,7 +346,7 @@ void qp_solve(
 	I* kkt_nnz_counts = work.internal.kkt_nnz_counts.ptr_mut();
 
 	auto& iterative_solver = *work.internal.matrix_free_solver.get();
-
+	isize C_active_nnz = 0;
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 
@@ -357,6 +357,7 @@ void qp_solve(
 					// ineq constraints initially inactive
 					for (isize j = 0; j < n_in; ++j) {
 						kkt_nnz_counts[n + n_eq + j] = 0;
+						results.active_constraints[j] = false;
 					}
 					break;
                 }
@@ -371,8 +372,12 @@ void qp_solve(
 					for (isize j = 0; j < n_in; ++j) {
 						if (results.z(j)!=0){
 							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+							results.active_constraints[j] = true;
+							C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 						}else{
 							kkt_nnz_counts[n + n_eq + j] = 0;
+							results.active_constraints[j] = false;
+							
 						}
 					}
                     break;
@@ -400,8 +405,12 @@ void qp_solve(
 					for (isize j = 0; j < n_in; ++j) {
 						if (results.z(j)!=0){
 							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+							results.active_constraints[j] = true;
+							C_active_nnz += kkt_nnz_counts[n + n_eq + j];
+
 						}else{
 							kkt_nnz_counts[n + n_eq + j] = 0;
+							results.active_constraints[j] = false;
 						}
 					}
                     break;
@@ -428,12 +437,13 @@ void qp_solve(
 			linearsolver::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
-			data.H_nnz + data.A_nnz,
+			data.H_nnz + data.A_nnz + C_active_nnz,
 			kkt.col_ptrs_mut(),
 			kkt_nnz_counts,
 			kkt.row_indices_mut(),
 			kkt.values_mut(),
 	};
+
 
 	I* etree = work.internal.ldl.etree.ptr_mut();
 	I* ldl_nnz_counts = work.internal.ldl.nnz_counts.ptr_mut();

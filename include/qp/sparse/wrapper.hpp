@@ -105,7 +105,7 @@ struct QP {
 				detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, model.C_nnz);
 
 		// update the model
-		/*
+		
 		if (g_ != tl::nullopt) {
 			model.g = g_.value();
 		} 
@@ -146,7 +146,8 @@ struct QP {
 				}
 			} else {
 				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) ;
-				if (res){
+				std::cout << " have same structure " << res << std::endl;
+				if (true){
 						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
 				}
 			}
@@ -170,7 +171,7 @@ struct QP {
 					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 			}
 		}
-		*/
+		
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
 		sparse::QpView<T, I> qp = {
 				{linearsolver::sparse::from_eigen, H_triu},

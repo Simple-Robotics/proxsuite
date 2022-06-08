@@ -46,6 +46,11 @@ void refactorize(
 		linearsolver::sparse::factorize_symbolic_non_zeros(
 				work.internal.ldl.nnz_counts.ptr_mut(), work.internal.ldl.etree.ptr_mut(), work.internal.ldl.perm_inv.ptr_mut(), work.internal.ldl.perm.ptr_mut(), kkt_active.symbolic(), stack);
 
+		isize nnz = 0;
+		for (usize j =  0;j<usize(kkt_active.ncols());++j){
+			nnz+=usize(kkt_active.col_end(j)-kkt_active.col_start(j));
+		}
+		VEG_ASSERT(kkt_active.nnz()==nnz);
 		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
 		T* diag = _diag.ptr_mut();
 
