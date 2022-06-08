@@ -377,7 +377,6 @@ void qp_solve(
 						}else{
 							kkt_nnz_counts[n + n_eq + j] = 0;
 							results.active_constraints[j] = false;
-							
 						}
 					}
                     break;
@@ -391,6 +390,7 @@ void qp_solve(
 					// ineq constraints initially inactive
 					for (isize j = 0; j < n_in; ++j) {
 						kkt_nnz_counts[n + n_eq + j] = 0;
+						results.active_constraints[j] = false;
 					}
                     break;
                 }
@@ -425,8 +425,11 @@ void qp_solve(
 					for (isize j = 0; j < n_in; ++j) {
 						if (results.z(j)!=0){
 							kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(j+n+n_eq) - kkt.col_start(j+n+n_eq));
+							results.active_constraints[j] = true;
+							C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 						}else{
 							kkt_nnz_counts[n + n_eq + j] = 0;
+							results.active_constraints[j] = false;
 						}
 					}
                     break;
