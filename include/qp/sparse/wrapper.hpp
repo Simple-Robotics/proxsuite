@@ -41,6 +41,13 @@ struct QP {
 			SparseMat<bool, I> H_triu = H.template triangularView<Eigen::Upper>();
 			SparseMat<bool, I> AT = A.transpose();
 			SparseMat<bool, I> CT = C.transpose();
+			/*
+			std::cout << "dim " << _dim  << " n_eq " << _n_eq << " _n_in " << _n_in << std::endl;
+			std::cout << "H mask " << H << std::endl;
+			std::cout << "A mask " << A << std::endl;
+			std::cout << "C mask " << C << std::endl;
+			*/
+
 			linearsolver::sparse::MatRef<bool,I> Href = {linearsolver::sparse::from_eigen, H_triu};
 			linearsolver::sparse::MatRef<bool,I> ATref = {linearsolver::sparse::from_eigen, AT};
 			linearsolver::sparse::MatRef<bool,I> CTref = {linearsolver::sparse::from_eigen, CT};
@@ -192,6 +199,7 @@ struct QP {
 		}
 		
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
+		//std::cout << "  H_triu at update " << H_triu << std::endl;
 		sparse::QpView<T, I> qp = {
 				{linearsolver::sparse::from_eigen, H_triu},
 				{linearsolver::sparse::from_eigen, model.g},
@@ -200,6 +208,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
 				{linearsolver::sparse::from_eigen, model.l},
 				{linearsolver::sparse::from_eigen, model.u}};
+		
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status); // store model value + performs scaling according to chosen options
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds

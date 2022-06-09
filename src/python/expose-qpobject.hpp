@@ -135,6 +135,7 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 
 	::pybind11::class_<sparse::QP<T,I>>(m, "QP")//,pybind11::module_local()
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
+			.def(::pybind11::init<const sparse::SparseMat<bool, I>&,const sparse::SparseMat<bool,I>&,const sparse::SparseMat<bool,I>&>()) // constructor
 			.def_readwrite(
 					"results",
 					&sparse::QP<T,I>::results,

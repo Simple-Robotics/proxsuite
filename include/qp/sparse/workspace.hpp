@@ -228,7 +228,6 @@ struct Workspace {
 
 		data.kkt_col_ptrs_unscaled = data.kkt_col_ptrs;
 		data.kkt_row_indices_unscaled = data.kkt_row_indices;
-		data.kkt_values_unscaled = data.kkt_values;
 
 
 		storage.resize_for_overwrite( //
@@ -483,6 +482,7 @@ struct Workspace {
 			insert_submatrix(qp.H, true);
 			insert_submatrix(qp.AT, false);
 			insert_submatrix(qp.CT, false);
+			data.kkt_values_unscaled = data.kkt_values;
 	}
 #define PROX_QP_ALL_OF(...)                                                    \
 ::veg::dynstack::StackReq::and_(::veg::init_list(__VA_ARGS__))
