@@ -118,11 +118,11 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v(
 							"mu_eq",
 							tl::nullopt,
-							"dual equatlity constraint proximal parameter"),
+							"dual equality constraint proximal parameter"),
 					pybind11::arg_v(
 							"mu_in",
 							tl::nullopt,
-							"dual inequatlity constraint proximal parameter"))
+							"dual inequality constraint proximal parameter"))
 			.def(
 					"cleanup",
 					&dense::QP<T>::cleanup,
@@ -133,7 +133,7 @@ void exposeQpObjectDense(pybind11::module_ m) {
 template <typename T,typename I>
 void exposeQpObjectSparse(pybind11::module_ m) {
 
-	::pybind11::class_<sparse::QP<T,I>>(m, "QP",pybind11::module_local())
+	::pybind11::class_<sparse::QP<T,I>>(m, "QP")//,pybind11::module_local()
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readwrite(
 					"results",
@@ -194,11 +194,11 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v(
 							"mu_eq",
 							tl::nullopt,
-							"dual equatlity constraint proximal parameter"),
+							"dual equality constraint proximal parameter"),
 					pybind11::arg_v(
 							"mu_in",
 							tl::nullopt,
-							"dual inequatlity constraint proximal parameter"))
+							"dual inequality constraint proximal parameter"))
 			.def(
 					"cleanup",
 					&sparse::QP<T,I>::cleanup,

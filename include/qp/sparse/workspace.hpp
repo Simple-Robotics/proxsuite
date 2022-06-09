@@ -108,6 +108,7 @@ struct Workspace {
 		veg::Vec<veg::mem::byte> storage;
 		Ldlt<T,I> ldl;
 		bool do_ldlt;
+		bool do_symbolic_fact;
 		// persistent allocations
 
 		Eigen::Matrix<T, Eigen::Dynamic, 1> g_scaled;
@@ -132,6 +133,165 @@ struct Workspace {
 		}
 
 	} internal;
+
+	isize lnnz;
+
+	void setup_symbolic_factorizaton(
+			Results<T>& results,
+			Model<T, I>& data,
+			Settings<T>& settings,
+			veg::dynstack::StackReq precond_req,
+			linearsolver::sparse::SymbolicMatRef<I> H,linearsolver::sparse::SymbolicMatRef<I> AT,linearsolver::sparse::SymbolicMatRef<I> CT
+			){
+		auto& ldl = internal.ldl;
+		
+		auto& storage = internal.storage ;
+		auto& do_ldlt = internal.do_ldlt;
+		// persistent allocations
+		/*
+		auto& g_scaled = internal.g_scaled;
+		auto& b_scaled = internal.b_scaled;
+		auto& l_scaled = internal.l_scaled;
+		auto& u_scaled = internal.u_scaled;
+		auto& kkt_nnz_counts = internal.kkt_nnz_counts;
+
+		// stored in unique_ptr because we need a stable address
+		auto& matrix_free_solver = internal.matrix_free_solver;
+		auto& matrix_free_kkt = internal.matrix_free_kkt;
+		*/
+		data.dim = H.nrows();
+		data.n_eq = AT.ncols();
+		data.n_in = CT.ncols();
+		data.H_nnz = H.nnz();
+		data.A_nnz = AT.nnz();
+		data.C_nnz = CT.nnz();
+
+		using namespace veg::dynstack;
+		using namespace linearsolver::sparse::util;
+
+		using SR = StackReq;
+		veg::Tag<I> itag;
+		veg::Tag<T> xtag;
+
+		isize n = H.nrows();
+		isize n_eq = AT.ncols();
+		isize n_in = CT.ncols();
+		isize n_tot = n + n_eq + n_in;
+
+		isize nnz_tot = H.nnz() + AT.nnz() + CT.nnz();
+
+		// form the full kkt matrix
+		// assuming H, AT, CT are sorted
+		// and H is upper triangular
+		{
+			data.kkt_col_ptrs.resize_for_overwrite(n_tot + 1);
+			data.kkt_row_indices.resize_for_overwrite(nnz_tot);
+			data.kkt_values.resize_for_overwrite(nnz_tot);
+
+			I* kktp = data.kkt_col_ptrs.ptr_mut();
+			I* kkti = data.kkt_row_indices.ptr_mut();
+
+			kktp[0] = 0;
+			usize col = 0;
+			usize pos = 0;
+
+			auto insert_submatrix = [&](linearsolver::sparse::SymbolicMatRef<I> m,
+										bool assert_sym_hi) -> void {
+				I const* mi = m.row_indices();
+				isize ncols = m.ncols();
+
+				for (usize j = 0; j < usize(ncols); ++j) {
+					usize col_start = m.col_start(j);
+					usize col_end = m.col_end(j);
+
+					kktp[col + 1] =
+							checked_non_negative_plus(kktp[col], I(col_end - col_start));
+					++col;
+
+					for (usize p = col_start; p < col_end; ++p) {
+						usize i = zero_extend(mi[p]);
+						if (assert_sym_hi) {
+							VEG_ASSERT(i <= j);
+						}
+
+						kkti[pos] = veg::nb::narrow<I>{}(i);
+
+						++pos;
+					}
+				}
+			};
+
+			insert_submatrix(H, true);
+			insert_submatrix(AT, false);
+			insert_submatrix(CT, false);
+		}
+
+		data.kkt_col_ptrs_unscaled = data.kkt_col_ptrs;
+		data.kkt_row_indices_unscaled = data.kkt_row_indices;
+		data.kkt_values_unscaled = data.kkt_values;
+
+
+		storage.resize_for_overwrite( //
+				(StackReq::with_len(itag, n_tot) &
+				linearsolver::sparse::factorize_symbolic_req( //
+							itag,                                     //
+							n_tot,                                    //
+							nnz_tot,                                  //
+							linearsolver::sparse::Ordering::amd))     //
+						.alloc_req()                               //
+		);
+
+		ldl.col_ptrs.resize_for_overwrite(n_tot + 1);
+		ldl.perm_inv.resize_for_overwrite(n_tot);
+
+		DynStackMut stack = stack_mut();
+
+		bool overflow = false;
+		{
+			ldl.etree.resize_for_overwrite(n_tot);
+			auto etree_ptr = ldl.etree.ptr_mut();
+
+			using namespace veg::literals;
+			auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
+					linearsolver::sparse::from_raw_parts,
+					n_tot,
+					n_tot,
+					nnz_tot,
+					data.kkt_col_ptrs.ptr(),
+					nullptr,
+					data.kkt_row_indices.ptr(),
+			};
+			linearsolver::sparse::factorize_symbolic_non_zeros( //
+					ldl.col_ptrs.ptr_mut() + 1,
+					etree_ptr,
+					ldl.perm_inv.ptr_mut(),
+					static_cast<I const*>(nullptr),
+					kkt_sym,
+					stack);
+
+			auto pcol_ptrs = ldl.col_ptrs.ptr_mut();
+			pcol_ptrs[0] = I(0);
+
+			using veg::u64;
+			u64 acc = 0;
+
+			for (usize i = 0; i < usize(n_tot); ++i) {
+				acc += u64(zero_extend(pcol_ptrs[i + 1]));
+				if (acc != u64(I(acc))) {
+					overflow = true;
+				}
+				pcol_ptrs[(i + 1)] = I(acc);
+			}
+		}
+
+		lnnz = isize(zero_extend(ldl.col_ptrs[n_tot]));
+
+		// if ldlt is too sparse
+		// do_ldlt = !overflow && lnnz < (10000000);
+		do_ldlt = !overflow && lnnz < 10000000;
+		
+		internal.do_symbolic_fact = false;
+	}
 
 	template <typename P>
 	void setup_impl(
@@ -184,6 +344,8 @@ struct Workspace {
 		isize n_tot = n + n_eq + n_in;
 
 		isize nnz_tot = qp.H.nnz() + qp.AT.nnz() + qp.CT.nnz();
+
+		if (internal.do_symbolic_fact){
 
 		// form the full kkt matrix
 		// assuming H, AT, CT are sorted
@@ -297,7 +459,31 @@ struct Workspace {
 		// if ldlt is too sparse
 		// do_ldlt = !overflow && lnnz < (10000000);
 		do_ldlt = !overflow && lnnz < 10000000;
+	}else{
+			T* kktx = data.kkt_values.ptr_mut();
+			usize pos = 0;	
+			auto insert_submatrix = [&](linearsolver::sparse::MatRef<T, I> m,
+										bool assert_sym_hi) -> void {
 
+				T const* mx = m.values();
+				isize ncols = m.ncols();
+
+				for (usize j = 0; j < usize(ncols); ++j) {
+					usize col_start = m.col_start(j);
+					usize col_end = m.col_end(j);
+					for (usize p = col_start; p < col_end; ++p) {
+
+						kktx[pos] = mx[p];
+
+						++pos;
+					}
+				}
+			};
+
+			insert_submatrix(qp.H, true);
+			insert_submatrix(qp.AT, false);
+			insert_submatrix(qp.CT, false);
+	}
 #define PROX_QP_ALL_OF(...)                                                    \
 ::veg::dynstack::StackReq::and_(::veg::init_list(__VA_ARGS__))
 #define PROX_QP_ANY_OF(...)                                                    \
@@ -346,6 +532,9 @@ struct Workspace {
 				x_vec(n_in),     // tmp_lo
 				x_vec(n_in),     // tmp_up
 		});
+		// define memory needed for primal_dual_newton_semi_smooth
+		//PROX_QP_ALL_OF --> need to store all argument inside
+		//PROX_QP_ANY_OF --> au moins un de  ceux en entrée
 		auto primal_dual_newton_semi_smooth_req = PROX_QP_ALL_OF({
 				x_vec(n_tot), // dw
 				PROX_QP_ANY_OF({
@@ -451,7 +640,8 @@ struct Workspace {
 				{linearsolver::sparse::from_eigen, l_scaled},
 				{linearsolver::sparse::from_eigen, u_scaled},
 		};
-		stack = stack_mut();
+		
+		DynStackMut stack = stack_mut();
 		precond.scale_qp_in_place(qp_scaled, settings, execute_or_not, stack);
 
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
