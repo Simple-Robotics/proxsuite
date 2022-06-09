@@ -5,7 +5,6 @@
 #include "veg/util/get.hpp"
 #include "veg/internal/narrow.hpp"
 #include "veg/tuple.hpp"
-#include "veg/util/compare.hpp"
 #include "veg/internal/prologue.hpp"
 #include <initializer_list>
 
@@ -39,26 +38,26 @@ public:
 
 	VEG_NODISCARD
 	VEG_INLINE
-	constexpr auto ptr() const VEG_NOEXCEPT -> T const* { return data; }
+	constexpr auto ptr() const VEG_NOEXCEPT->T const* { return data; }
 	VEG_NODISCARD
 	VEG_INLINE
-	constexpr auto len() const VEG_NOEXCEPT -> isize { return size; }
+	constexpr auto len() const VEG_NOEXCEPT->isize { return size; }
 
 	VEG_NODISCARD
 	VEG_INLINE
-	constexpr auto operator[](isize idx) const VEG_NOEXCEPT -> T const& {
+	constexpr auto operator[](isize idx) const VEG_NOEXCEPT->T const& {
 		return VEG_INTERNAL_ASSERT_PRECONDITION(usize(idx) < usize(len())),
 		       *(data + idx);
 	}
 	VEG_NODISCARD
 	VEG_INLINE
-	constexpr auto get_unchecked(Unsafe /*tag*/, isize idx) const VEG_NOEXCEPT
-			-> Ref<T> {
+	constexpr auto
+	get_unchecked(Unsafe /*tag*/, isize idx) const VEG_NOEXCEPT->Ref<T> {
 		return ref(*(data + idx));
 	}
 
-	VEG_NODISCARD VEG_INLINE constexpr auto split_at(isize idx) const VEG_NOEXCEPT
-			-> Tuple<Slice<T>, Slice<T>> {
+	VEG_NODISCARD VEG_INLINE constexpr auto
+	split_at(isize idx) const VEG_NOEXCEPT->Tuple<Slice<T>, Slice<T>> {
 		return VEG_INTERNAL_ASSERT_PRECONDITION(usize(idx) <= usize(len())),
 		       Tuple<Slice<T>, Slice<T>>{
 							 tuplify,
@@ -77,8 +76,8 @@ public:
 					 };
 	}
 
-	VEG_NODISCARD VEG_INLINE auto as_bytes() const VEG_NOEXCEPT
-			-> Slice<unsigned char> {
+	VEG_NODISCARD VEG_INLINE auto
+	as_bytes() const VEG_NOEXCEPT->Slice<unsigned char> {
 		return {
 				unsafe,
 				from_raw_parts,
@@ -116,22 +115,22 @@ struct SliceMut : private Slice<T> {
 
 	VEG_NODISCARD
 	VEG_INLINE
-	VEG_CPP14(constexpr) auto operator[](isize idx) VEG_NOEXCEPT -> T& {
+	VEG_CPP14(constexpr) auto operator[](isize idx) VEG_NOEXCEPT->T& {
 		return const_cast<T&>(static_cast<Slice<T> const&>(*this)[idx]);
 	}
 	VEG_NODISCARD
 	VEG_INLINE
-	VEG_CPP14(constexpr) auto ptr_mut() VEG_NOEXCEPT -> T* {
+	VEG_CPP14(constexpr) auto ptr_mut() VEG_NOEXCEPT->T* {
 		return const_cast<T*>(ptr());
 	}
 	VEG_NODISCARD
 	VEG_INLINE
 	VEG_CPP14(constexpr)
-	auto get_mut_unchecked(Unsafe /*tag*/, isize idx) VEG_NOEXCEPT -> RefMut<T> {
+	auto get_mut_unchecked(Unsafe /*tag*/, isize idx) VEG_NOEXCEPT->RefMut<T> {
 		return mut(const_cast<T&>(*(this->data + idx)));
 	}
-	VEG_NODISCARD VEG_INLINE auto as_mut_bytes() VEG_NOEXCEPT
-			-> SliceMut<unsigned char> {
+	VEG_NODISCARD VEG_INLINE auto
+	as_mut_bytes() VEG_NOEXCEPT->SliceMut<unsigned char> {
 		return {
 				unsafe,
 				from_raw_parts,
@@ -141,7 +140,7 @@ struct SliceMut : private Slice<T> {
 	}
 
 	VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto split_at_mut(isize idx)
-			VEG_NOEXCEPT -> Tuple<SliceMut<T>, SliceMut<T>> {
+			VEG_NOEXCEPT->Tuple<SliceMut<T>, SliceMut<T>> {
 		return VEG_INTERNAL_ASSERT_PRECONDITION(usize(idx) <= usize(len())),
 		       Tuple<SliceMut<T>, SliceMut<T>>{
 							 tuplify,
@@ -189,37 +188,6 @@ using array::Array;
 
 namespace _detail {
 namespace _slice {
-namespace adl {
-VEG_TEMPLATE(
-		(typename T, typename U),
-		requires(VEG_CONCEPT(eq<T, U>)),
-		VEG_NODISCARD static VEG_CPP14(constexpr) auto
-		operator==,
-		(lhs, Slice<T>),
-		(rhs, Slice<U>))
-VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_eq<T, U>))->bool {
-	if (lhs.len() != rhs.len()) {
-		return false;
-	}
-	for (isize i = 0; i < lhs.len(); ++i) {
-		if (!(lhs.get_unchecked(unsafe, i).get() ==
-		      rhs.get_unchecked(unsafe, i).get())) {
-			return false;
-		}
-	}
-	return true;
-};
-VEG_TEMPLATE(
-		(typename T, typename U),
-		requires(VEG_CONCEPT(eq<T, U>)),
-		VEG_NODISCARD static VEG_CPP14(constexpr) auto
-		operator==,
-		(lhs, SliceMut<T>),
-		(rhs, SliceMut<U>))
-VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_eq<T, U>))->bool {
-	return adl::operator==(lhs.as_const(), rhs.as_const());
-};
-} // namespace adl
 
 struct DbgSliceBase {
 	template <typename T>
@@ -248,70 +216,8 @@ struct DbgArrayBase {
 	}
 };
 
-struct OrdSliceBase {
-	VEG_TEMPLATE(
-			(typename T, typename U),
-			requires(VEG_CONCEPT(ord<T, U>)),
-			VEG_NODISCARD static VEG_CPP14(constexpr) auto cmp,
-			(lhs, Ref<Slice<T>>),
-			(rhs, Ref<Slice<U>>))
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_ord<T, U>))->cmp::Ordering {
-		Slice<T> lhs_ = lhs.get();
-		Slice<U> rhs_ = rhs.get();
-
-		isize common_len = lhs_.len() < rhs_.len() ? lhs_.len() : rhs_.len();
-		for (isize i = 0; i < common_len; ++i) {
-			auto const val = static_cast<cmp::Ordering>(cmp::Ord<T, U>::cmp( //
-					lhs_.get_unchecked(unsafe, i),
-					rhs_.get_unchecked(unsafe, i)));
-			if (val != cmp::Ordering::equal) {
-				return val;
-			}
-		}
-		return cmp::Ord<isize, isize>::cmp(ref(lhs_.len()), ref(rhs_.len()));
-	}
-};
-struct OrdSliceMutBase {
-	VEG_TEMPLATE(
-			(typename T, typename U),
-			requires(VEG_CONCEPT(ord<T, U>)),
-			VEG_NODISCARD static VEG_CPP14(constexpr) auto cmp,
-			(lhs, Ref<SliceMut<T>>),
-			(rhs, Ref<SliceMut<U>>))
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_ord<T, U>))->cmp::Ordering {
-		return OrdSliceBase::cmp( //
-				ref(lhs.get().as_const()),
-				ref(rhs.get().as_const()));
-	}
-};
-struct OrdArrayBase {
-	VEG_TEMPLATE(
-			(typename T, isize N, typename U, isize M),
-			requires(VEG_CONCEPT(ord<T, U>)),
-			VEG_NODISCARD static VEG_CPP14(constexpr) auto cmp,
-			(lhs, Ref<Array<T, N>>),
-			(rhs, Ref<Array<U, M>>))
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_ord<T, U>))->cmp::Ordering {
-		return OrdSliceBase::cmp( //
-				ref(lhs.get().as_ref()),
-				ref(rhs.get().as_ref()));
-	}
-};
 } // namespace _slice
 } // namespace _detail
-namespace array {
-VEG_TEMPLATE(
-		(typename T, isize N, typename U, isize M),
-		requires(VEG_CONCEPT(eq<T, U>)),
-		VEG_NODISCARD static VEG_CPP14(constexpr) auto
-		operator==,
-		(lhs, Array<T, N> const&),
-		(rhs, Array<U, M> const&))
-VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_eq<T, U>))->bool {
-	return (N == M) &&
-	       _detail::_slice::adl::operator==(lhs.as_ref(), rhs.as_ref());
-}
-} // namespace array
 
 namespace nb {
 struct init_list {
@@ -332,13 +238,6 @@ VEG_NIEBLOID(init_list);
 
 template <typename T>
 struct cpo::is_trivially_constructible<Slice<T>> : meta::bool_constant<true> {};
-
-template <typename T, typename U>
-struct cmp::Ord<Slice<T>, Slice<U>> : _detail::_slice::OrdSliceBase {};
-template <typename T, typename U>
-struct cmp::Ord<SliceMut<T>, SliceMut<U>> : _detail::_slice::OrdSliceMutBase {};
-template <typename T, isize N, typename U, isize M>
-struct cmp::Ord<Array<T, N>, Array<U, M>> : _detail::_slice::OrdArrayBase {};
 
 template <typename T>
 struct fmt::Debug<Slice<T>> : _detail::_slice::DbgSliceBase {};

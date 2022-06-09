@@ -9,7 +9,6 @@
 #include "veg/type_traits/constructible.hpp"
 #include "veg/memory/placement.hpp"
 #include "veg/memory/address.hpp"
-#include "veg/option.hpp"
 #include "veg/internal/narrow.hpp"
 #include "veg/internal/prologue.hpp"
 

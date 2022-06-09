@@ -6,7 +6,6 @@
 #include "veg/type_traits/invocable.hpp"
 #include "veg/util/get.hpp"
 #include "veg/internal/fix_index.hpp"
-#include "veg/cereal/bin_cereal.hpp"
 #include "veg/internal/prologue.hpp"
 
 #if defined(__GLIBCXX__)
@@ -72,7 +71,7 @@ namespace nb {
 struct tuplify {
 	template <typename... Ts>
 	VEG_NODISCARD VEG_INLINE constexpr auto
-	operator()(Ts... args) const VEG_NOEXCEPT -> veg::Tuple<Ts...> {
+	operator()(Ts... args) const VEG_NOEXCEPT->veg::Tuple<Ts...> {
 		return {tuplify{}, Ts(VEG_FWD(args))...};
 	}
 };
@@ -135,7 +134,7 @@ struct TupleLeafImpl<T, true> : T {
 			VEG_NOEXCEPT_LIKE(VEG_FWD(fn)())
 			: T{VEG_FWD(fn)()} {}
 	TupleLeafImpl() = default;
-	VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT -> T& {
+	VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT->T& {
 		return const_cast<T&>(static_cast<T const&>(*this));
 	}
 };
@@ -149,7 +148,7 @@ struct TupleLeafImpl<T, false> {
 			: leaf{VEG_FWD(fn)()} {}
 	TupleLeafImpl() = default;
 
-	VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT -> T& {
+	VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT->T& {
 		return const_cast<T&>(leaf);
 	}
 };
@@ -317,14 +316,14 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...> {
 	VEG_EXPLICIT_COPY(IndexedTuple);
 
 	VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto as_ref() const
-			& VEG_NOEXCEPT -> Tuple<Ref<Ts>...> {
+			& VEG_NOEXCEPT->Tuple<Ref<Ts>...> {
 		return {
 				tuplify,
 				ref(__VEG_IMPL_LEAF(*this, Is, Ts))...,
 		};
 	}
-	VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto as_mut() VEG_NOEXCEPT
-			-> Tuple<RefMut<Ts>...> {
+	VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto as_mut()
+			VEG_NOEXCEPT->Tuple<RefMut<Ts>...> {
 		return {
 				tuplify,
 				mut(__VEG_IMPL_LEAF_MUT(*this, Is, Ts))...,
@@ -351,7 +350,7 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...> {
 			VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto
 			operator[],
 			(/*arg*/, Fix<I>)) &
-			VEG_NOEXCEPT -> ith<usize{I}, Ts...>& {
+			VEG_NOEXCEPT->ith<usize{I}, Ts...>& {
 		return __VEG_IMPL_LEAF_MUT(*this, usize{I}, ith<usize{I}, Ts...>);
 	}
 
@@ -366,37 +365,6 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...> {
 	}
 };
 } // namespace tuple
-
-namespace _detail {
-namespace _tuple {
-
-struct cmp_impl {
-	template <usize... Is, typename... Ts, typename... Us>
-	static constexpr auto
-	eq(tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...> const& lhs,
-	   tuple::IndexedTuple<meta::index_sequence<Is...>, Us...> const& rhs)
-			VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_eq<Ts, Us>))) -> bool {
-#if VEG_HAS_FOLD_EXPR
-		return VEG_ALL_OF(
-				(__VEG_IMPL_LEAF(lhs, Is, Ts) == __VEG_IMPL_LEAF(rhs, Is, Us)));
-#else
-		return CmpImpl<Ts...>::eq(
-				__VEG_IMPL_LEAF(lhs, Is, Ts)..., __VEG_IMPL_LEAF(rhs, Is, Us)...);
-#endif
-	}
-
-	template <usize... Is, typename... Ts, typename... Us>
-	static constexpr auto
-	cmp(tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...> const& lhs,
-	    tuple::IndexedTuple<meta::index_sequence<Is...>, Us...> const& rhs)
-			VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_ord<Ts, Us>)))
-					-> cmp::Ordering {
-		return CmpImpl<Ts...>::cmp(
-				__VEG_IMPL_LEAF(lhs, Is, Ts)..., __VEG_IMPL_LEAF(rhs, Is, Us)...);
-	}
-};
-} // namespace _tuple
-} // namespace _detail
 
 namespace _detail {
 namespace meta_ {
@@ -479,59 +447,37 @@ namespace tuple {
 template <usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> const& tup)
-		VEG_NOEXCEPT -> ith<I, Ts...> const& {
+		VEG_NOEXCEPT->ith<I, Ts...> const& {
 	return __VEG_IMPL_LEAF(tup, I, ith<I, Ts...>);
 }
 template <usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...>& tup)
-		VEG_NOEXCEPT -> ith<I, Ts...>& {
+		VEG_NOEXCEPT->ith<I, Ts...>& {
 	return __VEG_IMPL_LEAF_MUT(tup, I, ith<I, Ts...>);
 }
 template <usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> const&& tup)
-		VEG_NOEXCEPT -> ith<I, Ts...> const&& {
+		VEG_NOEXCEPT->ith<I, Ts...> const&& {
 	return static_cast<ith<I, Ts...> const&&>(
 			__VEG_IMPL_LEAF(tup, I, ith<I, Ts...>));
 }
 template <usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...>&& tup)
-		VEG_NOEXCEPT -> ith<I, Ts...>&& {
+		VEG_NOEXCEPT->ith<I, Ts...>&& {
 	return __VEG_IMPL_LEAF_ONCE(tup, I, ith<I, Ts...>);
 }
 
-/// short-circuiting equality test of all the members in order
-VEG_TEMPLATE(
-		(typename... Ts, typename... Us, usize... Is),
-		requires(VEG_ALL_OF(VEG_CONCEPT(eq<Ts, Us>))),
-		VEG_NODISCARD VEG_INLINE constexpr auto
-		operator==,
-		(lhs, tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> const&),
-		(rhs, tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Us...> const&))
-VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_eq<Ts, Us>)))->bool {
-	return _detail::_tuple::cmp_impl::eq(lhs, rhs);
-}
-
-VEG_TEMPLATE(
-		(typename... Ts, typename... Us, usize... Is),
-		requires(VEG_ALL_OF(VEG_CONCEPT(eq<Ts, Us>))),
-		VEG_NODISCARD VEG_INLINE constexpr auto
-		operator!=,
-		(lhs, tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> const&),
-		(rhs, tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Us...> const&))
-VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_eq<Ts, Us>)))->bool {
-	return !tuple::operator==(lhs, rhs);
-}
 } // namespace tuple
 
 namespace _detail {
 namespace _tuple {
 template <usize... Is, typename... Ts>
-VEG_INLINE static constexpr auto tuple_fwd(
-		tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>&& tup) VEG_NOEXCEPT
-		-> Tuple<Ts&&...> {
+VEG_INLINE static constexpr auto
+tuple_fwd(tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>&& tup)
+		VEG_NOEXCEPT->Tuple<Ts&&...> {
 	return {
 			((void)(tup), tuplify),
 			__VEG_IMPL_LEAF_ONCE(tup, Is, Ts)...,
@@ -585,14 +531,14 @@ struct zip {
 private:
 	template <typename... Tuples>
 	VEG_INLINE static constexpr auto
-	pre_apply(veg::meta::true_type /*unused*/, Tuples&&... tups) VEG_NOEXCEPT
-			-> Zip<Tuples...> {
+	pre_apply(veg::meta::true_type /*unused*/, Tuples&&... tups)
+			VEG_NOEXCEPT->Zip<Tuples...> {
 		return zip::apply(VEG_FWD(tups)...);
 	}
 	template <typename... Tuples>
 	VEG_INLINE static constexpr auto
-	pre_apply(veg::meta::false_type /*unused*/, Tuples&&... tups) VEG_NOEXCEPT
-			-> Zip<Tuples...> {
+	pre_apply(veg::meta::false_type /*unused*/, Tuples&&... tups)
+			VEG_NOEXCEPT->Zip<Tuples...> {
 		return zip::from_ref_to_result(
 				Tag<veg::meta::type_sequence_zip<
 						Tuple,
@@ -600,9 +546,7 @@ private:
 				zip::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
 	}
 
-	VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT -> Tuple<> {
-		return {};
-	}
+	VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
 
 	template <usize I, typename T>
 	struct Helper {
@@ -610,8 +554,8 @@ private:
 		using Type = Tuple<T, meta::tuple_element<I, Ts>...>;
 
 		template <typename... Ts>
-		VEG_INLINE constexpr auto apply(Ts&&... tups) const VEG_NOEXCEPT
-				-> Type<Ts...> {
+		VEG_INLINE constexpr auto
+		apply(Ts&&... tups) const VEG_NOEXCEPT->Type<Ts...> {
 			return {
 					tuplify{},
 					VEG_FWD(first),
@@ -624,8 +568,8 @@ private:
 	template <usize... Is, typename... Ts, typename... Tuples>
 	VEG_INLINE static constexpr auto apply(
 			IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> first,
-			Tuples... rest) VEG_NOEXCEPT -> Tuple< //
-			typename Helper<Is, Ts>::              //
+			Tuples... rest) VEG_NOEXCEPT->Tuple< //
+			typename Helper<Is, Ts>::            //
 			template Type<Tuples...>...> {
 		return {
 				((void)first, tuplify{}),
@@ -643,8 +587,8 @@ private:
 	struct ConverterImpl<veg::meta::index_sequence<Is...>, InnerTargets...> {
 		IndexedTuple<veg::meta::index_sequence<Is...>, InnerTargets&&...>&& refs;
 
-		VEG_INLINE constexpr auto operator()() const && VEG_NOEXCEPT
-																										-> Tuple<InnerTargets...> {
+		VEG_INLINE constexpr auto operator()() const
+				&& VEG_NOEXCEPT->Tuple<InnerTargets...> {
 
 			return {
 					inplace[tuplify{}],
@@ -665,7 +609,7 @@ private:
 	VEG_INLINE static constexpr auto from_ref_to_result(
 			Tag<Tuple<OuterTargets...>> /*tag*/,
 			IndexedTuple<veg::meta::index_sequence<Is...>, Tups...> zipped_refs)
-			VEG_NOEXCEPT -> Tuple<OuterTargets...> {
+			VEG_NOEXCEPT->Tuple<OuterTargets...> {
 		return {
 				((void)zipped_refs, inplace[tuplify{}]),
 				typename Converter<OuterTargets>::Type{
@@ -698,15 +642,15 @@ struct cat {
 private:
 	template <typename... Tuples>
 	VEG_INLINE static constexpr auto
-	pre_apply(veg::meta::true_type /*unused*/, Tuples&&... tups) VEG_NOEXCEPT
-			-> Concat<Tuples...> {
+	pre_apply(veg::meta::true_type /*unused*/, Tuples&&... tups)
+			VEG_NOEXCEPT->Concat<Tuples...> {
 		return cat::apply(VEG_FWD(tups)...);
 	}
 
 	template <typename... Tuples>
 	VEG_INLINE static constexpr auto
-	pre_apply(veg::meta::false_type /*unused*/, Tuples&&... tups) VEG_NOEXCEPT
-			-> Concat<Tuples...> {
+	pre_apply(veg::meta::false_type /*unused*/, Tuples&&... tups)
+			VEG_NOEXCEPT->Concat<Tuples...> {
 		return cat::template from_ref_to_result(
 				Tag<veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
 				cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
@@ -715,23 +659,21 @@ private:
 	template <typename... Targets, usize... Is, typename... Refs>
 	VEG_INLINE static constexpr auto from_ref_to_result(
 			Tag<Tuple<Targets...>> /*tag*/,
-			IndexedTuple<veg::meta::index_sequence<Is...>, Refs...> refs) VEG_NOEXCEPT
-			-> veg::Tuple<Targets...> {
+			IndexedTuple<veg::meta::index_sequence<Is...>, Refs...> refs)
+			VEG_NOEXCEPT->veg::Tuple<Targets...> {
 		return {
 				inplace[tuplify{}],
 				_detail::MoveFn<Targets>{__VEG_IMPL_LEAF_ONCE(refs, Is, Targets)}...,
 		};
 	}
 
-	VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT -> Tuple<> {
-		return {};
-	}
+	VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
 
 	template <usize... Is, typename... Ts, typename... Tuples>
 	VEG_INLINE static constexpr auto apply(
 			IndexedTuple<veg::meta::index_sequence<Is...>, Ts...>&& first,
-			Tuples&&... rest) VEG_NOEXCEPT
-			-> veg::meta::type_sequence_cat<
+			Tuples&&... rest)
+			VEG_NOEXCEPT->veg::meta::type_sequence_cat<
 					Tuple,
 					Tuple<Ts...>,
 					typename _detail::meta_::IndexedToTuple<Tuples>::Type...> {
@@ -742,7 +684,7 @@ private:
 	VEG_INLINE static constexpr auto apply2(
 			IndexedTuple<veg::meta::index_sequence<Is...>, Ts...>&& first,
 			IndexedTuple<veg::meta::index_sequence<Js...>, Us...>&& second)
-			VEG_NOEXCEPT -> Tuple<Ts..., Us...> {
+			VEG_NOEXCEPT->Tuple<Ts..., Us...> {
 		return {
 				tuplify{},
 				__VEG_IMPL_LEAF_ONCE(first, Is, Ts)...,
@@ -804,37 +746,6 @@ struct is_trivially_constructible<tuple::Tuple<Ts...>>
 
 namespace _detail {
 namespace _tuple {
-template <typename... Ts, typename... Us, usize... Is>
-VEG_NODISCARD VEG_INLINE constexpr auto
-ord(tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Ts...> const& lhs,
-    tuple::IndexedTuple<veg::meta::index_sequence<Is...>, Us...> const& rhs)
-		VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_ord<Ts, Us>)))
-				-> cmp::Ordering {
-	return _detail::_tuple::cmp_impl::cmp(lhs, rhs);
-}
-struct OrdTupleBase {
-	VEG_TEMPLATE(
-			(typename... Ts, typename... Us),
-			requires(VEG_ALL_OF(VEG_CONCEPT(ord<Ts, Us>))),
-			VEG_NODISCARD VEG_INLINE static constexpr auto cmp,
-			(lhs, Ref<Tuple<Ts...>>),
-			(rhs, Ref<Tuple<Us...>>))
-	VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_ord<Ts, Us>)))->cmp::Ordering {
-		return _tuple::ord(lhs.get(), rhs.get());
-	}
-};
-struct OrdITupleBase {
-	VEG_TEMPLATE(
-			(usize... Is, typename... Ts, typename... Us),
-			requires(VEG_ALL_OF(VEG_CONCEPT(ord<Ts, Us>))),
-			VEG_NODISCARD VEG_INLINE static constexpr auto cmp,
-			(lhs, Ref<tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>>),
-			(rhs, Ref<tuple::IndexedTuple<meta::index_sequence<Is...>, Us...>>))
-	VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_ord<Ts, Us>)))->cmp::Ordering {
-		return _tuple::ord(lhs.get(), rhs.get());
-	}
-};
-
 template <typename... Ts, usize... Is>
 static void to_string_impl(
 		fmt::BufferMut out,
@@ -862,75 +773,14 @@ struct DebugTupleBase {
 	}
 };
 
-template <typename File>
-struct BinCerealVisitor {
-	RefMut<File> f;
-	template <typename T>
-			VEG_INLINE void operator()(Ref<T> t) &
-			VEG_NOEXCEPT_IF(
-					VEG_CONCEPT(aux::cereal::xnothrow_bin_serializable<T, File>)) {
-		cereal::BinCereal<T>::serialize_to(mut(f.get()), VEG_FWD(t));
-	}
-};
-template <typename T, typename File>
-struct BinCerealFn {
-	RefMut<File> f;
-	VEG_INLINE auto operator()() &&
-			VEG_NOEXCEPT_IF(
-					VEG_CONCEPT(aux::cereal::xnothrow_bin_serializable<T, File>)) -> T {
-		return cereal::BinCereal<T>::unchecked_deserialize_from(
-				unsafe, Tag<T>{}, VEG_FWD(f));
-	}
-};
-
-struct BinCerealTupleBase {
-	VEG_TEMPLATE(
-			(typename... Ts, typename File),
-			requires(VEG_ALL_OF(VEG_CONCEPT(bin_cereal<Ts, File>))),
-			static void serialize_to,
-			(f, RefMut<File>),
-			(t, Ref<Tuple<Ts...>>))
-	VEG_NOEXCEPT_IF(VEG_ALL_OF(
-			VEG_CONCEPT(aux::cereal::xnothrow_bin_serializable<Ts, File>))) {
-		tuple::for_each(t.get().as_ref(), BinCerealVisitor<File>{VEG_FWD(f)});
-	}
-
-	VEG_TEMPLATE(
-			(typename... Ts, typename File),
-			requires(VEG_ALL_OF(VEG_CONCEPT(bin_cereal<Ts, File>))),
-			static auto unchecked_deserialize_from,
-			(/*unsafe*/, Unsafe),
-			(/*tag*/, Tag<Tuple<Ts...>>),
-			(f, RefMut<File>))
-	VEG_NOEXCEPT_IF(
-			VEG_ALL_OF(VEG_CONCEPT(
-					aux::cereal::xnothrow_bin_deserializable_unsafe<Ts, File>)))
-			->Tuple<Ts...> {
-		return {
-				inplace[tuplify],
-				BinCerealFn<Ts, File>{VEG_FWD(f)}...,
-		};
-	}
-};
 } // namespace _tuple
 } // namespace _detail
-
-template <typename... Ts, typename... Us>
-struct cmp::Ord<Tuple<Ts...>, Tuple<Us...>> : _detail::_tuple::OrdTupleBase {};
-template <usize... Is, typename... Ts, typename... Us>
-struct cmp::Ord<
-		tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>,
-		tuple::IndexedTuple<meta::index_sequence<Is...>, Us...>>
-		: _detail::_tuple::OrdITupleBase {};
 
 template <typename... Ts>
 struct fmt::Debug<Tuple<Ts...>> : _detail::_tuple::DebugTupleBase {};
 template <usize... Is, typename... Ts>
 struct fmt::Debug<tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>>
 		: _detail::_tuple::DebugITupleBase {};
-
-template <typename... Ts>
-struct cereal::BinCereal<Tuple<Ts...>> : _detail::_tuple::BinCerealTupleBase {};
 } // namespace veg
 
 template <typename... Ts>

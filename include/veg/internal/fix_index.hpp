@@ -4,7 +4,6 @@
 #include "veg/type_traits/tags.hpp"
 #include "veg/internal/std.hpp"
 #include "veg/internal/dbg.hpp"
-#include "veg/util/compare.hpp"
 #include "veg/internal/prologue.hpp"
 
 namespace veg {

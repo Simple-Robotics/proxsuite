@@ -6,7 +6,6 @@
 #include "veg/internal/collection_algo.hpp"
 #include "veg/internal/narrow.hpp"
 #include "veg/slice.hpp"
-#include "veg/util/compare.hpp"
 #include "veg/util/unreachable.hpp"
 
 #include "veg/internal/prologue.hpp"
@@ -317,7 +316,7 @@ struct CloneFromImpl<false> {
 		vector::RawVector<T> lhs_copy = lhs_raw;
 		usize rhs_len = (rhs_raw.end - rhs_raw.data);
 
-		if (cmp::ne(lhs_alloc.as_const(), rhs_alloc)) {
+		if (!(lhs_alloc == rhs_alloc)) {
 			T* data = lhs_copy.data;
 			T* data_end = lhs_copy.end;
 
@@ -409,7 +408,7 @@ struct CloneFromImpl<true> {
 		vector::RawVector<T> lhs_copy = lhs_raw;
 
 		bool need_to_realloc =
-				(cmp::ne(lhs_alloc.as_const(), rhs_alloc) ||
+				(!(lhs_alloc.get() == rhs_alloc.get()) ||
 		     (lhs_copy.cap() < rhs_raw.len()));
 		if (need_to_realloc) {
 			T* data = lhs_copy.data;
@@ -943,35 +942,10 @@ struct Vec : private _detail::_vector::adl::AdlBase,
 
 namespace _detail {
 namespace _vector {
-namespace adl {
-VEG_TEMPLATE(
-		(typename T, typename LhsA, typename U, typename RhsA),
-		requires(VEG_CONCEPT(eq<T, U>)),
-		VEG_NODISCARD static VEG_CPP14(constexpr) auto
-		operator==,
-		(lhs, Vec<T, LhsA> const&),
-		(rhs, Vec<U, RhsA> const&))
-VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_eq<T, U>))->bool {
-	return _detail::_slice::adl::operator==(lhs.as_ref(), rhs.as_ref());
-}
-} // namespace adl
 struct DbgVec {
 	template <typename T, typename A>
 	static void to_string(fmt::BufferMut out, Ref<Vec<T, A>> arg) {
 		fmt::Debug<Slice<T>>::to_string(out, ref(arg.get().as_ref()));
-	}
-};
-struct OrdVec {
-	VEG_TEMPLATE(
-			(typename T, typename LhsA, typename U, typename RhsA),
-			requires(VEG_CONCEPT(ord<T, U>)),
-			VEG_NODISCARD static constexpr auto cmp,
-			(lhs, Ref<Vec<T, LhsA>>),
-			(rhs, Ref<Vec<U, RhsA>>))
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_ord<T, U>))->cmp::Ordering {
-		return cmp::Ord<Slice<T>, Slice<U>>::cmp( //
-				ref(lhs.get().as_ref()),
-				ref(rhs.get().as_ref()));
 	}
 };
 } // namespace _vector
@@ -986,9 +960,6 @@ struct cpo::is_trivially_constructible<Vec<T, A>>
 
 template <typename T, typename A>
 struct fmt::Debug<Vec<T, A>> : _detail::_vector::DbgVec {};
-
-template <typename T, typename LhsA, typename U, typename RhsA>
-struct cmp::Ord<Vec<T, LhsA>, Vec<U, RhsA>> : _detail::_vector::OrdVec {};
 } // namespace veg
 
 #undef __VEG_ASAN_ANNOTATE
