@@ -6,8 +6,8 @@
 
 namespace veg {
 namespace _detail {
-[[noreturn]] void terminate() noexcept {
-  std::terminate();
+[[noreturn]] inline void terminate() noexcept {
+	std::terminate();
 }
 } // namespace _detail
 } // namespace veg

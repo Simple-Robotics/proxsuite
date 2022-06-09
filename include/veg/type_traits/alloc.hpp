@@ -43,7 +43,7 @@ struct DeferUnreachable /* NOLINT */ {
 } // namespace _detail
 
 namespace mem {
-auto memmove(void* dest, void const* src, usize nbytes) noexcept -> void* {
+inline auto memmove(void* dest, void const* src, usize nbytes) noexcept -> void* {
 	if (dest != nullptr) {
 		return std::memmove(dest, src, nbytes);
 	} else {
