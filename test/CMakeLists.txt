@@ -55,7 +55,7 @@ ldlt_test(test.qp_update_api src/test_qp_update_api.cpp)
 ldlt_test(test.qp_update_api_sparse src/test_qp_update_api_sparse.cpp)
 ldlt_bench(bench.maros_meszaros src/bench_maros_meszaros.cpp)
 ldlt_bench(bench.sparse.maros_meszaros src/bench_maros_meszaros_sparse.cpp)
-
+ldlt_test(test.sparse_fact src/test_sparse_fact.cpp)
 
 target_compile_definitions(
   bench.maros_meszaros PUBLIC PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
