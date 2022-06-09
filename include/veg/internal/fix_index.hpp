@@ -83,15 +83,6 @@ struct Boolean {
 	operator bool() const VEG_NOEXCEPT {
 		return T == yes;
 	}
-
-private:
-	void print(fmt::Buffer& out) const {
-		constexpr auto const& yes_str = "maybe(true)";
-		constexpr auto const& no_str = "maybe(false)";
-		char const* str = (T == yes) ? yes_str : no_str;
-		auto len = ((T == yes) ? sizeof(yes_str) : sizeof(no_str)) - 1;
-		out.insert(out.size(), str, isize(len));
-	}
 };
 
 template <isize N>
@@ -305,28 +296,6 @@ operator"" _c() VEG_NOEXCEPT -> Fix<_detail::parse_int(
 	return {};
 }
 } // namespace literals
-
-template <>
-struct fmt::Debug<Boolean<yes>> {
-	static void to_string(fmt::Buffer& out, Ref<Boolean<yes>> /*val*/) {
-		out.insert(out.size(), "yes", 3);
-	}
-};
-template <>
-struct fmt::Debug<Boolean<no>> {
-	static void to_string(fmt::Buffer& out, Ref<Boolean<no>> /*val*/) {
-		out.insert(out.size(), "no", 2);
-	}
-};
-
-template <isize N>
-struct fmt::Debug<Fix<N>> {
-	static void to_string(fmt::Buffer& out, Ref<Fix<N>> /*val*/) {
-		out.insert(out.size(), "Fix[", 4);
-		Debug<isize>::to_string(out, ref(N));
-		out.insert(out.size(), "]", 1);
-	}
-};
 } // namespace veg
 
 #include "veg/internal/epilogue.hpp"

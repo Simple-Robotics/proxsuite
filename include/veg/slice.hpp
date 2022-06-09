@@ -186,39 +186,6 @@ struct Array {
 } // namespace array
 using array::Array;
 
-namespace _detail {
-namespace _slice {
-
-struct DbgSliceBase {
-	template <typename T>
-	static void to_string(fmt::BufferMut out, Ref<Slice<T>> arg) {
-		T const* ptr = arg.get().ptr();
-		isize len = arg.get().len();
-
-		_detail::_fmt::DbgStructScope _{out};
-		for (isize i = 0; i < len; ++i) {
-			out.append_ln();
-			fmt::Debug<T>::to_string(out, ref(ptr[i]));
-			out.append_literal(u8",");
-		}
-	}
-};
-struct DbgSliceMutBase {
-	template <typename T>
-	static void to_string(fmt::BufferMut out, Ref<SliceMut<T>> arg) {
-		DbgSliceBase::to_string(VEG_FWD(out), ref((Slice<T> const&)(arg.get())));
-	}
-};
-struct DbgArrayBase {
-	template <typename T, isize N>
-	static void to_string(fmt::BufferMut out, Ref<Array<T, N>> arg) {
-		DbgSliceBase::to_string(VEG_FWD(out), ref(arg.get().as_ref()));
-	}
-};
-
-} // namespace _slice
-} // namespace _detail
-
 namespace nb {
 struct init_list {
 	template <typename T>
@@ -238,13 +205,6 @@ VEG_NIEBLOID(init_list);
 
 template <typename T>
 struct cpo::is_trivially_constructible<Slice<T>> : meta::bool_constant<true> {};
-
-template <typename T>
-struct fmt::Debug<Slice<T>> : _detail::_slice::DbgSliceBase {};
-template <typename T>
-struct fmt::Debug<SliceMut<T>> : _detail::_slice::DbgSliceMutBase {};
-template <typename T, isize N>
-struct fmt::Debug<Array<T, N>> : _detail::_slice::DbgArrayBase {};
 } // namespace veg
 
 #include "veg/internal/epilogue.hpp"

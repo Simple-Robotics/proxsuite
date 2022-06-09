@@ -940,26 +940,12 @@ struct Vec : private _detail::_vector::adl::AdlBase,
 	VEG_EXPLICIT_COPY(Vec);
 };
 
-namespace _detail {
-namespace _vector {
-struct DbgVec {
-	template <typename T, typename A>
-	static void to_string(fmt::BufferMut out, Ref<Vec<T, A>> arg) {
-		fmt::Debug<Slice<T>>::to_string(out, ref(arg.get().as_ref()));
-	}
-};
-} // namespace _vector
-} // namespace _detail
-
 template <typename T, typename A>
 struct cpo::is_trivially_relocatable<Vec<T, A>>
 		: cpo::is_trivially_relocatable<A> {};
 template <typename T, typename A>
 struct cpo::is_trivially_constructible<Vec<T, A>>
 		: cpo::is_trivially_constructible<A> {};
-
-template <typename T, typename A>
-struct fmt::Debug<Vec<T, A>> : _detail::_vector::DbgVec {};
 } // namespace veg
 
 #undef __VEG_ASAN_ANNOTATE

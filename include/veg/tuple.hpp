@@ -743,44 +743,6 @@ struct is_trivially_constructible<tuple::Tuple<Ts...>>
 		: meta::bool_constant<(VEG_ALL_OF(is_trivially_constructible<Ts>::value))> {
 };
 } // namespace cpo
-
-namespace _detail {
-namespace _tuple {
-template <typename... Ts, usize... Is>
-static void to_string_impl(
-		fmt::BufferMut out,
-		tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...> const& tup) {
-	_detail::_fmt::DbgStructScope _{VEG_FWD(out)};
-	VEG_EVAL_ALL(
-			(_.out.append_ln(),
-	     fmt::Debug<Ts>::to_string(
-					 VEG_FWD(_.out), ref(__VEG_IMPL_LEAF(tup, Is, Ts))),
-	     _.out.append_literal(u8",")));
-}
-
-struct DebugITupleBase {
-	template <usize... Is, typename... Ts>
-	static void to_string(
-			fmt::BufferMut out,
-			Ref<tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>> tup) {
-		_tuple::to_string_impl(VEG_FWD(out), tup.get());
-	}
-};
-struct DebugTupleBase {
-	template <typename... Ts>
-	static void to_string(fmt::BufferMut out, Ref<Tuple<Ts...>> tup) {
-		_tuple::to_string_impl(VEG_FWD(out), tup.get());
-	}
-};
-
-} // namespace _tuple
-} // namespace _detail
-
-template <typename... Ts>
-struct fmt::Debug<Tuple<Ts...>> : _detail::_tuple::DebugTupleBase {};
-template <usize... Is, typename... Ts>
-struct fmt::Debug<tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>>
-		: _detail::_tuple::DebugITupleBase {};
 } // namespace veg
 
 template <typename... Ts>
