@@ -142,8 +142,7 @@ void factorize_blocked_impl(
 	// right looking blocked cholesky
 
 	using T = typename Mat::Scalar;
-	VEG_ASSERT_ELSE( //
-			"matrix must be square",
+	VEG_ASSERT(
 			mat.rows() == mat.cols());
 
 	isize n = mat.rows();
@@ -205,8 +204,7 @@ void factorize_recursive_impl(Mat mat, veg::dynstack::DynStackMut stack) {
 	// right looking recursive cholesky
 
 	using T = typename Mat::Scalar;
-	VEG_ASSERT_ELSE( //
-			"matrix must be square",
+	VEG_ASSERT(
 			mat.rows() == mat.cols());
 
 	isize n = mat.rows();

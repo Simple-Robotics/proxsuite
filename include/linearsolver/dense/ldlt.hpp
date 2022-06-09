@@ -729,7 +729,6 @@ public:
 	}
 
 	auto dbg_reconstructed_matrix_internal() const -> ColMat {
-		veg::dbg(maybe_sorted_diag);
 		isize n = dim();
 		auto tmp = ColMat(n, n);
 		tmp = l();
