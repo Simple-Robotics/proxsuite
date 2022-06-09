@@ -10,9 +10,6 @@
 [submodule "external/qpalm"]
 	path = external/qpalm
 	url = https://github.com/Benny44/QPALM_vLADEL
-[submodule "external/veg"]
-	path = external/veg
-	url = https://github.com/kitegi/veg.git
 [submodule "external/optional"]
 	path = external/optional
 	url = https://github.com/TartanLlama/optional.git

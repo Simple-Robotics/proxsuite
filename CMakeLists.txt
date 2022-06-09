@@ -122,9 +122,6 @@ endif()
 
 target_link_libraries(prox-suite INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
 
-add_subdirectory(external/veg)
-target_link_libraries(prox-suite INTERFACE veg::veg)
-
 if(INRIA_LDLT_PYTHON_BINDINGS)
   target_compile_definitions(
     prox-suite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
