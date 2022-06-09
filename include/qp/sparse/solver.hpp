@@ -331,7 +331,7 @@ void qp_solve(
 
 	isize ldlt_ntot = do_ldlt ? n_tot : 0;
 
-	auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot).unwrap();
+	auto _perm = stack.make_new_for_overwrite(itag, ldlt_ntot);
 
 	I* perm_inv = work.internal.ldl.perm_inv.ptr_mut();
 	I* perm = _perm.ptr_mut();

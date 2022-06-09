@@ -150,17 +150,13 @@ auto add_row(
 	{
 		// allocate workspace for numerical step, storage for the k-th row and k-th
 		// column of the new matrix
-		auto _lx2_storage =
-				stack.make_new_for_overwrite(veg::Tag<T>{}, ld.nrows()).unwrap();
+		auto _lx2_storage = stack.make_new_for_overwrite(veg::Tag<T>{}, ld.nrows());
 		auto plx2_storage = _lx2_storage.ptr_mut();
 
 		// allocate workspace for permuted row indices of the new column if
 		// necessary
-		auto _new_col_permuted_indices =
-				stack
-						.make_new_for_overwrite(
-								veg::Tag<I>{}, id_perm ? isize(0) : new_col.nnz())
-						.unwrap();
+		auto _new_col_permuted_indices = stack.make_new_for_overwrite(
+				veg::Tag<I>{}, id_perm ? isize(0) : new_col.nnz());
 
 		auto new_col_permuted_indices =
 				id_perm ? new_col.row_indices() : _new_col_permuted_indices.ptr();
@@ -178,12 +174,9 @@ auto add_row(
 
 		// allocate workspace for non-zero pattern of k-th row
 		auto _l12_nnz_pattern =
-				stack.make_new_for_overwrite(veg::Tag<I>{}, isize(permuted_pos))
-						.unwrap();
-		auto _difference = stack
-		                       .make_new_for_overwrite(
-															 veg::Tag<I>{}, ld.nrows() - isize(permuted_pos))
-		                       .unwrap();
+				stack.make_new_for_overwrite(veg::Tag<I>{}, isize(permuted_pos));
+		auto _difference = stack.make_new_for_overwrite(
+				veg::Tag<I>{}, ld.nrows() - isize(permuted_pos));
 		auto pdifference = _difference.ptr_mut();
 
 		auto pl12_nnz_pattern = _l12_nnz_pattern.ptr_mut();
@@ -196,8 +189,7 @@ auto add_row(
 
 		// for each row in the added column
 		{
-			auto _visited =
-					stack.make_new(veg::Tag<bool>{}, isize(permuted_pos)).unwrap();
+			auto _visited = stack.make_new(veg::Tag<bool>{}, isize(permuted_pos));
 			bool* visited = _visited.ptr_mut();
 			for (usize p = 0; p < usize(new_col.nnz()); ++p) {
 				auto j = zx(new_col_permuted_indices[p]);

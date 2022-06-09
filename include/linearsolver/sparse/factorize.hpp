@@ -35,7 +35,7 @@ void transpose( //
 	auto pati = at.row_indices_mut();
 	auto patx = at.values_mut();
 
-	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols()).unwrap();
+	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols());
 	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
@@ -97,7 +97,7 @@ void transpose_symbolic( //
 	auto patp = at.col_ptrs_mut();
 	auto pati = at.row_indices_mut();
 
-	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols()).unwrap();
+	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols());
 	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
@@ -255,7 +255,7 @@ VEG_INLINE void etree( //
 	usize n = usize(a.ncols());
 	auto pai = a.row_indices();
 
-	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, isize(n)).unwrap();
+	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, isize(n));
 	auto pancestors = _work.ptr_mut();
 
 	// for each column of a
@@ -444,8 +444,7 @@ template <typename I>
 void postorder(I* post, I const* parent, isize n, DynStackMut stack) noexcept {
 	using namespace _detail;
 
-	auto _work =
-			stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * isize(n)).unwrap();
+	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * isize(n));
 	I* pwork = _work.ptr_mut();
 
 	I* pstack = pwork;
@@ -566,8 +565,7 @@ void column_counts(
 	using namespace _detail;
 	usize n = usize(a.nrows());
 	auto _at_work =
-			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz())
-					.unwrap();
+			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz());
 	auto pat_work = _at_work.ptr_mut();
 	pat_work[0] = 0;
 	pat_work[n] = I(a.nnz());
@@ -698,7 +696,7 @@ void amd(I* perm, SymbolicMatRef<I> mat, DynStackMut stack) noexcept {
 	isize nnz = mat.nnz();
 
 	Eigen::PermutationMatrix<-1, -1, I> perm_eigen;
-	auto _ = stack.make_new(veg::Tag<char>{}, nnz).unwrap();
+	auto _ = stack.make_new(veg::Tag<char>{}, nnz);
 
 	Eigen::AMDOrdering<I>{}(
 			Eigen::Map<Eigen::SparseMatrix<char, Eigen::ColMajor, I> const>{
@@ -777,7 +775,7 @@ void symmetric_permute_symbolic(
 		DynStackMut stack) noexcept {
 
 	usize n = usize(new_a.nrows());
-	auto _work = stack.make_new(veg::Tag<I>{}, isize(n)).unwrap();
+	auto _work = stack.make_new(veg::Tag<I>{}, isize(n));
 	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
@@ -823,7 +821,7 @@ void symmetric_permute(
 		I const* perm_inv,
 		DynStackMut stack) noexcept(VEG_CONCEPT(nothrow_copyable<T>)) {
 	usize n = usize(new_a.nrows());
-	auto _work = stack.make_new(veg::Tag<I>{}, isize(n)).unwrap();
+	auto _work = stack.make_new(veg::Tag<I>{}, isize(n));
 	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
@@ -955,7 +953,7 @@ void factorize_symbolic_non_zeros(
 		break;
 
 	case Ordering::amd: {
-		auto amd_perm = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
+		auto amd_perm = stack.make_new_for_overwrite(tag, isize(n));
 		sparse::amd(amd_perm.ptr_mut(), a, stack);
 		perm = amd_perm.ptr();
 	}
@@ -969,12 +967,10 @@ void factorize_symbolic_non_zeros(
 
 	auto _permuted_a_col_ptrs =
 			stack //
-					.make_new_for_overwrite(tag, id_perm ? 0 : (a.ncols() + 1))
-					.unwrap();
+					.make_new_for_overwrite(tag, id_perm ? 0 : (a.ncols() + 1));
 	auto _permuted_a_row_indices =
 			stack //
-					.make_new_for_overwrite(tag, id_perm ? 0 : (a.nnz()))
-					.unwrap();
+					.make_new_for_overwrite(tag, id_perm ? 0 : (a.nnz()));
 
 	if (!id_perm) {
 		_permuted_a_col_ptrs.as_mut()[0] = 0;
@@ -1004,7 +1000,7 @@ void factorize_symbolic_non_zeros(
 
 	sparse::etree(etree, permuted_a, stack);
 
-	auto _post = stack.make_new_for_overwrite(tag, isize(n)).unwrap();
+	auto _post = stack.make_new_for_overwrite(tag, isize(n));
 	sparse::postorder(_post.ptr_mut(), etree, isize(n), stack);
 	sparse::column_counts(nnz_per_col, permuted_a, etree, _post.ptr(), stack);
 }
@@ -1116,15 +1112,14 @@ void factorize_numeric( //
 	veg::Tag<I> tag{};
 
 	auto _permuted_a_values =
-			stack.make_new_for_overwrite(veg::Tag<T>{}, id_perm ? 0 : a.nnz())
-					.unwrap();
+			stack.make_new_for_overwrite(veg::Tag<T>{}, id_perm ? 0 : a.nnz());
 
-	auto _x = stack.make_new_for_overwrite(veg::Tag<T>{}, n).unwrap();
+	auto _x = stack.make_new_for_overwrite(veg::Tag<T>{}, n);
 
 	auto _permuted_a_col_ptrs =
-			stack.make_new_for_overwrite(tag, id_perm ? 0 : (a.ncols() + 1)).unwrap();
+			stack.make_new_for_overwrite(tag, id_perm ? 0 : (a.ncols() + 1));
 	auto _permuted_a_row_indices =
-			stack.make_new_for_overwrite(tag, id_perm ? 0 : a.nnz()).unwrap();
+			stack.make_new_for_overwrite(tag, id_perm ? 0 : a.nnz());
 
 	if (!id_perm) {
 		_permuted_a_col_ptrs.as_mut()[0] = 0;
@@ -1154,8 +1149,8 @@ void factorize_numeric( //
 																					_permuted_a_values.ptr(),
 																			};
 
-	auto _current_row_index = stack.make_new_for_overwrite(tag, n).unwrap();
-	auto _ereach_stack_storage = stack.make_new_for_overwrite(tag, n).unwrap();
+	auto _current_row_index = stack.make_new_for_overwrite(tag, n);
+	auto _ereach_stack_storage = stack.make_new_for_overwrite(tag, n);
 
 	I* pcurrent_row_index = _current_row_index.ptr_mut();
 	T* px = _x.ptr_mut();
@@ -1172,7 +1167,7 @@ void factorize_numeric( //
 	// the diagonal element is filled with the diagonal of D instead of 1
 	I const* plp = col_ptrs;
 
-	auto _marked = stack.make_new(veg::Tag<bool>{}, n).unwrap();
+	auto _marked = stack.make_new(veg::Tag<bool>{}, n);
 	for (usize iter = 0; iter < usize(n); ++iter) {
 		usize ereach_count = 0;
 		auto ereach_stack = _detail::ereach(

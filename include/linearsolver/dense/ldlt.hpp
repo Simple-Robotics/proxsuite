@@ -324,8 +324,7 @@ public:
 
 		isize n = dim();
 
-		auto _indices_actual =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
+		auto _indices_actual = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
 		auto* indices_actual = _indices_actual.ptr_mut();
 
 		for (isize k = 0; k < r; ++k) {
@@ -490,10 +489,8 @@ public:
 			return;
 		}
 
-		auto _positions =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
-		auto _sorted_indices =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, r).unwrap();
+		auto _positions = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
+		auto _sorted_indices = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
 		auto* positions = _positions.ptr_mut();
 		auto* sorted_indices = _sorted_indices.ptr_mut();
 

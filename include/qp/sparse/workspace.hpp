@@ -51,7 +51,7 @@ void refactorize(
 			nnz+=usize(kkt_active.col_end(j)-kkt_active.col_start(j));
 		}
 		VEG_ASSERT(kkt_active.nnz()==nnz);
-		auto _diag = stack.make_new_for_overwrite(xtag, n_tot).unwrap();
+		auto _diag = stack.make_new_for_overwrite(xtag, n_tot);
 		T* diag = _diag.ptr_mut();
 
 		for (isize i = 0; i < data.dim; ++i) {

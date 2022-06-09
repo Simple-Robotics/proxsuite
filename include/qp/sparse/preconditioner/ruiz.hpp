@@ -142,9 +142,9 @@ auto ruiz_scale_qp_in_place( //
 		// norm_infty of each column of A (resp. C), i.e.,
 		// each row of AT (resp. CT)
 		{
-			auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
-			auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
-			auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+			auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n);
+			auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n);
+			auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n);
 			T* a_infty_norm = _a_infty_norm.ptr_mut();
 			T* c_infty_norm = _c_infty_norm.ptr_mut();
 			T* h_infty_norm = _h_infty_norm.ptr_mut();
@@ -279,7 +279,7 @@ auto ruiz_scale_qp_in_place( //
 		qp.u.to_eigen().array() *= delta.tail(n_in).array();
 
 		// additional normalization
-		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n).unwrap();
+		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n);
 		T* h_infty_norm = _h_infty_norm.ptr_mut();
 
 		switch (sym) {

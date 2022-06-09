@@ -102,7 +102,7 @@ namespace _detail {
 // otherwise, if there is not enough space for aligning or advancing the
 // pointer, returns nullptr and the values are left unmodified
 inline auto align_next(isize alignment, isize size, void*& ptr, isize& space)
-		VEG_ALWAYS_NOEXCEPT -> void* {
+		VEG_ALWAYS_NOEXCEPT->void* {
 	static_assert(
 			sizeof(std::uintptr_t) >= sizeof(void*),
 			"std::uintptr_t can't hold a pointer value");
@@ -199,13 +199,13 @@ public:
 				stack_bytes(s.len()) {}
 
 	VEG_NODISCARD
-	auto remaining_bytes() const VEG_NOEXCEPT -> isize {
+	auto remaining_bytes() const VEG_NOEXCEPT->isize {
 		return isize(stack_bytes);
 	}
 	VEG_NODISCARD
-	auto ptr_mut() const VEG_NOEXCEPT -> void* { return stack_data; }
+	auto ptr_mut() const VEG_NOEXCEPT->void* { return stack_data; }
 	VEG_NODISCARD
-	auto ptr() const VEG_NOEXCEPT -> void const* { return stack_data; }
+	auto ptr() const VEG_NOEXCEPT->void const* { return stack_data; }
 
 private:
 	VEG_INLINE void assert_valid_len(isize len) VEG_NOEXCEPT {
@@ -220,15 +220,12 @@ public:
 			(/*unused*/, Tag<T>),
 			(len, isize),
 			(align = alignof(T), isize))
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_constructible<T>))
-			->Option<DynStackArray<T>> {
+	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_constructible<T>))->DynStackArray<T> {
 		assert_valid_len(len);
 		DynStackArray<T> get{
 				*this, isize(len), align, _detail::_dynstack::zero_init_fn{}};
-		if (get.ptr() == nullptr) {
-			return none;
-		}
-		return {some, VEG_FWD(get)};
+		VEG_ASSERT(get.ptr() != nullptr);
+		return VEG_FWD(get);
 	}
 
 	VEG_TEMPLATE(
@@ -239,28 +236,23 @@ public:
 			(len, isize),
 			(align = alignof(T), isize))
 
-	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_constructible<T>))
-			->Option<DynStackArray<T>> {
+	VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_constructible<T>))->DynStackArray<T> {
 		assert_valid_len(len);
 		DynStackArray<T> get{
 				*this, isize(len), align, _detail::_dynstack::default_init_fn{}};
-		if (get.ptr() == nullptr) {
-			return none;
-		}
-		return {some, VEG_FWD(get)};
+		VEG_ASSERT(get.ptr() != nullptr);
+		return VEG_FWD(get);
 	}
 
 	template <typename T>
-	VEG_NODISCARD auto make_alloc(
-			Tag<T> /*unused*/, isize len, isize align = alignof(T)) VEG_NOEXCEPT
-			-> Option<DynStackAlloc<T>> {
+	VEG_NODISCARD auto
+	make_alloc(Tag<T> /*unused*/, isize len, isize align = alignof(T))
+			VEG_NOEXCEPT->DynStackAlloc<T> {
 		assert_valid_len(len);
 		DynStackAlloc<T> get{
 				*this, isize(len), align, _detail::_dynstack::no_init_fn{}};
-		if (get.ptr() == nullptr) {
-			return none;
-		}
-		return {some, VEG_FWD(get)};
+		VEG_ASSERT(get.ptr() != nullptr);
+		return VEG_FWD(get);
 	}
 
 private:
@@ -339,14 +331,14 @@ public:
 	};
 
 	auto operator=(DynStackAlloc const&) -> DynStackAlloc& = delete;
-	auto operator=(DynStackAlloc&& rhs) VEG_NOEXCEPT -> DynStackAlloc& {
+	auto operator=(DynStackAlloc&& rhs) VEG_NOEXCEPT->DynStackAlloc& {
 		{ auto cleanup = static_cast<decltype(rhs)>(*this); }
 		static_cast<Base&>(*this) = rhs;
 		static_cast<Base&>(rhs) = {};
 		return *this;
 	}
 
-	VEG_NODISCARD auto as_mut() VEG_NOEXCEPT -> SliceMut<T> {
+	VEG_NODISCARD auto as_mut() VEG_NOEXCEPT->SliceMut<T> {
 		return {
 				unsafe,
 				FromRawParts{},
@@ -355,7 +347,7 @@ public:
 		};
 	}
 
-	VEG_NODISCARD auto as_ref() const VEG_NOEXCEPT -> Slice<T> {
+	VEG_NODISCARD auto as_ref() const VEG_NOEXCEPT->Slice<T> {
 		return {
 				unsafe,
 				FromRawParts{},
@@ -364,15 +356,15 @@ public:
 		};
 	}
 
-	VEG_NODISCARD auto ptr_mut() VEG_NOEXCEPT -> T* {
+	VEG_NODISCARD auto ptr_mut() VEG_NOEXCEPT->T* {
 		return /* NOLINT(clang-analyzer-core.uninitialized.UndefReturn) */
 				static_cast<T*>(const_cast<void*>(Base::data));
 	}
-	VEG_NODISCARD auto ptr() const VEG_NOEXCEPT -> T const* {
+	VEG_NODISCARD auto ptr() const VEG_NOEXCEPT->T const* {
 		return /* NOLINT(clang-analyzer-core.uninitialized.UndefReturn) */
 				static_cast<T const*>(const_cast<void const*>(Base::data));
 	}
-	VEG_NODISCARD auto len() const VEG_NOEXCEPT -> isize {
+	VEG_NODISCARD auto len() const VEG_NOEXCEPT->isize {
 		return isize(Base::len);
 	}
 
@@ -433,7 +425,7 @@ public:
 	DynStackArray(DynStackArray&&) VEG_NOEXCEPT = default;
 	auto operator=(DynStackArray const&) -> DynStackArray& = delete;
 
-	auto operator=(DynStackArray&& rhs) VEG_NOEXCEPT -> DynStackArray& {
+	auto operator=(DynStackArray&& rhs) VEG_NOEXCEPT->DynStackArray& {
 		{ auto cleanup = static_cast<decltype(rhs)>(*this); }
 		static_cast<Base&>(*this) = rhs;
 		static_cast<Base&>(rhs) = {};

@@ -88,8 +88,7 @@ void mu_update(
 	rank_update_alpha.tail(n_c).setConstant(qpresults.info.mu_in - mu_in_new);
 
 	{
-		auto _indices =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, n_eq + n_c).unwrap();
+		auto _indices = stack.make_new_for_overwrite(veg::Tag<isize>{}, n_eq + n_c);
 		isize* indices = _indices.ptr_mut();
 		for (isize k = 0; k < n_eq; ++k) {
 			indices[k] = n + k;
@@ -297,9 +296,7 @@ void bcl_update(
 
 template <typename T>
 auto compute_inner_loop_saddle_point(
-		const Model<T>& qpmodel,
-		Results<T>& qpresults,
-		Workspace<T>& qpwork) -> T {
+		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) -> T {
 
 	qpwork.active_part_z =
 			positive_part(qpwork.primal_residual_in_scaled_up) +
@@ -521,7 +518,6 @@ auto primal_dual_newton_semi_smooth(
 	return err_in;
 }
 
-
 template <typename T>
 void qp_solve( //
 		const Settings<T>& qpsettings,
@@ -530,10 +526,10 @@ void qp_solve( //
 		Workspace<T>& qpwork,
 		preconditioner::RuizEquilibration<T>& ruiz) {
 
-	if (qpsettings.compute_timings){
-					qpwork.timer.stop();
-					qpwork.timer.start();
-		}
+	if (qpsettings.compute_timings) {
+		qpwork.timer.stop();
+		qpwork.timer.start();
+	}
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
 	  static constexpr auto DYN = Eigen::Dynamic;
@@ -545,41 +541,42 @@ void qp_solve( //
 	//::Eigen::internal::set_is_malloc_allowed(false);
 
 	switch (qpsettings.initial_guess) {
-                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-    				proxsuite::qp::dense::setup_factorization(qpwork,qpmodel,qpresults);
-					compute_equality_constrained_initial_guess(qpwork,qpsettings,qpmodel,qpresults);
-                    break;
-                }
-                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
-					//!\ TODO in a quicker way
-					setup_factorization(qpwork,qpmodel,qpresults);
-					for (isize i = 0; i < qpmodel.n_in; i++){
-						if (qpresults.z[i]!=0){
-							qpwork.active_inequalities[i] = true;
-						}
-					}
-					linesearch::active_set_change(qpmodel,qpresults,qpwork);
-                    break;
-                }
-                case InitialGuessStatus::NO_INITIAL_GUESS:{
-    				setup_factorization(qpwork,qpmodel,qpresults);
-                    break;
-                }
-				case InitialGuessStatus::WARM_START:{
-					//!\ TODO in a quicker way
-    				setup_factorization(qpwork,qpmodel,qpresults);
-					for (isize i = 0; i < qpmodel.n_in; i++){
-						if (qpresults.z[i]!=0){
-							qpwork.active_inequalities[i] = true;
-						}
-					}
-					linesearch::active_set_change(qpmodel,qpresults,qpwork);
-                    break;
-                }
-                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
-                    // keep workspace and results solutions except statistics
-                    break;
-                }
+	case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+		proxsuite::qp::dense::setup_factorization(qpwork, qpmodel, qpresults);
+		compute_equality_constrained_initial_guess(
+				qpwork, qpsettings, qpmodel, qpresults);
+		break;
+	}
+	case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+		//!\ TODO in a quicker way
+		setup_factorization(qpwork, qpmodel, qpresults);
+		for (isize i = 0; i < qpmodel.n_in; i++) {
+			if (qpresults.z[i] != 0) {
+				qpwork.active_inequalities[i] = true;
+			}
+		}
+		linesearch::active_set_change(qpmodel, qpresults, qpwork);
+		break;
+	}
+	case InitialGuessStatus::NO_INITIAL_GUESS: {
+		setup_factorization(qpwork, qpmodel, qpresults);
+		break;
+	}
+	case InitialGuessStatus::WARM_START: {
+		//!\ TODO in a quicker way
+		setup_factorization(qpwork, qpmodel, qpresults);
+		for (isize i = 0; i < qpmodel.n_in; i++) {
+			if (qpresults.z[i] != 0) {
+				qpwork.active_inequalities[i] = true;
+			}
+		}
+		linesearch::active_set_change(qpmodel, qpresults, qpwork);
+		break;
+	}
+	case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+		// keep workspace and results solutions except statistics
+		break;
+	}
 	}
 
 	T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
@@ -850,12 +847,9 @@ void qp_solve( //
 		qpresults.info.mu_in_inv = new_bcl_mu_in_inv;
 	}
 
-	ruiz.unscale_primal_in_place(
-			VectorViewMut<T>{from_eigen, qpresults.x});
-	ruiz.unscale_dual_in_place_eq(
-			VectorViewMut<T>{from_eigen, qpresults.y});
-	ruiz.unscale_dual_in_place_in(
-			VectorViewMut<T>{from_eigen, qpresults.z});
+	ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
+	ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
+	ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpresults.z});
 
 	{
 		// EigenAllowAlloc _{};
@@ -870,9 +864,10 @@ void qp_solve( //
 		qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 	}
 
-	if (qpsettings.compute_timings){
+	if (qpsettings.compute_timings) {
 		qpresults.info.solve_time = qpwork.timer.elapsed().user; // in nanoseconds
-		qpresults.info.run_time = qpresults.info.solve_time + qpresults.info.setup_time;
+		qpresults.info.run_time =
+				qpresults.info.solve_time + qpresults.info.setup_time;
 
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
@@ -883,7 +878,7 @@ void qp_solve( //
 			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
 			std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
 		}
-	}else{
+	} else {
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
 			std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
@@ -893,13 +888,11 @@ void qp_solve( //
 			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
 		}
 	}
-
 }
 
 } // namespace dense
 
 } // namespace qp
 } // namespace proxsuite
-
 
 #endif /* end of include guard PROXSUITE_QP_DENSE_SOLVER_HPP */

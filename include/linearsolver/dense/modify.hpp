@@ -85,8 +85,8 @@ void ldlt_delete_rows_and_cols_impl( //
 
 	veg::Tag<T> tag;
 
-	auto _w = stack.make_new(tag, r * w_stride, _detail::align<T>()).unwrap();
-	auto _alpha = stack.make_new_for_overwrite(tag, r).unwrap();
+	auto _w = stack.make_new(tag, r * w_stride, _detail::align<T>());
+	auto _alpha = stack.make_new_for_overwrite(tag, r);
 
 	auto pw = _w.ptr_mut();
 	auto palpha = _alpha.ptr_mut();
@@ -191,12 +191,10 @@ void ldlt_insert_rows_and_cols_impl(
 
 	{
 		isize tmp_stride = _detail::adjusted_stride<T>(pos);
-		auto _tmp = stack
-		                .make_new_for_overwrite( //
-												tag,
-												tmp_stride,
-												_detail::align<T>())
-		                .unwrap();
+		auto _tmp = stack.make_new_for_overwrite( //
+				tag,
+				tmp_stride,
+				_detail::align<T>());
 		auto d0xl10T = Eigen::Map<
 				Eigen::Matrix< //
 						T,
@@ -231,8 +229,8 @@ void ldlt_insert_rows_and_cols_impl(
 	l21 = l21 * d1.inverse();
 
 	auto w_stride = _detail::adjusted_stride<T>(rem);
-	auto _w = stack.make_new(tag, r * w_stride, _detail::align<T>()).unwrap();
-	auto _alpha = stack.make_new_for_overwrite(tag, r).unwrap();
+	auto _w = stack.make_new(tag, r * w_stride, _detail::align<T>());
+	auto _alpha = stack.make_new_for_overwrite(tag, r);
 
 	auto pw = _w.ptr_mut();
 	auto palpha = _alpha.ptr_mut();

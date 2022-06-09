@@ -89,12 +89,10 @@ void factorize_unblocked_impl(Mat mat, veg::dynstack::DynStackMut stack) {
 		return;
 	}
 
-	auto _work = stack
-	                 .make_new_for_overwrite( //
-											 veg::Tag<T>{},
-											 n,
-											 _detail::align<T>())
-	                 .unwrap();
+	auto _work = stack.make_new_for_overwrite( //
+			veg::Tag<T>{},
+			n,
+			_detail::align<T>());
 	auto work_storage =
 			Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>, Eigen::Unaligned>{
 					_work.ptr_mut(),
@@ -169,12 +167,10 @@ void factorize_blocked_impl(
 
 		isize work_stride = _detail::adjusted_stride<T>(rem);
 
-		auto _work = stack
-		                 .make_new_for_overwrite( //
-												 veg::Tag<T>{},
-												 bs * work_stride,
-												 _detail::align<T>())
-		                 .unwrap();
+		auto _work = stack.make_new_for_overwrite( //
+				veg::Tag<T>{},
+				bs * work_stride,
+				_detail::align<T>());
 
 		auto work = Eigen::Map<
 				Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>,
@@ -247,12 +243,10 @@ void factorize_recursive_impl(Mat mat, veg::dynstack::DynStackMut stack) {
 				.template solveInPlace<Eigen::OnTheRight>(l10);
 
 		{
-			auto _work = stack
-			                 .make_new_for_overwrite( //
-													 veg::Tag<T>{},
-													 bs * work_stride,
-													 _detail::align<T>())
-			                 .unwrap();
+			auto _work = stack.make_new_for_overwrite( //
+					veg::Tag<T>{},
+					bs * work_stride,
+					_detail::align<T>());
 
 			auto work = Eigen::Map<
 					Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>,

@@ -14,14 +14,10 @@
 #define LDLT_ID(id) __VEG_PP_CAT(id, __LINE__)
 
 #define __LDLT_TEMP_VEC_IMPL(Type, Name, Rows, Stack, Make)                    \
-	auto LDLT_ID(vec_storage) =                                                  \
-			(Stack)                                                                  \
-					.Make(                                                               \
-							::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                       \
-							(Rows),                                                          \
-							::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(     \
-									Type)>())                                                    \
-					.unwrap();                                                           \
+	auto LDLT_ID(vec_storage) = (Stack).Make(                                    \
+			::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                               \
+			(Rows),                                                                  \
+			::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type), ::Eigen::Dynamic, 1>,       \
 			::Eigen::Unaligned,                                                      \
@@ -41,14 +37,10 @@
 	::veg::isize LDLT_ID(stride) =                                               \
 			::linearsolver::dense::_detail::adjusted_stride<__VEG_PP_REMOVE_PAREN(   \
 					Type)>(LDLT_ID(rows));                                               \
-	auto LDLT_ID(vec_storage) =                                                  \
-			(Stack)                                                                  \
-					.Make(                                                               \
-							::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                       \
-							LDLT_ID(stride) * LDLT_ID(cols),                                 \
-							::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(     \
-									Type)>())                                                    \
-					.unwrap();                                                           \
+	auto LDLT_ID(vec_storage) = (Stack).Make(                                    \
+			::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                               \
+			LDLT_ID(stride) * LDLT_ID(cols),                                         \
+			::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<                                                         \
 					__VEG_PP_REMOVE_PAREN(Type),                                         \

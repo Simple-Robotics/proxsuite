@@ -152,9 +152,7 @@ auto primal_dual_gradient_norm(
 
 template <typename T>
 void primal_dual_ls(
-		const Model<T>& qpmodel,
-		Results<T>& qpresults,
-		Workspace<T>& qpwork) {
+		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) {
 
 	/*
 	 * The function follows the algorithm
@@ -324,9 +322,7 @@ void primal_dual_ls(
 
 template <typename T>
 void active_set_change(
-		const Model<T>& qpmodel,
-		Results<T>& qpresults,
-		Workspace<T>& qpwork) {
+		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) {
 
 	/*
 	 * arguments
@@ -387,8 +383,7 @@ void active_set_change(
 
 	{
 		auto _planned_to_delete =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, isize(qpmodel.n_in))
-						.unwrap();
+				stack.make_new_for_overwrite(veg::Tag<isize>{}, isize(qpmodel.n_in));
 		isize* planned_to_delete = _planned_to_delete.ptr_mut();
 		isize planned_to_delete_count = 0;
 
@@ -422,7 +417,7 @@ void active_set_change(
 
 	{
 		auto _planned_to_add =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, qpmodel.n_in).unwrap();
+				stack.make_new_for_overwrite(veg::Tag<isize>{}, qpmodel.n_in);
 		auto planned_to_add = _planned_to_add.ptr_mut();
 
 		isize planned_to_add_count = 0;

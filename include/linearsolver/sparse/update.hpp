@@ -60,7 +60,7 @@ auto merge_second_col_into_first( //
 
 	veg::Tag<I> tag{};
 
-	auto _ins_pos = stack.make_new_for_overwrite(tag, isize(second_len)).unwrap();
+	auto _ins_pos = stack.make_new_for_overwrite(tag, isize(second_len));
 
 	I* insert_pos_ptr = _ins_pos.ptr_mut();
 	usize insert_count = 0;
@@ -185,7 +185,7 @@ auto rank1_update(
 	bool id_perm = perm_inv == nullptr;
 
 	auto _w_permuted_indices =
-			stack.make_new_for_overwrite(tag, id_perm ? isize(0) : w.nnz()).unwrap();
+			stack.make_new_for_overwrite(tag, id_perm ? isize(0) : w.nnz());
 
 	auto w_permuted_indices =
 			id_perm ? w.row_indices() : _w_permuted_indices.ptr();
@@ -205,9 +205,9 @@ auto rank1_update(
 		usize current_col = zx(w_permuted_indices[0]);
 
 		auto _difference =
-				stack.make_new_for_overwrite(tag, isize(n - current_col)).unwrap();
+				stack.make_new_for_overwrite(tag, isize(n - current_col));
 		auto _difference_backup =
-				stack.make_new_for_overwrite(tag, isize(n - current_col)).unwrap();
+				stack.make_new_for_overwrite(tag, isize(n - current_col));
 
 		auto merge_col = w_permuted_indices;
 		isize merge_col_len = w.nnz();
@@ -248,7 +248,7 @@ auto rank1_update(
 
 			if (new_parent == old_parent) {
 				merge_col = computed_difference.ptr();
-        merge_col_len = computed_difference.len();
+				merge_col_len = computed_difference.len();
 				difference = _difference_backup.ptr_mut();
 			} else {
 				merge_col = new_current_col.ptr();
@@ -264,7 +264,7 @@ auto rank1_update(
 	// numerical update
 	{
 		usize first_col = zx(w_permuted_indices[0]);
-		auto _work = stack.make_new_for_overwrite(veg::Tag<T>{}, isize(n)).unwrap();
+		auto _work = stack.make_new_for_overwrite(veg::Tag<T>{}, isize(n));
 		T* pwork = _work.ptr_mut();
 
 		for (usize col = first_col; col != usize(-1); col = sx(etree[isize(col)])) {
