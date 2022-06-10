@@ -3,7 +3,7 @@
 #include <linearsolver/sparse/rowmod.hpp>
 #include <veg/vec.hpp>
 #include <doctest.h>
-#include<iostream>
+#include <iostream>
 
 template <typename T, typename I>
 auto to_eigen(linearsolver::sparse::MatRef<T, I> a) noexcept
@@ -19,13 +19,13 @@ auto to_eigen_vec(linearsolver::sparse::VecRef<T, I> v) noexcept
 	for (veg::isize p = 0; p < v.nnz(); ++p) {
 		out.data()[linearsolver::sparse::util::zero_extend(v.row_indices()[p])] =
 				v.values()[p];
-				//linearsolver::sparse::util::zero_extend : converti en type usize
-				// usize :unsigned
-				// isize :négatif ou positive
-				// v.row_indices() : pointeur vers liste des indices non nul
-				// out.data(): pointeur premier élt de la sortie
+		//linearsolver::sparse::util::zero_extend : converti en type usize
+		// usize :unsigned
+		// isize :négatif ou positive
+		// v.row_indices() : pointeur vers liste des indices non nul
+		// out.data(): pointeur premier élt de la sortie
 	}
-	//  
+	//
 	return out;
 }
 // slice: view vers un vecteur
@@ -38,8 +38,8 @@ auto to_eigen_perm(veg::Slice<I> perm) -> Eigen::PermutationMatrix<-1, -1, I> {
 			perm_eigen.indices().data(),
 			perm.ptr(),
 			veg::usize(perm.len()) * sizeof(I));
-			//copie perm.ptr() vers perm_eigen ...
-			// veg::usize(perm.len()) * sizeof(I) :taille de la zone à copier
+	//copie perm.ptr() vers perm_eigen ...
+	// veg::usize(perm.len()) * sizeof(I) :taille de la zone à copier
 	return perm_eigen;
 }
 
@@ -77,7 +77,7 @@ auto ldlt_with_perm(
 		for (veg::isize i = 0; i < n; ++i) {
 			auto a12 = ld_perm_eigen.row(i).head(i).transpose();
 			auto l11 = ld_perm_eigen.topLeftCorner(i, i)
-										 .template triangularView<Eigen::UnitLower>();
+			               .template triangularView<Eigen::UnitLower>();
 			auto l12 = ld_perm_eigen.row(i).head(i).transpose();
 			auto d1 = ld_perm_eigen.diagonal().head(i);
 			l12 = l11.solve(a12);
@@ -103,7 +103,8 @@ TEST_CASE("ldlt: factorize compressed") {
 	Vec<T> vals;
 	//csc format
 	for (auto c : {0, 1, 2, 4, 5, 6, 9, 11, 14, 16, 21, 27}) {
-		col_ptrs.push(I(c));// l'indice du premier  élt de chaque colonne non null de chaque de colonne 
+		col_ptrs.push(I(
+				c)); // l'indice du premier  élt de chaque colonne non null de chaque de colonne
 	}
 
 	for (auto r : {0, 1, 1, 2, 3, 4, 0, 3, 5, 0, 6, 1, 4, 7,
@@ -124,20 +125,33 @@ TEST_CASE("ldlt: factorize compressed") {
 			n,
 			nnz,
 			col_ptrs.ptr(),
-			nullptr,// si compressé --> nullptr; si non compressé, il faut un ptr vers nbr d'elt non nul par colonne
+			nullptr, // si compressé --> nullptr; si non compressé, il faut un ptr vers nbr d'elt non nul par colonne
 			row_ind.ptr(),
 			vals.ptr(),
 	};
 
 	{
-		auto req = etree_req(Tag<I>{}, n); // calcule la mémoire pour la fonction etree (arbre d'élimination)
-		req = req | postorder_req(veg::Tag<I>{}, n); // postorder_req: calcule mémoire pour fonction postorder (calcule certaine permutation de la matrice a)
-		req = req | column_counts_req(Tag<I>{}, n, nnz);//column_counts_req :column_counts  nbr d'elt non nul par colonne de la ldlt
+		auto req = etree_req(
+				Tag<I>{},
+				n); // calcule la mémoire pour la fonction etree (arbre d'élimination)
+		req =
+				req |
+				postorder_req(
+						veg::Tag<I>{},
+						n); // postorder_req: calcule mémoire pour fonction postorder (calcule certaine permutation de la matrice a)
+		req =
+				req |
+				column_counts_req(
+						Tag<I>{},
+						n,
+						nnz); //column_counts_req :column_counts  nbr d'elt non nul par colonne de la ldlt
 		// | : any of operator
 		// & : all of operator
 		Vec<unsigned char> stack_data; // vector de bytes
-		stack_data.resize_for_overwrite(req.alloc_req()); // resize pour avoir taille du workspace necessaire
-		auto stack = dynstack::DynStackMut{from_slice_mut, stack_data.as_mut()}; //stack: view sur ce vecteur
+		stack_data.resize_for_overwrite(
+				req.alloc_req()); // resize pour avoir taille du workspace necessaire
+		auto stack = dynstack::DynStackMut{
+				from_slice_mut, stack_data.as_mut()}; //stack: view sur ce vecteur
 
 		auto const parent_expected = [] {
 			Vec<I> parent;
@@ -147,15 +161,18 @@ TEST_CASE("ldlt: factorize compressed") {
 			return parent;
 		}();
 
-		Vec<I> parent;// parent de chaque elt dans l'arbre d'elimination
-		parent.resize_for_overwrite(n); 
+		Vec<I> parent; // parent de chaque elt dans l'arbre d'elimination
+		parent.resize_for_overwrite(n);
 
-		etree(parent.ptr_mut(), a.symbolic(), stack); // calcule l'arbre d'élimination; l'arbre est définit par une liste de parent
+		etree(
+				parent.ptr_mut(),
+				a.symbolic(),
+				stack); // calcule l'arbre d'élimination; l'arbre est définit par une liste de parent
 		// check : https://youtu.be/uZKJPTo4dZs check course on sparse factorization
 
 		auto post_expected = [] {
 			Vec<I> post;
-			for (auto p : {1, 2, 4, 7, 0, 3, 5, 6, 8, 9, 10}) {
+			for  (auto p : {1, 2, 4, 7, 0, 3, 5, 6, 8, 9, 10}) {
 				post.push(I(p));
 			}
 			return post;
@@ -172,7 +189,7 @@ TEST_CASE("ldlt: factorize compressed") {
 				counts.push(I(c));
 			}
 			return counts;
-		}();  // nbr d'elts non nul par colonne de la ldlt
+		}(); // nbr d'elts non nul par colonne de la ldlt
 
 		Vec<I> counts;
 		counts.resize_for_overwrite(n);
@@ -181,8 +198,8 @@ TEST_CASE("ldlt: factorize compressed") {
 				a.symbolic(),
 				parent.ptr(),
 				post.ptr(),
-				stack);//calcle nbr d'elts non nul par colonne de la ldlt
-		for (isize i=0; i < n + 1; ++i) {
+				stack); //calcle nbr d'elts non nul par colonne de la ldlt
+		for (isize i = 0; i < n; ++i) {
 			CHECK(counts[i] == counts_expected[i]);
 		}
 	}
@@ -191,7 +208,9 @@ TEST_CASE("ldlt: factorize compressed") {
 		// VERSio minimal format compressée
 		Vec<I> l_col_ptrs;
 		Vec<I> etree;
-		l_col_ptrs.resize_for_overwrite(n + 1); // n+1 car: pour chaque colonne tu as besoin de l'indice du début de la colonne et fin de la colonne
+		l_col_ptrs.resize_for_overwrite(
+				n +
+				1); // n+1 car: pour chaque colonne tu as besoin de l'indice du début de la colonne et fin de la colonne
 		etree.resize_for_overwrite(n);
 		//factorize_symbolic_req : calcule mémoire de la factorization symbolique
 		//Ordering:: ammd ou no permutation ou user_provided
@@ -207,14 +226,16 @@ TEST_CASE("ldlt: factorize compressed") {
 		perm_inv.resize_for_overwrite(n);
 
 		factorize_symbolic_col_counts( // calcule la taille de chaque colonne de la factorization (matrice maximale a; donne taille maximale de chaque colonne de l)
-				l_col_ptrs.ptr_mut(), // indices des colonnes
+				l_col_ptrs.ptr_mut(),      // indices des colonnes
 				etree.ptr_mut(),
 				perm_inv.ptr_mut(),
-				static_cast<I*>(nullptr), // permutation direct: si elle null on calcule la permutation inverse avec amd ; si non null on utilise la permutation directe ppur calculer la permutation inverse
+				static_cast<I*>(
+						nullptr), // permutation direct: si elle null on calcule la permutation inverse avec amd ; si non null on utilise la permutation directe ppur calculer la permutation inverse
 				a.symbolic(),
 				stack);
 
-		auto lnnz = isize(util::zero_extend(l_col_ptrs[n]));//l_col_ptrs[n] : nbr d'elts non nul total
+		auto lnnz = isize(util::zero_extend(
+				l_col_ptrs[n])); //l_col_ptrs[n] : nbr d'elts non nul total
 
 		Vec<I> l_row_indices;
 		Vec<T> l_values;
@@ -238,7 +259,7 @@ TEST_CASE("ldlt: factorize compressed") {
 				n,
 				nnz,
 				l_col_ptrs.ptr(),
-				{},// nbr d'elets non nul par colonne ; la matrice est en format compressé
+				{}, // nbr d'elets non nul par colonne ; la matrice est en format compressé
 				l_row_indices.ptr(),
 				l_values.ptr(),
 		};
@@ -254,8 +275,8 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 
 	isize n = 11;
 	isize nnz = 27;
-	// assez d"espace  dans la matrice non compressé: 
-	// 
+	// assez d"espace  dans la matrice non compressé:
+	//
 	Vec<I> col_ptrs_compressed;
 	Vec<I> row_ind_compressed;
 	Vec<T> vals_compressed;
@@ -307,7 +328,7 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 			n,
 			nnz,
 			col_ptrs.ptr(),
-			nnz_per_col.ptr(),// version non compressé
+			nnz_per_col.ptr(), // version non compressé
 			row_ind.ptr(),
 			vals.ptr(),
 	};
@@ -395,7 +416,13 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 	};
 	using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 	auto w_eigen = to_eigen_vec(w);
-	ld = rank1_update(ld, etree.ptr_mut(), perm_inv.ptr(), w, 1.0, stack); // alpha * w w.T et alpha = 1.0 ici
+	ld = rank1_update(
+			ld,
+			etree.ptr_mut(),
+			perm_inv.ptr(),
+			w,
+			1.0,
+			stack); // alpha * w w.T et alpha = 1.0 ici
 	CHECK(
 			(reconstruct_with_perm(perm_inv.as_ref(), ld.as_const()) -
 	     Mat(to_eigen(a).selfadjointView<Eigen::Upper>()) -
