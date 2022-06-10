@@ -4,6 +4,7 @@
 
 #include "linearsolver/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
+#include <iostream>
 
 namespace linearsolver {
 namespace sparse {
@@ -775,6 +776,7 @@ void symmetric_permute_symbolic(
 		DynStackMut stack) noexcept {
 
 	usize n = usize(new_a.nrows());
+
 	auto _work = stack.make_new(veg::Tag<I>{}, isize(n));
 	I* pcol_counts = _work.ptr_mut();
 
@@ -794,8 +796,8 @@ void symmetric_permute_symbolic(
 	for (usize old_j = 0; old_j < n; ++old_j) {
 		usize new_j = util::zero_extend(pperm_inv[old_j]);
 
-		auto col_start = util::zero_extend(pold_ap[old_j]);
-		auto col_end = util::zero_extend(pold_ap[old_j + 1]);
+		auto col_start = old_a.col_start(old_j);
+		auto col_end = old_a.col_end(old_j);
 
 		for (usize p = col_start; p < col_end; ++p) {
 			usize old_i = util::zero_extend(pold_ai[p]);
@@ -835,7 +837,7 @@ void symmetric_permute(
 
 	_detail::symmetric_permute_common(
 			n, pperm_inv, old_a.symbolic(), pnew_ap, pcol_counts);
-
+	
 	auto pcurrent_row_index = pcol_counts;
 
 	auto pold_ax = old_a.values();
@@ -843,8 +845,8 @@ void symmetric_permute(
 	for (usize old_j = 0; old_j < n; ++old_j) {
 		usize new_j = util::zero_extend(pperm_inv[old_j]);
 
-		auto col_start = util::zero_extend(pold_ap[old_j]);
-		auto col_end = util::zero_extend(pold_ap[old_j + 1]);
+		auto col_start = old_a.col_start(old_j);
+		auto col_end = old_a.col_end(old_j);
 
 		for (usize p = col_start; p < col_end; ++p) {
 			usize old_i = util::zero_extend(pold_ai[p]);
