@@ -14,22 +14,7 @@ namespace qp {
 namespace dense {
 /*!
  * Wrapper class for using proxsuite API with dense backend
- * for solving linearly constrained convex QP with the ProxQp algorithm.  
- * More, precisely, when provided with a QP problem (will its matrices be sparse or dense): 
- * 
- * \f{eqnarray*}{
- * \min_{x} &\frac{1}{2}x^THx& + g^Tx \\
- * Ax &=& b \\
- * l\leq &Cx& \leq u
- * \f}
- * 
- * the solver will provide a global solution \f$ ( x^* , y^* , z^* ) \f$ satisfying the KKT conditions at the defined absolute precision \f$\epsilon_{\text{abs}}\f$:
- * 
- * \f{eqnarray*}{
- * \| Hx^* + g + A^Ty^* + C^Tz^*\| \leq \epsilon_{\text{abs}} \\
- * \| Ax^* -b \| \leq \epsilon_{\text{abs}} \\
- * \| [Cx^* -u]_{+} + [Cx^*-l]_{+} \| \leq \epsilon_{\text{abs}}.
- * \f}
+ * for solving linearly constrained convex QP problem using ProxQp algorithm.  
  * 
  * Example usage:
  * ```cpp
@@ -42,13 +27,14 @@ namespace dense {
 using T = double;
 auto main() -> int {
 
-	// Generate a random QP problem
+	// Generate a random QP problem with primal variable dimension of size dim; n_eq equality constraints and n_in inequality constraints
 	ldlt_test::rand::set_seed(1);
 	qp::isize dim = 10;
 	qp::isize n_eq(dim / 4);
 	qp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
-	T sparsity_factor = 0.15;
+	T sparsity_factor = 0.15; // controls the sparsity of each matrix of the problem generated
+	T eps_abs = T(1e-9);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
 			dim,
@@ -59,8 +45,8 @@ auto main() -> int {
 	
 	// Solve the problem
 	qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
-	Qp.settings.eps_abs = T(1e-9); // choose accuracy needed
-	Qp.setup_dense_matrices(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); // setup the QP object
+	Qp.settings.eps_abs = eps_abs; // choose accuracy needed
+	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); // setup the QP object
 	Qp.solve(); // solve the problem
 
 	// Verify solution accuracy
@@ -93,7 +79,12 @@ struct QP {
 	Model<T> model;
 	Workspace<T> work;
 	preconditioner::RuizEquilibration<T> ruiz;
-
+	/*!
+	 * Default constructor.
+	 * @param _dim primal variable dimension.
+	 * @param _n_eq number of equality constraints.
+	 * @param _n_in number of inequality constraints.
+	 */
 	QP(isize _dim, isize _n_eq, isize _n_in)
 			: results(_dim, _n_eq, _n_in),
 				settings(),
@@ -102,6 +93,17 @@ struct QP {
 				ruiz(preconditioner::RuizEquilibration<T>{_dim, _n_eq + _n_in}) {
 				work.timer.stop();
 				}
+	/*!
+	 * Setups the QP model (with dense matrix format) and equilibrates it. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
+	 */
 	void init(
 			MatRef<T> H,
 			VecRef<T> g,
@@ -141,6 +143,17 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	/*!
+	 * Setups the QP model (with sparse matrix format) and equilibrates it if specified by the user. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
+	 */
 	void init(
 			const SparseMat<T> H,
 			VecRef<T> g,
@@ -179,6 +192,17 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	/*!
+	 * Updates the QP model (with dense matrix format) and re-equilibrates it if specified by the user. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param update_preconditioner bool parameter for updating or not the preconditioner and the associated scaled model.
+	 */
 	void update(
 			const tl::optional<MatRef<T>> H,
 			tl::optional<VecRef<T>> g,
@@ -223,6 +247,17 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	/*!
+	 * Updates the QP model (with sparse matrix format) and equilibrates it if specified by the user. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param update_preconditioner bool parameter for executing or not the preconditioner.
+	 */
 	void update(
 			const tl::optional<SparseMat<T>> H,
 			tl::optional<VecRef<T>> g,
@@ -267,6 +302,17 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	/*!
+	 * Updates the QP model vectors only (to avoid ambiguity through overloading) and equilibrates it if specified by the user. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param update_preconditioner bool parameter for executing or not the preconditioner.
+	 */
 	void update(
 			const tl::nullopt_t H,
 			tl::optional<VecRef<T>> g,
@@ -323,6 +369,9 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
+	/*!
+	 * Solves the QP problem using PRXOQP algorithm.
+	 */
 	void solve() {
 		qp_solve( //
 				settings,
@@ -331,6 +380,12 @@ struct QP {
 				work,
 				ruiz);
 	};
+	/*!
+	 * Solves the QP problem using PROXQP algorithm and a warm start.
+	 * @param x primal warm start.
+	 * @param y dual equality warm start.
+	 * @param z dual inequality warm start.
+	 */
 	void solve(tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
@@ -342,10 +397,19 @@ struct QP {
 				work,
 				ruiz);
 	};
+	/*!
+	 * Updates proximal parameters of the solver.
+	 * @param rho new primal proximal parameter.
+	 * @param mu_eq new dual equality constrained proximal parameter.
+	 * @param mu_in new dual inequality constrained proximal parameter.
+	 */
 	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		proxsuite::qp::dense::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
+	/*!
+	 * Clean-ups solver's results and workspace.
+	 */
 	void cleanup() {
 		results.cleanup();
 		work.cleanup();

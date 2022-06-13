@@ -543,8 +543,7 @@ auto diagonal(Mat&& mat) noexcept -> Eigen::Map< //
 						Eigen::ColMajor>>,
 		Eigen::Unaligned,
 		Eigen::InnerStride<Eigen::Dynamic>> {
-	VEG_DEBUG_ASSERT_ELSE( //
-			"matrix must be square",
+	VEG_DEBUG_ASSERT( //
 			mat.rows() == mat.cols());
 	return {
 			mat.data(),

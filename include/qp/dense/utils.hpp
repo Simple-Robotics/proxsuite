@@ -18,7 +18,12 @@
 namespace proxsuite {
 namespace qp {
 namespace dense {
-
+/*!
+* Save a matrix into a CSV format. Used for debug purposes.
+*
+* @param filename filename name for the CSV.
+* @param mat matrix to save into CSV format.
+*/
 template <typename Derived>
 void save_data(
 		const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat) {
@@ -46,20 +51,19 @@ template <typename T>
 auto negative_part(T const& expr)
 		LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
-// COMPUTES:
-// primal_residual_eq_scaled = scaled(Ax - b)
-//
-// primal_feasibility_lhs = max(norm(unscaled(Ax - b)),
-//                              norm(unscaled([Cx - u]+ + [Cx - l]-)))
-// primal_feasibility_eq_rhs_0 = norm(unscaled(Ax))
-// primal_feasibility_in_rhs_0 = norm(unscaled(Cx))
-//
-// MAY_ALIAS[primal_residual_in_scaled_u, primal_residual_in_scaled_l]
-//
-// INDETERMINATE:
-// primal_residual_in_scaled_u = unscaled(Cx)
-// primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
-
+/*!
+* Derives the global primal residual of the QP problem.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+* @param ruiz ruiz preconditioner.
+* @param primal_feasibility_lhs primal infeasibility.
+* @param primal_feasibility_eq_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param primal_feasibility_in_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param primal_feasibility_eq_lhs scalar variable used when using a relative stopping criterion.
+* @param primal_feasibility_in_lhs scalar variable used when using a relative stopping criterion.
+*/
 template <typename T>
 void global_primal_residual(
 		const Model<T>& qpmodel,
@@ -71,7 +75,19 @@ void global_primal_residual(
 		T& primal_feasibility_in_rhs_0,
 		T& primal_feasibility_eq_lhs,
 		T& primal_feasibility_in_lhs) {
-
+	// COMPUTES:
+	// primal_residual_eq_scaled = scaled(Ax - b)
+	//
+	// primal_feasibility_lhs = max(norm(unscaled(Ax - b)),
+	//                              norm(unscaled([Cx - u]+ + [Cx - l]-)))
+	// primal_feasibility_eq_rhs_0 = norm(unscaled(Ax))
+	// primal_feasibility_in_rhs_0 = norm(unscaled(Cx))
+	//
+	// MAY_ALIAS[primal_residual_in_scaled_u, primal_residual_in_scaled_l]
+	//
+	// INDETERMINATE:
+	// primal_residual_in_scaled_u = unscaled(Cx)
+	// primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
 	qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
 	qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
 
@@ -96,15 +112,18 @@ void global_primal_residual(
 			VectorViewMut<T>{from_eigen, qpwork.primal_residual_eq_scaled});
 }
 
-// The problem is primal infeasible if the following four conditions hold:
-//
-// ||unscaled(A^Tdy)|| <= eps_p_inf ||unscaled(dy)||
-// b^T dy <= -eps_p_inf ||unscaled(dy)||
-// ||unscaled(C^Tdz)|| <= eps_p_inf ||unscaled(dz)||
-// u^T [dz]_+ - l^T[-dz]_+ <= -eps_p_inf ||unscaled(dz)||
-//
-// the variables in entry are changed in place
 
+/*!
+* Check whether the global primal infeasibility criterion is satisfied.
+*
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param ruiz ruiz preconditioner.
+* @param ATdy variable used for testing global primal infeasibility criterion is satisfied.
+* @param CTdz variable used for testing global primal infeasibility criterion is satisfied.
+* @param dy variable used for testing global primal infeasibility criterion is satisfied.
+* @param dz variable used for testing global primal infeasibility criterion is satisfied.
+*/
 template <typename T>
 bool global_primal_residual_infeasibility(
 		VectorViewMut<T> ATdy,
@@ -115,6 +134,14 @@ bool global_primal_residual_infeasibility(
 		const Settings<T>& qpsettings,
 		preconditioner::RuizEquilibration<T>& ruiz) {
 
+	// The problem is primal infeasible if the following four conditions hold:
+	//
+	// ||unscaled(A^Tdy)|| <= eps_p_inf ||unscaled(dy)||
+	// b^T dy <= -eps_p_inf ||unscaled(dy)||
+	// ||unscaled(C^Tdz)|| <= eps_p_inf ||unscaled(dz)||
+	// u^T [dz]_+ - l^T[-dz]_+ <= -eps_p_inf ||unscaled(dz)||
+	//
+	// the variables in entry are changed in place
 	ruiz.unscale_dual_residual_in_place(ATdy);
 	ruiz.unscale_dual_residual_in_place(CTdz);
 	T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
@@ -131,20 +158,18 @@ bool global_primal_residual_infeasibility(
 	return res;
 }
 
-// The problem is dual infeasible if one of the conditions hold:
-//
-// FIRST
-// ||unscaled(Adx)|| <= eps_d_inf ||unscaled(dx)||
-// unscaled(Cdx)_i \in [-eps_d_inf,eps_d_inf] ||unscaled(dx)|| if u_i and l_i
-// are finite 					or >= -eps_d_inf||unscaled(dx)|| if u_i = +inf 					or <=
-// eps_d_inf||unscaled(dx)|| if l_i = -inf
-//
-// SECOND
-//
-// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c
-// eps_d_inf  ||unscaled(dx)|| or dx^THdx <= -c eps_d_inf^2 dx the variables in
-// entry are changed in place
-
+/*!
+* Check whether the global dual infeasibility criterion is satisfied.
+*
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param ruiz ruiz preconditioner.
+* @param Adx variable used for testing global dual infeasibility criterion is satisfied.
+* @param Cdx variable used for testing global dual infeasibility criterion is satisfied.
+* @param Hdx variable used for testing global dual infeasibility criterion is satisfied.
+* @param dx variable used for testing global dual infeasibility criterion is satisfied.
+*/
 template <typename T>
 bool global_dual_residual_infeasibility(
 		VectorViewMut<T> Adx,
@@ -156,6 +181,19 @@ bool global_dual_residual_infeasibility(
 		const Model<T>& qpmodel,
 		preconditioner::RuizEquilibration<T>& ruiz) {
 
+	// The problem is dual infeasible if one of the conditions hold:
+	//
+	// FIRST
+	// ||unscaled(Adx)|| <= eps_d_inf ||unscaled(dx)||
+	// unscaled(Cdx)_i \in [-eps_d_inf,eps_d_inf] ||unscaled(dx)|| if u_i and l_i
+	// are finite 					or >= -eps_d_inf||unscaled(dx)|| if u_i = +inf 					or <=
+	// eps_d_inf||unscaled(dx)|| if l_i = -inf
+	//
+	// SECOND
+	//
+	// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c
+	// eps_d_inf  ||unscaled(dx)|| or dx^THdx <= -c eps_d_inf^2 dx the variables in
+	// entry are changed in place
 	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
 	ruiz.unscale_dual_residual_in_place(Hdx);
 	ruiz.unscale_primal_residual_in_place_eq(Adx);
@@ -190,12 +228,18 @@ bool global_dual_residual_infeasibility(
 	return res;
 }
 
-// dual_feasibility_lhs = norm(dual_residual_scaled)
-// dual_feasibility_rhs_0 = norm(unscaled(Hx))
-// dual_feasibility_rhs_1 = norm(unscaled(ATy))
-// dual_feasibility_rhs_3 = norm(unscaled(CTz))
-//
-// dual_residual_scaled = scaled(Hx + g + ATy + CTz)
+/*!
+* Derives the global dual residual of the QP problem.
+*
+* @param qpwork solver workspace.
+* @param qpresults solver results.
+* @param ruiz ruiz preconditioner.
+* @param dual_feasibility_lhs primal infeasibility.
+* @param primal_feasibility_eq_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_1 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_3 scalar variable used when using a relative stopping criterion.
+*/
 template <typename T>
 void global_dual_residual(
 		Results<T>& qpresults,
@@ -205,7 +249,12 @@ void global_dual_residual(
 		T& dual_feasibility_rhs_0,
 		T& dual_feasibility_rhs_1,
 		T& dual_feasibility_rhs_3) {
-
+	// dual_feasibility_lhs = norm(dual_residual_scaled)
+	// dual_feasibility_rhs_0 = norm(unscaled(Hx))
+	// dual_feasibility_rhs_1 = norm(unscaled(ATy))
+	// dual_feasibility_rhs_3 = norm(unscaled(CTz))
+	//
+	// dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 	qpwork.dual_residual_scaled = qpwork.g_scaled;
 	qpwork.CTz.noalias() =
 			qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;

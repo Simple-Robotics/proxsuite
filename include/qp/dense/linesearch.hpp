@@ -16,24 +16,37 @@ namespace qp {
 namespace dense {
 namespace linesearch {
 
+/*!
+* Stores results of the line-search.
+*
+* @param a second order polynomial coefficient of the merit function used in the linesearch.
+* @param b first order polynomial coefficient of the merit function used in the linesearch.
+* @param grad derivative of the merit function used in the linesearch.
+*/
 template <typename T>
-struct PrimalDualGradResult {
+struct PrimalDualDerivativeResult {
 	T a;
 	T b;
 	T grad;
-	VEG_REFLECT(PrimalDualGradResult, a, b, grad);
+	VEG_REFLECT(PrimalDualDerivativeResult, a, b, grad);
 };
 
+/*!
+* Stores first derivative and coefficient of the univariate second order polynomial merit function to be canceled by the exact primal-dual linesearch.
+*
+* @param a second order polynomial coefficient of the merit function used in the linesearch.
+* @param b first order polynomial coefficient of the merit function used in the linesearch.
+* @param grad derivative of the merit function used in the linesearch.
+*/
 template <typename T>
-auto primal_dual_gradient_norm(
+auto primal_dual_derivative_results(
 		const Model<T>& qpmodel,
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
-		T alpha) -> PrimalDualGradResult<T> {
+		T alpha) -> PrimalDualDerivativeResult<T> {
 
 	/*
-	 * the function computes the first derivative of the proximal augmented
-	 * lagrangian of the problem at outer step k and inner step l
+	 * the function computes the first derivative of phi(alpha) at outer step k and inner step l
 	 *
 	 * phi(alpha) = f(x_l+alpha dx) + rho/2 |x_l + alpha dx - x_k|**2
 	 *              + mu_eq_inv/2 (|A(x_l+alpha dx)-d+y_k * mu_eq|**2)
@@ -45,7 +58,7 @@ auto primal_dual_gradient_norm(
 	 * 				+ mu_in_inv * nu / 2 ( | [C(x_l+alpha dx) - u + z_k * mu_in]_+ +
 	 * [C(x_l+alpha dx) - l + z_k * mu_in]_- - (z+alpha dz) * mu_in |**2 with f(x) =
 	 * 0.5 * x^THx + g^Tx phi is a second order polynomial in alpha. Below are
-	 * computed its coefficient a0 and b0 in order to compute the desired gradient
+	 * computed its coefficients a0 and b0 in order to compute the desired gradient
 	 * a0 * alpha + b0
 	 */
 
@@ -150,14 +163,20 @@ auto primal_dual_gradient_norm(
 	};
 }
 
+/*!
+* Performs the exact primaldual linesearch algorithm.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+*/
 template <typename T>
 void primal_dual_ls(
 		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) {
 
 	/*
-	 * The function follows the algorithm
+	 * The algorithm performs the following step
 	 *
-	 * To do so it does the following step
 	 * 1/
 	 * 1.1/ Store solutions of equations
 	 * C(x+alpha dx) - l + ze/mu_in = 0
@@ -183,7 +202,6 @@ void primal_dual_ls(
 	 * loop, then do
 	 *   last_alpha_neg = 0
 	 *   last_grad_neg = phi'(0)
-	 * using function "gradient_norm"
 	 *
 	 * 2.3
 	 * the optimal alpha is within the interval
@@ -204,9 +222,6 @@ void primal_dual_ls(
 	///////// STEP 1 /////////
 	// 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
 	// dx)-u +ze/mu_in = 0
-
-	// IF NAN DO SOMETHING --> investigate why there is nan and how to fix it
-	// (alpha=1?)
 
 	for (isize i = 0; i < qpmodel.n_in; i++) {
 
@@ -257,7 +272,6 @@ void primal_dual_ls(
 		 * For each positive alpha compute the first derivative of
 		 * phi(alpha) = [proximal augmented lagrangian of the
 		 *               subproblem evaluated at x_k + alpha dx]
-		 * using function "gradient_norm"
 		 *
 		 * (By construction for alpha = 0,  phi'(alpha) <= 0 and
 		 * phi'(alpha) goes to infinity with alpha hence it cancels
@@ -269,7 +283,7 @@ void primal_dual_ls(
 		 * (noted first_grad_pos) and alpha (first_alpha_pos), and
 		 * break the loop
 		 */
-		T gr = primal_dual_gradient_norm(qpmodel, qpresults, qpwork, alpha_).grad;
+		T gr = primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_).grad;
 
 		if (gr < T(0)) {
 			alpha_last_neg = alpha_;
@@ -290,7 +304,7 @@ void primal_dual_ls(
 	 */
 	if (alpha_last_neg == T(0)) {
 		last_neg_grad =
-				primal_dual_gradient_norm(qpmodel, qpresults, qpwork, alpha_last_neg)
+				primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_last_neg)
 						.grad;
 	}
 	if (alpha_first_pos == infty) {
@@ -299,7 +313,7 @@ void primal_dual_ls(
 		 * the optimal alpha is within the interval
 		 * [last_alpha_neg, +∞)
 		 */
-		PrimalDualGradResult<T> res = primal_dual_gradient_norm(
+		PrimalDualDerivativeResult<T> res = primal_dual_derivative_results(
 				qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
 		auto& a = res.a;
 		auto& b = res.b;
@@ -320,6 +334,13 @@ void primal_dual_ls(
 	}
 }
 
+/*!
+* Performs the active set change of the factorized KKT matrix (using rank one updates or downgrades).
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+*/
 template <typename T>
 void active_set_change(
 		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) {

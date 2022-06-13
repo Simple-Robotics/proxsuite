@@ -27,7 +27,12 @@ struct Model {
 	isize n_eq;
 	isize n_in;
 	isize n_total;
-
+	/*!
+	 * Default constructor.
+	 * @param _dim primal variable dimension.
+	 * @param _n_eq number of equality constraints.
+	 * @param _n_in number of inequality constraints.
+	 */
 	Model(isize _dim, isize _n_eq, isize _n_in)
 			: H(_dim, _dim),
 				g(_dim),

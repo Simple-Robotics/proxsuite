@@ -7,6 +7,13 @@
 
 namespace linearsolver {
 namespace sparse {
+
+/*!
+ * Computes the memory requirements for deleting a row and column for the ldlt factors
+ *
+ * @param n : dimension of the matrix
+ * @param max_nnz : upper bound of non zero counts over the columns of the matrix. n is always a valid value.
+ */
 template <typename T, typename I>
 auto delete_row_req( //
 		veg::Tag<T> /*tag*/,
@@ -17,6 +24,16 @@ auto delete_row_req( //
 			veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
 }
 
+/*!
+ * Given the ldlt factors of matrix a, computes the ldlt factors of the matrix a with row and column at position pos replaced by those of the identity matrix
+ * It returns a view of the updated factors.
+ * 
+ * @param ld : the ldlt factors
+ * @param etree pointer to the elimination tree
+ * @param perm_inv pointer to inverse permutation (for ex AMD). If this is null, the permutation is assumed to be the identity.
+ * @param pos position of the row and column to be deleted
+ * @param stack is the memory stack
+ */
 template <typename T, typename I>
 auto delete_row(
 		MatMut<T, I> ld,
@@ -97,7 +114,14 @@ auto delete_row(
 	petree[permuted_pos] = I(-1);
 	return ld;
 }
-
+/*!
+ * Computes the memory requirements for adding a row and column for the ldlt factors
+ *
+ * @param n : dimension of the matrix
+ * @param id_perm : whether the permutation corresponds to the identity 
+ * @param nnz : number of non zero elements in the added vector
+ * @param max_nnz : upper bound of non zero counts over the columns of the matrix. n is always a valid value.
+ */
 template <typename T, typename I>
 auto add_row_req( //
 		veg::Tag<T> /*tag*/,
@@ -123,7 +147,19 @@ auto add_row_req( //
 
 	return req;
 }
-
+/*!
+ * Given the ldlt factors of matrix a, computes the ldlt factors of the matrix a with added row and column at position pos. 
+ * It is assumed that the row and column are empty except the diagonal element.
+ * It returns a view of the updated factors.
+ * 
+ * @param ld : the ldlt factors
+ * @param etree pointer to the elimination tree
+ * @param perm_inv pointer to inverse permutation (for ex AMD). If this is null, the permutation is assumed to be the identity.
+ * @param pos position of the row and column to be added
+ * @param new_col : new column to be added without the diagonal element (of size nnz-1)
+ * @param diag_element : diagonal element of the added row and column
+ * @param stack is the memory stack
+ */
 template <typename T, typename I>
 auto add_row(
 		MatMut<T, I> ld,

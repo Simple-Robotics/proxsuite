@@ -88,7 +88,7 @@ void factorize_unblocked_impl(Mat mat, veg::dynstack::DynStackMut stack) {
 	if (n == 0) {
 		return;
 	}
-
+	
 	auto _work = stack.make_new_for_overwrite( //
 			veg::Tag<T>{},
 			n,

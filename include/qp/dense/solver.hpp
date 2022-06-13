@@ -21,6 +21,14 @@ namespace proxsuite {
 namespace qp {
 namespace dense {
 
+/*!
+* Performs a refactorization of the KKT matrix used by the solver.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+* @param rho_new new primal proximal parameter used for the refactorization.
+*/
 template <typename T>
 void refactorize(
 		const Model<T>& qpmodel,
@@ -65,6 +73,15 @@ void refactorize(
 	qpwork.dw_aug.setZero();
 }
 
+/*!
+* Updates the dual proximal parameters of the solver (i.e., penalization parameters of the primal-dual merit function).
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+* @param mu_eq_new new dual equality constrained proximal parameter.
+* @param mu_in_new new dual inequality constrained proximal parameter.
+*/
 template <typename T>
 void mu_update(
 		const Model<T>& qpmodel,
@@ -102,7 +119,14 @@ void mu_update(
 
 	qpwork.constraints_changed = true;
 }
-
+/*!
+* Derives the residual of the iterative refinement algorithm used for solving associated linear systems of PROXQP algorithm.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+* @param inner_pb_dim dimension of the linear system.
+*/
 template <typename T>
 void iterative_residual(
 		const Model<T>& qpmodel,
@@ -139,7 +163,16 @@ void iterative_residual(
 	qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) +=
 			qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.info.mu_eq;
 }
-
+/*!
+* Performs iterative refinement for solving associated linear systems of PROXQP algorithm.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param eps accuracy required for pursuing or not the iterative refinement.
+* @param inner_pb_dim dimension of the linear system.
+*/
 template <typename T>
 void iterative_solve_with_permut_fact( //
 		const Settings<T>& qpsettings,
@@ -244,7 +277,22 @@ void iterative_solve_with_permut_fact( //
 	}
 	qpwork.rhs.head(inner_pb_dim).setZero();
 }
-
+/*!
+* BCL rule for updating penalization parameters and accuracy variables.
+*
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param primal_feasibility_lhs_new primal infeasibility.
+* @param bcl_eta_ext BCL variable measuring whether the precisely infeasibility is too large or not.
+* @param bcl_eta_in BCL variable setting the accuracy required for solving an associated subproblem.
+* @param bcl_eta_ext_init initial BCL bcl_eta_ext variable value.
+* @param eps_in_min minimal possible value for bcl_eta_in.
+* @param new_bcl_mu_in new value of the inequality constrained penalization parameter.
+* @param new_bcl_mu_eq new value of the equality constrained penalization parameter.
+* @param new_bcl_mu_in_inv new value of the inequality constrained penalization parameter (inverse form).
+* @param new_bcl_mu_eq_inv new value of the equality constrained penalization parameter (inverse form).
+*/
 template <typename T>
 void bcl_update(
 		const Settings<T>& qpsettings,
@@ -293,7 +341,13 @@ void bcl_update(
 		bcl_eta_in = std::max(new_bcl_mu_in, eps_in_min);
 	}
 }
-
+/*!
+* Derives the stopping criterion value used by the Newton semismooth algorithm to minimize the primal-dual augmented Lagrangian function.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
+*/
 template <typename T>
 auto compute_inner_loop_saddle_point(
 		const Model<T>& qpmodel, Results<T>& qpresults, Workspace<T>& qpwork) -> T {
@@ -318,7 +372,15 @@ auto compute_inner_loop_saddle_point(
 
 	return err;
 }
-
+/*!
+* Derives the Newton semismooth step.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param eps accuracy required for solving the subproblem.
+*/
 template <typename T>
 void primal_dual_semi_smooth_newton_step(
 		const Settings<T>& qpsettings,
@@ -389,7 +451,16 @@ void primal_dual_semi_smooth_newton_step(
 	}
 	qpwork.dw_aug.tail(qpmodel.n_in) = qpwork.active_part_z;
 }
-
+/*!
+* Performs the Newton semismooth algorithm to minimize the primal-dual augmented Lagrangian function used by PROXQP algorithm.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param ruiz ruiz preconditioner.
+* @param eps_int accuracy required for solving the subproblem.
+*/
 template <typename T>
 auto primal_dual_newton_semi_smooth(
 		const Settings<T>& qpsettings,
@@ -517,7 +588,15 @@ auto primal_dual_newton_semi_smooth(
 
 	return err_in;
 }
-
+/*!
+* Executes the PROXQP algorithm.
+*
+* @param qpwork solver workspace.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param ruiz ruiz preconditioner.
+*/
 template <typename T>
 void qp_solve( //
 		const Settings<T>& qpsettings,

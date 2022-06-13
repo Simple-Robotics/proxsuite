@@ -222,7 +222,15 @@ struct RuizEquilibration {
 	Symmetry sym;
 
 	std::ostream* logger_ptr = nullptr;
-
+	/*!
+	 * Default constructor.
+	 * @param dim primal variable dimension.
+	 * @param n_eq_in number of equality and inequality constraints.
+	 * @param epsilon_ accuracy required for stopping the ruiz equilibration algorithm.
+	 * @param max_iter_ maximum number of ruiz equilibration iterations.
+	 * @param sym_ symetry option format of quadratic cost matrix.
+	 * @param logger parameter for printing or not intermediary results.
+	 */
 	explicit RuizEquilibration(
 			isize dim_,
 			isize n_eq_in,
@@ -239,12 +247,21 @@ struct RuizEquilibration {
 				logger_ptr(logger) {
 		delta.setOnes();
 	}
+	/*!
+	 * Prints ruiz equilibrator scaling variables.
+	 */
 	void print() {
 		// CHANGE: endl to newline
 		*logger_ptr << " delta : " << delta << "\n\n";
 		*logger_ptr << " c : " << c << "\n\n";
 	}
-
+	/*!
+	 * Determines memory requirements for executing the equilibrator.
+	 * @param tag tag for specifying entry type.
+	 * @param n dimension of the primal variable of the model.
+	 * @param n_eq number of equality constraints.
+	 * @param n_in number of inequality constraints.
+	 */
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
@@ -255,6 +272,13 @@ struct RuizEquilibration {
 	// A_new = tail @ A @ head
 	// g_new = c * head @ g
 	// b_new = tail @ b
+	/*!
+	 * Scales the qp performing the ruiz equilibrator algorithm considering user options.
+	 * @param qp qp to be scaled (in place).
+	 * @param execute_preconditioner bool variable specifying whether the qp is scaled using current equilibrator scaling variables, or performing anew the algorithm.
+	 * @param settings solver's settings.
+	 * @param stack stack variable used by the equilibrator.
+	 */
 	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, Settings<T>& settings, veg::dynstack::DynStackMut stack) {
 
 		max_iter = settings.preconditioner_max_iter;
@@ -330,11 +354,13 @@ struct RuizEquilibration {
 			g *= c;
 			H *= c;
 		}
-
-
-
-
 	}
+	/*!
+	 * Scales the qp performing the ruiz equilibrator algorithm considering user options.
+	 * @param qp qp model.
+	 * @param scaled_qp qp to be scaled.
+	 * @param tmp_delta_preallocated temporary variable used for performing the equilibration.
+	 */
 	void scale_qp(
 			QpViewBox<T> qp,
 			QpViewBoxMut<T> scaled_qp,
@@ -356,69 +382,129 @@ struct RuizEquilibration {
 		scale_qp_in_place(scaled_qp, tmp_delta_preallocated, epsilon, max_iter);
 	}
 	// modifies variables in place
+	/*!
+	 * Scales a primal variable in place.
+	 * @param primal primal variable.
+	 */
 	void scale_primal_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() /= delta.array().head(dim);
 	}
+	/*!
+	 * Scales a dual variable in place.
+	 * @param dual dual variable (includes all equalities and inequalities constraints).
+	 */
 	void scale_dual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() = dual.as_const().to_eigen().array() /
 		                          delta.tail(delta.size() - dim).array() * c;
 	}
-
+	/*!
+	 * Scales a dual equality constrained variable in place.
+	 * @param dual dual variable (includes equalities constraints only).
+	 */
 	void scale_dual_in_place_eq(VectorViewMut<T> dual) {
 		dual.to_eigen().array() =
 				dual.as_const().to_eigen().array() /
 				delta.middleRows(dim, dual.to_eigen().size()).array() * c;
 	}
+	/*!
+	 * Scales a dual inequality constrained variable in place.
+	 * @param dual dual variable (includes inequalities constraints only).
+	 */
 	void scale_dual_in_place_in(VectorViewMut<T> dual) {
 		dual.to_eigen().array() = dual.as_const().to_eigen().array() /
 		                          delta.tail(dual.to_eigen().size()).array() * c;
 	}
-
+	/*!
+	 * Unscales a primal variable in place.
+	 * @param primal primal variable.
+	 */
 	void unscale_primal_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() *= delta.array().head(dim);
 	}
+	/*!
+	 * Unscales a dual variable in place.
+	 * @param dual dual variable (includes equalities constraints only).
+	 */
 	void unscale_dual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() = dual.as_const().to_eigen().array() *
 		                          delta.tail(delta.size() - dim).array() / c;
 	}
-
+	/*!
+	 * Unscales a dual equality constrained variable in place.
+	 * @param dual dual variable (includes equalities constraints only).
+	 */
 	void unscale_dual_in_place_eq(VectorViewMut<T> dual) {
 		dual.to_eigen().array() =
 				dual.as_const().to_eigen().array() *
 				delta.middleRows(dim, dual.to_eigen().size()).array() / c;
 	}
-
+	/*!
+	 * Unscales a dual inequality constrained variable in place.
+	 * @param dual dual variable (includes inequalities constraints only).
+	 */
 	void unscale_dual_in_place_in(VectorViewMut<T> dual) {
 		dual.to_eigen().array() = dual.as_const().to_eigen().array() *
 		                          delta.tail(dual.to_eigen().size()).array() / c;
 	}
 	// modifies residuals in place
+	/*!
+	 * Scales a primal residual in place.
+	 * @param primal primal residual (includes equality and inequality constraints)
+	 */
 	void scale_primal_residual_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() *= delta.tail(delta.size() - dim).array();
 	}
 
+	/*!
+	 * Scales a primal equality constraint residual in place.
+	 * @param primal primal equality constraint residual.
+	 */
 	void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) {
 		primal_eq.to_eigen().array() *=
 				delta.middleRows(dim, primal_eq.to_eigen().size()).array();
 	}
+	/*!
+	 * Scales a primal inequality constraint residual in place.
+	 * @param primal primal inequality constraint residual.
+	 */
 	void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in) {
 		primal_in.to_eigen().array() *=
 				delta.tail(primal_in.to_eigen().size()).array();
 	}
+	/*!
+	 * Scales a dual residual in place.
+	 * @param dual dual residual.
+	 */
 	void scale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() *= delta.head(dim).array() * c;
 	}
+	/*!
+	 * Unscales a primal residual in place.
+	 * @param primal primal residual (includes equality and inequality constraints).
+	 */
 	void unscale_primal_residual_in_place(VectorViewMut<T> primal) {
 		primal.to_eigen().array() /= delta.tail(delta.size() - dim).array();
 	}
+	/*!
+	 * Unscales a primal equality constraint residual in place.
+	 * @param primal primal equality constraint residual.
+	 */
 	void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) {
 		primal_eq.to_eigen().array() /=
 				delta.middleRows(dim, primal_eq.to_eigen().size()).array();
 	}
+	/*!
+	 * Unscales a primal inequality constraint residual in place.
+	 * @param primal primal inequality constraint residual.
+	 */
 	void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in) {
 		primal_in.to_eigen().array() /=
 				delta.tail(primal_in.to_eigen().size()).array();
 	}
+	/*!
+	 * Unscales a dual residual in place.
+	 * @param dual dual residual.
+	 */
 	void unscale_dual_residual_in_place(VectorViewMut<T> dual) {
 		dual.to_eigen().array() /= delta.head(dim).array() * c;
 	}

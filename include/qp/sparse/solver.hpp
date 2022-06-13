@@ -276,7 +276,7 @@ void qp_solve(
 	}
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
-	auto zx = util::zero_extend;
+	auto zx = util::zero_extend;// ?
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
 
@@ -460,7 +460,7 @@ void qp_solve(
 			n_tot,
 			0,
 			ldl_col_ptrs,
-			do_ldlt ? ldl_nnz_counts : nullptr,
+			do_ldlt ? ldl_nnz_counts : nullptr,//si do_ldlt est vrai do ldl_nnz_counts
 			ldl_row_indices,
 			ldl_values,
 	};
@@ -583,7 +583,7 @@ void qp_solve(
 			};
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-			VEG_BIND(
+			VEG_BIND(// ?
 					auto,
 					(primal_feasibility_lhs, dual_feasibility_lhs),
 					detail::unscaled_primal_dual_residual(
@@ -666,7 +666,6 @@ void qp_solve(
 						if (n_in > 0) {
 							bool removed = false;
 							bool added = false;
-							veg::unused(removed, added);
 
 							for (isize i = 0; i < n_in; ++i) {
 								bool was_active = active_constraints[i];
@@ -747,7 +746,7 @@ void qp_solve(
 
 						ldl_solve_in_place(
 								{qp::from_eigen, rhs},
-								{qp::from_eigen, dw_prev},
+								{qp::from_eigen, dw_prev},// why dw_prev :  todo: MAJ dw_prev avec dw pour avoir meilleur guess sur les solve in place
 								results,
 								data,
 								n_tot,
@@ -946,7 +945,7 @@ void qp_solve(
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 			primal_dual_newton_semi_smooth();
-
+			// VEG bind : met le résultat tuple de unscaled_primal_dual_residual dans (primal_feasibility_lhs_new, dual_feasibility_lhs_new) en guessant leur type via auto
 			VEG_BIND(
 					auto,
 					(primal_feasibility_lhs_new, dual_feasibility_lhs_new),
@@ -1036,6 +1035,7 @@ void qp_solve(
 		if (results.info.mu_in != new_bcl_mu_in ||
 		    results.info.mu_eq != new_bcl_mu_eq) {
 			{ ++results.info.mu_updates; }
+			/*
 			refactorize(
 					work,
 					results,
@@ -1044,6 +1044,36 @@ void qp_solve(
 					data,
 					stack,
 					xtag);
+			*/
+			isize w_values = 1;// un seul elt non nul
+			T alpha  = 0;
+			for (isize j=0; j<n_eq+n_in;++j){
+				I row_index = j+n;
+				if (j <n_eq){
+					alpha = results.info.mu_eq - new_bcl_mu_eq;
+
+				}else{
+					if (!results.active_constraints[j-n_eq]){
+						continue;
+					}
+					alpha = results.info.mu_in - new_bcl_mu_in;
+				}
+				T value = 1;
+				linearsolver::sparse::VecRef<T, I> w{
+						veg::from_raw_parts,
+						n+n_eq+n_in,
+						w_values,
+						&row_index, // &: adresse de row index
+						&value,
+				};
+				ldl= rank1_update(
+					ldl,
+					etree,
+					perm_inv,
+					w,
+					alpha,
+					stack);
+				}
 		}
 
 		results.info.mu_eq = new_bcl_mu_eq;

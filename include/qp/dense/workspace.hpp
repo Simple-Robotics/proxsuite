@@ -15,8 +15,6 @@ namespace qp {
 namespace dense {
 template <typename T>
 struct Workspace {
-	///// EQUILIBRATOR
-	//preconditioner::RuizEquilibration<T> ruiz;
 
 	///// Cholesky Factorization
 	linearsolver::dense::Ldlt<T> ldl{};
@@ -83,7 +81,12 @@ struct Workspace {
 	Vec<T> CTz;
 
 	bool constraints_changed;
-
+	/*!
+	 * Default constructor.
+	 * @param dim primal variable dimension.
+	 * @param n_eq number of equality constraints.
+	 * @param n_in number of inequality constraints.
+	 */
 	Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: //
 				//ruiz(preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
@@ -185,7 +188,9 @@ struct Workspace {
 		primal_residual_in_scaled_low_plus_alphaCdx.setZero();
 		CTz.setZero();
 	}
-
+	/*!
+	 * Clean-ups solver's workspace.
+	 */
 	void cleanup() {
 		isize n_in = C_scaled.rows();
 		H_scaled.setZero();

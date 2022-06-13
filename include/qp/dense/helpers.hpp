@@ -17,6 +17,14 @@ namespace qp {
 namespace dense {
 
 /////// SETUP ////////
+/*!
+ * Computes the equality constrained initial guess of a QP problem.
+ *
+ * @param qpwork workspace of the solver.
+ * @param qpsettings settings of the solver.
+ * @param qpmodel QP problem as defined by the user (without any scaling performed).
+ * @param qpresults solution results.
+ */
 template <typename T>
 void compute_equality_constrained_initial_guess(
         Workspace<T>& qpwork,
@@ -41,25 +49,13 @@ void compute_equality_constrained_initial_guess(
     qpwork.rhs.setZero();
 }
 
-template <typename T>
-void compute_unconstrained_initial_guess(
-        Workspace<T>& qpwork,
-		Model<T>& qpmodel,
-		Results<T>& qpresults){
-    
-    veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
-			qpwork.ldl_stack.as_mut(),
-	};
-    linearsolver::dense::Ldlt<T> ldl_tmp;
-    ldl_tmp.factorize(qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim),stack);
-    qpwork.rhs.setZero();
-    qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
-    ldl_tmp.solve_in_place(qpwork.rhs.head(qpmodel.dim), stack);
-    qpresults.x = qpwork.rhs.head(qpmodel.dim);
-    qpwork.rhs.setZero();
-}
-
+/*!
+ * Setups and performs the first factorization of the regularized KKT matrix of the problem.  
+ *
+ * @param qpwork workspace of the solver.
+ * @param qpmodel QP problem model as defined by the user (without any scaling performed).
+ * @param qpresults solution results.
+ */
 template <typename T>
 void setup_factorization(Workspace<T>& qpwork,
 		const Model<T>& qpmodel,
@@ -83,9 +79,19 @@ void setup_factorization(Workspace<T>& qpwork,
 
         qpwork.ldl.factorize(qpwork.kkt, stack);
 }
-
+/*!
+ * Performs the equilibration of the QP problem for reducing its ill-conditionness.
+ *
+ * @param qpwork workspace of the solver.
+ * @param qpsettings settings of the solver.
+ * @param ruiz ruiz preconditioner.
+ * @param execute_preconditioner boolean variable for executing or not the ruiz preconditioner. If set to False, it uses the previous preconditioning variables (initialized to the identity preconditioner if it is the first scaling performed).
+ */
 template <typename T>
-void setup_equilibration(Workspace<T>& qpwork, Settings<T>& qpsettings, preconditioner::RuizEquilibration<T>& ruiz, bool execute_preconditioner){
+void setup_equilibration(Workspace<T>& qpwork, 
+						Settings<T>& qpsettings, 
+						preconditioner::RuizEquilibration<T>& ruiz, 
+						bool execute_preconditioner){
 
     QpViewBoxMut<T> qp_scaled{
 			{from_eigen, qpwork.H_scaled},
@@ -105,12 +111,12 @@ void setup_equilibration(Workspace<T>& qpwork, Settings<T>& qpsettings, precondi
 }
 
 /*!
-* Setup the linear solver and the parameters x, y and z (through warm starting or default values if warm_start=false in the settings)
+* Setups the solver initial guess.
 *
-* @param qpwork solver workspace
-* @param qpsettings solver settings
-* @param qpmodel solver model
-* @param qpresults solver result 
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param qpresults solver results.
 */
 template <typename T>
 void initial_guess(
@@ -128,19 +134,19 @@ void initial_guess(
 
 }
 /*!
-* Setup the QP solver (the linear solver backend being dense).
+* Updates the QP solver model.
 *
-* @param H quadratic cost input defining the QP model
-* @param g linear cost input defining the QP model
-* @param A equality constraint matrix input defining the QP model
-* @param b equality constraint vector input defining the QP model
-* @param C inequality constraint matrix input defining the QP model
-* @param u lower inequality constraint vector input defining the QP model
-* @param l lower inequality constraint vector input defining the QP model
-* @param qpwork solver workspace
-* @param qpsettings solver settings
-* @param qpmodel solver model
-* @param qpresults solver result 
+* @param H quadratic cost input defining the QP model.
+* @param g linear cost input defining the QP model.
+* @param A equality constraint matrix input defining the QP model.
+* @param b equality constraint vector input defining the QP model.
+* @param C inequality constraint matrix input defining the QP model.
+* @param u lower inequality constraint vector input defining the QP model.
+* @param l lower inequality constraint vector input defining the QP model.
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpmodel solver model.
+* @param qpresults solver result. 
 */
 
 template <typename Mat,typename T>
@@ -194,6 +200,23 @@ void update(
 			model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
 		}
 }
+/*!
+* Setups the QP solver model.
+*
+* @param H quadratic cost input defining the QP model.
+* @param g linear cost input defining the QP model.
+* @param A equality constraint matrix input defining the QP model.
+* @param b equality constraint vector input defining the QP model.
+* @param C inequality constraint matrix input defining the QP model.
+* @param u lower inequality constraint vector input defining the QP model.
+* @param l lower inequality constraint vector input defining the QP model.
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpmodel solver model.
+* @param qpresults solver result.
+* @param ruiz ruiz preconditioner.
+* @param preconditioner_status bool variable for deciding whether executing the preconditioning algorithm, or keeping previous preconditioning variables, or using the identity preconditioner (i.e., no preconditioner).
+*/
 template <typename Mat, typename T>
 void setup( //
 		Mat const& H,
@@ -307,10 +330,10 @@ void setup( //
 /*!
 * Update the proximal parameters of the results object.
 *
-* @param rho_new primal proximal parameter
-* @param mu_eq_new dual equality proximal parameter
-* @param mu_in_new dual inequality proximal parameter
-* @param results solver result 
+* @param rho_new primal proximal parameter.
+* @param mu_eq_new dual equality proximal parameter.
+* @param mu_in_new dual inequality proximal parameter.
+* @param results solver results.
 */
 template <typename T>
 void update_proximal_parameters(
@@ -332,13 +355,13 @@ void update_proximal_parameters(
 	}
 }
 /*!
-* Warm start the results primal and dual variables.
+* Warm start the primal and dual variables.
 *
-* @param x_wm primal proximal parameter
-* @param y_wm dual equality proximal parameter
-* @param z_wm dual inequality proximal parameter
-* @param results solver result 
-* @param settings solver settings 
+* @param x_wm primal warm start.
+* @param y_wm dual equality warm start.
+* @param z_wm dual inequality warm start.
+* @param results solver result.
+* @param settings solver settings. 
 */
 template <typename T>
 void warm_start(

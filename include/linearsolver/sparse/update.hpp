@@ -8,6 +8,10 @@
 
 namespace linearsolver {
 namespace sparse {
+
+/*
+calcule mémoire nécessaire pour la fonction merge_second_col_into_first
+*/
 template <typename I>
 auto merge_second_col_into_first_req(
 		veg::Tag<I> /*tag*/, isize second_size) noexcept
@@ -17,6 +21,7 @@ auto merge_second_col_into_first_req(
 			alignof(I),
 	};
 }
+
 
 template <typename T, typename I>
 auto merge_second_col_into_first( //
@@ -146,6 +151,13 @@ auto merge_second_col_into_first( //
 	};
 }
 
+/*!
+ * Computes the memory requirements for rank one update.
+ *
+ * @param n dimension of matrix 
+ * @param id_perm whether the permutation is implicitly the identity or not 
+ * @param col_nnz number of nnz elts in the update vector
+ */
 template <typename T, typename I>
 auto rank1_update_req( //
 		veg::Tag<T> /*tag*/,
@@ -166,6 +178,17 @@ auto rank1_update_req( //
 	return permuted_indices & ((difference & merge) | numerical_workspace);
 }
 
+/*!
+ * Performs a rank one update in place. Given ldlt factor l, and d, of a matrix a, this computes the ldlt factors of a + alpha  w w.T
+ * It returns a view on the updated factors.
+ * 
+ * @param ld : ldlt factors of a (lower triangular with d on the diagonal)
+ * @param etree pointer to the elimination tree
+ * @param perm_inv pointer to inverse permutation (for ex AMD). If this is null, the permutation is assumed to be the identity.
+ * @param w is the update vector
+ * @param alpha is the update coefficient
+ * @param stack is the memory stack
+ */
 template <typename T, typename I>
 auto rank1_update(
 		MatMut<T, I> ld,

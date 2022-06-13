@@ -41,13 +41,6 @@ struct QP {
 			SparseMat<bool, I> H_triu = H.template triangularView<Eigen::Upper>();
 			SparseMat<bool, I> AT = A.transpose();
 			SparseMat<bool, I> CT = C.transpose();
-			/*
-			std::cout << "dim " << _dim  << " n_eq " << _n_eq << " _n_in " << _n_in << std::endl;
-			std::cout << "H mask " << H << std::endl;
-			std::cout << "A mask " << A << std::endl;
-			std::cout << "C mask " << C << std::endl;
-			*/
-
 			linearsolver::sparse::MatRef<bool,I> Href = {linearsolver::sparse::from_eigen, H_triu};
 			linearsolver::sparse::MatRef<bool,I> ATref = {linearsolver::sparse::from_eigen, AT};
 			linearsolver::sparse::MatRef<bool,I> CTref = {linearsolver::sparse::from_eigen, CT};

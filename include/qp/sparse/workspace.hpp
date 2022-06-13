@@ -105,7 +105,7 @@ struct Workspace {
 
 	struct /* NOLINT */ {
 		// temporary allocations
-		veg::Vec<veg::mem::byte> storage;
+		veg::Vec<veg::mem::byte> storage;// la mémoire de la stack, et les req déterminent sa taille 
 		Ldlt<T,I> ldl;
 		bool do_ldlt;
 		bool do_symbolic_fact;
@@ -118,19 +118,19 @@ struct Workspace {
 		veg::Vec<I> kkt_nnz_counts;
 
 		// stored in unique_ptr because we need a stable address
-		std::unique_ptr<detail::AugmentedKkt<T, I>> matrix_free_kkt;
+		std::unique_ptr<detail::AugmentedKkt<T, I>> matrix_free_kkt; // view sur la partie active de la KKt (incluant les régularisations)
 		std::unique_ptr<Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>>
-				matrix_free_solver;
+				matrix_free_solver; // QUESTION: --> check eigen ; pas de facto; méthode qui prend en entrée un vecteur; et basé sur des  produits matrices vecteurs
 
 		auto stack_mut() -> veg::dynstack::DynStackMut {
 			return {
 					veg::from_slice_mut,
 					storage.as_mut(),
-			};
-		}
+			}; 
+		}// exploite toute la mémoire disponible dans storage
 
 	} internal;
 
@@ -148,17 +148,7 @@ struct Workspace {
 		auto& storage = internal.storage ;
 		auto& do_ldlt = internal.do_ldlt;
 		// persistent allocations
-		/*
-		auto& g_scaled = internal.g_scaled;
-		auto& b_scaled = internal.b_scaled;
-		auto& l_scaled = internal.l_scaled;
-		auto& u_scaled = internal.u_scaled;
-		auto& kkt_nnz_counts = internal.kkt_nnz_counts;
 
-		// stored in unique_ptr because we need a stable address
-		auto& matrix_free_solver = internal.matrix_free_solver;
-		auto& matrix_free_kkt = internal.matrix_free_kkt;
-		*/
 		data.dim = H.nrows();
 		data.n_eq = AT.ncols();
 		data.n_in = CT.ncols();
@@ -170,8 +160,8 @@ struct Workspace {
 		using namespace linearsolver::sparse::util;
 
 		using SR = StackReq;
-		veg::Tag<I> itag;
-		veg::Tag<T> xtag;
+		veg::Tag<I> itag; // ?
+		veg::Tag<T> xtag; // ?
 
 		isize n = H.nrows();
 		isize n_eq = AT.ncols();
@@ -184,7 +174,7 @@ struct Workspace {
 		// assuming H, AT, CT are sorted
 		// and H is upper triangular
 		{
-			data.kkt_col_ptrs.resize_for_overwrite(n_tot + 1);
+			data.kkt_col_ptrs.resize_for_overwrite(n_tot + 1); // 
 			data.kkt_row_indices.resize_for_overwrite(nnz_tot);
 			data.kkt_values.resize_for_overwrite(nnz_tot);
 
@@ -238,7 +228,7 @@ struct Workspace {
 							nnz_tot,                                  //
 							linearsolver::sparse::Ordering::amd))     //
 						.alloc_req()                               //
-		);
+		); 
 
 		ldl.col_ptrs.resize_for_overwrite(n_tot + 1);
 		ldl.perm_inv.resize_for_overwrite(n_tot);
@@ -261,13 +251,13 @@ struct Workspace {
 					data.kkt_row_indices.ptr(),
 			};
 			linearsolver::sparse::factorize_symbolic_non_zeros( //
-					ldl.col_ptrs.ptr_mut() + 1,
+					ldl.col_ptrs.ptr_mut() + 1,//réimplémente col counts; pour avoir la version matrix free aussi
 					etree_ptr,
 					ldl.perm_inv.ptr_mut(),
 					static_cast<I const*>(nullptr),
 					kkt_sym,
 					stack);
-
+			
 			auto pcol_ptrs = ldl.col_ptrs.ptr_mut();
 			pcol_ptrs[0] = I(0);
 
@@ -373,7 +363,7 @@ struct Workspace {
 					usize col_end = m.col_end(j);
 
 					kktp[col + 1] =
-							checked_non_negative_plus(kktp[col], I(col_end - col_start));
+							checked_non_negative_plus(kktp[col], I(col_end - col_start));// QUESTION: que fait la fonction?
 					++col;
 
 					for (usize p = col_start; p < col_end; ++p) {
@@ -382,7 +372,7 @@ struct Workspace {
 							VEG_ASSERT(i <= j);
 						}
 
-						kkti[pos] = veg::nb::narrow<I>{}(i);
+						kkti[pos] = veg::nb::narrow<I>{}(i); // QUESTION: que fait la fonction?
 						kktx[pos] = mx[p];
 
 						++pos;
@@ -438,8 +428,9 @@ struct Workspace {
 					kkt_sym,
 					stack);
 
-			auto pcol_ptrs = ldl.col_ptrs.ptr_mut();
-			pcol_ptrs[0] = I(0);
+			auto pcol_ptrs = ldl.col_ptrs.ptr_mut(); 
+			pcol_ptrs[0] = I(0);//pcol_ptrs +1: pointeur vers nbr d'elts non nuls par colonne de ldl
+			// besoin de calculer sa somme cumulative plus bas et déterminer s'il y a un overflow
 
 			using veg::u64;
 			u64 acc = 0;
@@ -488,8 +479,8 @@ struct Workspace {
 ::veg::dynstack::StackReq::and_(::veg::init_list(__VA_ARGS__))
 #define PROX_QP_ANY_OF(...)                                                    \
 ::veg::dynstack::StackReq::or_(::veg::init_list(__VA_ARGS__))
-
-		auto refactorize_req =
+		//  ? --> if
+		auto refactorize_req = 
 				do_ldlt
 						? PROX_QP_ANY_OF({
 									linearsolver::sparse::
@@ -510,8 +501,8 @@ struct Workspace {
 									}),
 							})
 						: PROX_QP_ALL_OF({
-									SR::with_len(itag, 0),
-									SR::with_len(xtag, 0),
+									SR::with_len(itag, 0), // calcule l'espace nécessaire pour stocker n elts de type I (n ici = 0)
+									SR::with_len(xtag, 0), // calcule l'espace nécessaire pour stocker n elts de type T (n ici = 0)
 							});
 
 		auto x_vec = [&](isize n) noexcept -> StackReq {
@@ -561,7 +552,7 @@ struct Workspace {
 								x_vec(n),    // CTdz
 						}),
 				}),
-				line_search_req,
+				line_search_req, 
 		});
 
 		auto iter_req = PROX_QP_ANY_OF({
@@ -611,11 +602,25 @@ struct Workspace {
 						}),
 				});
 
-		storage.resize_for_overwrite(req.alloc_req());
+		storage.resize_for_overwrite(req.alloc_req()); // taille maximale de storage
+		// storage.resize(n) si on fait deux fois avec n, la deuxième fois il ne se passe rien
 
 		// preconditioner
 		auto kkt = data.kkt_mut();
-		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
+		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n); //  top_rows_mut_unchecked: prend view matrice sparse, donne view sur les n premières lignes ; la fonction suppose que toutes les autres lignes sont nulles
+		/*
+			H AT CT
+			A 
+			C
+
+			on stocke que partie triangulaire supérieure
+			donc
+			tirSup(H) AT CT
+			0 0 0 
+			0 0 0 
+
+			veg::unsafe:  indicateur, la fonction est dangeureuse; si on respect pas la condition on ne sais pas ce qu'il se passe
+		*/
 
 		linearsolver::sparse::MatMut<T, I> H_scaled =
 				detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
@@ -650,7 +655,7 @@ struct Workspace {
 				linearsolver::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
-				data.H_nnz + data.A_nnz,
+				data.H_nnz + data.A_nnz,// not necessarily correct (dépend initial guess) but variable not used for matrix vector product in augmented KKT for Min res algorithm
 				kkt.col_ptrs_mut(),
 				kkt_nnz_counts.ptr_mut(),
 				kkt.row_indices_mut(),
@@ -678,7 +683,7 @@ struct Workspace {
 						},
 				}};
 
-		auto zx = linearsolver::sparse::util::zero_extend;
+		auto zx = linearsolver::sparse::util::zero_extend;// ?
 		auto max_lnnz = isize(zx(ldl.col_ptrs[n_tot]));
 		isize ldlt_ntot = do_ldlt ? n_tot : 0;
 		isize ldlt_lnnz = do_ldlt ? max_lnnz : 0;
