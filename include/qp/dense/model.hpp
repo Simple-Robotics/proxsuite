@@ -8,8 +8,13 @@
 
 namespace proxsuite {
 namespace qp {
-
 namespace dense {
+///
+/// @brief This class stores the model of the QP problem.
+///
+/*!
+ * Model class of the dense solver storing the QP problem.
+*/
 template <typename T>
 struct Model {
 

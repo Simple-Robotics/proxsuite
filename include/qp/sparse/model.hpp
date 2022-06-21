@@ -8,6 +8,9 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
+///
+/// @brief This class stores the model of the QP problem.
+///
 /*!
  * Model class of the sparse solver storing the QP problem structure.
 */

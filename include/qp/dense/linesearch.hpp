@@ -15,7 +15,9 @@ namespace proxsuite {
 namespace qp {
 namespace dense {
 namespace linesearch {
-
+///
+/// @brief This class stores the results of the primal-dual line-search.
+///
 /*!
 * Stores results of the line-search.
 *

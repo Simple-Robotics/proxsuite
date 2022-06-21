@@ -25,6 +25,9 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
+///
+/// @brief This class defines the workspace of the sparse solver.
+///
 /*!
  * Workspace class of the sparse solver.
 */

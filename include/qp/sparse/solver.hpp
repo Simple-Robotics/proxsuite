@@ -158,7 +158,28 @@ void ldl_iter_solve_noalias(
 		sol_e -= err;
 	}
 };
-
+/*!
+* Solves in place a linear system.
+*
+* @param rhs right hand side vector of the linear system to solver.
+* @param init_guess initial guess for solving the linear system
+* @param ldl current ldlt.
+* @param do_ldlt boolean variable for doing the ldlt (rather than MinRes algorithm).
+* @param perm_inv pointer to the inverse of the permutation.
+* @param results solver results.
+* @param data model of the QP.
+* @param n_tot dimension of the KKT matrix
+* @param kkt_active active part of the KKT matrix.
+* @param active_constraints vector boolean precising whether the constraints are active or not.
+* @param iterative_solver iterative solver matrix free.
+* @param stack memory stack.
+* @param ldl_values pointor to ldl values.
+* @param perm pointor to the ldl permutation.
+* @param ldl_col_ptrs pointor to the column of the ldl.
+* @param perm_inv pointor the inverse permutation.
+* @param settings solver's settings.
+* @param kkt_active active part of the kkt.
+*/
 template <typename T, typename I>
 void ldl_solve_in_place(
 		VectorViewMut<T> rhs,
@@ -201,7 +222,12 @@ void ldl_solve_in_place(
 			active_constraints);
 	rhs.to_eigen() = tmp;
 };
-
+/*!
+* Reconstructs manually the permutted matrix.
+*
+* @param ldl current ldlt.
+* @param do_ldlt boolean variable for doing the ldlt (rather than MinRes algorithm).
+*/
 template <typename T, typename I>
 auto inner_reconstructed_matrix(
 		linearsolver::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
@@ -213,7 +239,14 @@ auto inner_reconstructed_matrix(
 	auto mat = DMat<T>(l * d * lt);
 	return mat;
 };
-
+/*!
+* Reconstructs manually the value of the KKT matrix.
+*
+* @param ldl current ldlt.
+* @param do_ldlt boolean variable for doing the ldlt (rather than MinRes algorithm).
+* @param perm_inv pointer to the inverse of the permutation.
+* @param n_tot dimension of the KKT matrix
+*/
 template <typename T, typename I>
 auto reconstructed_matrix(
 		linearsolver::sparse::MatMut<T, I> ldl,
@@ -229,7 +262,18 @@ auto reconstructed_matrix(
 	}
 	return mat;
 };
-
+/*!
+* Derives the norm of the difference between current KKT and the one it should be (derived manually).
+*
+* @param ldl current ldlt.
+* @param do_ldlt boolean variable for doing the ldlt (rather than MinRes algorithm).
+* @param perm_inv pointer to the inverse of the permutation.
+* @param results solver results.
+* @param data model of the QP.
+* @param n_tot dimension of the KKT matrix
+* @param kkt_active active part of the KKT matrix.
+* @param active_constraints vector boolean precising whether the constraints are active or not.
+*/
 template <typename T, typename I>
 auto reconstruction_error(
 		linearsolver::sparse::MatMut<T, I> ldl,
@@ -263,6 +307,15 @@ struct PrimalDualGradResult {
 	VEG_REFLECT(PrimalDualGradResult, a, b, grad);
 };
 
+/*!
+* Executes the PROXQP algorithm.
+*
+* @param work solver workspace.
+* @param model QP problem model as defined by the user (without any scaling performed).
+* @param settings solver settings.
+* @param results solver results.
+* @param precond preconditioner.
+*/
 template <typename T, typename I, typename P>
 void qp_solve(
 		Results<T>& results,
@@ -746,7 +799,7 @@ void qp_solve(
 
 						ldl_solve_in_place(
 								{qp::from_eigen, rhs},
-								{qp::from_eigen, dw_prev},// why dw_prev :  todo: MAJ dw_prev avec dw pour avoir meilleur guess sur les solve in place
+								{qp::from_eigen, dw_prev},// todo: MAJ dw_prev avec dw pour avoir meilleur guess sur les solve in place
 								results,
 								data,
 								n_tot,

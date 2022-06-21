@@ -23,7 +23,7 @@ struct CPUTimes {
 ///
 /// @brief This class mimics the way "boost/timer/timer.hpp" operates while
 /// using the modern std::chrono library.
-///        Importantly, this class will only have an effect for C++11 and more.
+/// Importantly, this class will only have an effect for C++11 and more.
 ///
 template <typename T>
 struct Timer {

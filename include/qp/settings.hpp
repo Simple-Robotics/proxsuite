@@ -11,8 +11,11 @@
 
 namespace proxsuite {
 namespace qp {
+///
+/// @brief This class defines the settings of PROXQP solvers with sparse and dense backends.
+///
 /*!
- * Settings class of which defines the parameters used by the solver (and its preconditioner).
+ * Settings class, which defines the parameters used by the dense and sparse solver (and its preconditioner).
 */
 template <typename T>
 struct Settings {

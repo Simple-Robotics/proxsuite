@@ -13,6 +13,9 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
+///
+/// @brief This class defines the API of PROXQP solver with sparse backend.
+///
 /*!
  * Wrapper class for using proxsuite API with dense backend
  * for solving linearly constrained convex QP problem using ProxQp algorithm.  

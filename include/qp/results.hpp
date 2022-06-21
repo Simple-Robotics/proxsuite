@@ -12,7 +12,12 @@
 
 namespace proxsuite {
 namespace qp {
-
+///
+/// @brief This class stores the results statistics of PROXQP solvers with sparse and dense backends.
+///
+/*!
+ * Info class of dense and sparse solver.
+*/
 template <typename T>
 struct Info {
 	///// final proximal regularization parameters
@@ -39,7 +44,12 @@ struct Info {
 	T pri_res;
 	T dua_res;
 };
-
+///
+/// @brief This class stores all the results of PROXQP solvers with sparse and dense backends.
+///
+/*!
+ * Results class of dense and sparse solver.
+*/
 template <typename T>
 struct Results {
 
@@ -53,7 +63,12 @@ struct Results {
 	Info<T> info;
 
 	////// SOLUTION STATUS
-
+	/*!
+	* Default constructor.
+	* @param dim dimension of the primal variable.
+	* @param n_eq dimension of the number of equality constraints.
+	* @param n_in dimension of the number of inequality constraints.
+	*/
 	Results(isize dim = 0, isize n_eq = 0, isize n_in = 0)
 			: x(dim), y(n_eq), z(n_in) {
 
@@ -80,7 +95,9 @@ struct Results {
 		info.dua_res = 0.;
 		info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
 	}
-
+	/*!
+	* cleanups the Result variables and set the info variables to their initial values.
+	*/ 
 	void cleanup() {
 		x.setZero();
 		y.setZero();

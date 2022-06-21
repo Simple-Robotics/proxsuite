@@ -13,6 +13,9 @@
 namespace proxsuite {
 namespace qp {
 namespace dense {
+///
+/// @brief This class defines the workspace of the dense solver.
+///
 /*!
  * Workspace class of the dense solver.
 */

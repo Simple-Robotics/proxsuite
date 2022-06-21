@@ -12,18 +12,18 @@ namespace qp {
 
 // SOLVER STATUS
 enum struct QPSolverOutput {
-	PROXQP_SOLVED,
-	PROXQP_MAX_ITER_REACHED,
-	PROXQP_PRIMAL_INFEASIBLE,
-	PROXQP_DUAL_INFEASIBLE
+	PROXQP_SOLVED, // the problem is solved.
+	PROXQP_MAX_ITER_REACHED, // the maximum number of iterations has been reached.
+	PROXQP_PRIMAL_INFEASIBLE, // the problem is primal infeasible.
+	PROXQP_DUAL_INFEASIBLE // the problem is dual infeasible.
 };
 // INITIAL GUESS STATUS
 enum struct InitialGuessStatus {
 	NO_INITIAL_GUESS,
 	EQUALITY_CONSTRAINED_INITIAL_GUESS, 
 	WARM_START_WITH_PREVIOUS_RESULT,
-	WARM_START, // tout refaire pour la KKT avec la partie active de z
-	COLD_START_WITH_PREVIOUS_RESULT // keep solutions + KKT
+	WARM_START, 
+	COLD_START_WITH_PREVIOUS_RESULT 
 };
 // PRECONDITIONER STATUS
 enum struct PreconditionerStatus {
