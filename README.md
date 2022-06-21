@@ -10,7 +10,7 @@ subject to           A x = b
                 l <= C x <= u
 ```
 
-where `x in R^n` is the optimization variable. The objective function is defined by a positive semidefinite matrix `P in S^n_+` and vector `q in R^n`. The linear constraints are defined by matrices `A in R^{n_eq x n}`, `C in R^{n_in x n}` and vectors `b`, `l` and `u` so that `b_i in R` for all `i in 1,...,n_eq` and `l_i in R U {-inf}` and `u_i in R U {+inf}` for all `i in 1,...,n_in`.
+where `x in R^n` is the optimization variable. The objective function is defined by a positive semidefinite matrix `H in S^n_+` and vector `g in R^n`. The linear constraints are defined by matrices `A in R^{n_eq x n}`, `C in R^{n_in x n}` and vectors `b`, `l` and `u` so that `b_i in R` for all `i in 1,...,n_eq` and `l_i in R U {-inf}` and `u_i in R U {+inf}` for all `i in 1,...,n_in`.
 
 ## Citing PROXQP
 
