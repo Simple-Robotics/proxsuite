@@ -25,7 +25,9 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
-
+/*!
+ * Workspace class of the sparse solver.
+*/
 template <typename T, typename I>
 struct Workspace;
 
@@ -99,13 +101,12 @@ struct Ldlt {
 	veg::Vec<I> row_indices;
 	veg::Vec<T> values;
 };
-
 template <typename T, typename I>
 struct Workspace {
 
 	struct /* NOLINT */ {
 		// temporary allocations
-		veg::Vec<veg::mem::byte> storage;// la mémoire de la stack, et les req déterminent sa taille 
+		veg::Vec<veg::mem::byte> storage;// memory of the stack with the requirements req which determines its size.
 		Ldlt<T,I> ldl;
 		bool do_ldlt;
 		bool do_symbolic_fact;
@@ -118,24 +119,33 @@ struct Workspace {
 		veg::Vec<I> kkt_nnz_counts;
 
 		// stored in unique_ptr because we need a stable address
-		std::unique_ptr<detail::AugmentedKkt<T, I>> matrix_free_kkt; // view sur la partie active de la KKt (incluant les régularisations)
+		std::unique_ptr<detail::AugmentedKkt<T, I>> matrix_free_kkt; // view on active part of the KKT which includes the regularizations 
 		std::unique_ptr<Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>>
-				matrix_free_solver; // QUESTION: --> check eigen ; pas de facto; méthode qui prend en entrée un vecteur; et basé sur des  produits matrices vecteurs
+				matrix_free_solver; //eigen based method which takes in entry vector, and performs matrix vector products
 
 		auto stack_mut() -> veg::dynstack::DynStackMut {
 			return {
 					veg::from_slice_mut,
 					storage.as_mut(),
 			}; 
-		}// exploite toute la mémoire disponible dans storage
+		}// exploits all available memory in storage 
 
 	} internal;
 
 	isize lnnz;
-
+	/*!
+	 * Constructor using the symbolic factorization.
+	 * @param results solver's results.
+	 * @param data solver's model.
+	 * @param settings solver's settings.
+	 * @param precond_req storage requirements for the solver's preconditioner.
+	 * @param H symbolic structure of the quadratic cost input defining the QP model.
+	 * @param A symbolic structure of the equality constraint matrix input defining the QP model.
+	 * @param C symbolic structure of the inequality constraint matrix input defining the QP model.
+	 */
 	void setup_symbolic_factorizaton(
 			Results<T>& results,
 			Model<T, I>& data,
@@ -251,7 +261,7 @@ struct Workspace {
 					data.kkt_row_indices.ptr(),
 			};
 			linearsolver::sparse::factorize_symbolic_non_zeros( //
-					ldl.col_ptrs.ptr_mut() + 1,//réimplémente col counts; pour avoir la version matrix free aussi
+					ldl.col_ptrs.ptr_mut() + 1,// reimplements col counts to get the matrix free version as well
 					etree_ptr,
 					ldl.perm_inv.ptr_mut(),
 					static_cast<I const*>(nullptr),
@@ -281,7 +291,16 @@ struct Workspace {
 		
 		internal.do_symbolic_fact = false;
 	}
-
+	/*!
+	 * Constructor.
+	 * @param qp view on the qp problem.
+	 * @param results solver's results.
+	 * @param data solver's model.
+	 * @param settings solver's settings.
+	 * @param execute_or_not boolean option for execturing or not the preconditioner for scaling the problem (and reduce its ill conditioning).
+	 * @param precond preconditioner chosen for the solver.
+	 * @param precond_req storage requirements for the solver's preconditioner.
+	 */
 	template <typename P>
 	void setup_impl(
 			QpView<T, I> qp,
@@ -363,7 +382,7 @@ struct Workspace {
 					usize col_end = m.col_end(j);
 
 					kktp[col + 1] =
-							checked_non_negative_plus(kktp[col], I(col_end - col_start));// QUESTION: que fait la fonction?
+							checked_non_negative_plus(kktp[col], I(col_end - col_start));
 					++col;
 
 					for (usize p = col_start; p < col_end; ++p) {
@@ -372,7 +391,7 @@ struct Workspace {
 							VEG_ASSERT(i <= j);
 						}
 
-						kkti[pos] = veg::nb::narrow<I>{}(i); // QUESTION: que fait la fonction?
+						kkti[pos] = veg::nb::narrow<I>{}(i); 
 						kktx[pos] = mx[p];
 
 						++pos;
@@ -429,8 +448,8 @@ struct Workspace {
 					stack);
 
 			auto pcol_ptrs = ldl.col_ptrs.ptr_mut(); 
-			pcol_ptrs[0] = I(0);//pcol_ptrs +1: pointeur vers nbr d'elts non nuls par colonne de ldl
-			// besoin de calculer sa somme cumulative plus bas et déterminer s'il y a un overflow
+			pcol_ptrs[0] = I(0);//pcol_ptrs +1: pointor towards the nbr of non zero elts per column of the ldlt 
+			// we need to compute its cumulative sum below to determine if there could be an overflow
 
 			using veg::u64;
 			u64 acc = 0;
@@ -501,8 +520,8 @@ struct Workspace {
 									}),
 							})
 						: PROX_QP_ALL_OF({
-									SR::with_len(itag, 0), // calcule l'espace nécessaire pour stocker n elts de type I (n ici = 0)
-									SR::with_len(xtag, 0), // calcule l'espace nécessaire pour stocker n elts de type T (n ici = 0)
+									SR::with_len(itag, 0), // compute necessary space for storing n elts of type I (n = 0 here)
+									SR::with_len(xtag, 0), // compute necessary space for storing n elts of type T (n = 0 here)
 							});
 
 		auto x_vec = [&](isize n) noexcept -> StackReq {
@@ -602,24 +621,24 @@ struct Workspace {
 						}),
 				});
 
-		storage.resize_for_overwrite(req.alloc_req()); // taille maximale de storage
-		// storage.resize(n) si on fait deux fois avec n, la deuxième fois il ne se passe rien
+		storage.resize_for_overwrite(req.alloc_req()); // defines the maximal storage size 
+		// storage.resize(n): if it is done twice in a row, the second times it does nothing, as the same resize has been asked
 
 		// preconditioner
 		auto kkt = data.kkt_mut();
-		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n); //  top_rows_mut_unchecked: prend view matrice sparse, donne view sur les n premières lignes ; la fonction suppose que toutes les autres lignes sont nulles
+		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n); //  top_rows_mut_unchecked: take a view of sparse matrix for n first lines ; the function assumes all others lines are zeros;
 		/*
 			H AT CT
 			A 
 			C
 
-			on stocke que partie triangulaire supérieure
-			donc
+			here we store the upper triangular part below
+
 			tirSup(H) AT CT
 			0 0 0 
 			0 0 0 
 
-			veg::unsafe:  indicateur, la fonction est dangeureuse; si on respect pas la condition on ne sais pas ce qu'il se passe
+			veg::unsafe:  precises that the function has undefined behavior if upper condition is not respected.
 		*/
 
 		linearsolver::sparse::MatMut<T, I> H_scaled =
@@ -655,7 +674,7 @@ struct Workspace {
 				linearsolver::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
-				data.H_nnz + data.A_nnz,// not necessarily correct (dépend initial guess) but variable not used for matrix vector product in augmented KKT for Min res algorithm
+				data.H_nnz + data.A_nnz,// these variables are not used for the matrix vector product in augmented KKT with Min res algorithm (to be exact, it should depend of the initial guess)
 				kkt.col_ptrs_mut(),
 				kkt_nnz_counts.ptr_mut(),
 				kkt.row_indices_mut(),

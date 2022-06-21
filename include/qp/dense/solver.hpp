@@ -327,10 +327,10 @@ void bcl_update(
 
 		new_bcl_mu_in = std::max(
 				qpresults.info.mu_in * qpsettings.mu_update_factor,
-				qpsettings.mu_max_in);
+				qpsettings.mu_min_in);
 		new_bcl_mu_eq = std::max(
 				qpresults.info.mu_eq * qpsettings.mu_update_factor,
-				qpsettings.mu_max_eq);
+				qpsettings.mu_min_eq);
 		new_bcl_mu_in_inv = std::min(
 				qpresults.info.mu_in_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_in_inv);
@@ -385,10 +385,10 @@ void Martinez_update(
 
 		new_bcl_mu_in = std::max(
 				qpresults.info.mu_in * qpsettings.mu_update_factor,
-				qpsettings.mu_max_in);
+				qpsettings.mu_min_in);
 		new_bcl_mu_eq = std::max(
 				qpresults.info.mu_eq * qpsettings.mu_update_factor,
-				qpsettings.mu_max_eq);
+				qpsettings.mu_min_eq);
 		new_bcl_mu_in_inv = std::min(
 				qpresults.info.mu_in_inv * qpsettings.mu_update_inv_factor,
 				qpsettings.mu_max_in_inv);

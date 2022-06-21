@@ -982,10 +982,10 @@ void qp_solve(
 					z_e = z_prev_e;
 					new_bcl_mu_in = std::max(
 							results.info.mu_in * settings.mu_update_factor,
-							settings.mu_max_in);
+							settings.mu_min_in);
 					new_bcl_mu_eq = std::max(
 							results.info.mu_eq * settings.mu_update_factor,
-							settings.mu_max_eq);
+							settings.mu_min_eq);
 
 					new_bcl_mu_in_inv = std::min(
 							results.info.mu_in_inv * settings.mu_update_inv_factor,

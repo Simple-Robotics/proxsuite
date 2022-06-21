@@ -11,7 +11,9 @@
 
 namespace proxsuite {
 namespace qp {
-
+/*!
+ * Settings class of which defines the parameters used by the solver (and its preconditioner).
+*/
 template <typename T>
 struct Settings {
 	T alpha_bcl;
@@ -20,8 +22,8 @@ struct Settings {
 	T refactor_dual_feasibility_threshold;
 	T refactor_rho_threshold;
 
-	T mu_max_eq;
-	T mu_max_in;
+	T mu_min_eq;
+	T mu_min_in;
 	T mu_max_eq_inv;
 	T mu_max_in_inv;
 
@@ -51,14 +53,46 @@ struct Settings {
 	isize preconditioner_max_iter;
 	T preconditioner_accuracy;
 	bool bcl_update;
-
+	/*!
+	 * Default constructor.
+	 * @param alpha_bcl_ alpha parameter of the BCL algorithm. 
+	 * @param beta_bcl_ beta parameter of the BCL algorithm. 
+	 * @param refactor_dual_feasibility_threshold_ threshold above which refactorization is performed to change rho parameter.
+	 * @param refactor_rho_threshold_ new rho parameter used if the refactor_dual_feasibility_threshold_ condition has been satisfied.
+	 * @param mu_min_eq_ minimal authorized value for mu_eq.
+	 * @param mu_min_in_ minimal authorized value for mu_in.
+	 * @param mu_max_eq_inv_ maximal authorized value for the inverse of mu_eq_inv.
+	 * @param mu_max_in_inv_ maximal authorized value for the inverse of mu_in_inv.
+	 * @param mu_update_factor_ update factor used for updating mu_eq and mu_in.
+	 * @param mu_update_inv_factor_ update factor used for updating mu_eq_inv and mu_in_inv.
+	 * @param cold_reset_mu_eq_ value used for cold restarting mu_eq.
+	 * @param cold_reset_mu_in_ value used for cold restarting mu_in.
+	 * @param cold_reset_mu_eq_inv_ value used for cold restarting mu_eq_inv.
+	 * @param cold_reset_mu_in_inv_ value used for cold restarting mu_in_inv.
+	 * @param eps_abs_ asbolute stopping criterion of the solver.
+	 * @param eps_rel_ relative stopping criterion of the solver.
+	 * @param max_iter_ maximal number of authorized iteration.
+	 * @param max_iter_in_ maximal number of authorized iterations for an inner loop.
+	 * @param nb_iterative_refinement_ number of iterative refinements.
+	 * @param eps_refact_ threshold value for refactorizing the ldlt factorization in the iterative refinement loop.
+	 * @param VERBOSE if set to true, the solver prints information at each loop. 
+	 * @param initial_guess_ sets the initial guess option for initilizing x, y and z.
+	 * @param update_preconditioner_ If set to true, the preconditioner will be re-derived with the update method.
+	 * @param compute_preconditioner_ If set to true, the preconditioner will be derived with the init method.
+	 * @param compute_timings_ If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
+	 * @param preconditioner_max_iter_ maximal number of authorized iterations for the preconditioner.
+	 * @param preconditioner_accuracy_ accuracy level of the preconditioner.
+	 * @param eps_primal_inf_ threshold under which primal infeasibility is detected.
+	 * @param eps_dual_inf_ threshold under which dual infeasibility is detected.
+	 * @param bcl_update_ if set to true, BCL strategy is used for calibrating mu_eq and mu_in. If set to false, a strategy developped by Martinez & al is used.
+	 */
 	Settings(
 			T alpha_bcl_ = 0.1,
 			T beta_bcl_ = 0.9,
 			T refactor_dual_feasibility_threshold_ = 1e-2,
 			T refactor_rho_threshold_ = 1e-7,
-			T mu_max_eq_ = 1e-9,
-			T mu_max_in_ = 1e-8,
+			T mu_min_eq_ = 1e-9,
+			T mu_min_in_ = 1e-8,
 			T mu_max_eq_inv_ = 1e9,
 			T mu_max_in_inv_ = 1e8,
 			T mu_update_factor_ = 0.1,
@@ -88,8 +122,8 @@ struct Settings {
 				refactor_dual_feasibility_threshold(
 						refactor_dual_feasibility_threshold_),
 				refactor_rho_threshold(refactor_rho_threshold_),
-				mu_max_eq(mu_max_eq_),
-				mu_max_in(mu_max_in_),
+				mu_min_eq(mu_min_eq_),
+				mu_min_in(mu_min_in_),
 				mu_max_eq_inv(mu_max_eq_inv_),
 				mu_max_in_inv(mu_max_in_inv_),
 				mu_update_factor(mu_update_factor_),

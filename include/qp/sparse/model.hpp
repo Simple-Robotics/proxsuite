@@ -8,7 +8,9 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
-
+/*!
+ * Model class of the sparse solver storing the QP problem structure.
+*/
 template <typename T, typename I>
 struct Model {
 	isize dim;
@@ -32,6 +34,9 @@ struct Model {
 	Eigen::Matrix<T, Eigen::Dynamic, 1> l;
 	Eigen::Matrix<T, Eigen::Dynamic, 1> u;
 
+	/*!
+	 * Returns the current (scaled) KKT matrix of the problem.
+	 */
 	auto kkt() const -> linearsolver::sparse::MatRef<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;
 		auto nnz =
@@ -47,6 +52,9 @@ struct Model {
 				kkt_values.ptr(),
 		};
 	}
+	/*!
+	 * Returns the current (scaled) KKT matrix of the problem (mutable form).
+	 */
 	auto kkt_mut() -> linearsolver::sparse::MatMut<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;
 		auto nnz =
@@ -62,7 +70,9 @@ struct Model {
 				kkt_values.ptr_mut(),
 		};
 	}
-
+	/*!
+	 * Returns the original (unscaled) KKT matrix of the problem.
+	 */
 	auto kkt_unscaled() const -> linearsolver::sparse::MatRef<T, I> {
 		auto n_tot = kkt_col_ptrs_unscaled.len() - 1;
 		auto nnz =
@@ -78,6 +88,9 @@ struct Model {
 				kkt_values_unscaled.ptr(),
 		};
 	}
+	/*!
+	 * Returns the original (unscaled) KKT matrix of the problem (mutable form).
+	 */
 	auto kkt_mut_unscaled() -> linearsolver::sparse::MatMut<T, I> {
 		auto n_tot = kkt_col_ptrs_unscaled.len() - 1;
 		auto nnz =

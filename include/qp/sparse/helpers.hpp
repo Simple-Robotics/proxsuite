@@ -86,11 +86,19 @@ void warm_start(
 					settings.initial_guess = InitialGuessStatus::WARM_START;
 		}
 	}	
-
-	
-
 }
 
+/*!
+* Setups the QP solver model.
+*
+* @param qp view of the QP model.
+* @param work solver workspace.
+* @param settings solver settings.
+* @param data solver model.
+* @param results solver result.
+* @param precond preconditioner.
+* @param preconditioner_status bool variable for deciding whether executing the preconditioning algorithm, or keeping previous preconditioning variables, or using the identity preconditioner (i.e., no preconditioner).
+*/
 template <typename T, typename I, typename P>
 void qp_setup(
 		QpView<T, I> qp,
@@ -136,7 +144,7 @@ void qp_setup(
 		execute_preconditioner_or_not = false;
 		break;
 	}
-	// performs scaling according to options chosen + store model value
+	// performs scaling according to options chosen + stored model value
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					results.cleanup(); 
@@ -208,7 +216,12 @@ void qp_setup(
                 }
 	}
 }
-
+/*!
+* Checks whether matrix b has the same sparsity structure as matrix a.
+*
+* @param a matrix.
+* @param b matrix.
+*/
 template <typename T, typename I>
 auto have_same_structure(linearsolver::sparse::MatRef<T, I> a, linearsolver::sparse::MatRef<T, I> b) -> bool {
   if (a.nrows() != b.nrows()) return false;
@@ -224,7 +237,12 @@ auto have_same_structure(linearsolver::sparse::MatRef<T, I> a, linearsolver::spa
   }
   return true;
 }
-
+/*!
+* Copies matrix b elements into matrix a.
+*
+* @param a matrix.
+* @param b matrix.
+*/
 template <typename T, typename I>
 void copy(linearsolver::sparse::MatMut<T, I> a, linearsolver::sparse::MatRef<T, I> b) {
   // assume same sparsity structure for a and b

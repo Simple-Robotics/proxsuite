@@ -89,7 +89,12 @@ struct QP {
 	Model<T, I> model;
 	Workspace<T, I> work;
 	preconditioner::RuizEquilibration<T, I> ruiz;
-
+	/*!
+	 * Default constructor using the dimension of the matrices in entry.
+	 * @param _dim primal variable dimension.
+	 * @param _n_eq number of equality constraints.
+	 * @param _n_in number of inequality constraints.
+	 */
 	QP(isize _dim, isize _n_eq, isize _n_in)
 			: results(_dim, _n_eq, _n_in),
 				settings(),
@@ -100,7 +105,12 @@ struct QP {
 			work.timer.stop();
 			work.internal.do_symbolic_fact=true;
 				}
-
+	/*!
+	 * Default constructor using the sparsity structure of the matrices in entry.
+	 * @param H boolean mask of the quadratic cost input defining the QP model.
+	 * @param A boolean mask of the equality constraint matrix input defining the QP model.
+	 * @param C boolean mask of the inequality constraint matrix input defining the QP model.
+	 */
 	QP(const SparseMat<bool, I>& H,const SparseMat<bool,I>& A,const SparseMat<bool,I>& C)
 			:QP( H.rows(),A.rows(),C.rows()){
 			isize _dim = H.rows();
@@ -114,10 +124,19 @@ struct QP {
 			linearsolver::sparse::MatRef<bool,I> CTref = {linearsolver::sparse::from_eigen, CT};
 			work.setup_symbolic_factorizaton(results,model,settings,preconditioner::RuizEquilibration<T, I>::scale_qp_in_place_req(veg::Tag<T>{}, _dim, _n_eq, _n_in),
 			Href.symbolic(),ATref.symbolic(),CTref.symbolic());
-		
 		}
 
-
+	/*!
+	 * Setups the QP model (with sparse matrix format) and equilibrates it. 
+	 * @param H quadratic cost input defining the QP model.
+	 * @param g linear cost input defining the QP model.
+	 * @param A equality constraint matrix input defining the QP model.
+	 * @param b equality constraint vector input defining the QP model.
+	 * @param C inequality constraint matrix input defining the QP model.
+	 * @param u lower inequality constraint vector input defining the QP model.
+	 * @param l lower inequality constraint vector input defining the QP model.
+	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
+	 */
 	void init(
 			const tl::optional<SparseMat<T, I>> H,
 			tl::optional<VecRef<T>> g,
@@ -154,7 +173,18 @@ struct QP {
 			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
 		}
 	};
-	
+	/*!
+	 * Updates the QP model (with sparse matrix format) and re-equilibrates it if specified by the user. 
+	 * If matrices in entry are not null, the update is effective only if the sparsity structure of entry is the same as the one used for the initialization.
+	 * @param H_ quadratic cost input defining the QP model.
+	 * @param g_ linear cost input defining the QP model.
+	 * @param A_ equality constraint matrix input defining the QP model.
+	 * @param b_ equality constraint vector input defining the QP model.
+	 * @param C_ inequality constraint matrix input defining the QP model.
+	 * @param u_ lower inequality constraint vector input defining the QP model.
+	 * @param l_ lower inequality constraint vector input defining the QP model.
+	 * @param update_preconditioner_ bool parameter for updating or not the preconditioner and the associated scaled model.
+	 */
 	void update(const tl::optional<SparseMat<T, I>> H_,
 			tl::optional<VecRef<T>> g_,
 			const tl::optional<SparseMat<T, I>> A_,
@@ -260,7 +290,6 @@ struct QP {
 		}
 		
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
-		//std::cout << "  H_triu at update " << H_triu << std::endl;
 		sparse::QpView<T, I> qp = {
 				{linearsolver::sparse::from_eigen, H_triu},
 				{linearsolver::sparse::from_eigen, model.g},
@@ -276,7 +305,9 @@ struct QP {
 		}
 	};
 	
-
+	/*!
+	 * Solves the QP problem using PRXOQP algorithm.
+	 */
 	void solve() {
 		qp_solve( //
 				results,
@@ -285,6 +316,12 @@ struct QP {
 				work,
 				ruiz);
 	};
+	/*!
+	 * Solves the QP problem using PROXQP algorithm and a warm start.
+	 * @param x primal warm start.
+	 * @param y dual equality warm start.
+	 * @param z dual inequality warm start.
+	 */
 	void solve(tl::optional<VecRef<T>> x,
 			tl::optional<VecRef<T>> y,
 			tl::optional<VecRef<T>> z) {
@@ -296,11 +333,19 @@ struct QP {
 				work,
 				ruiz);
 	};
-
+	/*!
+	 * Updates proximal parameters of the solver.
+	 * @param rho new primal proximal parameter.
+	 * @param mu_eq new dual equality constrained proximal parameter.
+	 * @param mu_in new dual inequality constrained proximal parameter.
+	 */
 	void update_proximal_parameters(
 			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
 		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
+	/*!
+	 * Clean-ups solver's results.
+	 */
 	void cleanup() { results.cleanup(); }
 };
 

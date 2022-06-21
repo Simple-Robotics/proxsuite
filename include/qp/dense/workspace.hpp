@@ -13,6 +13,9 @@
 namespace proxsuite {
 namespace qp {
 namespace dense {
+/*!
+ * Workspace class of the dense solver.
+*/
 template <typename T>
 struct Workspace {
 
