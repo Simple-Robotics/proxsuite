@@ -33,13 +33,13 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 	}
 
 	qp::dense::QP<Scalar> Qp{dim,n_eq,n_in}; // creating QP object
-	Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 
 	auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
-			Qp.work.ruiz.delta.head(dim).asDiagonal());
+			Qp.ruiz.delta.head(dim).asDiagonal());
 	auto tail = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
-			Qp.work.ruiz.delta.tail(n_eq).asDiagonal());
-	auto c = Qp.work.ruiz.c;
+			Qp.ruiz.delta.tail(n_eq).asDiagonal());
+	auto c = Qp.ruiz.c;
 
 	auto const& H = qp.H;
 	auto const& g = qp.g;

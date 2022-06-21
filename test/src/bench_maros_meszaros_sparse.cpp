@@ -114,29 +114,13 @@ void bench_maros_meszaros(benchmark::State& s, char const* file) {
 					{linearsolver::sparse::from_eigen, u},
 			};
 
-			qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
-					n,
-					n_eq + n_in,
-					1e-3,
-					10,
-					qp::sparse::preconditioner::Symmetry::UPPER,
-			};
-
-			Settings<T> settings;
-			sparse::Workspace<T, I> work;
-			sparse::Data<T, I> data;
-			Results<T> results;
-			auto& x = results.x;
-			auto& y = results.y;
-			auto& z = results.z;
-
-			x.setZero();
-			y.setZero();
-			z.setZero();
-
-			sparse::qp_setup(qp, results, data, work, ruiz);
+			proxsuite::qp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
+			Qp.settings.max_iter = 1.E6;
+			Qp.settings.verbose = false;
+			auto& eps = Qp.settings.eps_abs;
+			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			s.ResumeTiming();
-			sparse::qp_solve(results, data, settings, work, ruiz);
+			Qp.solve();
 		}
 	} else {
 		for (auto _ : s) {

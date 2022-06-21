@@ -50,6 +50,7 @@ struct Settings {
 	T eps_dual_inf;
 	isize preconditioner_max_iter;
 	T preconditioner_accuracy;
+	bool bcl_update;
 
 	Settings(
 			T alpha_bcl_ = 0.1,
@@ -80,7 +81,8 @@ struct Settings {
 			isize preconditioner_max_iter_ = 10,
 			T preconditioner_accuracy_ = 1.e-3,
 			T eps_primal_inf_ = 1.E-14,
-			T eps_dual_inf_ = 1.E-14)
+			T eps_dual_inf_ = 1.E-14,
+			bool bcl_update_ = true)
 			: alpha_bcl(alpha_bcl_),
 				beta_bcl(beta_bcl_),
 				refactor_dual_feasibility_threshold(
@@ -110,7 +112,8 @@ struct Settings {
 				eps_primal_inf(eps_primal_inf_),
 				eps_dual_inf(eps_dual_inf_),
 				preconditioner_max_iter(preconditioner_max_iter_),
-				preconditioner_accuracy(preconditioner_accuracy_) {}
+				preconditioner_accuracy(preconditioner_accuracy_),
+				bcl_update(bcl_update_) {}
 };
 
 } // namespace qp

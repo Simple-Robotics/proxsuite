@@ -342,6 +342,62 @@ void bcl_update(
 	}
 }
 /*!
+* Martinez rule for updating penalization parameters and accuracy variables.
+*
+* @param qpwork solver workspace.
+* @param qpsettings solver settings.
+* @param qpresults solver results.
+* @param primal_feasibility_lhs_new primal infeasibility.
+* @param bcl_eta_ext BCL variable measuring whether the precisely infeasibility is too large or not.
+* @param bcl_eta_in BCL variable setting the accuracy required for solving an associated subproblem.
+* @param bcl_eta_ext_init initial BCL bcl_eta_ext variable value.
+* @param eps_in_min minimal possible value for bcl_eta_in.
+* @param new_bcl_mu_in new value of the inequality constrained penalization parameter.
+* @param new_bcl_mu_eq new value of the equality constrained penalization parameter.
+* @param new_bcl_mu_in_inv new value of the inequality constrained penalization parameter (inverse form).
+* @param new_bcl_mu_eq_inv new value of the equality constrained penalization parameter (inverse form).
+*/
+template <typename T>
+void Martinez_update(
+		const Settings<T>& qpsettings,
+		Results<T>& qpresults,
+		Workspace<T>& qpwork,
+		T& primal_feasibility_lhs_new,
+		T& primal_feasibility_lhs_old,
+		T& bcl_eta_in,
+		T eps_in_min,
+
+		T& new_bcl_mu_in,
+		T& new_bcl_mu_eq,
+		T& new_bcl_mu_in_inv,
+		T& new_bcl_mu_eq_inv
+
+) {
+	bcl_eta_in = std::max(bcl_eta_in * 0.1, eps_in_min);
+	if (primal_feasibility_lhs_new <= 0.95 * primal_feasibility_lhs_old) {
+		if (qpsettings.verbose) {
+			std::cout << "good step" << std::endl;
+		}
+	} else {
+		if (qpsettings.verbose) {
+			std::cout << "bad step" << std::endl;
+		}
+
+		new_bcl_mu_in = std::max(
+				qpresults.info.mu_in * qpsettings.mu_update_factor,
+				qpsettings.mu_max_in);
+		new_bcl_mu_eq = std::max(
+				qpresults.info.mu_eq * qpsettings.mu_update_factor,
+				qpsettings.mu_max_eq);
+		new_bcl_mu_in_inv = std::min(
+				qpresults.info.mu_in_inv * qpsettings.mu_update_inv_factor,
+				qpsettings.mu_max_in_inv);
+		new_bcl_mu_eq_inv = std::min(
+				qpresults.info.mu_eq_inv * qpsettings.mu_update_inv_factor,
+				qpsettings.mu_max_eq_inv);
+	}
+}
+/*!
 * Derives the stopping criterion value used by the Newton semismooth algorithm to minimize the primal-dual augmented Lagrangian function.
 *
 * @param qpwork solver workspace.
@@ -866,24 +922,37 @@ void qp_solve( //
 				break;
 			}
 		}
+		if (qpsettings.bcl_update){
+			bcl_update(
+					qpsettings,
+					qpresults,
+					qpwork,
+					primal_feasibility_lhs_new,
+					bcl_eta_ext,
+					bcl_eta_in,
+					bcl_eta_ext_init,
+					eps_in_min,
 
-		bcl_update(
-				qpsettings,
-				qpresults,
-				qpwork,
-				primal_feasibility_lhs_new,
-				bcl_eta_ext,
-				bcl_eta_in,
-				bcl_eta_ext_init,
-				eps_in_min,
-
-				new_bcl_mu_in,
-				new_bcl_mu_eq,
-				new_bcl_mu_in_inv,
-				new_bcl_mu_eq_inv
-
-		);
-
+					new_bcl_mu_in,
+					new_bcl_mu_eq,
+					new_bcl_mu_in_inv,
+					new_bcl_mu_eq_inv
+			);
+		} else{
+			Martinez_update(
+					qpsettings,
+					qpresults,
+					qpwork,
+					primal_feasibility_lhs_new,
+					primal_feasibility_lhs,
+					bcl_eta_in,
+					eps_in_min,
+					new_bcl_mu_in,
+					new_bcl_mu_eq,
+					new_bcl_mu_in_inv,
+					new_bcl_mu_eq_inv
+			);
+		}
 		// COLD RESTART
 
 		T dual_feasibility_lhs_new(dual_feasibility_lhs);

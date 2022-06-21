@@ -55,6 +55,9 @@ TEST_CASE("upper part") {
 	VEG_MAKE_STACK(
 			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 
+	bool execute_preconditioner = true;
+	proxsuite::qp::Settings<T> settings;
+
 	ruiz.scale_qp_in_place(
 			{
 					{linearsolver::sparse::from_eigen, H_scaled},
@@ -65,6 +68,8 @@ TEST_CASE("upper part") {
 					{linearsolver::sparse::from_eigen, l_scaled},
 					{linearsolver::sparse::from_eigen, u_scaled},
 			},
+			execute_preconditioner,
+			settings,
 			stack);
 
 	ruiz_dense.scale_qp_in_place(
@@ -77,6 +82,8 @@ TEST_CASE("upper part") {
 					{qp::from_eigen, l_scaled_dense},
 					{qp::from_eigen, u_scaled_dense},
 			},
+			execute_preconditioner,
+			settings,
 			stack);
 
 	CHECK(H_scaled.toDense() == (H_scaled_dense));
@@ -135,7 +142,8 @@ TEST_CASE("lower part") {
 	};
 	VEG_MAKE_STACK(
 			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
-
+	bool execute_preconditioner = true;
+	proxsuite::qp::Settings<T> settings;
 	ruiz.scale_qp_in_place(
 			{
 					{linearsolver::sparse::from_eigen, H_scaled},
@@ -146,6 +154,8 @@ TEST_CASE("lower part") {
 					{linearsolver::sparse::from_eigen, l_scaled},
 					{linearsolver::sparse::from_eigen, u_scaled},
 			},
+			execute_preconditioner,
+			settings,
 			stack);
 
 	ruiz_dense.scale_qp_in_place(
@@ -158,6 +168,8 @@ TEST_CASE("lower part") {
 					{qp::from_eigen, l_scaled_dense},
 					{qp::from_eigen, u_scaled_dense},
 			},
+			execute_preconditioner,
+			settings,
 			stack);
 
 	CHECK(H_scaled.toDense() == (H_scaled_dense));

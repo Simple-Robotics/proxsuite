@@ -647,7 +647,7 @@ struct Workspace {
 		};
 		
 		DynStackMut stack = stack_mut();
-		precond.scale_qp_in_place(qp_scaled, settings, execute_or_not, stack);
+		precond.scale_qp_in_place(qp_scaled, execute_or_not, settings, stack);
 
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
 

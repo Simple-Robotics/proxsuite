@@ -101,6 +101,14 @@ TEST_CASE("ldlt: factorize compressed") {
 	Vec<I> col_ptrs;
 	Vec<I> row_ind;
 	Vec<T> vals;
+
+	/*
+	https://eigen.tuxfamily.org/dox/group__TutorialSparse.html
+	Values: vals	22	7	3	5	14	1	17	8
+	InnerIndices:row_ind	1	2	0	2	4	2	1	4
+	OuterStarts:col_ptrs	0	2	4	5	6	8
+	*/
+
 	//csc format
 	for (auto c : {0, 1, 2, 4, 5, 6, 9, 11, 14, 16, 21, 27}) {
 		col_ptrs.push(I(
@@ -297,10 +305,20 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 		vals_compressed[col_ptrs_compressed[i + 1] - 1] = 10 * (T(20) - T(i));
 	}
 
+
 	Vec<I> col_ptrs; // format non compressé
 	Vec<I> nnz_per_col;
 	Vec<I> row_ind;
 	Vec<T> vals;
+
+	/*
+	https://eigen.tuxfamily.org/dox/group__TutorialSparse.html
+	Values:  vals	22	7	_	3	5	14	_	_	1	_	17	8 --> 
+	InnerIndices: row_ind	1	2	_	0	2	4	_	_	2	_	1	4 --> 
+	OuterStarts:col_ptrs	0	3	5	8	10	12 -->
+	InnerNNZs: nnz_per_col
+	*/
+
 	for (isize j = 0; j < n; ++j) {
 		nnz_per_col.push(col_ptrs_compressed[j + 1] - col_ptrs_compressed[j]);
 	}
@@ -311,7 +329,7 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 	vals.resize_for_overwrite(n * n);
 
 	isize src_index = 0; // src -->source
-	// copie matrice indice lignes et valeur du format compreessé au non compressé
+	// copie matrice indice lignes et valeur du format compressé au non compressé
 	for (isize j = 0; j < n; ++j) {
 		isize dest_index = col_ptrs[j];
 		for (isize k = 0; k < nnz_per_col[j]; ++k) {
@@ -328,7 +346,7 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 			n,
 			nnz,
 			col_ptrs.ptr(),
-			nnz_per_col.ptr(), // version non compressé
+			nnz_per_col.ptr(), // version non compressée
 			row_ind.ptr(),
 			vals.ptr(),
 	};
@@ -452,7 +470,7 @@ TEST_CASE("ldlt: row mod") {
 	for (isize i = 0; i < nnz; ++i) {
 		vals_compressed.push(T(i));
 	}
-	for (isize i = 0; i < n; ++i) {
+	for (isize i = 0; i < n; ++i) { 
 		// sort in decreasing order so eigen doesn't permute them
 		vals_compressed[col_ptrs_compressed[i + 1] - 1] = 10 * (T(20) - T(i));
 	}
@@ -586,7 +604,7 @@ TEST_CASE("ldlt: row mod") {
 			w_values.ptr(),
 	};
 
-	ld = add_row(ld, etree.ptr_mut(), perm_inv.ptr(), 2, w, 180, stack);
+	ld = add_row(ld, etree.ptr_mut(), perm_inv.ptr(), 2, w, 180, stack);//  2: indice de la novuelle colonne et 180: l'elt diagonale 
 	std::cout << to_eigen(ld.as_const()) << '\n' << '\n';
 	dump_reconstructed();
 }

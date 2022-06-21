@@ -13,7 +13,75 @@
 namespace proxsuite {
 namespace qp {
 namespace sparse {
+/*!
+ * Wrapper class for using proxsuite API with dense backend
+ * for solving linearly constrained convex QP problem using ProxQp algorithm.  
+ * 
+ * Example usage:
+ * ```cpp
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
+#include <qp/dense/dense.hpp>
+#include <veg/util/dbg.hpp>
+#include <test/include/util.hpp>
 
+using T = double;
+using I = c_int;
+auto main() -> int {
+
+	// Generate a random QP problem with primal variable dimension of size dim; n_eq equality constraints and n_in inequality constraints
+	ldlt_test::rand::set_seed(1);
+	qp::isize dim = 10;
+	qp::isize n_eq(dim / 4);
+	qp::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	T sparsity_factor = 0.15; // controls the sparsity of each matrix of the problem generated
+	T eps_abs = T(1e-9);
+	double p = 1.0;
+	T conditioning(10.0);
+	auto H = ldlt_test::rand::sparse_positive_definite_rand(n, conditioning, p);
+	auto g = ldlt_test::rand::vector_rand<T>(n);
+	auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p);
+	auto b = ldlt_test::rand::vector_rand<T>(n_eq);
+	auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
+	auto l = ldlt_test::rand::vector_rand<T>(n_in);
+	auto u = (l.array() + 1).matrix().eval();
+
+	qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+	Qp.settings.eps_abs = 1.E-9;
+	Qp.settings.verbose = true;
+	Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
+	Qp.solve();
+	
+	// Solve the problem
+	qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+	Qp.settings.eps_abs = 1.E-9;
+	Qp.settings.verbose = true;
+	Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
+	Qp.solve();
+
+	// Verify solution accuracy
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+			qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+					qp.C.transpose() * Qp.results.z)
+					.lpNorm<Eigen::Infinity>();
+	VEG_ASSERT(pri_res <= eps_abs);
+	VEG_ASSERT(dua_res <= eps_abs);
+
+	// Some solver statistics
+	std::cout << "------solving qp with dim: " << dim
+						<< " neq: " << n_eq << " nin: " << n_in << std::endl;
+	std::cout << "primal residual: " << pri_res << std::endl;
+	std::cout << "dual residual: " << dua_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter
+						<< std::endl;
+}
+ * ```
+ */
 template <typename T, typename I>
 struct QP {
 	Results<T> results;

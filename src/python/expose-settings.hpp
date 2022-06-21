@@ -44,7 +44,9 @@ void exposeSettings(pybind11::module_ m) {
 			.def_readwrite("compute_timings", &Settings<T>::compute_timings)
 			.def_readwrite("compute_preconditioner", &Settings<T>::compute_preconditioner)
 			.def_readwrite("update_preconditioner", &Settings<T>::update_preconditioner)
-			.def_readwrite("verbose", &Settings<T>::verbose);
+			.def_readwrite("verbose", &Settings<T>::verbose)
+			.def_readwrite("bcl_update", &Settings<T>::bcl_update)
+			;
 }
 } // namespace python
 } // namespace qp

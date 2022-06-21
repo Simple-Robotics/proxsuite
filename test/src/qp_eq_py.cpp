@@ -70,7 +70,7 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving") {
 
 		qp::dense::QP<Scalar> Qp{n,n_eq,0}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
-		Qp.setup_dense_matrices(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
+		Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 		Qp.solve();
 
 		fmt::print(
