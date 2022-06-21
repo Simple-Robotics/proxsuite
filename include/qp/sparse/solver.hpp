@@ -666,6 +666,9 @@ void qp_solve(
 			}
 			if (is_primal_feasible(primal_feasibility_lhs) &&
 			    is_dual_feasible(dual_feasibility_lhs)) {
+				results.info.pri_res = primal_feasibility_lhs;
+				results.info.dua_res = dual_feasibility_lhs;
+				results.info.status = QPSolverOutput::PROXQP_SOLVED;
 				break;
 			}
 
@@ -993,11 +996,48 @@ void qp_solve(
 						results.info.iter += iter_inner + 1;
 						return;
 					}
+
+					// compute primal and dual infeasibility criteria
+					bool is_primal_infeasible = proxsuite::qp::sparse::detail::global_primal_residual_infeasibility(
+							VectorViewMut<T>{from_eigen, ATdy},
+							VectorViewMut<T>{from_eigen, CTdz},
+							VectorViewMut<T>{from_eigen, dy},
+							VectorViewMut<T>{from_eigen, dz},
+							qp_scaled.as_const(),
+							settings,
+							precond);
+					bool is_dual_infeasible = proxsuite::qp::sparse::detail::global_dual_residual_infeasibility(
+									VectorViewMut<T>{from_eigen, Adx},
+									VectorViewMut<T>{from_eigen, Cdx},
+									VectorViewMut<T>{from_eigen, Hdx},
+									VectorViewMut<T>{from_eigen, dx},
+									qp_scaled.as_const(),
+									settings,
+									data,
+									precond);	
+					if (is_primal_infeasible) {
+						results.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+						dw_prev = dw;
+						break;
+					} else if (is_dual_infeasible) {
+						results.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+						dw_prev = dw;
+						break;
+					}
+				
 				}
 			};
 			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 			primal_dual_newton_semi_smooth();
+			if (results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
+				results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
+				// certificate of infeasibility
+				results.x = dw_prev.head(data.dim);
+				results.y = dw_prev.segment(data.dim, data.dim + data.n_eq);
+				results.z = dw_prev.tail(data.n_in);
+				break;
+			}
 			// VEG bind : met le résultat tuple de unscaled_primal_dual_residual dans (primal_feasibility_lhs_new, dual_feasibility_lhs_new) en guessant leur type via auto
 			VEG_BIND(
 					auto,

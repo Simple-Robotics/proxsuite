@@ -351,7 +351,140 @@ auto top_rows_mut_unchecked(
 			mat.values_mut(),
 	};
 }
+/*!
+* Check whether the global primal infeasibility criterion is satisfied.
+*
+* @param qp_scaled view on the scaled version of the qp problem.
+* @param qpsettings solver settings.
+* @param ruiz ruiz preconditioner.
+* @param ATdy variable used for testing global primal infeasibility criterion is satisfied.
+* @param CTdz variable used for testing global primal infeasibility criterion is satisfied.
+* @param dy variable used for testing global primal infeasibility criterion is satisfied.
+* @param dz variable used for testing global primal infeasibility criterion is satisfied.
+*/
+template <typename T,typename I, typename P>
+bool global_primal_residual_infeasibility(
+		VectorViewMut<T> ATdy,
+		VectorViewMut<T> CTdz,
+		VectorViewMut<T> dy,
+		VectorViewMut<T> dz,
+		QpView<T, I> qp_scaled,
+		const Settings<T>& qpsettings,
+		P& ruiz) {
 
+	// The problem is primal infeasible if the following four conditions hold:
+	//
+	// ||unscaled(A^Tdy)|| <= eps_p_inf ||unscaled(dy)||
+	// b^T dy <= -eps_p_inf ||unscaled(dy)||
+	// ||unscaled(C^Tdz)|| <= eps_p_inf ||unscaled(dz)||
+	// u^T [dz]_+ - l^T[-dz]_+ <= -eps_p_inf ||unscaled(dz)||
+	//
+	// the variables in entry are changed in place
+	ruiz.unscale_dual_residual_in_place(ATdy);
+	ruiz.unscale_dual_residual_in_place(CTdz);
+	T eq_inf = dy.to_eigen().dot(qp_scaled.b.to_eigen());
+	T in_inf = positive_part(dz.to_eigen()).dot(qp_scaled.u.to_eigen()) -
+	           positive_part(-dz.to_eigen()).dot(qp_scaled.l.to_eigen());
+	ruiz.unscale_dual_in_place_eq(dy);
+	ruiz.unscale_dual_in_place_in(dz);
+
+	T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
+	T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
+
+	bool res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
+	           infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
+	return res;
+}
+/*!
+* Check whether the global dual infeasibility criterion is satisfied.
+
+* @param qp_scaled view on the scaled version of the qp problem.
+* @param qpsettings solver settings.
+* @param qpmodel QP problem model as defined by the user (without any scaling performed).
+* @param ruiz ruiz preconditioner.
+* @param Adx variable used for testing global dual infeasibility criterion is satisfied.
+* @param Cdx variable used for testing global dual infeasibility criterion is satisfied.
+* @param Hdx variable used for testing global dual infeasibility criterion is satisfied.
+* @param dx variable used for testing global dual infeasibility criterion is satisfied.
+*/
+template <typename T, typename I, typename P>
+bool global_dual_residual_infeasibility(
+		VectorViewMut<T> Adx,
+		VectorViewMut<T> Cdx,
+		VectorViewMut<T> Hdx,
+		VectorViewMut<T> dx,
+		QpView<T, I> qp_scaled,
+		const Settings<T>& qpsettings,
+		const Model<T,I>& qpmodel,
+		P& ruiz) {
+
+	// The problem is dual infeasible if one of the conditions hold:
+	//
+	// FIRST
+	// ||unscaled(Adx)|| <= eps_d_inf ||unscaled(dx)||
+	// unscaled(Cdx)_i \in [-eps_d_inf,eps_d_inf] ||unscaled(dx)|| if u_i and l_i
+	// are finite 					or >= -eps_d_inf||unscaled(dx)|| if u_i = +inf 					or <=
+	// eps_d_inf||unscaled(dx)|| if l_i = -inf
+	//
+	// SECOND
+	//
+	// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c
+	// eps_d_inf  ||unscaled(dx)|| or dx^THdx <= -c eps_d_inf^2 dx the variables in
+	// entry are changed in place
+	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
+	ruiz.unscale_dual_residual_in_place(Hdx);
+	ruiz.unscale_primal_residual_in_place_eq(Adx);
+	ruiz.unscale_primal_residual_in_place_in(Cdx);
+	T gdx = (dx.to_eigen()).dot(qp_scaled.g.to_eigen());
+	ruiz.unscale_primal_in_place(dx);
+
+	T bound = infty_norm(dx.to_eigen()) * qpsettings.eps_dual_inf;
+	T bound_neg = -bound;
+
+	bool first_cond = infty_norm(Adx.to_eigen()) <= bound;
+
+	for (i64 iter = 0; iter < qpmodel.n_in; ++iter) {
+		T Cdx_i = Cdx.to_eigen()[iter];
+		if (qp_scaled.u.to_eigen()[iter] <= 1.E20 && qp_scaled.l.to_eigen()[iter] >= -1.E20) {
+			first_cond = first_cond && Cdx_i <= bound && Cdx_i >= bound_neg;
+		} else if (qp_scaled.u.to_eigen()[iter] > 1.E20) {
+			first_cond = first_cond && Cdx_i >= bound_neg;
+		} else if (qp_scaled.l.to_eigen()[iter] < -1.E20) {
+			first_cond = first_cond && Cdx_i <= bound;
+		}
+	}
+
+	bound *= ruiz.c;
+	bound_neg *= ruiz.c;
+	bool second_cond_alt1 =
+			infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
+	bound_neg *= qpsettings.eps_dual_inf;
+	bool second_cond_alt2 = dxHdx <= bound_neg;
+
+	bool res = first_cond && (second_cond_alt1 || second_cond_alt2);
+	return res;
+}
+
+/*!
+* Derives the global primal and dual residual of the QP problem for determining whether the solution is reached (at the desired accuracy).
+*
+* @param primal_residual_eq_scaled vector storing the primal equality residual.
+* @param primal_residual_in_scaled_lo vector storing the primal lower bound inequality residual.
+* @param primal_residual_in_scaled_up vector storing the primal uppder bound inequality residual.
+* @param dual_residual_scaled vector storing the dual residual.
+* @param primal_feasibility_eq_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param primal_feasibility_in_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_0 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_1 scalar variable used when using a relative stopping criterion.
+* @param dual_feasibility_rhs_3 scalar variable used when using a relative stopping criterion.
+* @param precond preconditioner.
+* @param data model of the problem.
+* @param qp_scaled view on the scaled version of the qp problem.
+* @param x_e current estimate of primal variable x.
+* @param y_e current estimate of equality constrained lagrange multiplier.
+* @param z_e current estimate of inequality constrained lagrange multiplier.
+* @param stak stack.
+*/
 template <typename T, typename I, typename P>
 auto unscaled_primal_dual_residual(
 		VecMapMut<T> primal_residual_eq_scaled,

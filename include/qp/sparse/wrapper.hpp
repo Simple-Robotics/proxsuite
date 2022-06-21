@@ -116,6 +116,10 @@ struct QP {
 	 */
 	QP(const SparseMat<bool, I>& H,const SparseMat<bool,I>& A,const SparseMat<bool,I>& C)
 			:QP( H.rows(),A.rows(),C.rows()){
+			if (settings.compute_timings){
+				work.timer.stop();
+				work.timer.start();
+			}
 			isize _dim = H.rows();
 			isize _n_eq = A.rows();
 			isize _n_in = C.rows();
@@ -127,6 +131,9 @@ struct QP {
 			linearsolver::sparse::MatRef<bool,I> CTref = {linearsolver::sparse::from_eigen, CT};
 			work.setup_symbolic_factorizaton(results,model,settings,preconditioner::RuizEquilibration<T, I>::scale_qp_in_place_req(veg::Tag<T>{}, _dim, _n_eq, _n_in),
 			Href.symbolic(),ATref.symbolic(),CTref.symbolic());
+			if (settings.compute_timings){
+				results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			}
 		}
 
 	/*!
@@ -173,7 +180,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, u.value()}};
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time += work.timer.elapsed().user; // in nanoseconds
 		}
 	};
 	/*!
