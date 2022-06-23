@@ -203,7 +203,7 @@ TEST_CASE("maros meszaros wip using the API") {
 			//proxsuite::qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			proxsuite::qp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
 			Qp.settings.max_iter = 1.E6;
-			Qp.settings.verbose = false;
+			Qp.settings.verbose = true;
 			auto& eps = Qp.settings.eps_abs;
 			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			//std::cout << "kkt before update " << Qp.model.kkt().to_eigen() << std::endl;

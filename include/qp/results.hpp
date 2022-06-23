@@ -33,7 +33,7 @@ struct Info {
 	sparse::isize iter_ext;
 	sparse::isize mu_updates;
 	sparse::isize rho_updates;
-	sparse::isize n_c; // final number of active inequalities
+	sparse::isize n_c; // final number of active inequalities ;  used only in the dense solver.
 	QPSolverOutput status;
 
 	//// timings

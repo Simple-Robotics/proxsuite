@@ -14,10 +14,81 @@
 #include <fstream>
 #include <cmath>
 #include <type_traits>
+#include <fmt/format.h>
+#include <fmt/ostream.h>
 
 namespace proxsuite {
 namespace qp {
 namespace dense {
+
+void print_line() {
+  isize HEADER_LINE_LEN(81);	
+  char the_line[HEADER_LINE_LEN + 1];
+
+  for (isize i = 0; i < HEADER_LINE_LEN; ++i){
+	the_line[i] = '-';
+  }
+  the_line[HEADER_LINE_LEN] = '\0';
+  std::cout << the_line << "\n" << std::endl;
+}
+void print_header() {
+  std::cout << "iter    objective    pri res    dua res    mu_in  \n" << std::endl;
+}
+
+template<typename T>
+void print_setup_header(const Settings<T>& settings,Results<T>& results, const Model<T>& model){
+
+  print_line();
+  std::cout  <<"                 ProxQP  -  Primal Dual Proximal QP Solver\n"
+             <<"     (c) Antoine Bambade, Sarah El Kazdadi, Adrien Taylor, Justin Carpentier\n"
+             <<"                            Inria Paris 2022        \n"
+          << std::endl;
+  print_line();
+
+  // Print variables and constraints
+  std::cout << "problem:  " << std::endl;
+  std::cout << "          variables n = " << model.dim << ", equality constraints n_eq = " << model.n_eq <<  ",\n" <<
+  "          inequality constraints n_in = "<< model.n_in << std::endl;
+
+  // Print Settings
+  std::cout << "settings: " << std::endl;
+  fmt::print("          backend = dense,\n");
+  fmt::print("          eps_abs = {}, eps_rel = {},\n",
+          settings.eps_abs,settings.eps_rel);
+  fmt::print("          eps_prim_inf = {}, eps_dual_inf = {},\n",
+          settings.eps_primal_inf, settings.eps_dual_inf);
+  fmt::print("          rho = {}, mu_in = {}, mu_eq = {},\n", results.info.rho, results.info.mu_eq, results.info.mu_in);
+  fmt::print("          max_iter = {}, max_iter_in = {},\n", settings.max_iter,settings.max_iter_in);
+
+  if (settings.compute_preconditioner) {
+    fmt::print("          scaling: on, \n");
+  } else {
+    fmt::print("          scaling: off, \n");
+  }
+  if (settings.compute_timings) {
+    fmt::print("          timings: on, \n");
+  } else {
+    fmt::print("          timings: off, \n");
+  }
+  switch (settings.initial_guess)
+  {
+  case InitialGuessStatus::WARM_START:
+	std::cout << "          initial guess: warm start. \n"<< std::endl;
+	break;
+  case InitialGuessStatus::NO_INITIAL_GUESS:
+	std::cout << "          initial guess: initial guess. \n"<< std::endl;
+	break;
+  case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:
+	std::cout << "          initial guess: warm start with previous result. \n"<< std::endl;
+	break;
+  case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:
+	std::cout << "          initial guess: cold start with previous result. \n"<< std::endl;
+	break;
+  case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:
+	std::cout << "          initial guess: equality constrained initial guess. \n"<< std::endl;
+  }
+}
+
 /*!
 * Save a matrix into a CSV format. Used for debug purposes.
 *

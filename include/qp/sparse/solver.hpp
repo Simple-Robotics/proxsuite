@@ -22,6 +22,7 @@
 #include "qp/sparse/preconditioner/identity.hpp"
 
 #include <iostream>
+#include <iomanip> 
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 
@@ -326,6 +327,10 @@ void qp_solve(
 	if (settings.compute_timings){
 		work.timer.stop();
 		work.timer.start();
+	}
+	if (settings.verbose){
+		sparse::print_setup_header(settings,results, data);
+		sparse::print_header();
 	}
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
@@ -656,13 +661,34 @@ void qp_solve(
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
-
+			/*put in debug mode
 			if (settings.verbose) {
 				std::cout << "-------- outer iteration: " << iter << " primal residual "
 									<< primal_feasibility_lhs << " dual residual "
 									<< dual_feasibility_lhs << " mu_in " << results.info.mu_in
 									<< " bcl_eta_ext " << bcl_eta_ext << " bcl_eta_in "
 									<< bcl_eta_in << std::endl;
+			}
+			*/
+			if (settings.verbose){
+				LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
+				tmp.setZero();
+				detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
+				precond.unscale_dual_residual_in_place({qp::from_eigen, tmp});
+
+				precond.unscale_primal_in_place({qp::from_eigen, x_e});
+				precond.unscale_dual_in_place_eq({qp::from_eigen, y_e});
+				precond.unscale_dual_in_place_in({qp::from_eigen, z_e});
+				tmp *= 0.5;
+				tmp += data.g;
+				results.info.objValue = (tmp).dot(x_e);
+
+				std::cout << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) 
+				<< results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
+				
+				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
+				precond.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, y_e});
+				precond.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, z_e});
 			}
 			if (is_primal_feasible(primal_feasibility_lhs) &&
 			    is_dual_feasible(dual_feasibility_lhs)) {
@@ -702,11 +728,6 @@ void qp_solve(
 						break;
 					}
 
-					if (settings.verbose) {
-						std::cout
-								<< "-------------------starting inner loop solve in place "
-								<< std::endl;
-					}
 					// primal_dual_semi_smooth_newton_step
 					{
 						LDLT_TEMP_VEC_UNINIT(bool, active_set_lo, n_in, stack);
@@ -818,11 +839,6 @@ void qp_solve(
 								kkt_active,
 								active_constraints);
 					}
-					if (settings.verbose) {
-						std::cout
-								<< "-------------------finished inner loop solve in place "
-								<< std::endl;
-					}
 					auto dx = dw.head(n);
 					auto dy = dw.segment(n, n_eq);
 					auto dz = dw.segment(n + n_eq, n_in);
@@ -840,10 +856,6 @@ void qp_solve(
 
 					T alpha = 1;
 					// primal dual line search
-					if (settings.verbose) {
-						std::cout << "-------------------starting inner loop line search "
-											<< std::endl;
-					}
 					if (n_in > 0) {
 						auto primal_dual_gradient_norm =
 								[&](T alpha_cur) -> PrimalDualGradResult<T> {
@@ -964,10 +976,6 @@ void qp_solve(
 						results.info.iter += iter_inner + 1;
 						return;
 					}
-					if (settings.verbose) {
-						std::cout << "-------------------finished inner loop line search "
-											<< std::endl;
-					}
 
 					x_e += alpha * dx;
 					y_e += alpha * dy;
@@ -987,11 +995,13 @@ void qp_solve(
 							(infty_norm(primal_residual_eq_scaled)),
 							(infty_norm(dual_residual_scaled)),
 					});
+					/* put in debug mode 
 					if (settings.verbose) {
 						std::cout << "--inner iter " << iter_inner << " iner error "
 											<< err_in << " alpha " << alpha << " infty_norm(dw) "
 											<< infty_norm(dw) << std::endl;
 					}
+					*/
 					if (err_in <= bcl_eta_in) {
 						results.info.iter += iter_inner + 1;
 						return;
@@ -1187,27 +1197,30 @@ void qp_solve(
 	tmp += data.g;
 	results.info.objValue = (tmp).dot(x_e);
 
-	if (settings.compute_timings){
+	if (settings.compute_timings) {
 		results.info.solve_time = work.timer.elapsed().user; // in nanoseconds
-		results.info.run_time = results.info.solve_time + results.info.setup_time;
+		results.info.run_time =
+				results.info.solve_time + results.info.setup_time;
 
 		if (settings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-			std::cout << "iter : " << results.info.iter << std::endl;
-			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-			std::cout << "objValue : " << results.info.objValue << std::endl;
-			std::cout << "solve_time : " << results.info.solve_time << std::endl;
+			std::cout << "iter ext:     " << results.info.iter_ext << std::endl;
+			std::cout << "iter:         " << results.info.iter << std::endl;
+			std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
+			std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
+			std::cout << "objValue:     " << results.info.objValue << std::endl;
+			std::cout << "solve time:   " << results.info.solve_time << std::endl;
+			std::cout << "--------------------------------" << std::endl;
 		}
-	}else{
+	} else {
 		if (settings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << results.info.iter_ext << std::endl;
-			std::cout << "iter : " << results.info.iter << std::endl;
-			std::cout << "mu updates : " << results.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << results.info.rho_updates << std::endl;
-			std::cout << "objValue : " << results.info.objValue << std::endl;
+			std::cout << "iter ext:     " << results.info.iter_ext << std::endl;
+			std::cout << "iter:         " << results.info.iter << std::endl;
+			std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
+			std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
+			std::cout << "objValue:     " << results.info.objValue << std::endl;
+			std::cout << "--------------------------------" << std::endl;
 		}
 	}
 

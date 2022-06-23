@@ -115,7 +115,8 @@ TEST_CASE("maros meszaros wip") {
 			
 			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
-			Qp.solve();
+			Qp.settings.verbose = true;
+			Qp.solve(); 
 			auto& x = Qp.results.x;
 			auto& y = Qp.results.y;
 			auto& z = Qp.results.z;

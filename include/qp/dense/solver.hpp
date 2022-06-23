@@ -16,6 +16,7 @@
 #include <veg/util/dynstack_alloc.hpp>
 #include <linearsolver/dense/ldlt.hpp>
 #include <chrono>
+#include <iomanip> 
 
 namespace proxsuite {
 namespace qp {
@@ -195,10 +196,12 @@ void iterative_solve_with_permut_fact( //
 
 	++it;
 	T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
+	/* to put in debuger mode
 	if (qpsettings.verbose) {
 		std::cout << "infty_norm(res) " << infty_norm(qpwork.err.head(inner_pb_dim))
 							<< std::endl;
 	}
+	*/
 	while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
 		if (it >= qpsettings.nb_iterative_refinement) {
@@ -312,16 +315,19 @@ void bcl_update(
 
 ) {
 	if (primal_feasibility_lhs_new <= bcl_eta_ext) {
+		/* TO PUT IN DEBUG MODE
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}
+		*/
 		bcl_eta_ext *= pow(qpresults.info.mu_in, qpsettings.beta_bcl);
 		bcl_eta_in = std::max(bcl_eta_in * qpresults.info.mu_in, eps_in_min);
 	} else {
+		/* TO PUT IN DEBUG MODE
 		if (qpsettings.verbose) {
 			std::cout << "bad step" << std::endl;
 		}
-
+		*/
 		qpresults.y = qpwork.y_prev;
 		qpresults.z = qpwork.z_prev;
 
@@ -375,14 +381,17 @@ void Martinez_update(
 ) {
 	bcl_eta_in = std::max(bcl_eta_in * 0.1, eps_in_min);
 	if (primal_feasibility_lhs_new <= 0.95 * primal_feasibility_lhs_old) {
+		/* TO PUT IN DEBUG MODE
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;
 		}
+		*/
 	} else {
+		/* TO PUT IN DEBUG MODE
 		if (qpsettings.verbose) {
 			std::cout << "bad step" << std::endl;
 		}
-
+		*/
 		new_bcl_mu_in = std::max(
 				qpresults.info.mu_in * qpsettings.mu_update_factor,
 				qpsettings.mu_min_in);
@@ -532,7 +541,11 @@ auto primal_dual_newton_semi_smooth(
 	 *  primal_residual_in_scaled_up = Cx-u+mu_in(z_prev)
 	 *  primal_residual_in_scaled_low = Cx-l+mu_in(z_prev)
 	 */
-
+	/* for debug
+	if (qpsettings.verbose) {
+		std::cout << "---- inner iteration    inner error    alpha ----" << std::endl;
+	}
+	*/
 	T err_in = 1.e6;
 
 	for (i64 iter = 0; iter <= qpsettings.max_iter_in; ++iter) {
@@ -577,10 +590,12 @@ auto primal_dual_newton_semi_smooth(
 
 		if (infty_norm(alpha * qpwork.dw_aug) < 1.E-11 && iter > 0) {
 			qpresults.info.iter += iter + 1;
+			/* to put in debuger mode
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(alpha_step * dx) "
 									<< infty_norm(alpha * qpwork.dw_aug) << std::endl;
 			}
+			*/
 			break;
 		}
 
@@ -602,14 +617,19 @@ auto primal_dual_newton_semi_smooth(
 				alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
 
 		err_in = dense::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
-
+		/* for debug
 		if (qpsettings.verbose) {
-			std::cout << "---it in " << iter << " projection norm " << err_in
-								<< " alpha " << alpha << std::endl;
+			std::cout << "           " << iter << "              " << std::setprecision(2) << err_in
+								<< "         "  << alpha << std::endl;
 		}
-
+		*/
 		if (err_in <= eps_int) {
 			qpresults.info.iter += iter + 1;
+			/* for debug
+			if (qpsettings.verbose) {
+				std::cout << "-------------------------------------------------" << std::endl;
+			}
+			*/
 			break;
 		}
 
@@ -635,11 +655,22 @@ auto primal_dual_newton_semi_smooth(
 
 		if (is_primal_infeasible) {
 			qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+			/* for debug
+			if (qpsettings.verbose) {
+				std::cout << "-------------------------------------------------" << std::endl;
+			}
+			*/
 			break;
 		} else if (is_dual_infeasible) {
 			qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+			/* for debug
+			if (qpsettings.verbose) {
+				std::cout << "-------------------------------------------------" << std::endl;
+			}
+			*/
 			break;
 		}
+		
 	}
 
 	return err_in;
@@ -660,7 +691,10 @@ void qp_solve( //
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
 		preconditioner::RuizEquilibration<T>& ruiz) {
-
+	if (qpsettings.verbose){
+		dense::print_setup_header(qpsettings,qpresults, qpmodel);
+		dense::print_header();
+	}
 	if (qpsettings.compute_timings) {
 		qpwork.timer.stop();
 		qpwork.timer.start();
@@ -680,7 +714,7 @@ void qp_solve( //
 		proxsuite::qp::dense::setup_factorization(qpwork, qpmodel, qpresults);
 		compute_equality_constrained_initial_guess(
 				qpwork, qpsettings, qpmodel, qpresults);
-		break;
+		break; 
 	}
 	case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
 		//!\ TODO in a quicker way
@@ -793,6 +827,7 @@ void qp_solve( //
 		bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
 
 		if (qpsettings.verbose) {
+			/* TO PUT IN DEBUG MODE
 			std::cout << "---------------it : " << iter
 								<< " primal residual : " << primal_feasibility_lhs
 								<< " dual residual : " << dual_feasibility_lhs << std::endl;
@@ -816,6 +851,32 @@ void qp_solve( //
 								<< std::endl;
 			std::cout << "is_primal_feasible " << is_primal_feasible
 								<< " is_dual_feasible " << is_dual_feasible << std::endl;
+			*/
+
+			ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
+			ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
+			ruiz.unscale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpresults.z});
+
+			{
+				// EigenAllowAlloc _{};
+				for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
+					qpresults.info.objValue +=
+							0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
+					qpresults.info.objValue +=
+							qpresults.x(j) * T(qpmodel.H.col(j)
+											.tail(qpmodel.dim - j - 1)
+											.dot(qpresults.x.tail(qpmodel.dim - j - 1)));
+				}
+				qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
+			}
+
+			std::cout << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) 
+			<< qpresults.info.objValue <<  "     " <<std::setprecision(2) << qpresults.info.pri_res  << "   " << std::setprecision(2)<< qpresults.info.dua_res  << "   "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
+			
+			ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
+			ruiz.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
+			ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpresults.z});
+
 		}
 		if (is_primal_feasible) {
 
@@ -856,9 +917,11 @@ void qp_solve( //
 
 		T err_in = primal_dual_newton_semi_smooth(
 				qpsettings, qpmodel, qpresults, qpwork, ruiz, bcl_eta_in);
+		/* to put in debuger mode
 		if (qpsettings.verbose) {
 			std::cout << " inner loop residual : " << err_in << std::endl;
 		}
+		*/
 		if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
 		    qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
 			// certificate of infeasibility
@@ -970,10 +1033,11 @@ void qp_solve( //
 		if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
 		    dual_feasibility_lhs_new >= dual_feasibility_lhs &&
 		    qpresults.info.mu_in <= T(1e-5)) {
-
+			/* to put in debuger mode
 			if (qpsettings.verbose) {
 				std::cout << "cold restart" << std::endl;
 			}
+			*/
 
 			new_bcl_mu_in = qpsettings.cold_reset_mu_in;
 			new_bcl_mu_eq = qpsettings.cold_reset_mu_eq;
@@ -1019,21 +1083,23 @@ void qp_solve( //
 
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
-			std::cout << "iter : " << qpresults.info.iter << std::endl;
-			std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
-			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
-			std::cout << "solve_time : " << qpresults.info.solve_time << std::endl;
+			std::cout << "iter ext:     " << qpresults.info.iter_ext << std::endl;
+			std::cout << "iter:         " << qpresults.info.iter << std::endl;
+			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
+			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
+			std::cout << "objValue:     " << qpresults.info.objValue << std::endl;
+			std::cout << "solve time:   " << qpresults.info.solve_time << std::endl;
+			std::cout << "--------------------------------" << std::endl;
 		}
 	} else {
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter_ext : " << qpresults.info.iter_ext << std::endl;
-			std::cout << "iter : " << qpresults.info.iter << std::endl;
-			std::cout << "mu updates : " << qpresults.info.mu_updates << std::endl;
-			std::cout << "rho_updates : " << qpresults.info.rho_updates << std::endl;
-			std::cout << "objValue : " << qpresults.info.objValue << std::endl;
+			std::cout << "iter ext:     " << qpresults.info.iter_ext << std::endl;
+			std::cout << "iter:         " << qpresults.info.iter << std::endl;
+			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
+			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
+			std::cout << "objValue:     " << qpresults.info.objValue << std::endl;
+			std::cout << "--------------------------------" << std::endl;
 		}
 	}
 }
