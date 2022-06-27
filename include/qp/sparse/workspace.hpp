@@ -309,10 +309,10 @@ struct Workspace {
 	 */
 	template <typename P>
 	void setup_impl(
-			QpView<T, I> qp,
+			const QpView<T, I> qp,
 			Results<T>& results,
 			Model<T, I>& data,
-			Settings<T>& settings,
+			const Settings<T>& settings,
 			bool execute_or_not,
 			P& precond,
 			veg::dynstack::StackReq precond_req) {
