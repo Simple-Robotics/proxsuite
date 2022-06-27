@@ -4,12 +4,6 @@
 [submodule "external/pybind11"]
 	path = external/pybind11
 	url = https://github.com/pybind/pybind11
-[submodule "external/osqp"]
-	path = external/osqp
-	url = https://github.com/osqp/osqp
-[submodule "external/qpalm"]
-	path = external/qpalm
-	url = https://github.com/Benny44/QPALM_vLADEL
 [submodule "external/optional"]
 	path = external/optional
 	url = https://github.com/TartanLlama/optional.git
