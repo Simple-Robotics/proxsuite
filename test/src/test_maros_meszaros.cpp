@@ -89,7 +89,7 @@ TEST_CASE("maros meszaros wip") {
 		isize n = qp.P.rows();
 		isize n_eq_in = qp.A.rows();
 
-		bool skip = n > 1000 || n_eq_in > 1000;
+		const bool skip = n > 1000 || n_eq_in > 1000;
 		if (skip){
 			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
 		}else{
@@ -120,6 +120,7 @@ TEST_CASE("maros meszaros wip") {
 			auto& y = Qp.results.y;
 			auto& z = Qp.results.z;
 			
+			Qp.settings.eps_abs = 2e-8;
 			auto& eps = Qp.settings.eps_abs;
 
 			T prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
@@ -151,8 +152,8 @@ TEST_CASE("maros meszaros wip") {
 
 			prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
 			prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;
-			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+			std::cout << "primal residual: " << std::max(prim_eq,prim_in) << std::endl;
+			std::cout << "dual residual: " << proxsuite::qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) << std::endl;
 
 		}
