@@ -4,7 +4,6 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <fmt/core.h>
 #include <qp/dense/dense.hpp>
 
 using namespace proxsuite::qp;
@@ -91,12 +90,11 @@ TEST_CASE("maros meszaros wip") {
 		isize n_eq_in = qp.A.rows();
 
 		bool skip = n > 1000 || n_eq_in > 1000;
-		::fmt::print(
-				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
-				qp.filename,
-				n,
-				n_eq_in,
-				skip ? "skipping" : "");
+		if (skip){
+			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
+		}else{
+			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+		}
 
 		if (!skip) {
 
@@ -115,8 +113,6 @@ TEST_CASE("maros meszaros wip") {
 
 			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 			Qp.init(H,g,A,b,C,u,l);
-			
-			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
 			Qp.settings.verbose = true;
 			Qp.solve(); 

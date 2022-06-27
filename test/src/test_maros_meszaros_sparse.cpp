@@ -4,7 +4,6 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <fmt/core.h>
 #include <qp/sparse/wrapper.hpp>
 
 using namespace proxsuite::qp;
@@ -96,12 +95,11 @@ TEST_CASE("maros meszaros wip") {
 		isize n_eq_in = qp_raw.A.rows();
 
 		bool skip = (n > 1000 || n_eq_in > 1000);
-		::fmt::print(
-				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
-				qp_raw.filename,
-				n,
-				n_eq_in,
-				skip ? "skipping" : "");
+		if (skip){
+			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
+		}else{
+			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+		}
 
 		if (!skip) {
 
@@ -116,8 +114,6 @@ TEST_CASE("maros meszaros wip") {
 
 			isize n_eq = AT.cols();
 			isize n_in = CT.cols();
-
-			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
 
 			sparse::QpView<T, I> qp = {
 					{linearsolver::sparse::from_eigen, H},
@@ -180,13 +176,12 @@ TEST_CASE("maros meszaros wip using the API") {
 		isize n_eq_in = qp_raw.A.rows();
 
 		bool skip = (n > 1000 || n_eq_in > 1000);
-		::fmt::print(
-				"path: {}, n: {}, n_eq+n_in: {}.{}\n",
-				qp_raw.filename,
-				n,
-				n_eq_in,
-				skip ? "skipping" : "");
-
+		if (skip){
+			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
+		}else{
+			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+		}
+		
 		if (!skip) {
 
 			auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
@@ -200,10 +195,6 @@ TEST_CASE("maros meszaros wip using the API") {
 
 			isize n_eq = AT.cols();
 			isize n_in = CT.cols();
-
-			::fmt::print("n_eq: {}, n_in: {}\n", n_eq, n_in);
-
-			//proxsuite::qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			proxsuite::qp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
 			Qp.settings.max_iter = 1.E6;
 			Qp.settings.verbose = true;

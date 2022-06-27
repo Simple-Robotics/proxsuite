@@ -58,23 +58,22 @@ void print_setup_header(const Settings<T>& settings,Results<T>& results, const M
 
   // Print Settings
   std::cout << "settings: " << std::endl;
-  fmt::print("          backend = sparse,\n");
-  fmt::print("          eps_abs = {}, eps_rel = {},\n",
-          settings.eps_abs,settings.eps_rel);
-  fmt::print("          eps_prim_inf = {}, eps_dual_inf = {},\n",
-          settings.eps_primal_inf, settings.eps_dual_inf);
-  fmt::print("          rho = {}, mu_in = {}, mu_eq = {},\n", results.info.rho, results.info.mu_eq, results.info.mu_in);
-  fmt::print("          max_iter = {}, max_iter_in = {},\n", settings.max_iter,settings.max_iter_in);
+  std::cout  <<"          backend = sparse," << std::endl;
+  std::cout  <<"          eps_abs = " << settings.eps_abs <<" eps_rel = " << settings.eps_rel << std::endl;
+  std::cout  <<"          eps_prim_inf = " <<settings.eps_primal_inf <<", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
+
+  std::cout  <<"          rho = " <<results.info.rho <<", mu_eq = " << results.info.mu_eq << ", mu_in " << results.info.mu_in << "," << std::endl;
+  std::cout  <<"          max_iter = " <<settings.max_iter <<", max_iter_in = " << settings.max_iter_in << "," << std::endl;
 
   if (settings.compute_preconditioner) {
-    fmt::print("          scaling: on, \n");
+    std::cout  <<"          scaling: on, " << std::endl;
   } else {
-    fmt::print("          scaling: off, \n");
+    std::cout  <<"          scaling: off, " << std::endl;
   }
   if (settings.compute_timings) {
-    fmt::print("          timings: on, \n");
+    std::cout  <<"          timings: on, " << std::endl;
   } else {
-    fmt::print("          timings: off, \n");
+    std::cout  <<"          timings: off, " << std::endl;
   }
   switch (settings.initial_guess)
   {

@@ -29,8 +29,8 @@ void exposeSettings(pybind11::module_ m) {
 					&Settings<T>::refactor_dual_feasibility_threshold)
 			.def_readwrite(
 					"refactor_rho_threshold", &Settings<T>::refactor_rho_threshold)
-			.def_readwrite("mu_max_eq", &Settings<T>::mu_max_eq)
-			.def_readwrite("mu_max_in", &Settings<T>::mu_max_in)
+			.def_readwrite("mu_min_eq", &Settings<T>::mu_min_eq)
+			.def_readwrite("mu_min_in", &Settings<T>::mu_min_in)
 			.def_readwrite("mu_update_factor", &Settings<T>::mu_update_factor)
 			.def_readwrite("cold_reset_mu_eq", &Settings<T>::cold_reset_mu_eq)
 			.def_readwrite("cold_reset_mu_in", &Settings<T>::cold_reset_mu_in)
