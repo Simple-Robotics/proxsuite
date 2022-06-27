@@ -81,91 +81,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "STCQP2.mat",   MAROS_MESZAROS_DIR "TAME.mat",
 		MAROS_MESZAROS_DIR "UBH1.mat",     MAROS_MESZAROS_DIR "VALUES.mat",
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
-		
-		//MAROS_MESZAROS_DIR "QBRANDY.mat"
 };
-
-/*
-TEST_CASE("maros meszaros wip") {
-	using T = double;
-	using I = mat_int32_t;
-	for (auto const* file : files) {
-		auto qp_raw = load_qp(file);
-		isize n = qp_raw.P.rows();
-		isize n_eq_in = qp_raw.A.rows();
-
-		bool skip = (n > 1000 || n_eq_in > 1000);
-		if (skip){
-			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
-		}else{
-			std::cout << " path: " <<  qp_raw.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
-		}
-
-		if (!skip) {
-
-			auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
-			auto& H = preprocessed.H;
-			auto& AT = preprocessed.AT;
-			auto& CT = preprocessed.CT;
-			auto& g = preprocessed.g;
-			auto& b = preprocessed.b;
-			auto& u = preprocessed.u;
-			auto& l = preprocessed.l;
-
-			isize n_eq = AT.cols();
-			isize n_in = CT.cols();
-
-			sparse::QpView<T, I> qp = {
-					{linearsolver::sparse::from_eigen, H},
-					{linearsolver::sparse::from_eigen, g},
-					{linearsolver::sparse::from_eigen, AT},
-					{linearsolver::sparse::from_eigen, b},
-					{linearsolver::sparse::from_eigen, CT},
-					{linearsolver::sparse::from_eigen, l},
-					{linearsolver::sparse::from_eigen, u},
-			};
-
-			qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
-					n,
-					n_eq + n_in,
-					1e-3,
-					10,
-					qp::sparse::preconditioner::Symmetry::UPPER,
-			};
-
-			Settings<T> settings;
-			settings.max_iter = 1.E6;
-			settings.mu_max_in = 1.E9;
-			settings.mu_max_eq = 1.E9;
-			sparse::Workspace<T, I> work;
-			sparse::Data<T, I> data;
-			Results<T> results;
-      auto& x = results.x;
-      auto& y = results.y;
-      auto& z = results.z;
-
-			x.setZero();
-			y.setZero();
-			z.setZero();
-
-			sparse::qp_setup(qp, results, data, work, ruiz);
-			sparse::qp_solve(results, data, settings, work, ruiz);
-
-			auto& eps = settings.eps_abs;
-
-			CHECK(
-					qp::dense::infty_norm(
-							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
-					eps);
-			CHECK(qp::dense::infty_norm(AT.transpose() * x - b) <= eps);
-			if (n_in > 0) {
-				CHECK((CT.transpose() * x - l).minCoeff() > -eps);
-				CHECK((CT.transpose() * x - u).maxCoeff() < eps);
-			}
-		}
-	}
-}
-*/
 
 TEST_CASE("maros meszaros wip using the API") {
 	using T = double;
@@ -198,6 +114,8 @@ TEST_CASE("maros meszaros wip using the API") {
 			proxsuite::qp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
 			Qp.settings.max_iter = 1.E6;
 			Qp.settings.verbose = true;
+
+			Qp.settings.eps_abs = 2e-8;
 			auto& eps = Qp.settings.eps_abs;
 			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			//std::cout << "kkt before update " << Qp.model.kkt().to_eigen() << std::endl;
