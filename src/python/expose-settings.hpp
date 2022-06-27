@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <qp/settings.hpp>
 #include <qp/status.hpp>
 #include <pybind11/pybind11.h>

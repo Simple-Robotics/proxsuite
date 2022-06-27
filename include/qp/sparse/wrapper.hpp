@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 /**
  * @file wrapper.hpp 
 */

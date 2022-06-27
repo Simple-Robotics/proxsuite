@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 #define SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
 

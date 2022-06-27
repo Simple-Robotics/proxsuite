@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <maros_meszaros.hpp>
 #include <benchmark/benchmark.h>
 #include <qp/sparse/wrapper.hpp>

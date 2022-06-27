@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include "algorithms.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>

@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 #define DENSE_LDLT_SOLVE_HPP_PXM02T7QS
 

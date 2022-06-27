@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 #define SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
 

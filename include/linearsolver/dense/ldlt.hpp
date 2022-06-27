@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 #define DENSE_LDLT_LDLT_HPP_6MGYLBRCS
 

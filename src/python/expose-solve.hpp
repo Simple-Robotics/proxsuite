@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <qp/dense/wrapper.hpp>
 #include <qp/sparse/wrapper.hpp>
 #include <pybind11/pybind11.h>

@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_FACTORIZE_HPP_KGMCTXZHS
 #define DENSE_LDLT_FACTORIZE_HPP_KGMCTXZHS
 

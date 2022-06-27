@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_CORE_HPP_JOITF1PQS
 #define DENSE_LDLT_CORE_HPP_JOITF1PQS
 

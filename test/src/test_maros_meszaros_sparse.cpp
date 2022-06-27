@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>

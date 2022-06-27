@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
 #define DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
 

@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 /**
  * @file solver.hpp 
 */
@@ -194,7 +197,7 @@ void iterative_solve_with_permut_fact( //
 
 	iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
 
-	++it;
+	++it; 
 	T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
 	/* to put in debuger mode
 	if (qpsettings.verbose) {
@@ -225,11 +228,12 @@ void iterative_solve_with_permut_fact( //
 			break;
 		}
 		preverr = infty_norm(qpwork.err.head(inner_pb_dim));
-
+		/* to put in debug mode
 		if (qpsettings.verbose) {
 			std::cout << "infty_norm(res) "
 								<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 		}
+		*/
 	}
 
 	if (infty_norm(qpwork.err.head(inner_pb_dim)) >=
@@ -245,10 +249,12 @@ void iterative_solve_with_permut_fact( //
 
 		preverr = infty_norm(qpwork.err.head(inner_pb_dim));
 		++it;
+		/* to put in debug mode
 		if (qpsettings.verbose) {
 			std::cout << "infty_norm(res) "
 								<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 		}
+		*/
 		while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
 			if (it >= qpsettings.nb_iterative_refinement) {
@@ -271,11 +277,12 @@ void iterative_solve_with_permut_fact( //
 				break;
 			}
 			preverr = infty_norm(qpwork.err.head(inner_pb_dim));
-
+			/* to put in debug mode
 			if (qpsettings.verbose) {
 				std::cout << "infty_norm(res) "
 									<< infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
 			}
+			*/
 		}
 	}
 	qpwork.rhs.head(inner_pb_dim).setZero();

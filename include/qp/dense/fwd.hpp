@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 /** \file */
 #ifndef PROXSUITE_QP_DENSE_FWD_HPP
 #define PROXSUITE_QP_DENSE_FWD_HPP

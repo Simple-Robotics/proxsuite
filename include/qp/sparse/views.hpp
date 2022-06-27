@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 /** \file */
 
 #ifndef PROXSUITE_QP_SPARSE_VIEWS_HPP

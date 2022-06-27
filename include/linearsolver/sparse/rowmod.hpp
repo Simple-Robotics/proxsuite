@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 #define SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
 

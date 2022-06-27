@@ -1,4 +1,7 @@
 /** \file */
+//
+// Copyright (c) 2022, INRIA
+//
 #ifndef DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
 #define DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
 

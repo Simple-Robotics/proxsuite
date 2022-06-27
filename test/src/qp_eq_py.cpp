@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include "cnpy.hpp"
 #include <doctest.h>
 #include <fstream>

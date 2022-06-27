@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <qp/sparse/wrapper.hpp>
 #include <util.hpp>
 #include <doctest.h>

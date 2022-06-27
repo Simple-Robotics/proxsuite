@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <linearsolver/sparse/factorize.hpp>
 #include <linearsolver/sparse/update.hpp>
 #include <linearsolver/sparse/rowmod.hpp>

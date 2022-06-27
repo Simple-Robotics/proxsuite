@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 #include <qp/sparse/solver.hpp>
 #include <qp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>

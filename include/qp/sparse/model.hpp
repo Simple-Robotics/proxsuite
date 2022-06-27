@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2022, INRIA
+//
 /** \file */
 #ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
 #define PROXSUITE_QP_SPARSE_MODEL_HPP
