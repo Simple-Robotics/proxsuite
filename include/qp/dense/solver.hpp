@@ -780,7 +780,6 @@ void qp_solve( //
 
 	for (i64 iter = 0; iter <= qpsettings.max_iter; ++iter) {
 
-		qpresults.info.iter_ext += 1;
 		if (iter == qpsettings.max_iter) {
 			break;
 		}
@@ -911,7 +910,8 @@ void qp_solve( //
 				break;
 			}
 		}
-
+		qpresults.info.iter_ext += 1; // We start a new external loop update
+		
 		qpwork.x_prev = qpresults.x;
 		qpwork.y_prev = qpresults.y;
 		qpwork.z_prev = qpresults.z;
