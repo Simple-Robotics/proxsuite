@@ -13,3 +13,6 @@
 [submodule "external/optional"]
 	path = external/optional
 	url = https://github.com/TartanLlama/optional.git
+[submodule "cmake-module"]
+	path = cmake-module
+	url = https://github.com/jrl-umi3218/jrl-cmakemodules.git
