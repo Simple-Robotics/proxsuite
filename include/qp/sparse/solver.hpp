@@ -331,6 +331,38 @@ void qp_solve(
 		work.timer.stop();
 		work.timer.start();
 	}
+
+	if(work.internal.dirty)
+	{
+		std::cout << "dirty" << std::endl;
+		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
+
+		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
+
+		linearsolver::sparse::MatMut<T, I> H_unscaled = 
+				detail::middle_cols_mut(kkt_top_n_rows, 0, data.dim, data.H_nnz);
+
+		linearsolver::sparse::MatMut<T, I> AT_unscaled =
+				detail::middle_cols_mut(kkt_top_n_rows, data.dim, data.n_eq, data.A_nnz);
+
+		linearsolver::sparse::MatMut<T, I> CT_unscaled =
+				detail::middle_cols_mut(kkt_top_n_rows, data.dim + data.n_eq, data.n_in, data.C_nnz);
+
+		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
+		sparse::QpView<T, I> qp = {
+				{linearsolver::sparse::from_eigen, H_triu},
+				{linearsolver::sparse::from_eigen, data.g},
+				{linearsolver::sparse::from_eigen, AT_unscaled.to_eigen()},
+				{linearsolver::sparse::from_eigen, data.b},
+				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
+				{linearsolver::sparse::from_eigen, data.l},
+				{linearsolver::sparse::from_eigen, data.u}};
+
+		results.cleanup();
+		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
+		
+	}
+
 	if (settings.verbose){
 		sparse::print_setup_header(settings,results, data);
 		sparse::print_header();
@@ -1227,6 +1259,7 @@ void qp_solve(
 		}
 	}
 
+	work.set_dirty();
 
 }
 } // namespace sparse

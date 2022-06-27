@@ -139,6 +139,9 @@ struct Workspace {
 			}; 
 		}// exploits all available memory in storage 
 
+		// Whether the workspace is dirty
+		bool dirty;
+
 	} internal;
 
 	isize lnnz;
@@ -724,6 +727,8 @@ struct Workspace {
 				ldl.perm[isize(zx(ldl.perm_inv[i]))] = I(i);
 			}
 		}
+
+		internal.dirty = false;
 	}
 	Timer<T> timer;
 	Workspace() = default;
@@ -737,6 +742,8 @@ struct Workspace {
 	auto stack_mut() -> veg::dynstack::DynStackMut {
 		return internal.stack_mut();
 	}
+
+	void set_dirty() { internal.dirty = true; }
 };
 
 } //namespace sparse
