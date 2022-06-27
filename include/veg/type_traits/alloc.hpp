@@ -29,7 +29,7 @@ extern "C" void __sanitizer_annotate_contiguous_container /* NOLINT */ (
 #endif
 
 [[noreturn]] HEDLEY_NEVER_INLINE void throw_bad_alloc();
-[[noreturn]] HEDLEY_NEVER_INLINE void terminate() noexcept;
+[[noreturn]] inline void terminate() noexcept;
 namespace _mem {
 struct DeferUnreachable /* NOLINT */ {
 	bool is_unreachable;

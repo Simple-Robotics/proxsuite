@@ -6,7 +6,7 @@
 
 namespace veg {
 namespace _detail {
-[[noreturn]] HEDLEY_NEVER_INLINE void terminate() noexcept {
+[[noreturn]] inline void terminate() noexcept {
 	std::terminate();
 }
 } // namespace _detail
