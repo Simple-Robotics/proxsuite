@@ -181,7 +181,7 @@ auto sparse_positive_definite_rand(isize n, Scalar cond, double p)
 	Mat<Scalar, colmajor> H_dense = H.toDense();
 	Vec<Scalar> eigh =
 			H_dense.template selfadjointView<Eigen::Upper>().eigenvalues();
-	
+
 	Scalar min = eigh.minCoeff();
 	Scalar max = eigh.maxCoeff();
 
@@ -403,7 +403,7 @@ struct Qp {
 	   qp::isize dim,
 	   qp::isize n_eq,
 	   qp::isize n_in,
-	   double sparsity_factor,
+	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, strong_convexity_factor, sparsity_factor)),
@@ -431,7 +431,7 @@ struct Qp {
 
 	Qp(RandomUnconstrained /*tag*/,
 	   qp::isize dim,
-	   double sparsity_factor,
+	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, strong_convexity_factor, sparsity_factor)),
@@ -446,7 +446,7 @@ struct Qp {
 
 	Qp(RandomWithDimNinBoxConstraints /*tag*/,
 	   qp::isize dim,
-	   double sparsity_factor,
+	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, strong_convexity_factor, sparsity_factor)),
@@ -473,7 +473,7 @@ struct Qp {
 	Qp(RandomWithDimNinNotStronglyConvex /*tag*/,
 	   qp::isize dim,
 	   qp::isize n_in,
-	   double sparsity_factor)
+	   Scalar sparsity_factor)
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, Scalar(0), sparsity_factor)),
 				g(dim),
@@ -502,7 +502,7 @@ struct Qp {
 	Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/,
 	   qp::isize dim,
 	   qp::isize n_in,
-	   double sparsity_factor,
+	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, strong_convexity_factor, sparsity_factor)),
