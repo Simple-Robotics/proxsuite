@@ -778,11 +778,8 @@ void qp_solve( //
 	T primal_feasibility_in_lhs(0);
 	T dual_feasibility_lhs(0);
 
-	for (i64 iter = 0; iter <= qpsettings.max_iter; ++iter) {
+	for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
-		if (iter == qpsettings.max_iter) {
-			break;
-		}
 
 		// compute primal residual
 
