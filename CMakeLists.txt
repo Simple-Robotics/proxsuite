@@ -1,162 +1,100 @@
-cmake_minimum_required(VERSION 3.15)
-project(prox-suite CXX)
+#
+# Copyright (c) 2022 INRIA
+#
 
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
+cmake_minimum_required(VERSION 3.10)
 
-get_directory_property(has_parent PARENT_DIRECTORY)
-if(has_parent)
-  set(top_level FALSE)
-else()
-  set(top_level TRUE)
+set(PROJECT_NAME proxsuite)
+set(PROJECT_DESCRIPTION "The proximal solver suite")
+set(PROJECT_URL "http://github.com/Simple-Robotics/proxsuite")
+set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
+set(PROJECT_USE_CMAKE_EXPORT TRUE)
+set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
+
+# Disable -Werror on Unix for now.
+set(CXX_DISABLE_WERROR True)
+set(CMAKE_VERBOSE_MAKEFILE True)
+
+# Set CMake Policies
+if(POLICY CMP0068)
+  cmake_policy(SET CMP0068 NEW)
+endif(POLICY CMP0068)
+
+# Check if the submodule cmake have been initialized
+if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake")
+  MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
 endif()
 
-option(INRIA_LDLT_ENABLE_TESTING "build with tests" OFF)
+# ----------------------------------------------------
+# --- OPTIONS  ---------------------------------------
+# Need to be set before including base.cmake
+# ----------------------------------------------------
+option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+set(DOXYGEN_USE_MATHJAX YES)
+set(DOXYGEN_USE_TEMPLATE_CSS YES)
 
-if(top_level AND INRIA_LDLT_ENABLE_TESTING)
-  set(ENABLE_TESTING ON)
-else()
-  set(ENABLE_TESTING OFF)
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake)
+compute_project_args(PROJECT_ARGS LANGUAGES CXX)
+project(${PROJECT_NAME} ${PROJECT_ARGS})
+
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/python.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
+include(CMakeDependentOption)
+
+# If needed, set CMake policy for APPLE systems
+apply_default_apple_configuration()
+
+option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
+option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS
     "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
 )
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external" ${CMAKE_MODULE_PATH})
 
-set(CMAKE_SKIP_RPATH FALSE)
-list(APPEND CMAKE_BUILD_RPATH ${CMAKE_CURRENT_BINARY_DIR})
-message(STATUS "CMAKE_BUILD_RPATH: ${CMAKE_BUILD_RPATH}")
-if(APPLE) # Ensure that the policy if is only applied on OSX systems
-  set(CMAKE_MACOSX_RPATH TRUE)
-  set(CMAKE_SKIP_BUILD_RPATH FALSE)
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  list(
-    FIND
-    CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES
-    "${CMAKE_INSTALL_PREFIX}/lib"
-    isSystemDir
-  )
-  if("${isSystemDir}" STREQUAL "-1")
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  endif("${isSystemDir}" STREQUAL "-1")
-endif(APPLE)
-
-if(ENABLE_DOCS_ONLY)
-  add_subdirectory(doc)
-  return()
+# Look for dependencies
+add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
+if(BUILD_TESTING)
+  find_package(Matio REQUIRED)
 endif()
+set(OPTIONAL_BUILD_TESTS OFF)
+add_subdirectory(external/optional)
 
-if(ENABLE_TESTING)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
-
-include(cmake/compiler_warnings.cmake)
-include(cmake/static_analyzers.cmake)
-include(cmake/sanitizers.cmake)
-include(cmake/conan.cmake)
-
-if(ENABLE_TESTING)
-  option(INRIA_LDLT_DEBUG "build with debug symbols" ON)
-  if(INRIA_LDLT_DEBUG)
-    add_compile_options("-g")
-  endif()
-  include(cmake/extra_local_settings.cmake)
-endif()
-
-add_library(prox-suite INTERFACE)
-target_compile_options(prox-suite INTERFACE "-march=native")
-target_include_directories(prox-suite INTERFACE external/simde/)
+# Build the main library
+add_library(proxsuite INTERFACE)
+target_include_directories(proxsuite INTERFACE external/simde/)
 target_include_directories(
-  prox-suite INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  proxsuite INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
+target_link_libraries(proxsuite INTERFACE tl::optional)
+target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
 
-add_library(prox-suite-util STATIC test/src/util_f64.cpp test/src/util_f32.cpp)
-target_include_directories(prox-suite-util PUBLIC test/include)
-target_link_libraries(prox-suite-util prox-suite)
+# Activate only for advanced users to profile and benchmark the code
+if(ADVANCED_USERS)
+  include(cmake/compiler_warnings.cmake)
+  include(cmake/extra_local_settings.cmake)
+  include(cmake/static_analyzers.cmake)
+  include(cmake/sanitizers.cmake)
 
-set(CONAN_REQUIRES eigen/3.3.7 fmt/8.0.0)
-if(ENABLE_TESTING)
-  set(CONAN_REQUIRES
-      ${CONAN_REQUIRES}
-      matio/1.5.21
-      # MIT License
-      backward-cpp/1.6
-      #
-      # Apache-2.0
-      benchmark/1.6.0
-  )
-  set(CONAN_OPTIONS)
-endif(ENABLE_TESTING)
-run_conan()
-if(APPLE)
-  set(CMAKE_SKIP_RPATH
-      FALSE
-      CACHE BOOL "rpaths" FORCE
-  )
-endif(APPLE)
-
-# Conan dependencies
-if(ENABLE_TESTING)
-
-  target_compile_definitions(prox-suite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
+  target_compile_definitions(proxsuite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
   target_compile_definitions(
-    prox-suite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
+    proxsuite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
   )
-  add_subdirectory(external/osqp)
-  add_subdirectory(external/qpalm)
-  target_link_libraries(prox-suite INTERFACE CONAN_PKG::fmt)
-
-  find_package(Python3 COMPONENTS Interpreter)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 
-  target_link_libraries(prox-suite INTERFACE project_options project_warnings)
+  target_link_libraries(proxsuite INTERFACE project_options project_warnings)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
 endif()
 
-target_link_libraries(prox-suite INTERFACE CONAN_PKG::eigen CONAN_PKG::fmt)
-
-if(INRIA_LDLT_PYTHON_BINDINGS)
-  target_compile_definitions(
-    prox-suite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
-  )
-  find_package(Python3 COMPONENTS Interpreter Development)
-  add_subdirectory(external/pybind11)
-  add_subdirectory(external/optional)
-  add_library(proxsuite MODULE src/python/expose-all.cpp)
-
-  execute_process(
-    COMMAND
-      "${Python3_EXECUTABLE}" "-c"
-      "from distutils.sysconfig import get_config_var; print(get_config_var('EXT_SUFFIX'))"
-    OUTPUT_VARIABLE PYTHON_EXT_SUFFIX
-  )
-
-  string(STRIP ${PYTHON_EXT_SUFFIX} PYTHON_EXT_SUFFIX)
-  message(STATUS "PYTHON_EXT_SUFFIX: ${PYTHON_EXT_SUFFIX}")
-  target_link_libraries(proxsuite PUBLIC prox-suite pybind11::module)
-  target_link_libraries(prox-suite INTERFACE tl::optional)
-  set_target_properties(
-    proxsuite
-    PROPERTIES BUILD_RPATH ${CMAKE_BUILD_RPATH}
-               PREFIX ""
-               SUFFIX "${PYTHON_EXT_SUFFIX}"
-  )
+if(BUILD_PYTHON_INTERFACE)
+  FINDPYTHON(REQUIRED)
 endif()
 
-if(ENABLE_TESTING)
-  set(EXTRA_CXX_FLAGS
-      $ENV{EXTRA_CXX_FLAGS}
-      CACHE STRING "extra compiler flags for development"
-  )
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CXX_FLAGS}")
-  enable_testing()
-  add_subdirectory(test)
-  add_subdirectory(doc)
-endif()
+add_subdirectory(bindings)
+add_subdirectory(test)
+#add_subdirectory(doc)

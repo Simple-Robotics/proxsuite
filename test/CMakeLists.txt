@@ -1,19 +1,19 @@
-include(../cmake/doctest.cmake)
+include(../cmake-external/doctest.cmake)
 
 include_directories(include)
 
 add_library(doctest_main STATIC src/doctest_main.cpp)
 add_library(libcnpy OBJECT src/cnpy.cpp)
-target_link_libraries(libcnpy CONAN_PKG::eigen)
+target_link_libraries(libcnpy Eigen3::Eigen)
 
-add_library(prox-suite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
-target_include_directories(prox-suite-test-util PUBLIC test/include)
-target_link_libraries(prox-suite-test-util prox-suite CONAN_PKG::matio)
+add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
+target_include_directories(proxsuite-test-util PUBLIC test/include)
+target_link_libraries(proxsuite-test-util proxsuite matio)
 
 macro(proxsuite_test name path)
   add_executable(test-cpp-${name} ${path})
   doctest_discover_tests(test-cpp-${name})
-  target_link_libraries(test-cpp-${name} prox-suite doctest_main prox-suite-test-util )
+  target_link_libraries(test-cpp-${name} proxsuite doctest_main proxsuite-test-util )
   target_compile_definitions(test-cpp-${name} PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
 endmacro()
 
