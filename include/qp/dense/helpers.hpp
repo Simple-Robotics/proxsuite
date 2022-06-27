@@ -300,32 +300,6 @@ void setup( //
 		setup_equilibration(qpwork, qpsettings, ruiz, false);
 		break;
 	}
-	switch (qpsettings.initial_guess) {
-                case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-                    break;
-                }
-                case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
-					// keep solutions but restart workspace and results
-					// unscale warm start from previous problem
-					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
-					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
-					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
-                    break;
-                }
-                case InitialGuessStatus::NO_INITIAL_GUESS:{
-                    break;
-                }
-				case InitialGuessStatus::WARM_START:{
-                    break;
-                }
-                case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
-                    // keep workspace and results solutions except statistics
-					ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
-					ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
-					ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
-                    break;
-                }
-	}
 }
 
 ////// UPDATES ///////

@@ -725,6 +725,9 @@ void qp_solve( //
 	}
 	case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
 		//!\ TODO in a quicker way
+		ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
+		ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+		ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
 		setup_factorization(qpwork, qpmodel, qpresults);
 		for (isize i = 0; i < qpmodel.n_in; i++) {
 			if (qpresults.z[i] != 0) {
@@ -750,7 +753,12 @@ void qp_solve( //
 		break;
 	}
 	case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+
+		ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
+		ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+		ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
 		// keep workspace and results solutions except statistics
+
 		break;
 	}
 	}
