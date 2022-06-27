@@ -28,7 +28,7 @@ template <typename T>
 void exposeQpObjectDense(pybind11::module_ m) {
 
 	::pybind11::class_<dense::QP<T>>(m, "QP")
-			.def(::pybind11::init<i64, i64, i64>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>(),"Default constructor") // constructor
 			.def_readwrite(
 					"results",
 					&dense::QP<T>::results,

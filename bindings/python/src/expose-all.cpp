@@ -26,9 +26,9 @@ void exposeDenseAlgorithm(pybind11::module_ m) {
 	qp::python::exposeQpObjectDense<T>(m);
 }
 
-PYBIND11_MODULE(proxsuite, m) {
+PYBIND11_MODULE(proxsuite_pywrap, m) {
 	m.doc() = R"pbdoc(
-        proxsuite module
+        ProxSuite module
     ------------------------
 
     .. currentmodule:: proxsuite

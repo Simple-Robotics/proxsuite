@@ -12,7 +12,7 @@ namespace python {
 template <typename T>
 void exposeSettings(pybind11::module_ m) {
 
-	::pybind11::enum_<InitialGuessStatus>(m, "initial_guess",pybind11::module_local())
+	::pybind11::enum_<InitialGuessStatus>(m, "InitialGuess",pybind11::module_local())
 		.value("NO_INITIAL_GUESS", InitialGuessStatus::NO_INITIAL_GUESS)
 		.value("EQUALITY_CONSTRAINED_INITIAL_GUESS", InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 		.value("WARM_START_WITH_PREVIOUS_RESULT", InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT)
