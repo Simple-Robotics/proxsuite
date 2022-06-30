@@ -37,12 +37,12 @@ cd your/checkout/folder/
 cmake ..
 make 
 ```
-* To build the documentation:
+To build the documentation:
 
-    ```bash
-    cd build/
-    make doc
-    ```
+```bash
+cd build/
+make doc
+```
 ### Dependencies
 
 * CMake (with the [JRL CMake modules](https://github.com/jrl-umi3218/jrl-cmakemodules))
