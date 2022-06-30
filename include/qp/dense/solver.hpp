@@ -881,8 +881,13 @@ void qp_solve( //
 				}
 				qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 			}
-
-			std::cout <<  std::noshowpos << iter << "      " <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos
+			std::string space = "       ";
+			isize nb_space = 0;
+			if (iter >0){
+				nb_space = isize(log10(iter));
+			}
+			space.resize(space.size() - nb_space);
+			std::cout <<  std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos
 			<< qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
 			
 			ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});

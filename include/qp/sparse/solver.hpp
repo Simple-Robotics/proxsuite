@@ -334,7 +334,7 @@ void qp_solve(
 
 	if(work.internal.dirty)
 	{
-		std::cout << "dirty" << std::endl;
+		//std::cout << "dirty" << std::endl;
 		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
@@ -718,7 +718,13 @@ void qp_solve(
 				tmp += data.g;
 				results.info.objValue = (tmp).dot(x_e);
 
-				std::cout << std::noshowpos << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
+				std::string space = "       ";
+				isize nb_space = 0;
+				if (iter >0){
+					nb_space = isize(log10(iter));
+				}
+				space.resize(space.size() - nb_space);
+				std::cout << std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
 				<< results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
 				
 				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
