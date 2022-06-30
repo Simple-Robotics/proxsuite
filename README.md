@@ -22,7 +22,35 @@ If you are using PROXQP for your work, we encourage you to
 
 Numerical benchmarks against other solvers are available [here](https://github.com/Bambade/proxqp_benchmark).
 
+## Building from source
 
+Clone this repo using
 
+```bash
+git clone [url-to-repo] --recursive
+```
+
+Create a build tree using CMake, build and install:
+
+```bash
+cd your/checkout/folder/
+cmake ..
+make 
+```
+* To build the documentation:
+
+    ```bash
+    cd build/
+    make doc
+    ```
+### Dependencies
+
+* CMake (with the [JRL CMake modules](https://github.com/jrl-umi3218/jrl-cmakemodules))
+* Eigen>=3.0.5
+
+**Python dependencies (for some unit tests):**
+
+* numpy
+* scipy
 
 
