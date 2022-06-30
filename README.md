@@ -16,11 +16,13 @@ where `x in R^n` is the optimization variable. The objective function is defined
 
 If you are using PROXQP for your work, we encourage you to
 
-* [Cite the related papers](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/),
-* Put a star on this repository.
+* [Cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/),
 
 ## Numerical benchmarks
 
 Numerical benchmarks against other solvers are available [here](https://github.com/Bambade/proxqp_benchmark).
+
+
+
 
 
