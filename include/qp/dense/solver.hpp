@@ -882,8 +882,8 @@ void qp_solve( //
 				qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 			}
 
-			std::cout << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) 
-			<< qpresults.info.objValue <<  "     " <<std::setprecision(2) << qpresults.info.pri_res  << "   " << std::setprecision(2)<< qpresults.info.dua_res  << "   "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
+			std::cout <<  std::noshowpos << iter << "      " <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos
+			<< qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
 			
 			ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
 			ruiz.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
@@ -1096,22 +1096,22 @@ void qp_solve( //
 
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter ext:     " << qpresults.info.iter_ext << std::endl;
-			std::cout << "iter:         " << qpresults.info.iter << std::endl;
+			std::cout << "outer iter:   " << qpresults.info.iter_ext << std::endl;
+			std::cout << "total iter:   " << qpresults.info.iter << std::endl;
 			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
-			std::cout << "objValue:     " << qpresults.info.objValue << std::endl;
-			std::cout << "solve time:   " << qpresults.info.solve_time << std::endl;
+			std::cout << "objective:    " << qpresults.info.objValue << std::endl;
+			std::cout << "run time:     " << qpresults.info.solve_time << std::endl;
 			std::cout << "--------------------------------" << std::endl;
 		}
 	} else {
 		if (qpsettings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter ext:     " << qpresults.info.iter_ext << std::endl;
-			std::cout << "iter:         " << qpresults.info.iter << std::endl;
+			std::cout << "outer iter:   " << qpresults.info.iter_ext << std::endl;
+			std::cout << "total iter:   " << qpresults.info.iter << std::endl;
 			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
-			std::cout << "objValue:     " << qpresults.info.objValue << std::endl;
+			std::cout << "objective:    " << qpresults.info.objValue << std::endl;
 			std::cout << "--------------------------------" << std::endl;
 		}
 	}

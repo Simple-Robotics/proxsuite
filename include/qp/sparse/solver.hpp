@@ -718,7 +718,7 @@ void qp_solve(
 				tmp += data.g;
 				results.info.objValue = (tmp).dot(x_e);
 
-				std::cout << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) 
+				std::cout << std::noshowpos << iter << "       " <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
 				<< results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
 				
 				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
@@ -1239,22 +1239,22 @@ void qp_solve(
 
 		if (settings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter ext:     " << results.info.iter_ext << std::endl;
-			std::cout << "iter:         " << results.info.iter << std::endl;
+			std::cout << "outer iter:   " << results.info.iter_ext << std::endl;
+			std::cout << "total iter:   " << results.info.iter << std::endl;
 			std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
-			std::cout << "objValue:     " << results.info.objValue << std::endl;
-			std::cout << "solve time:   " << results.info.solve_time << std::endl;
+			std::cout << "objective:    " << results.info.objValue << std::endl;
+			std::cout << "run time:     " << results.info.solve_time << std::endl;
 			std::cout << "--------------------------------" << std::endl;
 		}
 	} else {
 		if (settings.verbose) {
 			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
-			std::cout << "iter ext:     " << results.info.iter_ext << std::endl;
-			std::cout << "iter:         " << results.info.iter << std::endl;
+			std::cout << "outer iter:   " << results.info.iter_ext << std::endl;
+			std::cout << "total iter:   " << results.info.iter << std::endl;
 			std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
-			std::cout << "objValue:     " << results.info.objValue << std::endl;
+			std::cout << "objective:    " << results.info.objValue << std::endl;
 			std::cout << "--------------------------------" << std::endl;
 		}
 	}
