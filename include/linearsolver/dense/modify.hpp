@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
-#define DENSE_LDLT_MODIFY_HPP_LBIRIX9AS
+#ifndef DENSE_LDLT_MODIFY_HPP
+#define DENSE_LDLT_MODIFY_HPP
 
 #include "linearsolver/dense/core.hpp"
 #include "linearsolver/dense/update.hpp"
@@ -304,4 +304,4 @@ void ldlt_insert_rows_and_cols(
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_MODIFY_HPP_LBIRIX9AS */
+#endif /* end of include guard DENSE_LDLT_MODIFY_HPP */

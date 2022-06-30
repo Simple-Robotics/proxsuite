@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
-#define SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS
+#ifndef SPARSE_LDLT_UPDATE_HPP
+#define SPARSE_LDLT_UPDATE_HPP
 
 #include "linearsolver/sparse/core.hpp"
 #include <veg/tuple.hpp>
@@ -334,4 +334,4 @@ auto rank1_update(
 } // namespace sparse
 } // namespace linearsolver
 
-#endif /* end of include guard SPARSE_LDLT_UPDATE_HPP_T3WZ0HOXS */
+#endif /* end of include guard SPARSE_LDLT_UPDATE_HPP */

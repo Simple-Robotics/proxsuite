@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_LDLT_HPP_6MGYLBRCS
-#define DENSE_LDLT_LDLT_HPP_6MGYLBRCS
+#ifndef DENSE_LDLT_LDLT_HPP
+#define DENSE_LDLT_LDLT_HPP
 
 #include "linearsolver/dense/factorize.hpp"
 #include "linearsolver/dense/update.hpp"
@@ -759,4 +759,4 @@ public:
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_LDLT_HPP_6MGYLBRCS */
+#endif /* end of include guard DENSE_LDLT_LDLT_HPP */

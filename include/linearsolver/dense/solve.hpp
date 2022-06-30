@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_SOLVE_HPP_PXM02T7QS
-#define DENSE_LDLT_SOLVE_HPP_PXM02T7QS
+#ifndef DENSE_LDLT_SOLVE_HPP
+#define DENSE_LDLT_SOLVE_HPP
 
 #include "linearsolver/dense/core.hpp"
 #include <Eigen/Core>
@@ -29,4 +29,4 @@ void solve(Mat const& mat, Rhs&& rhs) {
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_SOLVE_HPP_PXM02T7QS */
+#endif /* end of include guard DENSE_LDLT_SOLVE_HPP */

@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
-#define SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS
+#ifndef SPARSE_LDLT_FACTORIZE_HPP
+#define SPARSE_LDLT_FACTORIZE_HPP
 
 #include "linearsolver/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
@@ -1243,4 +1243,4 @@ void factorize_numeric( //
 }
 } // namespace sparse
 } // namespace linearsolver
-#endif /* end of include guard SPARSE_LDLT_FACTORIZE_HPP_P6FLZUBLS */
+#endif /* end of include guard SPARSE_LDLT_FACTORIZE_HPP */

@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
-#define DENSE_LDLT_UPDATE_HPP_PEVXUDLIS
+#ifndef DENSE_LDLT_UPDATE_HPP
+#define DENSE_LDLT_UPDATE_HPP
 
 #include "linearsolver/dense/core.hpp"
 
@@ -291,4 +291,4 @@ void rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha) {
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_UPDATE_HPP_PEVXUDLIS */
+#endif /* end of include guard DENSE_LDLT_UPDATE_HPP */

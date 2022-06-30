@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_CORE_HPP_JOITF1PQS
-#define DENSE_LDLT_CORE_HPP_JOITF1PQS
+#ifndef DENSE_LDLT_CORE_HPP
+#define DENSE_LDLT_CORE_HPP
 
 #include <veg/util/dbg.hpp>
 #include <veg/util/assert.hpp>
@@ -760,4 +760,4 @@ auto temp_vec_req(veg::Tag<T> /*tag*/, isize rows) noexcept
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_CORE_HPP_JOITF1PQS */
+#endif /* end of include guard DENSE_LDLT_CORE_HPP */

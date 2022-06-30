@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
-#define SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS
+#ifndef SPARSE_LDLT_ROWMOD_HPP
+#define SPARSE_LDLT_ROWMOD_HPP
 
 #include "linearsolver/sparse/update.hpp"
 #include <algorithm>
@@ -417,4 +417,4 @@ auto add_row(
 } // namespace sparse
 } // namespace linearsolver
 
-#endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP_OPFWGTXBS */
+#endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP */

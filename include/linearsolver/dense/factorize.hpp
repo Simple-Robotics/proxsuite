@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#ifndef DENSE_LDLT_FACTORIZE_HPP_KGMCTXZHS
-#define DENSE_LDLT_FACTORIZE_HPP_KGMCTXZHS
+#ifndef DENSE_LDLT_FACTORIZE_HPP
+#define DENSE_LDLT_FACTORIZE_HPP
 
 #include "linearsolver/dense/core.hpp"
 #include <algorithm>
@@ -338,4 +338,4 @@ void factorize(Mat&& mat, veg::dynstack::DynStackMut stack) {
 } // namespace dense
 } // namespace linearsolver
 
-#endif /* end of include guard DENSE_LDLT_FACTORIZE_HPP_KGMCTXZHS */
+#endif /* end of include guard DENSE_LDLT_FACTORIZE_HPP */
