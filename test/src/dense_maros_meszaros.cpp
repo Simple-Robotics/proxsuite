@@ -135,7 +135,7 @@ TEST_CASE("maros meszaros wip") {
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
 
-			Qp.update(tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,true);// change nothing, redo the solve
+			Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			Qp.solve();
 			x = Qp.results.x;
 			y = Qp.results.y;

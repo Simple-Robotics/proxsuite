@@ -151,13 +151,13 @@ struct QP {
 	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
 	 */
 	void init(
-			const tl::optional<SparseMat<T, I>> H,
-			tl::optional<VecRef<T>> g,
-			const tl::optional<SparseMat<T, I>> A,
-			tl::optional<VecRef<T>> b,
-			const tl::optional<SparseMat<T, I>> C,
-			tl::optional<VecRef<T>> u,
-			tl::optional<VecRef<T>> l,
+			const std::optional<SparseMat<T, I>> H,
+			std::optional<VecRef<T>> g,
+			const std::optional<SparseMat<T, I>> A,
+			std::optional<VecRef<T>> b,
+			const std::optional<SparseMat<T, I>> C,
+			std::optional<VecRef<T>> u,
+			std::optional<VecRef<T>> l,
 			bool compute_preconditioner_=true) {
 		if (settings.compute_timings){
 			work.timer.stop();
@@ -198,13 +198,13 @@ struct QP {
 	 * @param l_ lower inequality constraint vector input defining the QP model.
 	 * @param update_preconditioner_ bool parameter for updating or not the preconditioner and the associated scaled model.
 	 */
-	void update(const tl::optional<SparseMat<T, I>> H_,
-			tl::optional<VecRef<T>> g_,
-			const tl::optional<SparseMat<T, I>> A_,
-			tl::optional<VecRef<T>> b_,
-			const tl::optional<SparseMat<T, I>> C_,
-			tl::optional<VecRef<T>> u_,
-			tl::optional<VecRef<T>> l_,
+	void update(const std::optional<SparseMat<T, I>> H_,
+			std::optional<VecRef<T>> g_,
+			const std::optional<SparseMat<T, I>> A_,
+			std::optional<VecRef<T>> b_,
+			const std::optional<SparseMat<T, I>> C_,
+			std::optional<VecRef<T>> u_,
+			std::optional<VecRef<T>> l_,
 			bool update_preconditioner_ = false){
 		if (settings.compute_timings){
 			work.timer.stop();
@@ -236,21 +236,21 @@ struct QP {
 
 		// update the model
 		
-		if (g_ != tl::nullopt) {
+		if (g_ != std::nullopt) {
 			model.g = g_.value();
 		} 
-		if (b_ != tl::nullopt) {
+		if (b_ != std::nullopt) {
 			model.b = b_.value();
 		}
-		if (u_ != tl::nullopt) {
+		if (u_ != std::nullopt) {
 			model.u = u_.value();
 		}
-		if (l_ != tl::nullopt) {
+		if (l_ != std::nullopt) {
 			model.l = l_.value();
 		} 
-		if (H_ != tl::nullopt) {
-			if (A_ != tl::nullopt) {
-				if (C_ != tl::nullopt) {
+		if (H_ != std::nullopt) {
+			if (A_ != std::nullopt) {
+				if (C_ != std::nullopt) {
 					bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) &&
 						have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}) &&
 						have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}) ;
@@ -267,7 +267,7 @@ struct QP {
 						copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
 					}
 				}
-			} else if (C_ != tl::nullopt) {
+			} else if (C_ != std::nullopt) {
 				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_.value()}) &&
 					have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 				if (res){
@@ -281,8 +281,8 @@ struct QP {
 						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
 				}
 			}
-		} else if (A_ != tl::nullopt) {
-			if (C_ != tl::nullopt) {
+		} else if (A_ != std::nullopt) {
+			if (C_ != std::nullopt) {
 				bool res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())})&&
 					have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 				if (res){
@@ -295,7 +295,7 @@ struct QP {
 					copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
 				}
 			}
-		} else if (C_ != tl::nullopt) {
+		} else if (C_ != std::nullopt) {
 			bool res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 			if (res){
 					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
@@ -335,9 +335,9 @@ struct QP {
 	 * @param y dual equality warm start.
 	 * @param z dual inequality warm start.
 	 */
-	void solve(tl::optional<VecRef<T>> x,
-			tl::optional<VecRef<T>> y,
-			tl::optional<VecRef<T>> z) {
+	void solve(std::optional<VecRef<T>> x,
+			std::optional<VecRef<T>> y,
+			std::optional<VecRef<T>> z) {
 		proxsuite::qp::sparse::warm_start(x, y, z, results, settings);
 		qp_solve( //
 				results,
@@ -353,7 +353,7 @@ struct QP {
 	 * @param mu_in new dual inequality constrained proximal parameter.
 	 */
 	void update_proximal_parameters(
-			tl::optional<T> rho, tl::optional<T> mu_eq, tl::optional<T> mu_in) {
+			std::optional<T> rho, std::optional<T> mu_eq, std::optional<T> mu_in) {
 		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	/*!
@@ -364,38 +364,38 @@ struct QP {
 
 template <typename T, typename I>
 qp::Results<T> solve(
-		const tl::optional<SparseMat<T, I>> H,
-		tl::optional<VecRef<T>> g,
-		const tl::optional<SparseMat<T, I>> A,
-		tl::optional<VecRef<T>> b,
-		const tl::optional<SparseMat<T, I>> C,
-		tl::optional<VecRef<T>> u,
-		tl::optional<VecRef<T>> l,
+		const std::optional<SparseMat<T, I>> H,
+		std::optional<VecRef<T>> g,
+		const std::optional<SparseMat<T, I>> A,
+		std::optional<VecRef<T>> b,
+		const std::optional<SparseMat<T, I>> C,
+		std::optional<VecRef<T>> u,
+		std::optional<VecRef<T>> l,
 
-		tl::optional<T> eps_abs,
-		tl::optional<T> eps_rel,
-		tl::optional<T> rho,
-		tl::optional<T> mu_eq,
-		tl::optional<T> mu_in,
-		tl::optional<VecRef<T>> x,
-		tl::optional<VecRef<T>> y,
-		tl::optional<VecRef<T>> z,
-		tl::optional<bool> verbose,
-		tl::optional<isize> max_iter,
-		tl::optional<T> alpha_bcl,
-		tl::optional<T> beta_bcl,
-		tl::optional<T> refactor_dual_feasibility_threshold,
-		tl::optional<T> refactor_rho_threshold,
-		tl::optional<T> mu_max_eq,
-		tl::optional<T> mu_max_in,
-		tl::optional<T> mu_update_factor,
-		tl::optional<T> cold_reset_mu_eq,
-		tl::optional<T> cold_reset_mu_in,
-		tl::optional<isize> max_iter_in,
-		tl::optional<T> eps_refact,
-		tl::optional<isize> nb_iterative_refinement,
-		tl::optional<T> eps_primal_inf,
-		tl::optional<T> eps_dual_inf) {
+		std::optional<T> eps_abs,
+		std::optional<T> eps_rel,
+		std::optional<T> rho,
+		std::optional<T> mu_eq,
+		std::optional<T> mu_in,
+		std::optional<VecRef<T>> x,
+		std::optional<VecRef<T>> y,
+		std::optional<VecRef<T>> z,
+		std::optional<bool> verbose,
+		std::optional<isize> max_iter,
+		std::optional<T> alpha_bcl,
+		std::optional<T> beta_bcl,
+		std::optional<T> refactor_dual_feasibility_threshold,
+		std::optional<T> refactor_rho_threshold,
+		std::optional<T> mu_max_eq,
+		std::optional<T> mu_max_in,
+		std::optional<T> mu_update_factor,
+		std::optional<T> cold_reset_mu_eq,
+		std::optional<T> cold_reset_mu_in,
+		std::optional<isize> max_iter_in,
+		std::optional<T> eps_refact,
+		std::optional<isize> nb_iterative_refinement,
+		std::optional<T> eps_primal_inf,
+		std::optional<T> eps_dual_inf) {
 
 	isize n = H.value().rows();
 	isize n_eq = A.value().rows();
@@ -407,64 +407,64 @@ qp::Results<T> solve(
 	Qp.update_proximal_parameters(rho, mu_eq, mu_in);
 	Qp.warm_start(x, y, z);
 
-	if (eps_abs != tl::nullopt) {
+	if (eps_abs != std::nullopt) {
 		Qp.settings.eps_abs = eps_abs.value();
 	}
-	if (eps_rel != tl::nullopt) {
+	if (eps_rel != std::nullopt) {
 		Qp.settings.eps_rel = eps_rel.value();
 	}
-	if (verbose != tl::nullopt) {
+	if (verbose != std::nullopt) {
 		Qp.settings.verbose = verbose.value();
 	}
-	if (alpha_bcl != tl::nullopt) {
+	if (alpha_bcl != std::nullopt) {
 		Qp.settings.alpha_bcl = alpha_bcl.value();
 	}
-	if (beta_bcl != tl::nullopt) {
+	if (beta_bcl != std::nullopt) {
 		Qp.settings.beta_bcl = beta_bcl.value();
 	}
-	if (refactor_dual_feasibility_threshold != tl::nullopt) {
+	if (refactor_dual_feasibility_threshold != std::nullopt) {
 		Qp.settings.refactor_dual_feasibility_threshold =
 				refactor_dual_feasibility_threshold.value();
 	}
-	if (refactor_rho_threshold != tl::nullopt) {
+	if (refactor_rho_threshold != std::nullopt) {
 		Qp.settings.refactor_rho_threshold = refactor_rho_threshold.value();
 	}
-	if (mu_max_eq != tl::nullopt) {
+	if (mu_max_eq != std::nullopt) {
 		Qp.settings.mu_max_eq = mu_max_eq.value();
 		Qp.settings.mu_max_eq_inv = T(1) / mu_max_eq.value();
 	}
-	if (mu_max_in != tl::nullopt) {
+	if (mu_max_in != std::nullopt) {
 		Qp.settings.mu_max_in = mu_max_in.value();
 		Qp.settings.mu_max_in_inv = T(1) / mu_max_in.value();
 	}
-	if (mu_update_factor != tl::nullopt) {
+	if (mu_update_factor != std::nullopt) {
 		Qp.settings.mu_update_factor = mu_update_factor.value();
 		Qp.settings.mu_update_inv_factor = T(1) / mu_update_factor.value();
 	}
-	if (cold_reset_mu_eq != tl::nullopt) {
+	if (cold_reset_mu_eq != std::nullopt) {
 		Qp.settings.cold_reset_mu_eq = cold_reset_mu_eq.value();
 		Qp.settings.cold_reset_mu_eq_inv = T(1) / cold_reset_mu_eq.value();
 	}
-	if (cold_reset_mu_in != tl::nullopt) {
+	if (cold_reset_mu_in != std::nullopt) {
 		Qp.settings.cold_reset_mu_in = cold_reset_mu_in.value();
 		Qp.settings.cold_reset_mu_in_inv = T(1) / cold_reset_mu_in.value();
 	}
-	if (max_iter != tl::nullopt) {
+	if (max_iter != std::nullopt) {
 		Qp.settings.max_iter = max_iter.value();
 	}
-	if (max_iter_in != tl::nullopt) {
+	if (max_iter_in != std::nullopt) {
 		Qp.settings.max_iter_in = max_iter_in.value();
 	}
-	if (eps_refact != tl::nullopt) {
+	if (eps_refact != std::nullopt) {
 		Qp.settings.eps_refact = eps_refact.value();
 	}
-	if (nb_iterative_refinement != tl::nullopt) {
+	if (nb_iterative_refinement != std::nullopt) {
 		Qp.settings.nb_iterative_refinement = nb_iterative_refinement.value();
 	}
-	if (eps_primal_inf != tl::nullopt) {
+	if (eps_primal_inf != std::nullopt) {
 		Qp.settings.eps_primal_inf = eps_primal_inf.value();
 	}
-	if (eps_dual_inf != tl::nullopt) {
+	if (eps_dual_inf != std::nullopt) {
 		Qp.settings.eps_dual_inf = eps_dual_inf.value();
 	}
 

@@ -119,7 +119,7 @@ TEST_CASE("maros meszaros wip using the API") {
 			auto& eps = Qp.settings.eps_abs;
 			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			//std::cout << "kkt before update " << Qp.model.kkt().to_eigen() << std::endl;
-			Qp.update(tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,true);// change nothing, redo the solve
+			Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			//std::cout << "kkt after update " << Qp.model.kkt().to_eigen() << std::endl;
 			T prim_eq(0);
 			T prim_in(0);
@@ -144,7 +144,7 @@ TEST_CASE("maros meszaros wip using the API") {
 				//std::max((CT.transpose() * Qp.results.x - l).minCoeff(),(CT.transpose() * Qp.results.x - u).maxCoeff());
 				std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
 
-				Qp.update(tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,tl::nullopt,true);// change nothing, redo the solve
+				Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			}
 			
 			Qp.solve();

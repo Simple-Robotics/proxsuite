@@ -39,7 +39,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         Qp.settings.eps_abs = 1.E-9;
         Qp.settings.verbose = false;
         Qp.init(H,g,A,b,C,u,l);
-        Qp.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt);
+        Qp.update_proximal_parameters(T(1.e-7), std::nullopt, std::nullopt);
         std::cout << "after upating" << std::endl;
         std::cout << "rho :  " << Qp.results.info.rho << std::endl;
         Qp.solve();
@@ -83,7 +83,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
         Qp.settings.eps_abs = 1.E-9;
         Qp.init(H,g,A,b,C,u,l);
-        Qp.update_proximal_parameters(tl::nullopt, T(1.E-2), T(1.E-3));
+        Qp.update_proximal_parameters(std::nullopt, T(1.E-2), T(1.E-3));
         std::cout << "after upating" << std::endl;
         std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
         std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
@@ -422,13 +422,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
                 Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
                 Qp.update(
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,true);
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,true);
                 Qp.solve();
                 pri_res = std::max(
                                 (A * Qp.results.x - b).lpNorm<Eigen::Infinity>(),
@@ -540,13 +540,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
                 Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
                 Qp.update(
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,true);
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,true);
                 Qp.solve();
                 pri_res = std::max(
                                 (A * Qp.results.x - b).lpNorm<Eigen::Infinity>(),
@@ -723,13 +723,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                 std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
                 Qp.update(
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,true);
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,true);
                 Qp.solve();
 
                 pri_res = std::max(
@@ -776,13 +776,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                 std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
                 Qp2.update(
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,
-                                tl::nullopt,false);
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,
+                                std::nullopt,false);
                 Qp2.solve();
                 pri_res = std::max(
                                 (A * Qp2.results.x - b).lpNorm<Eigen::Infinity>(),

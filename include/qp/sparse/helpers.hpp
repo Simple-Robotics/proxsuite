@@ -24,18 +24,18 @@ namespace sparse {
 template <typename T>
 void update_proximal_parameters(
 		Results<T>& results,
-		tl::optional<T> rho_new,
-		tl::optional<T> mu_eq_new,
-		tl::optional<T> mu_in_new) {
+		std::optional<T> rho_new,
+		std::optional<T> mu_eq_new,
+		std::optional<T> mu_in_new) {
 
-	if (rho_new != tl::nullopt) {
+	if (rho_new != std::nullopt) {
 		results.info.rho = rho_new.value();
 	}
-	if (mu_eq_new != tl::nullopt) {
+	if (mu_eq_new != std::nullopt) {
 		results.info.mu_eq = mu_eq_new.value();
 		results.info.mu_eq_inv = T(1) / results.info.mu_eq;
 	}
-	if (mu_in_new != tl::nullopt) {
+	if (mu_in_new != std::nullopt) {
 		results.info.mu_in = mu_in_new.value();
 		results.info.mu_in_inv = T(1) / results.info.mu_in;
 	}
@@ -51,9 +51,9 @@ void update_proximal_parameters(
 */
 template <typename T>
 void warm_start(
-		tl::optional<VecRef<T>> x_wm,
-		tl::optional<VecRef<T>> y_wm,
-		tl::optional<VecRef<T>> z_wm,
+		std::optional<VecRef<T>> x_wm,
+		std::optional<VecRef<T>> y_wm,
+		std::optional<VecRef<T>> z_wm,
 		Results<T>& results,
 		Settings<T>& settings) {
 
@@ -61,7 +61,7 @@ void warm_start(
 	isize n_in = results.z.rows();
 	if (n_eq!=0){
 		if (n_in!=0){
-			if(x_wm != tl::nullopt && y_wm != tl::nullopt && z_wm != tl::nullopt){
+			if(x_wm != std::nullopt && y_wm != std::nullopt && z_wm != std::nullopt){
 					results.x = x_wm.value().eval();
 					results.y = y_wm.value().eval();
 					results.z = z_wm.value().eval();
@@ -69,7 +69,7 @@ void warm_start(
 			}
 		}else{
 			// n_in= 0
-			if(x_wm != tl::nullopt && y_wm != tl::nullopt){
+			if(x_wm != std::nullopt && y_wm != std::nullopt){
 					results.x = x_wm.value().eval();
 					results.y = y_wm.value().eval();
 					settings.initial_guess = InitialGuessStatus::WARM_START;
@@ -77,14 +77,14 @@ void warm_start(
 		}
 	}else if (n_in !=0){
 		// n_eq = 0
-		if(x_wm != tl::nullopt && z_wm != tl::nullopt){
+		if(x_wm != std::nullopt && z_wm != std::nullopt){
 					results.x = x_wm.value().eval();
 					results.z = z_wm.value().eval();
 					settings.initial_guess = InitialGuessStatus::WARM_START;
 		}
 	} else {
 		// n_eq = 0 and n_in = 0
-		if(x_wm != tl::nullopt ){
+		if(x_wm != std::nullopt ){
 					results.x = x_wm.value().eval();
 					settings.initial_guess = InitialGuessStatus::WARM_START;
 		}

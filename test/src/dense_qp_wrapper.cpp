@@ -69,12 +69,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	qp.H.setIdentity();
 	Qp.update(
 			qp.H,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
 	std::cout << "g :  " << Qp.model.g << std::endl;
@@ -192,13 +192,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	qp.A = ldlt_test::rand::sparse_matrix_rand_not_compressed<T>(
 			n_eq, dim, sparsity_factor);
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
+			std::nullopt,
+			std::nullopt,
 			qp.A,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -316,13 +316,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	qp.C = ldlt_test::rand::sparse_matrix_rand_not_compressed<T>(
 			n_in, dim, sparsity_factor);
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
 			qp.C,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -440,13 +440,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	auto x_sol = ldlt_test::rand::vector_rand<T>(dim);
 	qp.b = qp.A * x_sol;
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
 			qp.b,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -568,13 +568,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	qp.u = qp.C * x_sol + delta;
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
 			qp.u,
-			tl::nullopt);
+			std::nullopt);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -692,13 +692,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	qp.g = g;
 	Qp.update(
-			tl::nullopt,
+			std::nullopt,
 			qp.g,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -826,7 +826,7 @@ DOCTEST_TEST_CASE(
 	qp.b = qp.A * x_sol;
 	qp.u = qp.C * x_sol + delta;
 	qp.l = qp.C * x_sol - delta;
-	Qp.update(qp.H, tl::nullopt, qp.A, qp.b, tl::nullopt, qp.u, qp.l);
+	Qp.update(qp.H, std::nullopt, qp.A, qp.b, std::nullopt, qp.u, qp.l);
 
 	std::cout << "after upating" << std::endl;
 	std::cout << "H :  " << Qp.model.H << std::endl;
@@ -935,14 +935,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt); // restart the problem with default options
-	Qp.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt); // update one parameter of the problem
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt); // restart the problem with default options
+	Qp.update_proximal_parameters(T(1.e-7), std::nullopt, std::nullopt); // update one parameter of the problem
 	std::cout << "after upating" << std::endl;
 	std::cout << "rho :  " << Qp.results.info.rho << std::endl;
 
@@ -970,7 +970,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-	Qp2.update_proximal_parameters(T(1.e-7), tl::nullopt, tl::nullopt);
+	Qp2.update_proximal_parameters(T(1.e-7), std::nullopt, std::nullopt);
 	std::cout << "rho :  " << Qp2.results.info.rho << std::endl;
 	Qp2.solve();
 
@@ -1046,15 +1046,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
 
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 	Qp.update_proximal_parameters(
-			tl::nullopt, T(1.e-2), T(1.e-3)); // after update should redo a setup
+			std::nullopt, T(1.e-2), T(1.e-3)); // after update should redo a setup
 	std::cout << "after upating" << std::endl;
 	std::cout << "mu_in :  " << Qp.results.info.mu_in << std::endl;
 	std::cout << "mu_eq :  " << Qp.results.info.mu_eq << std::endl;
@@ -1084,7 +1084,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 	Qp2.update_proximal_parameters(
-			tl::nullopt, T(1.e-2), T(1.e-3)); 
+			std::nullopt, T(1.e-2), T(1.e-3)); 
 	Qp2.solve();
 	std::cout << "mu_in :  " << Qp2.results.info.mu_in << std::endl;
 	std::cout << "mu_eq :  " << Qp2.results.info.mu_eq << std::endl;
@@ -1164,13 +1164,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "z_wm :  " << z_wm << std::endl;
 	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
 	Qp.solve(x_wm, y_wm, z_wm);
 
 	pri_res = std::max(
@@ -1481,13 +1481,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,false);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,false);
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -1590,13 +1590,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,true);
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,true);
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -1756,13 +1756,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	Qp.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,true); // rederive preconditioner with previous options, i.e., redo exact same derivations
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,true); // rederive preconditioner with previous options, i.e., redo exact same derivations
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -1806,13 +1806,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
 	Qp2.update(
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,
-			tl::nullopt,false); // use previous preconditioner: should get same result as well
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,false); // use previous preconditioner: should get same result as well
 	Qp2.solve();
 	DOCTEST_CHECK(pri_res <= eps_abs);
 	DOCTEST_CHECK(dua_res <= eps_abs);
