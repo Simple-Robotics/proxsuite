@@ -70,11 +70,12 @@ set(OPTIONAL_BUILD_TESTS OFF)
 add_subdirectory(external/optional)
 
 # Build the main library
-add_library(proxsuite INTERFACE)
-target_include_directories(proxsuite INTERFACE external/simde/)
-target_include_directories(
-  proxsuite INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include/
+file(GLOB_RECURSE MAIN_HEADERS
+  ${PROJECT_SOURCE_DIR}/include/*.hpp
 )
+
+add_library(proxsuite INTERFACE ${MAIN_HEADERS})
+target_include_directories(proxsuite INTERFACE external/simde/)
 target_link_libraries(proxsuite INTERFACE tl::optional)
 target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
 
