@@ -14,9 +14,7 @@ where `x in R^n` is the optimization variable. The objective function is defined
 
 ## Citing PROXQP
 
-If you are using PROXQP for your work, we encourage you to
-
-* [Cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/),
+If you are using PROXQP for your work, we encourage you to [Cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/).
 
 ## Numerical benchmarks
 
@@ -47,6 +45,7 @@ make doc
 
 * CMake (with the [JRL CMake modules](https://github.com/jrl-umi3218/jrl-cmakemodules))
 * Eigen>=3.0.5
+* C++ >= 17
 
 **Python dependencies (for some unit tests):**
 
