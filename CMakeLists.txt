@@ -47,11 +47,11 @@ apply_default_apple_configuration()
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
 option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS
-    "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
-)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_FLAGS
+#     "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
+# )
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external" ${CMAKE_MODULE_PATH})
 
 # Look for dependencies
