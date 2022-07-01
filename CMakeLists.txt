@@ -47,12 +47,19 @@ apply_default_apple_configuration()
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
 option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
+option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
+option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_FLAGS
 #     "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
 # )
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external" ${CMAKE_MODULE_PATH})
+
+if(INITIALIZE_EIGEN_WITH_NAN)
+  add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
+endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # Look for dependencies
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
