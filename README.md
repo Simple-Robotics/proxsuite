@@ -20,36 +20,68 @@ If you are using PROXQP for your work, we encourage you to [cite the related pap
 
 Numerical benchmarks against other solvers are available [here](https://github.com/Bambade/proxqp_benchmark).
 
-## Building from source
 
-Clone this repo using
+## Installation
 
-```bash
-git clone [url-to-repo] --recursive
-```
+### Building from source
 
-Create a build tree using CMake, build and install:
+#### Required install dependencies
 
-```bash
-cd your/checkout/folder/
-cmake ..
-make 
-```
-To build the documentation:
+The following dependencies are required at compile time:
 
-```bash
-cd build/
-make doc
-```
-### Dependencies
-
-* CMake (with the [JRL CMake modules](https://github.com/jrl-umi3218/jrl-cmakemodules))
-* Eigen>=3.0.5
+* CMake
+* Eigen >= 3.0.5
 * C++ >= 17
 
-**Python dependencies (for some unit tests):**
+#### Installation instructions
 
-* numpy
-* scipy
+1. Clone this repository with:
 
+```bash
+git clone https://github.com/Simple-Robotics/proxqp.git --recursive
+```
 
+2. Create a build tree using CMake, build and install:
+
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+make 
+make install
+```
+
+3. Build the Python interface
+
+You just need to ensure that Python3 is indeed present on your system and activate the cmake option `BUILD_PYTHON_INTERFACE=ON` by replacing:
+
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON
+make 
+make install
+```
+
+4. Generate the doc
+
+To build the documentation, it is as simple as:
+
+```bash
+make doc
+open doc/doxygen_html/index.html
+```
+
+#### Enabling vectorization
+
+We highly encourage you to enable the vectorization of the underlying linear algebra for the best performances.
+You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
+
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
+make 
+make install
+```
+
+#### Testing
+
+To test the whole framework, you can activate the build of the unit tests by activating the cmake option `BUILD_TESTING=ON`.
