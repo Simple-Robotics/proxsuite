@@ -881,6 +881,7 @@ void qp_solve( //
 				}
 				qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 			}
+			/*
 			std::string space = "       ";
 			isize nb_space = 0;
 			if (iter >0){
@@ -889,7 +890,9 @@ void qp_solve( //
 			space.resize(space.size() - nb_space);
 			std::cout <<  std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos
 			<< qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
-			
+			*/
+			std::cout << std::noshowpos <<std::setw(20) << iter <<std::scientific << std::setprecision(2) << std::showpos
+			 << qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
 			ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
 			ruiz.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
 			ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpresults.z});

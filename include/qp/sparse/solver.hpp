@@ -334,7 +334,6 @@ void qp_solve(
 
 	if(work.internal.dirty)
 	{
-		//std::cout << "dirty" << std::endl;
 		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
@@ -358,9 +357,64 @@ void qp_solve(
 				{linearsolver::sparse::from_eigen, data.l},
 				{linearsolver::sparse::from_eigen, data.u}};
 
-		results.cleanup();
+		switch (settings.initial_guess) {
+					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+						results.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						// keep solutions but restart workspace and results
+						results.cold_start();
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::NO_INITIAL_GUESS:{
+						results.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::WARM_START:{
+						results.cold_start(); // because there was already a solve, precond was already computed if set so
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						// keep workspace and results solutions except statistics
+						results.cleanup_statistics();
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+		}
 		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
 		
+	}else{
+		// only case: when warm starting first time
+		switch (settings.initial_guess) {
+					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+						break;
+					}
+					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						break;
+					}
+					case InitialGuessStatus::NO_INITIAL_GUESS:{
+						break;
+					}
+					case InitialGuessStatus::WARM_START:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						break;
+					}
+		}
+
 	}
 
 	if (settings.verbose){
@@ -369,7 +423,7 @@ void qp_solve(
 	}
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
-	auto zx = util::zero_extend;// ?
+	auto zx = util::zero_extend;
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
 
@@ -725,7 +779,7 @@ void qp_solve(
 				}
 				space.resize(space.size() - nb_space);
 				std::cout << std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
-				<< results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
+				results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
 				
 				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
 				precond.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, y_e});
@@ -1217,7 +1271,7 @@ void qp_solve(
 					w,
 					alpha,
 					stack);
-				}
+			}
 		}
 
 		results.info.mu_eq = new_bcl_mu_eq;
@@ -1239,7 +1293,7 @@ void qp_solve(
 	results.info.objValue = (tmp).dot(x_e);
 
 	if (settings.compute_timings) {
-		results.info.solve_time = work.timer.elapsed().user; // in nanoseconds
+		results.info.solve_time = work.timer.elapsed().user; // in microseconds
 		results.info.run_time =
 				results.info.solve_time + results.info.setup_time;
 

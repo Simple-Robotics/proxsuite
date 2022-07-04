@@ -110,7 +110,7 @@ void qp_setup(
 		Workspace<T, I>& work,
 		Settings<T>& settings,
 		P& precond,
-		PreconditionerStatus preconditioner_status) {
+		PreconditionerStatus& preconditioner_status) {
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
 	isize n_in = qp.CT.ncols();

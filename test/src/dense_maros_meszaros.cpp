@@ -126,7 +126,7 @@ TEST_CASE("maros meszaros wip") {
 			T prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
 			T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;
 			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+			std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) << std::endl;
 			CHECK(
 					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <

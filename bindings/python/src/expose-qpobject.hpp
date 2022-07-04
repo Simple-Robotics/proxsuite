@@ -43,9 +43,9 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
 
 			.def(
@@ -59,9 +59,9 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
 			.def( 
 					"solve",
@@ -82,9 +82,9 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("update_preconditioner",true,"update the preconditioner considering new matrices entries for reducing ill-conditioning and speeding up solver execution. If set up to false, use previous derived preconditioner."))
 
 			.def(
@@ -98,9 +98,9 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("update_preconditioner",true,"update the preconditioner considering new matrices entries for reducing ill-conditioning and speeding up solver execution. If set up to false, use previous derived preconditioner."))
 
 			.def(
@@ -151,9 +151,9 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("compute_preconditioner",true,"execute the preconditioner for reducing ill-conditioning and speeding up solver execution."))
 			
 			.def(
@@ -167,9 +167,9 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 					pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
 					pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
 					pybind11::arg_v(
-							"l", std::nullopt, "lower inequality constraint vector"),
-					pybind11::arg_v(
 							"u", std::nullopt, "upper inequality constraint vector"),
+					pybind11::arg_v(
+							"l", std::nullopt, "lower inequality constraint vector"),
 					pybind11::arg_v("update_preconditioner",false,"update the preconditioner or re-use previous derived for reducing ill-conditioning and speeding up solver execution."))
 			
 			.def(
