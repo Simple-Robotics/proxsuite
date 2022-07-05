@@ -10,7 +10,6 @@ using namespace qp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
-/*
 
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update rho") {
@@ -1890,7 +1889,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	}
 }
-*/
+
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update + multiple solve at once with cold start initial guess and then cold start option") {
 
@@ -1988,7 +1987,6 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	}
 }
-/*
 
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update + multiple solve at once with warm start") {
@@ -2088,5 +2086,3 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	}
 }
-
-*/
