@@ -91,6 +91,8 @@ struct Workspace {
 
 	bool constraints_changed;
 	bool dirty;
+	bool refactorize;
+	bool proximal_parameter_update;
 	/*!
 	 * Default constructor.
 	 * @param dim primal variable dimension.
@@ -134,7 +136,9 @@ struct Workspace {
 				primal_residual_in_scaled_low_plus_alphaCdx(n_in),
 				CTz(dim),
 				constraints_changed(false),
-				dirty(false)
+				dirty(false),
+				refactorize(false),
+				proximal_parameter_update(false)
 
 	{
 		ldl.reserve_uninit(dim + n_eq + n_in);
@@ -238,9 +242,12 @@ struct Workspace {
 		for (isize i = 0; i < n_in; i++) {
 			current_bijection_map(i) = i;
 			new_bijection_map(i) = i;
+			active_inequalities(i) =false;
 		}
 		constraints_changed = false;
 		dirty = false;
+		refactorize = false;
+		proximal_parameter_update=false;
 	}
 };
 } // namespace dense

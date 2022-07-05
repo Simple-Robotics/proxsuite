@@ -771,9 +771,12 @@ void qp_solve( //
 			}
 			case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
 				//!\ TODO in a quicker way
+				qpresults.info.n_c = 0;
 				for (isize i = 0; i < qpmodel.n_in; i++) {
 					if (qpresults.z[i] != 0) {
 						qpwork.active_inequalities[i] = true;
+					}else{
+						qpwork.active_inequalities[i] = false;
 					}
 				}
 				linesearch::active_set_change(qpmodel, qpresults, qpwork);
@@ -784,9 +787,12 @@ void qp_solve( //
 			}
 			case InitialGuessStatus::WARM_START: {
 				//!\ TODO in a quicker way
+				qpresults.info.n_c = 0;
 				for (isize i = 0; i < qpmodel.n_in; i++) {
 					if (qpresults.z[i] != 0) {
 						qpwork.active_inequalities[i] = true;
+					}else{
+						qpwork.active_inequalities[i] = false;
 					}
 				}
 				linesearch::active_set_change(qpmodel, qpresults, qpwork);
@@ -813,9 +819,12 @@ void qp_solve( //
 				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y}); 
 				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
 				setup_factorization(qpwork, qpmodel, qpresults);
+				qpresults.info.n_c = 0;
 				for (isize i = 0; i < qpmodel.n_in; i++) {
 					if (qpresults.z[i] != 0) {
 						qpwork.active_inequalities[i] = true;
+					}else{
+						qpwork.active_inequalities[i] = false;
 					}
 				}
 				linesearch::active_set_change(qpmodel, qpresults, qpwork);
@@ -831,9 +840,12 @@ void qp_solve( //
 				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
 				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
 				setup_factorization(qpwork, qpmodel, qpresults);
+				qpresults.info.n_c = 0;
 				for (isize i = 0; i < qpmodel.n_in; i++) {
 					if (qpresults.z[i] != 0) {
 						qpwork.active_inequalities[i] = true;
+					}else{
+						qpwork.active_inequalities[i] = false;
 					}
 				}
 				linesearch::active_set_change(qpmodel, qpresults, qpwork);
@@ -844,14 +856,19 @@ void qp_solve( //
 				ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
 				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
 				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
-				setup_factorization(qpwork, qpmodel, qpresults);
-				for (isize i = 0; i < qpmodel.n_in; i++) {
-					if (qpresults.z[i] != 0) {
-						qpwork.active_inequalities[i] = true;
+				if (qpwork.refactorize){ // refactorization only when one of the matrices has changed or one proximal parameter has changed
+					setup_factorization(qpwork, qpmodel, qpresults);
+					qpresults.info.n_c = 0;
+					for (isize i = 0; i < qpmodel.n_in; i++) {
+						if (qpresults.z[i] != 0) {
+							qpwork.active_inequalities[i] = true;
+						}else{
+						qpwork.active_inequalities[i] = false;
 					}
+					}
+					linesearch::active_set_change(qpmodel, qpresults, qpwork);
+					break;
 				}
-				linesearch::active_set_change(qpmodel, qpresults, qpwork);
-				break;
 			}
 		}
 	}

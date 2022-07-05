@@ -107,7 +107,6 @@ struct Results {
 		z.setZero();
 		cold_start();
 	}
-
 	void cleanup_statistics(){
 		info.run_time = 0;
 		info.setup_time = 0;
@@ -117,9 +116,10 @@ struct Results {
 		info.iter_ext = 0;
 		info.mu_updates = 0;
 		info.rho_updates = 0;
+		info.pri_res = 0.;
+		info.dua_res = 0.;
 		info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
 	}
-	
 	void cold_start(){
 
 		info.rho = 1e-6;
@@ -129,9 +129,13 @@ struct Results {
 		info.mu_in = 1e-1;
 		info.nu = 1.;
 		info.n_c = 0;
-		info.pri_res = 0.;
-		info.dua_res = 0.;
-		info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+		cleanup_statistics();
+	}
+	void cleanup_all_except_prox_parameters(){
+		info.n_c = 0;
+		x.setZero();
+		y.setZero();
+		z.setZero();
 		cleanup_statistics();
 	}
 };

@@ -162,7 +162,8 @@ void update(
 			std::optional<Mat> C_,
 			std::optional<VecRef<T>> u_,
 			std::optional<VecRef<T>> l_,
-			Model<T>& model) {
+			Model<T>& model,
+			Workspace<T>& work) {
 
 		// update the model
 		if (g_ != std::nullopt) {
@@ -178,6 +179,7 @@ void update(
 			model.l = l_.value().eval();
 		} 
 		if (H_ != std::nullopt) {
+			work.refactorize=true;
 			if (A_ != std::nullopt) {
 				if (C_ != std::nullopt) {
 					model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
@@ -194,6 +196,7 @@ void update(
 				model.H = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 			}
 		} else if (A_ != std::nullopt) {
+			work.refactorize=true;
 			if (C_ != std::nullopt) {
 				model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
@@ -201,6 +204,7 @@ void update(
 				model.A = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 			}
 		} else if (C_ != std::nullopt) {
+			work.refactorize=true;
 			model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
 		}
 }
@@ -235,34 +239,50 @@ void setup( //
 		Workspace<T>& qpwork,
 		Results<T>& qpresults,
 		preconditioner::RuizEquilibration<T>& ruiz,
-		PreconditionerStatus preconditioner_status,
-		bool real_update) {
+		PreconditionerStatus preconditioner_status) {
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+					if (qpwork.proximal_parameter_update){
+						qpresults.cleanup_all_except_prox_parameters(); 
+					}else{
+						qpresults.cleanup(); 
+					}
 					qpwork.cleanup();
-					qpresults.cleanup(); 
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
+					if (qpwork.proximal_parameter_update){
+						qpresults.cleanup_statistics(); 
+					}else{
+						qpresults.cold_start(); 
+					}
 					qpwork.cleanup();
-					qpresults.cold_start();
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
+					if (qpwork.proximal_parameter_update){
+						qpresults.cleanup_all_except_prox_parameters(); 
+					}else{
+						qpresults.cleanup(); 
+					}
 					qpwork.cleanup();
-					qpresults.cleanup(); 
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
+					if (qpwork.proximal_parameter_update){
+						qpresults.cleanup_all_except_prox_parameters(); // the warm start is given at the solve function
+					}else{
+						qpresults.cleanup(); 
+					}
 					qpwork.cleanup();
-					qpresults.cleanup(); 
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
-					if (real_update){
+					if (qpwork.refactorize||qpwork.proximal_parameter_update){
 						qpwork.cleanup(); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+						qpwork.refactorize = true;
 					}
 					qpresults.cleanup_statistics();
                     break;
@@ -320,20 +340,24 @@ void setup( //
 template <typename T>
 void update_proximal_parameters(
 		Results<T>& results,
+		Workspace<T>& work,
 		std::optional<T> rho_new,
 		std::optional<T> mu_eq_new,
 		std::optional<T> mu_in_new) {
 
-	if (rho_new != std::nullopt) {
+	if (rho_new != std::nullopt){
 		results.info.rho = rho_new.value();
+		work.proximal_parameter_update=true;
 	}
 	if (mu_eq_new != std::nullopt) {
 		results.info.mu_eq = mu_eq_new.value();
 		results.info.mu_eq_inv = T(1) / results.info.mu_eq;
+		work.proximal_parameter_update=true;
 	}
 	if (mu_in_new != std::nullopt) {
 		results.info.mu_in = mu_in_new.value();
 		results.info.mu_in_inv = T(1) / results.info.mu_in;
+		work.proximal_parameter_update=true;
 	}
 }
 /*!

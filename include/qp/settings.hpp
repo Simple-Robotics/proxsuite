@@ -114,7 +114,7 @@ struct Settings {
 			isize nb_iterative_refinement_ = 10,
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
 			bool VERBOSE = false,
-			InitialGuessStatus initial_guess_ = InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+			InitialGuessStatus initial_guess_ = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT,
 			bool update_preconditioner_ = false,
 			bool compute_preconditioner_ = true,
 			bool compute_timings_ = true,

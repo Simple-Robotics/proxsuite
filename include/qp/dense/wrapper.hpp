@@ -118,9 +118,17 @@ struct QP {
 			MatRef<T> C,
 			VecRef<T> u,
 			VecRef<T> l,
-			bool compute_preconditioner = true) {
+			bool compute_preconditioner = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt) {
 		// dense case
-		bool real_update = true;
+		if (settings.initial_guess == InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT){
+			work.refactorize=true; // necessary for the first solve (then refactorize only if there is an update of the matrices)
+		}else{
+			work.refactorize=false;
+		}
+		work.proximal_parameter_update=false;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -131,6 +139,7 @@ struct QP {
 		}else{
 			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
 		}
+		proxsuite::qp::dense::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -144,9 +153,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status,
-				real_update);
-
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
@@ -170,9 +177,17 @@ struct QP {
 			const SparseMat<T> C,
 			VecRef<T> u,
 			VecRef<T> l,
-			bool compute_preconditioner = true) {
+			bool compute_preconditioner = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt) {
 		// sparse case
-		bool real_update = true;
+		if (settings.initial_guess == InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT){
+			work.refactorize=true; // necessary for the first solve (then refactorize only if there is an update of the matrices)
+		}else{
+			work.refactorize=false;
+		}
+		work.proximal_parameter_update=false;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -183,6 +198,7 @@ struct QP {
 		}else{
 			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
 		}
+		proxsuite::qp::dense::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		proxsuite::qp::dense::setup(
 				H,
 				g,
@@ -196,8 +212,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status,
-				real_update);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
@@ -221,8 +236,13 @@ struct QP {
 			const std::optional<MatRef<T>> C,
 			std::optional<VecRef<T>> u,
 			std::optional<VecRef<T>> l,
-			bool update_preconditioner = true) {
+			bool update_preconditioner = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt) {
 		// dense case
+		work.refactorize=false;
+		work.proximal_parameter_update=false;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -237,8 +257,9 @@ struct QP {
 		    b == std::nullopt && C == std::nullopt && u == std::nullopt &&
 		    l == std::nullopt);
 		if (real_update) {
-			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model);
+			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model,work);
 		}
+		proxsuite::qp::dense::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		proxsuite::qp::dense::setup(
 					MatRef<T>(model.H),
 					VecRef<T>(model.g),
@@ -252,8 +273,7 @@ struct QP {
 					work,
 					results,
 					ruiz,
-					preconditioner_status,
-					real_update);
+					preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
@@ -277,8 +297,13 @@ struct QP {
 			const std::optional<SparseMat<T>> C,
 			std::optional<VecRef<T>> u,
 			std::optional<VecRef<T>> l,
-			bool update_preconditioner = true) {
+			bool update_preconditioner = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt) {
 		// sparse case
+		work.refactorize=false;
+		work.proximal_parameter_update=false;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -293,8 +318,9 @@ struct QP {
 		    b == std::nullopt && C == std::nullopt && u == std::nullopt &&
 		    l == std::nullopt);
 		if (real_update) {
-			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model);
+			proxsuite::qp::dense::update(H,g,A,b,C,u,l,model,work);
 		}
+		proxsuite::qp::dense::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		proxsuite::qp::dense::setup(
 				MatRef<T>(model.H),
 				VecRef<T>(model.g),
@@ -308,8 +334,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status,
-				real_update);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
@@ -333,7 +358,12 @@ struct QP {
 			const std::nullopt_t C,
 			std::optional<VecRef<T>> u,
 			std::optional<VecRef<T>> l,
-			bool update_preconditioner = true) {
+			bool update_preconditioner = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt, 
+			std::optional<T> mu_in = std::nullopt) {
+		work.refactorize=false;
+		work.proximal_parameter_update=false;
 		// treat the case when H, A and C are nullopt, in order to avoid ambiguity through overloading
 		if (settings.compute_timings){
 					work.timer.stop();
@@ -363,6 +393,7 @@ struct QP {
 				model.l = l.value().eval();
 			} 
 		}
+		proxsuite::qp::dense::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		proxsuite::qp::dense::setup(
 				MatRef<T>(model.H),
 				VecRef<T>(model.g),
@@ -376,8 +407,7 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status,
-				real_update);
+				preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
@@ -409,16 +439,6 @@ struct QP {
 				results,
 				work,
 				ruiz);
-	};
-	/*!
-	 * Updates proximal parameters of the solver.
-	 * @param rho new primal proximal parameter.
-	 * @param mu_eq new dual equality constrained proximal parameter.
-	 * @param mu_in new dual inequality constrained proximal parameter.
-	 */
-	void update_proximal_parameters(
-			std::optional<T> rho, std::optional<T> mu_eq, std::optional<T> mu_in) {
-		proxsuite::qp::dense::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	/*!
 	 * Clean-ups solver's results and workspace.
