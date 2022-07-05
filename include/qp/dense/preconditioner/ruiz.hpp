@@ -282,7 +282,7 @@ struct RuizEquilibration {
 	 * @param settings solver's settings.
 	 * @param stack stack variable used by the equilibrator.
 	 */
-	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, Settings<T>& settings, veg::dynstack::DynStackMut stack) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, const Settings<T>& settings, veg::dynstack::DynStackMut stack) {
 
 		max_iter = settings.preconditioner_max_iter;
 		epsilon = settings.preconditioner_accuracy;

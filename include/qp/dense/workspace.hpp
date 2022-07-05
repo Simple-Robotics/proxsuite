@@ -90,6 +90,7 @@ struct Workspace {
 	Vec<T> CTz;
 
 	bool constraints_changed;
+	bool dirty;
 	/*!
 	 * Default constructor.
 	 * @param dim primal variable dimension.
@@ -132,7 +133,8 @@ struct Workspace {
 				primal_residual_in_scaled_up_plus_alphaCdx(n_in),
 				primal_residual_in_scaled_low_plus_alphaCdx(n_in),
 				CTz(dim),
-				constraints_changed(false)
+				constraints_changed(false),
+				dirty(false)
 
 	{
 		ldl.reserve_uninit(dim + n_eq + n_in);
@@ -196,6 +198,7 @@ struct Workspace {
 		primal_residual_in_scaled_up_plus_alphaCdx.setZero();
 		primal_residual_in_scaled_low_plus_alphaCdx.setZero();
 		CTz.setZero();
+		
 	}
 	/*!
 	 * Clean-ups solver's workspace.
@@ -236,6 +239,8 @@ struct Workspace {
 			current_bijection_map(i) = i;
 			new_bijection_map(i) = i;
 		}
+		constraints_changed = false;
+		dirty = false;
 	}
 };
 } // namespace dense

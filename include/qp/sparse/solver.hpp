@@ -357,7 +357,7 @@ void qp_solve(
 				{linearsolver::sparse::from_eigen, data.l},
 				{linearsolver::sparse::from_eigen, data.u}};
 
-		switch (settings.initial_guess) {
+		switch (settings.initial_guess) { // the following is used when one solve has already been executed
 					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 						results.cleanup(); 
 						break;
@@ -376,7 +376,7 @@ void qp_solve(
 					}
 					case InitialGuessStatus::WARM_START:{
 						results.cold_start(); // because there was already a solve, precond was already computed if set so
-						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // it contains the value given in entry for warm start
 						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
 						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
 						break;
@@ -399,6 +399,9 @@ void qp_solve(
 						break;
 					}
 					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
 						break;
 					}
 					case InitialGuessStatus::NO_INITIAL_GUESS:{
@@ -411,6 +414,9 @@ void qp_solve(
 						break;
 					}
 					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
 						break;
 					}
 		}

@@ -156,7 +156,7 @@ void qp_setup(
 						execute_preconditioner_or_not,
 						precond,
 						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
-	switch (settings.initial_guess) {
+	switch (settings.initial_guess) { // the following is used in practice when initiliazing the Qp object or updating it
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					results.cleanup(); 
                     break;
@@ -164,9 +164,6 @@ void qp_setup(
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
 					results.cold_start();
-					precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
-					precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
-					precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
@@ -180,9 +177,6 @@ void qp_setup(
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
 					results.cleanup_statistics();
-					precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
-					precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
-					precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
                     break;
                 }
 	}

@@ -1825,3 +1825,1421 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "ruiz vector : " << Qp2.ruiz.delta << " ruiz scalar factor " << Qp2.ruiz.c << std::endl;	
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;			
 }
+
+
+
+/////  TESTS ALL INITIAL GUESS OPTIONS FOR MULTIPLE SOLVES AT ONCE
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with no initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+			qp.A, qp.b,
+			qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+}
+
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with equality constrained initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+			qp.A, qp.b,
+			qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with equality constrained initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start with previous result and first solve with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+			qp.A, qp.b,
+			qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with no initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start with previous result and first solve with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with cold start initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+        
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with cold start with previous result and first solve with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with warm start") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: warm start test from init") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+        
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	Qp2.init(qp.H, qp.g,
+	qp.A, qp.b,
+	qp.C, qp.u, qp.l);
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	std::cout << "dirty workspace for Qp2 : " << Qp2.work.dirty << std::endl;
+	Qp2.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
+	             qp.C.transpose() * Qp2.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve with new QP object" << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+}
+
+/// TESTS WITH UPDATE + INITIAL GUESS OPTIONS
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update and multiple solve at once with no initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+  
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	bool update_preconditioner = true;
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update + multiple solve at once with equality constrained initial guess") {
+
+        
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	bool update_preconditioner = true;
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update + multiple solve at once with equality constrained initial guess and then warm start with previous results") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+        
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start with previous result and first solve with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	bool update_preconditioner = true;
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test multiple solve at once with no initial guess") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start with previous result and first solve with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	bool update_preconditioner = true;
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update + multiple solve at once with cold start initial guess and then cold start option") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	
+	std::cout << "Test with cold start with previous result and first solve with equality constrained initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	bool update_preconditioner = true;
+	Qp.update(
+	qp.H,
+	qp.g,
+	std::nullopt,
+	std::nullopt,
+	std::nullopt,
+	std::nullopt,
+	std::nullopt,update_preconditioner);
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+}
+
+TEST_CASE("sparse random strongly convex qp with equality and "
+                  "inequality constraints: test update + multiple solve at once with warm start") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+
+        
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	
+	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+        
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	auto x_wm = Qp.results.x; // keep previous result
+	auto y_wm = Qp.results.y;
+	auto z_wm = Qp.results.z;
+	bool update_preconditioner = true;
+	// test with a false update (the warm start should give the exact solution)
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	std::cout << "dirty workspace after update: " << Qp.work.dirty << std::endl;
+	Qp.solve(x_wm,y_wm,z_wm);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	std::cout << "Second solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	x_wm = Qp.results.x; // keep previous result
+	y_wm = Qp.results.y;
+	z_wm = Qp.results.z;
+	qp.H *= 2.; 
+	qp.g = ldlt_test::rand::vector_rand<T>(dim);
+	// try now with a real update
+	Qp.update(
+	qp.H,
+	qp.g,
+	qp.A,
+	qp.b,
+	qp.C,
+	qp.u,
+	qp.l,update_preconditioner);
+	std::cout << "dirty workspace after update: " << Qp.work.dirty << std::endl;
+	Qp.solve(x_wm,y_wm,z_wm);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Third solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fourth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
+	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "Fifth solve " << std::endl;
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+}

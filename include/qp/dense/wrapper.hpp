@@ -120,6 +120,7 @@ struct QP {
 			VecRef<T> l,
 			bool compute_preconditioner = true) {
 		// dense case
+		bool real_update = true;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -143,10 +144,11 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status);
+				preconditioner_status,
+				real_update);
 
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
 	};
 	/*!
@@ -170,6 +172,7 @@ struct QP {
 			VecRef<T> l,
 			bool compute_preconditioner = true) {
 		// sparse case
+		bool real_update = true;
 		if (settings.compute_timings){
 					work.timer.stop();
 					work.timer.start();
@@ -193,9 +196,10 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status);
+				preconditioner_status,
+				real_update);
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
 	};
 	/*!
@@ -248,9 +252,10 @@ struct QP {
 					work,
 					results,
 					ruiz,
-					preconditioner_status);
+					preconditioner_status,
+					real_update);
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
 	};
 	/*!
@@ -303,9 +308,10 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status);
+				preconditioner_status,
+				real_update);
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
 	};
 	/*!
@@ -370,9 +376,10 @@ struct QP {
 				work,
 				results,
 				ruiz,
-				preconditioner_status);
+				preconditioner_status,
+				real_update);
 		if (settings.compute_timings){
-			results.info.setup_time = work.timer.elapsed().user; // in nanoseconds
+			results.info.setup_time = work.timer.elapsed().user; // in microseconds
 		}
 	};
 	/*!

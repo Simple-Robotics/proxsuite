@@ -2034,8 +2034,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         
         Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
         std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
-        H *= 2.; // keep same sparsity structure
-        g = ldlt_test::rand::vector_rand<T>(n);
+        auto x_wm = Qp.results.x; // keep previous result
+        auto y_wm = Qp.results.y;
+        auto z_wm = Qp.results.z;
+        // try with a false update, the warm start should give the exact solution
         bool update_preconditioner = true;
         Qp.update(
         H,
@@ -2046,7 +2048,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         u,
         l,update_preconditioner);
         std::cout << "dirty workspace after update: " << Qp.work.internal.dirty << std::endl;
-        Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+        Qp.solve(x_wm,y_wm,z_wm);
         dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
         pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
 			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
@@ -2059,7 +2061,22 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
         std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
-        Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+        x_wm = Qp.results.x; // keep previous result
+        y_wm = Qp.results.y;
+        z_wm = Qp.results.z;
+        H *= 2.; // keep same sparsity structure
+        g = ldlt_test::rand::vector_rand<T>(n);
+        update_preconditioner = true;
+        Qp.update(
+        H,
+        g,
+        A,
+        b,
+        C,
+        u,
+        l,update_preconditioner);
+        std::cout << "dirty workspace after update: " << Qp.work.internal.dirty << std::endl;
+        Qp.solve(x_wm,y_wm,z_wm);
         dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
         pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
 			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
@@ -2079,6 +2096,19 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         CHECK(dua_res <= 1e-9);
         CHECK(pri_res <= 1E-9);
         std::cout << "Fourth solve " << std::endl;
+        std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+        std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+
+        std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
+        Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
+        dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) ;
+        pri_res = std::max( qp::dense::infty_norm(A * Qp.results.x - b),
+			qp::dense::infty_norm(sparse::detail::positive_part(C * Qp.results.x - u) + sparse::detail::negative_part(C * Qp.results.x - l)));
+        CHECK(dua_res <= 1e-9);
+        CHECK(pri_res <= 1E-9);
+        std::cout << "Fifth solve " << std::endl;
         std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in << std::endl;
         std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;

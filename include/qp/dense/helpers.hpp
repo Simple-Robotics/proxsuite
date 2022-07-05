@@ -93,7 +93,7 @@ void setup_factorization(Workspace<T>& qpwork,
  */
 template <typename T>
 void setup_equilibration(Workspace<T>& qpwork, 
-						Settings<T>& qpsettings, 
+						const Settings<T>& qpsettings, 
 						preconditioner::RuizEquilibration<T>& ruiz, 
 						bool execute_preconditioner){
 
@@ -191,14 +191,14 @@ void update(
 				model.H  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
 			} else {
-				model.H = H_.value().eval();
+				model.H = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(H_.value());
 			}
 		} else if (A_ != std::nullopt) {
 			if (C_ != std::nullopt) {
 				model.A  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 				model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
 			} else {
-				model.A = A_.value().eval();
+				model.A = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(A_.value());
 			}
 		} else if (C_ != std::nullopt) {
 			model.C  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(C_.value());
@@ -235,7 +235,8 @@ void setup( //
 		Workspace<T>& qpwork,
 		Results<T>& qpresults,
 		preconditioner::RuizEquilibration<T>& ruiz,
-		PreconditionerStatus preconditioner_status) {
+		PreconditionerStatus preconditioner_status,
+		bool real_update) {
 
 	switch (qpsettings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -260,6 +261,9 @@ void setup( //
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+					if (real_update){
+						qpwork.cleanup(); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+					}
 					qpresults.cleanup_statistics();
                     break;
                 }

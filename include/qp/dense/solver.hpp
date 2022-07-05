@@ -698,14 +698,6 @@ void qp_solve( //
 		Results<T>& qpresults,
 		Workspace<T>& qpwork,
 		preconditioner::RuizEquilibration<T>& ruiz) {
-	if (qpsettings.verbose){
-		dense::print_setup_header(qpsettings,qpresults, qpmodel);
-		dense::print_header();
-	}
-	if (qpsettings.compute_timings) {
-		qpwork.timer.stop();
-		qpwork.timer.start();
-	}
 	/*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
 	  static constexpr Layout layout = rowmajor;
 	  static constexpr auto DYN = Eigen::Dynamic;
@@ -713,54 +705,155 @@ void qp_solve( //
 	RowMat test(2,2); // test it is full of nan for debug
 	std::cout << "test " << test << std::endl;
 	*/
-
 	//::Eigen::internal::set_is_malloc_allowed(false);
-
-	switch (qpsettings.initial_guess) {
-	case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-		proxsuite::qp::dense::setup_factorization(qpwork, qpmodel, qpresults);
-		compute_equality_constrained_initial_guess(
-				qpwork, qpsettings, qpmodel, qpresults);
-		break; 
+	if (qpsettings.compute_timings) {
+		qpwork.timer.stop();
+		qpwork.timer.start();
 	}
-	case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
-		//!\ TODO in a quicker way
-		ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
-		ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
-		ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
-		setup_factorization(qpwork, qpmodel, qpresults);
-		for (isize i = 0; i < qpmodel.n_in; i++) {
-			if (qpresults.z[i] != 0) {
-				qpwork.active_inequalities[i] = true;
+	if (qpsettings.verbose){
+		dense::print_setup_header(qpsettings,qpresults, qpmodel);
+		dense::print_header();
+	}
+	if (qpwork.dirty){ // the following is used when a solve has already been executed (and without any intermediary model update)
+		switch (qpsettings.initial_guess) { // the following is used when one solve has already been executed
+					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+						qpwork.cleanup();
+						qpresults.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						// keep solutions but restart workspace and results
+						qpwork.cleanup();
+						qpresults.cold_start();
+						ruiz.scale_primal_in_place({proxsuite::qp::from_eigen, qpresults.x});
+						ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+						ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+						break;
+					}
+					case InitialGuessStatus::NO_INITIAL_GUESS:{
+						qpwork.cleanup();
+						qpresults.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::WARM_START:{
+						qpwork.cleanup();
+						qpresults.cold_start(); // because there was already a solve, precond was already computed if set so
+						ruiz.scale_primal_in_place({proxsuite::qp::from_eigen, qpresults.x}); // it contains the value given in entry for warm start
+						ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+						ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+						break;
+					}
+					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						// keep workspace and results solutions except statistics
+						qpresults.cleanup_statistics();
+						ruiz.scale_primal_in_place({proxsuite::qp::from_eigen, qpresults.x});
+						ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+						ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+						break;
+					}
+		}
+		if (qpsettings.initial_guess != InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT){
+				qpwork.H_scaled = qpmodel.H;
+				qpwork.g_scaled = qpmodel.g;
+				qpwork.A_scaled = qpmodel.A;
+				qpwork.b_scaled = qpmodel.b;
+				qpwork.C_scaled = qpmodel.C;
+				qpwork.u_scaled = qpmodel.u;
+				qpwork.l_scaled = qpmodel.l;
+				proxsuite::qp::dense::setup_equilibration(qpwork, qpsettings, ruiz, false); // reuse previous equilibration
+				proxsuite::qp::dense::setup_factorization(qpwork, qpmodel, qpresults);
+		}
+		switch (qpsettings.initial_guess) {
+			case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+				compute_equality_constrained_initial_guess(
+						qpwork, qpsettings, qpmodel, qpresults);
+				break; 
+			}
+			case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+				//!\ TODO in a quicker way
+				for (isize i = 0; i < qpmodel.n_in; i++) {
+					if (qpresults.z[i] != 0) {
+						qpwork.active_inequalities[i] = true;
+					}
+				}
+				linesearch::active_set_change(qpmodel, qpresults, qpwork);
+				break;
+			}
+			case InitialGuessStatus::NO_INITIAL_GUESS: {
+				break;
+			}
+			case InitialGuessStatus::WARM_START: {
+				//!\ TODO in a quicker way
+				for (isize i = 0; i < qpmodel.n_in; i++) {
+					if (qpresults.z[i] != 0) {
+						qpwork.active_inequalities[i] = true;
+					}
+				}
+				linesearch::active_set_change(qpmodel, qpresults, qpwork);
+				break;
+			}
+			case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+				// keep workspace and results solutions except statistics
+
+				// meaningful for when one wants to warm start with previous result with the same QP model
+				break;
 			}
 		}
-		linesearch::active_set_change(qpmodel, qpresults, qpwork);
-		break;
-	}
-	case InitialGuessStatus::NO_INITIAL_GUESS: {
-		setup_factorization(qpwork, qpmodel, qpresults);
-		break;
-	}
-	case InitialGuessStatus::WARM_START: {
-		//!\ TODO in a quicker way
-		setup_factorization(qpwork, qpmodel, qpresults);
-		for (isize i = 0; i < qpmodel.n_in; i++) {
-			if (qpresults.z[i] != 0) {
-				qpwork.active_inequalities[i] = true;
+	}else{ // the following is used for a first solve after initializing or updating the Qp object 
+		switch (qpsettings.initial_guess) {
+			case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+				proxsuite::qp::dense::setup_factorization(qpwork, qpmodel, qpresults);
+				compute_equality_constrained_initial_guess(
+						qpwork, qpsettings, qpmodel, qpresults);
+				break; 
+			}
+			case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+				//!\ TODO in a quicker way
+				ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y}); 
+				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+				setup_factorization(qpwork, qpmodel, qpresults);
+				for (isize i = 0; i < qpmodel.n_in; i++) {
+					if (qpresults.z[i] != 0) {
+						qpwork.active_inequalities[i] = true;
+					}
+				}
+				linesearch::active_set_change(qpmodel, qpresults, qpwork);
+				break;
+			}
+			case InitialGuessStatus::NO_INITIAL_GUESS: {
+				setup_factorization(qpwork, qpmodel, qpresults);
+				break;
+			}
+			case InitialGuessStatus::WARM_START: {
+				//!\ TODO in a quicker way
+				ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x}); 
+				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+				setup_factorization(qpwork, qpmodel, qpresults);
+				for (isize i = 0; i < qpmodel.n_in; i++) {
+					if (qpresults.z[i] != 0) {
+						qpwork.active_inequalities[i] = true;
+					}
+				}
+				linesearch::active_set_change(qpmodel, qpresults, qpwork);
+				break;
+			}
+			case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+
+				ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+				ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
+				ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
+				setup_factorization(qpwork, qpmodel, qpresults);
+				for (isize i = 0; i < qpmodel.n_in; i++) {
+					if (qpresults.z[i] != 0) {
+						qpwork.active_inequalities[i] = true;
+					}
+				}
+				linesearch::active_set_change(qpmodel, qpresults, qpwork);
+				break;
 			}
 		}
-		linesearch::active_set_change(qpmodel, qpresults, qpwork);
-		break;
-	}
-	case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
-
-		ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,qpresults.x});
-		ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,qpresults.y});
-		ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,qpresults.z});
-		// keep workspace and results solutions except statistics
-
-		break;
-	}
 	}
 
 	T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
@@ -1123,6 +1216,7 @@ void qp_solve( //
 			std::cout << "--------------------------------" << std::endl;
 		}
 	}
+	qpwork.dirty = true;
 }
 
 } // namespace dense
