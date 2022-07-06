@@ -23,7 +23,8 @@ void exposeSparseAlgorithm(pybind11::module_ m) {
 
 template <typename T>
 void exposeDenseAlgorithm(pybind11::module_ m) {
-	qp::python::exposeQpObjectDense<T>(m);
+	proxsuite::qp::dense::python::exposeModel<T>(m);
+    qp::python::exposeQpObjectDense<T>(m);
 }
 
 PYBIND11_MODULE(proxsuite_pywrap, m) {
