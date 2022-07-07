@@ -1775,7 +1775,7 @@ class SparseQpWrapper(unittest.TestCase):
 
         print("---testing sparse random strongly convex qp with equality and inequality constraints: test update g for different initial guess---")
         n = 10
-        H,g,A,b,C,u,l = generate_mixed_qp(n)
+        H,g_old,A,b,C,u,l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
         Qp = proxsuite.qp.dense.QP(n,n_eq,n_in)
@@ -1784,7 +1784,7 @@ class SparseQpWrapper(unittest.TestCase):
         Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
                 H,
-                np.asfortranarray(g),
+                np.asfortranarray(g_old),
                 A,
                 np.asfortranarray(b),
                 C,
@@ -1793,7 +1793,6 @@ class SparseQpWrapper(unittest.TestCase):
                 True
         )
         Qp.solve()
-        g_old = g 
         g = np.random.randn(n)
         dua_res = normInf(H @ Qp.results.x + g_old + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
         pri_res = max( normInf(A @ Qp.results.x - b),
@@ -1952,8 +1951,8 @@ class SparseQpWrapper(unittest.TestCase):
 
         print("---testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---")
         n = 10
-        H,g,A,b,C,u,l = generate_mixed_qp(n)
-        n_eq = A.shape[0]
+        H,g,A_old,b,C,u,l = generate_mixed_qp(n)
+        n_eq = A_old.shape[0]
         n_in = C.shape[0]
         Qp = proxsuite.qp.dense.QP(n,n_eq,n_in)
         Qp.settings.eps_abs = 1.E-9
@@ -1962,7 +1961,7 @@ class SparseQpWrapper(unittest.TestCase):
         Qp.init(
                 H,
                 np.asfortranarray(g),
-                A,
+                A_old,
                 np.asfortranarray(b),
                 C,
                 np.asfortranarray(u),
@@ -1970,7 +1969,6 @@ class SparseQpWrapper(unittest.TestCase):
                 True
         )
         Qp.solve()
-        A_old = A
         A = spa.random(n_eq, n, density=0.15,data_rvs=np.random.randn,format='csc')
         dua_res = normInf(H @ Qp.results.x + g + A_old.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
         pri_res = max( normInf(A_old @ Qp.results.x - b),

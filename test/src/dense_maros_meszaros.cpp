@@ -82,7 +82,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-TEST_CASE("maros meszaros wip") {
+TEST_CASE("dense maros meszaros using the api") {
 	using T = double;
 	for (auto const* file : files) {
 		auto qp = load_qp(file);
@@ -114,7 +114,7 @@ TEST_CASE("maros meszaros wip") {
 			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 			Qp.init(H,g,A,b,C,u,l);
 
-			Qp.settings.verbose = true;
+			Qp.settings.verbose = false;
 			Qp.solve(); 
 			auto& x = Qp.results.x;
 			auto& y = Qp.results.y;
@@ -135,7 +135,6 @@ TEST_CASE("maros meszaros wip") {
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
 
-			Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			Qp.solve();
 			x = Qp.results.x;
 			y = Qp.results.y;

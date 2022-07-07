@@ -58,8 +58,7 @@ class SparseQpWrapper(unittest.TestCase):
         Qp = proxsuite.qp.sparse.QP(H_,A_,C_)
         Qp.settings.eps_abs = 1.E-9
         Qp.settings.verbose = False
-        Qp.init(H,g,A,b,C,u,l)
-        Qp.update_proximal_parameters(rho = 1.e-7)
+        Qp.init(H=H,g=g,A=A,b=b,C=C,u=u,l=l,rho = 1.e-7)
         Qp.solve()
         dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
         pri_res = max( normInf(A @ Qp.results.x - b),
@@ -88,15 +87,15 @@ class SparseQpWrapper(unittest.TestCase):
         Qp.settings.eps_abs = 1.E-9
         Qp.settings.verbose = False
         Qp.init(
-                H,
-                np.asfortranarray(g),
-                A,
-                np.asfortranarray(b),
-                C,
-                np.asfortranarray(u),
-                np.asfortranarray(l)
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                u=np.asfortranarray(u),
+                l=np.asfortranarray(l),
+                rho = 1.e-7
         )
-        Qp.update_proximal_parameters(mu_eq = 1.E-2, mu_in = 1.E-3)
         Qp.solve()
 
         dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
@@ -1645,7 +1644,677 @@ class SparseQpWrapper(unittest.TestCase):
         print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
         print("total number of iteration: {}".format(Qp.results.info.iter))
         print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
+
+
+    def test_case_initialization_with_rho_for_different_initial_guess(self):
+
+        print("---testing sparse random strongly convex qp with equality and inequality constraints: test initializaton with rho for different initial guess---")
+        n = 10
+        H,g,A,b,C,u,l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        Qp = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp.settings.eps_abs = 1.E-9
+        Qp.settings.verbose = False
+        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True,
+                rho = 1.e-7
+        )
+        Qp.solve()
+        assert(Qp.results.info.rho == 1.e-7)
+        dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
+
+
+        Qp2 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp2.settings.eps_abs = 1.E-9
+        Qp2.settings.verbose = False
+        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp2.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True,
+                rho = 1.e-7
+        )
+        Qp2.solve()
+        assert(Qp2.results.info.rho == 1.e-7)
+        dua_res = normInf(H @ Qp2.results.x + g + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp2.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp2.results.info.setup_time, Qp2.results.info.solve_time))
         
+
+        Qp3 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp3.settings.eps_abs = 1.E-9
+        Qp3.settings.verbose = False
+        Qp3.settings.initial_guess = proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp3.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True,
+                rho = 1.e-7
+        )
+        Qp3.solve()
+        assert(Qp.results.info.rho == 1.e-7)
+        dua_res = normInf(H @ Qp3.results.x + g + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp3.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp3.results.info.setup_time, Qp3.results.info.solve_time))
+
+
+        Qp4 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp4.settings.eps_abs = 1.E-9
+        Qp4.settings.verbose = False
+        Qp4.settings.initial_guess = proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp4.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True,
+                rho = 1.e-7
+        )
+        Qp4.solve()
+        assert(Qp4.results.info.rho == 1.e-7)
+        dua_res = normInf(H @ Qp4.results.x + g + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp4.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp4.results.info.setup_time, Qp4.results.info.solve_time))
+
+        Qp5 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp5.settings.eps_abs = 1.E-9
+        Qp5.settings.verbose = False
+        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True,
+                rho = 1.e-7
+        )
+        Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z)
+        assert(Qp.results.info.rho == 1.e-7)
+        dua_res = normInf(H @ Qp5.results.x + g + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp5.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp5.results.info.setup_time, Qp5.results.info.solve_time))
+
+
+    def test_case_update_g_for_different_initial_guess(self):
+
+        print("---testing sparse random strongly convex qp with equality and inequality constraints: test update g for different initial guess---")
+        n = 10
+        H,g_old,A,b,C,u,l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        Qp = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp.settings.eps_abs = 1.E-9
+        Qp.settings.verbose = False
+        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.init(
+                H,
+                np.asfortranarray(g_old),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp.solve()
+        g = np.random.randn(n)
+        dua_res = normInf(H @ Qp.results.x + g_old + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp.update(g = g)
+        assert(normInf(Qp.model.g - g)<=1.e-9)
+        Qp.solve()
+        dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
+
+
+        Qp2 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp2.settings.eps_abs = 1.E-9
+        Qp2.settings.verbose = False
+        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp2.init(
+                H,
+                np.asfortranarray(g_old),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g_old + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp2.update(g = g)
+        assert(normInf(Qp.model.g - g)<=1.e-9)
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp2.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp2.results.info.setup_time, Qp2.results.info.solve_time))
+        
+
+        Qp3 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp3.settings.eps_abs = 1.E-9
+        Qp3.settings.verbose = False
+        Qp3.settings.initial_guess = proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp3.init(
+                H,
+                np.asfortranarray(g_old),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g_old + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp3.update(g = g)
+        assert(normInf(Qp.model.g - g)<=1.e-9)
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp3.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp3.results.info.setup_time, Qp3.results.info.solve_time))
+
+
+        Qp4 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp4.settings.eps_abs = 1.E-9
+        Qp4.settings.verbose = False
+        Qp4.settings.initial_guess = proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp4.init(
+                H,
+                np.asfortranarray(g_old),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g_old + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp4.update(g = g)
+        assert(normInf(Qp.model.g - g)<=1.e-9)
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp4.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp4.results.info.setup_time, Qp4.results.info.solve_time))
+
+        Qp5 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp5.settings.eps_abs = 1.E-9
+        Qp5.settings.verbose = False
+        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.init(
+                H,
+                np.asfortranarray(g_old),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z)
+        dua_res = normInf(H @ Qp5.results.x + g_old + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp5.update(g = g)
+        assert(normInf(Qp.model.g - g)<=1.e-9)
+        Qp5.solve()
+        dua_res = normInf(H @ Qp5.results.x + g + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp5.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp5.results.info.setup_time, Qp5.results.info.solve_time))
+
+    def test_case_update_A_for_different_initial_guess(self):
+
+        print("---testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---")
+        n = 10
+        H,g,A_old,b,C,u,l = generate_mixed_qp(n)
+        n_eq = A_old.shape[0]
+        n_in = C.shape[0]
+        Qp = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp.settings.eps_abs = 1.E-9
+        Qp.settings.verbose = False
+        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.init(
+                H,
+                np.asfortranarray(g),
+                A_old,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp.solve()
+        A = 2* A_old # keep same sparsity structure
+        dua_res = normInf(H @ Qp.results.x + g + A_old.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A_old @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp.update(A = A)
+        Qp.solve()
+        dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
+
+
+        Qp2 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp2.settings.eps_abs = 1.E-9
+        Qp2.settings.verbose = False
+        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp2.init(
+                H,
+                np.asfortranarray(g),
+                A_old,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g + A_old.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A_old @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp2.update(A = A)
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp2.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp2.results.info.setup_time, Qp2.results.info.solve_time))
+        
+
+        Qp3 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp3.settings.eps_abs = 1.E-9
+        Qp3.settings.verbose = False
+        Qp3.settings.initial_guess = proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp3.init(
+                H,
+                np.asfortranarray(g),
+                A_old,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g + A_old.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A_old @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp3.update(A = A)
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp3.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp3.results.info.setup_time, Qp3.results.info.solve_time))
+
+
+        Qp4 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp4.settings.eps_abs = 1.E-9
+        Qp4.settings.verbose = False
+        Qp4.settings.initial_guess = proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp4.init(
+                H,
+                np.asfortranarray(g),
+                A_old,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g + A_old.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A_old @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp4.update(A = A)
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp4.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp4.results.info.setup_time, Qp4.results.info.solve_time))
+
+        Qp5 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp5.settings.eps_abs = 1.E-9
+        Qp5.settings.verbose = False
+        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.init(
+                H,
+                np.asfortranarray(g),
+                A_old,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z)
+        dua_res = normInf(H @ Qp5.results.x + g + A_old.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A_old @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp5.update(A = A)
+        Qp5.solve()
+        dua_res = normInf(H @ Qp5.results.x + g + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp5.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp5.results.info.setup_time, Qp5.results.info.solve_time))
+
+    def test_case_update_rho_update_for_different_initial_guess(self):
+
+        print("---testing sparse random strongly convex qp with equality and inequality constraints: test update rho for different initial guess---")
+        n = 10
+        H,g,A,b,C,u,l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        Qp = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp.settings.eps_abs = 1.E-9
+        Qp.settings.verbose = False
+        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp.solve()
+        dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp.update(rho = 1.e-7)
+        assert(Qp.results.info.rho == 1.e-7)
+        Qp.solve()
+        dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
+        pri_res = max( normInf(A @ Qp.results.x - b),
+			normInf(np.maximum(C @ Qp.results.x - u,0) + np.minimum(C @ Qp.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
+
+
+        Qp2 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp2.settings.eps_abs = 1.E-9
+        Qp2.settings.verbose = False
+        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp2.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp2.update(rho = 1.e-7)
+        assert(Qp2.results.info.rho == 1.e-7)
+        Qp2.solve()
+        dua_res = normInf(H @ Qp2.results.x + g + A.transpose() @ Qp2.results.y + C.transpose() @ Qp2.results.z) 
+        pri_res = max( normInf(A @ Qp2.results.x - b),
+			normInf(np.maximum(C @ Qp2.results.x - u,0) + np.minimum(C @ Qp2.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp2.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp2.results.info.setup_time, Qp2.results.info.solve_time))
+        
+
+        Qp3 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp3.settings.eps_abs = 1.E-9
+        Qp3.settings.verbose = False
+        Qp3.settings.initial_guess = proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp3.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp3.update(rho = 1.e-7)
+        assert(Qp3.results.info.rho == 1.e-7)
+        Qp3.solve()
+        dua_res = normInf(H @ Qp3.results.x + g + A.transpose() @ Qp3.results.y + C.transpose() @ Qp3.results.z) 
+        pri_res = max( normInf(A @ Qp3.results.x - b),
+			normInf(np.maximum(C @ Qp3.results.x - u,0) + np.minimum(C @ Qp3.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp3.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp3.results.info.setup_time, Qp3.results.info.solve_time))
+
+
+        Qp4 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp4.settings.eps_abs = 1.E-9
+        Qp4.settings.verbose = False
+        Qp4.settings.initial_guess = proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp4.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp4.update(rho = 1.e-7)
+        assert(Qp4.results.info.rho == 1.e-7)
+        Qp4.solve()
+        dua_res = normInf(H @ Qp4.results.x + g + A.transpose() @ Qp4.results.y + C.transpose() @ Qp4.results.z) 
+        pri_res = max( normInf(A @ Qp4.results.x - b),
+			normInf(np.maximum(C @ Qp4.results.x - u,0) + np.minimum(C @ Qp4.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp4.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp4.results.info.setup_time, Qp4.results.info.solve_time))
+
+        Qp5 = proxsuite.qp.sparse.QP(n,n_eq,n_in)
+        Qp5.settings.eps_abs = 1.E-9
+        Qp5.settings.verbose = False
+        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(u),
+                np.asfortranarray(l),
+                True
+        )
+        Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z)
+        dua_res = normInf(H @ Qp5.results.x + g + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        Qp5.update(rho = 1.e-7)
+        assert(Qp5.results.info.rho == 1.e-7)
+        Qp5.solve()
+        dua_res = normInf(H @ Qp5.results.x + g + A.transpose() @ Qp5.results.y + C.transpose() @ Qp5.results.z) 
+        pri_res = max( normInf(A @ Qp5.results.x - b),
+			normInf(np.maximum(C @ Qp5.results.x - u,0) + np.minimum(C @ Qp5.results.x - l,0)))
+        assert(dua_res <= 1e-9)
+        assert(pri_res <= 1E-9)
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n,n_eq,n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res,pri_res))
+        print("total number of iteration: {}".format(Qp5.results.info.iter))
+        print("setup timing = {} ; solve time = {}".format(Qp5.results.info.setup_time, Qp5.results.info.solve_time))
+
+
 if __name__ == '__main__':
     unittest.main()
 

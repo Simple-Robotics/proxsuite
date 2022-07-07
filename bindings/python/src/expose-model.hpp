@@ -2,6 +2,7 @@
 // Copyright (c) 2022, INRIA
 //
 #include <qp/dense/model.hpp>
+#include <qp/sparse/model.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <qp/dense/utils.hpp>
@@ -11,8 +12,8 @@ namespace qp {
 namespace dense {
 namespace python {
 template <typename T>
-void exposeModel(pybind11::module_ m) {
-	::pybind11::class_<Model<T>>(m, "Model")
+void exposeDenseModel(pybind11::module_ m) {
+	::pybind11::class_<proxsuite::qp::dense::Model<T>>(m, "model")
 			.def(::pybind11::init<i64, i64, i64>()) // constructor
 			.def_readonly("H", &Model<T>::H)
 			.def_readonly("g", &Model<T>::g)
@@ -28,5 +29,26 @@ void exposeModel(pybind11::module_ m) {
 }
 } // namespace python
 } // namespace dense
+
+namespace sparse {
+namespace python {
+template <typename T,typename I>
+void exposeSparseModel(pybind11::module_ m) {
+	::pybind11::class_<proxsuite::qp::sparse::Model<T,I>>(m, "model")
+			.def(::pybind11::init()) // constructor
+			.def_readonly("g", &Model<T,I>::g)
+			.def_readonly("b", &Model<T,I>::b)
+			.def_readonly("u", &Model<T,I>::u)
+			.def_readonly("l", &Model<T,I>::l)
+			.def_readonly("dim", &Model<T,I>::dim)
+			.def_readonly("n_eq", &Model<T,I>::n_eq)
+			.def_readonly("n_in", &Model<T,I>::n_in)
+			.def_readonly("H_nnz", &Model<T,I>::H_nnz)
+			.def_readonly("A_nnz", &Model<T,I>::A_nnz)
+			.def_readonly("C_nnz", &Model<T,I>::C_nnz);
+}
+} // namespace python
+} // namespace sparse
+
 } // namespace qp
 } // namespace proxsuite

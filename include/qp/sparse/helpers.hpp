@@ -173,7 +173,7 @@ void qp_setup(
 					// keep solutions but restart workspace and results
 					
 					if (work.internal.proximal_parameter_update){
-						results.cleanup_all_except_prox_parameters(); 
+						results.cleanup_statistics(); 
 					}else{
 						results.cold_start(); 
 					}
