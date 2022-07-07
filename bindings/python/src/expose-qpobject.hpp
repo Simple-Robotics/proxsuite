@@ -13,6 +13,8 @@ namespace proxsuite {
 namespace qp {
 using veg::isize;
 
+namespace dense{
+
 namespace python {
 
 template <typename T>
@@ -143,6 +145,12 @@ void exposeQpObjectDense(pybind11::module_ m) {
 					"function used for cleaning the workspace and result "
 					"classes.");
 }
+} // namespace python
+} // namespace dense
+
+namespace sparse{
+
+namespace python {
 
 template <typename T,typename I>
 void exposeQpObjectSparse(pybind11::module_ m) {
@@ -227,6 +235,7 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 }
 
 } //namespace python
+} // namespace sparse
 
 } // namespace qp
 } // namespace proxsuite

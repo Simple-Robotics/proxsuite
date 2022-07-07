@@ -11,21 +11,23 @@ namespace qp {
 namespace python {
 
 template <typename T>
-void exposeQpAlgorithm(pybind11::module_ m) {
-	qp::python::exposeResults<T>(m);
-	qp::python::exposeSettings<T>(m);
+void exposeQpAlgorithms(pybind11::module_ m) {
+	exposeResults<T>(m);
+	exposeSettings<T>(m);
 }
 
 template <typename T,typename I>
-void exposeSparseAlgorithm(pybind11::module_ m) {
-    proxsuite::qp::sparse::python::exposeSparseModel<T,I>(m);
-    qp::python::exposeQpObjectSparse<T,I>(m);
+void exposeSparseAlgorithms(pybind11::module_ m) {
+    sparse::python::exposeSparseModel<T,I>(m);
+    sparse::python::exposeQpObjectSparse<T,I>(m);
+    sparse::python::solveSparseQp<T,I>(m);
 }
 
 template <typename T>
-void exposeDenseAlgorithm(pybind11::module_ m) {
-	proxsuite::qp::dense::python::exposeDenseModel<T>(m);
-    qp::python::exposeQpObjectDense<T>(m);
+void exposeDenseAlgorithms(pybind11::module_ m) {
+	dense::python::exposeDenseModel<T>(m);
+    dense::python::exposeQpObjectDense<T>(m);
+    dense::python::solveDenseQp<T>(m);
 }
 
 PYBIND11_MODULE(proxsuite_pywrap, m) {
@@ -41,11 +43,11 @@ PYBIND11_MODULE(proxsuite_pywrap, m) {
     )pbdoc";
 
     pybind11::module_ m2 = m.def_submodule("qp", "qp submodule of 'proxsuite' library");
-    exposeQpAlgorithm<f64>(m2);
+    exposeQpAlgorithms<f64>(m2);
     pybind11::module_ m3 = m2.def_submodule("dense", "dense submodule of 'qp'");
     pybind11::module_ m4 = m2.def_submodule("sparse", "sparse submodule of 'qp'");
-	exposeSparseAlgorithm<f64,int32_t>(m4);
-    exposeDenseAlgorithm<f64>(m3);
+	exposeSparseAlgorithms<f64,int32_t>(m4);
+    exposeDenseAlgorithms<f64>(m3);
 }
 
 } // namespace python
