@@ -13,26 +13,7 @@ using veg::isize;
 
 namespace dense {
 namespace python {
-/*
-m.def("solve", static_cast<qp::Results<T> (dense::QP<T>::*)(dense::MatRef<T>,dense::VecRef<T>,dense::MatRef<T>,dense::VecRef<T>,
-                                                    dense::MatRef<T>,dense::VecRef<T>,dense::VecRef<T>,
-                                                    std::optional<VecRef<T>>,std::optional<VecRef<T>>,std::optional<VecRef<T>>,
-                                                    std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
-                                                    std::optional<bool>,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
-                                                    )>(&dense::solve<T>)
-m.def("solve", static_cast<qp::Results<T> (dense::QP<T>::*)(const dense::SparseMat<T>&,dense::VecRef<T>,const dense::SparseMat<T>&,dense::VecRef<T>,
-                                                    const dense::SparseMat<T>&,dense::VecRef<T>,dense::VecRef<T>,
-                                                    std::optional<VecRef<T>>,std::optional<VecRef<T>>,std::optional<VecRef<T>>,
-                                                    std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
-                                                    std::optional<bool>,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
-                                                    )>(&dense::solve<T>)
- m.def("solve",  pybind11::overload_cast<dense::MatRef<T>,dense::VecRef<T>,dense::MatRef<T>,dense::VecRef<T>,
-														dense::MatRef<T>,dense::VecRef<T>,dense::VecRef<T>,
-                                                        std::optional<VecRef<T>>,std::optional<VecRef<T>>,std::optional<VecRef<T>>,
-                                                        std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
-                                                        std::optional<bool>,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
-                                                        >(&dense::solve)
-*/
+
 template <typename T>
 void solveDenseQp(pybind11::module_ m) {
     m.def("solve", pybind11::overload_cast<dense::MatRef<T>,dense::VecRef<T>,dense::MatRef<T>,dense::VecRef<T>,
@@ -41,7 +22,7 @@ void solveDenseQp(pybind11::module_ m) {
                                                     std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
                                                     std::optional<bool>,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
                                                     >(&dense::solve<T>)
-        ,"function for solving a QP problem using dense backend. It is possible to setting up some solver parameters.",
+        ,"Function for solving a QP problem using PROXQP sparse backend directly without defining a QP object. It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).",
         pybind11::arg_v("H",std::nullopt, "quadratic cost with dense format."),
         pybind11::arg_v("g",std::nullopt, "linear cost"),
         pybind11::arg_v("A",std::nullopt, "equality constraint matrix with dense format."),
@@ -68,7 +49,7 @@ void solveDenseQp(pybind11::module_ m) {
                                                         std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
                                                         std::optional<bool>,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
                                                         >(&dense::solve<T>)
-        ,"function for solving a QP problem using dense backend. It is possible to setting up some solver parameters.",
+        ,"Function for solving a QP problem using PROXQP dense backend directly without defining a QP object. It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).",
         pybind11::arg_v("H",std::nullopt, "quadratic cost with dense format."),
         pybind11::arg_v("g",std::nullopt, "linear cost"),
         pybind11::arg_v("A",std::nullopt, "equality constraint matrix with dense format."),
@@ -101,7 +82,7 @@ template <typename T,typename I>
 void solveSparseQp(pybind11::module_ m) {
 
     m.def("solve", &sparse::solve<T,I>
-        ,"function for solving a QP problem using dense backend. It is possible to setting up some solver parameters.",
+        ,"Function for solving a QP problem using PROXQP dense backend directly without defining a QP object. It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).",
         pybind11::arg_v("H",std::nullopt, "quadratic cost with dense format."),
         pybind11::arg_v("g",std::nullopt, "linear cost"),
         pybind11::arg_v("A",std::nullopt, "equality constraint matrix with dense format."),

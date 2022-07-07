@@ -21,7 +21,9 @@ template <typename T>
 void exposeQpObjectDense(pybind11::module_ m) {
 
 	::pybind11::class_<dense::QP<T>>(m, "QP")
-			.def(::pybind11::init<i64, i64, i64>(),"Default constructor") // constructor
+			.def(::pybind11::init<i64, i64, i64>(),
+				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
+				"Default constructor using QP model dimensions.") // constructor
 			.def_readwrite(
 					"results",
 					&dense::QP<T>::results,
@@ -156,8 +158,12 @@ template <typename T,typename I>
 void exposeQpObjectSparse(pybind11::module_ m) {
 
 	::pybind11::class_<sparse::QP<T,I>>(m, "QP")//,pybind11::module_local()
-			.def(::pybind11::init<i64, i64, i64>()) // constructor
-			.def(::pybind11::init<const sparse::SparseMat<bool, I>&,const sparse::SparseMat<bool,I>&,const sparse::SparseMat<bool,I>&>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>(),
+				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
+				"Constructor using QP model dimensions.") // constructor
+			.def(::pybind11::init<const sparse::SparseMat<bool, I>&,const sparse::SparseMat<bool,I>&,const sparse::SparseMat<bool,I>&>(),
+				pybind11::arg_v("H_mask",std::nullopt,"mask of the quadratic cost."),pybind11::arg_v("A_mask",std::nullopt,"mask of the equality constraint matrix."),pybind11::arg_v("C_mask",0,"mask of the inequality constraint matrix."),
+				"Constructor using QP model sparsity structure.") // constructor
 			.def_readwrite(
 					"model", &sparse::QP<T,I>::model, "class containing the QP model")
 			.def_readwrite(

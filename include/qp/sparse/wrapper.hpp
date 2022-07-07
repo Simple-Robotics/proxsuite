@@ -149,6 +149,9 @@ struct QP {
 	 * @param u lower inequality constraint vector input defining the QP model.
 	 * @param l lower inequality constraint vector input defining the QP model.
 	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
+	 * @param rho proximal step size wrt primal variable.
+	 * @param mu_eq proximal step size wrt equality constrained multiplier.
+	 * @param mu_in proximal step size wrt inequality constrained multiplier.
 	 */
 	void init(
 			const SparseMat<T, I>& H,
@@ -202,6 +205,9 @@ struct QP {
 	 * @param u_ lower inequality constraint vector input defining the QP model.
 	 * @param l_ lower inequality constraint vector input defining the QP model.
 	 * @param update_preconditioner_ bool parameter for updating or not the preconditioner and the associated scaled model.
+	 * @param rho proximal step size wrt primal variable.
+	 * @param mu_eq proximal step size wrt equality constrained multiplier.
+	 * @param mu_in proximal step size wrt inequality constrained multiplier.
 	 */
 	void update(const std::optional<SparseMat<T, I>> H_,
 			std::optional<VecRef<T>> g_,
@@ -382,7 +388,27 @@ struct QP {
 	void cleanup() { results.cleanup(); }
 };
 /*!
-* Solves the QP problem using PROXQP algorithm without the need to define a QP object, with matrices defined by Sparse Eigen matrices.
+* Solves the QP problem using PROXQP algorithm without the need to define a QP object, with matrices defined by Dense Eigen matrices.
+* It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).
+* @param H quadratic cost input defining the QP model.
+* @param g linear cost input defining the QP model.
+* @param A equality constraint matrix input defining the QP model.
+* @param b equality constraint vector input defining the QP model.
+* @param C inequality constraint matrix input defining the QP model.
+* @param u lower inequality constraint vector input defining the QP model.
+* @param l lower inequality constraint vector input defining the QP model.
+* @param x primal warm start.
+* @param y dual equality constraint warm start.
+* @param z dual inequality constraint warm start.
+* @param verbose if set to true, the solver prints more information about each iteration.
+* @param compute_preconditioner bool parameter for executing or not the preconditioner.
+* @param rho proximal step size wrt primal variable.
+* @param mu_eq proximal step size wrt equality constrained multiplier.
+* @param mu_in proximal step size wrt inequality constrained multiplier.
+* @param eps_abs absolute accuracy threshold.
+* @param eps_rel relative accuracy threshold.
+* @param max_iter maximum number of iteration.
+* @param initial_guess initial guess option for warm starting or not the initial iterate values.
 */
 template <typename T,typename I>
 qp::Results<T> solve(
