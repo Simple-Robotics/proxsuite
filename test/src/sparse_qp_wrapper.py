@@ -1621,7 +1621,6 @@ class SparseQpWrapper(unittest.TestCase):
         print("total number of iteration: {}".format(Qp.results.info.iter))
         print("setup timing = {} ; solve time = {}".format(Qp.results.info.setup_time, Qp.results.info.solve_time))
 
-        
         Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z)
         dua_res = normInf(H @ Qp.results.x + g + A.transpose() @ Qp.results.y + C.transpose() @ Qp.results.z) 
         pri_res = max( normInf(A @ Qp.results.x - b),

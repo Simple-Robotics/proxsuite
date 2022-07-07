@@ -151,18 +151,22 @@ struct QP {
 	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
 	 */
 	void init(
-			const std::optional<SparseMat<T, I>> H,
-			std::optional<VecRef<T>> g,
-			const std::optional<SparseMat<T, I>> A,
-			std::optional<VecRef<T>> b,
-			const std::optional<SparseMat<T, I>> C,
-			std::optional<VecRef<T>> u,
-			std::optional<VecRef<T>> l,
-			bool compute_preconditioner_=true) {
+			const SparseMat<T, I>& H,
+			VecRef<T> g,
+			const SparseMat<T, I>& A,
+			VecRef<T> b,
+			const SparseMat<T, I>& C,
+			VecRef<T> u,
+			VecRef<T> l,
+			bool compute_preconditioner_=true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt) {
 		if (settings.compute_timings){
 			work.timer.stop();
 			work.timer.start();
 		}
+		work.internal.proximal_parameter_update= false;
 		PreconditionerStatus preconditioner_status;
 		if (compute_preconditioner_){
 			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
@@ -170,17 +174,18 @@ struct QP {
 			preconditioner_status = proxsuite::qp::PreconditionerStatus::IDENTITY;
 		}
 		//settings.compute_preconditioner = compute_preconditioner_;
-		SparseMat<T, I> H_triu = H.value().template triangularView<Eigen::Upper>();
-		SparseMat<T, I> AT = A.value().transpose();
-		SparseMat<T, I> CT = C.value().transpose();
+		SparseMat<T, I> H_triu = H.template triangularView<Eigen::Upper>();
+		SparseMat<T, I> AT = A.transpose();
+		SparseMat<T, I> CT = C.transpose();
 		sparse::QpView<T, I> qp = {
 				{linearsolver::sparse::from_eigen, H_triu},
-				{linearsolver::sparse::from_eigen, g.value()},
+				{linearsolver::sparse::from_eigen, g},
 				{linearsolver::sparse::from_eigen, AT},
-				{linearsolver::sparse::from_eigen, b.value()},
+				{linearsolver::sparse::from_eigen, b},
 				{linearsolver::sparse::from_eigen, CT},
-				{linearsolver::sparse::from_eigen, l.value()},
-				{linearsolver::sparse::from_eigen, u.value()}};
+				{linearsolver::sparse::from_eigen, l},
+				{linearsolver::sparse::from_eigen, u}};
+		proxsuite::qp::sparse::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
 		if (settings.compute_timings){
 			results.info.setup_time += work.timer.elapsed().user; // in microseconds
@@ -205,12 +210,16 @@ struct QP {
 			const std::optional<SparseMat<T, I>> C_,
 			std::optional<VecRef<T>> u_,
 			std::optional<VecRef<T>> l_,
-			bool update_preconditioner_ = false){
+			bool update_preconditioner_ = true,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt){
 		if (settings.compute_timings){
 			work.timer.stop();
 			work.timer.start();
 		}
 		work.internal.dirty = false;
+		work.internal.proximal_parameter_update= false;
 		PreconditionerStatus preconditioner_status;
 		if (update_preconditioner_){
 			preconditioner_status = proxsuite::qp::PreconditionerStatus::EXECUTE;
@@ -332,7 +341,7 @@ struct QP {
 				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
 				{linearsolver::sparse::from_eigen, model.l},
 				{linearsolver::sparse::from_eigen, model.u}};
-		
+		proxsuite::qp::sparse::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status); // store model value + performs scaling according to chosen options
 		if (settings.compute_timings){
 			results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -366,16 +375,6 @@ struct QP {
 				settings,
 				work,
 				ruiz);
-	};
-	/*!
-	 * Updates proximal parameters of the solver.
-	 * @param rho new primal proximal parameter.
-	 * @param mu_eq new dual equality constrained proximal parameter.
-	 * @param mu_in new dual inequality constrained proximal parameter.
-	 */
-	void update_proximal_parameters(
-			std::optional<T> rho, std::optional<T> mu_eq, std::optional<T> mu_in) {
-		proxsuite::qp::sparse::update_proximal_parameters(results, rho, mu_eq, mu_in);
 	};
 	/*!
 	 * Clean-ups solver's results.

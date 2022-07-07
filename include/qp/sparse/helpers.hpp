@@ -21,23 +21,26 @@ namespace sparse {
 * @param mu_in_new dual inequality proximal parameter
 * @param results solver result 
 */
-template <typename T>
+template <typename T,typename I>
 void update_proximal_parameters(
 		Results<T>& results,
+		Workspace<T,I>& work,
 		std::optional<T> rho_new,
 		std::optional<T> mu_eq_new,
 		std::optional<T> mu_in_new) {
-
 	if (rho_new != std::nullopt) {
 		results.info.rho = rho_new.value();
+		work.internal.proximal_parameter_update=true;
 	}
 	if (mu_eq_new != std::nullopt) {
 		results.info.mu_eq = mu_eq_new.value();
 		results.info.mu_eq_inv = T(1) / results.info.mu_eq;
+		work.internal.proximal_parameter_update=true;
 	}
 	if (mu_in_new != std::nullopt) {
 		results.info.mu_in = mu_in_new.value();
 		results.info.mu_in_inv = T(1) / results.info.mu_in;
+		work.internal.proximal_parameter_update=true;
 	}
 }
 /*!
@@ -148,35 +151,56 @@ void qp_setup(
 		break;
 	}
 	// performs scaling according to options chosen + stored model value
-					work.setup_impl(
-						qp,
-						results,
-						data,
-						settings,
-						execute_preconditioner_or_not,
-						precond,
-						P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+	work.setup_impl(
+			qp,
+			results,
+			data,
+			settings,
+			execute_preconditioner_or_not,
+			precond,
+			P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 	switch (settings.initial_guess) { // the following is used in practice when initiliazing the Qp object or updating it
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-					results.cleanup(); 
+					
+					if (work.internal.proximal_parameter_update){
+						results.cleanup_all_except_prox_parameters(); 
+					}else{
+						results.cleanup(); 
+					}
                     break;
                 }
                 case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
 					// keep solutions but restart workspace and results
-					results.cold_start();
+					
+					if (work.internal.proximal_parameter_update){
+						results.cleanup_all_except_prox_parameters(); 
+					}else{
+						results.cold_start(); 
+					}
                     break;
                 }
                 case InitialGuessStatus::NO_INITIAL_GUESS:{
-					results.cleanup(); 
+					
+					if (work.internal.proximal_parameter_update){
+						results.cleanup_all_except_prox_parameters(); 
+					}else{
+						results.cleanup(); 
+					}
                     break;
                 }
 				case InitialGuessStatus::WARM_START:{
-					results.cleanup(); 
+					
+					if (work.internal.proximal_parameter_update){
+						results.cleanup_all_except_prox_parameters(); 
+					}else{
+						results.cleanup(); 
+					}
                     break;
                 }
                 case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
                     // keep workspace and results solutions except statistics
-					results.cleanup_statistics();
+					
+					results.cleanup_statistics(); // always keep prox parameters (changed or previous ones)
                     break;
                 }
 	}

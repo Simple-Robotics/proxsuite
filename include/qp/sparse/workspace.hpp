@@ -141,6 +141,7 @@ struct Workspace {
 
 		// Whether the workspace is dirty
 		bool dirty;
+		bool proximal_parameter_update;
 
 	} internal;
 
@@ -676,7 +677,6 @@ struct Workspace {
 		
 		DynStackMut stack = stack_mut();
 		precond.scale_qp_in_place(qp_scaled, execute_or_not, settings, stack);
-
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
 
 		linearsolver::sparse::MatMut<T, I> kkt_active = {

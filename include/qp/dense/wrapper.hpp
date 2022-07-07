@@ -170,11 +170,11 @@ struct QP {
 	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
 	 */
 	void init(
-			const SparseMat<T> H,
+			const SparseMat<T>& H,
 			VecRef<T> g,
-			const SparseMat<T> A,
+			const SparseMat<T>& A,
 			VecRef<T> b,
-			const SparseMat<T> C,
+			const SparseMat<T>& C,
 			VecRef<T> u,
 			VecRef<T> l,
 			bool compute_preconditioner = true,

@@ -324,7 +324,7 @@ template <typename T, typename I, typename P>
 void qp_solve(
 		Results<T>& results,
 		Model<T, I>& data,
-		Settings<T> const& settings,
+		const Settings<T>& settings,
 		Workspace<T, I>& work,
 		P& precond) {
 	if (settings.compute_timings){
@@ -332,7 +332,7 @@ void qp_solve(
 		work.timer.start();
 	}
 
-	if(work.internal.dirty)
+	if(work.internal.dirty) // the following is used when a solve has already been executed (and without any intermediary model update)
 	{
 		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
@@ -393,7 +393,7 @@ void qp_solve(
 		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
 		
 	}else{
-		// only case: when warm starting first time
+		// the following is used for a first solve after initializing or updating the Qp object 
 		switch (settings.initial_guess) {
 					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 						break;
@@ -502,7 +502,6 @@ void qp_solve(
 	isize C_active_nnz = 0;
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-
 					// H and A are always active
 					for (usize j = 0; j < usize(n + n_eq); ++j) {
 						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
@@ -786,7 +785,8 @@ void qp_solve(
 				space.resize(space.size() - nb_space);
 				std::cout << std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
 				results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
-				
+				results.info.pri_res = primal_feasibility_lhs;
+				results.info.dua_res = dual_feasibility_lhs;
 				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
 				precond.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, y_e});
 				precond.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, z_e});
@@ -1170,8 +1170,12 @@ void qp_solve(
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
+
 			if (is_primal_feasible(primal_feasibility_lhs_new) &&
 			    is_dual_feasible(dual_feasibility_lhs_new)) {
+				results.info.pri_res = primal_feasibility_lhs_new;
+				results.info.dua_res = dual_feasibility_lhs_new;
+				results.info.status = QPSolverOutput::PROXQP_SOLVED;
 				break;
 			}
 
@@ -1285,7 +1289,6 @@ void qp_solve(
 		results.info.mu_eq_inv = new_bcl_mu_eq_inv;
 		results.info.mu_in_inv = new_bcl_mu_in_inv;
 	}
-
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
 	tmp.setZero();
 	detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);

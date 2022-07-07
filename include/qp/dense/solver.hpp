@@ -715,7 +715,7 @@ void qp_solve( //
 		dense::print_header();
 	}
 	if (qpwork.dirty){ // the following is used when a solve has already been executed (and without any intermediary model update)
-		switch (qpsettings.initial_guess) { // the following is used when one solve has already been executed
+		switch (qpsettings.initial_guess) { 
 					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 						qpwork.cleanup();
 						qpresults.cleanup(); 
