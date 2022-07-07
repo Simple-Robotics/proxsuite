@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/sparse/wrapper.hpp>
+#include <qp/sparse/sparse.hpp>
 #include <util.hpp>
 #include <doctest.h>
 #include <veg/util/dynstack_alloc.hpp>

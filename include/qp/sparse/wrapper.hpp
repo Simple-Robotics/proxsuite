@@ -381,114 +381,53 @@ struct QP {
 	 */
 	void cleanup() { results.cleanup(); }
 };
-
-template <typename T, typename I>
+/*!
+* Solves the QP problem using PROXQP algorithm without the need to define a QP object, with matrices defined by Sparse Eigen matrices.
+*/
+template <typename T,typename I>
 qp::Results<T> solve(
-		const std::optional<SparseMat<T, I>> H,
-		std::optional<VecRef<T>> g,
-		const std::optional<SparseMat<T, I>> A,
-		std::optional<VecRef<T>> b,
-		const std::optional<SparseMat<T, I>> C,
-		std::optional<VecRef<T>> u,
-		std::optional<VecRef<T>> l,
+					 const SparseMat<T,I>& H,
+					 VecRef<T> g,
+					 const SparseMat<T,I>& A,
+					 VecRef<T> b,
+					 const SparseMat<T,I>& C,
+					 VecRef<T> u,
+					 VecRef<T> l,
+			std::optional<VecRef<T>> x = std::nullopt,
+			std::optional<VecRef<T>> y = std::nullopt,
+			std::optional<VecRef<T>> z = std::nullopt,
+			std::optional<T> eps_abs = std::nullopt,
+			std::optional<T> eps_rel = std::nullopt,
+			std::optional<T> rho = std::nullopt,
+			std::optional<T> mu_eq = std::nullopt,
+			std::optional<T> mu_in = std::nullopt,
+			std::optional<bool> verbose = std::nullopt,
+			bool compute_preconditioner = true,
+			std::optional<isize> max_iter = std::nullopt,
+			proxsuite::qp::InitialGuessStatus initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS
+			){
+	
+	isize n(H.rows());
+	isize n_eq(A.rows());
+	isize n_in(C.rows());
 
-		std::optional<T> eps_abs,
-		std::optional<T> eps_rel,
-		std::optional<T> rho,
-		std::optional<T> mu_eq,
-		std::optional<T> mu_in,
-		std::optional<VecRef<T>> x,
-		std::optional<VecRef<T>> y,
-		std::optional<VecRef<T>> z,
-		std::optional<bool> verbose,
-		std::optional<isize> max_iter,
-		std::optional<T> alpha_bcl,
-		std::optional<T> beta_bcl,
-		std::optional<T> refactor_dual_feasibility_threshold,
-		std::optional<T> refactor_rho_threshold,
-		std::optional<T> mu_max_eq,
-		std::optional<T> mu_max_in,
-		std::optional<T> mu_update_factor,
-		std::optional<T> cold_reset_mu_eq,
-		std::optional<T> cold_reset_mu_in,
-		std::optional<isize> max_iter_in,
-		std::optional<T> eps_refact,
-		std::optional<isize> nb_iterative_refinement,
-		std::optional<T> eps_primal_inf,
-		std::optional<T> eps_dual_inf) {
+	qp::sparse::QP<T,I> Qp(n,n_eq,n_in);
+	Qp.settings.initial_guess = initial_guess;
 
-	isize n = H.value().rows();
-	isize n_eq = A.value().rows();
-	isize n_in = C.value().rows();
-
-	qp::sparse::QP<T, I> Qp(n, n_eq, n_in);
-	Qp.setup(H, g, A, b, C, u, l); // symbolic factorisation done here
-
-	Qp.update_proximal_parameters(rho, mu_eq, mu_in);
-	Qp.warm_start(x, y, z);
-
-	if (eps_abs != std::nullopt) {
+	if (eps_abs!=std::nullopt){
 		Qp.settings.eps_abs = eps_abs.value();
 	}
-	if (eps_rel != std::nullopt) {
+	if (eps_rel!=std::nullopt){
 		Qp.settings.eps_rel = eps_rel.value();
 	}
-	if (verbose != std::nullopt) {
+	if (verbose!=std::nullopt){
 		Qp.settings.verbose = verbose.value();
 	}
-	if (alpha_bcl != std::nullopt) {
-		Qp.settings.alpha_bcl = alpha_bcl.value();
+	if (max_iter!=std::nullopt){
+		Qp.settings.max_iter = verbose.value();
 	}
-	if (beta_bcl != std::nullopt) {
-		Qp.settings.beta_bcl = beta_bcl.value();
-	}
-	if (refactor_dual_feasibility_threshold != std::nullopt) {
-		Qp.settings.refactor_dual_feasibility_threshold =
-				refactor_dual_feasibility_threshold.value();
-	}
-	if (refactor_rho_threshold != std::nullopt) {
-		Qp.settings.refactor_rho_threshold = refactor_rho_threshold.value();
-	}
-	if (mu_max_eq != std::nullopt) {
-		Qp.settings.mu_max_eq = mu_max_eq.value();
-		Qp.settings.mu_max_eq_inv = T(1) / mu_max_eq.value();
-	}
-	if (mu_max_in != std::nullopt) {
-		Qp.settings.mu_max_in = mu_max_in.value();
-		Qp.settings.mu_max_in_inv = T(1) / mu_max_in.value();
-	}
-	if (mu_update_factor != std::nullopt) {
-		Qp.settings.mu_update_factor = mu_update_factor.value();
-		Qp.settings.mu_update_inv_factor = T(1) / mu_update_factor.value();
-	}
-	if (cold_reset_mu_eq != std::nullopt) {
-		Qp.settings.cold_reset_mu_eq = cold_reset_mu_eq.value();
-		Qp.settings.cold_reset_mu_eq_inv = T(1) / cold_reset_mu_eq.value();
-	}
-	if (cold_reset_mu_in != std::nullopt) {
-		Qp.settings.cold_reset_mu_in = cold_reset_mu_in.value();
-		Qp.settings.cold_reset_mu_in_inv = T(1) / cold_reset_mu_in.value();
-	}
-	if (max_iter != std::nullopt) {
-		Qp.settings.max_iter = max_iter.value();
-	}
-	if (max_iter_in != std::nullopt) {
-		Qp.settings.max_iter_in = max_iter_in.value();
-	}
-	if (eps_refact != std::nullopt) {
-		Qp.settings.eps_refact = eps_refact.value();
-	}
-	if (nb_iterative_refinement != std::nullopt) {
-		Qp.settings.nb_iterative_refinement = nb_iterative_refinement.value();
-	}
-	if (eps_primal_inf != std::nullopt) {
-		Qp.settings.eps_primal_inf = eps_primal_inf.value();
-	}
-	if (eps_dual_inf != std::nullopt) {
-		Qp.settings.eps_dual_inf = eps_dual_inf.value();
-	}
-
-	Qp.solve(); // numeric facotisation done here
+	Qp.init(H,g,A,b,C,u,l,compute_preconditioner,rho,mu_eq,mu_in);
+	Qp.solve(x,y,z); 
 
 	return Qp.results;
 };
