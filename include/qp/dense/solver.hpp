@@ -630,6 +630,11 @@ auto primal_dual_newton_semi_smooth(
 								<< "         "  << alpha << std::endl;
 		}
 		*/
+		if (qpsettings.verbose ){
+			std::cout << "\033[1;34m[inner iteration " << iter + 1  << "]\033[0m" << std::endl;
+			std::cout << std::scientific << std::setw(2) << std::setprecision(2) << 
+			"| inner residual=" << err_in << " | alpha=" << alpha << std::endl;
+		}								      
 		if (err_in <= eps_int) {
 			qpresults.info.iter += iter + 1;
 			/* for debug
@@ -712,7 +717,6 @@ void qp_solve( //
 	}
 	if (qpsettings.verbose){
 		dense::print_setup_header(qpsettings,qpresults, qpmodel);
-		dense::print_header();
 	}
 	if (qpwork.dirty){ // the following is used when a solve has already been executed (and without any intermediary model update)
 		switch (qpsettings.initial_guess) { 
@@ -991,18 +995,9 @@ void qp_solve( //
 				}
 				qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 			}
-			/*
-			std::string space = "       ";
-			isize nb_space = 0;
-			if (iter >0){
-				nb_space = isize(log10(iter));
-			}
-			space.resize(space.size() - nb_space);
-			std::cout <<  std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos
-			<< qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
-			*/
-			std::cout << std::noshowpos <<std::setw(20) << iter <<std::scientific << std::setprecision(2) << std::showpos
-			 << qpresults.info.objValue <<  "   " <<std::setprecision(2) << qpresults.info.pri_res  << "  " << std::setprecision(2)<< qpresults.info.dua_res  << "  "<< std::setprecision(2) <<  qpresults.info.mu_in << std::endl;
+			std::cout << "\033[1;32m[outer iteration " << iter + 1  << "]\033[0m" << std::endl;
+			std::cout << std::scientific << std::setw(2) << std::setprecision(2) << 
+			"| primal residual=" << qpresults.info.pri_res << "| dual residual=" << qpresults.info.dua_res << " | mu_in=" << qpresults.info.mu_in << " | rho=" << qpresults.info.rho << std::endl;
 			ruiz.scale_primal_in_place(VectorViewMut<T>{from_eigen, qpresults.x});
 			ruiz.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, qpresults.y});
 			ruiz.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, qpresults.z});
@@ -1211,26 +1206,63 @@ void qp_solve( //
 		qpresults.info.solve_time = qpwork.timer.elapsed().user; // in nanoseconds
 		qpresults.info.run_time =
 				qpresults.info.solve_time + qpresults.info.setup_time;
-
 		if (qpsettings.verbose) {
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "-------------------SOLVER STATISTICS-------------------" << std::endl;
 			std::cout << "outer iter:   " << qpresults.info.iter_ext << std::endl;
 			std::cout << "total iter:   " << qpresults.info.iter << std::endl;
 			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
 			std::cout << "objective:    " << qpresults.info.objValue << std::endl;
+			std::cout << "status:       " << qpresults.info.objValue << std::endl;
+			switch (qpresults.info.status) { 
+						case QPSolverOutput::PROXQP_SOLVED:{
+							std::cout << "status:       " << "Solved" << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_MAX_ITER_REACHED:{
+							std::cout << "status:       " << "Maximum number of iterations reached" << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE:{
+							std::cout << "status:       " << "Primal infeasible" << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_DUAL_INFEASIBLE:{
+							std::cout << "status:       " << "Dual infeasible" << std::endl;
+							break;
+						}
+			}
 			std::cout << "run time:     " << qpresults.info.solve_time << std::endl;
-			std::cout << "--------------------------------" << std::endl;
+			std::cout << "--------------------------------------------------------" << std::endl;
 		}
 	} else {
 		if (qpsettings.verbose) {
-			std::cout << "------ SOLVER STATISTICS--------" << std::endl;
+			std::cout << "-------------------SOLVER STATISTICS-------------------" << std::endl;
 			std::cout << "outer iter:   " << qpresults.info.iter_ext << std::endl;
 			std::cout << "total iter:   " << qpresults.info.iter << std::endl;
 			std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
 			std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
 			std::cout << "objective:    " << qpresults.info.objValue << std::endl;
-			std::cout << "--------------------------------" << std::endl;
+			std::cout << "status:       " << qpresults.info.objValue << std::endl;
+			switch (qpresults.info.status) { 
+						case QPSolverOutput::PROXQP_SOLVED:{
+							std::cout << "status:       " << "Solved." << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_MAX_ITER_REACHED:{
+							std::cout << "status:       " << "Maximum number of iterations reached" << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE:{
+							std::cout << "status:       " << "Primal infeasible" << std::endl;
+							break;
+						}
+						case QPSolverOutput::PROXQP_DUAL_INFEASIBLE:{
+							std::cout << "status:       " << "Dual infeasible" << std::endl;
+							break;
+						}
+			}
+			std::cout << "--------------------------------------------------------" << std::endl;
 		}
 	}
 	qpwork.dirty = true;
