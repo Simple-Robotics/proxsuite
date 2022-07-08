@@ -1,6 +1,5 @@
 INPUT                   = @CMAKE_SOURCE_DIR@/doc \
                           @CMAKE_SOURCE_DIR@/include \
-                          @CMAKE_SOURCE_DIR@/README.md
 
 RECURSIVE               = YES
 
@@ -57,7 +56,7 @@ SOURCE_BROWSER          = YES
 
 ALPHABETICAL_INDEX      = YES
 
-USE_MDFILE_AS_MAINPAGE  = README.md
+USE_MDFILE_AS_MAINPAGE  = @CMAKE_SOURCE_DIR@/doc/1-Overview.md 
 
 BUILTIN_STL_SUPPORT     = YES
 HAVE_DOT                = YES
