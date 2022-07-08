@@ -37,7 +37,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake)
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/python.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
 include(CMakeDependentOption)
@@ -73,8 +72,16 @@ file(GLOB_RECURSE MAIN_HEADERS
 )
 
 add_library(proxsuite INTERFACE ${MAIN_HEADERS})
-target_include_directories(proxsuite INTERFACE external/simde/)
+# target_include_directories(proxsuite INTERFACE external/simde/)
 target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
+
+INSTALL(TARGETS proxsuite
+  EXPORT ${TARGETS_EXPORT_NAME}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 # Activate only for advanced users to profile and benchmark the code
 if(ADVANCED_USERS)
@@ -94,10 +101,6 @@ if(ADVANCED_USERS)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
-endif()
-
-if(BUILD_PYTHON_INTERFACE)
-  FINDPYTHON(REQUIRED)
 endif()
 
 add_subdirectory(bindings)
