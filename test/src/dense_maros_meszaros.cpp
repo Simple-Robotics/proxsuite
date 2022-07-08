@@ -82,7 +82,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-TEST_CASE("maros meszaros wip") {
+TEST_CASE("dense maros meszaros using the api") {
 	using T = double;
 	for (auto const* file : files) {
 		auto qp = load_qp(file);
@@ -114,7 +114,7 @@ TEST_CASE("maros meszaros wip") {
 			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 			Qp.init(H,g,A,b,C,u,l);
 
-			Qp.settings.verbose = true;
+			Qp.settings.verbose = false;
 			Qp.solve(); 
 			auto& x = Qp.results.x;
 			auto& y = Qp.results.y;
@@ -126,7 +126,7 @@ TEST_CASE("maros meszaros wip") {
 			T prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
 			T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;
 			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+			std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) << std::endl;
 			CHECK(
 					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
@@ -135,7 +135,6 @@ TEST_CASE("maros meszaros wip") {
 			CHECK((C * x - l).minCoeff() > -eps);
 			CHECK((C * x - u).maxCoeff() < eps);
 
-			Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			Qp.solve();
 			x = Qp.results.x;
 			y = Qp.results.y;

@@ -83,7 +83,7 @@ char const* files[] = {
 		MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-TEST_CASE("maros meszaros wip using the API") {
+TEST_CASE("sparse maros meszaros using the API") {
 	using T = double;
 	using I = mat_int32_t;
 	for (auto const* file : files) {
@@ -118,9 +118,6 @@ TEST_CASE("maros meszaros wip using the API") {
 			Qp.settings.eps_abs = 2e-8;
 			auto& eps = Qp.settings.eps_abs;
 			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
-			//std::cout << "kkt before update " << Qp.model.kkt().to_eigen() << std::endl;
-			Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
-			//std::cout << "kkt after update " << Qp.model.kkt().to_eigen() << std::endl;
 			T prim_eq(0);
 			T prim_in(0);
 			
@@ -136,15 +133,12 @@ TEST_CASE("maros meszaros wip using the API") {
 					CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 					CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 				}
-				std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+				std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
 								H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
 				T prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
 				T prim_in =  std::max( proxsuite::qp::dense::infty_norm(AT.transpose()* Qp.results.x - b),
 				proxsuite::qp::dense::infty_norm(sparse::detail::positive_part(CT.transpose() * Qp.results.x - u) + sparse::detail::negative_part(CT.transpose() * Qp.results.x - l))) ;
-				//std::max((CT.transpose() * Qp.results.x - l).minCoeff(),(CT.transpose() * Qp.results.x - u).maxCoeff());
 				std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-
-				Qp.update(std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt,true);// change nothing, redo the solve
 			}
 			
 			Qp.solve();
@@ -158,7 +152,7 @@ TEST_CASE("maros meszaros wip using the API") {
 				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 			}
-			std::cout << " dual residual " << proxsuite::qp::dense::infty_norm(
+			std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
 
 			prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);

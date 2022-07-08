@@ -12,7 +12,7 @@ template <typename T>
 void exposeResults(pybind11::module_ m) {
 
 	::pybind11::class_<Info<T>>(m, "Info",pybind11::module_local())
-			.def(::pybind11::init())
+			.def(::pybind11::init(),"Default constructor.")
 			.def_readwrite("n_c", &Info<T>::n_c)
 			.def_readwrite("mu_eq", &Info<T>::mu_eq)
 			.def_readwrite("mu_in", &Info<T>::mu_in)
@@ -30,7 +30,9 @@ void exposeResults(pybind11::module_ m) {
 			.def_readwrite("mu_updates", &Info<T>::mu_updates);
 
 	::pybind11::class_<Results<T>>(m, "Results",pybind11::module_local())
-			.def(::pybind11::init<i64, i64, i64>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>(),
+				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
+				"Constructor using QP model dimensions.") // constructor
 			.def_readwrite("x", &Results<T>::x) 
 			.def_readwrite("y", &Results<T>::y)
 			.def_readwrite("z", &Results<T>::z)

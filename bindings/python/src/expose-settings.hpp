@@ -21,7 +21,7 @@ void exposeSettings(pybind11::module_ m) {
 		.export_values();
 
 	::pybind11::class_<Settings<T>>(m, "Settings",pybind11::module_local())
-			.def(::pybind11::init()) // constructor
+			.def(::pybind11::init(),"Default constructor.") // constructor
 			.def_readwrite("alpha_bcl", &Settings<T>::alpha_bcl)
 			.def_readwrite("beta_bcl", &Settings<T>::beta_bcl)
 			.def_readwrite(

@@ -324,7 +324,7 @@ template <typename T, typename I, typename P>
 void qp_solve(
 		Results<T>& results,
 		Model<T, I>& data,
-		Settings<T> const& settings,
+		const Settings<T>& settings,
 		Workspace<T, I>& work,
 		P& precond) {
 	if (settings.compute_timings){
@@ -332,9 +332,8 @@ void qp_solve(
 		work.timer.start();
 	}
 
-	if(work.internal.dirty)
+	if(work.internal.dirty) // the following is used when a solve has already been executed (and without any intermediary model update)
 	{
-		//std::cout << "dirty" << std::endl;
 		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
@@ -358,9 +357,70 @@ void qp_solve(
 				{linearsolver::sparse::from_eigen, data.l},
 				{linearsolver::sparse::from_eigen, data.u}};
 
-		results.cleanup();
+		switch (settings.initial_guess) { // the following is used when one solve has already been executed
+					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+						results.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						// keep solutions but restart workspace and results
+						results.cold_start();
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::NO_INITIAL_GUESS:{
+						results.cleanup(); 
+						break;
+					}
+					case InitialGuessStatus::WARM_START:{
+						results.cold_start(); // because there was already a solve, precond was already computed if set so
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // it contains the value given in entry for warm start
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						// keep workspace and results solutions except statistics
+						results.cleanup_statistics();
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+		}
 		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
 		
+	}else{
+		// the following is used for a first solve after initializing or updating the Qp object 
+		switch (settings.initial_guess) {
+					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
+						break;
+					}
+					case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::NO_INITIAL_GUESS:{
+						break;
+					}
+					case InitialGuessStatus::WARM_START:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x});
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+					case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:{
+						precond.scale_primal_in_place({proxsuite::qp::from_eigen, results.x}); // meaningful for when there is an upate of the model and one wants to warm start with previous result
+						precond.scale_dual_in_place_eq({proxsuite::qp::from_eigen,results.y});
+						precond.scale_dual_in_place_in({proxsuite::qp::from_eigen,results.z});
+						break;
+					}
+		}
+
 	}
 
 	if (settings.verbose){
@@ -369,7 +429,7 @@ void qp_solve(
 	}
 	using namespace veg::literals;
 	namespace util = linearsolver::sparse::util;
-	auto zx = util::zero_extend;// ?
+	auto zx = util::zero_extend;
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
 
@@ -442,7 +502,6 @@ void qp_solve(
 	isize C_active_nnz = 0;
 	switch (settings.initial_guess) {
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
-
 					// H and A are always active
 					for (usize j = 0; j < usize(n + n_eq); ++j) {
 						kkt_nnz_counts[isize(j)] = I(kkt.col_end(j) - kkt.col_start(j));
@@ -725,8 +784,9 @@ void qp_solve(
 				}
 				space.resize(space.size() - nb_space);
 				std::cout << std::noshowpos << iter << space <<std::scientific << std::setw(2) << std::setprecision(2) << std::showpos <<
-				<< results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
-				
+				results.info.objValue <<  "     " <<std::setprecision(2) << results.info.pri_res  << "   " << std::setprecision(2)<< results.info.dua_res  << "   "<< std::setprecision(2) <<  results.info.mu_in << std::endl;
+				results.info.pri_res = primal_feasibility_lhs;
+				results.info.dua_res = dual_feasibility_lhs;
 				precond.scale_primal_in_place(VectorViewMut<T>{from_eigen, x_e});
 				precond.scale_dual_in_place_eq(VectorViewMut<T>{from_eigen, y_e});
 				precond.scale_dual_in_place_in(VectorViewMut<T>{from_eigen, z_e});
@@ -1110,8 +1170,12 @@ void qp_solve(
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
+
 			if (is_primal_feasible(primal_feasibility_lhs_new) &&
 			    is_dual_feasible(dual_feasibility_lhs_new)) {
+				results.info.pri_res = primal_feasibility_lhs_new;
+				results.info.dua_res = dual_feasibility_lhs_new;
+				results.info.status = QPSolverOutput::PROXQP_SOLVED;
 				break;
 			}
 
@@ -1217,7 +1281,7 @@ void qp_solve(
 					w,
 					alpha,
 					stack);
-				}
+			}
 		}
 
 		results.info.mu_eq = new_bcl_mu_eq;
@@ -1225,7 +1289,6 @@ void qp_solve(
 		results.info.mu_eq_inv = new_bcl_mu_eq_inv;
 		results.info.mu_in_inv = new_bcl_mu_in_inv;
 	}
-
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
 	tmp.setZero();
 	detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
@@ -1239,7 +1302,7 @@ void qp_solve(
 	results.info.objValue = (tmp).dot(x_e);
 
 	if (settings.compute_timings) {
-		results.info.solve_time = work.timer.elapsed().user; // in nanoseconds
+		results.info.solve_time = work.timer.elapsed().user; // in microseconds
 		results.info.run_time =
 				results.info.solve_time + results.info.setup_time;
 

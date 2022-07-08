@@ -13,7 +13,9 @@ namespace python {
 template <typename T>
 void exposeWorkspaceDense(pybind11::module_ m) {
 	::pybind11::class_<Workspace<T>>(m, "Workspace")
-			.def(::pybind11::init<i64, i64, i64>()) // constructor
+			.def(::pybind11::init<i64, i64, i64>(),
+				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
+				"Constructor using QP model dimensions.") // constructor)
 			.def_readwrite("H_scaled", &Workspace<T>::H_scaled)
 			.def_readwrite("g_scaled", &Workspace<T>::g_scaled)
 			.def_readwrite("A_scaled", &Workspace<T>::A_scaled)
