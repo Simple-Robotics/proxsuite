@@ -1,0 +1,65 @@
+INPUT                   = @CMAKE_SOURCE_DIR@/doc \
+                          @CMAKE_SOURCE_DIR@/include \
+                          @CMAKE_SOURCE_DIR@/README.md
+
+RECURSIVE               = YES
+
+FILE_PATTERNS           = *.cc *.cpp *.h *.hpp *.dox *.md *.py
+
+# Document members in declaration order
+SORT_MEMBER_DOCS        = NO
+SORT_BRIEF_DOCS         = NO
+SORT_MEMBERS_CTORS_1ST  = YES
+
+GENERATE_TESTLIST       = YES
+EXTRACT_STATIC          = YES
+
+EXTRACT_PRIV_VIRTUAL    = YES
+ENABLE_PREPROCESSING    = YES
+MACRO_EXPANSION         = YES
+EXPAND_ONLY_PREDEF      = YES
+PREDEFINED              += EIGEN_MAKE_ALIGNED_OPERATOR_NEW \
+                           PROXNLP_FUNCTION_TYPEDEFS \
+                           PROXNLP_DYNAMIC_TYPEDEFS
+
+FULL_PATH_NAMES         = YES
+EXCLUDE_SYMBOLS         = *::internal, internal::*, *::internal::*
+# Do not show source files
+EXCLUDE_PATTERNS        = *.hxx
+
+INCLUDE_PATH            = @PROJECT_SOURCE_DIR@/include
+
+EXCLUDE_SYMLINKS        = YES
+
+EXAMPLE_PATH            = @PROJECT_SOURCE_DIR@/examples
+
+EXTRA_PACKAGES          = {bm,stmaryrd}
+FORMULA_MACROFILE       = @PROJECT_SOURCE_DIR@/doc/macros.inc
+
+GENERATE_TREEVIEW       = YES
+
+VERBATIM_HEADERS        = YES
+
+
+HTML_HEADER             = @PROJECT_SOURCE_DIR@/doc/header.html
+HTML_EXTRA_STYLESHEET   = @PROJECT_SOURCE_DIR@/doc/doxygen-awesome.css
+HTML_EXTRA_FILES        = @PROJECT_SOURCE_DIR@/doc/doxygen-awesome-darkmode-toggle.js
+
+
+TAGFILES                =
+
+SHOW_FILES              = YES
+SHOW_NAMESPACES         = YES
+
+MATHJAX_FORMAT          = SVG
+
+SOURCE_BROWSER          = YES
+
+ALPHABETICAL_INDEX      = YES
+
+USE_MDFILE_AS_MAINPAGE  = README.md
+
+BUILTIN_STL_SUPPORT     = YES
+HAVE_DOT                = YES
+DOT_IMAGE_FORMAT        = SVG
+DOT_TRANSPARENT         = YES
