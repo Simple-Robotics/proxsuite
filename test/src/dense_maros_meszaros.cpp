@@ -115,13 +115,15 @@ TEST_CASE("dense maros meszaros using the api") {
 			Qp.init(H,g,A,b,C,u,l);
 
 			Qp.settings.verbose = false;
+			Qp.settings.eps_abs = 2e-8;
+			Qp.settings.eps_rel = 0;
+			auto& eps = Qp.settings.eps_abs;
 			Qp.solve(); 
 			auto& x = Qp.results.x;
 			auto& y = Qp.results.y;
 			auto& z = Qp.results.z;
 			
-			Qp.settings.eps_abs = 2e-8;
-			auto& eps = Qp.settings.eps_abs;
+
 
 			T prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
 			T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;

@@ -33,7 +33,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			strong_convexity_factor};
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
-                                                                    eps_abs);
+                                                                    eps_abs,0);
 
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -79,7 +79,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			strong_convexity_factor};
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
-                                                                    eps_abs,std::nullopt,T(1.E-7));
+                                                                    eps_abs,0,T(1.E-7));
     DOCTEST_CHECK(results.info.rho == T(1.E-7));
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -125,7 +125,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			strong_convexity_factor};
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
-                                                                    eps_abs,std::nullopt,std::nullopt,T(1.E-2),T(1.E-2));
+                                                                    eps_abs,0,std::nullopt,T(1.E-2),T(1.E-2));
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
@@ -171,7 +171,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
 	auto z_wm = ldlt_test::rand::vector_rand<T>(n_in);
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
-                                                                    x_wm,y_wm,z_wm,eps_abs);
+                                                                    x_wm,y_wm,z_wm,eps_abs,0);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
@@ -216,7 +216,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     bool verbose = true;
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,eps_abs,
-                                                                    std::nullopt,std::nullopt,std::nullopt,std::nullopt,
+                                                                    0,std::nullopt,std::nullopt,std::nullopt,
                                                                     verbose);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -262,7 +262,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     proxsuite::qp::InitialGuessStatus initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,eps_abs,
-                                                                    std::nullopt,std::nullopt,std::nullopt,std::nullopt,
+                                                                    0,std::nullopt,std::nullopt,std::nullopt,
                                                                     std::nullopt,true,std::nullopt,initial_guess);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
