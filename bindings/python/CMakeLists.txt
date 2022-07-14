@@ -4,7 +4,6 @@ findpython(REQUIRED)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11) 
 add_subdirectory(external/pybind11 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 
-set(PYWRAP proxsuite_pywrap)
 add_library(proxsuite_pywrap MODULE src/expose-all.cpp)
 
 target_link_libraries(proxsuite_pywrap PUBLIC proxsuite pybind11::module)
@@ -15,7 +14,7 @@ else()
 	set(${PYWRAP}_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-set_target_properties(${PYWRAP}
+set_target_properties(proxsuite_pywrap
 	PROPERTIES
 	PREFIX ""
 	SUFFIX ${PYTHON_EXT_SUFFIX}
