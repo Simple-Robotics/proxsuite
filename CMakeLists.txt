@@ -49,6 +49,8 @@ option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 
+option(BUILD_WITH_SIMDE_SUPPORT "Build the library with the SIMDE support (CPU acceleration)" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_FLAGS
@@ -62,6 +64,9 @@ endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # Look for dependencies
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
+if(BUILD_WITH_SIMDE_SUPPORT)
+  add_project_dependency(simde REQUIRED)
+endif()
 if(BUILD_TESTING)
   find_package(Matio REQUIRED)
 endif()
