@@ -32,6 +32,13 @@ The following dependencies are required at compile time:
 * CMake
 * Eigen >= 3.0.5
 * C++ >= 17
+* Matio (for the tests and reading .mat files)
+* Doxygen (for the documentation)
+
+You can install the later two dependencies using for example conda with the following command:
+```bash
+conda install libmatio Doxygen
+```
 
 #### Installation instructions
 
