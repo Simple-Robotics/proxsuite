@@ -45,7 +45,7 @@ We start with a simple program to load ProxQP and use ProxQP solver in order to 
 
 You can compile the C++ version by including ProxSuite and Eigen header directories. TODO
 
-\code g++ -std=c++11 overview-simple.cpp -o overview-simple $(pkg-config --cflags --libs pinocchio)  \endcode
+\code g++ -std=c++11 overview-simple.cpp -o overview-simple $(pkg-config --cflags --libs proxsuite)  \endcode
 
 Once your code is compiled, you might then run it using
 
