@@ -40,7 +40,7 @@ Qp.init(H,g,A,b,C,u,l)
 # solve without warm start
 Qp.solve() 
 # create a new problem and update Qp
-H_new,g_new,A_new,b_new,C_new,u_new,l_new = generate_mixed_qp(n)
+H_new,g_new,A_new,b_new,C_new,u_new,l_new = generate_mixed_qp(n,seed=2)
 Qp.update(H_new,g_new,A_new,b_new,C_new,u_new,l_new)
 # solve it
 Qp.solve()
