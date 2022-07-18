@@ -42,7 +42,7 @@ def generate_mixed_qp(n,seed=1):
 
     return P,q,A[:n_eq,:],u[:n_eq],A[n_in:,:],u[n_in:],l[n_in:]
 
-class SparseQpWrapper(unittest.TestCase):
+class DenseQpWrapper(unittest.TestCase):
 
     # TESTS DENSE SOLVE FUNCTION
 

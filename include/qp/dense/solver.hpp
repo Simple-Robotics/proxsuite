@@ -321,7 +321,7 @@ void bcl_update(
 		T& new_bcl_mu_eq_inv
 
 ) {
-	if (primal_feasibility_lhs_new <= bcl_eta_ext) {
+	if (primal_feasibility_lhs_new <= bcl_eta_ext || qpresults.info.iter > qpsettings.safe_guard) {
 		/* TO PUT IN DEBUG MODE
 		if (qpsettings.verbose) {
 			std::cout << "good step" << std::endl;

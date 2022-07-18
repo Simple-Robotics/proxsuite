@@ -497,9 +497,8 @@ bool global_dual_residual_infeasibility(
 	// SECOND
 	//
 	// ||unscaled(Hdx)|| <= c eps_d_inf * ||unscaled(dx)||  and  q^Tdx <= -c
-	// eps_d_inf  ||unscaled(dx)|| or dx^THdx <= -c eps_d_inf^2 dx the variables in
-	// entry are changed in place
-	T dxHdx = (dx.to_eigen()).dot(Hdx.to_eigen());
+	// eps_d_inf  ||unscaled(dx)|| 
+	// the variables in entry are changed in place
 	ruiz.unscale_dual_residual_in_place(Hdx);
 	ruiz.unscale_primal_residual_in_place_eq(Adx);
 	ruiz.unscale_primal_residual_in_place_in(Cdx);
@@ -527,9 +526,8 @@ bool global_dual_residual_infeasibility(
 	bool second_cond_alt1 =
 			infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
 	bound_neg *= qpsettings.eps_dual_inf;
-	bool second_cond_alt2 = dxHdx <= bound_neg;
 
-	bool res = first_cond && (second_cond_alt1 || second_cond_alt2);
+	bool res = first_cond && second_cond_alt1;
 	return res;
 }
 

@@ -43,6 +43,7 @@ struct Settings {
 
 	isize max_iter;
 	isize max_iter_in;
+	isize safe_guard;
 	T eps_abs;
 	T eps_rel;
 	T eps_refact;
@@ -81,6 +82,7 @@ struct Settings {
 	 * @param max_iter_in_ maximal number of authorized iterations for an inner loop.
 	 * @param nb_iterative_refinement_ number of iterative refinements.
 	 * @param eps_refact_ threshold value for refactorizing the ldlt factorization in the iterative refinement loop.
+	 * @param safe_guard safeguard parameter ensuring global convergence of ProxQP scheme.
 	 * @param VERBOSE if set to true, the solver prints information at each loop. 
 	 * @param initial_guess_ sets the initial guess option for initilizing x, y and z.
 	 * @param update_preconditioner_ If set to true, the preconditioner will be re-derived with the update method.
@@ -113,9 +115,10 @@ struct Settings {
 			isize max_iter_in_ = 1500,
 			isize nb_iterative_refinement_ = 10,
 			T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
+			isize safe_guard_ = 1.E4,
 			bool VERBOSE = false,
 			InitialGuessStatus initial_guess_ = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT,
-			bool update_preconditioner_ = false,
+			bool update_preconditioner_ = true,
 			bool compute_preconditioner_ = true,
 			bool compute_timings_ = true,
 			isize preconditioner_max_iter_ = 10,
@@ -153,7 +156,8 @@ struct Settings {
 				eps_dual_inf(eps_dual_inf_),
 				preconditioner_max_iter(preconditioner_max_iter_),
 				preconditioner_accuracy(preconditioner_accuracy_),
-				bcl_update(bcl_update_) {}
+				bcl_update(bcl_update_),
+				safe_guard(safe_guard_) {}
 };
 
 } // namespace qp

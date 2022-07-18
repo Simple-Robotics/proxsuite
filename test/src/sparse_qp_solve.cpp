@@ -29,15 +29,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                 
         double eps_abs = 1.e-9;
         double p = 0.15;
-                ldlt_test::rand::set_seed(1);
+        ldlt_test::rand::set_seed(1);
         auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
         auto g = ldlt_test::rand::vector_rand<T>(n);
         auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p);
-                auto x_sol = ldlt_test::rand::vector_rand<T>(n);
-            auto b = A * x_sol;
+        auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+        auto b = A * x_sol;
         auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
         auto l =  C * x_sol; 
-                auto u = (l.array() + 10).matrix().eval();
+        auto u = (l.array() + 10).matrix().eval();
         proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,
                                                                         eps_abs);
@@ -279,7 +279,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                         std::nullopt,std::nullopt,std::nullopt,std::nullopt,
-                                                                        std::nullopt,true,std::nullopt,initial_guess);
+                                                                        std::nullopt,true,true,std::nullopt,initial_guess);
         T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
         T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
 			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));

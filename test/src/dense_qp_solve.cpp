@@ -263,7 +263,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                     0,std::nullopt,std::nullopt,std::nullopt,
-                                                                    std::nullopt,true,std::nullopt,initial_guess);
+                                                                    std::nullopt,true,true,std::nullopt,initial_guess);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
 			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +

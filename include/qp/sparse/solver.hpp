@@ -1179,7 +1179,7 @@ void qp_solve(
 
 			// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 			auto bcl_update = [&]() -> void {
-				if (primal_feasibility_lhs_new <= bcl_eta_ext) {
+				if (primal_feasibility_lhs_new <= bcl_eta_ext || iter > settings.safe_guard) {
 					bcl_eta_ext *= pow(results.info.mu_in, settings.beta_bcl);
 					bcl_eta_in = std::max(bcl_eta_in * results.info.mu_in, eps_in_min);
 

@@ -4053,3 +4053,102 @@ TEST_CASE("Test rho update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp5.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp5.results.info.setup_time << " solve time " << Qp5.results.info.solve_time << std::endl;
 }
+
+TEST_CASE("Test g update for different warm start with previous result option") {
+
+	double sparsity_factor = 0.15;
+	T eps_abs = T(1e-9);
+	ldlt_test::rand::set_seed(1);
+	proxsuite::qp::dense::isize dim = 10;
+
+	proxsuite::qp::dense::isize n_eq(dim / 4);
+	proxsuite::qp::dense::isize n_in(dim / 4);
+	T strong_convexity_factor(1.e-2);
+	Qp<T> qp{
+			random_with_dim_and_neq_and_n_in,
+			dim,
+			n_eq,
+			n_in,
+			sparsity_factor,
+			strong_convexity_factor};
+
+	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+        
+	Qp.settings.eps_abs = eps_abs;
+	Qp.settings.eps_rel = 0;
+	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	
+	std::cout << "Test rho update for different initial guess" << std::endl;
+	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
+
+	Qp.init(qp.H, qp.g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp.solve();
+	
+	T pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	
+    // a new linear cost slightly modified
+	auto g = qp.g * 0.95;
+	
+	Qp.update(
+			std::nullopt,
+			g,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt,
+			std::nullopt);
+	Qp.solve();
+	pri_res = std::max(
+			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp.results.x + g + qp.A.transpose() * Qp.results.y +
+	             qp.C.transpose() * Qp.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
+	
+	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	Qp2.settings.eps_abs = eps_abs;
+	Qp2.settings.eps_rel = 0;
+	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.init(qp.H, g,
+		qp.A, qp.b,
+		qp.C, qp.u, qp.l);
+	Qp2.solve();
+	pri_res = std::max(
+			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+					.lpNorm<Eigen::Infinity>());
+	dua_res = (qp.H * Qp2.results.x + g + qp.A.transpose() * Qp2.results.y +
+	             qp.C.transpose() * Qp2.results.z)
+	                .lpNorm<Eigen::Infinity>();
+	CHECK(dua_res <= eps_abs);
+	CHECK(pri_res <= eps_abs);
+	std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in << std::endl;
+	std::cout  << "; dual residual " << dua_res << "; primal residual " <<  pri_res << std::endl;
+	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
+	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
+
+}
