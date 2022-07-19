@@ -32,13 +32,6 @@ The following dependencies are required at compile time:
 * CMake
 * Eigen >= 3.0.5
 * C++ >= 17
-* Matio (for the tests and reading .mat files)
-* Doxygen (for the documentation)
-
-You can install the latter two dependencies using for example conda with the following command:
-```bash
-conda install libmatio Doxygen
-```
 
 #### Installation instructions
 
@@ -70,7 +63,7 @@ make install
 
 4. Generate the doc
 
-To build the documentation, it is as simple as:
+To build the documentation, you need installing Doxygen. Once it is done, it then is as simple as:
 
 ```bash
 make doc
@@ -91,4 +84,4 @@ make install
 
 #### Testing
 
-To test the whole framework, you can activate the build of the unit tests by activating the cmake option `BUILD_TESTING=ON`.
+To test the whole framework, you need installing first [Matio](https://github.com/ami-iit/matio-cpp) (for reading .mat files in C++). You can then activate the build of the unit tests by activating the cmake option `BUILD_TESTING=ON`.
