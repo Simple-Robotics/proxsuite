@@ -42,7 +42,7 @@ $$\begin{equation}\label{eq:approx_qp_sol}
     &\left\{
     \begin{array}{ll}
         \|Hx+g+A^Ty+C^Tz\|_{\infty} \leq  \epsilon_{abs}, \\\
-        \|Ax-b\|_{\infty} \leq \epsilon_{abs},, \\\
+        \|Ax-b\|_{\infty} \leq \epsilon_{abs}, \\\
         \|[Cx-u]_+\|_{\infty}\leq \epsilon_{abs}. \\\
     \end{array}
     \right.

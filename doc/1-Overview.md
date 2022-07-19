@@ -41,9 +41,9 @@ We start with a simple program to load ProxQP and use ProxQP solver in order to 
   </tr>
 </table>
 
-\subsection OverviewSimpleCompile Compiling and running your program --> TO FINISH
+\subsection OverviewSimpleCompile Compiling and running your program
 
-You can compile the C++ version by including ProxSuite and Eigen header directories. TODO
+You can compile the C++ version by including ProxSuite and Eigen header directories
 
 \code g++ -std=c++11 overview-simple.cpp -o overview-simple $(pkg-config --cflags --libs proxsuite)  \endcode
 
