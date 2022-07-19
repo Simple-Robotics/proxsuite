@@ -36,6 +36,7 @@ DOCTEST_TEST_CASE(
 
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 
@@ -81,6 +82,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
 				strong_convexity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
@@ -123,6 +125,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
 				sparsity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
@@ -168,6 +171,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
 				strong_convexity_factor};
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
@@ -214,6 +218,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
 		//std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l " << qp.l << std::endl;
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.settings.verbose = false;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();

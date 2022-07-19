@@ -116,6 +116,7 @@ TEST_CASE("sparse maros meszaros using the API") {
 			Qp.settings.verbose = true;
 
 			Qp.settings.eps_abs = 2e-8;
+			Qp.settings.eps_rel = 0;
 			auto& eps = Qp.settings.eps_abs;
 			Qp.init(H,g,AT.transpose(),b,CT.transpose(),u,l);
 			T prim_eq(0);

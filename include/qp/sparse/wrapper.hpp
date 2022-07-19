@@ -7,7 +7,6 @@
 
 #ifndef PROXSUITE_QP_SPARSE_WRAPPER_HPP
 #define PROXSUITE_QP_SPARSE_WRAPPER_HPP
-#include <tl/optional.hpp>
 #include <qp/results.hpp>
 #include <qp/settings.hpp>
 #include <qp/sparse/solver.hpp>
@@ -148,7 +147,7 @@ struct QP {
 	 * @param C inequality constraint matrix input defining the QP model.
 	 * @param u lower inequality constraint vector input defining the QP model.
 	 * @param l lower inequality constraint vector input defining the QP model.
-	 * @param compute_preconditioner bool parameter for executing or not the preconditioner.
+	 * @param compute_preconditioner boolean parameter for executing or not the preconditioner.
 	 * @param rho proximal step size wrt primal variable.
 	 * @param mu_eq proximal step size wrt equality constrained multiplier.
 	 * @param mu_in proximal step size wrt inequality constrained multiplier.
@@ -401,7 +400,8 @@ struct QP {
 * @param y dual equality constraint warm start.
 * @param z dual inequality constraint warm start.
 * @param verbose if set to true, the solver prints more information about each iteration.
-* @param compute_preconditioner bool parameter for executing or not the preconditioner.
+* @param compute_preconditioner boolean parameter for executing or not the preconditioner.
+* @param compute_timings boolean parameter for computing the solver timings.
 * @param rho proximal step size wrt primal variable.
 * @param mu_eq proximal step size wrt equality constrained multiplier.
 * @param mu_in proximal step size wrt inequality constrained multiplier.
@@ -429,6 +429,7 @@ qp::Results<T> solve(
 			std::optional<T> mu_in = std::nullopt,
 			std::optional<bool> verbose = std::nullopt,
 			bool compute_preconditioner = true,
+			bool compute_timings = true,
 			std::optional<isize> max_iter = std::nullopt,
 			proxsuite::qp::InitialGuessStatus initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS
 			){
@@ -452,6 +453,7 @@ qp::Results<T> solve(
 	if (max_iter!=std::nullopt){
 		Qp.settings.max_iter = verbose.value();
 	}
+	Qp.settings.compute_timings = compute_timings;
 	Qp.init(H,g,A,b,C,u,l,compute_preconditioner,rho,mu_eq,mu_in);
 	Qp.solve(x,y,z); 
 

@@ -67,7 +67,7 @@ if(BUILD_TESTING)
   find_package(Matio REQUIRED)
 endif()
 set(OPTIONAL_BUILD_TESTS OFF)
-add_subdirectory(external/optional)
+#add_subdirectory(external/optional)
 
 # Build the main library
 file(GLOB_RECURSE MAIN_HEADERS
@@ -76,7 +76,7 @@ file(GLOB_RECURSE MAIN_HEADERS
 
 add_library(proxsuite INTERFACE ${MAIN_HEADERS})
 target_include_directories(proxsuite INTERFACE external/simde/)
-target_link_libraries(proxsuite INTERFACE tl::optional)
+#target_link_libraries(proxsuite INTERFACE tl::optional)
 target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
 
 # Activate only for advanced users to profile and benchmark the code

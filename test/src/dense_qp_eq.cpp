@@ -118,6 +118,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 
 		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
+		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 

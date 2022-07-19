@@ -159,7 +159,7 @@ void qp_setup(
 			execute_preconditioner_or_not,
 			precond,
 			P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
-	switch (settings.initial_guess) { // the following is used in practice when initiliazing the Qp object or updating it
+	switch (settings.initial_guess) { // the following is used when initiliazing the Qp object or updating it
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					
 					if (work.internal.proximal_parameter_update){

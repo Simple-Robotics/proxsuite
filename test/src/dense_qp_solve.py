@@ -42,7 +42,7 @@ def generate_mixed_qp(n,seed=1):
 
     return P,q,A[:n_eq,:],u[:n_eq],A[n_in:,:],u[n_in:],l[n_in:]
 
-class SparseQpWrapper(unittest.TestCase):
+class DenseQpWrapper(unittest.TestCase):
 
     # TESTS DENSE SOLVE FUNCTION
 
@@ -54,7 +54,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9)
+                                   eps_abs = 1.E-9,eps_rel = 0)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
@@ -73,7 +73,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9,rho = 1.e-7)
+                                   eps_abs = 1.E-9,eps_rel = 0,rho = 1.e-7)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
@@ -93,7 +93,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9,mu_eq = 1.e-2,mu_in=1.e-2)
+                                   eps_abs = 1.E-9,eps_rel = 0,mu_eq = 1.e-2,mu_in=1.e-2)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
@@ -114,7 +114,7 @@ class SparseQpWrapper(unittest.TestCase):
         y_wm = np.random.randn(n_eq)
         z_wm = np.random.randn(n_in)
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9,x = x_wm,y = y_wm,z=z_wm)
+                                   eps_abs = 1.E-9,eps_rel = 0,x = x_wm,y = y_wm,z=z_wm)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
@@ -132,7 +132,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9,verbose=True)
+                                   eps_abs = 1.E-9,eps_rel = 0,verbose=True)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
@@ -150,7 +150,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         results = proxsuite.qp.dense.solve(H=H,g=np.asfortranarray(g),A=A,b=np.asfortranarray(b),C=C,u=np.asfortranarray(u),l=np.asfortranarray(l),
-                                   eps_abs = 1.E-9,initial_guess= proxsuite.qp.NO_INITIAL_GUESS)
+                                   eps_abs = 1.E-9,eps_rel = 0,initial_guess= proxsuite.qp.NO_INITIAL_GUESS)
         dua_res = normInf(H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z) 
         pri_res = max( normInf(A @ results.x - b),
 			normInf(np.maximum(C @ results.x - u,0) + np.minimum(C @ results.x - l,0)))
