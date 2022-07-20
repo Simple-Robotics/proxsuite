@@ -1,4 +1,5 @@
 include(../cmake-external/doctest.cmake)
+find_package(Matio REQUIRED)
 
 include_directories(include)
 

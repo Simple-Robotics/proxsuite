@@ -67,9 +67,6 @@ add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(simde REQUIRED)
 endif()
-if(BUILD_TESTING)
-  find_package(Matio REQUIRED)
-endif()
 
 # Build the main library
 file(GLOB_RECURSE MAIN_HEADERS
