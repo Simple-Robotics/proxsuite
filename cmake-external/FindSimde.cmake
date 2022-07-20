@@ -1,4 +1,4 @@
-find_path(SIMDE_INCLUDE_DIR simde-math.h)
+find_path(SIMDE_INCLUDE_DIR simde/simde-math.h)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(simde
