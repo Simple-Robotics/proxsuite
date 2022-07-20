@@ -75,11 +75,18 @@ file(GLOB_RECURSE MAIN_HEADERS
 
 add_library(proxsuite INTERFACE ${MAIN_HEADERS})
 target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
+target_compile_definitions(proxsuite PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
+set(EXPORTED_TARGETS_LIST proxsuite)
+
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  target_link_libraries(proxsuite PUBLIC INTERFACE simde)
+  add_library(proxsuite-vectorized INTERFACE)
+  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite) 
+  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE simde)
+  list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
-INSTALL(TARGETS proxsuite
+
+INSTALL(TARGETS ${EXPORTED_TARGETS_LIST}
   EXPORT ${TARGETS_EXPORT_NAME}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
