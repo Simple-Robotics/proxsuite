@@ -69,11 +69,11 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
 endif()
 
 # Build the main library
-file(GLOB_RECURSE MAIN_HEADERS
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS
   ${PROJECT_SOURCE_DIR}/include/*.hpp
 )
 
-add_library(proxsuite INTERFACE ${MAIN_HEADERS})
+add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
 target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
 set(EXPORTED_TARGETS_LIST proxsuite)
 
