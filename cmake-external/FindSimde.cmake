@@ -9,7 +9,7 @@ find_package_handle_standard_args(simde
 )
 
 if(SIMDE_FOUND)
-    add_library(simde UNKNOWN IMPORTED)
+    add_library(simde INTERFACE IMPORTED)
     set_target_properties(simde PROPERTIES
 	    INTERFACE_INCLUDE_DIRECTORIES "${SIMDE_INCLUDE_DIR}"
     )
@@ -19,7 +19,7 @@ mark_as_advanced(SIMDE_INCLUDE_DIR)
 
 include(FeatureSummary)
 set_package_properties(simde PROPERTIES
-    DESCRIPTION "Reading and writing binary MATLAB MAT files"
-    URL "https://github.com/tbeu/matio"
+    DESCRIPTION "Implementations of SIMD instruction sets for systems which don't natively support them."
+    URL "https://github.com/simd-everywhere/simde"
 )
 
