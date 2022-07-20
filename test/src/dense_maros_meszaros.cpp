@@ -91,7 +91,7 @@ TEST_CASE("dense maros meszaros using the api") {
 
 		const bool skip = n > 1000 || n_eq_in > 1000;
 		if (skip){
-			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
+			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << " - skipping" << std::endl;
 		}else{
 			std::cout << " path: " <<  qp.filename << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
 		}
@@ -118,44 +118,33 @@ TEST_CASE("dense maros meszaros using the api") {
 			Qp.settings.eps_abs = 2e-8;
 			Qp.settings.eps_rel = 0;
 			auto& eps = Qp.settings.eps_abs;
-			Qp.solve(); 
-			auto& x = Qp.results.x;
-			auto& y = Qp.results.y;
-			auto& z = Qp.results.z;
-			
 
+      		for(size_t it = 0; it < 2; ++it)
+      		{
+				Qp.solve();
+				const auto & x = Qp.results.x;
+				const auto & y = Qp.results.y;
+				const auto & z = Qp.results.z;
+	
+				T prim_eq = proxsuite::qp::dense::infty_norm(A * x - b);
+				T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * x - u) + proxsuite::qp::dense::negative_part(C * x - l)) ;
+				std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
+				std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
+								H * x + g + A.transpose() * y + C.transpose() * z) << std::endl;
+				CHECK(
+						dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
+						2*eps);
+				CHECK(dense::infty_norm(A * x - b) > -eps);
+				CHECK((C * x - l).minCoeff() > -eps);
+				CHECK((C * x - u).maxCoeff() < eps);
 
-			T prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
-			T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;
-			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-			std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
-							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) << std::endl;
-			CHECK(
-					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
-					eps);
-			CHECK(dense::infty_norm(A * x - b) > -eps);
-			CHECK((C * x - l).minCoeff() > -eps);
-			CHECK((C * x - u).maxCoeff() < eps);
+				if(it > 0)
+				{
+					CHECK(Qp.results.info.iter == 0);	
+				}
 
-			Qp.solve();
-			x = Qp.results.x;
-			y = Qp.results.y;
-			z = Qp.results.z;
-			
-			eps = Qp.settings.eps_abs;
+	  		}
 
-			CHECK(
-					dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <
-					eps);
-			CHECK(dense::infty_norm(A * x - b) > -eps);
-			CHECK((C * x - l).minCoeff() > -eps);
-			CHECK((C * x - u).maxCoeff() < eps);
-
-			prim_eq = proxsuite::qp::dense::infty_norm(A * Qp.results.x - b);
-			prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * Qp.results.x - u) + proxsuite::qp::dense::negative_part(C * Qp.results.x - l)) ;
-			std::cout << "primal residual: " << std::max(prim_eq,prim_in) << std::endl;
-			std::cout << "dual residual: " << proxsuite::qp::dense::infty_norm(
-							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) << std::endl;
 
 		}
 	}
