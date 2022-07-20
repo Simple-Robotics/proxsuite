@@ -1,6 +1,3 @@
-[submodule "external/simde"]
-	path = external/simde
-	url = https://github.com/simd-everywhere/simde
 [submodule "external/pybind11"]
 	path = bindings/python/external/pybind11
 	url = https://github.com/pybind/pybind11
