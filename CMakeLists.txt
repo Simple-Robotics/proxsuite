@@ -49,7 +49,7 @@ option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 
-option(BUILD_WITH_SIMDE_SUPPORT "Build the library with the SIMDE support (CPU acceleration)" ON)
+option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions." ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -64,7 +64,7 @@ endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # Look for dependencies
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
-if(BUILD_WITH_SIMDE_SUPPORT)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(simde REQUIRED)
 endif()
 if(BUILD_TESTING)
@@ -77,8 +77,10 @@ file(GLOB_RECURSE MAIN_HEADERS
 )
 
 add_library(proxsuite INTERFACE ${MAIN_HEADERS})
-# target_include_directories(proxsuite INTERFACE external/simde/)
-target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
+target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  target_link_libraries(proxsuite PUBLIC INTERFACE simde)
+endif()
 
 INSTALL(TARGETS proxsuite
   EXPORT ${TARGETS_EXPORT_NAME}
