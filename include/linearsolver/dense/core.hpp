@@ -10,8 +10,12 @@
 #include <veg/memory/dynamic_stack.hpp>
 
 #include <immintrin.h>
-#include <simde/x86/avx2.h>
-#include <simde/x86/fma.h>
+
+#ifndef PROXSUITE_DONT_VECTORIZE
+  #include <simde/x86/avx2.h>
+  #include <simde/x86/fma.h>
+#endif
+
 #include <Eigen/Core>
 
 #define LDLT_ID(id) __VEG_PP_CAT(id, __LINE__)
@@ -146,6 +150,7 @@ struct Pack<T, 1> {
 	}
 };
 
+#ifndef PROXSUITE_DONT_VECTORIZE
 template <>
 struct Pack<f32, 4> {
 	using ScalarType = f32;
@@ -233,11 +238,15 @@ struct Pack<f64, 8> {
 };
 #endif
 
+#endif
+
 template <typename T>
 struct NativePackInfo {
 	static constexpr usize N = 1;
 	using Type = Pack<f32, N>;
 };
+
+#ifndef PROXSUITE_DONT_VECTORIZE
 template <>
 struct NativePackInfo<f32> {
 	static constexpr usize N = SIMDE_NATURAL_VECTOR_SIZE / 32;
@@ -248,6 +257,7 @@ struct NativePackInfo<f64> {
 	static constexpr usize N = SIMDE_NATURAL_VECTOR_SIZE / 64;
 	using Type = Pack<f64, N>;
 };
+#endif
 
 template <typename T>
 using NativePack = typename NativePackInfo<T>::Type;
@@ -268,13 +278,22 @@ constexpr auto round_up(T a, T b) noexcept -> T {
 	return a + (b - 1) / b * b;
 }
 
+#ifndef PROXSUITE_DONT_VECTORIZE 
 template <typename T>
 using should_vectorize = veg::meta::bool_constant<
 		VEG_CONCEPT(same<T, f32>) || VEG_CONCEPT(same<T, f64>)>;
+#else
+template <typename T>
+using should_vectorize = veg::meta::bool_constant<false>;
+#endif
 
 template <typename T>
 auto adjusted_stride(isize n) noexcept -> isize {
+#ifndef SIMDE_NATURAL_FLOAT_VECTOR_SIZE
+	isize simd_stride = 0;
+#else
 	isize simd_stride = (SIMDE_NATURAL_VECTOR_SIZE / CHAR_BIT) / isize{sizeof(T)};
+#endif
 	return _detail::should_vectorize<T>::value ? _detail::round_up(n, simd_stride)
 	                                           : n;
 }

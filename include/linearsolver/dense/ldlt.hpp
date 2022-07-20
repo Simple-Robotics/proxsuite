@@ -27,7 +27,11 @@ struct SimdAlignedSystemAlloc {
 
 template <>
 struct veg::mem::Alloc<linearsolver::dense::_detail::SimdAlignedSystemAlloc> {
+#ifdef PROXSUITE_DONT_VECTORIZE	
+	static constexpr usize min_align = 0;
+#else
 	static constexpr usize min_align = SIMDE_NATURAL_VECTOR_SIZE / 8;
+#endif
 
 	using RefMut =
 			veg::RefMut<linearsolver::dense::_detail::SimdAlignedSystemAlloc>;
