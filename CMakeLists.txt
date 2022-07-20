@@ -75,8 +75,12 @@ file(GLOB_RECURSE MAIN_HEADERS
 
 add_library(proxsuite INTERFACE ${MAIN_HEADERS})
 target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
-target_compile_definitions(proxsuite PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
 set(EXPORTED_TARGETS_LIST proxsuite)
+
+add_library(proxsuite-not-vectorized INTERFACE)
+target_link_libraries(proxsuite-not-vectorized PUBLIC INTERFACE proxsuite) 
+target_compile_definitions(proxsuite-not-vectorized PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
+list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)

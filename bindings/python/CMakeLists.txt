@@ -36,6 +36,6 @@ macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 	)
 endmacro()
 
-CREATE_PYTHON_TARGET(proxsuite_pywrap "" proxsuite)
+CREATE_PYTHON_TARGET(proxsuite_pywrap "" proxsuite-not-vectorized)
 CREATE_PYTHON_TARGET(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
 CREATE_PYTHON_TARGET(proxsuite_pywrap_avx512 "-mavx512f" proxsuite-vectorized)
