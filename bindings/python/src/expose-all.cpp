@@ -30,7 +30,7 @@ void exposeDenseAlgorithms(pybind11::module_ m) {
     dense::python::solveDenseQp<T>(m);
 }
 
-PYBIND11_MODULE(proxsuite_pywrap, m) {
+PYBIND11_MODULE(PYTHON_MODULE_NAME, m) {
 	m.doc() = R"pbdoc(
         ProxSuite module
     ------------------------
