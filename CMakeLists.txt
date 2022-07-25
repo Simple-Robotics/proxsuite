@@ -37,7 +37,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake)
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/python.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
 include(CMakeDependentOption)
@@ -49,6 +48,8 @@ option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
 option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
+
+option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions." ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -63,21 +64,39 @@ endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # Look for dependencies
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
-if(BUILD_TESTING)
-  find_package(Matio REQUIRED)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  add_project_dependency(simde REQUIRED)
 endif()
-set(OPTIONAL_BUILD_TESTS OFF)
-#add_subdirectory(external/optional)
 
 # Build the main library
-file(GLOB_RECURSE MAIN_HEADERS
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS
   ${PROJECT_SOURCE_DIR}/include/*.hpp
 )
 
-add_library(proxsuite INTERFACE ${MAIN_HEADERS})
-target_include_directories(proxsuite INTERFACE external/simde/)
-#target_link_libraries(proxsuite INTERFACE tl::optional)
-target_link_libraries(proxsuite INTERFACE Eigen3::Eigen)
+add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
+target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
+set(EXPORTED_TARGETS_LIST proxsuite)
+
+add_library(proxsuite-not-vectorized INTERFACE)
+target_link_libraries(proxsuite-not-vectorized PUBLIC INTERFACE proxsuite) 
+target_compile_definitions(proxsuite-not-vectorized PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
+list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
+
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  add_library(proxsuite-vectorized INTERFACE)
+  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite) 
+  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE simde)
+  list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
+endif()
+
+
+INSTALL(TARGETS ${EXPORTED_TARGETS_LIST}
+  EXPORT ${TARGETS_EXPORT_NAME}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 # Activate only for advanced users to profile and benchmark the code
 if(ADVANCED_USERS)
@@ -97,10 +116,6 @@ if(ADVANCED_USERS)
 
   set_project_warnings(project_warnings)
   enable_sanitizers(project_options)
-endif()
-
-if(BUILD_PYTHON_INTERFACE)
-  FINDPYTHON(REQUIRED)
 endif()
 
 add_subdirectory(bindings)
