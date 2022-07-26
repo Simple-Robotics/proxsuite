@@ -77,14 +77,16 @@ add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
 target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
 set(EXPORTED_TARGETS_LIST proxsuite)
 
+add_header_group(${PROJECT_NAME}_HEADERS)
+
 add_library(proxsuite-not-vectorized INTERFACE)
-target_link_libraries(proxsuite-not-vectorized PUBLIC INTERFACE proxsuite) 
+target_link_libraries(proxsuite-not-vectorized PUBLIC INTERFACE proxsuite)
 target_compile_definitions(proxsuite-not-vectorized PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
 list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
-  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite) 
+  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite)
   target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE simde)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
