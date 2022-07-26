@@ -290,7 +290,7 @@ using should_vectorize = veg::meta::bool_constant<false>;
 template <typename T>
 auto adjusted_stride(isize n) noexcept -> isize {
 #ifndef SIMDE_NATURAL_FLOAT_VECTOR_SIZE
-	isize simd_stride = 0;
+	isize simd_stride = 1;
 #else
 	isize simd_stride = (SIMDE_NATURAL_VECTOR_SIZE / CHAR_BIT) / isize{sizeof(T)};
 #endif
