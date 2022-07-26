@@ -1,7 +1,7 @@
 include(../../cmake-module/python.cmake)
 
 findpython(REQUIRED)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11) 
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11)
 add_subdirectory(external/pybind11 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
@@ -23,7 +23,7 @@ macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 		SUFFIX ${PYTHON_EXT_SUFFIX}
 		OUTPUT_NAME ${target_name}
 		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
-	)   
+	)
 
 	if(UNIX AND NOT APPLE)
 		set_target_properties(${target_name} PROPERTIES INSTALL_RPATH "\$ORIGIN/../../..")
@@ -37,5 +37,7 @@ macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 endmacro()
 
 CREATE_PYTHON_TARGET(proxsuite_pywrap "" proxsuite-not-vectorized)
-CREATE_PYTHON_TARGET(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
-CREATE_PYTHON_TARGET(proxsuite_pywrap_avx512 "-mavx512f" proxsuite-vectorized)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  CREATE_PYTHON_TARGET(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
+  CREATE_PYTHON_TARGET(proxsuite_pywrap_avx512 "-mavx512f" proxsuite-vectorized)
+endif()
