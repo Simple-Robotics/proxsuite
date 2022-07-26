@@ -122,4 +122,3 @@ endif()
 
 add_subdirectory(bindings)
 add_subdirectory(test)
-#add_subdirectory(doc)
