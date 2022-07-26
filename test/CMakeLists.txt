@@ -9,7 +9,11 @@ target_link_libraries(libcnpy Eigen3::Eigen)
 
 add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
 target_include_directories(proxsuite-test-util PUBLIC test/include)
-target_link_libraries(proxsuite-test-util proxsuite matio)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  target_link_libraries(proxsuite-test-util proxsuite-vectorized matio)
+else()
+  target_link_libraries(proxsuite-test-util proxsuite-not-vectorized matio)
+endif()
 
 macro(proxsuite_test name path)
   add_executable(test-cpp-${name} ${path})
