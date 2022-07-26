@@ -1,11 +1,11 @@
 #ifndef VEG_SLICE_HPP_GKSTE2JDS
 #define VEG_SLICE_HPP_GKSTE2JDS
 
-#include "veg/util/assert.hpp"
-#include "veg/util/get.hpp"
-#include "veg/internal/narrow.hpp"
-#include "veg/tuple.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/util/assert.hpp"
+#include "proxsuite/veg/util/get.hpp"
+#include "proxsuite/veg/internal/narrow.hpp"
+#include "proxsuite/veg/tuple.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 #include <initializer_list>
 
 namespace veg {
@@ -207,5 +207,5 @@ template <typename T>
 struct cpo::is_trivially_constructible<Slice<T>> : meta::bool_constant<true> {};
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_SLICE_HPP_GKSTE2JDS */

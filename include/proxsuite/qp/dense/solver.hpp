@@ -8,16 +8,16 @@
 #ifndef PROXSUITE_QP_DENSE_SOLVER_HPP
 #define PROXSUITE_QP_DENSE_SOLVER_HPP
 
-#include "qp/dense/views.hpp"
-#include "qp/dense/linesearch.hpp"
-#include "qp/dense/helpers.hpp"
-#include "qp/dense/utils.hpp"
+#include "proxsuite/qp/dense/views.hpp"
+#include "proxsuite/qp/dense/linesearch.hpp"
+#include "proxsuite/qp/dense/helpers.hpp"
+#include "proxsuite/qp/dense/utils.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>
 #include <fstream>
-#include <veg/util/dynstack_alloc.hpp>
-#include <linearsolver/dense/ldlt.hpp>
+#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linearsolver/dense/ldlt.hpp>
 #include <chrono>
 #include <iomanip> 
 

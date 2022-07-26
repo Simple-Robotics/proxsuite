@@ -1,9 +1,9 @@
 #ifndef VEG_ADDRESS_HPP_ZP6FDIHZS
 #define VEG_ADDRESS_HPP_ZP6FDIHZS
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/std.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/std.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if !VEG_HAS_BUILTIN(__builtin_addressof)
 
@@ -79,5 +79,5 @@ VEG_NIEBLOID(addressof);
 } // namespace mem
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_ADDRESS_HPP_ZP6FDIHZS */

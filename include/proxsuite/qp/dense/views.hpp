@@ -7,8 +7,8 @@
 #ifndef PROXSUITE_QP_DENSE_VIEWS_HPP
 #define PROXSUITE_QP_DENSE_VIEWS_HPP
 
-#include <veg/type_traits/core.hpp>
-#include <veg/util/dbg.hpp>
+#include <proxsuite/veg/type_traits/core.hpp>
+#include <proxsuite/veg/util/dbg.hpp>
 #include <cstring>
 #include <type_traits>
 #include <Eigen/Core>

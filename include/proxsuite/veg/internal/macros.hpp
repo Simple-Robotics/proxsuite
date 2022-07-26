@@ -1,9 +1,9 @@
 #ifndef VEG_MACROS_HPP_HSTLSKZXS
 #define VEG_MACROS_HPP_HSTLSKZXS
-#include "veg/internal/.external/hedley.ext.h"
-#include "veg/internal/typedefs.hpp"
-#include "veg/internal/preprocessor.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/.external/hedley.ext.h"
+#include "proxsuite/veg/internal/typedefs.hpp"
+#include "proxsuite/veg/internal/preprocessor.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 #include <initializer_list>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1170,5 +1170,5 @@ auto extract_chars_expr(LiteralType /*unused*/) ->
 
 #define VEG_REFLECT(PClass, ...) __VEG_IMPL_STRUCT_SETUP(PClass, __VA_ARGS__)
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_MACROS_HPP_HSTLSKZXS */

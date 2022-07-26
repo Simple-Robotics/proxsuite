@@ -1,6 +1,6 @@
 #ifndef VEG_INDEX_HPP_UX3WGF18S
 #define VEG_INDEX_HPP_UX3WGF18S
 
-#include "veg/internal/dyn_index.hpp"
+#include "proxsuite/veg/internal/dyn_index.hpp"
 
 #endif /* end of include guard VEG_INDEX_HPP_UX3WGF18S */

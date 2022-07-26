@@ -5,11 +5,11 @@
 #ifndef DENSE_LDLT_MODIFY_HPP
 #define DENSE_LDLT_MODIFY_HPP
 
-#include "linearsolver/dense/core.hpp"
-#include "linearsolver/dense/update.hpp"
-#include "linearsolver/dense/factorize.hpp"
+#include "proxsuite/linearsolver/dense/core.hpp"
+#include "proxsuite/linearsolver/dense/update.hpp"
+#include "proxsuite/linearsolver/dense/factorize.hpp"
 #include <algorithm>
-#include <veg/memory/dynamic_stack.hpp>
+#include <proxsuite/veg/memory/dynamic_stack.hpp>
 
 namespace linearsolver {
 namespace dense {

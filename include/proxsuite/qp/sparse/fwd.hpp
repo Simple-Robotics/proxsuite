@@ -6,8 +6,8 @@
 #define PROXSUITE_QP_SPARSE_FWD_HPP
 
 #include <Eigen/Sparse>
-#include <veg/vec.hpp>
-#include <qp/dense/views.hpp>
+#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/qp/dense/views.hpp>
 
 namespace proxsuite {
 namespace qp {

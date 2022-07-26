@@ -1,13 +1,13 @@
 #ifndef VEG_ALLOC_HPP_TAWYRUICS
 #define VEG_ALLOC_HPP_TAWYRUICS
 
-#include "veg/ref.hpp"
-#include "veg/type_traits/constructible.hpp"
-#include "veg/type_traits/assignable.hpp"
-#include "veg/internal/typedefs.hpp"
-#include "veg/internal/macros.hpp"
-#include "veg/memory/placement.hpp"
-#include "veg/type_traits/alloc.hpp"
+#include "proxsuite/veg/ref.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/type_traits/assignable.hpp"
+#include "proxsuite/veg/internal/typedefs.hpp"
+#include "proxsuite/veg/internal/macros.hpp"
+#include "proxsuite/veg/memory/placement.hpp"
+#include "proxsuite/veg/type_traits/alloc.hpp"
 
 #include <cstddef> // std::max_align_t
 #include <cstdlib> // std::{malloc, free, realloc}, ::{aligned_alloc, free}
@@ -17,7 +17,7 @@
 #include <malloc/malloc.h>
 #define malloc_usable_size malloc_size
 #endif
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace mem {
@@ -191,5 +191,5 @@ struct ManagedAlloc /* NOLINT */ {
 } // namespace _detail
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_ALLOC_HPP_TAWYRUICS */

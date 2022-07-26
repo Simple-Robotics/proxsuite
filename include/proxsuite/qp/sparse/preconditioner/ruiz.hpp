@@ -6,7 +6,7 @@
 #ifndef PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
 #define PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
 
-#include "qp/sparse/fwd.hpp"
+#include "proxsuite/qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {

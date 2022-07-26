@@ -1,11 +1,11 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/sparse/solver.hpp>
-#include <qp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/qp/sparse/solver.hpp>
+#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>
 #include <doctest.h>
-#include <veg/util/dynstack_alloc.hpp>
+#include <proxsuite/veg/util/dynstack_alloc.hpp>
 
 using namespace qp;
 using T = double;

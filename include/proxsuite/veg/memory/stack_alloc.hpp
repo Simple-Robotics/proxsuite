@@ -1,9 +1,9 @@
 #ifndef VEG_STACK_ALLOC_HPP_UTBYR4Y5S
 #define VEG_STACK_ALLOC_HPP_UTBYR4Y5S
 
-#include "veg/slice.hpp"
-#include "veg/type_traits/alloc.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/slice.hpp"
+#include "proxsuite/veg/type_traits/alloc.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 
@@ -205,5 +205,5 @@ struct Alloc<MonotonicAlloc<MaxAlign>> {
 } // namespace mem
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_STACK_ALLOC_HPP_UTBYR4Y5S */

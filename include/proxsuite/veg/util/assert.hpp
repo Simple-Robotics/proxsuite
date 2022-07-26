@@ -1,4 +1,4 @@
-#include "veg/internal/assert_impl.hpp"
+#include "proxsuite/veg/internal/assert_impl.hpp"
 
 #ifdef VEG_DEBUG_ASSERT
 #undef VEG_DEBUG_ASSERT

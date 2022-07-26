@@ -7,9 +7,9 @@
 #ifndef PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
 #define PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
 
-#include "qp/dense/views.hpp"
-#include "qp/dense/fwd.hpp"
-#include <linearsolver/dense/core.hpp>
+#include "proxsuite/qp/dense/views.hpp"
+#include "proxsuite/qp/dense/fwd.hpp"
+#include <proxsuite/linearsolver/dense/core.hpp>
 #include <ostream>
 
 #include <Eigen/Core>

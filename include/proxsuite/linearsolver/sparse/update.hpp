@@ -5,8 +5,8 @@
 #ifndef SPARSE_LDLT_UPDATE_HPP
 #define SPARSE_LDLT_UPDATE_HPP
 
-#include "linearsolver/sparse/core.hpp"
-#include <veg/tuple.hpp>
+#include "proxsuite/linearsolver/sparse/core.hpp"
+#include <proxsuite/veg/tuple.hpp>
 #include <algorithm>
 
 namespace linearsolver {

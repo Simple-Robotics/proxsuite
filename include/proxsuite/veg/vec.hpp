@@ -1,14 +1,14 @@
 #ifndef VEG_VECTOR_HPP_QWFSH3ROS
 #define VEG_VECTOR_HPP_QWFSH3ROS
 
-#include "veg/internal/delete_special_members.hpp"
-#include "veg/memory/alloc.hpp"
-#include "veg/internal/collection_algo.hpp"
-#include "veg/internal/narrow.hpp"
-#include "veg/slice.hpp"
-#include "veg/util/unreachable.hpp"
+#include "proxsuite/veg/internal/delete_special_members.hpp"
+#include "proxsuite/veg/memory/alloc.hpp"
+#include "proxsuite/veg/internal/collection_algo.hpp"
+#include "proxsuite/veg/internal/narrow.hpp"
+#include "proxsuite/veg/slice.hpp"
+#include "proxsuite/veg/util/unreachable.hpp"
 
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace _detail {
@@ -950,5 +950,5 @@ struct cpo::is_trivially_constructible<Vec<T, A>>
 
 #undef __VEG_ASAN_ANNOTATE
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_VECTOR_HPP_QWFSH3ROS */

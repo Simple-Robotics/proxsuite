@@ -1,8 +1,8 @@
 #ifndef VEG_DELETE_SPECIAL_MEMBERS_HPP_2HKRCVWUS
 #define VEG_DELETE_SPECIAL_MEMBERS_HPP_2HKRCVWUS
 
-#include "veg/internal/prologue.hpp"
-#include "veg/internal/typedefs.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/typedefs.hpp"
 
 namespace veg {
 namespace _detail {
@@ -62,5 +62,5 @@ struct NoCopy {
 } // namespace _detail
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_DELETE_SPECIAL_MEMBERS_HPP_2HKRCVWUS */

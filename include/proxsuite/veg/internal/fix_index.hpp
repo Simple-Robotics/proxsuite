@@ -1,10 +1,10 @@
 #ifndef VEG_META_INT_FIX_HPP_7S9Y48TFS
 #define VEG_META_INT_FIX_HPP_7S9Y48TFS
 
-#include "veg/type_traits/tags.hpp"
-#include "veg/internal/std.hpp"
-#include "veg/internal/dbg.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/tags.hpp"
+#include "proxsuite/veg/internal/std.hpp"
+#include "proxsuite/veg/internal/dbg.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 struct Dyn;
@@ -298,5 +298,5 @@ operator"" _c() VEG_NOEXCEPT -> Fix<_detail::parse_int(
 } // namespace literals
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_META_INT_FIX_HPP_7S9Y48TFS */

@@ -5,7 +5,7 @@
 #ifndef SPARSE_LDLT_FACTORIZE_HPP
 #define SPARSE_LDLT_FACTORIZE_HPP
 
-#include "linearsolver/sparse/core.hpp"
+#include "proxsuite/linearsolver/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
 #include <iostream>
 

@@ -1,9 +1,9 @@
 #ifndef VEG_INTEGER_SEQ_HPP_JBT0EKAQS
 #define VEG_INTEGER_SEQ_HPP_JBT0EKAQS
 
-#include "veg/internal/typedefs.hpp"
-#include "veg/internal/macros.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/typedefs.hpp"
+#include "proxsuite/veg/internal/macros.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace meta {
@@ -220,5 +220,5 @@ using ith = typename _detail::pack_ith_elem<I>::template Type<Ts...>;
 #endif
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_INTEGER_SEQ_HPP_JBT0EKAQS */

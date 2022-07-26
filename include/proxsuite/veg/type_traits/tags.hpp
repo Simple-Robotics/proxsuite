@@ -1,8 +1,8 @@
 #ifndef VEG_TAGS_HPP_FYDE7Q6ZS
 #define VEG_TAGS_HPP_FYDE7Q6ZS
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 inline namespace tags {
@@ -36,5 +36,5 @@ VEG_INLINE_VAR(inplace, InPlace<void>);
 } // namespace tags
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_TAGS_HPP_FYDE7Q6ZS */

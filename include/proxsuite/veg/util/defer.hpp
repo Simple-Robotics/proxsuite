@@ -1,9 +1,9 @@
 #ifndef VEG_DEFER_HPP_SQPONLRGS
 #define VEG_DEFER_HPP_SQPONLRGS
 
-#include "veg/type_traits/constructible.hpp"
-#include "veg/type_traits/invocable.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/type_traits/invocable.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 template <typename Fn>
@@ -43,5 +43,5 @@ struct defer {
 VEG_NIEBLOID(defer);
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_DEFER_HPP_SQPONLRGS */

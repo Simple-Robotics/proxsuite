@@ -2,9 +2,9 @@
 // Copyright (c) 2022, INRIA
 //
 #include <doctest.h>
-#include <qp/sparse/sparse.hpp>
+#include <proxsuite/qp/sparse/sparse.hpp>
 #include <util.hpp>
-#include <veg/util/dynstack_alloc.hpp>
+#include <proxsuite/veg/util/dynstack_alloc.hpp>
 
 using namespace qp;
 using T = double;

@@ -1,8 +1,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/settings.hpp>
-#include <qp/status.hpp>
+#include <proxsuite/qp/settings.hpp>
+#include <proxsuite/qp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 

@@ -8,10 +8,10 @@
 #define PROXSUITE_QP_DENSE_WORKSPACE_HPP
 
 #include <Eigen/Core>
-#include <linearsolver/dense/ldlt.hpp>
-#include <qp/timings.hpp>
-#include <veg/vec.hpp>
-//#include <qp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/linearsolver/dense/ldlt.hpp>
+#include <proxsuite/qp/timings.hpp>
+#include <proxsuite/veg/vec.hpp>
+//#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
 namespace qp {

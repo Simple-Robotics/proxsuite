@@ -1,9 +1,9 @@
 #ifndef VEG_UNREACHABLE_HPP_JNCM31VSS
 #define VEG_UNREACHABLE_HPP_JNCM31VSS
 
-#include "veg/internal/macros.hpp"
-#include "veg/internal/terminate.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/macros.hpp"
+#include "proxsuite/veg/internal/terminate.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace meta {
@@ -29,5 +29,5 @@ VEG_NIEBLOID(unreachable_if);
 } // namespace meta
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_UNREACHABLE_HPP_JNCM31VSS */

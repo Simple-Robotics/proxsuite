@@ -1,7 +1,7 @@
 #ifndef VEG_TERMINATE_HPP_YMTONE4HS
 #define VEG_TERMINATE_HPP_YMTONE4HS
 
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 #include <exception>
 
 namespace veg {
@@ -12,5 +12,5 @@ namespace _detail {
 } // namespace _detail
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_TERMINATE_HPP_YMTONE4HS */

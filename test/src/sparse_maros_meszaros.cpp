@@ -4,7 +4,7 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <qp/sparse/wrapper.hpp>
+#include <proxsuite/qp/sparse/wrapper.hpp>
 
 using namespace proxsuite::qp;
 

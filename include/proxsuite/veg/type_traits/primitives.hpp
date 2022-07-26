@@ -1,8 +1,8 @@
 #ifndef VEG_PRIMITIVES_HPP_A8O6GDV1S
 #define VEG_PRIMITIVES_HPP_A8O6GDV1S
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if !VEG_HAS_BUILTIN(__is_integral) ||                                         \
 		!VEG_HAS_BUILTIN(__is_floating_point) || !(VEG_HAS_BUILTIN(__is_enum))
@@ -33,5 +33,5 @@ VEG_DEF_CONCEPT_CONJUNCTION(
 } // namespace concepts
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_PRIMITIVES_HPP_A8O6GDV1S */

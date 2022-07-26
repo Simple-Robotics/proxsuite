@@ -5,7 +5,7 @@
 #ifndef DENSE_LDLT_SOLVE_HPP
 #define DENSE_LDLT_SOLVE_HPP
 
-#include "linearsolver/dense/core.hpp"
+#include "proxsuite/linearsolver/dense/core.hpp"
 #include <Eigen/Core>
 
 namespace linearsolver {

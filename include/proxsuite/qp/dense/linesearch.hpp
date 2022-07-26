@@ -5,11 +5,11 @@
 #ifndef PROXSUITE_QP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_QP_DENSE_LINESEARCH_HPP
 
-#include "qp/dense/views.hpp"
-#include "qp/dense/model.hpp"
-#include "qp/results.hpp"
-#include "qp/dense/workspace.hpp"
-#include "qp/settings.hpp"
+#include "proxsuite/qp/dense/views.hpp"
+#include "proxsuite/qp/dense/model.hpp"
+#include "proxsuite/qp/results.hpp"
+#include "proxsuite/qp/dense/workspace.hpp"
+#include "proxsuite/qp/settings.hpp"
 #include <cmath>
 #include <iostream>
 #include <fstream>

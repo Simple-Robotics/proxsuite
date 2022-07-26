@@ -5,7 +5,7 @@
 #ifndef DENSE_LDLT_UPDATE_HPP
 #define DENSE_LDLT_UPDATE_HPP
 
-#include "linearsolver/dense/core.hpp"
+#include "proxsuite/linearsolver/dense/core.hpp"
 
 namespace linearsolver {
 namespace dense {

@@ -1,10 +1,10 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <linearsolver/sparse/factorize.hpp>
-#include <linearsolver/sparse/update.hpp>
-#include <linearsolver/sparse/rowmod.hpp>
-#include <veg/vec.hpp>
+#include <proxsuite/linearsolver/sparse/factorize.hpp>
+#include <proxsuite/linearsolver/sparse/update.hpp>
+#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/veg/vec.hpp>
 #include <doctest.h>
 #include <iostream>
 

@@ -1,9 +1,9 @@
 #ifndef VEG_CONTAINER_ALGOS_HPP_SGBCMQAYS
 #define VEG_CONTAINER_ALGOS_HPP_SGBCMQAYS
 
-#include "veg/memory/alloc.hpp"
-#include "veg/util/defer.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/memory/alloc.hpp"
+#include "proxsuite/veg/util/defer.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace _detail {
@@ -74,5 +74,5 @@ void backward_destroy(RefMut<A> alloc, RefMut<C> cloner, T* ptr, T* ptr_end)
 } // namespace _detail
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_CONTAINER_ALGOS_HPP_SGBCMQAYS */

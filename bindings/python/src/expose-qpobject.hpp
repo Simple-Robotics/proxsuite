@@ -2,9 +2,9 @@
 // Copyright (c) 2022, INRIA
 //
 
-#include <qp/dense/wrapper.hpp>
-#include <qp/sparse/wrapper.hpp>
-#include <qp/status.hpp>
+#include <proxsuite/qp/dense/wrapper.hpp>
+#include <proxsuite/qp/sparse/wrapper.hpp>
+#include <proxsuite/qp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
@@ -85,7 +85,7 @@ void exposeQpObjectDense(pybind11::module_ m) {
 							"mu_in",
 							std::nullopt,
 							"dual inequality constraint proximal parameter"))
-			.def( 
+			.def(
 					"solve",
 					static_cast<void (dense::QP<T>::*)()>(&dense::QP<T>::solve),
 					"function used for solving the QP problem, using default parameters.")
@@ -200,7 +200,7 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 							"mu_in",
 							std::nullopt,
 							"dual inequality constraint proximal parameter"))
-			
+
 			.def(
 					"update",
 					&sparse::QP<T,I>::update,

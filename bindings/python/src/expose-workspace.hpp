@@ -1,10 +1,10 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/dense/workspace.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
-#include <qp/dense/utils.hpp>
+#include <proxsuite/qp/dense/workspace.hpp>
+#include <proxsuite/qp/dense/utils.hpp>
 
 namespace proxsuite {
 namespace qp {

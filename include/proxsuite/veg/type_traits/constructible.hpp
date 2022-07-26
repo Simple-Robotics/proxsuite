@@ -1,8 +1,8 @@
 #ifndef VEG_CONSTRUCTIBLE_HPP_D6CRVBJYS
 #define VEG_CONSTRUCTIBLE_HPP_D6CRVBJYS
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if !VEG_HAS_BUILTIN(__has_trivial_destructor) ||                              \
 		!VEG_HAS_BUILTIN(__is_trivially_constructible) ||                          \
@@ -200,5 +200,5 @@ struct WithArg {
 } // namespace _detail
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_CONSTRUCTIBLE_HPP_D6CRVBJYS */

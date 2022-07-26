@@ -7,7 +7,7 @@
 #ifndef PROXSUITE_QP_DENSE_PRECOND_IDENTITY_HPP
 #define PROXSUITE_QP_DENSE_PRECOND_IDENTITY_HPP
 
-#include "qp/dense/views.hpp"
+#include "proxsuite/qp/dense/views.hpp"
 
 namespace proxsuite {
 namespace qp {

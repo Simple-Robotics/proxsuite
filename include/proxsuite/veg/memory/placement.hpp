@@ -1,11 +1,11 @@
 #ifndef VEG_PLACEMENT_HPP_LP0HMLTPS
 #define VEG_PLACEMENT_HPP_LP0HMLTPS
 
-#include "veg/type_traits/constructible.hpp"
-#include "veg/internal/std.hpp"
-#include "veg/type_traits/invocable.hpp"
-#include "veg/memory/address.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/internal/std.hpp"
+#include "proxsuite/veg/type_traits/invocable.hpp"
+#include "proxsuite/veg/memory/address.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 #include <new>
 
 #if __cplusplus >= 202002L && !VEG_HAS_BUILTIN(__builtin_bit_cast)
@@ -184,5 +184,5 @@ VEG_NIEBLOID_TEMPLATE(typename To, bit_cast, To);
 } // namespace mem
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_PLACEMENT_HPP_LP0HMLTPS */

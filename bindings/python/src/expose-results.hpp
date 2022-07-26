@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/results.hpp>
+#include <proxsuite/qp/results.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
@@ -33,7 +33,7 @@ void exposeResults(pybind11::module_ m) {
 			.def(::pybind11::init<i64, i64, i64>(),
 				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
 				"Constructor using QP model dimensions.") // constructor
-			.def_readwrite("x", &Results<T>::x) 
+			.def_readwrite("x", &Results<T>::x)
 			.def_readwrite("y", &Results<T>::y)
 			.def_readwrite("z", &Results<T>::z)
 			.def_readwrite("info", &Results<T>::info);

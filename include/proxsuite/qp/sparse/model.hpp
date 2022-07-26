@@ -5,8 +5,8 @@
 #ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
 #define PROXSUITE_QP_SPARSE_MODEL_HPP
 
-#include "linearsolver/sparse/core.hpp"
-#include "qp/sparse/fwd.hpp"
+#include "proxsuite/linearsolver/sparse/core.hpp"
+#include "proxsuite/qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {

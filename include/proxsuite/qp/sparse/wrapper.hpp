@@ -7,10 +7,10 @@
 
 #ifndef PROXSUITE_QP_SPARSE_WRAPPER_HPP
 #define PROXSUITE_QP_SPARSE_WRAPPER_HPP
-#include <qp/results.hpp>
-#include <qp/settings.hpp>
-#include <qp/sparse/solver.hpp>
-#include <qp/sparse/helpers.hpp>
+#include <proxsuite/qp/results.hpp>
+#include <proxsuite/qp/settings.hpp>
+#include <proxsuite/qp/sparse/solver.hpp>
+#include <proxsuite/qp/sparse/helpers.hpp>
 
 namespace proxsuite {
 namespace qp {
@@ -26,8 +26,8 @@ namespace sparse {
  * ```cpp
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <qp/dense/dense.hpp>
-#include <veg/util/dbg.hpp>
+#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/veg/util/dbg.hpp>
 #include <test/include/util.hpp>
 
 using T = double;

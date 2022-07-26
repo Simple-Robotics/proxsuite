@@ -1,8 +1,8 @@
 #ifndef VEG_GET_HPP_QRS8GNSHS
 #define VEG_GET_HPP_QRS8GNSHS
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace meta {
@@ -135,5 +135,5 @@ struct get {
 VEG_NIEBLOID_TEMPLATE(usize I, get, I);
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_GET_HPP_QRS8GNSHS */

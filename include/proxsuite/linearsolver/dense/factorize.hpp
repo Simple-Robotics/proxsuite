@@ -5,9 +5,9 @@
 #ifndef DENSE_LDLT_FACTORIZE_HPP
 #define DENSE_LDLT_FACTORIZE_HPP
 
-#include "linearsolver/dense/core.hpp"
+#include "proxsuite/linearsolver/dense/core.hpp"
 #include <algorithm>
-#include <veg/memory/dynamic_stack.hpp>
+#include <proxsuite/veg/memory/dynamic_stack.hpp>
 
 namespace linearsolver {
 namespace dense {

@@ -1,16 +1,16 @@
 #ifndef VEG_DYNAMIC_STACK_DYNAMIC_STACK_HPP_UBOMZFTOS
 #define VEG_DYNAMIC_STACK_DYNAMIC_STACK_HPP_UBOMZFTOS
 
-#include "veg/util/assert.hpp"
-#include "veg/internal/collection_algo.hpp"
-#include "veg/memory/alloc.hpp"
-#include "veg/memory/placement.hpp"
-#include "veg/slice.hpp"
-#include "veg/type_traits/constructible.hpp"
-#include "veg/memory/placement.hpp"
-#include "veg/memory/address.hpp"
-#include "veg/internal/narrow.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/util/assert.hpp"
+#include "proxsuite/veg/internal/collection_algo.hpp"
+#include "proxsuite/veg/memory/alloc.hpp"
+#include "proxsuite/veg/memory/placement.hpp"
+#include "proxsuite/veg/slice.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/memory/placement.hpp"
+#include "proxsuite/veg/memory/address.hpp"
+#include "proxsuite/veg/internal/narrow.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace _detail {
@@ -439,6 +439,6 @@ private:
 } // namespace dynstack
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_DYNAMIC_STACK_DYNAMIC_STACK_HPP_UBOMZFTOS   \
         */

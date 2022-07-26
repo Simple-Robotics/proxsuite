@@ -8,11 +8,11 @@
 #ifndef PROXSUITE_QP_DENSE_HELPERS_HPP
 #define PROXSUITE_QP_DENSE_HELPERS_HPP
 
-#include <qp/results.hpp>
-#include <qp/settings.hpp>
-#include <qp/status.hpp>
-#include <qp/dense/fwd.hpp>
-#include <qp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/qp/results.hpp>
+#include <proxsuite/qp/settings.hpp>
+#include <proxsuite/qp/status.hpp>
+#include <proxsuite/qp/dense/fwd.hpp>
+#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 #include <optional>
 

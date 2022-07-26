@@ -8,9 +8,9 @@
 #define PROXSUITE_QP_SETTINGS_HPP
 
 #include <Eigen/Core>
-#include <qp/status.hpp>
-#include <qp/dense/views.hpp>
-#include <qp/sparse/fwd.hpp>
+#include <proxsuite/qp/status.hpp>
+#include <proxsuite/qp/dense/views.hpp>
+#include <proxsuite/qp/sparse/fwd.hpp>
 
 namespace proxsuite {
 namespace qp {

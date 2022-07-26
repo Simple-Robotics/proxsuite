@@ -6,19 +6,19 @@
 #ifndef PROXSUITE_QP_SPARSE_WORKSPACE_HPP
 #define PROXSUITE_QP_SPARSE_WORKSPACE_HPP
 
-#include <linearsolver/dense/core.hpp>
-#include <linearsolver/sparse/core.hpp>
-#include <linearsolver/sparse/factorize.hpp>
-#include <linearsolver/sparse/update.hpp>
-#include <linearsolver/sparse/rowmod.hpp>
-#include <qp/timings.hpp>
-#include <qp/settings.hpp>
-#include <qp/dense/views.hpp>
-#include <veg/vec.hpp>
-#include "qp/sparse/views.hpp"
-#include "qp/sparse/model.hpp"
-#include "qp/results.hpp"
-#include "qp/sparse/utils.hpp"
+#include <proxsuite/linearsolver/dense/core.hpp>
+#include <proxsuite/linearsolver/sparse/core.hpp>
+#include <proxsuite/linearsolver/sparse/factorize.hpp>
+#include <proxsuite/linearsolver/sparse/update.hpp>
+#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/qp/timings.hpp>
+#include <proxsuite/qp/settings.hpp>
+#include <proxsuite/qp/dense/views.hpp>
+#include <proxsuite/veg/vec.hpp>
+#include "proxsuite/qp/sparse/views.hpp"
+#include "proxsuite/qp/sparse/model.hpp"
+#include "proxsuite/qp/results.hpp"
+#include "proxsuite/qp/sparse/utils.hpp"
 
 #include <iostream>
 #include <memory>

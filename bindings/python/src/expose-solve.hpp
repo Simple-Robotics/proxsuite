@@ -1,8 +1,8 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <qp/dense/wrapper.hpp>
-#include <qp/sparse/wrapper.hpp>
+#include <proxsuite/qp/dense/wrapper.hpp>
+#include <proxsuite/qp/sparse/wrapper.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>

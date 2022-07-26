@@ -1,10 +1,10 @@
 #ifndef VEG_REF_HPP_VQCOSD7RS
 #define VEG_REF_HPP_VQCOSD7RS
 
-#include "veg/type_traits/tags.hpp"
-#include "veg/type_traits/constructible.hpp"
-#include "veg/memory/address.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/tags.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/memory/address.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace cmp {
@@ -117,5 +117,5 @@ VEG_NIEBLOID(ref);
 VEG_NIEBLOID(mut);
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_REF_HPP_VQCOSD7RS */

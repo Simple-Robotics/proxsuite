@@ -4,8 +4,8 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <qp/dense/dense.hpp>
-#include <veg/util/dbg.hpp>
+#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 
 using T = double;

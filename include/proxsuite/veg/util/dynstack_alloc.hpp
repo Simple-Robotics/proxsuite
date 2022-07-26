@@ -1,8 +1,8 @@
 #ifndef VEG_DYNSTACK_ALLOC_HPP_YYWN4MATS
 #define VEG_DYNSTACK_ALLOC_HPP_YYWN4MATS
 
-#include "veg/vec.hpp"
-#include "veg/memory/dynamic_stack.hpp"
+#include "proxsuite/veg/vec.hpp"
+#include "proxsuite/veg/memory/dynamic_stack.hpp"
 
 #define __VEG_IMPL_MAKE_STACK(vec, stack, ...)                                 \
 	VEG_NOM_SEMICOLON;                                                           \

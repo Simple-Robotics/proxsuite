@@ -1,11 +1,11 @@
 #ifndef VEG_META_INT_DYN_HPP_GC385NKBS
 #define VEG_META_INT_DYN_HPP_GC385NKBS
 
-#include "veg/util/assert.hpp"
-#include "veg/internal/fix_index.hpp"
-#include "veg/internal/narrow.hpp"
-#include "veg/util/compare.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/util/assert.hpp"
+#include "proxsuite/veg/internal/fix_index.hpp"
+#include "proxsuite/veg/internal/narrow.hpp"
+#include "proxsuite/veg/util/compare.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 
@@ -250,5 +250,5 @@ struct fmt::Debug<Dyn> {
 };
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_META_INT_DYN_HPP_GC385NKBS */

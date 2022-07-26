@@ -1,9 +1,9 @@
 #ifndef VEG_INVOCABLE_HPP_GVSWRKAYS
 #define VEG_INVOCABLE_HPP_GVSWRKAYS
 
-#include "veg/type_traits/core.hpp"
-#include "veg/type_traits/constructible.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/type_traits/constructible.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace _detail {
@@ -42,5 +42,5 @@ VEG_CONCEPT_EXPR(
 } // namespace concepts
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_INVOCABLE_HPP_GVSWRKAYS */

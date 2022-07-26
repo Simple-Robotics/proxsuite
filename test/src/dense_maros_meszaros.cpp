@@ -4,7 +4,7 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <qp/dense/dense.hpp>
+#include <proxsuite/qp/dense/dense.hpp>
 
 using namespace proxsuite::qp;
 

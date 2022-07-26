@@ -8,10 +8,10 @@
 #define PROXSUITE_QP_RESULTS_HPP
 
 #include <Eigen/Core>
-#include <veg/type_traits/core.hpp>
-#include <veg/vec.hpp>
-#include "qp/status.hpp"
-#include "qp/sparse/fwd.hpp"
+#include <proxsuite/veg/type_traits/core.hpp>
+#include <proxsuite/veg/vec.hpp>
+#include "proxsuite/qp/status.hpp"
+#include "proxsuite/qp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace qp {

@@ -5,8 +5,8 @@
 #ifndef SPARSE_LDLT_CORE_HPP
 #define SPARSE_LDLT_CORE_HPP
 
-#include <veg/slice.hpp>
-#include <veg/memory/dynamic_stack.hpp>
+#include <proxsuite/veg/slice.hpp>
+#include <proxsuite/veg/memory/dynamic_stack.hpp>
 #include <type_traits>
 #include <Eigen/SparseCore>
 

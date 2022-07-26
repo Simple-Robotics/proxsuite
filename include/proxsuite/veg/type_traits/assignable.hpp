@@ -1,8 +1,8 @@
 #ifndef VEG_ASSIGNABLE_HPP_4ZNCRTO7S
 #define VEG_ASSIGNABLE_HPP_4ZNCRTO7S
 
-#include "veg/type_traits/core.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/core.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if !VEG_HAS_BUILTIN(__is_trivially_assignable) ||                             \
 		!VEG_HAS_BUILTIN(__is_assignable) ||                                       \
@@ -42,5 +42,5 @@ VEG_DEF_CONCEPT(
 } // namespace concepts
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_ASSIGNABLE_HPP_4ZNCRTO7S */

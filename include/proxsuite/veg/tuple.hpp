@@ -1,12 +1,12 @@
 #ifndef VEG_TUPLE_HPP_B8PHUNWES
 #define VEG_TUPLE_HPP_B8PHUNWES
 
-#include "veg/type_traits/assignable.hpp"
-#include "veg/internal/dbg.hpp"
-#include "veg/type_traits/invocable.hpp"
-#include "veg/util/get.hpp"
-#include "veg/internal/fix_index.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/type_traits/assignable.hpp"
+#include "proxsuite/veg/internal/dbg.hpp"
+#include "proxsuite/veg/type_traits/invocable.hpp"
+#include "proxsuite/veg/util/get.hpp"
+#include "proxsuite/veg/internal/fix_index.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if defined(__GLIBCXX__)
 namespace std /* NOLINT */ {
@@ -753,5 +753,5 @@ struct std::tuple_element<I, veg::Tuple<Ts...>> {
 	using type = veg::ith<I, Ts...>;
 };
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_TUPLE_HPP_B8PHUNWES */

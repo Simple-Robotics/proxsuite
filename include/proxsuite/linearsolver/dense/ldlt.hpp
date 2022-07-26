@@ -5,11 +5,11 @@
 #ifndef DENSE_LDLT_LDLT_HPP
 #define DENSE_LDLT_LDLT_HPP
 
-#include "linearsolver/dense/factorize.hpp"
-#include "linearsolver/dense/update.hpp"
-#include "linearsolver/dense/modify.hpp"
-#include "linearsolver/dense/solve.hpp"
-#include <veg/vec.hpp>
+#include "proxsuite/linearsolver/dense/factorize.hpp"
+#include "proxsuite/linearsolver/dense/update.hpp"
+#include "proxsuite/linearsolver/dense/modify.hpp"
+#include "proxsuite/linearsolver/dense/solve.hpp"
+#include <proxsuite/veg/vec.hpp>
 
 namespace linearsolver {
 namespace dense {
@@ -85,8 +85,8 @@ namespace dense {
  *
  * Example usage:
  * ```cpp
-#include <linearsolver/dense/ldlt.hpp>
-#include <veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linearsolver/dense/ldlt.hpp>
+#include <proxsuite/veg/util/dynstack_alloc.hpp>
 
 auto main() -> int {
 	constexpr auto DYN = Eigen::Dynamic;

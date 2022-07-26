@@ -5,7 +5,7 @@
 #ifndef SPARSE_LDLT_ROWMOD_HPP
 #define SPARSE_LDLT_ROWMOD_HPP
 
-#include "linearsolver/sparse/update.hpp"
+#include "proxsuite/linearsolver/sparse/update.hpp"
 #include <algorithm>
 
 namespace linearsolver {

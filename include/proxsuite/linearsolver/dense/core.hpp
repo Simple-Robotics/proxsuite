@@ -5,9 +5,9 @@
 #ifndef DENSE_LDLT_CORE_HPP
 #define DENSE_LDLT_CORE_HPP
 
-#include <veg/util/dbg.hpp>
-#include <veg/util/assert.hpp>
-#include <veg/memory/dynamic_stack.hpp>
+#include <proxsuite/veg/util/dbg.hpp>
+#include <proxsuite/veg/util/assert.hpp>
+#include <proxsuite/veg/memory/dynamic_stack.hpp>
 
 #include <immintrin.h>
 

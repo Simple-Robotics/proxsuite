@@ -1,18 +1,18 @@
 #ifndef PROXSUITE_QP_DETAIL_SOLVER_IMPL_HPP
 #define PROXSUITE_QP_DETAIL_SOLVER_IMPL_HPP
 
-#include "linearsolver/sparse/core.hpp"
-#include "linearsolver/sparse/factorize.hpp"
-#include "qp/dense/views.hpp"
-#include "qp/sparse/views.hpp"
-#include "qp/status.hpp"
+#include "proxsuite/linearsolver/sparse/core.hpp"
+#include "proxsuite/linearsolver/sparse/factorize.hpp"
+#include "proxsuite/qp/dense/views.hpp"
+#include "proxsuite/qp/sparse/views.hpp"
+#include "proxsuite/qp/status.hpp"
 
 #include <Eigen/Core>
-#include <linearsolver/dense/core.hpp>
-#include <veg/box.hpp>
-#include <veg/memory/dynamic_stack.hpp>
-#include <veg/vec.hpp>
-#include <veg/fn_dyn.hpp>
+#include <proxsuite/linearsolver/dense/core.hpp>
+#include <proxsuite/veg/box.hpp>
+#include <proxsuite/veg/memory/dynamic_stack.hpp>
+#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/veg/fn_dyn.hpp>
 #include <ostream>
 #include <memory>
 #include <Eigen/IterativeLinearSolvers>

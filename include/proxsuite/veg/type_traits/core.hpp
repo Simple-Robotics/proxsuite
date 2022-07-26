@@ -1,9 +1,9 @@
 #ifndef VEG_CORE_HPP_GJCBNFLAS
 #define VEG_CORE_HPP_GJCBNFLAS
 
-#include "veg/internal/typedefs.hpp"
-#include "veg/internal/integer_seq.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/internal/typedefs.hpp"
+#include "proxsuite/veg/internal/integer_seq.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 #if __cplusplus >= 202002L && !VEG_HAS_BUILTIN(__builtin_is_constant_evaluated)
 #include <type_traits>
@@ -261,5 +261,5 @@ template <typename T>
 using DoNotDeduce = meta::type_identity_t<T>;
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_CORE_HPP_GJCBNFLAS */

@@ -1,8 +1,8 @@
 #ifndef VEG_NARROW_HPP_H0EXKJTAS
 #define VEG_NARROW_HPP_H0EXKJTAS
 
-#include "veg/util/assert.hpp"
-#include "veg/internal/prologue.hpp"
+#include "proxsuite/veg/util/assert.hpp"
+#include "proxsuite/veg/internal/prologue.hpp"
 
 namespace veg {
 namespace nb {
@@ -33,5 +33,5 @@ struct narrow {
 VEG_NIEBLOID_TEMPLATE(typename To, narrow, To);
 } // namespace veg
 
-#include "veg/internal/epilogue.hpp"
+#include "proxsuite/veg/internal/epilogue.hpp"
 #endif /* end of include guard VEG_NARROW_HPP_H0EXKJTAS */

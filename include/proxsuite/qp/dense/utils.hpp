@@ -7,12 +7,12 @@
 #ifndef PROXSUITE_QP_DENSE_UTILS_HPP
 #define PROXSUITE_QP_DENSE_UTILS_HPP
 
-#include "qp/dense/views.hpp"
-#include "qp/dense/workspace.hpp"
-#include <qp/dense/model.hpp>
-#include <qp/results.hpp>
-#include <qp/settings.hpp>
-#include <qp/dense/preconditioner/ruiz.hpp>
+#include "proxsuite/qp/dense/views.hpp"
+#include "proxsuite/qp/dense/workspace.hpp"
+#include <proxsuite/qp/dense/model.hpp>
+#include <proxsuite/qp/results.hpp>
+#include <proxsuite/qp/settings.hpp>
+#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
 #include <iostream>
 #include <fstream>
 #include <cmath>

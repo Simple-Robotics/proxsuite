@@ -7,9 +7,9 @@
 
 #ifndef PROXSUITE_QP_DENSE_WRAPPER_HPP
 #define PROXSUITE_QP_DENSE_WRAPPER_HPP
-#include <qp/dense/solver.hpp>
-#include <qp/dense/helpers.hpp>
-#include <qp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/qp/dense/solver.hpp>
+#include <proxsuite/qp/dense/helpers.hpp>
+#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 
 namespace proxsuite {
@@ -26,8 +26,8 @@ namespace dense {
  * ```cpp
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <qp/dense/dense.hpp>
-#include <veg/util/dbg.hpp>
+#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/veg/util/dbg.hpp>
 #include <test/include/util.hpp>
 
 using T = double;
