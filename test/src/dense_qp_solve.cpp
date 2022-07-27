@@ -4,7 +4,7 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 
@@ -19,10 +19,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -31,14 +31,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			n_in,
 			sparsity_factor,
 			strong_convexity_factor};
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
                                                                     eps_abs,0);
 
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)
@@ -65,10 +65,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -77,14 +77,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			n_in,
 			sparsity_factor,
 			strong_convexity_factor};
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
                                                                     eps_abs,0,T(1.E-7));
     DOCTEST_CHECK(results.info.rho == T(1.E-7));
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)
@@ -111,10 +111,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -123,13 +123,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			n_in,
 			sparsity_factor,
 			strong_convexity_factor};
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,
                                                                     eps_abs,0,std::nullopt,T(1.E-2),T(1.E-2));
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)
@@ -155,10 +155,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -170,12 +170,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	auto x_wm = ldlt_test::rand::vector_rand<T>(dim);
 	auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
 	auto z_wm = ldlt_test::rand::vector_rand<T>(n_in);
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     x_wm,y_wm,z_wm,eps_abs,0);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)
@@ -201,10 +201,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -214,14 +214,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
     bool verbose = true;
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                     0,std::nullopt,std::nullopt,std::nullopt,
                                                                     verbose);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)
@@ -247,10 +247,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -259,15 +259,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			n_in,
 			sparsity_factor,
 			strong_convexity_factor};
-    proxsuite::qp::InitialGuessStatus initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
-	proxsuite::qp::Results<T> results = proxsuite::qp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
+    proxsuite::proxqp::InitialGuessStatus initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+	proxsuite::proxqp::Results<T> results = proxsuite::proxqp::dense::solve<T>(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,
                                                                     std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                     0,std::nullopt,std::nullopt,std::nullopt,
                                                                     std::nullopt,true,true,std::nullopt,initial_guess);
 	T pri_res = std::max(
 			(qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
 	             qp.C.transpose() * results.z)

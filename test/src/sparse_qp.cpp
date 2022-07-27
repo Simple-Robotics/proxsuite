@@ -1,12 +1,12 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <util.hpp>
 #include <doctest.h>
 #include <proxsuite/veg/util/dynstack_alloc.hpp>
 
-using namespace qp;
+using namespace proxqp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
@@ -43,12 +43,12 @@ TEST_CASE("random ruiz") {
 					{linearsolver::sparse::from_eigen, u},
 			};
 
-			qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
+			proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
 					n,
 					n_eq + n_in,
 					1e-3,
 					10,
-					qp::sparse::preconditioner::Symmetry::UPPER,
+					proxqp::sparse::preconditioner::Symmetry::UPPER,
 			};
 
 			sparse::Workspace<T, I> work;
@@ -67,10 +67,10 @@ TEST_CASE("random ruiz") {
 
 			sparse::qp_solve(results, data, settings, work, ruiz);
 			CHECK(
-					qp::dense::infty_norm(
+					proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(AT.transpose() * x - b) <= 1e-9);
+			CHECK(proxqp::dense::infty_norm(AT.transpose() * x - b) <= 1e-9);
 			if (n_in > 0) {
 				CHECK((CT.transpose() * x - l).minCoeff() > -1e-9);
 				CHECK((CT.transpose() * x - u).maxCoeff() < 1e-9);
@@ -102,15 +102,15 @@ TEST_CASE("random ruiz using the API") {
 
 		{
 
-			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+			proxqp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
 			Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
 			Qp.solve();
 			CHECK(
-					qp::dense::infty_norm(
+					proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
+			CHECK(proxqp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
 			if (n_in > 0) {
 				CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
 				CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
@@ -151,7 +151,7 @@ TEST_CASE("random id") {
 					{linearsolver::sparse::from_eigen, u},
 			};
 
-			qp::sparse::preconditioner::Identity<T, I> id;
+			proxqp::sparse::preconditioner::Identity<T, I> id;
 
 			sparse::Workspace<T, I> work;
 			Settings<T> settings;
@@ -169,10 +169,10 @@ TEST_CASE("random id") {
 			sparse::qp_solve(results, data, settings, work, id);
 
 			CHECK(
-					qp::dense::infty_norm(
+					proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * x + g + AT * y + CT * z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(AT.transpose() * x - b) <= 1e-9);
+			CHECK(proxqp::dense::infty_norm(AT.transpose() * x - b) <= 1e-9);
 			if (n_in > 0) {
 				CHECK((CT.transpose() * x - l).minCoeff() > -1e-9);
 				CHECK((CT.transpose() * x - u).maxCoeff() < 1e-9);
@@ -203,17 +203,17 @@ TEST_CASE("random id using the API") {
 		auto u = (l.array() + 1).matrix().eval();
 
 		{
-			qp::sparse::QP<T,I> Qp(n, n_eq, n_in);
+			proxqp::sparse::QP<T,I> Qp(n, n_eq, n_in);
 			Qp.settings.eps_abs = 1.E-9;
 			Qp.settings.verbose = true;
 			Qp.init(H,g,A,b,C,u,l);
 			Qp.solve();
 
 			CHECK(
-					qp::dense::infty_norm(
+					proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
 					1e-9);
-			CHECK(qp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
+			CHECK(proxqp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
 			if (n_in > 0) {
 				CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
 				CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);

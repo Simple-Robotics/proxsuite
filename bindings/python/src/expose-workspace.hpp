@@ -3,11 +3,11 @@
 //
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
-#include <proxsuite/qp/dense/workspace.hpp>
-#include <proxsuite/qp/dense/utils.hpp>
+#include <proxsuite/proxqp/dense/workspace.hpp>
+#include <proxsuite/proxqp/dense/utils.hpp>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 namespace dense {
 namespace python {
 template <typename T>
@@ -82,5 +82,5 @@ void exposeWorkspaceDense(pybind11::module_ m) {
 }
 } // namespace python
 } // namespace dense
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

@@ -4,10 +4,10 @@
 #include "algorithms.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
-#include <proxsuite/qp/dense/utils.hpp>
+#include <proxsuite/proxqp/dense/utils.hpp>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 namespace python {
 
 template <typename T>
@@ -52,5 +52,5 @@ PYBIND11_MODULE(PYTHON_MODULE_NAME, m) {
 
 } // namespace python
 
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

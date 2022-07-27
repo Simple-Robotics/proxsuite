@@ -4,9 +4,9 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <proxsuite/qp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
 
-using namespace proxsuite::qp;
+using namespace proxsuite::proxqp;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -111,7 +111,7 @@ TEST_CASE("sparse maros meszaros using the API") {
 
 			isize n_eq = AT.cols();
 			isize n_in = CT.cols();
-			proxsuite::qp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
+			proxsuite::proxqp::sparse::QP<T,I> Qp(H.cast<bool>(),AT.transpose().cast<bool>(),CT.transpose().cast<bool>());
 			Qp.settings.max_iter = 1.E6;
 			Qp.settings.verbose = true;
 
@@ -126,39 +126,39 @@ TEST_CASE("sparse maros meszaros using the API") {
 				Qp.solve();
 
 				CHECK(
-						proxsuite::qp::dense::infty_norm(
+						proxsuite::proxqp::dense::infty_norm(
 								H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
 						eps);
-				CHECK(proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
+				CHECK(proxsuite::proxqp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
 				if (n_in > 0) {
 					CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 					CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 				}
-				std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
+				std::cout << "dual residual " << proxsuite::proxqp::dense::infty_norm(
 								H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
-				T prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
-				T prim_in =  std::max( proxsuite::qp::dense::infty_norm(AT.transpose()* Qp.results.x - b),
-				proxsuite::qp::dense::infty_norm(sparse::detail::positive_part(CT.transpose() * Qp.results.x - u) + sparse::detail::negative_part(CT.transpose() * Qp.results.x - l))) ;
+				T prim_eq = proxsuite::proxqp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
+				T prim_in =  std::max( proxsuite::proxqp::dense::infty_norm(AT.transpose()* Qp.results.x - b),
+				proxsuite::proxqp::dense::infty_norm(sparse::detail::positive_part(CT.transpose() * Qp.results.x - u) + sparse::detail::negative_part(CT.transpose() * Qp.results.x - l))) ;
 				std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
 			}
 			
 			Qp.solve();
 
 			CHECK(
-					proxsuite::qp::dense::infty_norm(
+					proxsuite::proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) <=
 					eps);
-			CHECK(proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
+			CHECK(proxsuite::proxqp::dense::infty_norm(AT.transpose() * Qp.results.x - b) <= eps);
 			if (n_in > 0) {
 				CHECK((CT.transpose() * Qp.results.x - l).minCoeff() > -eps);
 				CHECK((CT.transpose() * Qp.results.x - u).maxCoeff() < eps);
 			}
-			std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
+			std::cout << "dual residual " << proxsuite::proxqp::dense::infty_norm(
 							H.selfadjointView<Eigen::Upper>() * Qp.results.x + g + AT * Qp.results.y + CT * Qp.results.z) << std::endl;
 
-			prim_eq = proxsuite::qp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
-			prim_in = std::max( proxsuite::qp::dense::infty_norm(AT.transpose()* Qp.results.x - b),
-			proxsuite::qp::dense::infty_norm(sparse::detail::positive_part(CT.transpose() * Qp.results.x - u) + sparse::detail::negative_part(CT.transpose() * Qp.results.x - l))) ;
+			prim_eq = proxsuite::proxqp::dense::infty_norm(AT.transpose() * Qp.results.x - b);
+			prim_in = std::max( proxsuite::proxqp::dense::infty_norm(AT.transpose()* Qp.results.x - b),
+			proxsuite::proxqp::dense::infty_norm(sparse::detail::positive_part(CT.transpose() * Qp.results.x - u) + sparse::detail::negative_part(CT.transpose() * Qp.results.x - l))) ;
 			std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
 		}
 	}

@@ -1,13 +1,13 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/settings.hpp>
-#include <proxsuite/qp/status.hpp>
+#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 namespace python {
 template <typename T>
 void exposeSettings(pybind11::module_ m) {
@@ -52,5 +52,5 @@ void exposeSettings(pybind11::module_ m) {
 			;
 }
 } // namespace python
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

@@ -4,18 +4,18 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 #include <iostream>
 
 using T = double;
-using namespace qp;
+using namespace proxqp;
 
 DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework") {
-	qp::isize dim = 30;
-	qp::isize n_eq = 6;
-	qp::isize n_in = 0;
+	proxqp::isize dim = 30;
+	proxqp::isize n_eq = 6;
+	proxqp::isize n_in = 0;
 	std::cout << "---testing sparse random strongly convex qp with equality "
 	             "constraints and starting at the solution using the wrapper "
 	             "framework---"
@@ -31,9 +31,9 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework") {
 	dual_init = qp.solution.bottomRows(n_eq);
 	T eps_abs = T(1e-9);
 
-	qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
-	Qp.settings.initial_guess =  proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp.settings.initial_guess =  proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 	Qp.solve(primal_init, dual_init, dual_init_in);
 
@@ -53,10 +53,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	for (qp::isize dim = 10; dim < 1000; dim += 100) {
+	for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
-		qp::isize n_eq(dim / 2);
-		qp::isize n_in(0);
+		proxqp::isize n_eq(dim / 2);
+		proxqp::isize n_in(0);
 		T strong_convexity_factor(1.e-2);
 		Qp<T> qp{
 				random_with_dim_and_neq_and_n_in,
@@ -66,14 +66,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
 				sparsity_factor,
 				strong_convexity_factor};
 
-		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+		proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 		Qp.solve();
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-				(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-		     qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+				(proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+		     proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 						.lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 		             qp.C.transpose() * Qp.results.z)
@@ -99,10 +99,10 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	for (qp::isize dim = 10; dim < 1000; dim += 100) {
+	for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
-		qp::isize n_eq(dim / 2);
-		qp::isize n_in(0);
+		proxqp::isize n_eq(dim / 2);
+		proxqp::isize n_in(0);
 		T strong_convexity_factor(1.e-2);
 		Qp<T> qp{
 				random_with_dim_and_neq_and_n_in,
@@ -116,7 +116,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 				n_eq); // make sure the LP is bounded within the feasible set
 		qp.g = -qp.A.transpose() * y_sol;
 
-		qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+		proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
 		Qp.settings.eps_rel = 0;
 		Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -124,8 +124,8 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 
 		T pri_res = std::max(
 				(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-				(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-		     qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+				(proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+		     proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 						.lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 		             qp.C.transpose() * Qp.results.z)

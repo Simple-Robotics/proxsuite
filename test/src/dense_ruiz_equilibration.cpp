@@ -2,29 +2,29 @@
 #include <iostream>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace proxsuite::qp;
+using namespace proxsuite::proxqp;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner") {
 	isize dim = 5;
 	isize n_eq = 6;
 	isize n_in = 0;
-	auto sym = qp::Symmetry::upper; // 0 : upper triangular (by default), 1:
+	auto sym = proxqp::Symmetry::upper; // 0 : upper triangular (by default), 1:
 	                                // lower triangular ; else full matrix
 
 	Scalar sparsity_factor(0.15);
 	Qp<Scalar> qp{random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor};
 
 	switch (sym) {
-	case qp::Symmetry::upper: {
+	case proxqp::Symmetry::upper: {
 		qp.H = qp.H.triangularView<Eigen::Upper>();
 		break;
 	}
-	case qp::Symmetry::lower: {
+	case proxqp::Symmetry::lower: {
 		qp.H = qp.H.triangularView<Eigen::Lower>();
 		break;
 	}
@@ -32,7 +32,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner") {
 	}
 	}
 
-	qp::dense::QP<Scalar> Qp{dim,n_eq,n_in}; // creating QP object
+	proxqp::dense::QP<Scalar> Qp{dim,n_eq,n_in}; // creating QP object
 	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 
 	auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(

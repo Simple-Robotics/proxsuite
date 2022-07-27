@@ -7,20 +7,20 @@
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <utility>
-#include <qp/dense/views.hpp>
+#include <proxsuite/proxqp/dense/views.hpp>
 #include <map>
 
 using c_int = long long;
 using c_float = double;
 
-namespace qp = proxsuite::qp;
+namespace proxqp = proxsuite::proxqp;
 
-template <typename T, qp::Layout L>
+template <typename T, proxqp::Layout L>
 using Mat = Eigen::Matrix<
 		T,
 		Eigen::Dynamic,
 		Eigen::Dynamic,
-		(L == qp::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
+		(L == proxqp::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template <typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -28,7 +28,7 @@ template <typename Scalar>
 using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
 
 namespace ldlt_test {
-using namespace qp;
+using namespace proxqp;
 namespace eigen {
 template <typename T>
 void llt_compute( //
@@ -54,8 +54,8 @@ LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f64, rowmajor>>);
 } // namespace eigen
 namespace rand {
 
-using qp::u64;
-using qp::u32;
+using proxqp::u64;
+using proxqp::u32;
 using u128 = __uint128_t;
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
@@ -278,7 +278,7 @@ LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f64>);
 LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f64>);
 LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f64>);
 } // namespace rand
-using qp::usize;
+using proxqp::usize;
 
 namespace osqp {
 auto to_sparse(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
@@ -288,29 +288,29 @@ auto to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
 
 template <typename T>
 auto matmul_impl( //
-		Mat<T, qp::colmajor> const& lhs,
-		Mat<T, qp::colmajor> const& rhs) -> Mat<T, qp::colmajor> {
+		Mat<T, proxqp::colmajor> const& lhs,
+		Mat<T, proxqp::colmajor> const& rhs) -> Mat<T, proxqp::colmajor> {
 	return lhs.operator*(rhs);
 }
 template <typename To, typename From>
-auto mat_cast(Mat<From, qp::colmajor> const& from) -> Mat<To, qp::colmajor> {
+auto mat_cast(Mat<From, proxqp::colmajor> const& from) -> Mat<To, proxqp::colmajor> {
 	return from.template cast<To>();
 }
 LDLT_EXPLICIT_TPL_DECL(2, matmul_impl<long double>);
-LDLT_EXPLICIT_TPL_DECL(1, mat_cast<qp::f64, long double>);
-LDLT_EXPLICIT_TPL_DECL(1, mat_cast<qp::f32, long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<proxqp::f64, long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<proxqp::f32, long double>);
 
 template <
 		typename MatLhs,
 		typename MatRhs,
 		typename T = typename MatLhs::Scalar>
-auto matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, qp::colmajor> {
+auto matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, proxqp::colmajor> {
 	using Upscaled = typename std::
 			conditional<std::is_floating_point<T>::value, long double, T>::type;
 
 	return ::mat_cast<T, Upscaled>(::matmul_impl<Upscaled>(
-			Mat<T, qp::colmajor>(a).template cast<Upscaled>(),
-			Mat<T, qp::colmajor>(b).template cast<Upscaled>()));
+			Mat<T, proxqp::colmajor>(a).template cast<Upscaled>(),
+			Mat<T, proxqp::colmajor>(b).template cast<Upscaled>()));
 }
 
 template <
@@ -319,7 +319,7 @@ template <
 		typename MatRhs,
 		typename T = typename MatLhs::Scalar>
 auto matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
-		-> Mat<T, qp::colmajor> {
+		-> Mat<T, proxqp::colmajor> {
 	return ::matmul(::matmul(a, b), c);
 }
 
@@ -382,7 +382,7 @@ struct Qp {
 
 	}
 
-	Qp(RandomWithDimAndNeq /*tag*/, qp::isize dim, qp::isize n_eq)
+	Qp(RandomWithDimAndNeq /*tag*/, proxqp::isize dim, proxqp::isize n_eq)
 			: H(ldlt_test::rand::positive_definite_rand<Scalar>(dim, Scalar(1e2))),
 				g(dim),
 				A(ldlt_test::rand::matrix_rand<Scalar>(n_eq, dim)),
@@ -400,9 +400,9 @@ struct Qp {
 	}
 
 	Qp(RandomWithDimNeqNin /*tag*/,
-	   qp::isize dim,
-	   qp::isize n_eq,
-	   qp::isize n_in,
+	   proxqp::isize dim,
+	   proxqp::isize n_eq,
+	   proxqp::isize n_in,
 	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
@@ -419,7 +419,7 @@ struct Qp {
 		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
 		auto delta = Vec<Scalar>(n_in);
 
-		for (qp::isize i = 0; i < n_in; ++i) {
+		for (proxqp::isize i = 0; i < n_in; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
 
@@ -430,7 +430,7 @@ struct Qp {
 	}
 
 	Qp(RandomUnconstrained /*tag*/,
-	   qp::isize dim,
+	   proxqp::isize dim,
 	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
@@ -445,7 +445,7 @@ struct Qp {
 				l(0) {}
 
 	Qp(RandomWithDimNinBoxConstraints /*tag*/,
-	   qp::isize dim,
+	   proxqp::isize dim,
 	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
@@ -454,14 +454,14 @@ struct Qp {
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
 				b(0),
-				C(Mat<Scalar, qp::colmajor>(dim, dim)),
+				C(Mat<Scalar, proxqp::colmajor>(dim, dim)),
 				u(dim),
 				l(dim) {
 
 		auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
 		auto delta = Vec<Scalar>(dim);
 
-		for (qp::isize i = 0; i < dim; ++i) {
+		for (proxqp::isize i = 0; i < dim; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
 		C.setZero();
@@ -471,8 +471,8 @@ struct Qp {
 	}
 
 	Qp(RandomWithDimNinNotStronglyConvex /*tag*/,
-	   qp::isize dim,
-	   qp::isize n_in,
+	   proxqp::isize dim,
+	   proxqp::isize n_in,
 	   Scalar sparsity_factor)
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
 						dim, Scalar(0), sparsity_factor)),
@@ -489,7 +489,7 @@ struct Qp {
 		auto z_sol = ldlt_test::rand::vector_rand<Scalar>(n_in);
 		auto delta = Vec<Scalar>(n_in);
 
-		for (qp::isize i = 0; i < n_in; ++i) {
+		for (proxqp::isize i = 0; i < n_in; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
 		auto Cx = C * x_sol;
@@ -500,8 +500,8 @@ struct Qp {
 	}
 
 	Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/,
-	   qp::isize dim,
-	   qp::isize n_in,
+	   proxqp::isize dim,
+	   proxqp::isize n_in,
 	   Scalar sparsity_factor,
 	   Scalar strong_convexity_factor = Scalar(1e-2))
 			: H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
@@ -510,7 +510,7 @@ struct Qp {
 				A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
 						0, dim, sparsity_factor)),
 				b(0),
-				C(Mat<Scalar, qp::colmajor>(2 * n_in, dim)),
+				C(Mat<Scalar, proxqp::colmajor>(2 * n_in, dim)),
 				u(2 * n_in),
 				l(2 * n_in) {
 
@@ -523,7 +523,7 @@ struct Qp {
 		C.block(0, 0, n_in, dim) = C_;
 		C.block(n_in, 0, n_in, dim) = C_;
 
-		for (qp::isize i = 0; i < 2 * n_in; ++i) {
+		for (proxqp::isize i = 0; i < 2 * n_in; ++i) {
 			delta(i) = ldlt_test::rand::uniform_rand();
 		}
 		u = C * x_sol + delta;
@@ -531,24 +531,24 @@ struct Qp {
 		l.array() -= 1.e20;
 	}
 
-	auto as_view() -> qp::dense::QpView<Scalar> {
+	auto as_view() -> proxqp::dense::QpView<Scalar> {
 		return {
-				{qp::from_eigen, H},
-				{qp::from_eigen, g},
-				{qp::from_eigen, A},
-				{qp::from_eigen, b},
-				{qp::from_ptr_rows_cols_stride, nullptr, 0, qp::isize(H.rows()), 0},
-				{qp::from_ptr_size, nullptr, 0},
+				{proxqp::from_eigen, H},
+				{proxqp::from_eigen, g},
+				{proxqp::from_eigen, A},
+				{proxqp::from_eigen, b},
+				{proxqp::from_ptr_rows_cols_stride, nullptr, 0, proxqp::isize(H.rows()), 0},
+				{proxqp::from_ptr_size, nullptr, 0},
 		};
 	}
-	auto as_mut() -> qp::dense::QpViewMut<Scalar> {
+	auto as_mut() -> proxqp::dense::QpViewMut<Scalar> {
 		return {
-				{qp::from_eigen, H},
-				{qp::from_eigen, g},
-				{qp::from_eigen, A},
-				{qp::from_eigen, b},
-				{qp::from_ptr_rows_cols_stride, nullptr, 0, qp::isize(H.rows()), 0},
-				{qp::from_ptr_size, nullptr, 0},
+				{proxqp::from_eigen, H},
+				{proxqp::from_eigen, g},
+				{proxqp::from_eigen, A},
+				{proxqp::from_eigen, b},
+				{proxqp::from_ptr_rows_cols_stride, nullptr, 0, proxqp::isize(H.rows()), 0},
+				{proxqp::from_ptr_size, nullptr, 0},
 		};
 	}
 };

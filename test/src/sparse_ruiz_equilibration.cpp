@@ -1,13 +1,13 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/sparse/solver.hpp>
-#include <proxsuite/qp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/proxqp/sparse/solver.hpp>
+#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>
 #include <doctest.h>
 #include <proxsuite/veg/util/dynstack_alloc.hpp>
 
-using namespace qp;
+using namespace proxqp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
@@ -41,14 +41,14 @@ TEST_CASE("upper part") {
 	auto l_scaled_dense = l;
 	auto u_scaled_dense = u;
 
-	qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
+	proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
 			n,
 			n_eq + n_in,
 			1e-3,
 			10,
-			qp::sparse::preconditioner::Symmetry::UPPER,
+			proxqp::sparse::preconditioner::Symmetry::UPPER,
 	};
-	qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
+	proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
 			n,
 			n_eq + n_in,
 			1e-3,
@@ -59,7 +59,7 @@ TEST_CASE("upper part") {
 			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 
 	bool execute_preconditioner = true;
-	proxsuite::qp::Settings<T> settings;
+	proxsuite::proxqp::Settings<T> settings;
 
 	ruiz.scale_qp_in_place(
 			{
@@ -77,13 +77,13 @@ TEST_CASE("upper part") {
 
 	ruiz_dense.scale_qp_in_place(
 			{
-					{qp::from_eigen, H_scaled_dense},
-					{qp::from_eigen, g_scaled_dense},
-					{qp::from_eigen, A_scaled_dense},
-					{qp::from_eigen, b_scaled_dense},
-					{qp::from_eigen, C_scaled_dense},
-					{qp::from_eigen, l_scaled_dense},
-					{qp::from_eigen, u_scaled_dense},
+					{proxqp::from_eigen, H_scaled_dense},
+					{proxqp::from_eigen, g_scaled_dense},
+					{proxqp::from_eigen, A_scaled_dense},
+					{proxqp::from_eigen, b_scaled_dense},
+					{proxqp::from_eigen, C_scaled_dense},
+					{proxqp::from_eigen, l_scaled_dense},
+					{proxqp::from_eigen, u_scaled_dense},
 			},
 			execute_preconditioner,
 			settings,
@@ -129,14 +129,14 @@ TEST_CASE("lower part") {
 	auto l_scaled_dense = l;
 	auto u_scaled_dense = u;
 
-	qp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
+	proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
 			n,
 			n_eq + n_in,
 			1e-3,
 			10,
-			qp::sparse::preconditioner::Symmetry::LOWER,
+			proxqp::sparse::preconditioner::Symmetry::LOWER,
 	};
-	qp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
+	proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
 			n,
 			n_eq + n_in,
 			1e-3,
@@ -146,7 +146,7 @@ TEST_CASE("lower part") {
 	VEG_MAKE_STACK(
 			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
 	bool execute_preconditioner = true;
-	proxsuite::qp::Settings<T> settings;
+	proxsuite::proxqp::Settings<T> settings;
 	ruiz.scale_qp_in_place(
 			{
 					{linearsolver::sparse::from_eigen, H_scaled},
@@ -163,13 +163,13 @@ TEST_CASE("lower part") {
 
 	ruiz_dense.scale_qp_in_place(
 			{
-					{qp::from_eigen, H_scaled_dense},
-					{qp::from_eigen, g_scaled_dense},
-					{qp::from_eigen, A_scaled_dense},
-					{qp::from_eigen, b_scaled_dense},
-					{qp::from_eigen, C_scaled_dense},
-					{qp::from_eigen, l_scaled_dense},
-					{qp::from_eigen, u_scaled_dense},
+					{proxqp::from_eigen, H_scaled_dense},
+					{proxqp::from_eigen, g_scaled_dense},
+					{proxqp::from_eigen, A_scaled_dense},
+					{proxqp::from_eigen, b_scaled_dense},
+					{proxqp::from_eigen, C_scaled_dense},
+					{proxqp::from_eigen, l_scaled_dense},
+					{proxqp::from_eigen, u_scaled_dense},
 			},
 			execute_preconditioner,
 			settings,

@@ -2,15 +2,15 @@
 // Copyright (c) 2022, INRIA
 //
 
-#include <proxsuite/qp/dense/wrapper.hpp>
-#include <proxsuite/qp/sparse/wrapper.hpp>
-#include <proxsuite/qp/status.hpp>
+#include <proxsuite/proxqp/dense/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 using veg::isize;
 
 namespace dense{
@@ -243,5 +243,5 @@ void exposeQpObjectSparse(pybind11::module_ m) {
 } //namespace python
 } // namespace sparse
 
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

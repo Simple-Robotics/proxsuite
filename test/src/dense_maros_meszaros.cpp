@@ -4,9 +4,9 @@
 #include <doctest.h>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 
-using namespace proxsuite::qp;
+using namespace proxsuite::proxqp;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -111,7 +111,7 @@ TEST_CASE("dense maros meszaros using the api") {
 			isize n_eq = A.rows();
 			isize n_in = C.rows();
 
-			qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+			proxqp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 			Qp.init(H,g,A,b,C,u,l);
 
 			Qp.settings.verbose = false;
@@ -126,10 +126,10 @@ TEST_CASE("dense maros meszaros using the api") {
 				const auto & y = Qp.results.y;
 				const auto & z = Qp.results.z;
 	
-				T prim_eq = proxsuite::qp::dense::infty_norm(A * x - b);
-				T prim_in = proxsuite::qp::dense::infty_norm(proxsuite::qp::dense::positive_part(C * x - u) + proxsuite::qp::dense::negative_part(C * x - l)) ;
+				T prim_eq = proxsuite::proxqp::dense::infty_norm(A * x - b);
+				T prim_in = proxsuite::proxqp::dense::infty_norm(proxsuite::proxqp::dense::positive_part(C * x - u) + proxsuite::proxqp::dense::negative_part(C * x - l)) ;
 				std::cout << "primal residual " << std::max(prim_eq,prim_in) << std::endl;
-				std::cout << "dual residual " << proxsuite::qp::dense::infty_norm(
+				std::cout << "dual residual " << proxsuite::proxqp::dense::infty_norm(
 								H * x + g + A.transpose() * y + C.transpose() * z) << std::endl;
 				CHECK(
 						dense::infty_norm(H * x + g + A.transpose() * y + C.transpose() * z) <

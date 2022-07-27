@@ -4,11 +4,11 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace qp;
+using namespace proxqp;
 
 using T = double;
 
@@ -26,12 +26,12 @@ DOCTEST_TEST_CASE(
 		isize n_in(0);
 		T strong_convexity_factor(1.e-2);
 		Qp<T> qp{random_unconstrained, dim, sparsity_factor, strong_convexity_factor};
-		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+		proxqp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
 		Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 		Qp.solve();
 
-		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) + proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
 		DOCTEST_CHECK( dua_res <= eps_abs);
@@ -62,12 +62,12 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 		qp.g = -qp.H *
 		       x_sol; // to be dually feasible g must be in the image space of H
 
-		qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+		proxqp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 		Qp.settings.eps_abs = eps_abs;
 		Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 		Qp.solve();
 
-		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+		T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) + proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 		T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
 		DOCTEST_CHECK( pri_res <= eps_abs);
 		DOCTEST_CHECK( dua_res <= eps_abs);
@@ -93,12 +93,12 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random") {
     qp.H.setZero();
     qp.H.diagonal().array()+= 1;
 
-	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+	proxqp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 	Qp.solve();
 
-	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) + proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK( pri_res <= eps_abs);
     DOCTEST_CHECK( dua_res <= eps_abs);
@@ -125,12 +125,12 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0") {
     qp.H.diagonal().array()+= 1;
     qp.g.setZero();
 
-	qp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
+	proxqp::dense::QP<T> Qp{dim,n_eq,n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.init(qp.H,qp.g,qp.A,qp.b,qp.C,qp.u,qp.l);
 	Qp.solve();
 
-	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (qp::dense::positive_part(qp.C * Qp.results.x - qp.u) + qp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
+	T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(), (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) + proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l) ).lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z).lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK( pri_res <= eps_abs);
     DOCTEST_CHECK( dua_res <= eps_abs);

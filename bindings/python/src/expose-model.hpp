@@ -1,19 +1,19 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/dense/model.hpp>
-#include <proxsuite/qp/sparse/model.hpp>
+#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/proxqp/sparse/model.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
-#include <proxsuite/qp/dense/utils.hpp>
+#include <proxsuite/proxqp/dense/utils.hpp>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 namespace dense {
 namespace python {
 template <typename T>
 void exposeDenseModel(pybind11::module_ m) {
-	::pybind11::class_<proxsuite::qp::dense::Model<T>>(m, "model")
+	::pybind11::class_<proxsuite::proxqp::dense::Model<T>>(m, "model")
 			.def(::pybind11::init<i64, i64, i64>(),
 				pybind11::arg_v("n",0,"primal dimension."),pybind11::arg_v("n_eq",0,"number of equality constraints."),pybind11::arg_v("n_in",0,"number of inequality constraints."),
 				"Constructor using QP model dimensions.") // constructor)
@@ -36,7 +36,7 @@ namespace sparse {
 namespace python {
 template <typename T,typename I>
 void exposeSparseModel(pybind11::module_ m) {
-	::pybind11::class_<proxsuite::qp::sparse::Model<T,I>>(m, "model")
+	::pybind11::class_<proxsuite::proxqp::sparse::Model<T,I>>(m, "model")
 			.def(::pybind11::init(),"Default constructor.") // constructor
 			.def_readonly("g", &Model<T,I>::g)
 			.def_readonly("b", &Model<T,I>::b)
@@ -52,5 +52,5 @@ void exposeSparseModel(pybind11::module_ m) {
 } // namespace python
 } // namespace sparse
 
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

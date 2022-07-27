@@ -1,14 +1,14 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/dense/wrapper.hpp>
-#include <proxsuite/qp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/dense/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 using veg::isize;
 
 namespace dense {
@@ -20,7 +20,7 @@ void solveDenseQp(pybind11::module_ m) {
                                                     dense::MatRef<T>,dense::VecRef<T>,dense::VecRef<T>,
                                                     std::optional<VecRef<T>>,std::optional<VecRef<T>>,std::optional<VecRef<T>>,
                                                     std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
-                                                    std::optional<bool>,bool,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
+                                                    std::optional<bool>,bool,bool,std::optional<isize>,proxsuite::proxqp::InitialGuessStatus
                                                     >(&dense::solve<T>)
         ,"Function for solving a QP problem using PROXQP sparse backend directly without defining a QP object. It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).",
         pybind11::arg_v("H",std::nullopt, "quadratic cost with dense format."),
@@ -42,13 +42,13 @@ void solveDenseQp(pybind11::module_ m) {
         pybind11::arg_v("compute_preconditioner", true, "executes the default preconditioner for reducing ill conditioning and speeding up the solver."),
         pybind11::arg_v("compute_timings", true, "compute solver's timings."),
         pybind11::arg_v("max_iter", std::nullopt, "maximum number of iteration."),
-        pybind11::arg_v("initial_guess", proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
+        pybind11::arg_v("initial_guess", proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
         );
     m.def("solve", pybind11::overload_cast<const dense::SparseMat<T>&,dense::VecRef<T>,const dense::SparseMat<T>&,dense::VecRef<T>,
 														const dense::SparseMat<T>&,dense::VecRef<T>,dense::VecRef<T>,
                                                         std::optional<VecRef<T>>,std::optional<VecRef<T>>,std::optional<VecRef<T>>,
                                                         std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,std::optional<T>,
-                                                        std::optional<bool>,bool,bool,std::optional<isize>,proxsuite::qp::InitialGuessStatus
+                                                        std::optional<bool>,bool,bool,std::optional<isize>,proxsuite::proxqp::InitialGuessStatus
                                                         >(&dense::solve<T>)
         ,"Function for solving a QP problem using PROXQP dense backend directly without defining a QP object. It is possible to set up some of the solver parameters (warm start, initial guess option, proximal step sizes, absolute and relative accuracies, maximum number of iterations, preconditioner execution).",
         pybind11::arg_v("H",std::nullopt, "quadratic cost with dense format."),
@@ -70,7 +70,7 @@ void solveDenseQp(pybind11::module_ m) {
         pybind11::arg_v("compute_preconditioner", true, "executes the default preconditioner for reducing ill conditioning and speeding up the solver."),
         pybind11::arg_v("compute_timings", true, "compute solver's timings."),
         pybind11::arg_v("max_iter", std::nullopt, "maximum number of iteration."),
-        pybind11::arg_v("initial_guess", proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
+        pybind11::arg_v("initial_guess", proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
         );
 }
 
@@ -104,11 +104,11 @@ void solveSparseQp(pybind11::module_ m) {
         pybind11::arg_v("compute_preconditioner", true, "executes the default preconditioner for reducing ill conditioning and speeding up the solver."),
         pybind11::arg_v("compute_timings", true, "compute solver's timings."),
         pybind11::arg_v("max_iter", std::nullopt, "maximum number of iteration."),
-        pybind11::arg_v("initial_guess", proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
+        pybind11::arg_v("initial_guess", proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, "maximum number of iteration.")
         );
 }
 
 } //namespace python
 } //namespace sparse
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

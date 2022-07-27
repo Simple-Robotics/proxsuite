@@ -1,12 +1,12 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/qp/results.hpp>
+#include <proxsuite/proxqp/results.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 
 namespace proxsuite {
-namespace qp {
+namespace proxqp {
 namespace python {
 template <typename T>
 void exposeResults(pybind11::module_ m) {
@@ -39,5 +39,5 @@ void exposeResults(pybind11::module_ m) {
 			.def_readwrite("info", &Results<T>::info);
 }
 } //namespace python
-} // namespace qp
+} // namespace proxqp
 } // namespace proxsuite

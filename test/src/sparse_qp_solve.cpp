@@ -2,11 +2,11 @@
 // Copyright (c) 2022, INRIA
 //
 #include <doctest.h>
-#include <proxsuite/qp/sparse/sparse.hpp>
+#include <proxsuite/proxqp/sparse/sparse.hpp>
 #include <util.hpp>
 #include <proxsuite/veg/util/dynstack_alloc.hpp>
 
-using namespace qp;
+using namespace proxqp;
 using T = double;
 using I = c_int;
 using namespace linearsolver::sparse::tags;
@@ -38,13 +38,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
         auto l =  C * x_sol; 
         auto u = (l.array() + 10).matrix().eval();
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,
                                                                         eps_abs);
 
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -86,13 +86,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
         auto l =  C * x_sol; 
         auto u = (l.array() + 10).matrix().eval();
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,
                                                                         eps_abs,std::nullopt,T(1.E-7));
         DOCTEST_CHECK(results.info.rho == T(1.E-7));
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -133,12 +133,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
         auto l =  C * x_sol; 
         auto u = (l.array() + 10).matrix().eval();
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,
                                                                         eps_abs,std::nullopt,std::nullopt,T(1.E-2),T(1.E-2));
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -182,11 +182,11 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto x_wm = ldlt_test::rand::vector_rand<T>(n);
         auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
         auto z_wm = ldlt_test::rand::vector_rand<T>(n_in);
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         x_wm,y_wm,z_wm,eps_abs);
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -228,13 +228,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto l =  C * x_sol; 
         auto u = (l.array() + 10).matrix().eval();
         bool verbose = true;
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                         std::nullopt,std::nullopt,std::nullopt,std::nullopt,
                                                                         verbose);
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -275,14 +275,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
         auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p);
         auto l =  C * x_sol; 
         auto u = (l.array() + 10).matrix().eval();
-        proxsuite::qp::InitialGuessStatus initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
-        proxsuite::qp::Results<T> results = proxsuite::qp::sparse::solve<T,I>(H, g, A, b, C, u, l,
+        proxsuite::proxqp::InitialGuessStatus initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+        proxsuite::proxqp::Results<T> results = proxsuite::proxqp::sparse::solve<T,I>(H, g, A, b, C, u, l,
                                                                         std::nullopt,std::nullopt,std::nullopt,eps_abs,
                                                                         std::nullopt,std::nullopt,std::nullopt,std::nullopt,
                                                                         std::nullopt,true,true,std::nullopt,initial_guess);
-        T dua_res = qp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
-        T pri_res = std::max( qp::dense::infty_norm(A * results.x - b),
-			qp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
+        T dua_res = proxqp::dense::infty_norm(H.selfadjointView<Eigen::Upper>() * results.x + g + A.transpose() * results.y + C.transpose() * results.z) ;
+        T pri_res = std::max( proxqp::dense::infty_norm(A * results.x - b),
+			proxqp::dense::infty_norm(sparse::detail::positive_part(C * results.x - u) + sparse::detail::negative_part(C * results.x - l)));
         DOCTEST_CHECK(pri_res <= eps_abs);
         DOCTEST_CHECK(dua_res <= eps_abs);
 

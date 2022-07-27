@@ -4,7 +4,7 @@
 #include <doctest.h>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
-#include <proxsuite/qp/dense/dense.hpp>
+#include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/veg/util/dbg.hpp>
 #include <util.hpp>
 
@@ -19,10 +19,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -32,7 +32,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -40,8 +40,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -89,8 +89,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -107,7 +107,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -115,8 +115,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -144,10 +144,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
+	proxsuite::proxqp::isize dim = 10;
 
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -157,7 +157,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -165,8 +165,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -216,8 +216,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -233,7 +233,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -241,8 +241,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -270,10 +270,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
+	proxsuite::proxqp::isize dim = 10;
 
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -283,7 +283,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -291,8 +291,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -342,8 +342,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -359,7 +359,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -367,8 +367,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -396,10 +396,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
+	proxsuite::proxqp::isize dim = 10;
 
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -409,7 +409,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -417,8 +417,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -468,8 +468,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -485,7 +485,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -493,8 +493,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -522,9 +522,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -534,7 +534,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -542,8 +542,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -571,7 +571,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "testing updating b" << std::endl;
 	auto x_sol = ldlt_test::rand::vector_rand<T>(dim);
 	auto delta = Vec<T>(n_in);
-	for (proxsuite::qp::isize i = 0; i < n_in; ++i) {
+	for (proxsuite::proxqp::isize i = 0; i < n_in; ++i) {
 		delta(i) = ldlt_test::rand::uniform_rand();
 	}
 
@@ -598,8 +598,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -615,7 +615,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -623,8 +623,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -652,9 +652,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -664,7 +664,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -672,8 +672,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -724,8 +724,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -741,7 +741,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -749,8 +749,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -780,9 +780,9 @@ DOCTEST_TEST_CASE(
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -792,7 +792,7 @@ DOCTEST_TEST_CASE(
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -800,8 +800,8 @@ DOCTEST_TEST_CASE(
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -833,7 +833,7 @@ DOCTEST_TEST_CASE(
 			n_eq, dim, sparsity_factor);
 	auto x_sol = ldlt_test::rand::vector_rand<T>(dim);
 	auto delta = Vec<T>(n_in);
-	for (qp::isize i = 0; i < n_in; ++i) {
+	for (proxqp::isize i = 0; i < n_in; ++i) {
 		delta(i) = ldlt_test::rand::uniform_rand();
 	}
 	qp.b = qp.A * x_sol;
@@ -854,8 +854,8 @@ DOCTEST_TEST_CASE(
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -871,7 +871,7 @@ DOCTEST_TEST_CASE(
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -879,8 +879,8 @@ DOCTEST_TEST_CASE(
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -908,9 +908,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -920,7 +920,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -928,8 +928,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -968,8 +968,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -985,7 +985,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,true,T(1.e-7), std::nullopt, std::nullopt);
@@ -994,8 +994,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -1023,9 +1023,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1035,7 +1035,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -1043,8 +1043,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1083,8 +1083,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -1100,7 +1100,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,true,std::nullopt, T(1.e-2), T(1.e-3));
@@ -1109,8 +1109,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "mu_eq :  " << Qp2.results.info.mu_eq << std::endl;
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -1138,9 +1138,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::isize dim = 10;
-	proxsuite::qp::isize n_eq(dim / 4);
-	proxsuite::qp::isize n_in(dim / 4);
+	proxsuite::proxqp::isize dim = 10;
+	proxsuite::proxqp::isize n_eq(dim / 4);
+	proxsuite::proxqp::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1150,7 +1150,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -1158,8 +1158,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1182,13 +1182,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "x_wm :  " << x_wm << std::endl;
 	std::cout << "y_wm :  " << y_wm << std::endl;
 	std::cout << "z_wm :  " << z_wm << std::endl;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp.solve(x_wm, y_wm, z_wm);
 
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	         proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	         proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	           qp.C.transpose() * Qp.results.z)
@@ -1205,17 +1205,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
 	// conter factual check with another QP object starting at the updated model
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
 	Qp2.solve(x_wm,y_wm,z_wm);
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	           qp.C.transpose() * Qp2.results.z)
@@ -1243,10 +1243,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1256,18 +1256,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.init(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.H), qp.g, Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.A), qp.b, Eigen::
-			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::qp::rowmajor)>(qp.C), qp.u, qp.l);
+	Qp.init(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::proxqp::rowmajor)>(qp.H), qp.g, Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::proxqp::rowmajor)>(qp.A), qp.b, Eigen::
+			Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(proxsuite::proxqp::rowmajor)>(qp.C), qp.u, qp.l);
 	Qp.solve();
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1285,10 +1285,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1298,8 +1298,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
 	Qp.init(qp.H, qp.g,
@@ -1309,8 +1309,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1325,10 +1325,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
@@ -1336,8 +1336,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1363,10 +1363,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1376,10 +1376,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
@@ -1387,8 +1387,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1403,10 +1403,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
@@ -1414,8 +1414,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1441,10 +1441,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1454,10 +1454,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
@@ -1465,8 +1465,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1481,10 +1481,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,true);
@@ -1493,13 +1493,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	auto y = Qp.results.y;
 	auto z = Qp.results.z;
 	//std::cout << "after scaling x " << x <<  " Qp.results.x " << Qp.results.x << std::endl;
-	Qp2.ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,x});
-	Qp2.ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,y});
-	Qp2.ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,z});
+	Qp2.ruiz.scale_primal_in_place({proxsuite::proxqp::from_eigen,x});
+	Qp2.ruiz.scale_dual_in_place_eq({proxsuite::proxqp::from_eigen,y});
+	Qp2.ruiz.scale_dual_in_place_in({proxsuite::proxqp::from_eigen,z});
 	//std::cout << "after scaling x " << x <<  " Qp.results.x " << Qp.results.x << std::endl;
 	Qp2.solve(x,y,z);
 
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp.update(
 			std::nullopt,
 			std::nullopt,
@@ -1511,8 +1511,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1526,8 +1526,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1552,10 +1552,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1565,10 +1565,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l);
@@ -1576,8 +1576,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1592,10 +1592,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,true);
@@ -1604,13 +1604,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	auto y = Qp.results.y;
 	auto z = Qp.results.z;
 	//std::cout << "after scaling x " << x <<  " Qp.results.x " << Qp.results.x << std::endl;
-	Qp2.ruiz.scale_primal_in_place({proxsuite::qp::from_eigen,x});
-	Qp2.ruiz.scale_dual_in_place_eq({proxsuite::qp::from_eigen,y});
-	Qp2.ruiz.scale_dual_in_place_in({proxsuite::qp::from_eigen,z});
+	Qp2.ruiz.scale_primal_in_place({proxsuite::proxqp::from_eigen,x});
+	Qp2.ruiz.scale_dual_in_place_eq({proxsuite::proxqp::from_eigen,y});
+	Qp2.ruiz.scale_dual_in_place_in({proxsuite::proxqp::from_eigen,z});
 	//std::cout << "after scaling x " << x <<  " Qp.results.x " << Qp.results.x << std::endl;
 	Qp2.solve(x,y,z);
 
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp.update(
 			std::nullopt,
 			std::nullopt,
@@ -1622,8 +1622,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1637,8 +1637,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1663,10 +1663,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1676,10 +1676,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,true);
@@ -1687,8 +1687,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1704,18 +1704,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "ruiz vector : " << Qp.ruiz.delta << " ruiz scalar factor " << Qp.ruiz.c << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,false);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1741,10 +1741,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1754,18 +1754,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	proxsuite::qp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp{dim, n_eq, n_in}; // creating QP object
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,true);
 	Qp.solve();
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1791,8 +1791,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1807,18 +1807,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 						<< std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 
-	proxsuite::qp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
+	proxsuite::proxqp::dense::QP<T> Qp2{dim, n_eq, n_in}; // creating QP object
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp2.init(qp.H, qp.g,
 			qp.A, qp.b,
 			qp.C, qp.u, qp.l,true);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -1861,10 +1861,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1874,10 +1874,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -1889,8 +1889,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1906,8 +1906,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1924,8 +1924,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1942,8 +1942,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -1965,10 +1965,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -1978,10 +1978,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -1993,8 +1993,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2010,8 +2010,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2028,8 +2028,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2046,8 +2046,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2068,10 +2068,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2081,10 +2081,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start with previous result and first solve with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2096,8 +2096,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2109,13 +2109,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2132,8 +2132,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2150,8 +2150,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2172,10 +2172,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2185,11 +2185,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start with previous result and first solve with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2201,8 +2201,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2214,13 +2214,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2237,8 +2237,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2255,8 +2255,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2276,10 +2276,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2289,11 +2289,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with cold start with previous result and first solve with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2305,8 +2305,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2318,13 +2318,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2341,8 +2341,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2359,8 +2359,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2381,10 +2381,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2394,11 +2394,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2410,8 +2410,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2423,13 +2423,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2446,8 +2446,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2464,8 +2464,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2485,10 +2485,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2498,11 +2498,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2514,8 +2514,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2527,19 +2527,19 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.init(qp.H, qp.g,
 	qp.A, qp.b,
 	qp.C, qp.u, qp.l);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	std::cout << "dirty workspace for Qp2 : " << Qp2.work.dirty << std::endl;
 	Qp2.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -2561,10 +2561,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2574,11 +2574,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
   
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2590,8 +2590,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2619,8 +2619,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2637,8 +2637,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2655,8 +2655,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2677,10 +2677,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2690,11 +2690,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2706,8 +2706,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2735,8 +2735,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2753,8 +2753,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2771,8 +2771,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2793,10 +2793,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2806,11 +2806,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start with previous result and first solve with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2822,8 +2822,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2835,7 +2835,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	qp.H *= 2.; 
 	qp.g = ldlt_test::rand::vector_rand<T>(dim);
@@ -2852,8 +2852,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2870,8 +2870,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2888,8 +2888,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2909,10 +2909,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -2922,11 +2922,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start with previous result and first solve with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -2938,8 +2938,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2951,7 +2951,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	qp.H *= 2.; 
 	qp.g = ldlt_test::rand::vector_rand<T>(dim);
@@ -2967,8 +2967,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -2985,8 +2985,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3003,8 +3003,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3024,10 +3024,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3037,11 +3037,11 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	
 	std::cout << "Test with cold start with previous result and first solve with equality constrained initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3053,8 +3053,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3066,7 +3066,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	qp.H *= 2.; 
 	qp.g = ldlt_test::rand::vector_rand<T>(dim);
@@ -3082,8 +3082,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3100,8 +3100,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3118,8 +3118,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3140,10 +3140,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3153,12 +3153,12 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test with warm start and first solve with no initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3170,8 +3170,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3183,7 +3183,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
 	auto x_wm = Qp.results.x; // keep previous result
 	auto y_wm = Qp.results.y;
@@ -3202,8 +3202,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(x_wm,y_wm,z_wm);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3233,8 +3233,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(x_wm,y_wm,z_wm);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3251,8 +3251,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3269,8 +3269,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 	Qp.solve(Qp.results.x,Qp.results.y,Qp.results.z);
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3290,10 +3290,10 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3303,12 +3303,12 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
 
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test initializaton with rho for different initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3320,8 +3320,8 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	CHECK(Qp.results.info.rho == T(1.E-7));
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3333,10 +3333,10 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
         
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp2.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l,true,T(1.E-7));
@@ -3344,8 +3344,8 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	CHECK(Qp2.results.info.rho == T(1.E-7));
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3357,10 +3357,10 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
-	qp::dense::QP<T> Qp3(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp3(dim,n_eq,n_in);
 	Qp3.settings.eps_abs = eps_abs;
 	Qp3.settings.eps_rel = 0;
-	Qp3.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp3.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp3.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l,true,T(1.E-7));
@@ -3368,8 +3368,8 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	CHECK(Qp3.results.info.rho == T(1.E-7));
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3381,10 +3381,10 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	std::cout << "total number of iteration: " << Qp3.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp3.results.info.setup_time << " solve time " << Qp3.results.info.solve_time << std::endl;
                
-	qp::dense::QP<T> Qp4(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp4(dim,n_eq,n_in);
 	Qp4.settings.eps_abs = eps_abs;
 	Qp4.settings.eps_rel = 0;
-	Qp4.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp4.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp4.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l,true,T(1.E-7));
@@ -3392,8 +3392,8 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	CHECK(Qp4.results.info.rho == T(1.E-7));
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -3405,10 +3405,10 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	std::cout << "total number of iteration: " << Qp4.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp4.results.info.setup_time << " solve time " << Qp4.results.info.solve_time << std::endl;
        
-	qp::dense::QP<T> Qp5(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp5(dim,n_eq,n_in);
 	Qp5.settings.eps_abs = eps_abs;
 	Qp5.settings.eps_rel = 0;
-	Qp5.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp5.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp5.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l,true,T(1.E-7));
@@ -3416,8 +3416,8 @@ TEST_CASE("Test initializaton with rho for different initial guess") {
 	CHECK(Qp5.results.info.rho == T(1.E-7));
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -3436,10 +3436,10 @@ TEST_CASE("Test g update for different initial guess") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3449,11 +3449,11 @@ TEST_CASE("Test g update for different initial guess") {
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test g update for different initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3465,8 +3465,8 @@ TEST_CASE("Test g update for different initial guess") {
 	
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3479,8 +3479,8 @@ TEST_CASE("Test g update for different initial guess") {
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3494,18 +3494,18 @@ TEST_CASE("Test g update for different initial guess") {
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	
         
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp2.init(qp.H, old_g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + old_g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3516,8 +3516,8 @@ TEST_CASE("Test g update for different initial guess") {
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3530,18 +3530,18 @@ TEST_CASE("Test g update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
-	qp::dense::QP<T> Qp3(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp3(dim,n_eq,n_in);
 	Qp3.settings.eps_abs = eps_abs;
 	Qp3.settings.eps_rel = 0;
-	Qp3.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp3.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp3.init(qp.H, old_g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp3.solve();
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + old_g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3552,8 +3552,8 @@ TEST_CASE("Test g update for different initial guess") {
 	Qp3.solve();
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3566,18 +3566,18 @@ TEST_CASE("Test g update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp3.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp3.results.info.setup_time << " solve time " << Qp3.results.info.solve_time << std::endl;
                
-	qp::dense::QP<T> Qp4(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp4(dim,n_eq,n_in);
 	Qp4.settings.eps_abs = eps_abs;
 	Qp4.settings.eps_rel = 0;
-	Qp4.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp4.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp4.init(qp.H,old_g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp4.solve();
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + old_g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -3588,8 +3588,8 @@ TEST_CASE("Test g update for different initial guess") {
 	Qp4.solve();
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -3602,18 +3602,18 @@ TEST_CASE("Test g update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp4.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp4.results.info.setup_time << " solve time " << Qp4.results.info.solve_time << std::endl;
        
-	qp::dense::QP<T> Qp5(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp5(dim,n_eq,n_in);
 	Qp5.settings.eps_abs = eps_abs;
 	Qp5.settings.eps_rel = 0;
-	Qp5.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp5.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp5.init(qp.H, old_g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z);
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + old_g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -3624,8 +3624,8 @@ TEST_CASE("Test g update for different initial guess") {
 	Qp5.solve();
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -3645,10 +3645,10 @@ TEST_CASE("Test A update for different initial guess") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3658,11 +3658,11 @@ TEST_CASE("Test A update for different initial guess") {
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test A update for different initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3674,8 +3674,8 @@ TEST_CASE("Test A update for different initial guess") {
 	
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3688,8 +3688,8 @@ TEST_CASE("Test A update for different initial guess") {
 	Qp.solve();
 	pri_res = std::max(
 			(new_A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + new_A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3703,18 +3703,18 @@ TEST_CASE("Test A update for different initial guess") {
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	
         
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp2.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3725,8 +3725,8 @@ TEST_CASE("Test A update for different initial guess") {
 	Qp2.solve();
 	pri_res = std::max(
 			(new_A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + new_A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3739,18 +3739,18 @@ TEST_CASE("Test A update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
-	qp::dense::QP<T> Qp3(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp3(dim,n_eq,n_in);
 	Qp3.settings.eps_abs = eps_abs;
 	Qp3.settings.eps_rel = 0;
-	Qp3.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp3.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp3.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp3.solve();
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3761,8 +3761,8 @@ TEST_CASE("Test A update for different initial guess") {
 	Qp3.solve();
 	pri_res = std::max(
 			(new_A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + new_A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3775,18 +3775,18 @@ TEST_CASE("Test A update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp3.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp3.results.info.setup_time << " solve time " << Qp3.results.info.solve_time << std::endl;
                
-	qp::dense::QP<T> Qp4(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp4(dim,n_eq,n_in);
 	Qp4.settings.eps_abs = eps_abs;
 	Qp4.settings.eps_rel = 0;
-	Qp4.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp4.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp4.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp4.solve();
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -3797,8 +3797,8 @@ TEST_CASE("Test A update for different initial guess") {
 	Qp4.solve();
 	pri_res = std::max(
 			(new_A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + new_A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -3811,18 +3811,18 @@ TEST_CASE("Test A update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp4.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp4.results.info.setup_time << " solve time " << Qp4.results.info.solve_time << std::endl;
        
-	qp::dense::QP<T> Qp5(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp5(dim,n_eq,n_in);
 	Qp5.settings.eps_abs = eps_abs;
 	Qp5.settings.eps_rel = 0;
-	Qp5.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp5.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp5.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z);
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -3833,8 +3833,8 @@ TEST_CASE("Test A update for different initial guess") {
 	Qp5.solve();
 	pri_res = std::max(
 			(new_A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + new_A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -3853,10 +3853,10 @@ TEST_CASE("Test rho update for different initial guess") {
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -3866,11 +3866,11 @@ TEST_CASE("Test rho update for different initial guess") {
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::NO_INITIAL_GUESS;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 	
 	std::cout << "Test rho update for different initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -3882,8 +3882,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3894,8 +3894,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -3909,18 +3909,18 @@ TEST_CASE("Test rho update for different initial guess") {
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	
         
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp2.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3931,8 +3931,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
@@ -3945,18 +3945,18 @@ TEST_CASE("Test rho update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp2.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp2.results.info.setup_time << " solve time " << Qp2.results.info.solve_time << std::endl;
 
-	qp::dense::QP<T> Qp3(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp3(dim,n_eq,n_in);
 	Qp3.settings.eps_abs = eps_abs;
 	Qp3.settings.eps_rel = 0;
-	Qp3.settings.initial_guess = proxsuite::qp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+	Qp3.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 	Qp3.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp3.solve();
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3967,8 +3967,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	Qp3.solve();
 	pri_res = std::max(
 			(qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp3.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp3.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
 	             qp.C.transpose() * Qp3.results.z)
@@ -3981,18 +3981,18 @@ TEST_CASE("Test rho update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp3.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp3.results.info.setup_time << " solve time " << Qp3.results.info.solve_time << std::endl;
                
-	qp::dense::QP<T> Qp4(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp4(dim,n_eq,n_in);
 	Qp4.settings.eps_abs = eps_abs;
 	Qp4.settings.eps_rel = 0;
-	Qp4.settings.initial_guess = proxsuite::qp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+	Qp4.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
 	Qp4.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp4.solve();
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -4003,8 +4003,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	Qp4.solve();
 	pri_res = std::max(
 			(qp.A * Qp4.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp4.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp4.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp4.results.x + qp.g + qp.A.transpose() * Qp4.results.y +
 	             qp.C.transpose() * Qp4.results.z)
@@ -4017,18 +4017,18 @@ TEST_CASE("Test rho update for different initial guess") {
 	std::cout << "total number of iteration: " << Qp4.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp4.results.info.setup_time << " solve time " << Qp4.results.info.solve_time << std::endl;
        
-	qp::dense::QP<T> Qp5(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp5(dim,n_eq,n_in);
 	Qp5.settings.eps_abs = eps_abs;
 	Qp5.settings.eps_rel = 0;
-	Qp5.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
+	Qp5.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
 	Qp5.init(qp.H, qp.g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp5.solve(Qp3.results.x,Qp3.results.y,Qp3.results.z);
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -4039,8 +4039,8 @@ TEST_CASE("Test rho update for different initial guess") {
 	Qp5.solve(); 
 	pri_res = std::max(
 			(qp.A * Qp5.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp5.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp5.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp5.results.x + qp.g + qp.A.transpose() * Qp5.results.y +
 	             qp.C.transpose() * Qp5.results.z)
@@ -4059,10 +4059,10 @@ TEST_CASE("Test g update for different warm start with previous result option") 
 	double sparsity_factor = 0.15;
 	T eps_abs = T(1e-9);
 	ldlt_test::rand::set_seed(1);
-	proxsuite::qp::dense::isize dim = 10;
+	proxsuite::proxqp::dense::isize dim = 10;
 
-	proxsuite::qp::dense::isize n_eq(dim / 4);
-	proxsuite::qp::dense::isize n_in(dim / 4);
+	proxsuite::proxqp::dense::isize n_eq(dim / 4);
+	proxsuite::proxqp::dense::isize n_in(dim / 4);
 	T strong_convexity_factor(1.e-2);
 	Qp<T> qp{
 			random_with_dim_and_neq_and_n_in,
@@ -4072,11 +4072,11 @@ TEST_CASE("Test g update for different warm start with previous result option") 
 			sparsity_factor,
 			strong_convexity_factor};
 
-	qp::dense::QP<T> Qp(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp(dim,n_eq,n_in);
         
 	Qp.settings.eps_abs = eps_abs;
 	Qp.settings.eps_rel = 0;
-	Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	
 	std::cout << "Test rho update for different initial guess" << std::endl;
 	std::cout << "dirty workspace before any solving: " << Qp.work.dirty << std::endl;
@@ -4088,8 +4088,8 @@ TEST_CASE("Test g update for different warm start with previous result option") 
 	
 	T pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -4115,8 +4115,8 @@ TEST_CASE("Test g update for different warm start with previous result option") 
 	Qp.solve();
 	pri_res = std::max(
 			(qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp.results.x + g + qp.A.transpose() * Qp.results.y +
 	             qp.C.transpose() * Qp.results.z)
@@ -4128,18 +4128,18 @@ TEST_CASE("Test g update for different warm start with previous result option") 
 	std::cout << "total number of iteration: " << Qp.results.info.iter << std::endl;
 	std::cout << "setup timing " << Qp.results.info.setup_time << " solve time " << Qp.results.info.solve_time << std::endl;
 	
-	qp::dense::QP<T> Qp2(dim,n_eq,n_in);
+	proxqp::dense::QP<T> Qp2(dim,n_eq,n_in);
 	Qp2.settings.eps_abs = eps_abs;
 	Qp2.settings.eps_rel = 0;
-	Qp2.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+	Qp2.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 	Qp2.init(qp.H, g,
 		qp.A, qp.b,
 		qp.C, qp.u, qp.l);
 	Qp2.solve();
 	pri_res = std::max(
 			(qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-			(proxsuite::qp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
-	     	 proxsuite::qp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
+			(proxsuite::proxqp::dense::positive_part(qp.C * Qp2.results.x - qp.u) +
+	     	 proxsuite::proxqp::dense::negative_part(qp.C * Qp2.results.x - qp.l))
 					.lpNorm<Eigen::Infinity>());
 	dua_res = (qp.H * Qp2.results.x + g + qp.A.transpose() * Qp2.results.y +
 	             qp.C.transpose() * Qp2.results.z)
