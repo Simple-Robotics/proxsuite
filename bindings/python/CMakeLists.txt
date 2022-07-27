@@ -10,8 +10,19 @@ else()
 	set(${PYWRAP}_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
+# Collect files
+file(GLOB_RECURSE PYWRAP_HEADERS
+  ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp
+)
+add_header_group(PYWRAP_HEADERS)
+
+file(GLOB_RECURSE PYWRAP_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp
+)
+add_source_group(PYWRAP_SOURCES)
+
 macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-	add_library(${target_name} MODULE src/expose-all.cpp)
+	add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
 
 	target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
 	target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
