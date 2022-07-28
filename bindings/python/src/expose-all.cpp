@@ -1,9 +1,11 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include "algorithms.hpp"
+
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+
+#include "algorithms.hpp"
 #include <proxsuite/proxqp/dense/utils.hpp>
 
 namespace proxsuite {
@@ -11,7 +13,7 @@ namespace proxqp {
 namespace python {
 
 template <typename T>
-void exposeQpAlgorithms(pybind11::module_ m) {
+void exposeCommon(pybind11::module_ m) {
 	exposeResults<T>(m);
 	exposeSettings<T>(m);
 }
@@ -32,7 +34,7 @@ void exposeDenseAlgorithms(pybind11::module_ m) {
 
 PYBIND11_MODULE(PYTHON_MODULE_NAME, m) {
 	m.doc() = R"pbdoc(
-        ProxSuite module
+        The proxSuite library
     ------------------------
 
     .. currentmodule:: proxsuite
@@ -42,12 +44,13 @@ PYBIND11_MODULE(PYTHON_MODULE_NAME, m) {
         proxsuite
     )pbdoc";
 
-    pybind11::module_ m2 = m.def_submodule("qp", "qp submodule of 'proxsuite' library");
-    exposeQpAlgorithms<f64>(m2);
-    pybind11::module_ m3 = m2.def_submodule("dense", "dense submodule of 'qp'");
-    pybind11::module_ m4 = m2.def_submodule("sparse", "sparse submodule of 'qp'");
-	exposeSparseAlgorithms<f64,int32_t>(m4);
-    exposeDenseAlgorithms<f64>(m3);
+    pybind11::module_ proxqp_module = m.def_submodule("proxqp", "The proxQP solvers of the proxSuite library");
+  exposeCommon<f64>(proxqp_module);
+    pybind11::module_ dense_module = proxqp_module.def_submodule("dense", "Dense solver of proxQP");
+  exposeDenseAlgorithms<f64>(dense_module);
+    pybind11::module_ sparse_module = proxqp_module.def_submodule("sparse", "Sparse solver of proxQP");
+	exposeSparseAlgorithms<f64,int32_t>(sparse_module);
+    
 }
 
 } // namespace python
