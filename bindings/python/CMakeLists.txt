@@ -10,6 +10,8 @@ else()
 	set(${PYWRAP}_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
+add_custom_target(python)
+
 # Collect files
 file(GLOB_RECURSE PYWRAP_HEADERS
   ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp
@@ -23,6 +25,7 @@ add_source_group(PYWRAP_SOURCES)
 
 macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 	add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
+  add_dependencies(python ${target_name})
 
 	target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
 	target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
