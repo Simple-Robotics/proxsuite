@@ -23,6 +23,18 @@ file(GLOB_RECURSE PYWRAP_SOURCES
 )
 add_source_group(PYWRAP_SOURCES)
 
+# Add simd feature detectors for current CPU
+add_library(instructionset MODULE helpers/instruction-set.cpp)
+add_dependencies(python instructionset)
+target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
+set_target_properties(instructionset
+		PROPERTIES
+		PREFIX ""
+		SUFFIX ${PYTHON_EXT_SUFFIX}
+		OUTPUT_NAME instructionset
+		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+	)
+
 macro(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 	add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
