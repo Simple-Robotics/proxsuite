@@ -67,3 +67,13 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
   CREATE_PYTHON_TARGET(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
   CREATE_PYTHON_TARGET(proxsuite_pywrap_avx512 "-mavx512f" proxsuite-vectorized)
 endif()
+
+# --- INSTALL SCRIPTS
+set(PYTHON_FILES __init__.py)
+
+foreach(python ${PYTHON_FILES})
+  python_build(${PROJECT_NAME} ${python})
+  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/proxsuite/${python}"
+          DESTINATION ${${PYWRAP}_INSTALL_DIR})
+endforeach(python)
+add_dependencies(python ${compile_pyc})
