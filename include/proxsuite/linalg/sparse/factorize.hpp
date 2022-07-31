@@ -5,11 +5,11 @@
 #ifndef SPARSE_LDLT_FACTORIZE_HPP
 #define SPARSE_LDLT_FACTORIZE_HPP
 
-#include "proxsuite/linearsolver/sparse/core.hpp"
+#include "proxsuite/linalg/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
 #include <iostream>
 
-namespace linearsolver {
+namespace linalg {
 namespace sparse {
 
 template <typename I>
@@ -1242,5 +1242,5 @@ void factorize_numeric( //
 	}
 }
 } // namespace sparse
-} // namespace linearsolver
+} // namespace linalg
 #endif /* end of include guard SPARSE_LDLT_FACTORIZE_HPP */

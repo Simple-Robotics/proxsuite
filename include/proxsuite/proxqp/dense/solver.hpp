@@ -17,7 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <proxsuite/veg/util/dynstack_alloc.hpp>
-#include <proxsuite/linearsolver/dense/ldlt.hpp>
+#include <proxsuite/linalg/dense/ldlt.hpp>
 #include <chrono>
 #include <iomanip> 
 

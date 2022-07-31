@@ -9,7 +9,7 @@
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linearsolver::sparse::tags;
+using namespace linalg::sparse::tags;
 /*
 TEST_CASE("random ruiz") {
 
@@ -34,13 +34,13 @@ TEST_CASE("random ruiz") {
 
 		{
 			sparse::QpView<T, I> qp = {
-					{linearsolver::sparse::from_eigen, H},
-					{linearsolver::sparse::from_eigen, g},
-					{linearsolver::sparse::from_eigen, AT},
-					{linearsolver::sparse::from_eigen, b},
-					{linearsolver::sparse::from_eigen, CT},
-					{linearsolver::sparse::from_eigen, l},
-					{linearsolver::sparse::from_eigen, u},
+					{linalg::sparse::from_eigen, H},
+					{linalg::sparse::from_eigen, g},
+					{linalg::sparse::from_eigen, AT},
+					{linalg::sparse::from_eigen, b},
+					{linalg::sparse::from_eigen, CT},
+					{linalg::sparse::from_eigen, l},
+					{linalg::sparse::from_eigen, u},
 			};
 
 			proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
@@ -142,13 +142,13 @@ TEST_CASE("random id") {
 
 		{
 			sparse::QpView<T, I> qp = {
-					{linearsolver::sparse::from_eigen, H},
-					{linearsolver::sparse::from_eigen, g},
-					{linearsolver::sparse::from_eigen, AT},
-					{linearsolver::sparse::from_eigen, b},
-					{linearsolver::sparse::from_eigen, CT},
-					{linearsolver::sparse::from_eigen, l},
-					{linearsolver::sparse::from_eigen, u},
+					{linalg::sparse::from_eigen, H},
+					{linalg::sparse::from_eigen, g},
+					{linalg::sparse::from_eigen, AT},
+					{linalg::sparse::from_eigen, b},
+					{linalg::sparse::from_eigen, CT},
+					{linalg::sparse::from_eigen, l},
+					{linalg::sparse::from_eigen, u},
 			};
 
 			proxqp::sparse::preconditioner::Identity<T, I> id;

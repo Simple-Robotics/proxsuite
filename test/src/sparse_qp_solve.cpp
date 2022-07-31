@@ -9,7 +9,7 @@
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linearsolver::sparse::tags;
+using namespace linalg::sparse::tags;
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test solve function") {

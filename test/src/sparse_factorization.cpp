@@ -1,28 +1,28 @@
 //
 // Copyright (c) 2022, INRIA
 //
-#include <proxsuite/linearsolver/sparse/factorize.hpp>
-#include <proxsuite/linearsolver/sparse/update.hpp>
-#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/linalg/sparse/factorize.hpp>
+#include <proxsuite/linalg/sparse/update.hpp>
+#include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/veg/vec.hpp>
 #include <doctest.h>
 #include <iostream>
 
 template <typename T, typename I>
-auto to_eigen(linearsolver::sparse::MatRef<T, I> a) noexcept
+auto to_eigen(linalg::sparse::MatRef<T, I> a) noexcept
 		-> Eigen::Matrix<T, -1, -1> {
 	return a.to_eigen();
 }
 
 template <typename T, typename I>
-auto to_eigen_vec(linearsolver::sparse::VecRef<T, I> v) noexcept
+auto to_eigen_vec(linalg::sparse::VecRef<T, I> v) noexcept
 		-> Eigen::Matrix<T, -1, 1> {
 	Eigen::Matrix<T, -1, 1> out(v.nrows());
 	out.setZero();
 	for (veg::isize p = 0; p < v.nnz(); ++p) {
-		out.data()[linearsolver::sparse::util::zero_extend(v.row_indices()[p])] =
+		out.data()[linalg::sparse::util::zero_extend(v.row_indices()[p])] =
 				v.values()[p];
-		//linearsolver::sparse::util::zero_extend : converti en type usize
+		//linalg::sparse::util::zero_extend : converti en type usize
 		// usize :unsigned
 		// isize :négatif ou positive
 		// v.row_indices() : pointeur vers liste des indices non nul
@@ -48,7 +48,7 @@ auto to_eigen_perm(veg::Slice<I> perm) -> Eigen::PermutationMatrix<-1, -1, I> {
 
 template <typename T, typename I>
 auto reconstruct_with_perm(
-		veg::Slice<I> perm_inv, linearsolver::sparse::MatRef<T, I> ld)
+		veg::Slice<I> perm_inv, linalg::sparse::MatRef<T, I> ld)
 		-> Eigen::Matrix<T, -1, -1, Eigen::ColMajor> {
 	using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 	Mat ld_eigen = to_eigen(ld);
@@ -61,7 +61,7 @@ auto reconstruct_with_perm(
 
 template <typename T, typename I>
 auto ldlt_with_perm(
-		veg::Slice<I> perm_inv, linearsolver::sparse::MatRef<T, I> a)
+		veg::Slice<I> perm_inv, linalg::sparse::MatRef<T, I> a)
 		-> Eigen::Matrix<T, -1, -1, Eigen::ColMajor> {
 	using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 
@@ -91,7 +91,7 @@ auto ldlt_with_perm(
 	return ld_perm_eigen;
 }
 
-using namespace linearsolver::sparse;
+using namespace linalg::sparse;
 using namespace veg;
 
 TEST_CASE("ldlt: factorize compressed") {

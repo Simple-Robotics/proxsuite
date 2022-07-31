@@ -20,8 +20,8 @@ enum struct Symmetry {
 
 namespace detail {
 template <typename T, typename I>
-void rowwise_infty_norm(T* row_norm, linearsolver::sparse::MatRef<T, I> m) {
-	using namespace linearsolver::sparse::util;
+void rowwise_infty_norm(T* row_norm, linalg::sparse::MatRef<T, I> m) {
+	using namespace linalg::sparse::util;
 
 	I const* mi = m.row_indices();
 	T const* mx = m.values();
@@ -40,8 +40,8 @@ void rowwise_infty_norm(T* row_norm, linearsolver::sparse::MatRef<T, I> m) {
 
 template <typename T, typename I>
 void colwise_infty_norm_symhi(
-		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
-	using namespace linearsolver::sparse::util;
+		T* col_norm, linalg::sparse::MatRef<T, I> h) {
+	using namespace linalg::sparse::util;
 
 	I const* hi = h.row_indices();
 	T const* hx = h.values();
@@ -69,8 +69,8 @@ void colwise_infty_norm_symhi(
 
 template <typename T, typename I>
 void colwise_infty_norm_symlo(
-		T* col_norm, linearsolver::sparse::MatRef<T, I> h) {
-	using namespace linearsolver::sparse::util;
+		T* col_norm, linalg::sparse::MatRef<T, I> h) {
+	using namespace linalg::sparse::util;
 
 	I const* hi = h.row_indices();
 	T const* hx = h.values();
@@ -173,7 +173,7 @@ auto ruiz_scale_qp_in_place( //
 																				 })));
 			}
 		}
-		using namespace linearsolver::sparse::util;
+		using namespace linalg::sparse::util;
 		for (usize j = 0; j < usize(n_eq); ++j) {
 			T a_row_norm = 0;
 			qp.AT.to_eigen();
@@ -345,7 +345,7 @@ struct RuizEquilibration {
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
-		return linearsolver::dense::temp_vec_req(tag, n + n_eq + n_in) &
+		return linalg::dense::temp_vec_req(tag, n + n_eq + n_in) &
 		       veg::dynstack::StackReq::with_len(tag, 3 * n);
 	}
 
@@ -366,7 +366,7 @@ struct RuizEquilibration {
 					sym,
 					stack);
 		} else {
-			using linearsolver::sparse::util::zero_extend;
+			using linalg::sparse::util::zero_extend;
 			isize n = qp.H.nrows();
 			isize n_eq = qp.AT.ncols();
 			isize n_in = qp.CT.ncols();

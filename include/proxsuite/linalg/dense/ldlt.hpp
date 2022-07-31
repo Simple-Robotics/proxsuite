@@ -5,13 +5,13 @@
 #ifndef DENSE_LDLT_LDLT_HPP
 #define DENSE_LDLT_LDLT_HPP
 
-#include "proxsuite/linearsolver/dense/factorize.hpp"
-#include "proxsuite/linearsolver/dense/update.hpp"
-#include "proxsuite/linearsolver/dense/modify.hpp"
-#include "proxsuite/linearsolver/dense/solve.hpp"
+#include "proxsuite/linalg/dense/factorize.hpp"
+#include "proxsuite/linalg/dense/update.hpp"
+#include "proxsuite/linalg/dense/modify.hpp"
+#include "proxsuite/linalg/dense/solve.hpp"
 #include <proxsuite/veg/vec.hpp>
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 namespace _detail {
 struct SimdAlignedSystemAlloc {
@@ -23,10 +23,10 @@ struct SimdAlignedSystemAlloc {
 };
 } // namespace _detail
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 template <>
-struct veg::mem::Alloc<linearsolver::dense::_detail::SimdAlignedSystemAlloc> {
+struct veg::mem::Alloc<linalg::dense::_detail::SimdAlignedSystemAlloc> {
 #ifdef PROXSUITE_DONT_VECTORIZE	
 	static constexpr usize min_align = 0;
 #else
@@ -34,7 +34,7 @@ struct veg::mem::Alloc<linearsolver::dense::_detail::SimdAlignedSystemAlloc> {
 #endif
 
 	using RefMut =
-			veg::RefMut<linearsolver::dense::_detail::SimdAlignedSystemAlloc>;
+			veg::RefMut<linalg::dense::_detail::SimdAlignedSystemAlloc>;
 
 	VEG_INLINE static auto adjusted_layout(Layout l) noexcept -> Layout {
 		if (l.align < min_align) {
@@ -74,7 +74,7 @@ struct veg::mem::Alloc<linearsolver::dense::_detail::SimdAlignedSystemAlloc> {
 	}
 };
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 /*!
  * Wrapper class that handles an allocated LDLT decomposition,
@@ -85,14 +85,14 @@ namespace dense {
  *
  * Example usage:
  * ```cpp
-#include <proxsuite/linearsolver/dense/ldlt.hpp>
+#include <proxsuite/linalg/dense/ldlt.hpp>
 #include <proxsuite/veg/util/dynstack_alloc.hpp>
 
 auto main() -> int {
 	constexpr auto DYN = Eigen::Dynamic;
 	using Matrix = Eigen::Matrix<double, DYN, DYN>;
 	using Vector = Eigen::Matrix<double, DYN, 1>;
-	using Ldlt = linearsolver::dense::Ldlt<double>;
+	using Ldlt = linalg::dense::Ldlt<double>;
 	using veg::dynstack::StackReq;
 
 	// allocate a matrix `a`
@@ -308,7 +308,7 @@ public:
 							 r * isize{sizeof(isize)},
 							 alignof(isize),
 					 } &
-		       linearsolver::dense::ldlt_delete_rows_and_cols_req(
+		       linalg::dense::ldlt_delete_rows_and_cols_req(
 							 veg::Tag<T>{}, n, r);
 	}
 
@@ -338,7 +338,7 @@ public:
 			indices_actual[k] = perm_inv[indices[k]];
 		}
 
-		linearsolver::dense::ldlt_delete_rows_and_cols_sort_indices( //
+		linalg::dense::ldlt_delete_rows_and_cols_sort_indices( //
 				ld_col_mut(),
 				indices_actual,
 				r,
@@ -394,7 +394,7 @@ public:
 							 isize{sizeof(T)} * (adjusted_stride(n + r) * r),
 							 _detail::align<T>(),
 					 } &
-		       linearsolver::dense::ldlt_insert_rows_and_cols_req(
+		       linalg::dense::ldlt_insert_rows_and_cols_req(
 							 veg::Tag<T>{}, n, r);
 	}
 
@@ -446,7 +446,7 @@ public:
 			}
 		}
 
-		linearsolver::dense::ldlt_insert_rows_and_cols(
+		linalg::dense::ldlt_insert_rows_and_cols(
 				ld_col_mut(), i_actual, permuted_a, stack);
 	}
 
@@ -526,7 +526,7 @@ public:
 			_w(sorted_indices[k] - first, k) = 1;
 		}
 
-		linearsolver::dense::_detail::rank_r_update_clobber_w_impl(
+		linalg::dense::_detail::rank_r_update_clobber_w_impl(
 				util::submatrix(ld_col_mut(), first, first, n, n),
 				_w.data(),
 				_w.outerStride(),
@@ -573,7 +573,7 @@ public:
 			}
 		}
 
-		linearsolver::dense::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
+		linalg::dense::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
 	}
 
 	/*!
@@ -659,7 +659,7 @@ public:
 							 n * adjusted_stride(n) * isize{sizeof(T)},
 							 _detail::align<T>(),
 					 } |
-		       linearsolver::dense::factorize_req(veg::Tag<T>{}, n);
+		       linalg::dense::factorize_req(veg::Tag<T>{}, n);
 	}
 
 	/*!
@@ -681,7 +681,7 @@ public:
 		perm_inv.resize_for_overwrite(n);
 		maybe_sorted_diag.resize_for_overwrite(n);
 
-		linearsolver::dense::_detail::compute_permutation( //
+		linalg::dense::_detail::compute_permutation( //
 				perm.ptr_mut(),
 				perm_inv.ptr_mut(),
 				util::diagonal(mat));
@@ -689,7 +689,7 @@ public:
 		{
 			LDLT_TEMP_MAT_UNINIT(T, work, n, n, stack);
 			ld_col_mut() = mat;
-			linearsolver::dense::_detail::apply_permutation_tri_lower(
+			linalg::dense::_detail::apply_permutation_tri_lower(
 					ld_col_mut(), work, perm.ptr());
 		}
 
@@ -697,7 +697,7 @@ public:
 			maybe_sorted_diag[i] = ld_col()(i, i);
 		}
 
-		linearsolver::dense::factorize(ld_col_mut(), stack);
+		linalg::dense::factorize(ld_col_mut(), stack);
 	}
 
 	/*!
@@ -728,7 +728,7 @@ public:
 			work[i] = rhs[perm[i]];
 		}
 
-		linearsolver::dense::solve(ld_col(), work);
+		linalg::dense::solve(ld_col(), work);
 
 		for (isize i = 0; i < n; ++i) {
 			rhs[i] = work[perm_inv[i]];
@@ -761,6 +761,6 @@ public:
 	}
 };
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_LDLT_HPP */

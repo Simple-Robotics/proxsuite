@@ -6,11 +6,11 @@
 #ifndef PROXSUITE_QP_SPARSE_WORKSPACE_HPP
 #define PROXSUITE_QP_SPARSE_WORKSPACE_HPP
 
-#include <proxsuite/linearsolver/dense/core.hpp>
-#include <proxsuite/linearsolver/sparse/core.hpp>
-#include <proxsuite/linearsolver/sparse/factorize.hpp>
-#include <proxsuite/linearsolver/sparse/update.hpp>
-#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
+#include <proxsuite/linalg/sparse/core.hpp>
+#include <proxsuite/linalg/sparse/factorize.hpp>
+#include <proxsuite/linalg/sparse/update.hpp>
+#include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/timings.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
@@ -41,7 +41,7 @@ template <typename T, typename I>
 void refactorize(
 		Workspace<T,I>& work,
 		Results<T> const& results,
-		linearsolver::sparse::MatMut<T, I> kkt_active,
+		linalg::sparse::MatMut<T, I> kkt_active,
 		veg::SliceMut<bool> active_constraints,
 		Model<T, I> const& data,
 		veg::dynstack::DynStackMut stack,
@@ -51,7 +51,7 @@ void refactorize(
 	T mu_in_neg = -results.info.mu_in;
 	
 	if (work.internal.do_ldlt) {
-		linearsolver::sparse::factorize_symbolic_non_zeros(
+		linalg::sparse::factorize_symbolic_non_zeros(
 				work.internal.ldl.nnz_counts.ptr_mut(), work.internal.ldl.etree.ptr_mut(), work.internal.ldl.perm_inv.ptr_mut(), work.internal.ldl.perm.ptr_mut(), kkt_active.symbolic(), stack);
 
 		isize nnz = 0;
@@ -73,7 +73,7 @@ void refactorize(
 					active_constraints[i] ? mu_in_neg : T(1);
 		}
 
-		linearsolver::sparse::factorize_numeric(
+		linalg::sparse::factorize_numeric(
 				work.internal.ldl.values.ptr_mut(),
 				work.internal.ldl.row_indices.ptr_mut(),
 				diag,
@@ -161,7 +161,7 @@ struct Workspace {
 			Model<T, I>& data,
 			Settings<T>& settings,
 			veg::dynstack::StackReq precond_req,
-			linearsolver::sparse::SymbolicMatRef<I> H,linearsolver::sparse::SymbolicMatRef<I> AT,linearsolver::sparse::SymbolicMatRef<I> CT
+			linalg::sparse::SymbolicMatRef<I> H,linalg::sparse::SymbolicMatRef<I> AT,linalg::sparse::SymbolicMatRef<I> CT
 			){
 		auto& ldl = internal.ldl;
 		
@@ -177,7 +177,7 @@ struct Workspace {
 		data.C_nnz = CT.nnz();
 
 		using namespace veg::dynstack;
-		using namespace linearsolver::sparse::util;
+		using namespace linalg::sparse::util;
 
 		using SR = StackReq;
 		veg::Tag<I> itag; // ?
@@ -205,7 +205,7 @@ struct Workspace {
 			usize col = 0;
 			usize pos = 0;
 
-			auto insert_submatrix = [&](linearsolver::sparse::SymbolicMatRef<I> m,
+			auto insert_submatrix = [&](linalg::sparse::SymbolicMatRef<I> m,
 										bool assert_sym_hi) -> void {
 				I const* mi = m.row_indices();
 				isize ncols = m.ncols();
@@ -242,11 +242,11 @@ struct Workspace {
 
 		storage.resize_for_overwrite( //
 				(StackReq::with_len(itag, n_tot) &
-				linearsolver::sparse::factorize_symbolic_req( //
+				linalg::sparse::factorize_symbolic_req( //
 							itag,                                     //
 							n_tot,                                    //
 							nnz_tot,                                  //
-							linearsolver::sparse::Ordering::amd))     //
+							linalg::sparse::Ordering::amd))     //
 						.alloc_req()                               //
 		); 
 
@@ -261,8 +261,8 @@ struct Workspace {
 			auto etree_ptr = ldl.etree.ptr_mut();
 
 			using namespace veg::literals;
-			auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
-					linearsolver::sparse::from_raw_parts,
+			auto kkt_sym = linalg::sparse::SymbolicMatRef<I>{
+					linalg::sparse::from_raw_parts,
 					n_tot,
 					n_tot,
 					nnz_tot,
@@ -270,7 +270,7 @@ struct Workspace {
 					nullptr,
 					data.kkt_row_indices.ptr(),
 			};
-			linearsolver::sparse::factorize_symbolic_non_zeros( //
+			linalg::sparse::factorize_symbolic_non_zeros( //
 					ldl.col_ptrs.ptr_mut() + 1,// reimplements col counts to get the matrix free version as well
 					etree_ptr,
 					ldl.perm_inv.ptr_mut(),
@@ -350,7 +350,7 @@ struct Workspace {
 		data.u = qp.u.to_eigen();
 
 		using namespace veg::dynstack;
-		using namespace linearsolver::sparse::util;
+		using namespace linalg::sparse::util;
 
 		using SR = StackReq;
 		veg::Tag<I> itag;
@@ -381,7 +381,7 @@ struct Workspace {
 			usize col = 0;
 			usize pos = 0;
 
-			auto insert_submatrix = [&](linearsolver::sparse::MatRef<T, I> m,
+			auto insert_submatrix = [&](linalg::sparse::MatRef<T, I> m,
 										bool assert_sym_hi) -> void {
 				I const* mi = m.row_indices();
 				T const* mx = m.values();
@@ -421,11 +421,11 @@ struct Workspace {
 
 		storage.resize_for_overwrite( //
 				(StackReq::with_len(itag, n_tot) &
-				linearsolver::sparse::factorize_symbolic_req( //
+				linalg::sparse::factorize_symbolic_req( //
 							itag,                                     //
 							n_tot,                                    //
 							nnz_tot,                                  //
-							linearsolver::sparse::Ordering::amd))     //
+							linalg::sparse::Ordering::amd))     //
 						.alloc_req()                               //
 		);
 
@@ -440,8 +440,8 @@ struct Workspace {
 			auto etree_ptr = ldl.etree.ptr_mut();
 
 			using namespace veg::literals;
-			auto kkt_sym = linearsolver::sparse::SymbolicMatRef<I>{
-					linearsolver::sparse::from_raw_parts,
+			auto kkt_sym = linalg::sparse::SymbolicMatRef<I>{
+					linalg::sparse::from_raw_parts,
 					n_tot,
 					n_tot,
 					nnz_tot,
@@ -449,7 +449,7 @@ struct Workspace {
 					nullptr,
 					data.kkt_row_indices.ptr(),
 			};
-			linearsolver::sparse::factorize_symbolic_non_zeros( //
+			linalg::sparse::factorize_symbolic_non_zeros( //
 					ldl.col_ptrs.ptr_mut() + 1,
 					etree_ptr,
 					ldl.perm_inv.ptr_mut(),
@@ -481,7 +481,7 @@ struct Workspace {
 	}else{
 			T* kktx = data.kkt_values.ptr_mut();
 			usize pos = 0;	
-			auto insert_submatrix = [&](linearsolver::sparse::MatRef<T, I> m,
+			auto insert_submatrix = [&](linalg::sparse::MatRef<T, I> m,
 										bool assert_sym_hi) -> void {
 
 				T const* mx = m.values();
@@ -512,21 +512,21 @@ struct Workspace {
 		auto refactorize_req = 
 				do_ldlt
 						? PROX_QP_ANY_OF({
-									linearsolver::sparse::
+									linalg::sparse::
 											factorize_symbolic_req( // symbolic ldl
 													itag,
 													n_tot,
 													nnz_tot,
-													linearsolver::sparse::Ordering::user_provided),
+													linalg::sparse::Ordering::user_provided),
 									PROX_QP_ALL_OF({
 											SR::with_len(xtag, n_tot), // diag
-											linearsolver::sparse::
+											linalg::sparse::
 													factorize_numeric_req( // numeric ldl
 															xtag,
 															itag,
 															n_tot,
 															nnz_tot,
-															linearsolver::sparse::Ordering::user_provided),
+															linalg::sparse::Ordering::user_provided),
 									}),
 							})
 						: PROX_QP_ALL_OF({
@@ -535,7 +535,7 @@ struct Workspace {
 							});
 
 		auto x_vec = [&](isize n) noexcept -> StackReq {
-			return linearsolver::dense::temp_vec_req(xtag, n);
+			return linalg::dense::temp_vec_req(xtag, n);
 		};
 
 		auto ldl_solve_in_place_req = PROX_QP_ALL_OF({
@@ -566,9 +566,9 @@ struct Workspace {
 										veg::Tag<bool>{}, n_in), // new_active_constraints
 								(do_ldlt && n_in > 0)
 										? PROX_QP_ANY_OF({
-													linearsolver::sparse::add_row_req(
+													linalg::sparse::add_row_req(
 															xtag, itag, n_tot, false, n, n_tot),
-													linearsolver::sparse::delete_row_req(
+													linalg::sparse::delete_row_req(
 															xtag, itag, n_tot, n_tot),
 											})
 										: refactorize_req,
@@ -651,13 +651,13 @@ struct Workspace {
 			veg::unsafe:  precises that the function has undefined behavior if upper condition is not respected.
 		*/
 
-		linearsolver::sparse::MatMut<T, I> H_scaled =
+		linalg::sparse::MatMut<T, I> H_scaled =
 				detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
 
-		linearsolver::sparse::MatMut<T, I> AT_scaled =
+		linalg::sparse::MatMut<T, I> AT_scaled =
 				detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
 
-		linearsolver::sparse::MatMut<T, I> CT_scaled =
+		linalg::sparse::MatMut<T, I> CT_scaled =
 				detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
 		g_scaled = data.g;
@@ -667,20 +667,20 @@ struct Workspace {
 
 		QpViewMut<T, I> qp_scaled = {
 				H_scaled,
-				{linearsolver::sparse::from_eigen, g_scaled},
+				{linalg::sparse::from_eigen, g_scaled},
 				AT_scaled,
-				{linearsolver::sparse::from_eigen, b_scaled},
+				{linalg::sparse::from_eigen, b_scaled},
 				CT_scaled,
-				{linearsolver::sparse::from_eigen, l_scaled},
-				{linearsolver::sparse::from_eigen, u_scaled},
+				{linalg::sparse::from_eigen, l_scaled},
+				{linalg::sparse::from_eigen, u_scaled},
 		};
 		
 		DynStackMut stack = stack_mut();
 		precond.scale_qp_in_place(qp_scaled, execute_or_not, settings, stack);
 		kkt_nnz_counts.resize_for_overwrite(n_tot);
 
-		linearsolver::sparse::MatMut<T, I> kkt_active = {
-				linearsolver::sparse::from_raw_parts,
+		linalg::sparse::MatMut<T, I> kkt_active = {
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				data.H_nnz + data.A_nnz,// these variables are not used for the matrix vector product in augmented KKT with Min res algorithm (to be exact, it should depend of the initial guess)
@@ -711,7 +711,7 @@ struct Workspace {
 						},
 				}};
 
-		auto zx = linearsolver::sparse::util::zero_extend;// ?
+		auto zx = linalg::sparse::util::zero_extend;// ?
 		auto max_lnnz = isize(zx(ldl.col_ptrs[n_tot]));
 		isize ldlt_ntot = do_ldlt ? n_tot : 0;
 		isize ldlt_lnnz = do_ldlt ? max_lnnz : 0;

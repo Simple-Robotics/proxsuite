@@ -5,10 +5,10 @@
 #ifndef DENSE_LDLT_SOLVE_HPP
 #define DENSE_LDLT_SOLVE_HPP
 
-#include "proxsuite/linearsolver/dense/core.hpp"
+#include "proxsuite/linalg/dense/core.hpp"
 #include <Eigen/Core>
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 namespace _detail {
 template <typename Mat, typename Rhs>
@@ -27,6 +27,6 @@ void solve(Mat const& mat, Rhs&& rhs) {
 	_detail::solve_impl(util::to_view(mat), util::to_view_dyn_rows(rhs));
 }
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_SOLVE_HPP */

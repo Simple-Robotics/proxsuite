@@ -212,7 +212,7 @@ void qp_setup(
 * @param b matrix.
 */
 template <typename T, typename I>
-auto have_same_structure(linearsolver::sparse::MatRef<T, I> a, linearsolver::sparse::MatRef<T, I> b) -> bool {
+auto have_same_structure(linalg::sparse::MatRef<T, I> a, linalg::sparse::MatRef<T, I> b) -> bool {
   if (a.nrows() != b.nrows()) return false;
   if (a.ncols() != b.ncols()) return false;
   for (isize j = 0; j < a.ncols(); ++j) {
@@ -233,7 +233,7 @@ auto have_same_structure(linearsolver::sparse::MatRef<T, I> a, linearsolver::spa
 * @param b matrix.
 */
 template <typename T, typename I>
-void copy(linearsolver::sparse::MatMut<T, I> a, linearsolver::sparse::MatRef<T, I> b) {
+void copy(linalg::sparse::MatMut<T, I> a, linalg::sparse::MatRef<T, I> b) {
   // assume same sparsity structure for a and b
   // copy b into a
   for (isize j = 0; j < a.ncols(); ++j) {

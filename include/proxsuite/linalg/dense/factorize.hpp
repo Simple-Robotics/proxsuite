@@ -5,11 +5,11 @@
 #ifndef DENSE_LDLT_FACTORIZE_HPP
 #define DENSE_LDLT_FACTORIZE_HPP
 
-#include "proxsuite/linearsolver/dense/core.hpp"
+#include "proxsuite/linalg/dense/core.hpp"
 #include <algorithm>
 #include <proxsuite/veg/memory/dynamic_stack.hpp>
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 namespace _detail {
 
@@ -280,7 +280,7 @@ auto factorize_unblocked_req(veg::Tag<T> /*tag*/, isize n) noexcept
 template <typename T>
 auto factorize_blocked_req(veg::Tag<T> tag, isize n, isize block_size) noexcept
 		-> veg::dynstack::StackReq {
-	return linearsolver::dense::factorize_unblocked_req(tag, block_size) |
+	return linalg::dense::factorize_unblocked_req(tag, block_size) |
 	       veg::dynstack::StackReq{
 						 _detail::adjusted_stride<T>(
 								 _detail::max2(n - block_size, isize(0))) *
@@ -292,7 +292,7 @@ auto factorize_blocked_req(veg::Tag<T> tag, isize n, isize block_size) noexcept
 template <typename T>
 auto factorize_recursive_req(veg::Tag<T> tag, isize n) noexcept
 		-> veg::dynstack::StackReq {
-	auto req0 = linearsolver::dense::factorize_unblocked_req(
+	auto req0 = linalg::dense::factorize_unblocked_req(
 			tag, _detail::min2(n, _detail::factorize_recursive_threshold::value));
 	if (n < _detail::factorize_recursive_threshold::value) {
 		return req0;
@@ -322,20 +322,20 @@ void factorize_recursive(Mat&& mat, veg::dynstack::DynStackMut stack) {
 template <typename T>
 auto factorize_req(veg::Tag<T> tag, isize n) noexcept
 		-> veg::dynstack::StackReq {
-	return linearsolver::dense::factorize_blocked_req(tag, n, 128) |
-	       linearsolver::dense::factorize_recursive_req(tag, n);
+	return linalg::dense::factorize_blocked_req(tag, n, 128) |
+	       linalg::dense::factorize_recursive_req(tag, n);
 }
 
 template <typename Mat>
 void factorize(Mat&& mat, veg::dynstack::DynStackMut stack) {
 	isize n = mat.rows();
 	if (n > 2048) {
-		linearsolver::dense::factorize_blocked(mat, 128, stack);
+		linalg::dense::factorize_blocked(mat, 128, stack);
 	} else {
-		linearsolver::dense::factorize_recursive(mat, stack);
+		linalg::dense::factorize_recursive(mat, stack);
 	}
 }
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_FACTORIZE_HPP */

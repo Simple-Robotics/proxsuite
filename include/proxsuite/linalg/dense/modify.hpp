@@ -5,13 +5,13 @@
 #ifndef DENSE_LDLT_MODIFY_HPP
 #define DENSE_LDLT_MODIFY_HPP
 
-#include "proxsuite/linearsolver/dense/core.hpp"
-#include "proxsuite/linearsolver/dense/update.hpp"
-#include "proxsuite/linearsolver/dense/factorize.hpp"
+#include "proxsuite/linalg/dense/core.hpp"
+#include "proxsuite/linalg/dense/update.hpp"
+#include "proxsuite/linalg/dense/factorize.hpp"
 #include <algorithm>
 #include <proxsuite/veg/memory/dynamic_stack.hpp>
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 namespace _detail {
 
@@ -223,7 +223,7 @@ void ldlt_insert_rows_and_cols_impl(
 		util::noalias_mul_add(l21, l20, d0xl10T, T(-1));
 	}
 
-	linearsolver::dense::factorize(ld11, stack);
+	linalg::dense::factorize(ld11, stack);
 	util::trans(ld11) //
 			.template triangularView<Eigen::UnitUpper>()
 			.template solveInPlace<Eigen::OnTheRight>(l21);
@@ -281,7 +281,7 @@ void ldlt_delete_rows_and_cols_sort_indices( //
 template <typename T>
 auto ldlt_insert_rows_and_cols_req(veg::Tag<T> tag, isize n, isize r) noexcept
 		-> veg::dynstack::StackReq {
-	auto factorize_req = linearsolver::dense::factorize_req(tag, r);
+	auto factorize_req = linalg::dense::factorize_req(tag, r);
 
 	auto w_req = veg::dynstack::StackReq{
 			_detail::adjusted_stride<T>(n) * r * isize{sizeof(T)},
@@ -302,6 +302,6 @@ void ldlt_insert_rows_and_cols(
 			util::to_view_dyn(ld), pos, util::to_view_dyn_rows(a_1), stack);
 }
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_MODIFY_HPP */

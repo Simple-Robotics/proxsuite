@@ -6,11 +6,11 @@
 #ifndef PROXSUITE_QP_SPARSE_UTILS_HPP
 #define PROXSUITE_QP_SPARSE_UTILS_HPP
 
-#include <proxsuite/linearsolver/dense/core.hpp>
-#include <proxsuite/linearsolver/sparse/core.hpp>
-#include <proxsuite/linearsolver/sparse/factorize.hpp>
-#include <proxsuite/linearsolver/sparse/update.hpp>
-#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
+#include <proxsuite/linalg/sparse/core.hpp>
+#include <proxsuite/linalg/sparse/factorize.hpp>
+#include <proxsuite/linalg/sparse/update.hpp>
+#include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/veg/vec.hpp>
@@ -105,7 +105,7 @@ template <typename T, typename I>
 VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 		VectorViewMut<T> out_l,
 		VectorViewMut<T> out_r,
-		linearsolver::sparse::MatRef<T, I> a,
+		linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in_l,
 		VectorView<T> in_r) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ (
@@ -136,7 +136,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 
 		usize p = col_start;
 
-		auto zx = linearsolver::sparse::util::zero_extend;
+		auto zx = linalg::sparse::util::zero_extend;
 
 		for (; p < col_start + pcount / 4 * 4; p += 4) {
 			auto i0 = isize(zx(ai[p + 0]));
@@ -176,7 +176,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		VectorViewMut<T> out,
-		linearsolver::sparse::MatRef<T, I> a,
+		linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
@@ -207,7 +207,7 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 
 		usize pcount = col_end - col_start;
 
-		auto zx = linearsolver::sparse::util::zero_extend;
+		auto zx = linalg::sparse::util::zero_extend;
 
 		if (zx(ai[col_end - 1]) == j) {
 			T ajj = ax[col_end - 1];
@@ -257,7 +257,7 @@ void noalias_gevmmv_add(
 	noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out_l},
 			{proxqp::from_eigen, out_r},
-			{linearsolver::sparse::from_eigen, a},
+			{linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in_l},
 			{proxqp::from_eigen, in_r});
 }
@@ -267,14 +267,14 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
 	noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out},
-			{linearsolver::sparse::from_eigen, a},
+			{linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in});
 }
 
 template <typename T, typename I>
 struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 	struct Raw /* NOLINT */ {
-		linearsolver::sparse::MatRef<T, I> kkt_active;
+		linalg::sparse::MatRef<T, I> kkt_active;
 		veg::Slice<bool> active_constraints;
 		isize n;
 		isize n_eq;
@@ -351,13 +351,13 @@ auto vec_mut(V&& v) -> VecMapMut<typename veg::uncvref_t<V>::Scalar> {
 
 template <typename T, typename I>
 auto middle_cols(
-		linearsolver::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
-		-> linearsolver::sparse::MatRef<T, I> {
+		linalg::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
+		-> linalg::sparse::MatRef<T, I> {
 	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 
 	return {
-			linearsolver::sparse::from_raw_parts,
+			linalg::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -370,12 +370,12 @@ auto middle_cols(
 
 template <typename T, typename I>
 auto middle_cols_mut(
-		linearsolver::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
-		-> linearsolver::sparse::MatMut<T, I> {
+		linalg::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
+		-> linalg::sparse::MatMut<T, I> {
 	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 	return {
-			linearsolver::sparse::from_raw_parts,
+			linalg::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -388,11 +388,11 @@ auto middle_cols_mut(
 
 template <typename T, typename I>
 auto top_rows_unchecked(
-		veg::Unsafe /*unsafe*/, linearsolver::sparse::MatRef<T, I> mat, isize nrows)
-		-> linearsolver::sparse::MatRef<T, I> {
+		veg::Unsafe /*unsafe*/, linalg::sparse::MatRef<T, I> mat, isize nrows)
+		-> linalg::sparse::MatRef<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			linearsolver::sparse::from_raw_parts,
+			linalg::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),
@@ -405,11 +405,11 @@ auto top_rows_unchecked(
 
 template <typename T, typename I>
 auto top_rows_mut_unchecked(
-		veg::Unsafe /*unsafe*/, linearsolver::sparse::MatMut<T, I> mat, isize nrows)
-		-> linearsolver::sparse::MatMut<T, I> {
+		veg::Unsafe /*unsafe*/, linalg::sparse::MatMut<T, I> mat, isize nrows)
+		-> linalg::sparse::MatMut<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			linearsolver::sparse::from_raw_parts,
+			linalg::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),

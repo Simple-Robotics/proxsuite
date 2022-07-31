@@ -5,11 +5,11 @@
 #ifndef SPARSE_LDLT_UPDATE_HPP
 #define SPARSE_LDLT_UPDATE_HPP
 
-#include "proxsuite/linearsolver/sparse/core.hpp"
+#include "proxsuite/linalg/sparse/core.hpp"
 #include <proxsuite/veg/tuple.hpp>
 #include <algorithm>
 
-namespace linearsolver {
+namespace linalg {
 namespace sparse {
 
 /*
@@ -332,6 +332,6 @@ auto rank1_update(
 	return ld;
 }
 } // namespace sparse
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard SPARSE_LDLT_UPDATE_HPP */

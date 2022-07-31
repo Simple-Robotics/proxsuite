@@ -5,9 +5,9 @@
 #ifndef DENSE_LDLT_UPDATE_HPP
 #define DENSE_LDLT_UPDATE_HPP
 
-#include "proxsuite/linearsolver/dense/core.hpp"
+#include "proxsuite/linalg/dense/core.hpp"
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 namespace _detail {
 inline auto bytes_to_prev_aligned(void* ptr, usize align) noexcept -> isize {
@@ -289,6 +289,6 @@ void rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha) {
 			_detail::ConstantR{r});
 }
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_UPDATE_HPP */

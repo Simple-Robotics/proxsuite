@@ -24,7 +24,7 @@
 	auto LDLT_ID(vec_storage) = (Stack).Make(                                    \
 			::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                               \
 			(Rows),                                                                  \
-			::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
+			::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type), ::Eigen::Dynamic, 1>,       \
 			::Eigen::Unaligned,                                                      \
@@ -42,12 +42,12 @@
 	::veg::isize LDLT_ID(rows) = (Rows);                                         \
 	::veg::isize LDLT_ID(cols) = (Cols);                                         \
 	::veg::isize LDLT_ID(stride) =                                               \
-			::linearsolver::dense::_detail::adjusted_stride<__VEG_PP_REMOVE_PAREN(   \
+			::linalg::dense::_detail::adjusted_stride<__VEG_PP_REMOVE_PAREN(   \
 					Type)>(LDLT_ID(rows));                                               \
 	auto LDLT_ID(vec_storage) = (Stack).Make(                                    \
 			::veg::Tag<__VEG_PP_REMOVE_PAREN(Type)>{},                               \
 			LDLT_ID(stride) * LDLT_ID(cols),                                         \
-			::linearsolver::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
+			::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(Type)>());   \
 	auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
 			::Eigen::Matrix<                                                         \
 					__VEG_PP_REMOVE_PAREN(Type),                                         \
@@ -76,7 +76,7 @@
 #define LDLT_TEMP_MAT_UNINIT(Type, Name, Rows, Cols, Stack)                    \
 	__LDLT_TEMP_MAT_IMPL(Type, Name, Rows, Cols, Stack, make_new_for_overwrite)
 
-namespace linearsolver {
+namespace linalg {
 namespace dense {
 using veg::usize;
 using veg::isize;
@@ -777,6 +777,6 @@ auto temp_vec_req(veg::Tag<T> /*tag*/, isize rows) noexcept
 	};
 }
 } // namespace dense
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard DENSE_LDLT_CORE_HPP */

@@ -11,11 +11,11 @@
 #include <Eigen/SparseCore>
 
 #define SPARSE_LDLT_CONCEPT(...)                                               \
-	VEG_CONCEPT_MACRO(::linearsolver::sparse::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::linalg::sparse::concepts, __VA_ARGS__)
 #define SPARSE_LDLT_CHECK_CONCEPT(...)                                         \
-	VEG_CONCEPT_MACRO(::linearsolver::sparse::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::linalg::sparse::concepts, __VA_ARGS__)
 
-namespace linearsolver {
+namespace linalg {
 namespace sparse {
 using veg::dynstack::DynStackMut;
 using namespace veg::literals;
@@ -501,6 +501,6 @@ private:
 	} _;
 };
 } // namespace sparse
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard SPARSE_LDLT_CORE_HPP */

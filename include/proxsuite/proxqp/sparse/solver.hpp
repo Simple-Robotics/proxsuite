@@ -7,11 +7,11 @@
 #define PROXSUITE_QP_SPARSE_SOLVER_HPP
 
 #include <chrono>
-#include <proxsuite/linearsolver/dense/core.hpp>
-#include <proxsuite/linearsolver/sparse/core.hpp>
-#include <proxsuite/linearsolver/sparse/factorize.hpp>
-#include <proxsuite/linearsolver/sparse/update.hpp>
-#include <proxsuite/linearsolver/sparse/rowmod.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
+#include <proxsuite/linalg/sparse/core.hpp>
+#include <proxsuite/linalg/sparse/factorize.hpp>
+#include <proxsuite/linalg/sparse/update.hpp>
+#include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/veg/vec.hpp>
@@ -38,7 +38,7 @@ void ldl_solve(
 		VectorViewMut<T> sol,
 		VectorView<T> rhs,
 		isize n_tot,
-		linearsolver::sparse::MatMut<T, I> ldl,
+		linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
@@ -52,7 +52,7 @@ void ldl_solve(
 	LDLT_TEMP_VEC_UNINIT(T, work_, n_tot, stack);
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
-	auto zx = linearsolver::sparse::util::zero_extend;
+	auto zx = linalg::sparse::util::zero_extend;
 
 	if (do_ldlt) {
 
@@ -60,16 +60,16 @@ void ldl_solve(
 			work_[i] = rhs_e[isize(zx(perm[i]))];
 		}
 
-		linearsolver::sparse::dense_lsolve<T, I>( //
-				{linearsolver::sparse::from_eigen, work_},
+		linalg::sparse::dense_lsolve<T, I>( //
+				{linalg::sparse::from_eigen, work_},
 				ldl.as_const());
 
 		for (isize i = 0; i < n_tot; ++i) {
 			work_[i] /= ldl_values[isize(zx(ldl_col_ptrs[i]))];
 		}
 
-		linearsolver::sparse::dense_ltsolve<T, I>( //
-				{linearsolver::sparse::from_eigen, work_},
+		linalg::sparse::dense_ltsolve<T, I>( //
+				{linalg::sparse::from_eigen, work_},
 				ldl.as_const());
 
 		for (isize i = 0; i < n_tot; ++i) {
@@ -89,7 +89,7 @@ void ldl_iter_solve_noalias(
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linearsolver::sparse::MatMut<T, I> ldl,
+		linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
@@ -101,7 +101,7 @@ void ldl_iter_solve_noalias(
 		I* ldl_col_ptrs,
 		I const* perm_inv,
 		Settings<T> const& settings,
-		linearsolver::sparse::MatMut<T, I> kkt_active,
+		linalg::sparse::MatMut<T, I> kkt_active,
 		veg::SliceMut<bool> active_constraints) {
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
@@ -191,7 +191,7 @@ void ldl_solve_in_place(
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linearsolver::sparse::MatMut<T, I> ldl,
+		linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
@@ -203,7 +203,7 @@ void ldl_solve_in_place(
 		I* ldl_col_ptrs,
 		I const* perm_inv,
 		Settings<T> const& settings,
-		linearsolver::sparse::MatMut<T, I> kkt_active,
+		linalg::sparse::MatMut<T, I> kkt_active,
 		veg::SliceMut<bool> active_constraints) {
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
 	ldl_iter_solve_noalias(
@@ -234,7 +234,7 @@ void ldl_solve_in_place(
 */
 template <typename T, typename I>
 auto inner_reconstructed_matrix(
-		linearsolver::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
+		linalg::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
 	VEG_ASSERT(do_ldlt);
 	auto ldl_dense = ldl.to_eigen().toDense();
 	auto l = DMat<T>(ldl_dense.template triangularView<Eigen::UnitLower>());
@@ -253,7 +253,7 @@ auto inner_reconstructed_matrix(
 */
 template <typename T, typename I>
 auto reconstructed_matrix(
-		linearsolver::sparse::MatMut<T, I> ldl,
+		linalg::sparse::MatMut<T, I> ldl,
 		bool do_ldlt,
 		I const* perm_inv,
 		isize n_tot) -> DMat<T> {
@@ -280,13 +280,13 @@ auto reconstructed_matrix(
 */
 template <typename T, typename I>
 auto reconstruction_error(
-		linearsolver::sparse::MatMut<T, I> ldl,
+		linalg::sparse::MatMut<T, I> ldl,
 		bool do_ldlt,
 		I const* perm_inv,
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linearsolver::sparse::MatMut<T, I> kkt_active,
+		linalg::sparse::MatMut<T, I> kkt_active,
 		veg::SliceMut<bool> active_constraints) -> DMat<T> {
 	T mu_eq_neg = -results.info.mu_eq;
 	T mu_in_neg = -results.info.mu_in;
@@ -334,28 +334,28 @@ void qp_solve(
 
 	if(work.internal.dirty) // the following is used when a solve has already been executed (and without any intermediary model update)
 	{
-		linearsolver::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
+		linalg::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
 
-		linearsolver::sparse::MatMut<T, I> H_unscaled = 
+		linalg::sparse::MatMut<T, I> H_unscaled = 
 				detail::middle_cols_mut(kkt_top_n_rows, 0, data.dim, data.H_nnz);
 
-		linearsolver::sparse::MatMut<T, I> AT_unscaled =
+		linalg::sparse::MatMut<T, I> AT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, data.dim, data.n_eq, data.A_nnz);
 
-		linearsolver::sparse::MatMut<T, I> CT_unscaled =
+		linalg::sparse::MatMut<T, I> CT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, data.dim + data.n_eq, data.n_in, data.C_nnz);
 
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
 		sparse::QpView<T, I> qp = {
-				{linearsolver::sparse::from_eigen, H_triu},
-				{linearsolver::sparse::from_eigen, data.g},
-				{linearsolver::sparse::from_eigen, AT_unscaled.to_eigen()},
-				{linearsolver::sparse::from_eigen, data.b},
-				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
-				{linearsolver::sparse::from_eigen, data.l},
-				{linearsolver::sparse::from_eigen, data.u}};
+				{linalg::sparse::from_eigen, H_triu},
+				{linalg::sparse::from_eigen, data.g},
+				{linalg::sparse::from_eigen, AT_unscaled.to_eigen()},
+				{linalg::sparse::from_eigen, data.b},
+				{linalg::sparse::from_eigen, CT_unscaled.to_eigen()},
+				{linalg::sparse::from_eigen, data.l},
+				{linalg::sparse::from_eigen, data.u}};
 
 		switch (settings.initial_guess) { // the following is used when one solve has already been executed
 					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -427,7 +427,7 @@ void qp_solve(
 		sparse::print_setup_header(settings,results, data);
 	}
 	using namespace veg::literals;
-	namespace util = linearsolver::sparse::util;
+	namespace util = linalg::sparse::util;
 	auto zx = util::zero_extend;
 
 	veg::dynstack::DynStackMut stack = work.stack_mut();
@@ -441,17 +441,17 @@ void qp_solve(
 	VectorViewMut<T> y{proxqp::from_eigen, results.y};
 	VectorViewMut<T> z{proxqp::from_eigen, results.z};
 
-	linearsolver::sparse::MatMut<T, I> kkt = data.kkt_mut();
+	linalg::sparse::MatMut<T, I> kkt = data.kkt_mut();
 
 	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
 
-	linearsolver::sparse::MatMut<T, I> H_scaled = 
+	linalg::sparse::MatMut<T, I> H_scaled = 
 			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
 
-	linearsolver::sparse::MatMut<T, I> AT_scaled =
+	linalg::sparse::MatMut<T, I> AT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
 
-	linearsolver::sparse::MatMut<T, I> CT_scaled =
+	linalg::sparse::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
 	auto& g_scaled_e = work.internal.g_scaled;
@@ -461,12 +461,12 @@ void qp_solve(
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
-			{linearsolver::sparse::from_eigen, g_scaled_e},
+			{linalg::sparse::from_eigen, g_scaled_e},
 			AT_scaled,
-			{linearsolver::sparse::from_eigen, b_scaled_e},
+			{linalg::sparse::from_eigen, b_scaled_e},
 			CT_scaled,
-			{linearsolver::sparse::from_eigen, l_scaled_e},
-			{linearsolver::sparse::from_eigen, u_scaled_e},
+			{linalg::sparse::from_eigen, l_scaled_e},
+			{linalg::sparse::from_eigen, u_scaled_e},
 	};
 
 	T const primal_feasibility_rhs_1_eq = infty_norm(data.b);
@@ -587,8 +587,8 @@ void qp_solve(
                 }
 	}
 
-	linearsolver::sparse::MatMut<T, I> kkt_active = {
-			linearsolver::sparse::from_raw_parts,
+	linalg::sparse::MatMut<T, I> kkt_active = {
+			linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			data.H_nnz + data.A_nnz + C_active_nnz,
@@ -605,8 +605,8 @@ void qp_solve(
 	T* ldl_values = work.internal.ldl.values.ptr_mut();
 	veg::SliceMut<bool> active_constraints = results.active_constraints.as_mut();
 
-	linearsolver::sparse::MatMut<T, I> ldl = {
-			linearsolver::sparse::from_raw_parts,
+	linalg::sparse::MatMut<T, I> ldl = {
+			linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			0,
@@ -854,15 +854,15 @@ void qp_solve(
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
 
 									if (do_ldlt) {
-										linearsolver::sparse::VecRef<T, I> new_col{
-												linearsolver::sparse::from_raw_parts,
+										linalg::sparse::VecRef<T, I> new_col{
+												linalg::sparse::from_raw_parts,
 												n_tot,
 												isize(col_nnz),
 												kkt.row_indices() + zx(kkt.col_start(usize(idx))),
 												kkt.values() + zx(kkt.col_start(usize(idx))),
 										};
 
-										ldl = linearsolver::sparse::add_row(
+										ldl = linalg::sparse::add_row(
 												ldl,
 												etree,
 												perm_inv,
@@ -878,7 +878,7 @@ void qp_solve(
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
 									if (do_ldlt) {
-										ldl = linearsolver::sparse::delete_row(
+										ldl = linalg::sparse::delete_row(
 												ldl, etree, perm_inv, idx, stack);
 									}
 									active_constraints[i] = new_active_constraints[i];
@@ -1265,7 +1265,7 @@ void qp_solve(
 					alpha = results.info.mu_in - new_bcl_mu_in;
 				}
 				T value = 1;
-				linearsolver::sparse::VecRef<T, I> w{
+				linalg::sparse::VecRef<T, I> w{
 						veg::from_raw_parts,
 						n+n_eq+n_in,
 						w_values,

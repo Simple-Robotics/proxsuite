@@ -128,9 +128,9 @@ struct QP {
 			SparseMat<bool, I> H_triu = H.template triangularView<Eigen::Upper>();
 			SparseMat<bool, I> AT = A.transpose();
 			SparseMat<bool, I> CT = C.transpose();
-			linearsolver::sparse::MatRef<bool,I> Href = {linearsolver::sparse::from_eigen, H_triu};
-			linearsolver::sparse::MatRef<bool,I> ATref = {linearsolver::sparse::from_eigen, AT};
-			linearsolver::sparse::MatRef<bool,I> CTref = {linearsolver::sparse::from_eigen, CT};
+			linalg::sparse::MatRef<bool,I> Href = {linalg::sparse::from_eigen, H_triu};
+			linalg::sparse::MatRef<bool,I> ATref = {linalg::sparse::from_eigen, AT};
+			linalg::sparse::MatRef<bool,I> CTref = {linalg::sparse::from_eigen, CT};
 			work.setup_symbolic_factorizaton(results,model,settings,preconditioner::RuizEquilibration<T, I>::scale_qp_in_place_req(veg::Tag<T>{}, _dim, _n_eq, _n_in),
 			Href.symbolic(),ATref.symbolic(),CTref.symbolic());
 			if (settings.compute_timings){
@@ -180,13 +180,13 @@ struct QP {
 		SparseMat<T, I> AT = A.transpose();
 		SparseMat<T, I> CT = C.transpose();
 		sparse::QpView<T, I> qp = {
-				{linearsolver::sparse::from_eigen, H_triu},
-				{linearsolver::sparse::from_eigen, g},
-				{linearsolver::sparse::from_eigen, AT},
-				{linearsolver::sparse::from_eigen, b},
-				{linearsolver::sparse::from_eigen, CT},
-				{linearsolver::sparse::from_eigen, l},
-				{linearsolver::sparse::from_eigen, u}};
+				{linalg::sparse::from_eigen, H_triu},
+				{linalg::sparse::from_eigen, g},
+				{linalg::sparse::from_eigen, AT},
+				{linalg::sparse::from_eigen, b},
+				{linalg::sparse::from_eigen, CT},
+				{linalg::sparse::from_eigen, l},
+				{linalg::sparse::from_eigen, u}};
 		proxsuite::proxqp::sparse::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
 		if (settings.compute_timings){
@@ -234,17 +234,17 @@ struct QP {
 		isize n = model.dim;
 		isize n_eq = model.n_eq;
 		isize n_in = model.n_in;
-		linearsolver::sparse::MatMut<T, I> kkt_unscaled = model.kkt_mut_unscaled();
+		linalg::sparse::MatMut<T, I> kkt_unscaled = model.kkt_mut_unscaled();
 
 		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, n);
 
-		linearsolver::sparse::MatMut<T, I> H_unscaled = 
+		linalg::sparse::MatMut<T, I> H_unscaled = 
 				detail::middle_cols_mut(kkt_top_n_rows, 0, n, model.H_nnz);
 
-		linearsolver::sparse::MatMut<T, I> AT_unscaled =
+		linalg::sparse::MatMut<T, I> AT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, model.A_nnz);
 
-		linearsolver::sparse::MatMut<T, I> CT_unscaled =
+		linalg::sparse::MatMut<T, I> CT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, model.C_nnz);
 
 		// update the model
@@ -265,87 +265,87 @@ struct QP {
 			SparseMat<T, I> H_triu = H_.value().template triangularView<Eigen::Upper>();
 			if (A_ != std::nullopt) {
 				if (C_ != std::nullopt) {
-					bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_triu}) &&
-						have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}) &&
-						have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}) ;
+					bool res = have_same_structure(H_unscaled.as_const(),{linalg::sparse::from_eigen,H_triu}) &&
+						have_same_structure(AT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}) &&
+						have_same_structure(CT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}) ;
 					/* TO PUT IN DEBUG MODE
 					std::cout << "have same structure = " << res << std::endl;
 					*/
 					if (res){
-						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_triu}); // copy rhs into lhs
-						copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
-						copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
+						copy(H_unscaled,{linalg::sparse::from_eigen,H_triu}); // copy rhs into lhs
+						copy(AT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
+						copy(CT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 					}
 				} else {
-					bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_triu})&&
-						 have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())});
+					bool res = have_same_structure(H_unscaled.as_const(),{linalg::sparse::from_eigen,H_triu})&&
+						 have_same_structure(AT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())});
 					/* TO PUT IN DEBUG MODE
 					std::cout << "have same structure = " << res << std::endl;
 					*/
 					if (res){
-						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_triu}); // copy rhs into lhs
-						copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
+						copy(H_unscaled,{linalg::sparse::from_eigen,H_triu}); // copy rhs into lhs
+						copy(AT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
 					}
 				}
 			} else if (C_ != std::nullopt) {
-				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_triu}) &&
-					have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
+				bool res = have_same_structure(H_unscaled.as_const(),{linalg::sparse::from_eigen,H_triu}) &&
+					have_same_structure(CT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 				/* TO PUT IN DEBUG MODE
 				std::cout << "have same structure = " << res << std::endl;
 				*/
 				if (res){
-					copy(H_unscaled,{linearsolver::sparse::from_eigen,H_triu}); // copy rhs into lhs
-					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
+					copy(H_unscaled,{linalg::sparse::from_eigen,H_triu}); // copy rhs into lhs
+					copy(CT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 				}
 			} else {
 				
-				bool res = have_same_structure(H_unscaled.as_const(),{linearsolver::sparse::from_eigen,H_triu}) ;
+				bool res = have_same_structure(H_unscaled.as_const(),{linalg::sparse::from_eigen,H_triu}) ;
 				/* TO PUT IN DEBUG MODE
 				std::cout << "have same structure = " << res << std::endl;
 				*/
 				if (res){
-						copy(H_unscaled,{linearsolver::sparse::from_eigen,H_.value()}); // copy rhs into lhs
+						copy(H_unscaled,{linalg::sparse::from_eigen,H_.value()}); // copy rhs into lhs
 				}
 			}
 		} else if (A_ != std::nullopt) {
 			if (C_ != std::nullopt) {
-				bool res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())})&&
-					have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
+				bool res = have_same_structure(AT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())})&&
+					have_same_structure(CT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 				/* TO PUT IN DEBUG MODE
 				std::cout << "have same structure = " << res << std::endl;
 				*/
 				if (res){
-					copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
-					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
+					copy(AT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
+					copy(CT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 				}
 			} else {
-				bool res = have_same_structure(AT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())});
+				bool res = have_same_structure(AT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())});
 				/* TO PUT IN DEBUG MODE
 				std::cout << "have same structure = " << res << std::endl;
 				*/
 				if (res){
-					copy(AT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
+					copy(AT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(A_.value().transpose())}); // copy rhs into lhs
 				}
 			}
 		} else if (C_ != std::nullopt) {
-			bool res = have_same_structure(CT_unscaled.as_const(),{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
+			bool res = have_same_structure(CT_unscaled.as_const(),{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())});
 			/* TO PUT IN DEBUG MODE
 			std::cout << "have same structure = " << res << std::endl;
 			*/
 			if (res){
-					copy(CT_unscaled,{linearsolver::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
+					copy(CT_unscaled,{linalg::sparse::from_eigen,SparseMat<T,I>(C_.value().transpose())}); // copy rhs into lhs
 			}
 		}
 		
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
 		sparse::QpView<T, I> qp = {
-				{linearsolver::sparse::from_eigen, H_triu},
-				{linearsolver::sparse::from_eigen, model.g},
-				{linearsolver::sparse::from_eigen, AT_unscaled.to_eigen()},
-				{linearsolver::sparse::from_eigen, model.b},
-				{linearsolver::sparse::from_eigen, CT_unscaled.to_eigen()},
-				{linearsolver::sparse::from_eigen, model.l},
-				{linearsolver::sparse::from_eigen, model.u}};
+				{linalg::sparse::from_eigen, H_triu},
+				{linalg::sparse::from_eigen, model.g},
+				{linalg::sparse::from_eigen, AT_unscaled.to_eigen()},
+				{linalg::sparse::from_eigen, model.b},
+				{linalg::sparse::from_eigen, CT_unscaled.to_eigen()},
+				{linalg::sparse::from_eigen, model.l},
+				{linalg::sparse::from_eigen, model.u}};
 		proxsuite::proxqp::sparse::update_proximal_parameters(results, work, rho, mu_eq, mu_in);
 		qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status); // store model value + performs scaling according to chosen options
 		if (settings.compute_timings){

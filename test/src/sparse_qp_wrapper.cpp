@@ -9,7 +9,7 @@
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linearsolver::sparse::tags;
+using namespace linalg::sparse::tags;
 
 TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update rho") {
@@ -276,10 +276,10 @@ TEST_CASE("sparse random strongly convex qp with equality and "
         C,
         u,
         l,false);
-        linearsolver::sparse::MatMut<T, I> kkt_unscaled = Qp.model.kkt_mut_unscaled();
+        linalg::sparse::MatMut<T, I> kkt_unscaled = Qp.model.kkt_mut_unscaled();
         auto kkt_top_n_rows = proxsuite::proxqp::sparse::detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, n);
 
-	linearsolver::sparse::MatMut<T, I> H_unscaled = proxsuite::proxqp::sparse::detail::middle_cols_mut(kkt_top_n_rows, 0, n, Qp.model.H_nnz);
+	linalg::sparse::MatMut<T, I> H_unscaled = proxsuite::proxqp::sparse::detail::middle_cols_mut(kkt_top_n_rows, 0, n, Qp.model.H_nnz);
         std::cout << " H_unscaled " << H_unscaled.to_eigen() << std::endl;
         Qp.solve();
 

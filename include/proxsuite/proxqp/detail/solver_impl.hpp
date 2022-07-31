@@ -1,14 +1,14 @@
 #ifndef PROXSUITE_QP_DETAIL_SOLVER_IMPL_HPP
 #define PROXSUITE_QP_DETAIL_SOLVER_IMPL_HPP
 
-#include "proxsuite/linearsolver/sparse/core.hpp"
-#include "proxsuite/linearsolver/sparse/factorize.hpp"
+#include "proxsuite/linalg/sparse/core.hpp"
+#include "proxsuite/linalg/sparse/factorize.hpp"
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/status.hpp"
 
 #include <Eigen/Core>
-#include <proxsuite/linearsolver/dense/core.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/veg/box.hpp>
 #include <proxsuite/veg/memory/dynamic_stack.hpp>
 #include <proxsuite/veg/vec.hpp>
@@ -28,7 +28,7 @@ namespace detail {
 template <typename T, typename I>
 struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 	struct Internal {
-		linearsolver::sparse::MatRef<T, I> kkt_active;
+		linalg::sparse::MatRef<T, I> kkt_active;
 		bool const* active_constraints;
 		isize n;
 		isize n_eq;
@@ -69,7 +69,7 @@ struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		VectorViewMut<T> out,
-		linearsolver::sparse::MatRef<T, I> a,
+		linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
@@ -100,7 +100,7 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 
 		usize pcount = col_end - col_start;
 
-		auto zx = linearsolver::sparse::util::zero_extend;
+		auto zx = linalg::sparse::util::zero_extend;
 
 		if (zx(ai[col_end - 1]) == j) {
 			T ajj = ax[col_end - 1];
@@ -148,7 +148,7 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
 	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out},
-			{linearsolver::sparse::from_eigen, a},
+			{linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in});
 }
 
@@ -296,33 +296,33 @@ struct Results {
 
 	auto x() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
-		return linearsolver::dense::util::subrows(sol(), 0, n);
+		return linalg::dense::util::subrows(sol(), 0, n);
 	}
 	auto x_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
-		return linearsolver::dense::util::subrows(sol_mut(), 0, n);
+		return linalg::dense::util::subrows(sol_mut(), 0, n);
 	}
 	auto y() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
-		return linearsolver::dense::util::subrows(sol(), n, n_eq);
+		return linalg::dense::util::subrows(sol(), n, n_eq);
 	}
 	auto y_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
-		return linearsolver::dense::util::subrows(sol_mut(), n, n_eq);
+		return linalg::dense::util::subrows(sol_mut(), n, n_eq);
 	}
 	auto z() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
 		auto n_in = internal.n_in;
-		return linearsolver::dense::util::subrows(sol(), n + n_eq, n_in);
+		return linalg::dense::util::subrows(sol(), n + n_eq, n_in);
 	}
 	auto z_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
 		auto n_in = internal.n_in;
-		return linearsolver::dense::util::subrows(sol_mut(), n + n_eq, n_in);
+		return linalg::dense::util::subrows(sol_mut(), n + n_eq, n_in);
 	}
 };
 
@@ -382,11 +382,11 @@ struct Kkt {
 	veg::Vec<I> row_indices;
 	veg::Vec<T> values;
 
-	auto as_ref() const -> linearsolver::sparse::MatRef<T, I> {
+	auto as_ref() const -> linalg::sparse::MatRef<T, I> {
 		auto n_tot = col_ptrs.len() - 1;
-		auto nnz = isize(linearsolver::sparse::util::zero_extend(col_ptrs[n_tot]));
+		auto nnz = isize(linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
 		return {
-				linearsolver::sparse::from_raw_parts,
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -396,11 +396,11 @@ struct Kkt {
 				values.ptr(),
 		};
 	}
-	auto as_mut() -> linearsolver::sparse::MatMut<T, I> {
+	auto as_mut() -> linalg::sparse::MatMut<T, I> {
 		auto n_tot = col_ptrs.len() - 1;
-		auto nnz = isize(linearsolver::sparse::util::zero_extend(col_ptrs[n_tot]));
+		auto nnz = isize(linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
 		return {
-				linearsolver::sparse::from_raw_parts,
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -453,7 +453,7 @@ struct Workspace {
 namespace detail {
 template <typename T>
 void copy_vector_to_model(
-		veg::Vec<T>& dst, linearsolver::sparse::DenseVecRef<T> src) {
+		veg::Vec<T>& dst, linalg::sparse::DenseVecRef<T> src) {
 	isize n = src.nrows();
 	dst.resize_for_overwrite(src.nrows());
 	T* dstp = dst.ptr_mut();
@@ -468,7 +468,7 @@ void insert_submatrix(
 		I* kktp,
 		I* kkti,
 		T* kktx,
-		linearsolver::sparse::MatRef<T, I> const& m,
+		linalg::sparse::MatRef<T, I> const& m,
 		bool assert_sym_hi = false) {
 	I const* mi = m.row_indices();
 	T const* mx = m.values();
@@ -478,12 +478,12 @@ void insert_submatrix(
 		usize col_start = m.col_start(j);
 		usize col_end = m.col_end(j);
 
-		kktp[col + 1] = linearsolver::sparse::util::checked_non_negative_plus(
+		kktp[col + 1] = linalg::sparse::util::checked_non_negative_plus(
 				kktp[col], I(col_end - col_start));
 		++col;
 
 		for (usize p = col_start; p < col_end; ++p) {
-			usize i = linearsolver::sparse::util::zero_extend(mi[p]);
+			usize i = linalg::sparse::util::zero_extend(mi[p]);
 			if (assert_sym_hi) {
 				VEG_ASSERT(i <= j);
 			}
@@ -500,22 +500,22 @@ template <typename T, typename I>
 auto refactorize_req(
 		veg::Tag<T> xtag, veg::Tag<I> itag, isize n_tot, isize kkt_nnz)
 		-> veg::dynstack::StackReq {
-	auto symbolic_req = linearsolver::sparse::factorize_symbolic_req(
-			itag, n_tot, kkt_nnz, linearsolver::sparse::Ordering::user_provided);
-	auto diag_req = linearsolver::dense::temp_vec_req(xtag, n_tot);
-	auto numeric_req = linearsolver::sparse::factorize_numeric_req(
+	auto symbolic_req = linalg::sparse::factorize_symbolic_req(
+			itag, n_tot, kkt_nnz, linalg::sparse::Ordering::user_provided);
+	auto diag_req = linalg::dense::temp_vec_req(xtag, n_tot);
+	auto numeric_req = linalg::sparse::factorize_numeric_req(
 			xtag,
 			itag,
 			n_tot,
 			kkt_nnz,
-			linearsolver::sparse::Ordering::user_provided);
+			linalg::sparse::Ordering::user_provided);
 	return symbolic_req | (diag_req & numeric_req);
 }
 
 template <typename T, typename I>
 void refactorize(
 		SolverState<T> const& state,
-		linearsolver::sparse::MatRef<T, I> const& kkt_active,
+		linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		Workspace<T, I>& work,
 		veg::dynstack::DynStackMut stack) {
@@ -529,7 +529,7 @@ void refactorize(
 
 	if (work.internal.do_ldlt) {
 		Ldlt<T, I>& ldlt = work.internal.ldlt;
-		linearsolver::sparse::factorize_symbolic_non_zeros(
+		linalg::sparse::factorize_symbolic_non_zeros(
 				ldlt.nnz_counts.ptr_mut(),
 				ldlt.etree.ptr_mut(),
 				ldlt.perm_inv.ptr_mut(),
@@ -548,7 +548,7 @@ void refactorize(
 			diag[n + n_eq + i] = active_constraints[i] ? -state.mu_in : T(1);
 		}
 
-		linearsolver::sparse::factorize_numeric(
+		linalg::sparse::factorize_numeric(
 				ldlt.values.ptr_mut(),
 				ldlt.row_indices.ptr_mut(),
 				diag.data(),
@@ -577,7 +577,7 @@ void refactorize(
 template <typename T>
 auto ldl_solve_in_place_req(veg::Tag<T> xtag, isize n_tot)
 		-> veg::dynstack::StackReq {
-	return linearsolver::dense::temp_vec_req(xtag, n_tot);
+	return linalg::dense::temp_vec_req(xtag, n_tot);
 }
 
 template <typename T, typename I>
@@ -585,7 +585,7 @@ void ldl_solve_in_place(
 		VectorViewMut<T> rhs,
 		Workspace<T, I> const& work,
 		veg::dynstack::DynStackMut stack) {
-	auto zx = linearsolver::sparse::util::zero_extend;
+	auto zx = linalg::sparse::util::zero_extend;
 
 	auto rhs_e = rhs.to_eigen();
 	auto n_tot = rhs_e.rows();
@@ -595,8 +595,8 @@ void ldl_solve_in_place(
 
 		Ldlt<T, I>& ldlt = work.internal.ldlt;
 
-		linearsolver::sparse::MatRef<T, I> ld = {
-				linearsolver::sparse::from_raw_parts,
+		linalg::sparse::MatRef<T, I> ld = {
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				0,
@@ -613,13 +613,13 @@ void ldl_solve_in_place(
 			tmp[i] = rhs_e[isize(zx(perm[i]))];
 		}
 
-		linearsolver::sparse::dense_lsolve<T, I>(
-				{linearsolver::sparse::from_eigen, tmp}, ld);
+		linalg::sparse::dense_lsolve<T, I>(
+				{linalg::sparse::from_eigen, tmp}, ld);
 		for (isize i = 0; i < n_tot; ++i) {
 			tmp[i] /= ld.values()[isize(zx(ld.col_ptrs()[i]))];
 		}
-		linearsolver::sparse::dense_ltsolve<T, I>(
-				{linearsolver::sparse::from_eigen, tmp}, ld);
+		linalg::sparse::dense_ltsolve<T, I>(
+				{linalg::sparse::from_eigen, tmp}, ld);
 		for (isize i = 0; i < n_tot; ++i) {
 			rhs_e[i] = tmp[isize(zx(perm_inv[i]))];
 		}
@@ -633,7 +633,7 @@ void ldl_solve_in_place(
 template <typename T>
 auto ldl_iter_solve_noalias_req(veg::Tag<T> xtag, isize n_tot)
 		-> veg::dynstack::StackReq {
-	return linearsolver::dense::temp_vec_req(xtag, n_tot) &
+	return linalg::dense::temp_vec_req(xtag, n_tot) &
 	       detail::ldl_solve_in_place_req(xtag, n_tot);
 }
 
@@ -645,7 +645,7 @@ void ldl_iter_solve_noalias(
 		SolverState<T> const& state,
 		Settings<T> const& settings,
 		Workspace<T, I> const& work,
-		linearsolver::sparse::MatRef<T, I> const& kkt_active,
+		linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		isize n,
 		isize n_eq,
@@ -704,7 +704,7 @@ void ldl_iter_solve_in_place(
 		SolverState<T> const& state,
 		Settings<T> const& settings,
 		Workspace<T, I> const& work,
-		linearsolver::sparse::MatRef<T, I> const& kkt_active,
+		linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		isize n,
 		isize n_eq,
@@ -796,14 +796,14 @@ void setup(
 
 	// allocate storage for symbolic factorization
 	{
-		auto req = linearsolver::sparse::factorize_symbolic_req(
-				veg::Tag<I>{}, n_tot, nnz_tot, linearsolver::sparse::Ordering::amd);
+		auto req = linalg::sparse::factorize_symbolic_req(
+				veg::Tag<I>{}, n_tot, nnz_tot, linalg::sparse::Ordering::amd);
 		work.internal.storage.resize_for_overwrite(req.alloc_req());
 	}
 
 	// perform symbolic factorization, checking for overflow
 	bool overflow = false;
-	auto zx = linearsolver::sparse::util::zero_extend;
+	auto zx = linalg::sparse::util::zero_extend;
 	{
 		ldlt.etree.resize_for_overwrite(n_tot);
 		ldlt.perm.resize_for_overwrite(n_tot);
@@ -811,7 +811,7 @@ void setup(
 		ldlt.col_ptrs.resize_for_overwrite(n_tot + 1);
 
 		DynStackMut stack = work.stack_mut();
-		auto kkt_symbolic = linearsolver::sparse::SymbolicMatRef<I>{
+		auto kkt_symbolic = linalg::sparse::SymbolicMatRef<I>{
 				veg::from_raw_parts,
 				n_tot,
 				n_tot,
@@ -820,7 +820,7 @@ void setup(
 				nullptr,
 				kkt_storage.row_indices.ptr(),
 		};
-		linearsolver::sparse::factorize_symbolic_non_zeros(
+		linalg::sparse::factorize_symbolic_non_zeros(
 				ldlt.col_ptrs.ptr_mut() + 1,
 				ldlt.etree.ptr_mut(),
 				ldlt.perm_inv.ptr_mut(),
@@ -852,7 +852,7 @@ void setup(
 	work.internal.do_ldlt = !overflow && max_lnnz < 10000000;
 
 	StackReq req =
-			linearsolver::dense::temp_vec_req(veg::Tag<I>{}, n_tot) &
+			linalg::dense::temp_vec_req(veg::Tag<I>{}, n_tot) &
 			detail::refactorize_req(
 					veg::Tag<T>{}, veg::Tag<I>{}, n_tot, H_nnz + A_nnz + C_nnz);
 
@@ -860,7 +860,7 @@ void setup(
 
 	// initial factorization
 	{
-		linearsolver::sparse::MatRef<T, I> kkt = kkt_storage.as_ref();
+		linalg::sparse::MatRef<T, I> kkt = kkt_storage.as_ref();
 		DynStackMut stack = work.stack_mut();
 		LDLT_TEMP_VEC_UNINIT(I, kkt_nnz_counts, n_tot, stack);
 
@@ -879,8 +879,8 @@ void setup(
 			C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 		}
 
-		linearsolver::sparse::MatRef<T, I> kkt_active = {
-				linearsolver::sparse::from_raw_parts,
+		linalg::sparse::MatRef<T, I> kkt_active = {
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				H_nnz + A_nnz + C_active_nnz,
@@ -902,8 +902,8 @@ void setup(
 		ldlt.row_indices.resize_for_overwrite(ldlt_lnnz);
 		ldlt.values.resize_for_overwrite(ldlt_lnnz);
 
-		linearsolver::sparse::MatMut<T, I> ldlt_mut = {
-				linearsolver::sparse::from_raw_parts,
+		linalg::sparse::MatMut<T, I> ldlt_mut = {
+				linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				0,
@@ -947,7 +947,7 @@ void solve(
 	isize n_in = results.z().rows();
 	isize n_tot = n + n_eq + n_in;
 
-	linearsolver::sparse::MatRef<T, I> kkt = {
+	linalg::sparse::MatRef<T, I> kkt = {
 			veg::from_raw_parts,
 			n_tot,
 			n_tot,
@@ -982,8 +982,8 @@ void solve(
 		C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 	}
 
-	linearsolver::sparse::MatRef<T, I> kkt_active = {
-			linearsolver::sparse::from_raw_parts,
+	linalg::sparse::MatRef<T, I> kkt_active = {
+			linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			H_nnz + A_nnz + C_active_nnz,

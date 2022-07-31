@@ -5,10 +5,10 @@
 #ifndef SPARSE_LDLT_ROWMOD_HPP
 #define SPARSE_LDLT_ROWMOD_HPP
 
-#include "proxsuite/linearsolver/sparse/update.hpp"
+#include "proxsuite/linalg/sparse/update.hpp"
 #include <algorithm>
 
-namespace linearsolver {
+namespace linalg {
 namespace sparse {
 
 /*!
@@ -415,6 +415,6 @@ auto add_row(
 	return ld;
 }
 } // namespace sparse
-} // namespace linearsolver
+} // namespace linalg
 
 #endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP */

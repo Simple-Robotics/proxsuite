@@ -10,7 +10,7 @@
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linearsolver::sparse::tags;
+using namespace linalg::sparse::tags;
 
 TEST_CASE("upper part") {
 	isize n = 10;
@@ -63,13 +63,13 @@ TEST_CASE("upper part") {
 
 	ruiz.scale_qp_in_place(
 			{
-					{linearsolver::sparse::from_eigen, H_scaled},
-					{linearsolver::sparse::from_eigen, g_scaled},
-					{linearsolver::sparse::from_eigen, AT_scaled},
-					{linearsolver::sparse::from_eigen, b_scaled},
-					{linearsolver::sparse::from_eigen, CT_scaled},
-					{linearsolver::sparse::from_eigen, l_scaled},
-					{linearsolver::sparse::from_eigen, u_scaled},
+					{linalg::sparse::from_eigen, H_scaled},
+					{linalg::sparse::from_eigen, g_scaled},
+					{linalg::sparse::from_eigen, AT_scaled},
+					{linalg::sparse::from_eigen, b_scaled},
+					{linalg::sparse::from_eigen, CT_scaled},
+					{linalg::sparse::from_eigen, l_scaled},
+					{linalg::sparse::from_eigen, u_scaled},
 			},
 			execute_preconditioner,
 			settings,
@@ -149,13 +149,13 @@ TEST_CASE("lower part") {
 	proxsuite::proxqp::Settings<T> settings;
 	ruiz.scale_qp_in_place(
 			{
-					{linearsolver::sparse::from_eigen, H_scaled},
-					{linearsolver::sparse::from_eigen, g_scaled},
-					{linearsolver::sparse::from_eigen, AT_scaled},
-					{linearsolver::sparse::from_eigen, b_scaled},
-					{linearsolver::sparse::from_eigen, CT_scaled},
-					{linearsolver::sparse::from_eigen, l_scaled},
-					{linearsolver::sparse::from_eigen, u_scaled},
+					{linalg::sparse::from_eigen, H_scaled},
+					{linalg::sparse::from_eigen, g_scaled},
+					{linalg::sparse::from_eigen, AT_scaled},
+					{linalg::sparse::from_eigen, b_scaled},
+					{linalg::sparse::from_eigen, CT_scaled},
+					{linalg::sparse::from_eigen, l_scaled},
+					{linalg::sparse::from_eigen, u_scaled},
 			},
 			execute_preconditioner,
 			settings,

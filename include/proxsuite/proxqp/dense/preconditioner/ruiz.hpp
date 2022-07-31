@@ -9,7 +9,7 @@
 
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
-#include <proxsuite/linearsolver/dense/core.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
 #include <ostream>
 
 #include <Eigen/Core>
@@ -268,7 +268,7 @@ struct RuizEquilibration {
 	static auto
 	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
 			-> veg::dynstack::StackReq {
-		return linearsolver::dense::temp_vec_req(tag, n + n_eq + n_in);
+		return linalg::dense::temp_vec_req(tag, n + n_eq + n_in);
 	}
 
 	// H_new = c * head @ H @ head
