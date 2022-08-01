@@ -27,7 +27,6 @@ add_source_group(PYWRAP_SOURCES)
 add_library(instructionset MODULE helpers/instruction-set.cpp)
 add_dependencies(python instructionset)
 target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
-target_include_directories(instructionset PRIVATE ${PYTHON_INCLUDE_DIRS})
 set_target_properties(
   instructionset
   PROPERTIES PREFIX ""
