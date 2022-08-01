@@ -1,6 +1,6 @@
 #ifndef VEG_MACROS_HPP_HSTLSKZXS
 #define VEG_MACROS_HPP_HSTLSKZXS
-#include "proxsuite/linalg/veg/internal/.external/hedley.ext.h"
+#include "proxsuite/linalg/veg/internal/external/hedley.ext.hpp"
 #include "proxsuite/linalg/veg/internal/typedefs.hpp"
 #include "proxsuite/linalg/veg/internal/preprocessor.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
