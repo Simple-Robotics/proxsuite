@@ -1,0 +1,91 @@
+name: CI - Linux/OSX - Conda
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-with-conda:
+    name: '[conda:${{ matrix.os }}]'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Release]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniforge-variant: Mambaforge
+        miniforge-version: latest
+        channels: conda-forge
+
+    - name: Install dependencies [Conda]
+      shell: bash -l {0}
+      run: |
+        # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
+        conda config --remove channels defaults
+        # Compilation related dependencies
+        mamba install cmake compilers make pkg-config
+        # Main dependencies
+        mamba install eigen simde
+        # Test dependencies
+        mamba install libmatio
+
+    - name: Print environment [Conda]
+      shell: bash -l {0}
+      run: |
+        mamba list
+        env
+
+    - name: Configure [Conda/Linux&macOS]
+      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -l {0}
+      run: |
+        git submodule update --init
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON
+
+    - name: Build [Conda]
+      shell: bash -l {0}
+      run: |
+        cd build
+        cmake --build . --config ${{ matrix.build_type }}
+
+    - name: Test [Conda]
+      shell: bash -l {0}
+      run: |
+        cd build
+        ctest --output-on-failure -C ${{ matrix.build_type }}
+
+    - name: Install [Conda]
+      shell: bash -l {0}
+      run: |
+        cd build
+        cmake --install .
+
+    # - name: Test pkg-config [Conda]
+    #   shell: bash -l {0}
+    #   run: |
+    #     cd build
+    #     export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
+    #     pkg-config --cflags proxsuite
+    #     g++ -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)
+    #     ./overview-simple
+
+    # - name: Test CMake pacakging [Conda]
+    #   shell: bash -l {0}
+    #   run: |
+    #     cd build
+    #     g++ -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)
+    #     ./overview-simple
+
+    - name: Uninstall [Conda]
+      shell: bash -l {0}
+      run: |
+        cd build
+        cmake --build . --target uninstall
