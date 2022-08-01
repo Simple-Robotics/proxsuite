@@ -1,4 +1,4 @@
-NAME          PRIMALC2  
+NAME          PRIMALC2
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          PRIMALC2
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-231-7        
+*   classification QLR2-AN-231-7
 
 ROWS
   N OBJ.FUNC

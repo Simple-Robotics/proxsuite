@@ -1,4 +1,4 @@
-NAME          GOULDQP3  
+NAME          GOULDQP3
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          GOULDQP3
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-699-349      
+*   classification QLR2-AN-699-349
 
 ROWS
   N OBJ.FUNC

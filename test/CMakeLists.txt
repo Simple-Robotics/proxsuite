@@ -1,44 +1,54 @@
 include(../cmake-external/doctest.cmake)
 find_package(Matio REQUIRED)
 
-include_directories(include)
-
-add_library(doctest_main STATIC src/doctest_main.cpp)
-add_library(libcnpy OBJECT src/cnpy.cpp)
-target_link_libraries(libcnpy Eigen3::Eigen)
+add_library(doctest STATIC doctest/doctest.cpp)
+target_include_directories(doctest PUBLIC ./doctest)
+add_library(cnpy OBJECT src/cnpy.cpp)
+target_link_libraries(cnpy Eigen3::Eigen)
+target_include_directories(cnpy PUBLIC ./include)
 
 add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
-target_include_directories(proxsuite-test-util PUBLIC test/include)
-target_link_libraries(proxsuite-test-util proxsuite matio)
+target_include_directories(proxsuite-test-util PUBLIC ./include)
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  target_link_libraries(proxsuite-test-util proxsuite-vectorized matio)
+else()
+  target_link_libraries(proxsuite-test-util proxsuite-not-vectorized matio)
+endif()
 
 macro(proxsuite_test name path)
   add_executable(test-cpp-${name} ${path})
   doctest_discover_tests(test-cpp-${name})
-  target_link_libraries(test-cpp-${name} proxsuite doctest_main proxsuite-test-util )
-  target_compile_definitions(test-cpp-${name} PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
+  target_link_libraries(
+    test-cpp-${name}
+    proxsuite
+    doctest
+    proxsuite-test-util
+  )
+  target_compile_definitions(
+    test-cpp-${name} PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}"
+  )
 endmacro()
 
 if(0)
-add_custom_command(
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
-  COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/src/save_qp_eq.py
-          ${CMAKE_CURRENT_BINARY_DIR}
-  MAIN_DEPENDENCY src/save_qp_eq.py
-)
-add_custom_target(
-  test.qp_eq.py.generated_problems
-  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qp_proble
-  m/source_files.txt
-)
+  add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qp_problem/source_files.txt
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/src/save_qp_eq.py
+            ${CMAKE_CURRENT_BINARY_DIR}
+    MAIN_DEPENDENCY src/save_qp_eq.py
+  )
+  add_custom_target(
+    test.qp_eq.py.generated_problems
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qp_proble m/source_files.txt
+  )
 
-add_executable(test.qp_eq.py src/qp_eq_py.cpp)
-add_dependencies(test.qp_eq.py test.qp_eq.py.generated_problems)
-target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS} doctest_main)
+  add_executable(test.qp_eq.py src/qp_eq_py.cpp)
+  add_dependencies(test.qp_eq.py test.qp_eq.py.generated_problems)
+  target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS} doctest)
 
-target_compile_definitions(
-  test.qp_eq.py
-  PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${CMAKE_CURRENT_BINARY_DIR}/qp_problem/"
-)
+  target_compile_definitions(
+    test.qp_eq.py
+    PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${CMAKE_CURRENT_BINARY_DIR}/qp_problem/"
+  )
 endif()
 
 proxsuite_test(dense_ruiz_equilibration src/dense_ruiz_equilibration.cpp)

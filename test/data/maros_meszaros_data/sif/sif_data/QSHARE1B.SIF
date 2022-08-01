@@ -11,7 +11,7 @@ NAME          QSHARE1B
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-225-117      
+*   classification QLR2-AN-225-117
 
 ROWS
  N  000000
@@ -811,43 +811,43 @@ RHS
     RHS       000112            575.   000113            186.
     RHS       000118            248.
 QUADOBJ
-    CCC002    CCC002          10.   
-    CCC002    CCC008           1.   
-    CCC002    CCC014           1.   
-    CCC002    CCC085           1.   
-    CCC003    CCC003          10.   
-    CCC003    CCC009           1.   
-    CCC003    CCC015           1.   
-    CCC003    CCC159           1.   
-    CCC008    CCC008          10.   
-    CCC008    CCC014           1.   
-    CCC008    CCC085           1.   
-    CCC009    CCC009          10.   
-    CCC009    CCC015           1.   
-    CCC009    CCC159           1.   
-    CCC014    CCC014          10.   
-    CCC014    CCC085           1.   
-    CCC015    CCC015          10.   
-    CCC015    CCC159           1.   
-    CCC025    CCC025          10.   
-    CCC025    CCC125           1.   
-    CCC025    CCC130           1.   
-    CCC025    CCC134           1.   
-    CCC032    CCC032          10.   
-    CCC032    CCC153           1.   
-    CCC033    CCC033          10.   
-    CCC033    CCC154           1.   
-    CCC034    CCC034          10.   
-    CCC034    CCC111           1.   
-    CCC085    CCC085          10.   
-    CCC111    CCC111          10.   
-    CCC125    CCC125          10.   
-    CCC125    CCC130           1.   
-    CCC125    CCC134           1.   
-    CCC130    CCC130          10.   
-    CCC130    CCC134           1.   
-    CCC134    CCC134          10.   
-    CCC153    CCC153          10.   
-    CCC154    CCC154          10.   
-    CCC159    CCC159          10.   
+    CCC002    CCC002          10.
+    CCC002    CCC008           1.
+    CCC002    CCC014           1.
+    CCC002    CCC085           1.
+    CCC003    CCC003          10.
+    CCC003    CCC009           1.
+    CCC003    CCC015           1.
+    CCC003    CCC159           1.
+    CCC008    CCC008          10.
+    CCC008    CCC014           1.
+    CCC008    CCC085           1.
+    CCC009    CCC009          10.
+    CCC009    CCC015           1.
+    CCC009    CCC159           1.
+    CCC014    CCC014          10.
+    CCC014    CCC085           1.
+    CCC015    CCC015          10.
+    CCC015    CCC159           1.
+    CCC025    CCC025          10.
+    CCC025    CCC125           1.
+    CCC025    CCC130           1.
+    CCC025    CCC134           1.
+    CCC032    CCC032          10.
+    CCC032    CCC153           1.
+    CCC033    CCC033          10.
+    CCC033    CCC154           1.
+    CCC034    CCC034          10.
+    CCC034    CCC111           1.
+    CCC085    CCC085          10.
+    CCC111    CCC111          10.
+    CCC125    CCC125          10.
+    CCC125    CCC130           1.
+    CCC125    CCC134           1.
+    CCC130    CCC130          10.
+    CCC130    CCC134           1.
+    CCC134    CCC134          10.
+    CCC153    CCC153          10.
+    CCC154    CCC154          10.
+    CCC159    CCC159          10.
 ENDATA

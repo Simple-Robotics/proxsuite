@@ -11,7 +11,7 @@ NAME          QAFIRO
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-32-27        
+*   classification QLR2-AN-32-27
 
 ROWS
  E  R09
@@ -95,10 +95,10 @@ RHS
     B         X27               500.   R23                44.
     B         X40               500.
 QUADOBJ
-    X01       X01             10.   
-    X01       X02              1.   
-    X01       X03              1.   
-    X02       X02             10.   
-    X02       X03              1.   
-    X03       X03             10.   
+    X01       X01             10.
+    X01       X02              1.
+    X01       X03              1.
+    X02       X02             10.
+    X02       X03              1.
+    X03       X03             10.
 ENDATA

@@ -1,4 +1,4 @@
-NAME          AUG2DQP   
+NAME          AUG2DQP
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          AUG2DQP
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-20200-10000  
+*   classification QLR2-AN-20200-10000
 
 ROWS
   N OBJ.FUNC

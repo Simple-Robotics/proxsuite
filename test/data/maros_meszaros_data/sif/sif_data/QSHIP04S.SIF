@@ -11,7 +11,7 @@ NAME          QSHIP04S
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-1458-402     
+*   classification QLR2-AN-1458-402
 
 ROWS
  N  COST
@@ -3464,60 +3464,60 @@ RHS
     RHS       BAL0480       .0922432   BAL0482        .138365
     RHS       BAL0484        .230608
 QUADOBJ
-    PREG0101  PREG0101        40.   
-    PREG0101  PREG0102         4.   
-    PREG0101  PREG0201         2.   
-    PREG0101  PREG0202         2.   
-    PREG0101  PREG0401         2.   
-    PREG0101  PREG0403         2.   
-    PREG0101  PREG0404         2.   
-    PREG0102  PREG0102        40.   
-    PREG0102  PREG0201         2.   
-    PREG0102  PREG0202         2.   
-    PREG0102  PREG0401         2.   
-    PREG0102  PREG0403         2.   
-    PREG0102  PREG0404         2.   
-    PREG0201  PREG0201        40.   
-    PREG0201  PREG0202         4.   
-    PREG0201  PREG0401         2.   
-    PREG0201  PREG0403         2.   
-    PREG0201  PREG0404         2.   
-    PREG0202  PREG0202        40.   
-    PREG0202  PREG0401         2.   
-    PREG0202  PREG0403         2.   
-    PREG0202  PREG0404         2.   
-    PREG0401  PREG0401        40.   
-    PREG0401  PREG0403         4.   
-    PREG0401  PREG0404         4.   
-    PREG0403  PREG0403        40.   
-    PREG0403  PREG0404         4.   
-    PREG0404  PREG0404        40.   
-    POVR0101  POVR0101        30.   
-    POVR0101  POVR0102         3.   
-    POVR0101  POVR0201         2.   
-    POVR0101  POVR0202         2.   
-    POVR0101  POVR0401         2.   
-    POVR0101  POVR0403         2.   
-    POVR0101  POVR0404         2.   
-    POVR0102  POVR0102        30.   
-    POVR0102  POVR0201         2.   
-    POVR0102  POVR0202         2.   
-    POVR0102  POVR0401         2.   
-    POVR0102  POVR0403         2.   
-    POVR0102  POVR0404         2.   
-    POVR0201  POVR0201        30.   
-    POVR0201  POVR0202         3.   
-    POVR0201  POVR0401         2.   
-    POVR0201  POVR0403         2.   
-    POVR0201  POVR0404         2.   
-    POVR0202  POVR0202        30.   
-    POVR0202  POVR0401         2.   
-    POVR0202  POVR0403         2.   
-    POVR0202  POVR0404         2.   
-    POVR0401  POVR0401        30.   
-    POVR0401  POVR0403         3.   
-    POVR0401  POVR0404         3.   
-    POVR0403  POVR0403        30.   
-    POVR0403  POVR0404         3.   
-    POVR0404  POVR0404        30.   
+    PREG0101  PREG0101        40.
+    PREG0101  PREG0102         4.
+    PREG0101  PREG0201         2.
+    PREG0101  PREG0202         2.
+    PREG0101  PREG0401         2.
+    PREG0101  PREG0403         2.
+    PREG0101  PREG0404         2.
+    PREG0102  PREG0102        40.
+    PREG0102  PREG0201         2.
+    PREG0102  PREG0202         2.
+    PREG0102  PREG0401         2.
+    PREG0102  PREG0403         2.
+    PREG0102  PREG0404         2.
+    PREG0201  PREG0201        40.
+    PREG0201  PREG0202         4.
+    PREG0201  PREG0401         2.
+    PREG0201  PREG0403         2.
+    PREG0201  PREG0404         2.
+    PREG0202  PREG0202        40.
+    PREG0202  PREG0401         2.
+    PREG0202  PREG0403         2.
+    PREG0202  PREG0404         2.
+    PREG0401  PREG0401        40.
+    PREG0401  PREG0403         4.
+    PREG0401  PREG0404         4.
+    PREG0403  PREG0403        40.
+    PREG0403  PREG0404         4.
+    PREG0404  PREG0404        40.
+    POVR0101  POVR0101        30.
+    POVR0101  POVR0102         3.
+    POVR0101  POVR0201         2.
+    POVR0101  POVR0202         2.
+    POVR0101  POVR0401         2.
+    POVR0101  POVR0403         2.
+    POVR0101  POVR0404         2.
+    POVR0102  POVR0102        30.
+    POVR0102  POVR0201         2.
+    POVR0102  POVR0202         2.
+    POVR0102  POVR0401         2.
+    POVR0102  POVR0403         2.
+    POVR0102  POVR0404         2.
+    POVR0201  POVR0201        30.
+    POVR0201  POVR0202         3.
+    POVR0201  POVR0401         2.
+    POVR0201  POVR0403         2.
+    POVR0201  POVR0404         2.
+    POVR0202  POVR0202        30.
+    POVR0202  POVR0401         2.
+    POVR0202  POVR0403         2.
+    POVR0202  POVR0404         2.
+    POVR0401  POVR0401        30.
+    POVR0401  POVR0403         3.
+    POVR0401  POVR0404         3.
+    POVR0403  POVR0403        30.
+    POVR0403  POVR0404         3.
+    POVR0404  POVR0404        30.
 ENDATA

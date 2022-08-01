@@ -11,7 +11,7 @@ NAME          CVXQP2_S
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-100-25       
+*   classification QLR2-AN-100-25
 
 ROWS
   N OBJ.FUNC

@@ -1,4 +1,4 @@
-NAME          DUALC8    
+NAME          DUALC8
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          DUALC8
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-8-503        
+*   classification QLR2-AN-8-503
 
 ROWS
   N OBJ.FUNC

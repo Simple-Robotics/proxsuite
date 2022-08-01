@@ -1,4 +1,4 @@
-NAME          HS118     
+NAME          HS118
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          HS118
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-15-17        
+*   classification QLR2-AN-15-17
 
 ROWS
   N OBJ.FUNC

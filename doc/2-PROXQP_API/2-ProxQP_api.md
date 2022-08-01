@@ -17,7 +17,7 @@ $$\begin{equation}\label{eq:QP}\tag{QP}
 $$
 H is a real symmetric positive semi-definite matrix. d is the problem dimension (i.e., the number of primal variables), while n_eq and n_in are the numbers of equality and inequality constraints respectively.
 
-For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,[Section 5.2.3](https://web.stanford.edu/~boyd/cvxbook/)} and [Section 2, page 5](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) for more details). 
+For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,[Section 5.2.3](https://web.stanford.edu/~boyd/cvxbook/)} and [Section 2, page 5](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) for more details).
 For \eqref{eq:QP}, the KKT system is given by the set of equations:
 
 $$\begin{equation}\label{qp:kkt}\tag{KKT}
@@ -33,7 +33,7 @@ $$\begin{equation}\label{qp:kkt}\tag{KKT}
 \end{aligned}
 \end{equation}$$
 
-where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i). 
+where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
 
 In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:
 
@@ -84,8 +84,8 @@ For loading ProxQP with dense backend it is as simple as the following code belo
 
 <table class="manual">
   <tr>
-    <th>loading_dense_qp.cpp</th>
-    <th>loading_dense_qp.py</th>
+    <th>examples/cpp/loading_dense_qp.cpp</th>
+    <th>examples/python/loading_dense_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -105,8 +105,8 @@ For loading ProxQP with sparse backend they are two possibilities:
 
 <table class="manual">
   <tr>
-    <th>loading_sparse_qp.cpp</th>
-    <th>loading_sparse_qp.py</th>
+    <th>examples/cpp/loading_sparse_qp.cpp</th>
+    <th>examples/python/loading_sparse_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -118,7 +118,7 @@ For loading ProxQP with sparse backend they are two possibilities:
   </tr>
 </table>
 
-The sparse Qp object is templated by the floatting precision of the QP model (in the example above a double precision), and the integer precision used for the different types of non zero indices used (for the associated sparse matrix representation used). 
+The sparse Qp object is templated by the floatting precision of the QP model (in the example above a double precision), and the integer precision used for the different types of non zero indices used (for the associated sparse matrix representation used).
 
 \subsection explanationInitMethod The init method
 
@@ -126,8 +126,8 @@ Once you have defined a Qp object, the init method enables you setting up the QP
 
 <table class="manual">
   <tr>
-    <th>init_dense_qp.cpp</th>
-    <th>init_dense_qp.py</th>
+    <th>examples/cpp/init_dense_qp.cpp</th>
+    <th>examples/python/init_dense_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -151,8 +151,8 @@ We provide below one example in C++ and python.
 
 <table class="manual">
   <tr>
-    <th>init_dense_qp_with_other_options.cpp</th>
-    <th>init_dense_qp_with_other_options.py</th>
+    <th>examples/cpp/init_dense_qp_with_other_options.cpp</th>
+    <th>examples/python/init_dense_qp_with_other_options.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -168,8 +168,8 @@ Furthermore, some settings must be defined before the init method to take effect
 
 <table class="manual">
   <tr>
-    <th>init_dense_qp_with_timings.cpp</th>
-    <th>init_dense_qp_with_timings.py</th>
+    <th>examples/cpp/init_dense_qp_with_timings.cpp</th>
+    <th>examples/python/init_dense_qp_with_timings.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -187,8 +187,8 @@ Once you have defined a Qp object and initialized it with a model, the solve met
 
 <table class="manual">
   <tr>
-    <th>solve_dense_qp.cpp</th>
-    <th>solve_dense_qp.py</th>
+    <th>examples/cpp/solve_dense_qp.cpp</th>
+    <th>examples/python/solve_dense_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -204,8 +204,8 @@ Before ending this section, we will talk about how to activate some other settin
 
 <table class="manual">
   <tr>
-    <th>solve_dense_qp_with_setting.cpp</th>
-    <th>solve_dense_qp_with_setting.py</th>
+    <th>examples/cpp/solve_dense_qp_with_setting.cpp</th>
+    <th>examples/python/solve_dense_qp_with_setting.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -223,8 +223,8 @@ The update method is used to update the model or a parameter of the problem, as 
 
 <table class="manual">
   <tr>
-    <th>update_dense_qp.cpp</th>
-    <th>update_dense_qp.py</th>
+    <th>examples/cpp/update_dense_qp.cpp</th>
+    <th>examples/python/update_dense_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -241,8 +241,8 @@ The major difference between the dense and sparse API is that in the sparse case
 
 <table class="manual">
   <tr>
-    <th>update_sparse_qp.cpp</th>
-    <th>update_sparse_qp.py</th>
+    <th>examples/cpp/update_sparse_qp.cpp</th>
+    <th>examples/python/update_sparse_qp.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -259,8 +259,8 @@ Finally, if you want to change your initial guess option when updating the probl
 
 <table class="manual">
   <tr>
-    <th>update_dense_qp_ws_previous_result.cpp</th>
-    <th>update_dense_qp_ws_previous_result.py</th>
+    <th>examples/cpp/update_dense_qp_ws_previous_result.cpp</th>
+    <th>examples/python/update_dense_qp_ws_previous_result.py</th>
   </tr>
   <tr>
     <td valign="top">
@@ -286,7 +286,7 @@ In this table you have on the three columns from left to right: the name of the 
 | ----------------------------------- | ------------------------------ | -----------------------------------------
 | eps_abs                             | 1.E-3                          | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                              | Relative stopping criterion of the solver.
-| VERBOSE                             | False                          | If set to true, the solver prints information at each loop. 
+| VERBOSE                             | False                          | If set to true, the solver prints information at each loop.
 | compute_timings                     | True                           | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
 | max_iter                            | 1.E4                           | Maximal number of authorized outer iterations.
 | max_iter_in                         | 1500                           | Maximal number of authorized inner iterations.
@@ -314,9 +314,9 @@ In this table you have on the three columns from left to right: the name of the 
 
 The solver has five different possible initial guesses for warm starting or not the initial iterate values:
 * NO_INITIAL_GUESS,
-* EQUALITY_CONSTRAINED_INITIAL_GUESS, 
+* EQUALITY_CONSTRAINED_INITIAL_GUESS,
 * WARM_START_WITH_PREVIOUS_RESULT,
-* WARM_START, 
+* WARM_START,
 * COLD_START_WITH_PREVIOUS_RESULT.
 
 The different options will be commented below in the introduced order above.
@@ -342,7 +342,7 @@ b
 \end{bmatrix}$$
 z stays to 0. In general this option warm starts well equality constrained QP.
 
-\subsubsection OverviewWarmStartWithPreviousResult Warm start with previous result 
+\subsubsection OverviewWarmStartWithPreviousResult Warm start with previous result
 
 If set to this option, the solver will warm start x, y and z with the values of the previous problem solved and it will keep all the last parameters of the solver (i.e., proximal step sizes for example, and the full workspace with the ldlt factorization etc.). Hence, if the new problem to solve is the same as the previous one, the problem is warm started at the solution (and zero iteration will be executed).
 
@@ -352,9 +352,9 @@ Note however, that if your update involves new matrices or that you decide to ch
 
 Finally, note that this option is set by default in the solver. At the first solve, as there is no previous results, x, y and z are warm started with the 0 vector value.
 
-\subsubsection OverviewWarmStart Warm start 
+\subsubsection OverviewWarmStart Warm start
 
-If set to this option, the solver expects then a warm start at the solve method. 
+If set to this option, the solver expects then a warm start at the solve method.
 
 Note, that it is not necessary to set this option through the command below (for example in C++) before the update or solve method call.
 \code
@@ -363,9 +363,9 @@ Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
 
 It is sufficient to just add the warm start in the solve method, and the solver will automatically make the setting change internally.
 
-\subsubsection OverviewColdStartWithPreviousResult Cold start with previous result 
+\subsubsection OverviewColdStartWithPreviousResult Cold start with previous result
 
-If set to this option, the solver will warm start x, y and z with the values of the previous problem solved. Contrary to the WARM_START_WITH_PREVIOUS_RESULT option, all other parameters of the solver (i.e., proximal step sizes for example, and the full workspace with the ldlt factorization etc.) are re-set to their default values (hence a factorization is reperformed taking into account of z warm start for the active set, but with default values of proximal step sizes). 
+If set to this option, the solver will warm start x, y and z with the values of the previous problem solved. Contrary to the WARM_START_WITH_PREVIOUS_RESULT option, all other parameters of the solver (i.e., proximal step sizes for example, and the full workspace with the ldlt factorization etc.) are re-set to their default values (hence a factorization is reperformed taking into account of z warm start for the active set, but with default values of proximal step sizes).
 
 This option has also been thought initially for being used in optimal control like problems, when the next problem to be solved is closed to the previous one. Indeed, if the problem changes only slightly, it is reasonable to warm start the new problem with the value of the previous one for speeding the whole runtime.
 
@@ -466,7 +466,7 @@ We have the following generic advices for choosing between the sparse and dense 
 * too large (less than some thousands variables),
 * and too sparse (a sparsity ratio of your matrices greater than 0.1),
 
-then we recommand using the solver with dense backend. 
+then we recommand using the solver with dense backend.
 
 
 The sparsity ratio of matrix A is defined as:
@@ -499,7 +499,7 @@ We highly encourage you to enable the vectorization of the underlying linear alg
 \code
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
-make 
+make
 make install
 \endcode
 

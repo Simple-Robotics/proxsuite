@@ -11,7 +11,7 @@ NAME          QRECIPE
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-180-91       
+*   classification QLR2-AN-180-91
 
 ROWS
  E  BAL...BE
@@ -651,54 +651,54 @@ BOUNDS
  FX BOUND     JN44TGBE            0.
  FX BOUND     JP84TGBE            0.
 QUADOBJ
-    BAL.3EBE  BAL.3EBE        10.   
-    BAL.3EBE  BAL.3PBE         1.   
-    BAL.3EBE  BAL.3RBE         1.   
-    BAL.3EBE  EAL...BE         1.   
-    BCC.3EBE  BCC.3EBE        10.   
-    BCC.3EBE  BCC.3PBE         1.   
-    BCC.3EBE  BCC.3RBE         1.   
-    BCC.3EBE  ECC...BE         1.   
-    BCH.3EBE  BCH.3EBE        10.   
-    BCH.3EBE  BCH.3PBE         1.   
-    BCH.3EBE  BCH.3RBE         1.   
-    BCH.3EBE  ECH...BE         1.   
-    BCL.3EBE  BCL.3EBE        10.   
-    BCL.3EBE  BCL.3PBE         1.   
-    BCL.3EBE  BCL.3RBE         1.   
-    BCL.3EBE  ECL...BE         1.   
-    BHH.3EBE  BHH.3EBE        10.   
-    BHH.3EBE  BHH.3PBE         1.   
-    BHH.3EBE  BHH.3RBE         1.   
-    BHH.3EBE  EHH...BE         1.   
-    BAL.3PBE  BAL.3PBE        10.   
-    BAL.3PBE  BAL.3RBE         1.   
-    BAL.3PBE  EAL...BE         1.   
-    BCC.3PBE  BCC.3PBE        10.   
-    BCC.3PBE  BCC.3RBE         1.   
-    BCC.3PBE  ECC...BE         1.   
-    BCH.3PBE  BCH.3PBE        10.   
-    BCH.3PBE  BCH.3RBE         1.   
-    BCH.3PBE  ECH...BE         1.   
-    BCL.3PBE  BCL.3PBE        10.   
-    BCL.3PBE  BCL.3RBE         1.   
-    BCL.3PBE  ECL...BE         1.   
-    BHH.3PBE  BHH.3PBE        10.   
-    BHH.3PBE  BHH.3RBE         1.   
-    BHH.3PBE  EHH...BE         1.   
-    BAL.3RBE  BAL.3RBE        10.   
-    BAL.3RBE  EAL...BE         1.   
-    BCC.3RBE  BCC.3RBE        10.   
-    BCC.3RBE  ECC...BE         1.   
-    BCH.3RBE  BCH.3RBE        10.   
-    BCH.3RBE  ECH...BE         1.   
-    BCL.3RBE  BCL.3RBE        10.   
-    BCL.3RBE  ECL...BE         1.   
-    BHH.3RBE  BHH.3RBE        10.   
-    BHH.3RBE  EHH...BE         1.   
-    EAL...BE  EAL...BE        10.   
-    ECC...BE  ECC...BE        10.   
-    ECH...BE  ECH...BE        10.   
-    ECL...BE  ECL...BE        10.   
-    EHH...BE  EHH...BE        10.   
+    BAL.3EBE  BAL.3EBE        10.
+    BAL.3EBE  BAL.3PBE         1.
+    BAL.3EBE  BAL.3RBE         1.
+    BAL.3EBE  EAL...BE         1.
+    BCC.3EBE  BCC.3EBE        10.
+    BCC.3EBE  BCC.3PBE         1.
+    BCC.3EBE  BCC.3RBE         1.
+    BCC.3EBE  ECC...BE         1.
+    BCH.3EBE  BCH.3EBE        10.
+    BCH.3EBE  BCH.3PBE         1.
+    BCH.3EBE  BCH.3RBE         1.
+    BCH.3EBE  ECH...BE         1.
+    BCL.3EBE  BCL.3EBE        10.
+    BCL.3EBE  BCL.3PBE         1.
+    BCL.3EBE  BCL.3RBE         1.
+    BCL.3EBE  ECL...BE         1.
+    BHH.3EBE  BHH.3EBE        10.
+    BHH.3EBE  BHH.3PBE         1.
+    BHH.3EBE  BHH.3RBE         1.
+    BHH.3EBE  EHH...BE         1.
+    BAL.3PBE  BAL.3PBE        10.
+    BAL.3PBE  BAL.3RBE         1.
+    BAL.3PBE  EAL...BE         1.
+    BCC.3PBE  BCC.3PBE        10.
+    BCC.3PBE  BCC.3RBE         1.
+    BCC.3PBE  ECC...BE         1.
+    BCH.3PBE  BCH.3PBE        10.
+    BCH.3PBE  BCH.3RBE         1.
+    BCH.3PBE  ECH...BE         1.
+    BCL.3PBE  BCL.3PBE        10.
+    BCL.3PBE  BCL.3RBE         1.
+    BCL.3PBE  ECL...BE         1.
+    BHH.3PBE  BHH.3PBE        10.
+    BHH.3PBE  BHH.3RBE         1.
+    BHH.3PBE  EHH...BE         1.
+    BAL.3RBE  BAL.3RBE        10.
+    BAL.3RBE  EAL...BE         1.
+    BCC.3RBE  BCC.3RBE        10.
+    BCC.3RBE  ECC...BE         1.
+    BCH.3RBE  BCH.3RBE        10.
+    BCH.3RBE  ECH...BE         1.
+    BCL.3RBE  BCL.3RBE        10.
+    BCL.3RBE  ECL...BE         1.
+    BHH.3RBE  BHH.3RBE        10.
+    BHH.3RBE  EHH...BE         1.
+    EAL...BE  EAL...BE        10.
+    ECC...BE  ECC...BE        10.
+    ECH...BE  ECH...BE        10.
+    ECL...BE  ECL...BE        10.
+    EHH...BE  EHH...BE        10.
 ENDATA

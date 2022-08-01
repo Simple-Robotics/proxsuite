@@ -24,19 +24,19 @@ If you just need the Python bindings, you can directly have access to them throu
 
 \section OverviewSimple Simplest ProxQP example with compilation command
 
-We start with a simple program to load ProxQP and use ProxQP solver in order to solve a random generated QP problem. It is given in both C++ and Python version.
+We start with a simple program to load ProxQP and use ProxQP solver in order to solve a random generated QP problem. It is given in both C++ and Python cases.
 
 <table class="manual">
   <tr>
-    <th>overview-simple.cpp</th>
-    <th>overview-simple.py</th>
+    <th>examples/cpp/overview-simple.cpp</th>
+    <th>examples/python/overview-simple.py</th>
   </tr>
   <tr>
     <td valign="top">
-      \include overview-simple.cpp
+      \include cpp/overview-simple.cpp
     </td>
     <td valign="top">
-      \include overview-simple.py
+      \include python/overview-simple.py
     </td>
   </tr>
 </table>
@@ -45,7 +45,7 @@ We start with a simple program to load ProxQP and use ProxQP solver in order to 
 
 You can compile the C++ version by including ProxSuite and Eigen header directories
 
-\code g++ -std=c++11 overview-simple.cpp -o overview-simple $(pkg-config --cflags --libs proxsuite)  \endcode
+\code g++ -std=c++11 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags --libs proxsuite)  \endcode
 
 Once your code is compiled, you might then run it using
 
@@ -53,7 +53,7 @@ Once your code is compiled, you might then run it using
 
 In Python, just run it:
 
-\code python overview-simple.py \endcode
+\code python examples/python/overview-simple.py \endcode
 
 \subsection OverviewSimpleExplain Explanation of the program
 

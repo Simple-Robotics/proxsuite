@@ -1,4 +1,4 @@
-NAME          DUAL1     
+NAME          DUAL1
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          DUAL1
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-85-1         
+*   classification QLR2-AN-85-1
 
 ROWS
   N OBJ.FUNC

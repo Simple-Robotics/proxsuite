@@ -11,7 +11,7 @@ NAME          QSCAGR7
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-140-129      
+*   classification QLR2-AN-140-129
 
 ROWS
  N  FOB00001
@@ -465,29 +465,29 @@ RHS
     RHS       ROW00120         6900.   ROW00121         1600.
     RHS       ROW00122          800.
 QUADOBJ
-    COL00001  COL00001        10.   
-    COL00001  COL00002         1.   
-    COL00002  COL00002        30.   
-    COL00002  COL00003         1.   
-    COL00002  COL00005         2.   
-    COL00002  COL00006         1.   
-    COL00002  COL00008         1.   
-    COL00002  COL00011         1.   
-    COL00003  COL00003        30.   
-    COL00003  COL00004         1.   
-    COL00003  COL00005         1.   
-    COL00003  COL00006         2.   
-    COL00003  COL00008         1.   
-    COL00003  COL00011         1.   
-    COL00004  COL00004        10.   
-    COL00005  COL00005        20.   
-    COL00005  COL00006         1.   
-    COL00005  COL00008         1.   
-    COL00005  COL00011         1.   
-    COL00006  COL00006        20.   
-    COL00006  COL00008         1.   
-    COL00006  COL00011         1.   
-    COL00008  COL00008        20.   
-    COL00008  COL00011         1.   
-    COL00011  COL00011        10.   
+    COL00001  COL00001        10.
+    COL00001  COL00002         1.
+    COL00002  COL00002        30.
+    COL00002  COL00003         1.
+    COL00002  COL00005         2.
+    COL00002  COL00006         1.
+    COL00002  COL00008         1.
+    COL00002  COL00011         1.
+    COL00003  COL00003        30.
+    COL00003  COL00004         1.
+    COL00003  COL00005         1.
+    COL00003  COL00006         2.
+    COL00003  COL00008         1.
+    COL00003  COL00011         1.
+    COL00004  COL00004        10.
+    COL00005  COL00005        20.
+    COL00005  COL00006         1.
+    COL00005  COL00008         1.
+    COL00005  COL00011         1.
+    COL00006  COL00006        20.
+    COL00006  COL00008         1.
+    COL00006  COL00011         1.
+    COL00008  COL00008        20.
+    COL00008  COL00011         1.
+    COL00011  COL00011        10.
 ENDATA

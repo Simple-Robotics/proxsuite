@@ -1,4 +1,4 @@
-NAME          LISWET6   
+NAME          LISWET6
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          LISWET6
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-10002-10000  
+*   classification QLR2-AN-10002-10000
 
 ROWS
   N OBJ.FUNC

@@ -11,7 +11,7 @@ NAME          QBANDM
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-472-305      
+*   classification QLR2-AN-472-305
 
 ROWS
  N  ....1
@@ -1869,45 +1869,45 @@ RHS
     ZZZZ0001  .SM20             .374   .SM21              .29
     ZZZZ0001  .SM22            9.453   .SM22A          26.469
 QUADOBJ
-    KUWATS    KUWATS          10.   
-    KUWATS    KUWAIT           1.   
-    4CORNS    4CORNS          10.   
-    4CORNS    4CORN            1.   
-    AWFUL     AWFUL           20.   
-    AWFUL     OFFAL            1.   
-    AWFUL     B33UP6           1.   
-    AWFUL     B33UP7           1.   
-    OFFAL     OFFAL           10.   
-    OFFAL     B33UP6           1.   
-    CBTAR     CBTAR           10.   
-    CBTAR     CBTART           1.   
-    CBTAR     MN61             1.   
-    CBTART    CBTART          10.   
-    CBTART    MN61             1.   
-    FLDLPG    FLDLPG          10.   
-    ORROLC    ORROLC          10.   
-    ORROLC    SMROLC           1.   
-    ORROLC    OLC250           1.   
-    ORROLC    OLCO42           1.   
-    KUWAIT    KUWAIT          10.   
-    B25&26    B25&26          10.   
-    WILM26    WILM26          10.   
-    B33UP6    B33UP6          10.   
-    B33UP7    B33UP7          10.   
-    B33DN6    B33DN6          10.   
-    MN61      MN61            10.   
-    4CORN     4CORN           10.   
-    GACH      GACH            10.   
-    SMT       SMT             10.   
-    SMRNG     SMRNG           10.   
-    SMRNG     NAGASO           1.   
-    SMRSMV    SMRSMV          10.   
-    SMROLC    SMROLC          10.   
-    SMROLC    OLC250           1.   
-    SMROLC    OLCO42           1.   
-    OLC250    OLC250          10.   
-    OLC250    OLCO42           1.   
-    OLCO42    OLCO42          10.   
-    NAGASO    NAGASO          10.   
-    W67NIR    W67NIR          10.   
+    KUWATS    KUWATS          10.
+    KUWATS    KUWAIT           1.
+    4CORNS    4CORNS          10.
+    4CORNS    4CORN            1.
+    AWFUL     AWFUL           20.
+    AWFUL     OFFAL            1.
+    AWFUL     B33UP6           1.
+    AWFUL     B33UP7           1.
+    OFFAL     OFFAL           10.
+    OFFAL     B33UP6           1.
+    CBTAR     CBTAR           10.
+    CBTAR     CBTART           1.
+    CBTAR     MN61             1.
+    CBTART    CBTART          10.
+    CBTART    MN61             1.
+    FLDLPG    FLDLPG          10.
+    ORROLC    ORROLC          10.
+    ORROLC    SMROLC           1.
+    ORROLC    OLC250           1.
+    ORROLC    OLCO42           1.
+    KUWAIT    KUWAIT          10.
+    B25&26    B25&26          10.
+    WILM26    WILM26          10.
+    B33UP6    B33UP6          10.
+    B33UP7    B33UP7          10.
+    B33DN6    B33DN6          10.
+    MN61      MN61            10.
+    4CORN     4CORN           10.
+    GACH      GACH            10.
+    SMT       SMT             10.
+    SMRNG     SMRNG           10.
+    SMRNG     NAGASO           1.
+    SMRSMV    SMRSMV          10.
+    SMROLC    SMROLC          10.
+    SMROLC    OLC250           1.
+    SMROLC    OLCO42           1.
+    OLC250    OLC250          10.
+    OLC250    OLCO42           1.
+    OLCO42    OLCO42          10.
+    NAGASO    NAGASO          10.
+    W67NIR    W67NIR          10.
 ENDATA

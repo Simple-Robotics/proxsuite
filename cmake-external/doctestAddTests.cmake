@@ -19,13 +19,16 @@ function(add_command NAME)
       set(_args "${_args} ${_arg}")
     endif()
   endforeach()
-  set(script "${script}${NAME}(${_args})\n" PARENT_SCOPE)
+  set(script
+      "${script}${NAME}(${_args})\n"
+      PARENT_SCOPE
+  )
 endfunction()
 
 # Run test executable to get list of available tests
 if(NOT EXISTS "${TEST_EXECUTABLE}")
-  message(FATAL_ERROR
-    "Specified test executable '${TEST_EXECUTABLE}' does not exist"
+  message(
+    FATAL_ERROR "Specified test executable '${TEST_EXECUTABLE}' does not exist"
   )
 endif()
 
@@ -38,36 +41,55 @@ execute_process(
   OUTPUT_VARIABLE output
   RESULT_VARIABLE result
 )
-if(NOT ${result} EQUAL 0)
-  message(FATAL_ERROR
-    "Error running test executable '${TEST_EXECUTABLE}':\n"
-    "  Result: ${result}\n"
-    "  Output: ${output}\n"
+if(NOT
+   ${result}
+   EQUAL
+   0
+)
+  message(FATAL_ERROR "Error running test executable '${TEST_EXECUTABLE}':\n"
+                      "  Result: ${result}\n" "  Output: ${output}\n"
   )
 endif()
 
-string(REPLACE "\n" ";" output "${output}")
+string(
+  REPLACE "\n"
+          ";"
+          output
+          "${output}"
+)
 
 # Parse output
 foreach(line ${output})
-  if("${line}" STREQUAL "===============================================================================" OR "${line}" MATCHES [==[^\[doctest\] ]==])
+  if("${line}"
+     STREQUAL
+     "==============================================================================="
+     OR "${line}" MATCHES [==[^\[doctest\] ]==]
+  )
     continue()
   endif()
   set(test ${line})
   # use escape commas to handle properly test cases with commas inside the name
-  string(REPLACE "," "\\," test_name ${test})
+  string(
+    REPLACE ","
+            "\\,"
+            test_name
+            ${test}
+  )
   # ...and add to script
-  add_command(add_test
+  add_command(
+    add_test
     "${prefix}${test}${suffix}"
     ${TEST_EXECUTOR}
     "${TEST_EXECUTABLE}"
     "--test-case=${test_name}"
     ${extra_args}
   )
-  add_command(set_tests_properties
+  add_command(
+    set_tests_properties
     "${prefix}${test}${suffix}"
     PROPERTIES
-    WORKING_DIRECTORY "${TEST_WORKING_DIR}"
+    WORKING_DIRECTORY
+    "${TEST_WORKING_DIR}"
     ${properties}
   )
   list(APPEND tests "${prefix}${test}${suffix}")

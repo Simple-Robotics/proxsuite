@@ -2,7 +2,7 @@
 
 \section OverviewDense Dense linear solver
 
-TODO 
+TODO
 
 \section OverviewSparse Sparse linear solver
 

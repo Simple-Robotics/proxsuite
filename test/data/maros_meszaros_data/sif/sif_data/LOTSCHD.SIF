@@ -1,4 +1,4 @@
-NAME          LOTSCHD   
+NAME          LOTSCHD
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          LOTSCHD
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-12-7         
+*   classification QLR2-AN-12-7
 
 ROWS
   N OBJ.FUNC

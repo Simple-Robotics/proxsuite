@@ -1,25 +1,31 @@
-# The PROXQP Solver
+# ProxSuite
 
 ![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)
 
-The PROXQP solver is a numerical optimization package for solving problems in the form
-```
+**ProxSuite** is a collection of open-source, numerically robuste, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms.
+While the first targeted application is Robotics, **ProxSuite** can be used in other contextes without any limits.
+Through **ProxSuite**, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
+
+**ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
+
+## **ProxQP**
+
+The **ProxQP** solver is a numerical optimization package for solving problems of the form
+```latex
 minimize        0.5 x' H x + g' x
 
 subject to           A x = b
                 l <= C x <= u
 ```
+where $x \in \mathbb{R}^n$ is the optimization variable. The objective function is defined by a positive semidefinite matrix $H \in \mathcal{S}^n_+$ and vector $g \in \mathbb{R}^n$. The linear constraints are defined by the equality-contraint matrix $A \in \mathbb{R}^{n_\text{eq} \times n}$ and the inequality-constraint matrix $C \in \mathbb{R}^{n_\text{in} \times n}$ and the vectors $b \in \mathbb{R}^{n_\text{eq}}$, $l \in \mathbb{R}^{n_\text{in}}$ and $u \in \mathbb{R}^{n_\text{in}}$ so that $b_i \in \mathbb{R},~ \forall i = 1,...,n_\text{eq}$ and $l_i \in \mathbb{R} \cup \{ -\infty \}$ and $u_i \in \mathbb{R} \cup \{ +\infty \}, ~\forall i = 1,...,n_\text{in}$.
 
-where `x in R^n` is the optimization variable. The objective function is defined by a positive semidefinite matrix `H in S^n_+` and vector `g in R^n`. The linear constraints are defined by matrices `A in R^{n_eq x n}`, `C in R^{n_in x n}` and vectors `b`, `l` and `u` so that `b_i in R` for all `i in 1,...,n_eq` and `l_i in R U {-inf}` and `u_i in R U {+inf}` for all `i in 1,...,n_in`.
+### Citing **ProxQP**
 
-## Citing PROXQP
+If you are using **ProxQP** for your work, we encourage you to [cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/).
 
-If you are using PROXQP for your work, we encourage you to [cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/).
+### Numerical benchmarks
 
-## Numerical benchmarks
-
-Numerical benchmarks against other solvers are available [here](https://github.com/Bambade/proxqp_benchmark).
-
+The numerical benchmarks of **ProxQP** against other commercial and open-source solvers are available [here](https://github.com/Bambade/qp_benchmark).
 
 ## Installation
 
@@ -46,7 +52,7 @@ git clone https://github.com/Simple-Robotics/proxqp.git --recursive
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
-make 
+make
 make install
 ```
 
@@ -57,7 +63,7 @@ You just need to ensure that Python3 is indeed present on your system and activa
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON
-make 
+make
 make install
 ```
 
@@ -78,7 +84,7 @@ You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
-make 
+make
 make install
 ```
 

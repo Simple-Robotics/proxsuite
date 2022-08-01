@@ -18,8 +18,6 @@ ENABLE_PREPROCESSING    = YES
 MACRO_EXPANSION         = YES
 EXPAND_ONLY_PREDEF      = YES
 PREDEFINED              += EIGEN_MAKE_ALIGNED_OPERATOR_NEW \
-                           PROXNLP_FUNCTION_TYPEDEFS \
-                           PROXNLP_DYNAMIC_TYPEDEFS
 
 FULL_PATH_NAMES         = YES
 EXCLUDE_SYMBOLS         = *::internal, internal::*, *::internal::*
@@ -56,7 +54,7 @@ SOURCE_BROWSER          = YES
 
 ALPHABETICAL_INDEX      = YES
 
-USE_MDFILE_AS_MAINPAGE  = @CMAKE_SOURCE_DIR@/doc/1-Overview.md 
+USE_MDFILE_AS_MAINPAGE  = @CMAKE_SOURCE_DIR@/doc/1-Overview.md
 
 BUILTIN_STL_SUPPORT     = YES
 HAVE_DOT                = YES

@@ -1,4 +1,4 @@
-NAME          HS76      
+NAME          HS76
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          HS76
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-4-3          
+*   classification QLR2-AN-4-3
 
 ROWS
   N OBJ.FUNC
