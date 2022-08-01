@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, INRIA
+// Copyright (c) 2022 INRIA
 //
 #include <doctest.h>
 #include <Eigen/Core>

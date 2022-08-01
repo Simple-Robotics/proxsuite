@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, INRIA
+// Copyright (c) 2022 INRIA
 //
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>

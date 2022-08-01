@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, INRIA
+// Copyright (c) 2022 INRIA
 //
 #include <proxsuite/proxqp/results.hpp>
 #include <pybind11/pybind11.h>

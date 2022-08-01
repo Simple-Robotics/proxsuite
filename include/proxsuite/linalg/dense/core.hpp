@@ -1,6 +1,6 @@
 /** \file */
 //
-// Copyright (c) 2022, INRIA
+// Copyright (c) 2022 INRIA
 //
 #ifndef DENSE_LDLT_CORE_HPP
 #define DENSE_LDLT_CORE_HPP

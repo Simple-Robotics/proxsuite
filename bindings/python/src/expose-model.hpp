@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022, INRIA
+// Copyright (c) 2022 INRIA
 //
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
