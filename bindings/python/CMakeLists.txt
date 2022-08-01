@@ -35,6 +35,11 @@ set_target_properties(
              LIBRARY_OUTPUT_DIRECTORY
              "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
 )
+install(
+  TARGETS instructionset
+  EXPORT ${TARGETS_EXPORT_NAME}
+  DESTINATION ${${PYWRAP}_INSTALL_DIR}
+)
 
 macro(
   CREATE_PYTHON_TARGET
