@@ -55,6 +55,9 @@ option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 option(BUILD_WITH_VECTORIZATION_SUPPORT
        "Build the library with the support of modern SIMD instructions." ON
 )
+option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
+       "Build the bindings with AVX512 support." ON
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -76,7 +79,7 @@ add_project_dependency(
   "eigen3 >= 3.0.5"
 )
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  find_package(Simde REQUIRED)
+  add_project_dependency(Simde REQUIRED)
 endif()
 
 # Build the main library
