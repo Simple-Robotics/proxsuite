@@ -10,6 +10,10 @@
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <map>
 
+namespace proxsuite {
+namespace proxqp {
+namespace test {
+
 using c_int = long long;
 using c_float = double;
 
@@ -27,7 +31,6 @@ using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 template<typename Scalar>
 using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
 
-namespace ldlt_test {
 using namespace proxqp;
 namespace eigen {
 template<typename T>
@@ -317,7 +320,6 @@ to_sparse(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
 auto
 to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
 } // namespace osqp
-} // namespace ldlt_test
 
 template<typename T>
 auto
@@ -344,7 +346,7 @@ matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, proxqp::colmajor>
   using Upscaled = typename std::
     conditional<std::is_floating_point<T>::value, long double, T>::type;
 
-  return ::mat_cast<T, Upscaled>(::matmul_impl<Upscaled>(
+  return mat_cast<T, Upscaled>(matmul_impl<Upscaled>(
     Mat<T, proxqp::colmajor>(a).template cast<Upscaled>(),
     Mat<T, proxqp::colmajor>(b).template cast<Upscaled>()));
 }
@@ -357,7 +359,7 @@ auto
 matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
   -> Mat<T, proxqp::colmajor>
 {
-  return ::matmul(::matmul(a, b), c);
+  return matmul(matmul(a, b), c);
 }
 
 VEG_TAG(random_with_dim_and_n_eq, RandomWithDimAndNeq);
@@ -371,7 +373,7 @@ VEG_TAG(random_with_dim_and_n_in_degenerate,
         RandomWithDimNinDegenerateStronglyConvex);
 VEG_TAG(from_data, FromData);
 template<typename Scalar>
-struct Qp
+struct RandomQP
 {
 
   enum
@@ -400,14 +402,14 @@ struct Qp
            typename Matrix_C,
            typename Vector_u,
            typename Vector_l>
-  Qp(FromData /*tag*/,
-     const Eigen::MatrixBase<Matrix_H>& H_,
-     const Eigen::MatrixBase<Vector_g>& g_,
-     const Eigen::MatrixBase<Matrix_A>& A_,
-     const Eigen::MatrixBase<Vector_b>& b_,
-     const Eigen::MatrixBase<Matrix_C>& C_,
-     const Eigen::MatrixBase<Vector_u>& u_,
-     const Eigen::MatrixBase<Vector_l>& l_) noexcept
+  RandomQP(FromData /*tag*/,
+           const Eigen::MatrixBase<Matrix_H>& H_,
+           const Eigen::MatrixBase<Vector_g>& g_,
+           const Eigen::MatrixBase<Matrix_A>& A_,
+           const Eigen::MatrixBase<Vector_b>& b_,
+           const Eigen::MatrixBase<Matrix_C>& C_,
+           const Eigen::MatrixBase<Vector_u>& u_,
+           const Eigen::MatrixBase<Vector_l>& l_) noexcept
     : H(H_)
     , g(g_)
     , A(A_)
@@ -419,13 +421,13 @@ struct Qp
   {
   }
 
-  Qp(RandomWithDimAndNeq /*tag*/, proxqp::isize dim, proxqp::isize n_eq)
-    : H(ldlt_test::rand::positive_definite_rand<Scalar>(dim, Scalar(1e2)))
+  RandomQP(RandomWithDimAndNeq /*tag*/, proxqp::isize dim, proxqp::isize n_eq)
+    : H(rand::positive_definite_rand<Scalar>(dim, Scalar(1e2)))
     , g(dim)
-    , A(ldlt_test::rand::matrix_rand<Scalar>(n_eq, dim))
+    , A(rand::matrix_rand<Scalar>(n_eq, dim))
     , b(n_eq)
     , C(0, dim)
-    , solution(ldlt_test::rand::vector_rand<Scalar>(dim + n_eq))
+    , solution(rand::vector_rand<Scalar>(dim + n_eq))
   {
 
     // 1/2 (x-sol)T H (x-sol)
@@ -437,35 +439,33 @@ struct Qp
     b.noalias() = A * primal_solution;
   }
 
-  Qp(RandomWithDimNeqNin /*tag*/,
-     proxqp::isize dim,
-     proxqp::isize n_eq,
-     proxqp::isize n_in,
-     Scalar sparsity_factor,
-     Scalar strong_convexity_factor = Scalar(1e-2))
-    : H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+  RandomQP(RandomWithDimNeqNin /*tag*/,
+           proxqp::isize dim,
+           proxqp::isize n_eq,
+           proxqp::isize n_in,
+           Scalar sparsity_factor,
+           Scalar strong_convexity_factor = Scalar(1e-2))
+    : H(rand::sparse_positive_definite_rand_not_compressed<Scalar>(
         dim,
         strong_convexity_factor,
         sparsity_factor))
-    , g(ldlt_test::rand::vector_rand<Scalar>(dim))
-    , A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        n_eq,
-        dim,
-        sparsity_factor))
+    , g(rand::vector_rand<Scalar>(dim))
+    , A(rand::sparse_matrix_rand_not_compressed<Scalar>(n_eq,
+                                                        dim,
+                                                        sparsity_factor))
     , b(n_eq)
-    , C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        n_in,
-        dim,
-        sparsity_factor))
+    , C(rand::sparse_matrix_rand_not_compressed<Scalar>(n_in,
+                                                        dim,
+                                                        sparsity_factor))
     , u(n_in)
     , l(n_in)
   {
 
-    auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+    auto x_sol = rand::vector_rand<Scalar>(dim);
     auto delta = Vec<Scalar>(n_in);
 
     for (proxqp::isize i = 0; i < n_in; ++i) {
-      delta(i) = ldlt_test::rand::uniform_rand();
+      delta(i) = rand::uniform_rand();
     }
 
     u = C * x_sol + delta;
@@ -474,53 +474,50 @@ struct Qp
     l.array() -= 1.e20;
   }
 
-  Qp(RandomUnconstrained /*tag*/,
-     proxqp::isize dim,
-     Scalar sparsity_factor,
-     Scalar strong_convexity_factor = Scalar(1e-2))
-    : H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+  RandomQP(RandomUnconstrained /*tag*/,
+           proxqp::isize dim,
+           Scalar sparsity_factor,
+           Scalar strong_convexity_factor = Scalar(1e-2))
+    : H(rand::sparse_positive_definite_rand_not_compressed<Scalar>(
         dim,
         strong_convexity_factor,
         sparsity_factor))
-    , g(ldlt_test::rand::vector_rand<Scalar>(dim))
-    , A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        0,
-        dim,
-        sparsity_factor))
+    , g(rand::vector_rand<Scalar>(dim))
+    , A(rand::sparse_matrix_rand_not_compressed<Scalar>(0,
+                                                        dim,
+                                                        sparsity_factor))
     , b(0)
-    , C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        0,
-        dim,
-        sparsity_factor))
+    , C(rand::sparse_matrix_rand_not_compressed<Scalar>(0,
+                                                        dim,
+                                                        sparsity_factor))
     , u(0)
     , l(0)
   {
   }
 
-  Qp(RandomWithDimNinBoxConstraints /*tag*/,
-     proxqp::isize dim,
-     Scalar sparsity_factor,
-     Scalar strong_convexity_factor = Scalar(1e-2))
-    : H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+  RandomQP(RandomWithDimNinBoxConstraints /*tag*/,
+           proxqp::isize dim,
+           Scalar sparsity_factor,
+           Scalar strong_convexity_factor = Scalar(1e-2))
+    : H(rand::sparse_positive_definite_rand_not_compressed<Scalar>(
         dim,
         strong_convexity_factor,
         sparsity_factor))
-    , g(ldlt_test::rand::vector_rand<Scalar>(dim))
-    , A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        0,
-        dim,
-        sparsity_factor))
+    , g(rand::vector_rand<Scalar>(dim))
+    , A(rand::sparse_matrix_rand_not_compressed<Scalar>(0,
+                                                        dim,
+                                                        sparsity_factor))
     , b(0)
     , C(Mat<Scalar, proxqp::colmajor>(dim, dim))
     , u(dim)
     , l(dim)
   {
 
-    auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+    auto x_sol = rand::vector_rand<Scalar>(dim);
     auto delta = Vec<Scalar>(dim);
 
     for (proxqp::isize i = 0; i < dim; ++i) {
-      delta(i) = ldlt_test::rand::uniform_rand();
+      delta(i) = rand::uniform_rand();
     }
     C.setZero();
     C.diagonal().array() += 1;
@@ -528,34 +525,32 @@ struct Qp
     l = x_sol - delta;
   }
 
-  Qp(RandomWithDimNinNotStronglyConvex /*tag*/,
-     proxqp::isize dim,
-     proxqp::isize n_in,
-     Scalar sparsity_factor)
-    : H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+  RandomQP(RandomWithDimNinNotStronglyConvex /*tag*/,
+           proxqp::isize dim,
+           proxqp::isize n_in,
+           Scalar sparsity_factor)
+    : H(rand::sparse_positive_definite_rand_not_compressed<Scalar>(
         dim,
         Scalar(0),
         sparsity_factor))
     , g(dim)
-    , A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        0,
-        dim,
-        sparsity_factor))
+    , A(rand::sparse_matrix_rand_not_compressed<Scalar>(0,
+                                                        dim,
+                                                        sparsity_factor))
     , b(0)
-    , C(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        n_in,
-        dim,
-        sparsity_factor))
+    , C(rand::sparse_matrix_rand_not_compressed<Scalar>(n_in,
+                                                        dim,
+                                                        sparsity_factor))
     , u(n_in)
     , l(n_in)
   {
 
-    auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
-    auto z_sol = ldlt_test::rand::vector_rand<Scalar>(n_in);
+    auto x_sol = rand::vector_rand<Scalar>(dim);
+    auto z_sol = rand::vector_rand<Scalar>(n_in);
     auto delta = Vec<Scalar>(n_in);
 
     for (proxqp::isize i = 0; i < n_in; ++i) {
-      delta(i) = ldlt_test::rand::uniform_rand();
+      delta(i) = rand::uniform_rand();
     }
     auto Cx = C * x_sol;
     u = Cx + delta;
@@ -564,37 +559,36 @@ struct Qp
     g = -(H * x_sol + C.transpose() * z_sol);
   }
 
-  Qp(RandomWithDimNinDegenerateStronglyConvex /*tag*/,
-     proxqp::isize dim,
-     proxqp::isize n_in,
-     Scalar sparsity_factor,
-     Scalar strong_convexity_factor = Scalar(1e-2))
-    : H(ldlt_test::rand::sparse_positive_definite_rand_not_compressed<Scalar>(
+  RandomQP(RandomWithDimNinDegenerateStronglyConvex /*tag*/,
+           proxqp::isize dim,
+           proxqp::isize n_in,
+           Scalar sparsity_factor,
+           Scalar strong_convexity_factor = Scalar(1e-2))
+    : H(rand::sparse_positive_definite_rand_not_compressed<Scalar>(
         dim,
         strong_convexity_factor,
         sparsity_factor))
-    , g(ldlt_test::rand::vector_rand<Scalar>(dim))
-    , A(ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
-        0,
-        dim,
-        sparsity_factor))
+    , g(rand::vector_rand<Scalar>(dim))
+    , A(rand::sparse_matrix_rand_not_compressed<Scalar>(0,
+                                                        dim,
+                                                        sparsity_factor))
     , b(0)
     , C(Mat<Scalar, proxqp::colmajor>(2 * n_in, dim))
     , u(2 * n_in)
     , l(2 * n_in)
   {
 
-    auto x_sol = ldlt_test::rand::vector_rand<Scalar>(dim);
+    auto x_sol = rand::vector_rand<Scalar>(dim);
     auto delta = Vec<Scalar>(2 * n_in);
 
-    auto C_ = ldlt_test::rand::sparse_matrix_rand_not_compressed<Scalar>(
+    auto C_ = rand::sparse_matrix_rand_not_compressed<Scalar>(
       n_in, dim, sparsity_factor);
     C.setZero();
     C.block(0, 0, n_in, dim) = C_;
     C.block(n_in, 0, n_in, dim) = C_;
 
     for (proxqp::isize i = 0; i < 2 * n_in; ++i) {
-      delta(i) = ldlt_test::rand::uniform_rand();
+      delta(i) = rand::uniform_rand();
     }
     u = C * x_sol + delta;
     l.setZero();
@@ -653,5 +647,9 @@ struct EigenNoAlloc
   EigenNoAlloc() = default;
 #endif
 };
+
+} // namespace test
+} // namespace proxqp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_TEST_UTIL_HPP */

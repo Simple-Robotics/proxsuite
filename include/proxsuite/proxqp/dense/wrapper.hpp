@@ -28,14 +28,14 @@ namespace dense {
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <test/include/util.hpp>
+#include <util.hpp>
 
 using T = double;
 auto main() -> int {
 
         // Generate a random QP problem with primal variable dimension of size
 dim; n_eq equality constraints and n_in inequality constraints
-        ldlt_test::rand::set_seed(1);
+        ::proxsuite::proxqp::test::rand::set_seed(1);
         proxqp::isize dim = 10;
         proxqp::isize n_eq(dim / 4);
         proxqp::isize n_in(dim / 4);

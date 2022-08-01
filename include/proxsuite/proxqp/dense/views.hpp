@@ -35,8 +35,8 @@ struct FnInfo<auto(Args...)->Ret_>
 } // namespace detail
 
 #define LDLT_IMPL_GET_PARAM(Fn, Idx)                                           \
-  typename ::proxqp::detail::FnInfo<decltype Fn /* NOLINT */>::template Arg<(  \
-    Idx)>,
+  typename ::proxsuite::proxqp::detail::FnInfo<                                \
+    decltype Fn /* NOLINT */>::template Arg<(Idx)>,
 
 #define LDLT_IMPL_GET_PARAMS_0(NParams, ...)                                   \
   __VEG_PP_TUPLE_FOR_EACH(LDLT_IMPL_GET_PARAM,                                 \
@@ -52,9 +52,9 @@ struct FnInfo<auto(Args...)->Ret_>
 #define LDLT_EXPLICIT_TPL_DEF(NParams, ...)                                    \
   template auto __VA_ARGS__(                                                   \
     LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                                 \
-      typename ::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::template Arg<( \
-        NParams)-1>)                                                           \
-    ->typename ::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
+      typename ::proxsuite::proxqp::detail::FnInfo<                            \
+        decltype(__VA_ARGS__)>::template Arg<(NParams)-1>)                     \
+    ->typename ::proxsuite::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
   extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 

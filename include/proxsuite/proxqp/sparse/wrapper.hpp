@@ -28,7 +28,7 @@ namespace sparse {
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <test/include/util.hpp>
+#include <util.hpp>
 
 using T = double;
 using I = c_int;
@@ -36,19 +36,21 @@ auto main() -> int {
 
         // Generate a random QP problem with primal variable dimension of size
 dim; n_eq equality constraints and n_in inequality constraints
-        ldlt_test::rand::set_seed(1);
+        ::proxsuite::proxqp::test::rand::set_seed(1);
         proxqp::isize dim = 10;
         proxqp::isize n_eq(dim / 4);
         proxqp::isize n_in(dim / 4);
         T strong_convexity_factor(1.e-2);
         T sparsity_factor = 0.15; // controls the sparsity of each matrix of the
 problem generated T eps_abs = T(1e-9); double p = 1.0; T conditioning(10.0);
-        auto H = ldlt_test::rand::sparse_positive_definite_rand(n, conditioning,
-p); auto g = ldlt_test::rand::vector_rand<T>(n); auto A =
-ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
-ldlt_test::rand::vector_rand<T>(n_eq); auto C =
-ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
-ldlt_test::rand::vector_rand<T>(n_in); auto u = (l.array() + 1).matrix().eval();
+        auto H =
+::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(n, conditioning,
+p); auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n); auto A =
+::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
+::proxsuite::proxqp::test::rand::vector_rand<T>(n_eq); auto C =
+::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
+::proxsuite::proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+1).matrix().eval();
 
         proxqp::sparse::QP<T,I> Qp(n, n_eq, n_in);
         Qp.settings.eps_abs = 1.E-9;

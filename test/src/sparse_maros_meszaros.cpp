@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.h>
+#include <doctest.hpp>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>

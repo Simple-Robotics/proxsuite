@@ -5,7 +5,7 @@
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-#include <doctest.h>
+#include <doctest.hpp>
 #include <iostream>
 
 template<typename T, typename I>

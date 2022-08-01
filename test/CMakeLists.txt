@@ -1,14 +1,14 @@
 include(../cmake-external/doctest.cmake)
 find_package(Matio REQUIRED)
 
-include_directories(include)
-
-add_library(doctest_main STATIC src/doctest_main.cpp)
-add_library(libcnpy OBJECT src/cnpy.cpp)
-target_link_libraries(libcnpy Eigen3::Eigen)
+add_library(doctest STATIC doctest/doctest.cpp)
+target_include_directories(doctest PUBLIC ./doctest)
+add_library(cnpy OBJECT src/cnpy.cpp)
+target_link_libraries(cnpy Eigen3::Eigen)
+target_include_directories(cnpy PUBLIC ./include)
 
 add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
-target_include_directories(proxsuite-test-util PUBLIC test/include)
+target_include_directories(proxsuite-test-util PUBLIC ./include)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   target_link_libraries(proxsuite-test-util proxsuite-vectorized matio)
 else()
@@ -21,7 +21,7 @@ macro(proxsuite_test name path)
   target_link_libraries(
     test-cpp-${name}
     proxsuite
-    doctest_main
+    doctest
     proxsuite-test-util
   )
   target_compile_definitions(
@@ -43,7 +43,7 @@ if(0)
 
   add_executable(test.qp_eq.py src/qp_eq_py.cpp)
   add_dependencies(test.qp_eq.py test.qp_eq.py.generated_problems)
-  target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS} doctest_main)
+  target_link_libraries(test.qp_eq.py ${LDLT_TEST_LIBS} doctest)
 
   target_compile_definitions(
     test.qp_eq.py

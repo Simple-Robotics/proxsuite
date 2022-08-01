@@ -1,12 +1,12 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.h>
+#include <doctest.hpp>
 #include <util.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
-using namespace proxsuite::proxqp;
+using namespace proxsuite;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -85,6 +85,8 @@ char const* files[] = {
 TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
+  using isize = proxqp::test::isize;
+
   for (auto const* file : files) {
     auto qp = load_qp(file);
     isize n = qp.P.rows();
@@ -128,19 +130,19 @@ TEST_CASE("dense maros meszaros using the api")
         const auto& y = Qp.results.y;
         const auto& z = Qp.results.z;
 
-        T prim_eq = proxsuite::proxqp::dense::infty_norm(A * x - b);
-        T prim_in = proxsuite::proxqp::dense::infty_norm(
-          proxsuite::proxqp::dense::positive_part(C * x - u) +
-          proxsuite::proxqp::dense::negative_part(C * x - l));
+        T prim_eq = proxqp::dense::infty_norm(A * x - b);
+        T prim_in =
+          proxqp::dense::infty_norm(proxqp::dense::positive_part(C * x - u) +
+                                    proxqp::dense::negative_part(C * x - l));
         std::cout << "primal residual " << std::max(prim_eq, prim_in)
                   << std::endl;
         std::cout << "dual residual "
-                  << proxsuite::proxqp::dense::infty_norm(
-                       H * x + g + A.transpose() * y + C.transpose() * z)
+                  << proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
+                                               C.transpose() * z)
                   << std::endl;
-        CHECK(dense::infty_norm(H * x + g + A.transpose() * y +
-                                C.transpose() * z) < 2 * eps);
-        CHECK(dense::infty_norm(A * x - b) > -eps);
+        CHECK(proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
+                                        C.transpose() * z) < 2 * eps);
+        CHECK(proxqp::dense::infty_norm(A * x - b) > -eps);
         CHECK((C * x - l).minCoeff() > -eps);
         CHECK((C * x - u).maxCoeff() < eps);
 

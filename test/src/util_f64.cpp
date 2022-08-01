@@ -1,12 +1,16 @@
 #include <util.hpp>
 
-namespace ldlt_test {
+namespace proxsuite {
+namespace proxqp {
+namespace test {
+
 namespace eigen {
 LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f64, colmajor>>);
 LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<Mat<f64, colmajor>>);
 LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f64, rowmajor>>);
 LDLT_EXPLICIT_TPL_DEF(2, ldlt_compute<Mat<f64, rowmajor>>);
 } // namespace eigen
+
 namespace rand {
 LDLT_EXPLICIT_TPL_DEF(2, matrix_rand<f64>);
 LDLT_EXPLICIT_TPL_DEF(1, vector_rand<f64>);
@@ -15,6 +19,7 @@ LDLT_EXPLICIT_TPL_DEF(1, orthonormal_rand<f64>);
 LDLT_EXPLICIT_TPL_DEF(3, sparse_matrix_rand<f64>);
 LDLT_EXPLICIT_TPL_DEF(3, sparse_positive_definite_rand<f64>);
 } // namespace rand
+
 namespace osqp {
 auto
 to_sparse(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>
@@ -49,6 +54,9 @@ to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>
   return out;
 }
 } // namespace osqp
-} // namespace ldlt_test
 
-LDLT_EXPLICIT_TPL_DEF(1, mat_cast<proxqp::f64, long double>);
+LDLT_EXPLICIT_TPL_DEF(1, mat_cast<f64, long double>);
+
+} // namespace test
+} // namespace proxqp
+} // namespace proxsuite

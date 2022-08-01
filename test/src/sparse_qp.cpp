@@ -3,44 +3,45 @@
 //
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <util.hpp>
-#include <doctest.h>
+#include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
-using namespace proxqp;
+using namespace proxsuite;
 using T = double;
-using I = c_int;
-using namespace proxsuite::linalg::sparse::tags;
+using I = proxqp::test::c_int;
+using namespace linalg::sparse::tags;
 /*
 TEST_CASE("random ruiz") {
 
         for (auto const& dims : {
-                                         proxsuite::linalg::veg::tuplify(2, 0,
-2), proxsuite::linalg::veg::tuplify(50, 0, 0),
-                                         proxsuite::linalg::veg::tuplify(50, 25,
-0), proxsuite::linalg::veg::tuplify(50, 0, 25),
-                                         proxsuite::linalg::veg::tuplify(50, 10,
+                                         linalg::veg::tuplify(2, 0,
+2), linalg::veg::tuplify(50, 0, 0),
+                                         linalg::veg::tuplify(50, 25,
+0), linalg::veg::tuplify(50, 0, 25),
+                                         linalg::veg::tuplify(50, 10,
 25),
                          }) {
                 VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
                 double p = 1.0;
 
-                auto H = ldlt_test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = ldlt_test::rand::vector_rand<T>(n); auto AT =
-ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-ldlt_test::rand::vector_rand<T>(n_eq); auto CT =
-ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-ldlt_test::rand::vector_rand<T>(n_in); auto u = (l.array() + 1).matrix().eval();
+                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto AT =
+proxqp::test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+proxqp::test::rand::vector_rand<T>(n_eq); auto CT =
+proxqp::test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+1).matrix().eval();
 
                 {
                         sparse::QpView<T, I> qp = {
-                                        {proxsuite::linalg::sparse::from_eigen,
-H}, {proxsuite::linalg::sparse::from_eigen, g},
-                                        {proxsuite::linalg::sparse::from_eigen,
-AT}, {proxsuite::linalg::sparse::from_eigen, b},
-                                        {proxsuite::linalg::sparse::from_eigen,
-CT}, {proxsuite::linalg::sparse::from_eigen, l},
-                                        {proxsuite::linalg::sparse::from_eigen,
+                                        {linalg::sparse::from_eigen,
+H}, {linalg::sparse::from_eigen, g},
+                                        {linalg::sparse::from_eigen,
+AT}, {linalg::sparse::from_eigen, b},
+                                        {linalg::sparse::from_eigen,
+CT}, {linalg::sparse::from_eigen, l},
+                                        {linalg::sparse::from_eigen,
 u},
                         };
 
@@ -79,23 +80,24 @@ ruiz{ n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::UPPER,
 TEST_CASE("random ruiz using the API") {
 
         for (auto const& dims : {
-                                         proxsuite::linalg::veg::tuplify(2, 0,
-2), proxsuite::linalg::veg::tuplify(50, 0, 0),
-                                         proxsuite::linalg::veg::tuplify(50, 25,
-0), proxsuite::linalg::veg::tuplify(50, 0, 25),
-                                         proxsuite::linalg::veg::tuplify(50, 10,
+                                         linalg::veg::tuplify(2, 0,
+2), linalg::veg::tuplify(50, 0, 0),
+                                         linalg::veg::tuplify(50, 25,
+0), linalg::veg::tuplify(50, 0, 25),
+                                         linalg::veg::tuplify(50, 10,
 25),
                          }) {
                 VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
                 double p = 1.0;
 
-                auto H = ldlt_test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = ldlt_test::rand::vector_rand<T>(n); auto A =
-ldlt_test::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
-ldlt_test::rand::vector_rand<T>(n_eq); auto C =
-ldlt_test::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
-ldlt_test::rand::vector_rand<T>(n_in); auto u = (l.array() + 1).matrix().eval();
+                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto A =
+proxqp::test::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
+proxqp::test::rand::vector_rand<T>(n_eq); auto C =
+proxqp::test::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
+proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+1).matrix().eval();
 
                 {
 
@@ -118,33 +120,34 @@ Qp.results.z) <= 1e-9); CHECK(proxqp::dense::infty_norm(A * Qp.results.x - b) <=
 TEST_CASE("random id") {
 
         for (auto const& dims : {
-                                         proxsuite::linalg::veg::tuplify(50, 0,
-0), proxsuite::linalg::veg::tuplify(50, 25, 0),
-                                         proxsuite::linalg::veg::tuplify(10, 0,
-10), proxsuite::linalg::veg::tuplify(50, 0, 25),
-                                         proxsuite::linalg::veg::tuplify(50, 10,
+                                         linalg::veg::tuplify(50, 0,
+0), linalg::veg::tuplify(50, 25, 0),
+                                         linalg::veg::tuplify(10, 0,
+10), linalg::veg::tuplify(50, 0, 25),
+                                         linalg::veg::tuplify(50, 10,
 25),
                          }) {
                 VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
                 double p = 1.0;
 
-                auto H = ldlt_test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = ldlt_test::rand::vector_rand<T>(n); auto AT =
-ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-ldlt_test::rand::vector_rand<T>(n_eq); auto CT =
-ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-ldlt_test::rand::vector_rand<T>(n_in); auto u = (l.array() + 1).matrix().eval();
+                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto AT =
+proxqp::test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+proxqp::test::rand::vector_rand<T>(n_eq); auto CT =
+proxqp::test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+1).matrix().eval();
 
                 {
                         sparse::QpView<T, I> qp = {
-                                        {proxsuite::linalg::sparse::from_eigen,
-H}, {proxsuite::linalg::sparse::from_eigen, g},
-                                        {proxsuite::linalg::sparse::from_eigen,
-AT}, {proxsuite::linalg::sparse::from_eigen, b},
-                                        {proxsuite::linalg::sparse::from_eigen,
-CT}, {proxsuite::linalg::sparse::from_eigen, l},
-                                        {proxsuite::linalg::sparse::from_eigen,
+                                        {linalg::sparse::from_eigen,
+H}, {linalg::sparse::from_eigen, g},
+                                        {linalg::sparse::from_eigen,
+AT}, {linalg::sparse::from_eigen, b},
+                                        {linalg::sparse::from_eigen,
+CT}, {linalg::sparse::from_eigen, l},
+                                        {linalg::sparse::from_eigen,
 u},
                         };
 
@@ -182,22 +185,22 @@ TEST_CASE("random id using the API")
 {
 
   for (auto const& dims : {
-         proxsuite::linalg::veg::tuplify(50, 0, 0),
-         proxsuite::linalg::veg::tuplify(50, 25, 0),
-         proxsuite::linalg::veg::tuplify(10, 0, 10),
-         proxsuite::linalg::veg::tuplify(50, 0, 25),
-         proxsuite::linalg::veg::tuplify(50, 10, 25),
+         linalg::veg::tuplify(50, 0, 0),
+         linalg::veg::tuplify(50, 25, 0),
+         linalg::veg::tuplify(10, 0, 10),
+         linalg::veg::tuplify(50, 0, 25),
+         linalg::veg::tuplify(50, 10, 25),
        }) {
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 1.0;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
-    auto l = ldlt_test::rand::vector_rand<T>(n_in);
+    auto H = proxqp::test::rand::sparse_positive_definite_rand(n, T(10.0), p);
+    auto g = proxqp::test::rand::vector_rand<T>(n);
+    auto A = proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto b = proxqp::test::rand::vector_rand<T>(n_eq);
+    auto C = proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto l = proxqp::test::rand::vector_rand<T>(n_in);
     auto u = (l.array() + 1).matrix().eval();
 
     {

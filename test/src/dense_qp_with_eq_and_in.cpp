@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.h>
+#include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -9,6 +9,7 @@
 #include <util.hpp>
 
 using T = double;
+using namespace proxsuite;
 
 DOCTEST_TEST_CASE(
   "sparse random strongly convex qp with equality and inequality constraints "
@@ -21,14 +22,18 @@ DOCTEST_TEST_CASE(
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
     proxqp::isize n_eq(dim / 4);
     proxqp::isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
-    Qp<T> qp{
-      random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor,
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_neq_and_n_in,
+      dim,
+      n_eq,
+      n_in,
+      sparsity_factor,
       strong_convexity_factor
     };
 
@@ -68,16 +73,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
     proxqp::isize n_eq(0);
     proxqp::isize n_in(dim);
     T strong_convexity_factor(1.e-2);
-    Qp<T> qp{ random_with_dim_and_n_in_and_box_constraints,
-              dim,
-              sparsity_factor,
-              strong_convexity_factor };
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_n_in_and_box_constraints,
+      dim,
+      sparsity_factor,
+      strong_convexity_factor
+    };
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.settings.eps_rel = 0;
@@ -113,12 +120,15 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
-    Qp<T> qp{
-      random_with_dim_and_n_in_not_strongly_convex, dim, n_in, sparsity_factor
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_n_in_not_strongly_convex,
+      dim,
+      n_in,
+      sparsity_factor
     };
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
@@ -156,16 +166,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   T strong_convexity_factor(1e-2);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
     proxqp::isize m(dim / 4);
     proxqp::isize n_in(2 * m);
     proxqp::isize n_eq(0);
-    Qp<T> qp{ random_with_dim_and_n_in_degenerate,
-              dim,
-              m,
-              sparsity_factor,
-              strong_convexity_factor };
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_n_in_degenerate,
+      dim,
+      m,
+      sparsity_factor,
+      strong_convexity_factor
+    };
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.settings.eps_rel = 0;
@@ -200,15 +212,18 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
-    Qp<T> qp{
-      random_with_dim_and_n_in_not_strongly_convex, dim, n_in, sparsity_factor
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_n_in_not_strongly_convex,
+      dim,
+      n_in,
+      sparsity_factor
     };
     qp.H.setZero();
-    auto z_sol = ldlt_test::rand::vector_rand<T>(n_in);
+    auto z_sol = proxqp::test::rand::vector_rand<T>(n_in);
     qp.g = -qp.C.transpose() *
            z_sol; // make sure the LP is bounded within the feasible set
     // std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l "

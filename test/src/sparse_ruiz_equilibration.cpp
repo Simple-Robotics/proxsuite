@@ -4,12 +4,13 @@
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>
-#include <doctest.h>
+#include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
-using namespace proxqp;
+using namespace proxsuite;
+using namespace proxsuite::proxqp;
 using T = double;
-using I = c_int;
+using I = test::c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
 TEST_CASE("upper part")
@@ -18,13 +19,13 @@ TEST_CASE("upper part")
   isize n_eq = 6;
   isize n_in = 5;
 
-  auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), 0.5);
-  auto g = ldlt_test::rand::vector_rand<T>(n);
-  auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, 0.5);
-  auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-  auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, 0.5);
-  auto l = ldlt_test::rand::vector_rand<T>(n_in);
-  auto u = ldlt_test::rand::vector_rand<T>(n_in);
+  auto H = test::rand::sparse_positive_definite_rand(n, T(10.0), 0.5);
+  auto g = test::rand::vector_rand<T>(n);
+  auto AT = test::rand::sparse_matrix_rand<T>(n, n_eq, 0.5);
+  auto b = test::rand::vector_rand<T>(n_eq);
+  auto CT = test::rand::sparse_matrix_rand<T>(n, n_in, 0.5);
+  auto l = test::rand::vector_rand<T>(n_in);
+  auto u = test::rand::vector_rand<T>(n_in);
 
   auto H_scaled = H;
   auto g_scaled = g;
@@ -98,14 +99,14 @@ TEST_CASE("lower part")
   isize n_eq = 0;
   isize n_in = 0;
 
-  SparseMat<T> H =
-    ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), 0.5).transpose();
-  auto g = ldlt_test::rand::vector_rand<T>(n);
-  auto AT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_eq, 0.5);
-  auto b = ldlt_test::rand::vector_rand<T>(n_eq);
-  auto CT = ldlt_test::rand::sparse_matrix_rand<T>(n, n_in, 0.5);
-  auto l = ldlt_test::rand::vector_rand<T>(n_in);
-  auto u = ldlt_test::rand::vector_rand<T>(n_in);
+  test::SparseMat<T> H =
+    test::rand::sparse_positive_definite_rand(n, T(10.0), 0.5).transpose();
+  auto g = test::rand::vector_rand<T>(n);
+  auto AT = test::rand::sparse_matrix_rand<T>(n, n_eq, 0.5);
+  auto b = test::rand::vector_rand<T>(n_eq);
+  auto CT = test::rand::sparse_matrix_rand<T>(n, n_in, 0.5);
+  auto l = test::rand::vector_rand<T>(n_in);
+  auto u = test::rand::vector_rand<T>(n_in);
 
   auto H_scaled = H;
   auto g_scaled = g;

@@ -1,4 +1,4 @@
-#include <doctest.h>
+#include <doctest.hpp>
 #include <iostream>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
@@ -6,20 +6,24 @@
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace proxsuite::proxqp;
+using namespace proxsuite;
 using Scalar = long double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner")
 {
-  isize dim = 5;
-  isize n_eq = 6;
-  isize n_in = 0;
+  int dim = 5;
+  int n_eq = 6;
+  int n_in = 0;
   auto sym = proxqp::Symmetry::upper; // 0 : upper triangular (by default), 1:
                                       // lower triangular ; else full matrix
 
   Scalar sparsity_factor(0.15);
-  Qp<Scalar> qp{
-    random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor
+  proxqp::test::RandomQP<Scalar> qp{
+    proxqp::test::random_with_dim_and_neq_and_n_in,
+    dim,
+    n_eq,
+    n_in,
+    sparsity_factor
   };
 
   switch (sym) {

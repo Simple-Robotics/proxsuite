@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.h>
+#include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -10,7 +10,7 @@
 #include <iostream>
 
 using T = double;
-using namespace proxqp;
+using namespace proxsuite;
 
 DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
 {
@@ -21,9 +21,11 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
                "constraints and starting at the solution using the wrapper "
                "framework---"
             << std::endl;
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
 
-  Qp<T> qp{ random_with_dim_and_n_eq, dim, n_eq };
+  proxqp::test::RandomQP<T> qp{ proxqp::test::random_with_dim_and_n_eq,
+                                dim,
+                                n_eq };
 
   Eigen::Matrix<T, Eigen::Dynamic, 1> primal_init(dim);
   Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init(n_eq);
@@ -53,14 +55,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
     proxqp::isize n_eq(dim / 2);
     proxqp::isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    Qp<T> qp{
-      random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor,
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_neq_and_n_in,
+      dim,
+      n_eq,
+      n_in,
+      sparsity_factor,
       strong_convexity_factor
     };
 
@@ -97,18 +103,22 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  ldlt_test::rand::set_seed(1);
+  proxqp::test::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
 
     proxqp::isize n_eq(dim / 2);
     proxqp::isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    Qp<T> qp{
-      random_with_dim_and_neq_and_n_in, dim, n_eq, n_in, sparsity_factor,
+    proxqp::test::RandomQP<T> qp{
+      proxqp::test::random_with_dim_and_neq_and_n_in,
+      dim,
+      n_eq,
+      n_in,
+      sparsity_factor,
       strong_convexity_factor
     };
     qp.H.setZero();
-    auto y_sol = ldlt_test::rand::vector_rand<T>(
+    auto y_sol = proxqp::test::rand::vector_rand<T>(
       n_eq); // make sure the LP is bounded within the feasible set
     qp.g = -qp.A.transpose() * y_sol;
 

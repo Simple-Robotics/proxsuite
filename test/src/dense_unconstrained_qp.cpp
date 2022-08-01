@@ -1,14 +1,14 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.h>
+#include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <util.hpp>
 
-using namespace proxqp;
+using namespace proxsuite;
 
 using T = double;
 
@@ -21,14 +21,15 @@ DOCTEST_TEST_CASE(
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  for (isize dim = 10; dim < 1000; dim += 100) {
+  for (int dim = 10; dim < 1000; dim += 100) {
 
-    isize n_eq(0);
-    isize n_in(0);
+    int n_eq(0);
+    int n_in(0);
     T strong_convexity_factor(1.e-2);
-    Qp<T> qp{
-      random_unconstrained, dim, sparsity_factor, strong_convexity_factor
-    };
+    proxqp::test::RandomQP<T> qp{ proxqp::test::random_unconstrained,
+                                  dim,
+                                  sparsity_factor,
+                                  strong_convexity_factor };
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -63,15 +64,16 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  for (isize dim = 10; dim < 1000; dim += 100) {
+  for (int dim = 10; dim < 1000; dim += 100) {
 
-    isize n_eq(0);
-    isize n_in(0);
+    int n_eq(0);
+    int n_in(0);
     T strong_convexity_factor(0);
-    Qp<T> qp{
-      random_unconstrained, dim, sparsity_factor, strong_convexity_factor
-    };
-    auto x_sol = ldlt_test::rand::vector_rand<T>(dim);
+    proxqp::test::RandomQP<T> qp{ proxqp::test::random_unconstrained,
+                                  dim,
+                                  sparsity_factor,
+                                  strong_convexity_factor };
+    auto x_sol = proxqp::test::rand::vector_rand<T>(dim);
     qp.g =
       -qp.H * x_sol; // to be dually feasible g must be in the image space of H
 
@@ -107,13 +109,14 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
 
-  isize dim(100);
-  isize n_eq(0);
-  isize n_in(0);
+  int dim(100);
+  int n_eq(0);
+  int n_in(0);
   T strong_convexity_factor(1.E-2);
-  Qp<T> qp{
-    random_unconstrained, dim, sparsity_factor, strong_convexity_factor
-  };
+  proxqp::test::RandomQP<T> qp{ proxqp::test::random_unconstrained,
+                                dim,
+                                sparsity_factor,
+                                strong_convexity_factor };
   qp.H.setZero();
   qp.H.diagonal().array() += 1;
 
@@ -148,13 +151,14 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
 
-  isize dim(100);
-  isize n_eq(0);
-  isize n_in(0);
+  int dim(100);
+  int n_eq(0);
+  int n_in(0);
   T strong_convexity_factor(1.E-2);
-  Qp<T> qp{
-    random_unconstrained, dim, sparsity_factor, strong_convexity_factor
-  };
+  proxqp::test::RandomQP<T> qp{ proxqp::test::random_unconstrained,
+                                dim,
+                                sparsity_factor,
+                                strong_convexity_factor };
   qp.H.setZero();
   qp.H.diagonal().array() += 1;
   qp.g.setZero();

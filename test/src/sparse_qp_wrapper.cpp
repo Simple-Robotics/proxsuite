@@ -3,10 +3,11 @@
 //
 #include <proxsuite/proxqp/sparse/sparse.hpp>
 #include <util.hpp>
-#include <doctest.h>
+#include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
-using namespace proxqp;
+using namespace proxsuite::proxqp;
+using namespace proxsuite::proxqp::test;
 using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
@@ -27,12 +28,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -81,12 +83,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 1.0;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -137,12 +140,13 @@ TEST_CASE(
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -190,12 +194,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -241,12 +246,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -295,12 +301,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -329,7 +336,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     std::cout << "setup timing " << Qp.results.info.setup_time << " solve time "
               << Qp.results.info.solve_time << std::endl;
 
-    g = ldlt_test::rand::vector_rand<T>(n);
+    g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     std::cout << "H before update " << H << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
     std::cout << "H generated " << H_new << std::endl;
@@ -380,12 +387,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -394,9 +402,9 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     Qp.settings.initial_guess =
       proxsuite::proxqp::InitialGuessStatus::WARM_START;
     Qp.init(H, g, A, b, C, u, l);
-    auto x_wm = ldlt_test::rand::vector_rand<T>(n);
-    auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
-    auto z_wm = ldlt_test::rand::vector_rand<T>(n_in);
+    auto x_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto y_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n_eq);
+    auto z_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n_in);
     std::cout << "proposed warm start" << std::endl;
     std::cout << "x_wm :  " << x_wm << std::endl;
     std::cout << "y_wm :  " << y_wm << std::endl;
@@ -444,12 +452,13 @@ DOCTEST_TEST_CASE(
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
     T eps_abs = 1.E-9;
@@ -546,12 +555,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -656,12 +666,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -733,12 +744,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -852,12 +864,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -866,9 +879,9 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     Qp.settings.initial_guess =
       proxsuite::proxqp::InitialGuessStatus::WARM_START;
     Qp.init(H, g, A, b, C, u, l);
-    auto x_wm = ldlt_test::rand::vector_rand<T>(n);
-    auto y_wm = ldlt_test::rand::vector_rand<T>(n_eq);
-    auto z_wm = ldlt_test::rand::vector_rand<T>(n_in);
+    auto x_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto y_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n_eq);
+    auto z_wm = ::proxsuite::proxqp::test::rand::vector_rand<T>(n_in);
     std::cout << "proposed warm start" << std::endl;
     std::cout << "x_wm :  " << x_wm << std::endl;
     std::cout << "y_wm :  " << y_wm << std::endl;
@@ -910,12 +923,13 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 100).matrix().eval();
 
@@ -985,13 +999,14 @@ TEST_CASE(
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1106,13 +1121,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1226,13 +1242,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1350,13 +1367,14 @@ TEST_CASE(
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1474,13 +1492,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1597,13 +1616,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1719,13 +1739,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1807,13 +1828,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1850,7 +1872,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     bool update_preconditioner = true;
     Qp.update(H_new, g_new, A, b, C, u, l, update_preconditioner);
     std::cout << "dirty workspace after update : " << Qp.work.internal.dirty
@@ -1934,13 +1956,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     double p = 0.15;
 
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -1977,7 +2000,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
     std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     bool update_preconditioner = true;
     Qp.update(H_new, g_new, A, b, C, u, l, update_preconditioner);
     std::cout << "dirty workspace after update : " << Qp.work.internal.dirty
@@ -2061,13 +2084,14 @@ TEST_CASE(
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2108,7 +2132,7 @@ TEST_CASE(
       proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
     std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     bool update_preconditioner = true;
     Qp.update(H_new, g_new, A, b, C, u, l, update_preconditioner);
     std::cout << "dirty workspace after update : " << Qp.work.internal.dirty
@@ -2191,13 +2215,14 @@ TEST_CASE(
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2238,7 +2263,7 @@ TEST_CASE(
       proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
     std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     bool update_preconditioner = true;
     Qp.update(H_new, g_new, A, b, C, u, l, update_preconditioner);
     Qp.solve();
@@ -2319,13 +2344,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2366,7 +2392,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
       proxsuite::proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
     std::cout << "dirty workspace : " << Qp.work.internal.dirty << std::endl;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     bool update_preconditioner = true;
     Qp.update(H_new,
               g_new,
@@ -2454,13 +2480,14 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2532,7 +2559,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     y_wm = Qp.results.y;
     z_wm = Qp.results.z;
     auto H_new = 2. * H; // keep same sparsity structure
-    auto g_new = ldlt_test::rand::vector_rand<T>(n);
+    auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     update_preconditioner = true;
     Qp.update(H_new, g_new, A, b, C, u, l, update_preconditioner);
     std::cout << "dirty workspace after update: " << Qp.work.internal.dirty
@@ -2614,13 +2641,14 @@ TEST_CASE("Test initializaton with rho for different initial guess")
 
     double eps_abs = 1.e-9;
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2771,13 +2799,14 @@ TEST_CASE("Test g update for different initial guess")
 
     double eps_abs = 1.e-9;
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto old_g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto old_g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -2802,7 +2831,7 @@ TEST_CASE("Test g update for different initial guess")
                  sparse::detail::negative_part(C * Qp.results.x - l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     Qp.update(std::nullopt,
               g,
               std::nullopt,
@@ -3013,13 +3042,15 @@ TEST_CASE("Test A update for different initial guess")
 
     double eps_abs = 1.e-9;
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    SparseMat<T> old_A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    SparseMat<T> old_A =
+      ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = old_A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 
@@ -3315,13 +3346,14 @@ TEST_CASE("Test rho update for different initial guess")
 
     double eps_abs = 1.e-9;
     double p = 0.15;
-    ldlt_test::rand::set_seed(1);
-    auto H = ldlt_test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = ldlt_test::rand::vector_rand<T>(n);
-    auto A = ldlt_test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto x_sol = ldlt_test::rand::vector_rand<T>(n);
+    ::proxsuite::proxqp::test::rand::set_seed(1);
+    auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+      n, T(10.0), p);
+    auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
     auto b = A * x_sol;
-    auto C = ldlt_test::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
     auto l = C * x_sol;
     auto u = (l.array() + 10).matrix().eval();
 

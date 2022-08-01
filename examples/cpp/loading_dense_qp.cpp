@@ -1,6 +1,6 @@
-#include "qp/dense/dense.hpp"
+#include "proxsuite/proxqp/dense/dense.hpp"
 
-using namespace qp;
+using namespace proxsuite::proxqp;
 using T = double;
 int
 main()
