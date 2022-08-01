@@ -76,7 +76,7 @@ add_project_dependency(
   "eigen3 >= 3.0.5"
 )
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  add_project_dependency(Simde REQUIRED)
+  find_package(Simde REQUIRED)
 endif()
 
 # Build the main library
