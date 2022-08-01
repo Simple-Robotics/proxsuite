@@ -1,6 +1,6 @@
 include(../../cmake-module/python.cmake)
 
-findpython(REQUIRED)
+findpython(REQUIRED Development.Module)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11)
 add_subdirectory(
   external/pybind11 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11
@@ -27,6 +27,7 @@ add_source_group(PYWRAP_SOURCES)
 add_library(instructionset MODULE helpers/instruction-set.cpp)
 add_dependencies(python instructionset)
 target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
+target_include_directories(instructionset PRIVATE ${PYTHON_INCLUDE_DIRS})
 set_target_properties(
   instructionset
   PROPERTIES PREFIX ""
@@ -52,6 +53,7 @@ function(
 
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
+  target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
   target_compile_definitions(
     ${target_name} PRIVATE PYTHON_MODULE_NAME=${target_name}
   )
