@@ -10,7 +10,7 @@ find_package_handle_standard_args(
 if(SIMDE_FOUND)
   add_library(simde INTERFACE IMPORTED)
   set_target_properties(
-    simde PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${SIMDE_INCLUDE_DIR}"
+    simde PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Simde_INCLUDE_DIR}"
   )
 endif()
 
