@@ -41,7 +41,7 @@ install(
   DESTINATION ${${PYWRAP}_INSTALL_DIR}
 )
 
-macro(
+function(
   CREATE_PYTHON_TARGET
   target_name
   COMPILE_OPTIONS
@@ -76,7 +76,7 @@ macro(
     EXPORT ${TARGETS_EXPORT_NAME}
     DESTINATION ${${PYWRAP}_INSTALL_DIR}
   )
-endmacro()
+endfunction()
 
 create_python_target(proxsuite_pywrap "" proxsuite-not-vectorized)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
