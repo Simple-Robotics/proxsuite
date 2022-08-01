@@ -31,7 +31,7 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen
+        mamba install cmake compilers make pkg-config doxygen ninja
         # Main dependencies
         mamba install eigen simde
         # Test dependencies
@@ -51,7 +51,7 @@ jobs:
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
+        cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
 
     - name: Build [Conda]
       shell: bash -l {0}
