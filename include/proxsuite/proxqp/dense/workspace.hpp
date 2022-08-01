@@ -10,7 +10,7 @@
 #include <Eigen/Core>
 #include <proxsuite/linalg/dense/ldlt.hpp>
 #include <proxsuite/proxqp/timings.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 //#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
@@ -26,8 +26,8 @@ template <typename T>
 struct Workspace {
 
 	///// Cholesky Factorization
-	linalg::dense::Ldlt<T> ldl{};
-	veg::Vec<unsigned char> ldl_stack;
+	proxsuite::linalg::dense::Ldlt<T> ldl{};
+	proxsuite::linalg::veg::Vec<unsigned char> ldl_stack;
 	Timer<T> timer;
 
 	///// QP STORAGE
@@ -63,7 +63,7 @@ struct Workspace {
 	Vec<T> Adx;
 
 	Vec<T> active_part_z;
-	veg::Vec<T> alphas;
+	proxsuite::linalg::veg::Vec<T> alphas;
 
 	///// Newton variables
 	Vec<T> dw_aug;
@@ -143,22 +143,22 @@ struct Workspace {
 	{
 		ldl.reserve_uninit(dim + n_eq + n_in);
 		ldl_stack.resize_for_overwrite(
-				veg::dynstack::StackReq(
+				proxsuite::linalg::veg::dynstack::StackReq(
 
-						linalg::dense::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
+						proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
 
-						(linalg::dense::temp_vec_req(veg::Tag<T>{}, n_eq + n_in) &
-		         veg::dynstack::StackReq{
+						(proxsuite::linalg::dense::temp_vec_req(proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in) &
+		         proxsuite::linalg::veg::dynstack::StackReq{
 								 isize{sizeof(isize)} * (n_eq + n_in), alignof(isize)} &
-		         linalg::dense::Ldlt<T>::diagonal_update_req(
+		         proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
 								 dim + n_eq + n_in, n_eq + n_in)) |
 
-						(linalg::dense::temp_mat_req(
-								 veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
-		         linalg::dense::Ldlt<T>::insert_block_at_req(
+						(proxsuite::linalg::dense::temp_mat_req(
+								 proxsuite::linalg::veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
+		         proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
 								 dim + n_eq + n_in, n_in)) |
 
-						linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
+						proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq + n_in))
 
 						.alloc_req());
 

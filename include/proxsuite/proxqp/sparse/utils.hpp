@@ -13,7 +13,7 @@
 #include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
@@ -105,7 +105,7 @@ template <typename T, typename I>
 VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 		VectorViewMut<T> out_l,
 		VectorViewMut<T> out_r,
-		linalg::sparse::MatRef<T, I> a,
+		proxsuite::linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in_l,
 		VectorView<T> in_r) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ (
@@ -136,7 +136,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 
 		usize p = col_start;
 
-		auto zx = linalg::sparse::util::zero_extend;
+		auto zx = proxsuite::linalg::sparse::util::zero_extend;
 
 		for (; p < col_start + pcount / 4 * 4; p += 4) {
 			auto i0 = isize(zx(ai[p + 0]));
@@ -176,7 +176,7 @@ VEG_NO_INLINE void noalias_gevmmv_add_impl( //
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		VectorViewMut<T> out,
-		linalg::sparse::MatRef<T, I> a,
+		proxsuite::linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
@@ -207,7 +207,7 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 
 		usize pcount = col_end - col_start;
 
-		auto zx = linalg::sparse::util::zero_extend;
+		auto zx = proxsuite::linalg::sparse::util::zero_extend;
 
 		if (zx(ai[col_end - 1]) == j) {
 			T ajj = ax[col_end - 1];
@@ -257,7 +257,7 @@ void noalias_gevmmv_add(
 	noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out_l},
 			{proxqp::from_eigen, out_r},
-			{linalg::sparse::from_eigen, a},
+			{proxsuite::linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in_l},
 			{proxqp::from_eigen, in_r});
 }
@@ -267,15 +267,15 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
 	noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out},
-			{linalg::sparse::from_eigen, a},
+			{proxsuite::linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in});
 }
 
 template <typename T, typename I>
 struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 	struct Raw /* NOLINT */ {
-		linalg::sparse::MatRef<T, I> kkt_active;
-		veg::Slice<bool> active_constraints;
+		proxsuite::linalg::sparse::MatRef<T, I> kkt_active;
+		proxsuite::linalg::veg::Slice<bool> active_constraints;
 		isize n;
 		isize n_eq;
 		isize n_in;
@@ -336,8 +336,8 @@ auto vec(V const& v) -> VecMap<typename V::Scalar> {
 }
 
 template <typename V>
-auto vec_mut(V&& v) -> VecMapMut<typename veg::uncvref_t<V>::Scalar> {
-	static_assert(veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
+auto vec_mut(V&& v) -> VecMapMut<typename proxsuite::linalg::veg::uncvref_t<V>::Scalar> {
+	static_assert(proxsuite::linalg::veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
 	return {
 			v.data(),
 			v.rows(),
@@ -351,13 +351,13 @@ auto vec_mut(V&& v) -> VecMapMut<typename veg::uncvref_t<V>::Scalar> {
 
 template <typename T, typename I>
 auto middle_cols(
-		linalg::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
-		-> linalg::sparse::MatRef<T, I> {
+		proxsuite::linalg::sparse::MatRef<T, I> mat, isize start, isize ncols, isize nnz)
+		-> proxsuite::linalg::sparse::MatRef<T, I> {
 	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 
 	return {
-			linalg::sparse::from_raw_parts,
+			proxsuite::linalg::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -370,12 +370,12 @@ auto middle_cols(
 
 template <typename T, typename I>
 auto middle_cols_mut(
-		linalg::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
-		-> linalg::sparse::MatMut<T, I> {
+		proxsuite::linalg::sparse::MatMut<T, I> mat, isize start, isize ncols, isize nnz)
+		-> proxsuite::linalg::sparse::MatMut<T, I> {
 	VEG_ASSERT(start <= mat.ncols());
 	VEG_ASSERT(ncols <= mat.ncols() - start);
 	return {
-			linalg::sparse::from_raw_parts,
+			proxsuite::linalg::sparse::from_raw_parts,
 			mat.nrows(),
 			ncols,
 			nnz,
@@ -388,11 +388,11 @@ auto middle_cols_mut(
 
 template <typename T, typename I>
 auto top_rows_unchecked(
-		veg::Unsafe /*unsafe*/, linalg::sparse::MatRef<T, I> mat, isize nrows)
-		-> linalg::sparse::MatRef<T, I> {
+		proxsuite::linalg::veg::Unsafe /*unsafe*/, proxsuite::linalg::sparse::MatRef<T, I> mat, isize nrows)
+		-> proxsuite::linalg::sparse::MatRef<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			linalg::sparse::from_raw_parts,
+			proxsuite::linalg::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),
@@ -405,11 +405,11 @@ auto top_rows_unchecked(
 
 template <typename T, typename I>
 auto top_rows_mut_unchecked(
-		veg::Unsafe /*unsafe*/, linalg::sparse::MatMut<T, I> mat, isize nrows)
-		-> linalg::sparse::MatMut<T, I> {
+		proxsuite::linalg::veg::Unsafe /*unsafe*/, proxsuite::linalg::sparse::MatMut<T, I> mat, isize nrows)
+		-> proxsuite::linalg::sparse::MatMut<T, I> {
 	VEG_ASSERT(nrows <= mat.nrows());
 	return {
-			linalg::sparse::from_raw_parts,
+			proxsuite::linalg::sparse::from_raw_parts,
 			nrows,
 			mat.ncols(),
 			mat.nnz(),
@@ -568,7 +568,7 @@ auto unscaled_primal_dual_residual(
 		VecMap<T> x_e,
 		VecMap<T> y_e,
 		VecMap<T> z_e,
-		veg::dynstack::DynStackMut stack) -> veg::Tuple<T, T> {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) -> proxsuite::linalg::veg::Tuple<T, T> {
 	isize n = x_e.rows();
 
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
@@ -642,7 +642,7 @@ auto unscaled_primal_dual_residual(
 	T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
 	precond.scale_dual_residual_in_place({proxqp::from_eigen, dual_residual_scaled});
 
-	return veg::tuplify(primal_feasibility_lhs, dual_feasibility_lhs);
+	return proxsuite::linalg::veg::tuplify(primal_feasibility_lhs, dual_feasibility_lhs);
 }
 
 } // namespace detail
@@ -676,7 +676,7 @@ struct generic_product_impl<
 	template <typename Dst>
 	static void scaleAndAddTo(
 			Dst& dst, Mat_ const& lhs, Rhs const& rhs, Scalar const& alpha) {
-		using veg::isize;
+		using proxsuite::linalg::veg::isize;
 
 		VEG_ASSERT(alpha == Scalar(1));
 		proxsuite::proxqp::sparse::detail::noalias_symhiv_add(

@@ -20,8 +20,8 @@ enum struct Symmetry {
 
 namespace detail {
 template <typename T, typename I>
-void rowwise_infty_norm(T* row_norm, linalg::sparse::MatRef<T, I> m) {
-	using namespace linalg::sparse::util;
+void rowwise_infty_norm(T* row_norm, proxsuite::linalg::sparse::MatRef<T, I> m) {
+	using namespace proxsuite::linalg::sparse::util;
 
 	I const* mi = m.row_indices();
 	T const* mx = m.values();
@@ -40,8 +40,8 @@ void rowwise_infty_norm(T* row_norm, linalg::sparse::MatRef<T, I> m) {
 
 template <typename T, typename I>
 void colwise_infty_norm_symhi(
-		T* col_norm, linalg::sparse::MatRef<T, I> h) {
-	using namespace linalg::sparse::util;
+		T* col_norm, proxsuite::linalg::sparse::MatRef<T, I> h) {
+	using namespace proxsuite::linalg::sparse::util;
 
 	I const* hi = h.row_indices();
 	T const* hx = h.values();
@@ -69,8 +69,8 @@ void colwise_infty_norm_symhi(
 
 template <typename T, typename I>
 void colwise_infty_norm_symlo(
-		T* col_norm, linalg::sparse::MatRef<T, I> h) {
-	using namespace linalg::sparse::util;
+		T* col_norm, proxsuite::linalg::sparse::MatRef<T, I> h) {
+	using namespace proxsuite::linalg::sparse::util;
 
 	I const* hi = h.row_indices();
 	T const* hx = h.values();
@@ -110,7 +110,7 @@ auto ruiz_scale_qp_in_place( //
 		T epsilon,
 		isize max_iter,
 		Symmetry sym,
-		veg::dynstack::DynStackMut stack) -> T {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T {
 	
 	T c = 1;
 	auto S = delta_.to_eigen();
@@ -145,9 +145,9 @@ auto ruiz_scale_qp_in_place( //
 		// norm_infty of each column of A (resp. C), i.e.,
 		// each row of AT (resp. CT)
 		{
-			auto _a_infty_norm = stack.make_new(veg::Tag<T>{}, n);
-			auto _c_infty_norm = stack.make_new(veg::Tag<T>{}, n);
-			auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n);
+			auto _a_infty_norm = stack.make_new(proxsuite::linalg::veg::Tag<T>{}, n);
+			auto _c_infty_norm = stack.make_new(proxsuite::linalg::veg::Tag<T>{}, n);
+			auto _h_infty_norm = stack.make_new(proxsuite::linalg::veg::Tag<T>{}, n);
 			T* a_infty_norm = _a_infty_norm.ptr_mut();
 			T* c_infty_norm = _c_infty_norm.ptr_mut();
 			T* h_infty_norm = _h_infty_norm.ptr_mut();
@@ -173,7 +173,7 @@ auto ruiz_scale_qp_in_place( //
 																				 })));
 			}
 		}
-		using namespace linalg::sparse::util;
+		using namespace proxsuite::linalg::sparse::util;
 		for (usize j = 0; j < usize(n_eq); ++j) {
 			T a_row_norm = 0;
 			qp.AT.to_eigen();
@@ -282,7 +282,7 @@ auto ruiz_scale_qp_in_place( //
 		qp.u.to_eigen().array() *= delta.tail(n_in).array();
 
 		// additional normalization
-		auto _h_infty_norm = stack.make_new(veg::Tag<T>{}, n);
+		auto _h_infty_norm = stack.make_new(proxsuite::linalg::veg::Tag<T>{}, n);
 		T* h_infty_norm = _h_infty_norm.ptr_mut();
 
 		switch (sym) {
@@ -343,17 +343,17 @@ struct RuizEquilibration {
 				}
 
 	static auto
-	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
-			-> veg::dynstack::StackReq {
-		return linalg::dense::temp_vec_req(tag, n + n_eq + n_in) &
-		       veg::dynstack::StackReq::with_len(tag, 3 * n);
+	scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		return proxsuite::linalg::dense::temp_vec_req(tag, n + n_eq + n_in) &
+		       proxsuite::linalg::veg::dynstack::StackReq::with_len(tag, 3 * n);
 	}
 
 	void scale_qp_in_place(
 			QpViewMut<T, I> qp,
 			bool execute_preconditioner,
 			const Settings<T>& settings,
-			veg::dynstack::DynStackMut stack) {
+			proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 		max_iter = settings.preconditioner_max_iter;
 		epsilon = settings.preconditioner_accuracy;
 		if (execute_preconditioner) {
@@ -366,7 +366,7 @@ struct RuizEquilibration {
 					sym,
 					stack);
 		} else {
-			using linalg::sparse::util::zero_extend;
+			using proxsuite::linalg::sparse::util::zero_extend;
 			isize n = qp.H.nrows();
 			isize n_eq = qp.AT.ncols();
 			isize n_in = qp.CT.ncols();

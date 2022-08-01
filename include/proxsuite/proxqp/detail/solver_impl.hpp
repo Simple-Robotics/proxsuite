@@ -9,18 +9,18 @@
 
 #include <Eigen/Core>
 #include <proxsuite/linalg/dense/core.hpp>
-#include <proxsuite/veg/box.hpp>
-#include <proxsuite/veg/memory/dynamic_stack.hpp>
-#include <proxsuite/veg/vec.hpp>
-#include <proxsuite/veg/fn_dyn.hpp>
+#include <proxsuite/linalg/veg/box.hpp>
+#include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
+#include <proxsuite/linalg/veg/fn_dyn.hpp>
 #include <ostream>
 #include <memory>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 
 namespace proxsuite {
-using veg::isize;
-using veg::usize;
+using proxsuite::linalg::veg::isize;
+using proxsuite::linalg::veg::usize;
 
 namespace proxqp {
 namespace sparse {
@@ -28,7 +28,7 @@ namespace detail {
 template <typename T, typename I>
 struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 	struct Internal {
-		linalg::sparse::MatRef<T, I> kkt_active;
+		proxsuite::linalg::sparse::MatRef<T, I> kkt_active;
 		bool const* active_constraints;
 		isize n;
 		isize n_eq;
@@ -69,7 +69,7 @@ struct AugmentedKkt : Eigen::EigenBase<AugmentedKkt<T, I>> {
 template <typename T, typename I>
 VEG_NO_INLINE void noalias_symhiv_add_impl( //
 		VectorViewMut<T> out,
-		linalg::sparse::MatRef<T, I> a,
+		proxsuite::linalg::sparse::MatRef<T, I> a,
 		VectorView<T> in) {
 	VEG_ASSERT_ALL_OF /* NOLINT */ ( //
 			a.nrows() == a.ncols(),
@@ -100,7 +100,7 @@ VEG_NO_INLINE void noalias_symhiv_add_impl( //
 
 		usize pcount = col_end - col_start;
 
-		auto zx = linalg::sparse::util::zero_extend;
+		auto zx = proxsuite::linalg::sparse::util::zero_extend;
 
 		if (zx(ai[col_end - 1]) == j) {
 			T ajj = ax[col_end - 1];
@@ -148,7 +148,7 @@ void noalias_symhiv_add(Out&& out, A const& a, In const& in) {
 	// noalias symmetric (hi) matrix vector add
 	detail::noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
 			{proxqp::from_eigen, out},
-			{linalg::sparse::from_eigen, a},
+			{proxsuite::linalg::sparse::from_eigen, a},
 			{proxqp::from_eigen, in});
 }
 
@@ -183,7 +183,7 @@ struct generic_product_impl<
 	template <typename Dst>
 	static void scaleAndAddTo(
 			Dst& dst, Mat_ const& lhs, Rhs const& rhs, Scalar const& alpha) {
-		using veg::isize;
+		using proxsuite::linalg::veg::isize;
 
 		VEG_ASSERT(alpha == Scalar(1));
 		proxsuite::proxqp::sparse::detail::noalias_symhiv_add(
@@ -240,8 +240,8 @@ struct Results {
 		isize n = 0;
 		isize n_eq = 0;
 		isize n_in = 0;
-		veg::Vec<T> solution;
-		veg::Vec<bool> active_constraints;
+		proxsuite::linalg::veg::Vec<T> solution;
+		proxsuite::linalg::veg::Vec<bool> active_constraints;
 	} internal;
 
 	Results() = default;
@@ -296,33 +296,33 @@ struct Results {
 
 	auto x() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
-		return linalg::dense::util::subrows(sol(), 0, n);
+		return proxsuite::linalg::dense::util::subrows(sol(), 0, n);
 	}
 	auto x_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
-		return linalg::dense::util::subrows(sol_mut(), 0, n);
+		return proxsuite::linalg::dense::util::subrows(sol_mut(), 0, n);
 	}
 	auto y() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
-		return linalg::dense::util::subrows(sol(), n, n_eq);
+		return proxsuite::linalg::dense::util::subrows(sol(), n, n_eq);
 	}
 	auto y_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
-		return linalg::dense::util::subrows(sol_mut(), n, n_eq);
+		return proxsuite::linalg::dense::util::subrows(sol_mut(), n, n_eq);
 	}
 	auto z() const -> Eigen::Map<Vector<T> const, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
 		auto n_in = internal.n_in;
-		return linalg::dense::util::subrows(sol(), n + n_eq, n_in);
+		return proxsuite::linalg::dense::util::subrows(sol(), n + n_eq, n_in);
 	}
 	auto z_mut() -> Eigen::Map<Vector<T>, Eigen::Unaligned, Stride> {
 		auto n = internal.n;
 		auto n_eq = internal.n_eq;
 		auto n_in = internal.n_in;
-		return linalg::dense::util::subrows(sol_mut(), n + n_eq, n_in);
+		return proxsuite::linalg::dense::util::subrows(sol_mut(), n + n_eq, n_in);
 	}
 };
 
@@ -367,26 +367,26 @@ struct Settings {
 namespace sparse {
 template <typename T, typename I>
 struct Ldlt {
-	veg::Vec<I> etree;
-	veg::Vec<I> perm;
-	veg::Vec<I> perm_inv;
-	veg::Vec<I> col_ptrs;
-	veg::Vec<I> nnz_counts;
-	veg::Vec<I> row_indices;
-	veg::Vec<T> values;
+	proxsuite::linalg::veg::Vec<I> etree;
+	proxsuite::linalg::veg::Vec<I> perm;
+	proxsuite::linalg::veg::Vec<I> perm_inv;
+	proxsuite::linalg::veg::Vec<I> col_ptrs;
+	proxsuite::linalg::veg::Vec<I> nnz_counts;
+	proxsuite::linalg::veg::Vec<I> row_indices;
+	proxsuite::linalg::veg::Vec<T> values;
 };
 
 template <typename T, typename I>
 struct Kkt {
-	veg::Vec<I> col_ptrs;
-	veg::Vec<I> row_indices;
-	veg::Vec<T> values;
+	proxsuite::linalg::veg::Vec<I> col_ptrs;
+	proxsuite::linalg::veg::Vec<I> row_indices;
+	proxsuite::linalg::veg::Vec<T> values;
 
-	auto as_ref() const -> linalg::sparse::MatRef<T, I> {
+	auto as_ref() const -> proxsuite::linalg::sparse::MatRef<T, I> {
 		auto n_tot = col_ptrs.len() - 1;
-		auto nnz = isize(linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
+		auto nnz = isize(proxsuite::linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -396,11 +396,11 @@ struct Kkt {
 				values.ptr(),
 		};
 	}
-	auto as_mut() -> linalg::sparse::MatMut<T, I> {
+	auto as_mut() -> proxsuite::linalg::sparse::MatMut<T, I> {
 		auto n_tot = col_ptrs.len() - 1;
-		auto nnz = isize(linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
+		auto nnz = isize(proxsuite::linalg::sparse::util::zero_extend(col_ptrs[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -415,10 +415,10 @@ struct Kkt {
 template <typename T, typename I>
 struct Model {
 	Kkt<T, I> kkt;
-	veg::Vec<T> g;
-	veg::Vec<T> b;
-	veg::Vec<T> l;
-	veg::Vec<T> u;
+	proxsuite::linalg::veg::Vec<T> g;
+	proxsuite::linalg::veg::Vec<T> b;
+	proxsuite::linalg::veg::Vec<T> l;
+	proxsuite::linalg::veg::Vec<T> u;
 };
 
 template <typename T, typename I>
@@ -429,7 +429,7 @@ struct Workspace {
 			Eigen::IdentityPreconditioner>;
 
 	struct Internal {
-		veg::Vec<veg::mem::byte> storage;
+		proxsuite::linalg::veg::Vec<proxsuite::linalg::veg::mem::byte> storage;
 
 		bool do_ldlt = false;
 		Ldlt<T, I> ldlt;
@@ -442,9 +442,9 @@ struct Workspace {
 	Workspace() = default;
 
 	// must not be used while the storage is currently in use
-	auto stack_mut() -> veg::dynstack::DynStackMut {
+	auto stack_mut() -> proxsuite::linalg::veg::dynstack::DynStackMut {
 		return {
-				veg::from_slice_mut,
+				proxsuite::linalg::veg::from_slice_mut,
 				internal.storage.as_mut(),
 		};
 	}
@@ -453,7 +453,7 @@ struct Workspace {
 namespace detail {
 template <typename T>
 void copy_vector_to_model(
-		veg::Vec<T>& dst, linalg::sparse::DenseVecRef<T> src) {
+		proxsuite::linalg::veg::Vec<T>& dst, proxsuite::linalg::sparse::DenseVecRef<T> src) {
 	isize n = src.nrows();
 	dst.resize_for_overwrite(src.nrows());
 	T* dstp = dst.ptr_mut();
@@ -468,7 +468,7 @@ void insert_submatrix(
 		I* kktp,
 		I* kkti,
 		T* kktx,
-		linalg::sparse::MatRef<T, I> const& m,
+		proxsuite::linalg::sparse::MatRef<T, I> const& m,
 		bool assert_sym_hi = false) {
 	I const* mi = m.row_indices();
 	T const* mx = m.values();
@@ -478,12 +478,12 @@ void insert_submatrix(
 		usize col_start = m.col_start(j);
 		usize col_end = m.col_end(j);
 
-		kktp[col + 1] = linalg::sparse::util::checked_non_negative_plus(
+		kktp[col + 1] = proxsuite::linalg::sparse::util::checked_non_negative_plus(
 				kktp[col], I(col_end - col_start));
 		++col;
 
 		for (usize p = col_start; p < col_end; ++p) {
-			usize i = linalg::sparse::util::zero_extend(mi[p]);
+			usize i = proxsuite::linalg::sparse::util::zero_extend(mi[p]);
 			if (assert_sym_hi) {
 				VEG_ASSERT(i <= j);
 			}
@@ -498,27 +498,27 @@ void insert_submatrix(
 
 template <typename T, typename I>
 auto refactorize_req(
-		veg::Tag<T> xtag, veg::Tag<I> itag, isize n_tot, isize kkt_nnz)
-		-> veg::dynstack::StackReq {
-	auto symbolic_req = linalg::sparse::factorize_symbolic_req(
-			itag, n_tot, kkt_nnz, linalg::sparse::Ordering::user_provided);
-	auto diag_req = linalg::dense::temp_vec_req(xtag, n_tot);
-	auto numeric_req = linalg::sparse::factorize_numeric_req(
+		proxsuite::linalg::veg::Tag<T> xtag, proxsuite::linalg::veg::Tag<I> itag, isize n_tot, isize kkt_nnz)
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	auto symbolic_req = proxsuite::linalg::sparse::factorize_symbolic_req(
+			itag, n_tot, kkt_nnz, proxsuite::linalg::sparse::Ordering::user_provided);
+	auto diag_req = proxsuite::linalg::dense::temp_vec_req(xtag, n_tot);
+	auto numeric_req = proxsuite::linalg::sparse::factorize_numeric_req(
 			xtag,
 			itag,
 			n_tot,
 			kkt_nnz,
-			linalg::sparse::Ordering::user_provided);
+			proxsuite::linalg::sparse::Ordering::user_provided);
 	return symbolic_req | (diag_req & numeric_req);
 }
 
 template <typename T, typename I>
 void refactorize(
 		SolverState<T> const& state,
-		linalg::sparse::MatRef<T, I> const& kkt_active,
+		proxsuite::linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		Workspace<T, I>& work,
-		veg::dynstack::DynStackMut stack) {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	auto& aug_kkt = *work.internal.matrix_free_kkt.get();
 	auto& iterative_solver = *work.internal.matrix_free_solver.get();
 
@@ -529,7 +529,7 @@ void refactorize(
 
 	if (work.internal.do_ldlt) {
 		Ldlt<T, I>& ldlt = work.internal.ldlt;
-		linalg::sparse::factorize_symbolic_non_zeros(
+		proxsuite::linalg::sparse::factorize_symbolic_non_zeros(
 				ldlt.nnz_counts.ptr_mut(),
 				ldlt.etree.ptr_mut(),
 				ldlt.perm_inv.ptr_mut(),
@@ -548,7 +548,7 @@ void refactorize(
 			diag[n + n_eq + i] = active_constraints[i] ? -state.mu_in : T(1);
 		}
 
-		linalg::sparse::factorize_numeric(
+		proxsuite::linalg::sparse::factorize_numeric(
 				ldlt.values.ptr_mut(),
 				ldlt.row_indices.ptr_mut(),
 				diag.data(),
@@ -575,17 +575,17 @@ void refactorize(
 }
 
 template <typename T>
-auto ldl_solve_in_place_req(veg::Tag<T> xtag, isize n_tot)
-		-> veg::dynstack::StackReq {
-	return linalg::dense::temp_vec_req(xtag, n_tot);
+auto ldl_solve_in_place_req(proxsuite::linalg::veg::Tag<T> xtag, isize n_tot)
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	return proxsuite::linalg::dense::temp_vec_req(xtag, n_tot);
 }
 
 template <typename T, typename I>
 void ldl_solve_in_place(
 		VectorViewMut<T> rhs,
 		Workspace<T, I> const& work,
-		veg::dynstack::DynStackMut stack) {
-	auto zx = linalg::sparse::util::zero_extend;
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
+	auto zx = proxsuite::linalg::sparse::util::zero_extend;
 
 	auto rhs_e = rhs.to_eigen();
 	auto n_tot = rhs_e.rows();
@@ -595,8 +595,8 @@ void ldl_solve_in_place(
 
 		Ldlt<T, I>& ldlt = work.internal.ldlt;
 
-		linalg::sparse::MatRef<T, I> ld = {
-				linalg::sparse::from_raw_parts,
+		proxsuite::linalg::sparse::MatRef<T, I> ld = {
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				0,
@@ -613,13 +613,13 @@ void ldl_solve_in_place(
 			tmp[i] = rhs_e[isize(zx(perm[i]))];
 		}
 
-		linalg::sparse::dense_lsolve<T, I>(
-				{linalg::sparse::from_eigen, tmp}, ld);
+		proxsuite::linalg::sparse::dense_lsolve<T, I>(
+				{proxsuite::linalg::sparse::from_eigen, tmp}, ld);
 		for (isize i = 0; i < n_tot; ++i) {
 			tmp[i] /= ld.values()[isize(zx(ld.col_ptrs()[i]))];
 		}
-		linalg::sparse::dense_ltsolve<T, I>(
-				{linalg::sparse::from_eigen, tmp}, ld);
+		proxsuite::linalg::sparse::dense_ltsolve<T, I>(
+				{proxsuite::linalg::sparse::from_eigen, tmp}, ld);
 		for (isize i = 0; i < n_tot; ++i) {
 			rhs_e[i] = tmp[isize(zx(perm_inv[i]))];
 		}
@@ -631,9 +631,9 @@ void ldl_solve_in_place(
 }
 
 template <typename T>
-auto ldl_iter_solve_noalias_req(veg::Tag<T> xtag, isize n_tot)
-		-> veg::dynstack::StackReq {
-	return linalg::dense::temp_vec_req(xtag, n_tot) &
+auto ldl_iter_solve_noalias_req(proxsuite::linalg::veg::Tag<T> xtag, isize n_tot)
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	return proxsuite::linalg::dense::temp_vec_req(xtag, n_tot) &
 	       detail::ldl_solve_in_place_req(xtag, n_tot);
 }
 
@@ -645,12 +645,12 @@ void ldl_iter_solve_noalias(
 		SolverState<T> const& state,
 		Settings<T> const& settings,
 		Workspace<T, I> const& work,
-		linalg::sparse::MatRef<T, I> const& kkt_active,
+		proxsuite::linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		isize n,
 		isize n_eq,
 		isize n_in,
-		veg::dynstack::DynStackMut stack) {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
 
@@ -704,12 +704,12 @@ void ldl_iter_solve_in_place(
 		SolverState<T> const& state,
 		Settings<T> const& settings,
 		Workspace<T, I> const& work,
-		linalg::sparse::MatRef<T, I> const& kkt_active,
+		proxsuite::linalg::sparse::MatRef<T, I> const& kkt_active,
 		bool const* active_constraints,
 		isize n,
 		isize n_eq,
 		isize n_in,
-		veg::dynstack::DynStackMut stack) {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	isize n_tot = n + n_eq + n_in;
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
 	detail::ldl_iter_solve_noalias(
@@ -736,7 +736,7 @@ void setup(
 		Model<T, I>& model,
 		Settings<T> const& settings,
 		QpView<T, I> const& qp) {
-	using namespace veg::dynstack;
+	using namespace proxsuite::linalg::veg::dynstack;
 
 	isize n = qp.H.nrows();
 	isize n_eq = qp.AT.ncols();
@@ -796,14 +796,14 @@ void setup(
 
 	// allocate storage for symbolic factorization
 	{
-		auto req = linalg::sparse::factorize_symbolic_req(
-				veg::Tag<I>{}, n_tot, nnz_tot, linalg::sparse::Ordering::amd);
+		auto req = proxsuite::linalg::sparse::factorize_symbolic_req(
+				proxsuite::linalg::veg::Tag<I>{}, n_tot, nnz_tot, proxsuite::linalg::sparse::Ordering::amd);
 		work.internal.storage.resize_for_overwrite(req.alloc_req());
 	}
 
 	// perform symbolic factorization, checking for overflow
 	bool overflow = false;
-	auto zx = linalg::sparse::util::zero_extend;
+	auto zx = proxsuite::linalg::sparse::util::zero_extend;
 	{
 		ldlt.etree.resize_for_overwrite(n_tot);
 		ldlt.perm.resize_for_overwrite(n_tot);
@@ -811,8 +811,8 @@ void setup(
 		ldlt.col_ptrs.resize_for_overwrite(n_tot + 1);
 
 		DynStackMut stack = work.stack_mut();
-		auto kkt_symbolic = linalg::sparse::SymbolicMatRef<I>{
-				veg::from_raw_parts,
+		auto kkt_symbolic = proxsuite::linalg::sparse::SymbolicMatRef<I>{
+				proxsuite::linalg::veg::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz_tot,
@@ -820,7 +820,7 @@ void setup(
 				nullptr,
 				kkt_storage.row_indices.ptr(),
 		};
-		linalg::sparse::factorize_symbolic_non_zeros(
+		proxsuite::linalg::sparse::factorize_symbolic_non_zeros(
 				ldlt.col_ptrs.ptr_mut() + 1,
 				ldlt.etree.ptr_mut(),
 				ldlt.perm_inv.ptr_mut(),
@@ -836,7 +836,7 @@ void setup(
 		auto pcol_ptrs = ldlt.col_ptrs.ptr_mut();
 		pcol_ptrs[0] = I(0);
 
-		using veg::u64;
+		using proxsuite::linalg::veg::u64;
 		u64 acc = 0;
 		for (usize i = 0; i < usize(n_tot); ++i) {
 			acc += u64(zx(pcol_ptrs[i + 1]));
@@ -852,15 +852,15 @@ void setup(
 	work.internal.do_ldlt = !overflow && max_lnnz < 10000000;
 
 	StackReq req =
-			linalg::dense::temp_vec_req(veg::Tag<I>{}, n_tot) &
+			proxsuite::linalg::dense::temp_vec_req(proxsuite::linalg::veg::Tag<I>{}, n_tot) &
 			detail::refactorize_req(
-					veg::Tag<T>{}, veg::Tag<I>{}, n_tot, H_nnz + A_nnz + C_nnz);
+					proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n_tot, H_nnz + A_nnz + C_nnz);
 
 	work.internal.storage.resize_for_overwrite(req.alloc_req());
 
 	// initial factorization
 	{
-		linalg::sparse::MatRef<T, I> kkt = kkt_storage.as_ref();
+		proxsuite::linalg::sparse::MatRef<T, I> kkt = kkt_storage.as_ref();
 		DynStackMut stack = work.stack_mut();
 		LDLT_TEMP_VEC_UNINIT(I, kkt_nnz_counts, n_tot, stack);
 
@@ -879,8 +879,8 @@ void setup(
 			C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 		}
 
-		linalg::sparse::MatRef<T, I> kkt_active = {
-				linalg::sparse::from_raw_parts,
+		proxsuite::linalg::sparse::MatRef<T, I> kkt_active = {
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				H_nnz + A_nnz + C_active_nnz,
@@ -902,8 +902,8 @@ void setup(
 		ldlt.row_indices.resize_for_overwrite(ldlt_lnnz);
 		ldlt.values.resize_for_overwrite(ldlt_lnnz);
 
-		linalg::sparse::MatMut<T, I> ldlt_mut = {
-				linalg::sparse::from_raw_parts,
+		proxsuite::linalg::sparse::MatMut<T, I> ldlt_mut = {
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				0,
@@ -941,14 +941,14 @@ void solve(
 		T const* diag_precond = nullptr) {
 	auto norm = dense::infty_norm;
 
-	veg::dynstack::DynStackMut stack = work.stack_mut();
+	proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
 	isize n = results.x().rows();
 	isize n_eq = results.y().rows();
 	isize n_in = results.z().rows();
 	isize n_tot = n + n_eq + n_in;
 
-	linalg::sparse::MatRef<T, I> kkt = {
-			veg::from_raw_parts,
+	proxsuite::linalg::sparse::MatRef<T, I> kkt = {
+			proxsuite::linalg::veg::from_raw_parts,
 			n_tot,
 			n_tot,
 			0, // nnz not used
@@ -982,8 +982,8 @@ void solve(
 		C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 	}
 
-	linalg::sparse::MatRef<T, I> kkt_active = {
-			linalg::sparse::from_raw_parts,
+	proxsuite::linalg::sparse::MatRef<T, I> kkt_active = {
+			proxsuite::linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			H_nnz + A_nnz + C_active_nnz,

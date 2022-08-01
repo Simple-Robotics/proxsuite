@@ -1,7 +1,7 @@
 #include <Eigen/SparseCore>
 #include <matio.h>
 #include <string>
-#include <veg/util/assert.hpp>
+#include <proxsuite/linalg/veg/util/assert.hpp>
 #include <iostream>
 
 struct MarosMeszarosQp {
@@ -23,19 +23,19 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 
 	mat_t* mat_fp = Mat_Open(filename, MAT_ACC_RDONLY);
 	VEG_ASSERT(mat_fp != nullptr);
-	auto&& _mat_fp_cleanup = veg::defer([&] { Mat_Close(mat_fp); });
-	veg::unused(_mat_fp_cleanup);
+	auto&& _mat_fp_cleanup = proxsuite::linalg::veg::defer([&] { Mat_Close(mat_fp); });
+	proxsuite::linalg::veg::unused(_mat_fp_cleanup);
 
 	auto load_mat = [&](char const* name) -> Mat {
 		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
 		VEG_ASSERT(mat_var != nullptr);
-		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
-		veg::unused(_mat_var_cleanup);
+		auto&& _mat_var_cleanup = proxsuite::linalg::veg::defer([&] { Mat_VarFree(mat_var); });
+		proxsuite::linalg::veg::unused(_mat_var_cleanup);
 
 		VEG_ASSERT(int(mat_var->class_type) == int(matio_classes::MAT_C_SPARSE));
 		auto const* ptr = static_cast<mat_sparse_t const*>(mat_var->data);
 
-		using veg::isize;
+		using proxsuite::linalg::veg::isize;
 
 		isize nrows = isize(mat_var->dims[0]);
 		isize ncols = isize(mat_var->dims[1]);
@@ -66,8 +66,8 @@ auto load_qp(char const* filename) -> MarosMeszarosQp {
 	auto load_vec = [&](char const* name) -> Vec {
 		matvar_t* mat_var = Mat_VarRead(mat_fp, name);
 		VEG_ASSERT(mat_var != nullptr);
-		auto&& _mat_var_cleanup = veg::defer([&] { Mat_VarFree(mat_var); });
-		veg::unused(_mat_var_cleanup);
+		auto&& _mat_var_cleanup = proxsuite::linalg::veg::defer([&] { Mat_VarFree(mat_var); });
+		proxsuite::linalg::veg::unused(_mat_var_cleanup);
 
 		VEG_ASSERT(int(mat_var->data_type) == int(matio_types::MAT_T_DOUBLE));
 		auto const* ptr = static_cast<double const*>(mat_var->data);
@@ -118,7 +118,7 @@ struct PreprocessedQpSparse {
 auto preprocess_qp(MarosMeszarosQp& qp) -> PreprocessedQp {
 	using Mat = MarosMeszarosQp::Mat;
 	using Vec = MarosMeszarosQp::Vec;
-	using veg::isize;
+	using proxsuite::linalg::veg::isize;
 
 	auto eq = qp.l.array().cwiseEqual(qp.u.array()).eval();
 
@@ -162,7 +162,7 @@ auto preprocess_qp(MarosMeszarosQp& qp) -> PreprocessedQp {
 auto preprocess_qp_sparse(MarosMeszarosQp&& qp) -> PreprocessedQpSparse {
 	using Mat = MarosMeszarosQp::Mat;
 	using Vec = MarosMeszarosQp::Vec;
-	using veg::isize;
+	using proxsuite::linalg::veg::isize;
 
 	auto eq = qp.l.array().cwiseEqual(qp.u.array()).eval();
 

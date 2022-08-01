@@ -404,12 +404,12 @@ void active_set_change(
 
 	// suppression pour le nouvel active set, ajout dans le nouvel unactive set
 
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 
 	{
 		auto _planned_to_delete =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, isize(qpmodel.n_in));
+				stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, isize(qpmodel.n_in));
 		isize* planned_to_delete = _planned_to_delete.ptr_mut();
 		isize planned_to_delete_count = 0;
 
@@ -443,7 +443,7 @@ void active_set_change(
 
 	{
 		auto _planned_to_add =
-				stack.make_new_for_overwrite(veg::Tag<isize>{}, qpmodel.n_in);
+				stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, qpmodel.n_in);
 		auto planned_to_add = _planned_to_add.ptr_mut();
 
 		isize planned_to_add_count = 0;

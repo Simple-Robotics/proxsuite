@@ -266,9 +266,9 @@ struct RuizEquilibration {
 	 * @param n_in number of inequality constraints.
 	 */
 	static auto
-	scale_qp_in_place_req(veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
-			-> veg::dynstack::StackReq {
-		return linalg::dense::temp_vec_req(tag, n + n_eq + n_in);
+	scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T> tag, isize n, isize n_eq, isize n_in)
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		return proxsuite::linalg::dense::temp_vec_req(tag, n + n_eq + n_in);
 	}
 
 	// H_new = c * head @ H @ head
@@ -282,7 +282,7 @@ struct RuizEquilibration {
 	 * @param settings solver's settings.
 	 * @param stack stack variable used by the equilibrator.
 	 */
-	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, const Settings<T>& settings, veg::dynstack::DynStackMut stack) {
+	void scale_qp_in_place(QpViewBoxMut<T> qp, bool execute_preconditioner, const Settings<T>& settings, proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 
 		max_iter = settings.preconditioner_max_iter;
 		epsilon = settings.preconditioner_accuracy;

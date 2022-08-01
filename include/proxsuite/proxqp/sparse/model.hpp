@@ -27,13 +27,13 @@ struct Model {
 	isize A_nnz;
 	isize C_nnz;
 
-	veg::Vec<I> kkt_col_ptrs;
-	veg::Vec<I> kkt_row_indices; 
-	veg::Vec<T> kkt_values;
+	proxsuite::linalg::veg::Vec<I> kkt_col_ptrs;
+	proxsuite::linalg::veg::Vec<I> kkt_row_indices; 
+	proxsuite::linalg::veg::Vec<T> kkt_values;
 
-	veg::Vec<I> kkt_col_ptrs_unscaled;
-	veg::Vec<I> kkt_row_indices_unscaled; 
-	veg::Vec<T> kkt_values_unscaled;
+	proxsuite::linalg::veg::Vec<I> kkt_col_ptrs_unscaled;
+	proxsuite::linalg::veg::Vec<I> kkt_row_indices_unscaled; 
+	proxsuite::linalg::veg::Vec<T> kkt_values_unscaled;
 
 	Eigen::Matrix<T, Eigen::Dynamic, 1> g;
 	Eigen::Matrix<T, Eigen::Dynamic, 1> b;
@@ -43,12 +43,12 @@ struct Model {
 	/*!
 	 * Returns the current (scaled) KKT matrix of the problem.
 	 */
-	auto kkt() const -> linalg::sparse::MatRef<T, I> {
+	auto kkt() const -> proxsuite::linalg::sparse::MatRef<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;
 		auto nnz =
-				isize(linalg::sparse::util::zero_extend(kkt_col_ptrs[n_tot]));
+				isize(proxsuite::linalg::sparse::util::zero_extend(kkt_col_ptrs[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -61,12 +61,12 @@ struct Model {
 	/*!
 	 * Returns the current (scaled) KKT matrix of the problem (mutable form).
 	 */
-	auto kkt_mut() -> linalg::sparse::MatMut<T, I> {
+	auto kkt_mut() -> proxsuite::linalg::sparse::MatMut<T, I> {
 		auto n_tot = kkt_col_ptrs.len() - 1;
 		auto nnz =
-				isize(linalg::sparse::util::zero_extend(kkt_col_ptrs[n_tot]));
+				isize(proxsuite::linalg::sparse::util::zero_extend(kkt_col_ptrs[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -79,12 +79,12 @@ struct Model {
 	/*!
 	 * Returns the original (unscaled) KKT matrix of the problem.
 	 */
-	auto kkt_unscaled() const -> linalg::sparse::MatRef<T, I> {
+	auto kkt_unscaled() const -> proxsuite::linalg::sparse::MatRef<T, I> {
 		auto n_tot = kkt_col_ptrs_unscaled.len() - 1;
 		auto nnz =
-				isize(linalg::sparse::util::zero_extend(kkt_col_ptrs_unscaled[n_tot]));
+				isize(proxsuite::linalg::sparse::util::zero_extend(kkt_col_ptrs_unscaled[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,
@@ -97,12 +97,12 @@ struct Model {
 	/*!
 	 * Returns the original (unscaled) KKT matrix of the problem (mutable form).
 	 */
-	auto kkt_mut_unscaled() -> linalg::sparse::MatMut<T, I> {
+	auto kkt_mut_unscaled() -> proxsuite::linalg::sparse::MatMut<T, I> {
 		auto n_tot = kkt_col_ptrs_unscaled.len() - 1;
 		auto nnz =
-				isize(linalg::sparse::util::zero_extend(kkt_col_ptrs_unscaled[n_tot]));
+				isize(proxsuite::linalg::sparse::util::zero_extend(kkt_col_ptrs_unscaled[n_tot]));
 		return {
-				linalg::sparse::from_raw_parts,
+				proxsuite::linalg::sparse::from_raw_parts,
 				n_tot,
 				n_tot,
 				nnz,

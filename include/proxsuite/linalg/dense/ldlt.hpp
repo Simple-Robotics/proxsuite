@@ -9,8 +9,9 @@
 #include "proxsuite/linalg/dense/update.hpp"
 #include "proxsuite/linalg/dense/modify.hpp"
 #include "proxsuite/linalg/dense/solve.hpp"
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 
+namespace proxsuite {
 namespace linalg {
 namespace dense {
 namespace _detail {
@@ -24,9 +25,10 @@ struct SimdAlignedSystemAlloc {
 } // namespace _detail
 } // namespace dense
 } // namespace linalg
+} // namespace proxsuite
 
 template <>
-struct veg::mem::Alloc<linalg::dense::_detail::SimdAlignedSystemAlloc> {
+struct proxsuite::linalg::veg::mem::Alloc<proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc> {
 #ifdef PROXSUITE_DONT_VECTORIZE	
 	static constexpr usize min_align = 0;
 #else
@@ -34,7 +36,7 @@ struct veg::mem::Alloc<linalg::dense::_detail::SimdAlignedSystemAlloc> {
 #endif
 
 	using RefMut =
-			veg::RefMut<linalg::dense::_detail::SimdAlignedSystemAlloc>;
+			proxsuite::linalg::veg::RefMut<proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc>;
 
 	VEG_INLINE static auto adjusted_layout(Layout l) noexcept -> Layout {
 		if (l.align < min_align) {
@@ -74,6 +76,7 @@ struct veg::mem::Alloc<linalg::dense::_detail::SimdAlignedSystemAlloc> {
 	}
 };
 
+namespace proxsuite {
 namespace linalg {
 namespace dense {
 /*!
@@ -86,14 +89,14 @@ namespace dense {
  * Example usage:
  * ```cpp
 #include <proxsuite/linalg/dense/ldlt.hpp>
-#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 auto main() -> int {
 	constexpr auto DYN = Eigen::Dynamic;
 	using Matrix = Eigen::Matrix<double, DYN, DYN>;
 	using Vector = Eigen::Matrix<double, DYN, 1>;
-	using Ldlt = linalg::dense::Ldlt<double>;
-	using veg::dynstack::StackReq;
+	using Ldlt = proxsuite::linalg::dense::Ldlt<double>;
+	using proxsuite::linalg::veg::dynstack::StackReq;
 
 	// allocate a matrix `a`
 	auto a0 = Matrix{
@@ -136,7 +139,7 @@ auto main() -> int {
 	// then delete two rows and columns at indices 0 and 2
 	// matrix is
 	// 5.0
-	veg::isize const indices[] = {0, 2};
+	proxsuite::linalg::veg::isize const indices[] = {0, 2};
 	ldl.delete_at(indices, 2, stack);
 
 	auto rhs = Vector{1};
@@ -188,20 +191,20 @@ private:
 	using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
 	using Perm = Eigen::PermutationWrapper<VecMapISize>;
 
-	using StorageSimdVec = veg::Vec<
+	using StorageSimdVec = proxsuite::linalg::veg::Vec<
 			T,
-			veg::meta::if_t<
+			proxsuite::linalg::veg::meta::if_t<
 					_detail::should_vectorize<T>::value,
 					_detail::SimdAlignedSystemAlloc,
-					veg::mem::SystemAlloc>>;
+					proxsuite::linalg::veg::mem::SystemAlloc>>;
 
 	StorageSimdVec ld_storage;
 	isize stride{};
-	veg::Vec<isize> perm;
-	veg::Vec<isize> perm_inv;
+	proxsuite::linalg::veg::Vec<isize> perm;
+	proxsuite::linalg::veg::Vec<isize> perm_inv;
 
 	// sorted on a best effort basis
-	veg::Vec<T> maybe_sorted_diag;
+	proxsuite::linalg::veg::Vec<T> maybe_sorted_diag;
 
 	VEG_REFLECT(Ldlt, ld_storage, stride, perm, perm_inv, maybe_sorted_diag);
 
@@ -283,12 +286,12 @@ public:
    * @param r maximum number of simultaneous rank updates
 	 */
 	static auto rank_r_update_req(isize n, isize r) noexcept
-			-> veg::dynstack::StackReq {
-		auto w_req = veg::dynstack::StackReq{
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		auto w_req = proxsuite::linalg::veg::dynstack::StackReq{
 				_detail::adjusted_stride<T>(n) * r * isize{sizeof(T)},
 				_detail::align<T>(),
 		};
-		auto alpha_req = veg::dynstack::StackReq{
+		auto alpha_req = proxsuite::linalg::veg::dynstack::StackReq{
 				r * isize{sizeof(T)},
 				alignof(T),
 		};
@@ -303,13 +306,13 @@ public:
    * @param r maximum number of rows to be deleted
 	 */
 	static auto delete_at_req(isize n, isize r) noexcept
-			-> veg::dynstack::StackReq {
-		return veg::dynstack::StackReq{
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		return proxsuite::linalg::veg::dynstack::StackReq{
 							 r * isize{sizeof(isize)},
 							 alignof(isize),
 					 } &
-		       linalg::dense::ldlt_delete_rows_and_cols_req(
-							 veg::Tag<T>{}, n, r);
+		       proxsuite::linalg::dense::ldlt_delete_rows_and_cols_req(
+							 proxsuite::linalg::veg::Tag<T>{}, n, r);
 	}
 
 	/*!
@@ -322,7 +325,7 @@ public:
    * @param stack workspace memory stack
 	 */
 	void
-	delete_at(isize const* indices, isize r, veg::dynstack::DynStackMut stack) {
+	delete_at(isize const* indices, isize r, proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 		if (r == 0) {
 			return;
 		}
@@ -331,14 +334,14 @@ public:
 
 		isize n = dim();
 
-		auto _indices_actual = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
+		auto _indices_actual = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, r);
 		auto* indices_actual = _indices_actual.ptr_mut();
 
 		for (isize k = 0; k < r; ++k) {
 			indices_actual[k] = perm_inv[indices[k]];
 		}
 
-		linalg::dense::ldlt_delete_rows_and_cols_sort_indices( //
+		proxsuite::linalg::dense::ldlt_delete_rows_and_cols_sort_indices( //
 				ld_col_mut(),
 				indices_actual,
 				r,
@@ -388,14 +391,14 @@ public:
    * @param r maximum number of rows to be inserted
 	 */
 	static auto insert_block_at_req(isize n, isize r) noexcept
-			-> veg::dynstack::StackReq {
-		using veg::dynstack::StackReq;
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		using proxsuite::linalg::veg::dynstack::StackReq;
 		return StackReq{
 							 isize{sizeof(T)} * (adjusted_stride(n + r) * r),
 							 _detail::align<T>(),
 					 } &
-		       linalg::dense::ldlt_insert_rows_and_cols_req(
-							 veg::Tag<T>{}, n, r);
+		       proxsuite::linalg::dense::ldlt_insert_rows_and_cols_req(
+							 proxsuite::linalg::veg::Tag<T>{}, n, r);
 	}
 
 	/*!
@@ -407,7 +410,7 @@ public:
    * @param stack workspace memory stack
 	 */
 	void insert_block_at(
-			isize i, Eigen::Ref<ColMat const> a, veg::dynstack::DynStackMut stack) {
+			isize i, Eigen::Ref<ColMat const> a, proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 
 		isize n = dim();
 		isize r = a.cols();
@@ -446,7 +449,7 @@ public:
 			}
 		}
 
-		linalg::dense::ldlt_insert_rows_and_cols(
+		proxsuite::linalg::dense::ldlt_insert_rows_and_cols(
 				ld_col_mut(), i_actual, permuted_a, stack);
 	}
 
@@ -458,8 +461,8 @@ public:
    * @param r maximum size of diagonal subsection that gets updated
 	 */
 	static auto diagonal_update_req(isize n, isize r) noexcept
-			-> veg::dynstack::StackReq {
-		using veg::dynstack::StackReq;
+			-> proxsuite::linalg::veg::dynstack::StackReq {
+		using proxsuite::linalg::veg::dynstack::StackReq;
 		auto algo_req = StackReq{
 				2 * r * isize{sizeof(isize)},
 				alignof(isize),
@@ -490,14 +493,14 @@ public:
 			isize* indices,
 			isize r,
 			Eigen::Ref<Vec const> alpha,
-			veg::dynstack::DynStackMut stack) {
+			proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 
 		if (r == 0) {
 			return;
 		}
 
-		auto _positions = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
-		auto _sorted_indices = stack.make_new_for_overwrite(veg::Tag<isize>{}, r);
+		auto _positions = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, r);
+		auto _sorted_indices = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, r);
 		auto* positions = _positions.ptr_mut();
 		auto* sorted_indices = _sorted_indices.ptr_mut();
 
@@ -526,7 +529,7 @@ public:
 			_w(sorted_indices[k] - first, k) = 1;
 		}
 
-		linalg::dense::_detail::rank_r_update_clobber_w_impl(
+		proxsuite::linalg::dense::_detail::rank_r_update_clobber_w_impl(
 				util::submatrix(ld_col_mut(), first, first, n, n),
 				_w.data(),
 				_w.outerStride(),
@@ -550,7 +553,7 @@ public:
 	void rank_r_update( //
 			Eigen::Ref<ColMat const> w,
 			Eigen::Ref<Vec const> alpha,
-			veg::dynstack::DynStackMut stack) {
+			proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 
 		auto n = dim();
 		auto r = w.cols();
@@ -573,7 +576,7 @@ public:
 			}
 		}
 
-		linalg::dense::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
+		proxsuite::linalg::dense::rank_r_update_clobber_inputs(ld_col_mut(), _w, _alpha);
 	}
 
 	/*!
@@ -654,12 +657,12 @@ public:
    *
    * @param n maximum dimension of the matrix
 	 */
-	static auto factorize_req(isize n) -> veg::dynstack::StackReq {
-		return veg::dynstack::StackReq{
+	static auto factorize_req(isize n) -> proxsuite::linalg::veg::dynstack::StackReq {
+		return proxsuite::linalg::veg::dynstack::StackReq{
 							 n * adjusted_stride(n) * isize{sizeof(T)},
 							 _detail::align<T>(),
 					 } |
-		       linalg::dense::factorize_req(veg::Tag<T>{}, n);
+		       proxsuite::linalg::dense::factorize_req(proxsuite::linalg::veg::Tag<T>{}, n);
 	}
 
 	/*!
@@ -672,7 +675,7 @@ public:
    */
 	void factorize(
 			Eigen::Ref<ColMat const> mat /* NOLINT */,
-			veg::dynstack::DynStackMut stack) {
+			proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 		VEG_ASSERT(mat.rows() == mat.cols());
 		isize n = mat.rows();
 		reserve_uninit(n);
@@ -681,7 +684,7 @@ public:
 		perm_inv.resize_for_overwrite(n);
 		maybe_sorted_diag.resize_for_overwrite(n);
 
-		linalg::dense::_detail::compute_permutation( //
+		proxsuite::linalg::dense::_detail::compute_permutation( //
 				perm.ptr_mut(),
 				perm_inv.ptr_mut(),
 				util::diagonal(mat));
@@ -689,7 +692,7 @@ public:
 		{
 			LDLT_TEMP_MAT_UNINIT(T, work, n, n, stack);
 			ld_col_mut() = mat;
-			linalg::dense::_detail::apply_permutation_tri_lower(
+			proxsuite::linalg::dense::_detail::apply_permutation_tri_lower(
 					ld_col_mut(), work, perm.ptr());
 		}
 
@@ -697,7 +700,7 @@ public:
 			maybe_sorted_diag[i] = ld_col()(i, i);
 		}
 
-		linalg::dense::factorize(ld_col_mut(), stack);
+		proxsuite::linalg::dense::factorize(ld_col_mut(), stack);
 	}
 
 	/*!
@@ -706,7 +709,7 @@ public:
    *
    * @param n maximum dimension of the matrix
    */
-	static auto solve_in_place_req(isize n) -> veg::dynstack::StackReq {
+	static auto solve_in_place_req(isize n) -> proxsuite::linalg::veg::dynstack::StackReq {
 		return {
 				n * isize{sizeof(T)},
 				_detail::align<T>(),
@@ -720,7 +723,7 @@ public:
    * @param stack workspace memory stack
    */
 	void
-	solve_in_place(Eigen::Ref<Vec> rhs, veg::dynstack::DynStackMut stack) const {
+	solve_in_place(Eigen::Ref<Vec> rhs, proxsuite::linalg::veg::dynstack::DynStackMut stack) const {
 		isize n = rhs.rows();
 		LDLT_TEMP_VEC_UNINIT(T, work, n, stack);
 
@@ -728,7 +731,7 @@ public:
 			work[i] = rhs[perm[i]];
 		}
 
-		linalg::dense::solve(ld_col(), work);
+		proxsuite::linalg::dense::solve(ld_col(), work);
 
 		for (isize i = 0; i < n; ++i) {
 			rhs[i] = work[perm_inv[i]];
@@ -762,5 +765,6 @@ public:
 };
 } // namespace dense
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard DENSE_LDLT_LDLT_HPP */

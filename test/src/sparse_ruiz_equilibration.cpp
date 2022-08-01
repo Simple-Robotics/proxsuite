@@ -5,12 +5,12 @@
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <util.hpp>
 #include <doctest.h>
-#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linalg::sparse::tags;
+using namespace proxsuite::linalg::sparse::tags;
 
 TEST_CASE("upper part") {
 	isize n = 10;
@@ -56,20 +56,20 @@ TEST_CASE("upper part") {
 			Symmetry::upper,
 	};
 	VEG_MAKE_STACK(
-			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+			stack, ruiz.scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T>{}, n, n_eq, n_in));
 
 	bool execute_preconditioner = true;
 	proxsuite::proxqp::Settings<T> settings;
 
 	ruiz.scale_qp_in_place(
 			{
-					{linalg::sparse::from_eigen, H_scaled},
-					{linalg::sparse::from_eigen, g_scaled},
-					{linalg::sparse::from_eigen, AT_scaled},
-					{linalg::sparse::from_eigen, b_scaled},
-					{linalg::sparse::from_eigen, CT_scaled},
-					{linalg::sparse::from_eigen, l_scaled},
-					{linalg::sparse::from_eigen, u_scaled},
+					{proxsuite::linalg::sparse::from_eigen, H_scaled},
+					{proxsuite::linalg::sparse::from_eigen, g_scaled},
+					{proxsuite::linalg::sparse::from_eigen, AT_scaled},
+					{proxsuite::linalg::sparse::from_eigen, b_scaled},
+					{proxsuite::linalg::sparse::from_eigen, CT_scaled},
+					{proxsuite::linalg::sparse::from_eigen, l_scaled},
+					{proxsuite::linalg::sparse::from_eigen, u_scaled},
 			},
 			execute_preconditioner,
 			settings,
@@ -144,18 +144,18 @@ TEST_CASE("lower part") {
 			Symmetry::lower,
 	};
 	VEG_MAKE_STACK(
-			stack, ruiz.scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+			stack, ruiz.scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T>{}, n, n_eq, n_in));
 	bool execute_preconditioner = true;
 	proxsuite::proxqp::Settings<T> settings;
 	ruiz.scale_qp_in_place(
 			{
-					{linalg::sparse::from_eigen, H_scaled},
-					{linalg::sparse::from_eigen, g_scaled},
-					{linalg::sparse::from_eigen, AT_scaled},
-					{linalg::sparse::from_eigen, b_scaled},
-					{linalg::sparse::from_eigen, CT_scaled},
-					{linalg::sparse::from_eigen, l_scaled},
-					{linalg::sparse::from_eigen, u_scaled},
+					{proxsuite::linalg::sparse::from_eigen, H_scaled},
+					{proxsuite::linalg::sparse::from_eigen, g_scaled},
+					{proxsuite::linalg::sparse::from_eigen, AT_scaled},
+					{proxsuite::linalg::sparse::from_eigen, b_scaled},
+					{proxsuite::linalg::sparse::from_eigen, CT_scaled},
+					{proxsuite::linalg::sparse::from_eigen, l_scaled},
+					{proxsuite::linalg::sparse::from_eigen, u_scaled},
 			},
 			execute_preconditioner,
 			settings,

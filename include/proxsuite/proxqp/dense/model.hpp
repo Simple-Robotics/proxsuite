@@ -6,7 +6,7 @@
 #define PROXSUITE_QP_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
-#include <proxsuite/veg/type_traits/core.hpp>
+#include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include "proxsuite/proxqp/dense/fwd.hpp"
 
 namespace proxsuite {

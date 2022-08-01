@@ -8,6 +8,7 @@
 #include "proxsuite/linalg/sparse/update.hpp"
 #include <algorithm>
 
+namespace proxsuite {
 namespace linalg {
 namespace sparse {
 
@@ -19,12 +20,12 @@ namespace sparse {
  */
 template <typename T, typename I>
 auto delete_row_req( //
-		veg::Tag<T> /*tag*/,
-		veg::Tag<I> /*tag*/,
+		proxsuite::linalg::veg::Tag<T> /*tag*/,
+		proxsuite::linalg::veg::Tag<I> /*tag*/,
 		isize n,
-		isize max_nnz) noexcept -> veg::dynstack::StackReq {
+		isize max_nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
 	return sparse::rank1_update_req(
-			veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
+			proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n, true, max_nnz);
 }
 
 /*!
@@ -127,20 +128,20 @@ auto delete_row(
  */
 template <typename T, typename I>
 auto add_row_req( //
-		veg::Tag<T> /*tag*/,
-		veg::Tag<I> /*tag*/,
+		proxsuite::linalg::veg::Tag<T> /*tag*/,
+		proxsuite::linalg::veg::Tag<I> /*tag*/,
 		isize n,
 		bool id_perm,
 		isize nnz,
-		isize max_nnz) noexcept -> veg::dynstack::StackReq {
-	using veg::dynstack::StackReq;
+		isize max_nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
+	using proxsuite::linalg::veg::dynstack::StackReq;
 	auto numerical_work = StackReq{n * isize{sizeof(T)}, isize{alignof(T)}};
 	auto permuted_indices =
 			StackReq{(id_perm ? 0 : nnz) * isize{sizeof(I)}, isize{alignof(I)}};
 	auto pattern_diff = StackReq{n * isize{sizeof(I)}, isize{alignof(I)}};
-	auto merge = merge_second_col_into_first_req(veg::Tag<I>{}, n);
+	auto merge = merge_second_col_into_first_req(proxsuite::linalg::veg::Tag<I>{}, n);
 	auto update =
-			sparse::rank1_update_req(veg::Tag<T>{}, veg::Tag<I>{}, n, true, max_nnz);
+			sparse::rank1_update_req(proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n, true, max_nnz);
 
 	auto req = numerical_work;
 	req = req & permuted_indices;
@@ -170,7 +171,7 @@ auto add_row(
 		I const* perm_inv,
 		isize pos,
 		VecRef<T, I> new_col,
-		veg::DoNotDeduce<T> diag_element,
+		proxsuite::linalg::veg::DoNotDeduce<T> diag_element,
 		DynStackMut stack) noexcept(false) -> MatMut<T, I> {
 	VEG_ASSERT(!ld.is_compressed());
 	bool id_perm = perm_inv == nullptr;
@@ -189,13 +190,13 @@ auto add_row(
 	{
 		// allocate workspace for numerical step, storage for the k-th row and k-th
 		// column of the new matrix
-		auto _lx2_storage = stack.make_new_for_overwrite(veg::Tag<T>{}, ld.nrows());
+		auto _lx2_storage = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<T>{}, ld.nrows());
 		auto plx2_storage = _lx2_storage.ptr_mut();
 
 		// allocate workspace for permuted row indices of the new column if
 		// necessary
 		auto _new_col_permuted_indices = stack.make_new_for_overwrite(
-				veg::Tag<I>{}, id_perm ? isize(0) : new_col.nnz());
+				proxsuite::linalg::veg::Tag<I>{}, id_perm ? isize(0) : new_col.nnz());
 
 		auto new_col_permuted_indices =
 				id_perm ? new_col.row_indices() : _new_col_permuted_indices.ptr();
@@ -213,9 +214,9 @@ auto add_row(
 
 		// allocate workspace for non-zero pattern of k-th row
 		auto _l12_nnz_pattern =
-				stack.make_new_for_overwrite(veg::Tag<I>{}, isize(permuted_pos));
+				stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<I>{}, isize(permuted_pos));
 		auto _difference = stack.make_new_for_overwrite(
-				veg::Tag<I>{}, ld.nrows() - isize(permuted_pos));
+				proxsuite::linalg::veg::Tag<I>{}, ld.nrows() - isize(permuted_pos));
 		auto pdifference = _difference.ptr_mut();
 
 		auto pl12_nnz_pattern = _l12_nnz_pattern.ptr_mut();
@@ -228,7 +229,7 @@ auto add_row(
 
 		// for each row in the added column
 		{
-			auto _visited = stack.make_new(veg::Tag<bool>{}, isize(permuted_pos));
+			auto _visited = stack.make_new(proxsuite::linalg::veg::Tag<bool>{}, isize(permuted_pos));
 			bool* visited = _visited.ptr_mut();
 			for (usize p = 0; p < usize(new_col.nnz()); ++p) {
 				auto j = zx(new_col_permuted_indices[p]);
@@ -416,5 +417,6 @@ auto add_row(
 }
 } // namespace sparse
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP */

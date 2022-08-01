@@ -4,12 +4,12 @@
 #include <doctest.h>
 #include <proxsuite/proxqp/sparse/sparse.hpp>
 #include <util.hpp>
-#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linalg::sparse::tags;
+using namespace proxsuite::linalg::sparse::tags;
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test solve function") {
@@ -18,12 +18,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test solve function---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 
@@ -66,12 +66,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test solve with different rho value---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 
@@ -113,12 +113,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test solve with different mu_eq and mu_in values---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 
@@ -159,12 +159,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test warm starting---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 
@@ -207,12 +207,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test verbose = true ---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 
@@ -255,12 +255,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
 	             "inequality constraints: test no initial guess ---"
 						<< std::endl;
 	for (auto const& dims : {
-					 //veg::tuplify(50, 0, 0),
-					 //veg::tuplify(50, 25, 0),
-					 //veg::tuplify(10, 0, 10),
-					 //veg::tuplify(50, 0, 25),
-					 //veg::tuplify(50, 10, 25),
-                                         veg::tuplify(10, 3, 2)
+					 //proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 //proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 //proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 //proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 //proxsuite::linalg::veg::tuplify(50, 10, 25),
+                                         proxsuite::linalg::veg::tuplify(10, 3, 2)
 			 }) {
         VEG_BIND(auto const&, (n, n_eq, n_in), dims);
                 

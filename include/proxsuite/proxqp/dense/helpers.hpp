@@ -65,8 +65,8 @@ void setup_factorization(Workspace<T>& qpwork,
 		const Model<T>& qpmodel,
 		Results<T>& qpresults){
 
-        veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
+        proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut,
 			qpwork.ldl_stack.as_mut(),
 	    };
 
@@ -106,8 +106,8 @@ void setup_equilibration(Workspace<T>& qpwork,
 			{from_eigen, qpwork.u_scaled},
 			{from_eigen, qpwork.l_scaled}};
 
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut,
+	proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut,
 			qpwork.ldl_stack.as_mut(),
 	};
 	ruiz.scale_qp_in_place(qp_scaled, execute_preconditioner, qpsettings, stack);

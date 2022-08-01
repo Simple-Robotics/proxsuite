@@ -5,38 +5,39 @@
 #ifndef SPARSE_LDLT_CORE_HPP
 #define SPARSE_LDLT_CORE_HPP
 
-#include <proxsuite/veg/slice.hpp>
-#include <proxsuite/veg/memory/dynamic_stack.hpp>
+#include <proxsuite/linalg/veg/slice.hpp>
+#include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
 #include <type_traits>
 #include <Eigen/SparseCore>
 
 #define SPARSE_LDLT_CONCEPT(...)                                               \
-	VEG_CONCEPT_MACRO(::linalg::sparse::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::proxsuite::linalg::sparse::concepts, __VA_ARGS__)
 #define SPARSE_LDLT_CHECK_CONCEPT(...)                                         \
-	VEG_CONCEPT_MACRO(::linalg::sparse::concepts, __VA_ARGS__)
+	VEG_CONCEPT_MACRO(::proxsuite::linalg::sparse::concepts, __VA_ARGS__)
 
+namespace proxsuite {
 namespace linalg {
 namespace sparse {
-using veg::dynstack::DynStackMut;
-using namespace veg::literals;
+using proxsuite::linalg::veg::dynstack::DynStackMut;
+using namespace proxsuite::linalg::veg::literals;
 
-using veg::usize;
-using veg::isize;
+using proxsuite::linalg::veg::usize;
+using proxsuite::linalg::veg::isize;
 
-using veg::Slice;
-using veg::SliceMut;
+using proxsuite::linalg::veg::Slice;
+using proxsuite::linalg::veg::SliceMut;
 
-using veg::Ref;
-using veg::RefMut;
-using veg::ref;
-using veg::mut;
+using proxsuite::linalg::veg::Ref;
+using proxsuite::linalg::veg::RefMut;
+using proxsuite::linalg::veg::ref;
+using proxsuite::linalg::veg::mut;
 
 inline namespace tags {
-using veg::Unsafe;
-using veg::unsafe;
+using proxsuite::linalg::veg::Unsafe;
+using proxsuite::linalg::veg::unsafe;
 
-using veg::FromRawParts;
-using veg::from_raw_parts;
+using proxsuite::linalg::veg::FromRawParts;
+using proxsuite::linalg::veg::from_raw_parts;
 VEG_TAG(from_eigen, FromEigen);
 } // namespace tags
 
@@ -149,8 +150,8 @@ struct DenseVecMut {
 	template <typename V>
 	DenseVecMut(FromEigen /*from_eigen*/, V&& v) noexcept
 			: _{v.data(), v.rows()} {
-		static_assert(veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
-		static_assert(veg::uncvref_t<V>::ColsAtCompileTime == 1, ".");
+		static_assert(proxsuite::linalg::veg::uncvref_t<V>::InnerStrideAtCompileTime == 1, ".");
+		static_assert(proxsuite::linalg::veg::uncvref_t<V>::ColsAtCompileTime == 1, ".");
 	}
 
 	auto as_slice() const noexcept -> Slice<T> {
@@ -440,7 +441,7 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I> {
 						m.innerIndexPtr(),
 						m.valuePtr(),
 				} {
-		static_assert(!bool(veg::uncvref_t<M>::IsRowMajor), ".");
+		static_assert(!bool(proxsuite::linalg::veg::uncvref_t<M>::IsRowMajor), ".");
 	};
 
 	auto values() const noexcept -> T const* { return _.val; }
@@ -502,5 +503,6 @@ private:
 };
 } // namespace sparse
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard SPARSE_LDLT_CORE_HPP */

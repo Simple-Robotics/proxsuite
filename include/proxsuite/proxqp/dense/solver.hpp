@@ -16,7 +16,7 @@
 #include <Eigen/Sparse>
 #include <iostream>
 #include <fstream>
-#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 #include <proxsuite/linalg/dense/ldlt.hpp>
 #include <chrono>
 #include <iomanip> 
@@ -50,8 +50,8 @@ void refactorize(
 	qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
 			-qpresults.info.mu_eq;
 
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 	qpwork.ldl.factorize(qpwork.kkt, stack);
 
 	isize n = qpmodel.dim;
@@ -93,8 +93,8 @@ void mu_update(
 		Workspace<T>& qpwork,
 		T mu_eq_new,
 		T mu_in_new) {
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 
 	isize n = qpmodel.dim;
 	isize n_eq = qpmodel.n_eq;
@@ -109,7 +109,7 @@ void mu_update(
 	rank_update_alpha.tail(n_c).setConstant(qpresults.info.mu_in - mu_in_new);
 
 	{
-		auto _indices = stack.make_new_for_overwrite(veg::Tag<isize>{}, n_eq + n_c);
+		auto _indices = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<isize>{}, n_eq + n_c);
 		isize* indices = _indices.ptr_mut();
 		for (isize k = 0; k < n_eq; ++k) {
 			indices[k] = n + k;
@@ -191,8 +191,8 @@ void iterative_solve_with_permut_fact( //
 	i32 it_stability = 0;
 
 	qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
-	veg::dynstack::DynStackMut stack{
-			veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+	proxsuite::linalg::veg::dynstack::DynStackMut stack{
+			proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 	qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
 	iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
@@ -564,8 +564,8 @@ auto primal_dual_newton_semi_smooth(
 		primal_dual_semi_smooth_newton_step<T>(
 				qpsettings, qpmodel, qpresults, qpwork, eps_int);
 
-		veg::dynstack::DynStackMut stack{
-				veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
+		proxsuite::linalg::veg::dynstack::DynStackMut stack{
+				proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()};
 		LDLT_TEMP_VEC(T, ATdy, qpmodel.dim, stack);
 		LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
 

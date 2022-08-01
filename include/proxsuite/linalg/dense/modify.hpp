@@ -9,8 +9,9 @@
 #include "proxsuite/linalg/dense/update.hpp"
 #include "proxsuite/linalg/dense/factorize.hpp"
 #include <algorithm>
-#include <proxsuite/veg/memory/dynamic_stack.hpp>
+#include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
 
+namespace proxsuite {
 namespace linalg {
 namespace dense {
 namespace _detail {
@@ -76,7 +77,7 @@ void ldlt_delete_rows_and_cols_impl( //
 		Mat ld,
 		isize* indices,
 		isize r,
-		veg::dynstack::DynStackMut stack) {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	std::sort(indices, indices + r);
 
 	using T = typename Mat::Scalar;
@@ -86,7 +87,7 @@ void ldlt_delete_rows_and_cols_impl( //
 
 	auto w_stride = _detail::adjusted_stride<T>(n - first - r);
 
-	veg::Tag<T> tag;
+	proxsuite::linalg::veg::Tag<T> tag;
 
 	auto _w = stack.make_new(tag, r * w_stride, _detail::align<T>());
 	auto _alpha = stack.make_new_for_overwrite(tag, r);
@@ -121,10 +122,10 @@ void ldlt_delete_rows_and_cols_impl( //
 
 template <typename Mat, typename A_1>
 void ldlt_insert_rows_and_cols_impl(
-		Mat ld, isize pos, A_1 a_1, veg::dynstack::DynStackMut stack) {
+		Mat ld, isize pos, A_1 a_1, proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	using T = typename Mat::Scalar;
 
-	veg::Tag<T> tag;
+	proxsuite::linalg::veg::Tag<T> tag;
 
 	isize const new_n = ld.rows();
 	isize const r = a_1.cols();
@@ -223,7 +224,7 @@ void ldlt_insert_rows_and_cols_impl(
 		util::noalias_mul_add(l21, l20, d0xl10T, T(-1));
 	}
 
-	linalg::dense::factorize(ld11, stack);
+	proxsuite::linalg::dense::factorize(ld11, stack);
 	util::trans(ld11) //
 			.template triangularView<Eigen::UnitUpper>()
 			.template solveInPlace<Eigen::OnTheRight>(l21);
@@ -255,13 +256,13 @@ void ldlt_insert_rows_and_cols_impl(
 
 template <typename T>
 auto ldlt_delete_rows_and_cols_req(
-		veg::Tag<T> /*tag*/, isize n, isize r) noexcept -> veg::dynstack::StackReq {
+		proxsuite::linalg::veg::Tag<T> /*tag*/, isize n, isize r) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
 
-	auto w_req = veg::dynstack::StackReq{
+	auto w_req = proxsuite::linalg::veg::dynstack::StackReq{
 			_detail::adjusted_stride<T>(n - r) * r * isize{sizeof(T)},
 			_detail::align<T>(),
 	};
-	auto alpha_req = veg::dynstack::StackReq{
+	auto alpha_req = proxsuite::linalg::veg::dynstack::StackReq{
 			r * isize{sizeof(T)},
 			alignof(T),
 	};
@@ -273,21 +274,21 @@ void ldlt_delete_rows_and_cols_sort_indices( //
 		Mat&& ld,
 		isize* indices,
 		isize r,
-		veg::dynstack::DynStackMut stack) {
+		proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	_detail::ldlt_delete_rows_and_cols_impl(
 			util::to_view_dyn(ld), indices, r, stack);
 }
 
 template <typename T>
-auto ldlt_insert_rows_and_cols_req(veg::Tag<T> tag, isize n, isize r) noexcept
-		-> veg::dynstack::StackReq {
-	auto factorize_req = linalg::dense::factorize_req(tag, r);
+auto ldlt_insert_rows_and_cols_req(proxsuite::linalg::veg::Tag<T> tag, isize n, isize r) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	auto factorize_req = proxsuite::linalg::dense::factorize_req(tag, r);
 
-	auto w_req = veg::dynstack::StackReq{
+	auto w_req = proxsuite::linalg::veg::dynstack::StackReq{
 			_detail::adjusted_stride<T>(n) * r * isize{sizeof(T)},
 			_detail::align<T>(),
 	};
-	auto alpha_req = veg::dynstack::StackReq{
+	auto alpha_req = proxsuite::linalg::veg::dynstack::StackReq{
 			r * isize{sizeof(T)},
 			alignof(T),
 	};
@@ -297,11 +298,12 @@ auto ldlt_insert_rows_and_cols_req(veg::Tag<T> tag, isize n, isize r) noexcept
 
 template <typename Mat, typename A_1>
 void ldlt_insert_rows_and_cols(
-		Mat&& ld, isize pos, A_1 const& a_1, veg::dynstack::DynStackMut stack) {
+		Mat&& ld, isize pos, A_1 const& a_1, proxsuite::linalg::veg::dynstack::DynStackMut stack) {
 	_detail::ldlt_insert_rows_and_cols_impl(
 			util::to_view_dyn(ld), pos, util::to_view_dyn_rows(a_1), stack);
 }
 } // namespace dense
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard DENSE_LDLT_MODIFY_HPP */

@@ -4,21 +4,21 @@
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <util.hpp>
 #include <doctest.h>
-#include <proxsuite/veg/util/dynstack_alloc.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxqp;
 using T = double;
 using I = c_int;
-using namespace linalg::sparse::tags;
+using namespace proxsuite::linalg::sparse::tags;
 /*
 TEST_CASE("random ruiz") {
 
 	for (auto const& dims : {
-					 veg::tuplify(2, 0, 2),
-					 veg::tuplify(50, 0, 0),
-					 veg::tuplify(50, 25, 0),
-					 veg::tuplify(50, 0, 25),
-					 veg::tuplify(50, 10, 25),
+					 proxsuite::linalg::veg::tuplify(2, 0, 2),
+					 proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 proxsuite::linalg::veg::tuplify(50, 10, 25),
 			 }) {
 		VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
@@ -34,13 +34,13 @@ TEST_CASE("random ruiz") {
 
 		{
 			sparse::QpView<T, I> qp = {
-					{linalg::sparse::from_eigen, H},
-					{linalg::sparse::from_eigen, g},
-					{linalg::sparse::from_eigen, AT},
-					{linalg::sparse::from_eigen, b},
-					{linalg::sparse::from_eigen, CT},
-					{linalg::sparse::from_eigen, l},
-					{linalg::sparse::from_eigen, u},
+					{proxsuite::linalg::sparse::from_eigen, H},
+					{proxsuite::linalg::sparse::from_eigen, g},
+					{proxsuite::linalg::sparse::from_eigen, AT},
+					{proxsuite::linalg::sparse::from_eigen, b},
+					{proxsuite::linalg::sparse::from_eigen, CT},
+					{proxsuite::linalg::sparse::from_eigen, l},
+					{proxsuite::linalg::sparse::from_eigen, u},
 			};
 
 			proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
@@ -82,11 +82,11 @@ TEST_CASE("random ruiz") {
 TEST_CASE("random ruiz using the API") {
 
 	for (auto const& dims : {
-					 veg::tuplify(2, 0, 2),
-					 veg::tuplify(50, 0, 0),
-					 veg::tuplify(50, 25, 0),
-					 veg::tuplify(50, 0, 25),
-					 veg::tuplify(50, 10, 25),
+					 proxsuite::linalg::veg::tuplify(2, 0, 2),
+					 proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 proxsuite::linalg::veg::tuplify(50, 10, 25),
 			 }) {
 		VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
@@ -122,11 +122,11 @@ TEST_CASE("random ruiz using the API") {
 TEST_CASE("random id") {
 
 	for (auto const& dims : {
-					 veg::tuplify(50, 0, 0),
-					 veg::tuplify(50, 25, 0),
-					 veg::tuplify(10, 0, 10),
-					 veg::tuplify(50, 0, 25),
-					 veg::tuplify(50, 10, 25),
+					 proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 proxsuite::linalg::veg::tuplify(50, 10, 25),
 			 }) {
 		VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 
@@ -142,13 +142,13 @@ TEST_CASE("random id") {
 
 		{
 			sparse::QpView<T, I> qp = {
-					{linalg::sparse::from_eigen, H},
-					{linalg::sparse::from_eigen, g},
-					{linalg::sparse::from_eigen, AT},
-					{linalg::sparse::from_eigen, b},
-					{linalg::sparse::from_eigen, CT},
-					{linalg::sparse::from_eigen, l},
-					{linalg::sparse::from_eigen, u},
+					{proxsuite::linalg::sparse::from_eigen, H},
+					{proxsuite::linalg::sparse::from_eigen, g},
+					{proxsuite::linalg::sparse::from_eigen, AT},
+					{proxsuite::linalg::sparse::from_eigen, b},
+					{proxsuite::linalg::sparse::from_eigen, CT},
+					{proxsuite::linalg::sparse::from_eigen, l},
+					{proxsuite::linalg::sparse::from_eigen, u},
 			};
 
 			proxqp::sparse::preconditioner::Identity<T, I> id;
@@ -184,11 +184,11 @@ TEST_CASE("random id") {
 TEST_CASE("random id using the API") {
 
 	for (auto const& dims : {
-					 veg::tuplify(50, 0, 0),
-					 veg::tuplify(50, 25, 0),
-					 veg::tuplify(10, 0, 10),
-					 veg::tuplify(50, 0, 25),
-					 veg::tuplify(50, 10, 25),
+					 proxsuite::linalg::veg::tuplify(50, 0, 0),
+					 proxsuite::linalg::veg::tuplify(50, 25, 0),
+					 proxsuite::linalg::veg::tuplify(10, 0, 10),
+					 proxsuite::linalg::veg::tuplify(50, 0, 25),
+					 proxsuite::linalg::veg::tuplify(50, 10, 25),
 			 }) {
 		VEG_BIND(auto const&, (n, n_eq, n_in), dims);
 

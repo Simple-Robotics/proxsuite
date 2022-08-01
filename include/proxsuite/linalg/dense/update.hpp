@@ -7,6 +7,7 @@
 
 #include "proxsuite/linalg/dense/core.hpp"
 
+namespace proxsuite {
 namespace linalg {
 namespace dense {
 namespace _detail {
@@ -29,13 +30,13 @@ inline auto bytes_to_next_aligned(void* ptr, usize align) noexcept -> isize {
 
 template <usize... Is, typename Fn>
 VEG_INLINE void
-unroll_impl(veg::meta::index_sequence<Is...> /*unused*/, Fn fn) {
+unroll_impl(proxsuite::linalg::veg::meta::index_sequence<Is...> /*unused*/, Fn fn) {
 	VEG_EVAL_ALL(fn(Is));
 }
 
 template <usize N, typename Fn>
 VEG_INLINE void unroll(Fn fn) {
-	_detail::unroll_impl(veg::meta::make_index_sequence<N>{}, VEG_FWD(fn));
+	_detail::unroll_impl(proxsuite::linalg::veg::meta::make_index_sequence<N>{}, VEG_FWD(fn));
 }
 
 template <typename T, usize N>
@@ -264,13 +265,13 @@ struct ConstantR {
 template <
 		typename LD,
 		typename W,
-		typename T = typename veg::uncvref_t<LD>::Scalar>
-void rank_1_update_clobber_w(LD&& ld, W&& w, veg::DoNotDeduce<T> alpha) {
+		typename T = typename proxsuite::linalg::veg::uncvref_t<LD>::Scalar>
+void rank_1_update_clobber_w(LD&& ld, W&& w, proxsuite::linalg::veg::DoNotDeduce<T> alpha) {
 	_detail::rank_r_update_clobber_w_impl( //
 			util::to_view_dyn(ld),
 			w.data(),
 			0,
-			veg::mem::addressof(alpha),
+			proxsuite::linalg::veg::mem::addressof(alpha),
 			_detail::ConstantR{1});
 }
 
@@ -278,7 +279,7 @@ template <
 		typename LD,
 		typename W,
 		typename A,
-		typename T = typename veg::uncvref_t<LD>::Scalar>
+		typename T = typename proxsuite::linalg::veg::uncvref_t<LD>::Scalar>
 void rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha) {
 	isize r = w.cols();
 	_detail::rank_r_update_clobber_w_impl( //
@@ -290,5 +291,6 @@ void rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha) {
 }
 } // namespace dense
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard DENSE_LDLT_UPDATE_HPP */

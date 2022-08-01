@@ -14,7 +14,7 @@
 #include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
@@ -38,13 +38,13 @@ void ldl_solve(
 		VectorViewMut<T> sol,
 		VectorView<T> rhs,
 		isize n_tot,
-		linalg::sparse::MatMut<T, I> ldl,
+		proxsuite::linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>& iterative_solver,
 		bool do_ldlt,
-		veg::dynstack::DynStackMut stack,
+		proxsuite::linalg::veg::dynstack::DynStackMut stack,
 		T* ldl_values,
 		I* perm,
 		I* ldl_col_ptrs,
@@ -52,7 +52,7 @@ void ldl_solve(
 	LDLT_TEMP_VEC_UNINIT(T, work_, n_tot, stack);
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
-	auto zx = linalg::sparse::util::zero_extend;
+	auto zx = proxsuite::linalg::sparse::util::zero_extend;
 
 	if (do_ldlt) {
 
@@ -60,16 +60,16 @@ void ldl_solve(
 			work_[i] = rhs_e[isize(zx(perm[i]))];
 		}
 
-		linalg::sparse::dense_lsolve<T, I>( //
-				{linalg::sparse::from_eigen, work_},
+		proxsuite::linalg::sparse::dense_lsolve<T, I>( //
+				{proxsuite::linalg::sparse::from_eigen, work_},
 				ldl.as_const());
 
 		for (isize i = 0; i < n_tot; ++i) {
 			work_[i] /= ldl_values[isize(zx(ldl_col_ptrs[i]))];
 		}
 
-		linalg::sparse::dense_ltsolve<T, I>( //
-				{linalg::sparse::from_eigen, work_},
+		proxsuite::linalg::sparse::dense_ltsolve<T, I>( //
+				{proxsuite::linalg::sparse::from_eigen, work_},
 				ldl.as_const());
 
 		for (isize i = 0; i < n_tot; ++i) {
@@ -89,20 +89,20 @@ void ldl_iter_solve_noalias(
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linalg::sparse::MatMut<T, I> ldl,
+		proxsuite::linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>& iterative_solver,
 		bool do_ldlt,
-		veg::dynstack::DynStackMut stack,
+		proxsuite::linalg::veg::dynstack::DynStackMut stack,
 		T* ldl_values,
 		I* perm,
 		I* ldl_col_ptrs,
 		I const* perm_inv,
 		Settings<T> const& settings,
-		linalg::sparse::MatMut<T, I> kkt_active,
-		veg::SliceMut<bool> active_constraints) {
+		proxsuite::linalg::sparse::MatMut<T, I> kkt_active,
+		proxsuite::linalg::veg::SliceMut<bool> active_constraints) {
 	auto rhs_e = rhs.to_eigen();
 	auto sol_e = sol.to_eigen();
 
@@ -191,20 +191,20 @@ void ldl_solve_in_place(
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linalg::sparse::MatMut<T, I> ldl,
+		proxsuite::linalg::sparse::MatMut<T, I> ldl,
 		Eigen::MINRES<
 				detail::AugmentedKkt<T, I>,
 				Eigen::Upper | Eigen::Lower,
 				Eigen::IdentityPreconditioner>& iterative_solver,
 		bool do_ldlt,
-		veg::dynstack::DynStackMut stack,
+		proxsuite::linalg::veg::dynstack::DynStackMut stack,
 		T* ldl_values,
 		I* perm,
 		I* ldl_col_ptrs,
 		I const* perm_inv,
 		Settings<T> const& settings,
-		linalg::sparse::MatMut<T, I> kkt_active,
-		veg::SliceMut<bool> active_constraints) {
+		proxsuite::linalg::sparse::MatMut<T, I> kkt_active,
+		proxsuite::linalg::veg::SliceMut<bool> active_constraints) {
 	LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
 	ldl_iter_solve_noalias(
 			{proxqp::from_eigen, tmp},
@@ -234,7 +234,7 @@ void ldl_solve_in_place(
 */
 template <typename T, typename I>
 auto inner_reconstructed_matrix(
-		linalg::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
+		proxsuite::linalg::sparse::MatMut<T, I> ldl, bool do_ldlt) -> DMat<T> {
 	VEG_ASSERT(do_ldlt);
 	auto ldl_dense = ldl.to_eigen().toDense();
 	auto l = DMat<T>(ldl_dense.template triangularView<Eigen::UnitLower>());
@@ -253,7 +253,7 @@ auto inner_reconstructed_matrix(
 */
 template <typename T, typename I>
 auto reconstructed_matrix(
-		linalg::sparse::MatMut<T, I> ldl,
+		proxsuite::linalg::sparse::MatMut<T, I> ldl,
 		bool do_ldlt,
 		I const* perm_inv,
 		isize n_tot) -> DMat<T> {
@@ -280,14 +280,14 @@ auto reconstructed_matrix(
 */
 template <typename T, typename I>
 auto reconstruction_error(
-		linalg::sparse::MatMut<T, I> ldl,
+		proxsuite::linalg::sparse::MatMut<T, I> ldl,
 		bool do_ldlt,
 		I const* perm_inv,
 		Results<T> const& results,
 		Model<T, I> const& data,
 		isize n_tot,
-		linalg::sparse::MatMut<T, I> kkt_active,
-		veg::SliceMut<bool> active_constraints) -> DMat<T> {
+		proxsuite::linalg::sparse::MatMut<T, I> kkt_active,
+		proxsuite::linalg::veg::SliceMut<bool> active_constraints) -> DMat<T> {
 	T mu_eq_neg = -results.info.mu_eq;
 	T mu_in_neg = -results.info.mu_in;
 	auto diff = DMat<T>(
@@ -334,28 +334,28 @@ void qp_solve(
 
 	if(work.internal.dirty) // the following is used when a solve has already been executed (and without any intermediary model update)
 	{
-		linalg::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
+		proxsuite::linalg::sparse::MatMut<T, I> kkt_unscaled = data.kkt_mut_unscaled();
 
-		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt_unscaled, data.dim);
+		auto kkt_top_n_rows = detail::top_rows_mut_unchecked(proxsuite::linalg::veg::unsafe, kkt_unscaled, data.dim);
 
-		linalg::sparse::MatMut<T, I> H_unscaled = 
+		proxsuite::linalg::sparse::MatMut<T, I> H_unscaled = 
 				detail::middle_cols_mut(kkt_top_n_rows, 0, data.dim, data.H_nnz);
 
-		linalg::sparse::MatMut<T, I> AT_unscaled =
+		proxsuite::linalg::sparse::MatMut<T, I> AT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, data.dim, data.n_eq, data.A_nnz);
 
-		linalg::sparse::MatMut<T, I> CT_unscaled =
+		proxsuite::linalg::sparse::MatMut<T, I> CT_unscaled =
 				detail::middle_cols_mut(kkt_top_n_rows, data.dim + data.n_eq, data.n_in, data.C_nnz);
 
 		SparseMat<T, I> H_triu = H_unscaled.to_eigen().template triangularView<Eigen::Upper>();
 		sparse::QpView<T, I> qp = {
-				{linalg::sparse::from_eigen, H_triu},
-				{linalg::sparse::from_eigen, data.g},
-				{linalg::sparse::from_eigen, AT_unscaled.to_eigen()},
-				{linalg::sparse::from_eigen, data.b},
-				{linalg::sparse::from_eigen, CT_unscaled.to_eigen()},
-				{linalg::sparse::from_eigen, data.l},
-				{linalg::sparse::from_eigen, data.u}};
+				{proxsuite::linalg::sparse::from_eigen, H_triu},
+				{proxsuite::linalg::sparse::from_eigen, data.g},
+				{proxsuite::linalg::sparse::from_eigen, AT_unscaled.to_eigen()},
+				{proxsuite::linalg::sparse::from_eigen, data.b},
+				{proxsuite::linalg::sparse::from_eigen, CT_unscaled.to_eigen()},
+				{proxsuite::linalg::sparse::from_eigen, data.l},
+				{proxsuite::linalg::sparse::from_eigen, data.u}};
 
 		switch (settings.initial_guess) { // the following is used when one solve has already been executed
 					case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
@@ -390,7 +390,7 @@ void qp_solve(
 						break;
 					}
 		}
-		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
+		work.setup_impl(qp, results, data, settings, false, precond, P::scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T>{}, data.dim, data.n_eq, data.n_in));
 		
 	}else{
 		// the following is used for a first solve after initializing or updating the Qp object 
@@ -426,11 +426,11 @@ void qp_solve(
 	if (settings.verbose){
 		sparse::print_setup_header(settings,results, data);
 	}
-	using namespace veg::literals;
-	namespace util = linalg::sparse::util;
+	using namespace proxsuite::linalg::veg::literals;
+	namespace util = proxsuite::linalg::sparse::util;
 	auto zx = util::zero_extend;
 
-	veg::dynstack::DynStackMut stack = work.stack_mut();
+	proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
 
 	isize n = data.dim;
 	isize n_eq = data.n_eq;
@@ -441,17 +441,17 @@ void qp_solve(
 	VectorViewMut<T> y{proxqp::from_eigen, results.y};
 	VectorViewMut<T> z{proxqp::from_eigen, results.z};
 
-	linalg::sparse::MatMut<T, I> kkt = data.kkt_mut();
+	proxsuite::linalg::sparse::MatMut<T, I> kkt = data.kkt_mut();
 
-	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(veg::unsafe, kkt, n);
+	auto kkt_top_n_rows = detail::top_rows_mut_unchecked(proxsuite::linalg::veg::unsafe, kkt, n);
 
-	linalg::sparse::MatMut<T, I> H_scaled = 
+	proxsuite::linalg::sparse::MatMut<T, I> H_scaled = 
 			detail::middle_cols_mut(kkt_top_n_rows, 0, n, data.H_nnz);
 
-	linalg::sparse::MatMut<T, I> AT_scaled =
+	proxsuite::linalg::sparse::MatMut<T, I> AT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n, n_eq, data.A_nnz);
 
-	linalg::sparse::MatMut<T, I> CT_scaled =
+	proxsuite::linalg::sparse::MatMut<T, I> CT_scaled =
 			detail::middle_cols_mut(kkt_top_n_rows, n + n_eq, n_in, data.C_nnz);
 
 	auto& g_scaled_e = work.internal.g_scaled;
@@ -461,12 +461,12 @@ void qp_solve(
 
 	QpViewMut<T, I> qp_scaled = {
 			H_scaled,
-			{linalg::sparse::from_eigen, g_scaled_e},
+			{proxsuite::linalg::sparse::from_eigen, g_scaled_e},
 			AT_scaled,
-			{linalg::sparse::from_eigen, b_scaled_e},
+			{proxsuite::linalg::sparse::from_eigen, b_scaled_e},
 			CT_scaled,
-			{linalg::sparse::from_eigen, l_scaled_e},
-			{linalg::sparse::from_eigen, u_scaled_e},
+			{proxsuite::linalg::sparse::from_eigen, l_scaled_e},
+			{proxsuite::linalg::sparse::from_eigen, u_scaled_e},
 	};
 
 	T const primal_feasibility_rhs_1_eq = infty_norm(data.b);
@@ -476,8 +476,8 @@ void qp_solve(
 
 	//auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
 	auto ldl_col_ptrs = work.internal.ldl.col_ptrs.ptr_mut();
-	veg::Tag<I> itag;
-	veg::Tag<T> xtag;
+	proxsuite::linalg::veg::Tag<I> itag;
+	proxsuite::linalg::veg::Tag<T> xtag;
 
 	bool do_ldlt = work.internal.do_ldlt;
 
@@ -587,8 +587,8 @@ void qp_solve(
                 }
 	}
 
-	linalg::sparse::MatMut<T, I> kkt_active = {
-			linalg::sparse::from_raw_parts,
+	proxsuite::linalg::sparse::MatMut<T, I> kkt_active = {
+			proxsuite::linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			data.H_nnz + data.A_nnz + C_active_nnz,
@@ -603,10 +603,10 @@ void qp_solve(
 	I* ldl_nnz_counts = work.internal.ldl.nnz_counts.ptr_mut();
 	I* ldl_row_indices = work.internal.ldl.row_indices.ptr_mut();
 	T* ldl_values = work.internal.ldl.values.ptr_mut();
-	veg::SliceMut<bool> active_constraints = results.active_constraints.as_mut();
+	proxsuite::linalg::veg::SliceMut<bool> active_constraints = results.active_constraints.as_mut();
 
-	linalg::sparse::MatMut<T, I> ldl = {
-			linalg::sparse::from_raw_parts,
+	proxsuite::linalg::sparse::MatMut<T, I> ldl = {
+			proxsuite::linalg::sparse::from_raw_parts,
 			n_tot,
 			n_tot,
 			0,
@@ -854,15 +854,15 @@ void qp_solve(
 									kkt_active._set_nnz(kkt_active.nnz() + isize(col_nnz));
 
 									if (do_ldlt) {
-										linalg::sparse::VecRef<T, I> new_col{
-												linalg::sparse::from_raw_parts,
+										proxsuite::linalg::sparse::VecRef<T, I> new_col{
+												proxsuite::linalg::sparse::from_raw_parts,
 												n_tot,
 												isize(col_nnz),
 												kkt.row_indices() + zx(kkt.col_start(usize(idx))),
 												kkt.values() + zx(kkt.col_start(usize(idx))),
 										};
 
-										ldl = linalg::sparse::add_row(
+										ldl = proxsuite::linalg::sparse::add_row(
 												ldl,
 												etree,
 												perm_inv,
@@ -878,7 +878,7 @@ void qp_solve(
 									kkt_active.nnz_per_col_mut()[idx] = 0;
 									kkt_active._set_nnz(kkt_active.nnz() - isize(col_nnz));
 									if (do_ldlt) {
-										ldl = linalg::sparse::delete_row(
+										ldl = proxsuite::linalg::sparse::delete_row(
 												ldl, etree, perm_inv, idx, stack);
 									}
 									active_constraints[i] = new_active_constraints[i];
@@ -1227,7 +1227,7 @@ void qp_solve(
 							detail::vec(y_e),
 							detail::vec(z_e),
 							stack));
-			veg::unused(_);
+			proxsuite::linalg::veg::unused(_);
 
 			if (primal_feasibility_lhs_new >= primal_feasibility_lhs && //
 			    dual_feasibility_lhs_new_2 >= primal_feasibility_lhs && //
@@ -1265,8 +1265,8 @@ void qp_solve(
 					alpha = results.info.mu_in - new_bcl_mu_in;
 				}
 				T value = 1;
-				linalg::sparse::VecRef<T, I> w{
-						veg::from_raw_parts,
+				proxsuite::linalg::sparse::VecRef<T, I> w{
+						proxsuite::linalg::veg::from_raw_parts,
 						n+n_eq+n_in,
 						w_values,
 						&row_index, // &: adresse de row index

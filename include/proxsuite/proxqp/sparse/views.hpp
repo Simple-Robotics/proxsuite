@@ -13,7 +13,7 @@
 #include <proxsuite/linalg/sparse/rowmod.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 
@@ -27,24 +27,24 @@ namespace sparse {
 
 template <typename T, typename I>
 struct QpView {
-	linalg::sparse::MatRef<T, I> H;
-	linalg::sparse::DenseVecRef<T> g;
-	linalg::sparse::MatRef<T, I> AT;
-	linalg::sparse::DenseVecRef<T> b;
-	linalg::sparse::MatRef<T, I> CT;
-	linalg::sparse::DenseVecRef<T> l;
-	linalg::sparse::DenseVecRef<T> u;
+	proxsuite::linalg::sparse::MatRef<T, I> H;
+	proxsuite::linalg::sparse::DenseVecRef<T> g;
+	proxsuite::linalg::sparse::MatRef<T, I> AT;
+	proxsuite::linalg::sparse::DenseVecRef<T> b;
+	proxsuite::linalg::sparse::MatRef<T, I> CT;
+	proxsuite::linalg::sparse::DenseVecRef<T> l;
+	proxsuite::linalg::sparse::DenseVecRef<T> u;
 };
 
 template <typename T, typename I>
 struct QpViewMut {
-	linalg::sparse::MatMut<T, I> H;
-	linalg::sparse::DenseVecMut<T> g;
-	linalg::sparse::MatMut<T, I> AT;
-	linalg::sparse::DenseVecMut<T> b;
-	linalg::sparse::MatMut<T, I> CT;
-	linalg::sparse::DenseVecMut<T> l;
-	linalg::sparse::DenseVecMut<T> u;
+	proxsuite::linalg::sparse::MatMut<T, I> H;
+	proxsuite::linalg::sparse::DenseVecMut<T> g;
+	proxsuite::linalg::sparse::MatMut<T, I> AT;
+	proxsuite::linalg::sparse::DenseVecMut<T> b;
+	proxsuite::linalg::sparse::MatMut<T, I> CT;
+	proxsuite::linalg::sparse::DenseVecMut<T> l;
+	proxsuite::linalg::sparse::DenseVecMut<T> u;
 
 	auto as_const() noexcept -> QpView<T, I> {
 		return {

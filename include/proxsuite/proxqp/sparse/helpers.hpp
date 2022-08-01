@@ -6,7 +6,7 @@
 #define PROXSUITE_QP_SPARSE_HELPERS_HPP
 
 #include <Eigen/Sparse>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
 
 namespace proxsuite {
@@ -158,7 +158,7 @@ void qp_setup(
 			settings,
 			execute_preconditioner_or_not,
 			precond,
-			P::scale_qp_in_place_req(veg::Tag<T>{}, n, n_eq, n_in));
+			P::scale_qp_in_place_req(proxsuite::linalg::veg::Tag<T>{}, n, n_eq, n_in));
 	switch (settings.initial_guess) { // the following is used when initiliazing the Qp object or updating it
                 case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:{
 					
@@ -212,7 +212,7 @@ void qp_setup(
 * @param b matrix.
 */
 template <typename T, typename I>
-auto have_same_structure(linalg::sparse::MatRef<T, I> a, linalg::sparse::MatRef<T, I> b) -> bool {
+auto have_same_structure(proxsuite::linalg::sparse::MatRef<T, I> a, proxsuite::linalg::sparse::MatRef<T, I> b) -> bool {
   if (a.nrows() != b.nrows()) return false;
   if (a.ncols() != b.ncols()) return false;
   for (isize j = 0; j < a.ncols(); ++j) {
@@ -233,7 +233,7 @@ auto have_same_structure(linalg::sparse::MatRef<T, I> a, linalg::sparse::MatRef<
 * @param b matrix.
 */
 template <typename T, typename I>
-void copy(linalg::sparse::MatMut<T, I> a, linalg::sparse::MatRef<T, I> b) {
+void copy(proxsuite::linalg::sparse::MatMut<T, I> a, proxsuite::linalg::sparse::MatRef<T, I> b) {
   // assume same sparsity structure for a and b
   // copy b into a
   for (isize j = 0; j < a.ncols(); ++j) {

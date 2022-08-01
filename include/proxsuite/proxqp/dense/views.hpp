@@ -7,8 +7,8 @@
 #ifndef PROXSUITE_QP_DENSE_VIEWS_HPP
 #define PROXSUITE_QP_DENSE_VIEWS_HPP
 
-#include <proxsuite/veg/type_traits/core.hpp>
-#include <proxsuite/veg/util/dbg.hpp>
+#include <proxsuite/linalg/veg/type_traits/core.hpp>
+#include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <cstring>
 #include <type_traits>
 #include <Eigen/Core>
@@ -28,7 +28,7 @@ struct FnInfo;
 template <typename Ret_, typename... Args>
 struct FnInfo<auto(Args...)->Ret_> {
 	template <usize I>
-	using Arg = veg::ith<I, Args...>;
+	using Arg = proxsuite::linalg::veg::ith<I, Args...>;
 	using Ret = Ret_;
 };
 } // namespace detail
@@ -57,12 +57,12 @@ struct FnInfo<auto(Args...)->Ret_> {
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
 	extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 
-using veg::isize;
-using veg::usize;
-using veg::u32;
-using veg::i32;
-using veg::i64;
-using veg::u64;
+using proxsuite::linalg::veg::isize;
+using proxsuite::linalg::veg::usize;
+using proxsuite::linalg::veg::u32;
+using proxsuite::linalg::veg::i32;
+using proxsuite::linalg::veg::i64;
+using proxsuite::linalg::veg::u64;
 using f32 = float;
 using f64 = double;
 namespace detail {
@@ -316,14 +316,14 @@ struct unlref<T&> {
 
 template <typename T>
 auto is_eigen_matrix_base_impl(Eigen::MatrixBase<T> const volatile*)
-		-> veg::meta::true_type;
-auto is_eigen_matrix_base_impl(void const volatile*) -> veg::meta::false_type;
+		-> proxsuite::linalg::veg::meta::true_type;
+auto is_eigen_matrix_base_impl(void const volatile*) -> proxsuite::linalg::veg::meta::false_type;
 
 template <typename T>
 auto is_eigen_owning_matrix_base_impl(Eigen::PlainObjectBase<T> const volatile*)
-		-> veg::meta::true_type;
+		-> proxsuite::linalg::veg::meta::true_type;
 auto is_eigen_owning_matrix_base_impl(void const volatile*)
-		-> veg::meta::false_type;
+		-> proxsuite::linalg::veg::meta::false_type;
 
 template <typename... Ts>
 using Void = void;
@@ -337,12 +337,12 @@ template <
 		template <typename...>
 		class F,
 		typename... Ts>
-struct DetectedImpl : veg::meta::false_type {
+struct DetectedImpl : proxsuite::linalg::veg::meta::false_type {
 	using Type = Fallback;
 };
 
 template <typename Fallback, template <typename...> class F, typename... Ts>
-struct DetectedImpl<Void<F<Ts...>>, Fallback, F, Ts...> : veg::meta::true_type {
+struct DetectedImpl<Void<F<Ts...>>, Fallback, F, Ts...> : proxsuite::linalg::veg::meta::true_type {
 	using Type = F<Ts...>;
 };
 
@@ -351,16 +351,16 @@ using Detected = typename DetectedImpl<void, Fallback, F, Ts...>::Type;
 
 template <typename T>
 using CompTimeColsImpl =
-		veg::meta::constant<isize, isize(T::ColsAtCompileTime)>;
+		proxsuite::linalg::veg::meta::constant<isize, isize(T::ColsAtCompileTime)>;
 template <typename T>
 using CompTimeRowsImpl =
-		veg::meta::constant<isize, isize(T::RowsAtCompileTime)>;
+		proxsuite::linalg::veg::meta::constant<isize, isize(T::RowsAtCompileTime)>;
 template <typename T>
 using CompTimeInnerStrideImpl =
-		veg::meta::constant<isize, isize(T::InnerStrideAtCompileTime)>;
+		proxsuite::linalg::veg::meta::constant<isize, isize(T::InnerStrideAtCompileTime)>;
 template <typename T>
 using LayoutImpl =
-		veg::meta::constant<Layout, (bool(T::IsRowMajor) ? rowmajor : colmajor)>;
+		proxsuite::linalg::veg::meta::constant<Layout, (bool(T::IsRowMajor) ? rowmajor : colmajor)>;
 
 template <typename T, Layout L>
 using EigenMatMap = Eigen::Map<        //
@@ -432,16 +432,16 @@ using unref = typename detail::unlref<T&>::Type;
 namespace eigen {
 template <typename T>
 using CompTimeCols = detail::
-		Detected<veg::meta::constant<isize, 0>, detail::CompTimeColsImpl, T>;
+		Detected<proxsuite::linalg::veg::meta::constant<isize, 0>, detail::CompTimeColsImpl, T>;
 template <typename T>
 using CompTimeRows = detail::
-		Detected<veg::meta::constant<isize, 0>, detail::CompTimeRowsImpl, T>;
+		Detected<proxsuite::linalg::veg::meta::constant<isize, 0>, detail::CompTimeRowsImpl, T>;
 template <typename T>
 using CompTimeInnerStride = detail::
-		Detected<veg::meta::constant<isize, 0>, detail::CompTimeInnerStrideImpl, T>;
+		Detected<proxsuite::linalg::veg::meta::constant<isize, 0>, detail::CompTimeInnerStrideImpl, T>;
 template <typename T>
 using GetLayout = detail::Detected<
-		veg::meta::constant<Layout, Layout(static_cast<unsigned char>(-1))>,
+		proxsuite::linalg::veg::meta::constant<Layout, Layout(static_cast<unsigned char>(-1))>,
 		detail::LayoutImpl,
 		T>;
 } // namespace eigen
@@ -751,7 +751,7 @@ struct MatrixView {
 
 private:
 	VEG_INLINE auto col_impl(
-			veg::meta::constant<Layout, colmajor> /*tag*/, isize c) const noexcept
+			proxsuite::linalg::veg::meta::constant<Layout, colmajor> /*tag*/, isize c) const noexcept
 			-> VectorView<T> {
 		return {
 				from_ptr_size,
@@ -760,7 +760,7 @@ private:
 		};
 	}
 	VEG_INLINE auto col_impl(
-			veg::meta::constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
+			proxsuite::linalg::veg::meta::constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
 			-> StridedVectorView<T> {
 		return {
 				from_ptr_size_stride,
@@ -772,11 +772,11 @@ private:
 
 public:
 	VEG_INLINE auto col(isize c) const noexcept
-			-> veg::meta::if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>> {
-		return col_impl(veg::meta::constant<Layout, L>{}, c);
+			-> proxsuite::linalg::veg::meta::if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>> {
+		return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
 	}
 	VEG_INLINE auto row(isize r) const noexcept
-			-> veg::meta::if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>> {
+			-> proxsuite::linalg::veg::meta::if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>> {
 		return trans().col(r);
 	}
 	VEG_INLINE auto trans() const noexcept -> MatrixView<T, proxqp::flip_layout(L)> {
@@ -846,7 +846,7 @@ struct MatrixViewMut {
 
 private:
 	VEG_INLINE auto col_impl(
-			veg::meta::constant<Layout, colmajor> /*tag*/, isize c) const noexcept
+			proxsuite::linalg::veg::meta::constant<Layout, colmajor> /*tag*/, isize c) const noexcept
 			-> VectorViewMut<T> {
 		return {
 				from_ptr_size,
@@ -855,7 +855,7 @@ private:
 		};
 	}
 	VEG_INLINE auto col_impl(
-			veg::meta::constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
+			proxsuite::linalg::veg::meta::constant<Layout, rowmajor> /*tag*/, isize c) const noexcept
 			-> StridedVectorViewMut<T> {
 		return {
 				from_ptr_size_stride,
@@ -866,11 +866,11 @@ private:
 	}
 
 public:
-	VEG_INLINE auto col(isize c) const noexcept -> veg::meta::
+	VEG_INLINE auto col(isize c) const noexcept -> proxsuite::linalg::veg::meta::
 			if_t<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>> {
-		return col_impl(veg::meta::constant<Layout, L>{}, c);
+		return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
 	}
-	VEG_INLINE auto row(isize r) const noexcept -> veg::meta::
+	VEG_INLINE auto row(isize r) const noexcept -> proxsuite::linalg::veg::meta::
 			if_t<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>> {
 		return trans().col(r);
 	}

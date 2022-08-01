@@ -15,13 +15,13 @@ template <typename T, typename I>
 struct Identity {
 
 	static auto scale_qp_in_place_req(
-			veg::Tag<T> /*tag*/, isize /*n*/, isize /*n_eq*/, isize /*n_in*/)
-			-> veg::dynstack::StackReq {
+			proxsuite::linalg::veg::Tag<T> /*tag*/, isize /*n*/, isize /*n_eq*/, isize /*n_in*/)
+			-> proxsuite::linalg::veg::dynstack::StackReq {
 		return {0, 1};
 	}
 
 	void scale_qp_in_place(
-			QpViewMut<T, I> /*qp*/, veg::dynstack::DynStackMut /*stack*/) {}
+			QpViewMut<T, I> /*qp*/, proxsuite::linalg::veg::dynstack::DynStackMut /*stack*/) {}
 
 	// modifies variables in place
 	void scale_primal_in_place(VectorViewMut<T> /*primal*/) {}

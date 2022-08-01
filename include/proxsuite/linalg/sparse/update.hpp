@@ -6,9 +6,10 @@
 #define SPARSE_LDLT_UPDATE_HPP
 
 #include "proxsuite/linalg/sparse/core.hpp"
-#include <proxsuite/veg/tuple.hpp>
+#include <proxsuite/linalg/veg/tuple.hpp>
 #include <algorithm>
 
+namespace proxsuite {
 namespace linalg {
 namespace sparse {
 
@@ -17,8 +18,8 @@ calcule mémoire nécessaire pour la fonction merge_second_col_into_first
 */
 template <typename I>
 auto merge_second_col_into_first_req(
-		veg::Tag<I> /*tag*/, isize second_size) noexcept
-		-> veg::dynstack::StackReq {
+		proxsuite::linalg::veg::Tag<I> /*tag*/, isize second_size) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {
 			second_size * isize{sizeof(I)},
 			alignof(I),
@@ -34,16 +35,16 @@ auto merge_second_col_into_first( //
 		isize first_full_len,
 		isize first_initial_len,
 		Slice<I> second,
-		veg::DoNotDeduce<I> ignore_threshold_inclusive,
+		proxsuite::linalg::veg::DoNotDeduce<I> ignore_threshold_inclusive,
 		bool move_values,
 		DynStackMut stack) noexcept(false)
-		-> veg::Tuple<SliceMut<T>, SliceMut<I>, SliceMut<I>> {
+		-> proxsuite::linalg::veg::Tuple<SliceMut<T>, SliceMut<I>, SliceMut<I>> {
 	VEG_CHECK_CONCEPT(trivially_copyable<I>);
 	VEG_CHECK_CONCEPT(trivially_copyable<T>);
 
 	if (second.len() == 0) {
 		return {
-				veg::tuplify,
+				proxsuite::linalg::veg::tuplify,
 				{unsafe, from_raw_parts, first_values, first_initial_len},
 				{unsafe, from_raw_parts, first_ptr, first_initial_len},
 				{unsafe, from_raw_parts, difference, 0},
@@ -66,7 +67,7 @@ auto merge_second_col_into_first( //
 	second_len -= index_second;
 	index_second = 0;
 
-	veg::Tag<I> tag{};
+	proxsuite::linalg::veg::Tag<I> tag{};
 
 	auto _ins_pos = stack.make_new_for_overwrite(tag, isize(second_len));
 
@@ -147,7 +148,7 @@ auto merge_second_col_into_first( //
 	}
 
 	return {
-			veg::tuplify,
+			proxsuite::linalg::veg::tuplify,
 			{unsafe, from_raw_parts, first_values, isize(first_new_len)},
 			{unsafe, from_raw_parts, first_ptr, isize(first_new_len)},
 			{unsafe, from_raw_parts, difference, isize(insert_count + append_count)},
@@ -163,18 +164,18 @@ auto merge_second_col_into_first( //
  */
 template <typename T, typename I>
 auto rank1_update_req( //
-		veg::Tag<T> /*tag*/,
-		veg::Tag<I> /*tag*/,
+		proxsuite::linalg::veg::Tag<T> /*tag*/,
+		proxsuite::linalg::veg::Tag<I> /*tag*/,
 		isize n,
 		bool id_perm,
-		isize col_nnz) noexcept -> veg::dynstack::StackReq {
-	using veg::dynstack::StackReq;
+		isize col_nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
+	using proxsuite::linalg::veg::dynstack::StackReq;
 	StackReq permuted_indices = {
 			id_perm ? 0 : (col_nnz * isize{sizeof(I)}), isize{alignof(I)}};
 	StackReq difference = {n * isize{sizeof(I)}, isize{alignof(I)}};
 	difference = difference & difference;
 
-	StackReq merge = sparse::merge_second_col_into_first_req(veg::Tag<I>{}, n);
+	StackReq merge = sparse::merge_second_col_into_first_req(proxsuite::linalg::veg::Tag<I>{}, n);
 
 	StackReq numerical_workspace = {n * isize{sizeof(T)}, isize{alignof(T)}};
 
@@ -198,7 +199,7 @@ auto rank1_update(
 		I* etree,
 		I const* perm_inv,
 		VecRef<T, I> w,
-		veg::DoNotDeduce<T> alpha,
+		proxsuite::linalg::veg::DoNotDeduce<T> alpha,
 		DynStackMut stack) noexcept(false) -> MatMut<T, I> {
 	VEG_ASSERT(!ld.is_compressed());
 
@@ -206,7 +207,7 @@ auto rank1_update(
 		return ld;
 	}
 
-	veg::Tag<I> tag;
+	proxsuite::linalg::veg::Tag<I> tag;
 	usize n = usize(ld.ncols());
 	bool id_perm = perm_inv == nullptr;
 
@@ -254,7 +255,7 @@ auto rank1_update(
 							ld.row_indices_mut() + (current_ptr_idx + 1),
 							isize(next_ptr_idx - current_ptr_idx),
 							isize(zx(ld.nnz_per_col()[isize(current_col)])) - 1,
-							veg::Slice<I>{unsafe, from_raw_parts, merge_col, merge_col_len},
+							proxsuite::linalg::veg::Slice<I>{unsafe, from_raw_parts, merge_col, merge_col_len},
 							I(current_col),
 							true,
 							stack));
@@ -290,7 +291,7 @@ auto rank1_update(
 	// numerical update
 	{
 		usize first_col = zx(w_permuted_indices[0]);
-		auto _work = stack.make_new_for_overwrite(veg::Tag<T>{}, isize(n));
+		auto _work = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<T>{}, isize(n));
 		T* pwork = _work.ptr_mut();
 
 		for (usize col = first_col; col != usize(-1); col = sx(etree[isize(col)])) {
@@ -333,5 +334,6 @@ auto rank1_update(
 }
 } // namespace sparse
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard SPARSE_LDLT_UPDATE_HPP */

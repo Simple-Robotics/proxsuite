@@ -4,25 +4,25 @@
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include <doctest.h>
 #include <iostream>
 
 template <typename T, typename I>
-auto to_eigen(linalg::sparse::MatRef<T, I> a) noexcept
+auto to_eigen(proxsuite::linalg::sparse::MatRef<T, I> a) noexcept
 		-> Eigen::Matrix<T, -1, -1> {
 	return a.to_eigen();
 }
 
 template <typename T, typename I>
-auto to_eigen_vec(linalg::sparse::VecRef<T, I> v) noexcept
+auto to_eigen_vec(proxsuite::linalg::sparse::VecRef<T, I> v) noexcept
 		-> Eigen::Matrix<T, -1, 1> {
 	Eigen::Matrix<T, -1, 1> out(v.nrows());
 	out.setZero();
-	for (veg::isize p = 0; p < v.nnz(); ++p) {
-		out.data()[linalg::sparse::util::zero_extend(v.row_indices()[p])] =
+	for (proxsuite::linalg::veg::isize p = 0; p < v.nnz(); ++p) {
+		out.data()[proxsuite::linalg::sparse::util::zero_extend(v.row_indices()[p])] =
 				v.values()[p];
-		//linalg::sparse::util::zero_extend : converti en type usize
+		//proxsuite::linalg::sparse::util::zero_extend : converti en type usize
 		// usize :unsigned
 		// isize :négatif ou positive
 		// v.row_indices() : pointeur vers liste des indices non nul
@@ -34,21 +34,21 @@ auto to_eigen_vec(linalg::sparse::VecRef<T, I> v) noexcept
 // slice: view vers un vecteur
 // perm[0] : 1er elet du vecteur
 template <typename I>
-auto to_eigen_perm(veg::Slice<I> perm) -> Eigen::PermutationMatrix<-1, -1, I> {
+auto to_eigen_perm(proxsuite::linalg::veg::Slice<I> perm) -> Eigen::PermutationMatrix<-1, -1, I> {
 	Eigen::PermutationMatrix<-1, -1, I> perm_eigen;
 	perm_eigen.indices().resize(perm.len());
 	std::memmove( //
 			perm_eigen.indices().data(),
 			perm.ptr(),
-			veg::usize(perm.len()) * sizeof(I));
+			proxsuite::linalg::veg::usize(perm.len()) * sizeof(I));
 	//copie perm.ptr() vers perm_eigen ...
-	// veg::usize(perm.len()) * sizeof(I) :taille de la zone à copier
+	// proxsuite::linalg::veg::usize(perm.len()) * sizeof(I) :taille de la zone à copier
 	return perm_eigen;
 }
 
 template <typename T, typename I>
 auto reconstruct_with_perm(
-		veg::Slice<I> perm_inv, linalg::sparse::MatRef<T, I> ld)
+		proxsuite::linalg::veg::Slice<I> perm_inv, proxsuite::linalg::sparse::MatRef<T, I> ld)
 		-> Eigen::Matrix<T, -1, -1, Eigen::ColMajor> {
 	using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 	Mat ld_eigen = to_eigen(ld);
@@ -61,13 +61,13 @@ auto reconstruct_with_perm(
 
 template <typename T, typename I>
 auto ldlt_with_perm(
-		veg::Slice<I> perm_inv, linalg::sparse::MatRef<T, I> a)
+		proxsuite::linalg::veg::Slice<I> perm_inv, proxsuite::linalg::sparse::MatRef<T, I> a)
 		-> Eigen::Matrix<T, -1, -1, Eigen::ColMajor> {
 	using Mat = Eigen::Matrix<T, -1, -1, Eigen::ColMajor>;
 
 	VEG_ASSERT(a.nrows() == a.ncols());
 
-	veg::isize n = a.nrows();
+	proxsuite::linalg::veg::isize n = a.nrows();
 
 	Eigen::PermutationMatrix<-1, -1, I> perm_inv_eigen = to_eigen_perm(perm_inv);
 
@@ -77,7 +77,7 @@ auto ldlt_with_perm(
 	         perm_inv_eigen.inverse())
 	            .template triangularView<Eigen::Lower>());
 	{
-		for (veg::isize i = 0; i < n; ++i) {
+		for (proxsuite::linalg::veg::isize i = 0; i < n; ++i) {
 			auto a12 = ld_perm_eigen.row(i).head(i).transpose();
 			auto l11 = ld_perm_eigen.topLeftCorner(i, i)
 			               .template triangularView<Eigen::UnitLower>();
@@ -91,8 +91,8 @@ auto ldlt_with_perm(
 	return ld_perm_eigen;
 }
 
-using namespace linalg::sparse;
-using namespace veg;
+using namespace proxsuite::linalg::sparse;
+using namespace proxsuite::linalg::veg;
 
 TEST_CASE("ldlt: factorize compressed") {
 	using I = int;
@@ -148,7 +148,7 @@ TEST_CASE("ldlt: factorize compressed") {
 		req =
 				req |
 				postorder_req(
-						veg::Tag<I>{},
+						proxsuite::linalg::veg::Tag<I>{},
 						n); // postorder_req: calcule mémoire pour fonction postorder (calcule certaine permutation de la matrice a)
 		req =
 				req |
@@ -227,9 +227,9 @@ TEST_CASE("ldlt: factorize compressed") {
 		//Ordering:: ammd ou no permutation ou user_provided
 		Vec<unsigned char> _stack;
 		_stack.resize_for_overwrite(
-				(factorize_symbolic_req(veg::Tag<I>{}, n, nnz, Ordering::amd) |
+				(factorize_symbolic_req(proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd) |
 		     factorize_numeric_req(
-						 veg::Tag<T>{}, veg::Tag<I>{}, n, nnz, Ordering::amd))
+						 proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd))
 						.alloc_req());
 		dynstack::DynStackMut stack{from_slice_mut, _stack.as_mut()};
 
@@ -374,9 +374,9 @@ TEST_CASE("ldlt: factorize uncompressed, rank update") {
 
 	Vec<unsigned char> _stack;
 	_stack.resize_for_overwrite(
-			(factorize_symbolic_req(veg::Tag<I>{}, n, nnz, Ordering::amd) |
+			(factorize_symbolic_req(proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd) |
 	     factorize_numeric_req(
-					 veg::Tag<T>{}, veg::Tag<I>{}, n, nnz, Ordering::amd))
+					 proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd))
 					.alloc_req());
 	dynstack::DynStackMut stack{from_slice_mut, _stack.as_mut()};
 
@@ -533,9 +533,9 @@ TEST_CASE("ldlt: row mod") {
 
 	Vec<unsigned char> _stack;
 	_stack.resize_for_overwrite(
-			(factorize_symbolic_req(veg::Tag<I>{}, n, nnz, Ordering::amd) |
+			(factorize_symbolic_req(proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd) |
 	     factorize_numeric_req(
-					 veg::Tag<T>{}, veg::Tag<I>{}, n, nnz, Ordering::amd))
+					 proxsuite::linalg::veg::Tag<T>{}, proxsuite::linalg::veg::Tag<I>{}, n, nnz, Ordering::amd))
 					.alloc_req());
 	dynstack::DynStackMut stack{from_slice_mut, _stack.as_mut()};
 

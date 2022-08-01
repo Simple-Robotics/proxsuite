@@ -8,8 +8,8 @@
 #define PROXSUITE_QP_RESULTS_HPP
 
 #include <Eigen/Core>
-#include <proxsuite/veg/type_traits/core.hpp>
-#include <proxsuite/veg/vec.hpp>
+#include <proxsuite/linalg/veg/type_traits/core.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/status.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 
@@ -61,7 +61,7 @@ struct Results {
 	sparse::Vec<T> x;
 	sparse::Vec<T> y;
 	sparse::Vec<T> z;
-	veg::Vec<bool> active_constraints;
+	proxsuite::linalg::veg::Vec<bool> active_constraints;
 
 	Info<T> info;
 

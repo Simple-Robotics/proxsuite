@@ -9,12 +9,13 @@
 #include <Eigen/OrderingMethods>
 #include <iostream>
 
+namespace proxsuite {
 namespace linalg {
 namespace sparse {
 
 template <typename I>
-auto transpose_req(veg::Tag<I> /*tag*/, isize nrows) noexcept
-		-> veg::dynstack::StackReq {
+auto transpose_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize nrows) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {nrows * isize(sizeof(I)), isize(alignof(I))};
 }
 
@@ -39,7 +40,7 @@ void transpose( //
 	auto pati = at.row_indices_mut();
 	auto patx = at.values_mut();
 
-	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols());
+	auto _work = stack.make_new(proxsuite::linalg::veg::Tag<I>{}, at.ncols());
 	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
@@ -78,8 +79,8 @@ void transpose( //
 }
 
 template <typename I>
-auto transpose_symbolic_req(veg::Tag<I> /*tag*/, isize nrows) noexcept
-		-> veg::dynstack::StackReq {
+auto transpose_symbolic_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize nrows) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {nrows * isize(sizeof(I)), isize(alignof(I))};
 }
 
@@ -101,7 +102,7 @@ void transpose_symbolic( //
 	auto patp = at.col_ptrs_mut();
 	auto pati = at.row_indices_mut();
 
-	auto _work = stack.make_new(veg::Tag<I>{}, at.ncols());
+	auto _work = stack.make_new(proxsuite::linalg::veg::Tag<I>{}, at.ncols());
 	auto work = _work.ptr_mut();
 
 	// work[i] = num zeros in ith row of A
@@ -235,8 +236,8 @@ void dense_ltsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false) {
  * @param n dimension of the matrix.
  */
 template <typename I>
-auto etree_req(veg::Tag<I> /*tag*/, isize n) noexcept
-		-> veg::dynstack::StackReq {
+auto etree_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {n * isize{sizeof(I)}, alignof(I)};
 }
 
@@ -259,7 +260,7 @@ VEG_INLINE void etree( //
 	usize n = usize(a.ncols());
 	auto pai = a.row_indices();
 
-	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, isize(n));
+	auto _work = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<I>{}, isize(n));
 	auto pancestors = _work.ptr_mut();
 
 	// for each column of a
@@ -310,7 +311,7 @@ VEG_INLINE void etree( //
 }
 
 namespace _detail {
-inline auto ereach_req(isize k) noexcept -> veg::dynstack::StackReq {
+inline auto ereach_req(isize k) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
 	return {(k + 1) * isize{sizeof(bool)}, alignof(bool)};
 }
 
@@ -431,8 +432,8 @@ VEG_INLINE auto postorder_depth_first_search( //
  * @param n dimension of the matrix to be factorized.
  */
 template <typename I>
-auto postorder_req(veg::Tag<I> /*tag*/, isize n) noexcept
-		-> veg::dynstack::StackReq {
+auto postorder_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {(3 * n) * isize(sizeof(I)), alignof(I)};
 }
 
@@ -448,7 +449,7 @@ template <typename I>
 void postorder(I* post, I const* parent, isize n, DynStackMut stack) noexcept {
 	using namespace _detail;
 
-	auto _work = stack.make_new_for_overwrite(veg::Tag<I>{}, 3 * isize(n));
+	auto _work = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<I>{}, 3 * isize(n));
 	I* pwork = _work.ptr_mut();
 
 	I* pstack = pwork;
@@ -548,9 +549,9 @@ VEG_INLINE auto least_common_ancestor(
 } // namespace _detail
 
 template <typename I>
-auto column_counts_req(veg::Tag<I> tag, isize n, isize nnz) noexcept
-		-> veg::dynstack::StackReq {
-	using veg::dynstack::StackReq;
+auto column_counts_req(proxsuite::linalg::veg::Tag<I> tag, isize n, isize nnz) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	using proxsuite::linalg::veg::dynstack::StackReq;
 	return StackReq{
 						 isize{sizeof(I)} * (1 + 5 * n + nnz),
 						 alignof(I),
@@ -569,7 +570,7 @@ void column_counts(
 	using namespace _detail;
 	usize n = usize(a.nrows());
 	auto _at_work =
-			stack.make_new_for_overwrite(veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz());
+			stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<I>{}, 1 + 5 * isize(n) + a.nnz());
 	auto pat_work = _at_work.ptr_mut();
 	pat_work[0] = 0;
 	pat_work[n] = I(a.nnz());
@@ -686,8 +687,8 @@ void column_counts(
 }
 
 template <typename I>
-auto amd_req(veg::Tag<I> /*tag*/, isize /*n*/, isize nnz) noexcept
-		-> veg::dynstack::StackReq {
+auto amd_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize /*n*/, isize nnz) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {nnz * isize{sizeof(char)}, alignof(char)};
 }
 
@@ -700,7 +701,7 @@ void amd(I* perm, SymbolicMatRef<I> mat, DynStackMut stack) noexcept {
 	isize nnz = mat.nnz();
 
 	Eigen::PermutationMatrix<-1, -1, I> perm_eigen;
-	auto _ = stack.make_new(veg::Tag<char>{}, nnz);
+	auto _ = stack.make_new(proxsuite::linalg::veg::Tag<char>{}, nnz);
 
 	Eigen::AMDOrdering<I>{}(
 			Eigen::Map<Eigen::SparseMatrix<char, Eigen::ColMajor, I> const>{
@@ -730,13 +731,13 @@ void inv_perm(I* perm_inv, I const* perm, isize n) noexcept {
 }
 
 template <typename I>
-auto symmetric_permute_symbolic_req(veg::Tag<I> /*tag*/, isize n) noexcept
-		-> veg::dynstack::StackReq {
+auto symmetric_permute_symbolic_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {n * isize{sizeof(I)}, alignof(I)};
 }
 template <typename I>
-auto symmetric_permute_req(veg::Tag<I> /*tag*/, isize n) noexcept
-		-> veg::dynstack::StackReq {
+auto symmetric_permute_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
 	return {n * isize{sizeof(I)}, alignof(I)};
 }
 
@@ -780,7 +781,7 @@ void symmetric_permute_symbolic(
 
 	usize n = usize(new_a.nrows());
 
-	auto _work = stack.make_new(veg::Tag<I>{}, isize(n));
+	auto _work = stack.make_new(proxsuite::linalg::veg::Tag<I>{}, isize(n));
 	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
@@ -826,7 +827,7 @@ void symmetric_permute(
 		I const* perm_inv,
 		DynStackMut stack) noexcept(VEG_CONCEPT(nothrow_copyable<T>)) {
 	usize n = usize(new_a.nrows());
-	auto _work = stack.make_new(veg::Tag<I>{}, isize(n));
+	auto _work = stack.make_new(proxsuite::linalg::veg::Tag<I>{}, isize(n));
 	I* pcol_counts = _work.ptr_mut();
 
 	VEG_ASSERT(new_a.is_compressed());
@@ -886,9 +887,9 @@ enum struct Ordering : unsigned char {
  */
 template <typename I>
 auto factorize_symbolic_req(
-		veg::Tag<I> tag, isize n, isize nnz, Ordering o) noexcept
-		-> veg::dynstack::StackReq {
-	using veg::dynstack::StackReq;
+		proxsuite::linalg::veg::Tag<I> tag, isize n, isize nnz, Ordering o) noexcept
+		-> proxsuite::linalg::veg::dynstack::StackReq {
+	using proxsuite::linalg::veg::dynstack::StackReq;
 	constexpr isize sz{sizeof(I)};
 	constexpr isize al{alignof(I)};
 
@@ -949,7 +950,7 @@ void factorize_symbolic_non_zeros(
 	             : id_perm ? Ordering::natural
 	                       : Ordering::amd;
 
-	veg::Tag<I> tag{};
+	proxsuite::linalg::veg::Tag<I> tag{};
 
 	usize n = usize(a.ncols());
 
@@ -1056,12 +1057,12 @@ void factorize_symbolic_col_counts(
  */
 template <typename T, typename I>
 auto factorize_numeric_req(
-		veg::Tag<T> /*ttag*/,
-		veg::Tag<I> /*itag*/,
+		proxsuite::linalg::veg::Tag<T> /*ttag*/,
+		proxsuite::linalg::veg::Tag<I> /*itag*/,
 		isize n,
 		isize a_nnz,
-		Ordering o) noexcept -> veg::dynstack::StackReq {
-	using veg::dynstack::StackReq;
+		Ordering o) noexcept -> proxsuite::linalg::veg::dynstack::StackReq {
+	using proxsuite::linalg::veg::dynstack::StackReq;
 
 	constexpr isize sz{sizeof(I)};
 	constexpr isize al{alignof(I)};
@@ -1102,8 +1103,8 @@ template <typename T, typename I>
 void factorize_numeric( //
 		T* values,
 		I* row_indices,
-		veg::DoNotDeduce<T const*> diag_to_add,
-		veg::DoNotDeduce<I const*> perm,
+		proxsuite::linalg::veg::DoNotDeduce<T const*> diag_to_add,
+		proxsuite::linalg::veg::DoNotDeduce<I const*> perm,
 		I const* col_ptrs,
 		I const* etree,
 		I const* perm_inv,
@@ -1114,12 +1115,12 @@ void factorize_numeric( //
 
 	bool id_perm = perm_inv == nullptr;
 
-	veg::Tag<I> tag{};
+	proxsuite::linalg::veg::Tag<I> tag{};
 
 	auto _permuted_a_values =
-			stack.make_new_for_overwrite(veg::Tag<T>{}, id_perm ? 0 : a.nnz());
+			stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<T>{}, id_perm ? 0 : a.nnz());
 
-	auto _x = stack.make_new_for_overwrite(veg::Tag<T>{}, n);
+	auto _x = stack.make_new_for_overwrite(proxsuite::linalg::veg::Tag<T>{}, n);
 
 	auto _permuted_a_col_ptrs =
 			stack.make_new_for_overwrite(tag, id_perm ? 0 : (a.ncols() + 1));
@@ -1172,7 +1173,7 @@ void factorize_numeric( //
 	// the diagonal element is filled with the diagonal of D instead of 1
 	I const* plp = col_ptrs;
 
-	auto _marked = stack.make_new(veg::Tag<bool>{}, n);
+	auto _marked = stack.make_new(proxsuite::linalg::veg::Tag<bool>{}, n);
 	for (usize iter = 0; iter < usize(n); ++iter) {
 		usize ereach_count = 0;
 		auto ereach_stack = _detail::ereach(
@@ -1243,4 +1244,5 @@ void factorize_numeric( //
 }
 } // namespace sparse
 } // namespace linalg
+} // namespace proxsuite
 #endif /* end of include guard SPARSE_LDLT_FACTORIZE_HPP */

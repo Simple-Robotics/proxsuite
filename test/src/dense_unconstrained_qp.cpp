@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/veg/util/dbg.hpp>
+#include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <util.hpp>
 
 using namespace proxqp;

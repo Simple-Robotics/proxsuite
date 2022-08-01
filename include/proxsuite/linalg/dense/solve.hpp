@@ -8,6 +8,7 @@
 #include "proxsuite/linalg/dense/core.hpp"
 #include <Eigen/Core>
 
+namespace proxsuite {
 namespace linalg {
 namespace dense {
 namespace _detail {
@@ -28,5 +29,6 @@ void solve(Mat const& mat, Rhs&& rhs) {
 }
 } // namespace dense
 } // namespace linalg
+} // namespace proxsuite
 
 #endif /* end of include guard DENSE_LDLT_SOLVE_HPP */
