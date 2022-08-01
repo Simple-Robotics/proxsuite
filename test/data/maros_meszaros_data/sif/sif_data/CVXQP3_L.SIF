@@ -11,7 +11,7 @@ NAME          CVXQP3_L
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-10000-7500   
+*   classification QLR2-AN-10000-7500
 
 ROWS
   N OBJ.FUNC

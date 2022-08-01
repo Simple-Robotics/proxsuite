@@ -9,27 +9,32 @@ namespace linalg {
 namespace veg {
 namespace _detail {
 namespace _meta {
-template <typename T>
+template<typename T>
 struct make_signed;
-template <>
-struct make_signed<unsigned char> {
-	using Type = signed char;
+template<>
+struct make_signed<unsigned char>
+{
+  using Type = signed char;
 };
-template <>
-struct make_signed<unsigned short> {
-	using Type = signed short;
+template<>
+struct make_signed<unsigned short>
+{
+  using Type = signed short;
 };
-template <>
-struct make_signed<unsigned int> {
-	using Type = signed int;
+template<>
+struct make_signed<unsigned int>
+{
+  using Type = signed int;
 };
-template <>
-struct make_signed<unsigned long> {
-	using Type = signed long;
+template<>
+struct make_signed<unsigned long>
+{
+  using Type = signed long;
 };
-template <>
-struct make_signed<unsigned long long> {
-	using Type = signed long long;
+template<>
+struct make_signed<unsigned long long>
+{
+  using Type = signed long long;
 };
 } // namespace _meta
 } // namespace _detail

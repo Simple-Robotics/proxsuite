@@ -7,7 +7,7 @@ While the first targeted application is Robotics, **ProxSuite** can be used in o
 Through **ProxSuite**, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
- 
+
 ## **ProxQP**
 
 The **ProxQP** solver is a numerical optimization package for solving problems of the form
@@ -52,7 +52,7 @@ git clone https://github.com/Simple-Robotics/proxqp.git --recursive
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
-make 
+make
 make install
 ```
 
@@ -63,7 +63,7 @@ You just need to ensure that Python3 is indeed present on your system and activa
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON
-make 
+make
 make install
 ```
 
@@ -84,7 +84,7 @@ You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
 ```bash
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
-make 
+make
 make install
 ```
 

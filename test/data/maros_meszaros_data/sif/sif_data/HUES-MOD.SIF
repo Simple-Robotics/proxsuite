@@ -1,4 +1,4 @@
-NAME          HUES-MOD  
+NAME          HUES-MOD
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          HUES-MOD
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-10000-2      
+*   classification QLR2-AN-10000-2
 
 ROWS
   N OBJ.FUNC

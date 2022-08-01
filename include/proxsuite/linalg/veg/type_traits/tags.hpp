@@ -20,19 +20,22 @@ VEG_TAG(from_alloc_and_value, FromAllocAndValue);
 
 VEG_TAG(from_slice, FromSlice);
 VEG_TAG(from_slice_mut, FromSliceMut);
-template <typename Tag>
-struct InPlace {
-	InPlace() = default;
+template<typename Tag>
+struct InPlace
+{
+  InPlace() = default;
 };
 
-template <>
-struct InPlace<void> {
-	InPlace() = default;
-	template <typename Tag>
-	VEG_INLINE constexpr auto operator[](Tag /*tag*/) const noexcept
-			-> InPlace<Tag> {
-		return InPlace<Tag>{};
-	}
+template<>
+struct InPlace<void>
+{
+  InPlace() = default;
+  template<typename Tag>
+  VEG_INLINE constexpr auto operator[](Tag /*tag*/) const noexcept
+    -> InPlace<Tag>
+  {
+    return InPlace<Tag>{};
+  }
 };
 VEG_INLINE_VAR(inplace, InPlace<void>);
 } // namespace tags

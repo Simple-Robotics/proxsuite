@@ -1,4 +1,4 @@
-NAME          DUALC2    
+NAME          DUALC2
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          DUALC2
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-7-229        
+*   classification QLR2-AN-7-229
 
 ROWS
   N OBJ.FUNC

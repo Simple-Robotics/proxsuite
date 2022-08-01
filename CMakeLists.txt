@@ -22,7 +22,10 @@ endif(POLICY CMP0068)
 
 # Check if the submodule cmake have been initialized
 if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake")
-  MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
+  message(
+    FATAL_ERROR
+      "\nPlease run the following command first:\ngit submodule update --init\n"
+  )
 endif()
 
 # ----------------------------------------------------
@@ -49,56 +52,84 @@ option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 
-option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions." ON)
+option(BUILD_WITH_VECTORIZATION_SUPPORT
+       "Build the library with the support of modern SIMD instructions." ON
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_CXX_FLAGS
-#     "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC -fno-omit-frame-pointer"
-# )
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external" ${CMAKE_MODULE_PATH})
+# set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC
+# -fno-omit-frame-pointer" )
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external"
+                      ${CMAKE_MODULE_PATH}
+)
 
 if(INITIALIZE_EIGEN_WITH_NAN)
   add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
 endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # Look for dependencies
-add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
+add_project_dependency(
+  Eigen3
+  REQUIRED
+  PKG_CONFIG_REQUIRES
+  "eigen3 >= 3.0.5"
+)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(simde REQUIRED)
 endif()
 
 # Build the main library
-file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS
-  ${PROJECT_SOURCE_DIR}/include/*.hpp
-)
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
 add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
-target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
+target_link_libraries(
+  proxsuite
+  PUBLIC
+  INTERFACE Eigen3::Eigen
+)
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
 
 add_library(proxsuite-not-vectorized INTERFACE)
-target_link_libraries(proxsuite-not-vectorized PUBLIC INTERFACE proxsuite)
-target_compile_definitions(proxsuite-not-vectorized PUBLIC INTERFACE PROXSUITE_DONT_VECTORIZE)
+target_link_libraries(
+  proxsuite-not-vectorized
+  PUBLIC
+  INTERFACE proxsuite
+)
+target_compile_definitions(
+  proxsuite-not-vectorized
+  PUBLIC
+  INTERFACE PROXSUITE_DONT_VECTORIZE
+)
 list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
-  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite)
-  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE simde)
+  target_link_libraries(
+    proxsuite-vectorized
+    PUBLIC
+    INTERFACE proxsuite
+  )
+  target_link_libraries(
+    proxsuite-vectorized
+    PUBLIC
+    INTERFACE simde
+  )
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
-
-INSTALL(TARGETS ${EXPORTED_TARGETS_LIST}
+install(
+  TARGETS ${EXPORTED_TARGETS_LIST}
   EXPORT ${TARGETS_EXPORT_NAME}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
-  INCLUDES DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
+  INCLUDES
+  DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
+)
 
 # Activate only for advanced users to profile and benchmark the code
 if(ADVANCED_USERS)

@@ -8,38 +8,44 @@
 namespace proxsuite {
 namespace linalg {
 namespace veg {
-template <typename Fn>
-struct VEG_NODISCARD Defer {
-	Fn fn;
-	constexpr Defer(Fn _fn) VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<Fn>))
-			: fn(VEG_FWD(_fn)) {}
-	Defer(Defer const&) = delete;
-	Defer(Defer&&) VEG_NOEXCEPT = delete;
-	auto operator=(Defer const&) -> Defer& = delete;
-	auto operator=(Defer&&) VEG_NOEXCEPT -> Defer& = delete;
-	VEG_CPP20(constexpr)
-	VEG_INLINE ~Defer()
-			VEG_NOEXCEPT_IF(VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_fn_once<Fn, void>))) {
-		VEG_FWD(fn)();
-	}
+template<typename Fn>
+struct VEG_NODISCARD Defer
+{
+  Fn fn;
+  constexpr Defer(Fn _fn) VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<Fn>))
+    : fn(VEG_FWD(_fn))
+  {
+  }
+  Defer(Defer const&) = delete;
+  Defer(Defer&&) VEG_NOEXCEPT = delete;
+  auto operator=(Defer const&) -> Defer& = delete;
+  auto operator=(Defer&&) VEG_NOEXCEPT->Defer& = delete;
+  VEG_CPP20(constexpr)
+  VEG_INLINE ~Defer()
+    VEG_NOEXCEPT_IF(VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_fn_once<Fn, void>)))
+  {
+    VEG_FWD(fn)();
+  }
 };
 VEG_CPP17(
 
-		template <typename Fn> Defer(Fn) -> Defer<Fn>;
+  template<typename Fn> Defer(Fn) -> Defer<Fn>;
 
 )
 
 namespace nb {
-struct defer {
-	VEG_TEMPLATE(
-			typename Fn,
-			requires(VEG_CONCEPT(fn_once<Fn, void>)),
-			VEG_INLINE VEG_CPP20(constexpr) auto
-			operator(),
-			(fn, Fn&&))
-	const VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<Fn>))->proxsuite::linalg::veg::Defer<Fn> {
-		return {VEG_FWD(fn)};
-	}
+struct defer
+{
+  VEG_TEMPLATE(typename Fn,
+               requires(VEG_CONCEPT(fn_once<Fn, void>)),
+               VEG_INLINE VEG_CPP20(constexpr) auto
+               operator(),
+               (fn, Fn&&))
+  const VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<Fn>))
+    ->proxsuite::linalg::veg::Defer<Fn>
+  {
+    return { VEG_FWD(fn) };
+  }
 };
 } // namespace nb
 VEG_NIEBLOID(defer);

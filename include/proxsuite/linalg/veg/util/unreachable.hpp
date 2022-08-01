@@ -10,20 +10,24 @@ namespace linalg {
 namespace veg {
 namespace meta {
 namespace nb {
-struct unreachable {
-	[[noreturn]] VEG_INLINE void operator()() const VEG_NOEXCEPT {
+struct unreachable
+{
+  [[noreturn]] VEG_INLINE void operator()() const VEG_NOEXCEPT
+  {
 #ifdef NDEBUG
-		HEDLEY_UNREACHABLE();
+    HEDLEY_UNREACHABLE();
 #else
-		_detail::terminate();
+    _detail::terminate();
 #endif
-	}
+  }
 };
 
-struct unreachable_if {
-	VEG_INLINE constexpr auto operator()(bool Cond) const VEG_NOEXCEPT -> bool {
-		return (Cond ? unreachable{}() : (void)0), Cond;
-	}
+struct unreachable_if
+{
+  VEG_INLINE constexpr auto operator()(bool Cond) const VEG_NOEXCEPT->bool
+  {
+    return (Cond ? unreachable{}() : (void)0), Cond;
+  }
 };
 } // namespace nb
 VEG_NIEBLOID(unreachable);

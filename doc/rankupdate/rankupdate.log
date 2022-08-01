@@ -164,7 +164,7 @@ Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 )
 LaTeX Font Info:    Trying to load font information for U+msa on input line 14.
@@ -196,7 +196,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 16--18
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-(./rankupdate.aux) ) 
+(./rankupdate.aux) )
 Here is how much of TeX's memory you used:
  3374 strings out of 479304
  51365 string characters out of 5869778

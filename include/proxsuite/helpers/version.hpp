@@ -3,7 +3,7 @@
 //
 /**
  * @file version.hpp
-*/
+ */
 
 #ifndef PROXSUITE_HELPERS_VERSION_HPP
 #define PROXSUITE_HELPERS_VERSION_HPP
@@ -15,20 +15,22 @@
 namespace proxsuite {
 namespace helpers {
 
-inline std::string printVersion(const std::string& delimiter = ".") {
+inline std::string
+printVersion(const std::string& delimiter = ".")
+{
   std::ostringstream oss;
-  oss
-  << PROXSUITE_MAJOR_VERSION
-  << delimiter
-  << PROXSUITE_MINOR_VERSION
-  << delimiter
-  << PROXSUITE_PATCH_VERSION;
+  oss << PROXSUITE_MAJOR_VERSION << delimiter << PROXSUITE_MINOR_VERSION
+      << delimiter << PROXSUITE_PATCH_VERSION;
   return oss.str();
 }
 
-inline bool checkVersionAtLeast(unsigned int major_version, unsigned int minor_version,
-                                unsigned int patch_version) {
-  return PROXSUITE_VERSION_AT_LEAST(major_version, minor_version, patch_version);
+inline bool
+checkVersionAtLeast(unsigned int major_version,
+                    unsigned int minor_version,
+                    unsigned int patch_version)
+{
+  return PROXSUITE_VERSION_AT_LEAST(
+    major_version, minor_version, patch_version);
 }
 
 } // helpers

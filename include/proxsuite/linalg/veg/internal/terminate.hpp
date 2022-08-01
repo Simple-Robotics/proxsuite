@@ -8,8 +8,10 @@ namespace proxsuite {
 namespace linalg {
 namespace veg {
 namespace _detail {
-[[noreturn]] inline void terminate() noexcept {
-	std::terminate();
+[[noreturn]] inline void
+terminate() noexcept
+{
+  std::terminate();
 }
 } // namespace _detail
 } // namespace veg

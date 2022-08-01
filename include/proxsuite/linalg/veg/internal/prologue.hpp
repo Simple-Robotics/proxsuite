@@ -8,7 +8,7 @@
 #ifdef __VEG_DISABLE_NOEXCEPT
 #define VEG_NOEXCEPT noexcept(false)
 #define VEG_NOEXCEPT_IF(...)                                                   \
-	noexcept(VEG_WRAP_SILENCE_WARNING((__VA_ARGS__)) && false)
+  noexcept(VEG_WRAP_SILENCE_WARNING((__VA_ARGS__)) && false)
 #define VEG_IS_NOEXCEPT(Expr) noexcept(Expr)
 #else
 #define VEG_NOEXCEPT noexcept(true)
@@ -20,34 +20,34 @@
 #define VEG_HAS_BUILTIN_OR_0(True, False) __VEG_PP_REMOVE_PAREN(False)
 #define VEG_HAS_BUILTIN_OR_1(True, False) __VEG_PP_REMOVE_PAREN(True)
 #define VEG_HAS_BUILTIN_OR(Builtin, True, False)                               \
-	__VEG_PP_CAT(VEG_HAS_BUILTIN_OR_, VEG_HAS_BUILTIN(Builtin))(True, False)
+  __VEG_PP_CAT(VEG_HAS_BUILTIN_OR_, VEG_HAS_BUILTIN(Builtin))(True, False)
 #define VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT(Tpl, Trait, Std_Trait, ...)      \
-	VEG_DEF_CONCEPT(                                                             \
-			Tpl,                                                                     \
-			Trait,                                                                   \
-			VEG_HAS_BUILTIN_OR(                                                      \
-					__VEG_PP_CAT(__, Std_Trait),                                         \
-					((::proxsuite::linalg::veg::_detail::assert_complete<                                   \
-								::proxsuite::linalg::veg::_detail::Wrapper<__VEG_PP_HEAD(__VA_ARGS__)>>(),        \
-	          __VEG_PP_CAT(__, Std_Trait)(__VA_ARGS__))),                        \
-					(::std::Std_Trait<__VA_ARGS__>::value)))
+  VEG_DEF_CONCEPT(                                                             \
+    Tpl,                                                                       \
+    Trait,                                                                     \
+    VEG_HAS_BUILTIN_OR(__VEG_PP_CAT(__, Std_Trait),                            \
+                       ((::proxsuite::linalg::veg::_detail::assert_complete<   \
+                           ::proxsuite::linalg::veg::_detail::Wrapper<         \
+                             __VEG_PP_HEAD(__VA_ARGS__)>>(),                   \
+                         __VEG_PP_CAT(__, Std_Trait)(__VA_ARGS__))),           \
+                       (::std::Std_Trait<__VA_ARGS__>::value)))
 #define VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD(Tpl, Trait, ...)                   \
-	VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT(                                       \
-			Tpl, Trait, __VEG_PP_CAT(is_, Trait), __VA_ARGS__)
+  VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT(                                       \
+    Tpl, Trait, __VEG_PP_CAT(is_, Trait), __VA_ARGS__)
 
 #define VEG_EXPLICIT_COPY(Class)                                               \
-	~Class() = default;                                                          \
-	Class(Class&&) = default;                                                    \
-	explicit Class(Class const&) = default;                                      \
-	auto operator=(Class&&)&->Class& = default;                                  \
-	auto operator=(Class const&)&->Class& = default
+  ~Class() = default;                                                          \
+  Class(Class&&) = default;                                                    \
+  explicit Class(Class const&) = default;                                      \
+  auto operator=(Class&&)&->Class& = default;                                  \
+  auto operator=(Class const&)&->Class& = default
 
 #define VEG_NO_COPY(Class)                                                     \
-	~Class() = default;                                                          \
-	Class(Class&&) = default;                                                    \
-	Class(Class const&) = delete;                                                \
-	auto operator=(Class&&)&->Class& = default;                                  \
-	auto operator=(Class const&)&->Class& = delete
+  ~Class() = default;                                                          \
+  Class(Class&&) = default;                                                    \
+  Class(Class const&) = delete;                                                \
+  auto operator=(Class&&)&->Class& = default;                                  \
+  auto operator=(Class const&)&->Class& = delete
 
 #if __cplusplus >= 201402L
 #define VEG_CPP14(...) __VA_ARGS__
@@ -86,11 +86,11 @@
 
 #ifdef __VEG_INTERNAL_ASSERTIONS
 #define VEG_INTERNAL_ASSERT_INVARIANT(...)                                     \
-	VEG_ASSERT_ELSE("inner assertion failed", __VA_ARGS__)
+  VEG_ASSERT_ELSE("inner assertion failed", __VA_ARGS__)
 #else
 #define VEG_INTERNAL_ASSERT_INVARIANT(...)                                     \
-	(VEG_DEBUG_ASSERT_ELSE("inner assertion failed", __VA_ARGS__),               \
-	 HEDLEY_UNREACHABLE())
+  (VEG_DEBUG_ASSERT_ELSE("inner assertion failed", __VA_ARGS__),               \
+   HEDLEY_UNREACHABLE())
 #endif
 
 #ifdef __VEG_DISABLE_NOEXCEPT
@@ -99,12 +99,13 @@
 #undef VEG_INTERNAL_ASSERT_INVARIANT
 
 #define VEG_INTERNAL_ASSERT_PRECONDITIONS(...)                                 \
-	VEG_INTERNAL_ASSERT_PRECONDITION(::proxsuite::linalg::veg::_detail::all_of({__VA_ARGS__}))
+  VEG_INTERNAL_ASSERT_PRECONDITION(                                            \
+    ::proxsuite::linalg::veg::_detail::all_of({ __VA_ARGS__ }))
 
 #define VEG_INTERNAL_ASSERT_PRECONDITION(Cond)                                 \
-	(bool(Cond) ? (void)0 : ((throw 0) /* NOLINT */, (void)0))
+  (bool(Cond) ? (void)0 : ((throw 0) /* NOLINT */, (void)0))
 #define VEG_INTERNAL_ASSERT_INVARIANT(...)                                     \
-	(bool(__VA_ARGS__) ? (void)0 : ((throw 0), (void)0))
+  (bool(__VA_ARGS__) ? (void)0 : ((throw 0), (void)0))
 #endif
 
 #if __cplusplus >= 201402L

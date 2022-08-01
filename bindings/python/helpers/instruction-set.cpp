@@ -10,8 +10,8 @@ namespace proxsuite {
 namespace helpers {
 namespace python {
 
-
-PYBIND11_MODULE(instructionset, m) {
+PYBIND11_MODULE(instructionset, m)
+{
   m.doc() = R"pbdoc(
         CPU info library
     ------------------------
@@ -22,13 +22,13 @@ PYBIND11_MODULE(instructionset, m) {
 
         instructionset
     )pbdoc";
-  
-#define PYTHON_EXPOSE_FIELD(field_name) \
-m.def(#field_name,proxsuite::helpers::InstructionSet::field_name)
-  
+
+#define PYTHON_EXPOSE_FIELD(field_name)                                        \
+  m.def(#field_name, proxsuite::helpers::InstructionSet::field_name)
+
   PYTHON_EXPOSE_FIELD(vendor);
   PYTHON_EXPOSE_FIELD(brand);
-  
+
   PYTHON_EXPOSE_FIELD(has_SSE3);
   PYTHON_EXPOSE_FIELD(has_PCLMULQDQ);
   PYTHON_EXPOSE_FIELD(has_MONITOR);
@@ -45,7 +45,7 @@ m.def(#field_name,proxsuite::helpers::InstructionSet::field_name)
   PYTHON_EXPOSE_FIELD(has_AVX);
   PYTHON_EXPOSE_FIELD(has_F16C);
   PYTHON_EXPOSE_FIELD(has_RDRAND);
-  
+
   PYTHON_EXPOSE_FIELD(has_MSR);
   PYTHON_EXPOSE_FIELD(has_CX8);
   PYTHON_EXPOSE_FIELD(has_SEP);
@@ -55,7 +55,7 @@ m.def(#field_name,proxsuite::helpers::InstructionSet::field_name)
   PYTHON_EXPOSE_FIELD(has_FXSR);
   PYTHON_EXPOSE_FIELD(has_SSE);
   PYTHON_EXPOSE_FIELD(has_SSE2);
-  
+
   PYTHON_EXPOSE_FIELD(has_FSGSBASE);
   PYTHON_EXPOSE_FIELD(has_AVX512VBMI);
   PYTHON_EXPOSE_FIELD(has_BMI1);
@@ -75,9 +75,9 @@ m.def(#field_name,proxsuite::helpers::InstructionSet::field_name)
   PYTHON_EXPOSE_FIELD(has_SHA);
   PYTHON_EXPOSE_FIELD(has_AVX512BW);
   PYTHON_EXPOSE_FIELD(has_AVX512VL);
-  
+
   PYTHON_EXPOSE_FIELD(has_PREFETCHWT1);
-  
+
   PYTHON_EXPOSE_FIELD(has_LAHF);
   PYTHON_EXPOSE_FIELD(has_LZCNT);
   PYTHON_EXPOSE_FIELD(has_ABM);
@@ -85,20 +85,18 @@ m.def(#field_name,proxsuite::helpers::InstructionSet::field_name)
   PYTHON_EXPOSE_FIELD(has_XOP);
   PYTHON_EXPOSE_FIELD(has_FMA4);
   PYTHON_EXPOSE_FIELD(has_TBM);
-  
+
   PYTHON_EXPOSE_FIELD(has_SYSCALL);
   PYTHON_EXPOSE_FIELD(has_MMXEXT);
   PYTHON_EXPOSE_FIELD(has_RDTSCP);
   PYTHON_EXPOSE_FIELD(has_x64);
   PYTHON_EXPOSE_FIELD(has_3DNOWEXT);
   PYTHON_EXPOSE_FIELD(has_3DNOW);
-  
+
 #undef PYTHON_EXPOSE_FIELD
-    
 }
 
 } // namespace python
 
 } // namespace proxqp
 } // namespace proxsuite
-

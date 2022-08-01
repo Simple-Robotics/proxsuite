@@ -1,3 +1,3 @@
 if(BUILD_PYTHON_INTERFACE)
-	add_subdirectory(python)
+  add_subdirectory(python)
 endif()

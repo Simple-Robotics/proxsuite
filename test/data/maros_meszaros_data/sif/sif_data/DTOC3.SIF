@@ -1,4 +1,4 @@
-NAME          DTOC3     
+NAME          DTOC3
 
 *   Problem:
 *   ********
@@ -11,7 +11,7 @@ NAME          DTOC3
 
 *   SIF input: (already in QPS format)
 
-*   classification QLR2-AN-14999-9998   
+*   classification QLR2-AN-14999-9998
 
 ROWS
   N OBJ.FUNC

@@ -5,7 +5,9 @@ option(ENABLE_IPO
 option(ARCH_NATIVE "Build with -march=native" OFF)
 option(USE_LIBCXX "Use the libc++ STL" OFF)
 
-option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
+option(ENABLE_BUILD_WITH_TIME_TRACE
+       "Enable -ftime-trace to generate time tracing .json files on clang" OFF
+)
 if(ENABLE_BUILD_WITH_TIME_TRACE AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
   add_compile_options("-ftime-trace")
 endif()
@@ -43,12 +45,7 @@ endif()
 
 if(ENABLE_IPO)
   include(CheckIPOSupported)
-  check_ipo_supported(
-    RESULT
-    result
-    OUTPUT
-    output
-  )
+  check_ipo_supported(RESULT result OUTPUT output)
   if(result)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
   else()
