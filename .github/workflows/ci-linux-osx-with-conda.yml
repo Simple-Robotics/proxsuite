@@ -48,7 +48,7 @@ jobs:
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPython3_EXECUTABLE=$(which python3)
 
     - name: Build [Conda]
       shell: bash -l {0}
