@@ -1,4 +1,4 @@
-name: CI - Linux/OSX - Conda
+name: CI - Linux/OSX/Windows - Conda
 
 on:
   push:
