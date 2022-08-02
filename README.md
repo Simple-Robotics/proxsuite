@@ -10,14 +10,17 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 ## **ProxQP**
 
-The **ProxQP** solver is a numerical optimization package for solving problems of the form
-```latex
-minimize        0.5 x' H x + g' x
+The **ProxQP** solver is a numerical optimization package for solving problems of the form:
 
-subject to           A x = b
-                l <= C x <= u
-```
-where $x \in \mathbb{R}^n$ is the optimization variable. The objective function is defined by a positive semidefinite matrix $H \in \mathcal{S}^n_+$ and vector $g \in \mathbb{R}^n$. The linear constraints are defined by the equality-contraint matrix $A \in \mathbb{R}^{n_\text{eq} \times n}$ and the inequality-constraint matrix $C \in \mathbb{R}^{n_\text{in} \times n}$ and the vectors $b \in \mathbb{R}^{n_\text{eq}}$, $l \in \mathbb{R}^{n_\text{in}}$ and $u \in \mathbb{R}^{n_\text{in}}$ so that $b_i \in \mathbb{R},~ \forall i = 1,...,n_\text{eq}$ and $l_i \in \mathbb{R} \cup \{ -\infty \}$ and $u_i \in \mathbb{R} \cup \{ +\infty \}, ~\forall i = 1,...,n_\text{in}$.
+$$
+\begin{align} 
+\min_{x} &  ~\frac{1}{2}x^{T}Hx+g^{T}x \\
+\text{s.t.} & ~A x = b \\
+& ~l \leq C x \leq u
+\end{align}
+$$
+
+where $x \in \mathbb{R}^n$ is the optimization variable. The objective function is defined by a positive semidefinite matrix $H \in \mathcal{S}^n_+$ and a vector $g \in \mathbb{R}^n$. The linear constraints are defined by the equality-contraint matrix $A \in \mathbb{R}^{n_\text{eq} \times n}$ and the inequality-constraint matrix $C \in \mathbb{R}^{n_\text{in} \times n}$ and the vectors $b \in \mathbb{R}^{n_\text{eq}}$, $l \in \mathbb{R}^{n_\text{in}}$ and $u \in \mathbb{R}^{n_\text{in}}$ so that $b_i \in \mathbb{R},~ \forall i = 1,...,n_\text{eq}$ and $l_i \in \mathbb{R} \cup \{ -\infty \}$ and $u_i \in \mathbb{R} \cup \{ +\infty \}, ~\forall i = 1,...,n_\text{in}$.
 
 ### Citing **ProxQP**
 
@@ -44,7 +47,7 @@ The following dependencies are required at compile time:
 1. Clone this repository with:
 
 ```bash
-git clone https://github.com/Simple-Robotics/proxqp.git --recursive
+git clone https://github.com/Simple-Robotics/proxsuite.git --recursive
 ```
 
 2. Create a build tree using CMake, build and install:
@@ -76,14 +79,16 @@ make doc
 open doc/doxygen_html/index.html
 ```
 
-#### Enabling vectorization
+#### Disabling vectorization
 
 We highly encourage you to enable the vectorization of the underlying linear algebra for the best performances.
-You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
+They are active by default in **ProxSuite**.
+Yet, some CPU architectures may not support such operations.
+You just need to deactivate the cmake option `BUILD_WITH_VECTORIZATION_SUPPORT=OFF`, like:
 
 ```bash
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF
 make
 make install
 ```

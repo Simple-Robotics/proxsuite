@@ -3,6 +3,22 @@
 #endif
 #define VEG_PROLOGUE
 
+#if (__cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002))
+#define VEG_WITH_CXX20_SUPPORT
+#endif
+
+#if (__cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703))
+#define VEG_WITH_CXX17_SUPPORT
+#endif
+
+#if (__cplusplus >= 201402L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201403))
+#define VEG_WITH_CXX14_SUPPORT
+#endif
+
+#if (__cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600))
+#define VEG_WITH_CXX11_SUPPORT
+#endif
+
 #define VEG_ALWAYS_NOEXCEPT noexcept
 
 #ifdef __VEG_DISABLE_NOEXCEPT
@@ -49,19 +65,19 @@
   auto operator=(Class&&)&->Class& = default;                                  \
   auto operator=(Class const&)&->Class& = delete
 
-#if __cplusplus >= 201402L
+#ifdef VEG_WITH_CXX14_SUPPORT
 #define VEG_CPP14(...) __VA_ARGS__
 #else
 #define VEG_CPP14(...)
 #endif
 
-#if __cplusplus >= 201703L
+#ifdef VEG_WITH_CXX17_SUPPORT
 #define VEG_CPP17(...) __VA_ARGS__
 #else
 #define VEG_CPP17(...)
 #endif
 
-#if __cplusplus >= 202002L
+#ifdef VEG_WITH_CXX20_SUPPORT
 #define VEG_CPP20(...) __VA_ARGS__
 #else
 #define VEG_CPP20(...)
@@ -73,7 +89,7 @@
 #define VEG_HAS_BUILTIN(x) 0
 #endif
 
-#if __cplusplus >= 201703L
+#ifdef VEG_WITH_CXX17_SUPPORT
 #define VEG_NODISCARD [[nodiscard]]
 #elif defined(__clang__)
 #define VEG_NODISCARD HEDLEY_WARN_UNUSED_RESULT
@@ -108,20 +124,20 @@
   (bool(__VA_ARGS__) ? (void)0 : ((throw 0), (void)0))
 #endif
 
-#if __cplusplus >= 201402L
+#ifdef VEG_WITH_CXX14_SUPPORT
 
 #define VEG_IGNORE_CPP14_EXTENSION_WARNING(...) __VA_ARGS__
 #else
 #define VEG_IGNORE_CPP14_EXTENSION_WARNING(...)
 #endif
 
-#if __cplusplus >= 202002L
+#ifdef VEG_WITH_CXX20_SUPPORT
 #define VEG_ABI _20
-#elif __cplusplus >= 201703L
+#elif defined(VEG_WITH_CXX17_SUPPORT)
 #define VEG_ABI _17
-#elif __cplusplus >= 201402L
+#elif defined(VEG_WITH_CXX14_SUPPORT)
 #define VEG_ABI _14
-#elif __cplusplus >= 201102L
+#elif defined(VEG_WITH_CXX11_SUPPORT)
 #define VEG_ABI _11
 #else
 #error "[veg] c++ standards earlier than c++11 are not supported"

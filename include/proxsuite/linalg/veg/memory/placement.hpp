@@ -8,7 +8,7 @@
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 #include <new>
 
-#if __cplusplus >= 202002L && !VEG_HAS_BUILTIN(__builtin_bit_cast)
+#if defined(VEG_WITH_CXX20_SUPPORT) && !VEG_HAS_BUILTIN(__builtin_bit_cast)
 #include <bit>
 #define VEG_HAS_BITCAST 1
 #define VEG_BITCAST(T, x) ::std::bit_cast<T>(x)
@@ -24,7 +24,7 @@
 #endif
 
 // construct_at
-#if __cplusplus >= 202002L
+#if defined(VEG_WITH_CXX20_SUPPORT)
 
 // std::construct_at
 #if __VEG_HAS_INCLUDE(<bits / stl_construct.h>) &&                             \
@@ -41,7 +41,7 @@
 
 #if VEG_HAS_BUILTIN(__builtin_launder) || __GNUC__ >= 7
 #define VEG_LAUNDER(p) (__builtin_launder(p))
-#elif __cplusplus >= 201703L
+#elif defined(VEG_WITH_CXX17_SUPPORT)
 #include <new>
 #define VEG_LAUNDER(p) (::std::launder(p))
 #else
@@ -76,7 +76,7 @@ struct construct_at
   const VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_inplace_constructible<T, Args...>))
     ->T*
   {
-#if __cplusplus >= 202002L
+#if defined(VEG_WITH_CXX20_SUPPORT)
     return ::std::construct_at(mem, VEG_FWD(args)...);
 #else
     return ::new (mem) T(VEG_FWD(args)...);
@@ -95,7 +95,7 @@ struct construct_with
                (fn, Fn&&))
   const VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_fn_once<Fn, T>))->T*
   {
-#if __cplusplus >= 202002L
+#if defined(VEG_WITH_CXX20_SUPPORT)
     struct Convertor
     {
       Fn&& fn;

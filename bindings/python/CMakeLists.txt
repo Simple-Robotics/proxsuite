@@ -1,6 +1,6 @@
 include(../../cmake-module/python.cmake)
 
-findpython(REQUIRED)
+findpython(REQUIRED Development.Module)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11)
 add_subdirectory(
   external/pybind11 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11
@@ -52,6 +52,7 @@ function(
 
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
+  target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
   target_compile_definitions(
     ${target_name} PRIVATE PYTHON_MODULE_NAME=${target_name}
   )
@@ -80,8 +81,16 @@ endfunction()
 
 create_python_target(proxsuite_pywrap "" proxsuite-not-vectorized)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  create_python_target(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
-  create_python_target(proxsuite_pywrap_avx512 "-mavx512f" proxsuite-vectorized)
+  if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+    create_python_target(
+      proxsuite_pywrap_avx2 "-mavx2;-mfma" proxsuite-vectorized
+    )
+  endif(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+  if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
+    create_python_target(
+      proxsuite_pywrap_avx512 "-mavx512f;-mfma" proxsuite-vectorized
+    )
+  endif(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
 endif()
 
 # --- INSTALL SCRIPTS
