@@ -38,8 +38,6 @@ struct Info
   sparse::isize iter_ext;
   sparse::isize mu_updates;
   sparse::isize rho_updates;
-  sparse::isize n_c; // final number of active inequalities ;  used only in the
-                     // dense solver.
   QPSolverOutput status;
 
   //// timings
@@ -97,7 +95,6 @@ struct Results
     info.iter_ext = 0;
     info.mu_updates = 0;
     info.rho_updates = 0;
-    info.n_c = 0;
     info.run_time = 0;
     info.setup_time = 0;
     info.solve_time = 0;
@@ -140,12 +137,10 @@ struct Results
     info.mu_in_inv = 1e1;
     info.mu_in = 1e-1;
     info.nu = 1.;
-    info.n_c = 0;
     cleanup_statistics();
   }
   void cleanup_all_except_prox_parameters()
   {
-    info.n_c = 0;
     x.setZero();
     y.setZero();
     z.setZero();
