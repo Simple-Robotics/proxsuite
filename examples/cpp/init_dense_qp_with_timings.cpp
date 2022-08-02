@@ -1,5 +1,5 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
-#include <util.hpp> // used for generating a random convex Qp
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>// used for generating a random convex Qp
 
 using namespace proxsuite::proxqp;
 using T = double;
@@ -12,12 +12,12 @@ main()
   // generate a random qp
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  dense::Model<T> qp = utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);                  // create the QP object
   Qp.settings.compute_timings = true;                // compute all timings

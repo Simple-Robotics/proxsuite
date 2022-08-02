@@ -1,8 +1,7 @@
-#include <util.hpp>
-
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 namespace proxsuite {
 namespace proxqp {
-namespace test {
+namespace utils {
 
 namespace eigen {
 LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f64, colmajor>>);
@@ -57,6 +56,6 @@ to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>
 
 LDLT_EXPLICIT_TPL_DEF(1, mat_cast<f64, long double>);
 
-} // namespace test
+} // namespace utils
 } // namespace proxqp
 } // namespace proxsuite

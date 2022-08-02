@@ -1,5 +1,5 @@
-#include "proxsuite/proxqp/sparse/sparse.hpp" // get the sparse API of ProxQP
-#include "util.hpp" // use a function for generating a random QP
+#include <proxsuite/proxqp/sparse/sparse.hpp>// get the sparse API of ProxQP
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>// used for generating a random convex Qp
 
 using namespace proxsuite::proxqp;
 using T = double;
@@ -13,12 +13,12 @@ main()
 
   T p = 0.15;            // level of sparsity
   T conditioning = 10.0; // conditioning level for H
-  auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+  auto H = ::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand(
     n, conditioning, p);
-  auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
-  auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-  auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
-  auto x_sol = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+  auto g = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
+  auto A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+  auto C = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+  auto x_sol = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
   auto b = A * x_sol;
   auto l = C * x_sol;
   auto u = (l.array() + 10).matrix().eval();
@@ -38,7 +38,7 @@ main()
             std::nullopt); // update H with H_new, it will work
   Qp.solve();
   // generate H2 with another sparsity structure
-  auto H2 = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+  auto H2 = ::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand(
     n, conditioning, p);
   Qp.update(H2,
             std::nullopt,
@@ -48,7 +48,7 @@ main()
             std::nullopt,
             std::nullopt); // nothing will happen
   // if only a vector changes, then the update takes effect
-  auto g_new = ::proxsuite::proxqp::test::rand::vector_rand<T>(n);
+  auto g_new = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
   Qp.update(std::nullopt,
             g,
             std::nullopt,

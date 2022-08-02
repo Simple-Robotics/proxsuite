@@ -417,7 +417,7 @@ active_set_change(const Model<T>& qpmodel,
 
   qpwork.dw_aug.setZero();
 
-  isize n_c_f = qpresults.info.n_c;
+  isize n_c_f = qpwork.n_c;
   qpwork.new_bijection_map = qpwork.current_bijection_map;
 
   // suppression pour le nouvel active set, ajout dans le nouvel unactive set
@@ -433,7 +433,7 @@ active_set_change(const Model<T>& qpmodel,
     isize planned_to_delete_count = 0;
 
     for (isize i = 0; i < qpmodel.n_in; i++) {
-      if (qpwork.current_bijection_map(i) < qpresults.info.n_c) {
+      if (qpwork.current_bijection_map(i) < qpwork.n_c) {
         if (!qpwork.active_inequalities(i)) {
           // delete current_bijection_map(i)
 
@@ -506,7 +506,7 @@ active_set_change(const Model<T>& qpmodel,
     }
   }
 
-  qpresults.info.n_c = n_c_f;
+  qpwork.n_c = n_c_f;
   qpwork.current_bijection_map = qpwork.new_bijection_map;
   qpwork.dw_aug.setZero();
 }

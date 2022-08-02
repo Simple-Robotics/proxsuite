@@ -1,5 +1,5 @@
-#include "proxsuite/proxqp/sparse/sparse.hpp" // get the sparse API of ProxQP
-#include "util.hpp" // use a function for generating a random QP
+#include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse API of ProxQP
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>// used for generating a random convex Qp
 
 using namespace proxsuite::proxqp;
 using T = double;
@@ -18,10 +18,10 @@ main()
   T p = 0.15;            // level of sparsity
   T conditioning = 10.0; // conditioning level for H
 
-  auto H = ::proxsuite::proxqp::test::rand::sparse_positive_definite_rand(
+  auto H = ::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand(
     n, conditioning, p);
-  auto A = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-  auto C = ::proxsuite::proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
+  auto A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+  auto C = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
 
   // design a Qp2 object using sparsity masks of H, A and C
   proxsuite::proxqp::sparse::QP<T, isize> Qp2(

@@ -407,7 +407,6 @@ In this table you have on the three columns from left to right: the name of the 
 | iter_ext                            | 0                              | Total number of outer iterations.
 | mu_updates                          | 0                              | Total number of mu updates.
 | rho_updates                         | 0                              | Total number of rho updates.
-| n_c                                 | 0                              | Total number of active constraints.
 | status                              | PROXQP_MAX_ITER_REACHED        | Status of the solver.
 | setup_time                          | 0                              | Setup time (takes into account the equlibration procedure).
 | solve_time                          | 0                              | Solve time (takes into account the first factorization).
@@ -503,6 +502,4 @@ make
 make install
 \endcode
 
-ProxQP can be compiled more precisely with one SIMD instructions options for x86 instruction set architectures: [AVX-2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions). They can considerably enhance the speed of ProxQP, and we encourage you to use it if your OS is compatible with them. For your information, our benchmarks for [ProxQP algorithm](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf) have been realised with AVX-2 compilation option.
-
-We are working on other set of instructions for x86 architecture (such as [AVX-512](https://en.wikipedia.org/wiki/AVX-512)), and also with other ones compatible with other types of OS.
+ProxQP can be compiled more precisely with two SIMD instructions options for x86 instruction set architectures: [AVX-2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) and [AVX-512](https://en.wikipedia.org/wiki/AVX-512). They can considerably enhance the speed of ProxQP, and we encourage you to use them if your OS is compatible with them. For your information, our benchmarks for [ProxQP algorithm](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf) have been realised with AVX-2 compilation option.

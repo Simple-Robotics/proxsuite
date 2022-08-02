@@ -5,6 +5,7 @@
 #ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
 #define PROXSUITE_QP_SPARSE_MODEL_HPP
 
+#include <Eigen/Sparse>
 #include "proxsuite/linalg/sparse/core.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 
@@ -115,6 +116,80 @@ struct Model
       nullptr,
       kkt_row_indices_unscaled.ptr_mut(),
       kkt_values_unscaled.ptr_mut(),
+    };
+  }
+};
+
+template<typename Scalar>
+struct SparseModel
+{
+
+  enum
+  {
+    layout = Eigen::RowMajor
+  };
+
+  using VectorType = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
+
+  Eigen::SparseMatrix<Scalar, 1> H;
+  VectorType g;
+  Eigen::SparseMatrix<Scalar, 1> A;
+  VectorType b;
+  Eigen::SparseMatrix<Scalar, 1> C;
+  VectorType u;
+  VectorType l;
+
+  template<
+           typename Vector_g,
+           typename Vector_b,
+           typename Vector_u,
+           typename Vector_l>
+  SparseModel(
+           const Eigen::SparseMatrix<Scalar, 1>& H_,
+           const Eigen::MatrixBase<Vector_g>& g_,
+           const Eigen::SparseMatrix<Scalar, 1>& A_,
+           const Eigen::MatrixBase<Vector_b>& b_,
+           const Eigen::SparseMatrix<Scalar, 1>& C_,
+           const Eigen::MatrixBase<Vector_u>& u_,
+           const Eigen::MatrixBase<Vector_l>& l_) noexcept
+    : H(H_)
+    , g(g_)
+    , A(A_)
+    , b(b_)
+    , C(C_)
+    , u(u_)
+    , l(l_)
+  {
+  }
+
+  auto as_view() -> proxqp::dense::QpView<Scalar>
+  {
+    return {
+      { proxqp::from_eigen, H },
+      { proxqp::from_eigen, g },
+      { proxqp::from_eigen, A },
+      { proxqp::from_eigen, b },
+      { proxqp::from_ptr_rows_cols_stride,
+        nullptr,
+        0,
+        proxqp::isize(H.rows()),
+        0 },
+      { proxqp::from_ptr_size, nullptr, 0 },
+    };
+  }
+  auto as_mut() -> proxqp::dense::QpViewMut<Scalar>
+  {
+    return {
+      { proxqp::from_eigen, H },
+      { proxqp::from_eigen, g },
+      { proxqp::from_eigen, A },
+      { proxqp::from_eigen, b },
+      { proxqp::from_ptr_rows_cols_stride,
+        nullptr,
+        0,
+        proxqp::isize(H.rows()),
+        0 },
+      { proxqp::from_ptr_size, nullptr, 0 },
     };
   }
 };

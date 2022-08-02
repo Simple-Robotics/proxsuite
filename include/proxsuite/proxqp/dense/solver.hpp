@@ -60,7 +60,7 @@ refactorize(const Model<T>& qpmodel,
   isize n = qpmodel.dim;
   isize n_eq = qpmodel.n_eq;
   isize n_in = qpmodel.n_in;
-  isize n_c = qpresults.info.n_c;
+  isize n_c = qpwork.n_c;
 
   LDLT_TEMP_MAT(T, new_cols, n + n_eq + n_c, n_c, stack);
   T mu_in_neg = -qpresults.info.mu_in;
@@ -105,7 +105,7 @@ mu_update(const Model<T>& qpmodel,
 
   isize n = qpmodel.dim;
   isize n_eq = qpmodel.n_eq;
-  isize n_c = qpresults.info.n_c;
+  isize n_c = qpwork.n_c;
 
   if ((n_eq + n_c) == 0) {
     return;
@@ -163,7 +163,7 @@ iterative_residual(const Model<T>& qpmodel,
     qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
   for (isize i = 0; i < qpmodel.n_in; i++) {
     isize j = qpwork.current_bijection_map(i);
-    if (j < qpresults.info.n_c) {
+    if (j < qpwork.n_c) {
       qpwork.err.head(qpmodel.dim).noalias() -=
         qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpwork.C_scaled.row(i);
       qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
@@ -523,7 +523,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
     -qpwork.primal_residual_eq_scaled;
   for (isize i = 0; i < qpmodel.n_in; i++) {
     isize j = qpwork.current_bijection_map(i);
-    if (j < qpresults.info.n_c) {
+    if (j < qpwork.n_c) {
       if (qpwork.active_set_up(i)) {
         qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
           -qpwork.primal_residual_in_scaled_up(i) +
@@ -550,7 +550,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
   // use active_part_z as a temporary variable to derive unpermutted dz step
   for (isize j = 0; j < qpmodel.n_in; ++j) {
     isize i = qpwork.current_bijection_map(j);
-    if (i < qpresults.info.n_c) {
+    if (i < qpwork.n_c) {
       qpwork.active_part_z(j) = qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + i);
     } else {
       qpwork.active_part_z(j) = -qpresults.z(j);
@@ -840,7 +840,7 @@ qp_solve( //
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         //!\ TODO in a quicker way
-        qpresults.info.n_c = 0;
+        qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
@@ -856,7 +856,7 @@ qp_solve( //
       }
       case InitialGuessStatus::WARM_START: {
         //!\ TODO in a quicker way
-        qpresults.info.n_c = 0;
+        qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
@@ -897,7 +897,7 @@ qp_solve( //
         ruiz.scale_dual_in_place_in(
           { proxsuite::proxqp::from_eigen, qpresults.z });
         setup_factorization(qpwork, qpmodel, qpresults);
-        qpresults.info.n_c = 0;
+        qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
@@ -921,7 +921,7 @@ qp_solve( //
         ruiz.scale_dual_in_place_in(
           { proxsuite::proxqp::from_eigen, qpresults.z });
         setup_factorization(qpwork, qpmodel, qpresults);
-        qpresults.info.n_c = 0;
+        qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
@@ -947,7 +947,7 @@ qp_solve( //
                                   // matrices has changed or one proximal
                                   // parameter has changed
           setup_factorization(qpwork, qpmodel, qpresults);
-          qpresults.info.n_c = 0;
+          qpwork.n_c = 0;
           for (isize i = 0; i < qpmodel.n_in; i++) {
             if (qpresults.z[i] != 0) {
               qpwork.active_inequalities[i] = true;
@@ -1142,7 +1142,7 @@ qp_solve( //
       // certificate of infeasibility
       qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
       qpresults.y =
-        qpwork.dw_aug.segment(qpmodel.dim, qpmodel.dim + qpmodel.n_eq);
+        qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
       qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
       break;
     }
@@ -1294,7 +1294,6 @@ qp_solve( //
       std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
       std::cout << "objective:    " << qpresults.info.objValue << std::endl;
-      std::cout << "status:       " << qpresults.info.objValue << std::endl;
       switch (qpresults.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "
@@ -1330,7 +1329,6 @@ qp_solve( //
       std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
       std::cout << "objective:    " << qpresults.info.objValue << std::endl;
-      std::cout << "status:       " << qpresults.info.objValue << std::endl;
       switch (qpresults.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "

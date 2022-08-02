@@ -1205,7 +1205,7 @@ qp_solve(Results<T>& results,
           results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
         // certificate of infeasibility
         results.x = dw_prev.head(data.dim);
-        results.y = dw_prev.segment(data.dim, data.dim + data.n_eq);
+        results.y = dw_prev.segment(data.dim,data.n_eq);
         results.z = dw_prev.tail(data.n_in);
         break;
       }
@@ -1367,7 +1367,6 @@ qp_solve(Results<T>& results,
       std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
       std::cout << "objective:    " << results.info.objValue << std::endl;
-      std::cout << "status:       " << results.info.objValue << std::endl;
       switch (results.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "
@@ -1403,7 +1402,6 @@ qp_solve(Results<T>& results,
       std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
       std::cout << "objective:    " << results.info.objValue << std::endl;
-      std::cout << "status:       " << results.info.objValue << std::endl;
       switch (results.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "
