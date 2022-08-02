@@ -60,12 +60,12 @@ VEG_INLINE auto
 aligned_alloc(usize align, usize size) noexcept -> void*
 {
   usize const mask = align - 1;
-  return ::aligned_alloc(align, (size + mask) & ~mask);
+  return std::aligned_alloc(align, (size + mask) & ~mask);
 }
 VEG_INLINE void
 aligned_free(usize /*align*/, void* ptr) noexcept
 {
-  return ::free(ptr);
+  return std::free(ptr);
 }
 
 struct SystemAlloc
@@ -98,7 +98,11 @@ struct Alloc<SystemAlloc>
     if (HEDLEY_UNLIKELY(ptr == nullptr)) {
       _detail::terminate();
     }
+#ifndef _WIN32
     return { ptr, ::malloc_usable_size(ptr) };
+#else
+    return { ptr, _msize(ptr) };
+#endif
   }
   VEG_NODISCARD VEG_NO_INLINE static auto realloc(RefMut<SystemAlloc> /*alloc*/,
                                                   void* ptr,
@@ -127,8 +131,11 @@ struct Alloc<SystemAlloc>
       reloc(new_ptr, ptr, copy_size);
       mem::aligned_free(layout.align, ptr);
     }
-
+#ifndef _WIN32
     return { new_ptr, ::malloc_usable_size(new_ptr) };
+#else
+    return { new_ptr, _msize(new_ptr) };
+#endif
   }
   VEG_NODISCARD VEG_INLINE auto try_grow_in_place(
     void* /*ptr*/,
