@@ -1142,7 +1142,7 @@ qp_solve( //
       // certificate of infeasibility
       qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
       qpresults.y =
-        qpwork.dw_aug.segment(qpmodel.dim, qpmodel.dim + qpmodel.n_eq);
+        qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
       qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
       break;
     }
@@ -1294,7 +1294,6 @@ qp_solve( //
       std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
       std::cout << "objective:    " << qpresults.info.objValue << std::endl;
-      std::cout << "status:       " << qpresults.info.objValue << std::endl;
       switch (qpresults.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "
@@ -1330,7 +1329,6 @@ qp_solve( //
       std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
       std::cout << "rho updates:  " << qpresults.info.rho_updates << std::endl;
       std::cout << "objective:    " << qpresults.info.objValue << std::endl;
-      std::cout << "status:       " << qpresults.info.objValue << std::endl;
       switch (qpresults.info.status) {
         case QPSolverOutput::PROXQP_SOLVED: {
           std::cout << "status:       "
