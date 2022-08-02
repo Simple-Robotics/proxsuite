@@ -60,12 +60,22 @@ VEG_INLINE auto
 aligned_alloc(usize align, usize size) noexcept -> void*
 {
   usize const mask = align - 1;
+#ifndef _WIN32
   return std::aligned_alloc(align, (size + mask) & ~mask);
+#else
+  return _aligned_malloc(align, (size + mask) & ~mask);
 }
+#endif
+}
+
 VEG_INLINE void
 aligned_free(usize /*align*/, void* ptr) noexcept
 {
-  return std::free(ptr);
+#ifndef _WIN32
+  std::free(ptr);
+#else
+  _aligned_free(ptr);
+#endif
 }
 
 struct SystemAlloc
