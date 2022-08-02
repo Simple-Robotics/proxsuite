@@ -12,6 +12,7 @@
 #include <immintrin.h>
 
 #ifndef PROXSUITE_DONT_VECTORIZE
+#include <cmath> // to avoid error of the type no member named 'isnan' in namespace 'std';
 #include <simde/x86/avx2.h>
 #include <simde/x86/fma.h>
 #endif
