@@ -6,7 +6,7 @@
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <util.hpp>
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 
 using T = double;
 using namespace proxsuite;
@@ -20,18 +20,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -143,18 +143,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -191,7 +191,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating A" << std::endl;
-  qp.A = test::rand::sparse_matrix_rand_not_compressed<T>(
+  qp.A = utils::rand::sparse_matrix_rand_not_compressed<T>(
     n_eq, dim, sparsity_factor);
   Qp.update(std::nullopt,
             std::nullopt,
@@ -267,18 +267,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -315,7 +315,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating C" << std::endl;
-  qp.C = test::rand::sparse_matrix_rand_not_compressed<T>(
+  qp.C = utils::rand::sparse_matrix_rand_not_compressed<T>(
     n_in, dim, sparsity_factor);
   Qp.update(std::nullopt,
             std::nullopt,
@@ -391,18 +391,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -439,7 +439,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating b" << std::endl;
-  auto x_sol = test::rand::vector_rand<T>(dim);
+  auto x_sol = utils::rand::vector_rand<T>(dim);
   qp.b = qp.A * x_sol;
   Qp.update(std::nullopt,
             std::nullopt,
@@ -515,18 +515,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
-
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
@@ -562,10 +561,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating b" << std::endl;
-  auto x_sol = test::rand::vector_rand<T>(dim);
-  auto delta = test::Vec<T>(n_in);
+  auto x_sol = utils::rand::vector_rand<T>(dim);
+  auto delta = utils::Vec<T>(n_in);
   for (isize i = 0; i < n_in; ++i) {
-    delta(i) = test::rand::uniform_rand();
+    delta(i) = utils::rand::uniform_rand();
   }
 
   qp.u = qp.C * x_sol + delta;
@@ -643,18 +642,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
-
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
@@ -690,7 +688,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating g" << std::endl;
-  auto g = test::rand::vector_rand<T>(dim);
+  auto g = utils::rand::vector_rand<T>(dim);
 
   qp.g = g;
   Qp.update(std::nullopt,
@@ -769,18 +767,17 @@ DOCTEST_TEST_CASE(
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
-
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
@@ -816,14 +813,14 @@ DOCTEST_TEST_CASE(
   std::cout << "l :  " << qp.l << std::endl;
 
   std::cout << "testing updating b" << std::endl;
-  qp.H = test::rand::sparse_positive_definite_rand_not_compressed<T>(
+  qp.H = utils::rand::sparse_positive_definite_rand_not_compressed<T>(
     dim, strong_convexity_factor, sparsity_factor);
-  qp.A = test::rand::sparse_matrix_rand_not_compressed<T>(
+  qp.A = utils::rand::sparse_matrix_rand_not_compressed<T>(
     n_eq, dim, sparsity_factor);
-  auto x_sol = test::rand::vector_rand<T>(dim);
-  auto delta = test::Vec<T>(n_in);
+  auto x_sol = utils::rand::vector_rand<T>(dim);
+  auto delta = utils::Vec<T>(n_in);
   for (proxqp::isize i = 0; i < n_in; ++i) {
-    delta(i) = test::rand::uniform_rand();
+    delta(i) = utils::rand::uniform_rand();
   }
   qp.b = qp.A * x_sol;
   qp.u = qp.C * x_sol + delta;
@@ -896,18 +893,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
-
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
@@ -1018,18 +1014,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
-
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
@@ -1143,17 +1138,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1180,9 +1175,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   std::cout << "setup timing " << Qp.results.info.setup_time << " solve time "
             << Qp.results.info.solve_time << std::endl;
 
-  auto x_wm = test::rand::vector_rand<T>(dim);
-  auto y_wm = test::rand::vector_rand<T>(n_eq);
-  auto z_wm = test::rand::vector_rand<T>(n_in);
+  auto x_wm = utils::rand::vector_rand<T>(dim);
+  auto y_wm = utils::rand::vector_rand<T>(n_eq);
+  auto z_wm = utils::rand::vector_rand<T>(n_in);
   std::cout << "proposed warm start" << std::endl;
   std::cout << "x_wm :  " << x_wm << std::endl;
   std::cout << "y_wm :  " << y_wm << std::endl;
@@ -1247,18 +1242,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1296,18 +1291,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
@@ -1371,18 +1366,18 @@ DOCTEST_TEST_CASE(
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1448,18 +1443,18 @@ DOCTEST_TEST_CASE(
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1560,18 +1555,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1674,18 +1669,18 @@ DOCTEST_TEST_CASE(
     << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1754,18 +1749,18 @@ DOCTEST_TEST_CASE(
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
   Qp.settings.eps_abs = eps_abs;
@@ -1878,18 +1873,18 @@ TEST_CASE(
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
   Qp.settings.eps_abs = eps_abs;
@@ -1992,18 +1987,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
   Qp.settings.eps_abs = eps_abs;
@@ -2107,18 +2102,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
   Qp.settings.eps_abs = eps_abs;
@@ -2226,18 +2221,18 @@ TEST_CASE(
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2345,18 +2340,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2464,18 +2459,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2580,18 +2575,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2661,18 +2656,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2707,7 +2702,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   bool update_preconditioner = true;
   Qp.update(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, update_preconditioner);
   std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
@@ -2781,18 +2776,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2828,7 +2823,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   bool update_preconditioner = true;
   Qp.update(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, update_preconditioner);
   std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
@@ -2903,18 +2898,18 @@ TEST_CASE(
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -2954,7 +2949,7 @@ TEST_CASE(
     InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   bool update_preconditioner = true;
   Qp.update(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, update_preconditioner);
   std::cout << "dirty workspace after update : " << Qp.work.dirty << std::endl;
@@ -3028,18 +3023,18 @@ TEST_CASE(
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3078,7 +3073,7 @@ TEST_CASE(
     InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   bool update_preconditioner = true;
   Qp.update(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, update_preconditioner);
   Qp.solve();
@@ -3151,18 +3146,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3202,7 +3197,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
     InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   std::cout << "dirty workspace : " << Qp.work.dirty << std::endl;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   bool update_preconditioner = true;
   Qp.update(qp.H,
             qp.g,
@@ -3282,18 +3277,18 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3359,7 +3354,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
   y_wm = Qp.results.y;
   z_wm = Qp.results.z;
   qp.H *= 2.;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   // try now with a real update
   Qp.update(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, update_preconditioner);
   std::cout << "dirty workspace after update: " << Qp.work.dirty << std::endl;
@@ -3431,18 +3426,18 @@ TEST_CASE("Test initializaton with rho for different initial guess")
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3585,18 +3580,18 @@ TEST_CASE("Test g update for different initial guess")
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3621,7 +3616,7 @@ TEST_CASE("Test g update for different initial guess")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
   auto old_g = qp.g;
-  qp.g = test::rand::vector_rand<T>(dim);
+  qp.g = utils::rand::vector_rand<T>(dim);
   Qp.update(std::nullopt,
             qp.g,
             std::nullopt,
@@ -3826,18 +3821,18 @@ TEST_CASE("Test A update for different initial guess")
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -3861,7 +3856,7 @@ TEST_CASE("Test A update for different initial guess")
                 .lpNorm<Eigen::Infinity>();
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
-  auto new_A = test::rand::sparse_matrix_rand_not_compressed<T>(
+  auto new_A = utils::rand::sparse_matrix_rand_not_compressed<T>(
     n_eq, dim, sparsity_factor);
   Qp.update(std::nullopt,
             std::nullopt,
@@ -4067,18 +4062,18 @@ TEST_CASE("Test rho update for different initial guess")
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 
@@ -4316,18 +4311,18 @@ TEST_CASE("Test g update for different warm start with previous result option")
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  test::rand::set_seed(1);
+  utils::rand::set_seed(1);
   dense::isize dim = 10;
 
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  test::RandomQP<T> qp{ test::random_with_dim_and_neq_and_n_in,
-                        dim,
-                        n_eq,
-                        n_in,
-                        sparsity_factor,
-                        strong_convexity_factor };
+  proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);
 

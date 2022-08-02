@@ -8,6 +8,7 @@
 #include <Eigen/Core>
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include "proxsuite/proxqp/dense/fwd.hpp"
+#include <proxsuite/proxqp/sparse/model.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -64,7 +65,17 @@ struct Model
     u.setZero();
     l.setZero();
   }
+  
+  proxsuite::proxqp::sparse::SparseModel<T> to_sparse(){
+    SparseMat<T> H_sparse = H.sparseView();
+    SparseMat<T> A_sparse = A.sparseView();
+    SparseMat<T> C_sparse = C.sparseView();
+    proxsuite::proxqp::sparse::SparseModel<T> res{H_sparse,g,A_sparse,b,C_sparse,u,l};
+    return res;
+  }
+  
 };
+
 
 } // namespace dense
 } // namespace proxqp

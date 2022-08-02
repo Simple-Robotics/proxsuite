@@ -2,13 +2,13 @@
 // Copyright (c) 2022 INRIA
 //
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <util.hpp>
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
 using T = double;
-using I = proxqp::test::c_int;
+using I = proxqp::utils::c_int;
 using namespace linalg::sparse::tags;
 /*
 TEST_CASE("random ruiz") {
@@ -25,12 +25,12 @@ TEST_CASE("random ruiz") {
 
                 double p = 1.0;
 
-                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto AT =
-proxqp::test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-proxqp::test::rand::vector_rand<T>(n_eq); auto CT =
-proxqp::test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto AT =
+proxqp::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+proxqp::utils::rand::vector_rand<T>(n_eq); auto CT =
+proxqp::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -91,12 +91,12 @@ TEST_CASE("random ruiz using the API") {
 
                 double p = 1.0;
 
-                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto A =
-proxqp::test::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
-proxqp::test::rand::vector_rand<T>(n_eq); auto C =
-proxqp::test::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
-proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto A =
+proxqp::utils::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
+proxqp::utils::rand::vector_rand<T>(n_eq); auto C =
+proxqp::utils::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
+proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -131,12 +131,12 @@ TEST_CASE("random id") {
 
                 double p = 1.0;
 
-                auto H = proxqp::test::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::test::rand::vector_rand<T>(n); auto AT =
-proxqp::test::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-proxqp::test::rand::vector_rand<T>(n_eq); auto CT =
-proxqp::test::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-proxqp::test::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto AT =
+proxqp::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+proxqp::utils::rand::vector_rand<T>(n_eq); auto CT =
+proxqp::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -195,12 +195,12 @@ TEST_CASE("random id using the API")
 
     double p = 1.0;
 
-    auto H = proxqp::test::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = proxqp::test::rand::vector_rand<T>(n);
-    auto A = proxqp::test::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto b = proxqp::test::rand::vector_rand<T>(n_eq);
-    auto C = proxqp::test::rand::sparse_matrix_rand<T>(n_in, n, p);
-    auto l = proxqp::test::rand::vector_rand<T>(n_in);
+    auto H = proxqp::utils::rand::sparse_positive_definite_rand(n, T(10.0), p);
+    auto g = proxqp::utils::rand::vector_rand<T>(n);
+    auto A = proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto b = proxqp::utils::rand::vector_rand<T>(n_eq);
+    auto C = proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto l = proxqp::utils::rand::vector_rand<T>(n_in);
     auto u = (l.array() + 1).matrix().eval();
 
     {

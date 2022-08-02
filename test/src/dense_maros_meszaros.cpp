@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 #include <doctest.hpp>
-#include <util.hpp>
 #include <maros_meszaros.hpp>
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite;
@@ -85,7 +85,7 @@ char const* files[] = {
 TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
-  using isize = proxqp::test::isize;
+  using isize = proxqp::utils::isize;
 
   for (auto const* file : files) {
     auto qp = load_qp(file);

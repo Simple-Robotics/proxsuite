@@ -10,7 +10,7 @@
 #include <Eigen/Cholesky>
 #include <qp/dense/dense.hpp>
 #include <iostream>
-#include <util.hpp>
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 
 using namespace proxsuite::qp;
 using Scalar = double;
@@ -41,9 +41,13 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving")
     isize n_eq = isize(cnpy::npy_load_mat<Scalar>(path + "/A.npy").rows());
     isize n_in = 0;
     Scalar sparsity_factor = 0.15;
-    Qp<Scalar> qp{
-      random_with_dim_and_neq_and_n_in, n, n_eq, n_in, sparsity_factor
-    };
+    Scalar strong_convexity_factor = 0.01;
+    proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
     qp.H = cnpy::npy_load_mat<Scalar>(path + "/H.npy");
     qp.g = cnpy::npy_load_vec<Scalar>(path + "/g.npy");
     qp.A = cnpy::npy_load_mat<Scalar>(path + "/A.npy");

@@ -1,8 +1,7 @@
-#include <util.hpp>
-
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 namespace proxsuite {
 namespace proxqp {
-namespace test {
+namespace utils {
 
 namespace eigen {
 LDLT_EXPLICIT_TPL_DEF(2, llt_compute<Mat<f32, colmajor>>);
@@ -22,6 +21,6 @@ LDLT_EXPLICIT_TPL_DEF(3, sparse_positive_definite_rand<f32>);
 LDLT_EXPLICIT_TPL_DEF(2, matmul_impl<long double>);
 LDLT_EXPLICIT_TPL_DEF(1, mat_cast<proxqp::f32, long double>);
 
-} // namespace test
+} // namespace utils
 } // namespace proxqp
 } // namespace proxsuite

@@ -4,7 +4,7 @@
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <util.hpp>
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 
 using namespace proxsuite;
 using Scalar = long double;
@@ -18,13 +18,13 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
                                       // lower triangular ; else full matrix
 
   Scalar sparsity_factor(0.15);
-  proxqp::test::RandomQP<Scalar> qp{
-    proxqp::test::random_with_dim_and_neq_and_n_in,
-    dim,
-    n_eq,
-    n_in,
-    sparsity_factor
-  };
+  Scalar strong_convexity_factor(0.01);
+  proxqp::dense::Model<Scalar> qp = proxqp::utils::dense_strongly_convex_qp(
+                                  dim,
+                                  n_eq,
+                                  n_in,
+                                  sparsity_factor,
+                                  strong_convexity_factor);
 
   switch (sym) {
     case proxqp::Symmetry::upper: {
