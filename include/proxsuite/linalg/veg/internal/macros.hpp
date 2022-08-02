@@ -21,7 +21,7 @@
   HEDLEY_TI_CL7X_VERSION_CHECK(1, 2, 0) ||                                     \
   HEDLEY_TI_CLPRU_VERSION_CHECK(2, 3, 0)
 #define VEG_DEPRECATED(Reason) __attribute__((__deprecated__(Reason)))
-#elif defined(__cplusplus) && (__cplusplus >= 201402L)
+#elif defined(VEG_WITH_CXX14_SUPPORT)
 #define VEG_DEPRECATED(Reason)                                                 \
   HEDLEY_DIAGNOSTIC_DISABLE_CPP98_COMPAT_WRAP_([[deprecated(Reason)]])
 #elif HEDLEY_HAS_ATTRIBUTE(deprecated) || HEDLEY_GCC_VERSION_CHECK(3, 1, 0) || \
@@ -94,7 +94,7 @@
 #define VEG_HAS_CONCEPTS 0
 #endif
 
-#if __cplusplus >= 201703L
+#if defined(VEG_WITH_CXX17_SUPPORT)
 #define VEG_DECLVAL(...) (static_cast<__VA_ARGS__ (*)() noexcept>(nullptr)())
 #else
 #define VEG_DECLVAL(...)                                                       \
@@ -135,7 +135,7 @@
   }                                                                            \
   VEG_NOM_SEMICOLON
 
-#if __cplusplus >= 201703L
+#if defined(VEG_WITH_CXX17_SUPPORT)
 #define VEG_HAS_FOLD_EXPR 1
 #define VEG_ALL_OF(...) (__VA_ARGS__ && ... && true)
 #define VEG_ANY_OF(...) (__VA_ARGS__ || ... || false)
@@ -211,7 +211,7 @@
 
 #else
 
-#if __cplusplus >= 201402L
+#if defined(VEG_WITH_CXX14_SUPPORT)
 #define __VEG_IMPL_DEF_CONCEPT(Tpl, Name, Value, ...)                          \
   namespace _ {                                                                \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
@@ -276,7 +276,7 @@
       NothrowTestExpr::value);                                                 \
   VEG_NOM_SEMICOLON
 
-#if __cplusplus >= 201402L
+#if defined(VEG_WITH_CXX14_SUPPORT)
 #define VEG_CONCEPT_MACRO(Namespace, ...) Namespace::__VA_ARGS__
 #define __VEG_IMPL_ADD_VALUE(I, _, Param) (Param)
 #define __VEG_IMPL_TRAIT(Param) __VEG_PP_HEAD Param _::__VEG_PP_TAIL Param
@@ -476,7 +476,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#if __cplusplus >= 201703L
+#if defined(VEG_WITH_CXX17_SUPPORT)
 #define VEG_INLINE_VAR(Name, Obj)                                              \
   inline constexpr auto const& Name =                                          \
     ::proxsuite::linalg::veg::meta::static_const<Obj>::value;                  \
@@ -495,7 +495,7 @@
   }                                                                            \
   static_assert((void(Name), true), ".")
 
-#if __cplusplus >= 201402L
+#if defined(VEG_WITH_CXX14_SUPPORT)
 #define VEG_INLINE_VAR_TEMPLATE(Tpl, Name, ...) /* NOLINT */                   \
   namespace /* NOLINT */ {                      /* NOLINT */                   \
   template<__VEG_PP_REMOVE_PAREN(Tpl)>                                         \
@@ -782,7 +782,7 @@ template<usize... Is, typename... Ts>
 struct SimpleITuple<_meta::integer_sequence<usize, Is...>, Ts...>
   : SimpleLeaf<Is, Ts>...
 {
-#if __cplusplus < 201703
+#if !defined(VEG_WITH_CXX17_SUPPORT)
   constexpr SimpleITuple(Ts... args) noexcept
     : SimpleLeaf<Is, Ts>{ Ts(VEG_FWD(args)) }...
   {
@@ -798,7 +798,7 @@ template<typename... Ts>
 constexpr auto
 make_simple_tuple(Empty /*dummy*/, Ts... args) noexcept -> SimpleTuple<Ts...>
 {
-#if __cplusplus < 201703
+#if !defined(VEG_WITH_CXX17_SUPPORT)
   return { Ts(VEG_FWD(args))... };
 #else
   return { { Ts(VEG_FWD(args)) }... };
@@ -1053,7 +1053,7 @@ assert_complete() noexcept -> bool
 } // namespace linalg
 } // namespace proxsuite
 
-#if defined(__clang__) || (__cplusplus >= 201402L && defined(__GNUC__))
+#if defined(__clang__) || (defined(VEG_WITH_CXX14_SUPPORT) && defined(__GNUC__))
 HEDLEY_DIAGNOSTIC_PUSH
 #pragma GCC diagnostic ignored "-Wpedantic"
 #ifdef __clang__
@@ -1074,7 +1074,7 @@ HEDLEY_DIAGNOSTIC_POP
 #define __VEG_IMPL_UTF8_CONST(Literal) /* NOLINT */                            \
   (u8##Literal##__veglib_const_literal_gnuc)
 
-#elif (defined(__clang__) && __cplusplus >= 202002L) ||                        \
+#elif (defined(__clang__) && defined(VEG_WITH_CXX20_SUPPORT)) ||               \
   (defined(__cpp_nontype_template_args) &&                                     \
    (__cpp_nontype_template_args >= 201911L))
 namespace proxsuite {

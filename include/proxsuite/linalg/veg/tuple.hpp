@@ -310,7 +310,7 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
 {
   struct _ : TupleLeaf<Is, Ts>...
   {
-#if __cplusplus < 201703L
+#if !defined(VEG_WITH_CXX17_SUPPORT)
 #if VEG_HAS_NO_UNIQUE_ADDRESS
     template<typename... Fns>
     VEG_INLINE constexpr _(InPlace<void> /* unused */, Fns... fns) noexcept(
@@ -335,7 +335,7 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
   VEG_INLINE constexpr IndexedTuple(Tuplify /*tag*/, Ts... args) VEG_NOEXCEPT
     : inner
   {
-#if __cplusplus < 201703L
+#if !defined(VEG_WITH_CXX17_SUPPORT)
     inplace, _detail::MoveFn<Ts>{ VEG_FWD(args) }...,
 #else
 #if VEG_HAS_NO_UNIQUE_ADDRESS
@@ -358,7 +358,7 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
   VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_fn_once<Fns, Ts>)))
     : inner
   {
-#if __cplusplus < 201703L
+#if !defined(VEG_WITH_CXX17_SUPPORT)
     inplace, VEG_FWD(fns)...
 #else
 #if VEG_HAS_NO_UNIQUE_ADDRESS

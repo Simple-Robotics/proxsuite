@@ -19,7 +19,7 @@ namespace linalg {
 namespace veg {
 namespace concepts {
 
-#if VEG_HAS_BUILTIN(__is_final) || __cplusplus >= 201402L
+#if VEG_HAS_BUILTIN(__is_final) || defined(VEG_WITH_CXX14_SUPPORT)
 VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD(typename T, final, T);
 #else
 VEG_DEF_CONCEPT(typename T, final, (sizeof(T) < 0));

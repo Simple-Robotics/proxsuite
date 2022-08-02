@@ -19,7 +19,7 @@ namespace proxsuite {
 namespace linalg {
 namespace veg {
 
-#if !(VEG_HAS_BUILTIN(__builtin_addressof) || __cplusplus >= 201703L)
+#if !(VEG_HAS_BUILTIN(__builtin_addressof) || defined(VEG_WITH_CXX17_SUPPORT))
 
 namespace _detail {
 namespace _mem {
@@ -82,7 +82,7 @@ struct addressof
   {
 #if VEG_HAS_BUILTIN(__builtin_addressof)
     return __builtin_addressof(var);
-#elif __cplusplus >= 201703L
+#elif defined(VEG_WITH_CXX17_SUPPORT)
     return ::std::addressof(var);
 #else
     return _detail::_mem::addr_impl<T>::apply(var);

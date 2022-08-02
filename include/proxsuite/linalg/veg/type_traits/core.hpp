@@ -5,7 +5,8 @@
 #include "proxsuite/linalg/veg/internal/integer_seq.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 
-#if __cplusplus >= 202002L && !VEG_HAS_BUILTIN(__builtin_is_constant_evaluated)
+#if defined(VEG_WITH_CXX20_SUPPORT) &&                                         \
+  !VEG_HAS_BUILTIN(__builtin_is_constant_evaluated)
 #include <type_traits>
 #define VEG_HAS_CONSTEVAL 1
 #define VEG_IS_CONSTEVAL() ::std::is_constant_evaluated()
@@ -122,7 +123,7 @@ template<typename Ret, typename... Args>
 struct decay_helper<Ret(Args...)> : meta::type_identity<Ret (*)(Args...)>
 {
 };
-#if __cplusplus >= 201703L
+#if defined(VEG_WITH_CXX17_SUPPORT)
 template<typename Ret, typename... Args>
 struct decay_helper<Ret(Args...) noexcept>
   : meta::type_identity<Ret (*)(Args...) noexcept>
@@ -136,7 +137,7 @@ struct decay_helper<T[N]> : meta::type_identity<T*>
 
 using namespace meta;
 
-#if __cplusplus >= 201402L
+#if defined(VEG_WITH_CXX14_SUPPORT)
 
 template<typename Enable, template<typename...> class Ftor, typename... Args>
 constexpr bool _is_detected_v = false;
@@ -237,11 +238,11 @@ namespace concepts {
 using meta::conjunction;
 using meta::disjunction;
 
-#if __cplusplus >= 202002L
+#if defined(VEG_WITH_CXX20_SUPPORT)
 VEG_DEF_CONCEPT((template<typename...> class Op, typename... Args),
                 detected,
                 requires { typename Op<Args...>; });
-#elif __cplusplus >= 201402L
+#elif defined(VEG_WITH_CXX14_SUPPORT)
 VEG_DEF_CONCEPT((template<typename...> class Op, typename... Args),
                 detected,
                 _detail::_meta::is_detected_v<Op, Args...>);
