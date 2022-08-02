@@ -15,7 +15,6 @@ exposeResults(pybind11::module_ m)
 
   ::pybind11::class_<Info<T>>(m, "Info", pybind11::module_local())
     .def(::pybind11::init(), "Default constructor.")
-    .def_readwrite("n_c", &Info<T>::n_c)
     .def_readwrite("mu_eq", &Info<T>::mu_eq)
     .def_readwrite("mu_in", &Info<T>::mu_in)
     .def_readwrite("rho", &Info<T>::rho)

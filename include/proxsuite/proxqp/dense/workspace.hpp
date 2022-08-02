@@ -94,6 +94,9 @@ struct Workspace
   bool dirty;
   bool refactorize;
   bool proximal_parameter_update;
+
+
+  sparse::isize n_c; // final number of active inequalities
   /*!
    * Default constructor.
    * @param dim primal variable dimension.
@@ -208,6 +211,7 @@ struct Workspace
     primal_residual_in_scaled_up_plus_alphaCdx.setZero();
     primal_residual_in_scaled_low_plus_alphaCdx.setZero();
     CTz.setZero();
+    n_c = 0;
   }
   /*!
    * Clean-ups solver's workspace.
@@ -254,6 +258,7 @@ struct Workspace
     dirty = false;
     refactorize = false;
     proximal_parameter_update = false;
+    n_c=0;
   }
 };
 } // namespace dense
