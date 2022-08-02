@@ -14,6 +14,8 @@
 
 #ifndef _WIN32
 #include <cpuid.h>
+#else
+#include <intrin.h>
 #endif
 
 namespace proxsuite {
