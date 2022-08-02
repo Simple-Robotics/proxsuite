@@ -71,6 +71,12 @@ if(INITIALIZE_EIGEN_WITH_NAN)
   add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
 endif(INITIALIZE_EIGEN_WITH_NAN)
 
+# Handle Windows context
+if(MSVC)
+  # add_definitions(-D_USE_MATH_DEFINES)
+  add_definitions(-DNOMINMAX)
+endif()
+
 # Look for dependencies
 add_project_dependency(
   Eigen3
