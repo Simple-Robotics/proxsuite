@@ -81,7 +81,11 @@ endfunction()
 
 create_python_target(proxsuite_pywrap "" proxsuite-not-vectorized)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  create_python_target(proxsuite_pywrap_avx2 "-mavx2" proxsuite-vectorized)
+  if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+    create_python_target(
+      proxsuite_pywrap_avx2 "-mavx2;-mfma" proxsuite-vectorized
+    )
+  endif(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
   if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
     create_python_target(
       proxsuite_pywrap_avx512 "-mavx512f;-mfma" proxsuite-vectorized
