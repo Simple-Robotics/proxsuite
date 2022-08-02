@@ -64,7 +64,6 @@ aligned_alloc(usize align, usize size) noexcept -> void*
   return std::aligned_alloc(align, (size + mask) & ~mask);
 #else
   return _aligned_malloc(align, (size + mask) & ~mask);
-}
 #endif
 }
 
