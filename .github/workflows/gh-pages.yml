@@ -1,0 +1,76 @@
+name: gh-pages
+on:
+  push:
+    branches:
+      - '*'
+      - '!gh-pages'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          channels: conda-forge
+          python-version: "3.10"
+          activate-environment: doc
+
+      - name: Dependencies
+        shell: bash -l {0}
+        run: |
+          # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
+          conda config --remove channels defaults
+
+          # Compilation related dependencies
+          mamba install cmake make pkg-config doxygen graphviz
+          
+          # Main dependencies
+          mamba install eigen
+    
+      - name: Print environment
+        shell: bash -l {0}
+        run: |
+          conda info
+          mamba list
+          env
+
+      - name: Configure
+        shell: bash -l {0}
+        run: |
+          git submodule update --init
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON_INTERFACE:BOOL=OFF -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON -DBUILD_TESTING:BOOL=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=OFF
+
+      - name: Build documentation
+        shell: bash -l {0}
+        run: |
+          cd build
+          cmake --build . --config Release --target doc
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: site
+          path: build/doc/doxygen-html
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: site
+          path: site
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: site
