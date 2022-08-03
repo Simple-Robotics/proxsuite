@@ -173,12 +173,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void init(const SparseMat<T, I>& H,
-            VecRef<T> g,
+            const Vec<T>& g,
             const SparseMat<T, I>& A,
-            VecRef<T> b,
+            const Vec<T>&  b,
             const SparseMat<T, I>& C,
-            VecRef<T> u,
-            VecRef<T> l,
+            const Vec<T>& u,
+            const Vec<T>& l,
             bool compute_preconditioner_ = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -521,12 +521,12 @@ template<typename T, typename I>
 proxqp::Results<T>
 solve(
   const SparseMat<T, I>& H,
-  VecRef<T> g,
+  const Vec<T>& g,
   const SparseMat<T, I>& A,
-  VecRef<T> b,
+  const Vec<T>& b,
   const SparseMat<T, I>& C,
-  VecRef<T> u,
-  VecRef<T> l,
+  const Vec<T>& u,
+  const Vec<T>& l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
