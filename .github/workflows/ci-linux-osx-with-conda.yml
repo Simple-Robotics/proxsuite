@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-with-conda:
-    name: '[conda:${{ matrix.os }}]'
+    name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}]'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
