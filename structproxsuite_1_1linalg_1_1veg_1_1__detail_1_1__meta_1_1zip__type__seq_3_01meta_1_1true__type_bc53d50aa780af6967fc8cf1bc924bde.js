@@ -1,0 +1,4 @@
+var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_bc53d50aa780af6967fc8cf1bc924bde =
+[
+    [ "type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_bc53d50aa780af6967fc8cf1bc924bde.html#a2906ac136421eb89b15791e8fb02340b", null ]
+];

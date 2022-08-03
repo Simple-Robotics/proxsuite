@@ -1,0 +1,46 @@
+var namespaceproxsuite_1_1linalg_1_1veg_1_1mem =
+[
+    [ "nb", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb" ],
+    [ "Alloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc.html", null ],
+    [ "Alloc< BumpAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01BumpAlloc_3_01MaxAlign_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01BumpAlloc_3_01MaxAlign_01_4_01_4" ],
+    [ "Alloc< MonotonicAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01MonotonicAlloc_3_01MaxAlign_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01MonotonicAlloc_3_01MaxAlign_01_4_01_4" ],
+    [ "Alloc< proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01proxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01proxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc_01_4" ],
+    [ "Alloc< StackAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01StackAlloc_3_01MaxAlign_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01StackAlloc_3_01MaxAlign_01_4_01_4" ],
+    [ "Alloc< SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01SystemAlloc_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01SystemAlloc_01_4" ],
+    [ "AllocBlock", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock" ],
+    [ "BumpAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc" ],
+    [ "Cloner", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner.html", null ],
+    [ "Cloner< DefaultCloner >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner_3_01DefaultCloner_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner_3_01DefaultCloner_01_4" ],
+    [ "CopyAvailableFor", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1CopyAvailableFor.html", null ],
+    [ "DefaultCloner", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DefaultCloner.html", null ],
+    [ "DtorAvailableFor", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DtorAvailableFor.html", null ],
+    [ "Layout", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout" ],
+    [ "MonotonicAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1MonotonicAlloc.html", null ],
+    [ "RelocFn", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn" ],
+    [ "StackAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1StackAlloc.html", null ],
+    [ "SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc" ],
+    [ "byte", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#aaf71e95f8105797c322dcfc3194f61db", null ],
+    [ "CopyAvailable", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5f", [
+      [ "no", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5fa7fa3b767c460b54a2be4d49030b349c7", null ],
+      [ "yes_maythrow", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5fac242c4b5c866c6f70c80f3d2bfc58505", null ],
+      [ "yes_nothrow", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5fa9dd2c36cd495560b6ebf63262f1cb05d", null ]
+    ] ],
+    [ "DtorAvailable", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af1a489f3ac6116d0e943d3b56a62ae08", [
+      [ "no", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af1a489f3ac6116d0e943d3b56a62ae08a7fa3b767c460b54a2be4d49030b349c7", null ],
+      [ "yes_maythrow", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af1a489f3ac6116d0e943d3b56a62ae08ac242c4b5c866c6f70c80f3d2bfc58505", null ],
+      [ "yes_nothrow", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af1a489f3ac6116d0e943d3b56a62ae08a9dd2c36cd495560b6ebf63262f1cb05d", null ]
+    ] ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a3b4f7b11222d8500a6bfefd906f3fcf2", null ],
+    [ "aligned_alloc", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a9b8256c8a4a61a189d7122c24086f0cd", null ],
+    [ "aligned_free", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a7a0b4d58ec681120256e30bd22bc4190", null ],
+    [ "VEG_INLINE_VAR", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#aa4d6a7062c45a9666d9bcb5feb6a5e55", null ],
+    [ "VEG_INLINE_VAR", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a1377bf0d5708c8c3925b78e55109dd2e", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a7ace685a8adaed6bb8598b5f548732f9", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#abebcb6a1b2a156b6028360f254ee6e93", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#ae9de3fd8364806f1953ca5c6bc23af21", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#aa38115c83e115bacb717f737dc79031e", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af66c0dbd2aa88d3c47b35e7fa9b1f403", null ],
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a50c29e47370276cedadeeb02f5f6e339", null ],
+    [ "VEG_NIEBLOID_TEMPLATE", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a7fdc03f8337f9906777a541465ad7805", null ],
+    [ "memmove", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#aae872f8ff5772ee91305e119d3510dfe", null ]
+];

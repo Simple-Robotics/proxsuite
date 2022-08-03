@@ -1,0 +1,26 @@
+var namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections =
+[
+    [ "AllocCleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1AllocCleanup.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1AllocCleanup" ],
+    [ "Cleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1Cleanup.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1Cleanup" ],
+    [ "CloneFn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFn" ],
+    [ "CloneFromImpl< false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFromImpl_3_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFromImpl_3_01false_01_4" ],
+    [ "CloneFromImpl< true >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFromImpl_3_01true_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFromImpl_3_01true_01_4" ],
+    [ "CloneImpl", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl.html", null ],
+    [ "CloneImpl< false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01false_01_4" ],
+    [ "CloneImpl< true >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01true_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01true_01_4" ],
+    [ "DestroyImpl", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl.html", null ],
+    [ "DestroyImpl< false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl_3_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl_3_01false_01_4" ],
+    [ "DestroyImpl< true >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl_3_01true_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl_3_01true_01_4" ],
+    [ "relocate_pointer", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer.html", null ],
+    [ "relocate_pointer< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer_3_01T_00_01false_01_4" ],
+    [ "relocate_pointer_trivial", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer__trivial.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer__trivial" ],
+    [ "VecImpl", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl" ],
+    [ "backward_destroy", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#ac13e53128895c89e0fc037201f9025d2", null ],
+    [ "vector_grow_compute", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#afa32fec60dca2551b8d0a2ecdacb6f42", null ],
+    [ "vector_grow_choose", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a405021aa496356872ea476cd3d242802", null ],
+    [ "relocate", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#ad974291cc7f4acccae3ccbbdcbe15af1", null ],
+    [ "slice_clone", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a0e7b07967551c1607dc8f3fb0a643d15", null ],
+    [ "slice_clone_from", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a770883d3696a2fbbeca6fc5b67afbec1", null ],
+    [ "relocate_backward", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a4d8dfc85874d77e3ef32079c432d7d64", null ],
+    [ "clone_from", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a7bffc5331e08d4b14fe10f06bd1fdbbe", null ]
+];

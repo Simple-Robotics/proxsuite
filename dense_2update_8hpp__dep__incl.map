@@ -1,0 +1,11 @@
+<map id="include/proxsuite/linalg/dense/update.hpp" name="include/proxsuite/linalg/dense/update.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,180,47"/>
+<area shape="rect" id="node2" href="$ldlt_8hpp.html" title=" " alt="" coords="5,184,180,225"/>
+<area shape="rect" id="node9" href="$modify_8hpp.html" title=" " alt="" coords="68,95,243,136"/>
+<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="67,452,249,493"/>
+<area shape="rect" id="node6" href="$dense_2workspace_8hpp.html" title=" " alt="" coords="67,273,249,315"/>
+<area shape="rect" id="node4" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="67,541,249,583"/>
+<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="67,631,249,672"/>
+<area shape="rect" id="node7" href="$linesearch_8hpp.html" title=" " alt="" coords="67,363,249,404"/>
+<area shape="rect" id="node8" href="$dense_2utils_8hpp.html" title=" " alt="" coords="273,363,456,404"/>
+</map>

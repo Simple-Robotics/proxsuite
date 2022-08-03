@@ -1,0 +1,27 @@
+var sparse_2core_8hpp =
+[
+    [ "proxsuite::linalg::sparse::util::nb::wrapping_plus", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__plus.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__plus" ],
+    [ "proxsuite::linalg::sparse::util::nb::checked_non_negative_plus", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1checked__non__negative__plus.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1checked__non__negative__plus" ],
+    [ "proxsuite::linalg::sparse::util::nb::wrapping_inc", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__inc.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__inc" ],
+    [ "proxsuite::linalg::sparse::util::nb::wrapping_dec", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__dec.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1wrapping__dec" ],
+    [ "proxsuite::linalg::sparse::util::nb::sign_extend", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1sign__extend.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1sign__extend" ],
+    [ "proxsuite::linalg::sparse::util::nb::zero_extend", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1zero__extend.html", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1zero__extend" ],
+    [ "proxsuite::linalg::sparse::DenseVecRef< T >", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecRef" ],
+    [ "proxsuite::linalg::sparse::DenseVecMut< T >", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecMut" ],
+    [ "proxsuite::linalg::sparse::VecRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef" ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< D, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface" ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< D, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface" ],
+    [ "proxsuite::linalg::sparse::SymbolicMatRef< I >", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef" ],
+    [ "proxsuite::linalg::sparse::SymbolicMatMut< I >", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut" ],
+    [ "proxsuite::linalg::sparse::MatRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef" ],
+    [ "proxsuite::linalg::sparse::MatMut< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut" ],
+    [ "SPARSE_LDLT_CONCEPT", "sparse_2core_8hpp.html#af9f8ef0d39f66dc906cb6e431b9b82e6", null ],
+    [ "SPARSE_LDLT_CHECK_CONCEPT", "sparse_2core_8hpp.html#aa1fd471f366e2e5ff799f154ae59eea8", null ],
+    [ "VEG_TAG", "sparse_2core_8hpp.html#ae9a1f14680d6c23304abaa86bc75822c", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a1fa3710da51e7005829120f31d7f6e32", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a03b17c7a67b3243bf599d47027d7436d", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a81ad07cd0d9d9d0bc6fc563bc9cf994f", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a23fccf14ccc02b22481101d8daeb417e", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a63d8bcd1808682328a289acdadc9738c", null ],
+    [ "VEG_NIEBLOID", "sparse_2core_8hpp.html#a61c392155b8d1906f190818291990b52", null ]
+];

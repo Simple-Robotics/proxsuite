@@ -1,0 +1,43 @@
+<map id="include/proxsuite/linalg/veg/memory/stack_alloc.hpp" name="include/proxsuite/linalg/veg/memory/stack_alloc.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="2062,5,2277,47"/>
+<area shape="rect" id="node2" href="$slice_8hpp.html" title=" " alt="" coords="1766,95,1917,136"/>
+<area shape="rect" id="node15" href="$prologue_8hpp.html" title=" " alt="" coords="1605,988,1771,1029"/>
+<area shape="rect" id="node17" href="$epilogue_8hpp.html" title=" " alt="" coords="703,988,867,1029"/>
+<area shape="rect" id="node38" href="$type__traits_2alloc_8hpp.html" title=" " alt="" coords="2177,363,2335,404"/>
+<area shape="rect" id="node3" href="$assert_8hpp.html" title=" " alt="" coords="434,273,585,315"/>
+<area shape="rect" id="node16" title=" " alt="" coords="3005,995,3115,1022"/>
+<area shape="rect" id="node32" href="$get_8hpp.html" title=" " alt="" coords="1913,631,2063,672"/>
+<area shape="rect" id="node33" href="$narrow_8hpp.html" title=" " alt="" coords="356,184,508,225"/>
+<area shape="rect" id="node34" href="$tuple_8hpp.html" title=" " alt="" coords="1566,273,1717,315"/>
+<area shape="rect" id="node4" href="$assert__impl_8hpp.html" title=" " alt="" coords="417,363,601,404"/>
+<area shape="rect" id="node5" href="$typedefs_8hpp.html" title=" " alt="" coords="2343,988,2508,1029"/>
+<area shape="rect" id="node8" href="$defer_8hpp.html" title=" " alt="" coords="542,452,693,493"/>
+<area shape="rect" id="node20" href="$internal_2dbg_8hpp.html" title=" " alt="" coords="1093,452,1243,493"/>
+<area shape="rect" id="node31" title=" " alt="" coords="296,459,365,486"/>
+<area shape="rect" id="node6" title=" " alt="" coords="2803,1077,2869,1104"/>
+<area shape="rect" id="node7" title=" " alt="" coords="2390,1077,2461,1104"/>
+<area shape="rect" id="node9" href="$constructible_8hpp.html" title=" " alt="" coords="1303,631,1515,672"/>
+<area shape="rect" id="node19" href="$invocable_8hpp.html" title=" " alt="" coords="1505,541,1695,583"/>
+<area shape="rect" id="node10" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="1726,720,1882,761"/>
+<area shape="rect" id="node18" title=" " alt="" coords="1406,727,1498,754"/>
+<area shape="rect" id="node11" href="$integer__seq_8hpp.html" title=" " alt="" coords="2285,809,2469,851"/>
+<area shape="rect" id="node12" href="$macros_8hpp.html" title=" " alt="" coords="2807,899,2963,940"/>
+<area shape="rect" id="node13" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="2533,988,2766,1029"/>
+<area shape="rect" id="node14" href="$preprocessor_8hpp.html" title=" " alt="" coords="2790,988,2981,1029"/>
+<area shape="rect" id="node21" href="$primitives_8hpp.html" title=" " alt="" coords="853,631,1048,672"/>
+<area shape="rect" id="node22" href="$terminate_8hpp.html" title=" " alt="" coords="449,899,621,940"/>
+<area shape="rect" id="node24" href="$ref_8hpp.html" title=" " alt="" coords="1330,541,1481,583"/>
+<area shape="rect" id="node29" title=" " alt="" coords="2176,549,2243,575"/>
+<area shape="rect" id="node30" title=" " alt="" coords="1092,549,1153,575"/>
+<area shape="rect" id="node23" title=" " alt="" coords="491,995,578,1022"/>
+<area shape="rect" id="node25" href="$tags_8hpp.html" title=" " alt="" coords="1073,631,1229,672"/>
+<area shape="rect" id="node26" href="$address_8hpp.html" title=" " alt="" coords="2190,631,2354,672"/>
+<area shape="rect" id="node27" href="$std_8hpp.html" title=" " alt="" coords="2595,720,2746,761"/>
+<area shape="rect" id="node28" title=" " alt="" coords="2235,727,2312,754"/>
+<area shape="rect" id="node35" href="$assignable_8hpp.html" title=" " alt="" coords="1639,631,1838,672"/>
+<area shape="rect" id="node36" href="$fix__index_8hpp.html" title=" " alt="" coords="1027,363,1194,404"/>
+<area shape="rect" id="node37" title=" " alt="" coords="1543,370,1603,397"/>
+<area shape="rect" id="node39" href="$has__asan_8hpp.html" title=" " alt="" coords="2801,452,2970,493"/>
+<area shape="rect" id="node40" href="$placement_8hpp.html" title=" " alt="" coords="2235,452,2418,493"/>
+<area shape="rect" id="node41" title=" " alt="" coords="2419,549,2469,575"/>
+</map>

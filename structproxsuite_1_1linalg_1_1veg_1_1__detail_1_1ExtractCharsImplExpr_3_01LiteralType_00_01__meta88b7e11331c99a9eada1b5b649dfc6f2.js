@@ -1,0 +1,4 @@
+var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImplExpr_3_01LiteralType_00_01__meta88b7e11331c99a9eada1b5b649dfc6f2 =
+[
+    [ "Type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImplExpr_3_01LiteralType_00_01__meta88b7e11331c99a9eada1b5b649dfc6f2.html#a633e0a1b5db2e6a2ecbd801edf3d8bc6", null ]
+];

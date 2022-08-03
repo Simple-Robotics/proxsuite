@@ -1,0 +1,22 @@
+<map id="include/proxsuite/linalg/dense/core.hpp" name="include/proxsuite/linalg/dense/core.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="565,5,740,47"/>
+<area shape="rect" id="node2" href="$dense_2factorize_8hpp.html" title=" " alt="" coords="565,95,740,136"/>
+<area shape="rect" id="node10" href="$modify_8hpp.html" title=" " alt="" coords="440,184,615,225"/>
+<area shape="rect" id="node11" href="$solve_8hpp.html" title=" " alt="" coords="189,184,364,225"/>
+<area shape="rect" id="node12" href="$dense_2update_8hpp.html" title=" " alt="" coords="315,95,489,136"/>
+<area shape="rect" id="node13" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="19,363,238,404"/>
+<area shape="rect" id="node15" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="880,363,1063,404"/>
+<area shape="rect" id="node18" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="945,184,1128,225"/>
+<area shape="rect" id="node19" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="687,273,869,315"/>
+<area shape="rect" id="node20" href="$sparse_2views_8hpp.html" title=" " alt="" coords="816,95,999,136"/>
+<area shape="rect" id="node3" href="$ldlt_8hpp.html" title=" " alt="" coords="440,273,615,315"/>
+<area shape="rect" id="node4" href="$dense_2solver_8hpp.html" title=" " alt="" coords="235,541,417,583"/>
+<area shape="rect" id="node7" href="$dense_2workspace_8hpp.html" title=" " alt="" coords="436,363,619,404"/>
+<area shape="rect" id="node5" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="28,631,211,672"/>
+<area shape="rect" id="node6" href="$dense_8hpp.html" title=" " alt="" coords="28,720,211,761"/>
+<area shape="rect" id="node8" href="$linesearch_8hpp.html" title=" " alt="" coords="441,452,624,493"/>
+<area shape="rect" id="node9" href="$dense_2utils_8hpp.html" title=" " alt="" coords="235,452,417,493"/>
+<area shape="rect" id="node14" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="28,452,211,493"/>
+<area shape="rect" id="node16" href="$sparse_2wrapper_8hpp.html" title=" " alt="" coords="880,452,1063,493"/>
+<area shape="rect" id="node17" href="$sparse_8hpp.html" title=" " alt="" coords="880,541,1063,583"/>
+</map>
