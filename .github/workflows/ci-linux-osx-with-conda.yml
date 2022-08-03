@@ -40,7 +40,7 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen ninja graphviz
+        mamba install cmake compilers make pkg-config doxygen ninja graphviz ccache
         # Main dependencies
         mamba install eigen simde
         # Test dependencies
@@ -63,11 +63,12 @@ jobs:
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+        echo $(whereis ccache)
+        echo $(which ccache)
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows')
