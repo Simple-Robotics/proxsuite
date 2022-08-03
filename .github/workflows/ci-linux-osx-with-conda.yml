@@ -101,7 +101,7 @@ jobs:
       shell: bash -l {0}
       run: |
         cd build
-        cmake --install .
+        cmake --install . --config ${{ matrix.build_type }}
 
     # - name: Test pkg-config [Conda]
     #   shell: bash -l {0}
