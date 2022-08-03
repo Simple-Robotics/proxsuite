@@ -62,8 +62,6 @@ option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC
 # -fno-omit-frame-pointer" )
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external"
@@ -79,6 +77,8 @@ if(MSVC)
   # add_definitions(-D_USE_MATH_DEFINES)
   add_definitions(-DNOMINMAX)
   CHECK_MINIMAL_CXX_STANDARD(20 ENFORCE)
+else()
+  CHECK_MINIMAL_CXX_STANDARD(17 ENFORCE)
 endif()
 
 # Look for dependencies
