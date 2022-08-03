@@ -1,21 +1,29 @@
-from . import instructionset as instructionset
+from . import instructionset
 
-if instructionset.has_AVX512F():
-    from .proxsuite_pywrap_avx512 import *
 
-    main_module = proxsuite_pywrap_avx512
-    del proxsuite_pywrap_avx512
-elif instructionset.has_AVX2():
-    from .proxsuite_pywrap_avx2 import *
+def load_main_module(globals):
+    def load_module(main_module_name):
+        import importlib
 
-    main_module = proxsuite_pywrap_avx2
-    del proxsuite_pywrap_avx2
-else:
-    from .proxsuite_pywrap import *
+        try:
+            main_module = importlib.import_module("." + main_module_name, __name__)
+            globals.update(main_module.__dict__)
+            del globals[main_module_name]
+            return True
+        except ModuleNotFoundError:
+            return False
 
-    main_module = proxsuite_pywrap
-    del proxsuite_pywrap
+    all_modules = [
+        ("proxsuite_pywrap_avx512", instructionset.has_AVX512F),
+        ("proxsuite_pywrap_avx2", instructionset.has_AVX2),
+    ]
 
-__verion__ = main_module.__version__
+    for module_name, checker in all_modules:
+        if checker() and load_module(module_name):
+            return
 
-del main_module
+    assert load_module("proxsuite_pywrap") == True
+
+
+load_main_module(globals=globals())
+del load_main_module
