@@ -46,6 +46,12 @@ jobs:
         # Test dependencies
         mamba install libmatio
 
+    - name: Activate ccache [Conda]
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ matrix.os }}-${{ matrix.type }}
+        max-size: 1G
+
     - name: Print environment [Conda]
       shell: bash -l {0}
       run: |
@@ -60,7 +66,7 @@ jobs:
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
+        cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows')
