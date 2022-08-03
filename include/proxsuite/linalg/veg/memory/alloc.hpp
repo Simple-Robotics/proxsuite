@@ -127,11 +127,7 @@ struct Alloc<SystemAlloc>
     bool use_realloc = typical_align && trivial_reloc;
 
     if (use_realloc) {
-#ifndef _WIN32
       new_ptr = std::realloc(ptr, new_size);
-#else
-      new_ptr = _aligned_realloc(ptr, new_size, layout.align);
-#endif
     } else {
       new_ptr = mem::aligned_alloc(layout.align, new_size);
     }
