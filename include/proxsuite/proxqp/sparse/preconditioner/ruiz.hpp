@@ -362,11 +362,10 @@ struct RuizEquilibration
 
   void scale_qp_in_place(QpViewMut<T, I> qp,
                          bool execute_preconditioner,
-                         const Settings<T>& settings,
+                         const isize max_iter,
+                         const T epsilon,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
-    max_iter = settings.preconditioner_max_iter;
-    epsilon = settings.preconditioner_accuracy;
     if (execute_preconditioner) {
       delta.setOnes();
       c = detail::ruiz_scale_qp_in_place( //

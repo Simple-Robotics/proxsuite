@@ -706,7 +706,7 @@ struct Workspace
     };
 
     DynStackMut stack = stack_mut();
-    precond.scale_qp_in_place(qp_scaled, execute_or_not, settings, stack);
+    precond.scale_qp_in_place(qp_scaled, execute_or_not, settings.preconditioner_max_iter,settings.preconditioner_accuracy, stack);
     kkt_nnz_counts.resize_for_overwrite(n_tot);
 
     proxsuite::linalg::sparse::MatMut<T, I> kkt_active = {
