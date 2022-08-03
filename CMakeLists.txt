@@ -78,6 +78,7 @@ endif(INITIALIZE_EIGEN_WITH_NAN)
 if(MSVC)
   # add_definitions(-D_USE_MATH_DEFINES)
   add_definitions(-DNOMINMAX)
+  CHECK_MINIMAL_CXX_STANDARD(20 ENFORCE)
 endif()
 
 # Look for dependencies
