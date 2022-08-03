@@ -35,7 +35,10 @@ struct proxsuite::linalg::veg::mem::Alloc<
 #ifdef PROXSUITE_DONT_VECTORIZE
   static constexpr usize min_align = 0;
 #else
-  static constexpr usize min_align = SIMDE_NATURAL_VECTOR_SIZE / 8;
+  static constexpr usize min_align = alignof(std::max_align_t) >
+                                         SIMDE_NATURAL_VECTOR_SIZE / 8
+                                       ? SIMDE_NATURAL_VECTOR_SIZE / 8
+                                       : alignof(std::max_align_t);
 #endif
 
   using RefMut = proxsuite::linalg::veg::RefMut<
