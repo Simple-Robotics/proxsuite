@@ -40,7 +40,7 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen ninja graphviz ccache
+        mamba install cmake compilers make pkg-config doxygen ninja graphviz
         # Main dependencies
         mamba install eigen simde
         # Test dependencies
