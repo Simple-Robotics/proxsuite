@@ -73,6 +73,7 @@ jobs:
       if: contains(matrix.os, 'windows')
       shell: bash -l {0}
       run: |
+        echo $(where ccache)
         git submodule update --init
         mkdir build
         cd build
