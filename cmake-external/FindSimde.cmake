@@ -1,6 +1,6 @@
 find_path(Simde_INCLUDE_DIR simde/simde-math.h)
 
-if(!${SIMDE_HINT_FAILURE})
+if(NOT SIMDE_HINT_FAILURE)
   set(SIMDE_HINT_FAILURE None)
 endif()
 
