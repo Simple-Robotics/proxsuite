@@ -89,7 +89,10 @@ add_project_dependency(
   "eigen3 >= 3.0.5"
 )
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  add_project_dependency(Simde REQUIRED)
+  add_project_dependency(Simde)
+  if(NOT Simde_FOUND)
+    message(FATAL_ERROR "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde.")
+  endif()
 endif()
 
 # Build the main library
