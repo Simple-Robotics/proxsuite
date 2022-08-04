@@ -124,3 +124,8 @@ jobs:
       run: |
         cd build
         cmake --build . --config ${{ matrix.build_type }} --target uninstall
+
+    - name: Display ccache statistics [Conda]
+      shell: bash -l {0}
+      run: |
+        echo $(ccache -s)
