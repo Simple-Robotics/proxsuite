@@ -79,7 +79,7 @@ ldl_solve(VectorViewMut<T> sol,
     work_ = iterative_solver.solve(rhs_e);
     sol_e = work_;
   }
-};
+}
 
 template<typename T, typename I>
 void
@@ -161,7 +161,7 @@ ldl_iter_solve_noalias(
 
     sol_e -= err;
   }
-};
+}
 /*!
  * Solves in place a linear system.
  *
@@ -227,7 +227,7 @@ ldl_solve_in_place(
                          kkt_active,
                          active_constraints);
   rhs.to_eigen() = tmp;
-};
+}
 /*!
  * Reconstructs manually the permutted matrix.
  *
@@ -247,7 +247,7 @@ inner_reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
   auto d = ldl_dense.diagonal().asDiagonal();
   auto mat = DMat<T>(l * d * lt);
   return mat;
-};
+}
 /*!
  * Reconstructs manually the value of the KKT matrix.
  *
@@ -272,7 +272,7 @@ reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
     }
   }
   return mat;
-};
+}
 /*!
  * Derives the norm of the difference between current KKT and the one it should
  * be (derived manually).
@@ -313,7 +313,7 @@ reconstruction_error(proxsuite::linalg::sparse::MatMut<T, I> ldl,
       active_constraints[i] ? mu_in_neg : T(1);
   }
   return diff;
-};
+}
 
 template<typename T>
 struct PrimalDualGradResult
@@ -426,7 +426,6 @@ qp_solve(Results<T>& results,
     }
     work.setup_impl(
       qp,
-      results,
       data,
       settings,
       false,
@@ -1317,7 +1316,7 @@ qp_solve(Results<T>& results,
       isize w_values = 1; // un seul elt non nul
       T alpha = 0;
       for (isize j = 0; j < n_eq + n_in; ++j) {
-        I row_index = j + n;
+        I row_index= I(j + n);
         if (j < n_eq) {
           alpha = results.info.mu_eq - new_bcl_mu_eq;
 

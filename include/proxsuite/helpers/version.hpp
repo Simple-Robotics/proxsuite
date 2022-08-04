@@ -25,9 +25,9 @@ printVersion(const std::string& delimiter = ".")
 }
 
 inline bool
-checkVersionAtLeast(unsigned int major_version,
-                    unsigned int minor_version,
-                    unsigned int patch_version)
+checkVersionAtLeast(signed int major_version,
+                    signed int minor_version,
+                    signed int patch_version)
 {
   return PROXSUITE_VERSION_AT_LEAST(
     major_version, minor_version, patch_version);

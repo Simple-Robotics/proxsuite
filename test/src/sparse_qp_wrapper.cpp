@@ -80,9 +80,7 @@ TEST_CASE("sparse random strongly convex qp with equality and "
                             // proxsuite::linalg::veg::tuplify(50, 10, 25),
                             proxsuite::linalg::veg::tuplify(10, 2, 2) }) {
     VEG_BIND(auto const&, (n, n_eq, n_in), dims);
-
-    double p = 1.0;
-
+    
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
     ::proxsuite::proxqp::utils::rand::set_seed(1);

@@ -27,13 +27,7 @@ namespace dense {
 void
 print_line()
 {
-  isize HEADER_LINE_LEN(81);
-  char the_line[HEADER_LINE_LEN + 1];
-
-  for (isize i = 0; i < HEADER_LINE_LEN; ++i) {
-    the_line[i] = '-';
-  }
-  the_line[HEADER_LINE_LEN] = '\0';
+  std::string the_line = "---------------------------------------------------------------------------------\0";
   std::cout << the_line << "\n" << std::endl;
 }
 void

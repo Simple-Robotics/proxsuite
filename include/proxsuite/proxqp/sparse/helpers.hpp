@@ -160,7 +160,6 @@ qp_setup(QpView<T, I> qp,
   // performs scaling according to options chosen + stored model value
   work.setup_impl(
     qp,
-    results,
     data,
     settings,
     execute_preconditioner_or_not,
@@ -230,10 +229,11 @@ have_same_structure(proxsuite::linalg::sparse::MatRef<T, I> a,
   if (a.ncols() != b.ncols())
     return false;
   for (isize j = 0; j < a.ncols(); ++j) {
-    isize n_elems = a.col_end(j) - a.col_start(j);
-    if (n_elems != b.col_end(j) - b.col_start(j))
+    usize n_elems(a.col_end(j) - a.col_start(j));
+    usize n_elems_to_compare(b.col_end(j) - b.col_start(j));
+    if (n_elems != n_elems_to_compare)
       return false;
-    for (isize p = 0; p < n_elems; ++p) {
+    for (usize p = 0; p < n_elems; ++p) {
       isize i_a = a.row_indices()[a.col_start(j) + p];
       isize i_b = b.row_indices()[b.col_start(j) + p];
       if (i_a != i_b)
@@ -259,7 +259,7 @@ copy(proxsuite::linalg::sparse::MatMut<T, I> a,
     auto a_start = a.values_mut() + a.col_start(j);
     auto b_start = b.values() + b.col_start(j);
 
-    auto n_elems = a.col_end(j) - a.col_start(j);
+    isize n_elems = a.col_end(j) - a.col_start(j);
 
     for (isize p = 0; p < n_elems; ++p) {
       a_start[p] = b_start[p];

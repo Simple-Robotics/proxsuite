@@ -30,13 +30,7 @@ namespace sparse {
 void
 print_line()
 {
-  isize HEADER_LINE_LEN(81);
-  char the_line[HEADER_LINE_LEN + 1];
-
-  for (isize i = 0; i < HEADER_LINE_LEN; ++i) {
-    the_line[i] = '-';
-  }
-  the_line[HEADER_LINE_LEN] = '\0';
+  std::string the_line = "---------------------------------------------------------------------------------\0";
   std::cout << the_line << "\n" << std::endl;
 }
 void
@@ -638,9 +632,9 @@ unscaled_primal_dual_residual(
   VecMapMut<T> dual_residual_scaled,
   T& primal_feasibility_eq_rhs_0,
   T& primal_feasibility_in_rhs_0,
-  T dual_feasibility_rhs_0,
-  T dual_feasibility_rhs_1,
-  T dual_feasibility_rhs_3,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
   P& precond,
   Model<T, I> const& data,
   QpView<T, I> qp_scaled,
@@ -763,7 +757,7 @@ struct generic_product_impl<
   static void scaleAndAddTo(Dst& dst,
                             Mat_ const& lhs,
                             Rhs const& rhs,
-                            Scalar const& alpha)
+                            [[maybe_unused]] Scalar const& alpha)
   {
     using proxsuite::linalg::veg::isize;
 

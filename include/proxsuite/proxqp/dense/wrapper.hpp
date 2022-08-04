@@ -386,11 +386,11 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(const std::nullopt_t H,
+  void update([[maybe_unused]] const std::nullopt_t H,
               std::optional<VecRef<T>> g,
-              const std::nullopt_t A,
+              [[maybe_unused]] const std::nullopt_t A,
               std::optional<VecRef<T>> b,
-              const std::nullopt_t C,
+              [[maybe_unused]] const std::nullopt_t C,
               std::optional<VecRef<T>> u,
               std::optional<VecRef<T>> l,
               bool update_preconditioner = true,
@@ -567,7 +567,7 @@ solve(
   Qp.solve(x, y, z);
 
   return Qp.results;
-};
+}
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
  * object, with matrices defined by Dense Eigen matrices. It is possible to set
@@ -648,7 +648,7 @@ solve(
   Qp.solve(x, y, z);
 
   return Qp.results;
-};
+}
 
 } // namespace dense
 } // namespace proxqp

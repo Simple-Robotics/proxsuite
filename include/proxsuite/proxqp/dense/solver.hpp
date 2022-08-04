@@ -404,7 +404,6 @@ template<typename T>
 void
 Martinez_update(const Settings<T>& qpsettings,
                 Results<T>& qpresults,
-                Workspace<T>& qpwork,
                 T& primal_feasibility_lhs_new,
                 T& primal_feasibility_lhs_old,
                 T& bcl_eta_in,
@@ -571,13 +570,13 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
  * @param eps_int accuracy required for solving the subproblem.
  */
 template<typename T>
-auto
+void
 primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                const Model<T>& qpmodel,
                                Results<T>& qpresults,
                                Workspace<T>& qpwork,
                                preconditioner::RuizEquilibration<T>& ruiz,
-                               T eps_int) -> T
+                               T eps_int)
 {
 
   /* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
@@ -731,8 +730,13 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       break;
     }
   }
-
-  return err_in;
+  /* to put in debuger mode
+  if (qpsettings.verbose) {
+    if (err_in > eps_int){
+          std::cout << " inner loop residual is to high! Its value is equal to " << err_in << ", while it should be inferior to: "  << eps_int << std::endl;
+    }
+  }
+  */
 }
 /*!
  * Executes the PROXQP algorithm.
@@ -1130,13 +1134,9 @@ qp_solve( //
     qpwork.primal_residual_in_scaled_low -=
       qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
 
-    T err_in = primal_dual_newton_semi_smooth(
+    primal_dual_newton_semi_smooth(
       qpsettings, qpmodel, qpresults, qpwork, ruiz, bcl_eta_in);
-    /* to put in debuger mode
-    if (qpsettings.verbose) {
-            std::cout << " inner loop residual : " << err_in << std::endl;
-    }
-    */
+
     if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
         qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
       // certificate of infeasibility
@@ -1211,7 +1211,6 @@ qp_solve( //
     } else {
       Martinez_update(qpsettings,
                       qpresults,
-                      qpwork,
                       primal_feasibility_lhs_new,
                       primal_feasibility_lhs,
                       bcl_eta_in,

@@ -27,7 +27,7 @@
     (Rows),                                                                    \
     ::proxsuite::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(          \
       Type)>());                                                               \
-  auto(Name) /* NOLINT */ = ::Eigen::Map<                                      \
+  auto Name /* NOLINT */ = ::Eigen::Map<                                      \
     ::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type), ::Eigen::Dynamic, 1>,         \
     ::Eigen::Unaligned,                                                        \
     ::Eigen::Stride<::Eigen::Dynamic, 1>>{                                     \
@@ -51,7 +51,7 @@
     LDLT_ID(stride) * LDLT_ID(cols),                                           \
     ::proxsuite::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(          \
       Type)>());                                                               \
-  auto(Name) /* NOLINT */ =                                                    \
+  auto Name /* NOLINT */ =                                                    \
     ::Eigen::Map<::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type),                  \
                                  ::Eigen::Dynamic,                             \
                                  ::Eigen::Dynamic,                             \
@@ -168,7 +168,7 @@ struct Pack<f32, 4>
   using ScalarType = f32;
 
   simde__m128 inner;
-  LDLT_ARITHMETIC_IMPL(, ps);
+  LDLT_ARITHMETIC_IMPL(, ps)
   LDLT_LOAD_STORE(, ps);
 };
 
@@ -178,7 +178,7 @@ struct Pack<f32, 8>
   using ScalarType = f32;
 
   simde__m256 inner;
-  LDLT_ARITHMETIC_IMPL(256, ps);
+  LDLT_ARITHMETIC_IMPL(256, ps)
   LDLT_LOAD_STORE(256, ps);
 };
 
@@ -219,7 +219,7 @@ struct Pack<f64, 2>
   using ScalarType = f64;
 
   simde__m128d inner;
-  LDLT_ARITHMETIC_IMPL(, pd);
+  LDLT_ARITHMETIC_IMPL(, pd)
   LDLT_LOAD_STORE(, pd);
 };
 template<>
@@ -228,7 +228,7 @@ struct Pack<f64, 4>
   using ScalarType = f64;
 
   simde__m256d inner;
-  LDLT_ARITHMETIC_IMPL(256, pd);
+  LDLT_ARITHMETIC_IMPL(256, pd)
   LDLT_LOAD_STORE(256, pd);
 };
 

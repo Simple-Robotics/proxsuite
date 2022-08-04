@@ -826,7 +826,6 @@ symmetric_permute_symbolic(SymbolicMatMut<I> new_a,
   I* pcol_counts = _work.ptr_mut();
 
   VEG_ASSERT(new_a.is_compressed());
-  auto pold_ap = old_a.col_ptrs();
   auto pold_ai = old_a.row_indices();
 
   auto pnew_ap = new_a.col_ptrs_mut();
@@ -873,7 +872,6 @@ symmetric_permute(MatMut<T, I> new_a,
   I* pcol_counts = _work.ptr_mut();
 
   VEG_ASSERT(new_a.is_compressed());
-  auto pold_ap = old_a.col_ptrs();
   auto pold_ai = old_a.row_indices();
 
   auto pnew_ap = new_a.col_ptrs_mut();

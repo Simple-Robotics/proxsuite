@@ -20,7 +20,7 @@ In this doc, you will find the usual description of the library functionalities 
 
 The full installation procedure can be found on the Github Pages of the project: https://github.com/Simple-Robotics/proxsuite.
 
-If you just need the Python bindings, you can directly have access to them through Conda. On systems for which binaries are not provided, installation from source should be straightforward. Every release is validated in the main Linux distributions and Mac OS X.
+If you just need the Python bindings, you can directly have access to them through Conda. On systems for which binaries are not provided, installation from source should be straightforward. Every release is validated in main Linux, Mac OS X and Windows distributions.
 
 \section OverviewSimple Simplest ProxQP example with compilation command
 
