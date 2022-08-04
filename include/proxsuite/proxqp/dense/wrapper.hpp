@@ -117,12 +117,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void init(MatRef<T> H,
-            VecRef<T> g,
+            const Vec<T>& g,
             MatRef<T> A,
-            VecRef<T> b,
+            const Vec<T>& b,
             MatRef<T> C,
-            VecRef<T> u,
-            VecRef<T> l,
+            const Vec<T>& u,
+            const Vec<T>& l,
             bool compute_preconditioner = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -150,13 +150,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(H,
-                                    g,
+    proxsuite::proxqp::dense::setup(
+                                    H,
+                                    dense::VecRef<T>(g),
                                     A,
-                                    b,
+                                    dense::VecRef<T>(b),
                                     C,
-                                    u,
-                                    l,
+                                    dense::VecRef<T>(u),
+                                    dense::VecRef<T>(l),
                                     settings,
                                     model,
                                     work,
@@ -184,12 +185,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void init(const SparseMat<T>& H,
-            VecRef<T> g,
+            const Vec<T>& g,
             const SparseMat<T>& A,
-            VecRef<T> b,
+            const Vec<T>& b,
             const SparseMat<T>& C,
-            VecRef<T> u,
-            VecRef<T> l,
+            const Vec<T>& u,
+            const Vec<T>& l,
             bool compute_preconditioner = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -217,13 +218,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(H,
-                                    g,
+    proxsuite::proxqp::dense::setup(
+                                    H,
+                                    dense::VecRef<T>(g),
                                     A,
-                                    b,
+                                    dense::VecRef<T>(b),
                                     C,
-                                    u,
-                                    l,
+                                    dense::VecRef<T>(u),
+                                    dense::VecRef<T>(l),
                                     settings,
                                     model,
                                     work,
@@ -519,12 +521,12 @@ template<typename T>
 proxqp::Results<T>
 solve(
   MatRef<T> H,
-  VecRef<T> g,
+  const Vec<T>&  g,
   MatRef<T> A,
-  VecRef<T> b,
+  const Vec<T>&  b,
   MatRef<T> C,
-  VecRef<T> u,
-  VecRef<T> l,
+  const Vec<T>&  u,
+  const Vec<T>&  l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -600,12 +602,12 @@ template<typename T>
 proxqp::Results<T>
 solve(
   const SparseMat<T>& H,
-  VecRef<T> g,
+  const Vec<T>& g,
   const SparseMat<T>& A,
-  VecRef<T> b,
+  const Vec<T>& b,
   const SparseMat<T>& C,
-  VecRef<T> u,
-  VecRef<T> l,
+  const Vec<T>& u,
+  const Vec<T>& l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,

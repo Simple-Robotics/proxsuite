@@ -120,7 +120,7 @@ setup_equilibration(Workspace<T>& qpwork,
     proxsuite::linalg::veg::from_slice_mut,
     qpwork.ldl_stack.as_mut(),
   };
-  ruiz.scale_qp_in_place(qp_scaled, execute_preconditioner, qpsettings, stack);
+  ruiz.scale_qp_in_place(qp_scaled, execute_preconditioner, qpsettings.preconditioner_max_iter,qpsettings.preconditioner_accuracy, stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 }
 

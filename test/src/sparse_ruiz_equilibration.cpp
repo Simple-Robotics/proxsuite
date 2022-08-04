@@ -67,7 +67,8 @@ TEST_CASE("upper part")
       { proxsuite::linalg::sparse::from_eigen, u_scaled },
     },
     execute_preconditioner,
-    settings,
+    settings.preconditioner_max_iter,
+    settings.preconditioner_accuracy,
     stack);
 
   ruiz_dense.scale_qp_in_place(
@@ -81,7 +82,8 @@ TEST_CASE("upper part")
       { proxqp::from_eigen, u_scaled_dense },
     },
     execute_preconditioner,
-    settings,
+    settings.preconditioner_max_iter,
+    settings.preconditioner_accuracy,
     stack);
 
   CHECK(H_scaled.toDense() == (H_scaled_dense));
@@ -146,7 +148,8 @@ TEST_CASE("lower part")
       { proxsuite::linalg::sparse::from_eigen, u_scaled },
     },
     execute_preconditioner,
-    settings,
+    settings.preconditioner_max_iter,
+    settings.preconditioner_accuracy,
     stack);
 
   ruiz_dense.scale_qp_in_place(
@@ -160,7 +163,8 @@ TEST_CASE("lower part")
       { proxqp::from_eigen, u_scaled_dense },
     },
     execute_preconditioner,
-    settings,
+    settings.preconditioner_max_iter,
+    settings.preconditioner_accuracy,
     stack);
 
   CHECK(H_scaled.toDense() == (H_scaled_dense));
