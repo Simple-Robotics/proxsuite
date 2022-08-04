@@ -1,0 +1,18 @@
+[project]
+name = "proxsuite"
+version = "0.0.1"
+description = "Quadratic Programming Solver for Robotics and beyond."
+readme = "README.md"
+requires-python = ">= 3.8"
+license = "BSD-2-Clause"
+
+
+[project.urls]
+homepage = "https://github.com/Simple-Robotics/proxsuite"
+repository = "https://github.com/Simple-Robotics/proxsuite.git"
+changelog = "https://github.com/Simple-Robotics/proxsuite/CHANGELOG.md"
+
+[build-system]
+requires = ["cmeel[build]"]
+build-backend = "cmeel.build"
+configure-args = ["-DCMAKE_CXX_STANDARD=17","-DCMAKE_CXX_COMPILER=gcc","-DBUILD_TESTING=OFF","-DBUILD_PYTHON_INTERFACE=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT=ON","-DINSTALL_DOCUMENTATION=OFF"]

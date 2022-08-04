@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>proxsuite</name>
+  <version>0.0.1</version>
+  <description>Quadratic Programming Solver for Robotics and beyond</description>
+  <maintainer email="antoine.bambade@inria.fr">Antoine Bambade</maintainer>
+  <maintainer email="fabian.schramm@inria.fr">Fabian Schramm</maintainer>
+  <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
+  <license>BSD</license>
+
+  <url type="website">https://github.com/Simple-Robotics/proxsuite</url>
+
+  <build_depend>git</build_depend>
+  <build_depend>doxygen</build_depend>
+  <depend>eigen</depend>
+  <depend>simde</depend>
+  <depend>pybind11</depend>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

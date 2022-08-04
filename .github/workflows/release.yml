@@ -1,0 +1,70 @@
+name: Release on GitHub & PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-wheel:
+    runs-on: ubuntu-latest
+    name: Build ${{ matrix.python-version }}
+    container:
+      image: quay.io/pypa/manylinux_2_24_x86_64
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+          activate-environment: proxsuite
+
+      - name: Install dependencies [Conda]
+        shell: bash -l {0}
+        run: |
+          # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
+          conda config --remove channels defaults
+          mamba install doxygen graphviz eigen simde gcc cmake compilers
+
+      - name: Print environment [Conda]
+        shell: bash -l {0}
+        run: |
+          conda info
+          mamba list
+          env
+
+      - name: Build wheel
+        shell: bash -l {0}
+        run: |
+          pip wheel . -w wh
+      
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wh
+          path: wh
+
+  release:
+    needs: "build-wheel"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - uses: actions/download-artifact@v3
+      - run: ls -la wh/
+      - run: python -m pip install twine
+      # - run: python -m twine upload -u __token__ -p ${{ secrets.PYPI_TOKEN }} wh/proxsuite*.whl
+      # - run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      # - run: gh release create -t "Release ${{ env.TAG}}" -n "$(awk '/## \[${{ env.TAG }}] - /{flag=1;next}/## \[/{flag=0}flag' CHANGELOG.md)" ${{ env.TAG }} wh/proxsuite*.whl
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
