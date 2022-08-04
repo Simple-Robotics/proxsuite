@@ -1,6 +1,7 @@
 # ProxSuite
 
 ![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)
+[![CI - Linux/OSX/Windows - Conda](https://github.com/jcarpent/proxqp-unofficial/actions/workflows/ci-linux-osx-with-conda.yml/badge.svg)](https://github.com/jcarpent/proxqp-unofficial/actions/workflows/ci-linux-osx-with-conda.yml)
 
 **ProxSuite** is a collection of open-source, numerically robuste, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms.
 While the first targeted application is Robotics, **ProxSuite** can be used in other contextes without any limits.
