@@ -11,8 +11,6 @@
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/settings.hpp"
 #include <cmath>
-#include <iostream>
-#include <fstream>
 
 namespace proxsuite {
 namespace proxqp {

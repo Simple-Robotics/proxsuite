@@ -1,5 +1,4 @@
 #include <doctest.hpp>
-#include <iostream>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -20,11 +19,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   Scalar sparsity_factor(0.15);
   Scalar strong_convexity_factor(0.01);
   proxqp::dense::Model<Scalar> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   switch (sym) {
     case proxqp::Symmetry::upper: {

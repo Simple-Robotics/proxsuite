@@ -20,7 +20,6 @@
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/sparse/utils.hpp"
 
-#include <iostream>
 #include <memory>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>

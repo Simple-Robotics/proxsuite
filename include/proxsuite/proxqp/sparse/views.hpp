@@ -17,7 +17,6 @@
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 
-#include <iostream>
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>
 

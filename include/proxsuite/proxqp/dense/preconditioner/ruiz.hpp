@@ -14,8 +14,6 @@
 
 #include <Eigen/Core>
 
-#include <iostream>
-
 namespace proxsuite {
 namespace proxqp {
 enum struct Symmetry

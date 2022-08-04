@@ -7,7 +7,6 @@
 
 #include "proxsuite/linalg/sparse/core.hpp"
 #include <Eigen/OrderingMethods>
-#include <iostream>
 
 namespace proxsuite {
 namespace linalg {
