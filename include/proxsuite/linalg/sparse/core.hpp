@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef SPARSE_LDLT_CORE_HPP
-#define SPARSE_LDLT_CORE_HPP
+#ifndef PROXSUITE_LINALG_SPARSE_LDLT_CORE_HPP
+#define PROXSUITE_LINALG_SPARSE_LDLT_CORE_HPP
 
 #include <proxsuite/linalg/veg/slice.hpp>
 #include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
@@ -528,4 +528,4 @@ private:
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard SPARSE_LDLT_CORE_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_SPARSE_LDLT_CORE_HPP */

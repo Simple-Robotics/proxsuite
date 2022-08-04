@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef DENSE_LDLT_UPDATE_HPP
-#define DENSE_LDLT_UPDATE_HPP
+#ifndef PROXSUITE_LINALG_DENSE_LDLT_UPDATE_HPP
+#define PROXSUITE_LINALG_DENSE_LDLT_UPDATE_HPP
 
 #include "proxsuite/linalg/dense/core.hpp"
 
@@ -327,4 +327,4 @@ rank_r_update_clobber_inputs(LD&& ld, W&& w, A&& alpha)
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard DENSE_LDLT_UPDATE_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_DENSE_LDLT_UPDATE_HPP */

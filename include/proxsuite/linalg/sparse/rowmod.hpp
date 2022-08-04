@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef SPARSE_LDLT_ROWMOD_HPP
-#define SPARSE_LDLT_ROWMOD_HPP
+#ifndef PROXSUITE_LINALG_SPARSE_LDLT_ROWMOD_HPP
+#define PROXSUITE_LINALG_SPARSE_LDLT_ROWMOD_HPP
 
 #include "proxsuite/linalg/sparse/update.hpp"
 #include <algorithm>
@@ -440,4 +440,4 @@ add_row(MatMut<T, I> ld,
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard SPARSE_LDLT_ROWMOD_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_SPARSE_LDLT_ROWMOD_HPP */

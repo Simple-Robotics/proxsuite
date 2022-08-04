@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef SPARSE_LDLT_UPDATE_HPP
-#define SPARSE_LDLT_UPDATE_HPP
+#ifndef PROXSUITE_LINALG_SPARSE_LDLT_UPDATE_HPP
+#define PROXSUITE_LINALG_SPARSE_LDLT_UPDATE_HPP
 
 #include "proxsuite/linalg/sparse/core.hpp"
 #include <proxsuite/linalg/veg/tuple.hpp>
@@ -345,4 +345,4 @@ rank1_update(MatMut<T, I> ld,
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard SPARSE_LDLT_UPDATE_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_SPARSE_LDLT_UPDATE_HPP */

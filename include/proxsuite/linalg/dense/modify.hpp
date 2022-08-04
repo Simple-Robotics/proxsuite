@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef DENSE_LDLT_MODIFY_HPP
-#define DENSE_LDLT_MODIFY_HPP
+#ifndef PROXSUITE_LINALG_DENSE_LDLT_MODIFY_HPP
+#define PROXSUITE_LINALG_DENSE_LDLT_MODIFY_HPP
 
 #include "proxsuite/linalg/dense/core.hpp"
 #include "proxsuite/linalg/dense/update.hpp"
@@ -330,4 +330,4 @@ ldlt_insert_rows_and_cols(Mat&& ld,
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard DENSE_LDLT_MODIFY_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_DENSE_LDLT_MODIFY_HPP */

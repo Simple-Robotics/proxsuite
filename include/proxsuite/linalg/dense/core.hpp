@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#ifndef DENSE_LDLT_CORE_HPP
-#define DENSE_LDLT_CORE_HPP
+#ifndef PROXSUITE_LINALG_DENSE_LDLT_CORE_HPP
+#define PROXSUITE_LINALG_DENSE_LDLT_CORE_HPP
 
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/linalg/veg/util/assert.hpp>
@@ -848,4 +848,4 @@ temp_vec_req(proxsuite::linalg::veg::Tag<T> /*tag*/, isize rows) noexcept
 } // namespace linalg
 } // namespace proxsuite
 
-#endif /* end of include guard DENSE_LDLT_CORE_HPP */
+#endif /* end of include guard PROXSUITE_LINALG_DENSE_LDLT_CORE_HPP */
