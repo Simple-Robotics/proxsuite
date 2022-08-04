@@ -1,10 +1,15 @@
 find_path(Simde_INCLUDE_DIR simde/simde-math.h)
 
+if(!${SIMDE_HINT_FAILURE})
+  set(SIMDE_HINT_FAILURE None)
+endif()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   Simde
   FOUND_VAR Simde_FOUND
   REQUIRED_VARS Simde_INCLUDE_DIR
+  REASON_FAILURE_MESSAGE ${SIMDE_HINT_FAILURE}
 )
 
 if(SIMDE_FOUND)

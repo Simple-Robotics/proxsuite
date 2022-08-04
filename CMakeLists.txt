@@ -88,11 +88,10 @@ add_project_dependency(
   PKG_CONFIG_REQUIRES
   "eigen3 >= 3.0.5"
 )
+set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
+
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  add_project_dependency(Simde)
-  if(NOT Simde_FOUND)
-    message(FATAL_ERROR "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde.")
-  endif()
+  add_project_dependency(Simde REQUIRED)
 endif()
 
 # Build the main library
