@@ -1,8 +1,8 @@
 name: gh-pages
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types:
+      - published
 
 jobs:
   build:
