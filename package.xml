@@ -14,7 +14,6 @@
   <build_depend>doxygen</build_depend>
   <depend>eigen</depend>
   <depend>simde</depend>
-  <depend>pybind11</depend>
 
   <buildtool_depend>cmake</buildtool_depend>
   <export>
