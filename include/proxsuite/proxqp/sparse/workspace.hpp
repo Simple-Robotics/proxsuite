@@ -60,6 +60,7 @@ refactorize(Workspace<T, I>& work,
       stack);
 
     isize nnz = 0;
+    VEG_ONLY_USED_FOR_DEBUG(nnz);
     for (usize j = 0; j < usize(kkt_active.ncols()); ++j) {
       nnz += usize(kkt_active.col_end(j) - kkt_active.col_start(j));
     }
@@ -493,7 +494,8 @@ struct Workspace
     } else {
       T* kktx = data.kkt_values.ptr_mut();
       usize pos = 0;
-      auto insert_submatrix = [&](proxsuite::linalg::sparse::MatRef<T, I> m )-> void {
+      auto insert_submatrix =
+        [&](proxsuite::linalg::sparse::MatRef<T, I> m) -> void {
         T const* mx = m.values();
         isize ncols = m.ncols();
 
@@ -696,7 +698,11 @@ struct Workspace
     };
 
     DynStackMut stack = stack_mut();
-    precond.scale_qp_in_place(qp_scaled, execute_or_not, settings.preconditioner_max_iter,settings.preconditioner_accuracy, stack);
+    precond.scale_qp_in_place(qp_scaled,
+                              execute_or_not,
+                              settings.preconditioner_max_iter,
+                              settings.preconditioner_accuracy,
+                              stack);
     kkt_nnz_counts.resize_for_overwrite(n_tot);
 
     proxsuite::linalg::sparse::MatMut<T, I> kkt_active = {

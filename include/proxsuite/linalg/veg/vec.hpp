@@ -89,10 +89,13 @@ struct RawVector
   T* end;
   T* end_alloc;
 
-  VEG_INLINE constexpr auto len() const noexcept -> usize { return end - data; }
+  VEG_INLINE constexpr auto len() const noexcept -> usize
+  {
+    return static_cast<usize>(end - data);
+  }
   VEG_INLINE constexpr auto cap() const noexcept -> usize
   {
-    return end_alloc - data;
+    return static_cast<usize>(end_alloc - data);
   }
 };
 } // namespace vector

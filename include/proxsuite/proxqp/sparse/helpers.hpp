@@ -228,7 +228,7 @@ have_same_structure(proxsuite::linalg::sparse::MatRef<T, I> a,
     return false;
   if (a.ncols() != b.ncols())
     return false;
-  for (isize j = 0; j < a.ncols(); ++j) {
+  for (usize j = 0; j < static_cast<usize>(a.ncols()); ++j) {
     usize n_elems(a.col_end(j) - a.col_start(j));
     usize n_elems_to_compare(b.col_end(j) - b.col_start(j));
     if (n_elems != n_elems_to_compare)
@@ -255,13 +255,13 @@ copy(proxsuite::linalg::sparse::MatMut<T, I> a,
 {
   // assume same sparsity structure for a and b
   // copy b into a
-  for (isize j = 0; j < a.ncols(); ++j) {
+  for (usize j = 0; j < static_cast<usize>(a.ncols()); ++j) {
     auto a_start = a.values_mut() + a.col_start(j);
     auto b_start = b.values() + b.col_start(j);
 
-    isize n_elems = a.col_end(j) - a.col_start(j);
+    usize n_elems = static_cast<usize>(a.col_end(j) - a.col_start(j));
 
-    for (isize p = 0; p < n_elems; ++p) {
+    for (usize p = 0; p < n_elems; ++p) {
       a_start[p] = b_start[p];
     }
   }
