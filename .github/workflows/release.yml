@@ -1,9 +1,6 @@
 name: Release on GitHub & PyPI
 
 on:
-  push:
-    # tags:
-    #   - "v*"
   pull_request:
   release:
     types:
