@@ -278,19 +278,19 @@ public:
 
   auto col_start(usize j) const noexcept -> usize
   {
-    return VEG_ASSERT(j < ncols()), util::zero_extend(_().col[j]);
+    return VEG_ASSERT(j < usize(ncols())), util::zero_extend(_().col[j]);
   }
   auto col_start_unchecked(Unsafe /*unsafe*/, usize j) const noexcept -> usize
   {
-    return VEG_DEBUG_ASSERT(j < ncols()), util::zero_extend(_().col[j]);
+    return VEG_DEBUG_ASSERT(j < usize(ncols())), util::zero_extend(_().col[j]);
   }
   auto col_end(usize j) const noexcept -> usize
   {
-    return VEG_ASSERT(j < ncols()), col_end_unchecked(unsafe, j);
+    return VEG_ASSERT(j < usize(ncols())), col_end_unchecked(unsafe, j);
   }
   auto col_end_unchecked(Unsafe /*unsafe*/, usize j) const noexcept -> usize
   {
-    return VEG_DEBUG_ASSERT(j < ncols()),
+    return VEG_DEBUG_ASSERT(j < usize(ncols())),
            util::zero_extend(is_compressed()
                                ? _().col[j + 1]
                                : I(_().col[j] + _().nnz_per_col[j]));
@@ -410,7 +410,7 @@ struct MatRef : _detail::SymbolicMatRefInterface<MatRef<T, I>, I>
     }
   {
     static_assert(!bool(M::IsRowMajor), ".");
-  };
+  }
 
   auto values() const noexcept -> T const* { return _.val; }
   auto symbolic() const noexcept -> SymbolicMatRef<I>
@@ -472,7 +472,7 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I>
     }
   {
     static_assert(!bool(proxsuite::linalg::veg::uncvref_t<M>::IsRowMajor), ".");
-  };
+  } 
 
   auto values() const noexcept -> T const* { return _.val; }
   auto values_mut() const noexcept -> T* { return _.val; }

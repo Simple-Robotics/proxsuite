@@ -79,7 +79,7 @@ ldl_solve(VectorViewMut<T> sol,
     work_ = iterative_solver.solve(rhs_e);
     sol_e = work_;
   }
-};
+}
 
 template<typename T, typename I>
 void
@@ -161,7 +161,7 @@ ldl_iter_solve_noalias(
 
     sol_e -= err;
   }
-};
+}
 /*!
  * Solves in place a linear system.
  *
@@ -227,7 +227,7 @@ ldl_solve_in_place(
                          kkt_active,
                          active_constraints);
   rhs.to_eigen() = tmp;
-};
+}
 /*!
  * Reconstructs manually the permutted matrix.
  *
@@ -237,17 +237,16 @@ ldl_solve_in_place(
  */
 template<typename T, typename I>
 auto
-inner_reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
-                           bool do_ldlt) -> DMat<T>
+inner_reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl)
+  -> DMat<T>
 {
-  VEG_ASSERT(do_ldlt);
   auto ldl_dense = ldl.to_eigen().toDense();
   auto l = DMat<T>(ldl_dense.template triangularView<Eigen::UnitLower>());
   auto lt = l.transpose();
   auto d = ldl_dense.diagonal().asDiagonal();
   auto mat = DMat<T>(l * d * lt);
   return mat;
-};
+}
 /*!
  * Reconstructs manually the value of the KKT matrix.
  *
@@ -260,11 +259,10 @@ inner_reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
 template<typename T, typename I>
 auto
 reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
-                     bool do_ldlt,
                      I const* perm_inv,
                      isize n_tot) -> DMat<T>
 {
-  auto mat = inner_reconstructed_matrix(ldl, do_ldlt);
+  auto mat = inner_reconstructed_matrix(ldl);
   auto mat_backup = mat;
   for (isize i = 0; i < n_tot; ++i) {
     for (isize j = 0; j < n_tot; ++j) {
@@ -272,14 +270,12 @@ reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
     }
   }
   return mat;
-};
+}
 /*!
  * Derives the norm of the difference between current KKT and the one it should
  * be (derived manually).
  *
  * @param ldl current ldlt.
- * @param do_ldlt boolean variable for doing the ldlt (rather than MinRes
- * algorithm).
  * @param perm_inv pointer to the inverse of the permutation.
  * @param results solver results.
  * @param data model of the QP.
@@ -291,7 +287,6 @@ reconstructed_matrix(proxsuite::linalg::sparse::MatMut<T, I> ldl,
 template<typename T, typename I>
 auto
 reconstruction_error(proxsuite::linalg::sparse::MatMut<T, I> ldl,
-                     bool do_ldlt,
                      I const* perm_inv,
                      Results<T> const& results,
                      Model<T, I> const& data,
@@ -303,7 +298,7 @@ reconstruction_error(proxsuite::linalg::sparse::MatMut<T, I> ldl,
   T mu_eq_neg = -results.info.mu_eq;
   T mu_in_neg = -results.info.mu_in;
   auto diff = DMat<T>(
-    reconstructed_matrix(ldl, do_ldlt, perm_inv, n_tot) -
+    reconstructed_matrix(ldl, perm_inv, n_tot) -
     DMat<T>(
       DMat<T>(kkt_active.to_eigen()).template selfadjointView<Eigen::Upper>()));
   diff.diagonal().head(data.dim).array() -= results.info.rho;
@@ -313,7 +308,7 @@ reconstruction_error(proxsuite::linalg::sparse::MatMut<T, I> ldl,
       active_constraints[i] ? mu_in_neg : T(1);
   }
   return diff;
-};
+}
 
 template<typename T>
 struct PrimalDualGradResult
@@ -426,7 +421,6 @@ qp_solve(Results<T>& results,
     }
     work.setup_impl(
       qp,
-      results,
       data,
       settings,
       false,
@@ -579,8 +573,8 @@ qp_solve(Results<T>& results,
       // keep constraints inactive from previous solution
       for (isize j = 0; j < n_in; ++j) {
         if (results.z(j) != 0) {
-          kkt_nnz_counts[n + n_eq + j] =
-            I(kkt.col_end(j + n + n_eq) - kkt.col_start(j + n + n_eq));
+          kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
+                                           kkt.col_start(usize(n + n_eq + j)));
           results.active_constraints[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
         } else {
@@ -613,8 +607,8 @@ qp_solve(Results<T>& results,
       // keep constraints inactive from previous solution
       for (isize j = 0; j < n_in; ++j) {
         if (results.z(j) != 0) {
-          kkt_nnz_counts[n + n_eq + j] =
-            I(kkt.col_end(j + n + n_eq) - kkt.col_start(j + n + n_eq));
+          kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
+                                           kkt.col_start(usize(n + n_eq + j)));
           results.active_constraints[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 
@@ -634,8 +628,8 @@ qp_solve(Results<T>& results,
       // keep constraints inactive from previous solution
       for (isize j = 0; j < n_in; ++j) {
         if (results.z(j) != 0) {
-          kkt_nnz_counts[n + n_eq + j] =
-            I(kkt.col_end(j + n + n_eq) - kkt.col_start(j + n + n_eq));
+          kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
+                                           kkt.col_start(usize(n + n_eq + j)));
           results.active_constraints[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
         } else {
@@ -1205,7 +1199,7 @@ qp_solve(Results<T>& results,
           results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
         // certificate of infeasibility
         results.x = dw_prev.head(data.dim);
-        results.y = dw_prev.segment(data.dim,data.n_eq);
+        results.y = dw_prev.segment(data.dim, data.n_eq);
         results.z = dw_prev.tail(data.n_in);
         break;
       }
@@ -1317,7 +1311,7 @@ qp_solve(Results<T>& results,
       isize w_values = 1; // un seul elt non nul
       T alpha = 0;
       for (isize j = 0; j < n_eq + n_in; ++j) {
-        I row_index = j + n;
+        I row_index = I(j + n);
         if (j < n_eq) {
           alpha = results.info.mu_eq - new_bcl_mu_eq;
 

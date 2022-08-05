@@ -60,6 +60,7 @@ refactorize(Workspace<T, I>& work,
       stack);
 
     isize nnz = 0;
+    VEG_ONLY_USED_FOR_DEBUG(nnz);
     for (usize j = 0; j < usize(kkt_active.ncols()); ++j) {
       nnz += usize(kkt_active.col_end(j) - kkt_active.col_start(j));
     }
@@ -99,7 +100,7 @@ refactorize(Workspace<T, I>& work,
                                          results.info.mu_in_inv } };
     (*work.internal.matrix_free_solver).compute(*work.internal.matrix_free_kkt);
   }
-};
+}
 
 template<typename T, typename I>
 struct Ldlt
@@ -172,10 +173,7 @@ struct Workspace
    * defining the QP model.
    */
   void setup_symbolic_factorizaton(
-    Results<T>& results,
     Model<T, I>& data,
-    Settings<T>& settings,
-    proxsuite::linalg::veg::dynstack::StackReq precond_req,
     proxsuite::linalg::sparse::SymbolicMatRef<I> H,
     proxsuite::linalg::sparse::SymbolicMatRef<I> AT,
     proxsuite::linalg::sparse::SymbolicMatRef<I> CT)
@@ -195,10 +193,7 @@ struct Workspace
 
     using namespace proxsuite::linalg::veg::dynstack;
     using namespace proxsuite::linalg::sparse::util;
-
-    using SR = StackReq;
-    proxsuite::linalg::veg::Tag<I> itag; // ?
-    proxsuite::linalg::veg::Tag<T> xtag; // ?
+    proxsuite::linalg::veg::Tag<I> itag;
 
     isize n = H.nrows();
     isize n_eq = AT.ncols();
@@ -322,7 +317,6 @@ struct Workspace
   /*!
    * Constructor.
    * @param qp view on the qp problem.
-   * @param results solver's results.
    * @param data solver's model.
    * @param settings solver's settings.
    * @param execute_or_not boolean option for execturing or not the
@@ -332,7 +326,6 @@ struct Workspace
    */
   template<typename P>
   void setup_impl(const QpView<T, I> qp,
-                  Results<T>& results,
                   Model<T, I>& data,
                   const Settings<T>& settings,
                   bool execute_or_not,
@@ -501,8 +494,8 @@ struct Workspace
     } else {
       T* kktx = data.kkt_values.ptr_mut();
       usize pos = 0;
-      auto insert_submatrix = [&](proxsuite::linalg::sparse::MatRef<T, I> m,
-                                  bool assert_sym_hi) -> void {
+      auto insert_submatrix =
+        [&](proxsuite::linalg::sparse::MatRef<T, I> m) -> void {
         T const* mx = m.values();
         isize ncols = m.ncols();
 
@@ -518,9 +511,9 @@ struct Workspace
         }
       };
 
-      insert_submatrix(qp.H, true);
-      insert_submatrix(qp.AT, false);
-      insert_submatrix(qp.CT, false);
+      insert_submatrix(qp.H);
+      insert_submatrix(qp.AT);
+      insert_submatrix(qp.CT);
       data.kkt_values_unscaled = data.kkt_values;
     }
 #define PROX_QP_ALL_OF(...)                                                    \
@@ -705,7 +698,11 @@ struct Workspace
     };
 
     DynStackMut stack = stack_mut();
-    precond.scale_qp_in_place(qp_scaled, execute_or_not, settings.preconditioner_max_iter,settings.preconditioner_accuracy, stack);
+    precond.scale_qp_in_place(qp_scaled,
+                              execute_or_not,
+                              settings.preconditioner_max_iter,
+                              settings.preconditioner_accuracy,
+                              stack);
     kkt_nnz_counts.resize_for_overwrite(n_tot);
 
     proxsuite::linalg::sparse::MatMut<T, I> kkt_active = {

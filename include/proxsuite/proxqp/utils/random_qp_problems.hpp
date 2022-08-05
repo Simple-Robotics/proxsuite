@@ -189,7 +189,7 @@ positive_definite_rand(isize n, Scalar cond) -> Mat<Scalar, colmajor>
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand(isize n, Scalar cond, double p)
+sparse_positive_definite_rand(isize n, Scalar cond, Scalar p)
   -> SparseMat<Scalar>
 {
   auto H = SparseMat<Scalar>(n, n);
@@ -239,7 +239,7 @@ sparse_positive_definite_rand(isize n, Scalar cond, double p)
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand_compressed(isize n, Scalar rho, double p)
+sparse_positive_definite_rand_compressed(isize n, Scalar rho, Scalar p)
   -> SparseMat<Scalar>
 {
   auto H = SparseMat<Scalar>(n, n);
@@ -269,7 +269,7 @@ sparse_positive_definite_rand_compressed(isize n, Scalar rho, double p)
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
+sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, Scalar p)
   -> Mat<Scalar, colmajor>
 {
   auto H = Mat<Scalar, colmajor>(n, n);
@@ -298,7 +298,7 @@ sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, double p)
 
 template<typename Scalar>
 auto
-sparse_matrix_rand(isize nrows, isize ncols, double p) -> SparseMat<Scalar>
+sparse_matrix_rand(isize nrows, isize ncols, Scalar p) -> SparseMat<Scalar>
 {
   auto A = SparseMat<Scalar>(nrows, ncols);
 
@@ -315,7 +315,7 @@ sparse_matrix_rand(isize nrows, isize ncols, double p) -> SparseMat<Scalar>
 
 template<typename Scalar>
 auto
-sparse_matrix_rand_not_compressed(isize nrows, isize ncols, double p)
+sparse_matrix_rand_not_compressed(isize nrows, isize ncols, Scalar p)
   -> Mat<Scalar, colmajor>
 {
   auto A = Mat<Scalar, colmajor>(nrows, ncols);
@@ -443,7 +443,7 @@ proxsuite::proxqp::dense::Model<Scalar> dense_unconstrained_qp(
     model.H = H;
     model.g = g;
     return model;
-};
+}
 
 template<typename Scalar> 
 proxsuite::proxqp::dense::Model<Scalar> dense_strongly_convex_qp(
@@ -488,7 +488,7 @@ proxsuite::proxqp::dense::Model<Scalar> dense_strongly_convex_qp(
     model.u = u;
     model.l = l;
     return model;
-};
+}
 
 template<typename Scalar> 
 proxsuite::proxqp::dense::Model<Scalar> dense_not_strongly_convex_qp(
@@ -532,7 +532,7 @@ proxsuite::proxqp::dense::Model<Scalar> dense_not_strongly_convex_qp(
     model.u = u;
     model.l = l;
     return model;
-};
+}
 
 template<typename Scalar> 
 proxsuite::proxqp::dense::Model<Scalar> dense_degenerate_qp(
@@ -581,7 +581,7 @@ proxsuite::proxqp::dense::Model<Scalar> dense_degenerate_qp(
     model.u = u;
     model.l = l;
     return model;
-};
+}
 
 template<typename Scalar> 
 proxsuite::proxqp::dense::Model<Scalar> dense_box_constrained_qp(
@@ -622,7 +622,7 @@ proxsuite::proxqp::dense::Model<Scalar> dense_box_constrained_qp(
     model.u = u;
     model.l = l;
     return model;
-};
+}
 
 template<typename Scalar> 
 proxsuite::proxqp::sparse::SparseModel<Scalar> sparse_strongly_convex_qp(
@@ -660,7 +660,7 @@ proxsuite::proxqp::sparse::SparseModel<Scalar> sparse_strongly_convex_qp(
 
     proxsuite::proxqp::sparse::SparseModel<Scalar> res{H,g,A,b,C,u,l};
     return res;
-};
+}
 
 } // namespace utils
 } // namespace proxqp

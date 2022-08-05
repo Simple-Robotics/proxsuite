@@ -128,9 +128,6 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-    isize _dim = H.rows();
-    isize _n_eq = A.rows();
-    isize _n_in = C.rows();
     SparseMat<bool, I> H_triu = H.template triangularView<Eigen::Upper>();
     SparseMat<bool, I> AT = A.transpose();
     SparseMat<bool, I> CT = C.transpose();
@@ -144,11 +141,7 @@ struct QP
       proxsuite::linalg::sparse::from_eigen, CT
     };
     work.setup_symbolic_factorizaton(
-      results,
       model,
-      settings,
-      preconditioner::RuizEquilibration<T, I>::scale_qp_in_place_req(
-        proxsuite::linalg::veg::Tag<T>{}, _dim, _n_eq, _n_in),
       Href.symbolic(),
       ATref.symbolic(),
       CTref.symbolic());
@@ -567,7 +560,7 @@ solve(
   Qp.solve(x, y, z);
 
   return Qp.results;
-};
+}
 
 } // namespace sparse
 } // namespace proxqp

@@ -89,10 +89,13 @@ struct RawVector
   T* end;
   T* end_alloc;
 
-  VEG_INLINE constexpr auto len() const noexcept -> usize { return end - data; }
+  VEG_INLINE constexpr auto len() const noexcept -> usize
+  {
+    return static_cast<usize>(end - data);
+  }
   VEG_INLINE constexpr auto cap() const noexcept -> usize
   {
-    return end_alloc - data;
+    return static_cast<usize>(end_alloc - data);
   }
 };
 } // namespace vector
@@ -448,7 +451,6 @@ struct CloneFromImpl<true>
                             (lhs_copy.cap() < rhs_raw.len()));
     if (need_to_realloc) {
       T* data = lhs_copy.data;
-      T* data_end = lhs_copy.data + lhs_copy.len();
       usize cap = lhs_copy.cap();
 
       // assign before deallocation in case it fails
@@ -798,7 +800,8 @@ public:
   VEG_INLINE auto pop_mid_unchecked(Unsafe /*unsafe*/, isize i)
     VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<T>)) -> T
   {
-    VEG_DEBUG_ASSERT(0 <= i, i < len());
+    VEG_DEBUG_ASSERT(0 <= i);
+    VEG_DEBUG_ASSERT(i < len());
     T* elem = raw_ref().get().data + i;
     T t = static_cast<T&&>(*elem);
 
@@ -823,7 +826,8 @@ public:
   VEG_INLINE auto pop_mid(isize i)
     VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<T>)) -> T
   {
-    VEG_ASSERT(0 <= i, i < len());
+    VEG_ASSERT(0 <= i);
+    VEG_ASSERT(i < len());
     return pop_mid_unchecked(unsafe, i);
   }
 

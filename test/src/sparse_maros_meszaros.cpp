@@ -111,7 +111,6 @@ TEST_CASE("sparse maros meszaros using the API")
       auto& u = preprocessed.u;
       auto& l = preprocessed.l;
 
-      isize n_eq = AT.cols();
       isize n_in = CT.cols();
       proxsuite::proxqp::sparse::QP<T, I> Qp(H.cast<bool>(),
                                              AT.transpose().cast<bool>(),

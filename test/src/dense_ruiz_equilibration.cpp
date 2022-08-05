@@ -6,7 +6,7 @@
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 
 using namespace proxsuite;
-using Scalar = long double;
+using Scalar = double;
 
 DOCTEST_TEST_CASE("ruiz preconditioner")
 {

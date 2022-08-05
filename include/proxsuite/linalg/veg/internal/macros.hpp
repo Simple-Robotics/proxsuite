@@ -51,6 +51,14 @@
 #define VEG_DEPRECATED(Reason)
 #endif
 
+/// \brief Helper to declare that a parameter is unused
+#define VEG_UNUSED_VARIABLE(var) (void)(var)
+#ifdef NDEBUG
+#define VEG_ONLY_USED_FOR_DEBUG(var) VEG_UNUSED_VARIABLE(var)
+#else
+#define VEG_ONLY_USED_FOR_DEBUG(var)
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #if defined(__clang__)

@@ -34,7 +34,7 @@ merge_second_col_into_first( //
   I* difference,
   T* first_values,
   I* first_ptr,
-  isize first_full_len,
+  [[maybe_unused]] isize first_full_len,
   isize first_initial_len,
   Slice<I> second,
   proxsuite::linalg::veg::DoNotDeduce<I> ignore_threshold_inclusive,
@@ -106,7 +106,7 @@ merge_second_col_into_first( //
   usize remaining_insert_count = insert_count;
   usize first_new_len =
     ufirst_initial_len + insert_count + (second_len - index_second);
-  VEG_ASSERT(first_full_len >= first_new_len);
+  VEG_ASSERT(usize(first_full_len) >= first_new_len);
 
   usize append_count = second_len - index_second;
   std::memmove( //

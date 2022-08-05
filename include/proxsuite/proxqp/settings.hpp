@@ -43,25 +43,25 @@ struct Settings
   T cold_reset_mu_in;
   T cold_reset_mu_eq_inv;
   T cold_reset_mu_in_inv;
+  T eps_abs;
+  T eps_rel;
 
   isize max_iter;
   isize max_iter_in;
   isize safe_guard;
-  T eps_abs;
-  T eps_rel;
-  T eps_refact;
   isize nb_iterative_refinement;
+  T eps_refact;
 
   bool verbose;
+  InitialGuessStatus initial_guess;
   bool update_preconditioner;
   bool compute_preconditioner;
   bool compute_timings;
-  InitialGuessStatus initial_guess;
 
-  T eps_primal_inf;
-  T eps_dual_inf;
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
+  T eps_primal_inf;
+  T eps_dual_inf;
   bool bcl_update;
   /*!
    * Default constructor.
@@ -114,6 +114,8 @@ struct Settings
    * mu_eq and mu_in. If set to false, a strategy developped by Martinez & al is
    * used.
    */
+
+
   Settings(T alpha_bcl_ = 0.1,
            T beta_bcl_ = 0.9,
            T refactor_dual_feasibility_threshold_ = 1e-2,
@@ -132,9 +134,9 @@ struct Settings
            T eps_rel_ = 0,
            isize max_iter_ = 10000,
            isize max_iter_in_ = 1500,
+           isize safe_guard_ = 1.E4,
            isize nb_iterative_refinement_ = 10,
            T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
-           isize safe_guard_ = 1.E4,
            bool VERBOSE = false,
            InitialGuessStatus initial_guess_ =
              InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT,
@@ -160,23 +162,23 @@ struct Settings
     , cold_reset_mu_in(cold_reset_mu_in_)
     , cold_reset_mu_eq_inv(cold_reset_mu_eq_inv_)
     , cold_reset_mu_in_inv(cold_reset_mu_in_inv_)
-    , max_iter(max_iter_)
-    , max_iter_in(max_iter_in_)
     , eps_abs(eps_abs_)
     , eps_rel(eps_rel_)
-    , eps_refact(eps_refact_)
+    , max_iter(max_iter_)
+    , max_iter_in(max_iter_in_)
+    , safe_guard(safe_guard_)
     , nb_iterative_refinement(nb_iterative_refinement_)
+    , eps_refact(eps_refact_)
     , verbose(VERBOSE)
+    , initial_guess(initial_guess_)
     , update_preconditioner(update_preconditioner_)
     , compute_preconditioner(compute_preconditioner_)
     , compute_timings(compute_timings_)
-    , initial_guess(initial_guess_)
-    , eps_primal_inf(eps_primal_inf_)
-    , eps_dual_inf(eps_dual_inf_)
     , preconditioner_max_iter(preconditioner_max_iter_)
     , preconditioner_accuracy(preconditioner_accuracy_)
+    , eps_primal_inf(eps_primal_inf_)
+    , eps_dual_inf(eps_dual_inf_)
     , bcl_update(bcl_update_)
-    , safe_guard(safe_guard_)
   {
   }
 };
