@@ -1,9 +1,8 @@
 name: gh-pages
 on:
   push:
-    branches:
-      - '*'
-      - '!gh-pages'
+    tags:
+      - "v*"
 
 jobs:
   build:
