@@ -72,13 +72,17 @@ if(INITIALIZE_EIGEN_WITH_NAN)
   add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
 endif(INITIALIZE_EIGEN_WITH_NAN)
 
+# set CXX standard
+if(DEFINED CMAKE_CXX_STANDARD)
+  check_minimal_cxx_standard(17 ENFORCE)
+else()
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+
 # Handle Windows context
 if(MSVC)
   # add_definitions(-D_USE_MATH_DEFINES)
   add_definitions(-DNOMINMAX)
-  CHECK_MINIMAL_CXX_STANDARD(20 ENFORCE)
-else()
-  CHECK_MINIMAL_CXX_STANDARD(17 ENFORCE)
 endif()
 
 # Look for dependencies
