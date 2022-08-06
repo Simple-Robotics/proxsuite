@@ -62,8 +62,6 @@ option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
 
-# set(CMAKE_CXX_FLAGS "${CXX_COMPILATION_FLAGS} -march=native -mavx2 -fPIC
-# -fno-omit-frame-pointer" )
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external"
                       ${CMAKE_MODULE_PATH}
 )
