@@ -62,9 +62,8 @@ option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-external"
-                      ${CMAKE_MODULE_PATH}
-)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
+                      ${CMAKE_MODULE_PATH})
 
 if(INITIALIZE_EIGEN_WITH_NAN)
   add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
