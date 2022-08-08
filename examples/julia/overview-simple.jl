@@ -1,11 +1,12 @@
 using PyCall
+using Printf
 
 proxsuite = pyimport("proxsuite")
 np = pyimport("numpy")
 spa = pyimport("scipy.sparse")
 slice(i,j) = pycall(pybuiltin("slice"), PyObject, i,j)
 
-
+EPS = 1e-6
 # generate mixed random convex qp with size n
 function generate_mixed_qp(n, seed=1)
     np.random.seed(seed)
@@ -28,7 +29,7 @@ function generate_mixed_qp(n, seed=1)
     u = A * v
     l = -1.0e20 * np.ones(m)
 
-    return P, q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, -1)), get(u, slice(n_in, -1, )), l[n_in+1:end]
+    return P, q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, m)), get(u, slice(n_in, m, )), l[n_in+1:end]
 end
 
 # generate a qp problem
@@ -39,5 +40,31 @@ n_in = C.shape[1]
 
 # solve it
 Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+Qp.settings.eps_abs = EPS
 Qp.init(H, g, A, b, C, u, l)
 Qp.solve()
+
+x_res = Qp.results.x
+y_res = Qp.results.y
+z_res = Qp.results.z
+
+# calculate primal and dual residual
+prim_res = max(
+    np.linalg.norm(A * x_res - b, np.inf),
+    np.linalg.norm(np.maximum(C * x_res - u, 0) + np.minimum(C * x_res - l, 0), np.inf)
+)
+dual_res = np.linalg.norm(H * x_res + g + np.transpose(A) * y_res + np.transpose(C) * z_res )
+
+# assert that solved with required precision 
+@assert Qp.results.info.pri_res < EPS
+@assert Qp.results.info.dua_res < EPS
+@assert np.isclose(prim_res, Qp.results.info.pri_res)
+@assert np.isclose(dual_res, Qp.results.info.dua_res)
+
+# print stats
+@printf("Done solving the qp with dim %i having %i equality and %i inequality constraints.\n", n, n_eq, n_in)
+@printf("Primal residual: %f\n", Qp.results.info.pri_res)
+@printf("Dual residual: %f\n", Qp.results.info.dua_res)
+@printf("Total number of iteration %i.\n", Qp.results.info.iter)
+@printf("Setup time %fms, solve time %fms.\n", Qp.results.info.setup_time, Qp.results.info.solve_time)
+@printf("Epsilon absolute %f, epsilon relative %f.\n", Qp.settings.eps_abs, Qp.settings.eps_rel)
