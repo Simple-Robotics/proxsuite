@@ -43,7 +43,11 @@ void
 exposeSparseModel(pybind11::module_ m)
 {
   ::pybind11::class_<proxsuite::proxqp::sparse::Model<T, I>>(m, "model")
-    .def(::pybind11::init(), "Default constructor.") // constructor
+    .def(::pybind11::init<i64, i64, i64>(),
+         pybind11::arg_v("n", 0, "primal dimension."),
+         pybind11::arg_v("n_eq", 0, "number of equality constraints."),
+         pybind11::arg_v("n_in", 0, "number of inequality constraints."),
+         "Constructor using QP model dimensions.") // constructor)
     .def_readonly("g", &Model<T, I>::g)
     .def_readonly("b", &Model<T, I>::b)
     .def_readonly("u", &Model<T, I>::u)
