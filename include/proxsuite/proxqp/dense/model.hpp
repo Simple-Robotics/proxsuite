@@ -56,7 +56,7 @@ struct Model
     , n_in(_n_in)
     , n_total(_dim + _n_eq + _n_in)
   {
-
+    PROXSUITE_THROW_PRETTY(_dim == 0,std::invalid_argument,"wrong argument size: the dimension wrt primal variable x should be strictly positive.");
     H.setZero();
     g.setZero();
     A.setZero();
@@ -73,10 +73,7 @@ struct Model
     proxsuite::proxqp::sparse::SparseModel<T> res{H_sparse,g,A_sparse,b,C_sparse,u,l};
     return res;
   }
-  
 };
-
-
 } // namespace dense
 } // namespace proxqp
 } // namespace proxsuite

@@ -8,6 +8,32 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#if _WIN32
+#define PROXSUITE_PRETTY_FUNCTION __FUNCSIG__
+#else
+#define PROXSUITE_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#endif
+
+#define PROXSUITE_THROW_PRETTY(condition, exception, message)              \
+  if (condition) {                                                          \
+    std::ostringstream ss;                                     \
+    ss << "From file: " << __FILE__ << "\n";                  \
+    ss << "in function: " << PROXSUITE_PRETTY_FUNCTION << "\n"; \
+    ss << "at line: " << __LINE__ << "\n";                    \
+    ss << message << "\n";                     \
+    throw exception(ss.str());                                \
+  }
+
+#define PROXSUITE_CHECK_ARGUMENT_SIZE(size, expected_size, message) \
+  if (size != expected_size) { \
+    std::ostringstream oss; \
+    oss << "wrong argument size: expected " << expected_size << ", got " << size << "\n"; \
+    oss << "hint: " << message << std::endl; \
+    PROXSUITE_THROW_PRETTY(false, std::invalid_argument, oss.str()); \
+  }
+
+
+
 #if HEDLEY_MSVC_VERSION_CHECK(14, 0, 0) ||                                     \
   HEDLEY_INTEL_CL_VERSION_CHECK(2021, 1, 0)
 #define VEG_DEPRECATED(Reason) __declspec(deprecated(Reason))
