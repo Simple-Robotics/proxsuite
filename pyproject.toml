@@ -15,4 +15,4 @@ changelog = "https://github.com/Simple-Robotics/proxsuite/CHANGELOG.md"
 [build-system]
 requires = ["cmeel[build]"]
 build-backend = "cmeel.build"
-configure-args = ["-DCMAKE_CXX_COMPILER=gcc","-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"]
+configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"]
