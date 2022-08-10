@@ -1,0 +1,9 @@
+add_custom_target(example-py)
+
+file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_EXAMPLES *.py)
+message(${${PROJECT_NAME}_PYTHON_EXAMPLES})
+
+FOREACH(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
+    STRING(REGEX REPLACE "${PROJECT_SOURCE_DIR}/examples/python/" "" EXAMPLE ${EXAMPLE})
+    ADD_PYTHON_UNIT_TEST("example-py-${EXAMPLE}" "examples/python/${EXAMPLE}" "bindings/python")
+ENDFOREACH(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
