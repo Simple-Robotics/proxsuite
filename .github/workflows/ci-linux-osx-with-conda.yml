@@ -44,7 +44,7 @@ jobs:
         # Main dependencies
         mamba install eigen simde
         # Test dependencies
-        mamba install libmatio numpy
+        mamba install libmatio numpy scipy
 
     - name: Activate ccache [Conda]
       uses: hendrikmuhs/ccache-action@v1.2
