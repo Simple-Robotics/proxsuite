@@ -58,6 +58,12 @@ jobs:
         run: |
           pip wheel . -w dist
 
+      - name: Keep only proxsuite in dist
+        shell: bash -l {0}
+        run: |
+          rm dist/cmeel*.whl
+          rm dist/tomli*.whl
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -76,9 +82,9 @@ jobs:
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        # if: |
-        #   github.repository == 'simple-robotics/proxqp' &&
-        #   (github.event_name == 'release' && github.event.action == 'published')
+        if: |
+          github.repository == 'simple-robotics/proxqp' &&
+          (github.event_name == 'release' && github.event.action == 'published')
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
