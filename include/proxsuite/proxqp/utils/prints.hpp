@@ -5,23 +5,28 @@
 
 #ifndef PROXSUITE_PROXQP_UTILS_PRINTS_HPP
 #define PROXSUITE_PROXQP_UTILS_PRINTS_HPP
+
 #include <iostream>
 
 namespace proxsuite {
 namespace proxqp {
-void
+
+inline void
 print_line()
 {
   std::string the_line = "-------------------------------------------------------------------------------------------------\0";
   std::cout << the_line << "\n" << std::endl;
 }
-void
+
+inline void
 print_header()
 {
   std::cout << "iter    objective    pri res    dua res    mu_in  \n"
             << std::endl;
 }
-void print_preambule()
+
+inline void 
+print_preambule()
 {
   print_line();
   std::cout << "                              ProxQP  -  Primal Dual Proximal QP Solver\n"
