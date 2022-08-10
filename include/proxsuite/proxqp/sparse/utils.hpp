@@ -15,6 +15,7 @@
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/proxqp/utils/prints.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/ruiz.hpp"
@@ -27,18 +28,6 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
-void
-print_line()
-{
-  std::string the_line = "---------------------------------------------------------------------------------\0";
-  std::cout << the_line << "\n" << std::endl;
-}
-void
-print_header()
-{
-  std::cout << "iter    objective    pri res    dua res    mu_in  \n"
-            << std::endl;
-}
 
 template<typename T, typename I>
 void
@@ -47,13 +36,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T, I>& model)
 {
 
-  print_line();
-  std::cout << "                 ProxQP  -  Primal Dual Proximal QP Solver\n"
-            << "     (c) Antoine Bambade, Sarah El Kazdadi, Adrien Taylor, "
-               "Justin Carpentier\n"
-            << "                            Inria Paris 2022        \n"
-            << std::endl;
-  print_line();
+  proxsuite::proxqp::print_preambule();
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
