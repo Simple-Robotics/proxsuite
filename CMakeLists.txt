@@ -42,6 +42,8 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/FindJulia.cmake)
 include(CMakeDependentOption)
 
 # If needed, set CMake policy for APPLE systems
@@ -89,8 +91,9 @@ add_project_dependency(
   PKG_CONFIG_REQUIRES
   "eigen3 >= 3.0.5"
 )
-set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
 
+find_package(Julia)
+set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(Simde REQUIRED)
 endif()
