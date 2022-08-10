@@ -86,12 +86,6 @@ jobs:
         cd build
         cmake --build . --config ${{ matrix.build_type }} -v
 
-    - name: Test [Conda]
-      shell: bash -l {0}
-      run: |
-        cd build
-        ctest --output-on-failure -C ${{ matrix.build_type }}
-
     - name: Build documentation [Conda]
       shell: bash -l {0}
       run: |
@@ -104,6 +98,12 @@ jobs:
         cd build
         cmake --install . --config ${{ matrix.build_type }}
 
+    - name: Test [Conda]
+      shell: bash -l {0}
+      run: |
+        cd build
+        ctest --output-on-failure -C ${{ matrix.build_type }}
+        
     # - name: Test pkg-config [Conda]
     #   shell: bash -l {0}
     #   run: |
