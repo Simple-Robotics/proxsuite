@@ -1,10 +1,10 @@
-import proxsuite_pywrap as proxsuite
+import proxsuite
 
 # load a Qp object using Qp problem dimensions
 n = 10
 n_eq = 2
 n_in = 2
-Qp = proxsuite.qp.sparse.QP(n, n_eq, n_in)
+Qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 
 import numpy as np
 import scipy.sparse as spa
@@ -42,4 +42,4 @@ H, g, A, b, C, u, l = generate_mixed_qp(n)
 H_ = H != 0.0
 A_ = A != 0.0
 C_ = C != 0.0
-Qp2 = proxsuite.qp.sparse.QP(H_, A_, C_)
+Qp2 = proxsuite.proxqp.sparse.QP(H_, A_, C_)
