@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
+  <img src="https://github.com/simple-robotics/proxsuite/blob/main/doc/images/proxsuite-logo.png?raw=true" width="700" alt="Proxsuite Logo" align="center"/>
 </p>
 
 <p align="center">
@@ -12,6 +12,13 @@ While the first targeted application is Robotics, **ProxSuite** can be used in o
 Through **ProxSuite**, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
+
+If you want to directly dive into **ProxSuite**, only one single line is sufficient via pip (currently available on Linux and MacOS):
+
+<p align="center">
+<strong> pip install proxsuite </strong>
+</p>
+
 
 ## **ProxQP**
 
