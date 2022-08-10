@@ -1,4 +1,3 @@
-from operator import truediv
 import proxsuite
 import numpy as np
 import scipy.sparse as spa
