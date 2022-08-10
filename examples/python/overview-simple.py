@@ -1,4 +1,4 @@
-import proxsuite_pywrap as proxsuite
+import proxsuite
 import numpy as np
 import scipy.sparse as spa
 
@@ -35,6 +35,6 @@ n_eq = A.shape[0]
 n_in = C.shape[0]
 
 # solve it
-Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 Qp.init(H, g, A, b, C, u, l)
 Qp.solve()
