@@ -74,18 +74,11 @@ jobs:
           python-version: "3.10"
       - uses: actions/download-artifact@v3
 
-      - name: Publish package to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          verbose: true
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        if: |
-          github.repository == 'simple-robotics/proxqp' &&
-          (github.event_name == 'release' && github.event.action == 'published')
+        # if: |
+        #   github.repository == 'simple-robotics/proxqp' &&
+        #   (github.event_name == 'release' && github.event.action == 'published')
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
