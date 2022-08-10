@@ -38,7 +38,7 @@ install(
   DESTINATION ${${PYWRAP}_INSTALL_DIR})
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-  add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
+  python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
 
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
@@ -49,9 +49,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 
   set_target_properties(
     ${target_name}
-    PROPERTIES PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
-               OUTPUT_NAME ${target_name}
+    PROPERTIES OUTPUT_NAME ${target_name}
                LIBRARY_OUTPUT_DIRECTORY
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
 
