@@ -13,6 +13,13 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
 
+If you want to directly dive into **ProxSuite**, only one single line is sufficient via pip (currently available on Linux and MacOS):
+
+<p align="center">
+<strong> pip install proxsuite </strong>
+</p>
+
+
 ## **ProxQP**
 
 The **ProxQP** solver is a numerical optimization package for solving problems of the form:
