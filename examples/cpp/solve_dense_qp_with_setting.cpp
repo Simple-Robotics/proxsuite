@@ -25,7 +25,7 @@ main()
   Qp.settings.eps_abs = T(1.E-9); // set accuracy threshold to 1.e-9
   Qp.settings.verbose = true;     // print some intermediary results
   Qp.solve();                     // solve the problem with previous settings
-  // print the optimal solutions x,y and z
+  // print an optimal solution x,y and z
   std::cout << "optimal x: " << Qp.results.x << std::endl;
   std::cout << "optimal y: " << Qp.results.y << std::endl;
   std::cout << "optimal z: " << Qp.results.z << std::endl;
