@@ -45,6 +45,12 @@ jobs:
         mamba install eigen simde
         # Test dependencies
         mamba install libmatio numpy scipy
+        
+    - name: Install julia and pycall [macos/linux]
+      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -l {0}
+      run: |
+        mamba install julia
 
     - name: Activate ccache [Conda]
       uses: hendrikmuhs/ccache-action@v1.2

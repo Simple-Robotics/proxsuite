@@ -3,4 +3,5 @@
 	url = https://github.com/pybind/pybind11
 [submodule "cmake-module"]
 	path = cmake-module
-	url = https://github.com/jrl-umi3218/jrl-cmakemodules.git
+	url = https://github.com/fabinsch/jrl-cmakemodules.git
+	
