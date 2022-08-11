@@ -13,6 +13,28 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
 
+## Quick install
+
+**ProxSuite** is distributed on many well-known packager managers.
+
+### With <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:
+
+```bash
+   pip install proxsuite
+```
+This approach is only available on Linux and Mac OS X.
+
+### With <img src="https://s3.amazonaws.com/conda-dev/conda_logo.svg" height="18">:
+
+```bash
+   conda install proxsuite -c conda-forge
+```
+This approach is available on Linux, Windows and Mac OS X.
+
+### Alternative approaches
+
+Alternative installation procedures are presented in the [Installation Procedure](#installation-procedure) section.
+
 ## **ProxQP**
 
 The **ProxQP** solver is a numerical optimization package for solving problems of the form:
@@ -35,7 +57,7 @@ If you are using **ProxQP** for your work, we encourage you to [cite the related
 
 The numerical benchmarks of **ProxQP** against other commercial and open-source solvers are available [here](https://github.com/Bambade/qp_benchmark).
 
-For dense Convex Quadratic Programs with inequality and equality constraints, when asking for a relatively high accuracy (e.g., 1.E-6), one obtains the following results.
+For dense Convex Quadratic Programs with inequality and equality constraints, when asking for a relatively high accuracy (e.g., 1e-6), one obtains the following results.
 
 <p align="center">
   <img src="./doc/images/time_series_barplot_Random Mixed QP_dense_eps_abs_1e-6.jpg" width="600" alt="Random Mixed QP_dense_eps_abs_1e-6" align="center"/>
@@ -43,7 +65,7 @@ For dense Convex Quadratic Programs with inequality and equality constraints, wh
 
 On the y-axis you can see timings in microseconds, and on the x-axis dimension wrt to the primal variable of the random Quadratic problems generated (the number of constraints of the generated problem is half the size of its primal dimension). For every dimension, the problem is generated over different seeds and timings are obtained as averages over successive runs for the same problems. This chart shows for every benchmarked solvers and random Quadratic programs generated, barplots timings including median (as a dot) and minimal and maximal values obtained (defining the amplitude of the bar). You can see that **ProxQP** is always below over solvers, which means it is the quickest for this test.
 
-For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Problems/marmes.shtml), when asking for a high accuracy (e.g., 1.E-9), one obtains the results below.
+For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Problems/marmes.shtml), when asking for a high accuracy (e.g., 1e-9), one obtains the results below.
 
 <p align="center">
   <img src="./doc/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="600" alt="maros_meszaros_problems_high_accuracy" align="center"/>
@@ -51,8 +73,8 @@ For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Pr
 
 This chart above reports performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on y-axis) as a function of certain runtime (on x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher on the chart the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=0$), and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
 
-Note: All these results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.
+*Note: All these results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.*
 
-## Installation
+## Installation procedure
 
 Please follow the installation procedure [here](./doc/5-installation.md).
