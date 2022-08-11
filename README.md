@@ -47,6 +47,8 @@ For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Pr
   <img src="./doc/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="700" alt="maros_meszaros_problems_high_accuracy" align="center"/>
 </p>
 
+These results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.
+
 ## Installation
 
 ### Building from source
