@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
+  <img src="https://github.com/simple-robotics/proxsuite/blob/main/doc/images/proxsuite-logo.png?raw=true" width="700" alt="Proxsuite Logo" align="center"/>
 </p>
 
 <p align="center">
@@ -40,7 +40,7 @@ Alternative installation procedures are presented in the [Installation Procedure
 The **ProxQP** solver is a numerical optimization package for solving problems of the form:
 
 $$
-\begin{align} 
+\begin{align}
 \min_{x} &  ~\frac{1}{2}x^{T}Hx+g^{T}x \\
 \text{s.t.} & ~A x = b \\
 & ~l \leq C x \leq u

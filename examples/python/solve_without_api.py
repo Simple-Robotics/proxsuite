@@ -1,4 +1,4 @@
-import proxsuite_pywrap as proxsuite
+import proxsuite
 import numpy as np
 import scipy.sparse as spa
 
@@ -34,10 +34,13 @@ n = 10
 n_eq = 2
 n_in = 2
 H, g, A, b, C, u, l = generate_mixed_qp(n)
+
 # solve the problem using the sparse backend
-results = proxsuite.qp.sparse.solve(H, g, A, b, C, u, l)
+results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+
 # solve the problem using the dense backend
 results2 = proxsuite.qp.dense.solve(H, g, A, b, C, u, l)
+
 # print an optimal solution
 print("optimal x: {}".format(results.x))
 print("optimal y: {}".format(results.y))
