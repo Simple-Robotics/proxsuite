@@ -45,6 +45,12 @@ jobs:
         mamba install eigen simde
         # Test dependencies
         mamba install libmatio numpy scipy
+        
+    - name: Install julia [macOS/Linux]
+      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -l {0}
+      run: |
+        mamba install julia
 
     - name: Activate ccache [Conda]
       uses: hendrikmuhs/ccache-action@v1.2
@@ -68,7 +74,7 @@ jobs:
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=ON
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows')
@@ -101,9 +107,10 @@ jobs:
     - name: Test [Conda]
       shell: bash -l {0}
       run: |
+        find $CONDA_PREFIX -name proxsuite*
+        python -c "import proxsuite"
         cd build
         ctest --output-on-failure -C ${{ matrix.build_type }}
-        
     # - name: Test pkg-config [Conda]
     #   shell: bash -l {0}
     #   run: |
