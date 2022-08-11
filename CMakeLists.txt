@@ -43,7 +43,6 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/FindJulia.cmake)
 include(CMakeDependentOption)
 
 # If needed, set CMake policy for APPLE systems
@@ -64,6 +63,8 @@ option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
 
+SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
+                      ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
                       ${CMAKE_MODULE_PATH})
 
