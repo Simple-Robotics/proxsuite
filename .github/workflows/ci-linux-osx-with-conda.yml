@@ -46,7 +46,7 @@ jobs:
         # Test dependencies
         mamba install libmatio numpy scipy
         
-    - name: Install julia and pycall [macos/linux]
+    - name: Install julia [macOS/Linux]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |

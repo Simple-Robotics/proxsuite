@@ -1,3 +1,6 @@
+import Pkg
+Pkg.add("PyCall")
+
 using PyCall
 using Printf
 
