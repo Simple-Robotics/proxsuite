@@ -42,6 +42,7 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
 include(CMakeDependentOption)
 
 # If needed, set CMake policy for APPLE systems
@@ -61,7 +62,10 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
+option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 
+SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
+                      ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
                       ${CMAKE_MODULE_PATH})
 
@@ -89,8 +93,8 @@ add_project_dependency(
   PKG_CONFIG_REQUIRES
   "eigen3 >= 3.0.5"
 )
-set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
 
+set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(Simde REQUIRED)
 endif()
