@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/simple-robotics/proxsuite/blob/main/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
+  <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
 </p>
 
 <p align="center">
@@ -60,7 +60,7 @@ The numerical benchmarks of **ProxQP** against other commercial and open-source 
 For dense Convex Quadratic Programs with inequality and equality constraints, when asking for a relatively high accuracy (e.g., 1e-6), one obtains the following results.
 
 <p align="center">
-  <img src="https://github.com/simple-robotics/proxsuite/blob/main/images/time_series_barplot_Random Mixed QP_dense_eps_abs_1e-6.jpg" width="600" alt="Random Mixed QP_dense_eps_abs_1e-6" align="center"/>
+  <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/time_series_barplot_Random Mixed QP_dense_eps_abs_1e-6.jpg" width="600" alt="Random Mixed QP_dense_eps_abs_1e-6" align="center"/>
 </p>
 
 On the y-axis you can see timings in microseconds, and on the x-axis dimension wrt to the primal variable of the random Quadratic problems generated (the number of constraints of the generated problem is half the size of its primal dimension). For every dimension, the problem is generated over different seeds and timings are obtained as averages over successive runs for the same problems. This chart shows for every benchmarked solvers and random Quadratic programs generated, barplots timings including median (as a dot) and minimal and maximal values obtained (defining the amplitude of the bar). You can see that **ProxQP** is always below over solvers, which means it is the quickest for this test.
@@ -68,7 +68,7 @@ On the y-axis you can see timings in microseconds, and on the x-axis dimension w
 For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Problems/marmes.shtml), when asking for a high accuracy (e.g., 1e-9), one obtains the results below.
 
 <p align="center">
-  <img src="https://github.com/simple-robotics/proxsuite/blob/main/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="600" alt="maros_meszaros_problems_high_accuracy" align="center"/>
+  <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="600" alt="maros_meszaros_problems_high_accuracy" align="center"/>
 </p>
 
 This chart above reports performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on y-axis) as a function of certain runtime (on x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher on the chart the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=0$), and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
