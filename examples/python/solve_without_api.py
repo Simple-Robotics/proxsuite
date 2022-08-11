@@ -39,7 +39,7 @@ H, g, A, b, C, u, l = generate_mixed_qp(n)
 results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
 
 # solve the problem using the dense backend
-results2 = proxsuite.qp.dense.solve(H, g, A, b, C, u, l)
+results2 = proxsuite.proxqp.dense.solve(H, g, A, b, C, u, l)
 
 # print an optimal solution
 print("optimal x: {}".format(results.x))
