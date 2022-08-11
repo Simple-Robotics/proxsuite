@@ -15,7 +15,7 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 ## Quick install
 
-**ProxSuite** is distributed on many well-known packager managers.
+**ProxSuite** is distributed on many well-known package managers.
 
 ### With <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:
 
