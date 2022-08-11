@@ -1,7 +1,7 @@
 include(../../cmake-module/python.cmake)
 
 findpython(REQUIRED Development.Module)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/ pybind11)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 add_subdirectory(external/pybind11
                  ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 

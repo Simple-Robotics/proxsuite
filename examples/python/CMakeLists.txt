@@ -1,7 +1,6 @@
 add_custom_target(example-py)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_EXAMPLES *.py)
-message(${${PROJECT_NAME}_PYTHON_EXAMPLES})
 
 foreach(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
   string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/examples/python/" "" EXAMPLE
