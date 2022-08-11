@@ -24,6 +24,13 @@ main()
   // Solve the problem using the sparse backend
   Results<T> results_sparse_solver =
     sparse::solve<T, isize>(H, g, A, b, C, u, l);
+  std::cout << "optimal x from sparse solver: " << results_sparse_solver.x << std::endl;
+  std::cout << "optimal y from sparse solver: " << results_sparse_solver.y << std::endl;
+  std::cout << "optimal z from sparse solver: " << results_sparse_solver.z << std::endl;
   // Solve the problem using the dense backend
   Results<T> results_dense_solver = dense::solve<T>(H, g, A, b, C, u, l);
+  // print an optimal solution x,y and z
+  std::cout << "optimal x from dense solver: " << results_dense_solver.x << std::endl;
+  std::cout << "optimal y from dense solver: " << results_dense_solver.y << std::endl;
+  std::cout << "optimal z from dense solver: " << results_dense_solver.z << std::endl;
 }

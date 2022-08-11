@@ -62,4 +62,8 @@ main()
     H2.cast<bool>(), A.cast<bool>(), C.cast<bool>());
   Qp2.init(H2, g_new, A, b, C, u, l);
   Qp2.solve(); // it will solve the new problem
+  // print an optimal solution x,y and z
+  std::cout << "optimal x: " << Qp2.results.x << std::endl;
+  std::cout << "optimal y: " << Qp2.results.y << std::endl;
+  std::cout << "optimal z: " << Qp2.results.z << std::endl;
 }

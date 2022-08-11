@@ -38,3 +38,7 @@ n_in = C.shape[0]
 Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
 Qp.init(H, g, A, b, C, u, l)
 Qp.solve()
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))

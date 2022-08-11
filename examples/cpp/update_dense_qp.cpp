@@ -34,4 +34,8 @@ main()
   Qp.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.u, qp2.l);
   // solve it
   Qp.solve();
+  // print an optimal solution x,y and z
+  std::cout << "optimal x: " << Qp.results.x << std::endl;
+  std::cout << "optimal y: " << Qp.results.y << std::endl;
+  std::cout << "optimal z: " << Qp.results.z << std::endl;
 }

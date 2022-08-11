@@ -29,4 +29,8 @@ main()
   auto z_wm = utils::rand::vector_rand<T>(n_in);
   Qp.solve(x_wm, y_wm,
            z_wm); // if you have a warm start, put it here
+  // print an optimal solution x,y and z
+  std::cout << "optimal x: " << Qp.results.x << std::endl;
+  std::cout << "optimal y: " << Qp.results.y << std::endl;
+  std::cout << "optimal z: " << Qp.results.z << std::endl;
 }
