@@ -1,2 +1,4 @@
 add_subdirectory(cpp)
-# add_subdirectory(python)
+IF(BUILD_PYTHON_INTERFACE)
+  add_subdirectory(python)
+ENDIF(BUILD_PYTHON_INTERFACE)

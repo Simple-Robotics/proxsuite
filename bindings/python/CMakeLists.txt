@@ -20,23 +20,25 @@ file(GLOB_RECURSE PYWRAP_HEADERS ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp)
 file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 # Add simd feature detectors for current CPU
-add_library(instructionset MODULE helpers/instruction-set.cpp)
+python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
 add_dependencies(python instructionset)
 target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
 set_target_properties(
   instructionset
-  PROPERTIES PREFIX ""
-             SUFFIX ${PYTHON_EXT_SUFFIX}
-             OUTPUT_NAME instructionset
+  PROPERTIES OUTPUT_NAME instructionset
              LIBRARY_OUTPUT_DIRECTORY
              "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
+if(UNIX AND NOT APPLE)
+  set_target_properties(instructionset PROPERTIES INSTALL_RPATH
+                                                  "\$ORIGIN/../../..")
+endif()
 install(
   TARGETS instructionset
   EXPORT ${TARGETS_EXPORT_NAME}
   DESTINATION ${${PYWRAP}_INSTALL_DIR})
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-  add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
+  python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
 
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
@@ -47,9 +49,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 
   set_target_properties(
     ${target_name}
-    PROPERTIES PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
-               OUTPUT_NAME ${target_name}
+    PROPERTIES OUTPUT_NAME ${target_name}
                LIBRARY_OUTPUT_DIRECTORY
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
 

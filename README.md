@@ -40,7 +40,7 @@ Alternative installation procedures are presented in the [Installation Procedure
 The **ProxQP** solver is a numerical optimization package for solving problems of the form:
 
 $$
-\begin{align} 
+\begin{align}
 \min_{x} &  ~\frac{1}{2}x^{T}Hx+g^{T}x \\
 \text{s.t.} & ~A x = b \\
 & ~l \leq C x \leq u

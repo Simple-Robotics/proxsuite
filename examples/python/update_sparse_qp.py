@@ -1,4 +1,4 @@
-import proxsuite_pywrap as proxsuite
+import proxsuite
 import numpy as np
 import scipy.sparse as spa
 
@@ -33,7 +33,7 @@ def generate_mixed_qp(n, seed=1):
 n = 10
 n_eq = 2
 n_in = 2
-Qp = proxsuite.qp.sparse.QP(n, n_eq, n_in)
+Qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
@@ -49,7 +49,7 @@ Qp.update(H=H2)  # nothing will happen
 Qp.update(g=g_new)  # if only a vector changes, then the update takes effect
 Qp.solve()  # it solves the problem with the QP H,g_new,A,b,C,u,l
 # to solve the problem with H2 matrix create a new Qp object in the sparse case
-Qp2 = proxsuite.qp.sparse.QP(n, n_eq, n_in)
+Qp2 = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 Qp2.init(H2, g_new, A, b, C, u, l)
 Qp2.solve()  # it will solve the new problem
 # print an optimal solution

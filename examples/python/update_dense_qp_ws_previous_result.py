@@ -1,4 +1,4 @@
-import proxsuite_pywrap as proxsuite
+import proxsuite
 import numpy as np
 import scipy.sparse as spa
 
@@ -33,7 +33,7 @@ def generate_mixed_qp(n, seed=1):
 n = 10
 n_eq = 2
 n_in = 2
-Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
@@ -42,7 +42,9 @@ Qp.init(H, g, A, b, C, u, l)
 Qp.solve()
 # create a new problem and update Qp
 g_new = 0.95 * g  # slightly different g_new
-Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+Qp.settings.initial_guess = (
+    proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+)
 Qp.update(g=g_new)
 # solve it
 Qp.solve()

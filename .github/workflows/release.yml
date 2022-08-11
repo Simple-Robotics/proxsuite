@@ -1,0 +1,90 @@
+name: Release on GitHub & PyPI
+
+on:
+  pull_request:
+  release:
+    types:
+      - published
+
+jobs:
+  build-wheel:
+    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.os }} ${{ matrix.python-version }}
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Set docker for linux
+        if: contains(matrix.os, 'ubuntu')
+        uses: docker://quay.io/pypa/manylinux_2_24_x86_64
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set ownership
+        run: |
+          # Workaround for https://github.com/actions/runner/issues/2033
+          # this is to fix GIT not liking owner of the checkout dir
+          chown -R $(id -u):$(id -g) $PWD
+          git submodule update
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+          activate-environment: proxsuite
+
+      - name: Install dependencies [Conda]
+        shell: bash -l {0}
+        run: |
+          # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
+          conda config --remove channels defaults
+          mamba install doxygen graphviz eigen simde cmake compilers
+
+      - name: Print environment [Conda]
+        shell: bash -l {0}
+        run: |
+          conda info
+          mamba list
+          env
+
+      - name: Build wheel
+        shell: bash -l {0}
+        run: |
+          pip wheel . -w dist
+
+      - name: Keep only proxsuite in dist
+        shell: bash -l {0}
+        run: |
+          rm dist/cmeel*.whl
+          rm dist/tomli*.whl
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist
+
+  release:
+    needs: "build-wheel"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - uses: actions/download-artifact@v3
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        if: |
+          github.repository == 'simple-robotics/proxqp' &&
+          (github.event_name == 'release' && github.event.action == 'published')
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
