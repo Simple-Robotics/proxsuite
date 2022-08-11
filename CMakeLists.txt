@@ -62,6 +62,7 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON
 )
+option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
                       ${CMAKE_MODULE_PATH})
@@ -93,7 +94,6 @@ add_project_dependency(
   "eigen3 >= 3.0.5"
 )
 
-find_package(Julia)
 set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(Simde REQUIRED)
