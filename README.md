@@ -78,3 +78,7 @@ This chart above reports performance profiles of different solvers. It is classi
 ## Installation procedure
 
 Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
+
+## Documentation
+
+The online **ProxSuite** documentation of the last release is available [here](https://simple-robotics.github.io/proxsuite/).
