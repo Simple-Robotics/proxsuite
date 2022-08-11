@@ -27,4 +27,8 @@ main()
   dense::QP<T> Qp(dim, n_eq, n_in);
   Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
   Qp.solve();
+  // print an optimal solution x,y and z
+  std::cout << "optimal x: " << Qp.results.x << std::endl;
+  std::cout << "optimal y: " << Qp.results.y << std::endl;
+  std::cout << "optimal z: " << Qp.results.z << std::endl;
 }

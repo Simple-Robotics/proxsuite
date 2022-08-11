@@ -46,3 +46,7 @@ Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_R
 Qp.update(g=g_new)
 # solve it
 Qp.solve()
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))

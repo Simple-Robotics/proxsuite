@@ -52,3 +52,7 @@ Qp.solve()  # it solves the problem with the QP H,g_new,A,b,C,u,l
 Qp2 = proxsuite.qp.sparse.QP(n, n_eq, n_in)
 Qp2.init(H2, g_new, A, b, C, u, l)
 Qp2.solve()  # it will solve the new problem
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))

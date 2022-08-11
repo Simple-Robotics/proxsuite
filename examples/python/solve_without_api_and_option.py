@@ -40,3 +40,7 @@ results = proxsuite.qp.dense.solve(
     H=H, g=g, A=A, b=b, C=C, u=u, l=l, rho=1.0e-7, eps_abs=1.0e-9
 )
 # Note that in python the order does not matter for rho and eps_abs
+# print an optimal solution
+print("optimal x: {}".format(results.x))
+print("optimal y: {}".format(results.y))
+print("optimal z: {}".format(results.z))

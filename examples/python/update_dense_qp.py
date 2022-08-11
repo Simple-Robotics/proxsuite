@@ -45,3 +45,7 @@ H_new, g_new, A_new, b_new, C_new, u_new, l_new = generate_mixed_qp(n, seed=2)
 Qp.update(H_new, g_new, A_new, b_new, C_new, u_new, l_new)
 # solve it
 Qp.solve()
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))

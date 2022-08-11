@@ -35,6 +35,18 @@ If you are using **ProxQP** for your work, we encourage you to [cite the related
 
 The numerical benchmarks of **ProxQP** against other commercial and open-source solvers are available [here](https://github.com/Bambade/qp_benchmark).
 
+For dense Convex Quadratic Programs with inequality and equality constraints, when asking for a relatively high accuracy (e.g., 1.E-6), one obtains the following results.
+
+<p align="center">
+  <img src="./doc/images/time_series_barplot_Random Mixed QP_dense_eps_abs_1e-6.jpg" width="700" alt="Random Mixed QP_dense_eps_abs_1e-6" align="center"/>
+</p>
+
+For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Problems/marmes.shtml), when asking for a high accuracy (e.g., 1.E-9), one obtains the results below.
+
+<p align="center">
+  <img src="./doc/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="700" alt="maros_meszaros_problems_high_accuracy" align="center"/>
+</p>
+
 ## Installation
 
 ### Building from source

@@ -42,4 +42,8 @@ main()
                                        std::nullopt,
                                        std::nullopt,
                                        T(1.E-7));
+  // print an optimal solution x,y and z
+  std::cout << "optimal x: " << results.x << std::endl;
+  std::cout << "optimal y: " << results.y << std::endl;
+  std::cout << "optimal z: " << results.z << std::endl;
 }

@@ -43,3 +43,7 @@ Qp.settings.eps_abs = 1.0e-9
 Qp.settings.verbose = True
 # solve with previous settings
 Qp.solve()
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))

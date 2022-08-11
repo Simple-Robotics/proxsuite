@@ -42,3 +42,7 @@ Qp.init(H, g, A, b, C, u, l)
 Qp.solve()
 # solve with a warm start, for ex random one
 Qp.solve(np.random.randn(n), np.random.randn(n_eq), np.random.randn(n_in))
+# print an optimal solution
+print("optimal x: {}".format(Qp.results.x))
+print("optimal y: {}".format(Qp.results.y))
+print("optimal z: {}".format(Qp.results.z))
