@@ -12,15 +12,13 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   Matio
   FOUND_VAR MATIO_FOUND
-  REQUIRED_VARS MATIO_LIBRARIES MATIO_INCLUDE_DIR
-)
+  REQUIRED_VARS MATIO_LIBRARIES MATIO_INCLUDE_DIR)
 
 if(MATIO_FOUND)
   add_library(matio UNKNOWN IMPORTED)
   set_target_properties(
     matio PROPERTIES IMPORTED_LOCATION "${MATIO_LIBRARIES}"
-                     INTERFACE_INCLUDE_DIRECTORIES "${MATIO_INCLUDE_DIR}"
-  )
+                     INTERFACE_INCLUDE_DIRECTORIES "${MATIO_INCLUDE_DIR}")
 else()
   set(MATIO_LIBRARIES "")
 endif()
@@ -31,5 +29,4 @@ include(FeatureSummary)
 set_package_properties(
   Matio PROPERTIES
   DESCRIPTION "Reading and writing binary MATLAB MAT files"
-  URL "https://github.com/tbeu/matio"
-)
+  URL "https://github.com/tbeu/matio")

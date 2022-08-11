@@ -13,11 +13,7 @@ main()
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
   dense::Model<T> qp = utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   dense::QP<T> Qp(
     dim, n_eq, n_in); // create the QP

@@ -95,7 +95,6 @@ struct Workspace
   bool refactorize;
   bool proximal_parameter_update;
 
-
   sparse::isize n_c; // final number of active inequalities
   /*!
    * Default constructor.
@@ -258,7 +257,7 @@ struct Workspace
     dirty = false;
     refactorize = false;
     proximal_parameter_update = false;
-    n_c=0;
+    n_c = 0;
   }
 };
 } // namespace dense

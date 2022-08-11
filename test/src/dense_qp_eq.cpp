@@ -24,15 +24,20 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
                "framework---"
             << std::endl;
   proxqp::utils::rand::set_seed(1);
-  auto H = ::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand_not_compressed(
-    dim, strong_convexity_factor, sparsity_factor);
-  auto A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(n_eq, dim, sparsity_factor);
-  auto solution = ::proxsuite::proxqp::utils::rand::vector_rand<T>(dim+n_eq);
+  auto H = ::proxsuite::proxqp::utils::rand::
+    sparse_positive_definite_rand_not_compressed(
+      dim, strong_convexity_factor, sparsity_factor);
+  auto A =
+    ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
+      n_eq, dim, sparsity_factor);
+  auto solution = ::proxsuite::proxqp::utils::rand::vector_rand<T>(dim + n_eq);
   auto primal_solution = solution.topRows(dim);
   auto dual_solution = solution.bottomRows(n_eq);
   auto b = A * primal_solution;
   auto g = -H * primal_solution - A.transpose() * dual_solution;
-  auto C = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(0, dim, sparsity_factor);
+  auto C =
+    ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
+      0, dim, sparsity_factor);
   Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init_in(n_in);
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(0);
   Eigen::Matrix<T, Eigen::Dynamic, 1> l(0);
@@ -45,8 +50,7 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   Qp.init(H, g, A, b, C, u, l);
   Qp.solve(primal_solution, dual_solution, dual_init_in);
 
-  DOCTEST_CHECK((A * Qp.results.x - b).lpNorm<Eigen::Infinity>() <=
-                eps_abs);
+  DOCTEST_CHECK((A * Qp.results.x - b).lpNorm<Eigen::Infinity>() <= eps_abs);
   DOCTEST_CHECK((H * Qp.results.x + g + A.transpose() * Qp.results.y)
                   .lpNorm<Eigen::Infinity>() <= eps_abs);
 }
@@ -67,11 +71,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
     proxqp::isize n_in(0);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
@@ -112,11 +112,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
     proxqp::isize n_in(0);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp.H.setZero();
     auto y_sol = proxqp::utils::rand::vector_rand<T>(
       n_eq); // make sure the LP is bounded within the feasible set

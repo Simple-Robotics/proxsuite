@@ -332,8 +332,10 @@ struct DynAllocBase
   {
     if (data != nullptr) {
       // in case resource lifetimes are reodered by moving ownership
-      [[maybe_unused]] auto* parent_stack_data = static_cast<unsigned char*>(parent->stack_data);
-      [[maybe_unused]] auto* old_position = static_cast<unsigned char*>(old_pos);
+      [[maybe_unused]] auto* parent_stack_data =
+        static_cast<unsigned char*>(parent->stack_data);
+      [[maybe_unused]] auto* old_position =
+        static_cast<unsigned char*>(old_pos);
       [[maybe_unused]] auto* data_end =
         static_cast<unsigned char*>(const_cast<void*>(void_data_end));
 

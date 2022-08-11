@@ -28,11 +28,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   Results<T> results = dense::solve<T>(qp.H,
                                        qp.g,
                                        qp.A,
@@ -81,11 +77,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   Results<T> results = dense::solve<T>(qp.H,
                                        qp.g,
                                        qp.A,
@@ -137,11 +129,7 @@ DOCTEST_TEST_CASE(
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   Results<T> results = dense::solve<T>(qp.H,
                                        qp.g,
                                        qp.A,
@@ -192,11 +180,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   auto x_wm = utils::rand::vector_rand<T>(dim);
   auto y_wm = utils::rand::vector_rand<T>(n_eq);
   auto z_wm = utils::rand::vector_rand<T>(n_in);
@@ -237,11 +221,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   bool verbose = true;
   Results<T> results = dense::solve<T>(qp.H,
                                        qp.g,
@@ -294,11 +274,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   Results<T> results = dense::solve<T>(qp.H,
                                        qp.g,

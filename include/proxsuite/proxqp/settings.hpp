@@ -115,7 +115,6 @@ struct Settings
    * used.
    */
 
-
   Settings(T alpha_bcl_ = 0.1,
            T beta_bcl_ = 0.9,
            T refactor_dual_feasibility_threshold_ = 1e-2,

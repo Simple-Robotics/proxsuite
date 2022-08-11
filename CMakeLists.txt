@@ -54,18 +54,16 @@ option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 
 option(BUILD_WITH_VECTORIZATION_SUPPORT
-       "Build the library with the support of modern SIMD instructions." ON
-)
+       "Build the library with the support of modern SIMD instructions." ON)
 option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
-       ON
-)
+       ON)
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
-       "Build the bindings with AVX512 support." ON
-)
+       "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 
-SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
-                      ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
+    ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
                       ${CMAKE_MODULE_PATH})
 
@@ -87,14 +85,11 @@ if(MSVC)
 endif()
 
 # Look for dependencies
-add_project_dependency(
-  Eigen3
-  REQUIRED
-  PKG_CONFIG_REQUIRES
-  "eigen3 >= 3.0.5"
-)
+add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 
-set(SIMDE_HINT_FAILURE "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file.")
+set(SIMDE_HINT_FAILURE
+    "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file."
+)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_project_dependency(Simde REQUIRED)
 endif()
@@ -106,8 +101,7 @@ add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
 target_link_libraries(
   proxsuite
   PUBLIC
-  INTERFACE Eigen3::Eigen
-)
+  INTERFACE Eigen3::Eigen)
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
@@ -116,13 +110,11 @@ add_library(proxsuite-not-vectorized INTERFACE)
 target_link_libraries(
   proxsuite-not-vectorized
   PUBLIC
-  INTERFACE proxsuite
-)
+  INTERFACE proxsuite)
 target_compile_definitions(
   proxsuite-not-vectorized
   PUBLIC
-  INTERFACE PROXSUITE_DONT_VECTORIZE
-)
+  INTERFACE PROXSUITE_DONT_VECTORIZE)
 list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
@@ -130,13 +122,11 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
   target_link_libraries(
     proxsuite-vectorized
     PUBLIC
-    INTERFACE proxsuite
-  )
+    INTERFACE proxsuite)
   target_link_libraries(
     proxsuite-vectorized
     PUBLIC
-    INTERFACE simde
-  )
+    INTERFACE simde)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
@@ -148,8 +138,7 @@ install(
   DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
-)
+  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 # Activate only for advanced users to profile and benchmark the code
 if(ADVANCED_USERS)
@@ -159,9 +148,8 @@ if(ADVANCED_USERS)
   include(cmake/sanitizers.cmake)
 
   target_compile_definitions(proxsuite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
-  target_compile_definitions(
-    proxsuite INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN
-  )
+  target_compile_definitions(proxsuite
+                             INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN)
   add_library(project_warnings INTERFACE)
   add_library(project_options INTERFACE)
 

@@ -14,7 +14,8 @@ namespace proxqp {
 inline void
 print_line()
 {
-  std::string the_line = "-------------------------------------------------------------------------------------------------\0";
+  std::string the_line = "-----------------------------------------------------"
+                         "--------------------------------------------\0";
   std::cout << the_line << "\n" << std::endl;
 }
 
@@ -25,19 +26,22 @@ print_header()
             << std::endl;
 }
 
-inline void 
+inline void
 print_preambule()
 {
   print_line();
-  std::cout << "                              ProxQP  -  Primal Dual Proximal QP Solver\n"
-            << "     (c) Antoine Bambade, Sarah El Kazdadi, Fabian Schramm, Adrien Taylor, "
-               "Justin Carpentier\n"
-            << "                                         Inria Paris 2022        \n"
-            << std::endl;
+  std::cout
+    << "                              ProxQP  -  Primal Dual Proximal QP "
+       "Solver\n"
+    << "     (c) Antoine Bambade, Sarah El Kazdadi, Fabian Schramm, Adrien "
+       "Taylor, "
+       "Justin Carpentier\n"
+    << "                                         Inria Paris 2022        \n"
+    << std::endl;
   print_line();
 }
 
-}// end namespace proxqp
-}// end namespace proxsuite
+} // end namespace proxqp
+} // end namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_PROXQP_UTILS_PRINTS_HPP */

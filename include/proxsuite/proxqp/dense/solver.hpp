@@ -733,7 +733,8 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
   /* to put in debuger mode
   if (qpsettings.verbose) {
     if (err_in > eps_int){
-          std::cout << " inner loop residual is to high! Its value is equal to " << err_in << ", while it should be inferior to: "  << eps_int << std::endl;
+          std::cout << " inner loop residual is to high! Its value is equal to "
+  << err_in << ", while it should be inferior to: "  << eps_int << std::endl;
     }
   }
   */
@@ -1141,8 +1142,7 @@ qp_solve( //
         qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
       // certificate of infeasibility
       qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-      qpresults.y =
-        qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+      qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
       qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
       break;
     }

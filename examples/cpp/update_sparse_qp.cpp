@@ -1,5 +1,5 @@
-#include <proxsuite/proxqp/sparse/sparse.hpp>// get the sparse API of ProxQP
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>// used for generating a random convex Qp
+#include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse API of ProxQP
+#include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex Qp
 
 using namespace proxsuite::proxqp;
 using T = double;

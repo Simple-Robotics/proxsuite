@@ -133,16 +133,46 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(H.rows(),model.dim,"the row dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(H.cols(),model.dim,"the column dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(A.rows(),model.n_eq,"the row dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(A.cols(),model.dim,"the column dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(C.rows(),model.n_in,"the row dimension for initializing C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(C.cols(),model.dim,"the column dimension for initializing C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),
+                                  model.dim,
+                                  "the dimension wrt the primal variable x "
+                                  "variable for initializing g is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),
+                                  model.n_eq,
+                                  "the dimension wrt equality constrained "
+                                  "variables for initializing b is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),
+                                  model.n_in,
+                                  "the dimension wrt inequality constrained "
+                                  "variables for initializing u is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),
+                                  model.n_in,
+                                  "the dimension wrt inequality constrained "
+                                  "variables for initializing l is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      H.rows(),
+      model.dim,
+      "the row dimension for initializing H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      H.cols(),
+      model.dim,
+      "the column dimension for initializing H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      A.rows(),
+      model.n_eq,
+      "the row dimension for initializing A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      A.cols(),
+      model.dim,
+      "the column dimension for initializing A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      C.rows(),
+      model.n_in,
+      "the row dimension for initializing C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      C.cols(),
+      model.dim,
+      "the column dimension for initializing C is not valid.");
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       work.refactorize =
@@ -164,8 +194,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    H,
+    proxsuite::proxqp::dense::setup(H,
                                     dense::VecRef<T>(g),
                                     A,
                                     dense::VecRef<T>(b),
@@ -217,16 +246,46 @@ struct QP
     }
 
     // check the model is valid
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(H.rows(),model.dim,"the row dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(H.cols(),model.dim,"the column dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(A.rows(),model.n_eq,"the row dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(A.cols(),model.dim,"the column dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(C.rows(),model.n_in,"the row dimension for initializing C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(C.cols(),model.dim,"the column dimension for initializing C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),
+                                  model.dim,
+                                  "the dimension wrt the primal variable x "
+                                  "variable for initializing g is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),
+                                  model.n_eq,
+                                  "the dimension wrt equality constrained "
+                                  "variables for initializing b is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),
+                                  model.n_in,
+                                  "the dimension wrt inequality constrained "
+                                  "variables for initializing u is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),
+                                  model.n_in,
+                                  "the dimension wrt inequality constrained "
+                                  "variables for initializing l is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      H.rows(),
+      model.dim,
+      "the row dimension for initializing H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      H.cols(),
+      model.dim,
+      "the column dimension for initializing H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      A.rows(),
+      model.n_eq,
+      "the row dimension for initializing A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      A.cols(),
+      model.dim,
+      "the column dimension for initializing A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      C.rows(),
+      model.n_in,
+      "the row dimension for initializing C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      C.cols(),
+      model.dim,
+      "the column dimension for initializing C is not valid.");
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       work.refactorize =
@@ -248,8 +307,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    H,
+    proxsuite::proxqp::dense::setup(H,
                                     dense::VecRef<T>(g),
                                     A,
                                     dense::VecRef<T>(b),
@@ -447,16 +505,30 @@ struct QP
     if (real_update) {
       // check the model is valid
       if (g != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt primal variable x variable for updating g is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
+                                      model.dim,
+                                      "the dimension wrt primal variable x "
+                                      "variable for updating g is not valid.");
       }
       if (b != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for updating b is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
+                                      model.n_eq,
+                                      "the dimension wrt equality constrained "
+                                      "variables for updating b is not valid.");
       }
       if (u != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating u is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(
+          u.value().rows(),
+          model.n_in,
+          "the dimension wrt inequality constrained variables for updating u "
+          "is not valid.");
       }
       if (l != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating l is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(
+          l.value().rows(),
+          model.n_in,
+          "the dimension wrt inequality constrained variables for updating l "
+          "is not valid.");
       }
       // update the model
       if (g != std::nullopt) {
@@ -513,7 +585,7 @@ struct QP
              std::optional<VecRef<T>> y,
              std::optional<VecRef<T>> z)
   {
-    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings,model);
+    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings, model);
     qp_solve( //
       settings,
       model,
@@ -564,12 +636,12 @@ template<typename T>
 proxqp::Results<T>
 solve(
   MatRef<T> H,
-  const Vec<T>&  g,
+  const Vec<T>& g,
   MatRef<T> A,
-  const Vec<T>&  b,
+  const Vec<T>& b,
   MatRef<T> C,
-  const Vec<T>&  u,
-  const Vec<T>&  l,
+  const Vec<T>& u,
+  const Vec<T>& l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,

@@ -21,7 +21,7 @@ function generate_mixed_qp(n, seed=1)
         n, n, density=0.075, data_rvs=np.random.randn, format="csc"
         ).toarray()
     P = (P + np.transpose(P)) / 2.0
-    
+
     s = np.max(np.absolute(np.linalg.eigvals(P)))
     P += (np.abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
@@ -58,7 +58,7 @@ prim_res = max(
 )
 dual_res = np.linalg.norm(H * x_res + g + np.transpose(A) * y_res + np.transpose(C) * z_res )
 
-# assert that solved with required precision 
+# assert that solved with required precision
 @assert Qp.results.info.pri_res < EPS
 @assert Qp.results.info.dua_res < EPS
 @assert np.isclose(prim_res, Qp.results.info.pri_res)

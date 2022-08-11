@@ -472,7 +472,7 @@ struct MatMut : _detail::SymbolicMatMutInterface<MatMut<T, I>, I>
     }
   {
     static_assert(!bool(proxsuite::linalg::veg::uncvref_t<M>::IsRowMajor), ".");
-  } 
+  }
 
   auto values() const noexcept -> T const* { return _.val; }
   auto values_mut() const noexcept -> T* { return _.val; }

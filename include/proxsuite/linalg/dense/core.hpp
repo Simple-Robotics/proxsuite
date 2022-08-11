@@ -27,7 +27,7 @@
     (Rows),                                                                    \
     ::proxsuite::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(          \
       Type)>());                                                               \
-  auto Name /* NOLINT */ = ::Eigen::Map<                                      \
+  auto Name /* NOLINT */ = ::Eigen::Map<                                       \
     ::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type), ::Eigen::Dynamic, 1>,         \
     ::Eigen::Unaligned,                                                        \
     ::Eigen::Stride<::Eigen::Dynamic, 1>>{                                     \
@@ -51,7 +51,7 @@
     LDLT_ID(stride) * LDLT_ID(cols),                                           \
     ::proxsuite::linalg::dense::_detail::align<__VEG_PP_REMOVE_PAREN(          \
       Type)>());                                                               \
-  auto Name /* NOLINT */ =                                                    \
+  auto Name /* NOLINT */ =                                                     \
     ::Eigen::Map<::Eigen::Matrix<__VEG_PP_REMOVE_PAREN(Type),                  \
                                  ::Eigen::Dynamic,                             \
                                  ::Eigen::Dynamic,                             \

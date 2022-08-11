@@ -43,11 +43,7 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving")
     Scalar sparsity_factor = 0.15;
     Scalar strong_convexity_factor = 0.01;
     proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp.H = cnpy::npy_load_mat<Scalar>(path + "/H.npy");
     qp.g = cnpy::npy_load_vec<Scalar>(path + "/g.npy");
     qp.A = cnpy::npy_load_mat<Scalar>(path + "/A.npy");

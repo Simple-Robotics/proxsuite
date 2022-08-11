@@ -95,12 +95,8 @@ same as the doctest name; see also ``TEST_PREFIX`` and ``TEST_SUFFIX``.
 # ------------------------------------------------------------------------------
 function(doctest_discover_tests TARGET)
   cmake_parse_arguments(
-    ""
-    ""
-    "TEST_PREFIX;TEST_SUFFIX;WORKING_DIRECTORY;TEST_LIST"
-    "TEST_SPEC;EXTRA_ARGS;PROPERTIES"
-    ${ARGN}
-  )
+    "" "" "TEST_PREFIX;TEST_SUFFIX;WORKING_DIRECTORY;TEST_LIST"
+    "TEST_SPEC;EXTRA_ARGS;PROPERTIES" ${ARGN})
 
   if(NOT _WORKING_DIRECTORY)
     set(_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
@@ -111,25 +107,17 @@ function(doctest_discover_tests TARGET)
 
   # Generate a unique name based on the extra arguments
   string(SHA1 args_hash "${_TEST_SPEC} ${_EXTRA_ARGS}")
-  string(
-    SUBSTRING ${args_hash}
-              0
-              7
-              args_hash
-  )
+  string(SUBSTRING ${args_hash} 0 7 args_hash)
 
   # Define rule to generate test list for aforementioned test executable
   set(ctest_include_file
-      "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_include-${args_hash}.cmake"
-  )
+      "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_include-${args_hash}.cmake")
   set(ctest_tests_file
-      "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_tests-${args_hash}.cmake"
-  )
+      "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_tests-${args_hash}.cmake")
   get_property(
     crosscompiling_emulator
     TARGET ${TARGET}
-    PROPERTY CROSSCOMPILING_EMULATOR
-  )
+    PROPERTY CROSSCOMPILING_EMULATOR)
   add_custom_command(
     TARGET ${TARGET}
     POST_BUILD
@@ -143,8 +131,7 @@ function(doctest_discover_tests TARGET)
       "TEST_PREFIX=${_TEST_PREFIX}" -D "TEST_SUFFIX=${_TEST_SUFFIX}" -D
       "TEST_LIST=${_TEST_LIST}" -D "CTEST_FILE=${ctest_tests_file}" -P
       "${_DOCTEST_DISCOVER_TESTS_SCRIPT}"
-    VERBATIM
-  )
+    VERBATIM)
 
   file(
     WRITE "${ctest_include_file}"
@@ -152,28 +139,21 @@ function(doctest_discover_tests TARGET)
     "  include(\"${ctest_tests_file}\")\n"
     "else()\n"
     "  add_test(${TARGET}_NOT_BUILT-${args_hash} ${TARGET}_NOT_BUILT-${args_hash})\n"
-    "endif()\n"
-  )
+    "endif()\n")
 
-  if(NOT
-     CMAKE_VERSION
-     VERSION_LESS
-     3.10
-  )
+  if(NOT CMAKE_VERSION VERSION_LESS 3.10)
     # Add discovered tests to directory TEST_INCLUDE_FILES
     set_property(
       DIRECTORY
       APPEND
-      PROPERTY TEST_INCLUDE_FILES "${ctest_include_file}"
-    )
+      PROPERTY TEST_INCLUDE_FILES "${ctest_include_file}")
   else()
     # Add discovered tests as directory TEST_INCLUDE_FILE if possible
     get_property(
       test_include_file_set
       DIRECTORY
       PROPERTY TEST_INCLUDE_FILE
-      SET
-    )
+      SET)
     if(NOT ${test_include_file_set})
       set_property(DIRECTORY PROPERTY TEST_INCLUDE_FILE "${ctest_include_file}")
     else()
@@ -186,5 +166,4 @@ endfunction()
 # ##############################################################################
 
 set(_DOCTEST_DISCOVER_TESTS_SCRIPT
-    ${CMAKE_CURRENT_LIST_DIR}/doctestAddTests.cmake
-)
+    ${CMAKE_CURRENT_LIST_DIR}/doctestAddTests.cmake)

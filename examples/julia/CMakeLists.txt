@@ -2,7 +2,8 @@ add_custom_target(example-jl)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_JULIA_EXAMPLES *.jl)
 
-FOREACH(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})
-    STRING(REGEX REPLACE "${PROJECT_SOURCE_DIR}/examples/julia/" "" EXAMPLE ${EXAMPLE})
-    ADD_JULIA_UNIT_TEST("example-jl-${EXAMPLE}" "examples/julia/${EXAMPLE}")
-ENDFOREACH(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})
+foreach(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})
+  string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/examples/julia/" "" EXAMPLE
+                       ${EXAMPLE})
+  add_julia_unit_test("example-jl-${EXAMPLE}" "examples/julia/${EXAMPLE}")
+endforeach(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})

@@ -26,10 +26,10 @@ jobs:
 
           # Compilation related dependencies
           mamba install cmake make pkg-config doxygen graphviz
-          
+
           # Main dependencies
           mamba install eigen
-    
+
       - name: Print environment
         shell: bash -l {0}
         run: |

@@ -22,7 +22,8 @@ struct narrow
 #if defined(VEG_WITH_CXX14_SUPPORT)
 
     To to = static_cast<To>(from);
-    [[maybe_unused]] From roundtrip_from = static_cast<From>(static_cast<To>(from));
+    [[maybe_unused]] From roundtrip_from =
+      static_cast<From>(static_cast<To>(from));
     VEG_INTERNAL_ASSERT_PRECONDITION(roundtrip_from == from);
     return to;
 

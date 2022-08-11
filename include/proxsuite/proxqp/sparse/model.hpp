@@ -49,11 +49,14 @@ struct Model
    * @param _n_in number of inequality constraints.
    */
   Model(isize _dim, isize _n_eq, isize _n_in)
-  :  dim(_dim)
-   , n_eq(_n_eq)
-   , n_in(_n_in)
+    : dim(_dim)
+    , n_eq(_n_eq)
+    , n_in(_n_in)
   {
-    PROXSUITE_THROW_PRETTY(_dim == 0,std::invalid_argument,"wrong argument size: the dimension wrt primal variable x should be strictly positive.");
+    PROXSUITE_THROW_PRETTY(_dim == 0,
+                           std::invalid_argument,
+                           "wrong argument size: the dimension wrt primal "
+                           "variable x should be strictly positive.");
   }
   /*!
    * Returns the current (scaled) KKT matrix of the problem.
@@ -152,19 +155,17 @@ struct SparseModel
   VectorType u;
   VectorType l;
 
-  template<
-           typename Vector_g,
+  template<typename Vector_g,
            typename Vector_b,
            typename Vector_u,
            typename Vector_l>
-  SparseModel(
-           const Eigen::SparseMatrix<Scalar, 1>& H_,
-           const Eigen::MatrixBase<Vector_g>& g_,
-           const Eigen::SparseMatrix<Scalar, 1>& A_,
-           const Eigen::MatrixBase<Vector_b>& b_,
-           const Eigen::SparseMatrix<Scalar, 1>& C_,
-           const Eigen::MatrixBase<Vector_u>& u_,
-           const Eigen::MatrixBase<Vector_l>& l_) noexcept
+  SparseModel(const Eigen::SparseMatrix<Scalar, 1>& H_,
+              const Eigen::MatrixBase<Vector_g>& g_,
+              const Eigen::SparseMatrix<Scalar, 1>& A_,
+              const Eigen::MatrixBase<Vector_b>& b_,
+              const Eigen::SparseMatrix<Scalar, 1>& C_,
+              const Eigen::MatrixBase<Vector_u>& u_,
+              const Eigen::MatrixBase<Vector_l>& l_) noexcept
     : H(H_)
     , g(g_)
     , A(A_)

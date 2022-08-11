@@ -28,11 +28,7 @@ DOCTEST_TEST_CASE(
     proxqp::isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
@@ -77,11 +73,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
     proxqp::isize n_in(dim);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_box_constrained_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.settings.eps_rel = 0;
@@ -122,10 +114,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_not_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor);
+      dim, n_eq, n_in, sparsity_factor);
 
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
@@ -169,11 +158,11 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
     proxqp::isize n_in(2 * m);
     proxqp::isize n_eq(0);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_degenerate_qp(
-                                  dim,
-                                  n_eq,
-                                  m, // it n_in = 2 * m, it doubles the inequality constraints
-                                  sparsity_factor,
-                                  strong_convexity_factor);
+      dim,
+      n_eq,
+      m, // it n_in = 2 * m, it doubles the inequality constraints
+      sparsity_factor,
+      strong_convexity_factor);
     proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
     Qp.settings.eps_abs = eps_abs;
     Qp.settings.eps_rel = 0;
@@ -213,10 +202,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
     proxqp::dense::Model<T> qp = proxqp::utils::dense_not_strongly_convex_qp(
-                                  dim,
-                                  n_eq,
-                                  n_in,
-                                  sparsity_factor);
+      dim, n_eq, n_in, sparsity_factor);
     qp.H.setZero();
     auto z_sol = proxqp::utils::rand::vector_rand<T>(n_in);
     qp.g = -qp.C.transpose() *
