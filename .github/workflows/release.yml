@@ -83,7 +83,7 @@ jobs:
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         if: |
-          github.repository == 'simple-robotics/proxqp' &&
+          github.repository == 'Simple-Robotics/proxsuite' &&
           (github.event_name == 'release' && github.event.action == 'published')
         with:
           user: __token__
