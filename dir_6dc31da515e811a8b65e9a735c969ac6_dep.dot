@@ -1,0 +1,16 @@
+digraph "include/proxsuite/linalg/veg/type_traits"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  compound=true
+  subgraph clusterdir_7b2996acf61ebbcb38481b72d02f7469 {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", style="filled,dashed,", label="veg", fontname="Helvetica", fontsize="10", URL="dir_7b2996acf61ebbcb38481b72d02f7469.html"]
+  dir_57e0abd8154e4ee9dda57f187af62c6f [shape=box, label="memory", style="filled,", fillcolor="#a2b4d6", color="grey25", URL="dir_57e0abd8154e4ee9dda57f187af62c6f.html"];
+  dir_e3b8d04263a98fe910c6b8faff630582 [shape=box, label="internal", style="filled,", fillcolor="#a2b4d6", color="red", URL="dir_e3b8d04263a98fe910c6b8faff630582.html"];
+  dir_6dc31da515e811a8b65e9a735c969ac6 [shape=box, label="type_traits", style="filled,bold,", fillcolor="#edf0f7", color="grey25", URL="dir_6dc31da515e811a8b65e9a735c969ac6.html"];
+  }
+  dir_6dc31da515e811a8b65e9a735c969ac6->dir_57e0abd8154e4ee9dda57f187af62c6f [headlabel="1", labeldistance=1.5 headhref="dir_000016_000009.html"];
+  dir_6dc31da515e811a8b65e9a735c969ac6->dir_e3b8d04263a98fe910c6b8faff630582 [headlabel="19", labeldistance=1.5 headhref="dir_000016_000007.html"];
+}

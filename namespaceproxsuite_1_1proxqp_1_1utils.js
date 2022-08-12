@@ -17,7 +17,7 @@ var namespaceproxsuite_1_1proxqp_1_1utils =
       [ "to_sparse_sym", "namespaceproxsuite_1_1proxqp_1_1utils_1_1osqp.html#a07772afc79760f3ef022c07b9301e696", null ]
     ] ],
     [ "rand", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand" ],
-    [ "EigenNoAlloc", "structproxsuite_1_1proxqp_1_1utils_1_1EigenNoAlloc.html", "structproxsuite_1_1proxqp_1_1utils_1_1EigenNoAlloc" ],
+    [ "EigenNoAlloc", "structproxsuite_1_1proxqp_1_1utils_1_1_eigen_no_alloc.html", "structproxsuite_1_1proxqp_1_1utils_1_1_eigen_no_alloc" ],
     [ "c_int", "namespaceproxsuite_1_1proxqp_1_1utils.html#a0ffa0df170a2d30e3f1a7fe86a097745", null ],
     [ "c_float", "namespaceproxsuite_1_1proxqp_1_1utils.html#a650ecc15a52850da1b1ed5c7da717fa6", null ],
     [ "Mat", "namespaceproxsuite_1_1proxqp_1_1utils.html#a6e4d469b2f8e95871ede035cc0573a50", null ],

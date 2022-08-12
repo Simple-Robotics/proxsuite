@@ -1,6 +1,6 @@
 var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
 [
-    [ "AugmentedKkt", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt" ],
+    [ "AugmentedKkt", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt" ],
     [ "VecMapMut", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
     [ "VecMap", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a2860d2e80d0e47d632001cc274428e44", null ],
     [ "positive_part", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a475f4f1cb530f3ea0f8b560307349e9b", null ],
@@ -17,5 +17,5 @@ var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
     [ "top_rows_mut_unchecked", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a9c961aba3d0b5fc16b0b3a908e22fd20", null ],
     [ "global_primal_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a93e21ab0409626375d8e371d803b7d82", null ],
     [ "global_dual_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#adb8373ca531ced04e79d112f395f300f", null ],
-    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#ae16059f27ac10aeadfbcaeec8e4521e1", null ]
+    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#abe631f348381c4891c3f89ce58fe2a87", null ]
 ];

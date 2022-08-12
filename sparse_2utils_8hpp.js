@@ -1,11 +1,9 @@
 var sparse_2utils_8hpp =
 [
-    [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt" ],
-    [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >::Raw", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw" ],
+    [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt" ],
+    [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >::Raw", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt_1_1_raw.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt_1_1_raw" ],
     [ "VecMapMut", "sparse_2utils_8hpp.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
     [ "VecMap", "sparse_2utils_8hpp.html#a2860d2e80d0e47d632001cc274428e44", null ],
-    [ "print_line", "sparse_2utils_8hpp.html#a2422e178fc2c6ce42c0a6c5f97c42805", null ],
-    [ "print_header", "sparse_2utils_8hpp.html#a51616ffa8507a0babb72733c6d426c21", null ],
     [ "print_setup_header", "sparse_2utils_8hpp.html#aa3c995adc4bd5230f3f7ef89e92573af", null ],
     [ "positive_part", "sparse_2utils_8hpp.html#a475f4f1cb530f3ea0f8b560307349e9b", null ],
     [ "negative_part", "sparse_2utils_8hpp.html#a7f5431111d9112a7f38f2214776582ae", null ],
@@ -21,5 +19,5 @@ var sparse_2utils_8hpp =
     [ "top_rows_mut_unchecked", "sparse_2utils_8hpp.html#a9c961aba3d0b5fc16b0b3a908e22fd20", null ],
     [ "global_primal_residual_infeasibility", "sparse_2utils_8hpp.html#a93e21ab0409626375d8e371d803b7d82", null ],
     [ "global_dual_residual_infeasibility", "sparse_2utils_8hpp.html#adb8373ca531ced04e79d112f395f300f", null ],
-    [ "unscaled_primal_dual_residual", "sparse_2utils_8hpp.html#ae16059f27ac10aeadfbcaeec8e4521e1", null ]
+    [ "unscaled_primal_dual_residual", "sparse_2utils_8hpp.html#abe631f348381c4891c3f89ce58fe2a87", null ]
 ];

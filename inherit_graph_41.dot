@@ -1,0 +1,9 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="proxsuite::linalg::\lsparse::util::nb::checked\l_non_negative_plus",height=0.2,width=0.4,color="black",URL="$structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1checked__non__negative__plus.html",tooltip=" "];
+}

@@ -1,12 +1,12 @@
 var memory_2alloc_8hpp =
 [
-    [ "proxsuite::linalg::veg::mem::CopyAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1CopyAvailableFor.html", null ],
-    [ "proxsuite::linalg::veg::mem::DtorAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DtorAvailableFor.html", null ],
-    [ "proxsuite::linalg::veg::mem::SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc" ],
-    [ "proxsuite::linalg::veg::mem::Alloc< SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01SystemAlloc_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01SystemAlloc_01_4" ],
-    [ "proxsuite::linalg::veg::mem::DefaultCloner", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DefaultCloner.html", null ],
-    [ "proxsuite::linalg::veg::mem::Cloner< DefaultCloner >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner_3_01DefaultCloner_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner_3_01DefaultCloner_01_4" ],
-    [ "proxsuite::linalg::veg::_detail::_mem::ManagedAlloc< A >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1ManagedAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1ManagedAlloc" ],
+    [ "proxsuite::linalg::veg::mem::CopyAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_copy_available_for.html", null ],
+    [ "proxsuite::linalg::veg::mem::DtorAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_dtor_available_for.html", null ],
+    [ "proxsuite::linalg::veg::mem::SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_system_alloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_system_alloc" ],
+    [ "proxsuite::linalg::veg::mem::Alloc< SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc_3_01_system_alloc_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc_3_01_system_alloc_01_4" ],
+    [ "proxsuite::linalg::veg::mem::DefaultCloner", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_default_cloner.html", null ],
+    [ "proxsuite::linalg::veg::mem::Cloner< DefaultCloner >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_cloner_3_01_default_cloner_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_cloner_3_01_default_cloner_01_4" ],
+    [ "proxsuite::linalg::veg::_detail::_mem::ManagedAlloc< A >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1_managed_alloc.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1_managed_alloc" ],
     [ "CopyAvailable", "memory_2alloc_8hpp.html#af70c8c9fe3409803cdf933f93271ce5f", [
       [ "no", "memory_2alloc_8hpp.html#af70c8c9fe3409803cdf933f93271ce5fa7fa3b767c460b54a2be4d49030b349c7", null ],
       [ "yes_maythrow", "memory_2alloc_8hpp.html#af70c8c9fe3409803cdf933f93271ce5fac242c4b5c866c6f70c80f3d2bfc58505", null ],

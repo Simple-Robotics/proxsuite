@@ -1,6 +1,6 @@
 var modify_8hpp =
 [
-    [ "proxsuite::linalg::dense::_detail::IndicesR", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR" ],
+    [ "proxsuite::linalg::dense::_detail::IndicesR", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1_indices_r.html", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1_indices_r" ],
     [ "delete_rows_and_cols_triangular_impl", "modify_8hpp.html#a401f2c8777fe579e06dc53f4cb8b08c9", null ],
     [ "delete_rows_and_cols_triangular", "modify_8hpp.html#a60f8d808abf72d6b99d2ae7a35aec932", null ],
     [ "ldlt_delete_rows_and_cols_impl", "modify_8hpp.html#a5c34eefcbbe71afc0791b74ef6d807d1", null ],

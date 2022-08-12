@@ -1,0 +1,5 @@
+var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1member__extract__access_1_1_detect_impl_3_01_u_0e162eba36d791e5b8fca3e6774b0e358 =
+[
+    [ "Type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1member__extract__access_1_1_detect_impl_3_01_u_0e162eba36d791e5b8fca3e6774b0e358.html#a04e16f8bec18a7a601fb4b764860829e", null ],
+    [ "value", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1member__extract__access_1_1_detect_impl_3_01_u_0e162eba36d791e5b8fca3e6774b0e358.html#a693d9401a8c88e49fb92a422476705a2", null ]
+];

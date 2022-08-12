@@ -1,0 +1,12 @@
+digraph "include/proxsuite/linalg/veg/internal/external"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  compound=true
+  subgraph clusterdir_e3b8d04263a98fe910c6b8faff630582 {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", style="filled,dashed,", label="internal", fontname="Helvetica", fontsize="10", URL="dir_e3b8d04263a98fe910c6b8faff630582.html"]
+  dir_22f0154691ad263e0875c09e958ac56a [shape=box, label="external", style="filled,bold,", fillcolor="#edf0f7", color="grey25", URL="dir_22f0154691ad263e0875c09e958ac56a.html"];
+  }
+}

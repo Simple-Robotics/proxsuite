@@ -1,9 +1,9 @@
 var get_8hpp =
 [
     [ "proxsuite::linalg::veg::meta::is_bounded_array< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array.html", null ],
-    [ "proxsuite::linalg::veg::meta::is_bounded_array< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array_3_01T_0fN_0e_4.html", null ],
+    [ "proxsuite::linalg::veg::meta::is_bounded_array< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array_3_01_t_0f_n_0e_4.html", null ],
     [ "proxsuite::linalg::veg::meta::array_extent< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent.html", null ],
-    [ "proxsuite::linalg::veg::meta::array_extent< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent_3_01T_0fN_0e_4.html", null ],
+    [ "proxsuite::linalg::veg::meta::array_extent< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent_3_01_t_0f_n_0e_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::array_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1array__get.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1array__get" ],
     [ "proxsuite::linalg::veg::_detail::_meta::member_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1member__get.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1member__get" ],
     [ "proxsuite::linalg::veg::_detail::_meta::adl_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1adl__get.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1adl__get" ],

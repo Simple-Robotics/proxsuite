@@ -7,5 +7,5 @@ var dense_2helpers_8hpp =
     [ "update", "dense_2helpers_8hpp.html#a4c50db3b47789ce4d2fa78f6865f395f", null ],
     [ "setup", "dense_2helpers_8hpp.html#a553a0ee23189ebe868d7ff0c8f31cb87", null ],
     [ "update_proximal_parameters", "dense_2helpers_8hpp.html#afb6654be77b54dd341dda358c7276e49", null ],
-    [ "warm_start", "dense_2helpers_8hpp.html#a4a84dacac75859c4868a5d6ddf272b2c", null ]
+    [ "warm_start", "dense_2helpers_8hpp.html#a6c474364f6ce63390aea85d3862e7971", null ]
 ];
