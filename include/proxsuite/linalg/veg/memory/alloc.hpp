@@ -12,9 +12,9 @@
 #include <cstddef> // std::max_align_t
 #include <cstdlib> // std::{malloc, free, realloc}, ::{aligned_alloc, free}
 #ifndef __APPLE__
-#include <stdlib.h>
 #include <malloc.h> // ::malloc_usable_size
 #else
+#include <AvailabilityMacros.h>
 #include <malloc/malloc.h>
 #define malloc_usable_size malloc_size
 #endif
@@ -25,16 +25,30 @@ namespace linalg {
 namespace veg {
 
 #ifdef __APPLE__
-namespace _ {
+namespace alignment {
 
-VEG_INLINE auto
-_aligned_alloc(size_t alignment, size_t size) -> void*
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+VEG_INLINE void*
+aligned_alloc(std::size_t alignment, std::size_t size)
 {
-  using namespace std;
-  return aligned_alloc(alignment, size);
+  return std::aligned_alloc(alignment, size);
 }
+#elif MAC_OS_X_VERSION_MIN_REQUIRED >= 1090
+VEG_INLINE void*
+aligned_alloc(std::size_t alignment, std::size_t size)
+{
+  if (alignment < sizeof(void*)) {
+    alignment = sizeof(void*);
+  }
+  void* p;
+  if (::posix_memalign(&p, alignment, size) != 0) {
+    p = 0;
+  }
+  return p;
+}
+#endif
 
-}
+} // namespace alignment
 #endif
 
 namespace mem {
@@ -78,7 +92,7 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #if defined(_WIN32)
   return _aligned_malloc((size + mask) & ~mask, align);
 #elif defined(__APPLE__)
-  return _::_aligned_alloc(align, (size + mask) & ~mask);
+  return alignment::aligned_alloc(align, (size + mask) & ~mask);
 #else
   return std::aligned_alloc(align, (size + mask) & ~mask);
 #endif
