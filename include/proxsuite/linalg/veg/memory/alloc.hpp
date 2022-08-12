@@ -30,6 +30,7 @@ namespace _ {
 VEG_INLINE auto
 _aligned_alloc(size_t alignment, size_t size) -> void*
 {
+  using namespace std;
   return aligned_alloc(alignment, size);
 }
 
