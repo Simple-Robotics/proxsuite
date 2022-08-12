@@ -23,6 +23,19 @@
 namespace proxsuite {
 namespace linalg {
 namespace veg {
+
+#ifdef __APPLE__
+namespace _ {
+
+VEG_INLINE auto
+_aligned_alloc(size_t alignment, size_t size) -> void*
+{
+  return aligned_alloc(alignment, size);
+}
+
+}
+#endif
+
 namespace mem {
 enum struct CopyAvailable
 {
@@ -64,7 +77,7 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #if defined(_WIN32)
   return _aligned_malloc((size + mask) & ~mask, align);
 #elif defined(__APPLE__)
-  return ::aligned_alloc(align, (size + mask) & ~mask);
+  return _::_aligned_alloc(align, (size + mask) & ~mask);
 #else
   return std::aligned_alloc(align, (size + mask) & ~mask);
 #endif
