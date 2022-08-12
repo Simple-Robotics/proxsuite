@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME proxsuite)
-set(PROJECT_DESCRIPTION "The proximal solver suite")
+set(PROJECT_DESCRIPTION "The Advanced Proximal Optimization Toolbox")
 set(PROJECT_URL "http://github.com/Simple-Robotics/proxsuite")
 set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
