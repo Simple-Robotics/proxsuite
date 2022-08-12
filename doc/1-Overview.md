@@ -1,10 +1,11 @@
-# Overview {#index}
 <!--
 //
 // Copyright (c) 2022 INRIA
 // Author: Antoine Bambade, Sarah El Kazdadi, Adrien Taylor, Justin Carpentier
 //
 -->
+
+<img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" style="display: block; margin-left: auto; margin-right: auto;"/>
 
 \section OverviewIntro What is ProxSuite?
 
