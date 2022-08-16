@@ -97,7 +97,7 @@ For loading ProxQP with dense backend it is as simple as the following code belo
   </tr>
 </table>
 
-The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision).
+The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision). Note that for model to be valid, the primal dimension (i.e., n) must be strictly positive. If it is not the case an assertion will be raised precising this issue.
 
 For loading ProxQP with sparse backend they are two possibilities:
 * one can use as before the dimensions of the QP problem (i.e., n, n_eq and n_in)
@@ -139,7 +139,22 @@ Once you have defined a Qp object, the init method enables you setting up the QP
   </tr>
 </table>
 
-Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format).
+Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format). Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/initializing_with_none.cpp</th>
+    <th>examples/python/initializing_with_none.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include initializing_with_none.cpp
+    </td>
+    <td valign="top">
+      \include initializing_with_none.py
+    </td>
+  </tr>
+</table>
 
 With the init method, you can also setting-up on the same time some other parameters in the following order:
 * compute_preconditioner: a boolean parameter for executing or not the preconditioner. The preconditioner is an algorithm used (for the moment we use [Ruiz equilibrator](https://cds.cern.ch/record/585592/files/CM-P00040415.pdf)) for reducing the ill-conditioning of the QP problem, and hence speeding-up the solver and increasing its accuracy. It consists mostly of an heuristic involving linear scalings. Note that for very ill-conditioned QP problem, when one asks for a very accurate solution, the unscaling procedure can become less precise (we provide some remarks about this subject in section 6.D of the [following paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf)). By default its value is set to true.
