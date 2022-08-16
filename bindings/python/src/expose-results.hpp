@@ -18,10 +18,8 @@ exposeResults(pybind11::module_ m)
   ::pybind11::enum_<QPSolverOutput>(
     m, "QPSolverOutput", pybind11::module_local())
     .value("PROXQP_SOLVED", QPSolverOutput::PROXQP_SOLVED)
-    .value("PROXQP_MAX_ITER_REACHED",
-           QPSolverOutput::PROXQP_MAX_ITER_REACHED)
-    .value("PROXQP_PRIMAL_INFEASIBLE",
-           QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
+    .value("PROXQP_MAX_ITER_REACHED", QPSolverOutput::PROXQP_MAX_ITER_REACHED)
+    .value("PROXQP_PRIMAL_INFEASIBLE", QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
     .value("PROXQP_DUAL_INFEASIBLE", QPSolverOutput::PROXQP_DUAL_INFEASIBLE)
     .export_values();
 
