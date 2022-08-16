@@ -2,7 +2,7 @@
 # Copyright (c) 2022 INRIA
 #
 
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME proxsuite)
 set(PROJECT_DESCRIPTION "The proximal solver suite")
@@ -97,7 +97,10 @@ endif()
 # Build the main library
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
-add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
+add_library(proxsuite INTERFACE)
+target_include_directories(proxsuite INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>  
+  $<INSTALL_INTERFACE:include/>)
 target_link_libraries(
   proxsuite
   PUBLIC
