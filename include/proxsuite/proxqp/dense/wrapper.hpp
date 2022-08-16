@@ -116,13 +116,14 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(MatRef<T> H,
-            const Vec<T>& g,
-            MatRef<T> A,
-            const Vec<T>& b,
-            MatRef<T> C,
-            const Vec<T>& u,
-            const Vec<T>& l,
+  void init(
+            std::optional<MatRef<T>> H,
+            std::optional<Vec<T>> g,
+            std::optional<MatRef<T>>A,
+            std::optional<Vec<T>> b,
+            std::optional<MatRef<T>> C,
+            std::optional<Vec<T>> u,
+            std::optional<Vec<T>> l,
             bool compute_preconditioner = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -133,46 +134,32 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),
-                                  model.dim,
-                                  "the dimension wrt the primal variable x "
-                                  "variable for initializing g is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),
-                                  model.n_eq,
-                                  "the dimension wrt equality constrained "
-                                  "variables for initializing b is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing u is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing l is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.rows(),
-      model.dim,
-      "the row dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.cols(),
-      model.dim,
-      "the column dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.rows(),
-      model.n_eq,
-      "the row dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.cols(),
-      model.dim,
-      "the column dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.rows(),
-      model.n_in,
-      "the row dimension for initializing C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.cols(),
-      model.dim,
-      "the column dimension for initializing C is not valid.");
+    // check the model is valid
+    if (g != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
+    }
+    if (b != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
+    }
+    if (u != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
+    }
+    if (l != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
+    }
+    if (H != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().rows(),model.dim,"the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().cols(),model.dim,"the column dimension for initializing H is not valid.");
+    }
+    if (A != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().rows(),model.n_eq,"the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().cols(),model.dim,"the column dimension for initializing A is not valid.");
+    }
+    if (C != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().rows(),model.n_in,"the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().cols(),model.dim,"the column dimension for initializing C is not valid.");
+    }
+    
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       work.refactorize =
@@ -194,13 +181,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(H,
-                                    dense::VecRef<T>(g),
+    proxsuite::proxqp::dense::setup(
+                                    H,
+                                    g,
                                     A,
-                                    dense::VecRef<T>(b),
+                                    b,
                                     C,
-                                    dense::VecRef<T>(u),
-                                    dense::VecRef<T>(l),
+                                    u,
+                                    l,
                                     settings,
                                     model,
                                     work,
@@ -227,13 +215,14 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(const SparseMat<T>& H,
-            const Vec<T>& g,
-            const SparseMat<T>& A,
-            const Vec<T>& b,
-            const SparseMat<T>& C,
-            const Vec<T>& u,
-            const Vec<T>& l,
+  void init(
+            std::optional<SparseMat<T>> H,
+            std::optional<Vec<T>> g,
+            std::optional<SparseMat<T>> A,
+            std::optional<Vec<T>> b,
+            std::optional<SparseMat<T>> C,
+            std::optional<Vec<T>> u,
+            std::optional<Vec<T>> l,
             bool compute_preconditioner = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -244,48 +233,31 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-
     // check the model is valid
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),
-                                  model.dim,
-                                  "the dimension wrt the primal variable x "
-                                  "variable for initializing g is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),
-                                  model.n_eq,
-                                  "the dimension wrt equality constrained "
-                                  "variables for initializing b is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing u is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing l is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.rows(),
-      model.dim,
-      "the row dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.cols(),
-      model.dim,
-      "the column dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.rows(),
-      model.n_eq,
-      "the row dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.cols(),
-      model.dim,
-      "the column dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.rows(),
-      model.n_in,
-      "the row dimension for initializing C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.cols(),
-      model.dim,
-      "the column dimension for initializing C is not valid.");
+    if (g != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
+    }
+    if (b != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
+    }
+    if (u != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
+    }
+    if (l != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
+    }
+    if (H != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().rows(),model.dim,"the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().cols(),model.dim,"the column dimension for initializing H is not valid.");
+    }
+    if (A != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().rows(),model.n_eq,"the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().cols(),model.dim,"the column dimension for initializing A is not valid.");
+    }
+    if (C != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().rows(),model.n_in,"the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().cols(),model.dim,"the column dimension for initializing C is not valid.");
+    }
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       work.refactorize =
@@ -307,13 +279,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(H,
-                                    dense::VecRef<T>(g),
+    proxsuite::proxqp::dense::setup(
+                                    H,
+                                    g,
                                     A,
-                                    dense::VecRef<T>(b),
+                                    b,
                                     C,
-                                    dense::VecRef<T>(u),
-                                    dense::VecRef<T>(l),
+                                    u,
+                                    l,
                                     settings,
                                     model,
                                     work,
@@ -340,13 +313,14 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(const std::optional<MatRef<T>> H,
-              std::optional<VecRef<T>> g,
+  void update(
+              const std::optional<MatRef<T>> H,
+              std::optional<Vec<T>> g,
               const std::optional<MatRef<T>> A,
-              std::optional<VecRef<T>> b,
+              std::optional<Vec<T>> b,
               const std::optional<MatRef<T>> C,
-              std::optional<VecRef<T>> u,
-              std::optional<VecRef<T>> l,
+              std::optional<Vec<T>> u,
+              std::optional<Vec<T>> l,
               bool update_preconditioner = true,
               std::optional<T> rho = std::nullopt,
               std::optional<T> mu_eq = std::nullopt,
@@ -374,13 +348,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(MatRef<T>(model.H),
-                                    VecRef<T>(model.g),
-                                    MatRef<T>(model.A),
-                                    VecRef<T>(model.b),
-                                    MatRef<T>(model.C),
-                                    VecRef<T>(model.u),
-                                    VecRef<T>(model.l),
+    proxsuite::proxqp::dense::setup(
+                                    std::optional(model.H),
+                                    std::optional(model.g),
+                                    std::optional(model.A),
+                                    std::optional(model.b),
+                                    std::optional(model.C),
+                                    std::optional(model.u),
+                                    std::optional(model.l),
                                     settings,
                                     model,
                                     work,
@@ -407,13 +382,14 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(const std::optional<SparseMat<T>> H,
-              std::optional<VecRef<T>> g,
+  void update(
+              const std::optional<SparseMat<T>> H,
+              std::optional<Vec<T>> g,
               const std::optional<SparseMat<T>> A,
-              std::optional<VecRef<T>> b,
+              std::optional<Vec<T>> b,
               const std::optional<SparseMat<T>> C,
-              std::optional<VecRef<T>> u,
-              std::optional<VecRef<T>> l,
+              std::optional<Vec<T>> u,
+              std::optional<Vec<T>> l,
               bool update_preconditioner = true,
               std::optional<T> rho = std::nullopt,
               std::optional<T> mu_eq = std::nullopt,
@@ -441,13 +417,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(MatRef<T>(model.H),
-                                    VecRef<T>(model.g),
-                                    MatRef<T>(model.A),
-                                    VecRef<T>(model.b),
-                                    MatRef<T>(model.C),
-                                    VecRef<T>(model.u),
-                                    VecRef<T>(model.l),
+    proxsuite::proxqp::dense::setup(
+                                    std::optional(model.H),
+                                    std::optional(model.g),
+                                    std::optional(model.A),
+                                    std::optional(model.b),
+                                    std::optional(model.C),
+                                    std::optional(model.u),
+                                    std::optional(model.l),
                                     settings,
                                     model,
                                     work,
@@ -475,12 +452,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void update([[maybe_unused]] const std::nullopt_t H,
-              std::optional<VecRef<T>> g,
+              std::optional<Vec<T>> g,
               [[maybe_unused]] const std::nullopt_t A,
-              std::optional<VecRef<T>> b,
+              std::optional<Vec<T>> b,
               [[maybe_unused]] const std::nullopt_t C,
-              std::optional<VecRef<T>> u,
-              std::optional<VecRef<T>> l,
+              std::optional<Vec<T>> u,
+              std::optional<Vec<T>> l,
               bool update_preconditioner = true,
               std::optional<T> rho = std::nullopt,
               std::optional<T> mu_eq = std::nullopt,
@@ -505,30 +482,16 @@ struct QP
     if (real_update) {
       // check the model is valid
       if (g != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
-                                      model.dim,
-                                      "the dimension wrt primal variable x "
-                                      "variable for updating g is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt primal variable x variable for updating g is not valid.");
       }
       if (b != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for updating b is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for updating b is not valid.");
       }
       if (u != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          u.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for updating u "
-          "is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating u is not valid.");
       }
       if (l != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          l.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for updating l "
-          "is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating l is not valid.");
       }
       // update the model
       if (g != std::nullopt) {
@@ -546,13 +509,14 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(MatRef<T>(model.H),
-                                    VecRef<T>(model.g),
-                                    MatRef<T>(model.A),
-                                    VecRef<T>(model.b),
-                                    MatRef<T>(model.C),
-                                    VecRef<T>(model.u),
-                                    VecRef<T>(model.l),
+    proxsuite::proxqp::dense::setup(
+                                    std::optional(model.H),
+                                    std::optional(model.g),
+                                    std::optional(model.A),
+                                    std::optional(model.b),
+                                    std::optional(model.C),
+                                    std::optional(model.u),
+                                    std::optional(model.l),
                                     settings,
                                     model,
                                     work,
@@ -585,7 +549,7 @@ struct QP
              std::optional<VecRef<T>> y,
              std::optional<VecRef<T>> z)
   {
-    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings, model);
+    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings,model);
     qp_solve( //
       settings,
       model,
@@ -635,13 +599,13 @@ struct QP
 template<typename T>
 proxqp::Results<T>
 solve(
-  MatRef<T> H,
-  const Vec<T>& g,
-  MatRef<T> A,
-  const Vec<T>& b,
-  MatRef<T> C,
-  const Vec<T>& u,
-  const Vec<T>& l,
+  std::optional<MatRef<T>> H,
+  std::optional<Vec<T>>  g,
+  std::optional<MatRef<T>> A,
+  std::optional<Vec<T>>  b,
+  std::optional<MatRef<T>> C,
+  std::optional<Vec<T>>  u,
+  std::optional<Vec<T>>  l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -657,10 +621,18 @@ solve(
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 {
-
-  isize n(H.rows());
-  isize n_eq(A.rows());
-  isize n_in(C.rows());
+  isize n(0);
+  isize n_eq(0);
+  isize n_in(0);
+  if (H!=std::nullopt){
+    n = H.value().rows();
+  }
+  if (A!=std::nullopt){
+    n_eq = A.value().rows();
+  }
+  if (C!=std::nullopt){
+    n_in = C.value().rows();
+  }
 
   QP<T> Qp(n, n_eq, n_in);
   Qp.settings.initial_guess = initial_guess;
@@ -716,13 +688,13 @@ solve(
 template<typename T>
 proxqp::Results<T>
 solve(
-  const SparseMat<T>& H,
-  const Vec<T>& g,
-  const SparseMat<T>& A,
-  const Vec<T>& b,
-  const SparseMat<T>& C,
-  const Vec<T>& u,
-  const Vec<T>& l,
+  std::optional<SparseMat<T>> H,
+  std::optional<Vec<T>> g,
+  std::optional<SparseMat<T>> A,
+  std::optional<Vec<T>> b,
+  std::optional<SparseMat<T>> C,
+  std::optional<Vec<T>> u,
+  std::optional<Vec<T>> l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -739,10 +711,18 @@ solve(
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 {
 
-  isize n(H.rows());
-  isize n_eq(A.rows());
-  isize n_in(C.rows());
-
+  isize n(0);
+  isize n_eq(0);
+  isize n_in(0);
+  if (H!=std::nullopt){
+    n = H.value().rows();
+  }
+  if (A!=std::nullopt){
+    n_eq = A.value().rows();
+  }
+  if (C!=std::nullopt){
+    n_in = C.value().rows();
+  }
   QP<T> Qp(n, n_eq, n_in);
   Qp.settings.initial_guess = initial_guess;
 

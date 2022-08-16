@@ -58,7 +58,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -97,7 +97,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -138,7 +138,7 @@ class SparseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -181,7 +181,7 @@ class SparseQpWrapper(unittest.TestCase):
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
         z_wm = np.random.randn(n_in)
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -222,7 +222,7 @@ class SparseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -261,7 +261,7 @@ class SparseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.qp.sparse.solve(
+        results = proxsuite.proxqp.sparse.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -270,7 +270,7 @@ class SparseQpWrapper(unittest.TestCase):
             u=np.asfortranarray(u),
             l=np.asfortranarray(l),
             eps_abs=1.0e-9,
-            initial_guess=proxsuite.qp.NO_INITIAL_GUESS,
+            initial_guess=proxsuite.proxqp.NO_INITIAL_GUESS,
         )
         dua_res = normInf(
             H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z
@@ -292,6 +292,76 @@ class SparseQpWrapper(unittest.TestCase):
             )
         )
 
+    def test_sparse_problem_with_exact_solution_known(self):
+        print(
+            "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
+        )
+
+        n = 150
+        M = spa.lil_matrix(spa.eye(n))
+        for i in range(1, n - 1):
+            M[i, i + 1] = -1
+            M[i, i - 1] = 1
+
+        H = spa.csc_matrix(M.dot(M.transpose()))
+        g = -np.ones((n,))
+        A = None
+        b = None
+        C = spa.csc_matrix(spa.eye(n))
+        l = 2.0 * np.ones((n,))
+        u = np.full(l.shape, +np.infty)
+
+        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+        x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
+
+        dua_res = normInf(
+            H @ results.x + g  + C.transpose() @ results.z
+        )
+        pri_res = normInf(
+                np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0))
+            
+        
+        assert dua_res <= 1e-3 # default precision of the solver
+        assert pri_res <= 1e-3
+        assert normInf(x_theoretically_optimal-results.x) <= 1e-3
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
+        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
+        print("total number of iteration: {}".format(results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                results.info.setup_time, results.info.solve_time
+            )
+        )
+
+    def test_initializing_with_None(self):
+        print(
+            "------------------------test initialization with Nones"
+        )
+
+        H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
+        g = np.array([-13.0, 15.0, 7.0])
+        A = None
+        b = None
+        C = None
+        u = None
+        l = None
+
+        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+        print("optimal x: {}".format(results.x))
+
+        dua_res = normInf(
+            H @ results.x + g 
+        )
+
+        assert dua_res <= 1e-3 # default precision of the solver
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
+        print("dual residual = {} ".format(dua_res))
+        print("total number of iteration: {}".format(results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                results.info.setup_time, results.info.solve_time
+            )
+        )
 
 if __name__ == "__main__":
     unittest.main()

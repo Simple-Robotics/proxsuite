@@ -39,15 +39,16 @@ exposeQpObjectDense(pybind11::module_ m)
                    "class with settings option of the solver.")
     .def_readwrite(
       "model", &dense::QP<T>::model, "class containing the QP model")
+
     .def(
       "init",
-      static_cast<void (dense::QP<T>::*)(dense::MatRef<T>,
-                                         const dense::Vec<T>&,
-                                         dense::MatRef<T>,
-                                         const dense::Vec<T>&,
-                                         dense::MatRef<T>,
-                                         const dense::Vec<T>&,
-                                         const dense::Vec<T>&,
+      static_cast<void (dense::QP<T>::*)(std::optional<dense::MatRef<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::MatRef<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::MatRef<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::Vec<T>>,
                                          bool compute_preconditioner,
                                          std::optional<T>,
                                          std::optional<T>,
@@ -73,13 +74,13 @@ exposeQpObjectDense(pybind11::module_ m)
 
     .def(
       "init",
-      static_cast<void (dense::QP<T>::*)(const dense::SparseMat<T>&,
-                                         const dense::Vec<T>&,
-                                         const dense::SparseMat<T>&,
-                                         const dense::Vec<T>&,
-                                         const dense::SparseMat<T>&,
-                                         const dense::Vec<T>&,
-                                         const dense::Vec<T>&,
+      static_cast<void (dense::QP<T>::*)(std::optional<dense::SparseMat<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::SparseMat<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::SparseMat<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::Vec<T>>,
                                          bool compute_preconditioner,
                                          std::optional<T>,
                                          std::optional<T>,
@@ -102,6 +103,9 @@ exposeQpObjectDense(pybind11::module_ m)
         "mu_eq", std::nullopt, "dual equality constraint proximal parameter"),
       pybind11::arg_v(
         "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
+
+    
+
     .def("solve",
          static_cast<void (dense::QP<T>::*)()>(&dense::QP<T>::solve),
          "function used for solving the QP problem, using default parameters.")
@@ -111,15 +115,16 @@ exposeQpObjectDense(pybind11::module_ m)
                                             std::optional<dense::VecRef<T>> z)>(
            &dense::QP<T>::solve),
          "function used for solving the QP problem, when passing a warm start.")
+
     .def(
       "update",
       static_cast<void (dense::QP<T>::*)(std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
+                                         std::optional<dense::Vec<T>>,
                                          std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
+                                         std::optional<dense::Vec<T>>,
                                          std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
+                                         std::optional<dense::Vec<T>>,
+                                         std::optional<dense::Vec<T>>,
                                          bool update_preconditioner,
                                          std::optional<T>,
                                          std::optional<T>,
@@ -149,12 +154,12 @@ exposeQpObjectDense(pybind11::module_ m)
       "update",
       static_cast<void (dense::QP<T>::*)(
         const std::optional<dense::SparseMat<T>>,
-        std::optional<dense::VecRef<T>>,
+        std::optional<dense::Vec<T>>,
         const std::optional<dense::SparseMat<T>>,
-        std::optional<dense::VecRef<T>>,
+        std::optional<dense::Vec<T>>,
         const std::optional<dense::SparseMat<T>>,
-        std::optional<dense::VecRef<T>>,
-        std::optional<dense::VecRef<T>>,
+        std::optional<dense::Vec<T>>,
+        std::optional<dense::Vec<T>>,
         bool update_preconditioner,
         std::optional<T>,
         std::optional<T>,

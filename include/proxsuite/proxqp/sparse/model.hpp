@@ -57,6 +57,10 @@ struct Model
                            std::invalid_argument,
                            "wrong argument size: the dimension wrt primal "
                            "variable x should be strictly positive.");
+    g.setZero();
+    b.setZero();
+    u.setZero();
+    l.setZero();
   }
   /*!
    * Returns the current (scaled) KKT matrix of the problem.

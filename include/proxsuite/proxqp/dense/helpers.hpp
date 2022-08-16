@@ -120,11 +120,7 @@ setup_equilibration(Workspace<T>& qpwork,
     proxsuite::linalg::veg::from_slice_mut,
     qpwork.ldl_stack.as_mut(),
   };
-  ruiz.scale_qp_in_place(qp_scaled,
-                         execute_preconditioner,
-                         qpsettings.preconditioner_max_iter,
-                         qpsettings.preconditioner_accuracy,
-                         stack);
+  ruiz.scale_qp_in_place(qp_scaled, execute_preconditioner, qpsettings.preconditioner_max_iter,qpsettings.preconditioner_accuracy, stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 }
 
@@ -172,69 +168,39 @@ initial_guess(Workspace<T>& qpwork,
 template<typename Mat, typename T>
 void
 update(std::optional<Mat> H_,
-       std::optional<VecRef<T>> g_,
+       std::optional<Vec<T>> g_,
        std::optional<Mat> A_,
-       std::optional<VecRef<T>> b_,
+       std::optional<Vec<T>> b_,
        std::optional<Mat> C_,
-       std::optional<VecRef<T>> u_,
-       std::optional<VecRef<T>> l_,
+       std::optional<Vec<T>> u_,
+       std::optional<Vec<T>> l_,
        Model<T>& model,
        Workspace<T>& work)
 {
   // check the model is valid
   if (g_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),
-                                  model.dim,
-                                  "the dimension wrt the primal variable x "
-                                  "variable for updating g is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),model.dim,"the dimension wrt the primal variable x variable for updating g is not valid.");
   }
   if (b_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),
-                                  model.n_eq,
-                                  "the dimension wrt equality constrained "
-                                  "variables for updating b is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for updating b is not valid.");
   }
   if (u_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for updating u is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating u is not valid.");
   }
   if (l_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for updating l is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating l is not valid.");
   }
   if (H_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H_.value().rows(),
-      model.dim,
-      "the row dimension for updating H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H_.value().cols(),
-      model.dim,
-      "the column dimension for updating H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(H_.value().rows(),model.dim,"the row dimension for updating H is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(H_.value().cols(),model.dim,"the column dimension for updating H is not valid.");
   }
   if (A_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A_.value().rows(),
-      model.n_eq,
-      "the row dimension for updating A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A_.value().cols(),
-      model.dim,
-      "the column dimension for updating A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(A_.value().rows(),model.n_eq,"the row dimension for updating A is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(A_.value().cols(),model.dim,"the column dimension for updating A is not valid.");
   }
   if (C_ != std::nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C_.value().rows(),
-      model.n_in,
-      "the row dimension for updating C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C_.value().cols(),
-      model.dim,
-      "the column dimension for updating C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(C_.value().rows(),model.n_in,"the row dimension for updating C is not valid.");
+    PROXSUITE_CHECK_ARGUMENT_SIZE(C_.value().cols(),model.dim,"the column dimension for updating C is not valid.");
   }
   // update the model
   if (g_ != std::nullopt) {
@@ -322,16 +288,16 @@ update(std::optional<Mat> H_,
  * preconditioning algorithm, or keeping previous preconditioning variables, or
  * using the identity preconditioner (i.e., no preconditioner).
  */
-template<typename Mat, typename T>
+template<typename Mat,typename T>
 void
 setup( //
-  Mat const& H,
-  VecRef<T> g,
-  Mat const& A,
-  VecRef<T> b,
-  Mat const& C,
-  VecRef<T> u,
-  VecRef<T> l,
+  std::optional<Mat> H,
+  std::optional<Vec<T>> g,
+  std::optional<Mat> A,
+  std::optional<Vec<T>> b,
+  std::optional<Mat> C,
+  std::optional<Vec<T>> u,
+  std::optional<Vec<T>> l,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
@@ -390,19 +356,38 @@ setup( //
       break;
     }
   }
-  qpmodel.H =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      H);
-  qpmodel.g = g;
-  qpmodel.A =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      A);
-  qpmodel.b = b;
-  qpmodel.C =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      C);
-  qpmodel.u = u;
-  qpmodel.l = l;
+  if (H!=std::nullopt){
+    qpmodel.H =
+      Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        H.value());
+  }//else qpmodel.H remains initialzed to a matrix with zero elements
+  if (g!=std::nullopt){
+    qpmodel.g = dense::VecRef<T>(g.value());
+  }
+
+  if (A!=std::nullopt){
+    qpmodel.A =
+      Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        A.value());
+  }//else qpmodel.A remains initialzed to a matrix with zero elements or zero shape
+
+  if (b!=std::nullopt){
+    qpmodel.b = dense::VecRef<T>(b.value());
+  }//else qpmodel.b remains initialzed to a matrix with zero elements or zero shape
+
+  if (C!=std::nullopt){
+    qpmodel.C =
+      Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        C.value());
+  }//else qpmodel.C remains initialzed to a matrix with zero elements or zero shape
+
+  if (u!=std::nullopt){
+    qpmodel.u = dense::VecRef<T>(u.value());
+  }//else qpmodel.u remains initialzed to a matrix with zero elements or zero shape
+
+  if (l!=std::nullopt){
+    qpmodel.l = dense::VecRef<T>(l.value());
+  }//else qpmodel.l remains initialzed to a matrix with zero elements or zero shape
 
   qpwork.H_scaled = qpmodel.H;
   qpwork.g_scaled = qpmodel.g;
@@ -430,7 +415,6 @@ setup( //
       break;
   }
 }
-
 ////// UPDATES ///////
 
 /*!
@@ -490,19 +474,9 @@ warm_start(std::optional<VecRef<T>> x_wm,
     if (n_in != 0) {
       if (x_wm != std::nullopt && y_wm != std::nullopt &&
           z_wm != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          z_wm.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for warm start "
-          "is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for warm start is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          x_wm.value().rows(),
-          model.dim,
-          "the dimension wrt primal variable x for warm start is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for warm start is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for warm start is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(x_wm.value().rows(),model.dim,"the dimension wrt primal variable x for warm start is not valid.");
         results.x = x_wm.value().eval();
         results.y = y_wm.value().eval();
         results.z = z_wm.value().eval();
@@ -510,14 +484,8 @@ warm_start(std::optional<VecRef<T>> x_wm,
     } else {
       // n_in= 0
       if (x_wm != std::nullopt && y_wm != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for warm start is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          x_wm.value().rows(),
-          model.dim,
-          "the dimension wrt primal variable x for warm start is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for warm start is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(x_wm.value().rows(),model.dim,"the dimension wrt primal variable x for warm start is not valid.");
         results.x = x_wm.value().eval();
         results.y = y_wm.value().eval();
       }
@@ -525,24 +493,15 @@ warm_start(std::optional<VecRef<T>> x_wm,
   } else if (n_in != 0) {
     // n_eq = 0
     if (x_wm != std::nullopt && z_wm != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),
-                                    model.n_in,
-                                    "the dimension wrt inequality constrained "
-                                    "variables for warm start is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        x_wm.value().rows(),
-        model.dim,
-        "the dimension wrt primal variable x for warm start is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for warm start is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(x_wm.value().rows(),model.dim,"the dimension wrt primal variable x for warm start is not valid.");
       results.x = x_wm.value().eval();
       results.z = z_wm.value().eval();
     }
   } else {
     // n_eq = 0 and n_in = 0
     if (x_wm != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        x_wm.value().rows(),
-        model.dim,
-        "the dimension wrt primal variable x for warm start is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(x_wm.value().rows(),model.dim,"the dimension wrt primal variable x for warm start is not valid.");
       results.x = x_wm.value().eval();
     }
   }
