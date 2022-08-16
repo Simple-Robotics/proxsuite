@@ -18,8 +18,15 @@ main()
   dense::Model<T> qp = utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  Qp.init(qp.H, qp.g,qp.A,qp.b,qp.C,qp.u,qp.l); // initialization with zero shape matrices
-  //it is equivalent to do Qp.init(qp.H, qp.g, std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
+  Qp.init(qp.H,
+          qp.g,
+          qp.A,
+          qp.b,
+          qp.C,
+          qp.u,
+          qp.l); // initialization with zero shape matrices
+  // it is equivalent to do Qp.init(qp.H, qp.g,
+  // std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
   Qp.solve();
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << Qp.results.x << std::endl;

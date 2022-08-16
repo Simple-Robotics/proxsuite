@@ -297,6 +297,7 @@ class DenseQpWrapper(unittest.TestCase):
                 results.info.setup_time, results.info.solve_time
             )
         )
+
     def test_sparse_problem_with_exact_solution_known(self):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
@@ -319,16 +320,14 @@ class DenseQpWrapper(unittest.TestCase):
         results = proxsuite.proxqp.dense.solve(H, g, A, b, C, u, l)
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
-        dua_res = normInf(
-            H @ results.x + g  + C.transpose() @ results.z
-        )
+        dua_res = normInf(H @ results.x + g + C.transpose() @ results.z)
         pri_res = normInf(
-                np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0))
-            
-        
-        assert dua_res <= 1e-3 # default precision of the solver
+            np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
+        )
+
+        assert dua_res <= 1e-3  # default precision of the solver
         assert pri_res <= 1e-3
-        assert normInf(x_theoretically_optimal-results.x) <= 1e-3
+        assert normInf(x_theoretically_optimal - results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(results.info.iter))
@@ -339,9 +338,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
     def test_initializing_with_None(self):
-        print(
-            "------------------------test initialization with Nones"
-        )
+        print("------------------------test initialization with Nones")
 
         H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
         g = np.array([-13.0, 15.0, 7.0])
@@ -354,11 +351,9 @@ class DenseQpWrapper(unittest.TestCase):
         results = proxsuite.proxqp.dense.solve(H, g, A, b, C, u, l)
         print("optimal x: {}".format(results.x))
 
-        dua_res = normInf(
-            H @ results.x + g 
-        )
+        dua_res = normInf(H @ results.x + g)
 
-        assert dua_res <= 1e-3 # default precision of the solver
+        assert dua_res <= 1e-3  # default precision of the solver
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
         print("dual residual = {} ".format(dua_res))
         print("total number of iteration: {}".format(results.info.iter))

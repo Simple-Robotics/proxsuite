@@ -116,10 +116,9 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(
-            std::optional<MatRef<T>> H,
+  void init(std::optional<MatRef<T>> H,
             std::optional<Vec<T>> g,
-            std::optional<MatRef<T>>A,
+            std::optional<MatRef<T>> A,
             std::optional<Vec<T>> b,
             std::optional<MatRef<T>> C,
             std::optional<Vec<T>> u,
@@ -136,30 +135,64 @@ struct QP
     }
     // check the model is valid
     if (g != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        g.value().rows(),
+        model.dim,
+        "the dimension wrt the primal variable x variable for initializing g "
+        "is not valid.");
     }
     if (b != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        b.value().rows(),
+        model.n_eq,
+        "the dimension wrt equality constrained variables for initializing b "
+        "is not valid.");
     }
     if (u != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        u.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing u "
+        "is not valid.");
     }
     if (l != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        l.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing l "
+        "is not valid.");
     }
     if (H != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().rows(),model.dim,"the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().cols(),model.dim,"the column dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().rows(),
+        model.dim,
+        "the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().cols(),
+        model.dim,
+        "the column dimension for initializing H is not valid.");
     }
     if (A != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().rows(),model.n_eq,"the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().cols(),model.dim,"the column dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().rows(),
+        model.n_eq,
+        "the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().cols(),
+        model.dim,
+        "the column dimension for initializing A is not valid.");
     }
     if (C != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().rows(),model.n_in,"the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().cols(),model.dim,"the column dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().rows(),
+        model.n_in,
+        "the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().cols(),
+        model.dim,
+        "the column dimension for initializing C is not valid.");
     }
-    
+
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       work.refactorize =
@@ -181,8 +214,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    H,
+    proxsuite::proxqp::dense::setup(H,
                                     g,
                                     A,
                                     b,
@@ -215,8 +247,7 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(
-            std::optional<SparseMat<T>> H,
+  void init(std::optional<SparseMat<T>> H,
             std::optional<Vec<T>> g,
             std::optional<SparseMat<T>> A,
             std::optional<Vec<T>> b,
@@ -235,28 +266,62 @@ struct QP
     }
     // check the model is valid
     if (g != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        g.value().rows(),
+        model.dim,
+        "the dimension wrt the primal variable x variable for initializing g "
+        "is not valid.");
     }
     if (b != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        b.value().rows(),
+        model.n_eq,
+        "the dimension wrt equality constrained variables for initializing b "
+        "is not valid.");
     }
     if (u != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        u.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing u "
+        "is not valid.");
     }
     if (l != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        l.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing l "
+        "is not valid.");
     }
     if (H != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().rows(),model.dim,"the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().cols(),model.dim,"the column dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().rows(),
+        model.dim,
+        "the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().cols(),
+        model.dim,
+        "the column dimension for initializing H is not valid.");
     }
     if (A != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().rows(),model.n_eq,"the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().cols(),model.dim,"the column dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().rows(),
+        model.n_eq,
+        "the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().cols(),
+        model.dim,
+        "the column dimension for initializing A is not valid.");
     }
     if (C != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().rows(),model.n_in,"the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().cols(),model.dim,"the column dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().rows(),
+        model.n_in,
+        "the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().cols(),
+        model.dim,
+        "the column dimension for initializing C is not valid.");
     }
     if (settings.initial_guess ==
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
@@ -279,8 +344,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    H,
+    proxsuite::proxqp::dense::setup(H,
                                     g,
                                     A,
                                     b,
@@ -313,8 +377,7 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(
-              const std::optional<MatRef<T>> H,
+  void update(const std::optional<MatRef<T>> H,
               std::optional<Vec<T>> g,
               const std::optional<MatRef<T>> A,
               std::optional<Vec<T>> b,
@@ -348,8 +411,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(model.g),
                                     std::optional(model.A),
                                     std::optional(model.b),
@@ -382,8 +444,7 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(
-              const std::optional<SparseMat<T>> H,
+  void update(const std::optional<SparseMat<T>> H,
               std::optional<Vec<T>> g,
               const std::optional<SparseMat<T>> A,
               std::optional<Vec<T>> b,
@@ -417,8 +478,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(model.g),
                                     std::optional(model.A),
                                     std::optional(model.b),
@@ -482,16 +542,30 @@ struct QP
     if (real_update) {
       // check the model is valid
       if (g != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt primal variable x variable for updating g is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
+                                      model.dim,
+                                      "the dimension wrt primal variable x "
+                                      "variable for updating g is not valid.");
       }
       if (b != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for updating b is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
+                                      model.n_eq,
+                                      "the dimension wrt equality constrained "
+                                      "variables for updating b is not valid.");
       }
       if (u != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating u is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(
+          u.value().rows(),
+          model.n_in,
+          "the dimension wrt inequality constrained variables for updating u "
+          "is not valid.");
       }
       if (l != std::nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating l is not valid.");
+        PROXSUITE_CHECK_ARGUMENT_SIZE(
+          l.value().rows(),
+          model.n_in,
+          "the dimension wrt inequality constrained variables for updating l "
+          "is not valid.");
       }
       // update the model
       if (g != std::nullopt) {
@@ -509,8 +583,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(model.g),
                                     std::optional(model.A),
                                     std::optional(model.b),
@@ -549,7 +622,7 @@ struct QP
              std::optional<VecRef<T>> y,
              std::optional<VecRef<T>> z)
   {
-    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings,model);
+    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings, model);
     qp_solve( //
       settings,
       model,
@@ -600,12 +673,12 @@ template<typename T>
 proxqp::Results<T>
 solve(
   std::optional<MatRef<T>> H,
-  std::optional<Vec<T>>  g,
+  std::optional<Vec<T>> g,
   std::optional<MatRef<T>> A,
-  std::optional<Vec<T>>  b,
+  std::optional<Vec<T>> b,
   std::optional<MatRef<T>> C,
-  std::optional<Vec<T>>  u,
-  std::optional<Vec<T>>  l,
+  std::optional<Vec<T>> u,
+  std::optional<Vec<T>> l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -624,13 +697,13 @@ solve(
   isize n(0);
   isize n_eq(0);
   isize n_in(0);
-  if (H!=std::nullopt){
+  if (H != std::nullopt) {
     n = H.value().rows();
   }
-  if (A!=std::nullopt){
+  if (A != std::nullopt) {
     n_eq = A.value().rows();
   }
-  if (C!=std::nullopt){
+  if (C != std::nullopt) {
     n_in = C.value().rows();
   }
 
@@ -714,13 +787,13 @@ solve(
   isize n(0);
   isize n_eq(0);
   isize n_in(0);
-  if (H!=std::nullopt){
+  if (H != std::nullopt) {
     n = H.value().rows();
   }
-  if (A!=std::nullopt){
+  if (A != std::nullopt) {
     n_eq = A.value().rows();
   }
-  if (C!=std::nullopt){
+  if (C != std::nullopt) {
     n_in = C.value().rows();
   }
   QP<T> Qp(n, n_eq, n_in);

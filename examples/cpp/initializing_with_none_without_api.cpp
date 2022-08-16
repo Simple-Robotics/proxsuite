@@ -18,9 +18,16 @@ main()
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   Results<T> results =
-    dense::solve<T>(qp.H, qp.g,qp.A,qp.b,qp.C,qp.u,qp.l); // initialization with zero shape matrices
-  //it is equivalent to do dense::solve<T>(qp.H, qp.g, std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
-  // print an optimal solution x,y and z
+    dense::solve<T>(qp.H,
+                    qp.g,
+                    qp.A,
+                    qp.b,
+                    qp.C,
+                    qp.u,
+                    qp.l); // initialization with zero shape matrices
+  // it is equivalent to do dense::solve<T>(qp.H, qp.g,
+  // std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
+  //  print an optimal solution x,y and z
   std::cout << "optimal x: " << results.x << std::endl;
   std::cout << "optimal y: " << results.y << std::endl;
   std::cout << "optimal z: " << results.z << std::endl;

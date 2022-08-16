@@ -3872,22 +3872,20 @@ class DenseQpWrapper(unittest.TestCase):
         C = spa.csc_matrix(spa.eye(n))
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.infty)
-        
-        Qp = proxsuite.proxqp.dense.QP(n,0,n)
+
+        Qp = proxsuite.proxqp.dense.QP(n, 0, n)
         Qp.init(H, g, A, b, C, u, l)
         Qp.solve()
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
-        dua_res = normInf(
-            H @ Qp.results.x + g  + C.transpose() @ Qp.results.z
-        )
+        dua_res = normInf(H @ Qp.results.x + g + C.transpose() @ Qp.results.z)
         pri_res = normInf(
-                np.maximum(C @ Qp.results.x - u, 0) + np.minimum(C @ Qp.results.x - l, 0))
-            
-        
-        assert dua_res <= 1e-3 # default precision of the solver
+            np.maximum(C @ Qp.results.x - u, 0) + np.minimum(C @ Qp.results.x - l, 0)
+        )
+
+        assert dua_res <= 1e-3  # default precision of the solver
         assert pri_res <= 1e-3
-        assert normInf(x_theoretically_optimal-Qp.results.x) <= 1e-3
+        assert normInf(x_theoretically_optimal - Qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(Qp.results.info.iter))
@@ -3898,9 +3896,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
     def test_initializing_with_None(self):
-        print(
-            "------------------------test initialization with Nones"
-        )
+        print("------------------------test initialization with Nones")
 
         H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
         g = np.array([-13.0, 15.0, 7.0])
@@ -3910,16 +3906,14 @@ class DenseQpWrapper(unittest.TestCase):
         u = None
         l = None
 
-        Qp = proxsuite.proxqp.dense.QP(3,0,0)
+        Qp = proxsuite.proxqp.dense.QP(3, 0, 0)
         Qp.init(H, g, A, b, C, u, l)
         Qp.solve()
         print("optimal x: {}".format(Qp.results.x))
 
-        dua_res = normInf(
-            H @ Qp.results.x + g 
-        )
+        dua_res = normInf(H @ Qp.results.x + g)
 
-        assert dua_res <= 1e-3 # default precision of the solver
+        assert dua_res <= 1e-3  # default precision of the solver
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
         print("dual residual = {} ".format(dua_res))
         print("total number of iteration: {}".format(Qp.results.info.iter))
@@ -3928,6 +3922,7 @@ class DenseQpWrapper(unittest.TestCase):
                 Qp.results.info.setup_time, Qp.results.info.solve_time
             )
         )
+
 
 if __name__ == "__main__":
     unittest.main()

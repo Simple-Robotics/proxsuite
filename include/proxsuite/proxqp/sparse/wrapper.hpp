@@ -141,10 +141,7 @@ struct QP
       proxsuite::linalg::sparse::from_eigen, CT
     };
     work.setup_symbolic_factorizaton(
-      model,
-      Href.symbolic(),
-      ATref.symbolic(),
-      CTref.symbolic());
+      model, Href.symbolic(), ATref.symbolic(), CTref.symbolic());
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
@@ -168,7 +165,7 @@ struct QP
   void init(std::optional<SparseMat<T, I>> H,
             std::optional<Vec<T>> g,
             std::optional<SparseMat<T, I>> A,
-            std::optional<Vec<T>>  b,
+            std::optional<Vec<T>> b,
             std::optional<SparseMat<T, I>> C,
             std::optional<Vec<T>> u,
             std::optional<Vec<T>> l,
@@ -182,28 +179,62 @@ struct QP
       work.timer.start();
     }
     if (g != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),model.dim,"the dimension wrt the primal variable x variable for initializing g is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        g.value().rows(),
+        model.dim,
+        "the dimension wrt the primal variable x variable for initializing g "
+        "is not valid.");
     }
     if (b != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for initializing b is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        b.value().rows(),
+        model.n_eq,
+        "the dimension wrt equality constrained variables for initializing b "
+        "is not valid.");
     }
     if (u != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing u is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        u.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing u "
+        "is not valid.");
     }
     if (l != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for initializing l is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        l.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing l "
+        "is not valid.");
     }
     if (H != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().rows(),model.dim,"the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H.value().cols(),model.dim,"the column dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().rows(),
+        model.dim,
+        "the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().cols(),
+        model.dim,
+        "the column dimension for initializing H is not valid.");
     }
     if (A != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().rows(),model.n_eq,"the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A.value().cols(),model.dim,"the column dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().rows(),
+        model.n_eq,
+        "the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().cols(),
+        model.dim,
+        "the column dimension for initializing A is not valid.");
     }
     if (C != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().rows(),model.n_in,"the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C.value().cols(),model.dim,"the column dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().rows(),
+        model.n_in,
+        "the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().cols(),
+        model.dim,
+        "the column dimension for initializing C is not valid.");
     }
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
@@ -214,57 +245,63 @@ struct QP
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    
-  
-    if (g!=std::nullopt){
+
+    if (g != std::nullopt) {
       model.g = VecRef<T>(g.value());
-    }//else qpmodel.g remains initialzed to a matrix with zero elements or zero shape
-    if (b!=std::nullopt){
+    } // else qpmodel.g remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (b != std::nullopt) {
       model.b = VecRef<T>(b.value());
-    }//else qpmodel.b remains initialzed to a matrix with zero elements or zero shape
-    if (u!=std::nullopt){
+    } // else qpmodel.b remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (u != std::nullopt) {
       model.u = VecRef<T>(u.value());
-    }//else qpmodel.u remains initialzed to a matrix with zero elements or zero shape
-    if (l!=std::nullopt){
+    } // else qpmodel.u remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (l != std::nullopt) {
       model.l = VecRef<T>(l.value());
-    }//else qpmodel.l remains initialzed to a matrix with zero elements or zero shape
+    } // else qpmodel.l remains initialzed to a matrix with zero elements or
+      // zero shape
 
     // avoid allocations when H is not nullopt
-    SparseMat<T, I> AT(model.dim,model.n_eq);
-    if (A!=std::nullopt){
+    SparseMat<T, I> AT(model.dim, model.n_eq);
+    if (A != std::nullopt) {
       AT = (A.value()).transpose();
-    }else{
+    } else {
       AT.setZero();
     }
-    SparseMat<T, I> CT(model.dim,model.n_in);
-    if (C!=std::nullopt){
+    SparseMat<T, I> CT(model.dim, model.n_in);
+    if (C != std::nullopt) {
       CT = (C.value()).transpose();
-    }else{
+    } else {
       CT.setZero();
     }
-    if (H!=std::nullopt){
-      SparseMat<T, I> H_triu = (H.value()).template triangularView<Eigen::Upper>() ;
-      sparse::QpView<T, I> qp = { { proxsuite::linalg::sparse::from_eigen,
-                                  H_triu },
-                                { proxsuite::linalg::sparse::from_eigen, model.g },
-                                { proxsuite::linalg::sparse::from_eigen, AT },
-                                { proxsuite::linalg::sparse::from_eigen, model.b },
-                                { proxsuite::linalg::sparse::from_eigen, CT },
-                                { proxsuite::linalg::sparse::from_eigen, model.l },
-                                { proxsuite::linalg::sparse::from_eigen, model.u } };
+    if (H != std::nullopt) {
+      SparseMat<T, I> H_triu =
+        (H.value()).template triangularView<Eigen::Upper>();
+      sparse::QpView<T, I> qp = {
+        { proxsuite::linalg::sparse::from_eigen, H_triu },
+        { proxsuite::linalg::sparse::from_eigen, model.g },
+        { proxsuite::linalg::sparse::from_eigen, AT },
+        { proxsuite::linalg::sparse::from_eigen, model.b },
+        { proxsuite::linalg::sparse::from_eigen, CT },
+        { proxsuite::linalg::sparse::from_eigen, model.l },
+        { proxsuite::linalg::sparse::from_eigen, model.u }
+      };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
-    }else{
-      SparseMat<T, I> H_triu(model.dim,model.dim);
+    } else {
+      SparseMat<T, I> H_triu(model.dim, model.dim);
       H_triu.setZero();
       H_triu = (H.value()).template triangularView<Eigen::Upper>();
-      sparse::QpView<T, I> qp = { { proxsuite::linalg::sparse::from_eigen,
-                                  H_triu },
-                                { proxsuite::linalg::sparse::from_eigen, model.g },
-                                { proxsuite::linalg::sparse::from_eigen, AT },
-                                { proxsuite::linalg::sparse::from_eigen, model.b },
-                                { proxsuite::linalg::sparse::from_eigen, CT },
-                                { proxsuite::linalg::sparse::from_eigen, model.l },
-                                { proxsuite::linalg::sparse::from_eigen, model.u } };
+      sparse::QpView<T, I> qp = {
+        { proxsuite::linalg::sparse::from_eigen, H_triu },
+        { proxsuite::linalg::sparse::from_eigen, model.g },
+        { proxsuite::linalg::sparse::from_eigen, AT },
+        { proxsuite::linalg::sparse::from_eigen, model.b },
+        { proxsuite::linalg::sparse::from_eigen, CT },
+        { proxsuite::linalg::sparse::from_eigen, model.l },
+        { proxsuite::linalg::sparse::from_eigen, model.u }
+      };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
     }
 
@@ -334,28 +371,58 @@ struct QP
 
     // check the model is valid
     if (g_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),model.dim,"the dimension wrt the primal variable x variable for updating g is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),
+                                    model.dim,
+                                    "the dimension wrt the primal variable x "
+                                    "variable for updating g is not valid.");
     }
     if (b_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),model.n_eq,"the dimension wrt equality constrained variables for updating b is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),
+                                    model.n_eq,
+                                    "the dimension wrt equality constrained "
+                                    "variables for updating b is not valid.");
     }
     if (u_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating u is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),
+                                    model.n_in,
+                                    "the dimension wrt inequality constrained "
+                                    "variables for updating u is not valid.");
     }
     if (l_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),model.n_in,"the dimension wrt inequality constrained variables for updating l is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),
+                                    model.n_in,
+                                    "the dimension wrt inequality constrained "
+                                    "variables for updating l is not valid.");
     }
     if (H_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H_.value().rows(),model.dim,"the row dimension for updating H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(H_.value().cols(),model.dim,"the column dimension for updating H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H_.value().rows(),
+        model.dim,
+        "the row dimension for updating H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H_.value().cols(),
+        model.dim,
+        "the column dimension for updating H is not valid.");
     }
     if (A_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A_.value().rows(),model.n_eq,"the row dimension for updating A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(A_.value().cols(),model.dim,"the column dimension for updating A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A_.value().rows(),
+        model.n_eq,
+        "the row dimension for updating A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A_.value().cols(),
+        model.dim,
+        "the column dimension for updating A is not valid.");
     }
     if (C_ != std::nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C_.value().rows(),model.n_in,"the row dimension for updating C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(C_.value().cols(),model.dim,"the column dimension for updating C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C_.value().rows(),
+        model.n_in,
+        "the row dimension for updating C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C_.value().cols(),
+        model.dim,
+        "the column dimension for updating C is not valid.");
     }
 
     // update the model
@@ -558,7 +625,7 @@ struct QP
              std::optional<VecRef<T>> y,
              std::optional<VecRef<T>> z)
   {
-    proxsuite::proxqp::sparse::warm_start(x, y, z, results, settings,model);
+    proxsuite::proxqp::sparse::warm_start(x, y, z, results, settings, model);
     qp_solve( //
       results,
       model,
@@ -630,13 +697,13 @@ solve(
   isize n(0);
   isize n_eq(0);
   isize n_in(0);
-  if (H!=std::nullopt){
+  if (H != std::nullopt) {
     n = H.value().rows();
   }
-  if (A!=std::nullopt){
+  if (A != std::nullopt) {
     n_eq = A.value().rows();
   }
-  if (C!=std::nullopt){
+  if (C != std::nullopt) {
     n_in = C.value().rows();
   }
 

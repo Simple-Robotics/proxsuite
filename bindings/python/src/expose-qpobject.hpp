@@ -104,8 +104,6 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v(
         "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
 
-    
-
     .def("solve",
          static_cast<void (dense::QP<T>::*)()>(&dense::QP<T>::solve),
          "function used for solving the QP problem, using default parameters.")
