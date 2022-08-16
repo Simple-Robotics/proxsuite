@@ -98,9 +98,9 @@ endif()
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
 add_library(proxsuite INTERFACE)
-target_include_directories(proxsuite INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>  
-  $<INSTALL_INTERFACE:include/>)
+target_include_directories(
+  proxsuite INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+                      $<INSTALL_INTERFACE:include/>)
 target_link_libraries(
   proxsuite
   PUBLIC
