@@ -116,10 +116,9 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(
-            std::optional<MatRef<T>> H,
+  void init(std::optional<MatRef<T>> H,
             std::optional<VecRef<T>> g,
-            std::optional<MatRef<T>>A,
+            std::optional<MatRef<T>> A,
             std::optional<VecRef<T>> b,
             std::optional<MatRef<T>> C,
             std::optional<VecRef<T>> u,
@@ -248,8 +247,7 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(
-            std::optional<SparseMat<T>> H,
+  void init(std::optional<SparseMat<T>> H,
             std::optional<VecRef<T>> g,
             std::optional<SparseMat<T>> A,
             std::optional<VecRef<T>> b,
@@ -413,8 +411,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
                                     std::optional(dense::VecRef<T>(model.b)),
@@ -481,8 +478,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
                                     std::optional(dense::VecRef<T>(model.b)),
@@ -587,8 +583,7 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-                                    std::optional(model.H),
+    proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
                                     std::optional(dense::VecRef<T>(model.b)),
@@ -678,12 +673,12 @@ template<typename T>
 proxqp::Results<T>
 solve(
   std::optional<MatRef<T>> H,
-  std::optional<VecRef<T>>  g,
+  std::optional<VecRef<T>> g,
   std::optional<MatRef<T>> A,
-  std::optional<VecRef<T>>  b,
+  std::optional<VecRef<T>> b,
   std::optional<MatRef<T>> C,
-  std::optional<VecRef<T>>  u,
-  std::optional<VecRef<T>>  l,
+  std::optional<VecRef<T>> u,
+  std::optional<VecRef<T>> l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,

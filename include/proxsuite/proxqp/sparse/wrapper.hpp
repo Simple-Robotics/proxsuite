@@ -165,7 +165,7 @@ struct QP
   void init(std::optional<SparseMat<T, I>> H,
             std::optional<VecRef<T>> g,
             std::optional<SparseMat<T, I>> A,
-            std::optional<VecRef<T>>  b,
+            std::optional<VecRef<T>> b,
             std::optional<SparseMat<T, I>> C,
             std::optional<VecRef<T>> u,
             std::optional<VecRef<T>> l,
@@ -245,20 +245,23 @@ struct QP
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    
-  
-    if (g!=std::nullopt){
+
+    if (g != std::nullopt) {
       model.g = g.value();
-    }//else qpmodel.g remains initialzed to a matrix with zero elements or zero shape
-    if (b!=std::nullopt){
+    } // else qpmodel.g remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (b != std::nullopt) {
       model.b = b.value();
-    }//else qpmodel.b remains initialzed to a matrix with zero elements or zero shape
-    if (u!=std::nullopt){
+    } // else qpmodel.b remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (u != std::nullopt) {
       model.u = u.value();
-    }//else qpmodel.u remains initialzed to a matrix with zero elements or zero shape
-    if (l!=std::nullopt){
+    } // else qpmodel.u remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (l != std::nullopt) {
       model.l = l.value();
-    }//else qpmodel.l remains initialzed to a matrix with zero elements or zero shape
+    } // else qpmodel.l remains initialzed to a matrix with zero elements or
+      // zero shape
 
     // avoid allocations when H is not nullopt
     SparseMat<T, I> AT(model.dim, model.n_eq);

@@ -394,8 +394,8 @@ setup( //
     qpmodel.H = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         H.value());
-  }//else qpmodel.H remains initialzed to a matrix with zero elements
-  if (g!=std::nullopt){
+  } // else qpmodel.H remains initialzed to a matrix with zero elements
+  if (g != std::nullopt) {
     qpmodel.g = g.value();
   }
 
@@ -403,38 +403,47 @@ setup( //
     qpmodel.A = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         A.value());
-  }//else qpmodel.A remains initialized to a matrix with zero elements or zero shape
+  } // else qpmodel.A remains initialized to a matrix with zero elements or zero
+    // shape
 
-  if (b!=std::nullopt){
+  if (b != std::nullopt) {
     qpmodel.b = b.value();
-  }//else qpmodel.b remains initialized to a matrix with zero elements or zero shape
+  } // else qpmodel.b remains initialized to a matrix with zero elements or zero
+    // shape
 
   if (C != std::nullopt) {
     qpmodel.C = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         C.value());
-  }//else qpmodel.C remains initialized to a matrix with zero elements or zero shape
+  } // else qpmodel.C remains initialized to a matrix with zero elements or zero
+    // shape
 
-  if (u!=std::nullopt){
+  if (u != std::nullopt) {
     qpmodel.u = u.value();
-  }//else qpmodel.u remains initialized to a matrix with zero elements or zero shape
+  } // else qpmodel.u remains initialized to a matrix with zero elements or zero
+    // shape
 
-  if (l!=std::nullopt){
+  if (l != std::nullopt) {
     qpmodel.l = l.value();
-  }//else qpmodel.l remains initialized to a matrix with zero elements or zero shape
+  } // else qpmodel.l remains initialized to a matrix with zero elements or zero
+    // shape
 
   qpwork.H_scaled = qpmodel.H;
   qpwork.g_scaled = qpmodel.g;
   qpwork.A_scaled = qpmodel.A;
   qpwork.b_scaled = qpmodel.b;
   qpwork.C_scaled = qpmodel.C;
-  qpwork.u_scaled = (qpmodel.u.array() <= T(1.E20))
+  qpwork.u_scaled =
+    (qpmodel.u.array() <= T(1.E20))
       .select(qpmodel.u,
-              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array()+T(1.E20));
-  qpwork.l_scaled = (qpmodel.l.array() >= T(-1.E20))
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() +
+                T(1.E20));
+  qpwork.l_scaled =
+    (qpmodel.l.array() >= T(-1.E20))
       .select(qpmodel.l,
-              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array()-T(1.E20));
-    
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() -
+                T(1.E20));
+
   qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
   qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpwork.u_scaled);
   qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpwork.l_scaled);
