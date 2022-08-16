@@ -163,12 +163,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void init(std::optional<SparseMat<T, I>> H,
-            std::optional<Vec<T>> g,
+            std::optional<VecRef<T>> g,
             std::optional<SparseMat<T, I>> A,
-            std::optional<Vec<T>> b,
+            std::optional<VecRef<T>>  b,
             std::optional<SparseMat<T, I>> C,
-            std::optional<Vec<T>> u,
-            std::optional<Vec<T>> l,
+            std::optional<VecRef<T>> u,
+            std::optional<VecRef<T>> l,
             bool compute_preconditioner_ = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -245,23 +245,20 @@ struct QP
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-
-    if (g != std::nullopt) {
-      model.g = VecRef<T>(g.value());
-    } // else qpmodel.g remains initialzed to a matrix with zero elements or
-      // zero shape
-    if (b != std::nullopt) {
-      model.b = VecRef<T>(b.value());
-    } // else qpmodel.b remains initialzed to a matrix with zero elements or
-      // zero shape
-    if (u != std::nullopt) {
-      model.u = VecRef<T>(u.value());
-    } // else qpmodel.u remains initialzed to a matrix with zero elements or
-      // zero shape
-    if (l != std::nullopt) {
-      model.l = VecRef<T>(l.value());
-    } // else qpmodel.l remains initialzed to a matrix with zero elements or
-      // zero shape
+    
+  
+    if (g!=std::nullopt){
+      model.g = g.value();
+    }//else qpmodel.g remains initialzed to a matrix with zero elements or zero shape
+    if (b!=std::nullopt){
+      model.b = b.value();
+    }//else qpmodel.b remains initialzed to a matrix with zero elements or zero shape
+    if (u!=std::nullopt){
+      model.u = u.value();
+    }//else qpmodel.u remains initialzed to a matrix with zero elements or zero shape
+    if (l!=std::nullopt){
+      model.l = l.value();
+    }//else qpmodel.l remains initialzed to a matrix with zero elements or zero shape
 
     // avoid allocations when H is not nullopt
     SparseMat<T, I> AT(model.dim, model.n_eq);
@@ -672,12 +669,12 @@ template<typename T, typename I>
 proxqp::Results<T>
 solve(
   std::optional<SparseMat<T, I>> H,
-  std::optional<Vec<T>> g,
+  std::optional<VecRef<T>> g,
   std::optional<SparseMat<T, I>> A,
-  std::optional<Vec<T>> b,
+  std::optional<VecRef<T>> b,
   std::optional<SparseMat<T, I>> C,
-  std::optional<Vec<T>> u,
-  std::optional<Vec<T>> l,
+  std::optional<VecRef<T>> u,
+  std::optional<VecRef<T>> l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,

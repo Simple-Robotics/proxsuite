@@ -326,12 +326,12 @@ template<typename Mat, typename T>
 void
 setup( //
   std::optional<Mat> H,
-  std::optional<Vec<T>> g,
+  std::optional<VecRef<T>> g,
   std::optional<Mat> A,
-  std::optional<Vec<T>> b,
+  std::optional<VecRef<T>> b,
   std::optional<Mat> C,
-  std::optional<Vec<T>> u,
-  std::optional<Vec<T>> l,
+  std::optional<VecRef<T>> u,
+  std::optional<VecRef<T>> l,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
@@ -394,51 +394,50 @@ setup( //
     qpmodel.H = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         H.value());
-  } // else qpmodel.H remains initialzed to a matrix with zero elements
-  if (g != std::nullopt) {
-    qpmodel.g = dense::VecRef<T>(g.value());
+  }//else qpmodel.H remains initialzed to a matrix with zero elements
+  if (g!=std::nullopt){
+    qpmodel.g = g.value();
   }
 
   if (A != std::nullopt) {
     qpmodel.A = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         A.value());
-  } // else qpmodel.A remains initialzed to a matrix with zero elements or zero
-    // shape
+  }//else qpmodel.A remains initialized to a matrix with zero elements or zero shape
 
-  if (b != std::nullopt) {
-    qpmodel.b = dense::VecRef<T>(b.value());
-  } // else qpmodel.b remains initialzed to a matrix with zero elements or zero
-    // shape
+  if (b!=std::nullopt){
+    qpmodel.b = b.value();
+  }//else qpmodel.b remains initialized to a matrix with zero elements or zero shape
 
   if (C != std::nullopt) {
     qpmodel.C = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
         C.value());
-  } // else qpmodel.C remains initialzed to a matrix with zero elements or zero
-    // shape
+  }//else qpmodel.C remains initialized to a matrix with zero elements or zero shape
 
-  if (u != std::nullopt) {
-    qpmodel.u = dense::VecRef<T>(u.value());
-  } // else qpmodel.u remains initialzed to a matrix with zero elements or zero
-    // shape
+  if (u!=std::nullopt){
+    qpmodel.u = u.value();
+  }//else qpmodel.u remains initialized to a matrix with zero elements or zero shape
 
-  if (l != std::nullopt) {
-    qpmodel.l = dense::VecRef<T>(l.value());
-  } // else qpmodel.l remains initialzed to a matrix with zero elements or zero
-    // shape
+  if (l!=std::nullopt){
+    qpmodel.l = l.value();
+  }//else qpmodel.l remains initialized to a matrix with zero elements or zero shape
 
   qpwork.H_scaled = qpmodel.H;
   qpwork.g_scaled = qpmodel.g;
   qpwork.A_scaled = qpmodel.A;
   qpwork.b_scaled = qpmodel.b;
   qpwork.C_scaled = qpmodel.C;
-  qpwork.u_scaled = qpmodel.u;
-  qpwork.l_scaled = qpmodel.l;
-
+  qpwork.u_scaled = (qpmodel.u.array() <= T(1.E20))
+      .select(qpmodel.u,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array()+T(1.E20));
+  qpwork.l_scaled = (qpmodel.l.array() >= T(-1.E20))
+      .select(qpmodel.l,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array()-T(1.E20));
+    
   qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpwork.u_scaled);
+  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpwork.l_scaled);
   qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
 
   switch (preconditioner_status) {
