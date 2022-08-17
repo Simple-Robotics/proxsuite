@@ -172,12 +172,12 @@ initial_guess(Workspace<T>& qpwork,
 template<typename Mat, typename T>
 void
 update(std::optional<Mat> H_,
-       std::optional<VecRef<T>> g_,
+       std::optional<Vec<T>> g_,
        std::optional<Mat> A_,
-       std::optional<VecRef<T>> b_,
+       std::optional<Vec<T>> b_,
        std::optional<Mat> C_,
-       std::optional<VecRef<T>> u_,
-       std::optional<VecRef<T>> l_,
+       std::optional<Vec<T>> u_,
+       std::optional<Vec<T>> l_,
        Model<T>& model,
        Workspace<T>& work)
 {
@@ -325,13 +325,13 @@ update(std::optional<Mat> H_,
 template<typename Mat, typename T>
 void
 setup( //
-  Mat const& H,
-  VecRef<T> g,
-  Mat const& A,
-  VecRef<T> b,
-  Mat const& C,
-  VecRef<T> u,
-  VecRef<T> l,
+  std::optional<Mat> H,
+  std::optional<VecRef<T>> g,
+  std::optional<Mat> A,
+  std::optional<VecRef<T>> b,
+  std::optional<Mat> C,
+  std::optional<VecRef<T>> u,
+  std::optional<VecRef<T>> l,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
@@ -390,31 +390,63 @@ setup( //
       break;
     }
   }
-  qpmodel.H =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      H);
-  qpmodel.g = g;
-  qpmodel.A =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      A);
-  qpmodel.b = b;
-  qpmodel.C =
-    Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-      C);
-  qpmodel.u = u;
-  qpmodel.l = l;
+  if (H != std::nullopt) {
+    qpmodel.H = Eigen::
+      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        H.value());
+  } // else qpmodel.H remains initialzed to a matrix with zero elements
+  if (g != std::nullopt) {
+    qpmodel.g = g.value();
+  }
+
+  if (A != std::nullopt) {
+    qpmodel.A = Eigen::
+      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        A.value());
+  } // else qpmodel.A remains initialized to a matrix with zero elements or zero
+    // shape
+
+  if (b != std::nullopt) {
+    qpmodel.b = b.value();
+  } // else qpmodel.b remains initialized to a matrix with zero elements or zero
+    // shape
+
+  if (C != std::nullopt) {
+    qpmodel.C = Eigen::
+      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
+        C.value());
+  } // else qpmodel.C remains initialized to a matrix with zero elements or zero
+    // shape
+
+  if (u != std::nullopt) {
+    qpmodel.u = u.value();
+  } // else qpmodel.u remains initialized to a matrix with zero elements or zero
+    // shape
+
+  if (l != std::nullopt) {
+    qpmodel.l = l.value();
+  } // else qpmodel.l remains initialized to a matrix with zero elements or zero
+    // shape
 
   qpwork.H_scaled = qpmodel.H;
   qpwork.g_scaled = qpmodel.g;
   qpwork.A_scaled = qpmodel.A;
   qpwork.b_scaled = qpmodel.b;
   qpwork.C_scaled = qpmodel.C;
-  qpwork.u_scaled = qpmodel.u;
-  qpwork.l_scaled = qpmodel.l;
+  qpwork.u_scaled =
+    (qpmodel.u.array() <= T(1.E20))
+      .select(qpmodel.u,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() +
+                T(1.E20));
+  qpwork.l_scaled =
+    (qpmodel.l.array() >= T(-1.E20))
+      .select(qpmodel.l,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() -
+                T(1.E20));
 
   qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpmodel.u);
-  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpmodel.l);
+  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpwork.u_scaled);
+  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpwork.l_scaled);
   qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
 
   switch (preconditioner_status) {
@@ -430,7 +462,6 @@ setup( //
       break;
   }
 }
-
 ////// UPDATES ///////
 
 /*!

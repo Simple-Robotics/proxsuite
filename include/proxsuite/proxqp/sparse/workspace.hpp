@@ -684,8 +684,16 @@ struct Workspace
 
     g_scaled = data.g;
     b_scaled = data.b;
-    l_scaled = data.l;
-    u_scaled = data.u;
+    u_scaled =
+      (data.u.array() <= T(1.E20))
+        .select(data.u,
+                Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(data.n_in).array() +
+                  T(1.E20));
+    l_scaled =
+      (data.l.array() >= T(-1.E20))
+        .select(data.l,
+                Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(data.n_in).array() -
+                  T(1.E20));
 
     QpViewMut<T, I> qp_scaled = {
       H_scaled,

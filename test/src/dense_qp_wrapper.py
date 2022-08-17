@@ -58,7 +58,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.init(
@@ -107,7 +107,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.init(
@@ -158,7 +158,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.init(
@@ -208,7 +208,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.init(
@@ -258,10 +258,10 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -308,10 +308,10 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -396,10 +396,10 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -448,11 +448,11 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -488,10 +488,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
-        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp2.init(
             H,
             np.asfortranarray(g),
@@ -508,7 +508,7 @@ class DenseQpWrapper(unittest.TestCase):
         Qp2.solve(x, y, z)
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         Qp.solve()
         dua_res = normInf(
@@ -574,11 +574,11 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -617,10 +617,10 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert pri_res <= 1.0e-9
         assert dua_res <= 1.0e-9
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
-        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp2.init(
             H,
             np.asfortranarray(g),
@@ -636,7 +636,7 @@ class DenseQpWrapper(unittest.TestCase):
         Qp2.solve(x, y, z)
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         Qp.solve()
         dua_res = normInf(
@@ -703,11 +703,11 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -749,10 +749,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
-        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp2.init(
             H,
             np.asfortranarray(g),
@@ -802,11 +802,11 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -888,10 +888,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
-        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp2.init(
             H,
             np.asfortranarray(g),
@@ -966,10 +966,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1017,10 +1017,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1144,11 +1144,11 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -1275,11 +1275,11 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -1318,7 +1318,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         Qp.solve()
@@ -1408,10 +1408,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1449,7 +1449,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         Qp.solve()
@@ -1539,10 +1539,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1580,7 +1580,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
 
         Qp.solve()
@@ -1670,10 +1670,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1713,7 +1713,7 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
 
         Qp.solve(Qp.results.x, Qp.results.y, Qp.results.z)
         dua_res = normInf(
@@ -1802,10 +1802,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -1845,10 +1845,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.init(H, g, A, b, C, u, l)
         Qp2.settings.eps_abs = 1.0e-9
-        Qp2.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         Qp2.solve(Qp.results.x, Qp.results.y, Qp.results.z)
         dua_res = normInf(
             H @ Qp2.results.x
@@ -1886,10 +1886,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -2028,11 +2028,11 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -2172,11 +2172,11 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp.init(
             H,
@@ -2215,7 +2215,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2.0  # keep same sparsity structure
@@ -2320,10 +2320,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -2361,7 +2361,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2.0  # keep same sparsity structure
@@ -2466,10 +2466,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -2507,7 +2507,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
         Qp.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2  # keep same sparsity structure
@@ -2599,10 +2599,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -2639,7 +2639,7 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
 
         H *= 2.0  # keep same sparsity structure
         g = np.random.randn(n)
@@ -2741,10 +2741,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -2782,11 +2782,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
         Qp2.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         Qp2.init(
             H,
@@ -2825,11 +2825,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp3 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp3.settings.eps_abs = 1.0e-9
         Qp3.settings.verbose = False
         Qp3.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp3.init(
             H,
@@ -2868,11 +2868,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp4 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp4.settings.eps_abs = 1.0e-9
         Qp4.settings.verbose = False
         Qp4.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         Qp4.init(
             H,
@@ -2911,10 +2911,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp5 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp5.settings.eps_abs = 1.0e-9
         Qp5.settings.verbose = False
-        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp5.init(
             H,
             np.asfortranarray(g),
@@ -2961,10 +2961,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g_old, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g_old),
@@ -3019,11 +3019,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
         Qp2.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         Qp2.init(
             H,
@@ -3078,11 +3078,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp3 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp3.settings.eps_abs = 1.0e-9
         Qp3.settings.verbose = False
         Qp3.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp3.init(
             H,
@@ -3137,11 +3137,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp4 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp4.settings.eps_abs = 1.0e-9
         Qp4.settings.verbose = False
         Qp4.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         Qp4.init(
             H,
@@ -3196,10 +3196,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp5 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp5.settings.eps_abs = 1.0e-9
         Qp5.settings.verbose = False
-        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp5.init(
             H,
             np.asfortranarray(g_old),
@@ -3262,10 +3262,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A_old, b, C, u, l = generate_mixed_qp(n)
         n_eq = A_old.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -3320,11 +3320,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
         Qp2.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         Qp2.init(
             H,
@@ -3379,11 +3379,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp3 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp3.settings.eps_abs = 1.0e-9
         Qp3.settings.verbose = False
         Qp3.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp3.init(
             H,
@@ -3438,11 +3438,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp4 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp4.settings.eps_abs = 1.0e-9
         Qp4.settings.verbose = False
         Qp4.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         Qp4.init(
             H,
@@ -3497,10 +3497,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp5 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp5.settings.eps_abs = 1.0e-9
         Qp5.settings.verbose = False
-        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp5.init(
             H,
             np.asfortranarray(g),
@@ -3563,10 +3563,10 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -3620,11 +3620,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp2 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp2.settings.eps_abs = 1.0e-9
         Qp2.settings.verbose = False
         Qp2.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         Qp2.init(
             H,
@@ -3679,11 +3679,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp3 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp3.settings.eps_abs = 1.0e-9
         Qp3.settings.verbose = False
         Qp3.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         Qp3.init(
             H,
@@ -3738,11 +3738,11 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp4 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp4.settings.eps_abs = 1.0e-9
         Qp4.settings.verbose = False
         Qp4.settings.initial_guess = (
-            proxsuite.qp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         Qp4.init(
             H,
@@ -3797,10 +3797,10 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-        Qp5 = proxsuite.qp.dense.QP(n, n_eq, n_in)
+        Qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp5.settings.eps_abs = 1.0e-9
         Qp5.settings.verbose = False
-        Qp5.settings.initial_guess = proxsuite.qp.InitialGuess.NO_INITIAL_GUESS
+        Qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         Qp5.init(
             H,
             np.asfortranarray(g),
@@ -3851,6 +3851,75 @@ class DenseQpWrapper(unittest.TestCase):
         print(
             "setup timing = {} ; solve time = {}".format(
                 Qp5.results.info.setup_time, Qp5.results.info.solve_time
+            )
+        )
+
+    def test_sparse_problem_with_exact_solution_known(self):
+        print(
+            "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
+        )
+
+        n = 150
+        M = spa.lil_matrix(spa.eye(n))
+        for i in range(1, n - 1):
+            M[i, i + 1] = -1
+            M[i, i - 1] = 1
+
+        H = spa.csc_matrix(M.dot(M.transpose()))
+        g = -np.ones((n,))
+        A = None
+        b = None
+        C = spa.csc_matrix(spa.eye(n))
+        l = 2.0 * np.ones((n,))
+        u = np.full(l.shape, +np.infty)
+
+        Qp = proxsuite.proxqp.dense.QP(n, 0, n)
+        Qp.init(H, g, A, b, C, u, l)
+        Qp.solve()
+        x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
+
+        dua_res = normInf(H @ Qp.results.x + g + C.transpose() @ Qp.results.z)
+        pri_res = normInf(
+            np.maximum(C @ Qp.results.x - u, 0) + np.minimum(C @ Qp.results.x - l, 0)
+        )
+
+        assert dua_res <= 1e-3  # default precision of the solver
+        assert pri_res <= 1e-3
+        assert normInf(x_theoretically_optimal - Qp.results.x) <= 1e-3
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
+        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                Qp.results.info.setup_time, Qp.results.info.solve_time
+            )
+        )
+
+    def test_initializing_with_None(self):
+        print("------------------------test initialization with Nones")
+
+        H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
+        g = np.array([-13.0, 15.0, 7.0])
+        A = None
+        b = None
+        C = None
+        u = None
+        l = None
+
+        Qp = proxsuite.proxqp.dense.QP(3, 0, 0)
+        Qp.init(H, g, A, b, C, u, l)
+        Qp.solve()
+        print("optimal x: {}".format(Qp.results.x))
+
+        dua_res = normInf(H @ Qp.results.x + g)
+
+        assert dua_res <= 1e-3  # default precision of the solver
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
+        print("dual residual = {} ".format(dua_res))
+        print("total number of iteration: {}".format(Qp.results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                Qp.results.info.setup_time, Qp.results.info.solve_time
             )
         )
 

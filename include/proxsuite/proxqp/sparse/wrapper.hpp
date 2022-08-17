@@ -162,13 +162,13 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(const SparseMat<T, I>& H,
-            const Vec<T>& g,
-            const SparseMat<T, I>& A,
-            const Vec<T>& b,
-            const SparseMat<T, I>& C,
-            const Vec<T>& u,
-            const Vec<T>& l,
+  void init(std::optional<SparseMat<T, I>> H,
+            std::optional<VecRef<T>> g,
+            std::optional<SparseMat<T, I>> A,
+            std::optional<VecRef<T>> b,
+            std::optional<SparseMat<T, I>> C,
+            std::optional<VecRef<T>> u,
+            std::optional<VecRef<T>> l,
             bool compute_preconditioner_ = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -178,46 +178,64 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.rows(),
-                                  model.dim,
-                                  "the dimension wrt the primal variable x "
-                                  "variable for initializing g is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.rows(),
-                                  model.n_eq,
-                                  "the dimension wrt equality constrained "
-                                  "variables for initializing b is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing u is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.rows(),
-                                  model.n_in,
-                                  "the dimension wrt inequality constrained "
-                                  "variables for initializing l is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.rows(),
-      model.dim,
-      "the row dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H.cols(),
-      model.dim,
-      "the column dimension for initializing H is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.rows(),
-      model.n_eq,
-      "the row dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A.cols(),
-      model.dim,
-      "the column dimension for initializing A is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.rows(),
-      model.n_in,
-      "the row dimension for initializing C is not valid.");
-    PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C.cols(),
-      model.dim,
-      "the column dimension for initializing C is not valid.");
+    if (g != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        g.value().rows(),
+        model.dim,
+        "the dimension wrt the primal variable x variable for initializing g "
+        "is not valid.");
+    }
+    if (b != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        b.value().rows(),
+        model.n_eq,
+        "the dimension wrt equality constrained variables for initializing b "
+        "is not valid.");
+    }
+    if (u != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        u.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing u "
+        "is not valid.");
+    }
+    if (l != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        l.value().rows(),
+        model.n_in,
+        "the dimension wrt inequality constrained variables for initializing l "
+        "is not valid.");
+    }
+    if (H != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().rows(),
+        model.dim,
+        "the row dimension for initializing H is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        H.value().cols(),
+        model.dim,
+        "the column dimension for initializing H is not valid.");
+    }
+    if (A != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().rows(),
+        model.n_eq,
+        "the row dimension for initializing A is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        A.value().cols(),
+        model.dim,
+        "the column dimension for initializing A is not valid.");
+    }
+    if (C != std::nullopt) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().rows(),
+        model.n_in,
+        "the row dimension for initializing C is not valid.");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(
+        C.value().cols(),
+        model.dim,
+        "the column dimension for initializing C is not valid.");
+    }
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
     if (compute_preconditioner_) {
@@ -225,21 +243,68 @@ struct QP
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
-    // settings.compute_preconditioner = compute_preconditioner_;
-    SparseMat<T, I> H_triu = H.template triangularView<Eigen::Upper>();
-    SparseMat<T, I> AT = A.transpose();
-    SparseMat<T, I> CT = C.transpose();
-    sparse::QpView<T, I> qp = { { proxsuite::linalg::sparse::from_eigen,
-                                  H_triu },
-                                { proxsuite::linalg::sparse::from_eigen, g },
-                                { proxsuite::linalg::sparse::from_eigen, AT },
-                                { proxsuite::linalg::sparse::from_eigen, b },
-                                { proxsuite::linalg::sparse::from_eigen, CT },
-                                { proxsuite::linalg::sparse::from_eigen, l },
-                                { proxsuite::linalg::sparse::from_eigen, u } };
     proxsuite::proxqp::sparse::update_proximal_parameters(
       results, work, rho, mu_eq, mu_in);
-    qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
+
+    if (g != std::nullopt) {
+      model.g = g.value();
+    } // else qpmodel.g remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (b != std::nullopt) {
+      model.b = b.value();
+    } // else qpmodel.b remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (u != std::nullopt) {
+      model.u = u.value();
+    } // else qpmodel.u remains initialzed to a matrix with zero elements or
+      // zero shape
+    if (l != std::nullopt) {
+      model.l = l.value();
+    } // else qpmodel.l remains initialzed to a matrix with zero elements or
+      // zero shape
+
+    // avoid allocations when H is not nullopt
+    SparseMat<T, I> AT(model.dim, model.n_eq);
+    if (A != std::nullopt) {
+      AT = (A.value()).transpose();
+    } else {
+      AT.setZero();
+    }
+    SparseMat<T, I> CT(model.dim, model.n_in);
+    if (C != std::nullopt) {
+      CT = (C.value()).transpose();
+    } else {
+      CT.setZero();
+    }
+    if (H != std::nullopt) {
+      SparseMat<T, I> H_triu =
+        (H.value()).template triangularView<Eigen::Upper>();
+      sparse::QpView<T, I> qp = {
+        { proxsuite::linalg::sparse::from_eigen, H_triu },
+        { proxsuite::linalg::sparse::from_eigen, model.g },
+        { proxsuite::linalg::sparse::from_eigen, AT },
+        { proxsuite::linalg::sparse::from_eigen, model.b },
+        { proxsuite::linalg::sparse::from_eigen, CT },
+        { proxsuite::linalg::sparse::from_eigen, model.l },
+        { proxsuite::linalg::sparse::from_eigen, model.u }
+      };
+      qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
+    } else {
+      SparseMat<T, I> H_triu(model.dim, model.dim);
+      H_triu.setZero();
+      H_triu = (H.value()).template triangularView<Eigen::Upper>();
+      sparse::QpView<T, I> qp = {
+        { proxsuite::linalg::sparse::from_eigen, H_triu },
+        { proxsuite::linalg::sparse::from_eigen, model.g },
+        { proxsuite::linalg::sparse::from_eigen, AT },
+        { proxsuite::linalg::sparse::from_eigen, model.b },
+        { proxsuite::linalg::sparse::from_eigen, CT },
+        { proxsuite::linalg::sparse::from_eigen, model.l },
+        { proxsuite::linalg::sparse::from_eigen, model.u }
+      };
+      qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
+    }
+
     if (settings.compute_timings) {
       results.info.setup_time += work.timer.elapsed().user; // in microseconds
     }
@@ -606,13 +671,13 @@ struct QP
 template<typename T, typename I>
 proxqp::Results<T>
 solve(
-  const SparseMat<T, I>& H,
-  const Vec<T>& g,
-  const SparseMat<T, I>& A,
-  const Vec<T>& b,
-  const SparseMat<T, I>& C,
-  const Vec<T>& u,
-  const Vec<T>& l,
+  std::optional<SparseMat<T, I>> H,
+  std::optional<VecRef<T>> g,
+  std::optional<SparseMat<T, I>> A,
+  std::optional<VecRef<T>> b,
+  std::optional<SparseMat<T, I>> C,
+  std::optional<VecRef<T>> u,
+  std::optional<VecRef<T>> l,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -629,9 +694,18 @@ solve(
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 {
 
-  isize n(H.rows());
-  isize n_eq(A.rows());
-  isize n_in(C.rows());
+  isize n(0);
+  isize n_eq(0);
+  isize n_in(0);
+  if (H != std::nullopt) {
+    n = H.value().rows();
+  }
+  if (A != std::nullopt) {
+    n_eq = A.value().rows();
+  }
+  if (C != std::nullopt) {
+    n_in = C.value().rows();
+  }
 
   proxqp::sparse::QP<T, I> Qp(n, n_eq, n_in);
   Qp.settings.initial_guess = initial_guess;

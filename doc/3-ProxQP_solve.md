@@ -130,3 +130,20 @@ Finally, note that in C++, if you want to change one option, the order described
     </td>
   </tr>
 </table>
+
+Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/initializing_with_none_without_api.cpp</th>
+    <th>examples/python/initializing_with_none_without_api.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include initializing_with_none_without_api.cpp
+    </td>
+    <td valign="top">
+      \include initializing_with_none_without_api.py
+    </td>
+  </tr>
+</table>
