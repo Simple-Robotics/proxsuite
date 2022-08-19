@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: Thanks for using ProxSuite. Please use the following metadata and also consider the reference paper https://hal.inria.fr/hal-03683733.
+title: ProxSuite - The Advanced Proximal Optimization Toolbox
+abstract: ProxSuite is a collection of open-source, numerically robuste, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms. While the first targeted application is Robotics, ProxSuite can be used in other contextes without any limits. Through ProxSuite, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
+authors:
+  - family-names: Bambade
+    given-names: Antoine
+  - family-names: Taylor
+    given-names: Adrien
+  - family-names: Schramm
+    given-names: Fabian
+  - family-names: El-Kazdadi
+    given-names: Sarah
+  - family-names: Carpentier
+    given-names: Justin
+    orcid: "https://orcid.org/0000-0001-6585-2894"
+version: 0.0.1
+date-released: "2022-08-12"
+license: BSD-2-Clause
+repository-code: "https://github.com/Simple-Robotics/proxsuite"
