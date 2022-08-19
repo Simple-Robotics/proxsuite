@@ -38,7 +38,7 @@ Alternative installation procedures are presented in the [Installation Procedure
 
 ## **ProxQP**
 
-The **ProxQP** solver is a numerical optimization package for solving problems of the form:
+The **ProxQP** algorithm is a numerical optimization approach for solving quadratic programming problems of the form:
 
 $$
 \begin{align}
