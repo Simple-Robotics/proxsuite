@@ -330,19 +330,6 @@ sparse_matrix_rand_not_compressed(isize nrows, isize ncols, Scalar p)
   return A;
 }
 
-LDLT_EXPLICIT_TPL_DECL(2, matrix_rand<f32>);
-LDLT_EXPLICIT_TPL_DECL(1, vector_rand<f32>);
-LDLT_EXPLICIT_TPL_DECL(2, positive_definite_rand<f32>);
-LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f32>);
-LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f32>);
-LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f32>);
-
-LDLT_EXPLICIT_TPL_DECL(2, matrix_rand<f64>);
-LDLT_EXPLICIT_TPL_DECL(1, vector_rand<f64>);
-LDLT_EXPLICIT_TPL_DECL(2, positive_definite_rand<f64>);
-LDLT_EXPLICIT_TPL_DECL(1, orthonormal_rand<f64>);
-LDLT_EXPLICIT_TPL_DECL(3, sparse_matrix_rand<f64>);
-LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f64>);
 } // namespace rand
 using proxqp::usize;
 
