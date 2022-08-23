@@ -97,11 +97,14 @@ endif()
 # Build the main library
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
-add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
+add_library(proxsuite INTERFACE)
 target_link_libraries(
   proxsuite
   PUBLIC
   INTERFACE Eigen3::Eigen)
+target_include_directories(
+  proxsuite INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
+                      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
