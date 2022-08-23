@@ -91,7 +91,7 @@ set(SIMDE_HINT_FAILURE
     "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file."
 )
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  add_project_dependency(Simde REQUIRED)
+  add_project_dependency(Simde REQUIRED FIND_EXTERNAL "Simde")
 endif()
 
 # Build the main library
