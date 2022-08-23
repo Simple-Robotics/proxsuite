@@ -58,10 +58,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
                                                     "\$ORIGIN/../../..")
   endif()
 
-  install(
-    TARGETS ${target_name}
-    EXPORT ${TARGETS_EXPORT_NAME}
-    DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  install(TARGETS ${target_name} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endfunction()
 
 create_python_target(proxsuite_pywrap "" proxsuite-not-vectorized)
