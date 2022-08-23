@@ -120,12 +120,12 @@ jobs:
     #     g++ -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)
     #     ./overview-simple
 
-    - name: Test CMake pacakging [Conda]
+    - name: Test CMake pacakging [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
         cd test/packaging/cmake
-        mkdir build
+        mkdir build && cd build
         cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build . --config ${{ matrix.build_type }} --target all
         ./run-proxqp
