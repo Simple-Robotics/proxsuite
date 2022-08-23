@@ -1,4 +1,5 @@
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include "util_f64.hpp"
+
 namespace proxsuite {
 namespace proxqp {
 namespace utils {

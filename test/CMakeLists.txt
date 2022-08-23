@@ -7,7 +7,11 @@ add_library(cnpy OBJECT src/cnpy.cpp)
 target_link_libraries(cnpy Eigen3::Eigen)
 target_include_directories(cnpy PUBLIC ./include)
 
-add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp)
+file(GLOB_RECURSE TEST_HEADERS ./include/*.hpp)
+add_header_group(TEST_HEADERS)
+
+add_library(proxsuite-test-util STATIC ./src/util_f64.cpp ./src/util_f32.cpp
+                                       ${TEST_HEADERS})
 target_include_directories(proxsuite-test-util PUBLIC ./include)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   target_link_libraries(proxsuite-test-util proxsuite-vectorized matio)
