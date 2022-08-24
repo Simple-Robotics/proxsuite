@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -118,8 +118,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa01e92aba24d72d2ae011aef44c80f9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1ccb3fa2ad26ce46a51269dcbbf31e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aa1ccb3fa2ad26ce46a51269dcbbf31e6">print</a> ()</td></tr>
 <tr class="separator:aa1ccb3fa2ad26ce46a51269dcbbf31e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5bb3f315efb13459b92f7a734ad079a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#af5bb3f315efb13459b92f7a734ad079a">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; qp, bool execute_preconditioner, const <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;settings, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
-<tr class="separator:af5bb3f315efb13459b92f7a734ad079a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b79751fb65c55ef6666f809cd097b06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a7b79751fb65c55ef6666f809cd097b06">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; qp, bool execute_preconditioner, const isize <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a0cf2769231486325b268585a4aa070f6">max_iter</a>, const T <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aa298aa59d9e6b56fafd1127c428df444">epsilon</a>, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
+<tr class="separator:a7b79751fb65c55ef6666f809cd097b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6151af8393665d3dcf8f556c507a23a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a6151af8393665d3dcf8f556c507a23a5">scale_qp</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBox.html">QpViewBox</a>&lt; T &gt; qp, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; scaled_qp, <a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; tmp_delta_preallocated)</td></tr>
 <tr class="separator:a6151af8393665d3dcf8f556c507a23a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe0445c5b61930c10e3e6791c46868e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#afe0445c5b61930c10e3e6791c46868e4">scale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal)</td></tr>
@@ -180,7 +180,7 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 struct proxsuite::proxqp::dense::preconditioner::RuizEquilibration&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00222">222</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00220">220</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa01e92aba24d72d2ae011aef44c80f9c" name="aa01e92aba24d72d2ae011aef44c80f9c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa01e92aba24d72d2ae011aef44c80f9c">&#9670;&nbsp;</a></span>RuizEquilibration()</h2>
@@ -253,7 +253,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00242">242</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00240">240</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -284,7 +284,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Prints ruiz equilibrator scaling variables. </p>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00261">261</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00259">259</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -346,12 +346,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00274">274</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00272">272</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
-<a id="af5bb3f315efb13459b92f7a734ad079a" name="af5bb3f315efb13459b92f7a734ad079a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5bb3f315efb13459b92f7a734ad079a">&#9670;&nbsp;</a></span>scale_qp_in_place()</h2>
+<a id="a7b79751fb65c55ef6666f809cd097b06" name="a7b79751fb65c55ef6666f809cd097b06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b79751fb65c55ef6666f809cd097b06">&#9670;&nbsp;</a></span>scale_qp_in_place()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -376,8 +376,14 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>settings</em>, </td>
+          <td class="paramtype">const isize&#160;</td>
+          <td class="paramname"><em>max_iter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T&#160;</td>
+          <td class="paramname"><em>epsilon</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -407,7 +413,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00297">297</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00295">295</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -461,7 +467,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00383">383</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00379">379</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -497,7 +503,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00408">408</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00404">404</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -533,7 +539,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00417">417</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00413">413</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -569,7 +575,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00426">426</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00422">422</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -605,7 +611,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00436">436</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00432">432</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -641,7 +647,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00445">445</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00441">441</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -677,7 +683,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00453">453</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00449">449</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -713,7 +719,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00462">462</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00458">458</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -749,7 +755,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00472">472</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00468">468</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -785,7 +791,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00483">483</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00479">479</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -821,7 +827,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00492">492</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00488">488</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -857,7 +863,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00501">501</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00497">497</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -893,7 +899,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00510">510</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00506">506</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -929,7 +935,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00519">519</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00515">515</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -965,7 +971,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00527">527</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00523">523</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1001,7 +1007,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00536">536</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00532">532</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1037,7 +1043,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00545">545</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00541">541</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1056,7 +1062,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00224">224</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00222">222</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1074,7 +1080,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00225">225</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00223">223</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1098,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00226">226</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00224">224</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1116,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00227">227</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00225">225</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1128,7 +1134,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00228">228</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00226">226</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1146,7 +1152,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00229">229</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00227">227</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -1164,7 +1170,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00231">231</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00229">229</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>

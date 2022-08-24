@@ -1,7 +1,7 @@
 var tags_8hpp =
 [
-    [ "proxsuite::linalg::veg::tags::InPlace< Tag >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place" ],
-    [ "proxsuite::linalg::veg::tags::InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place_3_01void_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place_3_01void_01_4" ],
+    [ "proxsuite::linalg::veg::tags::InPlace< Tag >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace" ],
+    [ "proxsuite::linalg::veg::tags::InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4" ],
     [ "VEG_TAG_TEMPLATE", "tags_8hpp.html#afd04b23d6ddcac457828dbe0d9b02f8e", null ],
     [ "VEG_TAG", "tags_8hpp.html#a58723b9f8703ce0c3b890dc846ce4918", null ],
     [ "VEG_TAG", "tags_8hpp.html#ad4a0f5be30fd8286fe9c587a7ac522e3", null ],

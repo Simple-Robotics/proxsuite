@@ -1,6 +1,6 @@
 var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
 [
-    [ "AugmentedKkt", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1_augmented_kkt" ],
+    [ "AugmentedKkt", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt" ],
     [ "VecMapMut", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
     [ "VecMap", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a2860d2e80d0e47d632001cc274428e44", null ],
     [ "positive_part", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a475f4f1cb530f3ea0f8b560307349e9b", null ],

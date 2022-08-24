@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -126,7 +126,7 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a3cfb91b01e39f6e8d33b3c343a2009ce"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01proxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc_01_4.html#a3cfb91b01e39f6e8d33b3c343a2009ce">min_align</a></td></tr>
+<tr class="memitem:a3cfb91b01e39f6e8d33b3c343a2009ce"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01proxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc_01_4.html#a3cfb91b01e39f6e8d33b3c343a2009ce">min_align</a> = 0</td></tr>
 <tr class="separator:a3cfb91b01e39f6e8d33b3c343a2009ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -387,7 +387,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a> <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc.html">proxsuite::linalg::veg::mem::Alloc</a>&lt; <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc.html">proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc</a> &gt;::min_align</td>
+          <td class="memname">constexpr <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a> <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc.html">proxsuite::linalg::veg::mem::Alloc</a>&lt; <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc.html">proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc</a> &gt;::min_align = 0</td>
         </tr>
       </table>
   </td>
@@ -396,12 +396,8 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= <span class="keyword">alignof</span>(std::max_align_t) &gt;</div>
-<div class="line">                                         SIMDE_NATURAL_VECTOR_SIZE / 8</div>
-<div class="line">                                       ? SIMDE_NATURAL_VECTOR_SIZE / 8</div>
-<div class="line">                                       : <span class="keyword">alignof</span>(std::max_align_t)</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="ldlt_8hpp_source.html#l00038">38</a> of file <a class="el" href="ldlt_8hpp_source.html">ldlt.hpp</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="ldlt_8hpp_source.html#l00041">41</a> of file <a class="el" href="ldlt_8hpp_source.html">ldlt.hpp</a>.</p>
 
 </div>
 </div>

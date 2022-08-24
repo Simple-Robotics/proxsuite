@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -116,8 +116,8 @@ Collaboration diagram for proxsuite::proxqp::sparse::preconditioner::RuizEquilib
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa3bbbc418fb37707537f9d602b83ef54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#aa3bbbc418fb37707537f9d602b83ef54">RuizEquilibration</a> (isize n_, isize n_eq_in, T epsilon_=T(1e-3), i64 max_iter_=10, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48f">Symmetry</a> sym_=<a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48fa9e43f5291e6fcb2ad99c8e3f91acd179">Symmetry::UPPER</a>, std::ostream *logger=nullptr)</td></tr>
 <tr class="separator:aa3bbbc418fb37707537f9d602b83ef54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa633f8d24736896b2552a12b5b1dbc97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#aa633f8d24736896b2552a12b5b1dbc97">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html">QpViewMut</a>&lt; T, I &gt; qp, bool execute_preconditioner, const <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;settings, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
-<tr class="separator:aa633f8d24736896b2552a12b5b1dbc97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f2ffe84bbcdfc70649e2c2a1fc2aa5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#a04f2ffe84bbcdfc70649e2c2a1fc2aa5">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html">QpViewMut</a>&lt; T, I &gt; qp, bool execute_preconditioner, const isize <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#a98475b0820c6fa930647f1146c321e10">max_iter</a>, const T <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#ab1fbac8d89e1fe08564b831084d348fc">epsilon</a>, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
+<tr class="separator:a04f2ffe84bbcdfc70649e2c2a1fc2aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e5de9f4b9e37dec27765f5b36b4ca6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#a9e5de9f4b9e37dec27765f5b36b4ca6e">scale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal)</td></tr>
 <tr class="separator:a9e5de9f4b9e37dec27765f5b36b4ca6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22078d16a69844aae4074bb43575be59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#a22078d16a69844aae4074bb43575be59">scale_dual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual)</td></tr>
@@ -296,8 +296,8 @@ template&lt;typename T , typename I &gt; </div>
 
 </div>
 </div>
-<a id="aa633f8d24736896b2552a12b5b1dbc97" name="aa633f8d24736896b2552a12b5b1dbc97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa633f8d24736896b2552a12b5b1dbc97">&#9670;&nbsp;</a></span>scale_qp_in_place()</h2>
+<a id="a04f2ffe84bbcdfc70649e2c2a1fc2aa5" name="a04f2ffe84bbcdfc70649e2c2a1fc2aa5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f2ffe84bbcdfc70649e2c2a1fc2aa5">&#9670;&nbsp;</a></span>scale_qp_in_place()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,8 +322,14 @@ template&lt;typename T , typename I &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>settings</em>, </td>
+          <td class="paramtype">const isize&#160;</td>
+          <td class="paramname"><em>max_iter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T&#160;</td>
+          <td class="paramname"><em>epsilon</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -374,7 +380,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00480">480</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00479">479</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -404,7 +410,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00484">484</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00483">483</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -434,7 +440,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00490">490</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00489">489</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -464,7 +470,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00496">496</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00495">495</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -494,7 +500,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00502">502</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00501">501</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -524,7 +530,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00506">506</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00505">505</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -554,7 +560,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00512">512</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00511">511</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -584,7 +590,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00519">519</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00518">518</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -614,7 +620,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00525">525</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00524">524</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -644,7 +650,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00530">530</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00529">529</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -674,7 +680,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00535">535</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00534">534</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -704,7 +710,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00540">540</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00539">539</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -734,7 +740,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00544">544</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00543">543</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -764,7 +770,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00548">548</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00547">547</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -794,7 +800,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00553">553</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00552">552</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>
@@ -824,7 +830,7 @@ template&lt;typename T , typename I &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00558">558</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html#l00557">557</a> of file <a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>

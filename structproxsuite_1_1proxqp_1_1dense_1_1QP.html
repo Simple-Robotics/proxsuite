@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -112,16 +112,16 @@ $(document).ready(function(){initNavTree('structproxsuite_1_1proxqp_1_1dense_1_1
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa033a9cd9e2d5d4fea00189247318d67"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#aa033a9cd9e2d5d4fea00189247318d67">QP</a> (isize _dim, isize _n_eq, isize _n_in)</td></tr>
 <tr class="separator:aa033a9cd9e2d5d4fea00189247318d67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34d4c3b65b759adacb8138a42dfb0566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a34d4c3b65b759adacb8138a42dfb0566">init</a> (<a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; H, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; g, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; A, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; b, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; C, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; u, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; l, bool compute_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
-<tr class="separator:a34d4c3b65b759adacb8138a42dfb0566"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac5b3b20ef928f3945ac3930b582531b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#aac5b3b20ef928f3945ac3930b582531b">init</a> (const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;H, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; g, const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;A, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; b, const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;C, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; u, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; l, bool compute_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
-<tr class="separator:aac5b3b20ef928f3945ac3930b582531b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf306fc275cef01f1ba42f45e43c70e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#aaf306fc275cef01f1ba42f45e43c70e4">update</a> (const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; g, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; b, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
-<tr class="separator:aaf306fc275cef01f1ba42f45e43c70e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ee2209fbbf8361d5f12660a35e72685"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a2ee2209fbbf8361d5f12660a35e72685">update</a> (const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; g, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; b, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
-<tr class="separator:a2ee2209fbbf8361d5f12660a35e72685"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a268f1f364d23b2e91331012d29f722f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a268f1f364d23b2e91331012d29f722f2">update</a> (const std::nullopt_t H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; g, const std::nullopt_t A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; b, const std::nullopt_t C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
-<tr class="separator:a268f1f364d23b2e91331012d29f722f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eba530c0aa9db290070d62c60ac578a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a5eba530c0aa9db290070d62c60ac578a">init</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; g, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; b, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; l, bool compute_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
+<tr class="separator:a5eba530c0aa9db290070d62c60ac578a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63262331a039c02acb9fd10358b496cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a63262331a039c02acb9fd10358b496cc">init</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; g, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; b, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; l, bool compute_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
+<tr class="separator:a63262331a039c02acb9fd10358b496cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74e88f29e67a150c24e9527fd284f324"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a74e88f29e67a150c24e9527fd284f324">update</a> (const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; g, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; b, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
+<tr class="separator:a74e88f29e67a150c24e9527fd284f324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98ad52723669b915b3ace5f404bb94ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a98ad52723669b915b3ace5f404bb94ae">update</a> (const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; g, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; b, const std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
+<tr class="separator:a98ad52723669b915b3ace5f404bb94ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04209923c0b6ba3dd5e99b15926fc96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#ab04209923c0b6ba3dd5e99b15926fc96">update</a> (const std::nullopt_t H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; g, const std::nullopt_t A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; b, const std::nullopt_t C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt; l, bool update_preconditioner=true, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt)</td></tr>
+<tr class="separator:ab04209923c0b6ba3dd5e99b15926fc96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5027e4150940b1f90504152d3fe4ec87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a5027e4150940b1f90504152d3fe4ec87">solve</a> ()</td></tr>
 <tr class="separator:a5027e4150940b1f90504152d3fe4ec87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a812be318bd3418b2c716462a82ee1fa2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html#a812be318bd3418b2c716462a82ee1fa2">solve</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; x, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; y, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt; z)</td></tr>
@@ -261,8 +261,8 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a34d4c3b65b759adacb8138a42dfb0566" name="a34d4c3b65b759adacb8138a42dfb0566"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34d4c3b65b759adacb8138a42dfb0566">&#9670;&nbsp;</a></span>init() <span class="overload">[1/2]</span></h2>
+<a id="a5eba530c0aa9db290070d62c60ac578a" name="a5eba530c0aa9db290070d62c60ac578a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eba530c0aa9db290070d62c60ac578a">&#9670;&nbsp;</a></span>init() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -275,43 +275,43 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite::proxqp::dense::QP</a>&lt; T &gt;::init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>H</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>A</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8bc33ff8d2b8ee517202811704db5965">MatRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>C</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
@@ -371,8 +371,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="aac5b3b20ef928f3945ac3930b582531b" name="aac5b3b20ef928f3945ac3930b582531b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac5b3b20ef928f3945ac3930b582531b">&#9670;&nbsp;</a></span>init() <span class="overload">[2/2]</span></h2>
+<a id="a63262331a039c02acb9fd10358b496cc" name="a63262331a039c02acb9fd10358b496cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63262331a039c02acb9fd10358b496cc">&#9670;&nbsp;</a></span>init() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -385,43 +385,43 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite::proxqp::dense::QP</a>&lt; T &gt;::init </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>H</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>A</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d">SparseMat</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>C</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
@@ -477,12 +477,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00186">186</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00250">250</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aaf306fc275cef01f1ba42f45e43c70e4" name="aaf306fc275cef01f1ba42f45e43c70e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf306fc275cef01f1ba42f45e43c70e4">&#9670;&nbsp;</a></span>update() <span class="overload">[1/3]</span></h2>
+<a id="a74e88f29e67a150c24e9527fd284f324" name="a74e88f29e67a150c24e9527fd284f324"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74e88f29e67a150c24e9527fd284f324">&#9670;&nbsp;</a></span>update() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -501,7 +501,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
@@ -513,7 +513,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
@@ -525,13 +525,13 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
@@ -587,12 +587,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00253">253</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00380">380</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a2ee2209fbbf8361d5f12660a35e72685" name="a2ee2209fbbf8361d5f12660a35e72685"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ee2209fbbf8361d5f12660a35e72685">&#9670;&nbsp;</a></span>update() <span class="overload">[2/3]</span></h2>
+<a id="a98ad52723669b915b3ace5f404bb94ae" name="a98ad52723669b915b3ace5f404bb94ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98ad52723669b915b3ace5f404bb94ae">&#9670;&nbsp;</a></span>update() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -611,7 +611,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
@@ -623,7 +623,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
@@ -635,13 +635,13 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
@@ -697,12 +697,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00320">320</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00447">447</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a268f1f364d23b2e91331012d29f722f2" name="a268f1f364d23b2e91331012d29f722f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a268f1f364d23b2e91331012d29f722f2">&#9670;&nbsp;</a></span>update() <span class="overload">[3/3]</span></h2>
+<a id="ab04209923c0b6ba3dd5e99b15926fc96" name="ab04209923c0b6ba3dd5e99b15926fc96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04209923c0b6ba3dd5e99b15926fc96">&#9670;&nbsp;</a></span>update() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -721,7 +721,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
@@ -733,7 +733,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
@@ -745,13 +745,13 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78">VecRef</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">Vec</a>&lt; T &gt; &gt;&#160;</td>
           <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
@@ -792,7 +792,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Updates the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model vectors only (to avoid ambiguity through overloading) and equilibrates it if specified by the user. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">H</td><td>quadratic cost input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model. </td></tr>
+    <tr><td class="paramname">H</td><td>quadratic cost input defingit reset &ndash;soft HEAD~ing the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">g</td><td>linear cost input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">A</td><td>equality constraint matrix input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">b</td><td>equality constraint vector input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> model. </td></tr>
@@ -807,7 +807,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00387">387</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00514">514</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -837,7 +837,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Solves the <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html" title="This class defines the API of PROXQP solver with dense backend.">QP</a> problem using PRXOQP algorithm. </p>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00452">452</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00606">606</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -891,7 +891,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00467">467</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00621">621</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -921,7 +921,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Clean-ups solver's results and workspace. </p>
 
-<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00482">482</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2wrapper_8hpp_source.html#l00636">636</a> of file <a class="el" href="dense_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>

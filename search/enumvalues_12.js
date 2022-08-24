@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['upper_0',['UPPER',['../namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48fa9e43f5291e6fcb2ad99c8e3f91acd179',1,'proxsuite::proxqp::sparse::preconditioner']]],
-  ['upper_1',['upper',['../namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a0122b4c2c01ee1c698ecc309d2b8eb5a',1,'proxsuite::proxqp']]],
+  ['upper_0',['upper',['../namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a0122b4c2c01ee1c698ecc309d2b8eb5a',1,'proxsuite::proxqp']]],
+  ['upper_1',['UPPER',['../namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48fa9e43f5291e6fcb2ad99c8e3f91acd179',1,'proxsuite::proxqp::sparse::preconditioner']]],
   ['uppercase_5fa_2',['UPPERCASE_A',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43aba48b9dfe5aab528ca3d04bb0bfde43b',1,'proxsuite::linalg::veg']]],
   ['uppercase_5fb_3',['UPPERCASE_B',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a6a299b823a5aaa9f791f0cfe23f35389',1,'proxsuite::linalg::veg']]],
   ['uppercase_5fc_4',['UPPERCASE_C',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43adb5b10de3aff47d0252e0f38bbc5c654',1,'proxsuite::linalg::veg']]],

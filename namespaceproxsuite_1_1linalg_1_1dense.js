@@ -17,7 +17,7 @@ var namespaceproxsuite_1_1linalg_1_1dense =
       [ "subcols", "namespaceproxsuite_1_1linalg_1_1dense_1_1util.html#a71f8eb7499783879c88883d77c8e1d01", null ],
       [ "noalias_mul_add", "namespaceproxsuite_1_1linalg_1_1dense_1_1util.html#a443bda61fc4bce60db0d51e08101e83f", null ]
     ] ],
-    [ "Ldlt", "structproxsuite_1_1linalg_1_1dense_1_1_ldlt.html", "structproxsuite_1_1linalg_1_1dense_1_1_ldlt" ],
+    [ "Ldlt", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt" ],
     [ "f32", "namespaceproxsuite_1_1linalg_1_1dense.html#adb5eaa4317724174d1d5a6267cb231f6", null ],
     [ "f64", "namespaceproxsuite_1_1linalg_1_1dense.html#a834f5388e3e40ab99e4276b9d369d8d2", null ],
     [ "temp_mat_req", "namespaceproxsuite_1_1linalg_1_1dense.html#a492f939daf7eeeaea62d1b6d0ed450eb", null ],

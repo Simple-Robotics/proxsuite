@@ -1,6 +1,6 @@
 var sparse_2solver_8hpp =
 [
-    [ "proxsuite::proxqp::sparse::PrimalDualGradResult< T >", "structproxsuite_1_1proxqp_1_1sparse_1_1_primal_dual_grad_result.html", "structproxsuite_1_1proxqp_1_1sparse_1_1_primal_dual_grad_result" ],
+    [ "proxsuite::proxqp::sparse::PrimalDualGradResult< T >", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult.html", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult" ],
     [ "ldl_solve", "sparse_2solver_8hpp.html#abd6a3ee54e2af8e9f7dffc455e8ee4ab", null ],
     [ "ldl_iter_solve_noalias", "sparse_2solver_8hpp.html#a03cc034874dbb17022d8996835154843", null ],
     [ "ldl_solve_in_place", "sparse_2solver_8hpp.html#a28719923085de8afc86abf5cdeaf28d4", null ],

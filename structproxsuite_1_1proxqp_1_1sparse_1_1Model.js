@@ -1,5 +1,6 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1Model =
 [
+    [ "Model", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a71fbfb7bf01f3cd88f78dfbfe1c76786", null ],
     [ "kkt", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad220943707b391c8d64b6bfc912964e5", null ],
     [ "kkt_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a6a5516c2b4375fa0aecb5c483cc45ee1", null ],
     [ "kkt_unscaled", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a039a0f62cf6e950905b340bc312c0ee6", null ],

@@ -1,17 +1,16 @@
 var searchData=
 [
-  ['_7edefer_0',['~Defer',['../structproxsuite_1_1proxqp_1_1detail_1_1Defer.html#a81f61b12bce598fb8e1af82caa64bd44',1,'proxsuite::proxqp::detail::Defer::~Defer()'],['../structproxsuite_1_1linalg_1_1veg_1_1Defer.html#a750df75ba15842247350b44d70ca6711',1,'proxsuite::linalg::veg::Defer::~Defer()']]],
-  ['_7edeferunreachable_1',['~DeferUnreachable',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1DeferUnreachable.html#a7daeeea6b8f2c44012dcd8d26b0510f8',1,'proxsuite::linalg::veg::_detail::_mem::DeferUnreachable']]],
-  ['_7edynstackalloc_2',['~DynStackAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html#a3d5f64811723414a02b8e4cd7e8d782b',1,'proxsuite::linalg::veg::dynstack::DynStackAlloc']]],
-  ['_7edynstackarray_3',['~DynStackArray',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html#a875fa3933c64aa6d48df632c14889781',1,'proxsuite::linalg::veg::dynstack::DynStackArray']]],
-  ['_7edynstackarraydtor_4',['~DynStackArrayDtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html#aaca339b18b428c36297dd1c7f17b4922',1,'proxsuite::linalg::veg::_detail::_dynstack::DynStackArrayDtor&lt; T, false &gt;']]],
-  ['_7emanagedalloc_5',['~ManagedAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1ManagedAlloc.html#a69b6764ac5efdd9a721d509420e2b4ef',1,'proxsuite::linalg::veg::_detail::_mem::ManagedAlloc']]],
-  ['_7enocopy_6',['~NoCopy',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopy.html#aad15ce6a3cbcfca8c1ebdb1a42473b7f',1,'proxsuite::linalg::veg::_detail::NoCopy::~NoCopy()'],['../structproxsuite_1_1proxqp_1_1detail_1_1NoCopy.html#afbd39ebe8e2f943fcb9f136abeec67a8',1,'proxsuite::proxqp::detail::NoCopy::~NoCopy()'],['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1NoCopy.html#aea58b11a4a2124dea0ddd0c1daf386b2',1,'proxsuite::linalg::dense::_detail::NoCopy::~NoCopy()']]],
-  ['_7enocopyassign_7',['~NoCopyAssign',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyAssign.html#a5525495cd41a4352f4a99da21354f37c',1,'proxsuite::linalg::veg::_detail::NoCopyAssign']]],
-  ['_7enocopyctor_8',['~NoCopyCtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyCtor.html#a50385c95b651614a18eabda41734b700',1,'proxsuite::linalg::veg::_detail::NoCopyCtor']]],
-  ['_7enomove_9',['~NoMove',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMove.html#ac8d2d4ffddb402363088303c09bf50eb',1,'proxsuite::linalg::veg::_detail::NoMove']]],
-  ['_7enomoveassign_10',['~NoMoveAssign',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveAssign.html#a2cb28263f0129321c2efbdf9310c9bfb',1,'proxsuite::linalg::veg::_detail::NoMoveAssign']]],
-  ['_7enomovector_11',['~NoMoveCtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveCtor.html#ae6274f526b51ddad1fed549803276830',1,'proxsuite::linalg::veg::_detail::NoMoveCtor']]],
-  ['_7evecalloc_12',['~VecAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html#a5e13e35cd19c624ba85e87e45192c45d',1,'proxsuite::linalg::veg::_detail::_vector::VecAlloc']]],
-  ['_7evecimpl_13',['~VecImpl',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#a14b840ccea371ef49cd22d4be2fe5ceb',1,'proxsuite::linalg::veg::_detail::_collections::VecImpl']]]
+  ['z_0',['z',['../structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb',1,'proxsuite::proxqp::Results']]],
+  ['z_5fprev_1',['z_prev',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a3b972a17d766851a8268ed361051e20f',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['zero_2',['ZERO',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a529e9e0beb5f85d1f132917c1a09860c',1,'proxsuite::linalg::veg']]],
+  ['zero_5fextend_3',['zero_extend',['../structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1zero__extend.html',1,'proxsuite::linalg::sparse::util::nb']]],
+  ['zero_5finit_5ffn_4',['zero_init_fn',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1zero__init__fn.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
+  ['zip_5',['zip',['../structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1zip.html',1,'proxsuite::linalg::veg::tuple::nb']]],
+  ['zip_6',['Zip',['../structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1zip.html#a775366597d68cff023a403cc3235f10b',1,'proxsuite::linalg::veg::tuple::nb::zip']]],
+  ['zip_5ftype_5fseq_7',['zip_type_seq',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['zip_5ftype_5fseq2_8',['zip_type_seq2',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq2.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['zip_5ftype_5fseq2_3c_20f_2c_20f_3c_20ts_2e_2e_2e_20_3e_2c_20f_3c_20zipped_2e_2e_2e_20_3e_20_3e_9',['zip_type_seq2&lt; F, F&lt; Ts... &gt;, F&lt; Zipped... &gt; &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq2_3_01F_00_01F_3_01Ts_8_296bf3865960d353995853a151ca4dd5.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['zip_5ftype_5fseq_3c_20meta_3a_3atrue_5ftype_2c_20f_20_3e_10',['zip_type_seq&lt; meta::true_type, F &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_00_01F_01_4.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['zip_5ftype_5fseq_3c_20meta_3a_3atrue_5ftype_2c_20f_2c_20f_3c_20ts_2e_2e_2e_20_3e_20_3e_11',['zip_type_seq&lt; meta::true_type, F, F&lt; Ts... &gt; &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_bc53d50aa780af6967fc8cf1bc924bde.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['zip_5ftype_5fseq_3c_20meta_3a_3atrue_5ftype_2c_20f_2c_20f_3c_20ts_2e_2e_2e_20_3e_2c_20seq_2c_20seqs_2e_2e_2e_20_3e_12',['zip_type_seq&lt; meta::true_type, F, F&lt; Ts... &gt;, Seq, Seqs... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_07eff65470006726a7233b4b1d7a63dc.html',1,'proxsuite::linalg::veg::_detail::_meta']]]
 ];

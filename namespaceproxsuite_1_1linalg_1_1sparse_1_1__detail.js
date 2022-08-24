@@ -1,7 +1,7 @@
 var namespaceproxsuite_1_1linalg_1_1sparse_1_1__detail =
 [
-    [ "SymbolicMatMutInterface", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1_symbolic_mat_mut_interface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1_symbolic_mat_mut_interface" ],
-    [ "SymbolicMatRefInterface", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1_symbolic_mat_ref_interface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1_symbolic_mat_ref_interface" ],
+    [ "SymbolicMatMutInterface", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface" ],
+    [ "SymbolicMatRefInterface", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface" ],
     [ "ereach_req", "namespaceproxsuite_1_1linalg_1_1sparse_1_1__detail.html#ac3aff33150ed55c05a113b18ee24e9d7", null ],
     [ "ereach", "namespaceproxsuite_1_1linalg_1_1sparse_1_1__detail.html#a9d569bd5f8ed517063a797c8021495b5", null ],
     [ "postorder_depth_first_search", "namespaceproxsuite_1_1linalg_1_1sparse_1_1__detail.html#a1f0b573c4f1f76cfb74331b58120d5af", null ],

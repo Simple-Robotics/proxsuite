@@ -1,4 +1,0 @@
-var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1_extract_chars_impl_3_01_literal_type_00_01__metcb1fd7904614eff1b8b6d553d9bf597b =
-[
-    [ "Type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1_extract_chars_impl_3_01_literal_type_00_01__metcb1fd7904614eff1b8b6d553d9bf597b.html#ab7c55189e5ec3d3ef6036a65c41f7366", null ]
-];

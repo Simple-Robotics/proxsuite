@@ -1,5 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer__trivial.html" title=" " alt="" coords="5,5,188,61"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer.html" title=" " alt="" coords="236,5,447,61"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1collections_1_1relocate__pointer.html" title=" " alt="" coords="495,5,680,61"/>
+<area shape="rect" id="node1" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html" title=" " alt="" coords="5,5,177,61"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html" title=" " alt="" coords="225,13,479,54"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html" title=" " alt="" coords="527,53,783,94"/>
+<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html" title=" " alt="" coords="261,78,443,149"/>
 </map>

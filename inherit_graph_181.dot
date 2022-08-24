@@ -1,9 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
- // LATEX_PDF_SIZE
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="proxsuite::linalg::\lveg::mem::Alloc\< BumpAlloc\l\< MaxAlign \> \>",height=0.2,width=0.4,color="black",URL="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc_3_01_bump_alloc_3_01_max_align_01_4_01_4.html",tooltip=" "];
-}

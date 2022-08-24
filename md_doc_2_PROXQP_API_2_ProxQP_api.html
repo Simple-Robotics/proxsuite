@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -143,15 +143,16 @@ The API structure</h2>
 <div class="ttc" id="adense_8hpp_html"><div class="ttname"><a href="dense_8hpp.html">dense.hpp</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_html_ac1e2ec3344d2681c2b7e156325cae45f"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a></div><div class="ttdeci">_detail::_meta::make_signed&lt; usize &gt;::Type isize</div><div class="ttdef"><b>Definition:</b> <a href="typedefs_8hpp_source.html#l00043">typedefs.hpp:43</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1proxqp_html"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a></div><div class="ttdef"><b>Definition:</b> <a href="dense_2fwd_8hpp_source.html#l00011">fwd.hpp:11</a></div></div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"> </div>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite::proxqp::dense::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with dense backend.</div><div class="ttdef"><b>Definition:</b> <a href="dense_2wrapper_8hpp_source.html#l00081">wrapper.hpp:82</a></div></div>
 </div><!-- fragment -->   </td></tr>
 </table>
-<p >The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision).</p>
+<p >The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision). Note that for model to be valid, the primal dimension (i.e., n) must be strictly positive. If it is not the case an assertion will be raised precising this issue.</p>
 <p >For loading ProxQP with sparse backend they are two possibilities:</p><ul>
 <li>one can use as before the dimensions of the QP problem (i.e., n, n_eq and n_in)</li>
 <li>or one can use the sparsity structure of the matrices defining the QP problem. More precisely, if H designs the quadratic cost of the model, A the equality constraint matrix, and C the inequality constraint matrix, one can pass in entry a boolean mask of these matrices (i.e., matrices with true value when one entry is non zero) for initializing the Qp object.</li>
@@ -161,7 +162,7 @@ The API structure</h2>
 <th>examples/cpp/loading_sparse_qp.cpp </th><th>examples/python/loading_sparse_qp.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sparse_8hpp.html">proxsuite/proxqp/sparse/sparse.hpp</a>&gt;</span> <span class="comment">// get the sparse API of ProxQP</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -180,7 +181,7 @@ The API structure</h2>
 <div class="line">  T p = 0.15;            <span class="comment">// level of sparsity</span></div>
 <div class="line">  T conditioning = 10.0; <span class="comment">// conditioning level for H</span></div>
 <div class="line"> </div>
-<div class="line">  <span class="keyword">auto</span> H = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#abb33f5598086a662df743b7989c7c9bb">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
+<div class="line">  <span class="keyword">auto</span> H = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
 <div class="line">    n, conditioning, p);</div>
 <div class="line">  <span class="keyword">auto</span> A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand&lt;T&gt;(n_eq, n, p);</div>
 <div class="line">  <span class="keyword">auto</span> C = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand&lt;T&gt;(n_in, n, p);</div>
@@ -189,17 +190,17 @@ The API structure</h2>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP&lt;T, isize&gt;</a> Qp2(</div>
 <div class="line">    H.cast&lt;<span class="keywordtype">bool</span>&gt;(), A.cast&lt;<span class="keywordtype">bool</span>&gt;(), C.cast&lt;<span class="keywordtype">bool</span>&gt;());</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_1_1rand_html_abb33f5598086a662df743b7989c7c9bb"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#abb33f5598086a662df743b7989c7c9bb">proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a></div><div class="ttdeci">auto sparse_positive_definite_rand(isize n, Scalar cond, double p) -&gt; SparseMat&lt; Scalar &gt;</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00192">random_qp_problems.hpp:192</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_1_1rand_html_a51eb1a46428d5c6a4ba8c97816eb3248"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a></div><div class="ttdeci">auto sparse_positive_definite_rand(isize n, Scalar cond, Scalar p) -&gt; SparseMat&lt; Scalar &gt;</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00192">random_qp_problems.hpp:192</a></div></div>
 <div class="ttc" id="arandom__qp__problems_8hpp_html"><div class="ttname"><a href="random__qp__problems_8hpp.html">random_qp_problems.hpp</a></div></div>
 <div class="ttc" id="asparse_8hpp_html"><div class="ttname"><a href="sparse_8hpp.html">sparse.hpp</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1sparse_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with sparse backend.</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00090">wrapper.hpp:91</a></div></div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a Qp object using Qp problem dimensions</span></div>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.sparse.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite.proxqp.sparse.QP</a>(n, n_eq, n_in)</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
@@ -237,7 +238,7 @@ The API structure</h2>
 <div class="line">H_ = H != 0.0</div>
 <div class="line">A_ = A != 0.0</div>
 <div class="line">C_ = C != 0.0</div>
-<div class="line">Qp2 = proxsuite.qp.sparse.QP(H_, A_, C_)</div>
+<div class="line">Qp2 = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite.proxqp.sparse.QP</a>(H_, A_, C_)</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >The sparse Qp object is templated by the floatting precision of the QP model (in the example above a double precision), and the integer precision used for the different types of non zero indices used (for the associated sparse matrix representation used).</p>
@@ -249,7 +250,7 @@ The init method</h2>
 <th>examples/cpp/init_dense_qp.cpp </th><th>examples/python/init_dense_qp.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -264,17 +265,13 @@ The init method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
 <div class="line">}</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_html_a06cba1fc5370fa8f7edcfa6bed96e4a2"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">proxsuite::proxqp::utils::dense_strongly_convex_qp</a></div><div class="ttdeci">proxsuite::proxqp::dense::Model&lt; Scalar &gt; dense_strongly_convex_qp(proxqp::isize dim, proxqp::isize n_eq, proxqp::isize n_in, Scalar sparsity_factor, Scalar strong_convexity_factor=Scalar(1e-2))</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00449">random_qp_problems.hpp:449</a></div></div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_html_a06cba1fc5370fa8f7edcfa6bed96e4a2"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">proxsuite::proxqp::utils::dense_strongly_convex_qp</a></div><div class="ttdeci">proxsuite::proxqp::dense::Model&lt; Scalar &gt; dense_strongly_convex_qp(proxqp::isize dim, proxqp::isize n_eq, proxqp::isize n_in, Scalar sparsity_factor, Scalar strong_convexity_factor=Scalar(1e-2))</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00433">random_qp_problems.hpp:433</a></div></div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -309,14 +306,70 @@ The init method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
 <div class="line">Qp.init(H, g, A, b, C, u, l)</div>
 </div><!-- fragment -->   </td></tr>
 </table>
-<p >Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format).</p>
+<p >Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format). Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).</p>
+<table class="manual">
+<tr>
+<th>examples/cpp/initializing_with_none.cpp </th><th>examples/python/initializing_with_none.py  </th></tr>
+<tr>
+<td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
+<div class="line"><span class="keyword">using</span> T = double;</div>
+<div class="line"><span class="keywordtype">int</span></div>
+<div class="line">main()</div>
+<div class="line">{</div>
+<div class="line">  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">dense::isize</a> dim = 10;</div>
+<div class="line">  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">dense::isize</a> n_eq(0);</div>
+<div class="line">  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">dense::isize</a> n_in(0);</div>
+<div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);</div>
+<div class="line">  T strong_convexity_factor(0.1);</div>
+<div class="line">  T sparsity_factor(0.15);</div>
+<div class="line">  <span class="comment">// we generate a qp, so the function used from helpers.hpp is</span></div>
+<div class="line">  <span class="comment">// in proxqp namespace. The qp is in dense eigen format and</span></div>
+<div class="line">  <span class="comment">// you can control its sparsity ratio and strong convexity factor.</span></div>
+<div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
+<div class="line"> </div>
+<div class="line">  Qp.init(qp.H,</div>
+<div class="line">          qp.g,</div>
+<div class="line">          qp.A,</div>
+<div class="line">          qp.b,</div>
+<div class="line">          qp.C,</div>
+<div class="line">          qp.u,</div>
+<div class="line">          qp.l); <span class="comment">// initialization with zero shape matrices</span></div>
+<div class="line">  <span class="comment">// it is equivalent to do Qp.init(qp.H, qp.g,</span></div>
+<div class="line">  <span class="comment">// std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);</span></div>
+<div class="line">  Qp.solve();</div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp.results.z &lt;&lt; std::endl;</div>
+<div class="line">}</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
+<div class="line"><span class="keyword">import</span> proxsuite</div>
+<div class="line"> </div>
+<div class="line">H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])</div>
+<div class="line">g = np.array([-13.0, 15.0, 7.0])</div>
+<div class="line">A = <span class="keywordtype">None</span></div>
+<div class="line">b = <span class="keywordtype">None</span></div>
+<div class="line">C = <span class="keywordtype">None</span></div>
+<div class="line">u = <span class="keywordtype">None</span></div>
+<div class="line">l = <span class="keywordtype">None</span></div>
+<div class="line"> </div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(3, 0, 0)</div>
+<div class="line">Qp.init(H, g, A, b, C, u, l)  <span class="comment"># it is equivalent to do as well Qp.init(H, g)</span></div>
+<div class="line">Qp.solve()</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+</div><!-- fragment -->   </td></tr>
+</table>
 <p >With the init method, you can also setting-up on the same time some other parameters in the following order:</p><ul>
 <li>compute_preconditioner: a boolean parameter for executing or not the preconditioner. The preconditioner is an algorithm used (for the moment we use <a href="https://cds.cern.ch/record/585592/files/CM-P00040415.pdf">Ruiz equilibrator</a>) for reducing the ill-conditioning of the QP problem, and hence speeding-up the solver and increasing its accuracy. It consists mostly of an heuristic involving linear scalings. Note that for very ill-conditioned QP problem, when one asks for a very accurate solution, the unscaling procedure can become less precise (we provide some remarks about this subject in section 6.D of the <a href="https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf">following paper</a>). By default its value is set to true.</li>
 <li>rho: the proximal step size wrt primal variable. Reducing its value speed-ups convergence wrt primal variable (but increases as well ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-7. By default its value is set to 1.e-6.</li>
@@ -343,11 +396,7 @@ The init method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(</div>
 <div class="line">    dim, n_eq, n_in); <span class="comment">// create the QP</span></div>
@@ -357,7 +406,7 @@ The init method</h2>
 <div class="line">  <span class="comment">// if you don&#39;t want to change one parameter (here compute_preconditioner),</span></div>
 <div class="line">  <span class="comment">// just let it be std::nullopt</span></div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -392,7 +441,7 @@ The init method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve with another rho parameter</span></div>
@@ -405,7 +454,7 @@ The init method</h2>
 <th>examples/cpp/init_dense_qp_with_timings.cpp </th><th>examples/python/init_dense_qp_with_timings.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -419,18 +468,13 @@ The init method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.settings.compute_timings = <span class="keyword">true</span>;                <span class="comment">// compute all timings</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> truediv</div>
-<div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -465,7 +509,7 @@ The init method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -481,7 +525,7 @@ The solve method</h2>
 <th>examples/cpp/solve_dense_qp.cpp </th><th>examples/python/solve_dense_qp.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -497,11 +541,7 @@ The solve method</h2>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line"> </div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
@@ -511,8 +551,12 @@ The solve method</h2>
 <div class="line">  <span class="keyword">auto</span> z_wm = utils::rand::vector_rand&lt;T&gt;(n_in);</div>
 <div class="line">  Qp.solve(x_wm, y_wm,</div>
 <div class="line">           z_wm); <span class="comment">// if you have a warm start, put it here</span></div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -547,7 +591,7 @@ The solve method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -556,6 +600,10 @@ The solve method</h2>
 <div class="line">Qp.solve()</div>
 <div class="line"><span class="comment"># solve with a warm start, for ex random one</span></div>
 <div class="line">Qp.solve(np.random.randn(n), np.random.randn(n_eq), np.random.randn(n_in))</div>
+<div class="line"><span class="comment"># print an optimal solution</span></div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(Qp.results.y))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(Qp.results.z))</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >Before ending this section, we will talk about how to activate some other settings before launching the solve method. To do so, you only need to define your desired settings (for example, the stopping criterion accuracy threshold eps_abs, or the verbose option) after initializing the Qp object. They will be then taken into account only if there are set before the solve method (otherwise, they will be taken into account when a next solve or update method is called). The full description of all the settings is provided at a dedicated section below. Here we just give an example to illustrate the mentioned notion above.</p>
@@ -564,7 +612,7 @@ The solve method</h2>
 <th>examples/cpp/solve_dense_qp_with_setting.cpp </th><th>examples/python/solve_dense_qp_with_setting.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -579,20 +627,19 @@ The solve method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
 <div class="line">  Qp.settings.eps_abs = T(1.E-9); <span class="comment">// set accuracy threshold to 1.e-9</span></div>
 <div class="line">  Qp.settings.verbose = <span class="keyword">true</span>;     <span class="comment">// print some intermediary results</span></div>
 <div class="line">  Qp.solve();                     <span class="comment">// solve the problem with previous settings</span></div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> truediv</div>
-<div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -627,7 +674,7 @@ The solve method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -636,6 +683,10 @@ The solve method</h2>
 <div class="line">Qp.settings.verbose = <span class="keyword">True</span></div>
 <div class="line"><span class="comment"># solve with previous settings</span></div>
 <div class="line">Qp.solve()</div>
+<div class="line"><span class="comment"># print an optimal solution</span></div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(Qp.results.y))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(Qp.results.z))</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <h2><a class="anchor" id="explanationUpdateMethod"></a>
@@ -646,7 +697,7 @@ The update method</h2>
 <th>examples/cpp/update_dense_qp.cpp </th><th>examples/python/update_dense_qp.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -661,28 +712,24 @@ The update method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
 <div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
 <div class="line">  Qp.solve();                                        <span class="comment">// solve the problem</span></div>
 <div class="line">                                                     <span class="comment">// a new Qp problem</span></div>
 <div class="line">  dense::Model&lt;T&gt; qp2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line">  <span class="comment">// re update the model</span></div>
 <div class="line">  Qp.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.u, qp2.l);</div>
 <div class="line">  <span class="comment">// solve it</span></div>
 <div class="line">  Qp.solve();</div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -717,7 +764,7 @@ The update method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -729,6 +776,10 @@ The update method</h2>
 <div class="line">Qp.update(H_new, g_new, A_new, b_new, C_new, u_new, l_new)</div>
 <div class="line"><span class="comment"># solve it</span></div>
 <div class="line">Qp.solve()</div>
+<div class="line"><span class="comment"># print an optimal solution</span></div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(Qp.results.y))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(Qp.results.z))</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p>Contrary to the init method, the compute_preconditioner boolean parameter becomes update_preconditioner, which enables you keeping the previous preconditioner (if set to false) to equilibrate the new updated problem, or to re-compute the preconditioner with the new values of the problem (if set to true). By default the update_preconditioner parameter is set to true.</p>
@@ -737,8 +788,8 @@ The update method</h2>
 <tr>
 <th>examples/cpp/update_sparse_qp.cpp </th><th>examples/python/update_sparse_qp.py  </th></tr>
 <tr>
-<td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sparse_8hpp.html">proxsuite/proxqp/sparse/sparse.hpp</a>&gt;</span><span class="comment">// get the sparse API of ProxQP</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sparse_8hpp.html">proxsuite/proxqp/sparse/sparse.hpp</a>&gt;</span> <span class="comment">// get the sparse API of ProxQP</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using</span> T = double;</div>
@@ -752,7 +803,7 @@ The update method</h2>
 <div class="line"> </div>
 <div class="line">  T p = 0.15;            <span class="comment">// level of sparsity</span></div>
 <div class="line">  T conditioning = 10.0; <span class="comment">// conditioning level for H</span></div>
-<div class="line">  <span class="keyword">auto</span> H = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#abb33f5598086a662df743b7989c7c9bb">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
+<div class="line">  <span class="keyword">auto</span> H = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
 <div class="line">    n, conditioning, p);</div>
 <div class="line">  <span class="keyword">auto</span> g = ::proxsuite::proxqp::utils::rand::vector_rand&lt;T&gt;(n);</div>
 <div class="line">  <span class="keyword">auto</span> A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand&lt;T&gt;(n_eq, n, p);</div>
@@ -777,7 +828,7 @@ The update method</h2>
 <div class="line">            std::nullopt); <span class="comment">// update H with H_new, it will work</span></div>
 <div class="line">  Qp.solve();</div>
 <div class="line">  <span class="comment">// generate H2 with another sparsity structure</span></div>
-<div class="line">  <span class="keyword">auto</span> H2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#abb33f5598086a662df743b7989c7c9bb">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
+<div class="line">  <span class="keyword">auto</span> H2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
 <div class="line">    n, conditioning, p);</div>
 <div class="line">  Qp.update(H2,</div>
 <div class="line">            std::nullopt,</div>
@@ -801,8 +852,12 @@ The update method</h2>
 <div class="line">    H2.cast&lt;<span class="keywordtype">bool</span>&gt;(), A.cast&lt;<span class="keywordtype">bool</span>&gt;(), C.cast&lt;<span class="keywordtype">bool</span>&gt;());</div>
 <div class="line">  Qp2.init(H2, g_new, A, b, C, u, l);</div>
 <div class="line">  Qp2.solve(); <span class="comment">// it will solve the new problem</span></div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp2.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp2.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp2.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -837,7 +892,7 @@ The update method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.sparse.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite.proxqp.sparse.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -853,9 +908,13 @@ The update method</h2>
 <div class="line">Qp.update(g=g_new)  <span class="comment"># if only a vector changes, then the update takes effect</span></div>
 <div class="line">Qp.solve()  <span class="comment"># it solves the problem with the QP H,g_new,A,b,C,u,l</span></div>
 <div class="line"><span class="comment"># to solve the problem with H2 matrix create a new Qp object in the sparse case</span></div>
-<div class="line">Qp2 = proxsuite.qp.sparse.QP(n, n_eq, n_in)</div>
+<div class="line">Qp2 = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite.proxqp.sparse.QP</a>(n, n_eq, n_in)</div>
 <div class="line">Qp2.init(H2, g_new, A, b, C, u, l)</div>
 <div class="line">Qp2.solve()  <span class="comment"># it will solve the new problem</span></div>
+<div class="line"><span class="comment"># print an optimal solution</span></div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(Qp.results.y))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(Qp.results.z))</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >Finally, if you want to change your initial guess option when updating the problem, you must change it in the setting before the update to take effect for the next solve (otherwise it will keep the previous one set). It is important especially for the WARM_START_WITH_PREVIOUS_RESULT initial guess option (set by default in the solver). Indeed, in this case, if no matrix is updated, the workspace keeps the previous factorization in the update method, which adds considerable speed-up for the next solve. We provide below an example in the dense case.</p>
@@ -864,7 +923,7 @@ The update method</h2>
 <th>examples/cpp/update_dense_qp_ws_previous_result.cpp </th><th>examples/python/update_dense_qp_ws_previous_result.py  </th></tr>
 <tr>
 <td valign="top"><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="dense_8hpp.html">proxsuite/proxqp/dense/dense.hpp</a>&gt;</span> <span class="comment">// load the dense solver backend</span></div>
-<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span><span class="comment">// used for generating a random convex Qp</span></div>
+<div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex Qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite.html">proxsuite</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
@@ -879,13 +938,9 @@ The update method</h2>
 <div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  T strong_convexity_factor(1.e-2);</div>
 <div class="line">  dense::Model&lt;T&gt; qp = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils.html#a06cba1fc5370fa8f7edcfa6bed96e4a2">utils::dense_strongly_convex_qp</a>(</div>
-<div class="line">                                  dim,</div>
-<div class="line">                                  n_eq,</div>
-<div class="line">                                  n_in,</div>
-<div class="line">                                  sparsity_factor,</div>
-<div class="line">                                  strong_convexity_factor);</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
-<div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);          <span class="comment">// create the QP object</span></div>
+<div class="line">  dense::QP&lt;T&gt; Qp(dim, n_eq, n_in);                  <span class="comment">// create the QP object</span></div>
 <div class="line">  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); <span class="comment">// initialize the model</span></div>
 <div class="line">  Qp.solve();                                        <span class="comment">// solve the problem</span></div>
 <div class="line">  <span class="comment">// re update the linear cost taking previous result</span></div>
@@ -904,9 +959,13 @@ The update method</h2>
 <div class="line">            std::nullopt,</div>
 <div class="line">            std::nullopt);</div>
 <div class="line">  Qp.solve();</div>
+<div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; Qp.results.x &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; Qp.results.y &lt;&lt; std::endl;</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; Qp.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
 <div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="instruction-set_8hpp_source.html#l00021">instruction-set.hpp:21</a></div></div>
-</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite_pywrap <span class="keyword">as</span> proxsuite</div>
+</div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
 <div class="line"> </div>
@@ -941,7 +1000,7 @@ The update method</h2>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">Qp = proxsuite.qp.dense.QP(n, n_eq, n_in)</div>
+<div class="line">Qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(n, n_eq, n_in)</div>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
@@ -950,10 +1009,16 @@ The update method</h2>
 <div class="line">Qp.solve()</div>
 <div class="line"><span class="comment"># create a new problem and update Qp</span></div>
 <div class="line">g_new = 0.95 * g  <span class="comment"># slightly different g_new</span></div>
-<div class="line">Qp.settings.initial_guess = proxsuite.qp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT</div>
+<div class="line">Qp.settings.initial_guess = (</div>
+<div class="line">    proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT</div>
+<div class="line">)</div>
 <div class="line">Qp.update(g=g_new)</div>
 <div class="line"><span class="comment"># solve it</span></div>
 <div class="line">Qp.solve()</div>
+<div class="line"><span class="comment"># print an optimal solution</span></div>
+<div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(Qp.results.x))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(Qp.results.y))</div>
+<div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(Qp.results.z))</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >Note that one subsection is dedicated to the different initial guess options below.</p>

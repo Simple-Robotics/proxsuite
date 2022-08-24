@@ -1,4 +1,0 @@
-var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1_indexed_to_tuple_3_01tuple_1_1_indexe7831dadca4c88e3fb8e633461c2d44f8 =
-[
-    [ "Type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1_indexed_to_tuple_3_01tuple_1_1_indexe7831dadca4c88e3fb8e633461c2d44f8.html#af2d0f3d80c9169f215f9e32e86008e7f", null ]
-];

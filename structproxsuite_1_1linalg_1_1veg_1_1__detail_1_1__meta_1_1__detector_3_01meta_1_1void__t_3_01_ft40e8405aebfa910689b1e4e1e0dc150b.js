@@ -1,4 +1,0 @@
-var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector_3_01meta_1_1void__t_3_01_ft40e8405aebfa910689b1e4e1e0dc150b =
-[
-    [ "value_type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector_3_01meta_1_1void__t_3_01_ft40e8405aebfa910689b1e4e1e0dc150b.html#a78f771cae9f7988b34939602c70236a2", null ]
-];

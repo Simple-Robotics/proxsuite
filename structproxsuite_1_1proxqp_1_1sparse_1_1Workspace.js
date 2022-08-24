@@ -1,8 +1,8 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1Workspace =
 [
     [ "Workspace", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#ade9600665a757dad519a111944f5258f", null ],
-    [ "setup_symbolic_factorizaton", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a1bcf7f7c104ae9b7ccca8dafe80f1b55", null ],
-    [ "setup_impl", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a0729816519072d97bda88179df5c88b9", null ],
+    [ "setup_symbolic_factorizaton", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#aaf9b62c1770610f1c3f8dfbb5e4e25e1", null ],
+    [ "setup_impl", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a4530d8840c1df5198dcde751efc96aa4", null ],
     [ "ldl_col_ptrs", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#ab43c53d9268564e206073c557afaf9c3", null ],
     [ "ldl_col_ptrs_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a4e6207cfe583c78d3dbdb0018966e344", null ],
     [ "stack_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a96c33b265169b21f65d73f7efb002150", null ],

@@ -1,11 +1,11 @@
 var type__traits_2alloc_8hpp =
 [
-    [ "proxsuite::linalg::veg::mem::Alloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc.html", null ],
-    [ "proxsuite::linalg::veg::mem::Cloner< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_cloner.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_mem::DeferUnreachable", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1_defer_unreachable.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1_defer_unreachable" ],
-    [ "proxsuite::linalg::veg::mem::AllocBlock", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc_block.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_alloc_block" ],
-    [ "proxsuite::linalg::veg::mem::Layout", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_layout.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_layout" ],
-    [ "proxsuite::linalg::veg::mem::RelocFn", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_reloc_fn.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1_reloc_fn" ],
+    [ "proxsuite::linalg::veg::mem::Alloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc.html", null ],
+    [ "proxsuite::linalg::veg::mem::Cloner< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Cloner.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_mem::DeferUnreachable", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1DeferUnreachable.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1DeferUnreachable" ],
+    [ "proxsuite::linalg::veg::mem::AllocBlock", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock" ],
+    [ "proxsuite::linalg::veg::mem::Layout", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout" ],
+    [ "proxsuite::linalg::veg::mem::RelocFn", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn" ],
     [ "byte", "type__traits_2alloc_8hpp.html#aaf71e95f8105797c322dcfc3194f61db", null ],
     [ "throw_bad_alloc", "type__traits_2alloc_8hpp.html#ae2a3ceecb798c800a2d7e5287a475619", null ],
     [ "terminate", "type__traits_2alloc_8hpp.html#aaaa018bfbd94923135b274f338d4015a", null ],

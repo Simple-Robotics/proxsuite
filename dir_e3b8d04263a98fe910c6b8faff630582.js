@@ -4,7 +4,15 @@ var dir_e3b8d04263a98fe910c6b8faff630582 =
     [ "assert_impl.hpp", "assert__impl_8hpp.html", "assert__impl_8hpp" ],
     [ "collection_algo.hpp", "collection__algo_8hpp.html", "collection__algo_8hpp" ],
     [ "dbg.hpp", "internal_2dbg_8hpp.html", null ],
-    [ "delete_special_members.hpp", "delete__special__members_8hpp.html", "delete__special__members_8hpp" ],
+    [ "delete_special_members.hpp", "delete__special__members_8hpp.html", [
+      [ "proxsuite::linalg::veg::_detail::NoDefaultCtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoDefaultCtor.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoDefaultCtor" ],
+      [ "proxsuite::linalg::veg::_detail::NoMoveAssign", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveAssign.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveAssign" ],
+      [ "proxsuite::linalg::veg::_detail::NoCopyAssign", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyAssign.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyAssign" ],
+      [ "proxsuite::linalg::veg::_detail::NoMoveCtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveCtor.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveCtor" ],
+      [ "proxsuite::linalg::veg::_detail::NoCopyCtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyCtor.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopyCtor" ],
+      [ "proxsuite::linalg::veg::_detail::NoMove", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMove.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMove" ],
+      [ "proxsuite::linalg::veg::_detail::NoCopy", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopy.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoCopy" ]
+    ] ],
     [ "dyn_index.hpp", "dyn__index_8hpp.html", "dyn__index_8hpp" ],
     [ "epilogue.hpp", "epilogue_8hpp.html", null ],
     [ "fix_index.hpp", "fix__index_8hpp.html", "fix__index_8hpp" ],

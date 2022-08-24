@@ -1,7 +1,7 @@
 var namespaceproxsuite_1_1linalg_1_1veg_1_1tags =
 [
-    [ "InPlace", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place" ],
-    [ "InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place_3_01void_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1_in_place_3_01void_01_4" ],
+    [ "InPlace", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace" ],
+    [ "InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4" ],
     [ "Tuplify", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#aefbf3c2863cd848b82b1570e74a12661", null ],
     [ "VEG_TAG", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#ae0aef2126d390b1dc24fd63158da892d", null ],
     [ "VEG_TAG", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#ac7572e4ada23ff20a4532503f3e6c9af", null ],

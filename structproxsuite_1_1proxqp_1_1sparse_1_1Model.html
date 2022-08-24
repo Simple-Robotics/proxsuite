@@ -37,9 +37,9 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.0.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.0</span>
    </div>
-   <div id="projectbrief">The proximal solver suite</div>
+   <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
  </tr>
  </tbody>
@@ -116,6 +116,8 @@ Collaboration diagram for proxsuite::proxqp::sparse::Model&lt; T, I &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a71fbfb7bf01f3cd88f78dfbfe1c76786"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a71fbfb7bf01f3cd88f78dfbfe1c76786">Model</a> (isize _dim, isize _n_eq, isize _n_in)</td></tr>
+<tr class="separator:a71fbfb7bf01f3cd88f78dfbfe1c76786"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad220943707b391c8d64b6bfc912964e5"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad220943707b391c8d64b6bfc912964e5">kkt</a> () const -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html">proxsuite::linalg::sparse::MatRef</a>&lt; T, I &gt;</td></tr>
 <tr class="separator:ad220943707b391c8d64b6bfc912964e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a5516c2b4375fa0aecb5c483cc45ee1"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a6a5516c2b4375fa0aecb5c483cc45ee1">kkt_mut</a> () -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html">proxsuite::linalg::sparse::MatMut</a>&lt; T, I &gt;</td></tr>
@@ -166,7 +168,62 @@ struct proxsuite::proxqp::sparse::Model&lt; T, I &gt;</div><p >This class stores
 <p ><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html" title="This class stores the model of the QP problem.">Model</a> class of the sparse solver storing the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> problem structure. </p>
 
 <p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00022">22</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a71fbfb7bf01f3cd88f78dfbfe1c76786" name="a71fbfb7bf01f3cd88f78dfbfe1c76786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71fbfb7bf01f3cd88f78dfbfe1c76786">&#9670;&nbsp;</a></span>Model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename I &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html">proxsuite::proxqp::sparse::Model</a>&lt; T, I &gt;::Model </td>
+          <td>(</td>
+          <td class="paramtype">isize&#160;</td>
+          <td class="paramname"><em>_dim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">isize&#160;</td>
+          <td class="paramname"><em>_n_eq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">isize&#160;</td>
+          <td class="paramname"><em>_n_in</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Default constructor. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_dim</td><td>primal variable dimension. </td></tr>
+    <tr><td class="paramname">_n_eq</td><td>number of equality constraints. </td></tr>
+    <tr><td class="paramname">_n_in</td><td>number of inequality constraints. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00051">51</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="ad220943707b391c8d64b6bfc912964e5" name="ad220943707b391c8d64b6bfc912964e5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad220943707b391c8d64b6bfc912964e5">&#9670;&nbsp;</a></span>kkt()</h2>
 
@@ -194,7 +251,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Returns the current (scaled) KKT matrix of the problem. </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00048">48</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00068">68</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
@@ -225,7 +282,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Returns the current (scaled) KKT matrix of the problem (mutable form). </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00067">67</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00087">87</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
@@ -256,7 +313,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Returns the original (unscaled) KKT matrix of the problem. </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00086">86</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00106">106</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
@@ -287,7 +344,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Returns the original (unscaled) KKT matrix of the problem (mutable form). </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00105">105</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00125">125</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>

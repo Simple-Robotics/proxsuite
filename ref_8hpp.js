@@ -1,10 +1,10 @@
 var ref_8hpp =
 [
-    [ "proxsuite::linalg::veg::cmp::ref::RefBase", "structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1ref_1_1_ref_base.html", null ],
-    [ "proxsuite::linalg::veg::cmp::mut::RefMutBase", "structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1_ref_mut_base.html", null ],
-    [ "proxsuite::linalg::veg::Ref< T >", "structproxsuite_1_1linalg_1_1veg_1_1_ref.html", "structproxsuite_1_1linalg_1_1veg_1_1_ref" ],
+    [ "proxsuite::linalg::veg::cmp::ref::RefBase", "structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1ref_1_1RefBase.html", null ],
+    [ "proxsuite::linalg::veg::cmp::mut::RefMutBase", "structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html", null ],
+    [ "proxsuite::linalg::veg::Ref< T >", "structproxsuite_1_1linalg_1_1veg_1_1Ref.html", "structproxsuite_1_1linalg_1_1veg_1_1Ref" ],
     [ "proxsuite::linalg::veg::nb::ref", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1ref.html", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1ref" ],
-    [ "proxsuite::linalg::veg::RefMut< T >", "structproxsuite_1_1linalg_1_1veg_1_1_ref_mut.html", "structproxsuite_1_1linalg_1_1veg_1_1_ref_mut" ],
+    [ "proxsuite::linalg::veg::RefMut< T >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", "structproxsuite_1_1linalg_1_1veg_1_1RefMut" ],
     [ "proxsuite::linalg::veg::nb::deref", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1deref.html", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1deref" ],
     [ "proxsuite::linalg::veg::nb::deref_mut", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1deref__mut.html", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1deref__mut" ],
     [ "proxsuite::linalg::veg::nb::mut", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1mut.html", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1mut" ],

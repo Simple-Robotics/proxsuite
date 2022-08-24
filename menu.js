@@ -28,15 +28,7 @@ function initMenu(relPath,searchEnabled,serverSide,searchPage,search) {
     if ('children' in data) {
       result+='<ul>';
       for (var i in data.children) {
-        var url;
-        var link;
-        link = data.children[i].url;
-        if (link.substring(0,1)=='^') {
-          url = link.substring(1);
-        } else {
-          url = relPath+link;
-        }
-        result+='<li><a href="'+url+'">'+
+        result+='<li><a href="'+relPath+data.children[i].url+'">'+
                                 data.children[i].text+'</a>'+
                                 makeTree(data.children[i],relPath)+'</li>';
       }

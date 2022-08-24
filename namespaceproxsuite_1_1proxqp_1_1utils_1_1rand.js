@@ -19,17 +19,5 @@ var namespaceproxsuite_1_1proxqp_1_1utils_1_1rand =
     [ "sparse_positive_definite_rand_compressed", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a11ff69d65adbea4d887140d5920ef0eb", null ],
     [ "sparse_positive_definite_rand_not_compressed", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a68cb5f4431028238a893e8f0ccc5f22a", null ],
     [ "sparse_matrix_rand", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a903e7c2b3b352a6f21e51e5dcdee7be9", null ],
-    [ "sparse_matrix_rand_not_compressed", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a0a1f2d7f27002411ec971f1a1b5ff560", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a1ab0238938504b3c2245f9faf0ff9635", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a52770f583059826368c31bd2cb2fd786", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#aa3223a2fe2319f228592f8e35ed9da44", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a7c6bfc3f1e2d3794062fcb9e47343306", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#ae052193971b230e24de653ec40c93945", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#acdf4d185b86b5e97d2a0f5805fb6f8c3", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#ac7ed8ec71b0157ff73fb6453f4d9771b", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a4a174d3becd3619ee8a94d6f96b37d2f", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a4e52dfabddae7d1b33157b992e43f95f", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a1375d4da9adaab54e1a09803adefbf8c", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a6a9278638784cb8d8493f902ae2fc239", null ],
-    [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a4e1acc43a0a20113685ef9609715a177", null ]
+    [ "sparse_matrix_rand_not_compressed", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a0a1f2d7f27002411ec971f1a1b5ff560", null ]
 ];
