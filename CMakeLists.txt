@@ -91,17 +91,20 @@ set(SIMDE_HINT_FAILURE
     "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file."
 )
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  add_project_dependency(Simde REQUIRED)
+  add_project_dependency(Simde REQUIRED FIND_EXTERNAL "Simde")
 endif()
 
 # Build the main library
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
-add_library(proxsuite INTERFACE ${${PROJECT_NAME}_HEADERS})
+add_library(proxsuite INTERFACE)
 target_link_libraries(
   proxsuite
   PUBLIC
   INTERFACE Eigen3::Eigen)
+target_include_directories(
+  proxsuite INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
+                      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
@@ -133,9 +136,6 @@ endif()
 install(
   TARGETS ${EXPORTED_TARGETS_LIST}
   EXPORT ${TARGETS_EXPORT_NAME}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
-  INCLUDES
-  DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
