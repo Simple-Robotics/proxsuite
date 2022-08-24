@@ -109,17 +109,6 @@ set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
 
-add_library(proxsuite-not-vectorized INTERFACE)
-target_link_libraries(
-  proxsuite-not-vectorized
-  PUBLIC
-  INTERFACE proxsuite)
-target_compile_definitions(
-  proxsuite-not-vectorized
-  PUBLIC
-  INTERFACE PROXSUITE_DONT_VECTORIZE)
-list(APPEND EXPORTED_TARGETS_LIST proxsuite-not-vectorized)
-
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
   target_link_libraries(
@@ -130,6 +119,10 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
     proxsuite-vectorized
     PUBLIC
     INTERFACE simde)
+  target_compile_definitions(
+    proxsuite-vectorized
+    PUBLIC
+    INTERFACE PROXSUITE_VECTORIZE)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 

@@ -16,7 +16,7 @@ target_include_directories(proxsuite-test-util PUBLIC ./include)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   target_link_libraries(proxsuite-test-util proxsuite-vectorized matio)
 else()
-  target_link_libraries(proxsuite-test-util proxsuite-not-vectorized matio)
+  target_link_libraries(proxsuite-test-util proxsuite matio)
 endif()
 
 macro(proxsuite_test name path)

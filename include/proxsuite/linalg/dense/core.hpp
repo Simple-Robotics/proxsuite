@@ -11,7 +11,7 @@
 
 #include <immintrin.h>
 
-#ifndef PROXSUITE_DONT_VECTORIZE
+#ifdef PROXSUITE_VECTORIZE
 #include <cmath> // to avoid error of the type no member named 'isnan' in namespace 'std';
 #include <simde/x86/avx2.h>
 #include <simde/x86/fma.h>
@@ -161,7 +161,7 @@ struct Pack<T, 1>
   }
 };
 
-#ifndef PROXSUITE_DONT_VECTORIZE
+#ifdef PROXSUITE_VECTORIZE
 template<>
 struct Pack<f32, 4>
 {
@@ -272,7 +272,7 @@ struct NativePackInfo
   using Type = Pack<f32, N>;
 };
 
-#ifndef PROXSUITE_DONT_VECTORIZE
+#ifdef PROXSUITE_VECTORIZE
 template<>
 struct NativePackInfo<f32>
 {
@@ -308,7 +308,7 @@ round_up(T a, T b) noexcept -> T
   return a + (b - 1) / b * b;
 }
 
-#ifndef PROXSUITE_DONT_VECTORIZE
+#ifdef PROXSUITE_VECTORIZE
 template<typename T>
 using should_vectorize =
   proxsuite::linalg::veg::meta::bool_constant<VEG_CONCEPT(same<T, f32>) ||
