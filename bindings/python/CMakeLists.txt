@@ -61,7 +61,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   install(TARGETS ${target_name} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endfunction()
 
-create_python_target(proxsuite_pywrap "" proxsuite-not-vectorized)
+create_python_target(proxsuite_pywrap "" proxsuite)
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
     create_python_target(proxsuite_pywrap_avx2 "-mavx2;-mfma"
