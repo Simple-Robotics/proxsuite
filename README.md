@@ -51,7 +51,8 @@ Alternative installation procedures are presented in the [Installation Procedure
 **Proxsuite** is flexible:
 
    - header only,
-   - C++ 17/20 compliant.
+   - C++ 17/20 compliant,
+   - Python and Julia bindings for easy code prototyping without sacrificing performances.
 
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
