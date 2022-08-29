@@ -1,3 +1,4 @@
+#include <iostream>
 #include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse API of ProxQP
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex Qp
 
