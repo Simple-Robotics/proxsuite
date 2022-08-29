@@ -54,7 +54,7 @@ Alternative installation procedures are presented in the [Installation Procedure
    - C++ 17/20 compliant.
 
 **Proxsuite** is extensible.
-**Proxsuite** is reliable and extensively tested.
+**Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
 **Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
 
 ## **ProxQP**
