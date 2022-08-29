@@ -36,6 +36,28 @@ This approach is available on Linux, Windows and Mac OS X.
 
 Alternative installation procedures are presented in the [Installation Procedure](#installation-procedure) section.
 
+## ProxSuite main features
+
+**Proxsuite** is fast:
+
+   - C++ template library,
+   - cache friendly.
+
+**Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
+
+   - dense, sparse and matrix free matrix factorization backends,
+   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results).
+
+**Proxsuite** is flexible:
+
+   - header only,
+   - C++ 17/20 compliant,
+   - Python and Julia bindings for easy code prototyping without sacrificing performances.
+
+**Proxsuite** is extensible.
+**Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
+**Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
+
 ## **ProxQP**
 
 The **ProxQP** algorithm is a numerical optimization approach for solving quadratic programming problems of the form:
