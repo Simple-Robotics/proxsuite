@@ -1,3 +1,4 @@
+#include <iostream>
 #include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse backend of ProxQP
 #include <proxsuite/proxqp/dense/dense.hpp>   // get the dense backend of ProxQP
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex Qp

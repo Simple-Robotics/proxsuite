@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <iostream>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
