@@ -46,7 +46,7 @@ Alternative installation procedures are presented in the [Installation Procedure
 **Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
 
    - dense, sparse and matrix free matrix factorization backends,
-   - specialized warm starts (e.g., equality constrained initial guess, warm start or cold start options using previous results).
+   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results).
 
 **Proxsuite** is flexible:
 
