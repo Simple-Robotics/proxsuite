@@ -36,7 +36,7 @@ This approach is available on Linux, Windows and Mac OS X.
 
 Alternative installation procedures are presented in the [Installation Procedure](#installation-procedure) section.
 
-## Proxsuite main features
+## ProxSuite main features
 
 **Proxsuite** is fast:
 
