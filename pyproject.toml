@@ -12,6 +12,6 @@ repository = "https://github.com/Simple-Robotics/proxsuite.git"
 changelog = "https://github.com/Simple-Robotics/proxsuite/CHANGELOG.md"
 
 [build-system]
-requires = ["cmeel[build]"]
+requires = ["cmeel[build]", "numpy", "scipy"]
 build-backend = "cmeel.build"
 configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"]
