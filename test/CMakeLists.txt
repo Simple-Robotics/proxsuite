@@ -63,7 +63,8 @@ proxsuite_test(cvxpy src/cvxpy.cpp)
 
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
-  list(REMOVE_ITEM ${PROJECT_NAME}_PYTHON_UNITTEST ${CMAKE_CURRENT_SOURCE_DIR}/src/save_qp_eq.py)
+  list(REMOVE_ITEM ${PROJECT_NAME}_PYTHON_UNITTEST
+       ${CMAKE_CURRENT_SOURCE_DIR}/src/save_qp_eq.py)
   foreach(TEST ${${PROJECT_NAME}_PYTHON_UNITTEST})
     string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/test/src/" "" TEST ${TEST})
     add_python_unit_test("py-${TEST}" "test/src/${TEST}")

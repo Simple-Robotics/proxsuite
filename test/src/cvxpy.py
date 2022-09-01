@@ -16,7 +16,6 @@ def normInf(x):
 
 
 class CvxpyTest(unittest.TestCase):
-
     def test_trigger_infeasibility_with_exact_solution_known(self):
         print(
             "------------------------ test if infeasibility is triggered even though exact solution known"
@@ -31,7 +30,7 @@ class CvxpyTest(unittest.TestCase):
         l = -np.ones((n))
         u = np.ones(n)
 
-        qp = proxsuite.proxqp.dense.QP(n, 0, n) 
+        qp = proxsuite.proxqp.dense.QP(n, 0, n)
         qp.init(H, g, A, b, C, u, l)
         qp.settings.verbose = True
         qp.solve()
@@ -56,16 +55,14 @@ class CvxpyTest(unittest.TestCase):
         )
 
     def test_one_dim_with_exact_solution_known(self):
-        print(
-            "------------------------ test_one_dim_with_exact_solution_known"
-        )
+        print("------------------------ test_one_dim_with_exact_solution_known")
         n = 1
         H = np.array([[20]])
         g = np.array([-10])
         A = None
         b = None
         C = np.array([[1.0]])
-        l = 0*np.ones((n))
+        l = 0 * np.ones((n))
         u = np.ones(n)
 
         Qp = proxsuite.proxqp.dense.QP(n, 0, n)
@@ -75,6 +72,7 @@ class CvxpyTest(unittest.TestCase):
 
         x_sol = 0.5
         assert (x_sol - Qp.results.x) <= 1e-4
+
 
 if __name__ == "__main__":
     unittest.main()
