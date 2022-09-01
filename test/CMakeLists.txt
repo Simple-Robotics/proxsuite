@@ -59,6 +59,7 @@ proxsuite_test(dense_qp_solve src/dense_qp_solve.cpp)
 proxsuite_test(sparse_qp_wrapper src/sparse_qp_wrapper.cpp)
 proxsuite_test(sparse_qp_solve src/sparse_qp_solve.cpp)
 proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
+proxsuite_test(cvxpy src/cvxpy.cpp)
 
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
