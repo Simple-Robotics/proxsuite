@@ -14,6 +14,8 @@
   <build_depend>doxygen</build_depend>
   <depend>eigen</depend>
   <depend>simde</depend>
+  <depend>numpy</depend>
+  <depend>scipy</depend>
 
   <buildtool_depend>cmake</buildtool_depend>
   <export>
