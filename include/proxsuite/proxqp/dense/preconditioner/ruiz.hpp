@@ -29,12 +29,12 @@ template<typename T>
 auto
 ruiz_scale_qp_in_place( //
   VectorViewMut<T> delta_,
-  VectorViewMut<T> tmp_delta_preallocated,
   std::ostream* logger_ptr,
   QpViewBoxMut<T> qp,
   T epsilon,
   isize max_iter,
-  Symmetry sym) -> T
+  Symmetry sym,
+  proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
 
   T c(1);
@@ -62,7 +62,7 @@ ruiz_scale_qp_in_place( //
 
   T gamma = T(1);
 
-  auto delta = tmp_delta_preallocated.to_eigen();
+  LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
   i64 iter = 1;
 
@@ -300,14 +300,13 @@ struct RuizEquilibration
   {
     if (execute_preconditioner) {
       delta.setOnes();
-      LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
       c = detail::ruiz_scale_qp_in_place({ proxqp::from_eigen, delta },
-                                         { proxqp::from_eigen, tmp_delta },
                                          logger_ptr,
                                          qp,
                                          epsilon,
                                          max_iter,
-                                         sym);
+                                         sym,
+                                         stack);
     } else {
 
       auto H = qp.H.to_eigen();
