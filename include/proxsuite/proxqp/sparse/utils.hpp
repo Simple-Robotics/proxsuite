@@ -500,7 +500,7 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
 
   bool res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
              infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z &&
-             infty_norm(dy.to_eigen()) !=0 && infty_norm(dz.to_eigen()) !=0;
+             infty_norm(dy.to_eigen()) != 0 && infty_norm(dz.to_eigen()) != 0;
   return res;
 }
 /*!
@@ -575,7 +575,7 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
     infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
   bound_neg *= qpsettings.eps_dual_inf;
 
-  bool res = first_cond && second_cond_alt1 && infty_norm(dx.to_eigen()) !=0;
+  bool res = first_cond && second_cond_alt1 && infty_norm(dx.to_eigen()) != 0;
   return res;
 }
 
