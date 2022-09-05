@@ -87,46 +87,43 @@ ruiz_scale_qp_in_place( //
         switch (sym) {
           case Symmetry::upper: { // upper triangular part
             T aux = sqrt(std::max({
-                                 infty_norm(H.col(k).head(k)),
-                                 infty_norm(H.row(k).tail(n - k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) ;
-            if (aux==T(0)){
+              infty_norm(H.col(k).head(k)),
+              infty_norm(H.row(k).tail(n - k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
               aux = T(1);
             }
 
-            delta(k) = T(1) / (aux +
-                               machine_eps);
+            delta(k) = T(1) / (aux + machine_eps);
             break;
           }
           case Symmetry::lower: { // lower triangular part
 
             T aux = sqrt(std::max({
-                                 infty_norm(H.col(k).head(k)),
-                                 infty_norm(H.col(k).tail(n - k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) ;
-            if (aux==T(0)){
+              infty_norm(H.col(k).head(k)),
+              infty_norm(H.col(k).tail(n - k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
               aux = T(1);
             }
-            delta(k) = T(1) / (aux +
-                               machine_eps);
+            delta(k) = T(1) / (aux + machine_eps);
             break;
           }
           case Symmetry::general: {
 
             T aux = sqrt(std::max({
-                                 infty_norm(H.col(k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) ;
-            if (aux==T(0)){
+              infty_norm(H.col(k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
               aux = T(1);
             }
-            delta(k) = T(1) / (aux +
-                               machine_eps);
+            delta(k) = T(1) / (aux + machine_eps);
 
             break;
           }
@@ -135,14 +132,14 @@ ruiz_scale_qp_in_place( //
 
       for (isize k = 0; k < n_eq; ++k) {
         T aux = sqrt(infty_norm(A.row(k)));
-        if (aux==T(0)){
+        if (aux == T(0)) {
           aux = T(1);
         }
         delta(n + k) = T(1) / (aux + machine_eps);
       }
       for (isize k = 0; k < n_in; ++k) {
         T aux = sqrt(infty_norm(C.row(k)));
-        if (aux==T(0)){
+        if (aux == T(0)) {
           aux = T(1);
         }
         delta(k + n + n_eq) = T(1) / (aux + machine_eps);
