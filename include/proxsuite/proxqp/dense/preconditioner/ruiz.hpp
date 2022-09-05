@@ -109,8 +109,7 @@ ruiz_scale_qp_in_place( //
             }));
             if (aux == T(0)) {
               delta(k) = T(1);
-            }
-            else {
+            } else {
               delta(k) = T(1) / (aux + machine_eps);
             }
             break;
