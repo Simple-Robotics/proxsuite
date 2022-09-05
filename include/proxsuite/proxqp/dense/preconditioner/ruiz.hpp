@@ -108,9 +108,11 @@ ruiz_scale_qp_in_place( //
               infty_norm(C.col(k)),
             }));
             if (aux == T(0)) {
-              aux = T(1);
+              delta(k) = T(1);
             }
-            delta(k) = T(1) / (aux + machine_eps);
+            else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
             break;
           }
           case Symmetry::general: {
