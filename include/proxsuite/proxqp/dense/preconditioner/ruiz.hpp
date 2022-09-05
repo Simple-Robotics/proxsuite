@@ -29,12 +29,12 @@ template<typename T>
 auto
 ruiz_scale_qp_in_place( //
   VectorViewMut<T> delta_,
-  VectorViewMut<T> tmp_delta_preallocated,
   std::ostream* logger_ptr,
   QpViewBoxMut<T> qp,
   T epsilon,
   isize max_iter,
-  Symmetry sym) -> T
+  Symmetry sym,
+  proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
 
   T c(1);
@@ -62,7 +62,7 @@ ruiz_scale_qp_in_place( //
 
   T gamma = T(1);
 
-  auto delta = tmp_delta_preallocated.to_eigen();
+  LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
   i64 iter = 1;
 
@@ -86,33 +86,46 @@ ruiz_scale_qp_in_place( //
       for (isize k = 0; k < n; ++k) {
         switch (sym) {
           case Symmetry::upper: { // upper triangular part
-            delta(k) = T(1) / (sqrt(std::max({
-                                 infty_norm(H.col(k).head(k)),
-                                 infty_norm(H.row(k).tail(n - k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) +
-                               machine_eps);
+            T aux = sqrt(std::max({
+              infty_norm(H.col(k).head(k)),
+              infty_norm(H.row(k).tail(n - k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
             break;
           }
           case Symmetry::lower: { // lower triangular part
-            delta(k) = T(1) / (sqrt(std::max({
-                                 infty_norm(H.row(k).head(k)),
-                                 infty_norm(H.col(k).tail(n - k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) +
-                               machine_eps);
+
+            T aux = sqrt(std::max({
+              infty_norm(H.col(k).head(k)),
+              infty_norm(H.col(k).tail(n - k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
             break;
           }
           case Symmetry::general: {
-            delta(k) = T(1) / (sqrt(std::max({
-                                 infty_norm(H.col(k)),
-                                 infty_norm(A.col(k)),
-                                 infty_norm(C.col(k)),
-                               })) +
-                               machine_eps);
 
+            T aux = sqrt(std::max({
+              infty_norm(H.col(k)),
+              infty_norm(A.col(k)),
+              infty_norm(C.col(k)),
+            }));
+            if (aux == T(0)) {
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
             break;
           }
         }
@@ -120,11 +133,19 @@ ruiz_scale_qp_in_place( //
 
       for (isize k = 0; k < n_eq; ++k) {
         T aux = sqrt(infty_norm(A.row(k)));
-        delta(n + k) = T(1) / (aux + machine_eps);
+        if (aux == T(0)) {
+          delta(n + k) = T(1);
+        } else {
+          delta(n + k) = T(1) / (aux + machine_eps);
+        }
       }
       for (isize k = 0; k < n_in; ++k) {
         T aux = sqrt(infty_norm(C.row(k)));
-        delta(k + n + n_eq) = T(1) / (aux + machine_eps);
+        if (aux == T(0)) {
+          delta(k + n + n_eq) = T(1);
+        } else {
+          delta(k + n + n_eq) = T(1) / (aux + machine_eps);
+        }
       }
     }
     {
@@ -300,14 +321,13 @@ struct RuizEquilibration
   {
     if (execute_preconditioner) {
       delta.setOnes();
-      LDLT_TEMP_VEC(T, tmp_delta, qp.H.rows + qp.A.rows + qp.C.rows, stack);
       c = detail::ruiz_scale_qp_in_place({ proxqp::from_eigen, delta },
-                                         { proxqp::from_eigen, tmp_delta },
                                          logger_ptr,
                                          qp,
                                          epsilon,
                                          max_iter,
-                                         sym);
+                                         sym,
+                                         stack);
     } else {
 
       auto H = qp.H.to_eigen();
