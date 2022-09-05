@@ -67,6 +67,7 @@ class CvxpyTest(unittest.TestCase):
         Qp = proxsuite.proxqp.dense.QP(n, 0, n)
         Qp.init(H, g, A, b, C, u, l)
         Qp.settings.verbose = True
+        Qp.settings.eps_abs = 1e-8
         Qp.solve()
 
         x_sol = 0.5

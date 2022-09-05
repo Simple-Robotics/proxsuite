@@ -72,7 +72,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   std::cout << "---simple test case from cvxpy, check feasibility "
             << std::endl;
-  T eps_abs = T(1e-4);
+  T eps_abs = T(1e-8);
   dense::isize dim = 1;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
