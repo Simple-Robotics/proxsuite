@@ -2,7 +2,6 @@
 # Copyright (c) 2022, INRIA
 #
 
-from curses import A_CHARTEXT
 import proxsuite
 import numpy as np
 import unittest
