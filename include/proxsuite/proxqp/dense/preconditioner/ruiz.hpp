@@ -93,10 +93,10 @@ ruiz_scale_qp_in_place( //
               infty_norm(C.col(k)),
             }));
             if (aux == T(0)) {
-              aux = T(1);
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
             }
-
-            delta(k) = T(1) / (aux + machine_eps);
             break;
           }
           case Symmetry::lower: { // lower triangular part
@@ -122,10 +122,10 @@ ruiz_scale_qp_in_place( //
               infty_norm(C.col(k)),
             }));
             if (aux == T(0)) {
-              aux = T(1);
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
             }
-            delta(k) = T(1) / (aux + machine_eps);
-
             break;
           }
         }
@@ -134,16 +134,18 @@ ruiz_scale_qp_in_place( //
       for (isize k = 0; k < n_eq; ++k) {
         T aux = sqrt(infty_norm(A.row(k)));
         if (aux == T(0)) {
-          aux = T(1);
+          delta(n + k) = T(1);
+        } else {
+          delta(n + k) = T(1) / (aux + machine_eps);
         }
-        delta(n + k) = T(1) / (aux + machine_eps);
       }
       for (isize k = 0; k < n_in; ++k) {
         T aux = sqrt(infty_norm(C.row(k)));
         if (aux == T(0)) {
-          aux = T(1);
+          delta(k + n + n_eq) = T(1);
+        } else {
+          delta(k + n + n_eq) = T(1) / (aux + machine_eps);
         }
-        delta(k + n + n_eq) = T(1) / (aux + machine_eps);
       }
     }
     {
