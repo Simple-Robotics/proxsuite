@@ -120,10 +120,12 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
             << results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that solver stays there")
+DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
+                  "solver stays there")
 {
 
-  std::cout << "---simple test case from cvxpy, init with solution, check that solver stays there"
+  std::cout << "---simple test case from cvxpy, init with solution, check that "
+               "solver stays there"
             << std::endl;
   T eps_abs = T(1e-4);
   dense::isize dim = 1;
@@ -150,24 +152,22 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that s
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
   qp.settings.eps_abs = eps_abs;
 
-  qp.init(H,
-          g,
-          std::nullopt,
-          std::nullopt,
-          C,
-          u,
-          l);
+  qp.init(H, g, std::nullopt, std::nullopt, C, u, l);
 
-  dense::Vec<T> x = dense::Vec<T>(dim); dense::Vec<T> y = dense::Vec<T>(dim); dense::Vec<T> z = dense::Vec<T>(dim);
-  x << 0.5; y << 0.0; z << 0.0;
+  dense::Vec<T> x = dense::Vec<T>(dim);
+  dense::Vec<T> y = dense::Vec<T>(dim);
+  dense::Vec<T> z = dense::Vec<T>(dim);
+  x << 0.5;
+  y << 0.0;
+  z << 0.0;
   qp.solve(x, y, z);
-  
+
   T pri_res = (dense::positive_part(C * qp.results.x - u) +
                dense::negative_part(C * qp.results.x - l))
                 .lpNorm<Eigen::Infinity>();
-  T dua_res =
-    (H * qp.results.x + g + C.transpose() * qp.results.z).lpNorm<Eigen::Infinity>();
-  
+  T dua_res = (H * qp.results.x + g + C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+
   DOCTEST_CHECK(qp.results.info.iter <= 0);
   DOCTEST_CHECK((x_sol - qp.results.x.coeff(0, 0)) <= eps_abs);
   DOCTEST_CHECK(pri_res <= eps_abs);
@@ -175,7 +175,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that s
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
 }
