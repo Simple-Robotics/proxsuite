@@ -119,3 +119,63 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
+
+DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that solver stays there")
+{
+
+  std::cout << "---simple test case from cvxpy, init with solution, check that solver stays there"
+            << std::endl;
+  T eps_abs = T(1e-4);
+  dense::isize dim = 1;
+
+  Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
+  H << 20.0;
+
+  Vec<T> g = Vec<T>(dim);
+  g << -10.0;
+
+  Mat<T, colmajor> C = Mat<T, colmajor>(dim, dim);
+  C << 1.0;
+
+  Vec<T> l = Vec<T>(dim);
+  l << 0.0;
+
+  Vec<T> u = Vec<T>(dim);
+  u << 1.0;
+
+  T x_sol = 0.5;
+
+  proxqp::isize n_in(1);
+  proxqp::isize n_eq(0);
+  proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
+  qp.settings.eps_abs = eps_abs;
+
+  qp.init(H,
+          g,
+          std::nullopt,
+          std::nullopt,
+          C,
+          u,
+          l);
+
+  dense::Vec<T> x = dense::Vec<T>(dim); dense::Vec<T> y = dense::Vec<T>(dim); dense::Vec<T> z = dense::Vec<T>(dim);
+  x << 0.5; y << 0.0; z << 0.0;
+  qp.solve(x, y, z);
+  
+  T pri_res = (dense::positive_part(C * qp.results.x - u) +
+               dense::negative_part(C * qp.results.x - l))
+                .lpNorm<Eigen::Infinity>();
+  T dua_res =
+    (H * qp.results.x + g + C.transpose() * qp.results.z).lpNorm<Eigen::Infinity>();
+  
+  DOCTEST_CHECK(qp.results.info.iter <= 0);
+  DOCTEST_CHECK((x_sol - qp.results.x.coeff(0, 0)) <= eps_abs);
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+}
