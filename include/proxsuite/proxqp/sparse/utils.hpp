@@ -487,6 +487,11 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   // u^T [dz]_+ - l^T[-dz]_+ <= -eps_p_inf ||unscaled(dz)||
   //
   // the variables in entry are changed in place
+
+  bool res = infty_norm(dy.to_eigen()) != 0 && infty_norm(dz.to_eigen()) != 0;
+  if (!res) {
+    return res;
+  }
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
   T eq_inf = dy.to_eigen().dot(qp_scaled.b.to_eigen());
@@ -498,8 +503,8 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
   T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
 
-  bool res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
-             infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
+  res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
+        infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
   return res;
 }
 /*!
@@ -574,7 +579,7 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
     infty_norm(Hdx.to_eigen()) <= bound && gdx <= bound_neg;
   bound_neg *= qpsettings.eps_dual_inf;
 
-  bool res = first_cond && second_cond_alt1;
+  bool res = first_cond && second_cond_alt1 && infty_norm(dx.to_eigen()) != 0;
   return res;
 }
 
