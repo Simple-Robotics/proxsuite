@@ -1,12 +1,12 @@
 <map id="include/proxsuite/proxqp/dense/fwd.hpp" name="include/proxsuite/proxqp/dense/fwd.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="170,5,353,47"/>
-<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="24,184,206,225"/>
-<area shape="rect" id="node6" href="$dense_2model_8hpp.html" title=" " alt="" coords="368,95,550,136"/>
-<area shape="rect" id="node10" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="6,95,224,136"/>
-<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="192,273,374,315"/>
-<area shape="rect" id="node4" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="24,363,206,404"/>
-<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="24,452,206,493"/>
-<area shape="rect" id="node7" href="$linesearch_8hpp.html" title=" " alt="" coords="437,184,620,225"/>
-<area shape="rect" id="node8" href="$dense_2utils_8hpp.html" title=" " alt="" coords="230,184,413,225"/>
-<area shape="rect" id="node9" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="644,184,871,225"/>
+<area shape="rect" id="node1" title=" " alt="" coords="170,5,353,45"/>
+<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="24,181,206,221"/>
+<area shape="rect" id="node6" href="$dense_2model_8hpp.html" title=" " alt="" coords="368,93,550,133"/>
+<area shape="rect" id="node10" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="6,93,224,133"/>
+<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="192,269,374,309"/>
+<area shape="rect" id="node4" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="24,357,206,397"/>
+<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="24,445,206,485"/>
+<area shape="rect" id="node7" href="$linesearch_8hpp.html" title=" " alt="" coords="437,181,620,221"/>
+<area shape="rect" id="node8" href="$dense_2utils_8hpp.html" title=" " alt="" coords="230,181,413,221"/>
+<area shape="rect" id="node9" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="644,181,871,221"/>
 </map>

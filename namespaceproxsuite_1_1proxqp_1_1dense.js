@@ -1,7 +1,7 @@
 var namespaceproxsuite_1_1proxqp_1_1dense =
 [
     [ "detail", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html", [
-      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#ad6d21474ee680405917a8250c1889c25", null ]
+      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a42061d74d0aa193c36d9304eec71055b", null ]
     ] ],
     [ "linesearch", "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html", "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch" ],
     [ "nb", "namespaceproxsuite_1_1proxqp_1_1dense_1_1nb.html", "namespaceproxsuite_1_1proxqp_1_1dense_1_1nb" ],

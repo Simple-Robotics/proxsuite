@@ -7,10 +7,6 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "concepts", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts" ],
     [ "cpo", "namespaceproxsuite_1_1linalg_1_1veg_1_1cpo.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1cpo" ],
     [ "dynstack", "namespaceproxsuite_1_1linalg_1_1veg_1_1dynstack.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1dynstack" ],
-    [ "fmt", null, [
-      [ "Debug< Boolean< maybe > >", "structproxsuite_1_1linalg_1_1veg_1_1fmt_1_1Debug_3_01Boolean_3_01maybe_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1fmt_1_1Debug_3_01Boolean_3_01maybe_01_4_01_4" ],
-      [ "Debug< Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1fmt_1_1Debug_3_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1fmt_1_1Debug_3_01Dyn_01_4" ]
-    ] ],
     [ "literals", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html", [
       [ "operator\"\"_v", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24", null ],
       [ "operator\"\"_c", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#abe0bc3c51c199f306efd150dc2b076e1", null ]

@@ -256,31 +256,25 @@ var hierarchy =
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", null ],
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html", null ],
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::make_index_sequence< sizeof...(Ts)>, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", [
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
       [ "proxsuite::linalg::veg::Tuple< A, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
         [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, A >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
       ] ],
-      [ "proxsuite::linalg::veg::Tuple< proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< isize > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< isize, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< bool > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< bool, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< unsigned char > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< unsigned char, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< I > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< I, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< proxsuite::linalg::veg::mem::byte > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
+      [ "proxsuite::linalg::veg::Tuple< proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< isize > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< bool > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< unsigned char > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< I > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< proxsuite::linalg::veg::mem::byte > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< isize, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< bool, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< unsigned char, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
+        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< I, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ],
         [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< proxsuite::linalg::veg::mem::byte, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ]
+      ] ]
     ] ],
     [ "proxsuite::linalg::dense::_detail::IndicesR", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html", null ],
     [ "proxsuite::proxqp::Info< T >", "structproxsuite_1_1proxqp_1_1Info.html", null ],
@@ -426,32 +420,26 @@ var hierarchy =
     [ "proxsuite::proxqp::StridedVectorViewMut< T >", "structproxsuite_1_1proxqp_1_1StridedVectorViewMut.html", null ],
     [ "proxsuite::linalg::veg::StrLiteralConstant< Cs >", "structproxsuite_1_1linalg_1_1veg_1_1StrLiteralConstant.html", null ],
     [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< D, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< D, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", null ]
-    ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatMut< T, I >, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
+      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< MatMut< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", null ],
+      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< SymbolicMatMut< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", null ],
       [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< MatMut< T, I >, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", [
         [ "proxsuite::linalg::sparse::MatMut< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html", null ]
-      ] ]
-    ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatMut< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< MatMut< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", [
-        [ "proxsuite::linalg::sparse::MatMut< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html", null ]
-      ] ]
-    ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatRef< T, I >, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::MatRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", null ]
-    ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatRef< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::MatRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", null ]
-    ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< SymbolicMatMut< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< SymbolicMatMut< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", [
+      ] ],
+      [ "proxsuite::linalg::sparse::MatRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", null ],
+      [ "proxsuite::linalg::sparse::SymbolicMatRef< I >", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html", null ],
+      [ "proxsuite::linalg::sparse::_detail::SymbolicMatMutInterface< D, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html", [
+        [ "proxsuite::linalg::sparse::MatMut< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html", null ],
         [ "proxsuite::linalg::sparse::SymbolicMatMut< I >", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut.html", null ]
       ] ]
     ] ],
-    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< SymbolicMatRef< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
-      [ "proxsuite::linalg::sparse::SymbolicMatRef< I >", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html", null ]
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatMut< T, I >, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", null ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatMut< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", null ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatRef< T, I >, I >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", [
+      [ "proxsuite::linalg::sparse::MatRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", null ]
     ] ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< MatRef< T, isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", null ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< SymbolicMatMut< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", null ],
+    [ "proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface< SymbolicMatRef< isize >, isize >", "structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html", null ],
     [ "proxsuite::linalg::veg::mem::SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc.html", null ],
     [ "T", null, [
       [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, true >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01true_01_4.html", null ]
@@ -460,14 +448,13 @@ var hierarchy =
     [ "std::tuple_element< I, proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__element_3_01I_00_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::meta_::TupleBaseInfoImpl< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1TupleBaseInfoImpl.html", null ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, bool >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", [
+      [ "proxsuite::linalg::veg::tuple::TupleLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", [
+        [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... >::_", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8cbd6a50d8df9d5526ea9acd312613c29.html", null ]
+      ] ],
       [ "proxsuite::linalg::veg::tuple::TupleLeaf< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4.html", null ],
-    [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", [
-      [ "proxsuite::linalg::veg::tuple::TupleLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", [
-        [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... >::_", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8cbd6a50d8df9d5526ea9acd312613c29.html", null ]
-      ] ]
-    ] ],
+    [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", null ],
     [ "proxsuite::linalg::veg::tuple::nb::tuplify", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1tuplify.html", null ],
     [ "proxsuite::linalg::veg::meta::type_identity< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1type__identity.html", [
       [ "proxsuite::linalg::veg::_detail::_meta::decay_helper< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper.html", null ],
@@ -494,28 +481,22 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::_meta::unref< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1unref.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::unref< T & >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1unref_3_01T_01_6_01_4.html", null ],
     [ "proxsuite::linalg::veg::nb::unused", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1unused.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, A, Dtor, Copy >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< bool, mem::SystemAlloc, mem::DtorAvailableFor< bool >::value, mem::CopyAvailableFor< bool >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< bool >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< I, mem::SystemAlloc, mem::DtorAvailableFor< I >::value, mem::CopyAvailableFor< I >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< I >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< isize, mem::SystemAlloc, mem::DtorAvailableFor< isize >::value, mem::CopyAvailableFor< isize >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< isize >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< proxsuite::linalg::veg::mem::byte, mem::SystemAlloc, mem::DtorAvailableFor< proxsuite::linalg::veg::mem::byte >::value, mem::CopyAvailableFor< proxsuite::linalg::veg::mem::byte >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< proxsuite::linalg::veg::mem::byte >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, mem::SystemAlloc, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, A, Dtor, Copy >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
+      [ "proxsuite::linalg::veg::Vec< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc > >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
+      [ "proxsuite::linalg::veg::Vec< isize >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
+      [ "proxsuite::linalg::veg::Vec< bool >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
+      [ "proxsuite::linalg::veg::Vec< unsigned char >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
+      [ "proxsuite::linalg::veg::Vec< I >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
+      [ "proxsuite::linalg::veg::Vec< proxsuite::linalg::veg::mem::byte >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
       [ "proxsuite::linalg::veg::Vec< T, A, Dtor, Copy >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
     ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc > >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< unsigned char, mem::SystemAlloc, mem::DtorAvailableFor< unsigned char >::value, mem::CopyAvailableFor< unsigned char >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", [
-      [ "proxsuite::linalg::veg::Vec< unsigned char >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
-    ] ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< bool, mem::SystemAlloc, mem::DtorAvailableFor< bool >::value, mem::CopyAvailableFor< bool >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< I, mem::SystemAlloc, mem::DtorAvailableFor< I >::value, mem::CopyAvailableFor< I >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< isize, mem::SystemAlloc, mem::DtorAvailableFor< isize >::value, mem::CopyAvailableFor< isize >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< proxsuite::linalg::veg::mem::byte, mem::SystemAlloc, mem::DtorAvailableFor< proxsuite::linalg::veg::mem::byte >::value, mem::CopyAvailableFor< proxsuite::linalg::veg::mem::byte >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, mem::SystemAlloc, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< unsigned char, mem::SystemAlloc, mem::DtorAvailableFor< unsigned char >::value, mem::CopyAvailableFor< unsigned char >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
     [ "proxsuite::linalg::sparse::VecRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef.html", null ],
     [ "proxsuite::proxqp::VectorView< T >", "structproxsuite_1_1proxqp_1_1VectorView.html", null ],
     [ "proxsuite::proxqp::VectorView< Scalar >", "structproxsuite_1_1proxqp_1_1VectorView.html", null ],

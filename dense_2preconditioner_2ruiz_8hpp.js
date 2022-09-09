@@ -6,5 +6,5 @@ var dense_2preconditioner_2ruiz_8hpp =
       [ "lower", "dense_2preconditioner_2ruiz_8hpp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a81e073b428b50247daba38531dcf412a", null ],
       [ "upper", "dense_2preconditioner_2ruiz_8hpp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a0122b4c2c01ee1c698ecc309d2b8eb5a", null ]
     ] ],
-    [ "ruiz_scale_qp_in_place", "dense_2preconditioner_2ruiz_8hpp.html#ad6d21474ee680405917a8250c1889c25", null ]
+    [ "ruiz_scale_qp_in_place", "dense_2preconditioner_2ruiz_8hpp.html#a42061d74d0aa193c36d9304eec71055b", null ]
 ];

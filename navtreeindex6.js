@@ -62,7 +62,7 @@ var NAVTREEINDEX6 =
 "namespaceproxsuite_1_1proxqp_1_1dense.html#afdddf108860c8adc32403a68f1d6b842":[10,0,1,2,1,19],
 "namespaceproxsuite_1_1proxqp_1_1dense.html#aff5e3e80aab3c41a06693cb4fcb4fd78":[10,0,1,2,1,13],
 "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html":[10,0,1,2,1,0],
-"namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#ad6d21474ee680405917a8250c1889c25":[10,0,1,2,1,0,0],
+"namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a42061d74d0aa193c36d9304eec71055b":[10,0,1,2,1,0,0],
 "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html":[10,0,1,2,1,1],
 "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html#a0109c94344ba68788fc35d9aa8d11678":[10,0,1,2,1,1,1],
 "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html#a53f63547308089351f9023832f460381":[10,0,1,2,1,1,3],
