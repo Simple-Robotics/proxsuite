@@ -377,12 +377,12 @@ qp_solve(Results<T>& results,
     switch (settings.initial_guess) { // the following is used when one solve
                                       // has already been executed
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-        results.cleanup();
+        results.cleanup(settings.default_rho,settings.default_mu_eq,settings.default_mu_in);
         break;
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         // keep solutions but restart workspace and results
-        results.cold_start();
+        results.cold_start(settings.default_rho,settings.default_mu_eq,settings.default_mu_in);
         precond.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen, results.x });
         precond.scale_dual_in_place_eq(
@@ -392,11 +392,11 @@ qp_solve(Results<T>& results,
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
-        results.cleanup();
+        results.cleanup(settings.default_rho,settings.default_mu_eq,settings.default_mu_in);
         break;
       }
       case InitialGuessStatus::WARM_START: {
-        results.cold_start(); // because there was already a solve, precond was
+        results.cold_start(settings.default_rho,settings.default_mu_eq,settings.default_mu_in); // because there was already a solve, precond was
                               // already computed if set so
         precond.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen,

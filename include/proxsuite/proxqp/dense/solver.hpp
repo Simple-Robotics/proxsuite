@@ -778,13 +778,13 @@ qp_solve( //
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
         qpwork.cleanup();
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings.default_rho,qpsettings.default_mu_eq,qpsettings.default_mu_in);
         break;
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         // keep solutions but restart workspace and results
         qpwork.cleanup();
-        qpresults.cold_start();
+        qpresults.cold_start(qpsettings.default_rho,qpsettings.default_mu_eq,qpsettings.default_mu_in);
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen, qpresults.x });
         ruiz.scale_dual_in_place_eq(
@@ -795,12 +795,12 @@ qp_solve( //
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
         qpwork.cleanup();
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings.default_rho,qpsettings.default_mu_eq,qpsettings.default_mu_in);
         break;
       }
       case InitialGuessStatus::WARM_START: {
         qpwork.cleanup();
-        qpresults.cold_start(); // because there was already a solve, precond
+        qpresults.cold_start(qpsettings.default_rho,qpsettings.default_mu_eq,qpsettings.default_mu_in); // because there was already a solve, precond
                                 // was already computed if set so
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen,

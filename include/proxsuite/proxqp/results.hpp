@@ -107,12 +107,14 @@ struct Results
    * cleanups the Result variables and set the info variables to their initial
    * values.
    */
-  void cleanup()
+  void cleanup(std::optional<T> rho = std::nullopt,
+            std::optional<T> mu_eq = std::nullopt,
+            std::optional<T> mu_in = std::nullopt)
   {
     x.setZero();
     y.setZero();
     z.setZero();
-    cold_start();
+    cold_start(rho,mu_eq,mu_in);
   }
   void cleanup_statistics()
   {
@@ -128,14 +130,31 @@ struct Results
     info.dua_res = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
   }
-  void cold_start()
+  void cold_start(std::optional<T> rho = std::nullopt,
+            std::optional<T> mu_eq = std::nullopt,
+            std::optional<T> mu_in = std::nullopt)
   {
 
-    info.rho = 1e-6;
-    info.mu_eq_inv = 1e3;
-    info.mu_eq = 1e-3;
-    info.mu_in_inv = 1e1;
-    info.mu_in = 1e-1;
+    if (rho != std::nullopt) {
+      info.rho = rho.value();
+    } else{
+      info.rho = 1e-6;
+    }
+    if (mu_eq != std::nullopt) {
+      info.mu_eq = mu_eq.value();
+      info.mu_eq_inv = T(1) / info.mu_eq;
+    }else{
+      info.mu_eq_inv = 1e3;
+      info.mu_eq = 1e-3;
+    }
+    if (mu_in != std::nullopt) {
+      info.mu_in = mu_in.value();
+      info.mu_in_inv = T(1) / info.mu_in;
+    }else{
+      info.mu_in_inv = 1e1;
+      info.mu_in = 1e-1;
+    }
+
     info.nu = 1.;
     cleanup_statistics();
   }
