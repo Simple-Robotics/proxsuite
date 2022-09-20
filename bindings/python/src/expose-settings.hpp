@@ -28,6 +28,9 @@ exposeSettings(pybind11::module_ m)
 
   ::pybind11::class_<Settings<T>>(m, "Settings", pybind11::module_local())
     .def(::pybind11::init(), "Default constructor.") // constructor
+    .def_readwrite("default_rho", &Settings<T>::default_rho)
+    .def_readwrite("default_mu_eq", &Settings<T>::default_mu_eq)
+    .def_readwrite("default_mu_in", &Settings<T>::default_mu_in)
     .def_readwrite("alpha_bcl", &Settings<T>::alpha_bcl)
     .def_readwrite("beta_bcl", &Settings<T>::beta_bcl)
     .def_readwrite("refactor_dual_feasibility_threshold",
