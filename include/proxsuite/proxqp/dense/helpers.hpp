@@ -474,15 +474,13 @@ setup( //
  */
 template<typename T>
 void
-update_proximal_parameters(
-                           Settings<T>& settings,
+update_proximal_parameters(Settings<T>& settings,
                            Results<T>& results,
                            Workspace<T>& work,
                            std::optional<T> rho_new,
                            std::optional<T> mu_eq_new,
                            std::optional<T> mu_in_new)
 {
-
 
   if (rho_new != std::nullopt) {
     settings.default_rho = rho_new.value();

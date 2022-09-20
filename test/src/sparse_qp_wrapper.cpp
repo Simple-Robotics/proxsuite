@@ -3562,12 +3562,13 @@ TEST_CASE("Test rho update for different initial guess")
   }
 }
 
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after updates using no initial guess")
+                  "inequality constraints: test changing default settings "
+                  "after updates using no initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after updates using no initial guess---"
+               "inequality constraints: test changing default settings after "
+               "updates using no initial guess---"
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -3589,23 +3590,27 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   bool compute_preconditioner = true;
 
   Qp.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                        sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -3618,18 +3623,19 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             std::nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>()  * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-             qp.C.transpose() * Qp.results.z)
+  pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+             qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
@@ -3637,93 +3643,118 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   proxqp::sparse::QP<T, I> Qp2(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
   Qp2.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
 
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-             qp.C.transpose() * Qp2.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+     qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
   Qp3.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 }
 
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after updates using EQUALITY_CONSTRAINED_INITIAL_GUESS")
+                  "inequality constraints: test changing default settings "
+                  "after updates using EQUALITY_CONSTRAINED_INITIAL_GUESS")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after updates using EQUALITY_CONSTRAINED_INITIAL_GUESS---"
+               "inequality constraints: test changing default settings after "
+               "updates using EQUALITY_CONSTRAINED_INITIAL_GUESS---"
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -3744,24 +3775,29 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                        sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -3774,112 +3810,140 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             std::nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>()  * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-             qp.C.transpose() * Qp.results.z)
+  pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+             qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
 
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-             qp.C.transpose() * Qp2.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+     qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 }
 
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after updates using COLD_START_WITH_PREVIOUS_RESULT")
+                  "inequality constraints: test changing default settings "
+                  "after updates using COLD_START_WITH_PREVIOUS_RESULT")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after updates using COLD_START_WITH_PREVIOUS_RESULT---"
+               "inequality constraints: test changing default settings after "
+               "updates using COLD_START_WITH_PREVIOUS_RESULT---"
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -3900,24 +3964,29 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                        sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -3930,111 +3999,140 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             std::nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>()  * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-             qp.C.transpose() * Qp.results.z)
+  pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+             qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
 
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-             qp.C.transpose() * Qp2.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+     qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after updates using WARM_START_WITH_PREVIOUS_RESULT")
+                  "inequality constraints: test changing default settings "
+                  "after updates using WARM_START_WITH_PREVIOUS_RESULT")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after updates using WARM_START_WITH_PREVIOUS_RESULT---"
+               "inequality constraints: test changing default settings after "
+               "updates using WARM_START_WITH_PREVIOUS_RESULT---"
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -4055,24 +4153,29 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                        sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -4085,116 +4188,142 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             std::nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>()  * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-             qp.C.transpose() * Qp.results.z)
+  pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+             qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
 
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-             qp.C.transpose() * Qp2.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp2.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp2.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+     qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
     qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
 
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
   Qp3.solve();
-  pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                     (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
-                      sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-  dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-             qp.C.transpose() * Qp3.results.z)
-              .lpNorm<Eigen::Infinity>();
+  pri_res =
+    std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp3.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp3.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+     qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-
 }
 
-
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after several solves using no initial guess")
+                  "inequality constraints: test changing default settings "
+                  "after several solves using no initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after several solves using no initial guess---"
+               "inequality constraints: test changing default settings after "
+               "several solves using no initial guess---"
             << std::endl;
 
-  
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
@@ -4213,50 +4342,56 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   Qp.settings.eps_abs = eps_abs;
 
   std::cout << "Test rho update for different initial guess" << std::endl;
-  std::cout << "dirty workspace before any solving: "
-            << Qp.work.internal.dirty << std::endl;  
+  std::cout << "dirty workspace before any solving: " << Qp.work.internal.dirty
+            << std::endl;
 
   T rho(1.e-7);
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
   Qp.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  //Qp.settings.verbose = true;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  // Qp.settings.verbose = true;
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  
+
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
- 
+
   Qp.update(std::nullopt,
             std::nullopt,
             std::nullopt,
@@ -4268,131 +4403,158 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
   Qp2.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
     Qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-              qp.C.transpose() * Qp2.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+       qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
   Qp3.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
+
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after several solves using equality constrained initial guess")
+DOCTEST_TEST_CASE(
+  "sparse random strongly convex qp with equality and "
+  "inequality constraints: test changing default settings after several solves "
+  "using equality constrained initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after several solves using equality constrained initial guess---"
+               "inequality constraints: test changing default settings after "
+               "several solves using equality constrained initial guess---"
             << std::endl;
 
-  
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
@@ -4411,50 +4573,57 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   Qp.settings.eps_abs = eps_abs;
 
   std::cout << "Test rho update for different initial guess" << std::endl;
-  std::cout << "dirty workspace before any solving: "
-            << Qp.work.internal.dirty << std::endl;  
+  std::cout << "dirty workspace before any solving: " << Qp.work.internal.dirty
+            << std::endl;
 
   T rho(1.e-7);
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  //Qp.settings.verbose = true;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  // Qp.settings.verbose = true;
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  
+
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
- 
+
   Qp.update(std::nullopt,
             std::nullopt,
             std::nullopt,
@@ -4466,131 +4635,159 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
     Qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-              qp.C.transpose() * Qp2.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+       qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
+
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 }
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after several solves using cold start with previous result")
+                  "inequality constraints: test changing default settings "
+                  "after several solves using cold start with previous result")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after several solves using cold start with previous result---"
+               "inequality constraints: test changing default settings after "
+               "several solves using cold start with previous result---"
             << std::endl;
 
-  
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
@@ -4609,50 +4806,57 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   Qp.settings.eps_abs = eps_abs;
 
   std::cout << "Test rho update for different initial guess" << std::endl;
-  std::cout << "dirty workspace before any solving: "
-            << Qp.work.internal.dirty << std::endl;  
+  std::cout << "dirty workspace before any solving: " << Qp.work.internal.dirty
+            << std::endl;
 
   T rho(1.e-7);
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  //Qp.settings.verbose = true;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  // Qp.settings.verbose = true;
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  
+
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
- 
+
   Qp.update(std::nullopt,
             std::nullopt,
             std::nullopt,
@@ -4664,132 +4868,159 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
     Qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-              qp.C.transpose() * Qp2.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+       qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
+
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 }
 
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
-                  "inequality constraints: test changing default settings after several solves using warm start with previous result")
+                  "inequality constraints: test changing default settings "
+                  "after several solves using warm start with previous result")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after several solves using warm start with previous result---"
+               "inequality constraints: test changing default settings after "
+               "several solves using warm start with previous result---"
             << std::endl;
 
-  
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
@@ -4808,50 +5039,57 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   Qp.settings.eps_abs = eps_abs;
 
   std::cout << "Test rho update for different initial guess" << std::endl;
-  std::cout << "dirty workspace before any solving: "
-            << Qp.work.internal.dirty << std::endl;  
+  std::cout << "dirty workspace before any solving: " << Qp.work.internal.dirty
+            << std::endl;
 
   T rho(1.e-7);
   T mu_eq(1.e-4);
   bool compute_preconditioner = true;
 
-  Qp.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+  Qp.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp.settings.eps_abs = eps_abs;
   Qp.settings.eps_rel = 0;
-  //Qp.settings.verbose = true;
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho);
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  // Qp.settings.verbose = true;
+  Qp.init(
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, compute_preconditioner, rho);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
   Qp.solve();
-  DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<=1.E-9);
-  DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<=1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) <= 1.E-9);
 
-  T pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                         .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-               qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+  T pri_res =
+    std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+             (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+              sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+               .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+     qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+      .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  
+
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(rho-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(rho - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
- 
+
   Qp.update(std::nullopt,
             std::nullopt,
             std::nullopt,
@@ -4863,119 +5101,146 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     Qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.settings.default_rho)<1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp.results.info.rho)<1.e-9);
-    pri_res = std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-              qp.C.transpose() * Qp.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.settings.default_rho) < 1.e-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp.results.info.rho) < 1.e-9);
+    pri_res =
+      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp.results.x + qp.g +
+       qp.A.transpose() * Qp.results.y + qp.C.transpose() * Qp.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp2(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp2.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp2.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp2.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp2.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp2.settings.eps_abs = eps_abs;
   Qp2.settings.eps_rel = 0;
-  Qp2.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,std::nullopt,mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  Qp2.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           std::nullopt,
+           mu_eq);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
   Qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-  DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+  DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
     Qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp2.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp2.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g + qp.A.transpose() * Qp2.results.y +
-              qp.C.transpose() * Qp2.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp2.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp2.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp2.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp2.results.x + qp.g +
+       qp.A.transpose() * Qp2.results.y + qp.C.transpose() * Qp2.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  
   // conter factual check with another QP object starting at the updated model
   proxqp::sparse::QP<T, I> Qp3(
-  qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
-  Qp3.settings.initial_guess = proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(Qp3.settings.initial_guess == proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+    qp.H.cast<bool>(), qp.A.cast<bool>(), qp.C.cast<bool>());
+  Qp3.settings.initial_guess =
+    proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  DOCTEST_CHECK(Qp3.settings.initial_guess ==
+                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
   Qp3.settings.eps_abs = eps_abs;
   Qp3.settings.eps_rel = 0;
-  Qp3.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l,compute_preconditioner,rho,mu_eq);
+  Qp3.init(qp.H,
+           qp.g,
+           qp.A,
+           qp.b,
+           qp.C,
+           qp.u,
+           qp.l,
+           compute_preconditioner,
+           rho,
+           mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(rho-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(rho-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(T(1)/mu_eq-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(rho - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(rho - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(mu_eq - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(T(1) / mu_eq - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
+
   Qp3.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            compute_preconditioner,
-            1.e-6,
-            1.e-3);
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             std::nullopt,
+             compute_preconditioner,
+             1.e-6,
+             1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
     Qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.settings.default_rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6-Qp3.results.info.rho)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.settings.default_mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3-Qp3.results.info.mu_eq)<=1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3-Qp3.results.info.mu_eq_inv)<=1.E-9);
-    pri_res = std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
-                       sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
-                       .lpNorm<Eigen::Infinity>());
-    dua_res = (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g + qp.A.transpose() * Qp3.results.y +
-              qp.C.transpose() * Qp3.results.z)
-                .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.settings.default_rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-6 - Qp3.results.info.rho) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.settings.default_mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e-3 - Qp3.results.info.mu_eq) <= 1.E-9);
+    DOCTEST_CHECK(std::abs(1.e3 - Qp3.results.info.mu_eq_inv) <= 1.E-9);
+    pri_res =
+      std::max((qp.A * Qp3.results.x - qp.b).lpNorm<Eigen::Infinity>(),
+               (sparse::detail::positive_part(qp.C * Qp.results.x - qp.u) +
+                sparse::detail::negative_part(qp.C * Qp.results.x - qp.l))
+                 .lpNorm<Eigen::Infinity>());
+    dua_res =
+      (qp.H.selfadjointView<Eigen::Upper>() * Qp3.results.x + qp.g +
+       qp.A.transpose() * Qp3.results.y + qp.C.transpose() * Qp3.results.z)
+        .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
-  
 }

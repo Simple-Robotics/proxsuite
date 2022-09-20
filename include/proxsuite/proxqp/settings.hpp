@@ -25,7 +25,7 @@ namespace proxqp {
 template<typename T>
 struct Settings
 {
-  
+
   T default_rho;
   T default_mu_eq;
   T default_mu_in;
@@ -123,8 +123,7 @@ struct Settings
    * used.
    */
 
-  Settings(
-           T default_rho_ = 1.E-6,
+  Settings(T default_rho_ = 1.E-6,
            T default_mu_eq_ = 1.E-3,
            T default_mu_in_ = 1.E-1,
            T alpha_bcl_ = 0.1,

@@ -25,8 +25,7 @@ namespace sparse {
  */
 template<typename T, typename I>
 void
-update_proximal_parameters(
-                           Settings<T>& settings,
+update_proximal_parameters(Settings<T>& settings,
                            Results<T>& results,
                            Workspace<T, I>& work,
                            std::optional<T> rho_new,

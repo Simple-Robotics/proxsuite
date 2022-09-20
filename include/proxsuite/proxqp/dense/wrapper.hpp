@@ -343,7 +343,7 @@ struct QP
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
-      settings,results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(H,
                                     g,
                                     A,
@@ -410,7 +410,7 @@ struct QP
       proxsuite::proxqp::dense::update(H, g, A, b, C, u, l, model, work);
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
-      settings,results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
@@ -477,7 +477,7 @@ struct QP
       proxsuite::proxqp::dense::update(H, g, A, b, C, u, l, model, work);
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
-      settings,results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
@@ -582,7 +582,7 @@ struct QP
       }
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
-      settings,results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(std::optional(model.H),
                                     std::optional(dense::VecRef<T>(model.g)),
                                     std::optional(model.A),
@@ -635,7 +635,8 @@ struct QP
    */
   void cleanup()
   {
-    results.cleanup(settings.default_rho,settings.default_mu_eq,settings.default_mu_in);
+    results.cleanup(
+      settings.default_rho, settings.default_mu_eq, settings.default_mu_in);
     work.cleanup();
   }
 };

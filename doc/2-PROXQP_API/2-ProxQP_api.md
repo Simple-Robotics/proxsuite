@@ -304,7 +304,7 @@ In this table you have on the three columns from left to right: the name of the 
 | VERBOSE                             | False                          | If set to true, the solver prints information at each loop.
 | default_rho                         | 1.E-6                          | Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).
 | default_mu_eq                       | 1.E-3                          | Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).
-| default_mu_in                       | 1.E-1                          | Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value). 
+| default_mu_in                       | 1.E-1                          | Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value).
 | compute_timings                     | True                           | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
 | max_iter                            | 1.E4                           | Maximal number of authorized outer iterations.
 | max_iter_in                         | 1500                           | Maximal number of authorized inner iterations.

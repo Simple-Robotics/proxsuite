@@ -3894,9 +3894,9 @@ class DenseQpWrapper(unittest.TestCase):
             )
         )
 
-
-
-    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_no_initial_guess(self):
+    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_no_initial_guess(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, no initial guess, multiple solve and default rho and mu_eq"
         )
@@ -3904,8 +3904,8 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
@@ -3920,15 +3920,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -3946,9 +3946,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert pri_res <= 1e-9
         for i in range(10):
             Qp.solve()
-            assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-            assert np.abs(rho - Qp.results.info.rho) <1.E-9
-            assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+            assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+            assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+            assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
             dua_res = normInf(
                 H @ Qp.results.x
                 + g
@@ -3965,7 +3965,9 @@ class DenseQpWrapper(unittest.TestCase):
             assert dua_res <= 1e-9
             assert pri_res <= 1e-9
 
-    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(self):
+    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, multiple solve and default rho and mu_eq"
         )
@@ -3973,12 +3975,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -3989,15 +3993,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4015,9 +4019,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert pri_res <= 1e-9
         for i in range(10):
             Qp.solve()
-            assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-            assert np.abs(rho - Qp.results.info.rho) <1.E-9
-            assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+            assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+            assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+            assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
             dua_res = normInf(
                 H @ Qp.results.x
                 + g
@@ -4034,7 +4038,9 @@ class DenseQpWrapper(unittest.TestCase):
             assert dua_res <= 1e-9
             assert pri_res <= 1e-9
 
-    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(self):
+    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
         )
@@ -4042,12 +4048,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -4058,15 +4066,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4084,9 +4092,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert pri_res <= 1e-9
         for i in range(10):
             Qp.solve()
-            assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-            assert np.abs(rho - Qp.results.info.rho) <1.E-9
-            assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+            assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+            assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+            assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
             dua_res = normInf(
                 H @ Qp.results.x
                 + g
@@ -4103,7 +4111,9 @@ class DenseQpWrapper(unittest.TestCase):
             assert dua_res <= 1e-9
             assert pri_res <= 1e-9
 
-    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(self):
+    def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
         )
@@ -4111,12 +4121,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -4127,15 +4139,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4153,9 +4165,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert pri_res <= 1e-9
         for i in range(10):
             Qp.solve()
-            assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-            assert np.abs(rho - Qp.results.info.rho) <1.E-9
-            assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+            assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+            assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+            assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
             dua_res = normInf(
                 H @ Qp.results.x
                 + g
@@ -4172,8 +4184,9 @@ class DenseQpWrapper(unittest.TestCase):
             assert dua_res <= 1e-9
             assert pri_res <= 1e-9
 
-
-    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(self):
+    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
         )
@@ -4181,12 +4194,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -4197,15 +4212,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4221,10 +4236,10 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        Qp.update(mu_eq = 1.E-3,rho=1.E-6)
-        assert np.abs(1.E-6 - Qp.settings.default_rho) <1.E-9
-        assert np.abs(1.E-6 - Qp.results.info.rho) <1.E-9
-        assert np.abs(1.E-3 - Qp.settings.default_mu_eq) <1.E-9
+        Qp.update(mu_eq=1.0e-3, rho=1.0e-6)
+        assert np.abs(1.0e-6 - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(1.0e-6 - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(1.0e-3 - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
         dua_res = normInf(
             H @ Qp.results.x
@@ -4242,7 +4257,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
 
-    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(self):
+    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
         )
@@ -4250,12 +4267,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -4266,15 +4285,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4290,10 +4309,10 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        Qp.update(mu_eq = 1.E-3,rho=1.E-6)
-        assert np.abs(1.E-6 - Qp.settings.default_rho) <1.E-9
-        assert np.abs(1.E-6 - Qp.results.info.rho) <1.E-9
-        assert np.abs(1.E-3 - Qp.settings.default_mu_eq) <1.E-9
+        Qp.update(mu_eq=1.0e-3, rho=1.0e-6)
+        assert np.abs(1.0e-6 - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(1.0e-6 - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(1.0e-3 - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
         dua_res = normInf(
             H @ Qp.results.x
@@ -4311,7 +4330,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
 
-    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(self):
+    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, update + solve and default rho and mu_eq"
         )
@@ -4319,12 +4340,14 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
-        Qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        Qp.settings.initial_guess = (
+            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+        )
         Qp.init(
             H,
             np.asfortranarray(g),
@@ -4335,15 +4358,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4359,10 +4382,10 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        Qp.update(mu_eq = 1.E-3,rho=1.E-6)
-        assert np.abs(1.E-6 - Qp.settings.default_rho) <1.E-9
-        assert np.abs(1.E-6 - Qp.results.info.rho) <1.E-9
-        assert np.abs(1.E-3 - Qp.settings.default_mu_eq) <1.E-9
+        Qp.update(mu_eq=1.0e-3, rho=1.0e-6)
+        assert np.abs(1.0e-6 - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(1.0e-6 - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(1.0e-3 - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
         dua_res = normInf(
             H @ Qp.results.x
@@ -4380,7 +4403,9 @@ class DenseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
 
-    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_NO_INITIAL_GUESS(self):
+    def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_NO_INITIAL_GUESS(
+        self,
+    ):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints, NO_INITIAL_GUESS, update + solve and default rho and mu_eq"
         )
@@ -4388,8 +4413,8 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        rho = 1.E-7
-        mu_eq = 1.E-4
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
         Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         Qp.settings.eps_abs = 1.0e-9
         Qp.settings.verbose = False
@@ -4404,15 +4429,15 @@ class DenseQpWrapper(unittest.TestCase):
             np.asfortranarray(l),
             True,
             rho=rho,
-            mu_eq=mu_eq
+            mu_eq=mu_eq,
         )
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
-        assert np.abs(rho - Qp.settings.default_rho) <1.E-9
-        assert np.abs(rho - Qp.results.info.rho) <1.E-9
-        assert np.abs(mu_eq - Qp.settings.default_mu_eq) <1.E-9
+        assert np.abs(rho - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(rho - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(mu_eq - Qp.settings.default_mu_eq) < 1.0e-9
         dua_res = normInf(
             H @ Qp.results.x
             + g
@@ -4428,10 +4453,10 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        Qp.update(mu_eq = 1.E-3,rho=1.E-6)
-        assert np.abs(1.E-6 - Qp.settings.default_rho) <1.E-9
-        assert np.abs(1.E-6 - Qp.results.info.rho) <1.E-9
-        assert np.abs(1.E-3 - Qp.settings.default_mu_eq) <1.E-9
+        Qp.update(mu_eq=1.0e-3, rho=1.0e-6)
+        assert np.abs(1.0e-6 - Qp.settings.default_rho) < 1.0e-9
+        assert np.abs(1.0e-6 - Qp.results.info.rho) < 1.0e-9
+        assert np.abs(1.0e-3 - Qp.settings.default_mu_eq) < 1.0e-9
         Qp.solve()
         dua_res = normInf(
             H @ Qp.results.x
@@ -4448,8 +4473,6 @@ class DenseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-
-
 
     def test_initializing_with_None(self):
         print("------------------------test initialization with Nones")

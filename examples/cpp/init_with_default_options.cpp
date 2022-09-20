@@ -18,15 +18,25 @@ main()
   dense::QP<T> Qp(
     dim, n_eq, n_in); // create the QP
                       // initialize the model, along with another rho parameter
-  Qp.settings.initial_guess.NO_INITIAL_GUESS; 
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, true, /*rho*/ 1.e-7, /*mu_eq*/ 1.e-4);
+  Qp.settings.initial_guess.NO_INITIAL_GUESS;
+  Qp.init(qp.H,
+          qp.g,
+          qp.A,
+          qp.b,
+          qp.C,
+          qp.u,
+          qp.l,
+          true,
+          /*rho*/ 1.e-7,
+          /*mu_eq*/ 1.e-4);
   // Initializing rho sets in practive Qp.settings.default_rho value,
-  // hence, after each solve or update method, the Qp.results.info.rho value will be reset to
-  // Qp.settings.default_rho value. 
+  // hence, after each solve or update method, the Qp.results.info.rho value
+  // will be reset to Qp.settings.default_rho value.
   Qp.solve();
-  // So if we redo a solve, Qp.settings.default_rho value = 1.e-7, hence Qp.results.info.rho restarts at 1.e-7
-  // The same occurs for mu_eq.
+  // So if we redo a solve, Qp.settings.default_rho value = 1.e-7, hence
+  // Qp.results.info.rho restarts at 1.e-7 The same occurs for mu_eq.
   Qp.solve();
-  // There might be a different result with WARM_START_WITH_PREVIOUS_RESULT initial guess option, as by
-  // construction, it reuses the last proximal step sizes of the last solving method.
+  // There might be a different result with WARM_START_WITH_PREVIOUS_RESULT
+  // initial guess option, as by construction, it reuses the last proximal step
+  // sizes of the last solving method.
 }
