@@ -7,6 +7,7 @@
 #ifndef PROXSUITE_QP_RESULTS_HPP
 #define PROXSUITE_QP_RESULTS_HPP
 
+#include <optional>
 #include <Eigen/Core>
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
