@@ -37,7 +37,7 @@ Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-Qp.init(H, g, A, b, C, u, l,rho=1.e-7,mu_eq=1.e_4)
+Qp.init(H, g, A, b, C, u, l,rho=1.e-7,mu_eq=1.e-4)
 Qp.solve()
 # If we redo a solve, Qp.settings.default_rho value = 1.e-7, hence Qp.results.info.rho restarts at 1.e-7
 # The same occurs for mu_eq.
