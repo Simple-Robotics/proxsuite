@@ -389,7 +389,6 @@ This option has also been thought initially for being used in optimal control li
 
 Note finally that at the first solve, as there is no previous results, x, y and z are warm started with the 0 vector value.
 
-
 \section OverviewResults The results subclass
 
 The result subclass is composed of:
