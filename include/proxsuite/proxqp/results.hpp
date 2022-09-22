@@ -144,7 +144,7 @@ struct Results
       info.mu_eq_inv = T(1) / info.mu_eq;
       info.mu_in = settings.value().default_mu_in;
       info.mu_in_inv = T(1) / info.mu_in;
-    } 
+    }
     cleanup_statistics();
   }
   void cleanup_all_except_prox_parameters()

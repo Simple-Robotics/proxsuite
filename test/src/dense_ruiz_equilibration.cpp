@@ -18,8 +18,9 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
 
   Scalar sparsity_factor(0.15);
   Scalar strong_convexity_factor(0.01);
-  proxqp::dense::Model<Scalar> qp_random = proxqp::utils::dense_strongly_convex_qp(
-    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  proxqp::dense::Model<Scalar> qp_random =
+    proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   switch (sym) {
     case proxqp::Symmetry::upper: {
@@ -35,7 +36,13 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   }
 
   proxqp::dense::QP<Scalar> qp{ dim, n_eq, n_in }; // creating QP object
-  qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l);
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.u,
+          qp_random.l);
 
   auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
     qp.ruiz.delta.head(dim).asDiagonal());

@@ -635,8 +635,7 @@ struct QP
    */
   void cleanup()
   {
-    results.cleanup(
-      settings);
+    results.cleanup(settings);
     work.cleanup();
   }
 };

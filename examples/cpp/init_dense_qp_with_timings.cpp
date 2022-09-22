@@ -15,7 +15,13 @@ main()
   dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  dense::QP<T> qp(dim, n_eq, n_in);                  // create the QP object
-  qp.settings.compute_timings = true;                // compute all timings
-  qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l); // initialize the model
+  dense::QP<T> qp(dim, n_eq, n_in);   // create the QP object
+  qp.settings.compute_timings = true; // compute all timings
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.u,
+          qp_random.l); // initialize the model
 }

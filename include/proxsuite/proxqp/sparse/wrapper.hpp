@@ -636,11 +636,7 @@ struct QP
   /*!
    * Clean-ups solver's results.
    */
-  void cleanup()
-  {
-    results.cleanup(
-      settings);
-  }
+  void cleanup() { results.cleanup(settings); }
 };
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP

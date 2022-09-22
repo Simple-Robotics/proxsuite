@@ -21,7 +21,13 @@ main()
 
   // load PROXQP solver with dense backend and solve the problem
   dense::QP<T> qp(dim, n_eq, n_in);
-  qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l);
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.u,
+          qp_random.l);
   qp.solve();
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << qp.results.x << std::endl;

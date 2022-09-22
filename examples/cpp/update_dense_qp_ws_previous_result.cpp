@@ -16,9 +16,15 @@ main()
   dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  dense::QP<T> qp(dim, n_eq, n_in);                  // create the QP object
-  qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l); // initialize the model
-  qp.solve();                                        // solve the problem
+  dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.u,
+          qp_random.l); // initialize the model
+  qp.solve();           // solve the problem
   // re update the linear cost taking previous result
   qp.settings.initial_guess =
     InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;

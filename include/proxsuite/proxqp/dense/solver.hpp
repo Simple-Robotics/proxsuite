@@ -800,8 +800,9 @@ qp_solve( //
       }
       case InitialGuessStatus::WARM_START: {
         qpwork.cleanup();
-        qpresults.cold_start(qpsettings); // because there was already a solve,
-                                     // precond was already computed if set so
+        qpresults.cold_start(
+          qpsettings); // because there was already a solve,
+                       // precond was already computed if set so
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen,
             qpresults

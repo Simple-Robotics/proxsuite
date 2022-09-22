@@ -54,20 +54,30 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving")
 
     qp::dense::QP<Scalar> qp{ n, n_eq, 0 }; // creating QP object
     qp.settings.eps_abs = eps_abs;
-    qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l);
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
     qp.solve();
     std::cout << "-- iter           : " << qp.results.info.iter << std::endl;
-    std::cout << "-- primal residual: "
-              << (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>()
-              << std::endl;
+    std::cout
+      << "-- primal residual: "
+      << (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>()
+      << std::endl;
     std::cout << "-- dual residual  : "
-              << (qp_random.H * qp.results.x + qp_random.g + qp_random.A.transpose() * qp.results.y)
+              << (qp_random.H * qp.results.x + qp_random.g +
+                  qp_random.A.transpose() * qp.results.y)
                    .lpNorm<Eigen::Infinity>()
               << std::endl;
 
-    DOCTEST_CHECK((qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>() <=
-                  eps_abs);
-    DOCTEST_CHECK((qp_random.H * qp.results.x + qp_random.g + qp_random.A.transpose() * qp.results.y)
+    DOCTEST_CHECK(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>() <=
+      eps_abs);
+    DOCTEST_CHECK((qp_random.H * qp.results.x + qp_random.g +
+                   qp_random.A.transpose() * qp.results.y)
                     .lpNorm<Eigen::Infinity>() <= eps_abs);
   }
 }

@@ -18,7 +18,15 @@ main()
   dense::QP<T> qp(
     dim, n_eq, n_in); // create the QP
                       // initialize the model, along with another rho parameter
-  qp.init(qp_random.H, qp_random.g, qp_random.A, qp_random.b, qp_random.C, qp_random.u, qp_random.l, true, /*rho*/ 1.e-7);
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.u,
+          qp_random.l,
+          true,
+          /*rho*/ 1.e-7);
   // in c++ you must follow the order speficied in the API for the parameters
   // if you don't want to change one parameter (here compute_preconditioner),
   // just let it be std::nullopt
