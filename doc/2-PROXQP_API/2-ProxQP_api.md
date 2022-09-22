@@ -434,7 +434,7 @@ In this table you have on the three columns from left to right: the name of the 
 | dua_res                             | 0                              | The dual residual.
 
 
-Note finally that when initializing a Qp object, by default the proximal step sizes (i.e., rho, mu_eq and mu_in) are set up by the default values defined in the Setting class. Hence, when doing mutliple solves, if not specified, their values are re-set respectively to default_rho, default_mu_eq and default_mu_in. A small example is given below in c++ and python.
+Note finally that when initializing a QP object, by default the proximal step sizes (i.e., rho, mu_eq and mu_in) are set up by the default values defined in the Setting class. Hence, when doing multiple solves, if not specified, their values are re-set respectively to default_rho, default_mu_eq and default_mu_in. A small example is given below in c++ and python.
 
 <table class="manual">
   <tr>
