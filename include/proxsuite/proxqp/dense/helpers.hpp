@@ -345,7 +345,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_all_except_prox_parameters();
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -355,7 +355,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_statistics();
       } else {
-        qpresults.cold_start();
+        qpresults.cold_start(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -364,7 +364,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_all_except_prox_parameters();
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -375,7 +375,7 @@ setup( //
           .cleanup_all_except_prox_parameters(); // the warm start is given at
                                                  // the solve function
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;

@@ -639,7 +639,7 @@ struct QP
   void cleanup()
   {
     results.cleanup(
-      settings.default_rho, settings.default_mu_eq, settings.default_mu_in);
+      settings);
   }
 };
 /*!

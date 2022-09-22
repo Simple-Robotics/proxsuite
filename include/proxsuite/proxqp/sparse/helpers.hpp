@@ -210,7 +210,7 @@ qp_setup(QpView<T, I> qp,
       if (work.internal.proximal_parameter_update) {
         results.cleanup_all_except_prox_parameters();
       } else {
-        results.cleanup();
+        results.cleanup(settings);
       }
       break;
     }
@@ -220,7 +220,7 @@ qp_setup(QpView<T, I> qp,
       if (work.internal.proximal_parameter_update) {
         results.cleanup_statistics();
       } else {
-        results.cold_start();
+        results.cold_start(settings);
       }
       break;
     }
@@ -229,7 +229,7 @@ qp_setup(QpView<T, I> qp,
       if (work.internal.proximal_parameter_update) {
         results.cleanup_all_except_prox_parameters();
       } else {
-        results.cleanup();
+        results.cleanup(settings);
       }
       break;
     }
@@ -238,7 +238,7 @@ qp_setup(QpView<T, I> qp,
       if (work.internal.proximal_parameter_update) {
         results.cleanup_all_except_prox_parameters();
       } else {
-        results.cleanup();
+        results.cleanup(settings);
       }
       break;
     }

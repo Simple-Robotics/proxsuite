@@ -64,14 +64,14 @@ class CvxpyTest(unittest.TestCase):
         l = 0 * np.ones((n))
         u = np.ones(n)
 
-        Qp = proxsuite.proxqp.dense.QP(n, 0, n)
-        Qp.init(H, g, A, b, C, u, l)
-        Qp.settings.verbose = True
-        Qp.settings.eps_abs = 1e-8
-        Qp.solve()
+        qp = proxsuite.proxqp.dense.QP(n, 0, n)
+        qp.init(H, g, A, b, C, u, l)
+        qp.settings.verbose = True
+        qp.settings.eps_abs = 1e-8
+        qp.solve()
 
         x_sol = 0.5
-        assert (x_sol - Qp.results.x) <= 1e-4
+        assert (x_sol - qp.results.x) <= 1e-4
 
 
 if __name__ == "__main__":

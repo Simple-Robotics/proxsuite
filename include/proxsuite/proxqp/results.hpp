@@ -11,6 +11,7 @@
 #include <Eigen/Core>
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
+#include <proxsuite/proxqp/settings.hpp>
 #include "proxsuite/proxqp/status.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 
@@ -108,14 +109,12 @@ struct Results
    * cleanups the Result variables and set the info variables to their initial
    * values.
    */
-  void cleanup(std::optional<T> rho = std::nullopt,
-               std::optional<T> mu_eq = std::nullopt,
-               std::optional<T> mu_in = std::nullopt)
+  void cleanup(std::optional<Settings<T>> settings = std::nullopt)
   {
     x.setZero();
     y.setZero();
     z.setZero();
-    cold_start(rho, mu_eq, mu_in);
+    cold_start(settings);
   }
   void cleanup_statistics()
   {
@@ -131,32 +130,21 @@ struct Results
     info.dua_res = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
   }
-  void cold_start(std::optional<T> rho = std::nullopt,
-                  std::optional<T> mu_eq = std::nullopt,
-                  std::optional<T> mu_in = std::nullopt)
+  void cold_start(std::optional<Settings<T>> settings = std::nullopt)
   {
-
-    if (rho != std::nullopt) {
-      info.rho = rho.value();
-    } else {
-      info.rho = 1e-6;
-    }
-    if (mu_eq != std::nullopt) {
-      info.mu_eq = mu_eq.value();
-      info.mu_eq_inv = T(1) / info.mu_eq;
-    } else {
-      info.mu_eq_inv = 1e3;
-      info.mu_eq = 1e-3;
-    }
-    if (mu_in != std::nullopt) {
-      info.mu_in = mu_in.value();
-      info.mu_in_inv = T(1) / info.mu_in;
-    } else {
-      info.mu_in_inv = 1e1;
-      info.mu_in = 1e-1;
-    }
-
+    info.rho = 1e-6;
+    info.mu_eq_inv = 1e3;
+    info.mu_eq = 1e-3;
+    info.mu_in_inv = 1e1;
+    info.mu_in = 1e-1;
     info.nu = 1.;
+    if (settings != std::nullopt) {
+      info.rho = settings.value().default_rho;
+      info.mu_eq = settings.value().default_mu_eq;
+      info.mu_eq_inv = T(1) / info.mu_eq;
+      info.mu_in = settings.value().default_mu_in;
+      info.mu_in_inv = T(1) / info.mu_in;
+    } 
     cleanup_statistics();
   }
   void cleanup_all_except_prox_parameters()

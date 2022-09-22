@@ -116,19 +116,19 @@ TEST_CASE("dense maros meszaros using the api")
       isize n_eq = A.rows();
       isize n_in = C.rows();
 
-      proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-      Qp.init(H, g, A, b, C, u, l);
+      proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+      qp.init(H, g, A, b, C, u, l);
 
-      Qp.settings.verbose = false;
-      Qp.settings.eps_abs = 2e-8;
-      Qp.settings.eps_rel = 0;
-      auto& eps = Qp.settings.eps_abs;
+      qp.settings.verbose = false;
+      qp.settings.eps_abs = 2e-8;
+      qp.settings.eps_rel = 0;
+      auto& eps = qp.settings.eps_abs;
 
       for (size_t it = 0; it < 2; ++it) {
-        Qp.solve();
-        const auto& x = Qp.results.x;
-        const auto& y = Qp.results.y;
-        const auto& z = Qp.results.z;
+        qp.solve();
+        const auto& x = qp.results.x;
+        const auto& y = qp.results.y;
+        const auto& z = qp.results.z;
 
         T prim_eq = proxqp::dense::infty_norm(A * x - b);
         T prim_in =
@@ -147,7 +147,7 @@ TEST_CASE("dense maros meszaros using the api")
         CHECK((C * x - u).maxCoeff() < eps);
 
         if (it > 0) {
-          CHECK(Qp.results.info.iter == 0);
+          CHECK(qp.results.info.iter == 0);
         }
       }
     }
