@@ -42,14 +42,14 @@ n_eq = A.shape[1]
 n_in = C.shape[1]
 
 # solve it
-Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-Qp.settings.eps_abs = EPS
-Qp.init(H, g, A, b, C, u, l)
-Qp.solve()
+qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+qp.settings.eps_abs = EPS
+qp.init(H, g, A, b, C, u, l)
+qp.solve()
 
-x_res = Qp.results.x
-y_res = Qp.results.y
-z_res = Qp.results.z
+x_res = qp.results.x
+y_res = qp.results.y
+z_res = qp.results.z
 
 # calculate primal and dual residual
 prim_res = max(
@@ -59,15 +59,15 @@ prim_res = max(
 dual_res = np.linalg.norm(H * x_res + g + np.transpose(A) * y_res + np.transpose(C) * z_res )
 
 # assert that solved with required precision
-@assert Qp.results.info.pri_res < EPS
-@assert Qp.results.info.dua_res < EPS
-@assert np.isclose(prim_res, Qp.results.info.pri_res)
-@assert np.isclose(dual_res, Qp.results.info.dua_res)
+@assert qp.results.info.pri_res < EPS
+@assert qp.results.info.dua_res < EPS
+@assert np.isclose(prim_res, qp.results.info.pri_res)
+@assert np.isclose(dual_res, qp.results.info.dua_res)
 
 # print stats
 @printf("Done solving the qp with dim %i having %i equality and %i inequality constraints.\n", n, n_eq, n_in)
-@printf("Primal residual: %f\n", Qp.results.info.pri_res)
-@printf("Dual residual: %f\n", Qp.results.info.dua_res)
-@printf("Total number of iteration %i.\n", Qp.results.info.iter)
-@printf("Setup time %fms, solve time %fms.\n", Qp.results.info.setup_time, Qp.results.info.solve_time)
-@printf("Epsilon absolute %f, epsilon relative %f.\n", Qp.settings.eps_abs, Qp.settings.eps_rel)
+@printf("Primal residual: %f\n", qp.results.info.pri_res)
+@printf("Dual residual: %f\n", qp.results.info.dua_res)
+@printf("Total number of iteration %i.\n", qp.results.info.iter)
+@printf("Setup time %fms, solve time %fms.\n", qp.results.info.setup_time, qp.results.info.solve_time)
+@printf("Epsilon absolute %f, epsilon relative %f.\n", qp.settings.eps_abs, qp.settings.eps_rel)

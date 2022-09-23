@@ -4,7 +4,7 @@ import scipy.sparse as spa
 
 
 def generate_mixed_qp(n, seed=1):
-    # A function for generating random convex Qps
+    # A function for generating random convex qps
 
     np.random.seed(seed)
     n_eq = int(n / 4)
@@ -29,26 +29,26 @@ def generate_mixed_qp(n, seed=1):
     return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
-# load a Qp object using Qp problem dimensions
+# load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
 n_in = 2
-Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-Qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A, b, C, u, l)
 # solve without warm start
-Qp.solve()
-# create a new problem and update Qp
+qp.solve()
+# create a new problem and update qp
 g_new = 0.95 * g  # slightly different g_new
-Qp.settings.initial_guess = (
+qp.settings.initial_guess = (
     proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
 )
-Qp.update(g=g_new)
+qp.update(g=g_new)
 # solve it
-Qp.solve()
+qp.solve()
 # print an optimal solution
-print("optimal x: {}".format(Qp.results.x))
-print("optimal y: {}".format(Qp.results.y))
-print("optimal z: {}".format(Qp.results.z))
+print("optimal x: {}".format(qp.results.x))
+print("optimal y: {}".format(qp.results.y))
+print("optimal z: {}".format(qp.results.z))

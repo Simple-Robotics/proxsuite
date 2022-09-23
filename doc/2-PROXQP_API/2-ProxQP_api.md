@@ -302,6 +302,9 @@ In this table you have on the three columns from left to right: the name of the 
 | eps_abs                             | 1.E-3                          | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                              | Relative stopping criterion of the solver.
 | VERBOSE                             | False                          | If set to true, the solver prints information at each loop.
+| default_rho                         | 1.E-6                          | Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).
+| default_mu_eq                       | 1.E-3                          | Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).
+| default_mu_in                       | 1.E-1                          | Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value).
 | compute_timings                     | True                           | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
 | max_iter                            | 1.E4                           | Maximal number of authorized outer iterations.
 | max_iter_in                         | 1500                           | Maximal number of authorized inner iterations.
@@ -429,6 +432,25 @@ In this table you have on the three columns from left to right: the name of the 
 | objValue                            | 0                              | The objective value to minimize.
 | pri_res                             | 0                              | The primal residual.
 | dua_res                             | 0                              | The dual residual.
+
+
+Note finally that when initializing a QP object, by default the proximal step sizes (i.e., rho, mu_eq and mu_in) are set up by the default values defined in the Setting class. Hence, when doing multiple solves, if not specified, their values are re-set respectively to default_rho, default_mu_eq and default_mu_in. A small example is given below in c++ and python.
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/init_with_default_options.cpp</th>
+    <th>examples/python/init_with_default_options.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include init_with_default_options.cpp
+    </td>
+    <td valign="top">
+      \include init_with_default_options.py
+    </td>
+  </tr>
+</table>
+
 
 \subsection OverviewSolverStatus The solver's status
 

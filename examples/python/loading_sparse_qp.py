@@ -1,17 +1,17 @@
 import proxsuite
 
-# load a Qp object using Qp problem dimensions
+# load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
 n_in = 2
-Qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 
 import numpy as np
 import scipy.sparse as spa
 
 
 def generate_mixed_qp(n, seed=1):
-    # A function for generating random convex Qps
+    # A function for generating random convex qps
 
     np.random.seed(seed)
     n_eq = int(n / 4)
@@ -36,10 +36,10 @@ def generate_mixed_qp(n, seed=1):
     return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
-# load a Qp2 object using matrix masks
+# load a qp2 object using matrix masks
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 
 H_ = H != 0.0
 A_ = A != 0.0
 C_ = C != 0.0
-Qp2 = proxsuite.proxqp.sparse.QP(H_, A_, C_)
+qp2 = proxsuite.proxqp.sparse.QP(H_, A_, C_)

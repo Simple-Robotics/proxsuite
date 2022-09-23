@@ -18,6 +18,7 @@ main()
   dense::QP<T> qp(
     dim, n_eq, n_in); // create the QP
                       // initialize the model, along with another rho parameter
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -26,8 +27,16 @@ main()
           qp_random.u,
           qp_random.l,
           true,
-          /*rho*/ 1.e-7);
-  // in c++ you must follow the order speficied in the API for the parameters
-  // if you don't want to change one parameter (here compute_preconditioner),
-  // just let it be std::nullopt
+          /*rho*/ 1.e-7,
+          /*mu_eq*/ 1.e-4);
+  // Initializing rho sets in practive qp.settings.default_rho value,
+  // hence, after each solve or update method, the qp.results.info.rho value
+  // will be reset to qp.settings.default_rho value.
+  qp.solve();
+  // So if we redo a solve, qp.settings.default_rho value = 1.e-7, hence
+  // qp.results.info.rho restarts at 1.e-7 The same occurs for mu_eq.
+  qp.solve();
+  // There might be a different result with WARM_START_WITH_PREVIOUS_RESULT
+  // initial guess option, as by construction, it reuses the last proximal step
+  // sizes of the last solving method.
 }

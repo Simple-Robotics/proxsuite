@@ -35,10 +35,10 @@ n_eq = A.shape[0]
 n_in = C.shape[0]
 
 # solve it
-Qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-Qp.init(H, g, A, b, C, u, l)
-Qp.solve()
+qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+qp.init(H, g, A, b, C, u, l)
+qp.solve()
 # print an optimal solution
-print("optimal x: {}".format(Qp.results.x))
-print("optimal y: {}".format(Qp.results.y))
-print("optimal z: {}".format(Qp.results.z))
+print("optimal x: {}".format(qp.results.x))
+print("optimal y: {}".format(qp.results.y))
+print("optimal z: {}".format(qp.results.z))

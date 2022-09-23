@@ -345,7 +345,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_all_except_prox_parameters();
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -355,7 +355,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_statistics();
       } else {
-        qpresults.cold_start();
+        qpresults.cold_start(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -364,7 +364,7 @@ setup( //
       if (qpwork.proximal_parameter_update) {
         qpresults.cleanup_all_except_prox_parameters();
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -375,7 +375,7 @@ setup( //
           .cleanup_all_except_prox_parameters(); // the warm start is given at
                                                  // the solve function
       } else {
-        qpresults.cleanup();
+        qpresults.cleanup(qpsettings);
       }
       qpwork.cleanup();
       break;
@@ -474,7 +474,8 @@ setup( //
  */
 template<typename T>
 void
-update_proximal_parameters(Results<T>& results,
+update_proximal_parameters(Settings<T>& settings,
+                           Results<T>& results,
                            Workspace<T>& work,
                            std::optional<T> rho_new,
                            std::optional<T> mu_eq_new,
@@ -482,15 +483,18 @@ update_proximal_parameters(Results<T>& results,
 {
 
   if (rho_new != std::nullopt) {
+    settings.default_rho = rho_new.value();
     results.info.rho = rho_new.value();
     work.proximal_parameter_update = true;
   }
   if (mu_eq_new != std::nullopt) {
+    settings.default_mu_eq = mu_eq_new.value();
     results.info.mu_eq = mu_eq_new.value();
     results.info.mu_eq_inv = T(1) / results.info.mu_eq;
     work.proximal_parameter_update = true;
   }
   if (mu_in_new != std::nullopt) {
+    settings.default_mu_in = mu_in_new.value();
     results.info.mu_in = mu_in_new.value();
     results.info.mu_in_inv = T(1) / results.info.mu_in;
     work.proximal_parameter_update = true;

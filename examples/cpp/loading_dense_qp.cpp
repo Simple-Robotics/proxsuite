@@ -8,5 +8,5 @@ main()
   dense::isize dim = 10;
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
-  dense::QP<T> Qp(dim, n_eq, n_in);
+  dense::QP<T> qp(dim, n_eq, n_in);
 }

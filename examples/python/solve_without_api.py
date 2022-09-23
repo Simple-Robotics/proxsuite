@@ -4,7 +4,7 @@ import scipy.sparse as spa
 
 
 def generate_mixed_qp(n, seed=1):
-    # A function for generating random convex Qps
+    # A function for generating random convex qps
 
     np.random.seed(seed)
     n_eq = int(n / 4)
@@ -29,7 +29,7 @@ def generate_mixed_qp(n, seed=1):
     return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
-# load a Qp object using Qp problem dimensions
+# load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
 n_in = 2
