@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.2</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -171,9 +171,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aea3a6d1f1d7095555967b5a9fc6152eb"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
-<tr class="memitem:aea3a6d1f1d7095555967b5a9fc6152eb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#aea3a6d1f1d7095555967b5a9fc6152eb">update_proximal_parameters</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; &amp;results, <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html">Workspace</a>&lt; T, I &gt; &amp;work, std::optional&lt; T &gt; rho_new, std::optional&lt; T &gt; mu_eq_new, std::optional&lt; T &gt; mu_in_new)</td></tr>
-<tr class="separator:aea3a6d1f1d7095555967b5a9fc6152eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a749611765108272ac831a3fd7ffe8bd3"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
+<tr class="memitem:a749611765108272ac831a3fd7ffe8bd3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a749611765108272ac831a3fd7ffe8bd3">update_proximal_parameters</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;settings, <a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; &amp;results, <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html">Workspace</a>&lt; T, I &gt; &amp;work, std::optional&lt; T &gt; rho_new, std::optional&lt; T &gt; mu_eq_new, std::optional&lt; T &gt; mu_in_new)</td></tr>
+<tr class="separator:a749611765108272ac831a3fd7ffe8bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99b389b6a54dc534b78244b77acfebcb"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
 <tr class="memitem:a99b389b6a54dc534b78244b77acfebcb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a99b389b6a54dc534b78244b77acfebcb">warm_start</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; x_wm, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; y_wm, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; z_wm, <a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; &amp;results, <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;settings, <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html">Model</a>&lt; T, I &gt; &amp;model)</td></tr>
 <tr class="separator:a99b389b6a54dc534b78244b77acfebcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -352,8 +352,8 @@ template&lt;typename T , typename I &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aea3a6d1f1d7095555967b5a9fc6152eb" name="aea3a6d1f1d7095555967b5a9fc6152eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea3a6d1f1d7095555967b5a9fc6152eb">&#9670;&#160;</a></span>update_proximal_parameters()</h2>
+<a id="a749611765108272ac831a3fd7ffe8bd3" name="a749611765108272ac831a3fd7ffe8bd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a749611765108272ac831a3fd7ffe8bd3">&#9670;&#160;</a></span>update_proximal_parameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -363,6 +363,12 @@ template&lt;typename T , typename I &gt; </div>
         <tr>
           <td class="memname">void proxsuite::proxqp::sparse::update_proximal_parameters </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">Settings</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>settings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>results</em>, </td>
         </tr>
@@ -475,7 +481,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00060">60</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00064">64</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
 
 </div>
 </div>
@@ -550,7 +556,7 @@ template&lt;typename T , typename I , typename P &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00151">151</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00155">155</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
 
 </div>
 </div>
@@ -591,7 +597,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00258">258</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00262">262</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
 
 </div>
 </div>
@@ -631,7 +637,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00287">287</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2helpers_8hpp_source.html#l00291">291</a> of file <a class="el" href="sparse_2helpers_8hpp_source.html">helpers.hpp</a>.</p>
 
 </div>
 </div>

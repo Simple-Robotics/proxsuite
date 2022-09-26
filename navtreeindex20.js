@@ -1,5 +1,11 @@
 var NAVTREEINDEX20 =
 {
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#aafaff32333bc5819bc86c294c98f22e8":[10,0,1,2,1,11,9],
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#aafaff32333bc5819bc86c294c98f22e8":[11,0,0,2,0,10,9],
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ab1ce4ea7e4b9bae17eb58edd74c582a0":[11,0,0,2,0,10,4],
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ab1ce4ea7e4b9bae17eb58edd74c582a0":[10,0,1,2,1,11,4],
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ab44b548a535c379cfc3c08bc37e355a8":[10,0,1,2,1,11,10],
+"structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ab44b548a535c379cfc3c08bc37e355a8":[11,0,0,2,0,10,10],
 "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#abdefff30e0e5d34052eebe7e13892d08":[11,0,0,2,0,10,23],
 "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#abdefff30e0e5d34052eebe7e13892d08":[10,0,1,2,1,11,23],
 "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#acc5085e0df4be7845ff45b370087d994":[10,0,1,2,1,11,24],
@@ -243,11 +249,5 @@ var NAVTREEINDEX20 =
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a12e1462df13321aa765e742d493f0af6":[10,0,1,2,4,2,4],
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a12e1462df13321aa765e742d493f0af6":[11,0,0,2,2,2,4],
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a65ce7978a94863c179fbf4e27e2fddf5":[10,0,1,2,4,2,5],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a65ce7978a94863c179fbf4e27e2fddf5":[11,0,0,2,2,2,5],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a718326f9383a04953e0e95279ed5333f":[11,0,0,2,2,2,6],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a718326f9383a04953e0e95279ed5333f":[10,0,1,2,4,2,6],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a73593eee323c9f27a262c109f74bfb21":[11,0,0,2,2,2,0],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a73593eee323c9f27a262c109f74bfb21":[10,0,1,2,4,2,0],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a9c8279776d9033cac04946d53fc8d51f":[11,0,0,2,2,2,2],
-"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a9c8279776d9033cac04946d53fc8d51f":[10,0,1,2,4,2,2]
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a65ce7978a94863c179fbf4e27e2fddf5":[11,0,0,2,2,2,5]
 };

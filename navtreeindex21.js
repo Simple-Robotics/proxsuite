@@ -1,5 +1,11 @@
 var NAVTREEINDEX21 =
 {
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a718326f9383a04953e0e95279ed5333f":[11,0,0,2,2,2,6],
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a718326f9383a04953e0e95279ed5333f":[10,0,1,2,4,2,6],
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a73593eee323c9f27a262c109f74bfb21":[11,0,0,2,2,2,0],
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a73593eee323c9f27a262c109f74bfb21":[10,0,1,2,4,2,0],
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a9c8279776d9033cac04946d53fc8d51f":[11,0,0,2,2,2,2],
+"structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a9c8279776d9033cac04946d53fc8d51f":[10,0,1,2,4,2,2],
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#ab267e2aa1ad3d7716cfa8e6bb61bca06":[11,0,0,2,2,2,3],
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#ab267e2aa1ad3d7716cfa8e6bb61bca06":[10,0,1,2,4,2,3],
 "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#af1ffa5108dbbef068a8e36e0951d4da7":[11,0,0,2,2,2,1],
@@ -243,11 +249,5 @@ var NAVTREEINDEX21 =
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a5b7fe45787e50a3b2f3ee411a933ebf3":[11,0,0,2,2,1,0,3],
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a5b7fe45787e50a3b2f3ee411a933ebf3":[10,0,1,2,4,1,1,3],
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a698391d2bd31f87611f0b3650134290b":[10,0,1,2,4,1,1,0],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a698391d2bd31f87611f0b3650134290b":[11,0,0,2,2,1,0,0],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a7290ed464c454294647a449654cefcbc":[10,0,1,2,4,1,1,17],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a7290ed464c454294647a449654cefcbc":[11,0,0,2,2,1,0,17],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a72ddae8907a60a50b4e099938c115b28":[11,0,0,2,2,1,0,1],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a72ddae8907a60a50b4e099938c115b28":[10,0,1,2,4,1,1,1],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#aa126694d3610e05a8058aed914e6b490":[10,0,1,2,4,1,1,13],
-"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#aa126694d3610e05a8058aed914e6b490":[11,0,0,2,2,1,0,13]
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a698391d2bd31f87611f0b3650134290b":[11,0,0,2,2,1,0,0]
 };

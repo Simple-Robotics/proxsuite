@@ -1,6 +1,9 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a2c5bf6d593fbe86c7b772d18cd813c31", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a74de26ede0494fdeecb010304f4b05ed", null ],
+    [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
+    [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
+    [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],
     [ "alpha_bcl", "structproxsuite_1_1proxqp_1_1Settings.html#a3dffdd487b107b6d08f57dfea1d5d871", null ],
     [ "beta_bcl", "structproxsuite_1_1proxqp_1_1Settings.html#af3ab3bd10e449f60b8e0c60c636363b1", null ],
     [ "refactor_dual_feasibility_threshold", "structproxsuite_1_1proxqp_1_1Settings.html#afdb9d491ac29a8a7503a385c791a5c0c", null ],

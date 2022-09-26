@@ -16,7 +16,7 @@ var namespaceproxsuite_1_1proxqp_1_1sparse =
     [ "MatRef", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a0782818befb4af8a530a90fa3edfe62d", null ],
     [ "Vec", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a2a08151eb36728cb266172d4b9ff86f5", null ],
     [ "Mat", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a35112b8f605b306b546040d1fd9119ef", null ],
-    [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1sparse.html#aea3a6d1f1d7095555967b5a9fc6152eb", null ],
+    [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a749611765108272ac831a3fd7ffe8bd3", null ],
     [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a99b389b6a54dc534b78244b77acfebcb", null ],
     [ "qp_setup", "namespaceproxsuite_1_1proxqp_1_1sparse.html#adce70965d198a96746b041b659fed279", null ],
     [ "have_same_structure", "namespaceproxsuite_1_1proxqp_1_1sparse.html#abdc7d0082c64016e09b3327b92d1685f", null ],
