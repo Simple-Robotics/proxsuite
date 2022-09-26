@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>proxsuite</name>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
   <description>Quadratic Programming Solver for Robotics and beyond</description>
   <maintainer email="antoine.bambade@inria.fr">Antoine Bambade</maintainer>
   <maintainer email="fabian.schramm@inria.fr">Fabian Schramm</maintainer>
