@@ -14,6 +14,8 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
 
+**ProxSuite** is integrated into the [cvxpy](https://www.cvxpy.org/) modeling language for convex optimization problems.
+
 ## Quick install
 
 **ProxSuite** is distributed on many well-known package managers.
