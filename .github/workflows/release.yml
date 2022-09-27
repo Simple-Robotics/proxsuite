@@ -58,17 +58,17 @@ jobs:
         run: |
           pip wheel . -w dist
 
-      - name: Keep only proxsuite in dist
+      - name: Move proxsuite to specific dist folder
         shell: bash -l {0}
         run: |
-          rm dist/cmeel*.whl
-          rm dist/tomli*.whl
+          mkdir -p dist_proxsuite
+          mv dist/proxsuite*.whl dist_proxsuite
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         with:
           name: dist
-          path: dist
+          path: dist_proxsuite
 
   release:
     needs: "build-wheel"
