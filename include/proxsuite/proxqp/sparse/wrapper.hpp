@@ -154,7 +154,7 @@ struct QP
    * @param A equality constraint matrix input defining the QP model.
    * @param b equality constraint vector input defining the QP model.
    * @param C inequality constraint matrix input defining the QP model.
-   * @param u lower inequality constraint vector input defining the QP model.
+   * @param u upper inequality constraint vector input defining the QP model.
    * @param l lower inequality constraint vector input defining the QP model.
    * @param compute_preconditioner boolean parameter for executing or not the
    * preconditioner.
@@ -649,7 +649,7 @@ struct QP
  * @param A equality constraint matrix input defining the QP model.
  * @param b equality constraint vector input defining the QP model.
  * @param C inequality constraint matrix input defining the QP model.
- * @param u lower inequality constraint vector input defining the QP model.
+ * @param u upper inequality constraint vector input defining the QP model.
  * @param l lower inequality constraint vector input defining the QP model.
  * @param x primal warm start.
  * @param y dual equality constraint warm start.

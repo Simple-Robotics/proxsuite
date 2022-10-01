@@ -161,7 +161,7 @@ initial_guess(Workspace<T>& qpwork,
  * @param A equality constraint matrix input defining the QP model.
  * @param b equality constraint vector input defining the QP model.
  * @param C inequality constraint matrix input defining the QP model.
- * @param u lower inequality constraint vector input defining the QP model.
+ * @param u upper inequality constraint vector input defining the QP model.
  * @param l lower inequality constraint vector input defining the QP model.
  * @param qpwork solver workspace.
  * @param qpsettings solver settings.
@@ -311,7 +311,7 @@ update(std::optional<Mat> H_,
  * @param A equality constraint matrix input defining the QP model.
  * @param b equality constraint vector input defining the QP model.
  * @param C inequality constraint matrix input defining the QP model.
- * @param u lower inequality constraint vector input defining the QP model.
+ * @param u upper inequality constraint vector input defining the QP model.
  * @param l lower inequality constraint vector input defining the QP model.
  * @param qpwork solver workspace.
  * @param qpsettings solver settings.
