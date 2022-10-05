@@ -3276,7 +3276,9 @@ class DenseqpWrapper(unittest.TestCase):
             True,
         )
         qp.solve()
-        A = spa.random(n_eq, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
+        A = spa.random(
+            n_eq, n, density=0.15, data_rvs=np.random.randn, format="csc"
+        ).toarray()
         dua_res = normInf(
             H @ qp.results.x
             + g

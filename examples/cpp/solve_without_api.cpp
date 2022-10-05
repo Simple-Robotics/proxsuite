@@ -32,7 +32,8 @@ main()
   std::cout << "optimal z from sparse solver: " << results_sparse_solver.z
             << std::endl;
   // Solve the problem using the dense backend
-  Results<T> results_dense_solver = dense::solve<T>(dense::Mat<T>(H), g,dense::Mat<T>(A), b,dense::Mat<T>(C), u, l);
+  Results<T> results_dense_solver = dense::solve<T>(
+    dense::Mat<T>(H), g, dense::Mat<T>(A), b, dense::Mat<T>(C), u, l);
   // print an optimal solution x,y and z
   std::cout << "optimal x from dense solver: " << results_dense_solver.x
             << std::endl;
