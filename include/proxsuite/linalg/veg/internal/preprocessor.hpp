@@ -403,7 +403,8 @@
                 __VEG_IMPL_PP_IS_1(__VEG_PP_TUPLE_SIZE(Tuple)))                \
   (Macro, Data, Tuple)
 
-#define __VEG_PP_TUPLE_SIZE(Tuple) __VEG_PP_ID(__VEG_IMPL_PP_VARIADIC_SIZE Tuple)
+#define __VEG_PP_TUPLE_SIZE(Tuple)                                             \
+  __VEG_PP_ID(__VEG_IMPL_PP_VARIADIC_SIZE Tuple)
 #define __VEG_PP_SEQ_HEAD(Seq)                                                 \
         __VEG_IMPL_PP_SEQ_HEAD_0 Seq)
 #define __VEG_PP_SEQ_TAIL(Seq) __VEG_IMPL_PP_CONSUME Seq
@@ -422,9 +423,12 @@
 #define __VEG_PP_CAT2(A, ...) __VEG_IMPL_PP_CAT2(A, __VA_ARGS__)
 #define __VEG_PP_CAT3(A, ...) __VEG_IMPL_PP_CAT3(A, __VA_ARGS__)
 #define __VEG_PP_REMOVE_PAREN(...)                                             \
-  __VEG_IMPL_PP_REMOVE_PAREN2(__VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN1 __VA_ARGS__))
+  __VEG_IMPL_PP_REMOVE_PAREN2(                                                 \
+    __VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN1 __VA_ARGS__))
 #define __VEG_PP_REMOVE_PAREN1(...)                                            \
-  __VEG_IMPL_PP_REMOVE_PAREN21(__VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN11 __VA_ARGS__))
-#define __VEG_PP_UNWRAP(...) __VEG_PP_ID(__VEG_PP_HEAD __VA_ARGS__ __VEG_PP_TAIL __VA_ARGS__)
+  __VEG_IMPL_PP_REMOVE_PAREN21(                                                \
+    __VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN11 __VA_ARGS__))
+#define __VEG_PP_UNWRAP(...)                                                   \
+  __VEG_PP_ID(__VEG_PP_HEAD __VA_ARGS__ __VEG_PP_TAIL __VA_ARGS__)
 
 #endif /* end of include guard VEG_PREPROCESSOR_HPP_U2V3WRWYS */

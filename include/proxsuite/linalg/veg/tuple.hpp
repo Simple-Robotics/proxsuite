@@ -398,10 +398,12 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
                VEG_NODISCARD VEG_INLINE VEG_CPP14(constexpr) auto
                operator[],
                (/*arg*/, Fix<I>)) &&
-    VEG_NOEXCEPT_IF(VEG_CONCEPT(nothrow_movable<ith<static_cast<usize>(I), Ts...>>))
+    VEG_NOEXCEPT_IF(
+      VEG_CONCEPT(nothrow_movable<ith<static_cast<usize>(I), Ts...>>))
       -> ith<static_cast<usize>(I), Ts...>
   {
-    return __VEG_IMPL_LEAF_ONCE(*this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
+    return __VEG_IMPL_LEAF_ONCE(
+      *this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
   }
 
   VEG_TEMPLATE((isize I),
@@ -411,7 +413,8 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
                (/*arg*/, Fix<I>)) &
     VEG_NOEXCEPT->ith<static_cast<usize>(I), Ts...>&
   {
-    return __VEG_IMPL_LEAF_MUT(*this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
+    return __VEG_IMPL_LEAF_MUT(
+      *this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
   }
 
   VEG_TEMPLATE((isize I),
@@ -421,7 +424,8 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
                (/*arg*/, Fix<I>))
   const & VEG_NOEXCEPT->ith<static_cast<usize>(I), Ts...> const&
   {
-    return __VEG_IMPL_LEAF(*this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
+    return __VEG_IMPL_LEAF(
+      *this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
   }
 };
 } // namespace tuple
