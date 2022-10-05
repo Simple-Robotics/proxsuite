@@ -25,7 +25,7 @@ max2(isize a, isize b) noexcept -> isize
 constexpr auto
 round_up_pow2(isize a, isize b) noexcept -> isize
 {
-  return isize((usize(a) + ~-usize(b)) & -usize(b));
+  return isize((usize(a) + ~(0 - usize(b))) & (0 - usize(b)));
 }
 } // namespace _dynstack
 } // namespace _detail
