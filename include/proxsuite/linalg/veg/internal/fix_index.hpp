@@ -328,12 +328,10 @@ namespace adl {
 
 inline namespace literals {
 template<char... Chars>
-VEG_INLINE constexpr auto operator"" _c()
-  VEG_NOEXCEPT->Fix<_detail::parse_int(_detail::char_seq<Chars...>::value,
-                                       sizeof...(Chars),
-                                       _detail::Error{})>
+VEG_INLINE constexpr auto operator"" _c() VEG_NOEXCEPT
 {
-  return {};
+  return Fix<_detail::parse_int(
+    _detail::char_seq<Chars...>::value, sizeof...(Chars), _detail::Error{})>{};
 }
 } // namespace literals
 } // namespace veg

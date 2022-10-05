@@ -120,8 +120,9 @@
 #define __VEG_PP_IS_1(X) __VEG_IMPL_PP_IS_1_I(X)
 #define __VEG_PP_IS_0(X) __VEG_PP_IS_1(__VEG_IMPL_PP_INC_I(X))
 
+#define __VEG_PP_ID(X) X
 
-#define __VEG_IMPL_PP_VARIADIC_SIZE(...) __VEG_IMPL_PP_COUNT(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+#define __VEG_IMPL_PP_VARIADIC_SIZE(...) __VEG_PP_ID(__VEG_IMPL_PP_COUNT(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
 
 #define __VEG_IMPL_PP_MAKE_TUPLE0 ()
 #define __VEG_IMPL_PP_MAKE_TUPLE1 (0)
@@ -402,7 +403,8 @@
                 __VEG_IMPL_PP_IS_1(__VEG_PP_TUPLE_SIZE(Tuple)))                \
   (Macro, Data, Tuple)
 
-#define __VEG_PP_TUPLE_SIZE(Tuple) __VEG_IMPL_PP_VARIADIC_SIZE Tuple
+#define __VEG_PP_TUPLE_SIZE(Tuple)                                             \
+  __VEG_PP_ID(__VEG_IMPL_PP_VARIADIC_SIZE Tuple)
 #define __VEG_PP_SEQ_HEAD(Seq)                                                 \
         __VEG_IMPL_PP_SEQ_HEAD_0 Seq)
 #define __VEG_PP_SEQ_TAIL(Seq) __VEG_IMPL_PP_CONSUME Seq
@@ -421,9 +423,12 @@
 #define __VEG_PP_CAT2(A, ...) __VEG_IMPL_PP_CAT2(A, __VA_ARGS__)
 #define __VEG_PP_CAT3(A, ...) __VEG_IMPL_PP_CAT3(A, __VA_ARGS__)
 #define __VEG_PP_REMOVE_PAREN(...)                                             \
-  __VEG_IMPL_PP_REMOVE_PAREN2(__VEG_IMPL_PP_REMOVE_PAREN1 __VA_ARGS__)
+  __VEG_IMPL_PP_REMOVE_PAREN2(                                                 \
+    __VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN1 __VA_ARGS__))
 #define __VEG_PP_REMOVE_PAREN1(...)                                            \
-  __VEG_IMPL_PP_REMOVE_PAREN21(__VEG_IMPL_PP_REMOVE_PAREN11 __VA_ARGS__)
-#define __VEG_PP_UNWRAP(...) __VEG_PP_HEAD __VA_ARGS__ __VEG_PP_TAIL __VA_ARGS__
+  __VEG_IMPL_PP_REMOVE_PAREN21(                                                \
+    __VEG_PP_ID(__VEG_IMPL_PP_REMOVE_PAREN11 __VA_ARGS__))
+#define __VEG_PP_UNWRAP(...)                                                   \
+  __VEG_PP_ID(__VEG_PP_HEAD __VA_ARGS__ __VEG_PP_TAIL __VA_ARGS__)
 
 #endif /* end of include guard VEG_PREPROCESSOR_HPP_U2V3WRWYS */

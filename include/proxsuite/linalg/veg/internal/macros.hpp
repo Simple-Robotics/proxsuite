@@ -335,12 +335,13 @@
   noexcept->::proxsuite::linalg::veg::meta::true_type
 
 #define __VEG_IMPL_SFINAE(_, Param)                                            \
-  , ::proxsuite::linalg::veg::meta::enable_if_t<__VEG_PP_UNWRAP Param, int> = 0
+  , ::proxsuite::linalg::veg::meta::                                           \
+      enable_if_t<__VEG_PP_ID(__VEG_PP_UNWRAP Param), int> = 0
 
 #define __VEG_IMPL_OVERLOAD(Name_Tpl, Param)                                   \
   template<__VEG_PP_REMOVE_PAREN(__VEG_PP_TAIL Name_Tpl),                      \
            typename ::proxsuite::linalg::veg::_detail::_meta::                 \
-             enable_if<__VEG_PP_UNWRAP Param, int>::type = 0>                  \
+             enable_if<__VEG_PP_ID(__VEG_PP_UNWRAP Param), int>::type = 0>     \
   auto __VEG_PP_CAT(check_, __VEG_PP_HEAD Name_Tpl)() noexcept                 \
     ->::proxsuite::linalg::veg::meta::true_type;
 

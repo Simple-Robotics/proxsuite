@@ -187,7 +187,7 @@ template<typename T, isize N>
 struct Array
 {
   static_assert(N > 0, ".");
-  T _[usize{ N }];
+  T _[static_cast<usize>(N)];
 
   constexpr auto as_ref() const -> Slice<T>
   {
