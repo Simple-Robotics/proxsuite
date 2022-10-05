@@ -82,6 +82,7 @@ endif()
 if(MSVC)
   # add_definitions(-D_USE_MATH_DEFINES)
   add_definitions(-DNOMINMAX)
+  add_compile_options(/permissive-)
 endif()
 
 # Look for dependencies
