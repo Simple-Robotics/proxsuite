@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <iostream>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <doctest.hpp>
@@ -34,7 +35,7 @@ proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
-                        sparse::QpView<T, I> qp = {
+                        sparse::qpView<T, I> qp = {
                                         {linalg::sparse::from_eigen,
 H}, {linalg::sparse::from_eigen, g},
                                         {linalg::sparse::from_eigen,
@@ -101,17 +102,17 @@ proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 
                 {
 
-                        proxqp::sparse::QP<T,I> Qp(n, n_eq, n_in);
-                        Qp.settings.eps_abs = 1.E-9;
-                        Qp.setup_sparse_matrices(H,g,A,b,C,u,l);
-                        Qp.solve();
+                        proxqp::sparse::QP<T,I> qp(n, n_eq, n_in);
+                        qp.settings.eps_abs = 1.E-9;
+                        qp.setup_sparse_matrices(H,g,A,b,C,u,l);
+                        qp.solve();
                         CHECK(
                                         proxqp::dense::infty_norm(
                                                         H.selfadjointView<Eigen::Upper>()
-* Qp.results.x + g + A.transpose() * Qp.results.y + C.transpose() *
-Qp.results.z) <= 1e-9); CHECK(proxqp::dense::infty_norm(A * Qp.results.x - b) <=
-1e-9); if (n_in > 0) { CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
-                                CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
+* qp.results.x + g + A.transpose() * qp.results.y + C.transpose() *
+qp.results.z) <= 1e-9); CHECK(proxqp::dense::infty_norm(A * qp.results.x - b) <=
+1e-9); if (n_in > 0) { CHECK((C * qp.results.x - l).minCoeff() > -1e-9);
+                                CHECK((C * qp.results.x - u).maxCoeff() < 1e-9);
                         }
                 }
         }
@@ -140,7 +141,7 @@ proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
-                        sparse::QpView<T, I> qp = {
+                        sparse::qpView<T, I> qp = {
                                         {linalg::sparse::from_eigen,
 H}, {linalg::sparse::from_eigen, g},
                                         {linalg::sparse::from_eigen,
@@ -204,20 +205,20 @@ TEST_CASE("random id using the API")
     auto u = (l.array() + 1).matrix().eval();
 
     {
-      proxqp::sparse::QP<T, I> Qp(n, n_eq, n_in);
-      Qp.settings.eps_abs = 1.E-9;
-      Qp.settings.verbose = true;
-      Qp.init(H, g, A, b, C, u, l);
-      Qp.solve();
+      proxqp::sparse::QP<T, I> qp(n, n_eq, n_in);
+      qp.settings.eps_abs = 1.E-9;
+      qp.settings.verbose = true;
+      qp.init(H, g, A, b, C, u, l);
+      qp.solve();
 
       CHECK(proxqp::dense::infty_norm(
-              H.selfadjointView<Eigen::Upper>() * Qp.results.x + g +
-              A.transpose() * Qp.results.y + C.transpose() * Qp.results.z) <=
+              H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
+              A.transpose() * qp.results.y + C.transpose() * qp.results.z) <=
             1e-9);
-      CHECK(proxqp::dense::infty_norm(A * Qp.results.x - b) <= 1e-9);
+      CHECK(proxqp::dense::infty_norm(A * qp.results.x - b) <= 1e-9);
       if (n_in > 0) {
-        CHECK((C * Qp.results.x - l).minCoeff() > -1e-9);
-        CHECK((C * Qp.results.x - u).maxCoeff() < 1e-9);
+        CHECK((C * qp.results.x - l).minCoeff() > -1e-9);
+        CHECK((C * qp.results.x - u).maxCoeff() < 1e-9);
       }
     }
   }

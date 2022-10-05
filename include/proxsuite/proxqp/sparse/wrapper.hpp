@@ -154,7 +154,7 @@ struct QP
    * @param A equality constraint matrix input defining the QP model.
    * @param b equality constraint vector input defining the QP model.
    * @param C inequality constraint matrix input defining the QP model.
-   * @param u lower inequality constraint vector input defining the QP model.
+   * @param u upper inequality constraint vector input defining the QP model.
    * @param l lower inequality constraint vector input defining the QP model.
    * @param compute_preconditioner boolean parameter for executing or not the
    * preconditioner.
@@ -244,7 +244,7 @@ struct QP
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
-      results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
 
     if (g != std::nullopt) {
       model.g = g.value();
@@ -589,7 +589,7 @@ struct QP
       { proxsuite::linalg::sparse::from_eigen, model.u }
     };
     proxsuite::proxqp::sparse::update_proximal_parameters(
-      results, work, rho, mu_eq, mu_in);
+      settings, results, work, rho, mu_eq, mu_in);
     qp_setup(qp,
              results,
              model,
@@ -636,7 +636,7 @@ struct QP
   /*!
    * Clean-ups solver's results.
    */
-  void cleanup() { results.cleanup(); }
+  void cleanup() { results.cleanup(settings); }
 };
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
@@ -649,7 +649,7 @@ struct QP
  * @param A equality constraint matrix input defining the QP model.
  * @param b equality constraint vector input defining the QP model.
  * @param C inequality constraint matrix input defining the QP model.
- * @param u lower inequality constraint vector input defining the QP model.
+ * @param u upper inequality constraint vector input defining the QP model.
  * @param l lower inequality constraint vector input defining the QP model.
  * @param x primal warm start.
  * @param y dual equality constraint warm start.

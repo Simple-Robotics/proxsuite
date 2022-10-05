@@ -42,32 +42,42 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving")
     isize n_in = 0;
     Scalar sparsity_factor = 0.15;
     Scalar strong_convexity_factor = 0.01;
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    qp.H = cnpy::npy_load_mat<Scalar>(path + "/H.npy");
-    qp.g = cnpy::npy_load_vec<Scalar>(path + "/g.npy");
-    qp.A = cnpy::npy_load_mat<Scalar>(path + "/A.npy");
-    qp.b = cnpy::npy_load_vec<Scalar>(path + "/b.npy");
+    qp_random.H = cnpy::npy_load_mat<Scalar>(path + "/H.npy");
+    qp_random.g = cnpy::npy_load_vec<Scalar>(path + "/g.npy");
+    qp_random.A = cnpy::npy_load_mat<Scalar>(path + "/A.npy");
+    qp_random.b = cnpy::npy_load_vec<Scalar>(path + "/b.npy");
     std::cout << "-- problem_path   : " << path << std::endl;
     std::cout << "-- n   : " << n << std::endl;
     std::cout << "-- n_eq   : " << n_eq << std::endl;
 
-    qp::dense::QP<Scalar> Qp{ n, n_eq, 0 }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
-    std::cout << "-- iter           : " << Qp.results.info.iter << std::endl;
-    std::cout << "-- primal residual: "
-              << (qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>()
-              << std::endl;
+    qp::dense::QP<Scalar> qp{ n, n_eq, 0 }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
+    std::cout << "-- iter           : " << qp.results.info.iter << std::endl;
+    std::cout
+      << "-- primal residual: "
+      << (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>()
+      << std::endl;
     std::cout << "-- dual residual  : "
-              << (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y)
+              << (qp_random.H * qp.results.x + qp_random.g +
+                  qp_random.A.transpose() * qp.results.y)
                    .lpNorm<Eigen::Infinity>()
               << std::endl;
 
-    DOCTEST_CHECK((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>() <=
-                  eps_abs);
-    DOCTEST_CHECK((qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y)
+    DOCTEST_CHECK(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>() <=
+      eps_abs);
+    DOCTEST_CHECK((qp_random.H * qp.results.x + qp_random.g +
+                   qp_random.A.transpose() * qp.results.y)
                     .lpNorm<Eigen::Infinity>() <= eps_abs);
   }
 }

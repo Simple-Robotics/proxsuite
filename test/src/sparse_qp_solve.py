@@ -1,8 +1,7 @@
 #
 # Copyright (c) 2022, INRIA
 #
-from curses import A_CHARTEXT
-import proxsuite_pywrap as proxsuite
+import proxsuite
 import numpy as np
 import scipy.sparse as spa
 import unittest

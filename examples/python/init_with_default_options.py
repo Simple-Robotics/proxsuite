@@ -33,26 +33,14 @@ def generate_mixed_qp(n, seed=1):
 n = 10
 n_eq = 2
 n_in = 2
-qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A, b, C, u, l, rho=1.0e-7, mu_eq=1.0e-4)
 qp.solve()
-H_new = 2 * H  # keep the same sparsity structure
-qp.update(H_new)  # update H with H_new, it will work
+# If we redo a solve, qp.settings.default_rho value = 1.e-7, hence qp.results.info.rho restarts at 1.e-7
+# The same occurs for mu_eq.
 qp.solve()
-# generate a QP with another sparsity structure
-# create a new problem and update qp
-H2, g_new, A_new, b_new, C_new, u_new, l_new = generate_mixed_qp(n)
-qp.update(H=H2)  # nothing will happen
-qp.update(g=g_new)  # if only a vector changes, then the update takes effect
-qp.solve()  # it solves the problem with the QP H,g_new,A,b,C,u,l
-# to solve the problem with H2 matrix create a new qp object in the sparse case
-qp2 = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
-qp2.init(H2, g_new, A, b, C, u, l)
-qp2.solve()  # it will solve the new problem
-# print an optimal solution
-print("optimal x: {}".format(qp.results.x))
-print("optimal y: {}".format(qp.results.y))
-print("optimal z: {}".format(qp.results.z))
+# There might be a different result with WARM_START_WITH_PREVIOUS_RESULT initial guess option, as
+# by construction, it reuses the last proximal step sizes of the last solving method.

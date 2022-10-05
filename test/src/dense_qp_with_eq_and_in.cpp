@@ -27,22 +27,29 @@ DOCTEST_TEST_CASE(
     proxqp::isize n_eq(dim / 4);
     proxqp::isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.settings.eps_rel = 0;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
 
-    T pri_res =
-      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-               (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-                proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
-                 .lpNorm<Eigen::Infinity>());
-    T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-                 qp.C.transpose() * Qp.results.z)
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
@@ -51,7 +58,7 @@ DOCTEST_TEST_CASE(
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << Qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
 }
@@ -72,20 +79,27 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
     proxqp::isize n_eq(0);
     proxqp::isize n_in(dim);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_box_constrained_qp(
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_box_constrained_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.settings.eps_rel = 0;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
-    T pri_res =
-      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-               (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-                proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
-                 .lpNorm<Eigen::Infinity>());
-    T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-                 qp.C.transpose() * Qp.results.z)
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
@@ -94,7 +108,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << Qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
 }
@@ -113,21 +127,29 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_not_strongly_convex_qp(
-      dim, n_eq, n_in, sparsity_factor);
+    proxqp::dense::Model<T> qp_random =
+      proxqp::utils::dense_not_strongly_convex_qp(
+        dim, n_eq, n_in, sparsity_factor);
 
-    proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.settings.eps_rel = 0;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
-    T pri_res =
-      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-               (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-                proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
-                 .lpNorm<Eigen::Infinity>());
-    T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-                 qp.C.transpose() * Qp.results.z)
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
@@ -136,7 +158,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << Qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
 }
@@ -157,24 +179,31 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
     proxqp::isize m(dim / 4);
     proxqp::isize n_in(2 * m);
     proxqp::isize n_eq(0);
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_degenerate_qp(
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_degenerate_qp(
       dim,
       n_eq,
       m, // it n_in = 2 * m, it doubles the inequality constraints
       sparsity_factor,
       strong_convexity_factor);
-    proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.settings.eps_rel = 0;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
-    T pri_res =
-      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-               (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-                proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
-                 .lpNorm<Eigen::Infinity>());
-    T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-                 qp.C.transpose() * Qp.results.z)
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
@@ -183,7 +212,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << Qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
 }
@@ -201,27 +230,35 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
     proxqp::isize n_in(dim / 2);
     proxqp::isize n_eq(0);
-    proxqp::dense::Model<T> qp = proxqp::utils::dense_not_strongly_convex_qp(
-      dim, n_eq, n_in, sparsity_factor);
-    qp.H.setZero();
+    proxqp::dense::Model<T> qp_random =
+      proxqp::utils::dense_not_strongly_convex_qp(
+        dim, n_eq, n_in, sparsity_factor);
+    qp_random.H.setZero();
     auto z_sol = proxqp::utils::rand::vector_rand<T>(n_in);
-    qp.g = -qp.C.transpose() *
-           z_sol; // make sure the LP is bounded within the feasible set
+    qp_random.g = -qp_random.C.transpose() *
+                  z_sol; // make sure the LP is bounded within the feasible set
     // std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l "
     // << qp.l << std::endl;
-    proxqp::dense::QP<T> Qp{ dim, n_eq, n_in }; // creating QP object
-    Qp.settings.eps_abs = eps_abs;
-    Qp.settings.eps_rel = 0;
-    Qp.settings.verbose = false;
-    Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l);
-    Qp.solve();
-    T pri_res =
-      std::max((qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-               (proxqp::dense::positive_part(qp.C * Qp.results.x - qp.u) +
-                proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
-                 .lpNorm<Eigen::Infinity>());
-    T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() * Qp.results.y +
-                 qp.C.transpose() * Qp.results.z)
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.verbose = false;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.u,
+            qp_random.l);
+    qp.solve();
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
@@ -230,7 +267,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << Qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
 }
