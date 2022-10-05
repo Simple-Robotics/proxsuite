@@ -16,7 +16,7 @@ def normInf(x):
 
 def generate_mixed_qp(n, seed=1):
     """
-    Generate problem in QP format
+    Generate sparse problem in dense QP format
     """
     np.random.seed(seed)
 
@@ -35,13 +35,13 @@ def generate_mixed_qp(n, seed=1):
     P = spa.coo_matrix(P)
     print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
-    return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
+    return P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
 class DenseQpWrapper(unittest.TestCase):
@@ -308,11 +308,11 @@ class DenseQpWrapper(unittest.TestCase):
             M[i, i + 1] = -1
             M[i, i - 1] = 1
 
-        H = spa.csc_matrix(M.dot(M.transpose()))
+        H = spa.csc_matrix(M.dot(M.transpose())).toarray()
         g = -np.ones((n,))
         A = None
         b = None
-        C = spa.csc_matrix(spa.eye(n))
+        C = spa.csc_matrix(spa.eye(n)).toarray()
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.infty)
 

@@ -139,7 +139,7 @@ Once you have defined a Qp object, the init method enables you setting up the QP
   </tr>
 </table>
 
-Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format). Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).
+Note that with its dense backend, ProxQP solver manipulates matrices in dense representations (in the same spirit, the solver with sparse backend manipulates entries in sparse format). In the example above the matrices are originally in sparse format, and eventually converted into dense format. Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).
 
 <table class="manual">
   <tr>

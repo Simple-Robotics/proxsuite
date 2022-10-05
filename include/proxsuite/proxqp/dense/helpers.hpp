@@ -391,18 +391,14 @@ setup( //
     }
   }
   if (H != std::nullopt) {
-    qpmodel.H = Eigen::
-      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-        H.value());
+    qpmodel.H = H.value();
   } // else qpmodel.H remains initialzed to a matrix with zero elements
   if (g != std::nullopt) {
     qpmodel.g = g.value();
   }
 
   if (A != std::nullopt) {
-    qpmodel.A = Eigen::
-      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-        A.value());
+    qpmodel.A = A.value();
   } // else qpmodel.A remains initialized to a matrix with zero elements or zero
     // shape
 
@@ -412,9 +408,7 @@ setup( //
     // shape
 
   if (C != std::nullopt) {
-    qpmodel.C = Eigen::
-      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-        C.value());
+    qpmodel.C = C.value();
   } // else qpmodel.C remains initialized to a matrix with zero elements or zero
     // shape
 
