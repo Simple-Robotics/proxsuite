@@ -26,13 +26,13 @@ function generate_mixed_qp(n, seed=1)
     P += (np.abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A * v
     l = -1.0e20 * np.ones(m)
 
-    return P, q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, m)), get(u, slice(n_in, m, )), l[n_in+1:end]
+    return P.toarray(), q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, m)), get(u, slice(n_in, m, )), l[n_in+1:end]
 end
 
 # generate a qp problem
