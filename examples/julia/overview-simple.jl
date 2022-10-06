@@ -32,7 +32,7 @@ function generate_mixed_qp(n, seed=1)
     u = A * v
     l = -1.0e20 * np.ones(m)
 
-    return P, q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, m)), get(u, slice(n_in, m, )), l[n_in+1:end]
+    return P.toarray(), q, get(A, slice(0, n_eq)), get(u, slice(0, n_eq)), get(A, slice(n_in, m)), get(u, slice(n_in, m, )), l[n_in+1:end]
 end
 
 # generate a qp problem
@@ -44,7 +44,7 @@ n_in = C.shape[1]
 # solve it
 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 qp.settings.eps_abs = EPS
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A.toarray(), b, C.toarray(), u, l)
 qp.solve()
 
 x_res = qp.results.x

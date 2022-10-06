@@ -67,7 +67,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 
 If if you don't want to pass through [ProxQP API](2-ProxQP_api.md), it is also possible to use one single solve function. We will show how to do so with examples.
 
-You just need to call a "solve" function with in entry the model of the convex QP you want to solve. We show you below examples in C++ and python for ProxQP sparse and dense backends.
+You just need to call a "solve" function with in entry the model of the convex QP you want to solve. We show you below examples in C++ and python for ProxQP sparse and dense backends. Note that the sparse and dense solvers take respectivaly entries in sparse and dense formats.
 
 <table class="manual">
   <tr>
