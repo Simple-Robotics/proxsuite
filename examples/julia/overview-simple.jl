@@ -26,7 +26,7 @@ function generate_mixed_qp(n, seed=1)
     P += (np.abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A * v
@@ -44,7 +44,7 @@ n_in = C.shape[1]
 # solve it
 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 qp.settings.eps_abs = EPS
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A.toarray(), b, C.toarray(), u, l)
 qp.solve()
 
 x_res = qp.results.x
