@@ -47,7 +47,7 @@ def generate_mixed_qp(n, seed=1):
 class DenseqpWrapper(unittest.TestCase):
 
     # TESTS OF GENERAL METHODS OF THE API
-    
+
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
@@ -1659,7 +1659,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-    
+
     def test_case_warm_start_with_no_initial_guess(self):
 
         print(
@@ -1791,7 +1791,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-    
+
     def test_case_warm_start_with_no_initial_guess_and_different_init(self):
 
         print(

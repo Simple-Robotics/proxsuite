@@ -347,7 +347,13 @@ class DenseQpWrapper(unittest.TestCase):
         u = None
         l = None
 
-        results = proxsuite.proxqp.dense.solve(H, g, A, b, C, )
+        results = proxsuite.proxqp.dense.solve(
+            H,
+            g,
+            A,
+            b,
+            C,
+        )
         print("optimal x: {}".format(results.x))
 
         dua_res = normInf(H @ results.x + g)

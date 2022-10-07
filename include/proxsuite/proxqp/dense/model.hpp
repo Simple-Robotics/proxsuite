@@ -75,7 +75,7 @@ struct Model
     SparseMat<T> A_sparse = A.sparseView();
     SparseMat<T> C_sparse = C.sparseView();
     proxsuite::proxqp::sparse::SparseModel<T> res{ H_sparse, g, A_sparse, b,
-                                                   C_sparse, u, l};
+                                                   C_sparse, u, l };
     return res;
   }
 };
