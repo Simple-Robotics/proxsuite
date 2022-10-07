@@ -10,6 +10,6 @@ u = None
 l = None
 
 results = proxsuite.proxqp.dense.solve(
-    H, g, A, b, C, u, l
+    H, g, A, b, C, l, u
 )  # it is equivalent to do as well proxsuite.proxqp.dense.solve(H, g)
 print("optimal x: {}".format(results.x))

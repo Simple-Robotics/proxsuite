@@ -22,8 +22,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);           // initialize the model
+          qp_random.l,
+          qp_random.u);           // initialize the model
   qp.settings.eps_abs = T(1.E-9); // set accuracy threshold to 1.e-9
   qp.settings.verbose = true;     // print some intermediary results
   qp.solve();                     // solve the problem with previous settings

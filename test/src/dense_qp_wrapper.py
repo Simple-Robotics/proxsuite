@@ -47,7 +47,7 @@ def generate_mixed_qp(n, seed=1):
 class DenseqpWrapper(unittest.TestCase):
 
     # TESTS OF GENERAL METHODS OF THE API
-
+    
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
@@ -66,8 +66,8 @@ class DenseqpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             rho=1.0e-7,
         )
         qp.solve()
@@ -115,8 +115,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
-            np.asfortranarray(l),
+            l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             mu_eq=1.0e-2,
             mu_in=1.0e-3,
         )
@@ -166,8 +166,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp.solve()
@@ -216,8 +216,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -267,8 +267,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
 
@@ -317,8 +317,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
 
         qp.solve()
@@ -354,8 +354,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
 
@@ -405,8 +405,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
@@ -459,8 +459,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
         dua_res = normInf(
@@ -497,8 +497,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
 
         x = qp.results.x
@@ -585,8 +585,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
         dua_res = normInf(
@@ -626,8 +626,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         x = qp.results.x
         y = qp.results.y
@@ -714,8 +714,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -758,8 +758,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp2.solve()
@@ -813,8 +813,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -897,8 +897,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp2.solve()
@@ -975,8 +975,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve(np.random.randn(n), np.random.randn(n_eq), np.random.randn(n_in))
@@ -1026,8 +1026,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1155,8 +1155,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1286,8 +1286,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1417,8 +1417,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1548,8 +1548,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1659,7 +1659,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-
+    
     def test_case_warm_start_with_no_initial_guess(self):
 
         print(
@@ -1671,7 +1671,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-9
-        qp.settings.verbose = False
+        qp.settings.verbose = True
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
@@ -1679,13 +1679,13 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
 
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
 
         dua_res = normInf(
@@ -1791,7 +1791,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-
+    
     def test_case_warm_start_with_no_initial_guess_and_different_init(self):
 
         print(
@@ -1811,13 +1811,13 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
 
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
 
         dua_res = normInf(
@@ -1845,7 +1845,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.init(H, g, A, b, C, u, l)
+        qp2.init(H, g, A, b, C, l, u)
         qp2.settings.eps_abs = 1.0e-9
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.solve(qp.results.x, qp.results.y, qp.results.z)
@@ -1895,8 +1895,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1934,8 +1934,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2039,8 +2039,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2078,8 +2078,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2183,8 +2183,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2226,8 +2226,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2329,8 +2329,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2372,8 +2372,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2475,8 +2475,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2608,8 +2608,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2649,8 +2649,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve(qp.results.x, qp.results.y, qp.results.z)
@@ -2750,8 +2750,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2793,8 +2793,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2836,8 +2836,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2879,8 +2879,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2920,8 +2920,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2970,8 +2970,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3030,8 +3030,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3089,8 +3089,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3148,8 +3148,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3205,8 +3205,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3271,8 +3271,8 @@ class DenseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3333,8 +3333,8 @@ class DenseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3392,8 +3392,8 @@ class DenseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3451,8 +3451,8 @@ class DenseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3508,8 +3508,8 @@ class DenseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3574,8 +3574,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3633,8 +3633,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3692,8 +3692,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3751,8 +3751,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3808,8 +3808,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3875,7 +3875,7 @@ class DenseqpWrapper(unittest.TestCase):
         u = np.full(l.shape, +np.infty)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
@@ -3918,8 +3918,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -3991,8 +3991,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4064,8 +4064,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4137,8 +4137,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4210,8 +4210,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4283,8 +4283,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4356,8 +4356,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4427,8 +4427,8 @@ class DenseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4488,7 +4488,7 @@ class DenseqpWrapper(unittest.TestCase):
         l = None
 
         qp = proxsuite.proxqp.dense.QP(3, 0, 0)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
         print("optimal x: {}".format(qp.results.x))
 

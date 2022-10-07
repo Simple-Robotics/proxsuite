@@ -22,8 +22,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l); // initialize the model
+          qp_random.l,
+          qp_random.u); // initialize the model
   qp.solve();           // solve the problem
                         // a new qp problem
   dense::Model<T> qp2 = utils::dense_strongly_convex_qp(

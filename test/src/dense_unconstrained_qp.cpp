@@ -34,8 +34,8 @@ DOCTEST_TEST_CASE(
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
 
     T pri_res = std::max(
@@ -87,8 +87,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
 
     T pri_res = std::max(
@@ -135,8 +135,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -183,8 +183,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(

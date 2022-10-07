@@ -23,8 +23,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l); // initialize the model
+          qp_random.l,
+          qp_random.u); // initialize the model
   qp.solve();           // solve the problem without warm start
   auto x_wm = utils::rand::vector_rand<T>(dim);
   auto y_wm = utils::rand::vector_rand<T>(n_eq);

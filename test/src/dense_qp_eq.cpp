@@ -47,7 +47,7 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
-  qp.init(H, g, A, b, C, u, l);
+  qp.init(H, g, A, b, C, l, u);
   qp.solve(primal_solution, dual_solution, dual_init_in);
 
   DOCTEST_CHECK((A * qp.results.x - b).lpNorm<Eigen::Infinity>() <= eps_abs);
@@ -133,8 +133,8 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
 
     T pri_res = std::max(

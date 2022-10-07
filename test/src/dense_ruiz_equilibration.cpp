@@ -41,8 +41,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
 
   auto head = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(
     qp.ruiz.delta.head(dim).asDiagonal());

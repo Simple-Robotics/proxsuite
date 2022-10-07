@@ -23,8 +23,8 @@ main()
                     qp_random.A,
                     qp_random.b,
                     qp_random.C,
-                    qp_random.u,
-                    qp_random.l); // initialization with zero shape matrices
+                    qp_random.l,
+                    qp_random.u); // initialization with zero shape matrices
   // it is equivalent to do dense::solve<T>(qp_random.H, qp_random.g,
   // std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
   //  print an optimal solution x,y and z

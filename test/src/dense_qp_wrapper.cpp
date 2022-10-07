@@ -37,8 +37,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -121,8 +121,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -174,8 +174,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -259,8 +259,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -312,8 +312,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -397,8 +397,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -450,8 +450,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -535,8 +535,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -586,8 +586,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -633,8 +633,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             std::nullopt,
             std::nullopt,
             std::nullopt,
-            qp_random.u,
-            std::nullopt);
+            std::nullopt,
+            qp_random.u);
 
   std::cout << "after upating" << std::endl;
   std::cout << "H :  " << qp.model.H << std::endl;
@@ -676,8 +676,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -727,8 +727,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -813,8 +813,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -866,8 +866,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -918,8 +918,8 @@ DOCTEST_TEST_CASE(
             qp_random.A,
             qp_random.b,
             std::nullopt,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
 
   std::cout << "after upating" << std::endl;
   std::cout << "H :  " << qp.model.H << std::endl;
@@ -961,8 +961,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -1012,8 +1012,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1085,8 +1085,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            T(1.e-7),
            std::nullopt,
@@ -1141,8 +1141,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1217,8 +1217,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            std::nullopt,
            T(1.e-2),
@@ -1274,8 +1274,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1340,8 +1340,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve(x_wm, y_wm, z_wm);
 
   pri_res = std::max(
@@ -1397,8 +1397,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     qp_random.b,
     Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
       qp_random.C),
-    qp_random.u,
-    qp_random.l);
+    qp_random.l,
+    qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1441,8 +1441,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1474,8 +1474,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -1529,8 +1529,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1563,8 +1563,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
 
   pri_res = std::max(
@@ -1618,8 +1618,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1651,8 +1651,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true);
 
   auto x = qp.results.x;
@@ -1745,8 +1745,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -1778,8 +1778,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true);
 
   auto x = qp.results.x;
@@ -1874,8 +1874,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           true);
   qp.solve();
 
@@ -1912,8 +1912,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            false);
   qp2.solve();
   pri_res = std::max(
@@ -1968,8 +1968,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           true);
   qp.solve();
   T pri_res = std::max(
@@ -2034,8 +2034,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true);
   qp2.solve();
   pri_res = std::max(
@@ -2112,8 +2112,8 @@ TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2237,8 +2237,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2364,8 +2364,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2493,8 +2493,8 @@ TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2623,8 +2623,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2750,8 +2750,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2876,8 +2876,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -2906,8 +2906,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp2.settings.initial_guess = InitialGuessStatus::WARM_START;
@@ -2968,8 +2968,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3001,8 +3001,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update : " << qp.work.dirty << std::endl;
   qp.solve();
@@ -3106,8 +3106,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3139,8 +3139,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update : " << qp.work.dirty << std::endl;
   qp.solve();
@@ -3247,8 +3247,8 @@ TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3282,8 +3282,8 @@ TEST_CASE(
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update : " << qp.work.dirty << std::endl;
   qp.solve();
@@ -3388,8 +3388,8 @@ TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3423,8 +3423,8 @@ TEST_CASE(
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   qp.solve();
   pri_res = std::max(
@@ -3529,8 +3529,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3668,8 +3668,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -3704,8 +3704,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update: " << qp.work.dirty << std::endl;
   qp.solve(x_wm, y_wm, z_wm);
@@ -3740,8 +3740,8 @@ TEST_CASE("sparse random strongly convex qp with equality and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
             qp_random.l,
+            qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update: " << qp.work.dirty << std::endl;
   qp.solve(x_wm, y_wm, z_wm);
@@ -3843,8 +3843,8 @@ TEST_CASE("Test initializaton with rho for different initial guess")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           true,
           T(1.E-7));
   qp.solve();
@@ -3879,8 +3879,8 @@ TEST_CASE("Test initializaton with rho for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            T(1.E-7));
   qp2.solve();
@@ -3915,8 +3915,8 @@ TEST_CASE("Test initializaton with rho for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            T(1.E-7));
   qp3.solve();
@@ -3951,8 +3951,8 @@ TEST_CASE("Test initializaton with rho for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            T(1.E-7));
   qp4.solve();
@@ -3986,8 +3986,8 @@ TEST_CASE("Test initializaton with rho for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            true,
            T(1.E-7));
   qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z);
@@ -4042,8 +4042,8 @@ TEST_CASE("Test g update for different initial guess")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -4098,8 +4098,8 @@ TEST_CASE("Test g update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4151,8 +4151,8 @@ TEST_CASE("Test g update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4204,8 +4204,8 @@ TEST_CASE("Test g update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp4.solve();
   pri_res = std::max(
     (qp_random.A * qp4.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4256,8 +4256,8 @@ TEST_CASE("Test g update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z);
   pri_res = std::max(
     (qp_random.A * qp5.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4329,8 +4329,8 @@ TEST_CASE("Test A update for different initial guess")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -4385,8 +4385,8 @@ TEST_CASE("Test A update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4438,8 +4438,8 @@ TEST_CASE("Test A update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4491,8 +4491,8 @@ TEST_CASE("Test A update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp4.solve();
   pri_res = std::max(
     (qp_random.A * qp4.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4543,8 +4543,8 @@ TEST_CASE("Test A update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z);
   pri_res = std::max(
     (qp_random.A * qp5.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4616,8 +4616,8 @@ TEST_CASE("Test rho update for different initial guess")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -4672,8 +4672,8 @@ TEST_CASE("Test rho update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4727,8 +4727,8 @@ TEST_CASE("Test rho update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4782,8 +4782,8 @@ TEST_CASE("Test rho update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp4.solve();
   pri_res = std::max(
     (qp_random.A * qp4.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4836,8 +4836,8 @@ TEST_CASE("Test rho update for different initial guess")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z);
   pri_res = std::max(
     (qp_random.A * qp5.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -4912,8 +4912,8 @@ TEST_CASE("Test g update for different warm start with previous result option")
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
 
   T pri_res = std::max(
@@ -4977,8 +4977,8 @@ TEST_CASE("Test g update for different warm start with previous result option")
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
-           qp_random.l);
+           qp_random.l,
+           qp_random.u);
   qp2.solve();
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5034,8 +5034,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -5093,8 +5093,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -5129,8 +5129,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -5221,8 +5221,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -5282,8 +5282,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -5320,8 +5320,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -5412,8 +5412,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -5473,8 +5473,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -5511,8 +5511,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -5602,8 +5602,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -5662,8 +5662,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -5699,8 +5699,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -5789,8 +5789,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -5865,8 +5865,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -5913,8 +5913,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -6021,8 +6021,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -6099,8 +6099,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -6146,8 +6146,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -6249,8 +6249,8 @@ DOCTEST_TEST_CASE(
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -6327,8 +6327,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -6374,8 +6374,8 @@ DOCTEST_TEST_CASE(
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);
@@ -6475,8 +6475,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           compute_preconditioner,
           rho);
   DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
@@ -6552,8 +6552,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            std::nullopt,
            mu_eq);
@@ -6598,8 +6598,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
            qp_random.A,
            qp_random.b,
            qp_random.C,
-           qp_random.u,
            qp_random.l,
+           qp_random.u,
            compute_preconditioner,
            rho,
            mu_eq);

@@ -59,8 +59,8 @@ DOCTEST_TEST_CASE("qp: test qp loading and solving")
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
     std::cout << "-- iter           : " << qp.results.info.iter << std::endl;
     std::cout

@@ -23,8 +23,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
           qp_random.l,
+          qp_random.u,
           true,
           /*rho*/ 1.e-7);
   // in c++ you must follow the order speficied in the API for the parameters

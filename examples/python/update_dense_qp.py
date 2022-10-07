@@ -37,12 +37,12 @@ qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A, b, C, l, u)
 # solve without warm start
 qp.solve()
 # create a new problem and update qp
 H_new, g_new, A_new, b_new, C_new, u_new, l_new = generate_mixed_qp(n, seed=2)
-qp.update(H_new, g_new, A_new, b_new, C_new, u_new, l_new)
+qp.update(H_new, g_new, A_new, b_new, C_new, l_new, u_new)
 # solve it
 qp.solve()
 # print an optimal solution

@@ -36,12 +36,12 @@ n_in = 2
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 
 # solve the problem using the sparse backend
-results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
 
 # solve the problem using the dense backend
 
 results2 = proxsuite.proxqp.dense.solve(
-    H.toarray(), g, A.toarray(), b, C.toarray(), u, l
+    H.toarray(), g, A.toarray(), b, C.toarray(), l, u
 )
 # Note finally, that the matrices are in sparse format, when using the dense backend you
 # should convert them in dense format

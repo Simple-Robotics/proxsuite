@@ -154,8 +154,8 @@ struct QP
    * @param A equality constraint matrix input defining the QP model.
    * @param b equality constraint vector input defining the QP model.
    * @param C inequality constraint matrix input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
    * @param l lower inequality constraint vector input defining the QP model.
+   * @param u upper inequality constraint vector input defining the QP model.
    * @param compute_preconditioner boolean parameter for executing or not the
    * preconditioner.
    * @param rho proximal step size wrt primal variable.
@@ -167,8 +167,8 @@ struct QP
             std::optional<SparseMat<T, I>> A,
             std::optional<VecRef<T>> b,
             std::optional<SparseMat<T, I>> C,
-            std::optional<VecRef<T>> u,
             std::optional<VecRef<T>> l,
+            std::optional<VecRef<T>> u,
             bool compute_preconditioner_ = true,
             std::optional<T> rho = std::nullopt,
             std::optional<T> mu_eq = std::nullopt,
@@ -319,8 +319,8 @@ struct QP
    * @param A_ equality constraint matrix input defining the QP model.
    * @param b_ equality constraint vector input defining the QP model.
    * @param C_ inequality constraint matrix input defining the QP model.
-   * @param u_ lower inequality constraint vector input defining the QP model.
    * @param l_ lower inequality constraint vector input defining the QP model.
+   * @param u_ lower inequality constraint vector input defining the QP model.
    * @param update_preconditioner_ bool parameter for updating or not the
    * preconditioner and the associated scaled model.
    * @param rho proximal step size wrt primal variable.
@@ -332,8 +332,8 @@ struct QP
               const std::optional<SparseMat<T, I>> A_,
               std::optional<VecRef<T>> b_,
               const std::optional<SparseMat<T, I>> C_,
-              std::optional<VecRef<T>> u_,
               std::optional<VecRef<T>> l_,
+              std::optional<VecRef<T>> u_,
               bool update_preconditioner_ = true,
               std::optional<T> rho = std::nullopt,
               std::optional<T> mu_eq = std::nullopt,
@@ -649,8 +649,8 @@ struct QP
  * @param A equality constraint matrix input defining the QP model.
  * @param b equality constraint vector input defining the QP model.
  * @param C inequality constraint matrix input defining the QP model.
- * @param u upper inequality constraint vector input defining the QP model.
  * @param l lower inequality constraint vector input defining the QP model.
+ * @param u upper inequality constraint vector input defining the QP model.
  * @param x primal warm start.
  * @param y dual equality constraint warm start.
  * @param z dual inequality constraint warm start.
@@ -676,8 +676,8 @@ solve(
   std::optional<SparseMat<T, I>> A,
   std::optional<VecRef<T>> b,
   std::optional<SparseMat<T, I>> C,
-  std::optional<VecRef<T>> u,
   std::optional<VecRef<T>> l,
+  std::optional<VecRef<T>> u,
   std::optional<VecRef<T>> x = std::nullopt,
   std::optional<VecRef<T>> y = std::nullopt,
   std::optional<VecRef<T>> z = std::nullopt,
@@ -723,7 +723,7 @@ solve(
     Qp.settings.max_iter = verbose.value();
   }
   Qp.settings.compute_timings = compute_timings;
-  Qp.init(H, g, A, b, C, u, l, compute_preconditioner, rho, mu_eq, mu_in);
+  Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
   Qp.solve(x, y, z);
 
   return Qp.results;

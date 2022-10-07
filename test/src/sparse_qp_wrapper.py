@@ -165,8 +165,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp.solve()
@@ -218,8 +218,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -272,8 +272,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
 
@@ -325,8 +325,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
 
         qp.solve()
@@ -362,8 +362,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
 
@@ -416,8 +416,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
@@ -473,8 +473,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
         dua_res = normInf(
@@ -511,8 +511,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
 
         x = qp.results.x
@@ -602,8 +602,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         qp.solve()
         dua_res = normInf(
@@ -643,8 +643,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
         )
         x = qp.results.x
         y = qp.results.y
@@ -734,8 +734,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -778,8 +778,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp2.solve()
@@ -836,8 +836,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -920,8 +920,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             False,
         )
         qp2.solve()
@@ -998,8 +998,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve(np.random.randn(n), np.random.randn(n_eq), np.random.randn(n_in))
@@ -1049,8 +1049,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1178,8 +1178,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1309,8 +1309,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1440,8 +1440,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1571,8 +1571,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1702,13 +1702,13 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
 
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
 
         dua_res = normInf(
@@ -1834,13 +1834,13 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
 
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
 
         dua_res = normInf(
@@ -1868,7 +1868,7 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
-        qp2.init(H, g, A, b, C, u, l)
+        qp2.init(H, g, A, b, C, l, u)
         qp2.settings.eps_abs = 1.0e-9
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.solve(qp.results.x, qp.results.y, qp.results.z)
@@ -1918,8 +1918,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -1957,8 +1957,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2062,8 +2062,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2101,8 +2101,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2206,8 +2206,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2249,8 +2249,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2352,8 +2352,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2395,8 +2395,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve()
@@ -2498,8 +2498,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2631,8 +2631,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -2672,8 +2672,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             update_preconditioner,
         )
         qp.solve(qp.results.x, qp.results.y, qp.results.z)
@@ -2773,8 +2773,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2816,8 +2816,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2859,8 +2859,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2902,8 +2902,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2943,8 +2943,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=1.0e-7,
         )
@@ -2993,8 +2993,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3053,8 +3053,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3112,8 +3112,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3171,8 +3171,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3228,8 +3228,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3294,8 +3294,8 @@ class SparseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3353,8 +3353,8 @@ class SparseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3411,8 +3411,8 @@ class SparseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3469,8 +3469,8 @@ class SparseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3525,8 +3525,8 @@ class SparseqpWrapper(unittest.TestCase):
             A_old,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3590,8 +3590,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp.solve()
@@ -3649,8 +3649,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp2.solve()
@@ -3708,8 +3708,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp3.solve()
@@ -3767,8 +3767,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp4.solve()
@@ -3824,8 +3824,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
         )
         qp5.solve(qp3.results.x, qp3.results.y, qp3.results.z)
@@ -3893,8 +3893,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -3966,8 +3966,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4039,8 +4039,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4112,8 +4112,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4185,8 +4185,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4258,8 +4258,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4331,8 +4331,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4402,8 +4402,8 @@ class SparseqpWrapper(unittest.TestCase):
             A,
             np.asfortranarray(b),
             C,
-            np.asfortranarray(u),
             np.asfortranarray(l),
+            np.asfortranarray(u),
             True,
             rho=rho,
             mu_eq=mu_eq,
@@ -4471,7 +4471,7 @@ class SparseqpWrapper(unittest.TestCase):
         u = np.full(l.shape, +np.infty)
 
         qp = proxsuite.proxqp.sparse.QP(n, 0, n)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
@@ -4504,7 +4504,7 @@ class SparseqpWrapper(unittest.TestCase):
         l = None
 
         qp = proxsuite.proxqp.sparse.QP(3, 0, 0)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.solve()
         print("optimal x: {}".format(qp.results.x))
 

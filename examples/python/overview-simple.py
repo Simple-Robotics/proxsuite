@@ -37,7 +37,7 @@ n_in = C.shape[0]
 
 # solve it
 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A, b, C, l, u)
 qp.solve()
 # print an optimal solution
 print("optimal x: {}".format(qp.results.x))

@@ -67,8 +67,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.A,
                                              qp.b,
                                              qp.C,
-                                             qp.u,
                                              qp.l,
+                                             qp.u,
                                              std::nullopt,
                                              std::nullopt,
                                              std::nullopt,
@@ -123,8 +123,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.A,
                                              qp.b,
                                              qp.C,
-                                             qp.u,
                                              qp.l,
+                                             qp.u,
                                              std::nullopt,
                                              std::nullopt,
                                              std::nullopt,
@@ -183,8 +183,8 @@ DOCTEST_TEST_CASE(
                                              qp.A,
                                              qp.b,
                                              qp.C,
-                                             qp.u,
                                              qp.l,
+                                             qp.u,
                                              std::nullopt,
                                              std::nullopt,
                                              std::nullopt,
@@ -241,7 +241,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     auto z_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n_in);
     proxsuite::proxqp::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(
-        qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, x_wm, y_wm, z_wm, eps_abs);
+        qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs);
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
@@ -292,8 +292,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.A,
                                              qp.b,
                                              qp.C,
-                                             qp.u,
                                              qp.l,
+                                             qp.u,
                                              std::nullopt,
                                              std::nullopt,
                                              std::nullopt,
@@ -354,8 +354,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.A,
                                              qp.b,
                                              qp.C,
-                                             qp.u,
                                              qp.l,
+                                             qp.u,
                                              std::nullopt,
                                              std::nullopt,
                                              std::nullopt,
