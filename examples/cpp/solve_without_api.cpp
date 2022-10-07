@@ -24,7 +24,7 @@ main()
   auto u = (l.array() + 10).matrix().eval();
   // Solve the problem using the sparse backend
   Results<T> results_sparse_solver =
-    sparse::solve<T, isize>(H, g, A, b, C, u, l);
+    sparse::solve<T, isize>(H, g, A, b, C, l, u);
   std::cout << "optimal x from sparse solver: " << results_sparse_solver.x
             << std::endl;
   std::cout << "optimal y from sparse solver: " << results_sparse_solver.y

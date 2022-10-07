@@ -38,8 +38,8 @@ DOCTEST_TEST_CASE(
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
 
     T pri_res = std::max(
@@ -89,8 +89,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -139,8 +139,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -193,8 +193,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -248,8 +248,8 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
             qp_random.A,
             qp_random.b,
             qp_random.C,
-            qp_random.u,
-            qp_random.l);
+            qp_random.l,
+            qp_random.u);
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),

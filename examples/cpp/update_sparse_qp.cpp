@@ -26,7 +26,7 @@ main()
   // design a qp2 object using sparsity masks of H, A and C
   proxsuite::proxqp::sparse::QP<T, int> qp(
     H.cast<bool>(), A.cast<bool>(), C.cast<bool>());
-  qp.init(H, g, A, b, C, u, l);
+  qp.init(H, g, A, b, C, l, u);
   qp.solve();
   // update H
   auto H_new = 2 * H; // keep the same sparsity structure
@@ -61,7 +61,7 @@ main()
   // to solve the problem with H2 matrix create a new qp object
   proxsuite::proxqp::sparse::QP<T, isize> qp2(
     H2.cast<bool>(), A.cast<bool>(), C.cast<bool>());
-  qp2.init(H2, g_new, A, b, C, u, l);
+  qp2.init(H2, g_new, A, b, C, l, u);
   qp2.solve(); // it will solve the new problem
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << qp2.results.x << std::endl;

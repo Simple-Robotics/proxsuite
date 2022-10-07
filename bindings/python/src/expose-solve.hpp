@@ -53,8 +53,8 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
     pybind11::arg_v(
       "C", std::nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+    pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+    pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
     pybind11::arg_v("x", std::nullopt, "primal warm start"),
     pybind11::arg_v("y", std::nullopt, "dual equality warm start"),
     pybind11::arg_v("z", std::nullopt, "dual inequality warm start"),
@@ -112,8 +112,8 @@ solveSparseQp(pybind11::module_ m)
     pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
     pybind11::arg_v(
       "C", std::nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+    pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+    pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
     pybind11::arg_v("x", std::nullopt, "primal warm start"),
     pybind11::arg_v("y", std::nullopt, "dual equality warm start"),
     pybind11::arg_v("z", std::nullopt, "dual inequality warm start"),

@@ -34,8 +34,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        qp.A,
                                        qp.b,
                                        qp.C,
-                                       qp.u,
                                        qp.l,
+                                       qp.u,
                                        std::nullopt,
                                        std::nullopt,
                                        std::nullopt,
@@ -83,8 +83,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        qp.A,
                                        qp.b,
                                        qp.C,
-                                       qp.u,
                                        qp.l,
+                                       qp.u,
                                        std::nullopt,
                                        std::nullopt,
                                        std::nullopt,
@@ -135,8 +135,8 @@ DOCTEST_TEST_CASE(
                                        qp.A,
                                        qp.b,
                                        qp.C,
-                                       qp.u,
                                        qp.l,
+                                       qp.u,
                                        std::nullopt,
                                        std::nullopt,
                                        std::nullopt,
@@ -185,7 +185,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   auto y_wm = utils::rand::vector_rand<T>(n_eq);
   auto z_wm = utils::rand::vector_rand<T>(n_in);
   Results<T> results = dense::solve<T>(
-    qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l, x_wm, y_wm, z_wm, eps_abs, 0);
+    qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs, 0);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (dense::positive_part(qp.C * results.x - qp.u) +
                         dense::negative_part(qp.C * results.x - qp.l))
@@ -228,8 +228,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        qp.A,
                                        qp.b,
                                        qp.C,
-                                       qp.u,
                                        qp.l,
+                                       qp.u,
                                        std::nullopt,
                                        std::nullopt,
                                        std::nullopt,
@@ -281,8 +281,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        qp.A,
                                        qp.b,
                                        qp.C,
-                                       qp.u,
                                        qp.l,
+                                       qp.u,
                                        std::nullopt,
                                        std::nullopt,
                                        std::nullopt,

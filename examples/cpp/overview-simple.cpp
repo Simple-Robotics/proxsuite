@@ -26,8 +26,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l);
+          qp_random.l,
+          qp_random.u);
   qp.solve();
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << qp.results.x << std::endl;

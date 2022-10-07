@@ -37,7 +37,7 @@ qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-qp.init(H, g, A, b, C, u, l)
+qp.init(H, g, A, b, C, l, u)
 qp.solve()
 H_new = 2 * H  # keep the same sparsity structure
 qp.update(H_new)  # update H with H_new, it will work
@@ -50,7 +50,7 @@ qp.update(g=g_new)  # if only a vector changes, then the update takes effect
 qp.solve()  # it solves the problem with the QP H,g_new,A,b,C,u,l
 # to solve the problem with H2 matrix create a new qp object in the sparse case
 qp2 = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
-qp2.init(H2, g_new, A, b, C, u, l)
+qp2.init(H2, g_new, A, b, C, l, u)
 qp2.solve()  # it will solve the new problem
 # print an optimal solution
 print("optimal x: {}".format(qp.results.x))

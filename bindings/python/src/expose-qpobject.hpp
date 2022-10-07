@@ -60,8 +60,8 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
       pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
       pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
       pybind11::arg_v("compute_preconditioner",
                       true,
                       "execute the preconditioner for reducing "
@@ -102,8 +102,8 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
       pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
       pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
         true,
@@ -168,8 +168,8 @@ exposeQpObjectSparse(pybind11::module_ m)
       pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
       pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
       pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
       pybind11::arg_v("compute_preconditioner",
                       true,
                       "execute the preconditioner for reducing "
@@ -190,8 +190,8 @@ exposeQpObjectSparse(pybind11::module_ m)
       pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
       pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
       pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
         true,

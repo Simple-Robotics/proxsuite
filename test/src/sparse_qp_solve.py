@@ -63,8 +63,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
         )
         dua_res = normInf(
@@ -102,8 +102,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             rho=1.0e-7,
         )
@@ -143,8 +143,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             mu_eq=1.0e-2,
             mu_in=1.0e-2,
@@ -186,8 +186,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             x=x_wm,
             y=y_wm,
@@ -227,8 +227,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             verbose=True,
         )
@@ -266,8 +266,8 @@ class SparseQpWrapper(unittest.TestCase):
             A=A,
             b=np.asfortranarray(b),
             C=C,
-            u=np.asfortranarray(u),
             l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             initial_guess=proxsuite.proxqp.NO_INITIAL_GUESS,
         )
@@ -310,7 +310,7 @@ class SparseQpWrapper(unittest.TestCase):
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.infty)
 
-        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
         dua_res = normInf(H @ results.x + g + C.transpose() @ results.z)
@@ -341,7 +341,7 @@ class SparseQpWrapper(unittest.TestCase):
         u = None
         l = None
 
-        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, u, l)
+        results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
         print("optimal x: {}".format(results.x))
 
         dua_res = normInf(H @ results.x + g)

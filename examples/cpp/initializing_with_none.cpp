@@ -23,8 +23,8 @@ main()
           qp_random.A,
           qp_random.b,
           qp_random.C,
-          qp_random.u,
-          qp_random.l); // initialization with zero shape matrices
+          qp_random.l,
+          qp_random.u); // initialization with zero shape matrices
   // it is equivalent to do qp.init(qp_random.H, qp_random.g,
   // std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
   qp.solve();

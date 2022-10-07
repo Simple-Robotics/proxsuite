@@ -44,7 +44,7 @@ n_in = C.shape[1]
 # solve it
 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 qp.settings.eps_abs = EPS
-qp.init(H, g, A.toarray(), b, C.toarray(), u, l)
+qp.init(H, g, A.toarray(), b, C.toarray(), l, u)
 qp.solve()
 
 x_res = qp.results.x

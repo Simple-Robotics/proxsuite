@@ -30,7 +30,7 @@ class CvxpyTest(unittest.TestCase):
         u = np.ones(n)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.settings.verbose = True
         qp.solve()
         x_sol = np.array([1, 0.5, -1])
@@ -65,7 +65,7 @@ class CvxpyTest(unittest.TestCase):
         u = np.ones(n)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)
-        qp.init(H, g, A, b, C, u, l)
+        qp.init(H, g, A, b, C, l, u)
         qp.settings.verbose = True
         qp.settings.eps_abs = 1e-8
         qp.solve()

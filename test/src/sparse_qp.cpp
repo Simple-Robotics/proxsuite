@@ -208,7 +208,7 @@ TEST_CASE("random id using the API")
       proxqp::sparse::QP<T, I> qp(n, n_eq, n_in);
       qp.settings.eps_abs = 1.E-9;
       qp.settings.verbose = true;
-      qp.init(H, g, A, b, C, u, l);
+      qp.init(H, g, A, b, C, l, u);
       qp.solve();
 
       CHECK(proxqp::dense::infty_norm(
