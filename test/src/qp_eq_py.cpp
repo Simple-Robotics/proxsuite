@@ -18,8 +18,7 @@ using Scalar = double;
 DOCTEST_TEST_CASE("qp: test qp loading and solving")
 {
 
-  std::ifstream file(INRIA_LDLT_QP_PYTHON_PATH
-                     "source_files.txt"); // to be changed
+  std::ifstream file(QP_PROBLEM_PATH "source_files.txt"); // to be changed
   Scalar eps_abs = Scalar(1e-9);
 
   std::string path_len;

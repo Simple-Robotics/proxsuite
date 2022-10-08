@@ -43,7 +43,7 @@ if(0)
 
   target_compile_definitions(
     test.qp_eq.py
-    PUBLIC INRIA_LDLT_QP_PYTHON_PATH="${CMAKE_CURRENT_BINARY_DIR}/qp_problem/")
+    PUBLIC QP_PROBLEM_PATH="${CMAKE_CURRENT_BINARY_DIR}/qp_problem/")
 endif()
 
 proxsuite_test(dense_ruiz_equilibration src/dense_ruiz_equilibration.cpp)
