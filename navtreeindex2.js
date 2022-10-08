@@ -1,6 +1,5 @@
 var NAVTREEINDEX2 =
 {
-"hedley_8ext_8hpp.html#a2fedda788307a1a4ef41d11d1d9bc04c":[12,0,1,0,1,2,0,0,0,97],
 "hedley_8ext_8hpp.html#a32195936e60f6e0fae91d0c9bcb08a0d":[12,0,1,0,1,2,0,0,0,114],
 "hedley_8ext_8hpp.html#a337945063a50b068c79dfb8ced1371ae":[12,0,1,0,1,2,0,0,0,55],
 "hedley_8ext_8hpp.html#a33b349ce086b82c65ca0adba3a35f7bf":[12,0,1,0,1,2,0,0,0,111],
@@ -249,5 +248,6 @@ var NAVTREEINDEX2 =
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a73995fb90f0ebefe78b90731e67789cd":[12,0,1,0,1,2,0,10,122,25],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a7534dcf3c7ba1b391dd0bfd12c8c79c0":[12,0,1,0,1,2,0,10,122,92],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a75b07b16b29f72cd83e783a270b5da81":[12,0,1,0,1,2,0,10,122,7],
-"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a7a839798acc3929f5de2caf19905af09":[12,0,1,0,1,2,0,10,122,1]
+"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a7a839798acc3929f5de2caf19905af09":[12,0,1,0,1,2,0,10,122,1],
+"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a7c14e64eb9e3c3ba28c914f7cd5479ee":[12,0,1,0,1,2,0,10,122,45]
 };

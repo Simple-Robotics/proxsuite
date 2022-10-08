@@ -9,7 +9,7 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "dynstack", "namespaceproxsuite_1_1linalg_1_1veg_1_1dynstack.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1dynstack" ],
     [ "literals", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html", [
       [ "operator\"\"_v", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24", null ],
-      [ "operator\"\"_c", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#abe0bc3c51c199f306efd150dc2b076e1", null ]
+      [ "operator\"\"_c", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#aace788d5a99480afb21f8d3f61332a79", null ]
     ] ],
     [ "mem", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem" ],
     [ "meta", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta" ],
@@ -154,7 +154,7 @@ var namespaceproxsuite_1_1linalg_1_1veg =
       [ "TILDE", "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a56c6bab37a27b6b81a2dfcf5fac43329", null ]
     ] ],
     [ "operator\"\"_v", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24", null ],
-    [ "operator\"\"_c", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#abe0bc3c51c199f306efd150dc2b076e1", null ],
+    [ "operator\"\"_c", "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#aace788d5a99480afb21f8d3f61332a79", null ],
     [ "print_types_halt", "namespaceproxsuite_1_1linalg_1_1veg.html#aca337bef3983b0767f2842160206026f", null ],
     [ "VEG_CPP14", "namespaceproxsuite_1_1linalg_1_1veg.html#a81af152eb16629b9315bf2c459cf02f5", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg.html#aa6eb5a3c54ebb1a7e7aaf532bc2f4979", null ],

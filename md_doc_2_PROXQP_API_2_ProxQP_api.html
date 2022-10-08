@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -280,8 +280,8 @@ The init method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialize the model</span></div>
 <div class="line">}</div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">proxsuite::proxqp::dense::Model</a></div><div class="ttdoc">This class stores the model of the QP problem.</div><div class="ttdef"><b>Definition:</b> <a href="dense_2model_8hpp_source.html#l00023">model.hpp:24</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_a1e83a4aff28b7e6f81ecb962afaa6166"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">proxsuite::proxqp::dense::Model::l</a></div><div class="ttdeci">Vec&lt; T &gt; l</div><div class="ttdef"><b>Definition:</b> <a href="dense_2model_8hpp_source.html#l00033">model.hpp:33</a></div></div>
@@ -313,13 +313,13 @@ The init method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -330,10 +330,10 @@ The init method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 </div><!-- fragment -->   </td></tr>
 </table>
-<p >Note that with its dense backend, ProxQP solver can manipulate both matrices in dense and sparse representations (in the example above the matrices are in sparse format). Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).</p>
+<p >Note that with its dense backend, ProxQP solver manipulates matrices in dense representations (in the same spirit, the solver with sparse backend manipulates entries in sparse format). In the example above the matrices are originally in sparse format, and eventually converted into dense format. Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).</p>
 <table class="manual">
 <tr>
 <th>examples/cpp/initializing_with_none.cpp </th><th>examples/python/initializing_with_none.py  </th></tr>
@@ -363,8 +363,8 @@ The init method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialization with zero shape matrices</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialization with zero shape matrices</span></div>
 <div class="line">  <span class="comment">// it is equivalent to do qp.init(qp_random.H, qp_random.g,</span></div>
 <div class="line">  <span class="comment">// std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);</span></div>
 <div class="line">  qp.solve();</div>
@@ -385,7 +385,7 @@ The init method</h2>
 <div class="line">l = <span class="keywordtype">None</span></div>
 <div class="line"> </div>
 <div class="line">qp = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite.proxqp.dense.QP</a>(3, 0, 0)</div>
-<div class="line">qp.init(H, g, A, b, C, u, l)  <span class="comment"># it is equivalent to do as well qp.init(H, g)</span></div>
+<div class="line">qp.init(H, g, A, b, C, l, u)  <span class="comment"># it is equivalent to do as well qp.init(H, g)</span></div>
 <div class="line">qp.solve()</div>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(qp.results.x))</div>
 </div><!-- fragment -->   </td></tr>
@@ -426,8 +426,8 @@ The init method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
 <div class="line">          <span class="keyword">true</span>,</div>
 <div class="line">          <span class="comment">/*rho*/</span> 1.e-7);</div>
 <div class="line">  <span class="comment">// in c++ you must follow the order speficied in the API for the parameters</span></div>
@@ -456,13 +456,13 @@ The init method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -473,7 +473,7 @@ The init method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve with another rho parameter</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l, rho=1.0e-7)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u, rho=1.0e-7)</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >Furthermore, some settings must be defined before the init method to take effect. For example, if you want the solver to compute the runtime properly (the sum of the setup time and the solving time), you must set this option before the init method (which is part of the setup time). We provide below an example.</p>
@@ -505,8 +505,8 @@ The init method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialize the model</span></div>
 <div class="line">}</div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
@@ -530,13 +530,13 @@ The init method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -548,7 +548,7 @@ The init method</h2>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
 <div class="line">qp.settings.compute_timings  <span class="comment"># compute all timings</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <h2><a class="anchor" id="explanationSolveMethod"></a>
@@ -583,8 +583,8 @@ The solve method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialize the model</span></div>
 <div class="line">  qp.solve();           <span class="comment">// solve the problem without warm start</span></div>
 <div class="line">  <span class="keyword">auto</span> x_wm = utils::rand::vector_rand&lt;T&gt;(dim);</div>
 <div class="line">  <span class="keyword">auto</span> y_wm = utils::rand::vector_rand&lt;T&gt;(n_eq);</div>
@@ -602,7 +602,7 @@ The solve method</h2>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating random convex qps</span></div>
+<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
 <div class="line"> </div>
 <div class="line">    np.random.seed(seed)</div>
 <div class="line">    n_eq = int(n / 4)</div>
@@ -618,13 +618,13 @@ The solve method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -635,7 +635,7 @@ The solve method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 <div class="line"><span class="comment"># solve without warm start</span></div>
 <div class="line">qp.solve()</div>
 <div class="line"><span class="comment"># solve with a warm start, for ex random one</span></div>
@@ -675,8 +675,8 @@ The solve method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>);           <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>);           <span class="comment">// initialize the model</span></div>
 <div class="line">  qp.settings.eps_abs = T(1.E-9); <span class="comment">// set accuracy threshold to 1.e-9</span></div>
 <div class="line">  qp.settings.verbose = <span class="keyword">true</span>;     <span class="comment">// print some intermediary results</span></div>
 <div class="line">  qp.solve();                     <span class="comment">// solve the problem with previous settings</span></div>
@@ -691,7 +691,7 @@ The solve method</h2>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating random convex qps</span></div>
+<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
 <div class="line"> </div>
 <div class="line">    np.random.seed(seed)</div>
 <div class="line">    n_eq = int(n / 4)</div>
@@ -707,13 +707,13 @@ The solve method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -724,7 +724,7 @@ The solve method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 <div class="line">qp.settings.eps_abs = 1.0e-9</div>
 <div class="line">qp.settings.verbose = <span class="keyword">True</span></div>
 <div class="line"><span class="comment"># solve with previous settings</span></div>
@@ -766,8 +766,8 @@ The update method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialize the model</span></div>
 <div class="line">  qp.solve();           <span class="comment">// solve the problem</span></div>
 <div class="line">                        <span class="comment">// a new qp problem</span></div>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">dense::Model&lt;T&gt;</a> qp2 = utils::dense_strongly_convex_qp(</div>
@@ -787,7 +787,7 @@ The update method</h2>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating random convex qps</span></div>
+<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
 <div class="line"> </div>
 <div class="line">    np.random.seed(seed)</div>
 <div class="line">    n_eq = int(n / 4)</div>
@@ -803,13 +803,13 @@ The update method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -820,12 +820,12 @@ The update method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 <div class="line"><span class="comment"># solve without warm start</span></div>
 <div class="line">qp.solve()</div>
 <div class="line"><span class="comment"># create a new problem and update qp</span></div>
 <div class="line">H_new, g_new, A_new, b_new, C_new, u_new, l_new = generate_mixed_qp(n, seed=2)</div>
-<div class="line">qp.update(H_new, g_new, A_new, b_new, C_new, u_new, l_new)</div>
+<div class="line">qp.update(H_new, g_new, A_new, b_new, C_new, l_new, u_new)</div>
 <div class="line"><span class="comment"># solve it</span></div>
 <div class="line">qp.solve()</div>
 <div class="line"><span class="comment"># print an optimal solution</span></div>
@@ -868,7 +868,7 @@ The update method</h2>
 <div class="line">  <span class="comment">// design a qp2 object using sparsity masks of H, A and C</span></div>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP&lt;T, int&gt;</a> qp(</div>
 <div class="line">    H.cast&lt;<span class="keywordtype">bool</span>&gt;(), A.cast&lt;<span class="keywordtype">bool</span>&gt;(), C.cast&lt;<span class="keywordtype">bool</span>&gt;());</div>
-<div class="line">  qp.init(H, g, A, b, C, u, l);</div>
+<div class="line">  qp.init(H, g, A, b, C, l, u);</div>
 <div class="line">  qp.solve();</div>
 <div class="line">  <span class="comment">// update H</span></div>
 <div class="line">  <span class="keyword">auto</span> H_new = 2 * H; <span class="comment">// keep the same sparsity structure</span></div>
@@ -903,7 +903,7 @@ The update method</h2>
 <div class="line">  <span class="comment">// to solve the problem with H2 matrix create a new qp object</span></div>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP&lt;T, isize&gt;</a> qp2(</div>
 <div class="line">    H2.cast&lt;<span class="keywordtype">bool</span>&gt;(), A.cast&lt;<span class="keywordtype">bool</span>&gt;(), C.cast&lt;<span class="keywordtype">bool</span>&gt;());</div>
-<div class="line">  qp2.init(H2, g_new, A, b, C, u, l);</div>
+<div class="line">  qp2.init(H2, g_new, A, b, C, l, u);</div>
 <div class="line">  qp2.solve(); <span class="comment">// it will solve the new problem</span></div>
 <div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; qp2.results.x &lt;&lt; std::endl;</div>
@@ -949,7 +949,7 @@ The update method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 <div class="line">qp.solve()</div>
 <div class="line">H_new = 2 * H  <span class="comment"># keep the same sparsity structure</span></div>
 <div class="line">qp.update(H_new)  <span class="comment"># update H with H_new, it will work</span></div>
@@ -962,7 +962,7 @@ The update method</h2>
 <div class="line">qp.solve()  <span class="comment"># it solves the problem with the QP H,g_new,A,b,C,u,l</span></div>
 <div class="line"><span class="comment"># to solve the problem with H2 matrix create a new qp object in the sparse case</span></div>
 <div class="line">qp2 = <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite.proxqp.sparse.QP</a>(n, n_eq, n_in)</div>
-<div class="line">qp2.init(H2, g_new, A, b, C, u, l)</div>
+<div class="line">qp2.init(H2, g_new, A, b, C, l, u)</div>
 <div class="line">qp2.solve()  <span class="comment"># it will solve the new problem</span></div>
 <div class="line"><span class="comment"># print an optimal solution</span></div>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(qp.results.x))</div>
@@ -999,8 +999,8 @@ The update method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>); <span class="comment">// initialize the model</span></div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialize the model</span></div>
 <div class="line">  qp.solve();           <span class="comment">// solve the problem</span></div>
 <div class="line">  <span class="comment">// re update the linear cost taking previous result</span></div>
 <div class="line">  qp.settings.initial_guess =</div>
@@ -1030,7 +1030,7 @@ The update method</h2>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating random convex qps</span></div>
+<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
 <div class="line"> </div>
 <div class="line">    np.random.seed(seed)</div>
 <div class="line">    n_eq = int(n / 4)</div>
@@ -1046,13 +1046,13 @@ The update method</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -1063,7 +1063,7 @@ The update method</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u)</div>
 <div class="line"><span class="comment"># solve without warm start</span></div>
 <div class="line">qp.solve()</div>
 <div class="line"><span class="comment"># create a new problem and update qp</span></div>
@@ -1255,8 +1255,8 @@ The info subclass</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
-<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
 <div class="line">          <span class="keyword">true</span>,</div>
 <div class="line">          <span class="comment">/*rho*/</span> 1.e-7,</div>
 <div class="line">          <span class="comment">/*mu_eq*/</span> 1.e-4);</div>
@@ -1293,13 +1293,13 @@ The info subclass</h2>
 <div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
 <div class="line">    P = spa.coo_matrix(P)</div>
 <div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
+<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
 <div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
 <div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
 <div class="line">    u = A @ v</div>
 <div class="line">    l = -1.0e20 * np.ones(m)</div>
 <div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -1310,7 +1310,7 @@ The info subclass</h2>
 <div class="line"><span class="comment"># generate a random QP</span></div>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
-<div class="line">qp.init(H, g, A, b, C, u, l, rho=1.0e-7, mu_eq=1.0e-4)</div>
+<div class="line">qp.init(H, g, A, b, C, l, u, rho=1.0e-7, mu_eq=1.0e-4)</div>
 <div class="line">qp.solve()</div>
 <div class="line"><span class="comment"># If we redo a solve, qp.settings.default_rho value = 1.e-7, hence qp.results.info.rho restarts at 1.e-7</span></div>
 <div class="line"><span class="comment"># The same occurs for mu_eq.</span></div>

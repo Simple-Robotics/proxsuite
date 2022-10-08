@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -213,9 +213,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a30ad3bf95fdd46b74e665bd34dfc56e6"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
 <tr class="memitem:a30ad3bf95fdd46b74e665bd34dfc56e6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a30ad3bf95fdd46b74e665bd34dfc56e6">refactorize</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html">Workspace</a>&lt; T, I &gt; &amp;work, <a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; const &amp;results, <a class="el" href="structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html">proxsuite::linalg::sparse::MatMut</a>&lt; T, I &gt; kkt_active, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1SliceMut.html">proxsuite::linalg::veg::SliceMut</a>&lt; bool &gt; active_constraints, <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1Model.html">Model</a>&lt; T, I &gt; const &amp;data, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack, proxsuite::linalg::veg::Tag&lt; T &gt; &amp;xtag)</td></tr>
 <tr class="separator:a30ad3bf95fdd46b74e665bd34dfc56e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a439a847ba8065b5b0d4b6aee32f3138e"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
-<tr class="memitem:a439a847ba8065b5b0d4b6aee32f3138e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">proxqp::Results</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a439a847ba8065b5b0d4b6aee32f3138e">solve</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; g, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; b, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; l, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; x=std::nullopt, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; y=std::nullopt, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; z=std::nullopt, std::optional&lt; T &gt; eps_abs=std::nullopt, std::optional&lt; T &gt; eps_rel=std::nullopt, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt, std::optional&lt; bool &gt; verbose=std::nullopt, bool compute_preconditioner=true, bool compute_timings=true, std::optional&lt; isize &gt; max_iter=std::nullopt, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">proxsuite::proxqp::InitialGuessStatus</a> initial_guess=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3a7c1916eead021556161e1f37e259239f">proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS</a>)</td></tr>
-<tr class="separator:a439a847ba8065b5b0d4b6aee32f3138e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ca7597270dc7555c652b563f0f5905"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
+<tr class="memitem:af4ca7597270dc7555c652b563f0f5905"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">proxqp::Results</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#af4ca7597270dc7555c652b563f0f5905">solve</a> (std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; H, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; g, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; A, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; b, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a25504493b8d32d6b98e7ad499caf65d8">SparseMat</a>&lt; T, I &gt; &gt; C, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; l, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; u, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; x=std::nullopt, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; y=std::nullopt, std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt; z=std::nullopt, std::optional&lt; T &gt; eps_abs=std::nullopt, std::optional&lt; T &gt; eps_rel=std::nullopt, std::optional&lt; T &gt; rho=std::nullopt, std::optional&lt; T &gt; mu_eq=std::nullopt, std::optional&lt; T &gt; mu_in=std::nullopt, std::optional&lt; bool &gt; verbose=std::nullopt, bool compute_preconditioner=true, bool compute_timings=true, std::optional&lt; isize &gt; max_iter=std::nullopt, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">proxsuite::proxqp::InitialGuessStatus</a> initial_guess=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3a7c1916eead021556161e1f37e259239f">proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS</a>)</td></tr>
+<tr class="separator:af4ca7597270dc7555c652b563f0f5905"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -1306,8 +1306,8 @@ template&lt;typename T , typename I &gt; </div>
 
 </div>
 </div>
-<a id="a439a847ba8065b5b0d4b6aee32f3138e" name="a439a847ba8065b5b0d4b6aee32f3138e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a439a847ba8065b5b0d4b6aee32f3138e">&#9670;&#160;</a></span>solve()</h2>
+<a id="af4ca7597270dc7555c652b563f0f5905" name="af4ca7597270dc7555c652b563f0f5905"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4ca7597270dc7555c652b563f0f5905">&#9670;&#160;</a></span>solve()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1348,13 +1348,13 @@ template&lt;typename T , typename I &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt;&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
+          <td class="paramname"><em>l</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::optional&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a0ab3f6e1948594a38f3fde91b3cfb4fb">VecRef</a>&lt; T &gt; &gt;&#160;</td>
-          <td class="paramname"><em>l</em>, </td>
+          <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1448,8 +1448,8 @@ template&lt;typename T , typename I &gt; </div>
     <tr><td class="paramname">A</td><td>equality constraint matrix input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">b</td><td>equality constraint vector input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">C</td><td>inequality constraint matrix input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
-    <tr><td class="paramname">u</td><td>lower inequality constraint vector input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">l</td><td>lower inequality constraint vector input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
+    <tr><td class="paramname">u</td><td>upper inequality constraint vector input defining the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> model. </td></tr>
     <tr><td class="paramname">x</td><td>primal warm start. </td></tr>
     <tr><td class="paramname">y</td><td>dual equality constraint warm start. </td></tr>
     <tr><td class="paramname">z</td><td>dual inequality constraint warm start. </td></tr>

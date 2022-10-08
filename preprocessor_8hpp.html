@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -340,7 +340,9 @@ Macros</h2></td></tr>
 <tr class="separator:a235fd9a5684cb6715a56609fa2e07ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cf352ccfd4d19bc0996ff49fb1f809a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a7cf352ccfd4d19bc0996ff49fb1f809a">__VEG_PP_IS_0</a>(X)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a235fd9a5684cb6715a56609fa2e07ce3">__VEG_PP_IS_1</a>(<a class="el" href="preprocessor_8hpp.html#a0f025b4007cebc71c6cbfd0dad33ed32">__VEG_IMPL_PP_INC_I</a>(X))</td></tr>
 <tr class="separator:a7cf352ccfd4d19bc0996ff49fb1f809a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a458768711a0d8befcb0370070f5b34c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a>(...)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a670b05c8a5aa4f36462d7621c2be28f8">__VEG_IMPL_PP_COUNT</a>(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)</td></tr>
+<tr class="memitem:a5ed3aee59b502c2e42f89b7f8bf8a254"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(X)&#160;&#160;&#160;X</td></tr>
+<tr class="separator:a5ed3aee59b502c2e42f89b7f8bf8a254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a458768711a0d8befcb0370070f5b34c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a>(...)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a670b05c8a5aa4f36462d7621c2be28f8">__VEG_IMPL_PP_COUNT</a>(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))</td></tr>
 <tr class="separator:a458768711a0d8befcb0370070f5b34c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d861f29885dd59da71f92f6c6a7400b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a1d861f29885dd59da71f92f6c6a7400b">__VEG_IMPL_PP_MAKE_TUPLE0</a>&#160;&#160;&#160;()</td></tr>
 <tr class="separator:a1d861f29885dd59da71f92f6c6a7400b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -584,7 +586,7 @@ Macros</h2></td></tr>
 <tr class="separator:a18eb6670d67d3cc9acf66ae78378152d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3678ba1fbfd98157f20b627c76bb176"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#af3678ba1fbfd98157f20b627c76bb176">__VEG_PP_TUPLE_TRANSFORM_I</a>(Macro,  Data,  Tuple)</td></tr>
 <tr class="separator:af3678ba1fbfd98157f20b627c76bb176"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad48f7ecd8a9303bcd8b2adaf1ac5ed05"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a>(Tuple)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a> Tuple</td></tr>
+<tr class="memitem:ad48f7ecd8a9303bcd8b2adaf1ac5ed05"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a>(Tuple)&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a> Tuple)</td></tr>
 <tr class="separator:ad48f7ecd8a9303bcd8b2adaf1ac5ed05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a784c49382e49f5a3838f554ef800885a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a784c49382e49f5a3838f554ef800885a">__VEG_PP_SEQ_HEAD</a>(Seq)&#160;&#160;&#160;        <a class="el" href="preprocessor_8hpp.html#a933fef086fdc1ab572acc157f57561cb">__VEG_IMPL_PP_SEQ_HEAD_0</a> Seq)</td></tr>
 <tr class="separator:a784c49382e49f5a3838f554ef800885a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -602,11 +604,11 @@ Macros</h2></td></tr>
 <tr class="separator:a524241f169cb7395aaa2c0a0e3d616e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8081de8dcd2f141f80bc0996b144a08c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a8081de8dcd2f141f80bc0996b144a08c">__VEG_PP_CAT3</a>(A, ...)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#ab149e117d4dd71dd41b4d1364038bde9">__VEG_IMPL_PP_CAT3</a>(A, __VA_ARGS__)</td></tr>
 <tr class="separator:a8081de8dcd2f141f80bc0996b144a08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5a5044036e4077839b120e5d78b8267"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(...)&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a3887c47c459dec02a324e5ca9faed4c9">__VEG_IMPL_PP_REMOVE_PAREN2</a>(<a class="el" href="preprocessor_8hpp.html#ad3cde619d20b403b6a13e9dbde48f36a">__VEG_IMPL_PP_REMOVE_PAREN1</a> __VA_ARGS__)</td></tr>
+<tr class="memitem:aa5a5044036e4077839b120e5d78b8267"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(...)</td></tr>
 <tr class="separator:aa5a5044036e4077839b120e5d78b8267"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ffe02ae659dfba53aa9a66513bf6f0c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a6ffe02ae659dfba53aa9a66513bf6f0c">__VEG_PP_REMOVE_PAREN1</a>(...)&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a41ebf9482cd204bb2a57a5eb151117fd">__VEG_IMPL_PP_REMOVE_PAREN21</a>(<a class="el" href="preprocessor_8hpp.html#a7145676514e441417af57ee21cc931b4">__VEG_IMPL_PP_REMOVE_PAREN11</a> __VA_ARGS__)</td></tr>
+<tr class="memitem:a6ffe02ae659dfba53aa9a66513bf6f0c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#a6ffe02ae659dfba53aa9a66513bf6f0c">__VEG_PP_REMOVE_PAREN1</a>(...)</td></tr>
 <tr class="separator:a6ffe02ae659dfba53aa9a66513bf6f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7aa9e29bcef0328c16d736b15c003e3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#ac7aa9e29bcef0328c16d736b15c003e3">__VEG_PP_UNWRAP</a>(...)&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> __VA_ARGS__ <a class="el" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> __VA_ARGS__</td></tr>
+<tr class="memitem:ac7aa9e29bcef0328c16d736b15c003e3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="preprocessor_8hpp.html#ac7aa9e29bcef0328c16d736b15c003e3">__VEG_PP_UNWRAP</a>(...)&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> __VA_ARGS__ <a class="el" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> __VA_ARGS__)</td></tr>
 <tr class="separator:ac7aa9e29bcef0328c16d736b15c003e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -2628,6 +2630,26 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a id="a5ed3aee59b502c2e42f89b7f8bf8a254" name="a5ed3aee59b502c2e42f89b7f8bf8a254"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ed3aee59b502c2e42f89b7f8bf8a254">&#9670;&#160;</a></span>__VEG_PP_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define __VEG_PP_ID</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">X</td><td>)</td>
+          <td>&#160;&#160;&#160;X</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00123">123</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a458768711a0d8befcb0370070f5b34c8" name="a458768711a0d8befcb0370070f5b34c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a458768711a0d8befcb0370070f5b34c8">&#9670;&#160;</a></span>__VEG_IMPL_PP_VARIADIC_SIZE</h2>
 
@@ -2639,12 +2661,12 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a670b05c8a5aa4f36462d7621c2be28f8">__VEG_IMPL_PP_COUNT</a>(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a670b05c8a5aa4f36462d7621c2be28f8">__VEG_IMPL_PP_COUNT</a>(__VA_ARGS__, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00124">124</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00125">125</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2660,7 +2682,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00126">126</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00127">127</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2676,7 +2698,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00127">127</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00128">128</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2692,7 +2714,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00128">128</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00129">129</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2708,7 +2730,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00129">129</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00130">130</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2724,7 +2746,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00130">130</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00131">131</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2740,7 +2762,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00131">131</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00132">132</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2756,7 +2778,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00132">132</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00133">133</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2772,7 +2794,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00133">133</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00134">134</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2788,7 +2810,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00134">134</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00135">135</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2804,7 +2826,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00135">135</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00136">136</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2820,7 +2842,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00136">136</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00137">137</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2836,7 +2858,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00137">137</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00138">138</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2852,7 +2874,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00138">138</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00139">139</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2868,7 +2890,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00139">139</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00140">140</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2884,7 +2906,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00140">140</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00141">141</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2900,7 +2922,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00141">141</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00142">142</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2916,7 +2938,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00142">142</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00143">143</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2932,7 +2954,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00143">143</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00144">144</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2948,7 +2970,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00144">144</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00145">145</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2964,7 +2986,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00145">145</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00146">146</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2980,7 +3002,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00146">146</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00147">147</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -2996,7 +3018,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00147">147</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00148">148</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3012,7 +3034,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00148">148</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00149">149</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3028,7 +3050,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00149">149</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00150">150</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3044,7 +3066,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00150">150</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00151">151</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3060,7 +3082,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00151">151</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00152">152</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3076,7 +3098,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00152">152</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00153">153</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3092,7 +3114,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00153">153</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00154">154</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3108,7 +3130,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00154">154</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00155">155</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3124,7 +3146,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00155">155</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00156">156</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3140,7 +3162,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00156">156</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00157">157</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3156,7 +3178,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00157">157</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00158">158</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3172,7 +3194,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00158">158</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00159">159</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3202,7 +3224,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00161">161</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00162">162</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3232,7 +3254,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00162">162</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00163">163</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3262,7 +3284,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00163">163</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00164">164</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3282,7 +3304,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00165">165</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00166">166</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3302,7 +3324,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00167">167</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00168">168</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3322,7 +3344,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00168">168</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00169">169</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3352,7 +3374,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00170">170</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00171">171</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3382,7 +3404,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00171">171</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00172">172</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3402,7 +3424,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00172">172</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00173">173</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3422,7 +3444,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00173">173</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00174">174</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3442,7 +3464,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00175">175</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00176">176</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3462,7 +3484,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00177">177</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00178">178</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3482,7 +3504,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00178">178</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00179">179</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3498,7 +3520,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00180">180</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00181">181</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3518,7 +3540,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00182">182</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00183">183</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3538,7 +3560,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00184">184</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00185">185</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3554,7 +3576,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00186">186</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00187">187</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3574,7 +3596,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00188">188</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00189">189</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3610,7 +3632,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00190">190</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00191">191</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3647,10 +3669,10 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_1(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a8637a2e0e77da7056acd64120a305248"><div class="ttname"><a href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a></div><div class="ttdeci">#define __VEG_PP_HEAD(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00410">preprocessor.hpp:410</a></div></div>
-<div class="ttc" id="apreprocessor_8hpp_html_ae39f00104bbb09440e4d25b9a5df9ecf"><div class="ttname"><a href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a></div><div class="ttdeci">#define __VEG_PP_TAIL(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00414">preprocessor.hpp:414</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a8637a2e0e77da7056acd64120a305248"><div class="ttname"><a href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a></div><div class="ttdeci">#define __VEG_PP_HEAD(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00412">preprocessor.hpp:412</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ae39f00104bbb09440e4d25b9a5df9ecf"><div class="ttname"><a href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a></div><div class="ttdeci">#define __VEG_PP_TAIL(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00416">preprocessor.hpp:416</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00192">192</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00193">193</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3688,7 +3710,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_2(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00195">195</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00196">196</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3726,7 +3748,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_3(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00198">198</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00199">199</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3764,7 +3786,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_4(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00201">201</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00202">202</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3802,7 +3824,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_5(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00204">204</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00205">205</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3840,7 +3862,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_6(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00207">207</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00208">208</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3878,7 +3900,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_7(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00210">210</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00211">211</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3916,7 +3938,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_8(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00213">213</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00214">214</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3954,7 +3976,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_9(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00216">216</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00217">217</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -3992,7 +4014,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_10(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00219">219</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00220">220</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4030,7 +4052,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_11(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00222">222</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00223">223</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4068,7 +4090,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_12(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00225">225</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00226">226</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4106,7 +4128,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_13(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00228">228</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00229">229</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4144,7 +4166,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_14(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00231">231</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00232">232</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4182,7 +4204,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_15(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00234">234</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00235">235</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4220,7 +4242,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_16(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00237">237</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00238">238</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4258,7 +4280,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_17(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00240">240</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00241">241</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4296,7 +4318,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_18(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00243">243</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00244">244</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4334,7 +4356,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_19(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00246">246</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00247">247</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4372,7 +4394,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_20(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00249">249</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00250">250</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4410,7 +4432,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_21(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00252">252</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00253">253</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4448,7 +4470,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_22(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00255">255</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00256">256</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4486,7 +4508,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_23(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00258">258</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00259">259</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4524,7 +4546,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_24(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00261">261</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00262">262</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4562,7 +4584,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_25(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00264">264</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00265">265</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4600,7 +4622,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_26(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00267">267</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00268">268</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4638,7 +4660,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_27(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00270">270</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00271">271</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4676,7 +4698,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_28(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00273">273</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00274">274</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4714,7 +4736,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_29(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00276">276</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00277">277</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4752,7 +4774,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_30(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00279">279</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00280">280</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4790,7 +4812,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple)                                             \</div>
 <div class="line">    __VEG_IMPL_PP_TUPLE_FOR_EACH_31(Macro, Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00282">282</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00283">283</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4832,7 +4854,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00286">286</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00287">287</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4876,9 +4898,9 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#aa1cc00c9150ddfeefcaf468ce712c6d0">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_1</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
 <div class="ttc" id="apreprocessor_8hpp_html_a97372e7817396f02c97e5c3acfe87344"><div class="ttname"><a href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a></div><div class="ttdeci">#define __VEG_IMPL_PP_INC(X)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00112">preprocessor.hpp:112</a></div></div>
-<div class="ttc" id="apreprocessor_8hpp_html_aa1cc00c9150ddfeefcaf468ce712c6d0"><div class="ttname"><a href="preprocessor_8hpp.html#aa1cc00c9150ddfeefcaf468ce712c6d0">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_1</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_1(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00286">preprocessor.hpp:286</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_aa1cc00c9150ddfeefcaf468ce712c6d0"><div class="ttname"><a href="preprocessor_8hpp.html#aa1cc00c9150ddfeefcaf468ce712c6d0">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_1</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_1(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00287">preprocessor.hpp:287</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00288">288</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00289">289</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4921,9 +4943,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#abe4b6fed4d411de399e73e4bdf57df22">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_2</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_abe4b6fed4d411de399e73e4bdf57df22"><div class="ttname"><a href="preprocessor_8hpp.html#abe4b6fed4d411de399e73e4bdf57df22">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_2</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_2(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00288">preprocessor.hpp:288</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_abe4b6fed4d411de399e73e4bdf57df22"><div class="ttname"><a href="preprocessor_8hpp.html#abe4b6fed4d411de399e73e4bdf57df22">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_2</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_2(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00289">preprocessor.hpp:289</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00291">291</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00292">292</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -4966,9 +4988,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a00ef90cbd98660f9fae588030aa9334b">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_3</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a00ef90cbd98660f9fae588030aa9334b"><div class="ttname"><a href="preprocessor_8hpp.html#a00ef90cbd98660f9fae588030aa9334b">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_3</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_3(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00291">preprocessor.hpp:291</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a00ef90cbd98660f9fae588030aa9334b"><div class="ttname"><a href="preprocessor_8hpp.html#a00ef90cbd98660f9fae588030aa9334b">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_3</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_3(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00292">preprocessor.hpp:292</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00294">294</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00295">295</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5011,9 +5033,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a6a9d656bc1db325b414df12e67bbb052">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_4</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a6a9d656bc1db325b414df12e67bbb052"><div class="ttname"><a href="preprocessor_8hpp.html#a6a9d656bc1db325b414df12e67bbb052">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_4</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_4(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00294">preprocessor.hpp:294</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a6a9d656bc1db325b414df12e67bbb052"><div class="ttname"><a href="preprocessor_8hpp.html#a6a9d656bc1db325b414df12e67bbb052">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_4</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_4(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00295">preprocessor.hpp:295</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00297">297</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00298">298</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5056,9 +5078,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#afaaf344311162beb6d63b29eb1d60c97">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_5</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_afaaf344311162beb6d63b29eb1d60c97"><div class="ttname"><a href="preprocessor_8hpp.html#afaaf344311162beb6d63b29eb1d60c97">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_5</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_5(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00297">preprocessor.hpp:297</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_afaaf344311162beb6d63b29eb1d60c97"><div class="ttname"><a href="preprocessor_8hpp.html#afaaf344311162beb6d63b29eb1d60c97">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_5</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_5(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00298">preprocessor.hpp:298</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00300">300</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00301">301</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5101,9 +5123,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#af6c7818c41c82a6850cc0c8173205d6d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_6</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_af6c7818c41c82a6850cc0c8173205d6d"><div class="ttname"><a href="preprocessor_8hpp.html#af6c7818c41c82a6850cc0c8173205d6d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_6</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_6(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00300">preprocessor.hpp:300</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_af6c7818c41c82a6850cc0c8173205d6d"><div class="ttname"><a href="preprocessor_8hpp.html#af6c7818c41c82a6850cc0c8173205d6d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_6</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_6(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00301">preprocessor.hpp:301</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00303">303</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00304">304</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5146,9 +5168,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ac838e10c3e7a398b175f300626351bdf">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_7</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ac838e10c3e7a398b175f300626351bdf"><div class="ttname"><a href="preprocessor_8hpp.html#ac838e10c3e7a398b175f300626351bdf">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_7</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_7(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00303">preprocessor.hpp:303</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ac838e10c3e7a398b175f300626351bdf"><div class="ttname"><a href="preprocessor_8hpp.html#ac838e10c3e7a398b175f300626351bdf">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_7</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_7(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00304">preprocessor.hpp:304</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00306">306</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00307">307</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5191,9 +5213,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a1d286a9ceab23b25bc6172ad8588d6d5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_8</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a1d286a9ceab23b25bc6172ad8588d6d5"><div class="ttname"><a href="preprocessor_8hpp.html#a1d286a9ceab23b25bc6172ad8588d6d5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_8</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_8(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00306">preprocessor.hpp:306</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a1d286a9ceab23b25bc6172ad8588d6d5"><div class="ttname"><a href="preprocessor_8hpp.html#a1d286a9ceab23b25bc6172ad8588d6d5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_8</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_8(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00307">preprocessor.hpp:307</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00309">309</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00310">310</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5236,9 +5258,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#af6c0ca06cd143b3b7515c2a211d02ec6">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_9</a>(    \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_af6c0ca06cd143b3b7515c2a211d02ec6"><div class="ttname"><a href="preprocessor_8hpp.html#af6c0ca06cd143b3b7515c2a211d02ec6">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_9</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_9(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00309">preprocessor.hpp:309</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_af6c0ca06cd143b3b7515c2a211d02ec6"><div class="ttname"><a href="preprocessor_8hpp.html#af6c0ca06cd143b3b7515c2a211d02ec6">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_9</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_9(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00310">preprocessor.hpp:310</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00312">312</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00313">313</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5281,9 +5303,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a76350bdb85477e52f910efa4b71ad95f">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_10</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a76350bdb85477e52f910efa4b71ad95f"><div class="ttname"><a href="preprocessor_8hpp.html#a76350bdb85477e52f910efa4b71ad95f">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_10</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_10(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00312">preprocessor.hpp:312</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a76350bdb85477e52f910efa4b71ad95f"><div class="ttname"><a href="preprocessor_8hpp.html#a76350bdb85477e52f910efa4b71ad95f">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_10</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_10(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00313">preprocessor.hpp:313</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00315">315</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00316">316</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5326,9 +5348,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ae66090c0ff1456e77a7215cf44ddddfe">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_11</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ae66090c0ff1456e77a7215cf44ddddfe"><div class="ttname"><a href="preprocessor_8hpp.html#ae66090c0ff1456e77a7215cf44ddddfe">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_11</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_11(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00315">preprocessor.hpp:315</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ae66090c0ff1456e77a7215cf44ddddfe"><div class="ttname"><a href="preprocessor_8hpp.html#ae66090c0ff1456e77a7215cf44ddddfe">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_11</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_11(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00316">preprocessor.hpp:316</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00318">318</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00319">319</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5371,9 +5393,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a9b1193944fc0e64e0a3c4adb03f66694">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_12</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a9b1193944fc0e64e0a3c4adb03f66694"><div class="ttname"><a href="preprocessor_8hpp.html#a9b1193944fc0e64e0a3c4adb03f66694">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_12</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_12(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00318">preprocessor.hpp:318</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a9b1193944fc0e64e0a3c4adb03f66694"><div class="ttname"><a href="preprocessor_8hpp.html#a9b1193944fc0e64e0a3c4adb03f66694">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_12</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_12(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00319">preprocessor.hpp:319</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00321">321</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00322">322</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5416,9 +5438,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a93e0bb85388fedd5481b5bfce64339fa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_13</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a93e0bb85388fedd5481b5bfce64339fa"><div class="ttname"><a href="preprocessor_8hpp.html#a93e0bb85388fedd5481b5bfce64339fa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_13</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_13(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00321">preprocessor.hpp:321</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a93e0bb85388fedd5481b5bfce64339fa"><div class="ttname"><a href="preprocessor_8hpp.html#a93e0bb85388fedd5481b5bfce64339fa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_13</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_13(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00322">preprocessor.hpp:322</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00324">324</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00325">325</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5461,9 +5483,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a98bd3a2fee329659d3a14d20b9c32022">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_14</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a98bd3a2fee329659d3a14d20b9c32022"><div class="ttname"><a href="preprocessor_8hpp.html#a98bd3a2fee329659d3a14d20b9c32022">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_14</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_14(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00324">preprocessor.hpp:324</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a98bd3a2fee329659d3a14d20b9c32022"><div class="ttname"><a href="preprocessor_8hpp.html#a98bd3a2fee329659d3a14d20b9c32022">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_14</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_14(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00325">preprocessor.hpp:325</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00327">327</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00328">328</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5506,9 +5528,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a4a89b577d02575e802723fab56a12d85">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_15</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a4a89b577d02575e802723fab56a12d85"><div class="ttname"><a href="preprocessor_8hpp.html#a4a89b577d02575e802723fab56a12d85">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_15</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_15(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00327">preprocessor.hpp:327</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a4a89b577d02575e802723fab56a12d85"><div class="ttname"><a href="preprocessor_8hpp.html#a4a89b577d02575e802723fab56a12d85">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_15</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_15(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00328">preprocessor.hpp:328</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00330">330</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00331">331</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5551,9 +5573,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#af09d0d3575e8e8fcfb9de8df573ff9a4">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_16</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_af09d0d3575e8e8fcfb9de8df573ff9a4"><div class="ttname"><a href="preprocessor_8hpp.html#af09d0d3575e8e8fcfb9de8df573ff9a4">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_16</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_16(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00330">preprocessor.hpp:330</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_af09d0d3575e8e8fcfb9de8df573ff9a4"><div class="ttname"><a href="preprocessor_8hpp.html#af09d0d3575e8e8fcfb9de8df573ff9a4">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_16</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_16(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00331">preprocessor.hpp:331</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00333">333</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00334">334</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5596,9 +5618,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ae2e7830e0076e88a4b5e909395ff3ab7">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_17</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ae2e7830e0076e88a4b5e909395ff3ab7"><div class="ttname"><a href="preprocessor_8hpp.html#ae2e7830e0076e88a4b5e909395ff3ab7">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_17</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_17(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00333">preprocessor.hpp:333</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ae2e7830e0076e88a4b5e909395ff3ab7"><div class="ttname"><a href="preprocessor_8hpp.html#ae2e7830e0076e88a4b5e909395ff3ab7">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_17</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_17(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00334">preprocessor.hpp:334</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00336">336</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00337">337</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5641,9 +5663,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a0f89752e7edeb04121fe385bb1c0a725">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_18</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a0f89752e7edeb04121fe385bb1c0a725"><div class="ttname"><a href="preprocessor_8hpp.html#a0f89752e7edeb04121fe385bb1c0a725">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_18</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_18(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00336">preprocessor.hpp:336</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a0f89752e7edeb04121fe385bb1c0a725"><div class="ttname"><a href="preprocessor_8hpp.html#a0f89752e7edeb04121fe385bb1c0a725">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_18</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_18(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00337">preprocessor.hpp:337</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00339">339</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00340">340</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5686,9 +5708,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a33972ac18ddb179e5be405351d0821f1">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_19</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a33972ac18ddb179e5be405351d0821f1"><div class="ttname"><a href="preprocessor_8hpp.html#a33972ac18ddb179e5be405351d0821f1">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_19</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_19(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00339">preprocessor.hpp:339</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a33972ac18ddb179e5be405351d0821f1"><div class="ttname"><a href="preprocessor_8hpp.html#a33972ac18ddb179e5be405351d0821f1">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_19</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_19(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00340">preprocessor.hpp:340</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00342">342</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00343">343</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5731,9 +5753,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ad301ba66a0b05bd89a7ebc89b530611e">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_20</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ad301ba66a0b05bd89a7ebc89b530611e"><div class="ttname"><a href="preprocessor_8hpp.html#ad301ba66a0b05bd89a7ebc89b530611e">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_20</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_20(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00342">preprocessor.hpp:342</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ad301ba66a0b05bd89a7ebc89b530611e"><div class="ttname"><a href="preprocessor_8hpp.html#ad301ba66a0b05bd89a7ebc89b530611e">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_20</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_20(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00343">preprocessor.hpp:343</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00345">345</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00346">346</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5776,9 +5798,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a5075d7437ec23828bf65d04e29b810ce">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_21</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a5075d7437ec23828bf65d04e29b810ce"><div class="ttname"><a href="preprocessor_8hpp.html#a5075d7437ec23828bf65d04e29b810ce">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_21</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_21(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00345">preprocessor.hpp:345</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a5075d7437ec23828bf65d04e29b810ce"><div class="ttname"><a href="preprocessor_8hpp.html#a5075d7437ec23828bf65d04e29b810ce">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_21</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_21(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00346">preprocessor.hpp:346</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00348">348</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00349">349</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5821,9 +5843,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a311cf98b75a77516c9acb4919a07c751">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_22</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a311cf98b75a77516c9acb4919a07c751"><div class="ttname"><a href="preprocessor_8hpp.html#a311cf98b75a77516c9acb4919a07c751">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_22</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_22(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00348">preprocessor.hpp:348</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a311cf98b75a77516c9acb4919a07c751"><div class="ttname"><a href="preprocessor_8hpp.html#a311cf98b75a77516c9acb4919a07c751">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_22</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_22(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00349">preprocessor.hpp:349</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00351">351</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00352">352</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5866,9 +5888,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ae128e81b92f40e0af134f9936f1fdcd5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_23</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ae128e81b92f40e0af134f9936f1fdcd5"><div class="ttname"><a href="preprocessor_8hpp.html#ae128e81b92f40e0af134f9936f1fdcd5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_23</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_23(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00351">preprocessor.hpp:351</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ae128e81b92f40e0af134f9936f1fdcd5"><div class="ttname"><a href="preprocessor_8hpp.html#ae128e81b92f40e0af134f9936f1fdcd5">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_23</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_23(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00352">preprocessor.hpp:352</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00354">354</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00355">355</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5911,9 +5933,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#aaef17156d03c3958f416fcd2cc4cc170">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_24</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_aaef17156d03c3958f416fcd2cc4cc170"><div class="ttname"><a href="preprocessor_8hpp.html#aaef17156d03c3958f416fcd2cc4cc170">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_24</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_24(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00354">preprocessor.hpp:354</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_aaef17156d03c3958f416fcd2cc4cc170"><div class="ttname"><a href="preprocessor_8hpp.html#aaef17156d03c3958f416fcd2cc4cc170">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_24</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_24(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00355">preprocessor.hpp:355</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00357">357</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00358">358</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -5956,9 +5978,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a7f45d6a389d7738577572a8d1b611d2d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_25</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a7f45d6a389d7738577572a8d1b611d2d"><div class="ttname"><a href="preprocessor_8hpp.html#a7f45d6a389d7738577572a8d1b611d2d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_25</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_25(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00357">preprocessor.hpp:357</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a7f45d6a389d7738577572a8d1b611d2d"><div class="ttname"><a href="preprocessor_8hpp.html#a7f45d6a389d7738577572a8d1b611d2d">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_25</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_25(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00358">preprocessor.hpp:358</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00360">360</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00361">361</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6001,9 +6023,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a9b4ba65cc55618fdf66c9817c096e7ef">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_26</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a9b4ba65cc55618fdf66c9817c096e7ef"><div class="ttname"><a href="preprocessor_8hpp.html#a9b4ba65cc55618fdf66c9817c096e7ef">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_26</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_26(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00360">preprocessor.hpp:360</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a9b4ba65cc55618fdf66c9817c096e7ef"><div class="ttname"><a href="preprocessor_8hpp.html#a9b4ba65cc55618fdf66c9817c096e7ef">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_26</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_26(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00361">preprocessor.hpp:361</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00363">363</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00364">364</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6046,9 +6068,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a069467c35dece8269c18ab37147eb6aa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_27</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a069467c35dece8269c18ab37147eb6aa"><div class="ttname"><a href="preprocessor_8hpp.html#a069467c35dece8269c18ab37147eb6aa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_27</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_27(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00363">preprocessor.hpp:363</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a069467c35dece8269c18ab37147eb6aa"><div class="ttname"><a href="preprocessor_8hpp.html#a069467c35dece8269c18ab37147eb6aa">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_27</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_27(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00364">preprocessor.hpp:364</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00366">366</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00367">367</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6091,9 +6113,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a6a69722bfd69e7a56de6267b3fbd63d8">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_28</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a6a69722bfd69e7a56de6267b3fbd63d8"><div class="ttname"><a href="preprocessor_8hpp.html#a6a69722bfd69e7a56de6267b3fbd63d8">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_28</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_28(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00366">preprocessor.hpp:366</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a6a69722bfd69e7a56de6267b3fbd63d8"><div class="ttname"><a href="preprocessor_8hpp.html#a6a69722bfd69e7a56de6267b3fbd63d8">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_28</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_28(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00367">preprocessor.hpp:367</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00369">369</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00370">370</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6136,9 +6158,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#aa83631a0e532e52f9789791681952f9c">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_29</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_aa83631a0e532e52f9789791681952f9c"><div class="ttname"><a href="preprocessor_8hpp.html#aa83631a0e532e52f9789791681952f9c">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_29</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_29(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00369">preprocessor.hpp:369</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_aa83631a0e532e52f9789791681952f9c"><div class="ttname"><a href="preprocessor_8hpp.html#aa83631a0e532e52f9789791681952f9c">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_29</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_29(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00370">preprocessor.hpp:370</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00372">372</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00373">373</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6181,9 +6203,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#af52bdfefb5f1037fda994e0a137f1b61">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_30</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_af52bdfefb5f1037fda994e0a137f1b61"><div class="ttname"><a href="preprocessor_8hpp.html#af52bdfefb5f1037fda994e0a137f1b61">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_30</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_30(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00372">preprocessor.hpp:372</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_af52bdfefb5f1037fda994e0a137f1b61"><div class="ttname"><a href="preprocessor_8hpp.html#af52bdfefb5f1037fda994e0a137f1b61">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_30</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_30(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00373">preprocessor.hpp:373</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00375">375</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00376">376</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6226,9 +6248,9 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  Macro(Start, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#ada5daa01722e033e64a0284777384c19">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_31</a>(   \</div>
 <div class="line">    Macro, <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(Start), Data, (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_ada5daa01722e033e64a0284777384c19"><div class="ttname"><a href="preprocessor_8hpp.html#ada5daa01722e033e64a0284777384c19">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_31</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_31(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00375">preprocessor.hpp:375</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ada5daa01722e033e64a0284777384c19"><div class="ttname"><a href="preprocessor_8hpp.html#ada5daa01722e033e64a0284777384c19">__VEG_IMPL_PP_TUPLE_FOR_EACH_I_31</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TUPLE_FOR_EACH_I_31(Macro, Start, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00376">preprocessor.hpp:376</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00378">378</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00379">379</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6266,7 +6288,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  , <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Macro_Data(                                                  \</div>
 <div class="line">      <a class="code hl_define" href="preprocessor_8hpp.html#a97372e7817396f02c97e5c3acfe87344">__VEG_IMPL_PP_INC</a>(I), <a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Macro_Data, Elem)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00382">382</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00383">383</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6303,10 +6325,10 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  (Macro(0, Data, <a class="code hl_define" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> Tuple) <a class="code hl_define" href="preprocessor_8hpp.html#a692e4f76a4d201cf2a66861d42a836dd">__VEG_PP_TUPLE_FOR_EACH_I</a>(              \</div>
 <div class="line">    <a class="code hl_define" href="preprocessor_8hpp.html#a1fbb2950e27324479bc64d9b7c11b3e1">__VEG_IMPL_PP_TRANSFORM_HELPER</a>, (Macro, Data), (<a class="code hl_define" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> Tuple)))</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a1fbb2950e27324479bc64d9b7c11b3e1"><div class="ttname"><a href="preprocessor_8hpp.html#a1fbb2950e27324479bc64d9b7c11b3e1">__VEG_IMPL_PP_TRANSFORM_HELPER</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TRANSFORM_HELPER(I, Macro_Data, Elem)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00382">preprocessor.hpp:382</a></div></div>
-<div class="ttc" id="apreprocessor_8hpp_html_a692e4f76a4d201cf2a66861d42a836dd"><div class="ttname"><a href="preprocessor_8hpp.html#a692e4f76a4d201cf2a66861d42a836dd">__VEG_PP_TUPLE_FOR_EACH_I</a></div><div class="ttdeci">#define __VEG_PP_TUPLE_FOR_EACH_I(Macro, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00393">preprocessor.hpp:393</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a1fbb2950e27324479bc64d9b7c11b3e1"><div class="ttname"><a href="preprocessor_8hpp.html#a1fbb2950e27324479bc64d9b7c11b3e1">__VEG_IMPL_PP_TRANSFORM_HELPER</a></div><div class="ttdeci">#define __VEG_IMPL_PP_TRANSFORM_HELPER(I, Macro_Data, Elem)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00383">preprocessor.hpp:383</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a692e4f76a4d201cf2a66861d42a836dd"><div class="ttname"><a href="preprocessor_8hpp.html#a692e4f76a4d201cf2a66861d42a836dd">__VEG_PP_TUPLE_FOR_EACH_I</a></div><div class="ttdeci">#define __VEG_PP_TUPLE_FOR_EACH_I(Macro, Data, Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00394">preprocessor.hpp:394</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00386">386</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00387">387</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6342,7 +6364,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00390">390</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00391">391</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6379,10 +6401,10 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="preprocessor_8hpp.html#a524241f169cb7395aaa2c0a0e3d616e3">__VEG_PP_CAT2</a>(__VEG_IMPL_PP_TUPLE_FOR_EACH_I_, <a class="code hl_define" href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a>(Tuple))   \</div>
 <div class="line">  (Macro, 0, Data, Tuple)</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a524241f169cb7395aaa2c0a0e3d616e3"><div class="ttname"><a href="preprocessor_8hpp.html#a524241f169cb7395aaa2c0a0e3d616e3">__VEG_PP_CAT2</a></div><div class="ttdeci">#define __VEG_PP_CAT2(A,...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00421">preprocessor.hpp:421</a></div></div>
-<div class="ttc" id="apreprocessor_8hpp_html_ad48f7ecd8a9303bcd8b2adaf1ac5ed05"><div class="ttname"><a href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a></div><div class="ttdeci">#define __VEG_PP_TUPLE_SIZE(Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00405">preprocessor.hpp:405</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a524241f169cb7395aaa2c0a0e3d616e3"><div class="ttname"><a href="preprocessor_8hpp.html#a524241f169cb7395aaa2c0a0e3d616e3">__VEG_PP_CAT2</a></div><div class="ttdeci">#define __VEG_PP_CAT2(A,...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00423">preprocessor.hpp:423</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ad48f7ecd8a9303bcd8b2adaf1ac5ed05"><div class="ttname"><a href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a></div><div class="ttdeci">#define __VEG_PP_TUPLE_SIZE(Tuple)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00406">preprocessor.hpp:406</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00393">393</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00394">394</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6420,7 +6442,7 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="preprocessor_8hpp.html#a524241f169cb7395aaa2c0a0e3d616e3">__VEG_PP_CAT2</a>(__VEG_IMPL_PP_TUPLE_FOR_EACH_, <a class="code hl_define" href="preprocessor_8hpp.html#ad48f7ecd8a9303bcd8b2adaf1ac5ed05">__VEG_PP_TUPLE_SIZE</a>(Tuple))     \</div>
 <div class="line">  (Macro, Data, Tuple)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00396">396</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00397">397</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6460,7 +6482,7 @@ Macros</h2></td></tr>
 <div class="line">  (Macro, Data, Tuple)</div>
 <div class="ttc" id="apreprocessor_8hpp_html_a51cfda18dccbb54e485f1b0667867806"><div class="ttname"><a href="preprocessor_8hpp.html#a51cfda18dccbb54e485f1b0667867806">__VEG_IMPL_PP_IS_1</a></div><div class="ttdeci">#define __VEG_IMPL_PP_IS_1(X)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00114">preprocessor.hpp:114</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00400">400</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00401">401</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6475,12 +6497,12 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">Tuple</td><td>)</td>
-          <td>&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a> Tuple</td>
+          <td>&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a> Tuple)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00405">405</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00406">406</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6500,7 +6522,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00406">406</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00408">408</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6520,7 +6542,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00408">408</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00410">410</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6542,9 +6564,9 @@ Macros</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="preprocessor_8hpp.html#a524241f169cb7395aaa2c0a0e3d616e3">__VEG_PP_CAT2</a>(__VEG_IMPL_PP_HEAD_,                                           \</div>
 <div class="line">                <a class="code hl_define" href="preprocessor_8hpp.html#a51cfda18dccbb54e485f1b0667867806">__VEG_IMPL_PP_IS_1</a>(<a class="code hl_define" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a>(__VA_ARGS__)))  \</div>
 <div class="line">  (__VA_ARGS__)</div>
-<div class="ttc" id="apreprocessor_8hpp_html_a458768711a0d8befcb0370070f5b34c8"><div class="ttname"><a href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a></div><div class="ttdeci">#define __VEG_IMPL_PP_VARIADIC_SIZE(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00124">preprocessor.hpp:124</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a458768711a0d8befcb0370070f5b34c8"><div class="ttname"><a href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a></div><div class="ttdeci">#define __VEG_IMPL_PP_VARIADIC_SIZE(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00125">preprocessor.hpp:125</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00410">410</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00412">412</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6567,7 +6589,7 @@ Macros</h2></td></tr>
 <div class="line">                <a class="code hl_define" href="preprocessor_8hpp.html#a51cfda18dccbb54e485f1b0667867806">__VEG_IMPL_PP_IS_1</a>(<a class="code hl_define" href="preprocessor_8hpp.html#a458768711a0d8befcb0370070f5b34c8">__VEG_IMPL_PP_VARIADIC_SIZE</a>(__VA_ARGS__)))  \</div>
 <div class="line">  (__VA_ARGS__)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00414">414</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00416">416</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6587,7 +6609,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00419">419</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00421">421</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6617,7 +6639,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00420">420</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00422">422</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6647,7 +6669,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00421">421</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00423">423</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6677,7 +6699,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00422">422</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00424">424</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6692,12 +6714,17 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a3887c47c459dec02a324e5ca9faed4c9">__VEG_IMPL_PP_REMOVE_PAREN2</a>(<a class="el" href="preprocessor_8hpp.html#ad3cde619d20b403b6a13e9dbde48f36a">__VEG_IMPL_PP_REMOVE_PAREN1</a> __VA_ARGS__)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00423">423</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="preprocessor_8hpp.html#a3887c47c459dec02a324e5ca9faed4c9">__VEG_IMPL_PP_REMOVE_PAREN2</a>(                                                 \</div>
+<div class="line">    <a class="code hl_define" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="code hl_define" href="preprocessor_8hpp.html#ad3cde619d20b403b6a13e9dbde48f36a">__VEG_IMPL_PP_REMOVE_PAREN1</a> __VA_ARGS__))</div>
+<div class="ttc" id="apreprocessor_8hpp_html_a3887c47c459dec02a324e5ca9faed4c9"><div class="ttname"><a href="preprocessor_8hpp.html#a3887c47c459dec02a324e5ca9faed4c9">__VEG_IMPL_PP_REMOVE_PAREN2</a></div><div class="ttdeci">#define __VEG_IMPL_PP_REMOVE_PAREN2(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00179">preprocessor.hpp:179</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a5ed3aee59b502c2e42f89b7f8bf8a254"><div class="ttname"><a href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a></div><div class="ttdeci">#define __VEG_PP_ID(X)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00123">preprocessor.hpp:123</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_ad3cde619d20b403b6a13e9dbde48f36a"><div class="ttname"><a href="preprocessor_8hpp.html#ad3cde619d20b403b6a13e9dbde48f36a">__VEG_IMPL_PP_REMOVE_PAREN1</a></div><div class="ttdeci">#define __VEG_IMPL_PP_REMOVE_PAREN1(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00178">preprocessor.hpp:178</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00425">425</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6712,12 +6739,16 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a41ebf9482cd204bb2a57a5eb151117fd">__VEG_IMPL_PP_REMOVE_PAREN21</a>(<a class="el" href="preprocessor_8hpp.html#a7145676514e441417af57ee21cc931b4">__VEG_IMPL_PP_REMOVE_PAREN11</a> __VA_ARGS__)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00425">425</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="preprocessor_8hpp.html#a41ebf9482cd204bb2a57a5eb151117fd">__VEG_IMPL_PP_REMOVE_PAREN21</a>(                                                \</div>
+<div class="line">    <a class="code hl_define" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="code hl_define" href="preprocessor_8hpp.html#a7145676514e441417af57ee21cc931b4">__VEG_IMPL_PP_REMOVE_PAREN11</a> __VA_ARGS__))</div>
+<div class="ttc" id="apreprocessor_8hpp_html_a41ebf9482cd204bb2a57a5eb151117fd"><div class="ttname"><a href="preprocessor_8hpp.html#a41ebf9482cd204bb2a57a5eb151117fd">__VEG_IMPL_PP_REMOVE_PAREN21</a></div><div class="ttdeci">#define __VEG_IMPL_PP_REMOVE_PAREN21(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00185">preprocessor.hpp:185</a></div></div>
+<div class="ttc" id="apreprocessor_8hpp_html_a7145676514e441417af57ee21cc931b4"><div class="ttname"><a href="preprocessor_8hpp.html#a7145676514e441417af57ee21cc931b4">__VEG_IMPL_PP_REMOVE_PAREN11</a></div><div class="ttdeci">#define __VEG_IMPL_PP_REMOVE_PAREN11(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00183">preprocessor.hpp:183</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00428">428</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>
@@ -6732,12 +6763,12 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;<a class="el" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> __VA_ARGS__ <a class="el" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> __VA_ARGS__</td>
+          <td>&#160;&#160;&#160;  <a class="el" href="preprocessor_8hpp.html#a5ed3aee59b502c2e42f89b7f8bf8a254">__VEG_PP_ID</a>(<a class="el" href="preprocessor_8hpp.html#a8637a2e0e77da7056acd64120a305248">__VEG_PP_HEAD</a> __VA_ARGS__ <a class="el" href="preprocessor_8hpp.html#ae39f00104bbb09440e4d25b9a5df9ecf">__VEG_PP_TAIL</a> __VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00427">427</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="preprocessor_8hpp_source.html#l00431">431</a> of file <a class="el" href="preprocessor_8hpp_source.html">preprocessor.hpp</a>.</p>
 
 </div>
 </div>

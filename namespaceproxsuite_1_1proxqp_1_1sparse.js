@@ -30,6 +30,6 @@ var namespaceproxsuite_1_1proxqp_1_1sparse =
     [ "qp_solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a5ba249322aabb491b34d2dfcb4b8660b", null ],
     [ "print_setup_header", "namespaceproxsuite_1_1proxqp_1_1sparse.html#aa3c995adc4bd5230f3f7ef89e92573af", null ],
     [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a30ad3bf95fdd46b74e665bd34dfc56e6", null ],
-    [ "solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a439a847ba8065b5b0d4b6aee32f3138e", null ],
+    [ "solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#af4ca7597270dc7555c652b563f0f5905", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1sparse.html#ac9ede8007c247085583031077cdd1084", null ]
 ];

@@ -30,7 +30,7 @@ var fix__index_8hpp =
     [ "parse_digit", "fix__index_8hpp.html#aa5eaeea2eb636d97905716044e1b76c7", null ],
     [ "parse_num", "fix__index_8hpp.html#a6163a39a4814295e9ef40fd0dd322c08", null ],
     [ "parse_int", "fix__index_8hpp.html#a3a9a77103d04ba9d99d9aeebefe65d04", null ],
-    [ "operator\"\"_c", "fix__index_8hpp.html#abe0bc3c51c199f306efd150dc2b076e1", null ],
+    [ "operator\"\"_c", "fix__index_8hpp.html#aace788d5a99480afb21f8d3f61332a79", null ],
     [ "no", "fix__index_8hpp.html#a88d921b6dcd3a431f3d87116fd10987b", null ],
     [ "maybe", "fix__index_8hpp.html#a5990d7b9760dd78ff15b42fae0f33317", null ],
     [ "yes", "fix__index_8hpp.html#a8caf3e65dcf8d6c5b37b66119e7b5a30", null ]

@@ -10,5 +10,6 @@ var searchData=
   ['is_5ftuple_7',['is_tuple',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1NonTupleBaseInfoImpl.html#aaa9b0aacd73b0f6dd3caeb5be0e4b938',1,'proxsuite::linalg::veg::_detail::meta_::NonTupleBaseInfoImpl::is_tuple()'],['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1TupleBaseInfoImpl.html#aeb7437003368d47438b58205026d3625',1,'proxsuite::linalg::veg::_detail::meta_::TupleBaseInfoImpl::is_tuple()']]],
   ['is_5funreachable_8',['is_unreachable',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1DeferUnreachable.html#abc535c68cfed440612dfa6e8966ee887',1,'proxsuite::linalg::veg::_detail::_mem::DeferUnreachable']]],
   ['iter_9',['iter',['../structproxsuite_1_1proxqp_1_1Info.html#a533b2bf01b5d34c824bc78e55e0b39dd',1,'proxsuite::proxqp::Info']]],
-  ['iter_5fext_10',['iter_ext',['../structproxsuite_1_1proxqp_1_1Info.html#ab6ca13756f03d98715b3c635af73b76b',1,'proxsuite::proxqp::Info']]]
+  ['iter_5fext_10',['iter_ext',['../structproxsuite_1_1proxqp_1_1Info.html#ab6ca13756f03d98715b3c635af73b76b',1,'proxsuite::proxqp::Info']]],
+  ['ith_3c_20static_5fcast_3c_20usize_20_3e_28i_29_2c_20ts_2e_2e_2e_20_3e_11',['ith&lt; static_cast&lt; usize &gt;(I), Ts... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html#aae56cc60931c55da9dd0f2b60e06ee51',1,'proxsuite::linalg::veg::tuple::IndexedTuple&lt; meta::index_sequence&lt; Is... &gt;, Ts... &gt;']]]
 ];
