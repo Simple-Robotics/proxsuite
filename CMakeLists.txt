@@ -82,7 +82,6 @@ endif()
 if(MSVC)
   # add_definitions(-D_USE_MATH_DEFINES)
   add_definitions(-DNOMINMAX)
-  add_compile_options(/permissive-)
 endif()
 
 # Look for dependencies
@@ -99,6 +98,9 @@ endif()
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
 
 add_library(proxsuite INTERFACE)
+if(MSVC)
+  target_compile_options(proxsuite INTERFACE /permissive-)
+endif(MSVC)
 target_link_libraries(
   proxsuite
   PUBLIC
