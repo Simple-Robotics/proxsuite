@@ -16,18 +16,18 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 **ProxSuite** is integrated into the [cvxpy](https://www.cvxpy.org/) modeling language for convex optimization problems.
 
-## Quick install
+## Getting started
 
 **ProxSuite** is distributed on many well-known package managers.
 
-### With <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:
+### Quick install with <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:
 
 ```bash
    pip install proxsuite
 ```
 This approach is only available on Linux and Mac OS X.
 
-### With <img src="https://s3.amazonaws.com/conda-dev/conda_logo.svg" height="18">:
+### Quick install with <img src="https://s3.amazonaws.com/conda-dev/conda_logo.svg" height="18">:
 
 ```bash
    conda install proxsuite -c conda-forge
@@ -36,8 +36,13 @@ This approach is available on Linux, Windows and Mac OS X.
 
 ### Alternative approaches
 
-Alternative installation procedures are presented in the [Installation Procedure](#installation-procedure) section.
+Installation from source is presented [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
 
+### Compiling a program
+For the fastest performance use the following command to enable vectorization
+```bash
+g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/benchmark_dense_qp.cpp -o benchmark_dense_qp $(pkg-config --cflags proxsuite)
+```
 ## ProxSuite main features
 
 **Proxsuite** is fast:

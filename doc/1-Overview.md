@@ -48,6 +48,11 @@ You can compile the C++ version by including ProxSuite and Eigen header director
 
 \code g++ -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)  \endcode
 
+If you are looking for the fastest performance, use the following flags to use SIMDE in proxsuite and tell your
+compiler to use the corresponding cpu instruction set
+\code g++ -O3 -march=native -DNDEBUG -DPROXSUITE_VECTORIZE -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)
+\endcode
+
 Once your code is compiled, you might then run it using
 
 \code ./overview-simple \endcode
