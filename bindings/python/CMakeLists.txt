@@ -19,24 +19,27 @@ file(GLOB_RECURSE PYWRAP_HEADERS ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp)
 
 file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
-# Add simd feature detectors for current CPU
-python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
-add_dependencies(python instructionset)
-target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
-set_target_properties(
-  instructionset
-  PROPERTIES OUTPUT_NAME instructionset
-             LIBRARY_OUTPUT_DIRECTORY
-             "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
-if(UNIX AND NOT APPLE)
-  set_target_properties(instructionset PROPERTIES INSTALL_RPATH
-                                                  "\$ORIGIN/../../..")
+# Add simd feature detectors for current intel CPU
+message("-- CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD64" OR ${CMAKE_SYSTEM_PROCESSOR}
+                                                MATCHES "x86_64")
+  python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
+  add_dependencies(python instructionset)
+  target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
+  set_target_properties(
+    instructionset
+    PROPERTIES OUTPUT_NAME instructionset
+               LIBRARY_OUTPUT_DIRECTORY
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
+  if(UNIX AND NOT APPLE)
+    set_target_properties(instructionset PROPERTIES INSTALL_RPATH
+                                                    "\$ORIGIN/../../..")
+  endif()
+  install(
+    TARGETS instructionset
+    EXPORT ${TARGETS_EXPORT_NAME}
+    DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endif()
-install(
-  TARGETS instructionset
-  EXPORT ${TARGETS_EXPORT_NAME}
-  DESTINATION ${${PYWRAP}_INSTALL_DIR})
-
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
@@ -46,7 +49,6 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
-
   set_target_properties(
     ${target_name}
     PROPERTIES OUTPUT_NAME ${target_name}
