@@ -16,13 +16,11 @@ add_custom_target(python)
 
 # Collect files
 file(GLOB_RECURSE PYWRAP_HEADERS ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp)
-
 file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 # Add simd feature detectors for current intel CPU
 message("-- CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD64" OR ${CMAKE_SYSTEM_PROCESSOR}
-                                                MATCHES "x86_64")
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
   python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
   add_dependencies(python instructionset)
   target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
@@ -40,6 +38,7 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "AMD64" OR ${CMAKE_SYSTEM_PROCESSOR}
     EXPORT ${TARGETS_EXPORT_NAME}
     DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endif()
+
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
