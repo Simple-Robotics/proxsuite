@@ -1,0 +1,74 @@
+name: CI - OSX ARM64 - Conda
+
+on:
+  push:
+  pull_request:
+
+env:
+  PYTHONPATH: ${CONDA_PREFIX}/lib/python3.8/site-packages/
+
+jobs:
+  build-with-conda:
+    name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}]'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Release, Debug]
+        name: [macos-m1]
+
+        include:
+          - name: macos-m1
+            os: self-hosted-arm64
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # not working due to The node12 is not supported on macOS ARM64 platform. Use node16 instead.
+    # open issue https://github.com/conda-incubator/setup-miniconda/issues/247
+    # - uses: conda-incubator/setup-miniconda@v2
+    #   with:
+    #     activate-environment: proxarm
+
+    - name: Environment
+      shell: bash -l {0}
+      run: |
+        echo $CONDA_PREFIX
+        conda info
+        conda list
+        env
+
+    - name: Configure
+      shell: bash -l {0}
+      run: |
+        cd $GITHUB_WORKSPACE
+        git submodule update --init
+        mkdir build
+        cd build
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=OFF -DPYTHON_SITELIB=${CONDA_PREFIX}/Lib/site-packages -DPYTHON_EXECUTABLE=${CONDA_PYTHON_EXE} -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF
+
+    - name: Build
+      shell: bash -l {0}
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        cmake --build . --config ${{ matrix.build_type }} -v
+
+    - name: Install
+      shell: bash -l {0}
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        cmake --install . --config ${{ matrix.build_type }}
+
+
+    - name: Test
+      shell: bash -l {0}
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        ctest --output-on-failure -C ${{ matrix.build_type }}
+
+
+    - name: Uninstall [Conda]
+      shell: bash -l {0}
+      run: |
+        cd $GITHUB_WORKSPACE/build
+        cmake --build . --config ${{ matrix.build_type }} --target uninstall

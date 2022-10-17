@@ -9,7 +9,9 @@
 #include <proxsuite/linalg/veg/util/assert.hpp>
 #include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
 
+#ifndef __aarch64__
 #include <immintrin.h>
+#endif
 
 #ifdef PROXSUITE_VECTORIZE
 #include <cmath> // to avoid error of the type no member named 'isnan' in namespace 'std';
