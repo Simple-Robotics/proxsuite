@@ -19,7 +19,6 @@ file(GLOB_RECURSE PYWRAP_HEADERS ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp)
 file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 # Add simd feature detectors for current intel CPU
-message("-- CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
   python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
   add_dependencies(python instructionset)
@@ -63,7 +62,8 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
 endfunction()
 
 create_python_target(proxsuite_pywrap "" proxsuite)
-if(BUILD_WITH_VECTORIZATION_SUPPORT)
+if(BUILD_WITH_VECTORIZATION_SUPPORT AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES
+                                        "(x86)|(X86)|(amd64)|(AMD64)")
   if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
     create_python_target(proxsuite_pywrap_avx2 "-mavx2;-mfma"
                          proxsuite-vectorized)
