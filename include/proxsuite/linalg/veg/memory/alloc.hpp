@@ -27,7 +27,8 @@ namespace veg {
 #ifdef __APPLE__
 namespace alignment {
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= 101500
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= 101500 &&                                 \
+  (defined(_LIBCPP_HAS_ALIGNED_ALLOC) || defined(_LIBCPP_HAS_C11_FEATURES))
 VEG_INLINE void*
 aligned_alloc(std::size_t alignment, std::size_t size)
 {
