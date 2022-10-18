@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -222,6 +222,7 @@ Simplest ProxQP example with compilation command</h1>
 Compiling and running your program</h2>
 <p >You can compile the C++ version by including ProxSuite and <a class="el" href="namespaceEigen.html">Eigen</a> header directories</p>
 <div class="fragment"><div class="line">g++ -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)  </div>
+</div><!-- fragment --><p >If you are looking for the fastest performance, use the following flags to use SIMDE in proxsuite and tell your compiler to use the corresponding cpu instruction set </p><div class="fragment"><div class="line">g++ -O3 -march=native -DNDEBUG -DPROXSUITE_VECTORIZE -std=c++17 examples/cpp/overview-simple.cpp -o overview-simple $(pkg-config --cflags proxsuite)</div>
 </div><!-- fragment --><p >Once your code is compiled, you might then run it using</p>
 <div class="fragment"><div class="line">./overview-simple </div>
 </div><!-- fragment --><p >In Python, just run it:</p>
