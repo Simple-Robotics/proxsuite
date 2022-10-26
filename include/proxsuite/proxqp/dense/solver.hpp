@@ -1015,9 +1015,8 @@ qp_solve( //
 
     T rhs_pri(qpsettings.eps_abs);
     if (qpsettings.eps_rel != 0) {
-      rhs_pri +=
-        qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
-                                      primal_feasibility_in_rhs_0);
+      rhs_pri += qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                               primal_feasibility_in_rhs_0);
     }
     bool is_primal_feasible = primal_feasibility_lhs <= rhs_pri;
 
