@@ -13,6 +13,165 @@ using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
+DOCTEST_TEST_CASE("sparse random strongly convex qp with inequality constraints"
+                  "and empty equality constraints")
+{
+  std::cout << "---testing sparse random strongly convex qp with inequality "
+               "constraints "
+               "and empty equality constraints---"
+            << std::endl;
+  for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
+                            // proxsuite::linalg::veg::tuplify(50, 25, 0),
+                            // proxsuite::linalg::veg::tuplify(10, 0, 10),
+                            // proxsuite::linalg::veg::tuplify(50, 0, 25),
+                            // proxsuite::linalg::veg::tuplify(50, 10, 25),
+                            proxsuite::linalg::veg::tuplify(10, 0, 2) }) {
+    VEG_BIND(auto const&, (n, n_eq, n_in), dims);
+
+    T sparsity_factor = 0.15;
+    T strong_convexity_factor = 0.01;
+    ::proxsuite::proxqp::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
+      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    // Testing with empty but properly sized matrix A  of size (0, 10)
+    std::cout << "Solving QP with" << std::endl;
+    std::cout << "n: " << n << std::endl;
+    std::cout << "n_eq: " << n_eq << std::endl;
+    std::cout << "n_in: " << n_in << std::endl;
+    std::cout << "H :  " << qp_random.H << std::endl;
+    std::cout << "g :  " << qp_random.g << std::endl;
+    std::cout << "A :  " << qp_random.A << std::endl;
+    std::cout << "b :  " << qp_random.b << std::endl;
+    std::cout << "C :  " << qp_random.C << std::endl;
+    std::cout << "u :  " << qp_random.u << std::endl;
+    std::cout << "l :  " << qp_random.l << std::endl;
+
+    proxqp::sparse::QP<T, I> qp(n, n_eq, n_in);
+    qp.settings.eps_abs = 1.E-9;
+    qp.settings.verbose = false;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            true,
+            T(1.e-7),
+            std::nullopt,
+            std::nullopt);
+    std::cout << "after upating" << std::endl;
+    std::cout << "rho :  " << qp.results.info.rho << std::endl;
+    qp.solve();
+    T dua_res = proxqp::dense::infty_norm(
+      qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x + qp_random.g +
+      qp_random.A.transpose() * qp.results.y +
+      qp_random.C.transpose() * qp.results.z);
+    T pri_res = std::max(
+      proxqp::dense::infty_norm(qp_random.A * qp.results.x - qp_random.b),
+      proxqp::dense::infty_norm(sparse::detail::positive_part(
+                                  qp_random.C * qp.results.x - qp_random.u) +
+                                sparse::detail::negative_part(
+                                  qp_random.C * qp.results.x - qp_random.l)));
+    CHECK(dua_res <= 1e-9);
+    CHECK(pri_res <= 1E-9);
+    std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
+              << std::endl;
+    std::cout << "; dual residual " << dua_res << "; primal residual "
+              << pri_res << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+              << qp.results.info.solve_time << std::endl;
+
+    // Testing with empty matrix A  of size (0, 0)
+    qp_random.A = Eigen::SparseMatrix<double>();
+    qp_random.b = Eigen::VectorXd();
+
+    std::cout << "Solving QP with" << std::endl;
+    std::cout << "n: " << n << std::endl;
+    std::cout << "n_eq: " << n_eq << std::endl;
+    std::cout << "n_in: " << n_in << std::endl;
+    std::cout << "H :  " << qp_random.H << std::endl;
+    std::cout << "g :  " << qp_random.g << std::endl;
+    std::cout << "A :  " << qp_random.A << std::endl;
+    std::cout << "b :  " << qp_random.b << std::endl;
+    std::cout << "C :  " << qp_random.C << std::endl;
+    std::cout << "u :  " << qp_random.u << std::endl;
+    std::cout << "l :  " << qp_random.l << std::endl;
+
+    proxqp::sparse::QP<T, I> qp2(n, n_eq, n_in);
+    qp2.settings.eps_abs = 1.E-9;
+    qp2.settings.verbose = false;
+    qp2.init(qp_random.H,
+             qp_random.g,
+             qp_random.A,
+             qp_random.b,
+             qp_random.C,
+             qp_random.l,
+             qp_random.u,
+             true,
+             T(1.e-7),
+             std::nullopt,
+             std::nullopt);
+    std::cout << "after upating" << std::endl;
+    std::cout << "rho :  " << qp2.results.info.rho << std::endl;
+    qp2.solve();
+    dua_res = proxqp::dense::infty_norm(
+      qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x + qp_random.g +
+      qp_random.C.transpose() * qp.results.z);
+    pri_res = proxqp::dense::infty_norm(
+      sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+      sparse::detail::negative_part(qp_random.C * qp.results.x - qp_random.l));
+    CHECK(dua_res <= 1e-9);
+    CHECK(pri_res <= 1E-9);
+    std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
+              << std::endl;
+    std::cout << "; dual residual " << dua_res << "; primal residual "
+              << pri_res << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+              << qp.results.info.solve_time << std::endl;
+
+    // Testing with nullopt
+    proxqp::sparse::QP<T, I> qp3(n, n_eq, n_in);
+    qp3.settings.eps_abs = 1.E-9;
+    qp3.settings.verbose = false;
+    qp3.init(qp_random.H,
+             qp_random.g,
+             std::nullopt,
+             std::nullopt,
+             qp_random.C,
+             qp_random.l,
+             qp_random.u,
+             true,
+             T(1.e-7),
+             std::nullopt,
+             std::nullopt);
+    std::cout << "after upating" << std::endl;
+    std::cout << "rho :  " << qp3.results.info.rho << std::endl;
+    qp3.solve();
+    dua_res = proxqp::dense::infty_norm(
+      qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x + qp_random.g +
+      qp_random.C.transpose() * qp.results.z);
+    pri_res = proxqp::dense::infty_norm(
+      sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+      sparse::detail::negative_part(qp_random.C * qp.results.x - qp_random.l));
+    CHECK(dua_res <= 1e-9);
+    CHECK(pri_res <= 1E-9);
+    std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
+              << std::endl;
+    std::cout << "; dual residual " << dua_res << "; primal residual "
+              << pri_res << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+              << qp.results.info.solve_time << std::endl;
+  }
+}
+
 TEST_CASE("sparse random strongly convex qp with equality and "
           "inequality constraints: test update rho")
 {
