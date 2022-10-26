@@ -178,35 +178,43 @@ struct QP
       work.timer.stop();
       work.timer.start();
     }
-    if (g != std::nullopt) {
+    if (g != std::nullopt && g.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         g.value().rows(),
         model.dim,
         "the dimension wrt the primal variable x variable for initializing g "
         "is not valid.");
+    } else {
+      g.reset();
     }
-    if (b != std::nullopt) {
+    if (b != std::nullopt && b.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         b.value().rows(),
         model.n_eq,
         "the dimension wrt equality constrained variables for initializing b "
         "is not valid.");
+    } else {
+      b.reset();
     }
-    if (u != std::nullopt) {
+    if (u != std::nullopt && u.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         u.value().rows(),
         model.n_in,
         "the dimension wrt inequality constrained variables for initializing u "
         "is not valid.");
+    } else {
+      u.reset();
     }
-    if (l != std::nullopt) {
+    if (l != std::nullopt && l.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         l.value().rows(),
         model.n_in,
         "the dimension wrt inequality constrained variables for initializing l "
         "is not valid.");
+    } else {
+      l.reset();
     }
-    if (H != std::nullopt) {
+    if (H != std::nullopt && H.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         H.value().rows(),
         model.dim,
@@ -215,8 +223,10 @@ struct QP
         H.value().cols(),
         model.dim,
         "the column dimension for initializing H is not valid.");
+    } else {
+      H.reset();
     }
-    if (A != std::nullopt) {
+    if (A != std::nullopt && A.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         A.value().rows(),
         model.n_eq,
@@ -225,8 +235,10 @@ struct QP
         A.value().cols(),
         model.dim,
         "the column dimension for initializing A is not valid.");
+    } else {
+      A.reset();
     }
-    if (C != std::nullopt) {
+    if (C != std::nullopt && C.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         C.value().rows(),
         model.n_in,
@@ -235,6 +247,8 @@ struct QP
         C.value().cols(),
         model.dim,
         "the column dimension for initializing C is not valid.");
+    } else {
+      C.reset();
     }
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;

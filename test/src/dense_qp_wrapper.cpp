@@ -12,6 +12,152 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
+DOCTEST_TEST_CASE("sparse random strongly convex qp with inequality constraints"
+                  "and empty equality constraints")
+{
+  std::cout << "---testing sparse random strongly convex qp with inequality "
+               "constraints "
+               "and empty equality constraints---"
+            << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-9);
+  utils::rand::set_seed(1);
+  dense::isize dim = 10;
+
+  dense::isize n_eq(0);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+  dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+
+  // Testing with empty but properly sized matrix A  of size (0, 10)
+  std::cout << "Solving QP with" << std::endl;
+  std::cout << "dim: " << dim << std::endl;
+  std::cout << "n_eq: " << n_eq << std::endl;
+  std::cout << "n_in: " << n_in << std::endl;
+  std::cout << "H :  " << qp_random.H << std::endl;
+  std::cout << "g :  " << qp_random.g << std::endl;
+  std::cout << "A :  " << qp_random.A << std::endl;
+  std::cout << "A.cols() :  " << qp_random.A.cols() << std::endl;
+  std::cout << "A.rows() :  " << qp_random.A.rows() << std::endl;
+  std::cout << "b :  " << qp_random.b << std::endl;
+  std::cout << "C :  " << qp_random.C << std::endl;
+  std::cout << "u :  " << qp_random.u << std::endl;
+  std::cout << "l :  " << qp_random.l << std::endl;
+
+  qp.init(qp_random.H,
+          qp_random.g,
+          std::nullopt,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  qp.solve();
+
+  T pri_res = (dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+               dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+                .lpNorm<Eigen::Infinity>();
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------using API solving qp with dim: " << dim
+            << " neq: " << n_eq << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  // Testing with empty matrix A  of size (0, 0)
+  qp_random.A = Eigen::MatrixXd();
+  qp_random.b = Eigen::VectorXd();
+
+  dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
+  qp2.settings.eps_abs = eps_abs;
+  qp2.settings.eps_rel = 0;
+
+  std::cout << "Solving QP with" << std::endl;
+  std::cout << "dim: " << dim << std::endl;
+  std::cout << "n_eq: " << n_eq << std::endl;
+  std::cout << "n_in: " << n_in << std::endl;
+  std::cout << "H :  " << qp_random.H << std::endl;
+  std::cout << "g :  " << qp_random.g << std::endl;
+  std::cout << "A :  " << qp_random.A << std::endl;
+  std::cout << "A.cols() :  " << qp_random.A.cols() << std::endl;
+  std::cout << "A.rows() :  " << qp_random.A.rows() << std::endl;
+  std::cout << "b :  " << qp_random.b << std::endl;
+  std::cout << "C :  " << qp_random.C << std::endl;
+  std::cout << "u :  " << qp_random.u << std::endl;
+  std::cout << "l :  " << qp_random.l << std::endl;
+
+  qp2.init(qp_random.H,
+           qp_random.g,
+           qp_random.A,
+           qp_random.b,
+           qp_random.C,
+           qp_random.l,
+           qp_random.u);
+  qp2.solve();
+
+  pri_res = (dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+             dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+              .lpNorm<Eigen::Infinity>();
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------using API solving qp with dim: " << dim
+            << " neq: " << n_eq << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  // Testing with nullopt
+  dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
+  qp3.settings.eps_abs = eps_abs;
+  qp3.settings.eps_rel = 0;
+
+  qp3.init(qp_random.H,
+           qp_random.g,
+           std::nullopt,
+           std::nullopt,
+           qp_random.C,
+           qp_random.l,
+           qp_random.u);
+  qp3.solve();
+
+  pri_res = (dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+             dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+              .lpNorm<Eigen::Infinity>();
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------using API solving qp with dim: " << dim
+            << " neq: " << n_eq << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+}
+
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test update H")
 {

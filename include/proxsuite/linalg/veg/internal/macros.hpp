@@ -30,7 +30,7 @@
     oss << "wrong argument size: expected " << expected_size << ", got "       \
         << size << "\n";                                                       \
     oss << "hint: " << message << std::endl;                                   \
-    PROXSUITE_THROW_PRETTY(false, std::invalid_argument, oss.str());           \
+    PROXSUITE_THROW_PRETTY(true, std::invalid_argument, oss.str());            \
   }
 
 #if HEDLEY_MSVC_VERSION_CHECK(14, 0, 0) ||                                     \
