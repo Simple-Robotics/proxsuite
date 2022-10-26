@@ -4,6 +4,8 @@
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 
+#include <new>
+
 #if !VEG_HAS_BUILTIN(__has_trivial_destructor) ||                              \
   !VEG_HAS_BUILTIN(__is_trivially_constructible) ||                            \
   !VEG_HAS_BUILTIN(__is_constructible) ||                                      \
