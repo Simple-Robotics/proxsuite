@@ -65,7 +65,12 @@ namespace rand {
 
 using proxqp::u32;
 using proxqp::u64;
+
+#if _MSC_VER
+using u128 = uint64_t;
+#else
 using u128 = __uint128_t;
+#endif
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
 inline auto
