@@ -519,7 +519,6 @@ qp_solve(Results<T>& results,
     { proxsuite::linalg::sparse::from_eigen, u_scaled_e },
   };
 
-  T const primal_feasibility_rhs_1_eq = infty_norm(data.b);
   T const dual_feasibility_rhs_2 = infty_norm(data.g);
 
   // auto ldl_col_ptrs = work.ldl_col_ptrs_mut();
@@ -756,8 +755,7 @@ qp_solve(Results<T>& results,
         if (settings.eps_rel != 0) {
           rhs_pri += settings.eps_rel * std::max({
                                           primal_feasibility_eq_rhs_0,
-                                          primal_feasibility_in_rhs_0,
-                                          primal_feasibility_rhs_1_eq,
+                                          primal_feasibility_in_rhs_0
                                         });
         }
         return primal_feasibility_lhs <= rhs_pri;

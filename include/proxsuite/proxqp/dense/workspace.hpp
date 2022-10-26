@@ -73,9 +73,6 @@ struct Workspace
 
   //// Relative residuals constants
 
-  T primal_feasibility_rhs_1_eq;
-  T primal_feasibility_rhs_1_in_u;
-  T primal_feasibility_rhs_1_in_l;
   T dual_feasibility_rhs_2;
   T correction_guess_rhs_g;
   T correction_guess_rhs_b;
@@ -194,9 +191,6 @@ struct Workspace
     rhs.setZero();
     err.setZero();
 
-    primal_feasibility_rhs_1_eq = 0;
-    primal_feasibility_rhs_1_in_u = 0;
-    primal_feasibility_rhs_1_in_l = 0;
     dual_feasibility_rhs_2 = 0;
     correction_guess_rhs_g = 0;
     correction_guess_rhs_b = 0;

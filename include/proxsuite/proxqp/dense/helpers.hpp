@@ -437,10 +437,7 @@ setup( //
       .select(qpmodel.l,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() -
                 T(1.E20));
-
-  qpwork.primal_feasibility_rhs_1_eq = infty_norm(qpmodel.b);
-  qpwork.primal_feasibility_rhs_1_in_u = infty_norm(qpwork.u_scaled);
-  qpwork.primal_feasibility_rhs_1_in_l = infty_norm(qpwork.l_scaled);
+  
   qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
 
   switch (preconditioner_status) {
