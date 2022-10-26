@@ -1128,8 +1128,8 @@ qp_solve( //
     is_primal_feasible =
       primal_feasibility_lhs_new <=
       (qpsettings.eps_abs +
-       qpsettings.eps_rel * std::max(std::max(primal_feasibility_eq_rhs_0,
-                                              primal_feasibility_in_rhs_0)));
+       qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                              primal_feasibility_in_rhs_0));
     qpresults.info.pri_res = primal_feasibility_lhs_new;
     if (is_primal_feasible) {
       T dual_feasibility_lhs_new(dual_feasibility_lhs);
