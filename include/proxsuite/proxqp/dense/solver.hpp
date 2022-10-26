@@ -1232,6 +1232,7 @@ qp_solve( //
 
   {
     // EigenAllowAlloc _{};
+    qpresults.info.objValue = 0;
     for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
       qpresults.info.objValue +=
         0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
