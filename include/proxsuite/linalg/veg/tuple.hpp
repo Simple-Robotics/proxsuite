@@ -634,7 +634,7 @@ private:
       zip::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
   }
 
-  VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
+  VEG_INLINE static auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
 
   template<usize I, typename T>
   struct Helper
@@ -771,7 +771,7 @@ private:
     };
   }
 
-  VEG_INLINE static constexpr auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
+  VEG_INLINE static auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
 
   template<usize... Is, typename... Ts, typename... Tuples>
   VEG_INLINE static constexpr auto apply(
