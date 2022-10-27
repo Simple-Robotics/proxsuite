@@ -11,6 +11,8 @@
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <map>
+#include <random>
+
 
 namespace proxsuite {
 namespace proxqp {
@@ -67,10 +69,29 @@ using proxqp::u32;
 using proxqp::u64;
 
 #if _MSC_VER
-using u128 = uint64_t;
+std::random_device rd;
+std::mt19937 gen(rd());
+using u128 = std::uint32_t;
+inline auto
+uniform_rand() -> double
+{
+  return gen();
+}
+inline auto
+lehmer_global() -> u128&
+{
+  unsigned int n;
+  n = gen();
+  return n;
+}
+
+inline void
+set_seed(u64 seed)
+{
+  gen.seed(seed);
+}
 #else
 using u128 = __uint128_t;
-#endif
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
 inline auto
@@ -101,6 +122,7 @@ uniform_rand() -> double
   u64 a = lehmer64() / (1U << 11U);
   return double(a) / double(u64(1) << 53U);
 }
+#endif
 inline auto
 normal_rand() -> double
 {
