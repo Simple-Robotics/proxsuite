@@ -13,7 +13,6 @@
 #include <map>
 #include <random>
 
-
 namespace proxsuite {
 namespace proxqp {
 namespace utils {
