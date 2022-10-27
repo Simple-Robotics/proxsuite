@@ -63,4 +63,4 @@ make install
 
 #### Testing
 
-To test the whole framework, you need installing first [Matio](https://github.com/ami-iit/matio-cpp) (for reading .mat files in C++). You can then activate the build of the unit tests by activating the cmake option `BUILD_TESTING=ON`.
+To test the whole framework, you need installing first [Matio](https://github.com/tbeu/matio) (for reading .mat files in C++). You can then activate the build of the unit tests by activating the cmake option `BUILD_TESTING=ON`.
