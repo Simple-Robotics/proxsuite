@@ -93,7 +93,9 @@ using proxsuite::linalg::veg::Tuple;
 
 namespace tuple {
 template<typename ISeq, typename... Ts>
-struct IndexedTuple;
+struct IndexedTuple
+{
+};
 
 #if VEG_HAS_NO_UNIQUE_ADDRESS
 #define __VEG_IMPL_LEAF(Tuple, I, ...) /* NOLINT */                            \
