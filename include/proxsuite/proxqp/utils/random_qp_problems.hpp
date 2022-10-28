@@ -68,6 +68,10 @@ using proxqp::u32;
 using proxqp::u64;
 
 #if _MSC_VER
+/* Using the MSCV compiler on Windows causes problems because the type uint128 is not
+available. Therefore, we use a random number generator from the stdlib instead of
+our custom Lehmer random number generator. The necessary lehmer functions used in
+in our code are remplaced with calls to the stdlib.*/
 std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
