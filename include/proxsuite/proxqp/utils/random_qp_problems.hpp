@@ -70,12 +70,13 @@ using proxqp::u64;
 #if _MSC_VER
 std::random_device rd;
 std::mt19937 gen(rd());
+std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
 std::normal_distribution<double> normal_dist;
 using u128 = u64;
 inline auto
 uniform_rand() -> double
 {
-  double output = double(gen());
+  double output = double(uniform_dist(gen));
   return output;
 }
 inline auto
