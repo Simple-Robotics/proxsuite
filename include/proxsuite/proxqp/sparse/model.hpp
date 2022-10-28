@@ -60,7 +60,9 @@ struct Model
     g.setZero();
     b.setZero();
     u.setZero();
+    u.array() += 1.E10; // in case it appears u is nullopt (i.e., the problem is only lower bounded)
     l.setZero();
+    l.array() -= 1.E10; // in case it appears l is nullopt (i.e., the problem is only upper bounded)
   }
   /*!
    * Returns the current (scaled) KKT matrix of the problem.
