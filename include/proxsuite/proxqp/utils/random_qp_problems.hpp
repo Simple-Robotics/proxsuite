@@ -76,21 +76,18 @@ inline auto
 uniform_rand() -> double
 {
   double output = double(gen());
-  assert(!std::isnan(output));
   return output;
 }
 inline auto
 lehmer_global() -> u128&
 {
   static u64 output = gen();
-  assert(!std::isnan(output));
   return output;
 }
 
 inline void
 set_seed(u64 seed)
 {
-  assert(!std::isnan(seed));
   gen.seed(seed);
 }
 
