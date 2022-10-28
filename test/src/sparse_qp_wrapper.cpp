@@ -5243,17 +5243,11 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5291,14 +5285,10 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5326,14 +5316,10 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5486,17 +5472,11 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5535,14 +5515,9 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5570,14 +5545,10 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (sparse::detail::positive_part(qp_random.C * qp.results.x - qp_random.u) +
