@@ -70,24 +70,34 @@ using proxqp::u64;
 #if _MSC_VER
 std::random_device rd;
 std::mt19937 gen(rd());
-using u128 = std::uint32_t;
+std::normal_distribution<double> normal_dist;
+using u128 = u64;
 inline auto
 uniform_rand() -> double
 {
-  return gen();
+  double output = double(gen());
+  assert(!std::isnan(output));
+  return output;
 }
 inline auto
 lehmer_global() -> u128&
 {
-  unsigned int n;
-  n = gen();
-  return n;
+  static u64 output = gen();
+  assert(!std::isnan(output));
+  return output;
 }
 
 inline void
 set_seed(u64 seed)
 {
+  assert(!std::isnan(seed));
   gen.seed(seed);
+}
+
+inline auto
+normal_rand() -> double
+{
+  return normal_dist(gen);
 }
 #else
 using u128 = __uint128_t;
@@ -121,7 +131,6 @@ uniform_rand() -> double
   u64 a = lehmer64() / (1U << 11U);
   return double(a) / double(u64(1) << 53U);
 }
-#endif
 inline auto
 normal_rand() -> double
 {
@@ -135,6 +144,7 @@ normal_rand() -> double
 
   return sqrt * std::cos(pi2 * u2);
 }
+#endif
 
 template<typename Scalar>
 auto
