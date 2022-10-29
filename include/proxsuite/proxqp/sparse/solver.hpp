@@ -3,8 +3,8 @@
 //
 /** \file */
 
-#ifndef PROXSUITE_QP_SPARSE_SOLVER_HPP
-#define PROXSUITE_QP_SPARSE_SOLVER_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_SOLVER_HPP
+#define PROXSUITE_PROXQP_SPARSE_SOLVER_HPP
 
 #include <chrono>
 #include <proxsuite/linalg/dense/core.hpp>
@@ -1422,4 +1422,4 @@ qp_solve(Results<T>& results,
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_SOLVER_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_SOLVER_HPP */

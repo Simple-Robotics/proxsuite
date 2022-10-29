@@ -4,8 +4,8 @@
 /**
  * @file workspace.hpp
  */
-#ifndef PROXSUITE_QP_DENSE_WORKSPACE_HPP
-#define PROXSUITE_QP_DENSE_WORKSPACE_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP
+#define PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP
 
 #include <Eigen/Core>
 #include <proxsuite/linalg/dense/ldlt.hpp>
@@ -258,4 +258,4 @@ struct Workspace
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP */

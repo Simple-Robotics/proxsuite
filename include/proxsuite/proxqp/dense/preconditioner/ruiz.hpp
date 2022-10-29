@@ -4,8 +4,8 @@
 /**
  * @file ruiz.hpp
  */
-#ifndef PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
-#define PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
+#define PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
@@ -569,4 +569,4 @@ struct RuizEquilibration
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_PRECOND_RUIZ_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP */

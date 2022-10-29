@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
-#define PROXSUITE_QP_SPARSE_MODEL_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_MODEL_HPP
+#define PROXSUITE_PROXQP_SPARSE_MODEL_HPP
 
 #include <Eigen/Sparse>
 #include "proxsuite/linalg/sparse/core.hpp"
@@ -21,6 +21,9 @@ namespace sparse {
 template<typename T, typename I>
 struct Model
 {
+  typedef T Scalar;
+  using VectorType = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+
   isize dim;
   isize n_eq;
   isize n_in;
@@ -37,30 +40,36 @@ struct Model
   proxsuite::linalg::veg::Vec<I> kkt_row_indices_unscaled;
   proxsuite::linalg::veg::Vec<T> kkt_values_unscaled;
 
-  Eigen::Matrix<T, Eigen::Dynamic, 1> g;
-  Eigen::Matrix<T, Eigen::Dynamic, 1> b;
-  Eigen::Matrix<T, Eigen::Dynamic, 1> l;
-  Eigen::Matrix<T, Eigen::Dynamic, 1> u;
+  VectorType g;
+  VectorType b;
+  VectorType l;
+  VectorType u;
 
   /*!
    * Default constructor.
-   * @param _dim primal variable dimension.
-   * @param _n_eq number of equality constraints.
-   * @param _n_in number of inequality constraints.
+   * @param dim primal variable dimension.
+   * @param n_eq number of equality constraints.
+   * @param n_in number of inequality constraints.
    */
-  Model(isize _dim, isize _n_eq, isize _n_in)
-    : dim(_dim)
-    , n_eq(_n_eq)
-    , n_in(_n_in)
+  Model(isize dim, isize n_eq, isize n_in)
+    : dim(dim)
+    , n_eq(n_eq)
+    , n_in(n_in)
   {
-    PROXSUITE_THROW_PRETTY(_dim == 0,
+    PROXSUITE_THROW_PRETTY(dim == 0,
                            std::invalid_argument,
                            "wrong argument size: the dimension wrt primal "
                            "variable x should be strictly positive.");
+
+    const T infinite_bound_value = helpers::infinite_bound<T>::value();
+
     g.setZero();
     b.setZero();
     u.setZero();
-    l.setZero();
+    u.fill(+infinite_bound_value); // in case it appears u is nullopt (i.e., the
+                                   // problem is only lower bounded)
+    l.fill(-infinite_bound_value); // in case it appears l is nullopt (i.e., the
+                                   // problem is only upper bounded)
   }
   /*!
    * Returns the current (scaled) KKT matrix of the problem.
@@ -140,10 +149,10 @@ struct Model
   }
 };
 
-template<typename Scalar>
+template<typename _Scalar>
 struct SparseModel
 {
-
+  typedef _Scalar Scalar;
   enum
   {
     layout = Eigen::RowMajor
@@ -163,20 +172,20 @@ struct SparseModel
            typename Vector_b,
            typename Vector_u,
            typename Vector_l>
-  SparseModel(const Eigen::SparseMatrix<Scalar, 1>& H_,
-              const Eigen::MatrixBase<Vector_g>& g_,
-              const Eigen::SparseMatrix<Scalar, 1>& A_,
-              const Eigen::MatrixBase<Vector_b>& b_,
-              const Eigen::SparseMatrix<Scalar, 1>& C_,
-              const Eigen::MatrixBase<Vector_u>& u_,
-              const Eigen::MatrixBase<Vector_l>& l_) noexcept
-    : H(H_)
-    , g(g_)
-    , A(A_)
-    , b(b_)
-    , C(C_)
-    , u(u_)
-    , l(l_)
+  SparseModel(const Eigen::SparseMatrix<Scalar, 1>& H,
+              const Eigen::MatrixBase<Vector_g>& g,
+              const Eigen::SparseMatrix<Scalar, 1>& A,
+              const Eigen::MatrixBase<Vector_b>& b,
+              const Eigen::SparseMatrix<Scalar, 1>& C,
+              const Eigen::MatrixBase<Vector_u>& u,
+              const Eigen::MatrixBase<Vector_l>& l) noexcept
+    : H(H)
+    , g(g)
+    , A(A)
+    , b(b)
+    , C(C)
+    , u(u)
+    , l(l)
   {
   }
 
@@ -216,4 +225,4 @@ struct SparseModel
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_MODEL_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_MODEL_HPP */

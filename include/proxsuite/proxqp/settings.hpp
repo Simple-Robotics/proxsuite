@@ -4,8 +4,8 @@
 /**
  * @file settings.hpp
  */
-#ifndef PROXSUITE_QP_SETTINGS_HPP
-#define PROXSUITE_QP_SETTINGS_HPP
+#ifndef PROXSUITE_PROXQP_SETTINGS_HPP
+#define PROXSUITE_PROXQP_SETTINGS_HPP
 
 #include <Eigen/Core>
 #include <proxsuite/proxqp/status.hpp>
@@ -268,4 +268,4 @@ struct Settings
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SETTINGS_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SETTINGS_HPP */

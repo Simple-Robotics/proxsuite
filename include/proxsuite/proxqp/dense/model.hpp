@@ -2,13 +2,13 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_DENSE_MODEL_HPP
-#define PROXSUITE_QP_DENSE_MODEL_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_MODEL_HPP
+#define PROXSUITE_PROXQP_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
-#include <proxsuite/linalg/veg/type_traits/core.hpp>
+#include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
-#include <proxsuite/proxqp/sparse/model.hpp>
+#include "proxsuite/proxqp/sparse/model.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -32,41 +32,47 @@ struct Model
   Vec<T> u;
   Vec<T> l;
 
-  ///// model size
+  ///// model sizes
   isize dim;
   isize n_eq;
   isize n_in;
   isize n_total;
+
   /*!
    * Default constructor.
-   * @param _dim primal variable dimension.
-   * @param _n_eq number of equality constraints.
-   * @param _n_in number of inequality constraints.
+   * @param dim primal variable dimension.
+   * @param n_eq number of equality constraints.
+   * @param n_in number of inequality constraints.
    */
-  Model(isize _dim, isize _n_eq, isize _n_in)
-    : H(_dim, _dim)
-    , g(_dim)
-    , A(_n_eq, _dim)
-    , C(_n_in, _dim)
-    , b(_n_eq)
-    , u(_n_in)
-    , l(_n_in)
-    , dim(_dim)
-    , n_eq(_n_eq)
-    , n_in(_n_in)
-    , n_total(_dim + _n_eq + _n_in)
+  Model(isize dim, isize n_eq, isize n_in)
+    : H(dim, dim)
+    , g(dim)
+    , A(n_eq, dim)
+    , C(n_in, dim)
+    , b(n_eq)
+    , u(n_in)
+    , l(n_in)
+    , dim(dim)
+    , n_eq(n_eq)
+    , n_in(n_in)
+    , n_total(dim + n_eq + n_in)
   {
-    PROXSUITE_THROW_PRETTY(_dim == 0,
+    PROXSUITE_THROW_PRETTY(dim == 0,
                            std::invalid_argument,
-                           "wrong argument size: the dimension wrt primal "
+                           "wrong argument size: the dimension wrt the primal "
                            "variable x should be strictly positive.");
+
+    const T infinite_bound_value = helpers::infinite_bound<T>::value();
+
     H.setZero();
     g.setZero();
     A.setZero();
     C.setZero();
     b.setZero();
-    u.setZero();
-    l.setZero();
+    u.fill(+infinite_bound_value); // in case it appears u is nullopt (i.e., the
+                                   // problem is only lower bounded)
+    l.fill(-infinite_bound_value); // in case it appears l is nullopt (i.e., the
+                                   // problem is only upper bounded)
   }
 
   proxsuite::proxqp::sparse::SparseModel<T> to_sparse()
@@ -83,4 +89,4 @@ struct Model
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_MODEL_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_MODEL_HPP */

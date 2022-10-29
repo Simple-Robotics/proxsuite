@@ -4,8 +4,8 @@
 /**
  * @file constants.hpp
  */
-#ifndef PROXSUITE_QP_CONSTANTS_HPP
-#define PROXSUITE_QP_CONSTANTS_HPP
+#ifndef PROXSUITE_PROXQP_CONSTANTS_HPP
+#define PROXSUITE_PROXQP_CONSTANTS_HPP
 
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include "proxsuite/proxqp/sparse/fwd.hpp"
@@ -42,4 +42,4 @@ enum struct PreconditionerStatus
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_CONSTANTS_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_CONSTANTS_HPP */

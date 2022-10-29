@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_DENSE_LINESEARCH_HPP
-#define PROXSUITE_QP_DENSE_LINESEARCH_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
+#define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
@@ -514,4 +514,4 @@ active_set_change(const Model<T>& qpmodel,
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_LINESEARCH_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP */
