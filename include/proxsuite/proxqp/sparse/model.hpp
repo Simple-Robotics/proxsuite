@@ -60,14 +60,16 @@ struct Model
                            std::invalid_argument,
                            "wrong argument size: the dimension wrt primal "
                            "variable x should be strictly positive.");
+
+    const T infinite_bound_value = helpers::infinite_bound<T>::value();
+
     g.setZero();
     b.setZero();
     u.setZero();
-    u.array() += 1.E10; // in case it appears u is nullopt (i.e., the problem is
-                        // only lower bounded)
-    l.setZero();
-    l.array() -= 1.E10; // in case it appears l is nullopt (i.e., the problem is
-                        // only upper bounded)
+    u.fill(+infinite_bound_value); // in case it appears u is nullopt (i.e., the
+                                   // problem is only lower bounded)
+    l.fill(-infinite_bound_value); // in case it appears l is nullopt (i.e., the
+                                   // problem is only upper bounded)
   }
   /*!
    * Returns the current (scaled) KKT matrix of the problem.

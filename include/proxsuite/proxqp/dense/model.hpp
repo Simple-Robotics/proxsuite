@@ -6,9 +6,9 @@
 #define PROXSUITE_PROXQP_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
-#include <proxsuite/linalg/veg/type_traits/core.hpp>
+#include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
-#include <proxsuite/proxqp/sparse/model.hpp>
+#include "proxsuite/proxqp/sparse/model.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -61,17 +61,18 @@ struct Model
                            std::invalid_argument,
                            "wrong argument size: the dimension wrt the primal "
                            "variable x should be strictly positive.");
+
+    const T infinite_bound_value = helpers::infinite_bound<T>::value();
+
     H.setZero();
     g.setZero();
     A.setZero();
     C.setZero();
     b.setZero();
-    u.setZero();
-    u.array() += 1.E10; // in case it appears u is nullopt (i.e., the problem is
-                        // only lower bounded)
-    l.setZero();
-    l.array() -= 1.E10; // in case it appears l is nullopt (i.e., the problem is
-                        // only upper bounded)
+    u.fill(+infinite_bound_value); // in case it appears u is nullopt (i.e., the
+                                   // problem is only lower bounded)
+    l.fill(-infinite_bound_value); // in case it appears l is nullopt (i.e., the
+                                   // problem is only upper bounded)
   }
 
   proxsuite::proxqp::sparse::SparseModel<T> to_sparse()
