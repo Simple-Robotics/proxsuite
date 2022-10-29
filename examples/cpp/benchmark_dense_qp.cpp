@@ -58,8 +58,8 @@ main()
   double setup_time = 0.0;
 
   dense::isize dim = 100;
-  dense::isize n_eq(dim * 0.5);
-  dense::isize n_in(dim * 0.5);
+  dense::isize n_eq(dim / 2);
+  dense::isize n_in(dim / 2);
 
   for (T sparsity_factor = 0.1; sparsity_factor < 0.5; sparsity_factor += 0.1) {
     T strong_convexity_factor(1.e-2);
