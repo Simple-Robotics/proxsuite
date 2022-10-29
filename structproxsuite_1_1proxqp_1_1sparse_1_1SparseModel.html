@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>proxsuite: proxsuite::proxqp::sparse::SparseModel&lt; Scalar &gt; Struct Template Reference</title>
+<title>proxsuite: proxsuite::proxqp::sparse::SparseModel&lt; _Scalar &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('structproxsuite_1_1proxqp_1_1sparse_1_
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">proxsuite::proxqp::sparse::SparseModel&lt; Scalar &gt; Struct Template Reference</div></div>
+  <div class="headertitle"><div class="title">proxsuite::proxqp::sparse::SparseModel&lt; _Scalar &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
@@ -115,59 +115,79 @@ $(document).ready(function(){initNavTree('structproxsuite_1_1proxqp_1_1sparse_1_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a8dac60483b9c44228ce2fbe0ce7e763c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8dac60483b9c44228ce2fbe0ce7e763ca5223db10abb4e22e71fecf1b7546c385">layout</a> = Eigen::RowMajor
+<tr class="memitem:a8dac60483b9c44228ce2fbe0ce7e763c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8dac60483b9c44228ce2fbe0ce7e763ca37f61476900d91d9d02bfce4c45bafdf">layout</a> = Eigen::RowMajor
  }</td></tr>
 <tr class="separator:a8dac60483b9c44228ce2fbe0ce7e763c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8943509b9f7b0cae061dd9f6d1f123e3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a> = Eigen::Matrix&lt; Scalar, Eigen::Dynamic, 1 &gt;</td></tr>
-<tr class="separator:a8943509b9f7b0cae061dd9f6d1f123e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6de84e3851ff6adf5558f264ac45ab2"><td class="memItemLeft" align="right" valign="top">typedef _Scalar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a></td></tr>
+<tr class="separator:aa6de84e3851ff6adf5558f264ac45ab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf0d0a4f8e8d5474910ff47b0e5dc4df"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a> = Eigen::Matrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, Eigen::Dynamic, 1 &gt;</td></tr>
+<tr class="separator:adf0d0a4f8e8d5474910ff47b0e5dc4df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a21e5b75d3126498a419fcba8e5bffabb"><td class="memTemplParams" colspan="2">template&lt;typename Vector_g , typename Vector_b , typename Vector_u , typename Vector_l &gt; </td></tr>
-<tr class="memitem:a21e5b75d3126498a419fcba8e5bffabb"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a21e5b75d3126498a419fcba8e5bffabb">SparseModel</a> (const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;H_, const Eigen::MatrixBase&lt; Vector_g &gt; &amp;g_, const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;A_, const Eigen::MatrixBase&lt; Vector_b &gt; &amp;b_, const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;C_, const Eigen::MatrixBase&lt; Vector_u &gt; &amp;u_, const Eigen::MatrixBase&lt; Vector_l &gt; &amp;l_) noexcept</td></tr>
-<tr class="separator:a21e5b75d3126498a419fcba8e5bffabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad05afae370e87cc4ef154b8008eea05c"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#ad05afae370e87cc4ef154b8008eea05c">as_view</a> () -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpView.html">proxqp::dense::QpView</a>&lt; Scalar &gt;</td></tr>
-<tr class="separator:ad05afae370e87cc4ef154b8008eea05c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f6644835da31b07d93abb4ab980e063"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a4f6644835da31b07d93abb4ab980e063">as_mut</a> () -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html">proxqp::dense::QpViewMut</a>&lt; Scalar &gt;</td></tr>
-<tr class="separator:a4f6644835da31b07d93abb4ab980e063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37146513178bfaa843c99e65bc912951"><td class="memTemplParams" colspan="2">template&lt;typename Vector_g , typename Vector_b , typename Vector_u , typename Vector_l &gt; </td></tr>
+<tr class="memitem:a37146513178bfaa843c99e65bc912951"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a37146513178bfaa843c99e65bc912951">SparseModel</a> (const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a66613eb6d918fb3a49d0fa05fd606869">H</a>, const Eigen::MatrixBase&lt; Vector_g &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#af9dfe51f57b411571ffaf4dda17f6f1e">g</a>, const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a919f2bffd55a81fbaca494486d6ae1f1">A</a>, const Eigen::MatrixBase&lt; Vector_b &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a516b900ad0135214d3f9b327aba0e26b">b</a>, const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a499b1e560d365e23919433996d3d9ece">C</a>, const Eigen::MatrixBase&lt; Vector_u &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aca49c9bb18bc65091e95a16cb2c7cc74">u</a>, const Eigen::MatrixBase&lt; Vector_l &gt; &amp;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aeed8a31478563712a1f9bb66538c0034">l</a>) noexcept</td></tr>
+<tr class="separator:a37146513178bfaa843c99e65bc912951"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c54a2f64236634233128c67f5232686"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a1c54a2f64236634233128c67f5232686">as_view</a> () -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpView.html">proxqp::dense::QpView</a>&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a> &gt;</td></tr>
+<tr class="separator:a1c54a2f64236634233128c67f5232686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7ebec058e33bdc71f8054df9fd3acce"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#af7ebec058e33bdc71f8054df9fd3acce">as_mut</a> () -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html">proxqp::dense::QpViewMut</a>&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a> &gt;</td></tr>
+<tr class="separator:af7ebec058e33bdc71f8054df9fd3acce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ac1d12ac242922278c253f2a2d00637e6"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#ac1d12ac242922278c253f2a2d00637e6">H</a></td></tr>
-<tr class="separator:ac1d12ac242922278c253f2a2d00637e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1acf4b1f214059863f87cb6ccfed03f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a1acf4b1f214059863f87cb6ccfed03f1">g</a></td></tr>
-<tr class="separator:a1acf4b1f214059863f87cb6ccfed03f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ba7e04985e6ec18f955b1177257a5c3"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a4ba7e04985e6ec18f955b1177257a5c3">A</a></td></tr>
-<tr class="separator:a4ba7e04985e6ec18f955b1177257a5c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6574fbad6964fc366530df05efaf83ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a6574fbad6964fc366530df05efaf83ce">b</a></td></tr>
-<tr class="separator:a6574fbad6964fc366530df05efaf83ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35e2a775bf331a43045e0606eb39c85c"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a35e2a775bf331a43045e0606eb39c85c">C</a></td></tr>
-<tr class="separator:a35e2a775bf331a43045e0606eb39c85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a753ea7a74ca2247b5d1265a1c4406152"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a753ea7a74ca2247b5d1265a1c4406152">u</a></td></tr>
-<tr class="separator:a753ea7a74ca2247b5d1265a1c4406152"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a153ba0f6eefe58fb06dd75fb773d9e8b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a153ba0f6eefe58fb06dd75fb773d9e8b">l</a></td></tr>
-<tr class="separator:a153ba0f6eefe58fb06dd75fb773d9e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66613eb6d918fb3a49d0fa05fd606869"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a66613eb6d918fb3a49d0fa05fd606869">H</a></td></tr>
+<tr class="separator:a66613eb6d918fb3a49d0fa05fd606869"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9dfe51f57b411571ffaf4dda17f6f1e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#af9dfe51f57b411571ffaf4dda17f6f1e">g</a></td></tr>
+<tr class="separator:af9dfe51f57b411571ffaf4dda17f6f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a919f2bffd55a81fbaca494486d6ae1f1"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a919f2bffd55a81fbaca494486d6ae1f1">A</a></td></tr>
+<tr class="separator:a919f2bffd55a81fbaca494486d6ae1f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a516b900ad0135214d3f9b327aba0e26b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a516b900ad0135214d3f9b327aba0e26b">b</a></td></tr>
+<tr class="separator:a516b900ad0135214d3f9b327aba0e26b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a499b1e560d365e23919433996d3d9ece"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a499b1e560d365e23919433996d3d9ece">C</a></td></tr>
+<tr class="separator:a499b1e560d365e23919433996d3d9ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca49c9bb18bc65091e95a16cb2c7cc74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aca49c9bb18bc65091e95a16cb2c7cc74">u</a></td></tr>
+<tr class="separator:aca49c9bb18bc65091e95a16cb2c7cc74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeed8a31478563712a1f9bb66538c0034"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aeed8a31478563712a1f9bb66538c0034">l</a></td></tr>
+<tr class="separator:aeed8a31478563712a1f9bb66538c0034"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;typename Scalar&gt;<br />
-struct proxsuite::proxqp::sparse::SparseModel&lt; Scalar &gt;</div>
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00144">144</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename _Scalar&gt;<br />
+struct proxsuite::proxqp::sparse::SparseModel&lt; _Scalar &gt;</div>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00153">153</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a8943509b9f7b0cae061dd9f6d1f123e3" name="a8943509b9f7b0cae061dd9f6d1f123e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8943509b9f7b0cae061dd9f6d1f123e3">&#9670;&#160;</a></span>VectorType</h2>
+<a id="aa6de84e3851ff6adf5558f264ac45ab2" name="aa6de84e3851ff6adf5558f264ac45ab2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6de84e3851ff6adf5558f264ac45ab2">&#9670;&#160;</a></span>Scalar</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::VectorType =  Eigen::Matrix&lt;Scalar, Eigen::Dynamic, 1&gt;</td>
+          <td class="memname">typedef _Scalar <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::Scalar</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00152">152</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00155">155</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+
+</div>
+</div>
+<a id="adf0d0a4f8e8d5474910ff47b0e5dc4df" name="adf0d0a4f8e8d5474910ff47b0e5dc4df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf0d0a4f8e8d5474910ff47b0e5dc4df">&#9670;&#160;</a></span>VectorType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename _Scalar &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::VectorType =  Eigen::Matrix&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, Eigen::Dynamic, 1&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00161">161</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
@@ -178,7 +198,7 @@ template&lt;typename Scalar &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">anonymous enum</td>
@@ -186,21 +206,21 @@ template&lt;typename Scalar &gt; </div>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8dac60483b9c44228ce2fbe0ce7e763ca5223db10abb4e22e71fecf1b7546c385" name="a8dac60483b9c44228ce2fbe0ce7e763ca5223db10abb4e22e71fecf1b7546c385"></a>layout&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8dac60483b9c44228ce2fbe0ce7e763ca37f61476900d91d9d02bfce4c45bafdf" name="a8dac60483b9c44228ce2fbe0ce7e763ca37f61476900d91d9d02bfce4c45bafdf"></a>layout&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00147">147</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00156">156</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a21e5b75d3126498a419fcba8e5bffabb" name="a21e5b75d3126498a419fcba8e5bffabb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21e5b75d3126498a419fcba8e5bffabb">&#9670;&#160;</a></span>SparseModel()</h2>
+<a id="a37146513178bfaa843c99e65bc912951" name="a37146513178bfaa843c99e65bc912951"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37146513178bfaa843c99e65bc912951">&#9670;&#160;</a></span>SparseModel()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
 <div class="memtemplate">
 template&lt;typename Vector_g , typename Vector_b , typename Vector_u , typename Vector_l &gt; </div>
 <table class="mlabels">
@@ -208,46 +228,46 @@ template&lt;typename Vector_g , typename Vector_b , typename Vector_u , typename
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::SparseModel </td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::SparseModel </td>
           <td>(</td>
-          <td class="paramtype">const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>H_</em>, </td>
+          <td class="paramtype">const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>H</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::MatrixBase&lt; Vector_g &gt; &amp;&#160;</td>
-          <td class="paramname"><em>g_</em>, </td>
+          <td class="paramname"><em>g</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>A_</em>, </td>
+          <td class="paramtype">const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::MatrixBase&lt; Vector_b &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b_</em>, </td>
+          <td class="paramname"><em>b</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Eigen::SparseMatrix&lt; Scalar, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>C_</em>, </td>
+          <td class="paramtype">const Eigen::SparseMatrix&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>C</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::MatrixBase&lt; Vector_u &gt; &amp;&#160;</td>
-          <td class="paramname"><em>u_</em>, </td>
+          <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::MatrixBase&lt; Vector_l &gt; &amp;&#160;</td>
-          <td class="paramname"><em>l_</em>&#160;</td>
+          <td class="paramname"><em>l</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -262,27 +282,27 @@ template&lt;typename Vector_g , typename Vector_b , typename Vector_u , typename
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00166">166</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00175">175</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad05afae370e87cc4ef154b8008eea05c" name="ad05afae370e87cc4ef154b8008eea05c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad05afae370e87cc4ef154b8008eea05c">&#9670;&#160;</a></span>as_view()</h2>
+<a id="a1c54a2f64236634233128c67f5232686" name="a1c54a2f64236634233128c67f5232686"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c54a2f64236634233128c67f5232686">&#9670;&#160;</a></span>as_view()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::as_view </td>
+          <td class="memname">auto <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::as_view </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpView.html">proxqp::dense::QpView</a>&lt;Scalar&gt;
+          <td> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpView.html">proxqp::dense::QpView</a>&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>&gt;
   </td>
         </tr>
       </table>
@@ -293,26 +313,26 @@ template&lt;typename Scalar &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00183">183</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00192">192</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a4f6644835da31b07d93abb4ab980e063" name="a4f6644835da31b07d93abb4ab980e063"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f6644835da31b07d93abb4ab980e063">&#9670;&#160;</a></span>as_mut()</h2>
+<a id="af7ebec058e33bdc71f8054df9fd3acce" name="af7ebec058e33bdc71f8054df9fd3acce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7ebec058e33bdc71f8054df9fd3acce">&#9670;&#160;</a></span>as_mut()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::as_mut </td>
+          <td class="memname">auto <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::as_mut </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html">proxqp::dense::QpViewMut</a>&lt;Scalar&gt;
+          <td> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html">proxqp::dense::QpViewMut</a>&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>&gt;
   </td>
         </tr>
       </table>
@@ -323,134 +343,134 @@ template&lt;typename Scalar &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00198">198</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00207">207</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ac1d12ac242922278c253f2a2d00637e6" name="ac1d12ac242922278c253f2a2d00637e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1d12ac242922278c253f2a2d00637e6">&#9670;&#160;</a></span>H</h2>
+<a id="a66613eb6d918fb3a49d0fa05fd606869" name="a66613eb6d918fb3a49d0fa05fd606869"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66613eb6d918fb3a49d0fa05fd606869">&#9670;&#160;</a></span>H</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::H</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::H</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00154">154</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00163">163</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a1acf4b1f214059863f87cb6ccfed03f1" name="a1acf4b1f214059863f87cb6ccfed03f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1acf4b1f214059863f87cb6ccfed03f1">&#9670;&#160;</a></span>g</h2>
+<a id="af9dfe51f57b411571ffaf4dda17f6f1e" name="af9dfe51f57b411571ffaf4dda17f6f1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9dfe51f57b411571ffaf4dda17f6f1e">&#9670;&#160;</a></span>g</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::g</td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::g</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00155">155</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00164">164</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a4ba7e04985e6ec18f955b1177257a5c3" name="a4ba7e04985e6ec18f955b1177257a5c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ba7e04985e6ec18f955b1177257a5c3">&#9670;&#160;</a></span>A</h2>
+<a id="a919f2bffd55a81fbaca494486d6ae1f1" name="a919f2bffd55a81fbaca494486d6ae1f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a919f2bffd55a81fbaca494486d6ae1f1">&#9670;&#160;</a></span>A</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::A</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::A</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00156">156</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00165">165</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a6574fbad6964fc366530df05efaf83ce" name="a6574fbad6964fc366530df05efaf83ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6574fbad6964fc366530df05efaf83ce">&#9670;&#160;</a></span>b</h2>
+<a id="a516b900ad0135214d3f9b327aba0e26b" name="a516b900ad0135214d3f9b327aba0e26b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a516b900ad0135214d3f9b327aba0e26b">&#9670;&#160;</a></span>b</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::b</td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::b</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00157">157</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00166">166</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a35e2a775bf331a43045e0606eb39c85c" name="a35e2a775bf331a43045e0606eb39c85c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35e2a775bf331a43045e0606eb39c85c">&#9670;&#160;</a></span>C</h2>
+<a id="a499b1e560d365e23919433996d3d9ece" name="a499b1e560d365e23919433996d3d9ece"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a499b1e560d365e23919433996d3d9ece">&#9670;&#160;</a></span>C</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::C</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2">Scalar</a>, 1&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::C</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00158">158</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00167">167</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a753ea7a74ca2247b5d1265a1c4406152" name="a753ea7a74ca2247b5d1265a1c4406152"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a753ea7a74ca2247b5d1265a1c4406152">&#9670;&#160;</a></span>u</h2>
+<a id="aca49c9bb18bc65091e95a16cb2c7cc74" name="aca49c9bb18bc65091e95a16cb2c7cc74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca49c9bb18bc65091e95a16cb2c7cc74">&#9670;&#160;</a></span>u</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::u</td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::u</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00159">159</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00168">168</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a153ba0f6eefe58fb06dd75fb773d9e8b" name="a153ba0f6eefe58fb06dd75fb773d9e8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a153ba0f6eefe58fb06dd75fb773d9e8b">&#9670;&#160;</a></span>l</h2>
+<a id="aeed8a31478563712a1f9bb66538c0034" name="aeed8a31478563712a1f9bb66538c0034"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeed8a31478563712a1f9bb66538c0034">&#9670;&#160;</a></span>l</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
+template&lt;typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; Scalar &gt;::l</td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df">VectorType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; _Scalar &gt;::l</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00160">160</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="sparse_2model_8hpp_source.html#l00169">169</a> of file <a class="el" href="sparse_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>

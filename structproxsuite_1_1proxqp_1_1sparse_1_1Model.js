@@ -1,6 +1,8 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1Model =
 [
-    [ "Model", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a71fbfb7bf01f3cd88f78dfbfe1c76786", null ],
+    [ "Scalar", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a3924f351411dd0faf9a0eea3fdf6bbb9", null ],
+    [ "VectorType", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a3c8c94f5f57b49f93bf8e04b6513d0ea", null ],
+    [ "Model", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a4f1308d44e64fec328d7e72c4e572661", null ],
     [ "kkt", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad220943707b391c8d64b6bfc912964e5", null ],
     [ "kkt_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a6a5516c2b4375fa0aecb5c483cc45ee1", null ],
     [ "kkt_unscaled", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a039a0f62cf6e950905b340bc312c0ee6", null ],
@@ -17,8 +19,8 @@ var structproxsuite_1_1proxqp_1_1sparse_1_1Model =
     [ "kkt_col_ptrs_unscaled", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#af52f24d741a5aa3a8d9e0679248a6bf4", null ],
     [ "kkt_row_indices_unscaled", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a51780ce6a53b00a68cd04235f0cb9e9b", null ],
     [ "kkt_values_unscaled", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a656a16dfe6ca607d4b89d0ebe92e6832", null ],
-    [ "g", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a32373666ec59152a47c16eac5c992f07", null ],
-    [ "b", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a70224da6365c3bd94356b3189c621ed7", null ],
-    [ "l", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a436f17c6a0b077357b09695918ab8aa7", null ],
-    [ "u", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ae3c7fcf9af4ce632f13967ccd1b525b8", null ]
+    [ "g", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ae2004296126d404822e242bf5ea6f243", null ],
+    [ "b", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a14d3f7392eb315ed1f2a430076163738", null ],
+    [ "l", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a4b479fe03e53cb9503459b93188e6700", null ],
+    [ "u", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad2bbb5aba5a312b92e64192df36be6d6", null ]
 ];

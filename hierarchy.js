@@ -277,6 +277,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "proxsuite::linalg::dense::_detail::IndicesR", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html", null ],
+    [ "proxsuite::helpers::infinite_bound< Scalar >", "structproxsuite_1_1helpers_1_1infinite__bound.html", null ],
     [ "proxsuite::proxqp::Info< T >", "structproxsuite_1_1proxqp_1_1Info.html", null ],
     [ "proxsuite::proxqp::dense::nb::infty_norm", "structproxsuite_1_1proxqp_1_1dense_1_1nb_1_1infty__norm.html", null ],
     [ "proxsuite::linalg::veg::nb::init_list", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1init__list.html", null ],
@@ -411,7 +412,7 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::SimpleLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1SimpleLeaf.html", [
       [ "proxsuite::linalg::veg::_detail::SimpleITuple< _meta::integer_sequence< usize, Is... >, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1SimpleITuple_3_01__meta_1_1integer__sequence_3_03280e6cc7eeb52352ef307fb2696e6bf.html", null ]
     ] ],
-    [ "proxsuite::proxqp::sparse::SparseModel< Scalar >", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html", null ],
+    [ "proxsuite::proxqp::sparse::SparseModel< _Scalar >", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html", null ],
     [ "proxsuite::proxqp::dense::nb::sqrt", "structproxsuite_1_1proxqp_1_1dense_1_1nb_1_1sqrt.html", null ],
     [ "proxsuite::linalg::veg::dynstack::StackReq", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html", null ],
     [ "proxsuite::linalg::veg::meta::static_const< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1static__const.html", null ],

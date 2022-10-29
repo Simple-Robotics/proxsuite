@@ -1,14 +1,15 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel =
 [
-    [ "VectorType", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a8943509b9f7b0cae061dd9f6d1f123e3", null ],
-    [ "SparseModel", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a21e5b75d3126498a419fcba8e5bffabb", null ],
-    [ "as_view", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#ad05afae370e87cc4ef154b8008eea05c", null ],
-    [ "as_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a4f6644835da31b07d93abb4ab980e063", null ],
-    [ "H", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#ac1d12ac242922278c253f2a2d00637e6", null ],
-    [ "g", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a1acf4b1f214059863f87cb6ccfed03f1", null ],
-    [ "A", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a4ba7e04985e6ec18f955b1177257a5c3", null ],
-    [ "b", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a6574fbad6964fc366530df05efaf83ce", null ],
-    [ "C", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a35e2a775bf331a43045e0606eb39c85c", null ],
-    [ "u", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a753ea7a74ca2247b5d1265a1c4406152", null ],
-    [ "l", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a153ba0f6eefe58fb06dd75fb773d9e8b", null ]
+    [ "Scalar", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2", null ],
+    [ "VectorType", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df", null ],
+    [ "SparseModel", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a37146513178bfaa843c99e65bc912951", null ],
+    [ "as_view", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a1c54a2f64236634233128c67f5232686", null ],
+    [ "as_mut", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#af7ebec058e33bdc71f8054df9fd3acce", null ],
+    [ "H", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a66613eb6d918fb3a49d0fa05fd606869", null ],
+    [ "g", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#af9dfe51f57b411571ffaf4dda17f6f1e", null ],
+    [ "A", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a919f2bffd55a81fbaca494486d6ae1f1", null ],
+    [ "b", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a516b900ad0135214d3f9b327aba0e26b", null ],
+    [ "C", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a499b1e560d365e23919433996d3d9ece", null ],
+    [ "u", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aca49c9bb18bc65091e95a16cb2c7cc74", null ],
+    [ "l", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aeed8a31478563712a1f9bb66538c0034", null ]
 ];

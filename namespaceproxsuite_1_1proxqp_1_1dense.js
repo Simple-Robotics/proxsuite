@@ -32,7 +32,7 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "setup_equilibration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4597b80a07e8460b5b743ae0c30736", null ],
     [ "initial_guess", "namespaceproxsuite_1_1proxqp_1_1dense.html#a13d57a50fa06a913d1ffd3c0213465c6", null ],
     [ "update", "namespaceproxsuite_1_1proxqp_1_1dense.html#af572367b2d0ba20d3ed19b44895121d3", null ],
-    [ "setup", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8e98ad0c1c9b7cf09d36f733c78f5a8f", null ],
+    [ "setup", "namespaceproxsuite_1_1proxqp_1_1dense.html#aefae118cd40487371c964e6b87bc5c22", null ],
     [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1dense.html#ab5e5c1e01673f4f53ebd7434640fdd9a", null ],
     [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6c474364f6ce63390aea85d3862e7971", null ],
     [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8cb8a34c0abc1aabca3ded2a9a0112ca", null ],

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -680,7 +680,7 @@ Functions</h2></td></tr>
 <div class="line">    oss &lt;&lt; <span class="stringliteral">&quot;wrong argument size: expected &quot;</span> &lt;&lt; expected_size &lt;&lt; <span class="stringliteral">&quot;, got &quot;</span>       \</div>
 <div class="line">        &lt;&lt; size &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;                                                       \</div>
 <div class="line">    oss &lt;&lt; <span class="stringliteral">&quot;hint: &quot;</span> &lt;&lt; message &lt;&lt; std::endl;                                   \</div>
-<div class="line">    PROXSUITE_THROW_PRETTY(<span class="keyword">false</span>, std::invalid_argument, oss.str());           \</div>
+<div class="line">    PROXSUITE_THROW_PRETTY(<span class="keyword">true</span>, std::invalid_argument, oss.str());            \</div>
 <div class="line">  }</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l00027">27</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
@@ -1499,7 +1499,7 @@ Functions</h2></td></tr>
 <div class="line">             __VEG_PP_TUPLE_FOR_EACH(<a class="code hl_define" href="macros_8hpp.html#a70fbedfc05e0d55aab7409eea3ade022">__VEG_IMPL_SFINAE</a>, _, Seq)&gt;               \</div>
 <div class="line">  <span class="keyword">auto</span> check_##Name() noexcept-&gt;::<a class="code hl_namespace" href="namespaceproxsuite.html">proxsuite</a>::linalg::veg::meta::true_type</div>
 <div class="ttc" id="amacros_8hpp_html_a70fbedfc05e0d55aab7409eea3ade022"><div class="ttname"><a href="macros_8hpp.html#a70fbedfc05e0d55aab7409eea3ade022">__VEG_IMPL_SFINAE</a></div><div class="ttdeci">#define __VEG_IMPL_SFINAE(_, Param)</div><div class="ttdef"><b>Definition:</b> <a href="macros_8hpp_source.html#l00337">macros.hpp:337</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="instruction-set_8hpp_source.html#l00021">instruction-set.hpp:21</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00014">common.hpp:14</a></div></div>
 <div class="ttc" id="apreprocessor_8hpp_html_a6ffe02ae659dfba53aa9a66513bf6f0c"><div class="ttname"><a href="preprocessor_8hpp.html#a6ffe02ae659dfba53aa9a66513bf6f0c">__VEG_PP_REMOVE_PAREN1</a></div><div class="ttdeci">#define __VEG_PP_REMOVE_PAREN1(...)</div><div class="ttdef"><b>Definition:</b> <a href="preprocessor_8hpp_source.html#l00428">preprocessor.hpp:428</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l00348">348</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>

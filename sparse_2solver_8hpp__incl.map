@@ -1,52 +1,52 @@
 <map id="include/proxsuite/proxqp/sparse/solver.hpp" name="include/proxsuite/proxqp/sparse/solver.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="1467,5,1650,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="380,277,447,302"/>
-<area shape="rect" id="node3" href="$dense_2core_8hpp.html" title=" " alt="" coords="721,357,887,397"/>
-<area shape="rect" id="node19" href="$sparse_2core_8hpp.html" title=" " alt="" coords="1384,533,1555,573"/>
-<area shape="rect" id="node22" href="$sparse_2factorize_8hpp.html" title=" " alt="" coords="1443,357,1613,397"/>
-<area shape="rect" id="node24" href="$sparse_2update_8hpp.html" title=" " alt="" coords="216,445,387,485"/>
-<area shape="rect" id="node26" href="$rowmod_8hpp.html" title=" " alt="" coords="93,357,264,397"/>
-<area shape="rect" id="node27" href="$dense_2views_8hpp.html" title=" " alt="" coords="775,709,950,749"/>
-<area shape="rect" id="node29" href="$settings_8hpp.html" title=" " alt="" coords="1064,453,1280,478"/>
-<area shape="rect" id="node31" href="$sparse_2fwd_8hpp.html" title=" " alt="" coords="2255,621,2433,661"/>
-<area shape="rect" id="node33" href="$vec_8hpp.html" title=" " alt="" coords="1845,709,1995,749"/>
-<area shape="rect" id="node36" href="$results_8hpp.html" title=" " alt="" coords="1941,365,2149,390"/>
-<area shape="rect" id="node38" href="$sparse_2views_8hpp.html" title=" " alt="" coords="1089,269,1268,309"/>
-<area shape="rect" id="node39" href="$sparse_2model_8hpp.html" title=" " alt="" coords="2173,357,2352,397"/>
-<area shape="rect" id="node40" title=" " alt="" coords="440,365,645,390"/>
-<area shape="rect" id="node41" title=" " alt="" coords="1216,357,1419,397"/>
-<area shape="rect" id="node42" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="1165,93,1344,133"/>
-<area shape="rect" id="node44" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="1596,181,1775,221"/>
-<area shape="rect" id="node46" title=" " alt="" coords="2376,365,2456,390"/>
-<area shape="rect" id="node47" href="$sparse_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="2769,269,2948,309"/>
-<area shape="rect" id="node48" href="$sparse_2preconditioner_2identity_8hpp.html" title=" " alt="" coords="2292,269,2492,309"/>
-<area shape="rect" id="node50" title=" " alt="" coords="3073,101,3148,126"/>
-<area shape="rect" id="node4" href="$util_2dbg_8hpp.html" title=" " alt="" coords="517,805,667,845"/>
-<area shape="rect" id="node9" href="$assert_8hpp.html" title=" " alt="" coords="1205,988,1355,1028"/>
-<area shape="rect" id="node11" href="$dynamic__stack_8hpp.html" title=" " alt="" coords="1368,709,1579,749"/>
-<area shape="rect" id="node17" title=" " alt="" coords="739,453,837,478"/>
-<area shape="rect" id="node18" title=" " alt="" coords="838,812,930,837"/>
-<area shape="rect" id="node5" href="$internal_2dbg_8hpp.html" title=" " alt="" coords="878,1171,1029,1211"/>
-<area shape="rect" id="node6" href="$prologue_8hpp.html" title=" " alt="" coords="1268,1267,1433,1307"/>
-<area shape="rect" id="node7" title=" " alt="" coords="772,1274,839,1299"/>
-<area shape="rect" id="node8" href="$epilogue_8hpp.html" title=" " alt="" coords="1807,1267,1971,1307"/>
-<area shape="rect" id="node10" href="$assert__impl_8hpp.html" title=" " alt="" coords="1172,1076,1356,1116"/>
-<area shape="rect" id="node12" href="$collection__algo_8hpp.html" title=" " alt="" coords="1583,797,1734,852"/>
-<area shape="rect" id="node13" href="$memory_2alloc_8hpp.html" title=" " alt="" coords="1697,900,1847,940"/>
-<area shape="rect" id="node14" href="$slice_8hpp.html" title=" " alt="" coords="1255,805,1406,845"/>
-<area shape="rect" id="node15" href="$narrow_8hpp.html" title=" " alt="" coords="1317,900,1469,940"/>
-<area shape="rect" id="node16" href="$tuple_8hpp.html" title=" " alt="" coords="878,1076,1029,1116"/>
-<area shape="rect" id="node20" title=" " alt="" coords="1026,812,1118,837"/>
-<area shape="rect" id="node21" title=" " alt="" coords="1368,629,1504,654"/>
-<area shape="rect" id="node23" title=" " alt="" coords="1406,453,1581,478"/>
-<area shape="rect" id="node25" title=" " alt="" coords="157,541,243,566"/>
-<area shape="rect" id="node28" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="2123,805,2279,845"/>
-<area shape="rect" id="node30" href="$status_8hpp.html" title=" " alt="" coords="2102,541,2306,566"/>
-<area shape="rect" id="node32" title=" " alt="" coords="2433,717,2540,742"/>
-<area shape="rect" id="node34" href="$delete__special__members_8hpp.html" title=" " alt="" coords="2003,1164,2178,1219"/>
-<area shape="rect" id="node35" href="$unreachable_8hpp.html" title=" " alt="" coords="1617,1171,1775,1211"/>
-<area shape="rect" id="node37" title=" " alt="" coords="1992,453,2067,478"/>
-<area shape="rect" id="node43" href="$timings_8hpp.html" title=" " alt="" coords="383,189,596,214"/>
-<area shape="rect" id="node49" title=" " alt="" coords="1343,189,1420,214"/>
-<area shape="rect" id="node45" href="$prints_8hpp.html" title=" " alt="" coords="2053,269,2217,309"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1315,5,1498,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="495,277,561,302"/>
+<area shape="rect" id="node3" href="$dense_2core_8hpp.html" title=" " alt="" coords="2009,357,2175,397"/>
+<area shape="rect" id="node18" href="$sparse_2core_8hpp.html" title=" " alt="" coords="1952,533,2123,573"/>
+<area shape="rect" id="node21" href="$sparse_2factorize_8hpp.html" title=" " alt="" coords="1813,357,1984,397"/>
+<area shape="rect" id="node23" href="$sparse_2update_8hpp.html" title=" " alt="" coords="2424,445,2595,485"/>
+<area shape="rect" id="node25" href="$rowmod_8hpp.html" title=" " alt="" coords="2600,357,2771,397"/>
+<area shape="rect" id="node26" href="$dense_2views_8hpp.html" title=" " alt="" coords="905,709,1079,749"/>
+<area shape="rect" id="node28" href="$settings_8hpp.html" title=" " alt="" coords="688,453,904,478"/>
+<area shape="rect" id="node30" href="$sparse_2fwd_8hpp.html" title=" " alt="" coords="483,621,661,661"/>
+<area shape="rect" id="node32" href="$vec_8hpp.html" title=" " alt="" coords="1687,709,1838,749"/>
+<area shape="rect" id="node36" href="$results_8hpp.html" title=" " alt="" coords="1176,365,1384,390"/>
+<area shape="rect" id="node38" href="$sparse_2views_8hpp.html" title=" " alt="" coords="1317,269,1496,309"/>
+<area shape="rect" id="node39" href="$sparse_2model_8hpp.html" title=" " alt="" coords="315,357,493,397"/>
+<area shape="rect" id="node40" title=" " alt="" coords="845,365,1051,390"/>
+<area shape="rect" id="node41" title=" " alt="" coords="619,357,821,397"/>
+<area shape="rect" id="node42" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="1191,93,1369,133"/>
+<area shape="rect" id="node44" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="1444,181,1623,221"/>
+<area shape="rect" id="node46" title=" " alt="" coords="2251,365,2331,390"/>
+<area shape="rect" id="node47" href="$sparse_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="117,269,296,309"/>
+<area shape="rect" id="node48" href="$sparse_2preconditioner_2identity_8hpp.html" title=" " alt="" coords="2267,269,2467,309"/>
+<area shape="rect" id="node50" title=" " alt="" coords="2947,101,3021,126"/>
+<area shape="rect" id="node4" href="$util_2dbg_8hpp.html" title=" " alt="" coords="1207,805,1358,845"/>
+<area shape="rect" id="node9" href="$assert_8hpp.html" title=" " alt="" coords="2369,995,2519,1035"/>
+<area shape="rect" id="node10" href="$dynamic__stack_8hpp.html" title=" " alt="" coords="2149,709,2360,749"/>
+<area shape="rect" id="node16" title=" " alt="" coords="2125,453,2224,478"/>
+<area shape="rect" id="node17" title=" " alt="" coords="634,812,726,837"/>
+<area shape="rect" id="node5" href="$internal_2dbg_8hpp.html" title=" " alt="" coords="1251,995,1402,1035"/>
+<area shape="rect" id="node6" href="$prologue_8hpp.html" title=" " alt="" coords="2045,1091,2211,1131"/>
+<area shape="rect" id="node7" title=" " alt="" coords="1112,1098,1179,1123"/>
+<area shape="rect" id="node8" href="$epilogue_8hpp.html" title=" " alt="" coords="1358,1091,1522,1131"/>
+<area shape="rect" id="node11" href="$collection__algo_8hpp.html" title=" " alt="" coords="1902,797,2053,852"/>
+<area shape="rect" id="node12" href="$memory_2alloc_8hpp.html" title=" " alt="" coords="1865,900,2015,940"/>
+<area shape="rect" id="node13" href="$slice_8hpp.html" title=" " alt="" coords="2179,805,2330,845"/>
+<area shape="rect" id="node14" href="$narrow_8hpp.html" title=" " alt="" coords="2141,900,2293,940"/>
+<area shape="rect" id="node15" href="$tuple_8hpp.html" title=" " alt="" coords="1473,900,1623,940"/>
+<area shape="rect" id="node19" title=" " alt="" coords="1382,812,1474,837"/>
+<area shape="rect" id="node20" title=" " alt="" coords="1936,629,2072,654"/>
+<area shape="rect" id="node22" title=" " alt="" coords="1774,453,1949,478"/>
+<area shape="rect" id="node24" title=" " alt="" coords="2536,541,2621,566"/>
+<area shape="rect" id="node27" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="1027,805,1183,845"/>
+<area shape="rect" id="node29" href="$status_8hpp.html" title=" " alt="" coords="1037,541,1241,566"/>
+<area shape="rect" id="node31" title=" " alt="" coords="77,717,184,742"/>
+<area shape="rect" id="node35" href="$common_8hpp.html" title=" " alt="" coords="460,717,684,742"/>
+<area shape="rect" id="node33" href="$delete__special__members_8hpp.html" title=" " alt="" coords="1915,988,2090,1043"/>
+<area shape="rect" id="node34" href="$unreachable_8hpp.html" title=" " alt="" coords="1478,995,1637,1035"/>
+<area shape="rect" id="node37" title=" " alt="" coords="1117,453,1192,478"/>
+<area shape="rect" id="node43" href="$timings_8hpp.html" title=" " alt="" coords="523,189,736,214"/>
+<area shape="rect" id="node49" title=" " alt="" coords="1115,189,1192,214"/>
+<area shape="rect" id="node45" href="$prints_8hpp.html" title=" " alt="" coords="1825,269,1989,309"/>
 </map>

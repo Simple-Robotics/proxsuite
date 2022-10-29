@@ -11,11 +11,11 @@
 <!-- Node0 -->
 <g id="node1" class="node">
 <title>Node0</title>
-<g id="a_node1"><a xlink:href="structproxsuite_1_1proxqp_1_1detail_1_1SetZeroImpl_3_01T_00_01true_01_4.html" target="_top" xlink:title=" ">
+<g id="a_node1"><a xlink:href="structproxsuite_1_1proxqp_1_1detail_1_1SetZeroImpl.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="110,-41 0,-41 0,0 110,0 110,-41"/>
 <text text-anchor="start" x="8" y="-29" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::proxqp::</text>
 <text text-anchor="start" x="8" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">detail::SetZeroImpl</text>
-<text text-anchor="middle" x="55" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; T, true &gt;</text>
+<text text-anchor="middle" x="55" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; T, bool &gt;</text>
 </a>
 </g>
 </g>

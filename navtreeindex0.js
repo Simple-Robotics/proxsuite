@@ -33,6 +33,8 @@ var NAVTREEINDEX0 =
 "collection__algo_8hpp.html":[12,0,1,0,1,2,0,2],
 "collection__algo_8hpp.html#ac13e53128895c89e0fc037201f9025d2":[12,0,1,0,1,2,0,2,3],
 "collection__algo_8hpp_source.html":[12,0,1,0,1,2,0,2],
+"common_8hpp.html":[12,0,1,0,0,0],
+"common_8hpp_source.html":[12,0,1,0,0,0],
 "constructible_8hpp.html":[12,0,1,0,1,2,2,2],
 "constructible_8hpp.html#a0a8b44930e3abb506824f1ff024a550d":[12,0,1,0,1,2,2,2,25],
 "constructible_8hpp.html#a188e9a7e3cdfc56e7b34eb16fb433463":[12,0,1,0,1,2,2,2,21],
@@ -144,10 +146,10 @@ var NAVTREEINDEX0 =
 "dense_2helpers_8hpp.html#a13d57a50fa06a913d1ffd3c0213465c6":[12,0,1,0,2,0,3,3],
 "dense_2helpers_8hpp.html#a4322c774a3588684a61b25b5c15d14b1":[12,0,1,0,2,0,3,0],
 "dense_2helpers_8hpp.html#a6c474364f6ce63390aea85d3862e7971":[12,0,1,0,2,0,3,7],
-"dense_2helpers_8hpp.html#a8e98ad0c1c9b7cf09d36f733c78f5a8f":[12,0,1,0,2,0,3,5],
 "dense_2helpers_8hpp.html#a9b4597b80a07e8460b5b743ae0c30736":[12,0,1,0,2,0,3,2],
 "dense_2helpers_8hpp.html#aa5ad2dcaf673f179e9d246e4cc5d6538":[12,0,1,0,2,0,3,1],
 "dense_2helpers_8hpp.html#ab5e5c1e01673f4f53ebd7434640fdd9a":[12,0,1,0,2,0,3,6],
+"dense_2helpers_8hpp.html#aefae118cd40487371c964e6b87bc5c22":[12,0,1,0,2,0,3,5],
 "dense_2helpers_8hpp.html#af572367b2d0ba20d3ed19b44895121d3":[12,0,1,0,2,0,3,4],
 "dense_2helpers_8hpp_source.html":[12,0,1,0,2,0,3],
 "dense_2model_8hpp.html":[12,0,1,0,2,0,5],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "dense_2views_8hpp.html#a9376493705671641474f3d36d27d882d":[12,0,1,0,2,0,8,91],
 "dense_2views_8hpp.html#a94a8cc9d0cb3a98941131e19c885d0cd":[12,0,1,0,2,0,8,56],
 "dense_2views_8hpp.html#a95f1475e7d77f87895bccc2b3a790a90":[12,0,1,0,2,0,8,65],
-"dense_2views_8hpp.html#a95f1475e7d77f87895bccc2b3a790a90a531f659b28e004031909860372c4f322":[12,0,1,0,2,0,8,65,1],
-"dense_2views_8hpp.html#a95f1475e7d77f87895bccc2b3a790a90a792226b1a2c2e2df788701a896fc243c":[12,0,1,0,2,0,8,65,0],
-"dense_2views_8hpp.html#a9b388d6c6442a4e8072d00f8a600d0f3":[12,0,1,0,2,0,8,105]
+"dense_2views_8hpp.html#a95f1475e7d77f87895bccc2b3a790a90a531f659b28e004031909860372c4f322":[12,0,1,0,2,0,8,65,1]
 };

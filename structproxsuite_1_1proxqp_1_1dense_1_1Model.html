@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -123,8 +123,8 @@ Collaboration diagram for proxsuite::proxqp::dense::Model&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a5cba86edc28d0a1110bd4f97aa4798d2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a5cba86edc28d0a1110bd4f97aa4798d2">Model</a> (isize _dim, isize _n_eq, isize _n_in)</td></tr>
-<tr class="separator:a5cba86edc28d0a1110bd4f97aa4798d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a622239c2f31446cad6d5406a0a626e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1a622239c2f31446cad6d5406a0a626e">Model</a> (isize <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a65cc80eafcd5a5c9aadca68c427e2869">dim</a>, isize <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ad990a0ddc1463ba309338c1aa49189a8">n_eq</a>, isize <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab80dc12d7baf60a2e8f268fada47d6a2">n_in</a>)</td></tr>
+<tr class="separator:a1a622239c2f31446cad6d5406a0a626e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab18fd6fc7f3e83bbf907f30270ca80c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html">proxsuite::proxqp::sparse::SparseModel</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab18fd6fc7f3e83bbf907f30270ca80c">to_sparse</a> ()</td></tr>
 <tr class="separator:aab18fd6fc7f3e83bbf907f30270ca80c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -160,8 +160,8 @@ struct proxsuite::proxqp::dense::Model&lt; T &gt;</div><p >This class stores the
 
 <p class="definition">Definition at line <a class="el" href="dense_2model_8hpp_source.html#l00023">23</a> of file <a class="el" href="dense_2model_8hpp_source.html">model.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a5cba86edc28d0a1110bd4f97aa4798d2" name="a5cba86edc28d0a1110bd4f97aa4798d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cba86edc28d0a1110bd4f97aa4798d2">&#9670;&#160;</a></span>Model()</h2>
+<a id="a1a622239c2f31446cad6d5406a0a626e" name="a1a622239c2f31446cad6d5406a0a626e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a622239c2f31446cad6d5406a0a626e">&#9670;&#160;</a></span>Model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,19 +175,19 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">proxsuite::proxqp::dense::Model</a>&lt; T &gt;::Model </td>
           <td>(</td>
           <td class="paramtype">isize&#160;</td>
-          <td class="paramname"><em>_dim</em>, </td>
+          <td class="paramname"><em>dim</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">isize&#160;</td>
-          <td class="paramname"><em>_n_eq</em>, </td>
+          <td class="paramname"><em>n_eq</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">isize&#160;</td>
-          <td class="paramname"><em>_n_in</em>&#160;</td>
+          <td class="paramname"><em>n_in</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -203,14 +203,14 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Default constructor. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">_dim</td><td>primal variable dimension. </td></tr>
-    <tr><td class="paramname">_n_eq</td><td>number of equality constraints. </td></tr>
-    <tr><td class="paramname">_n_in</td><td>number of inequality constraints. </td></tr>
+    <tr><td class="paramname">dim</td><td>primal variable dimension. </td></tr>
+    <tr><td class="paramname">n_eq</td><td>number of equality constraints. </td></tr>
+    <tr><td class="paramname">n_in</td><td>number of inequality constraints. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2model_8hpp_source.html#l00046">46</a> of file <a class="el" href="dense_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2model_8hpp_source.html#l00047">47</a> of file <a class="el" href="dense_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>
@@ -240,7 +240,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2model_8hpp_source.html#l00072">72</a> of file <a class="el" href="dense_2model_8hpp_source.html">model.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2model_8hpp_source.html#l00078">78</a> of file <a class="el" href="dense_2model_8hpp_source.html">model.hpp</a>.</p>
 
 </div>
 </div>

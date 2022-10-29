@@ -16,7 +16,7 @@
 <text text-anchor="start" x="8" y="-40" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
 <text text-anchor="start" x="8" y="-29" font-family="Helvetica,sans-Serif" font-size="10.00">sparse::_detail::SymbolicMat</text>
 <text text-anchor="start" x="8" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">RefInterface&lt; MatMut&lt; T,</text>
-<text text-anchor="middle" x="79" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00"> isize &gt;, isize &gt;</text>
+<text text-anchor="middle" x="79" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00"> I &gt;, I &gt;</text>
 </a>
 </g>
 </g>
