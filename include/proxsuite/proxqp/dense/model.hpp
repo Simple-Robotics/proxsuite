@@ -32,33 +32,34 @@ struct Model
   Vec<T> u;
   Vec<T> l;
 
-  ///// model size
+  ///// model sizes
   isize dim;
   isize n_eq;
   isize n_in;
   isize n_total;
+
   /*!
    * Default constructor.
-   * @param _dim primal variable dimension.
-   * @param _n_eq number of equality constraints.
-   * @param _n_in number of inequality constraints.
+   * @param dim primal variable dimension.
+   * @param n_eq number of equality constraints.
+   * @param n_in number of inequality constraints.
    */
-  Model(isize _dim, isize _n_eq, isize _n_in)
-    : H(_dim, _dim)
-    , g(_dim)
-    , A(_n_eq, _dim)
-    , C(_n_in, _dim)
-    , b(_n_eq)
-    , u(_n_in)
-    , l(_n_in)
-    , dim(_dim)
-    , n_eq(_n_eq)
-    , n_in(_n_in)
-    , n_total(_dim + _n_eq + _n_in)
+  Model(isize dim, isize n_eq, isize n_in)
+    : H(dim, dim)
+    , g(dim)
+    , A(n_eq, dim)
+    , C(n_in, dim)
+    , b(n_eq)
+    , u(n_in)
+    , l(n_in)
+    , dim(dim)
+    , n_eq(n_eq)
+    , n_in(n_in)
+    , n_total(dim + n_eq + n_in)
   {
-    PROXSUITE_THROW_PRETTY(_dim == 0,
+    PROXSUITE_THROW_PRETTY(dim == 0,
                            std::invalid_argument,
-                           "wrong argument size: the dimension wrt primal "
+                           "wrong argument size: the dimension wrt the primal "
                            "variable x should be strictly positive.");
     H.setZero();
     g.setZero();
