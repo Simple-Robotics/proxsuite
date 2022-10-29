@@ -22,7 +22,7 @@ template<typename T, typename I>
 struct Model
 {
   typedef T Scalar;
-  using VectorType = Eigen::Matrix<T, Eigen::Dynamic, 1> VectorType;
+  using VectorType = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
   isize dim;
   isize n_eq;
