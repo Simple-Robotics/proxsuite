@@ -93,7 +93,7 @@ Different options are available for the solve function. In the table below you h
 | x                                   | Value of the EQUALITY_CONSTRAINED_INITIAL_GUESS | Warm start value for the primal variable.
 | y                                   | Value of the EQUALITY_CONSTRAINED_INITIAL_GUESS | Warm start value for the dual Lagrange multiplier for equality constraints.
 | z                                   | 0                                               | Warm start value for the dual Lagrange multiplier for inequality constraints.
-| eps_abs                             | 1.E-3                                           | Asbolute stopping criterion of the solver.
+| eps_abs                             | 1.E-5                                           | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                                               | Relative stopping criterion of the solver.
 | mu_eq                               | 1.E-3                                           | Proximal step size wrt equality constraints multiplier.
 | mu_in                               | 1.E-1                                           | Proximal step size wrt inequality constraints multiplier.
@@ -101,7 +101,7 @@ Different options are available for the solve function. In the table below you h
 | VERBOSE                             | False                                           | If set to true, the solver prints information at each loop.
 | compute_preconditioner              | True                                            | If set to true, the preconditioner will be derived.
 | compute_timings                     | True                                            | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
-| max_iter                            | 1.E4                                            | Maximal number of authorized outer iterations.
+| max_iter                            | 10.000                                           | Maximal number of authorized outer iterations.
 | initial_guess                       | EQUALITY_CONSTRAINED_INITIAL_GUESS              | Sets the initial guess option for initilizing x, y and z.
 
 All other settings are set to their default values detailed in [ProxQP API with examples](2-ProxQP_api.md) differents subsections of "The settings subclass" section.

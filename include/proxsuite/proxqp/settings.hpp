@@ -140,7 +140,7 @@ struct Settings
            T cold_reset_mu_in = 1. / 1.1,
            T cold_reset_mu_eq_inv = 1.1,
            T cold_reset_mu_in_inv = 1.1,
-           T eps_abs = 1.e-8,
+           T eps_abs = 1.e-5,
            T eps_rel = 0,
            isize max_iter = 10000,
            isize max_iter_in = 1500,
