@@ -25,6 +25,7 @@ macro(proxsuite_test name path)
   target_link_libraries(test-cpp-${name} proxsuite doctest proxsuite-test-util)
   target_compile_definitions(test-cpp-${name}
                              PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
+  add_dependencies(build_tests test-cpp-${name})
 endmacro()
 
 proxsuite_test(dense_ruiz_equilibration src/dense_ruiz_equilibration.cpp)
