@@ -3,8 +3,8 @@
 //
 /** \file */
 
-#ifndef PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
-#define PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_PRECOND_RUIZ_HPP
+#define PROXSUITE_PROXQP_SPARSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 
@@ -566,4 +566,4 @@ struct RuizEquilibration
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_PRECOND_RUIZ_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_PRECOND_RUIZ_HPP */

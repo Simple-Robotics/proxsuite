@@ -4,8 +4,8 @@
 /**
  * @file results.hpp
  */
-#ifndef PROXSUITE_QP_RESULTS_HPP
-#define PROXSUITE_QP_RESULTS_HPP
+#ifndef PROXSUITE_PROXQP_RESULTS_HPP
+#define PROXSUITE_PROXQP_RESULTS_HPP
 
 #include <optional>
 #include <Eigen/Core>
@@ -159,4 +159,4 @@ struct Results
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_RESULTS_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_RESULTS_HPP */

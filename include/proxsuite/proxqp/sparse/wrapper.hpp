@@ -5,8 +5,8 @@
  * @file wrapper.hpp
  */
 
-#ifndef PROXSUITE_QP_SPARSE_WRAPPER_HPP
-#define PROXSUITE_QP_SPARSE_WRAPPER_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
+#define PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/sparse/solver.hpp>
@@ -747,4 +747,4 @@ solve(
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_WRAPPER_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP */

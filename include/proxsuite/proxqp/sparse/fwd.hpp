@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_SPARSE_FWD_HPP
-#define PROXSUITE_QP_SPARSE_FWD_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_FWD_HPP
+#define PROXSUITE_PROXQP_SPARSE_FWD_HPP
 
 #include <Eigen/Sparse>
 #include <proxsuite/linalg/veg/vec.hpp>
@@ -44,4 +44,4 @@ using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_FWD_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_FWD_HPP */

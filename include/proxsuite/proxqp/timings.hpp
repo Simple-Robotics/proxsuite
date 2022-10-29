@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 
-#ifndef PROXSUITE_QP_TIMINGS_HPP
-#define PROXSUITE_QP_TIMINGS_HPP
+#ifndef PROXSUITE_PROXQP_TIMINGS_HPP
+#define PROXSUITE_PROXQP_TIMINGS_HPP
 
 #include <chrono>
 
@@ -98,4 +98,4 @@ protected:
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif // ifndef PROXSUITE_QP_TIMINGS_HPP
+#endif // ifndef PROXSUITE_PROXQP_TIMINGS_HPP

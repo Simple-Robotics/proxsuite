@@ -3,8 +3,8 @@
 //
 /** \file */
 
-#ifndef PROXSUITE_QP_SPARSE_UTILS_HPP
-#define PROXSUITE_QP_SPARSE_UTILS_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_UTILS_HPP
+#define PROXSUITE_PROXQP_SPARSE_UTILS_HPP
 
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
@@ -778,4 +778,4 @@ struct generic_product_impl<
 } // namespace internal
 } // namespace Eigen
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_UTILS_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_UTILS_HPP */

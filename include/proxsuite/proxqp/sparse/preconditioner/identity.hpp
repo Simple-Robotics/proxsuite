@@ -3,8 +3,8 @@
 //
 /** \file */
 
-#ifndef PROXSUITE_QP_SPARSE_PRECOND_IDENTITY_HPP
-#define PROXSUITE_QP_SPARSE_PRECOND_IDENTITY_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_PRECOND_IDENTITY_HPP
+#define PROXSUITE_PROXQP_SPARSE_PRECOND_IDENTITY_HPP
 
 namespace proxsuite {
 namespace proxqp {
@@ -61,4 +61,4 @@ struct Identity
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_PRECOND_IDENTITY_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_PRECOND_IDENTITY_HPP */

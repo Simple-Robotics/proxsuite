@@ -3,8 +3,8 @@
 //
 /** \file */
 
-#ifndef PROXSUITE_QP_SPARSE_VIEWS_HPP
-#define PROXSUITE_QP_SPARSE_VIEWS_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_VIEWS_HPP
+#define PROXSUITE_PROXQP_SPARSE_VIEWS_HPP
 
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
@@ -60,4 +60,4 @@ struct QpViewMut
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_WORKSPACE_HPP */

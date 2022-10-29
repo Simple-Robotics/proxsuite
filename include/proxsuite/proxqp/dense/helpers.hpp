@@ -5,8 +5,8 @@
  * @file helpers.hpp
  */
 
-#ifndef PROXSUITE_QP_DENSE_HELPERS_HPP
-#define PROXSUITE_QP_DENSE_HELPERS_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_HELPERS_HPP
+#define PROXSUITE_PROXQP_DENSE_HELPERS_HPP
 
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/proxqp/settings.hpp>
@@ -579,4 +579,4 @@ warm_start(std::optional<VecRef<T>> x_wm,
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_HELPERS_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_HELPERS_HPP */

@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_DENSE_MODEL_HPP
-#define PROXSUITE_QP_DENSE_MODEL_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_MODEL_HPP
+#define PROXSUITE_PROXQP_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
@@ -88,4 +88,4 @@ struct Model
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_DENSE_MODEL_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_DENSE_MODEL_HPP */

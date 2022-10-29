@@ -2,8 +2,8 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_QP_SPARSE_MODEL_HPP
-#define PROXSUITE_QP_SPARSE_MODEL_HPP
+#ifndef PROXSUITE_PROXQP_SPARSE_MODEL_HPP
+#define PROXSUITE_PROXQP_SPARSE_MODEL_HPP
 
 #include <Eigen/Sparse>
 #include "proxsuite/linalg/sparse/core.hpp"
@@ -223,4 +223,4 @@ struct SparseModel
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_QP_SPARSE_MODEL_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_MODEL_HPP */
