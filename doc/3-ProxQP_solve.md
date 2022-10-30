@@ -101,7 +101,7 @@ Different options are available for the solve function. In the table below you h
 | VERBOSE                             | False                                           | If set to true, the solver prints information at each loop.
 | compute_preconditioner              | True                                            | If set to true, the preconditioner will be derived.
 | compute_timings                     | True                                            | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
-| max_iter                            | 10.000                                           | Maximal number of authorized outer iterations.
+| max_iter                            | 10.000                                          | Maximal number of authorized outer iterations.
 | initial_guess                       | EQUALITY_CONSTRAINED_INITIAL_GUESS              | Sets the initial guess option for initilizing x, y and z.
 
 All other settings are set to their default values detailed in [ProxQP API with examples](2-ProxQP_api.md) differents subsections of "The settings subclass" section.

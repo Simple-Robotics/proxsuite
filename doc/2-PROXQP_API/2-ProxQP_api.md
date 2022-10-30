@@ -297,36 +297,36 @@ In this section you will find first the solver's settings, and then a subsection
 
 In this table you have on the three columns from left to right: the name of the setting, its default value and then a short description of it.
 
-| Setting                             | Default value                  | Description
-| ----------------------------------- | ------------------------------ | -----------------------------------------
-| eps_abs                             | 1.E-5                          | Asbolute stopping criterion of the solver.
-| eps_rel                             | 0                              | Relative stopping criterion of the solver.
-| VERBOSE                             | False                          | If set to true, the solver prints information at each loop.
-| default_rho                         | 1.E-6                          | Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).
-| default_mu_eq                       | 1.E-3                          | Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).
-| default_mu_in                       | 1.E-1                          | Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value).
-| compute_timings                     | True                           | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
-| max_iter                            | 10.000                         | Maximal number of authorized outer iterations.
-| max_iter_in                         | 1500                           | Maximal number of authorized inner iterations.
-| initial_guess                       | WARM_START_WITH_PREVIOUS_RESULT| Sets the initial guess option for initilizing x, y and z.
-| mu_min_eq                           | 1.E-9                          | Minimal authorized value for mu_eq.
-| mu_min_in                           | 1.E-8                          | Minimal authorized value for mu_in.
-| mu_update_factor                    | 0.1                            | Factor used for updating mu_eq and mu_in.
-| eps_primal_inf                      | 1.E-4                          | Threshold under which primal infeasibility is detected.
-| eps_dual_inf                        | 1.E-4                          | Threshold under which dual infeasibility is detected.
-| update_preconditioner               | True                           | If set to true, the preconditioner will be re-derived with the update method, otherwise it uses previous one.
-| compute_preconditioner              | True                           | If set to true, the preconditioner will be derived with the init method.
-| alpha_bcl                           | 0.1                            | alpha parameter of the BCL algorithm.
-| beta_bcl                            | 0.9                            | beta parameter of the BCL algorithm.
-| refactor_dual_feasibility_threshold | 1.E-2                          | Threshold above which refactorization is performed to change rho parameter.
-| refactor_rho_threshold              | 1.E-7                          | New rho parameter used if the refactor_dual_feasibility_threshold condition has been satisfied.
-| cold_reset_mu_eq                    | 1./1.1                         | Value used for cold restarting mu_eq.
-| cold_reset_mu_in                    | 1./1.1                         | Value used for cold restarting mu_in.
-| nb_iterative_refinement             | 10                             | Maximal number of iterative refinements.
-| eps_refact                          | 1.E-6                          | Threshold value below which the ldlt is refactorized factorization in the iterative refinement loop.
-| safe_guard                          | 1.E4                           | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
-| preconditioner_max_iter             | 10                             | Maximal number of authorized iterations for the preconditioner.
-| preconditioner_accuracy             | 1.E-3                          | Accuracy level of the preconditioner.
+| Setting                             | Default value                      | Description
+| ----------------------------------- | ---------------------------------- | -----------------------------------------
+| eps_abs                             | 1.E-5                              | Asbolute stopping criterion of the solver.
+| eps_rel                             | 0                                  | Relative stopping criterion of the solver.
+| VERBOSE                             | False                              | If set to true, the solver prints information at each loop.
+| default_rho                         | 1.E-6                              | Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).
+| default_mu_eq                       | 1.E-3                              | Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).
+| default_mu_in                       | 1.E-1                              | Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value).
+| compute_timings                     | True                               | If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).
+| max_iter                            | 10.000                             | Maximal number of authorized outer iterations.
+| max_iter_in                         | 1500                               | Maximal number of authorized inner iterations.
+| initial_guess                       | EQUALITY_CONSTRAINED_INITIAL_GUESS | Sets the initial guess option for initilizing x, y and z.
+| mu_min_eq                           | 1.E-9                              | Minimal authorized value for mu_eq.
+| mu_min_in                           | 1.E-8                              | Minimal authorized value for mu_in.
+| mu_update_factor                    | 0.1                                | Factor used for updating mu_eq and mu_in.
+| eps_primal_inf                      | 1.E-4                              | Threshold under which primal infeasibility is detected.
+| eps_dual_inf                        | 1.E-4                              | Threshold under which dual infeasibility is detected.
+| update_preconditioner               | True                               | If set to true, the preconditioner will be re-derived with the update method, otherwise it uses previous one.
+| compute_preconditioner              | True                               | If set to true, the preconditioner will be derived with the init method.
+| alpha_bcl                           | 0.1                                | alpha parameter of the BCL algorithm.
+| beta_bcl                            | 0.9                                | beta parameter of the BCL algorithm.
+| refactor_dual_feasibility_threshold | 1.E-2                              | Threshold above which refactorization is performed to change rho parameter.
+| refactor_rho_threshold              | 1.E-7                              | New rho parameter used if the refactor_dual_feasibility_threshold condition has been satisfied.
+| cold_reset_mu_eq                    | 1./1.1                             | Value used for cold restarting mu_eq.
+| cold_reset_mu_in                    | 1./1.1                             | Value used for cold restarting mu_in.
+| nb_iterative_refinement             | 10                                 | Maximal number of iterative refinements.
+| eps_refact                          | 1.E-6                              | Threshold value below which the ldlt is refactorized factorization in the iterative refinement loop.
+| safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
+| preconditioner_max_iter             | 10                                 | Maximal number of authorized iterations for the preconditioner.
+| preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
 
 \subsection OverviewInitialGuess The different initial guesses
 
