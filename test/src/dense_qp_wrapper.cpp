@@ -5188,7 +5188,7 @@ DOCTEST_TEST_CASE(
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5227,6 +5227,9 @@ DOCTEST_TEST_CASE(
             std::nullopt,
             compute_preconditioner,
             1.e-6);
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
   qp.solve();
@@ -5247,7 +5250,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5283,7 +5286,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5329,6 +5332,8 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
+  qp3.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5947,7 +5952,7 @@ DOCTEST_TEST_CASE(
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5977,6 +5982,8 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
@@ -6023,7 +6030,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6044,6 +6051,8 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
+  qp2.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   for (isize iter = 0; iter < 10; ++iter) {
     // warm start with previous result used, hence if the qp is small and
     // simple, the parameters should not changed during first solve, and also
@@ -6071,9 +6080,10 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT);
+                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
+  qp3.settings.verbose = true;
   qp3.init(qp_random.H,
            qp_random.g,
            qp_random.A,
