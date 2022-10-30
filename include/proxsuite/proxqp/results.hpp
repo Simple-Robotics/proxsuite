@@ -103,7 +103,7 @@ struct Results
     info.objValue = 0.;
     info.pri_res = 0.;
     info.dua_res = 0.;
-    info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+    info.status = QPSolverOutput::PROXQP_NOT_RUN;
   }
   /*!
    * cleanups the Result variables and set the info variables to their initial

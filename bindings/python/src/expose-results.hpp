@@ -21,6 +21,7 @@ exposeResults(pybind11::module_ m)
     .value("PROXQP_MAX_ITER_REACHED", QPSolverOutput::PROXQP_MAX_ITER_REACHED)
     .value("PROXQP_PRIMAL_INFEASIBLE", QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
     .value("PROXQP_DUAL_INFEASIBLE", QPSolverOutput::PROXQP_DUAL_INFEASIBLE)
+    .value("PROXQP_NOT_RUN", QPSolverOutput::PROXQP_NOT_RUN)
     .export_values();
 
   ::pybind11::class_<Info<T>>(m, "Info", pybind11::module_local())
