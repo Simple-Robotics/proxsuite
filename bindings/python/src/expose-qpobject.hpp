@@ -34,9 +34,8 @@ exposeQpObjectDense(pybind11::module_ m)
       "class containing the solution or certificate of infeasibility, "
       "and "
       "information statistics in an info subclass.")
-    .def_readwrite("settings",
-                   &dense::QP<T>::settings,
-                   "class with settings option of the solver.")
+    .def_readwrite(
+      "settings", &dense::QP<T>::settings, "Settings of the solver.")
     .def_readwrite(
       "model", &dense::QP<T>::model, "class containing the QP model")
 
@@ -155,9 +154,8 @@ exposeQpObjectSparse(pybind11::module_ m)
       "class containing the solution or certificate of infeasibility, "
       "and "
       "information statistics in an info subclass.")
-    .def_readwrite("settings",
-                   &sparse::QP<T, I>::settings,
-                   "class with settings option of the solver.")
+    .def_readwrite(
+      "settings", &sparse::QP<T, I>::settings, "Settings of the solver.")
     .def(
       "init",
       &sparse::QP<T, I>::init,
