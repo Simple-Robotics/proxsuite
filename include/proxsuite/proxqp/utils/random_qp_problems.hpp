@@ -67,7 +67,7 @@ namespace rand {
 using proxqp::u32;
 using proxqp::u64;
 
-#if _MSC_VER
+#ifdef _MSC_VER
 /* Using the MSCV compiler on Windows causes problems because the type uint128
 is not available. Therefore, we use a random number generator from the stdlib
 instead of our custom Lehmer random number generator. The necessary lehmer
