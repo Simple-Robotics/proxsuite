@@ -123,41 +123,45 @@ struct Settings
    * used.
    */
 
-  Settings(T default_rho = 1.E-6,
-           T default_mu_eq = 1.E-3,
-           T default_mu_in = 1.E-1,
-           T alpha_bcl = 0.1,
-           T beta_bcl = 0.9,
-           T refactor_dual_feasibility_threshold = 1e-2,
-           T refactor_rho_threshold = 1e-7,
-           T mu_min_eq = 1e-9,
-           T mu_min_in = 1e-8,
-           T mu_max_eq_inv = 1e9,
-           T mu_max_in_inv = 1e8,
-           T mu_update_factor = 0.1,
-           T mu_update_inv_factor = 10,
-           T cold_reset_mu_eq = 1. / 1.1,
-           T cold_reset_mu_in = 1. / 1.1,
-           T cold_reset_mu_eq_inv = 1.1,
-           T cold_reset_mu_in_inv = 1.1,
-           T eps_abs = 1.e-5,
-           T eps_rel = 0,
-           isize max_iter = 10000,
-           isize max_iter_in = 1500,
-           isize safe_guard = 1.E4,
-           isize nb_iterative_refinement = 10,
-           T eps_refact = 1.e-6, // before eps_refact_=1.e-6
-           bool verbose = false,
-           InitialGuessStatus initial_guess =
-             InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT,
-           bool update_preconditioner = true,
-           bool compute_preconditioner = true,
-           bool compute_timings = true,
-           isize preconditioner_max_iter = 10,
-           T preconditioner_accuracy = 1.e-3,
-           T eps_primal_inf = 1.E-4,
-           T eps_dual_inf = 1.E-4,
-           bool bcl_update = true)
+  Settings(
+    T default_rho = 1.E-6,
+    T default_mu_eq = 1.E-3,
+    T default_mu_in = 1.E-1,
+    T alpha_bcl = 0.1,
+    T beta_bcl = 0.9,
+    T refactor_dual_feasibility_threshold = 1e-2,
+    T refactor_rho_threshold = 1e-7,
+    T mu_min_eq = 1e-9,
+    T mu_min_in = 1e-8,
+    T mu_max_eq_inv = 1e9,
+    T mu_max_in_inv = 1e8,
+    T mu_update_factor = 0.1,
+    T mu_update_inv_factor = 10,
+    T cold_reset_mu_eq = 1. / 1.1,
+    T cold_reset_mu_in = 1. / 1.1,
+    T cold_reset_mu_eq_inv = 1.1,
+    T cold_reset_mu_in_inv = 1.1,
+    T eps_abs = 1.e-5,
+    T eps_rel = 0,
+    isize max_iter = 10000,
+    isize max_iter_in = 1500,
+    isize safe_guard = 1.E4,
+    isize nb_iterative_refinement = 10,
+    T eps_refact = 1.e-6, // before eps_refact_=1.e-6
+    bool verbose = false,
+    InitialGuessStatus initial_guess = InitialGuessStatus::
+      EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
+                                          // EQUALITY_CONSTRAINED_INITIAL_GUESS,
+                                          // as most often we run only
+                                          // once a problem
+    bool update_preconditioner = true,
+    bool compute_preconditioner = true,
+    bool compute_timings = true,
+    isize preconditioner_max_iter = 10,
+    T preconditioner_accuracy = 1.e-3,
+    T eps_primal_inf = 1.E-4,
+    T eps_dual_inf = 1.E-4,
+    bool bcl_update = true)
     : default_rho(default_rho)
     , default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)

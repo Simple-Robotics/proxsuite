@@ -1351,74 +1351,45 @@ qp_solve(Results<T>& results,
   if (settings.compute_timings) {
     results.info.solve_time = work.timer.elapsed().user; // in nanoseconds
     results.info.run_time = results.info.solve_time + results.info.setup_time;
-    if (settings.verbose) {
-      std::cout << "-------------------SOLVER STATISTICS-------------------"
-                << std::endl;
-      std::cout << "outer iter:   " << results.info.iter_ext << std::endl;
-      std::cout << "total iter:   " << results.info.iter << std::endl;
-      std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
-      std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
-      std::cout << "objective:    " << results.info.objValue << std::endl;
-      switch (results.info.status) {
-        case QPSolverOutput::PROXQP_SOLVED: {
-          std::cout << "status:       "
-                    << "Solved" << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
-          std::cout << "status:       "
-                    << "Maximum number of iterations reached" << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
-          std::cout << "status:       "
-                    << "Primal infeasible" << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
-          std::cout << "status:       "
-                    << "Dual infeasible" << std::endl;
-          break;
-        }
+  }
+  if (settings.verbose) {
+    std::cout << "-------------------SOLVER STATISTICS-------------------"
+              << std::endl;
+    std::cout << "outer iter:   " << results.info.iter_ext << std::endl;
+    std::cout << "total iter:   " << results.info.iter << std::endl;
+    std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
+    std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
+    std::cout << "objective:    " << results.info.objValue << std::endl;
+    switch (results.info.status) {
+      case QPSolverOutput::PROXQP_SOLVED: {
+        std::cout << "status:       "
+                  << "Solved" << std::endl;
+        break;
       }
+      case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
+        std::cout << "status:       "
+                  << "Maximum number of iterations reached" << std::endl;
+        break;
+      }
+      case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
+        std::cout << "status:       "
+                  << "Primal infeasible" << std::endl;
+        break;
+      }
+      case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
+        std::cout << "status:       "
+                  << "Dual infeasible" << std::endl;
+        break;
+      }
+      default: {
+        assert(false && "Should never happened");
+        break;
+      }
+    }
+    if (settings.compute_timings)
       std::cout << "run time:     " << results.info.solve_time << std::endl;
-      std::cout << "--------------------------------------------------------"
-                << std::endl;
-    }
-  } else {
-    if (settings.verbose) {
-      std::cout << "-------------------SOLVER STATISTICS-------------------"
-                << std::endl;
-      std::cout << "outer iter:   " << results.info.iter_ext << std::endl;
-      std::cout << "total iter:   " << results.info.iter << std::endl;
-      std::cout << "mu updates:   " << results.info.mu_updates << std::endl;
-      std::cout << "rho updates:  " << results.info.rho_updates << std::endl;
-      std::cout << "objective:    " << results.info.objValue << std::endl;
-      switch (results.info.status) {
-        case QPSolverOutput::PROXQP_SOLVED: {
-          std::cout << "status:       "
-                    << "Solved." << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
-          std::cout << "status:       "
-                    << "Maximum number of iterations reached" << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
-          std::cout << "status:       "
-                    << "Primal infeasible" << std::endl;
-          break;
-        }
-        case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
-          std::cout << "status:       "
-                    << "Dual infeasible" << std::endl;
-          break;
-        }
-      }
-      std::cout << "--------------------------------------------------------"
-                << std::endl;
-    }
+    std::cout << "--------------------------------------------------------"
+              << std::endl;
   }
 
   work.set_dirty();

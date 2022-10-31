@@ -116,7 +116,7 @@ TEST_CASE("sparse maros meszaros using the API")
                                              AT.transpose().cast<bool>(),
                                              CT.transpose().cast<bool>());
       qp.settings.max_iter = 1.E6;
-      qp.settings.verbose = true;
+      qp.settings.verbose = false;
 
       qp.settings.eps_abs = 2e-8;
       qp.settings.eps_rel = 0;
@@ -126,6 +126,9 @@ TEST_CASE("sparse maros meszaros using the API")
       T prim_in(0);
 
       for (isize iter = 0; iter < 10; ++iter) {
+        if (iter > 0)
+          qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
+            WARM_START_WITH_PREVIOUS_RESULT;
         qp.solve();
 
         CHECK(proxsuite::proxqp::dense::infty_norm(

@@ -125,6 +125,10 @@ TEST_CASE("dense maros meszaros using the api")
       auto& eps = qp.settings.eps_abs;
 
       for (size_t it = 0; it < 2; ++it) {
+        if (it > 0)
+          qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
+            WARM_START_WITH_PREVIOUS_RESULT;
+
         qp.solve();
         const auto& x = qp.results.x;
         const auto& y = qp.results.y;
