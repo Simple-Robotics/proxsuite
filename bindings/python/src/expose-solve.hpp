@@ -53,8 +53,8 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
     pybind11::arg_v(
       "C", std::nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
+    pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+    pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
     pybind11::arg_v("x", std::nullopt, "primal warm start"),
     pybind11::arg_v("y", std::nullopt, "dual equality warm start"),
     pybind11::arg_v("z", std::nullopt, "dual inequality warm start"),
@@ -100,20 +100,20 @@ solveSparseQp(pybind11::module_ m)
   m.def(
     "solve",
     &sparse::solve<T, I>,
-    "Function for solving a QP problem using PROXQP dense backend directly "
+    "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
     "absolute and relative accuracies, maximum number of iterations, "
     "preconditioner execution).",
-    pybind11::arg_v("H", std::nullopt, "quadratic cost with dense format."),
+    pybind11::arg_v("H", std::nullopt, "quadratic cost with sparse format."),
     pybind11::arg_v("g", std::nullopt, "linear cost"),
     pybind11::arg_v(
-      "A", std::nullopt, "equality constraint matrix with dense format."),
+      "A", std::nullopt, "equality constraint matrix with sparse format."),
     pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
     pybind11::arg_v(
-      "C", std::nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
+      "C", std::nullopt, "inequality constraint matrix with sparse format."),
+    pybind11::arg_v("l", std::nullopt, "lower inequality constraint vector"),
+    pybind11::arg_v("u", std::nullopt, "upper inequality constraint vector"),
     pybind11::arg_v("x", std::nullopt, "primal warm start"),
     pybind11::arg_v("y", std::nullopt, "dual equality warm start"),
     pybind11::arg_v("z", std::nullopt, "dual inequality warm start"),
