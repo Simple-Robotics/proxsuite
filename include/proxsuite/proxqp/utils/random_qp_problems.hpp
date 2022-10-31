@@ -11,6 +11,7 @@
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <map>
+#include <random>
 
 namespace proxsuite {
 namespace proxqp {
@@ -65,6 +66,42 @@ namespace rand {
 
 using proxqp::u32;
 using proxqp::u64;
+
+#ifdef _MSC_VER
+/* Using the MSCV compiler on Windows causes problems because the type uint128
+is not available. Therefore, we use a random number generator from the stdlib
+instead of our custom Lehmer random number generator. The necessary lehmer
+functions used in in our code are remplaced with calls to the stdlib.*/
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
+std::normal_distribution<double> normal_dist;
+using u128 = u64;
+inline auto
+uniform_rand() -> double
+{
+  double output = double(uniform_dist(gen));
+  return output;
+}
+inline auto
+lehmer_global() -> u128&
+{
+  static u64 output = gen();
+  return output;
+}
+
+inline void
+set_seed(u64 seed)
+{
+  gen.seed(seed);
+}
+
+inline auto
+normal_rand() -> double
+{
+  return normal_dist(gen);
+}
+#else
 using u128 = __uint128_t;
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
@@ -109,6 +146,7 @@ normal_rand() -> double
 
   return sqrt * std::cos(pi2 * u2);
 }
+#endif
 
 template<typename Scalar>
 auto

@@ -61,16 +61,30 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   install(TARGETS ${target_name} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endfunction()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+  set(AVX_COMPILE_OPTION "/arch:AVX")
+  set(AVX2_COMPILE_OPTION "/arch:AVX2")
+  set(FMA_COMPILE_OPTION "/fp:fast,")
+  set(AVX512_COMPILE_OPTION "/arch:AVX512")
+else()
+  set(AVX_COMPILE_OPTION "-mavx")
+  set(AVX2_COMPILE_OPTION "-mavx2")
+  set(FMA_COMPILE_OPTION "-mfma")
+  set(AVX512_COMPILE_OPTION "-mavx512f")
+endif()
+
 create_python_target(proxsuite_pywrap "" proxsuite)
 if(BUILD_WITH_VECTORIZATION_SUPPORT AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES
                                         "(x86)|(X86)|(amd64)|(AMD64)")
   if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
-    create_python_target(proxsuite_pywrap_avx2 "-mavx2;-mfma"
-                         proxsuite-vectorized)
+    create_python_target(
+      proxsuite_pywrap_avx2 "${AVX2_COMPILE_OPTION};${FMA_COMPILE_OPTION}"
+      proxsuite-vectorized)
   endif(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
   if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
-    create_python_target(proxsuite_pywrap_avx512 "-mavx512f;-mfma"
-                         proxsuite-vectorized)
+    create_python_target(
+      proxsuite_pywrap_avx512 "${AVX512_COMPILE_OPTION};${FMA_COMPILE_OPTION}"
+      proxsuite-vectorized)
   endif(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
 endif()
 add_header_group(PYWRAP_HEADERS)
