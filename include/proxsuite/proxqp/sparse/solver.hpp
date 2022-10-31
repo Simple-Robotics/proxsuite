@@ -1301,28 +1301,33 @@ qp_solve(Results<T>& results,
                       stack,
                       xtag);
       */
-      isize w_values = 1; // un seul elt non nul
-      T alpha = 0;
-      for (isize j = 0; j < n_eq + n_in; ++j) {
-        I row_index = I(j + n);
-        if (j < n_eq) {
-          alpha = results.info.mu_eq - new_bcl_mu_eq;
+      if (work.internal.do_ldlt) {
+        isize w_values = 1; // un seul elt non nul
+        T alpha = 0;
+        for (isize j = 0; j < n_eq + n_in; ++j) {
+          I row_index = I(j + n);
+          if (j < n_eq) {
+            alpha = results.info.mu_eq - new_bcl_mu_eq;
 
-        } else {
-          if (!results.active_constraints[j - n_eq]) {
-            continue;
+          } else {
+            if (!results.active_constraints[j - n_eq]) {
+              continue;
+            }
+            alpha = results.info.mu_in - new_bcl_mu_in;
           }
-          alpha = results.info.mu_in - new_bcl_mu_in;
+          T value = 1;
+          proxsuite::linalg::sparse::VecRef<T, I> w{
+            proxsuite::linalg::veg::from_raw_parts,
+            n + n_eq + n_in,
+            w_values,
+            &row_index, // &: adresse de row index
+            &value,
+          };
+          ldl = rank1_update(ldl, etree, perm_inv, w, alpha, stack);
         }
-        T value = 1;
-        proxsuite::linalg::sparse::VecRef<T, I> w{
-          proxsuite::linalg::veg::from_raw_parts,
-          n + n_eq + n_in,
-          w_values,
-          &row_index, // &: adresse de row index
-          &value,
-        };
-        ldl = rank1_update(ldl, etree, perm_inv, w, alpha, stack);
+      } else {
+        refactorize(
+          work, results, kkt_active, active_constraints, data, stack, xtag);
       }
     }
 
