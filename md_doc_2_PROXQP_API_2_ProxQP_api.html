@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.4</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -197,7 +197,7 @@ The API structure</h2>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP&lt;T, isize&gt;</a> qp2(</div>
 <div class="line">    H.cast&lt;<span class="keywordtype">bool</span>&gt;(), A.cast&lt;<span class="keywordtype">bool</span>&gt;(), C.cast&lt;<span class="keywordtype">bool</span>&gt;());</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_1_1rand_html_a51eb1a46428d5c6a4ba8c97816eb3248"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a></div><div class="ttdeci">auto sparse_positive_definite_rand(isize n, Scalar cond, Scalar p) -&gt; SparseMat&lt; Scalar &gt;</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00192">random_qp_problems.hpp:192</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1utils_1_1rand_html_a51eb1a46428d5c6a4ba8c97816eb3248"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a></div><div class="ttdeci">auto sparse_positive_definite_rand(isize n, Scalar cond, Scalar p) -&gt; SparseMat&lt; Scalar &gt;</div><div class="ttdef"><b>Definition:</b> <a href="random__qp__problems_8hpp_source.html#l00230">random_qp_problems.hpp:230</a></div></div>
 <div class="ttc" id="arandom__qp__problems_8hpp_html"><div class="ttname"><a href="random__qp__problems_8hpp.html">random_qp_problems.hpp</a></div></div>
 <div class="ttc" id="asparse_8hpp_html"><div class="ttname"><a href="sparse_8hpp.html">sparse.hpp</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1sparse_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with sparse backend.</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00090">wrapper.hpp:91</a></div></div>
@@ -1091,7 +1091,7 @@ The solver's settings</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Setting   </th><th class="markdownTableHeadNone">Default value   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">eps_abs   </td><td class="markdownTableBodyNone">1.E-3   </td><td class="markdownTableBodyNone">Asbolute stopping criterion of the solver.    </td></tr>
+<td class="markdownTableBodyNone">eps_abs   </td><td class="markdownTableBodyNone">1.E-5   </td><td class="markdownTableBodyNone">Asbolute stopping criterion of the solver.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">eps_rel   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Relative stopping criterion of the solver.    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -1105,11 +1105,11 @@ The solver's settings</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">1.E4   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
+<td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">max_iter_in   </td><td class="markdownTableBodyNone">1500   </td><td class="markdownTableBodyNone">Maximal number of authorized inner iterations.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">initial_guess   </td><td class="markdownTableBodyNone">WARM_START_WITH_PREVIOUS_RESULT   </td><td class="markdownTableBodyNone">Sets the initial guess option for initilizing x, y and z.    </td></tr>
+<td class="markdownTableBodyNone">initial_guess   </td><td class="markdownTableBodyNone">EQUALITY_CONSTRAINED_INITIAL_GUESS   </td><td class="markdownTableBodyNone">Sets the initial guess option for initilizing x, y and z.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">mu_min_eq   </td><td class="markdownTableBodyNone">1.E-9   </td><td class="markdownTableBodyNone">Minimal authorized value for mu_eq.    </td></tr>
 <tr class="markdownTableRowEven">
@@ -1210,7 +1210,7 @@ The info subclass</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">rho_updates   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Total number of rho updates.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">status   </td><td class="markdownTableBodyNone">PROXQP_MAX_ITER_REACHED   </td><td class="markdownTableBodyNone">Status of the solver.    </td></tr>
+<td class="markdownTableBodyNone">status   </td><td class="markdownTableBodyNone">PROXQP_NOT_RUN   </td><td class="markdownTableBodyNone">Status of the solver.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">setup_time   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Setup time (takes into account the equlibration procedure).    </td></tr>
 <tr class="markdownTableRowEven">
@@ -1321,11 +1321,12 @@ The info subclass</h2>
 </table>
 <h2><a class="anchor" id="OverviewSolverStatus"></a>
 The solver's status</h2>
-<p >The solver has four status:</p><ul>
+<p >The solver has five status:</p><ul>
 <li>PROXQP_SOLVED: the problem is solved.</li>
 <li>PROXQP_MAX_ITER_REACHED: the maximum number of iterations has been reached.</li>
 <li>PROXQP_PRIMAL_INFEASIBLE: the problem is primal infeasible.</li>
 <li>PROXQP_DUAL_INFEASIBLE: the problem is dual infeasible.</li>
+<li>PROXQP_NOT_RUN: the solver has not been run yet.</li>
 </ul>
 <p >Infeasibility is detected using the necessary conditions exposed in <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">section 3.4</a>. More precisely, primal infeasibility is assumed if the following conditions are matched for some non zeros dy and dz (according the eps_prim_inf variable set by the user):</p>
 <p >$$\begin{equation}\label{eq:approx_qp_sol_prim_inf}\tag{PrimalInfeas} \begin{aligned} &amp;\left\{ \begin{array}{ll} |A^Tdy|_{\infty} \leq \epsilon_{\text{primal_inf}} |dy|_{\infty} , \\ b^T dy \leq -\epsilon_{\text{primal_inf}} |dy|_{\infty}, \\ |C^Tdz|_{\infty} \leq \epsilon_{\text{primal_inf}} |dz|_{\infty}, \\ u^T [dz]_+ - l^T[-dz]_+\leq -\epsilon_{\text{primal_inf}} |dz|_{\infty}. \\ \end{array} \right. \end{aligned} \end{equation}$$</p>

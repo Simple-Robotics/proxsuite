@@ -1,16 +1,17 @@
 <map id="include/proxsuite/linalg/veg/type_traits/invocable.hpp" name="include/proxsuite/linalg/veg/type_traits/invocable.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="701,5,920,45"/>
-<area shape="rect" id="node2" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="657,181,813,221"/>
-<area shape="rect" id="node10" href="$prologue_8hpp.html" title=" " alt="" coords="991,445,1156,485"/>
-<area shape="rect" id="node12" href="$epilogue_8hpp.html" title=" " alt="" coords="802,445,966,485"/>
-<area shape="rect" id="node13" href="$constructible_8hpp.html" title=" " alt="" coords="777,93,989,133"/>
-<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="5,445,171,485"/>
-<area shape="rect" id="node6" href="$integer__seq_8hpp.html" title=" " alt="" coords="656,269,840,309"/>
-<area shape="rect" id="node4" title=" " alt="" coords="8,533,75,559"/>
-<area shape="rect" id="node5" title=" " alt="" coords="99,533,170,559"/>
-<area shape="rect" id="node7" href="$macros_8hpp.html" title=" " alt="" coords="425,357,581,397"/>
-<area shape="rect" id="node8" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="330,445,563,485"/>
-<area shape="rect" id="node9" href="$preprocessor_8hpp.html" title=" " alt="" coords="587,445,778,485"/>
-<area shape="rect" id="node11" title=" " alt="" coords="195,453,306,478"/>
-<area shape="rect" id="node14" title=" " alt="" coords="837,189,929,214"/>
+<area shape="rect" id="node1" title=" " alt="" coords="672,5,891,45"/>
+<area shape="rect" id="node2" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="641,181,797,221"/>
+<area shape="rect" id="node10" href="$prologue_8hpp.html" title=" " alt="" coords="5,445,171,485"/>
+<area shape="rect" id="node12" href="$epilogue_8hpp.html" title=" " alt="" coords="993,445,1157,485"/>
+<area shape="rect" id="node13" href="$constructible_8hpp.html" title=" " alt="" coords="747,93,959,133"/>
+<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="803,445,968,485"/>
+<area shape="rect" id="node6" href="$integer__seq_8hpp.html" title=" " alt="" coords="627,269,811,309"/>
+<area shape="rect" id="node4" title=" " alt="" coords="805,533,872,559"/>
+<area shape="rect" id="node5" title=" " alt="" coords="897,533,967,559"/>
+<area shape="rect" id="node7" href="$macros_8hpp.html" title=" " alt="" coords="583,357,739,397"/>
+<area shape="rect" id="node8" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="545,445,778,485"/>
+<area shape="rect" id="node9" href="$preprocessor_8hpp.html" title=" " alt="" coords="195,445,386,485"/>
+<area shape="rect" id="node11" title=" " alt="" coords="410,453,521,478"/>
+<area shape="rect" id="node14" title=" " alt="" coords="821,189,870,214"/>
+<area shape="rect" id="node15" title=" " alt="" coords="894,189,986,214"/>
 </map>

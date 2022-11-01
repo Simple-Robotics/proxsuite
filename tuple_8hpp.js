@@ -1,6 +1,7 @@
 var tuple_8hpp =
 [
     [ "proxsuite::linalg::veg::tuple::nb::tuplify", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1tuplify.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1tuplify" ],
+    [ "proxsuite::linalg::veg::tuple::IndexedTuple< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", null ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, true >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01true_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01true_01_4" ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4" ],
     [ "proxsuite::linalg::veg::tuple::TupleLeaf< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", null ],

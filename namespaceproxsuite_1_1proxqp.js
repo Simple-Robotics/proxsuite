@@ -47,7 +47,8 @@ var namespaceproxsuite_1_1proxqp =
       [ "PROXQP_SOLVED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b", null ],
       [ "PROXQP_MAX_ITER_REACHED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649", null ],
       [ "PROXQP_PRIMAL_INFEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda66e00e0c26e39203330a20482a6e0bb8", null ],
-      [ "PROXQP_DUAL_INFEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed", null ]
+      [ "PROXQP_DUAL_INFEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed", null ],
+      [ "PROXQP_NOT_RUN", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda911da665938abf5871d00e431bac179f", null ]
     ] ],
     [ "InitialGuessStatus", "namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3", [
       [ "NO_INITIAL_GUESS", "namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3ab6b315d420f973b7c309d91b1dca4564", null ],

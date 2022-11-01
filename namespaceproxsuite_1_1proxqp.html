@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.4</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -186,10 +186,14 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90a531f659b28e004031909860372c4f322">rowmajor</a> = 1
  }</td></tr>
 <tr class="separator:a95f1475e7d77f87895bccc2b3a790a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3b64c0293312c54fdfa991580ed70fd"><td class="memItemLeft" align="right" valign="top">enum struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd">QPSolverOutput</a> { <a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b">PROXQP_SOLVED</a>
+<tr class="memitem:ae3b64c0293312c54fdfa991580ed70fd"><td class="memItemLeft" align="right" valign="top">enum struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd">QPSolverOutput</a> { <br />
+&#160;&#160;<a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b">PROXQP_SOLVED</a>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649">PROXQP_MAX_ITER_REACHED</a>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda66e00e0c26e39203330a20482a6e0bb8">PROXQP_PRIMAL_INFEASIBLE</a>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed">PROXQP_DUAL_INFEASIBLE</a>
+, <br />
+&#160;&#160;<a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda911da665938abf5871d00e431bac179f">PROXQP_NOT_RUN</a>
+<br />
  }</td></tr>
 <tr class="separator:ae3b64c0293312c54fdfa991580ed70fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a415d3d2e727acf7261e7b3708abc1db3"><td class="memItemLeft" align="right" valign="top">enum struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">InitialGuessStatus</a> { <br />
@@ -387,6 +391,7 @@ template&lt;typename T &gt; </div>
 <tr><td class="fieldname"><a id="ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649" name="ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649"></a>PROXQP_MAX_ITER_REACHED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae3b64c0293312c54fdfa991580ed70fda66e00e0c26e39203330a20482a6e0bb8" name="ae3b64c0293312c54fdfa991580ed70fda66e00e0c26e39203330a20482a6e0bb8"></a>PROXQP_PRIMAL_INFEASIBLE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed" name="ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed"></a>PROXQP_DUAL_INFEASIBLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae3b64c0293312c54fdfa991580ed70fda911da665938abf5871d00e431bac179f" name="ae3b64c0293312c54fdfa991580ed70fda911da665938abf5871d00e431bac179f"></a>PROXQP_NOT_RUN&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="status_8hpp_source.html#l00017">17</a> of file <a class="el" href="status_8hpp_source.html">status.hpp</a>.</p>
@@ -420,7 +425,7 @@ template&lt;typename T &gt; </div>
 <tr><td class="fieldname"><a id="a415d3d2e727acf7261e7b3708abc1db3a4ec1f0b55193af85d7204a616c63ba4f" name="a415d3d2e727acf7261e7b3708abc1db3a4ec1f0b55193af85d7204a616c63ba4f"></a>COLD_START_WITH_PREVIOUS_RESULT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="status_8hpp_source.html#l00025">25</a> of file <a class="el" href="status_8hpp_source.html">status.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="status_8hpp_source.html#l00026">26</a> of file <a class="el" href="status_8hpp_source.html">status.hpp</a>.</p>
 
 </div>
 </div>
@@ -449,7 +454,7 @@ template&lt;typename T &gt; </div>
 <tr><td class="fieldname"><a id="ae3aacefdb4b7177de8c2005bab169f08ad8156d3c6735d75d8a1b8dedd0e79c8b" name="ae3aacefdb4b7177de8c2005bab169f08ad8156d3c6735d75d8a1b8dedd0e79c8b"></a>IDENTITY&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="status_8hpp_source.html#l00034">34</a> of file <a class="el" href="status_8hpp_source.html">status.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="status_8hpp_source.html#l00035">35</a> of file <a class="el" href="status_8hpp_source.html">status.hpp</a>.</p>
 
 </div>
 </div>
