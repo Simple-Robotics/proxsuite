@@ -236,7 +236,8 @@ public:
   auto ptr() const VEG_NOEXCEPT->void const* { return stack_data; }
 
 private:
-  VEG_INLINE void assert_valid_len([[maybe_unused]] isize len) VEG_NOEXCEPT
+  VEG_INLINE void assert_valid_len(PROXSUITE_MAYBE_UNUSED isize len)
+    VEG_NOEXCEPT
   {
     VEG_INTERNAL_ASSERT_PRECONDITIONS(isize(len) >= 0);
   }
@@ -332,11 +333,11 @@ struct DynAllocBase
   {
     if (data != nullptr) {
       // in case resource lifetimes are reodered by moving ownership
-      [[maybe_unused]] auto* parent_stack_data =
+      PROXSUITE_MAYBE_UNUSED auto* parent_stack_data =
         static_cast<unsigned char*>(parent->stack_data);
-      [[maybe_unused]] auto* old_position =
+      PROXSUITE_MAYBE_UNUSED auto* old_position =
         static_cast<unsigned char*>(old_pos);
-      [[maybe_unused]] auto* data_end =
+      PROXSUITE_MAYBE_UNUSED auto* data_end =
         static_cast<unsigned char*>(const_cast<void*>(void_data_end));
 
       VEG_INTERNAL_ASSERT_PRECONDITIONS( //
