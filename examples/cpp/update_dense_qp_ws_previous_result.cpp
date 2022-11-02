@@ -33,13 +33,7 @@ main()
   // the previous factorization is kept)
   // a new linear cost slightly modified
   auto g = qp_random.g * 0.95;
-  qp.update(std::nullopt,
-            g,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt);
+  qp.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
   qp.solve();
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << qp.results.x << std::endl;
