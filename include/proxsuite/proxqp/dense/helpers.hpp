@@ -14,7 +14,7 @@
 #include <proxsuite/proxqp/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
-#include <optional>
+#include <proxsuite/optional.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -171,42 +171,42 @@ initial_guess(Workspace<T>& qpwork,
 
 template<typename Mat, typename T>
 void
-update(std::optional<Mat> H_,
-       std::optional<Vec<T>> g_,
-       std::optional<Mat> A_,
-       std::optional<Vec<T>> b_,
-       std::optional<Mat> C_,
-       std::optional<Vec<T>> u_,
-       std::optional<Vec<T>> l_,
+update(optional<Mat> H_,
+       optional<Vec<T>> g_,
+       optional<Mat> A_,
+       optional<Vec<T>> b_,
+       optional<Mat> C_,
+       optional<Vec<T>> u_,
+       optional<Vec<T>> l_,
        Model<T>& model,
        Workspace<T>& work)
 {
   // check the model is valid
-  if (g_ != std::nullopt) {
+  if (g_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),
                                   model.dim,
                                   "the dimension wrt the primal variable x "
                                   "variable for updating g is not valid.");
   }
-  if (b_ != std::nullopt) {
+  if (b_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),
                                   model.n_eq,
                                   "the dimension wrt equality constrained "
                                   "variables for updating b is not valid.");
   }
-  if (u_ != std::nullopt) {
+  if (u_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating u is not valid.");
   }
-  if (l_ != std::nullopt) {
+  if (l_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating l is not valid.");
   }
-  if (H_ != std::nullopt) {
+  if (H_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
       H_.value().rows(),
       model.dim,
@@ -216,7 +216,7 @@ update(std::optional<Mat> H_,
       model.dim,
       "the column dimension for updating H is not valid.");
   }
-  if (A_ != std::nullopt) {
+  if (A_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
       A_.value().rows(),
       model.n_eq,
@@ -226,7 +226,7 @@ update(std::optional<Mat> H_,
       model.dim,
       "the column dimension for updating A is not valid.");
   }
-  if (C_ != std::nullopt) {
+  if (C_ != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
       C_.value().rows(),
       model.n_in,
@@ -237,22 +237,22 @@ update(std::optional<Mat> H_,
       "the column dimension for updating C is not valid.");
   }
   // update the model
-  if (g_ != std::nullopt) {
+  if (g_ != nullopt) {
     model.g = g_.value().eval();
   }
-  if (b_ != std::nullopt) {
+  if (b_ != nullopt) {
     model.b = b_.value().eval();
   }
-  if (u_ != std::nullopt) {
+  if (u_ != nullopt) {
     model.u = u_.value().eval();
   }
-  if (l_ != std::nullopt) {
+  if (l_ != nullopt) {
     model.l = l_.value().eval();
   }
-  if (H_ != std::nullopt) {
+  if (H_ != nullopt) {
     work.refactorize = true;
-    if (A_ != std::nullopt) {
-      if (C_ != std::nullopt) {
+    if (A_ != nullopt) {
+      if (C_ != nullopt) {
         model.H = Eigen::
           Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
             H_.value());
@@ -270,7 +270,7 @@ update(std::optional<Mat> H_,
           Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
             A_.value());
       }
-    } else if (C_ != std::nullopt) {
+    } else if (C_ != nullopt) {
       model.H = Eigen::
         Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
           H_.value());
@@ -282,9 +282,9 @@ update(std::optional<Mat> H_,
         Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
           H_.value());
     }
-  } else if (A_ != std::nullopt) {
+  } else if (A_ != nullopt) {
     work.refactorize = true;
-    if (C_ != std::nullopt) {
+    if (C_ != nullopt) {
       model.A = Eigen::
         Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
           A_.value());
@@ -296,7 +296,7 @@ update(std::optional<Mat> H_,
         Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
           A_.value());
     }
-  } else if (C_ != std::nullopt) {
+  } else if (C_ != nullopt) {
     work.refactorize = true;
     model.C = Eigen::
       Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
@@ -325,13 +325,13 @@ update(std::optional<Mat> H_,
 template<typename Mat, typename T>
 void
 setup( //
-  std::optional<Mat> H,
-  std::optional<VecRef<T>> g,
-  std::optional<Mat> A,
-  std::optional<VecRef<T>> b,
-  std::optional<Mat> C,
-  std::optional<VecRef<T>> l,
-  std::optional<VecRef<T>> u,
+  optional<Mat> H,
+  optional<VecRef<T>> g,
+  optional<Mat> A,
+  optional<VecRef<T>> b,
+  optional<Mat> C,
+  optional<VecRef<T>> l,
+  optional<VecRef<T>> u,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
@@ -390,34 +390,34 @@ setup( //
       break;
     }
   }
-  if (H != std::nullopt) {
+  if (H != nullopt) {
     qpmodel.H = H.value();
   } // else qpmodel.H remains initialzed to a matrix with zero elements
-  if (g != std::nullopt) {
+  if (g != nullopt) {
     qpmodel.g = g.value();
   }
 
-  if (A != std::nullopt) {
+  if (A != nullopt) {
     qpmodel.A = A.value();
   } // else qpmodel.A remains initialized to a matrix with zero elements or zero
     // shape
 
-  if (b != std::nullopt) {
+  if (b != nullopt) {
     qpmodel.b = b.value();
   } // else qpmodel.b remains initialized to a matrix with zero elements or zero
     // shape
 
-  if (C != std::nullopt) {
+  if (C != nullopt) {
     qpmodel.C = C.value();
   } // else qpmodel.C remains initialized to a matrix with zero elements or zero
     // shape
 
-  if (u != std::nullopt) {
+  if (u != nullopt) {
     qpmodel.u = u.value();
   } // else qpmodel.u remains initialized to a matrix with zero elements or zero
     // shape
 
-  if (l != std::nullopt) {
+  if (l != nullopt) {
     qpmodel.l = l.value();
   } // else qpmodel.l remains initialized to a matrix with zero elements or zero
     // shape
@@ -468,23 +468,23 @@ void
 update_proximal_parameters(Settings<T>& settings,
                            Results<T>& results,
                            Workspace<T>& work,
-                           std::optional<T> rho_new,
-                           std::optional<T> mu_eq_new,
-                           std::optional<T> mu_in_new)
+                           optional<T> rho_new,
+                           optional<T> mu_eq_new,
+                           optional<T> mu_in_new)
 {
 
-  if (rho_new != std::nullopt) {
+  if (rho_new != nullopt) {
     settings.default_rho = rho_new.value();
     results.info.rho = rho_new.value();
     work.proximal_parameter_update = true;
   }
-  if (mu_eq_new != std::nullopt) {
+  if (mu_eq_new != nullopt) {
     settings.default_mu_eq = mu_eq_new.value();
     results.info.mu_eq = mu_eq_new.value();
     results.info.mu_eq_inv = T(1) / results.info.mu_eq;
     work.proximal_parameter_update = true;
   }
-  if (mu_in_new != std::nullopt) {
+  if (mu_in_new != nullopt) {
     settings.default_mu_in = mu_in_new.value();
     results.info.mu_in = mu_in_new.value();
     results.info.mu_in_inv = T(1) / results.info.mu_in;
@@ -502,9 +502,9 @@ update_proximal_parameters(Settings<T>& settings,
  */
 template<typename T>
 void
-warm_start(std::optional<VecRef<T>> x_wm,
-           std::optional<VecRef<T>> y_wm,
-           std::optional<VecRef<T>> z_wm,
+warm_start(optional<VecRef<T>> x_wm,
+           optional<VecRef<T>> y_wm,
+           optional<VecRef<T>> z_wm,
            Results<T>& results,
            Settings<T>& settings,
            Model<T>& model)
@@ -514,8 +514,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
   isize n_in = results.z.rows();
   if (n_eq != 0) {
     if (n_in != 0) {
-      if (x_wm != std::nullopt && y_wm != std::nullopt &&
-          z_wm != std::nullopt) {
+      if (x_wm != nullopt && y_wm != nullopt && z_wm != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(
           z_wm.value().rows(),
           model.n_in,
@@ -535,7 +534,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
       }
     } else {
       // n_in= 0
-      if (x_wm != std::nullopt && y_wm != std::nullopt) {
+      if (x_wm != nullopt && y_wm != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
                                       model.n_eq,
                                       "the dimension wrt equality constrained "
@@ -550,7 +549,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
     }
   } else if (n_in != 0) {
     // n_eq = 0
-    if (x_wm != std::nullopt && z_wm != std::nullopt) {
+    if (x_wm != nullopt && z_wm != nullopt) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),
                                     model.n_in,
                                     "the dimension wrt inequality constrained "
@@ -564,7 +563,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
     }
   } else {
     // n_eq = 0 and n_in = 0
-    if (x_wm != std::nullopt) {
+    if (x_wm != nullopt) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         x_wm.value().rows(),
         model.dim,

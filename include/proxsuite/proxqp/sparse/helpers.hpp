@@ -6,7 +6,7 @@
 #define PROXSUITE_PROXQP_SPARSE_HELPERS_HPP
 
 #include <Eigen/Sparse>
-#include <optional>
+#include <proxsuite/optional.hpp>
 
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
@@ -28,22 +28,22 @@ void
 update_proximal_parameters(Settings<T>& settings,
                            Results<T>& results,
                            Workspace<T, I>& work,
-                           std::optional<T> rho_new,
-                           std::optional<T> mu_eq_new,
-                           std::optional<T> mu_in_new)
+                           optional<T> rho_new,
+                           optional<T> mu_eq_new,
+                           optional<T> mu_in_new)
 {
-  if (rho_new != std::nullopt) {
+  if (rho_new != nullopt) {
     settings.default_rho = rho_new.value();
     results.info.rho = rho_new.value();
     work.internal.proximal_parameter_update = true;
   }
-  if (mu_eq_new != std::nullopt) {
+  if (mu_eq_new != nullopt) {
     settings.default_mu_eq = mu_eq_new.value();
     results.info.mu_eq = mu_eq_new.value();
     results.info.mu_eq_inv = T(1) / results.info.mu_eq;
     work.internal.proximal_parameter_update = true;
   }
-  if (mu_in_new != std::nullopt) {
+  if (mu_in_new != nullopt) {
     settings.default_mu_in = mu_in_new.value();
     results.info.mu_in = mu_in_new.value();
     results.info.mu_in_inv = T(1) / results.info.mu_in;
@@ -61,9 +61,9 @@ update_proximal_parameters(Settings<T>& settings,
  */
 template<typename T, typename I>
 void
-warm_start(std::optional<VecRef<T>> x_wm,
-           std::optional<VecRef<T>> y_wm,
-           std::optional<VecRef<T>> z_wm,
+warm_start(optional<VecRef<T>> x_wm,
+           optional<VecRef<T>> y_wm,
+           optional<VecRef<T>> z_wm,
            Results<T>& results,
            Settings<T>& settings,
            Model<T, I>& model)
@@ -73,8 +73,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
   isize n_in = results.z.rows();
   if (n_eq != 0) {
     if (n_in != 0) {
-      if (x_wm != std::nullopt && y_wm != std::nullopt &&
-          z_wm != std::nullopt) {
+      if (x_wm != nullopt && y_wm != nullopt && z_wm != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(
           z_wm.value().rows(),
           model.n_in,
@@ -95,7 +94,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
       }
     } else {
       // n_in= 0
-      if (x_wm != std::nullopt && y_wm != std::nullopt) {
+      if (x_wm != nullopt && y_wm != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
                                       model.n_eq,
                                       "the dimension wrt equality constrained "
@@ -111,7 +110,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
     }
   } else if (n_in != 0) {
     // n_eq = 0
-    if (x_wm != std::nullopt && z_wm != std::nullopt) {
+    if (x_wm != nullopt && z_wm != nullopt) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),
                                     model.n_in,
                                     "the dimension wrt inequality constrained "
@@ -126,7 +125,7 @@ warm_start(std::optional<VecRef<T>> x_wm,
     }
   } else {
     // n_eq = 0 and n_in = 0
-    if (x_wm != std::nullopt) {
+    if (x_wm != nullopt) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(x_wm.value().rows(),
                                     model.dim,
                                     "the dimension wrt primal variable x "

@@ -116,17 +116,17 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void init(std::optional<MatRef<T>> H,
-            std::optional<VecRef<T>> g,
-            std::optional<MatRef<T>> A,
-            std::optional<VecRef<T>> b,
-            std::optional<MatRef<T>> C,
-            std::optional<VecRef<T>> l,
-            std::optional<VecRef<T>> u,
+  void init(optional<MatRef<T>> H,
+            optional<VecRef<T>> g,
+            optional<MatRef<T>> A,
+            optional<VecRef<T>> b,
+            optional<MatRef<T>> C,
+            optional<VecRef<T>> l,
+            optional<VecRef<T>> u,
             bool compute_preconditioner = true,
-            std::optional<T> rho = std::nullopt,
-            std::optional<T> mu_eq = std::nullopt,
-            std::optional<T> mu_in = std::nullopt)
+            optional<T> rho = nullopt,
+            optional<T> mu_eq = nullopt,
+            optional<T> mu_in = nullopt)
   {
     // dense case
     if (settings.compute_timings) {
@@ -134,7 +134,7 @@ struct QP
       work.timer.start();
     }
     // check the model is valid
-    if (g != std::nullopt && g.value().size() != 0) {
+    if (g != nullopt && g.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         g.value().rows(),
         model.dim,
@@ -143,7 +143,7 @@ struct QP
     } else {
       g.reset();
     }
-    if (b != std::nullopt && b.value().size() != 0) {
+    if (b != nullopt && b.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         b.value().rows(),
         model.n_eq,
@@ -152,7 +152,7 @@ struct QP
     } else {
       b.reset();
     }
-    if (u != std::nullopt && u.value().size() != 0) {
+    if (u != nullopt && u.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         u.value().rows(),
         model.n_in,
@@ -161,7 +161,7 @@ struct QP
     } else {
       u.reset();
     }
-    if (l != std::nullopt && l.value().size() != 0) {
+    if (l != nullopt && l.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         l.value().rows(),
         model.n_in,
@@ -170,7 +170,7 @@ struct QP
     } else {
       l.reset();
     }
-    if (H != std::nullopt && H.value().size() != 0) {
+    if (H != nullopt && H.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         H.value().rows(),
         model.dim,
@@ -182,7 +182,7 @@ struct QP
     } else {
       H.reset();
     }
-    if (A != std::nullopt && A.value().size() != 0) {
+    if (A != nullopt && A.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         A.value().rows(),
         model.n_eq,
@@ -194,7 +194,7 @@ struct QP
     } else {
       A.reset();
     }
-    if (C != std::nullopt && C.value().size() != 0) {
+    if (C != nullopt && C.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         C.value().rows(),
         model.n_in,
@@ -260,17 +260,17 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(const std::optional<MatRef<T>> H,
-              std::optional<Vec<T>> g,
-              const std::optional<MatRef<T>> A,
-              std::optional<Vec<T>> b,
-              const std::optional<MatRef<T>> C,
-              std::optional<Vec<T>> l,
-              std::optional<Vec<T>> u,
+  void update(const optional<MatRef<T>> H,
+              optional<Vec<T>> g,
+              const optional<MatRef<T>> A,
+              optional<Vec<T>> b,
+              const optional<MatRef<T>> C,
+              optional<Vec<T>> l,
+              optional<Vec<T>> u,
               bool update_preconditioner = true,
-              std::optional<T> rho = std::nullopt,
-              std::optional<T> mu_eq = std::nullopt,
-              std::optional<T> mu_in = std::nullopt)
+              optional<T> rho = nullopt,
+              optional<T> mu_eq = nullopt,
+              optional<T> mu_in = nullopt)
   {
     // dense case
     work.refactorize = false;
@@ -286,27 +286,27 @@ struct QP
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
     bool real_update =
-      !(H == std::nullopt && g == std::nullopt && A == std::nullopt &&
-        b == std::nullopt && C == std::nullopt && u == std::nullopt &&
-        l == std::nullopt);
+      !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
+        C == nullopt && u == nullopt && l == nullopt);
     if (real_update) {
       proxsuite::proxqp::dense::update(H, g, A, b, C, u, l, model, work);
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(std::optional(model.H),
-                                    std::optional(dense::VecRef<T>(model.g)),
-                                    std::optional(model.A),
-                                    std::optional(dense::VecRef<T>(model.b)),
-                                    std::optional(model.C),
-                                    std::optional(dense::VecRef<T>(model.l)),
-                                    std::optional(dense::VecRef<T>(model.u)),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    ruiz,
-                                    preconditioner_status);
+    proxsuite::proxqp::dense::setup(
+      optional<Mat<T>>(model.H),
+      optional<VecRef<T>>(dense::VecRef<T>(model.g)),
+      optional<Mat<T>>(model.A),
+      optional<VecRef<T>>(dense::VecRef<T>(model.b)),
+      optional<Mat<T>>(model.C),
+      optional<VecRef<T>>(dense::VecRef<T>(model.l)),
+      optional<VecRef<T>>(dense::VecRef<T>(model.u)),
+      settings,
+      model,
+      work,
+      results,
+      ruiz,
+      preconditioner_status);
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
@@ -327,17 +327,17 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update([[maybe_unused]] const std::nullopt_t H,
-              std::optional<Vec<T>> g,
-              [[maybe_unused]] const std::nullopt_t A,
-              std::optional<Vec<T>> b,
-              [[maybe_unused]] const std::nullopt_t C,
-              std::optional<Vec<T>> l,
-              std::optional<Vec<T>> u,
+  void update([[maybe_unused]] const nullopt_t H,
+              optional<Vec<T>> g,
+              [[maybe_unused]] const nullopt_t A,
+              optional<Vec<T>> b,
+              [[maybe_unused]] const nullopt_t C,
+              optional<Vec<T>> l,
+              optional<Vec<T>> u,
               bool update_preconditioner = true,
-              std::optional<T> rho = std::nullopt,
-              std::optional<T> mu_eq = std::nullopt,
-              std::optional<T> mu_in = std::nullopt)
+              optional<T> rho = nullopt,
+              optional<T> mu_eq = nullopt,
+              optional<T> mu_in = nullopt)
   {
     work.refactorize = false;
     work.proximal_parameter_update = false;
@@ -353,30 +353,30 @@ struct QP
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
-    bool real_update = !(g == std::nullopt && b == std::nullopt &&
-                         u == std::nullopt && l == std::nullopt);
+    bool real_update =
+      !(g == nullopt && b == nullopt && u == nullopt && l == nullopt);
     if (real_update) {
       // check the model is valid
-      if (g != std::nullopt) {
+      if (g != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
                                       model.dim,
                                       "the dimension wrt primal variable x "
                                       "variable for updating g is not valid.");
       }
-      if (b != std::nullopt) {
+      if (b != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
                                       model.n_eq,
                                       "the dimension wrt equality constrained "
                                       "variables for updating b is not valid.");
       }
-      if (u != std::nullopt) {
+      if (u != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(
           u.value().rows(),
           model.n_in,
           "the dimension wrt inequality constrained variables for updating u "
           "is not valid.");
       }
-      if (l != std::nullopt) {
+      if (l != nullopt) {
         PROXSUITE_CHECK_ARGUMENT_SIZE(
           l.value().rows(),
           model.n_in,
@@ -384,34 +384,35 @@ struct QP
           "is not valid.");
       }
       // update the model
-      if (g != std::nullopt) {
+      if (g != nullopt) {
         model.g = g.value().eval();
       }
-      if (b != std::nullopt) {
+      if (b != nullopt) {
         model.b = b.value().eval();
       }
-      if (u != std::nullopt) {
+      if (u != nullopt) {
         model.u = u.value().eval();
       }
-      if (l != std::nullopt) {
+      if (l != nullopt) {
         model.l = l.value().eval();
       }
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(std::optional(model.H),
-                                    std::optional(dense::VecRef<T>(model.g)),
-                                    std::optional(model.A),
-                                    std::optional(dense::VecRef<T>(model.b)),
-                                    std::optional(model.C),
-                                    std::optional(dense::VecRef<T>(model.l)),
-                                    std::optional(dense::VecRef<T>(model.u)),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    ruiz,
-                                    preconditioner_status);
+    proxsuite::proxqp::dense::setup(
+      optional<Mat<T>>(model.H),
+      optional<VecRef<T>>(dense::VecRef<T>(model.g)),
+      optional<Mat<T>>(model.A),
+      optional<VecRef<T>>(dense::VecRef<T>(model.b)),
+      optional<Mat<T>>(model.C),
+      optional<VecRef<T>>(dense::VecRef<T>(model.l)),
+      optional<VecRef<T>>(dense::VecRef<T>(model.u)),
+      settings,
+      model,
+      work,
+      results,
+      ruiz,
+      preconditioner_status);
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
@@ -434,9 +435,9 @@ struct QP
    * @param y dual equality warm start.
    * @param z dual inequality warm start.
    */
-  void solve(std::optional<VecRef<T>> x,
-             std::optional<VecRef<T>> y,
-             std::optional<VecRef<T>> z)
+  void solve(optional<VecRef<T>> x,
+             optional<VecRef<T>> y,
+             optional<VecRef<T>> z)
   {
     proxsuite::proxqp::dense::warm_start(x, y, z, results, settings, model);
     qp_solve( //
@@ -488,54 +489,54 @@ struct QP
 template<typename T>
 proxqp::Results<T>
 solve(
-  std::optional<MatRef<T>> H,
-  std::optional<VecRef<T>> g,
-  std::optional<MatRef<T>> A,
-  std::optional<VecRef<T>> b,
-  std::optional<MatRef<T>> C,
-  std::optional<VecRef<T>> l,
-  std::optional<VecRef<T>> u,
-  std::optional<VecRef<T>> x = std::nullopt,
-  std::optional<VecRef<T>> y = std::nullopt,
-  std::optional<VecRef<T>> z = std::nullopt,
-  std::optional<T> eps_abs = std::nullopt,
-  std::optional<T> eps_rel = std::nullopt,
-  std::optional<T> rho = std::nullopt,
-  std::optional<T> mu_eq = std::nullopt,
-  std::optional<T> mu_in = std::nullopt,
-  std::optional<bool> verbose = std::nullopt,
+  optional<MatRef<T>> H,
+  optional<VecRef<T>> g,
+  optional<MatRef<T>> A,
+  optional<VecRef<T>> b,
+  optional<MatRef<T>> C,
+  optional<VecRef<T>> l,
+  optional<VecRef<T>> u,
+  optional<VecRef<T>> x = nullopt,
+  optional<VecRef<T>> y = nullopt,
+  optional<VecRef<T>> z = nullopt,
+  optional<T> eps_abs = nullopt,
+  optional<T> eps_rel = nullopt,
+  optional<T> rho = nullopt,
+  optional<T> mu_eq = nullopt,
+  optional<T> mu_in = nullopt,
+  optional<bool> verbose = nullopt,
   bool compute_preconditioner = true,
   bool compute_timings = true,
-  std::optional<isize> max_iter = std::nullopt,
+  optional<isize> max_iter = nullopt,
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
 {
   isize n(0);
   isize n_eq(0);
   isize n_in(0);
-  if (H != std::nullopt) {
+  if (H != nullopt) {
     n = H.value().rows();
   }
-  if (A != std::nullopt) {
+  if (A != nullopt) {
     n_eq = A.value().rows();
   }
-  if (C != std::nullopt) {
+  if (C != nullopt) {
     n_in = C.value().rows();
   }
 
   QP<T> Qp(n, n_eq, n_in);
   Qp.settings.initial_guess = initial_guess;
 
-  if (eps_abs != std::nullopt) {
+  if (eps_abs != nullopt) {
     Qp.settings.eps_abs = eps_abs.value();
   }
-  if (eps_rel != std::nullopt) {
+  if (eps_rel != nullopt) {
     Qp.settings.eps_rel = eps_rel.value();
   }
-  if (verbose != std::nullopt) {
+  if (verbose != nullopt) {
     Qp.settings.verbose = verbose.value();
   }
-  if (max_iter != std::nullopt) {
+  if (max_iter != nullopt) {
     Qp.settings.max_iter = verbose.value();
   }
   Qp.settings.compute_timings = compute_timings;
