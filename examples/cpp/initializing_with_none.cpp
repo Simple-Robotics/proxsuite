@@ -26,7 +26,7 @@ main()
           qp_random.l,
           qp_random.u); // initialization with zero shape matrices
   // it is equivalent to do qp.init(qp_random.H, qp_random.g,
-  // std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);
+  // nullopt,nullopt,nullopt,nullopt,nullopt);
   qp.solve();
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << qp.results.x << std::endl;

@@ -39,18 +39,8 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0, 1.0, 1.0;
-  Results<T> results = dense::solve<T>(H,
-                                       g,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       C,
-                                       l,
-                                       u,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       eps_abs,
-                                       0);
+  Results<T> results = dense::solve<T>(
+    H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (dense::positive_part(C * results.x - u) +
                dense::negative_part(C * results.x - l))
@@ -89,18 +79,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0;
-  Results<T> results = dense::solve<T>(H,
-                                       g,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       C,
-                                       l,
-                                       u,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       eps_abs,
-                                       0);
+  Results<T> results = dense::solve<T>(
+    H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (dense::positive_part(C * results.x - u) +
                dense::negative_part(C * results.x - l))
@@ -152,7 +132,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
   qp.settings.eps_abs = eps_abs;
 
-  qp.init(H, g, std::nullopt, std::nullopt, C, u, l);
+  qp.init(H, g, nullopt, nullopt, C, u, l);
 
   dense::Vec<T> x = dense::Vec<T>(dim);
   dense::Vec<T> y = dense::Vec<T>(dim);

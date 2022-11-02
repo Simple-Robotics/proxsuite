@@ -7,6 +7,7 @@
 #include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
+using namespace proxsuite;
 using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::utils;
 using T = double;
@@ -60,8 +61,8 @@ DOCTEST_TEST_CASE(
             qp_random.u,
             true,
             T(1.e-7),
-            std::nullopt,
-            std::nullopt);
+            nullopt,
+            nullopt);
     std::cout << "after upating" << std::endl;
     std::cout << "rho :  " << qp.results.info.rho << std::endl;
     qp.solve();
@@ -114,8 +115,8 @@ DOCTEST_TEST_CASE(
              qp_random.u,
              true,
              T(1.e-7),
-             std::nullopt,
-             std::nullopt);
+             nullopt,
+             nullopt);
     std::cout << "after upating" << std::endl;
     std::cout << "rho :  " << qp2.results.info.rho << std::endl;
     qp2.solve();
@@ -142,15 +143,15 @@ DOCTEST_TEST_CASE(
     qp3.settings.verbose = false;
     qp3.init(qp_random.H,
              qp_random.g,
-             std::nullopt,
-             std::nullopt,
+             nullopt,
+             nullopt,
              qp_random.C,
              qp_random.l,
              qp_random.u,
              true,
              T(1.e-7),
-             std::nullopt,
-             std::nullopt);
+             nullopt,
+             nullopt);
     std::cout << "after upating" << std::endl;
     std::cout << "rho :  " << qp3.results.info.rho << std::endl;
     qp3.solve();
@@ -205,8 +206,8 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
             qp_random.u,
             true,
             T(1.e-7),
-            std::nullopt,
-            std::nullopt);
+            nullopt,
+            nullopt);
     std::cout << "after upating" << std::endl;
     std::cout << "rho :  " << qp.results.info.rho << std::endl;
     qp.solve();
@@ -264,7 +265,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
             qp_random.l,
             qp_random.u,
             true,
-            std::nullopt,
+            nullopt,
             T(1.E-2),
             T(1.E-3));
     std::cout << "after upating" << std::endl;
@@ -1075,14 +1076,8 @@ DOCTEST_TEST_CASE(
     std::cout << "setup timing " << qp2.results.info.setup_time
               << " solve time " << qp2.results.info.solve_time << std::endl;
 
-    qp2.update(std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               false);
+    qp2.update(
+      nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, false);
     qp2.solve();
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -2854,11 +2849,11 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
     bool update_preconditioner = true;
     qp.update(H_new,
               g_new,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
               update_preconditioner);
     qp.solve();
     dua_res = proxqp::dense::infty_norm(
@@ -3389,13 +3384,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
     auto g = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
-    qp.update(std::nullopt,
-              g,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt);
+    qp.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
     qp.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
@@ -3443,13 +3432,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
                                   qp_random.C * qp2.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp2.update(std::nullopt,
-               g,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp2.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
     qp2.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp2.results.x + g +
@@ -3497,13 +3480,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
                                   qp_random.C * qp3.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp3.update(std::nullopt,
-               g,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp3.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
     qp3.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp3.results.x + g +
@@ -3551,13 +3528,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
                                   qp_random.C * qp4.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp4.update(std::nullopt,
-               g,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp4.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
     qp4.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp4.results.x + g +
@@ -3605,13 +3576,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
                                   qp_random.C * qp5.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp5.update(std::nullopt,
-               g,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp5.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
     qp5.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp5.results.x + g +
@@ -3690,13 +3655,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
     SparseMat<T> A = 2 * qp_random.A; // keep same sparsity structure
-    qp.update(std::nullopt,
-              std::nullopt,
-              A,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt);
+    qp.update(nullopt, nullopt, A, nullopt, nullopt, nullopt, nullopt);
     qp.settings.verbose = false;
     qp.solve();
     dua_res = proxqp::dense::infty_norm(
@@ -3757,13 +3716,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
                                   qp_random.C * qp2.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp2.update(std::nullopt,
-               std::nullopt,
-               A,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp2.update(nullopt, nullopt, A, nullopt, nullopt, nullopt, nullopt);
     qp2.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp2.results.x +
@@ -3822,13 +3775,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
                                   qp_random.C * qp3.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp3.update(std::nullopt,
-               std::nullopt,
-               A,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp3.update(nullopt, nullopt, A, nullopt, nullopt, nullopt, nullopt);
     qp3.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp3.results.x +
@@ -3887,13 +3834,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
                                   qp_random.C * qp4.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp4.update(std::nullopt,
-               std::nullopt,
-               A,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp4.update(nullopt, nullopt, A, nullopt, nullopt, nullopt, nullopt);
     qp4.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp4.results.x +
@@ -3952,13 +3893,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
                                   qp_random.C * qp5.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp5.update(std::nullopt,
-               std::nullopt,
-               A,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt);
+    qp5.update(nullopt, nullopt, A, nullopt, nullopt, nullopt, nullopt);
     qp5.solve();
     dua_res = proxqp::dense::infty_norm(
       qp_random.H.selfadjointView<Eigen::Upper>() * qp5.results.x +
@@ -4047,13 +3982,13 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
                                   qp_random.C * qp.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp.update(std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt,
+    qp.update(nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
+              nullopt,
               true,
               T(1.E-7));
     qp.settings.verbose = false;
@@ -4104,13 +4039,13 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
                                   qp_random.C * qp2.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp2.update(std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
+    qp2.update(nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
                true,
                T(1.E-7));
     qp2.solve();
@@ -4160,13 +4095,13 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
                                   qp_random.C * qp3.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp3.update(std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
+    qp3.update(nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
                true,
                T(1.E-7));
     qp3.solve();
@@ -4216,13 +4151,13 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
                                   qp_random.C * qp4.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp4.update(std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
+    qp4.update(nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
                true,
                T(1.E-7));
     qp4.solve();
@@ -4272,13 +4207,13 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
                                   qp_random.C * qp5.results.x - qp_random.l)));
     CHECK(dua_res <= eps_abs);
     CHECK(pri_res <= eps_abs);
-    qp5.update(std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
-               std::nullopt,
+    qp5.update(nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
+               nullopt,
                true,
                T(1.E-7));
     qp5.solve();
@@ -4367,13 +4302,13 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
@@ -4411,7 +4346,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -4475,13 +4410,13 @@ DOCTEST_TEST_CASE(
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -4566,13 +4501,13 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
@@ -4611,7 +4546,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -4676,13 +4611,13 @@ DOCTEST_TEST_CASE(
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -4767,13 +4702,13 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
@@ -4812,7 +4747,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -4877,13 +4812,13 @@ DOCTEST_TEST_CASE(
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -4968,13 +4903,13 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
@@ -5013,7 +4948,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -5078,13 +5013,13 @@ DOCTEST_TEST_CASE(
               .lpNorm<Eigen::Infinity>();
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -5193,13 +5128,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
@@ -5236,7 +5171,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -5302,13 +5237,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -5421,13 +5356,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
@@ -5465,7 +5400,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -5531,13 +5466,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -5650,13 +5585,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
@@ -5694,7 +5629,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -5771,13 +5706,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);
@@ -5894,13 +5829,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp.update(std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             compute_preconditioner,
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
@@ -5938,7 +5873,7 @@ DOCTEST_TEST_CASE(
            qp_random.l,
            qp_random.u,
            compute_preconditioner,
-           std::nullopt,
+           nullopt,
            mu_eq);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
@@ -6015,13 +5950,13 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 
-  qp3.update(std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
-             std::nullopt,
+  qp3.update(nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
+             nullopt,
              compute_preconditioner,
              1.e-6,
              1.e-3);

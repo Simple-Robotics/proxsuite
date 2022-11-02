@@ -39,81 +39,78 @@ exposeQpObjectDense(pybind11::module_ m)
     .def_readwrite(
       "model", &dense::QP<T>::model, "class containing the QP model")
 
-    .def(
-      "init",
-      static_cast<void (dense::QP<T>::*)(std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
-                                         std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
-                                         std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
-                                         std::optional<dense::VecRef<T>>,
-                                         bool compute_preconditioner,
-                                         std::optional<T>,
-                                         std::optional<T>,
-                                         std::optional<T>)>(
-        &dense::QP<T>::init),
-      "function for initialize the QP model.",
-      pybind11::arg_v("H", std::nullopt, "quadratic cost"),
-      pybind11::arg_v("g", std::nullopt, "linear cost"),
-      pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
-      pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
-      pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
-      pybind11::arg_v("compute_preconditioner",
-                      true,
-                      "execute the preconditioner for reducing "
-                      "ill-conditioning and speeding up solver execution."),
-      pybind11::arg_v("rho", std::nullopt, "primal proximal parameter"),
-      pybind11::arg_v(
-        "mu_eq", std::nullopt, "dual equality constraint proximal parameter"),
-      pybind11::arg_v(
-        "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
+    .def("init",
+         static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            bool compute_preconditioner,
+                                            optional<T>,
+                                            optional<T>,
+                                            optional<T>)>(&dense::QP<T>::init),
+         "function for initialize the QP model.",
+         pybind11::arg_v("H", nullopt, "quadratic cost"),
+         pybind11::arg_v("g", nullopt, "linear cost"),
+         pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+         pybind11::arg_v("b", nullopt, "equality constraint vector"),
+         pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+         pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+         pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+         pybind11::arg_v("compute_preconditioner",
+                         true,
+                         "execute the preconditioner for reducing "
+                         "ill-conditioning and speeding up solver execution."),
+         pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
+         pybind11::arg_v(
+           "mu_eq", nullopt, "dual equality constraint proximal parameter"),
+         pybind11::arg_v(
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
     .def("solve",
          static_cast<void (dense::QP<T>::*)()>(&dense::QP<T>::solve),
          "function used for solving the QP problem, using default parameters.")
     .def("solve",
-         static_cast<void (dense::QP<T>::*)(std::optional<dense::VecRef<T>> x,
-                                            std::optional<dense::VecRef<T>> y,
-                                            std::optional<dense::VecRef<T>> z)>(
+         static_cast<void (dense::QP<T>::*)(optional<dense::VecRef<T>> x,
+                                            optional<dense::VecRef<T>> y,
+                                            optional<dense::VecRef<T>> z)>(
            &dense::QP<T>::solve),
          "function used for solving the QP problem, when passing a warm start.")
 
     .def(
       "update",
-      static_cast<void (dense::QP<T>::*)(std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::Vec<T>>,
-                                         std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::Vec<T>>,
-                                         std::optional<dense::MatRef<T>>,
-                                         std::optional<dense::Vec<T>>,
-                                         std::optional<dense::Vec<T>>,
+      static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
+                                         optional<dense::Vec<T>>,
+                                         optional<dense::MatRef<T>>,
+                                         optional<dense::Vec<T>>,
+                                         optional<dense::MatRef<T>>,
+                                         optional<dense::Vec<T>>,
+                                         optional<dense::Vec<T>>,
                                          bool update_preconditioner,
-                                         std::optional<T>,
-                                         std::optional<T>,
-                                         std::optional<T>)>(
-        &dense::QP<T>::update),
+                                         optional<T>,
+                                         optional<T>,
+                                         optional<T>)>(&dense::QP<T>::update),
       "function used for updating matrix or vector entry of the model using "
       "dense matrix entries.",
-      pybind11::arg_v("H", std::nullopt, "quadratic cost"),
-      pybind11::arg_v("g", std::nullopt, "linear cost"),
-      pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
-      pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
-      pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v("H", nullopt, "quadratic cost"),
+      pybind11::arg_v("g", nullopt, "linear cost"),
+      pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+      pybind11::arg_v("b", nullopt, "equality constraint vector"),
+      pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+      pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
         true,
         "update the preconditioner considering new matrices entries for "
         "reducing ill-conditioning and speeding up solver execution. If set up "
         "to false, use previous derived preconditioner."),
-      pybind11::arg_v("rho", std::nullopt, "primal proximal parameter"),
+      pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
       pybind11::arg_v(
-        "mu_eq", std::nullopt, "dual equality constraint proximal parameter"),
+        "mu_eq", nullopt, "dual equality constraint proximal parameter"),
       pybind11::arg_v(
-        "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
+        "mu_in", nullopt, "dual inequality constraint proximal parameter"))
     .def("cleanup",
          &dense::QP<T>::cleanup,
          "function used for cleaning the workspace and result "
@@ -141,9 +138,9 @@ exposeQpObjectSparse(pybind11::module_ m)
       ::pybind11::init<const sparse::SparseMat<bool, I>&,
                        const sparse::SparseMat<bool, I>&,
                        const sparse::SparseMat<bool, I>&>(),
-      pybind11::arg_v("H_mask", std::nullopt, "mask of the quadratic cost."),
+      pybind11::arg_v("H_mask", nullopt, "mask of the quadratic cost."),
       pybind11::arg_v(
-        "A_mask", std::nullopt, "mask of the equality constraint matrix."),
+        "A_mask", nullopt, "mask of the equality constraint matrix."),
       pybind11::arg_v("C_mask", 0, "mask of the inequality constraint matrix."),
       "Constructor using QP model sparsity structure.") // constructor
     .def_readwrite(
@@ -156,58 +153,56 @@ exposeQpObjectSparse(pybind11::module_ m)
       "information statistics in an info subclass.")
     .def_readwrite(
       "settings", &sparse::QP<T, I>::settings, "Settings of the solver.")
-    .def(
-      "init",
-      &sparse::QP<T, I>::init,
-      "function for initializing the model when passing sparse matrices in "
-      "entry.",
-      pybind11::arg_v("H", std::nullopt, "quadratic cost"),
-      pybind11::arg_v("g", std::nullopt, "linear cost"),
-      pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
-      pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
-      pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
-      pybind11::arg_v("compute_preconditioner",
-                      true,
-                      "execute the preconditioner for reducing "
-                      "ill-conditioning and speeding up solver execution."),
-      pybind11::arg_v("rho", std::nullopt, "primal proximal parameter"),
-      pybind11::arg_v(
-        "mu_eq", std::nullopt, "dual equality constraint proximal parameter"),
-      pybind11::arg_v(
-        "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
+    .def("init",
+         &sparse::QP<T, I>::init,
+         "function for initializing the model when passing sparse matrices in "
+         "entry.",
+         pybind11::arg_v("H", nullopt, "quadratic cost"),
+         pybind11::arg_v("g", nullopt, "linear cost"),
+         pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+         pybind11::arg_v("b", nullopt, "equality constraint vector"),
+         pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+         pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+         pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+         pybind11::arg_v("compute_preconditioner",
+                         true,
+                         "execute the preconditioner for reducing "
+                         "ill-conditioning and speeding up solver execution."),
+         pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
+         pybind11::arg_v(
+           "mu_eq", nullopt, "dual equality constraint proximal parameter"),
+         pybind11::arg_v(
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
 
-    .def(
-      "update",
-      &sparse::QP<T, I>::update,
-      "function for updating the model when passing sparse matrices in "
-      "entry.",
-      pybind11::arg_v("H", std::nullopt, "quadratic cost"),
-      pybind11::arg_v("g", std::nullopt, "linear cost"),
-      pybind11::arg_v("A", std::nullopt, "equality constraint matrix"),
-      pybind11::arg_v("b", std::nullopt, "equality constraint vector"),
-      pybind11::arg_v("C", std::nullopt, "inequality constraint matrix"),
-      pybind11::arg_v("l", std::nullopt, "upper inequality constraint vector"),
-      pybind11::arg_v("u", std::nullopt, "lower inequality constraint vector"),
-      pybind11::arg_v(
-        "update_preconditioner",
-        true,
-        "update the preconditioner or re-use previous derived for reducing "
-        "ill-conditioning and speeding up solver execution."),
-      pybind11::arg_v("rho", std::nullopt, "primal proximal parameter"),
-      pybind11::arg_v(
-        "mu_eq", std::nullopt, "dual equality constraint proximal parameter"),
-      pybind11::arg_v(
-        "mu_in", std::nullopt, "dual inequality constraint proximal parameter"))
+    .def("update",
+         &sparse::QP<T, I>::update,
+         "function for updating the model when passing sparse matrices in "
+         "entry.",
+         pybind11::arg_v("H", nullopt, "quadratic cost"),
+         pybind11::arg_v("g", nullopt, "linear cost"),
+         pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+         pybind11::arg_v("b", nullopt, "equality constraint vector"),
+         pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+         pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+         pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+         pybind11::arg_v(
+           "update_preconditioner",
+           true,
+           "update the preconditioner or re-use previous derived for reducing "
+           "ill-conditioning and speeding up solver execution."),
+         pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
+         pybind11::arg_v(
+           "mu_eq", nullopt, "dual equality constraint proximal parameter"),
+         pybind11::arg_v(
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
     .def("solve",
          static_cast<void (sparse::QP<T, I>::*)()>(&sparse::QP<T, I>::solve),
          "function used for solving the QP problem, using default parameters.")
     .def("solve",
-         static_cast<void (sparse::QP<T, I>::*)(
-           std::optional<sparse::VecRef<T>> x,
-           std::optional<sparse::VecRef<T>> y,
-           std::optional<sparse::VecRef<T>> z)>(&sparse::QP<T, I>::solve),
+         static_cast<void (sparse::QP<T, I>::*)(optional<sparse::VecRef<T>> x,
+                                                optional<sparse::VecRef<T>> y,
+                                                optional<sparse::VecRef<T>> z)>(
+           &sparse::QP<T, I>::solve),
          "function used for solving the QP problem, when passing a warm start.")
     .def("cleanup",
          &sparse::QP<T, I>::cleanup,

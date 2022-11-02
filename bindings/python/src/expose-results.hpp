@@ -6,6 +6,7 @@
 #include <pybind11/eigen.h>
 
 #include "helpers.hpp"
+#include "optional.hpp"
 
 namespace proxsuite {
 namespace proxqp {

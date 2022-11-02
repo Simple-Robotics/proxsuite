@@ -7,6 +7,7 @@
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
+using namespace proxsuite;
 using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::utils;
 using T = double;
@@ -69,9 +70,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.C,
                                              qp.l,
                                              qp.u,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              eps_abs);
 
     T dua_res = proxqp::dense::infty_norm(
@@ -125,11 +126,11 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.C,
                                              qp.l,
                                              qp.u,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              eps_abs,
-                                             std::nullopt,
+                                             nullopt,
                                              T(1.E-7));
     DOCTEST_CHECK(results.info.rho == T(1.E-7));
     T dua_res = proxqp::dense::infty_norm(
@@ -185,12 +186,12 @@ DOCTEST_TEST_CASE(
                                              qp.C,
                                              qp.l,
                                              qp.u,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              eps_abs,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
                                              T(1.E-2),
                                              T(1.E-2));
     T dua_res = proxqp::dense::infty_norm(
@@ -294,14 +295,14 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.C,
                                              qp.l,
                                              qp.u,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              eps_abs,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              verbose);
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
@@ -356,18 +357,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                              qp.C,
                                              qp.l,
                                              qp.u,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              eps_abs,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
-                                             std::nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
                                              true,
                                              true,
-                                             std::nullopt,
+                                             nullopt,
                                              initial_guess);
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +

@@ -3,6 +3,7 @@
 #include <proxsuite/proxqp/dense/dense.hpp>   // get the dense backend of ProxQP
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
+using namespace proxsuite;
 using namespace proxsuite::proxqp;
 using T = double;
 
@@ -27,13 +28,13 @@ main()
                                        qp_random.C,
                                        qp_random.l,
                                        qp_random.u,
-                                       std::nullopt,
-                                       std::nullopt,
-                                       std::nullopt,
+                                       nullopt,
+                                       nullopt,
+                                       nullopt,
                                        T(1.E-9),
-                                       std::nullopt,
-                                       std::nullopt,
-                                       std::nullopt,
+                                       nullopt,
+                                       nullopt,
+                                       nullopt,
                                        T(1.E-7));
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << results.x << std::endl;
