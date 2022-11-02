@@ -18,12 +18,12 @@ namespace proxsuite {
 template<class T>
 using optional = std::optional<T>;
 using nullopt_t = std::nullopt_t;
-inline constexpr nullopt_t nullopt{ {} };
+inline constexpr nullopt_t nullopt = std::nullopt;
 #else
 template<class T>
 using optional = tl::optional<T>;
 using nullopt_t = tl::nullopt_t;
-inline constexpr nullopt_t nullopt{ {}, {} };
+inline constexpr nullopt_t nullopt = tl::nullopt;
 #endif
 } // namespace proxsuite
 
