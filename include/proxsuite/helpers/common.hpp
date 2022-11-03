@@ -27,12 +27,4 @@ struct infinite_bound
 } // helpers
 } // proxsuite
 
-#if __cplusplus >= 201703L
-#define PROXSUITE_MAYBE_UNUSED [[maybe_unused]]
-#elif defined(_MSC_VER) && !defined(__clang__)
-#define PROXSUITE_MAYBE_UNUSED
-#else
-#define PROXSUITE_MAYBE_UNUSED __attribute__((__unused__))
-#endif
-
 #endif // ifndef PROXSUITE_HELPERS_COMMON_HPP
