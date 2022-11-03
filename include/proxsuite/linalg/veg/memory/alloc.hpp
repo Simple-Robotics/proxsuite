@@ -52,6 +52,81 @@ aligned_alloc(std::size_t alignment, std::size_t size)
 } // namespace alignment
 #endif
 
+// Support aligned_alloc for c++14, code from boost/align.
+namespace alignment {
+namespace detail {
+// Source: https://www.boost.org/doc/libs/1_65_0/boost/align/detail/min_size.hpp
+template<std::size_t A, std::size_t B>
+struct min_size : std::integral_constant<std::size_t, (A < B) ? A : B>
+{
+};
+
+template<class T>
+struct offset_value
+{
+  char value;
+  T object;
+};
+
+// Source:
+// https://www.boost.org/doc/libs/1_65_0/boost/align/detail/alignment_of.hpp
+template<class T>
+struct alignment_of : min_size<sizeof(T), sizeof(offset_value<T>) - sizeof(T)>
+{
+};
+
+// Source:
+// https://www.boost.org/doc/libs/1_65_0/boost/align/detail/is_alignment.hpp
+constexpr inline bool
+is_alignment(std::size_t value)
+{
+  return (value > 0) && ((value & (value - 1)) == 0);
+}
+
+// Source: https://www.boost.org/doc/libs/1_65_0/boost/align/detail/align.hpp
+inline void*
+align(std::size_t alignment, std::size_t size, void*& ptr, std::size_t& space)
+{
+  assert(is_alignment(alignment));
+  if (size <= space) {
+    char* p = reinterpret_cast<char*>(
+      ~(alignment - 1) & (reinterpret_cast<std::size_t>(ptr) + alignment - 1));
+    std::size_t n = space - (p - static_cast<char*>(ptr));
+    if (size <= n) {
+      ptr = p;
+      space = n;
+      return p;
+    }
+  }
+  return 0;
+}
+
+// Source:
+// https://www.boost.org/doc/libs/1_65_0/boost/align/detail/aligned_alloc.hpp
+inline void*
+aligned_alloc(std::size_t alignment, std::size_t size)
+{
+  assert(is_alignment(alignment));
+  enum
+  {
+    N = alignment_of<void*>::value
+  };
+  if (alignment < N) {
+    alignment = N;
+  }
+  std::size_t n = size + alignment - N;
+  void* p = std::malloc(sizeof(void*) + n);
+  if (p) {
+    void* r = static_cast<char*>(p) + sizeof(void*);
+    (void)align(alignment, size, r, n);
+    *(static_cast<void**>(r) - 1) = p;
+    p = r;
+  }
+  return p;
+}
+} // namespace detail
+} // namespace alignment
+
 namespace mem {
 enum struct CopyAvailable
 {
@@ -95,7 +170,11 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #elif defined(__APPLE__)
   return alignment::aligned_alloc(align, (size + mask) & ~mask);
 #else
+#ifdef PROXSUITE_WITH_CPP_17
   return std::aligned_alloc(align, (size + mask) & ~mask);
+#else
+  return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);
+#endif
 #endif
 }
 
