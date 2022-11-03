@@ -8,14 +8,15 @@
 #ifndef PROXSUITE_HELPERS_OPTIONAL_HPP
 #define PROXSUITE_HELPERS_OPTIONAL_HPP
 
-#if __cplusplus >= 201703L
+#include <proxsuite/helpers/tl-optional.hpp>
+#ifdef PROXSUITE_WITH_CPP_17
 #include <optional>
 #else
 #include <proxsuite/helpers/tl-optional.hpp>
 #endif
 
 namespace proxsuite {
-#if __cplusplus >= 201703L
+#ifdef PROXSUITE_WITH_CPP_17
 template<class T>
 using optional = std::optional<T>;
 using nullopt_t = std::nullopt_t;

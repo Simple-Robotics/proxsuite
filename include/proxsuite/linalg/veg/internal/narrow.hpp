@@ -1,8 +1,10 @@
 #ifndef VEG_NARROW_HPP_H0EXKJTAS
 #define VEG_NARROW_HPP_H0EXKJTAS
 
+#include "proxsuite/fwd.hpp"
 #include "proxsuite/linalg/veg/util/assert.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
+#include "proxsuite/helpers/common.hpp"
 
 namespace proxsuite {
 namespace linalg {
@@ -22,7 +24,7 @@ struct narrow
 #if defined(VEG_WITH_CXX14_SUPPORT)
 
     To to = static_cast<To>(from);
-    [[maybe_unused]] From roundtrip_from =
+    PROXSUITE_MAYBE_UNUSED From roundtrip_from =
       static_cast<From>(static_cast<To>(from));
     VEG_INTERNAL_ASSERT_PRECONDITION(roundtrip_from == from);
     return to;

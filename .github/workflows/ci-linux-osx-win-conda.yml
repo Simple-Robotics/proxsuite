@@ -55,7 +55,15 @@ jobs:
         mamba install julia
 
     - name: Activate ccache [Conda]
+      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ matrix.os }}-${{ matrix.type }}
+        max-size: 1G
+
+    - name: Activate ccache windows [Conda]
+      if: contains(matrix.os, 'windows')
+      uses: hendrikmuhs/ccache-action@v1.1
       with:
         key: ${{ matrix.os }}-${{ matrix.type }}
         max-size: 1G

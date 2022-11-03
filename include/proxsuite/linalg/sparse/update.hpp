@@ -34,7 +34,7 @@ merge_second_col_into_first( //
   I* difference,
   T* first_values,
   I* first_ptr,
-  [[maybe_unused]] isize first_full_len,
+  PROXSUITE_MAYBE_UNUSED isize first_full_len,
   isize first_initial_len,
   Slice<I> second,
   proxsuite::linalg::veg::DoNotDeduce<I> ignore_threshold_inclusive,
