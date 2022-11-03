@@ -7,13 +7,12 @@
 
 #if __cplusplus >= 201703L
 #define PROXSUITE_WITH_CPP_17
-#elif __cplusplus >= 201402L
+#endif
+#if __cplusplus >= 201402L
 #define PROXSUITE_WITH_CPP_14
-#else
-#error "Please use at least c++14"  // should not happen
 #endif
 
-#if defined PROXSUITE_WITH_CPP_17
+#if defined(PROXSUITE_WITH_CPP_17)
 #define PROXSUITE_MAYBE_UNUSED [[maybe_unused]]
 #elif defined(_MSC_VER) && !defined(__clang__)
 #define PROXSUITE_MAYBE_UNUSED
