@@ -89,6 +89,83 @@ class SparseqpWrapper(unittest.TestCase):
             )
         )
 
+    def test_case_setting_SparseBackend(self):
+        print(
+            "------------------------sparse random strongly convex qp with equality and inequality constraints: test setting SparseBackend"
+        )
+        n = 10
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+
+        H_ = H != 0.0
+        A_ = A != 0.0
+        C_ = C != 0.0
+        qp = proxsuite.proxqp.sparse.QP(H_, A_, C_)
+        qp.settings.eps_abs = 1.0e-9
+        qp.settings.verbose = True
+        assert qp.settings.sparse_backend == proxsuite.proxqp.SparseBackend.Automatic
+        qp.settings.sparse_backend = proxsuite.proxqp.SparseBackend.MatrixFree
+        assert qp.settings.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
+        qp.init(H=H, g=g, A=A, b=b, C=C, u=u, l=l, rho=1.0e-7)
+        qp.solve()
+        dua_res = normInf(
+            H @ qp.results.x
+            + g
+            + A.transpose() @ qp.results.y
+            + C.transpose() @ qp.results.z
+        )
+        pri_res = max(
+            normInf(A @ qp.results.x - b),
+            normInf(
+                np.maximum(C @ qp.results.x - u, 0)
+                + np.minimum(C @ qp.results.x - l, 0)
+            ),
+        )
+        assert dua_res <= 1e-9
+        assert pri_res <= 1e-9
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
+        print("total number of iteration: {}".format(qp.results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                qp.results.info.setup_time, qp.results.info.solve_time
+            )
+        )
+
+        qp2 = proxsuite.proxqp.sparse.QP(H_, A_, C_)
+        qp2.settings.eps_abs = 1.0e-9
+        qp2.settings.verbose = True
+        assert qp2.settings.sparse_backend == proxsuite.proxqp.SparseBackend.Automatic
+        qp2.settings.sparse_backend = proxsuite.proxqp.SparseBackend.MatrixFree
+        assert qp2.settings.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
+        qp2.init(H=H, g=g, A=A, b=b, C=C, u=u, l=l, rho=1.0e-7)
+        qp2.solve()
+        dua_res = normInf(
+            H @ qp2.results.x
+            + g
+            + A.transpose() @ qp2.results.y
+            + C.transpose() @ qp2.results.z
+        )
+        pri_res = max(
+            normInf(A @ qp2.results.x - b),
+            normInf(
+                np.maximum(C @ qp2.results.x - u, 0)
+                + np.minimum(C @ qp2.results.x - l, 0)
+            ),
+        )
+        assert dua_res <= 1e-9
+        assert pri_res <= 1e-9
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
+        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                qp2.results.info.setup_time, qp2.results.info.solve_time
+            )
+        )
+        assert (qp.results.x == qp2.results.x).all()
+
     def test_case_update_mu(self):
 
         print(
