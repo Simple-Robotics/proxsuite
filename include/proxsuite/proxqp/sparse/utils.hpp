@@ -49,8 +49,10 @@ print_setup_header(const Settings<T>& settings,
   // Print Settings
   std::cout << "settings: " << std::endl;
   std::cout << "          backend = sparse," << std::endl;
+  std::cout << "          sparse_backend = " << settings.sparse_backend << ","
+            << std::endl;
   std::cout << "          eps_abs = " << settings.eps_abs
-            << " eps_rel = " << settings.eps_rel << std::endl;
+            << ", eps_rel = " << settings.eps_rel << std::endl;
   std::cout << "          eps_prim_inf = " << settings.eps_primal_inf
             << ", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
 

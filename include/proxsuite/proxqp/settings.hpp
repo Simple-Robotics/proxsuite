@@ -14,6 +14,28 @@
 
 namespace proxsuite {
 namespace proxqp {
+
+// Sparse backend specifications
+enum struct SparseBackend
+{
+  Automatic,      // the solver will select the appropriate sparse backend.
+  SparseCholesky, // sparse cholesky backend.
+  MatrixFree,     // iterative matrix free sparse backend.
+};
+
+inline std::ostream&
+operator<<(std::ostream& os, const SparseBackend& sparse_backend)
+{
+  if (sparse_backend == SparseBackend::Automatic)
+    os << "Automatic";
+  else if (sparse_backend == SparseBackend::SparseCholesky) {
+    os << "SparseCholesky";
+  } else {
+    os << "MatrixFree";
+  }
+  return os;
+}
+
 ///
 /// @brief This class defines the settings of PROXQP solvers with sparse and
 /// dense backends.
@@ -68,6 +90,8 @@ struct Settings
   T eps_primal_inf;
   T eps_dual_inf;
   bool bcl_update;
+
+  SparseBackend sparse_backend;
   /*!
    * Default constructor.
    * @param default_rho default rho parameter of result class
@@ -121,6 +145,8 @@ struct Settings
    * @param bcl_update if set to true, BCL strategy is used for calibrating
    * mu_eq and mu_in. If set to false, a strategy developped by Martinez & al is
    * used.
+   * @param sparse_backend Default automatic. User can choose between sparse
+   * cholesky or iterative matrix free sparse backend.
    */
 
   Settings(
@@ -161,7 +187,8 @@ struct Settings
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
     T eps_dual_inf = 1.E-4,
-    bool bcl_update = true)
+    bool bcl_update = true,
+    SparseBackend sparse_backend = SparseBackend::Automatic)
     : default_rho(default_rho)
     , default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
@@ -196,6 +223,7 @@ struct Settings
     , eps_primal_inf(eps_primal_inf)
     , eps_dual_inf(eps_dual_inf)
     , bcl_update(bcl_update)
+    , sparse_backend(sparse_backend)
   {
   }
   /*
@@ -231,7 +259,8 @@ struct Settings
            T preconditioner_accuracy_ = 1.e-3,
            T eps_primal_inf_ = 1.E-4,
            T eps_dual_inf_ = 1.E-4,
-           bool bcl_update_ = true
+           bool bcl_update_ = true,
+           SparseBackend sparse_backend_ = SparseBackend::Automatic
  ){
     alpha_bcl = alpha_bcl_;
     beta_bcl = beta_bcl_ ;
@@ -264,6 +293,8 @@ struct Settings
     eps_primal_inf = eps_primal_inf_;
     eps_dual_inf = eps_dual_inf_;
     bcl_update = bcl_update_;
+    sparse_backend = sparse_backend_;
+
 
  }
  */
