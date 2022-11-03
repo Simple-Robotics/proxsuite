@@ -26,6 +26,12 @@ exposeSettings(pybind11::module_ m)
            InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT)
     .export_values();
 
+  ::pybind11::enum_<SparseBackend>(m, "SparseBackend", pybind11::module_local())
+    .value("Automatic", SparseBackend::Automatic)
+    .value("MatrixFree", SparseBackend::MatrixFree)
+    .value("SparseCholesky", SparseBackend::SparseCholesky)
+    .export_values();
+
   ::pybind11::class_<Settings<T>>(m, "Settings", pybind11::module_local())
     .def(::pybind11::init(), "Default constructor.") // constructor
     .def_readwrite("default_rho", &Settings<T>::default_rho)
@@ -51,6 +57,7 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("nb_iterative_refinement",
                    &Settings<T>::nb_iterative_refinement)
     .def_readwrite("initial_guess", &Settings<T>::initial_guess)
+    .def_readwrite("sparse_backend", &Settings<T>::sparse_backend)
     .def_readwrite("preconditioner_accuracy",
                    &Settings<T>::preconditioner_accuracy)
     .def_readwrite("preconditioner_max_iter",
