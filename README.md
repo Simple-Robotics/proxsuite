@@ -35,6 +35,13 @@ This approach is only available on Linux and Mac OS X.
 ```
 This approach is available on Linux, Windows and Mac OS X.
 
+### Quick install with <img src="https://brew.sh/assets/img/homebrew-256x256.png" height="30">:
+
+```bash
+   brew install proxsuite 
+```
+This approach is available on Linux and Mac OS X.
+
 ### Alternative approaches
 
 Installation from source is presented [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
