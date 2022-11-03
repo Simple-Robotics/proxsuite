@@ -14,7 +14,7 @@
 #include <proxsuite/proxqp/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
-#include <proxsuite/optional.hpp>
+#include <proxsuite/helpers/optional.hpp>
 
 namespace proxsuite {
 namespace proxqp {

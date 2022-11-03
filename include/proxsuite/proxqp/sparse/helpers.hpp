@@ -6,7 +6,7 @@
 #define PROXSUITE_PROXQP_SPARSE_HELPERS_HPP
 
 #include <Eigen/Sparse>
-#include <proxsuite/optional.hpp>
+#include <proxsuite/helpers/optional.hpp>
 
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>

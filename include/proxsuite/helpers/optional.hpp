@@ -5,12 +5,13 @@
  * @file optional.hpp
  */
 
-#ifndef PROXSUITE_OPTIONAL_HPP
-#define PROXSUITE_OPTIONAL_HPP
+#ifndef PROXSUITE_HELPERS_OPTIONAL_HPP
+#define PROXSUITE_HELPERS_OPTIONAL_HPP
 
-#include <proxsuite/helpers/tl-optional.hpp>
 #ifdef PROXSUITE_WITH_CPP_17
 #include <optional>
+#else
+#include <proxsuite/helpers/tl-optional.hpp>
 #endif
 
 namespace proxsuite {
@@ -27,4 +28,4 @@ inline constexpr nullopt_t nullopt = tl::nullopt;
 #endif
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_OPTIONAL_HPP */
+#endif /* end of include guard PROXSUITE_HELPERS_OPTIONAL_HPP */
