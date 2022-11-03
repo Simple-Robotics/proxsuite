@@ -745,7 +745,7 @@ struct generic_product_impl<
   static void scaleAndAddTo(Dst& dst,
                             Mat_ const& lhs,
                             Rhs const& rhs,
-                            [[maybe_unused]] Scalar const& alpha)
+                            PROXSUITE_MAYBE_UNUSED Scalar const& alpha)
   {
     using proxsuite::linalg::veg::isize;
 

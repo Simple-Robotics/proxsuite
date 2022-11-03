@@ -9,12 +9,12 @@
 #define PROXSUITE_OPTIONAL_HPP
 
 #include <proxsuite/helpers/tl-optional.hpp>
-#if __cplusplus >= 201703L
+#ifdef PROXSUITE_WITH_CPP_17
 #include <optional>
 #endif
 
 namespace proxsuite {
-#if __cplusplus >= 201703L
+#ifdef PROXSUITE_WITH_CPP_17
 template<class T>
 using optional = std::optional<T>;
 using nullopt_t = std::nullopt_t;
