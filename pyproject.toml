@@ -5,6 +5,7 @@ description = "Quadratic Programming Solver for Robotics and beyond."
 readme = "README.md"
 requires-python = ">= 3.7"
 license = "BSD-2-Clause"
+dependencies = ["numpy","scipy"]
 
 [project.urls]
 homepage = "https://github.com/Simple-Robotics/proxsuite"
@@ -12,6 +13,6 @@ repository = "https://github.com/Simple-Robotics/proxsuite.git"
 changelog = "https://github.com/Simple-Robotics/proxsuite/CHANGELOG.md"
 
 [build-system]
-requires = ["cmeel[build]", "numpy", "scipy"]
+requires = ["cmeel[build]"]
 build-backend = "cmeel.build"
 configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"]
