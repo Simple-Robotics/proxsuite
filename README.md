@@ -38,7 +38,7 @@ This approach is available on Linux, Windows and Mac OS X.
 ### Quick install with <img src="https://brew.sh/assets/img/homebrew-256x256.png" height="30">:
 
 ```bash
-   brew install proxsuite 
+   brew install proxsuite
 ```
 This approach is available on Linux and Mac OS X.
 
