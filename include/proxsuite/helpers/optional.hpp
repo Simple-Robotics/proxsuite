@@ -8,7 +8,6 @@
 #ifndef PROXSUITE_HELPERS_OPTIONAL_HPP
 #define PROXSUITE_HELPERS_OPTIONAL_HPP
 
-#include <proxsuite/helpers/tl-optional.hpp>
 #ifdef PROXSUITE_WITH_CPP_17
 #include <optional>
 #else
