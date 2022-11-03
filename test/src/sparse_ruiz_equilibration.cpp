@@ -87,13 +87,13 @@ TEST_CASE("upper part")
     settings.preconditioner_accuracy,
     stack);
 
-  CHECK(H_scaled.toDense() == (H_scaled_dense));
-  CHECK(g_scaled == (g_scaled_dense));
-  CHECK(AT_scaled.transpose().toDense() == (A_scaled_dense));
-  CHECK(b_scaled == (b_scaled_dense));
-  CHECK(AT_scaled.transpose().toDense() == (A_scaled_dense));
-  CHECK(l_scaled == (l_scaled_dense));
-  CHECK(u_scaled == (u_scaled_dense));
+  CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
+  CHECK(g_scaled.isApprox(g_scaled_dense));
+  CHECK(AT_scaled.transpose().toDense().isApprox(A_scaled_dense));
+  CHECK(b_scaled.isApprox(b_scaled_dense));
+  CHECK(AT_scaled.transpose().toDense().isApprox(A_scaled_dense));
+  CHECK(l_scaled.isApprox(l_scaled_dense));
+  CHECK(u_scaled.isApprox(u_scaled_dense));
 }
 
 TEST_CASE("lower part")
@@ -168,11 +168,11 @@ TEST_CASE("lower part")
     settings.preconditioner_accuracy,
     stack);
 
-  CHECK(H_scaled.toDense() == (H_scaled_dense));
-  CHECK(g_scaled == (g_scaled_dense));
-  CHECK(AT_scaled.transpose().toDense() == (A_scaled_dense));
-  CHECK(b_scaled == (b_scaled_dense));
-  CHECK(AT_scaled.transpose().toDense() == (A_scaled_dense));
-  CHECK(l_scaled == (l_scaled_dense));
-  CHECK(u_scaled == (u_scaled_dense));
+  CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
+  CHECK(g_scaled.isApprox(g_scaled_dense));
+  CHECK(AT_scaled.transpose().toDense().isApprox(A_scaled_dense));
+  CHECK(b_scaled.isApprox(b_scaled_dense));
+  CHECK(AT_scaled.transpose().toDense().isApprox(A_scaled_dense));
+  CHECK(l_scaled.isApprox(l_scaled_dense));
+  CHECK(u_scaled.isApprox(u_scaled_dense));
 }
