@@ -2331,7 +2331,7 @@ registerReporter(const char* name, int priority, bool isReporter)
                                        decorators)
 
 // for registering tests in classes - requires C++17 for inline variables!
-#if __cplusplus >= 201703L ||                                                  \
+#if defined PROXSUITE_WITH_CPP_17 ||                                           \
   (DOCTEST_MSVC >= DOCTEST_COMPILER(19, 12, 0) && _MSVC_LANG >= 201703L)
 #define DOCTEST_TEST_CASE_CLASS(decorators)                                    \
   DOCTEST_CREATE_AND_REGISTER_FUNCTION_IN_CLASS(                               \

@@ -1,6 +1,7 @@
 #ifndef VEG_DYNAMIC_STACK_DYNAMIC_STACK_HPP_UBOMZFTOS
 #define VEG_DYNAMIC_STACK_DYNAMIC_STACK_HPP_UBOMZFTOS
 
+#include "proxsuite/fwd.hpp"
 #include "proxsuite/linalg/veg/util/assert.hpp"
 #include "proxsuite/linalg/veg/internal/collection_algo.hpp"
 #include "proxsuite/linalg/veg/memory/alloc.hpp"

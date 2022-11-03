@@ -170,7 +170,7 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #elif defined(__APPLE__)
   return alignment::aligned_alloc(align, (size + mask) & ~mask);
 #else
-#if __cplusplus >= 201703L
+#ifdef PROXSUITE_WITH_CPP_17
   return std::aligned_alloc(align, (size + mask) & ~mask);
 #else
   return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);

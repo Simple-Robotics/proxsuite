@@ -1,6 +1,7 @@
 #ifndef VEG_NARROW_HPP_H0EXKJTAS
 #define VEG_NARROW_HPP_H0EXKJTAS
 
+#include "proxsuite/fwd.hpp"
 #include "proxsuite/linalg/veg/util/assert.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 #include "proxsuite/helpers/common.hpp"
