@@ -49,6 +49,9 @@ struct Info
   T objValue;
   T pri_res;
   T dua_res;
+
+  //// sparse backend used by solver, either CholeskySparse or MatrixFree
+  SparseBackend sparse_backend;
 };
 ///
 /// @brief This class stores all the results of PROXQP solvers with sparse and
@@ -104,6 +107,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
+    info.sparse_backend = SparseBackend::Automatic;
   }
   /*!
    * cleanups the Result variables and set the info variables to their initial
@@ -129,6 +133,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+    info.sparse_backend = SparseBackend::Automatic;
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
   {
