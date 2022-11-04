@@ -286,6 +286,8 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
                                   qp_random.C * qp.results.x - qp_random.l)));
     CHECK(dua_res <= 1e-9);
     CHECK(pri_res <= 1E-9);
+    CHECK(qp.results.info.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::MatrixFree);
     std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
               << std::endl;
     std::cout << "dual residual " << dua_res << "; primal residual " << pri_res
@@ -328,6 +330,8 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
                                   qp_random.C * qp2.results.x - qp_random.l)));
     CHECK(dua_res2 <= 1e-9);
     CHECK(pri_res2 <= 1E-9);
+    CHECK(qp2.results.info.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::SparseCholesky);
     std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
               << std::endl;
     std::cout << "dual residual " << dua_res2 << "; primal residual "

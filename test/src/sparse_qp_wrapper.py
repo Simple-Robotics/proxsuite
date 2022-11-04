@@ -124,6 +124,9 @@ class SparseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
+        assert (
+            qp.results.info.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
+        )
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -132,13 +135,14 @@ class SparseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-
         qp2 = proxsuite.proxqp.sparse.QP(H_, A_, C_)
         qp2.settings.eps_abs = 1.0e-9
         qp2.settings.verbose = True
         assert qp2.settings.sparse_backend == proxsuite.proxqp.SparseBackend.Automatic
-        qp2.settings.sparse_backend = proxsuite.proxqp.SparseBackend.MatrixFree
-        assert qp2.settings.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
+        qp2.settings.sparse_backend = proxsuite.proxqp.SparseBackend.SparseCholesky
+        assert (
+            qp2.settings.sparse_backend == proxsuite.proxqp.SparseBackend.SparseCholesky
+        )
         qp2.init(H=H, g=g, A=A, b=b, C=C, u=u, l=l, rho=1.0e-7)
         qp2.solve()
         dua_res = normInf(
@@ -156,6 +160,10 @@ class SparseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
+        assert (
+            qp2.results.info.sparse_backend
+            == proxsuite.proxqp.SparseBackend.SparseCholesky
+        )
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp2.results.info.iter))

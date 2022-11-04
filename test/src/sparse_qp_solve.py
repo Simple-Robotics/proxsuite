@@ -308,7 +308,6 @@ class SparseQpWrapper(unittest.TestCase):
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
             eps_abs=1.0e-9,
-            verbose=false,
             sparse_backend=proxsuite.proxqp.SparseBackend.MatrixFree,
         )
         dua_res = normInf(
