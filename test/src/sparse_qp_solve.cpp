@@ -216,6 +216,78 @@ DOCTEST_TEST_CASE(
   }
 }
 
+DOCTEST_TEST_CASE(
+  "sparse random strongly convex qp with equality and "
+  "inequality constraints: test setting specific sparse backend")
+{
+
+  std::cout
+    << "---testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test setting specific sparse backend ---"
+    << std::endl;
+  for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
+                            // proxsuite::linalg::veg::tuplify(50, 25, 0),
+                            // proxsuite::linalg::veg::tuplify(10, 0, 10),
+                            // proxsuite::linalg::veg::tuplify(50, 0, 25),
+                            // proxsuite::linalg::veg::tuplify(50, 10, 25),
+                            proxsuite::linalg::veg::tuplify(10, 3, 2) }) {
+    VEG_BIND(auto const&, (n, n_eq, n_in), dims);
+
+    double eps_abs = 1.e-9;
+    T sparsity_factor = 0.15;
+    T strong_convexity_factor = 0.01;
+    ::proxsuite::proxqp::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
+      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    proxsuite::proxqp::InitialGuessStatus initial_guess =
+      proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+    proxsuite::proxqp::SparseBackend sparse_backend =
+      proxsuite::proxqp::SparseBackend::MatrixFree;
+    proxsuite::proxqp::Results<T> results =
+      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                             qp.g,
+                                             qp.A,
+                                             qp.b,
+                                             qp.C,
+                                             qp.l,
+                                             qp.u,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             eps_abs,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             nullopt,
+                                             true,
+                                             true,
+                                             nullopt,
+                                             initial_guess,
+                                             sparse_backend);
+    T dua_res = proxqp::dense::infty_norm(
+      qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
+      qp.A.transpose() * results.y + qp.C.transpose() * results.z);
+    T pri_res =
+      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+               proxqp::dense::infty_norm(
+                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
+                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    DOCTEST_CHECK(pri_res <= eps_abs);
+    DOCTEST_CHECK(dua_res <= eps_abs);
+    DOCTEST_CHECK(results.info.sparse_backend == SparseBackend::MatrixFree);
+
+    std::cout << "------using API solving qp with dim: " << n
+              << " neq: " << n_eq << " nin: " << n_in << std::endl;
+    std::cout << "primal residual: " << pri_res << std::endl;
+    std::cout << "dual residual: " << dua_res << std::endl;
+    std::cout << "total number of iteration: " << results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << results.info.setup_time << " solve time "
+              << results.info.solve_time << std::endl;
+  }
+}
+
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                   "inequality constraints: test warm starting")
 {

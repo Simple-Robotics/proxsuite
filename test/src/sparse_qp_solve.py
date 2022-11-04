@@ -291,6 +291,47 @@ class SparseQpWrapper(unittest.TestCase):
             )
         )
 
+    def test_case_different_matrix_free_sparse_backend(self):
+        print(
+            "------------------------sparse random strongly convex qp with equality and inequality constraints: test setting matrix free backend"
+        )
+        n = 10
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        results = proxsuite.proxqp.sparse.solve(
+            H=H,
+            g=np.asfortranarray(g),
+            A=A,
+            b=np.asfortranarray(b),
+            C=C,
+            l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
+            eps_abs=1.0e-9,
+            verbose=false,
+            sparse_backend=proxsuite.proxqp.SparseBackend.MatrixFree,
+        )
+        dua_res = normInf(
+            H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z
+        )
+        pri_res = max(
+            normInf(A @ results.x - b),
+            normInf(
+                np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
+            ),
+        )
+        assert dua_res <= 1e-9
+        assert pri_res <= 1e-9
+        assert results.info.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
+        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
+        print("total number of iteration: {}".format(results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                results.info.setup_time, results.info.solve_time
+            )
+        )
+
     def test_sparse_problem_with_exact_solution_known(self):
         print(
             "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
