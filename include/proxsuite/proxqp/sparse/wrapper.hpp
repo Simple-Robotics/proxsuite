@@ -700,7 +700,9 @@ solve(
   bool compute_timings = true,
   optional<isize> max_iter = nullopt,
   proxsuite::proxqp::InitialGuessStatus initial_guess =
-    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
+    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+  proxsuite::proxqp::SparseBackend sparse_backend =
+    proxsuite::proxqp::SparseBackend::Automatic)
 {
 
   isize n(0);
@@ -732,6 +734,7 @@ solve(
     Qp.settings.max_iter = verbose.value();
   }
   Qp.settings.compute_timings = compute_timings;
+  Qp.settings.sparse_backend = sparse_backend;
   Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
   Qp.solve(x, y, z);
 
