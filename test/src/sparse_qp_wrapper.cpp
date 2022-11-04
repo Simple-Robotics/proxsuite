@@ -340,7 +340,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
               << std::endl;
     std::cout << "setup timing " << qp2.results.info.setup_time
               << " solve time " << qp2.results.info.solve_time << std::endl;
-    CHECK(qp.results.x == qp2.results.x);
+    CHECK(qp.results.x.isApprox(qp2.results.x));
   }
 }
 
