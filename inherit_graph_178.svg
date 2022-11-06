@@ -11,10 +11,10 @@
 <!-- Node0 -->
 <g id="node1" class="node">
 <title>Node0</title>
-<g id="a_node1"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1fmt_1_1Debug_3_01Dyn_01_4.html" target="_top" xlink:title=" ">
+<g id="a_node1"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="137,-30 0,-30 0,0 137,0 137,-30"/>
 <text text-anchor="start" x="8" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
-<text text-anchor="middle" x="68.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">veg::fmt::Debug&lt; Dyn &gt;</text>
+<text text-anchor="middle" x="68.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">veg::dynstack::StackReq</text>
 </a>
 </g>
 </g>

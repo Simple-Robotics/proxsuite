@@ -1,5 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,60,48,85"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1conjunction_3_01First_00_01Preds_8_8_8_01_4.html" title=" " alt="" coords="96,5,267,60"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction_3_01First_00_01Preds_8_8_8_01_4.html" title=" " alt="" coords="98,84,265,139"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,20,140,45"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html" title=" " alt="" coords="188,5,403,60"/>
 </map>

@@ -34,8 +34,11 @@ var searchData=
   ['member_5ftrait_5fand_3c_20trait_2c_20simpleituple_3c_20_5fmeta_3a_3ainteger_5fsequence_3c_20usize_2c_20is_2e_2e_2e_20_3e_2c_20ts_20bases_3a_3a_2a_2e_2e_2e_20_3e_20_3e_31',['member_trait_and&lt; Trait, SimpleITuple&lt; _meta::integer_sequence&lt; usize, Is... &gt;, Ts Bases::*... &gt; &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1member__trait__and_3_01Trait_00_01Simplc5b492ef828350d9630bf5ebc812c047.html',1,'proxsuite::linalg::veg::_detail::_cpo']]],
   ['meta_5fapply_32',['meta_apply',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1meta__apply.html',1,'proxsuite::linalg::veg::meta']]],
   ['min2_33',['min2',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1nb_1_1min2.html',1,'proxsuite::linalg::dense::_detail::nb::min2'],['../structproxsuite_1_1proxqp_1_1detail_1_1nb_1_1min2.html',1,'proxsuite::proxqp::detail::nb::min2']]],
-  ['model_34',['Model',['../structproxsuite_1_1proxqp_1_1dense_1_1Model.html',1,'proxsuite::proxqp::dense::Model&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html',1,'proxsuite::proxqp::sparse::Model&lt; T, I &gt;']]],
-  ['monotonicalloc_35',['MonotonicAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1MonotonicAlloc.html',1,'proxsuite::linalg::veg::mem']]],
-  ['movefn_36',['MoveFn',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1MoveFn.html',1,'proxsuite::linalg::veg::_detail']]],
-  ['mut_37',['mut',['../structproxsuite_1_1linalg_1_1veg_1_1nb_1_1mut.html',1,'proxsuite::linalg::veg::nb']]]
+  ['min_5fsize_34',['min_size',['../structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1min__size.html',1,'proxsuite::linalg::veg::alignment::detail']]],
+  ['min_5fsize_3c_20sizeof_28t_29_2c_20sizeof_28offset_5fvalue_3c_20t_20_3e_29_20_2d_20sizeof_28t_29_3e_35',['min_size&lt; sizeof(T), sizeof(offset_value&lt; T &gt;) - sizeof(T)&gt;',['../structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1min__size.html',1,'proxsuite::linalg::veg::alignment::detail']]],
+  ['model_36',['Model',['../structproxsuite_1_1proxqp_1_1dense_1_1Model.html',1,'proxsuite::proxqp::dense::Model&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html',1,'proxsuite::proxqp::sparse::Model&lt; T, I &gt;']]],
+  ['monostate_37',['monostate',['../classtl_1_1monostate.html',1,'tl']]],
+  ['monotonicalloc_38',['MonotonicAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1MonotonicAlloc.html',1,'proxsuite::linalg::veg::mem']]],
+  ['movefn_39',['MoveFn',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1MoveFn.html',1,'proxsuite::linalg::veg::_detail']]],
+  ['mut_40',['mut',['../structproxsuite_1_1linalg_1_1veg_1_1nb_1_1mut.html',1,'proxsuite::linalg::veg::nb']]]
 ];

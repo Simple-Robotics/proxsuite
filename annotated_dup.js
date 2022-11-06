@@ -249,6 +249,13 @@ var annotated_dup =
             [ "WithArg", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg" ],
             [ "Wrapper", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Wrapper.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Wrapper" ]
           ] ],
+          [ "alignment", "namespaceproxsuite_1_1linalg_1_1veg_1_1alignment.html", [
+            [ "detail", "namespaceproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail.html", [
+              [ "alignment_of", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1alignment__of.html", null ],
+              [ "min_size", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1min__size.html", null ],
+              [ "offset_value", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value.html", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value" ]
+            ] ]
+          ] ],
           [ "array", "namespaceproxsuite_1_1linalg_1_1veg_1_1array.html", [
             [ "Array", "structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array.html", "structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array" ]
           ] ],
@@ -477,8 +484,58 @@ var annotated_dup =
         [ "VectorViewMut", "structproxsuite_1_1proxqp_1_1VectorViewMut.html", "structproxsuite_1_1proxqp_1_1VectorViewMut" ]
       ] ]
     ] ],
-    [ "std", null, [
+    [ "std", "namespacestd.html", [
+      [ "hash< tl::optional< T > >", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4.html", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4" ],
       [ "tuple_element< I, proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__element_3_01I_00_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", "structstd_1_1tuple__element_3_01I_00_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4" ],
       [ "tuple_size< proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__size_3_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ]
+    ] ],
+    [ "tl", "namespacetl.html", [
+      [ "detail", "namespacetl_1_1detail.html", [
+        [ "swap_adl_tests", "namespacetl_1_1detail_1_1swap__adl__tests.html", [
+          [ "is_adl_swap_noexcept", "structtl_1_1detail_1_1swap__adl__tests_1_1is__adl__swap__noexcept.html", null ],
+          [ "is_std_swap_noexcept", "structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept.html", null ],
+          [ "is_std_swap_noexcept< T[N]>", "structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept_3_01T_0fN_0e_4.html", null ],
+          [ "tag", "structtl_1_1detail_1_1swap__adl__tests_1_1tag.html", null ]
+        ] ],
+        [ "conjunction", "structtl_1_1detail_1_1conjunction.html", null ],
+        [ "conjunction< B >", "structtl_1_1detail_1_1conjunction_3_01B_01_4.html", null ],
+        [ "conjunction< B, Bs... >", "structtl_1_1detail_1_1conjunction_3_01B_00_01Bs_8_8_8_01_4.html", null ],
+        [ "i_am_secret", "structtl_1_1detail_1_1i__am__secret.html", null ],
+        [ "invoke_result_impl", "structtl_1_1detail_1_1invoke__result__impl.html", null ],
+        [ "invoke_result_impl< F, decltype(detail::invoke(std::declval< F >(), std::declval< Us >()...), void()), Us... >", "structtl_1_1detail_1_1invoke__result__impl_3_01F_00_01decltype_07detail_1_1invoke_07std_1_1declvcbceb13962854eff875073298b31c9c4.html", "structtl_1_1detail_1_1invoke__result__impl_3_01F_00_01decltype_07detail_1_1invoke_07std_1_1declvcbceb13962854eff875073298b31c9c4" ],
+        [ "is_nothrow_swappable", "structtl_1_1detail_1_1is__nothrow__swappable.html", null ],
+        [ "is_optional_impl", "structtl_1_1detail_1_1is__optional__impl.html", null ],
+        [ "is_optional_impl< optional< T > >", "structtl_1_1detail_1_1is__optional__impl_3_01optional_3_01T_01_4_01_4.html", null ],
+        [ "is_swappable", "structtl_1_1detail_1_1is__swappable.html", null ],
+        [ "is_swappable< T[N], T[N]>", "structtl_1_1detail_1_1is__swappable_3_01T_0fN_0e_00_01T_0fN_0e_4.html", null ],
+        [ "optional_copy_assign_base", "structtl_1_1detail_1_1optional__copy__assign__base.html", null ],
+        [ "optional_copy_assign_base< T, false >", "structtl_1_1detail_1_1optional__copy__assign__base_3_01T_00_01false_01_4.html", "structtl_1_1detail_1_1optional__copy__assign__base_3_01T_00_01false_01_4" ],
+        [ "optional_copy_base", "structtl_1_1detail_1_1optional__copy__base.html", null ],
+        [ "optional_copy_base< T, false >", "structtl_1_1detail_1_1optional__copy__base_3_01T_00_01false_01_4.html", "structtl_1_1detail_1_1optional__copy__base_3_01T_00_01false_01_4" ],
+        [ "optional_delete_assign_base", "structtl_1_1detail_1_1optional__delete__assign__base.html", "structtl_1_1detail_1_1optional__delete__assign__base" ],
+        [ "optional_delete_assign_base< T, false, false >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01false_01_4.html", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01false_01_4" ],
+        [ "optional_delete_assign_base< T, false, true >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01true_01_4.html", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01true_01_4" ],
+        [ "optional_delete_assign_base< T, true, false >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01true_00_01false_01_4.html", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01true_00_01false_01_4" ],
+        [ "optional_delete_ctor_base", "structtl_1_1detail_1_1optional__delete__ctor__base.html", "structtl_1_1detail_1_1optional__delete__ctor__base" ],
+        [ "optional_delete_ctor_base< T, false, false >", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01false_01_4.html", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01false_01_4" ],
+        [ "optional_delete_ctor_base< T, false, true >", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01true_01_4.html", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01true_01_4" ],
+        [ "optional_delete_ctor_base< T, true, false >", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4" ],
+        [ "optional_move_assign_base", "structtl_1_1detail_1_1optional__move__assign__base.html", null ],
+        [ "optional_move_assign_base< T, false >", "structtl_1_1detail_1_1optional__move__assign__base_3_01T_00_01false_01_4.html", "structtl_1_1detail_1_1optional__move__assign__base_3_01T_00_01false_01_4" ],
+        [ "optional_move_base", "structtl_1_1detail_1_1optional__move__base.html", null ],
+        [ "optional_move_base< T, false >", "structtl_1_1detail_1_1optional__move__base_3_01T_00_01false_01_4.html", "structtl_1_1detail_1_1optional__move__base_3_01T_00_01false_01_4" ],
+        [ "optional_operations_base", "structtl_1_1detail_1_1optional__operations__base.html", "structtl_1_1detail_1_1optional__operations__base" ],
+        [ "optional_storage_base", "structtl_1_1detail_1_1optional__storage__base.html", "structtl_1_1detail_1_1optional__storage__base" ],
+        [ "optional_storage_base< T, true >", "structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4.html", "structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4" ],
+        [ "returns_void_impl", "structtl_1_1detail_1_1returns__void__impl.html", null ],
+        [ "returns_void_impl< F, void_t< invoke_result_t< F, U... > >, U... >", "structtl_1_1detail_1_1returns__void__impl_3_01F_00_01void__t_3_01invoke__result__t_3_01F_00_01U_d550cf27283c1c228efcceae556d7c6b.html", null ],
+        [ "voider", "structtl_1_1detail_1_1voider.html", "structtl_1_1detail_1_1voider" ]
+      ] ],
+      [ "bad_optional_access", "classtl_1_1bad__optional__access.html", "classtl_1_1bad__optional__access" ],
+      [ "in_place_t", "structtl_1_1in__place__t.html", "structtl_1_1in__place__t" ],
+      [ "monostate", "classtl_1_1monostate.html", null ],
+      [ "nullopt_t", "structtl_1_1nullopt__t.html", "structtl_1_1nullopt__t" ],
+      [ "optional", "classtl_1_1optional.html", "classtl_1_1optional" ],
+      [ "optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", "classtl_1_1optional_3_01T_01_6_01_4" ]
     ] ]
 ];

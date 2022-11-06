@@ -23,8 +23,10 @@ var searchData=
   ['relocfn_20',['RelocFn',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn.html',1,'proxsuite::linalg::veg::mem']]],
   ['results_21',['Results',['../structproxsuite_1_1proxqp_1_1Results.html',1,'proxsuite::proxqp']]],
   ['ret_5f_22',['Ret_',['../structproxsuite_1_1proxqp_1_1detail_1_1Ret__.html',1,'proxsuite::proxqp::detail']]],
-  ['rowcolaccessimpl_23',['RowColAccessImpl',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl.html',1,'proxsuite::linalg::dense::_detail']]],
-  ['rowcolaccessimpl_3c_20false_20_3e_24',['RowColAccessImpl&lt; false &gt;',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01false_01_4.html',1,'proxsuite::linalg::dense::_detail']]],
-  ['rowcolaccessimpl_3c_20true_20_3e_25',['RowColAccessImpl&lt; true &gt;',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01true_01_4.html',1,'proxsuite::linalg::dense::_detail']]],
-  ['ruizequilibration_26',['RuizEquilibration',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration&lt; T, I &gt;']]]
+  ['returns_5fvoid_5fimpl_23',['returns_void_impl',['../structtl_1_1detail_1_1returns__void__impl.html',1,'tl::detail']]],
+  ['returns_5fvoid_5fimpl_3c_20f_2c_20void_5ft_3c_20invoke_5fresult_5ft_3c_20f_2c_20u_2e_2e_2e_20_3e_20_3e_2c_20u_2e_2e_2e_20_3e_24',['returns_void_impl&lt; F, void_t&lt; invoke_result_t&lt; F, U... &gt; &gt;, U... &gt;',['../structtl_1_1detail_1_1returns__void__impl_3_01F_00_01void__t_3_01invoke__result__t_3_01F_00_01U_d550cf27283c1c228efcceae556d7c6b.html',1,'tl::detail']]],
+  ['rowcolaccessimpl_25',['RowColAccessImpl',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl.html',1,'proxsuite::linalg::dense::_detail']]],
+  ['rowcolaccessimpl_3c_20false_20_3e_26',['RowColAccessImpl&lt; false &gt;',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01false_01_4.html',1,'proxsuite::linalg::dense::_detail']]],
+  ['rowcolaccessimpl_3c_20true_20_3e_27',['RowColAccessImpl&lt; true &gt;',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01true_01_4.html',1,'proxsuite::linalg::dense::_detail']]],
+  ['ruizequilibration_28',['RuizEquilibration',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration&lt; T, I &gt;']]]
 ];

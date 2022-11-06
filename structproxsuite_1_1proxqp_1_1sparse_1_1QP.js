@@ -2,10 +2,10 @@ var structproxsuite_1_1proxqp_1_1sparse_1_1QP =
 [
     [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#aef6a6cddf8898923f90f72f99cdf499e", null ],
     [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a59326d34e2d7d63a31a819088ed121ce", null ],
-    [ "init", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#ac8f8d18e5af321f9404ccc7c6f8ad494", null ],
-    [ "update", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#af29a39af5d5a6081d2d3f75b50de2199", null ],
+    [ "init", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#adaf789212a4312830410f92ec6b925af", null ],
+    [ "update", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#aad5b5bb1e847d692e27aa303f6068051", null ],
     [ "solve", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a6af68e8508f3d3e5794479528737dac2", null ],
-    [ "solve", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#ad59b1b85ece71690da815305b1bfe8d0", null ],
+    [ "solve", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a66663416c86cac0e2b51a3f11ee4b07e", null ],
     [ "cleanup", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#ac89d46d9f028d3ea13bbf0f2f8a19220", null ],
     [ "results", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#aad8dada031c8b705e6a3bed9bd851746", null ],
     [ "settings", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#acc2ec4c91875dab53eff112072486231", null ],

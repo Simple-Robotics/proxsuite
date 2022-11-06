@@ -1,5 +1,27 @@
 var searchData=
 [
-  ['or_5ftest_0',['or_test',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test.html',1,'proxsuite::linalg::veg::meta']]],
-  ['or_5ftest_3c_20index_5fsequence_3c_20is_2e_2e_2e_20_3e_2c_20indexed_3c_20is_2c_20false_5ftype_20_3e_2e_2e_2e_20_3e_1',['or_test&lt; index_sequence&lt; Is... &gt;, indexed&lt; Is, false_type &gt;... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_0172997cf84633db2288bb9ba9827aedd6.html',1,'proxsuite::linalg::veg::meta']]]
+  ['offset_5fvalue_0',['offset_value',['../structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value.html',1,'proxsuite::linalg::veg::alignment::detail']]],
+  ['optional_1',['optional',['../classtl_1_1optional.html',1,'tl']]],
+  ['optional_3c_20t_20_26_20_3e_2',['optional&lt; T &amp; &gt;',['../classtl_1_1optional_3_01T_01_6_01_4.html',1,'tl']]],
+  ['optional_5fcopy_5fassign_5fbase_3',['optional_copy_assign_base',['../structtl_1_1detail_1_1optional__copy__assign__base.html',1,'tl::detail']]],
+  ['optional_5fcopy_5fassign_5fbase_3c_20t_2c_20false_20_3e_4',['optional_copy_assign_base&lt; T, false &gt;',['../structtl_1_1detail_1_1optional__copy__assign__base_3_01T_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fcopy_5fbase_5',['optional_copy_base',['../structtl_1_1detail_1_1optional__copy__base.html',1,'tl::detail']]],
+  ['optional_5fcopy_5fbase_3c_20t_2c_20false_20_3e_6',['optional_copy_base&lt; T, false &gt;',['../structtl_1_1detail_1_1optional__copy__base_3_01T_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fassign_5fbase_7',['optional_delete_assign_base',['../structtl_1_1detail_1_1optional__delete__assign__base.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fassign_5fbase_3c_20t_2c_20false_2c_20false_20_3e_8',['optional_delete_assign_base&lt; T, false, false &gt;',['../structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fassign_5fbase_3c_20t_2c_20false_2c_20true_20_3e_9',['optional_delete_assign_base&lt; T, false, true &gt;',['../structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01true_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fassign_5fbase_3c_20t_2c_20true_2c_20false_20_3e_10',['optional_delete_assign_base&lt; T, true, false &gt;',['../structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01true_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fctor_5fbase_11',['optional_delete_ctor_base',['../structtl_1_1detail_1_1optional__delete__ctor__base.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fctor_5fbase_3c_20t_2c_20false_2c_20false_20_3e_12',['optional_delete_ctor_base&lt; T, false, false &gt;',['../structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fctor_5fbase_3c_20t_2c_20false_2c_20true_20_3e_13',['optional_delete_ctor_base&lt; T, false, true &gt;',['../structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01true_01_4.html',1,'tl::detail']]],
+  ['optional_5fdelete_5fctor_5fbase_3c_20t_2c_20true_2c_20false_20_3e_14',['optional_delete_ctor_base&lt; T, true, false &gt;',['../structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fmove_5fassign_5fbase_15',['optional_move_assign_base',['../structtl_1_1detail_1_1optional__move__assign__base.html',1,'tl::detail']]],
+  ['optional_5fmove_5fassign_5fbase_3c_20t_2c_20false_20_3e_16',['optional_move_assign_base&lt; T, false &gt;',['../structtl_1_1detail_1_1optional__move__assign__base_3_01T_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5fmove_5fbase_17',['optional_move_base',['../structtl_1_1detail_1_1optional__move__base.html',1,'tl::detail']]],
+  ['optional_5fmove_5fbase_3c_20t_2c_20false_20_3e_18',['optional_move_base&lt; T, false &gt;',['../structtl_1_1detail_1_1optional__move__base_3_01T_00_01false_01_4.html',1,'tl::detail']]],
+  ['optional_5foperations_5fbase_19',['optional_operations_base',['../structtl_1_1detail_1_1optional__operations__base.html',1,'tl::detail']]],
+  ['optional_5fstorage_5fbase_20',['optional_storage_base',['../structtl_1_1detail_1_1optional__storage__base.html',1,'tl::detail']]],
+  ['optional_5fstorage_5fbase_3c_20t_2c_20true_20_3e_21',['optional_storage_base&lt; T, true &gt;',['../structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4.html',1,'tl::detail']]],
+  ['or_5ftest_22',['or_test',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test.html',1,'proxsuite::linalg::veg::meta']]],
+  ['or_5ftest_3c_20index_5fsequence_3c_20is_2e_2e_2e_20_3e_2c_20indexed_3c_20is_2c_20false_5ftype_20_3e_2e_2e_2e_20_3e_23',['or_test&lt; index_sequence&lt; Is... &gt;, indexed&lt; Is, false_type &gt;... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_0172997cf84633db2288bb9ba9827aedd6.html',1,'proxsuite::linalg::veg::meta']]]
 ];

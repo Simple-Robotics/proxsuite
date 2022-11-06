@@ -752,7 +752,7 @@
 <!-- Node37 -->
 <g id="node26" class="node">
 <title>Node37</title>
-<g id="a_node26"><a xlink:href="sparse_2fwd_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node26"><a xlink:href="proxqp_2sparse_2fwd_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="#fff0f0" stroke="red" points="1202.73,-558 1065.73,-558 1065.73,-528 1202.73,-528 1202.73,-558"/>
 <text text-anchor="start" x="1073.73" y="-546" font-family="Helvetica,sans-Serif" font-size="10.00">include/proxsuite/proxqp</text>
 <text text-anchor="middle" x="1134.23" y="-535" font-family="Helvetica,sans-Serif" font-size="10.00">/sparse/fwd.hpp</text>

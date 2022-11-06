@@ -20,7 +20,7 @@ var structproxsuite_1_1proxqp_1_1sparse_1_1Workspace =
     [ "matrix_free_solver", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a51beeba70ec7c25adb8b9f470af8818e", null ],
     [ "dirty", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a9619a0157d1fbc48529e5d725f3048d9", null ],
     [ "proximal_parameter_update", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a0b20013e4cdb913d792cb6263ddf2b8a", null ],
-    [ "internal", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#aa4e74c85f90a1e9f1000126f7af62e79", null ],
+    [ "internal", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a5606305347d9a2e4919345fcff20758a", null ],
     [ "lnnz", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#aa495dcf754832565a824b8ba9e8f8b3f", null ],
     [ "timer", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#aede260522ff910b4d0f46b1de531215c", null ]
 ];

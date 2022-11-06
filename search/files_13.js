@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['tags_2ehpp_0',['tags.hpp',['../tags_8hpp.html',1,'']]],
-  ['terminate_2ehpp_1',['terminate.hpp',['../terminate_8hpp.html',1,'']]],
-  ['timings_2ehpp_2',['timings.hpp',['../timings_8hpp.html',1,'']]],
-  ['tuple_2ehpp_3',['tuple.hpp',['../tuple_8hpp.html',1,'']]],
-  ['typedefs_2ehpp_4',['typedefs.hpp',['../typedefs_8hpp.html',1,'']]]
+  ['settings_2ehpp_0',['settings.hpp',['../settings_8hpp.html',1,'']]],
+  ['slice_2ehpp_1',['slice.hpp',['../slice_8hpp.html',1,'']]],
+  ['solve_2ehpp_2',['solve.hpp',['../solve_8hpp.html',1,'']]],
+  ['solver_2ehpp_3',['solver.hpp',['../dense_2solver_8hpp.html',1,'(Global Namespace)'],['../sparse_2solver_8hpp.html',1,'(Global Namespace)']]],
+  ['sparse_2ehpp_4',['sparse.hpp',['../sparse_8hpp.html',1,'']]],
+  ['stack_5falloc_2ehpp_5',['stack_alloc.hpp',['../stack__alloc_8hpp.html',1,'']]],
+  ['status_2ehpp_6',['status.hpp',['../status_8hpp.html',1,'']]],
+  ['std_2ehpp_7',['std.hpp',['../std_8hpp.html',1,'']]]
 ];

@@ -29,12 +29,14 @@ var searchData=
   ['disjunction_3c_20first_2c_20preds_2e_2e_2e_20_3e_26',['disjunction&lt; First, Preds... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction_3_01First_00_01Preds_8_8_8_01_4.html',1,'proxsuite::linalg::veg::meta']]],
   ['disjunction_3c_20has_5fmember_5faddr_3c_20t_20_3e_2c_20has_5fadl_5faddr_3c_20t_20_3e_2c_20builtin_5faddr_20_3e_27',['disjunction&lt; has_member_addr&lt; T &gt;, has_adl_addr&lt; T &gt;, builtin_addr &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction.html',1,'proxsuite::linalg::veg::meta']]],
   ['disjunction_3c_3e_28',['disjunction&lt;&gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction_3_4.html',1,'proxsuite::linalg::veg::meta']]],
-  ['dtoravailablefor_29',['DtorAvailableFor',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DtorAvailableFor.html',1,'proxsuite::linalg::veg::mem']]],
-  ['dyn_30',['Dyn',['../structproxsuite_1_1linalg_1_1veg_1_1Dyn.html',1,'proxsuite::linalg::veg']]],
-  ['dynallocbase_31',['DynAllocBase',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
-  ['dynstackalloc_32',['DynStackAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html',1,'proxsuite::linalg::veg::dynstack']]],
-  ['dynstackarray_33',['DynStackArray',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html',1,'proxsuite::linalg::veg::dynstack']]],
-  ['dynstackarraydtor_34',['DynStackArrayDtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
-  ['dynstackarraydtor_3c_20t_2c_20false_20_3e_35',['DynStackArrayDtor&lt; T, false &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
-  ['dynstackmut_36',['DynStackMut',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html',1,'proxsuite::linalg::veg::dynstack']]]
+  ['do_5fnot_5fuse_29',['do_not_use',['../structtl_1_1nullopt__t_1_1do__not__use.html',1,'tl::nullopt_t']]],
+  ['dtoravailablefor_30',['DtorAvailableFor',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DtorAvailableFor.html',1,'proxsuite::linalg::veg::mem']]],
+  ['dummy_31',['dummy',['../structtl_1_1detail_1_1optional__storage__base_1_1dummy.html',1,'tl::detail::optional_storage_base&lt; T, bool &gt;::dummy'],['../structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4_1_1dummy.html',1,'tl::detail::optional_storage_base&lt; T, true &gt;::dummy']]],
+  ['dyn_32',['Dyn',['../structproxsuite_1_1linalg_1_1veg_1_1Dyn.html',1,'proxsuite::linalg::veg']]],
+  ['dynallocbase_33',['DynAllocBase',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
+  ['dynstackalloc_34',['DynStackAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html',1,'proxsuite::linalg::veg::dynstack']]],
+  ['dynstackarray_35',['DynStackArray',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html',1,'proxsuite::linalg::veg::dynstack']]],
+  ['dynstackarraydtor_36',['DynStackArrayDtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
+  ['dynstackarraydtor_3c_20t_2c_20false_20_3e_37',['DynStackArrayDtor&lt; T, false &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html',1,'proxsuite::linalg::veg::_detail::_dynstack']]],
+  ['dynstackmut_38',['DynStackMut',['../structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html',1,'proxsuite::linalg::veg::dynstack']]]
 ];

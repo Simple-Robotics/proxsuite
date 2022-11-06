@@ -1,5 +1,8 @@
 var memory_2alloc_8hpp =
 [
+    [ "proxsuite::linalg::veg::alignment::detail::min_size< A, B >", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1min__size.html", null ],
+    [ "proxsuite::linalg::veg::alignment::detail::offset_value< T >", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value.html", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value" ],
+    [ "proxsuite::linalg::veg::alignment::detail::alignment_of< T >", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1alignment__of.html", null ],
     [ "proxsuite::linalg::veg::mem::CopyAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1CopyAvailableFor.html", null ],
     [ "proxsuite::linalg::veg::mem::DtorAvailableFor< T >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1DtorAvailableFor.html", null ],
     [ "proxsuite::linalg::veg::mem::SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc" ],
@@ -17,6 +20,9 @@ var memory_2alloc_8hpp =
       [ "yes_maythrow", "memory_2alloc_8hpp.html#af1a489f3ac6116d0e943d3b56a62ae08ac242c4b5c866c6f70c80f3d2bfc58505", null ],
       [ "yes_nothrow", "memory_2alloc_8hpp.html#af1a489f3ac6116d0e943d3b56a62ae08a9dd2c36cd495560b6ebf63262f1cb05d", null ]
     ] ],
+    [ "is_alignment", "memory_2alloc_8hpp.html#ae009c4d27e4e6f0e264d6679f0d532fc", null ],
+    [ "align", "memory_2alloc_8hpp.html#ac71aa52ea836d51602552f935e4631fe", null ],
+    [ "aligned_alloc", "memory_2alloc_8hpp.html#a6cb9ac31eb2af20837f74384ced7f610", null ],
     [ "aligned_alloc", "memory_2alloc_8hpp.html#a9b8256c8a4a61a189d7122c24086f0cd", null ],
     [ "aligned_free", "memory_2alloc_8hpp.html#a7a0b4d58ec681120256e30bd22bc4190", null ],
     [ "VEG_INLINE_VAR", "memory_2alloc_8hpp.html#aa4d6a7062c45a9666d9bcb5feb6a5e55", null ],

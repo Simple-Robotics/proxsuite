@@ -988,7 +988,7 @@
 <!-- Node40 -->
 <g id="node40" class="node">
 <title>Node40</title>
-<g id="a_node40"><a xlink:href="sparse_2fwd_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node40"><a xlink:href="proxqp_2sparse_2fwd_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1453,-635 1316,-635 1316,-605 1453,-605 1453,-635"/>
 <text text-anchor="start" x="1324" y="-623" font-family="Helvetica,sans-Serif" font-size="10.00">include/proxsuite/proxqp</text>
 <text text-anchor="middle" x="1384.5" y="-612" font-family="Helvetica,sans-Serif" font-size="10.00">/sparse/fwd.hpp</text>

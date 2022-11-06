@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -111,14 +111,14 @@ $(document).ready(function(){initNavTree('dense_2helpers_8hpp.html',''); initRes
 <div class="textblock"><code>#include &lt;<a class="el" href="results_8hpp_source.html">proxsuite/proxqp/results.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="settings_8hpp_source.html">proxsuite/proxqp/settings.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="status_8hpp_source.html">proxsuite/proxqp/status.hpp</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="dense_2fwd_8hpp_source.html">proxsuite/proxqp/dense/fwd.hpp</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="proxqp_2dense_2fwd_8hpp_source.html">proxsuite/proxqp/dense/fwd.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">proxsuite/proxqp/dense/preconditioner/ruiz.hpp</a>&gt;</code><br />
 <code>#include &lt;chrono&gt;</code><br />
-<code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;<a class="el" href="optional_8hpp_source.html">proxsuite/helpers/optional.hpp</a>&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for helpers.hpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dense_2helpers_8hpp__incl.svg" width="2807" height="1356"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dense_2helpers_8hpp__incl.svg" width="2800" height="1356"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -153,18 +153,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a13d57a50fa06a913d1ffd3c0213465c6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a13d57a50fa06a913d1ffd3c0213465c6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a13d57a50fa06a913d1ffd3c0213465c6">proxsuite::proxqp::dense::initial_guess</a> (Workspace&lt; T &gt; &amp;qpwork, Settings&lt; T &gt; &amp;qpsettings, Model&lt; T &gt; &amp;qpmodel, Results&lt; T &gt; &amp;qpresults)</td></tr>
 <tr class="separator:a13d57a50fa06a913d1ffd3c0213465c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af572367b2d0ba20d3ed19b44895121d3"><td class="memTemplParams" colspan="2">template&lt;typename Mat , typename T &gt; </td></tr>
-<tr class="memitem:af572367b2d0ba20d3ed19b44895121d3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#af572367b2d0ba20d3ed19b44895121d3">proxsuite::proxqp::dense::update</a> (std::optional&lt; Mat &gt; H_, std::optional&lt; Vec&lt; T &gt; &gt; g_, std::optional&lt; Mat &gt; A_, std::optional&lt; Vec&lt; T &gt; &gt; b_, std::optional&lt; Mat &gt; C_, std::optional&lt; Vec&lt; T &gt; &gt; u_, std::optional&lt; Vec&lt; T &gt; &gt; l_, Model&lt; T &gt; &amp;model, Workspace&lt; T &gt; &amp;work)</td></tr>
-<tr class="separator:af572367b2d0ba20d3ed19b44895121d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefae118cd40487371c964e6b87bc5c22"><td class="memTemplParams" colspan="2">template&lt;typename Mat , typename T &gt; </td></tr>
-<tr class="memitem:aefae118cd40487371c964e6b87bc5c22"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aefae118cd40487371c964e6b87bc5c22">proxsuite::proxqp::dense::setup</a> (std::optional&lt; Mat &gt; H, std::optional&lt; VecRef&lt; T &gt; &gt; g, std::optional&lt; Mat &gt; A, std::optional&lt; VecRef&lt; T &gt; &gt; b, std::optional&lt; Mat &gt; C, std::optional&lt; VecRef&lt; T &gt; &gt; l, std::optional&lt; VecRef&lt; T &gt; &gt; u, Settings&lt; T &gt; &amp;qpsettings, Model&lt; T &gt; &amp;qpmodel, Workspace&lt; T &gt; &amp;qpwork, Results&lt; T &gt; &amp;qpresults, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, PreconditionerStatus preconditioner_status)</td></tr>
-<tr class="separator:aefae118cd40487371c964e6b87bc5c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5e5c1e01673f4f53ebd7434640fdd9a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab5e5c1e01673f4f53ebd7434640fdd9a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ab5e5c1e01673f4f53ebd7434640fdd9a">proxsuite::proxqp::dense::update_proximal_parameters</a> (Settings&lt; T &gt; &amp;settings, Results&lt; T &gt; &amp;results, Workspace&lt; T &gt; &amp;work, std::optional&lt; T &gt; rho_new, std::optional&lt; T &gt; mu_eq_new, std::optional&lt; T &gt; mu_in_new)</td></tr>
-<tr class="separator:ab5e5c1e01673f4f53ebd7434640fdd9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c474364f6ce63390aea85d3862e7971"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6c474364f6ce63390aea85d3862e7971"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a6c474364f6ce63390aea85d3862e7971">proxsuite::proxqp::dense::warm_start</a> (std::optional&lt; VecRef&lt; T &gt; &gt; x_wm, std::optional&lt; VecRef&lt; T &gt; &gt; y_wm, std::optional&lt; VecRef&lt; T &gt; &gt; z_wm, Results&lt; T &gt; &amp;results, Settings&lt; T &gt; &amp;settings, Model&lt; T &gt; &amp;model)</td></tr>
-<tr class="separator:a6c474364f6ce63390aea85d3862e7971"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedb19ed666c1397e2d3464aea36dd845"><td class="memTemplParams" colspan="2">template&lt;typename Mat , typename T &gt; </td></tr>
+<tr class="memitem:aedb19ed666c1397e2d3464aea36dd845"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aedb19ed666c1397e2d3464aea36dd845">proxsuite::proxqp::dense::update</a> (optional&lt; Mat &gt; H_, optional&lt; Vec&lt; T &gt; &gt; g_, optional&lt; Mat &gt; A_, optional&lt; Vec&lt; T &gt; &gt; b_, optional&lt; Mat &gt; C_, optional&lt; Vec&lt; T &gt; &gt; u_, optional&lt; Vec&lt; T &gt; &gt; l_, Model&lt; T &gt; &amp;model, Workspace&lt; T &gt; &amp;work)</td></tr>
+<tr class="separator:aedb19ed666c1397e2d3464aea36dd845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af431a932f3f86f6144341bdb20396150"><td class="memTemplParams" colspan="2">template&lt;typename Mat , typename T &gt; </td></tr>
+<tr class="memitem:af431a932f3f86f6144341bdb20396150"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#af431a932f3f86f6144341bdb20396150">proxsuite::proxqp::dense::setup</a> (optional&lt; Mat &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; Mat &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; Mat &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, Settings&lt; T &gt; &amp;qpsettings, Model&lt; T &gt; &amp;qpmodel, Workspace&lt; T &gt; &amp;qpwork, Results&lt; T &gt; &amp;qpresults, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, PreconditionerStatus preconditioner_status)</td></tr>
+<tr class="separator:af431a932f3f86f6144341bdb20396150"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdf36ab6383e41d5a3a26290f4079470"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:abdf36ab6383e41d5a3a26290f4079470"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#abdf36ab6383e41d5a3a26290f4079470">proxsuite::proxqp::dense::update_proximal_parameters</a> (Settings&lt; T &gt; &amp;settings, Results&lt; T &gt; &amp;results, Workspace&lt; T &gt; &amp;work, optional&lt; T &gt; rho_new, optional&lt; T &gt; mu_eq_new, optional&lt; T &gt; mu_in_new)</td></tr>
+<tr class="separator:abdf36ab6383e41d5a3a26290f4079470"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e61ff8678ab095c388aeba57888b0a1"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0e61ff8678ab095c388aeba57888b0a1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a0e61ff8678ab095c388aeba57888b0a1">proxsuite::proxqp::dense::warm_start</a> (optional&lt; VecRef&lt; T &gt; &gt; x_wm, optional&lt; VecRef&lt; T &gt; &gt; y_wm, optional&lt; VecRef&lt; T &gt; &gt; z_wm, Results&lt; T &gt; &amp;results, Settings&lt; T &gt; &amp;settings, Model&lt; T &gt; &amp;model)</td></tr>
+<tr class="separator:a0e61ff8678ab095c388aeba57888b0a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

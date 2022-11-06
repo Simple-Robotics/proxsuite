@@ -1,0 +1,9 @@
+<map id="tl::detail::optional_move_assign_base&lt; T, bool &gt;" name="tl::detail::optional_move_assign_base&lt; T, bool &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="11,460,191,515"/>
+<area shape="rect" id="node7" href="$classtl_1_1optional.html" title=" " alt="" coords="35,563,166,588"/>
+<area shape="rect" id="node2" href="$structtl_1_1detail_1_1optional__copy__assign__base.html" title=" " alt="" coords="13,357,188,412"/>
+<area shape="rect" id="node3" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="11,269,190,309"/>
+<area shape="rect" id="node4" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="15,181,187,221"/>
+<area shape="rect" id="node5" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="13,93,188,133"/>
+<area shape="rect" id="node6" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="5,5,196,45"/>
+</map>

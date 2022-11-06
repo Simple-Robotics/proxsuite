@@ -31,10 +31,10 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "setup_factorization", "namespaceproxsuite_1_1proxqp_1_1dense.html#aa5ad2dcaf673f179e9d246e4cc5d6538", null ],
     [ "setup_equilibration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4597b80a07e8460b5b743ae0c30736", null ],
     [ "initial_guess", "namespaceproxsuite_1_1proxqp_1_1dense.html#a13d57a50fa06a913d1ffd3c0213465c6", null ],
-    [ "update", "namespaceproxsuite_1_1proxqp_1_1dense.html#af572367b2d0ba20d3ed19b44895121d3", null ],
-    [ "setup", "namespaceproxsuite_1_1proxqp_1_1dense.html#aefae118cd40487371c964e6b87bc5c22", null ],
-    [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1dense.html#ab5e5c1e01673f4f53ebd7434640fdd9a", null ],
-    [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6c474364f6ce63390aea85d3862e7971", null ],
+    [ "update", "namespaceproxsuite_1_1proxqp_1_1dense.html#aedb19ed666c1397e2d3464aea36dd845", null ],
+    [ "setup", "namespaceproxsuite_1_1proxqp_1_1dense.html#af431a932f3f86f6144341bdb20396150", null ],
+    [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1dense.html#abdf36ab6383e41d5a3a26290f4079470", null ],
+    [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1dense.html#a0e61ff8678ab095c388aeba57888b0a1", null ],
     [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8cb8a34c0abc1aabca3ded2a9a0112ca", null ],
     [ "mu_update", "namespaceproxsuite_1_1proxqp_1_1dense.html#a356b918b5a52ce263a515850c16429db", null ],
     [ "iterative_residual", "namespaceproxsuite_1_1proxqp_1_1dense.html#a7ae3afa3fdf062916c502d9ef98d695d", null ],
@@ -57,6 +57,6 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#ab9e4215822b98b7116a94171fd7658d3", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#abac125fdfd928439ba053632f11b7d97", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#ae07dd375e6c5428f02a60b2c0a3453ce", null ],
-    [ "solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a87c1d655f9bfb2a0d96ae58aac772877", null ],
+    [ "solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6f880437281a6ccde0b9cdcb9d4e0c6c", null ]
 ];

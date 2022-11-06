@@ -1,6 +1,7 @@
 var namespaceproxsuite_1_1linalg_1_1veg =
 [
     [ "_detail", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail" ],
+    [ "alignment", "namespaceproxsuite_1_1linalg_1_1veg_1_1alignment.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1alignment" ],
     [ "array", "namespaceproxsuite_1_1linalg_1_1veg_1_1array.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1array" ],
     [ "cmp", "namespaceproxsuite_1_1linalg_1_1veg_1_1cmp.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1cmp" ],
     [ "collections", "namespaceproxsuite_1_1linalg_1_1veg_1_1collections.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1collections" ],

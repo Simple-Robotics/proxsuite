@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -148,7 +148,7 @@ The API structure</h2>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">dense::QP&lt;T&gt;</a> qp(dim, n_eq, n_in);</div>
 <div class="line">}</div>
 <div class="ttc" id="adense_8hpp_html"><div class="ttname"><a href="dense_8hpp.html">dense.hpp</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_html"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a></div><div class="ttdef"><b>Definition:</b> <a href="dense_2fwd_8hpp_source.html#l00012">fwd.hpp:12</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_html"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a></div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2dense_2fwd_8hpp_source.html#l00012">fwd.hpp:12</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxsuite::proxqp::dense::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with dense backend.</div><div class="ttdef"><b>Definition:</b> <a href="dense_2wrapper_8hpp_source.html#l00081">wrapper.hpp:82</a></div></div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"> </div>
@@ -366,7 +366,7 @@ The init method</h2>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
 <div class="line">          qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialization with zero shape matrices</span></div>
 <div class="line">  <span class="comment">// it is equivalent to do qp.init(qp_random.H, qp_random.g,</span></div>
-<div class="line">  <span class="comment">// std::nullopt,std::nullopt,std::nullopt,std::nullopt,std::nullopt);</span></div>
+<div class="line">  <span class="comment">// nullopt,nullopt,nullopt,nullopt,nullopt);</span></div>
 <div class="line">  qp.solve();</div>
 <div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; qp.results.x &lt;&lt; std::endl;</div>
@@ -432,7 +432,7 @@ The init method</h2>
 <div class="line">          <span class="comment">/*rho*/</span> 1.e-7);</div>
 <div class="line">  <span class="comment">// in c++ you must follow the order speficied in the API for the parameters</span></div>
 <div class="line">  <span class="comment">// if you don&#39;t want to change one parameter (here compute_preconditioner),</span></div>
-<div class="line">  <span class="comment">// just let it be std::nullopt</span></div>
+<div class="line">  <span class="comment">// just let it be nullopt</span></div>
 <div class="line">}</div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
@@ -844,6 +844,7 @@ The update method</h2>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="sparse_8hpp.html">proxsuite/proxqp/sparse/sparse.hpp</a>&gt;</span> <span class="comment">// get the sparse API of ProxQP</span></div>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex qp</span></div>
 <div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite.html">proxsuite</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
 <div class="line"><span class="keyword">using </span>T = double;</div>
 <div class="line"> </div>
@@ -873,32 +874,26 @@ The update method</h2>
 <div class="line">  <span class="comment">// update H</span></div>
 <div class="line">  <span class="keyword">auto</span> H_new = 2 * H; <span class="comment">// keep the same sparsity structure</span></div>
 <div class="line">  qp.update(H_new,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt); <span class="comment">// update H with H_new, it will work</span></div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt); <span class="comment">// update H with H_new, it will work</span></div>
 <div class="line">  qp.solve();</div>
 <div class="line">  <span class="comment">// generate H2 with another sparsity structure</span></div>
 <div class="line">  <span class="keyword">auto</span> H2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a51eb1a46428d5c6a4ba8c97816eb3248">::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand</a>(</div>
 <div class="line">    n, conditioning, p);</div>
 <div class="line">  qp.update(H2,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt); <span class="comment">// nothing will happen</span></div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt,</div>
+<div class="line">            nullopt); <span class="comment">// nothing will happen</span></div>
 <div class="line">  <span class="comment">// if only a vector changes, then the update takes effect</span></div>
 <div class="line">  <span class="keyword">auto</span> g_new = ::proxsuite::proxqp::utils::rand::vector_rand&lt;T&gt;(n);</div>
-<div class="line">  qp.update(std::nullopt,</div>
-<div class="line">            g,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt);</div>
+<div class="line">  qp.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);</div>
 <div class="line">  qp.solve(); <span class="comment">// it solves the problem with another vector</span></div>
 <div class="line">  <span class="comment">// to solve the problem with H2 matrix create a new qp object</span></div>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP&lt;T, isize&gt;</a> qp2(</div>
@@ -910,6 +905,7 @@ The update method</h2>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; qp2.results.y &lt;&lt; std::endl;</div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; qp2.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
+<div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00014">common.hpp:14</a></div></div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
@@ -1010,20 +1006,13 @@ The update method</h2>
 <div class="line">  <span class="comment">// the previous factorization is kept)</span></div>
 <div class="line">  <span class="comment">// a new linear cost slightly modified</span></div>
 <div class="line">  <span class="keyword">auto</span> g = qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab44afb08fed7665a9a1b6b76123bc2e">g</a> * 0.95;</div>
-<div class="line">  qp.update(std::nullopt,</div>
-<div class="line">            g,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt,</div>
-<div class="line">            std::nullopt);</div>
+<div class="line">  qp.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);</div>
 <div class="line">  qp.solve();</div>
 <div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x: &quot;</span> &lt;&lt; qp.results.x &lt;&lt; std::endl;</div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y: &quot;</span> &lt;&lt; qp.results.y &lt;&lt; std::endl;</div>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; qp.results.z &lt;&lt; std::endl;</div>
 <div class="line">}</div>
-<div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00014">common.hpp:14</a></div></div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>

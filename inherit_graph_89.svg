@@ -11,12 +11,12 @@
 <!-- Node0 -->
 <g id="node1" class="node">
 <title>Node0</title>
-<g id="a_node1"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1concat__type__seq_3_01true__type_00_01F_00_01F_3_01Ts_8_8_8_01_4_01_4.html" target="_top" xlink:title=" ">
+<g id="a_node1"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1concat__type__seq_3_01true__type_00_01F_01_4.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="135,-52 0,-52 0,0 135,0 135,-52"/>
 <text text-anchor="start" x="8" y="-40" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
 <text text-anchor="start" x="8" y="-29" font-family="Helvetica,sans-Serif" font-size="10.00">veg::_detail::_meta</text>
 <text text-anchor="start" x="8" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">::concat_type_seq&lt; true</text>
-<text text-anchor="middle" x="67.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">_type, F, F&lt; Ts... &gt; &gt;</text>
+<text text-anchor="middle" x="67.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">_type, F &gt;</text>
 </a>
 </g>
 </g>

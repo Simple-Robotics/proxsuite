@@ -27,5 +27,6 @@ var searchData=
   ['vectorview_24',['VectorView',['../structproxsuite_1_1proxqp_1_1VectorView.html',1,'proxsuite::proxqp']]],
   ['vectorview_3c_20scalar_20_3e_25',['VectorView&lt; Scalar &gt;',['../structproxsuite_1_1proxqp_1_1VectorView.html',1,'proxsuite::proxqp']]],
   ['vectorviewmut_26',['VectorViewMut',['../structproxsuite_1_1proxqp_1_1VectorViewMut.html',1,'proxsuite::proxqp']]],
-  ['vectorviewmut_3c_20scalar_20_3e_27',['VectorViewMut&lt; Scalar &gt;',['../structproxsuite_1_1proxqp_1_1VectorViewMut.html',1,'proxsuite::proxqp']]]
+  ['vectorviewmut_3c_20scalar_20_3e_27',['VectorViewMut&lt; Scalar &gt;',['../structproxsuite_1_1proxqp_1_1VectorViewMut.html',1,'proxsuite::proxqp']]],
+  ['voider_28',['voider',['../structtl_1_1detail_1_1voider.html',1,'tl::detail']]]
 ];

@@ -12,5 +12,6 @@ var searchData=
   ['nomovector_9',['NoMoveCtor',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveCtor.html',1,'proxsuite::linalg::veg::_detail']]],
   ['none_10',['none',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['none_5ffound_11',['none_found',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none__found.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
-  ['nontuplebaseinfoimpl_12',['NonTupleBaseInfoImpl',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1NonTupleBaseInfoImpl.html',1,'proxsuite::linalg::veg::_detail::meta_']]]
+  ['nontuplebaseinfoimpl_12',['NonTupleBaseInfoImpl',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1NonTupleBaseInfoImpl.html',1,'proxsuite::linalg::veg::_detail::meta_']]],
+  ['nullopt_5ft_13',['nullopt_t',['../structtl_1_1nullopt__t.html',1,'tl']]]
 ];

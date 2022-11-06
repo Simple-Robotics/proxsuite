@@ -44,7 +44,7 @@ var namespaceproxsuite_1_1linalg_1_1sparse =
     [ "add_row_req", "namespaceproxsuite_1_1linalg_1_1sparse.html#ac959d85677fcab27b1afaa10cc3abc46", null ],
     [ "add_row", "namespaceproxsuite_1_1linalg_1_1sparse.html#a82050235c2a096a1dea4cad699a4e8b0", null ],
     [ "merge_second_col_into_first_req", "namespaceproxsuite_1_1linalg_1_1sparse.html#afbb7ec2320c38f0d188f9f9d8f1ac44d", null ],
-    [ "merge_second_col_into_first", "namespaceproxsuite_1_1linalg_1_1sparse.html#a6dc6e580ad9adbeca07f78903583f202", null ],
+    [ "merge_second_col_into_first", "namespaceproxsuite_1_1linalg_1_1sparse.html#a4803b9c2fde5dbef56c606a3a8acf100", null ],
     [ "rank1_update_req", "namespaceproxsuite_1_1linalg_1_1sparse.html#aad2f3a35d7814875aa62f2dc9a4cb6cd", null ],
     [ "rank1_update", "namespaceproxsuite_1_1linalg_1_1sparse.html#ad3b82600836aa726fc9c8f3744264829", null ]
 ];
