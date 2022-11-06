@@ -509,70 +509,45 @@ warm_start(optional<VecRef<T>> x_wm,
            Settings<T>& settings,
            Model<T>& model)
 {
-
-  isize n_eq = results.y.rows();
-  isize n_in = results.z.rows();
-  if (n_eq != 0) {
-    if (n_in != 0) {
-      if (x_wm != nullopt && y_wm != nullopt && z_wm != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          z_wm.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for warm start "
-          "is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for warm start is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          x_wm.value().rows(),
-          model.dim,
-          "the dimension wrt primal variable x for warm start is not valid.");
-        results.x = x_wm.value().eval();
-        results.y = y_wm.value().eval();
-        results.z = z_wm.value().eval();
-      }
-    } else {
-      // n_in= 0
-      if (x_wm != nullopt && y_wm != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for warm start is not valid.");
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          x_wm.value().rows(),
-          model.dim,
-          "the dimension wrt primal variable x for warm start is not valid.");
-        results.x = x_wm.value().eval();
-        results.y = y_wm.value().eval();
-      }
-    }
-  } else if (n_in != 0) {
-    // n_eq = 0
-    if (x_wm != nullopt && z_wm != nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(z_wm.value().rows(),
-                                    model.n_in,
-                                    "the dimension wrt inequality constrained "
-                                    "variables for warm start is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        x_wm.value().rows(),
-        model.dim,
-        "the dimension wrt primal variable x for warm start is not valid.");
-      results.x = x_wm.value().eval();
-      results.z = z_wm.value().eval();
-    }
-  } else {
-    // n_eq = 0 and n_in = 0
-    if (x_wm != nullopt) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        x_wm.value().rows(),
-        model.dim,
-        "the dimension wrt primal variable x for warm start is not valid.");
-      results.x = x_wm.value().eval();
-    }
-  }
+  if (x_wm == nullopt && y_wm == nullopt && z_wm == nullopt)
+    return;
 
   settings.initial_guess = InitialGuessStatus::WARM_START;
+
+  // first check problem dimensions
+  if (x_wm != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      x_wm.value().rows(),
+      model.dim,
+      "the dimension wrt primal variable x for warm start is not valid.");
+  }
+
+  if (y_wm != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(y_wm.value().rows(),
+                                  model.n_eq,
+                                  "the dimension wrt equality constrained "
+                                  "variables for warm start is not valid.");
+  }
+
+  if (z_wm != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      z_wm.value().rows(),
+      model.n_in,
+      "the dimension wrt inequality constrained variables for warm start "
+      "is not valid.");
+  }
+
+  if (x_wm != nullopt) {
+    results.x = x_wm.value().eval();
+  }
+
+  if (y_wm != nullopt) {
+    results.y = y_wm.value().eval();
+  }
+
+  if (z_wm != nullopt) {
+    results.z = z_wm.value().eval();
+  }
 }
 } // namespace dense
 } // namespace proxqp
