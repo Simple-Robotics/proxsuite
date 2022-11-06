@@ -83,20 +83,19 @@ is_alignment(std::size_t value)
   return (value > 0) && ((value & (value - 1)) == 0);
 }
 
-// Source: https://www.boost.org/doc/libs/1_65_0/boost/align/detail/align.hpp
+// Source: https://www.boost.org/doc/libs/1_74_0/boost/align/detail/align.hpp
 inline void*
 align(std::size_t alignment, std::size_t size, void*& ptr, std::size_t& space)
 {
   assert(is_alignment(alignment));
-  if (size <= space) {
-    char* p = reinterpret_cast<char*>(
-      ~(alignment - 1) & (reinterpret_cast<std::size_t>(ptr) + alignment - 1));
-    std::size_t n = space - (p - static_cast<char*>(ptr));
-    if (size <= n) {
-      ptr = p;
-      space = n;
-      return p;
-    }
+  char* p = reinterpret_cast<char*>(
+    ~(alignment - 1) & (reinterpret_cast<std::size_t>(ptr) + alignment - 1));
+  assert((p - static_cast<char*>(ptr)) >= 0);
+  std::size_t n = std::size_t(p - static_cast<char*>(ptr));
+  if (size + n <= space) {
+    ptr = p;
+    space -= n;
+    return p;
   }
   return 0;
 }
