@@ -135,12 +135,10 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
   qp.init(H, g, nullopt, nullopt, C, u, l);
 
   dense::Vec<T> x = dense::Vec<T>(dim);
-  dense::Vec<T> y = dense::Vec<T>(dim);
-  dense::Vec<T> z = dense::Vec<T>(dim);
+  dense::Vec<T> z = dense::Vec<T>(n_in);
   x << 0.5;
-  y << 0.0;
   z << 0.0;
-  qp.solve(x, y, z);
+  qp.solve(x, nullopt, z);
 
   T pri_res = (dense::positive_part(C * qp.results.x - u) +
                dense::negative_part(C * qp.results.x - l))
