@@ -154,8 +154,6 @@ const typename InstructionSetBase<>::Data InstructionSetBase<>::data =
 
 // Adapted from
 // https://docs.microsoft.com/fr-fr/cpp/intrinsics/cpuid-cpuidex?view=msvc-170
-// template <typename T>
-// struct InstructionSet: public internal::InstructionSetBase<T>
 struct InstructionSet : public internal::InstructionSetBase<>
 {
   static std::string vendor(void)
