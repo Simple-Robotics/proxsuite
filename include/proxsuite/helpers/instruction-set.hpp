@@ -41,81 +41,11 @@ cpuidex(std::array<int, 4>& cpui, int level, int count)
   __cpuidex(cpui.data(), level, count);
 #endif
 }
-}
 
-// Adapted from
-// https://docs.microsoft.com/fr-fr/cpp/intrinsics/cpuid-cpuidex?view=msvc-170
-struct InstructionSet
+template<typename T = void>
+struct InstructionSetBase
 {
-  static std::string vendor(void) { return data.vendor_; }
-  static std::string brand(void) { return data.brand_; }
-
-  static bool has_SSE3(void) { return data.f_1_ECX_[0]; }
-  static bool has_PCLMULQDQ(void) { return data.f_1_ECX_[1]; }
-  static bool has_MONITOR(void) { return data.f_1_ECX_[3]; }
-  static bool has_SSSE3(void) { return data.f_1_ECX_[9]; }
-  static bool has_FMA(void) { return data.f_1_ECX_[12]; }
-  static bool has_CMPXCHG16B(void) { return data.f_1_ECX_[13]; }
-  static bool has_SSE41(void) { return data.f_1_ECX_[19]; }
-  static bool has_SSE42(void) { return data.f_1_ECX_[20]; }
-  static bool has_MOVBE(void) { return data.f_1_ECX_[22]; }
-  static bool has_POPCNT(void) { return data.f_1_ECX_[23]; }
-  static bool has_AES(void) { return data.f_1_ECX_[25]; }
-  static bool has_XSAVE(void) { return data.f_1_ECX_[26]; }
-  static bool has_OSXSAVE(void) { return data.f_1_ECX_[27]; }
-  static bool has_AVX(void) { return data.f_1_ECX_[28]; }
-  static bool has_F16C(void) { return data.f_1_ECX_[29]; }
-  static bool has_RDRAND(void) { return data.f_1_ECX_[30]; }
-
-  static bool has_MSR(void) { return data.f_1_EDX_[5]; }
-  static bool has_CX8(void) { return data.f_1_EDX_[8]; }
-  static bool has_SEP(void) { return data.f_1_EDX_[11]; }
-  static bool has_CMOV(void) { return data.f_1_EDX_[15]; }
-  static bool has_CLFSH(void) { return data.f_1_EDX_[19]; }
-  static bool has_MMX(void) { return data.f_1_EDX_[23]; }
-  static bool has_FXSR(void) { return data.f_1_EDX_[24]; }
-  static bool has_SSE(void) { return data.f_1_EDX_[25]; }
-  static bool has_SSE2(void) { return data.f_1_EDX_[26]; }
-
-  static bool has_FSGSBASE(void) { return data.f_7_EBX_[0]; }
-  static bool has_AVX512VBMI(void) { return data.f_7_EBX_[1]; }
-  static bool has_BMI1(void) { return data.f_7_EBX_[3]; }
-  static bool has_HLE(void) { return data.isIntel_ && data.f_7_EBX_[4]; }
-  static bool has_AVX2(void) { return data.f_7_EBX_[5]; }
-  static bool has_BMI2(void) { return data.f_7_EBX_[8]; }
-  static bool has_ERMS(void) { return data.f_7_EBX_[9]; }
-  static bool has_INVPCID(void) { return data.f_7_EBX_[10]; }
-  static bool has_RTM(void) { return data.isIntel_ && data.f_7_EBX_[11]; }
-  static bool has_AVX512F(void) { return data.f_7_EBX_[16]; }
-  static bool has_AVX512DQ(void) { return data.f_7_EBX_[17]; }
-  static bool has_RDSEED(void) { return data.f_7_EBX_[18]; }
-  static bool has_ADX(void) { return data.f_7_EBX_[19]; }
-  static bool has_AVX512IFMA(void) { return data.f_7_EBX_[21]; }
-  static bool has_AVX512PF(void) { return data.f_7_EBX_[26]; }
-  static bool has_AVX512ER(void) { return data.f_7_EBX_[27]; }
-  static bool has_AVX512CD(void) { return data.f_7_EBX_[28]; }
-  static bool has_SHA(void) { return data.f_7_EBX_[29]; }
-  static bool has_AVX512BW(void) { return data.f_7_EBX_[30]; }
-  static bool has_AVX512VL(void) { return data.f_7_EBX_[31]; }
-
-  static bool has_PREFETCHWT1(void) { return data.f_7_ECX_[0]; }
-
-  static bool has_LAHF(void) { return data.f_81_ECX_[0]; }
-  static bool has_LZCNT(void) { return data.isIntel_ && data.f_81_ECX_[5]; }
-  static bool has_ABM(void) { return data.isAMD_ && data.f_81_ECX_[5]; }
-  static bool has_SSE4a(void) { return data.isAMD_ && data.f_81_ECX_[6]; }
-  static bool has_XOP(void) { return data.isAMD_ && data.f_81_ECX_[11]; }
-  static bool has_FMA4(void) { return data.isAMD_ && data.f_81_ECX_[16]; }
-  static bool has_TBM(void) { return data.isAMD_ && data.f_81_ECX_[21]; }
-
-  static bool has_SYSCALL(void) { return data.isIntel_ && data.f_81_EDX_[11]; }
-  static bool has_MMXEXT(void) { return data.isAMD_ && data.f_81_EDX_[22]; }
-  static bool has_RDTSCP(void) { return data.isIntel_ && data.f_81_EDX_[27]; }
-  static bool has_x64(void) { return data.isIntel_ && data.f_81_EDX_[29]; }
-  static bool has_3DNOWEXT(void) { return data.isAMD_ && data.f_81_EDX_[30]; }
-  static bool has_3DNOW(void) { return data.isAMD_ && data.f_81_EDX_[31]; }
-
-private:
+protected:
   struct Data
   {
     Data()
@@ -214,7 +144,284 @@ private:
     std::vector<std::array<int, 4>> extdata_;
   };
 
-  inline static const Data data = Data();
+  static const Data data;
+};
+
+template<>
+const typename InstructionSetBase<>::Data InstructionSetBase<>::data =
+  typename InstructionSetBase<>::Data();
+} // namespace internal
+
+// Adapted from
+// https://docs.microsoft.com/fr-fr/cpp/intrinsics/cpuid-cpuidex?view=msvc-170
+// template <typename T>
+// struct InstructionSet: public internal::InstructionSetBase<T>
+struct InstructionSet : public internal::InstructionSetBase<>
+{
+  static std::string vendor(void)
+  {
+    return internal::InstructionSetBase<>::data.vendor_;
+  }
+  static std::string brand(void)
+  {
+    return internal::InstructionSetBase<>::data.brand_;
+  }
+
+  static bool has_SSE3(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[0];
+  }
+  static bool has_PCLMULQDQ(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[1];
+  }
+  static bool has_MONITOR(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[3];
+  }
+  static bool has_SSSE3(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[9];
+  }
+  static bool has_FMA(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[12];
+  }
+  static bool has_CMPXCHG16B(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[13];
+  }
+  static bool has_SSE41(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[19];
+  }
+  static bool has_SSE42(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[20];
+  }
+  static bool has_MOVBE(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[22];
+  }
+  static bool has_POPCNT(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[23];
+  }
+  static bool has_AES(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[25];
+  }
+  static bool has_XSAVE(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[26];
+  }
+  static bool has_OSXSAVE(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[27];
+  }
+  static bool has_AVX(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[28];
+  }
+  static bool has_F16C(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[29];
+  }
+  static bool has_RDRAND(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_ECX_[30];
+  }
+
+  static bool has_MSR(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[5];
+  }
+  static bool has_CX8(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[8];
+  }
+  static bool has_SEP(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[11];
+  }
+  static bool has_CMOV(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[15];
+  }
+  static bool has_CLFSH(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[19];
+  }
+  static bool has_MMX(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[23];
+  }
+  static bool has_FXSR(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[24];
+  }
+  static bool has_SSE(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[25];
+  }
+  static bool has_SSE2(void)
+  {
+    return internal::InstructionSetBase<>::data.f_1_EDX_[26];
+  }
+
+  static bool has_FSGSBASE(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[0];
+  }
+  static bool has_AVX512VBMI(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[1];
+  }
+  static bool has_BMI1(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[3];
+  }
+  static bool has_HLE(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_7_EBX_[4];
+  }
+  static bool has_AVX2(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[5];
+  }
+  static bool has_BMI2(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[8];
+  }
+  static bool has_ERMS(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[9];
+  }
+  static bool has_INVPCID(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[10];
+  }
+  static bool has_RTM(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_7_EBX_[11];
+  }
+  static bool has_AVX512F(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[16];
+  }
+  static bool has_AVX512DQ(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[17];
+  }
+  static bool has_RDSEED(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[18];
+  }
+  static bool has_ADX(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[19];
+  }
+  static bool has_AVX512IFMA(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[21];
+  }
+  static bool has_AVX512PF(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[26];
+  }
+  static bool has_AVX512ER(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[27];
+  }
+  static bool has_AVX512CD(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[28];
+  }
+  static bool has_SHA(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[29];
+  }
+  static bool has_AVX512BW(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[30];
+  }
+  static bool has_AVX512VL(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_EBX_[31];
+  }
+
+  static bool has_PREFETCHWT1(void)
+  {
+    return internal::InstructionSetBase<>::data.f_7_ECX_[0];
+  }
+
+  static bool has_LAHF(void)
+  {
+    return internal::InstructionSetBase<>::data.f_81_ECX_[0];
+  }
+  static bool has_LZCNT(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[5];
+  }
+  static bool has_ABM(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[5];
+  }
+  static bool has_SSE4a(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[6];
+  }
+  static bool has_XOP(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[11];
+  }
+  static bool has_FMA4(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[16];
+  }
+  static bool has_TBM(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_ECX_[21];
+  }
+
+  static bool has_SYSCALL(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[11];
+  }
+  static bool has_MMXEXT(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[22];
+  }
+  static bool has_RDTSCP(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[27];
+  }
+  static bool has_x64(void)
+  {
+    return internal::InstructionSetBase<>::data.isIntel_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[29];
+  }
+  static bool has_3DNOWEXT(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[30];
+  }
+  static bool has_3DNOW(void)
+  {
+    return internal::InstructionSetBase<>::data.isAMD_ &&
+           internal::InstructionSetBase<>::data.f_81_EDX_[31];
+  }
 };
 
 } // helpers
