@@ -235,6 +235,116 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+          "inequality constraints: test setting SparseBackend")
+{
+  std::cout << "------------------------sparse random strongly convex qp with "
+               "equality and inequality constraints: test setting SparseBackend"
+            << std::endl;
+  for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
+                            // proxsuite::linalg::veg::tuplify(50, 25, 0),
+                            // proxsuite::linalg::veg::tuplify(10, 0, 10),
+                            // proxsuite::linalg::veg::tuplify(50, 0, 25),
+                            // proxsuite::linalg::veg::tuplify(50, 10, 25),
+                            proxsuite::linalg::veg::tuplify(10, 2, 2) }) {
+    VEG_BIND(auto const&, (n, n_eq, n_in), dims);
+
+    T sparsity_factor = 0.15;
+    T strong_convexity_factor = 0.01;
+    ::proxsuite::proxqp::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
+      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    proxqp::sparse::QP<T, I> qp(n, n_eq, n_in);
+    qp.settings.eps_abs = 1.E-9;
+    qp.settings.verbose = true;
+    CHECK(qp.settings.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::Automatic);
+    qp.settings.sparse_backend = proxsuite::proxqp::SparseBackend::MatrixFree;
+    CHECK(qp.settings.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::MatrixFree);
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            true,
+            T(1.e-7),
+            nullopt,
+            nullopt);
+    qp.solve();
+    T dua_res = proxqp::dense::infty_norm(
+      qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x + qp_random.g +
+      qp_random.A.transpose() * qp.results.y +
+      qp_random.C.transpose() * qp.results.z);
+    T pri_res = std::max(
+      proxqp::dense::infty_norm(qp_random.A * qp.results.x - qp_random.b),
+      proxqp::dense::infty_norm(sparse::detail::positive_part(
+                                  qp_random.C * qp.results.x - qp_random.u) +
+                                sparse::detail::negative_part(
+                                  qp_random.C * qp.results.x - qp_random.l)));
+    CHECK(dua_res <= 1e-9);
+    CHECK(pri_res <= 1E-9);
+    CHECK(qp.results.info.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::MatrixFree);
+    std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
+              << std::endl;
+    std::cout << "dual residual " << dua_res << "; primal residual " << pri_res
+              << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+              << qp.results.info.solve_time << std::endl;
+
+    proxqp::sparse::QP<T, I> qp2(n, n_eq, n_in);
+    qp2.settings.eps_abs = 1.E-9;
+    qp2.settings.verbose = true;
+    CHECK(qp2.settings.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::Automatic);
+    qp2.settings.sparse_backend =
+      proxsuite::proxqp::SparseBackend::SparseCholesky;
+    CHECK(qp2.settings.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::SparseCholesky);
+    qp2.init(qp_random.H,
+             qp_random.g,
+             qp_random.A,
+             qp_random.b,
+             qp_random.C,
+             qp_random.l,
+             qp_random.u,
+             true,
+             T(1.e-7),
+             nullopt,
+             nullopt);
+    qp2.solve();
+    T dua_res2 = proxqp::dense::infty_norm(
+      qp_random.H.selfadjointView<Eigen::Upper>() * qp2.results.x +
+      qp_random.g + qp_random.A.transpose() * qp2.results.y +
+      qp_random.C.transpose() * qp2.results.z);
+    T pri_res2 = std::max(
+      proxqp::dense::infty_norm(qp_random.A * qp2.results.x - qp_random.b),
+      proxqp::dense::infty_norm(sparse::detail::positive_part(
+                                  qp_random.C * qp2.results.x - qp_random.u) +
+                                sparse::detail::negative_part(
+                                  qp_random.C * qp2.results.x - qp_random.l)));
+    CHECK(dua_res2 <= 1e-9);
+    CHECK(pri_res2 <= 1E-9);
+    CHECK(qp2.results.info.sparse_backend ==
+          proxsuite::proxqp::SparseBackend::SparseCholesky);
+    std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
+              << std::endl;
+    std::cout << "dual residual " << dua_res2 << "; primal residual "
+              << pri_res2 << std::endl;
+    std::cout << "total number of iteration: " << qp2.results.info.iter
+              << std::endl;
+    std::cout << "setup timing " << qp2.results.info.setup_time
+              << " solve time " << qp2.results.info.solve_time << std::endl;
+    CHECK(qp.results.x.isApprox(qp2.results.x, 1E-4));
+  }
+}
+
+TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update mus")
 {
 

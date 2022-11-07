@@ -490,7 +490,14 @@ struct Workspace
 
       // if ldlt is too sparse
       // do_ldlt = !overflow && lnnz < (10000000);
-      do_ldlt = !overflow && lnnz < 10000000;
+      if (settings.sparse_backend == SparseBackend::Automatic) {
+        do_ldlt = !overflow && lnnz < 10000000;
+      } else if (settings.sparse_backend == SparseBackend::SparseCholesky) {
+        do_ldlt = true;
+      } else {
+        do_ldlt = false;
+      }
+
     } else {
       T* kktx = data.kkt_values.ptr_mut();
       usize pos = 0;

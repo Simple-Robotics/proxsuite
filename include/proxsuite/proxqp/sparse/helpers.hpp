@@ -222,6 +222,19 @@ qp_setup(QpView<T, I> qp,
       break;
     }
   }
+  // if user chose Automatic as sparse backend, store in results which backend
+  // of SparseCholesky or MatrixFree had been used
+  if (settings.sparse_backend == SparseBackend::Automatic) {
+    if (work.internal.do_ldlt) {
+      results.info.sparse_backend = SparseBackend::SparseCholesky;
+    } else {
+      results.info.sparse_backend = SparseBackend::MatrixFree;
+    }
+  }
+  // if user selected a specfic sparse backend, store it in results
+  else {
+    results.info.sparse_backend = settings.sparse_backend;
+  }
 }
 /*!
  * Checks whether matrix b has the same sparsity structure as matrix a.

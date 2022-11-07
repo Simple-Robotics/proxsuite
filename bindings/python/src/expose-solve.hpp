@@ -139,10 +139,11 @@ solveSparseQp(pybind11::module_ m)
                     "conditioning and speeding up the solver."),
     pybind11::arg_v("compute_timings", true, "compute solver's timings."),
     pybind11::arg_v("max_iter", nullopt, "maximum number of iteration."),
-    pybind11::arg_v(
-      "initial_guess",
-      proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-      "maximum number of iteration."));
+    pybind11::arg_v("initial_guess",
+                    proxsuite::proxqp::InitialGuessStatus::
+                      EQUALITY_CONSTRAINED_INITIAL_GUESS),
+    pybind11::arg_v("sparse_backend",
+                    proxsuite::proxqp::SparseBackend::Automatic));
 }
 
 } // namespace python

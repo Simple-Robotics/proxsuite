@@ -40,7 +40,11 @@ exposeResults(pybind11::module_ m)
     .def_readwrite("objValue", &Info<T>::objValue)
     .def_readwrite("status", &Info<T>::status)
     .def_readwrite("rho_updates", &Info<T>::rho_updates)
-    .def_readwrite("mu_updates", &Info<T>::mu_updates);
+    .def_readwrite("mu_updates", &Info<T>::mu_updates)
+    .def_readwrite("sparse_backend",
+                   &Info<T>::sparse_backend,
+                   "Sparse backend used to solve the qp, either SparseCholesky "
+                   "or MatrixFree.");
 
   ::pybind11::class_<Results<T>>(m, "Results", pybind11::module_local())
     .def(::pybind11::init<i64, i64, i64>(),
