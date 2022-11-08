@@ -125,10 +125,7 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
     proxsuite-vectorized
     PUBLIC
     INTERFACE simde)
-  target_compile_definitions(
-    proxsuite-vectorized
-    PUBLIC
-    INTERFACE PROXSUITE_VECTORIZE)
+  target_compile_definitions(proxsuite-vectorized INTERFACE PROXSUITE_VECTORIZE)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
