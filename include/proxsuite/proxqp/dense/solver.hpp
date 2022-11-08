@@ -55,7 +55,7 @@ refactorize(const Model<T>& qpmodel,
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
-  qpwork.ldl.factorize(qpwork.kkt, stack);
+  qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
 
   isize n = qpmodel.dim;
   isize n_eq = qpmodel.n_eq;
