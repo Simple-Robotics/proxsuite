@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.5</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.6</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -186,6 +186,11 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90a531f659b28e004031909860372c4f322">rowmajor</a> = 1
  }</td></tr>
 <tr class="separator:a95f1475e7d77f87895bccc2b3a790a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acab609dfd23d8843cdcfda5004246a1f"><td class="memItemLeft" align="right" valign="top">enum struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> { <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d">Automatic</a>
+, <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa84a54df9bcae79cadd31cac885d6ab7f">SparseCholesky</a>
+, <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1faf2674a258348188d6a3ee81d2669255a">MatrixFree</a>
+ }</td></tr>
+<tr class="separator:acab609dfd23d8843cdcfda5004246a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3b64c0293312c54fdfa991580ed70fd"><td class="memItemLeft" align="right" valign="top">enum struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd">QPSolverOutput</a> { <br />
 &#160;&#160;<a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b">PROXQP_SOLVED</a>
 , <a class="el" href="namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649">PROXQP_MAX_ITER_REACHED</a>
@@ -228,6 +233,8 @@ Functions</h2></td></tr>
 <tr class="separator:adb258896b22637ecc6725f24f25e26d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdf83458168221144e3a563d193038d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1tags.html#acdf83458168221144e3a563d193038d5">VEG_TAG</a> (from_eigen, FromEigen)</td></tr>
 <tr class="separator:acdf83458168221144e3a563d193038d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1df5f823a7615dfa6621ebc32a637502"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a1df5f823a7615dfa6621ebc32a637502">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> &amp;sparse_backend)</td></tr>
+<tr class="separator:a1df5f823a7615dfa6621ebc32a637502"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6110ed9a1376cba698a791a111dcc5f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a6110ed9a1376cba698a791a111dcc5f2">print_line</a> ()</td></tr>
 <tr class="separator:a6110ed9a1376cba698a791a111dcc5f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a759ab0dc0dadd15636f4b00436d684a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a759ab0dc0dadd15636f4b00436d684a0">print_header</a> ()</td></tr>
@@ -364,6 +371,35 @@ template&lt;typename T &gt; </div>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="dense_2views_8hpp_source.html#l00238">238</a> of file <a class="el" href="dense_2views_8hpp_source.html">views.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acab609dfd23d8843cdcfda5004246a1f" name="acab609dfd23d8843cdcfda5004246a1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acab609dfd23d8843cdcfda5004246a1f">&#9670;&#160;</a></span>SparseBackend</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum struct <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">proxsuite::proxqp::SparseBackend</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d" name="acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d"></a>Automatic&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acab609dfd23d8843cdcfda5004246a1fa84a54df9bcae79cadd31cac885d6ab7f" name="acab609dfd23d8843cdcfda5004246a1fa84a54df9bcae79cadd31cac885d6ab7f"></a>SparseCholesky&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="acab609dfd23d8843cdcfda5004246a1faf2674a258348188d6a3ee81d2669255a" name="acab609dfd23d8843cdcfda5004246a1faf2674a258348188d6a3ee81d2669255a"></a>MatrixFree&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="settings_8hpp_source.html#l00019">19</a> of file <a class="el" href="settings_8hpp_source.html">settings.hpp</a>.</p>
 
 </div>
 </div>
@@ -543,6 +579,44 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="dense_2views_8hpp_source.html#l00258">258</a> of file <a class="el" href="dense_2views_8hpp_source.html">views.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1df5f823a7615dfa6621ebc32a637502" name="a1df5f823a7615dfa6621ebc32a637502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1df5f823a7615dfa6621ebc32a637502">&#9670;&#160;</a></span>operator&lt;&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream &amp; proxsuite::proxqp::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> &amp;&#160;</td>
+          <td class="paramname"><em>sparse_backend</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="settings_8hpp_source.html#l00026">26</a> of file <a class="el" href="settings_8hpp_source.html">settings.hpp</a>.</p>
 
 </div>
 </div>

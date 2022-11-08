@@ -43,6 +43,11 @@ var namespaceproxsuite_1_1proxqp =
       [ "colmajor", "namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90a792226b1a2c2e2df788701a896fc243c", null ],
       [ "rowmajor", "namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90a531f659b28e004031909860372c4f322", null ]
     ] ],
+    [ "SparseBackend", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f", [
+      [ "Automatic", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d", null ],
+      [ "SparseCholesky", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa84a54df9bcae79cadd31cac885d6ab7f", null ],
+      [ "MatrixFree", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1faf2674a258348188d6a3ee81d2669255a", null ]
+    ] ],
     [ "QPSolverOutput", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd", [
       [ "PROXQP_SOLVED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b", null ],
       [ "PROXQP_MAX_ITER_REACHED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649", null ],
@@ -69,6 +74,7 @@ var namespaceproxsuite_1_1proxqp =
     [ "VEG_TAG", "namespaceproxsuite_1_1proxqp_1_1tags.html#af590e82417de5470ca4e00e36f0508ee", null ],
     [ "VEG_TAG", "namespaceproxsuite_1_1proxqp_1_1tags.html#adb258896b22637ecc6725f24f25e26d6", null ],
     [ "VEG_TAG", "namespaceproxsuite_1_1proxqp_1_1tags.html#acdf83458168221144e3a563d193038d5", null ],
+    [ "operator<<", "namespaceproxsuite_1_1proxqp.html#a1df5f823a7615dfa6621ebc32a637502", null ],
     [ "print_line", "namespaceproxsuite_1_1proxqp.html#a6110ed9a1376cba698a791a111dcc5f2", null ],
     [ "print_header", "namespaceproxsuite_1_1proxqp.html#a759ab0dc0dadd15636f4b00436d684a0", null ],
     [ "print_preambule", "namespaceproxsuite_1_1proxqp.html#af2a2c9e8126d293aed43788b41e8a7ca", null ],

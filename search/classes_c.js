@@ -13,5 +13,6 @@ var searchData=
   ['none_10',['none',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['none_5ffound_11',['none_found',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none__found.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['nontuplebaseinfoimpl_12',['NonTupleBaseInfoImpl',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1NonTupleBaseInfoImpl.html',1,'proxsuite::linalg::veg::_detail::meta_']]],
-  ['nullopt_5ft_13',['nullopt_t',['../structtl_1_1nullopt__t.html',1,'tl']]]
+  ['nullopt_5finstance_13',['nullopt_instance',['../structproxsuite_1_1detail_1_1nullopt__instance.html',1,'proxsuite::detail']]],
+  ['nullopt_5ft_14',['nullopt_t',['../structtl_1_1nullopt__t.html',1,'tl']]]
 ];

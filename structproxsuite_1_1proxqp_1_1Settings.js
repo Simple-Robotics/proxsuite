@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a7db7b9e933e03ef1c7409aef2a0e8292", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a03f93ffc1d74178deea7e444c817fac2", null ],
     [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
     [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
     [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],
@@ -34,5 +34,6 @@ var structproxsuite_1_1proxqp_1_1Settings =
     [ "preconditioner_accuracy", "structproxsuite_1_1proxqp_1_1Settings.html#acc106f3d790b5ed5855c9340a5f3f779", null ],
     [ "eps_primal_inf", "structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24", null ],
     [ "eps_dual_inf", "structproxsuite_1_1proxqp_1_1Settings.html#a8b11a745706778cfb57273d00e02391d", null ],
-    [ "bcl_update", "structproxsuite_1_1proxqp_1_1Settings.html#a175999aba3e97149fe7cc5aedb48f262", null ]
+    [ "bcl_update", "structproxsuite_1_1proxqp_1_1Settings.html#a175999aba3e97149fe7cc5aedb48f262", null ],
+    [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc", null ]
 ];

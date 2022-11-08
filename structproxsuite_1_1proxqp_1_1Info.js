@@ -16,5 +16,6 @@ var structproxsuite_1_1proxqp_1_1Info =
     [ "run_time", "structproxsuite_1_1proxqp_1_1Info.html#a2a3e322479065c3b213a0d04d7f20b3c", null ],
     [ "objValue", "structproxsuite_1_1proxqp_1_1Info.html#a07f62fa33bce0780e78c082c4cb5d2d5", null ],
     [ "pri_res", "structproxsuite_1_1proxqp_1_1Info.html#a729ee967ad5ad5cb87233de2fc30514a", null ],
-    [ "dua_res", "structproxsuite_1_1proxqp_1_1Info.html#a078039aabc1c7d6ffa5cddaf1982b789", null ]
+    [ "dua_res", "structproxsuite_1_1proxqp_1_1Info.html#a078039aabc1c7d6ffa5cddaf1982b789", null ],
+    [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Info.html#a846f580dc75073ebe1e94e98702b7749", null ]
 ];

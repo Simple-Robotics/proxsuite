@@ -300,7 +300,9 @@ var hierarchy =
     [ "proxsuite::linalg::veg::tags::InPlace< Tag >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace.html", null ],
     [ "proxsuite::linalg::veg::InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4.html", null ],
     [ "proxsuite::linalg::veg::tags::InPlace< void >", "structproxsuite_1_1linalg_1_1veg_1_1tags_1_1InPlace_3_01void_01_4.html", null ],
-    [ "proxsuite::helpers::InstructionSet", "structproxsuite_1_1helpers_1_1InstructionSet.html", null ],
+    [ "proxsuite::helpers::internal::InstructionSetBase< T >", null, [
+      [ "proxsuite::helpers::InstructionSet", "structproxsuite_1_1helpers_1_1InstructionSet.html", null ]
+    ] ],
     [ "proxsuite::linalg::veg::_detail::_meta::integer_sequence< T, Nums >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1integer__sequence.html", null ],
     [ "std::integral_constant", null, [
       [ "tl::detail::is_nothrow_swappable< T, U >", "structtl_1_1detail_1_1is__nothrow__swappable.html", null ],
@@ -389,6 +391,7 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::NoMoveCtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveCtor.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::none", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none.html", null ],
     [ "proxsuite::linalg::veg::_detail::meta_::NonTupleBaseInfoImpl", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1meta___1_1NonTupleBaseInfoImpl.html", null ],
+    [ "proxsuite::detail::nullopt_instance< T >", "structproxsuite_1_1detail_1_1nullopt__instance.html", null ],
     [ "tl::nullopt_t", "structtl_1_1nullopt__t.html", null ],
     [ "proxsuite::linalg::veg::alignment::detail::offset_value< T >", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value.html", null ],
     [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", null ],

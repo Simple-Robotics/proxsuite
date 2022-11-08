@@ -1,6 +1,9 @@
 var annotated_dup =
 [
     [ "proxsuite", "namespaceproxsuite.html", [
+      [ "detail", "namespaceproxsuite_1_1detail.html", [
+        [ "nullopt_instance", "structproxsuite_1_1detail_1_1nullopt__instance.html", "structproxsuite_1_1detail_1_1nullopt__instance" ]
+      ] ],
       [ "helpers", "namespaceproxsuite_1_1helpers.html", [
         [ "infinite_bound", "structproxsuite_1_1helpers_1_1infinite__bound.html", "structproxsuite_1_1helpers_1_1infinite__bound" ],
         [ "InstructionSet", "structproxsuite_1_1helpers_1_1InstructionSet.html", "structproxsuite_1_1helpers_1_1InstructionSet" ]

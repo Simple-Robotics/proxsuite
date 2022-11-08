@@ -20,6 +20,7 @@ var dense_2core_8hpp =
     [ "LDLT_FN_IMPL3", "dense_2core_8hpp.html#a1a570e4adbfc51941c5d09741dbe66b7", null ],
     [ "LDLT_ARITHMETIC_IMPL", "dense_2core_8hpp.html#accbd649d02f39f37b62a02dd1fc6f246", null ],
     [ "LDLT_LOAD_STORE", "dense_2core_8hpp.html#a7910fdc91997d1f5f37dc2c3b01f1700", null ],
+    [ "LAZY_PRODUCT", "dense_2core_8hpp.html#a343cb6a82136d73ddd53c069c13a1099", null ],
     [ "f32", "dense_2core_8hpp.html#adb5eaa4317724174d1d5a6267cb231f6", null ],
     [ "f64", "dense_2core_8hpp.html#a834f5388e3e40ab99e4276b9d369d8d2", null ],
     [ "NativePack", "dense_2core_8hpp.html#ac75cbb81bad1ebafff964521b27ebf2a", null ],

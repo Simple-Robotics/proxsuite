@@ -1,3 +1,18 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1RawVectorMoveRaii.html" title=" " alt="" coords="5,5,204,60"/>
+<area shape="rect" id="node1" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="35,253,190,307"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="268,291,563,405"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="347,429,484,469"/>
+<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="348,493,483,533"/>
+<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="316,5,515,45"/>
+<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="348,69,483,109"/>
+<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="319,134,511,189"/>
+<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="337,213,494,267"/>
+<area shape="rect" id="node9" title=" " alt="" coords="70,437,155,462"/>
+<area shape="rect" id="node10" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible.html" title=" " alt="" coords="339,637,492,691"/>
+<area shape="rect" id="node12" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html" title=" " alt="" coords="339,715,492,770"/>
+<area shape="rect" id="node14" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible.html" title=" " alt="" coords="339,794,492,849"/>
+<area shape="rect" id="node15" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html" title=" " alt="" coords="339,558,492,613"/>
+<area shape="rect" id="node11" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Vec_3_01T_00_01A_01_4_01_4.html" title=" " alt="" coords="627,625,805,695"/>
+<area shape="rect" id="node13" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01Vec_3_01T_00_01A_01_4_01_4.html" title=" " alt="" coords="611,719,821,774"/>
+<area shape="rect" id="node16" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="5,174,220,229"/>
 </map>
