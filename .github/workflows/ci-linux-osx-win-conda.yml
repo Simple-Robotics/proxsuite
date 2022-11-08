@@ -6,13 +6,14 @@ on:
 
 jobs:
   build-with-conda:
-    name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}]'
+    name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
         name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
+        cxx_std: [17]
 
         include:
           - name: ubuntu-latest
@@ -24,6 +25,10 @@ jobs:
             compiler: clang-cl
           - name: windows-latest
             os: windows-latest
+          - name: macos-latest
+            os: macos-latest
+            build_type: Release
+            cxx_std: 14
 
     steps:
     - uses: actions/checkout@v2
@@ -84,7 +89,7 @@ jobs:
         git submodule update --init
         mkdir build
         cd build
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=ON
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=ON
 
     - name: Configure [Conda/Windows-2019]
       if: contains(matrix.os, 'windows-2019')

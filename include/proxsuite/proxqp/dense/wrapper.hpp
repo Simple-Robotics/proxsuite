@@ -327,11 +327,11 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update([[maybe_unused]] const nullopt_t H,
+  void update(PROXSUITE_MAYBE_UNUSED const nullopt_t H,
               optional<Vec<T>> g,
-              [[maybe_unused]] const nullopt_t A,
+              PROXSUITE_MAYBE_UNUSED const nullopt_t A,
               optional<Vec<T>> b,
-              [[maybe_unused]] const nullopt_t C,
+              PROXSUITE_MAYBE_UNUSED const nullopt_t C,
               optional<Vec<T>> l,
               optional<Vec<T>> u,
               bool update_preconditioner = true,

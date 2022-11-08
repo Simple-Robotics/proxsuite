@@ -74,7 +74,7 @@ endif(INITIALIZE_EIGEN_WITH_NAN)
 
 # set CXX standard
 if(DEFINED CMAKE_CXX_STANDARD)
-  check_minimal_cxx_standard(17 ENFORCE)
+  check_minimal_cxx_standard(14 ENFORCE)
 else()
   set(CMAKE_CXX_STANDARD 17)
 endif()
