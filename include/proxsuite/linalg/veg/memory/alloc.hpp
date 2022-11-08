@@ -1,6 +1,7 @@
 #ifndef VEG_ALLOC_HPP_TAWYRUICS
 #define VEG_ALLOC_HPP_TAWYRUICS
 
+#include "proxsuite/fwd.hpp"
 #include "proxsuite/linalg/veg/ref.hpp"
 #include "proxsuite/linalg/veg/type_traits/constructible.hpp"
 #include "proxsuite/linalg/veg/type_traits/assignable.hpp"
@@ -168,15 +169,15 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #if defined(_WIN32)
   return _aligned_malloc((size + mask) & ~mask, align);
 #elif defined(__APPLE__)
-#if defined(PROXSUITE_WITH_CPP_17)
+#ifdef PROXSUITE_WITH_CPP_17
   return alignment::aligned_alloc(align, (size + mask) & ~mask);
-#elif defined(PROXSUITE_WITH_CPP_14)
+#else
   return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);
 #endif
 #else
 #ifdef PROXSUITE_WITH_CPP_17
   return std::aligned_alloc(align, (size + mask) & ~mask);
-#elif defined(PROXSUITE_WITH_CPP_14)
+#else
   return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);
 #endif
 #endif
