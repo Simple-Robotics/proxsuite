@@ -50,7 +50,9 @@ apply_default_apple_configuration()
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
 option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
-option(INITIALIZE_EIGEN_WITH_NAN "Initializa Eigen objects with NAN values" OFF)
+option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
+option(CHECK_RUNTIME_MALLOC
+       "Check if some memory allocations are performed at runtime" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 
 option(BUILD_WITH_VECTORIZATION_SUPPORT
@@ -71,6 +73,11 @@ message(STATUS "CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 if(INITIALIZE_EIGEN_WITH_NAN)
   add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
 endif(INITIALIZE_EIGEN_WITH_NAN)
+if(CHECK_RUNTIME_MALLOC)
+  message(STATUS "Check if some memory allocations are performed at runtime.")
+  add_definitions(-DPROXSUITE_EIGEN_CHECK_MALLOC)
+  add_definitions(-DEIGEN_RUNTIME_NO_MALLOC)
+endif(CHECK_RUNTIME_MALLOC)
 
 # set CXX standard
 if(DEFINED CMAKE_CXX_STANDARD)
@@ -141,10 +148,10 @@ install(
 
 # Activate only for advanced users to profile and benchmark the code
 if(ADVANCED_USERS)
-  include(cmake/compiler_warnings.cmake)
-  include(cmake/extra_local_settings.cmake)
-  include(cmake/static_analyzers.cmake)
-  include(cmake/sanitizers.cmake)
+  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/compiler_warnings.cmake)
+  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/extra_local_settings.cmake)
+  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/static_analyzers.cmake)
+  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/sanitizers.cmake)
 
   target_compile_definitions(proxsuite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
   target_compile_definitions(proxsuite
