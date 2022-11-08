@@ -793,6 +793,12 @@ noalias_mul_add_impl(Dst dst, Lhs lhs, Rhs rhs, T factor)
   }
 
 #if !EIGEN_VERSION_AT_LEAST(3, 3, 8)
+#define LAZY_PRODUCT(a, b) a.lazyProduct(b)
+#else
+#define LAZY_PRODUCT(a, b) a.operator*(b)
+#endif
+
+#if !EIGEN_VERSION_AT_LEAST(3, 3, 8)
   if ((dst.rows() < 20) && (dst.cols() < 20) && (rhs.rows() < 20)) {
     // gemm
     // workaround for eigen 3.3.7 bug:
@@ -804,12 +810,14 @@ noalias_mul_add_impl(Dst dst, Lhs lhs, Rhs rhs, T factor)
 
     auto dst_ =
       MapMut(dst.data(), dst.rows(), dst.cols(), { dst.outerStride() });
-    dst_.noalias().operator+=(lhs.operator*(rhs).operator*(factor));
+    dst_.noalias().operator+=(factor * LAZY_PRODUCT(lhs, rhs));
   } else
 #endif
   {
-    dst.noalias().operator+=(lhs.operator*(rhs).operator*(factor));
+    dst.noalias().operator+=(factor * LAZY_PRODUCT(lhs, rhs));
   }
+
+#undef LAZY_PRODUCT
 }
 } // namespace _detail
 namespace util {

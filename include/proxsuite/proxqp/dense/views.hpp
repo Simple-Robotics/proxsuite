@@ -1117,6 +1117,12 @@ noalias_mul_add(MatrixViewMut<T, colmajor> dst,
     return;
   }
 
+#if !EIGEN_VERSION_AT_LEAST(3, 3, 8)
+#define LAZY_PRODUCT(a, b) a.lazyProduct(b)
+#else
+#define LAZY_PRODUCT(a, b) a.operator*(b)
+#endif
+
   if (dst.cols == 1 && dst.rows == 1) {
     // dot
     auto rhs_col = rhs.col(0);
@@ -1133,7 +1139,7 @@ noalias_mul_add(MatrixViewMut<T, colmajor> dst,
     auto rhs_col = rhs.col(0);
     auto dst_col = dst.col(0);
     dst_col.to_eigen().noalias().operator+=(
-      factor * (lhs.to_eigen().operator*(rhs_col.to_eigen())));
+      factor * LAZY_PRODUCT(lhs.to_eigen(), rhs_col.to_eigen()));
   }
 
 #if !EIGEN_VERSION_AT_LEAST(3, 3, 8)
@@ -1151,19 +1157,20 @@ noalias_mul_add(MatrixViewMut<T, colmajor> dst,
       .noalias()
       .
       operator+=(
-        Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride))
-          .
-          operator*(Map(rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))
-                      .
-                      operator*(factor)));
+        factor *
+        LAZY_PRODUCT(
+          Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride)),
+          Map(rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))));
   }
 #endif
 
   else {
     // gemm
     dst.to_eigen().noalias().operator+=(
-      lhs.to_eigen().operator*(rhs.to_eigen().operator*(factor)));
+      factor * LAZY_PRODUCT(lhs.to_eigen(), rhs.to_eigen()));
   }
+
+#undef LAZY_PRODUCT
 }
 
 template<typename T>

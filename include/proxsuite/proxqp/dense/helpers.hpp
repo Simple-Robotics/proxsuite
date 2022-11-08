@@ -87,7 +87,7 @@ setup_factorization(Workspace<T>& qpwork,
     .segment(qpmodel.dim, qpmodel.n_eq)
     .setConstant(-qpresults.info.mu_eq);
 
-  qpwork.ldl.factorize(qpwork.kkt, stack);
+  qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
 }
 /*!
  * Performs the equilibration of the QP problem for reducing its
