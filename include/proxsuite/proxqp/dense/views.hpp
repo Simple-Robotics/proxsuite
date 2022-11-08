@@ -1150,19 +1150,18 @@ noalias_mul_add(MatrixViewMut<T, colmajor> dst,
     MapMut(dst.data, dst.rows, dst.cols, Stride(dst.outer_stride))
       .noalias()
       .
-      operator+=(
-        Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride))
-          .
-          operator*(Map(rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))
-                      .
-                      operator*(factor)));
+      operator+=(factor *
+                 Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride))
+                   .
+                   operator*(Map(
+                     rhs.data, rhs.rows, rhs.cols, Stride(rhs.outer_stride))));
   }
 #endif
 
   else {
     // gemm
     dst.to_eigen().noalias().operator+=(
-      lhs.to_eigen().operator*(rhs.to_eigen().operator*(factor)));
+      factor * lhs.to_eigen().operator*(rhs.to_eigen()));
   }
 }
 
