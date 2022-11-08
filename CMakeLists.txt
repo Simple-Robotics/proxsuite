@@ -146,25 +146,6 @@ install(
   ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
-# Activate only for advanced users to profile and benchmark the code
-if(ADVANCED_USERS)
-  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/compiler_warnings.cmake)
-  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/extra_local_settings.cmake)
-  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/static_analyzers.cmake)
-  include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/sanitizers.cmake)
-
-  target_compile_definitions(proxsuite INTERFACE EIGEN_RUNTIME_NO_MALLOC)
-  target_compile_definitions(proxsuite
-                             INTERFACE EIGEN_INITIALIZE_MATRICES_BY_NAN)
-  add_library(project_warnings INTERFACE)
-  add_library(project_options INTERFACE)
-
-  target_link_libraries(proxsuite INTERFACE project_options project_warnings)
-
-  set_project_warnings(project_warnings)
-  enable_sanitizers(project_options)
-endif()
-
 add_subdirectory(bindings)
 if(BUILD_TESTING)
   add_subdirectory(test)
