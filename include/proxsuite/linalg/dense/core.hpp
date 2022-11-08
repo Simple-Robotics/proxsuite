@@ -804,11 +804,11 @@ noalias_mul_add_impl(Dst dst, Lhs lhs, Rhs rhs, T factor)
 
     auto dst_ =
       MapMut(dst.data(), dst.rows(), dst.cols(), { dst.outerStride() });
-    dst_.noalias().operator+=(lhs.operator*(rhs).operator*(factor));
+    dst_.noalias().operator+=(factor * lhs.operator*(rhs));
   } else
 #endif
   {
-    dst.noalias().operator+=(lhs.operator*(rhs).operator*(factor));
+    dst.noalias().operator+=(factor * lhs.operator*(rhs));
   }
 }
 } // namespace _detail
