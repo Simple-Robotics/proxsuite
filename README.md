@@ -15,7 +15,9 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
 
-**ProxSuite** is integrated into the [cvxpy](https://www.cvxpy.org/) modeling language for convex optimization problems.
+**ProxSuite** is integrated into:
+- [CVXPY](https://www.cvxpy.org/) modeling language for convex optimization problems
+- [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming).
 
 ## Getting started
 
@@ -66,7 +68,7 @@ g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/bench
 **Proxsuite** is flexible:
 
    - header only,
-   - C++ 17/20 compliant,
+   - C++ 14/17/20 compliant,
    - Python and Julia bindings for easy code prototyping without sacrificing performances.
 
 **Proxsuite** is extensible.
