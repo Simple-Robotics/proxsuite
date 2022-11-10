@@ -19,14 +19,16 @@ enum
 };
 template<typename T>
 using SparseMat = Eigen::SparseMatrix<T, 1>;
-template<typename T>
-using VecRef = Eigen::Ref<Eigen::Matrix<T, DYN, 1> const>;
-template<typename T>
-using MatRef = Eigen::Ref<Eigen::Matrix<T, DYN, DYN> const>;
-template<typename T>
-using Mat = Eigen::Matrix<T, DYN, DYN, layout>;
+
 template<typename T>
 using Vec = Eigen::Matrix<T, DYN, 1>;
+template<typename T>
+using VecRef = Eigen::Ref<Vec<T> const>;
+
+template<typename T, int l = layout>
+using Mat = Eigen::Matrix<T, DYN, DYN, l>;
+template<typename T, int l = layout>
+using MatRef = Eigen::Ref<Mat<T, l> const>;
 
 using proxsuite::linalg::veg::isize;
 
@@ -35,10 +37,10 @@ using VecMap = Eigen::Map<Vec<T> const>;
 template<typename T>
 using VecMapMut = Eigen::Map<Vec<T>>;
 
-template<typename T>
-using MatMap = Eigen::Map<Mat<T> const>;
-template<typename T>
-using MatMapMut = Eigen::Map<Mat<T>>;
+template<typename T, int l = layout>
+using MatMap = Eigen::Map<Mat<T, l> const>;
+template<typename T, int l = layout>
+using MatMapMut = Eigen::Map<Mat<T, l>>;
 
 using VecMapISize = Eigen::Map<Eigen::Matrix<isize, DYN, 1> const>;
 using VecISize = Eigen::Matrix<isize, DYN, 1>;
