@@ -294,11 +294,11 @@ struct QP
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(
-      optional<Mat<T>>(model.H),
+      optional<MatRef<T>>(dense::MatRef<T>(model.H)),
       optional<VecRef<T>>(dense::VecRef<T>(model.g)),
-      optional<Mat<T>>(model.A),
+      optional<MatRef<T>>(dense::MatRef<T>(model.A)),
       optional<VecRef<T>>(dense::VecRef<T>(model.b)),
-      optional<Mat<T>>(model.C),
+      optional<MatRef<T>>(dense::MatRef<T>(model.C)),
       optional<VecRef<T>>(dense::VecRef<T>(model.l)),
       optional<VecRef<T>>(dense::VecRef<T>(model.u)),
       settings,
@@ -328,12 +328,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void update(PROXSUITE_MAYBE_UNUSED const nullopt_t H,
-              optional<Vec<T>> g,
+              optional<VecRef<T>> g,
               PROXSUITE_MAYBE_UNUSED const nullopt_t A,
-              optional<Vec<T>> b,
+              optional<VecRef<T>> b,
               PROXSUITE_MAYBE_UNUSED const nullopt_t C,
-              optional<Vec<T>> l,
-              optional<Vec<T>> u,
+              optional<VecRef<T>> l,
+              optional<VecRef<T>> u,
               bool update_preconditioner = true,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
@@ -400,11 +400,11 @@ struct QP
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(
-      optional<Mat<T>>(model.H),
+      optional<MatRef<T>>(dense::MatRef<T>(model.H)),
       optional<VecRef<T>>(dense::VecRef<T>(model.g)),
-      optional<Mat<T>>(model.A),
+      optional<MatRef<T>>(dense::MatRef<T>(model.A)),
       optional<VecRef<T>>(dense::VecRef<T>(model.b)),
-      optional<Mat<T>>(model.C),
+      optional<MatRef<T>>(dense::MatRef<T>(model.C)),
       optional<VecRef<T>>(dense::VecRef<T>(model.l)),
       optional<VecRef<T>>(dense::VecRef<T>(model.u)),
       settings,

@@ -322,16 +322,16 @@ update(optional<Mat> H_,
  * preconditioning algorithm, or keeping previous preconditioning variables, or
  * using the identity preconditioner (i.e., no preconditioner).
  */
-template<typename Mat, typename T>
+template<typename Mat, typename Vec, typename T>
 void
 setup( //
   optional<Mat> H,
-  optional<VecRef<T>> g,
+  optional<Vec> g,
   optional<Mat> A,
-  optional<VecRef<T>> b,
+  optional<Vec> b,
   optional<Mat> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
+  optional<Vec> l,
+  optional<Vec> u,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
