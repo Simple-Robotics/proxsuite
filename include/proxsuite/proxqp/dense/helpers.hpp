@@ -169,15 +169,15 @@ initial_guess(Workspace<T>& qpwork,
  * @param qpresults solver result.
  */
 
-template<typename Mat, typename Vec, typename T>
+template<typename T>
 void
-update(optional<Mat> H_,
-       optional<Vec> g_,
-       optional<Mat> A_,
-       optional<Vec> b_,
-       optional<Mat> C_,
-       optional<Vec> u_,
-       optional<Vec> l_,
+update(optional<MatRef<T>> H_,
+       optional<VecRef<T>> g_,
+       optional<MatRef<T>> A_,
+       optional<VecRef<T>> b_,
+       optional<MatRef<T>> C_,
+       optional<VecRef<T>> u_,
+       optional<VecRef<T>> l_,
        Model<T>& model,
        Workspace<T>& work)
 {
@@ -322,16 +322,16 @@ update(optional<Mat> H_,
  * preconditioning algorithm, or keeping previous preconditioning variables, or
  * using the identity preconditioner (i.e., no preconditioner).
  */
-template<typename Mat, typename Vec, typename T>
+template<typename T>
 void
 setup( //
-  optional<Mat> H,
-  optional<Vec> g,
-  optional<Mat> A,
-  optional<Vec> b,
-  optional<Mat> C,
-  optional<Vec> l,
-  optional<Vec> u,
+  optional<MatRef<T>> H,
+  optional<VecRef<T>> g,
+  optional<MatRef<T>> A,
+  optional<VecRef<T>> b,
+  optional<MatRef<T>> C,
+  optional<VecRef<T>> l,
+  optional<VecRef<T>> u,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
