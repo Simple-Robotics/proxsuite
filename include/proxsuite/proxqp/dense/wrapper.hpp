@@ -261,12 +261,12 @@ struct QP
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
   void update(const optional<MatRef<T>> H,
-              optional<Vec<T>> g,
+              optional<VecRef<T>> g,
               const optional<MatRef<T>> A,
-              optional<Vec<T>> b,
+              optional<VecRef<T>> b,
               const optional<MatRef<T>> C,
-              optional<Vec<T>> l,
-              optional<Vec<T>> u,
+              optional<VecRef<T>> l,
+              optional<VecRef<T>> u,
               bool update_preconditioner = true,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,

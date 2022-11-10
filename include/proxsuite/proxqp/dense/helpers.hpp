@@ -169,15 +169,15 @@ initial_guess(Workspace<T>& qpwork,
  * @param qpresults solver result.
  */
 
-template<typename Mat, typename T>
+template<typename Mat, typename Vec, typename T>
 void
 update(optional<Mat> H_,
-       optional<Vec<T>> g_,
+       optional<Vec> g_,
        optional<Mat> A_,
-       optional<Vec<T>> b_,
+       optional<Vec> b_,
        optional<Mat> C_,
-       optional<Vec<T>> u_,
-       optional<Vec<T>> l_,
+       optional<Vec> u_,
+       optional<Vec> l_,
        Model<T>& model,
        Workspace<T>& work)
 {
