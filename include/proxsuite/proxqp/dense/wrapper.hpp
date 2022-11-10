@@ -289,7 +289,7 @@ struct QP
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt);
     if (matrix_update) {
-      proxsuite::proxqp::dense::update(H, g, A, b, C, u, l, model, work);
+      proxsuite::proxqp::dense::update(H, g, A, b, C, l, u, model, work);
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
