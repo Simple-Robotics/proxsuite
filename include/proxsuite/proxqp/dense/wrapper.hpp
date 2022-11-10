@@ -285,10 +285,10 @@ struct QP
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
-    bool real_update =
+    const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt);
-    if (real_update) {
+    if (matrix_update) {
       proxsuite::proxqp::dense::update(H, g, A, b, C, u, l, model, work);
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
