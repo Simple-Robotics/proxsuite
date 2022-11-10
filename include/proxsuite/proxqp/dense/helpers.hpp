@@ -171,136 +171,98 @@ initial_guess(Workspace<T>& qpwork,
 
 template<typename T>
 void
-update(optional<MatRef<T>> H_,
-       optional<VecRef<T>> g_,
-       optional<MatRef<T>> A_,
-       optional<VecRef<T>> b_,
-       optional<MatRef<T>> C_,
-       optional<VecRef<T>> u_,
-       optional<VecRef<T>> l_,
+update(optional<MatRef<T>> H,
+       optional<VecRef<T>> g,
+       optional<MatRef<T>> A,
+       optional<VecRef<T>> b,
+       optional<MatRef<T>> C,
+       optional<VecRef<T>> u,
+       optional<VecRef<T>> l,
        Model<T>& model,
        Workspace<T>& work)
 {
   // check the model is valid
-  if (g_ != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g_.value().rows(),
+  if (g != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
                                   model.dim,
                                   "the dimension wrt the primal variable x "
                                   "variable for updating g is not valid.");
   }
-  if (b_ != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b_.value().rows(),
+  if (b != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
                                   model.n_eq,
                                   "the dimension wrt equality constrained "
                                   "variables for updating b is not valid.");
   }
-  if (u_ != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u_.value().rows(),
+  if (u != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating u is not valid.");
   }
-  if (l_ != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l_.value().rows(),
+  if (l != nullopt) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating l is not valid.");
   }
-  if (H_ != nullopt) {
+  if (H != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H_.value().rows(),
+      H.value().rows(),
       model.dim,
       "the row dimension for updating H is not valid.");
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      H_.value().cols(),
+      H.value().cols(),
       model.dim,
       "the column dimension for updating H is not valid.");
   }
-  if (A_ != nullopt) {
+  if (A != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A_.value().rows(),
+      A.value().rows(),
       model.n_eq,
       "the row dimension for updating A is not valid.");
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      A_.value().cols(),
+      A.value().cols(),
       model.dim,
       "the column dimension for updating A is not valid.");
   }
-  if (C_ != nullopt) {
+  if (C != nullopt) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C_.value().rows(),
+      C.value().rows(),
       model.n_in,
       "the row dimension for updating C is not valid.");
     PROXSUITE_CHECK_ARGUMENT_SIZE(
-      C_.value().cols(),
+      C.value().cols(),
       model.dim,
       "the column dimension for updating C is not valid.");
   }
+
   // update the model
-  if (g_ != nullopt) {
-    model.g = g_.value().eval();
+  if (g != nullopt) {
+    model.g = g.value().eval();
   }
-  if (b_ != nullopt) {
-    model.b = b_.value().eval();
+  if (b != nullopt) {
+    model.b = b.value().eval();
   }
-  if (u_ != nullopt) {
-    model.u = u_.value().eval();
+  if (u != nullopt) {
+    model.u = u.value().eval();
   }
-  if (l_ != nullopt) {
-    model.l = l_.value().eval();
+  if (l != nullopt) {
+    model.l = l.value().eval();
   }
-  if (H_ != nullopt) {
+
+  if (H != nullopt || A != nullopt || C != nullopt) {
     work.refactorize = true;
-    if (A_ != nullopt) {
-      if (C_ != nullopt) {
-        model.H = Eigen::
-          Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-            H_.value());
-        model.A = Eigen::
-          Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-            A_.value());
-        model.C = Eigen::
-          Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-            C_.value());
-      } else {
-        model.H = Eigen::
-          Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-            H_.value());
-        model.A = Eigen::
-          Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-            A_.value());
-      }
-    } else if (C_ != nullopt) {
-      model.H = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          H_.value());
-      model.C = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          C_.value());
-    } else {
-      model.H = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          H_.value());
-    }
-  } else if (A_ != nullopt) {
-    work.refactorize = true;
-    if (C_ != nullopt) {
-      model.A = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          A_.value());
-      model.C = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          C_.value());
-    } else {
-      model.A = Eigen::
-        Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-          A_.value());
-    }
-  } else if (C_ != nullopt) {
-    work.refactorize = true;
-    model.C = Eigen::
-      Matrix<T, Eigen::Dynamic, Eigen::Dynamic, to_eigen_layout(rowmajor)>(
-        C_.value());
+  }
+
+  if (H != nullopt) {
+    model.H = H.value();
+  }
+  if (A != nullopt) {
+    model.A = A.value();
+  }
+  if (C != nullopt) {
+    model.C = C.value();
   }
 }
 /*!
