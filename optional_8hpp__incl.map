@@ -1,9 +1,11 @@
 <map id="include/proxsuite/helpers/optional.hpp" name="include/proxsuite/helpers/optional.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="158,5,345,45"/>
-<area shape="rect" id="node2" href="$tl-optional_8hpp.html" title=" " alt="" coords="177,93,325,133"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,181,92,207"/>
-<area shape="rect" id="node4" title=" " alt="" coords="116,181,203,207"/>
-<area shape="rect" id="node5" title=" " alt="" coords="227,181,276,207"/>
-<area shape="rect" id="node6" title=" " alt="" coords="300,181,392,207"/>
-<area shape="rect" id="node7" title=" " alt="" coords="416,181,476,207"/>
+<area shape="rect" id="node1" title=" " alt="" coords="115,5,302,45"/>
+<area shape="rect" id="node2" href="$fwd_8hpp.html" title=" " alt="" coords="55,101,194,126"/>
+<area shape="rect" id="node4" href="$tl-optional_8hpp.html" title=" " alt="" coords="247,93,395,133"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,181,97,207"/>
+<area shape="rect" id="node5" title=" " alt="" coords="121,181,208,207"/>
+<area shape="rect" id="node6" title=" " alt="" coords="232,181,319,207"/>
+<area shape="rect" id="node7" title=" " alt="" coords="343,181,392,207"/>
+<area shape="rect" id="node8" title=" " alt="" coords="416,181,508,207"/>
+<area shape="rect" id="node9" title=" " alt="" coords="532,181,592,207"/>
 </map>

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -107,10 +107,17 @@ $(document).ready(function(){initNavTree('fwd_8hpp.html',''); initResizable(); }
   <div class="headertitle"><div class="title">fwd.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><div class="dynheader">
+<div class="textblock"><code>#include &lt;Eigen/Core&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for fwd.hpp:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="fwd_8hpp__incl.svg" width="200" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="fwd_8hpp__dep__incl.svg" width="3831" height="1210"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="fwd_8hpp__dep__incl.svg" width="3707" height="1210"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div>
@@ -120,6 +127,12 @@ This graph shows which files directly or indirectly include this file:</div>
 Macros</h2></td></tr>
 <tr class="memitem:ad3a35cc8e3f08a0b6c0b3b3ce77c9884"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fwd_8hpp.html#ad3a35cc8e3f08a0b6c0b3b3ce77c9884">PROXSUITE_MAYBE_UNUSED</a>&#160;&#160;&#160;__attribute__((__unused__))</td></tr>
 <tr class="separator:ad3a35cc8e3f08a0b6c0b3b3ce77c9884"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6cd878bcc51cf2a6fe70d8160f0d4e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fwd_8hpp.html#ae6cd878bcc51cf2a6fe70d8160f0d4e6">PROXSUITE_EIGEN_MALLOC</a>(allowed)</td></tr>
+<tr class="separator:ae6cd878bcc51cf2a6fe70d8160f0d4e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70c7efc0355797a8d37bb28636a64e59"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fwd_8hpp.html#a70c7efc0355797a8d37bb28636a64e59">PROXSUITE_EIGEN_MALLOC_ALLOWED</a>()</td></tr>
+<tr class="separator:a70c7efc0355797a8d37bb28636a64e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0ede9886fc8bba8406c240cb6731c20"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fwd_8hpp.html#ac0ede9886fc8bba8406c240cb6731c20">PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED</a>()</td></tr>
+<tr class="separator:ac0ede9886fc8bba8406c240cb6731c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ad3a35cc8e3f08a0b6c0b3b3ce77c9884" name="ad3a35cc8e3f08a0b6c0b3b3ce77c9884"></a>
@@ -135,6 +148,64 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="fwd_8hpp_source.html#l00020">20</a> of file <a class="el" href="fwd_8hpp_source.html">fwd.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae6cd878bcc51cf2a6fe70d8160f0d4e6" name="ae6cd878bcc51cf2a6fe70d8160f0d4e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6cd878bcc51cf2a6fe70d8160f0d4e6">&#9670;&#160;</a></span>PROXSUITE_EIGEN_MALLOC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROXSUITE_EIGEN_MALLOC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">allowed</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="fwd_8hpp_source.html#l00047">47</a> of file <a class="el" href="fwd_8hpp_source.html">fwd.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a70c7efc0355797a8d37bb28636a64e59" name="a70c7efc0355797a8d37bb28636a64e59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70c7efc0355797a8d37bb28636a64e59">&#9670;&#160;</a></span>PROXSUITE_EIGEN_MALLOC_ALLOWED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROXSUITE_EIGEN_MALLOC_ALLOWED</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="fwd_8hpp_source.html#l00048">48</a> of file <a class="el" href="fwd_8hpp_source.html">fwd.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac0ede9886fc8bba8406c240cb6731c20" name="ac0ede9886fc8bba8406c240cb6731c20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0ede9886fc8bba8406c240cb6731c20">&#9670;&#160;</a></span>PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="fwd_8hpp_source.html#l00049">49</a> of file <a class="el" href="fwd_8hpp_source.html">fwd.hpp</a>.</p>
 
 </div>
 </div>

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -127,7 +127,36 @@ $(document).ready(function(){initNavTree('fwd_8hpp_source.html',''); initResizab
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="fwd_8hpp.html#ad3a35cc8e3f08a0b6c0b3b3ce77c9884">   20</a></span><span class="preprocessor">#define PROXSUITE_MAYBE_UNUSED __attribute__((__unused__))</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#endif </span><span class="comment">// #ifndef __proxsuite_fwd_hpp__</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">// Same logic as in Pinocchio to check eigen malloc</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#ifdef PROXSUITE_EIGEN_CHECK_MALLOC</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#ifndef EIGEN_RUNTIME_NO_MALLOC</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#define EIGEN_RUNTIME_NO_MALLOC_WAS_NOT_DEFINED</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#define EIGEN_RUNTIME_NO_MALLOC</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &lt;Eigen/Core&gt;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#ifdef PROXSUITE_EIGEN_CHECK_MALLOC</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#ifdef EIGEN_RUNTIME_NO_MALLOC_WAS_NOT_DEFINED</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#undef EIGEN_RUNTIME_NO_MALLOC</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#undef EIGEN_RUNTIME_NO_MALLOC_WAS_NOT_DEFINED</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment">// Check memory allocation for Eigen</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#ifdef PROXSUITE_EIGEN_CHECK_MALLOC</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC(allowed)                                        \</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">  ::Eigen::internal::set_is_malloc_allowed(allowed)</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC_ALLOWED() PROXSUITE_EIGEN_MALLOC(true)</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED() PROXSUITE_EIGEN_MALLOC(false)</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="fwd_8hpp.html#ae6cd878bcc51cf2a6fe70d8160f0d4e6">   47</a></span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC(allowed)</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="fwd_8hpp.html#a70c7efc0355797a8d37bb28636a64e59">   48</a></span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC_ALLOWED()</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="fwd_8hpp.html#ac0ede9886fc8bba8406c240cb6731c20">   49</a></span><span class="preprocessor">#define PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED()</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#endif </span><span class="comment">// #ifndef __proxsuite_fwd_hpp__</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.5-->

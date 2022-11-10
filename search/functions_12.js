@@ -17,7 +17,7 @@ var searchData=
   ['set_5fseed_14',['set_seed',['../namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#ae961fa33b220260fb576a2b57d22d024',1,'proxsuite::proxqp::utils::rand']]],
   ['set_5fzero_15',['set_zero',['../namespaceproxsuite_1_1proxqp_1_1detail.html#ababccf2f860c7a79bc9848494e17d151',1,'proxsuite::proxqp::detail::set_zero()'],['../namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a28717cff5d1a31fbe73d76844d051556',1,'proxsuite::linalg::dense::_detail::set_zero()']]],
   ['settings_16',['Settings',['../structproxsuite_1_1proxqp_1_1Settings.html#a03f93ffc1d74178deea7e444c817fac2',1,'proxsuite::proxqp::Settings']]],
-  ['setup_17',['setup',['../namespaceproxsuite_1_1proxqp_1_1dense.html#af431a932f3f86f6144341bdb20396150',1,'proxsuite::proxqp::dense']]],
+  ['setup_17',['setup',['../namespaceproxsuite_1_1proxqp_1_1dense.html#acf3e1faf929066ea740798d08af43d4b',1,'proxsuite::proxqp::dense']]],
   ['setup_5fequilibration_18',['setup_equilibration',['../namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4597b80a07e8460b5b743ae0c30736',1,'proxsuite::proxqp::dense']]],
   ['setup_5ffactorization_19',['setup_factorization',['../namespaceproxsuite_1_1proxqp_1_1dense.html#aa5ad2dcaf673f179e9d246e4cc5d6538',1,'proxsuite::proxqp::dense']]],
   ['setup_5fimpl_20',['setup_impl',['../structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a4530d8840c1df5198dcde751efc96aa4',1,'proxsuite::proxqp::sparse::Workspace']]],
