@@ -8,6 +8,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 #define PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 
+#include "proxsuite/fwd.hpp"
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
@@ -765,7 +766,8 @@ qp_solve( //
   RowMat test(2,2); // test it is full of nan for debug
   std::cout << "test " << test << std::endl;
   */
-  //::Eigen::internal::set_is_malloc_allowed(false);
+  PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
+
   if (qpsettings.compute_timings) {
     qpwork.timer.stop();
     qpwork.timer.start();
@@ -1291,6 +1293,7 @@ qp_solve( //
               << std::endl;
   }
   qpwork.dirty = true;
+  PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
 } // namespace dense
