@@ -260,11 +260,11 @@ struct QP
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
    */
-  void update(const optional<MatRef<T>> H,
+  void update(optional<MatRef<T>> H,
               optional<VecRef<T>> g,
-              const optional<MatRef<T>> A,
+              optional<MatRef<T>> A,
               optional<VecRef<T>> b,
-              const optional<MatRef<T>> C,
+              optional<MatRef<T>> C,
               optional<VecRef<T>> l,
               optional<VecRef<T>> u,
               bool update_preconditioner = true,
@@ -293,130 +293,29 @@ struct QP
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-      optional<MatRef<T>>(dense::MatRef<T>(model.H)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.g)),
-      optional<MatRef<T>>(dense::MatRef<T>(model.A)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.b)),
-      optional<MatRef<T>>(dense::MatRef<T>(model.C)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.l)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.u)),
-      settings,
-      model,
-      work,
-      results,
-      ruiz,
-      preconditioner_status);
+
+    typedef optional<MatRef<T>> optional_MatRef;
+    typedef optional<VecRef<T>> optional_VecRef;
+    proxsuite::proxqp::dense::setup(/* avoid double assignation */
+                                    optional_MatRef(nullopt),
+                                    optional_VecRef(nullopt),
+                                    optional_MatRef(nullopt),
+                                    optional_VecRef(nullopt),
+                                    optional_MatRef(nullopt),
+                                    optional_VecRef(nullopt),
+                                    optional_VecRef(nullopt),
+                                    settings,
+                                    model,
+                                    work,
+                                    results,
+                                    ruiz,
+                                    preconditioner_status);
+
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
   };
-  /*!
-   * Updates the QP model vectors only (to avoid ambiguity through overloading)
-   * and equilibrates it if specified by the user.
-   * @param H quadratic cost input defingit reset --soft HEAD~ing the QP model.
-   * @param g linear cost input defining the QP model.
-   * @param A equality constraint matrix input defining the QP model.
-   * @param b equality constraint vector input defining the QP model.
-   * @param C inequality constraint matrix input defining the QP model.
-   * @param l lower inequality constraint vector input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
-   * @param update_preconditioner bool parameter for executing or not the
-   * preconditioner.
-   * @param rho proximal step size wrt primal variable.
-   * @param mu_eq proximal step size wrt equality constrained multiplier.
-   * @param mu_in proximal step size wrt inequality constrained multiplier.
-   */
-  void update(PROXSUITE_MAYBE_UNUSED const nullopt_t H,
-              optional<VecRef<T>> g,
-              PROXSUITE_MAYBE_UNUSED const nullopt_t A,
-              optional<VecRef<T>> b,
-              PROXSUITE_MAYBE_UNUSED const nullopt_t C,
-              optional<VecRef<T>> l,
-              optional<VecRef<T>> u,
-              bool update_preconditioner = true,
-              optional<T> rho = nullopt,
-              optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
-  {
-    work.refactorize = false;
-    work.proximal_parameter_update = false;
-    // treat the case when H, A and C are nullopt, in order to avoid ambiguity
-    // through overloading
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (update_preconditioner) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
-    }
-    bool real_update =
-      !(g == nullopt && b == nullopt && u == nullopt && l == nullopt);
-    if (real_update) {
-      // check the model is valid
-      if (g != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
-                                      model.dim,
-                                      "the dimension wrt primal variable x "
-                                      "variable for updating g is not valid.");
-      }
-      if (b != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
-                                      model.n_eq,
-                                      "the dimension wrt equality constrained "
-                                      "variables for updating b is not valid.");
-      }
-      if (u != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          u.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for updating u "
-          "is not valid.");
-      }
-      if (l != nullopt) {
-        PROXSUITE_CHECK_ARGUMENT_SIZE(
-          l.value().rows(),
-          model.n_in,
-          "the dimension wrt inequality constrained variables for updating l "
-          "is not valid.");
-      }
-      // update the model
-      if (g != nullopt) {
-        model.g = g.value().eval();
-      }
-      if (b != nullopt) {
-        model.b = b.value().eval();
-      }
-      if (u != nullopt) {
-        model.u = u.value().eval();
-      }
-      if (l != nullopt) {
-        model.l = l.value().eval();
-      }
-    }
-    proxsuite::proxqp::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::setup(
-      optional<MatRef<T>>(dense::MatRef<T>(model.H)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.g)),
-      optional<MatRef<T>>(dense::MatRef<T>(model.A)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.b)),
-      optional<MatRef<T>>(dense::MatRef<T>(model.C)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.l)),
-      optional<VecRef<T>>(dense::VecRef<T>(model.u)),
-      settings,
-      model,
-      work,
-      results,
-      ruiz,
-      preconditioner_status);
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
-  };
+
   /*!
    * Solves the QP problem using PRXOQP algorithm.
    */
