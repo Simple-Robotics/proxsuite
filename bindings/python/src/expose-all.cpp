@@ -31,6 +31,13 @@ exposeSparseAlgorithms(pybind11::module_ m)
   sparse::python::solveSparseQp<T, I>(m);
 }
 
+template<typename T, typename I>
+void
+exposeSparseLinalg(pybind11::module_ m)
+{
+  proxsuite::linalg::sparse::python::exposeSparseLDLT<T, I>(m);
+}
+
 template<typename T>
 void
 exposeDenseAlgorithms(pybind11::module_ m)
@@ -52,6 +59,11 @@ PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
 
         proxsuite
     )pbdoc";
+
+  pybind11::module_ linalg_module = m.def_submodule("linalg","The linear system solvers of the proxSuite library");
+  pybind11::module_ sparse_linalg_module =
+    linalg_module.def_submodule("sparse", "Sparse linalg modules of proxQP");
+  exposeSparseLinalg<f64,int32_t>(sparse_linalg_module);
 
   pybind11::module_ proxqp_module =
     m.def_submodule("proxqp", "The proxQP solvers of the proxSuite library");
