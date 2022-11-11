@@ -725,7 +725,7 @@ qp_solve(Results<T>& results,
     }
   }
   T rhs_duality_gap(0);
-  
+
   for (isize iter = 0; iter < settings.max_iter; ++iter) {
 
     results.info.iter_ext += 1;

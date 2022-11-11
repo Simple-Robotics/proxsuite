@@ -641,8 +641,8 @@ unscaled_primal_dual_residual(
 {
   isize n = x_e.rows();
 
-  const isize max_dim = std::max(data.dim,std::max(data.n_eq,data.n_in));
-  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products 
+  const isize max_dim = std::max(data.dim, std::max(data.n_eq, data.n_in));
+  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products
 
   LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
   dual_residual_scaled = qp_scaled.g.to_eigen();

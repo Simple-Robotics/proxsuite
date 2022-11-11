@@ -360,8 +360,9 @@ global_dual_residual(const Results<T>& qpresults,
   // dual_feasibility_rhs_3 = norm(unscaled(CTz))
   //
   // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
-  const isize max_dim = std::max(qpmodel.dim,std::max(qpmodel.n_eq,qpmodel.n_in));
-  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products 
+  const isize max_dim =
+    std::max(qpmodel.dim, std::max(qpmodel.n_eq, qpmodel.n_in));
+  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
   qpwork.CTz.noalias() =
