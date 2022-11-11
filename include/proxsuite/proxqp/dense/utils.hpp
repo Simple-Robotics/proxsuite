@@ -28,7 +28,7 @@ namespace dense {
 template<typename T>
 void
 print_setup_header(const Settings<T>& settings,
-                   Results<T>& results,
+                   const Results<T>& results,
                    const Model<T>& model)
 {
 
@@ -147,9 +147,9 @@ negative_part(T const& expr)
 template<typename T>
 void
 global_primal_residual(const Model<T>& qpmodel,
-                       Results<T>& qpresults,
+                       const Results<T>& qpresults,
                        Workspace<T>& qpwork,
-                       preconditioner::RuizEquilibration<T>& ruiz,
+                       const preconditioner::RuizEquilibration<T>& ruiz,
                        T& primal_feasibility_lhs,
                        T& primal_feasibility_eq_rhs_0,
                        T& primal_feasibility_in_rhs_0,
@@ -210,13 +210,14 @@ global_primal_residual(const Model<T>& qpmodel,
  */
 template<typename T>
 bool
-global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
-                                     VectorViewMut<T> CTdz,
-                                     VectorViewMut<T> dy,
-                                     VectorViewMut<T> dz,
-                                     Workspace<T>& qpwork,
-                                     const Settings<T>& qpsettings,
-                                     preconditioner::RuizEquilibration<T>& ruiz)
+global_primal_residual_infeasibility(
+  VectorViewMut<T> ATdy,
+  VectorViewMut<T> CTdz,
+  VectorViewMut<T> dy,
+  VectorViewMut<T> dz,
+  Workspace<T>& qpwork,
+  const Settings<T>& qpsettings,
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is primal infeasible if the following four conditions hold:
@@ -267,14 +268,15 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
  */
 template<typename T>
 bool
-global_dual_residual_infeasibility(VectorViewMut<T> Adx,
-                                   VectorViewMut<T> Cdx,
-                                   VectorViewMut<T> Hdx,
-                                   VectorViewMut<T> dx,
-                                   Workspace<T>& qpwork,
-                                   const Settings<T>& qpsettings,
-                                   const Model<T>& qpmodel,
-                                   preconditioner::RuizEquilibration<T>& ruiz)
+global_dual_residual_infeasibility(
+  VectorViewMut<T> Adx,
+  VectorViewMut<T> Cdx,
+  VectorViewMut<T> Hdx,
+  VectorViewMut<T> dx,
+  Workspace<T>& qpwork,
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is dual infeasible the two following conditions hold:
@@ -341,9 +343,9 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
  */
 template<typename T>
 void
-global_dual_residual(Results<T>& qpresults,
+global_dual_residual(const Results<T>& qpresults,
                      Workspace<T>& qpwork,
-                     preconditioner::RuizEquilibration<T>& ruiz,
+                     const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
                      T& dual_feasibility_rhs_0,
                      T& dual_feasibility_rhs_1,

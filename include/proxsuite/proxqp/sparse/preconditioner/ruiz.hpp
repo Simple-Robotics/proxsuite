@@ -324,7 +324,7 @@ ruiz_scale_qp_in_place( //
 template<typename T, typename I>
 struct RuizEquilibration
 {
-  Eigen::Matrix<T, -1, 1> delta;
+  Vec<T> delta;
   isize n;
   T c;
   T epsilon;
@@ -339,7 +339,7 @@ struct RuizEquilibration
                     i64 max_iter_ = 10,
                     Symmetry sym_ = Symmetry::UPPER,
                     std::ostream* logger = nullptr)
-    : delta(Eigen::Matrix<T, -1, 1>::Ones(n_ + n_eq_in))
+    : delta(Vec<T>::Ones(n_ + n_eq_in))
     , n(n_)
     , c(1)
     , epsilon(epsilon_)
@@ -476,7 +476,7 @@ struct RuizEquilibration
   }
 
   // modifies variables in place
-  void scale_primal_in_place(VectorViewMut<T> primal)
+  void scale_primal_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() /= delta.array().head(n);
   }
@@ -486,75 +486,75 @@ struct RuizEquilibration
                               delta.tail(delta.size() - n).array() * c;
   }
 
-  void scale_dual_in_place_eq(VectorViewMut<T> dual)
+  void scale_dual_in_place_eq(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() =
       dual.as_const().to_eigen().array() /
       delta.middleRows(n, dual.to_eigen().size()).array() * c;
   }
-  void scale_dual_in_place_in(VectorViewMut<T> dual)
+  void scale_dual_in_place_in(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() /
                               delta.tail(dual.to_eigen().size()).array() * c;
   }
 
-  void unscale_primal_in_place(VectorViewMut<T> primal)
+  void unscale_primal_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() *= delta.array().head(n);
   }
-  void unscale_dual_in_place(VectorViewMut<T> dual)
+  void unscale_dual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() *
                               delta.tail(delta.size() - n).array() / c;
   }
 
-  void unscale_dual_in_place_eq(VectorViewMut<T> dual)
+  void unscale_dual_in_place_eq(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() =
       dual.as_const().to_eigen().array() *
       delta.middleRows(n, dual.to_eigen().size()).array() / c;
   }
 
-  void unscale_dual_in_place_in(VectorViewMut<T> dual)
+  void unscale_dual_in_place_in(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() *
                               delta.tail(dual.to_eigen().size()).array() / c;
   }
   // modifies residuals in place
-  void scale_primal_residual_in_place(VectorViewMut<T> primal)
+  void scale_primal_residual_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() *= delta.tail(delta.size() - n).array();
   }
 
-  void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq)
+  void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) const
   {
     primal_eq.to_eigen().array() *=
       delta.middleRows(n, primal_eq.to_eigen().size()).array();
   }
-  void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in)
+  void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in) const
   {
     primal_in.to_eigen().array() *=
       delta.tail(primal_in.to_eigen().size()).array();
   }
-  void scale_dual_residual_in_place(VectorViewMut<T> dual)
+  void scale_dual_residual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() *= delta.head(n).array() * c;
   }
-  void unscale_primal_residual_in_place(VectorViewMut<T> primal)
+  void unscale_primal_residual_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() /= delta.tail(delta.size() - n).array();
   }
-  void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq)
+  void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) const
   {
     primal_eq.to_eigen().array() /=
       delta.middleRows(n, primal_eq.to_eigen().size()).array();
   }
-  void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in)
+  void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in) const
   {
     primal_in.to_eigen().array() /=
       delta.tail(primal_in.to_eigen().size()).array();
   }
-  void unscale_dual_residual_in_place(VectorViewMut<T> dual)
+  void unscale_dual_residual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() /= delta.head(n).array() * c;
   }
