@@ -371,7 +371,7 @@ global_dual_residual(Results<T>& qpresults,
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::abs(duality_gap);
   T xHx = (qpwork.CTz).dot(qpresults.x) ;
-  duality_gap += xHx;// contains now 0.5*xHx+g.Tx
+  duality_gap += xHx;// contains now xHx+g.Tx
   rhs_duality_gap = std::max(rhs_duality_gap,std::abs(xHx));
 
   ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
