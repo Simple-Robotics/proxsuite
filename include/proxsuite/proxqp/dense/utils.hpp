@@ -343,7 +343,7 @@ global_dual_residual_infeasibility(
  */
 template<typename T>
 void
-global_dual_residual(const Results<T>& qpresults,
+global_dual_residual(Results<T>& qpresults,
                      Workspace<T>& qpwork,
                      const Model<T>& qpmodel,
                      const preconditioner::RuizEquilibration<T>& ruiz,
