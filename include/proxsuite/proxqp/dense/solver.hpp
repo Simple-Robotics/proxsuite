@@ -987,9 +987,6 @@ qp_solve( //
 
   T duality_gap(0);
   T rhs_duality_gap(0);
-  isize max_dim = std::max(qpmodel.dim, qpmodel.n_eq);
-  max_dim = std::max(max_dim, qpmodel.n_in);
-  T sqrt_max_dim(std::sqrt(max_dim));
 
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
@@ -1015,8 +1012,7 @@ qp_solve( //
                          dual_feasibility_rhs_1,
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
-                         duality_gap,
-                         sqrt_max_dim);
+                         duality_gap);
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
     qpresults.info.duality_gap = duality_gap;
@@ -1160,8 +1156,7 @@ qp_solve( //
                            dual_feasibility_rhs_1,
                            dual_feasibility_rhs_3,
                            rhs_duality_gap,
-                           duality_gap,
-                           sqrt_max_dim);
+                           duality_gap);
       qpresults.info.dua_res = dual_feasibility_lhs_new;
       qpresults.info.duality_gap = duality_gap;
 
@@ -1220,8 +1215,7 @@ qp_solve( //
                          dual_feasibility_rhs_1,
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
-                         duality_gap,
-                         sqrt_max_dim);
+                         duality_gap);
     qpresults.info.dua_res = dual_feasibility_lhs_new;
     qpresults.info.duality_gap = duality_gap;
 

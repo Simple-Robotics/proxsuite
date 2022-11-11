@@ -630,7 +630,6 @@ unscaled_primal_dual_residual(
   T& dual_feasibility_rhs_1,
   T& dual_feasibility_rhs_3,
   T& rhs_duality_gap,
-  T sqrt_max_dim,
   const P& precond,
   Model<T, I> const& data,
   const QpView<T, I> qp_scaled,
@@ -641,6 +640,9 @@ unscaled_primal_dual_residual(
   -> proxsuite::linalg::veg::Tuple<T, T>
 {
   isize n = x_e.rows();
+
+  const isize max_dim = std::max(data.dim,std::max(data.n_eq,data.n_in));
+  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products 
 
   LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
   dual_residual_scaled = qp_scaled.g.to_eigen();
