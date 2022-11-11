@@ -372,9 +372,9 @@ global_dual_residual(const Results<T>& qpresults,
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::abs(duality_gap);
-  T xHx = (qpwork.CTz).dot(qpresults.x) ;
-  duality_gap += xHx;// contains now xHx+g.Tx
-  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(xHx));
+  T xHx = (qpwork.CTz).dot(qpresults.x);
+  duality_gap += xHx; // contains now xHx+g.Tx
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
 
   ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
 
@@ -398,24 +398,21 @@ global_dual_residual(const Results<T>& qpresults,
   ruiz.scale_dual_residual_in_place(
     VectorViewMut<T>{ from_eigen, qpwork.dual_residual_scaled });
 
-  ruiz.unscale_dual_in_place_eq(
-    VectorViewMut<T>{ from_eigen, qpresults.y });
+  ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
   T by = (qpmodel.b).dot(qpresults.y);
-  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(by));
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
   duality_gap += by;
   ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-  ruiz.unscale_dual_in_place_in(
-    VectorViewMut<T>{ from_eigen, qpresults.z });
-  T zu= positive_part(qpresults.z).dot(qpmodel.u);
-  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zu));
+  ruiz.unscale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+  T zu = positive_part(qpresults.z).dot(qpmodel.u);
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
   duality_gap += zu;
   T zl = negative_part(qpresults.z).dot(qpmodel.l);
-  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zl));
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
   duality_gap += zl;
-  ruiz.scale_dual_in_place_in(
-    VectorViewMut<T>{ from_eigen, qpresults.z });
+  ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
   duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
-  rhs_duality_gap +=1.;
+  rhs_duality_gap += 1.;
 }
 
 } // namespace dense

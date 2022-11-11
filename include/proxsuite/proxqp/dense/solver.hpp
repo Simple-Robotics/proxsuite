@@ -987,8 +987,8 @@ qp_solve( //
 
   T duality_gap(0);
   T rhs_duality_gap(0);
-  isize max_dim = std::max(qpmodel.dim,qpmodel.n_eq);
-  max_dim = std::max(max_dim,qpmodel.n_in);
+  isize max_dim = std::max(qpmodel.dim, qpmodel.n_eq);
+  max_dim = std::max(max_dim, qpmodel.n_in);
   T sqrt_max_dim(std::sqrt(max_dim));
 
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
@@ -1016,8 +1016,7 @@ qp_solve( //
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
                          duality_gap,
-                         sqrt_max_dim
-                         );
+                         sqrt_max_dim);
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
     qpresults.info.duality_gap = duality_gap;
@@ -1092,7 +1091,8 @@ qp_solve( //
         qpresults.info.rho = rho_new;
       }
       if (is_dual_feasible) {
-        if (qpresults.info.duality_gap<=qpsettings.eps_abs* rhs_duality_gap ){
+        if (qpresults.info.duality_gap <=
+            qpsettings.eps_abs * rhs_duality_gap) {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
@@ -1174,7 +1174,8 @@ qp_solve( //
              std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
       if (is_dual_feasible) {
-        if (qpresults.info.duality_gap<=qpsettings.eps_abs * rhs_duality_gap ){
+        if (qpresults.info.duality_gap <=
+            qpsettings.eps_abs * rhs_duality_gap) {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
