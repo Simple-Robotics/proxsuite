@@ -49,7 +49,7 @@ struct Info
   T objValue;
   T pri_res;
   T dua_res;
-
+  T duality_gap;
   //// sparse backend used by solver, either CholeskySparse or MatrixFree
   SparseBackend sparse_backend;
 };
@@ -106,6 +106,7 @@ struct Results
     info.objValue = 0.;
     info.pri_res = 0.;
     info.dua_res = 0.;
+    info.duality_gap = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
   }
@@ -132,6 +133,7 @@ struct Results
     info.rho_updates = 0;
     info.pri_res = 0.;
     info.dua_res = 0.;
+    info.duality_gap = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
   }

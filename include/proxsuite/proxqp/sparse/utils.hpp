@@ -619,6 +619,7 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
 template<typename T, typename I, typename P>
 auto
 unscaled_primal_dual_residual(
+  Results<T>& results,
   VecMapMut<T> primal_residual_eq_scaled,
   VecMapMut<T> primal_residual_in_scaled_lo,
   VecMapMut<T> primal_residual_in_scaled_up,
@@ -628,12 +629,14 @@ unscaled_primal_dual_residual(
   T& dual_feasibility_rhs_0,
   T& dual_feasibility_rhs_1,
   T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T sqrt_max_dim,
   P& precond,
   Model<T, I> const& data,
   QpView<T, I> qp_scaled,
-  VecMap<T> x_e,
-  VecMap<T> y_e,
-  VecMap<T> z_e,
+  VecMapMut<T> x_e,
+  VecMapMut<T> y_e,
+  VecMapMut<T> z_e,
   proxsuite::linalg::veg::dynstack::DynStackMut stack)
   -> proxsuite::linalg::veg::Tuple<T, T>
 {
@@ -646,13 +649,41 @@ unscaled_primal_dual_residual(
     noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
     dual_residual_scaled += tmp;
 
-    precond.unscale_dual_residual_in_place({ proxqp::from_eigen, tmp });
+    precond.unscale_dual_residual_in_place({ proxqp::from_eigen, tmp });// contains unscaled Hx
     dual_feasibility_rhs_0 = infty_norm(tmp);
+    precond.unscale_primal_in_place({ proxqp::from_eigen, x_e});
+    results.info.duality_gap = x_e.dot(data.g); // contains gTx
+    rhs_duality_gap = std::abs(results.info.duality_gap);
+    T xHx = (tmp).dot(x_e) ;
+    results.info.duality_gap += xHx;
+    rhs_duality_gap = std::max(rhs_duality_gap,std::abs(xHx));
+    tmp += data.g;// contains now Hx+g
+    precond.scale_primal_in_place({ proxqp::from_eigen, x_e});
+
+    precond.unscale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, y_e });
+    T by = (data.b).dot(y_e);
+    results.info.duality_gap += by;
+    rhs_duality_gap = std::max(rhs_duality_gap,std::abs(by));
+    precond.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, y_e });
+    precond.unscale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, z_e });
+    T zl = (data.l).dot(detail::negative_part(z_e));
+    results.info.duality_gap += zl;
+    rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zl));
+    T zu = (data.u).dot(detail::positive_part(z_e));
+    results.info.duality_gap += zu;
+    rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zu));
+    precond.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, z_e });
+    results.info.duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
+    rhs_duality_gap +=1.;
   }
 
   {
     auto ATy = tmp;
-    ATy.setZero();
+    ATy.setZero(); 
     primal_residual_eq_scaled.setZero();
 
     detail::noalias_gevmmv_add(
@@ -662,6 +693,7 @@ unscaled_primal_dual_residual(
 
     precond.unscale_dual_residual_in_place({ proxqp::from_eigen, ATy });
     dual_feasibility_rhs_1 = infty_norm(ATy);
+
   }
 
   {
