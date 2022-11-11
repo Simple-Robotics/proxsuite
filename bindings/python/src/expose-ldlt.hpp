@@ -463,7 +463,7 @@ exposeSparseLDLT(pybind11::module_ m)
     m, "SparseLDLT", pybind11::module_local())
     .def(::pybind11::init<proxsuite::linalg::veg::i64>(),
          pybind11::arg_v("n_tot", 0, "dimension of the matrix to factorize."),
-         "Constructor for defining sparse LDLT object.") // constructor)
+         "Constructor for defining sparse LDLT object.") // constructor
     .def("factorize",
          &SparseLDLT<T, I>::factorize,
          "Factorizes a sparse symmetric and invertible matrix.")
