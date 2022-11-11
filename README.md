@@ -80,12 +80,12 @@ If you want to use ProxSuite with CMake, the following tiny example should help 
 ```cmake
 cmake_minimum_required(VERSION 3.10)
 
-project(ExternalLib CXX)
+project(Example CXX)
 find_package(proxsuite REQUIRED)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17) # set(CMAKE_CXX_STANDARD 14) will work too
 
-add_executable(run-proxqp ${CMAKE_CURRENT_LIST_DIR}/../src/run-proxqp.cpp)
-target_link_libraries(run-proxqp PUBLIC proxsuite::proxsuit`)
+add_executable(example example.cpp)
+target_link_libraries(example PUBLIC proxsuite::proxsuite`)
 ```
 If you have compiled ProxSuite with the vectorization support, you might also use the CMake target `proxsuite::proxsuite-vectorized` to also link against SIMDE.
 Don't forget to use `-march=native` for getting the best performance.
