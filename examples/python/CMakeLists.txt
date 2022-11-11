@@ -1,5 +1,3 @@
-add_custom_target(example-py)
-
 file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_EXAMPLES *.py)
 
 foreach(EXAMPLE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
