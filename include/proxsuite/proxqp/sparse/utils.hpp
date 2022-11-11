@@ -678,7 +678,6 @@ unscaled_primal_dual_residual(
     precond.scale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
     results.info.duality_gap /=
       sqrt_max_dim; // in order to get an a-dimensional duality gap
-    rhs_duality_gap += 1.;
   }
 
   {

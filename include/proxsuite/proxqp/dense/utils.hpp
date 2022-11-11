@@ -415,7 +415,6 @@ global_dual_residual(const Results<T>& qpresults,
   duality_gap += zl;
   ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
   duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
-  rhs_duality_gap += 1.;
 }
 
 } // namespace dense
