@@ -479,9 +479,9 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
                                      VectorViewMut<T> CTdz,
                                      VectorViewMut<T> dy,
                                      VectorViewMut<T> dz,
-                                     QpView<T, I> qp_scaled,
+                                     const QpView<T, I> qp_scaled,
                                      const Settings<T>& qpsettings,
-                                     P& ruiz)
+                                     const P& ruiz)
 {
 
   // The problem is primal infeasible if the following four conditions hold:
@@ -535,10 +535,10 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
                                    VectorViewMut<T> Cdx,
                                    VectorViewMut<T> Hdx,
                                    VectorViewMut<T> dx,
-                                   QpView<T, I> qp_scaled,
+                                   const QpView<T, I> qp_scaled,
                                    const Settings<T>& qpsettings,
                                    const Model<T, I>& qpmodel,
-                                   P& ruiz)
+                                   const P& ruiz)
 {
 
   // The problem is dual infeasible if one of the conditions hold:
@@ -628,9 +628,9 @@ unscaled_primal_dual_residual(
   T& dual_feasibility_rhs_0,
   T& dual_feasibility_rhs_1,
   T& dual_feasibility_rhs_3,
-  P& precond,
+  const P& precond,
   Model<T, I> const& data,
-  QpView<T, I> qp_scaled,
+  const QpView<T, I> qp_scaled,
   VecMap<T> x_e,
   VecMap<T> y_e,
   VecMap<T> z_e,
