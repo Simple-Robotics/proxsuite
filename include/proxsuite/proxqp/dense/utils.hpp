@@ -345,11 +345,15 @@ template<typename T>
 void
 global_dual_residual(const Results<T>& qpresults,
                      Workspace<T>& qpwork,
+                     const Model<T>& qpmodel,
                      const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
                      T& dual_feasibility_rhs_0,
                      T& dual_feasibility_rhs_1,
-                     T& dual_feasibility_rhs_3)
+                     T& dual_feasibility_rhs_3,
+                     T& rhs_duality_gap,
+                     T& duality_gap,
+                     T sqrt_max_dim)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -362,8 +366,18 @@ global_dual_residual(const Results<T>& qpresults,
     qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
   qpwork.dual_residual_scaled += qpwork.CTz;
   ruiz.unscale_dual_residual_in_place(
-    VectorViewMut<T>{ from_eigen, qpwork.CTz });
+    VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
   dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+
+  ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
+  duality_gap = (qpmodel.g).dot(qpresults.x);
+  rhs_duality_gap = std::abs(duality_gap);
+  T xHx = (qpwork.CTz).dot(qpresults.x) ;
+  duality_gap += xHx;// contains now 0.5*xHx+g.Tx
+  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(xHx));
+
+  ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
+
   qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
   qpwork.dual_residual_scaled += qpwork.CTz;
   ruiz.unscale_dual_residual_in_place(
@@ -383,6 +397,25 @@ global_dual_residual(const Results<T>& qpresults,
 
   ruiz.scale_dual_residual_in_place(
     VectorViewMut<T>{ from_eigen, qpwork.dual_residual_scaled });
+
+  ruiz.unscale_dual_in_place_eq(
+    VectorViewMut<T>{ from_eigen, qpresults.y });
+  T by = (qpmodel.b).dot(qpresults.y);
+  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(by));
+  duality_gap += by;
+  ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
+  ruiz.unscale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z });
+  T zu= positive_part(qpresults.z).dot(qpmodel.u);
+  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zu));
+  duality_gap += zu;
+  T zl = negative_part(qpresults.z).dot(qpmodel.l);
+  rhs_duality_gap = std::max(rhs_duality_gap,std::abs(zl));
+  duality_gap += zl;
+  ruiz.scale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z });
+  duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
+  rhs_duality_gap +=1.;
 }
 
 } // namespace dense
