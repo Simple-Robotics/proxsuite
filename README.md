@@ -53,6 +53,21 @@ For the fastest performance use the following command to enable vectorization
 ```bash
 g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/benchmark_dense_qp.cpp -o benchmark_dense_qp $(pkg-config --cflags proxsuite)
 ```
+### Using ProxSuite with CMake
+If you want to use ProxSuite with CMake, the following tiny example should help you:
+```cmake
+cmake_minimum_required(VERSION 3.10)
+
+project(ExternalLib CXX)
+find_package(proxsuite REQUIRED)
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(run-proxqp ${CMAKE_CURRENT_LIST_DIR}/../src/run-proxqp.cpp)
+target_link_libraries(run-proxqp PUBLIC proxsuite::proxsuit`)
+```
+If you have compiled ProxSuite with the vectorization support, you might also use the CMake target `proxsuite::proxsuite-vectorized` to also link against SIMDE.
+Don't forget to use `-march=native` for getting the best performance.
+
 ## ProxSuite main features
 
 **Proxsuite** is fast:
