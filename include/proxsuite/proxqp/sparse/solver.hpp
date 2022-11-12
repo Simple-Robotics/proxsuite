@@ -724,6 +724,8 @@ qp_solve(Results<T>& results,
       break;
     }
   }
+  T rhs_duality_gap(0);
+
   for (isize iter = 0; iter < settings.max_iter; ++iter) {
 
     results.info.iter_ext += 1;
@@ -777,7 +779,8 @@ qp_solve(Results<T>& results,
       VEG_BIND( // ?
         auto,
         (primal_feasibility_lhs, dual_feasibility_lhs),
-        detail::unscaled_primal_dual_residual(primal_residual_eq_scaled,
+        detail::unscaled_primal_dual_residual(results,
+                                              primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
                                               dual_residual_scaled,
@@ -786,12 +789,13 @@ qp_solve(Results<T>& results,
                                               dual_feasibility_rhs_0,
                                               dual_feasibility_rhs_1,
                                               dual_feasibility_rhs_3,
+                                              rhs_duality_gap,
                                               precond,
                                               data,
                                               qp_scaled.as_const(),
-                                              detail::vec(x_e),
-                                              detail::vec(y_e),
-                                              detail::vec(z_e),
+                                              detail::vec_mut(x_e),
+                                              detail::vec_mut(y_e),
+                                              detail::vec_mut(z_e),
                                               stack));
       /*put in debug mode
       if (settings.verbose) {
@@ -824,8 +828,9 @@ qp_solve(Results<T>& results,
         std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                   << "| primal residual=" << primal_feasibility_lhs
                   << "| dual residual=" << dual_feasibility_lhs
-                  << " | mu_in=" << results.info.mu_in
-                  << " | rho=" << results.info.rho << std::endl;
+                  << "| dualality gap=" << results.info.duality_gap
+                  << "| mu_in=" << results.info.mu_in
+                  << "| rho=" << results.info.rho << std::endl;
         results.info.pri_res = primal_feasibility_lhs;
         results.info.dua_res = dual_feasibility_lhs;
         precond.scale_primal_in_place(VectorViewMut<T>{ from_eigen, x_e });
@@ -834,10 +839,14 @@ qp_solve(Results<T>& results,
       }
       if (is_primal_feasible(primal_feasibility_lhs) &&
           is_dual_feasible(dual_feasibility_lhs)) {
-        results.info.pri_res = primal_feasibility_lhs;
-        results.info.dua_res = dual_feasibility_lhs;
-        results.info.status = QPSolverOutput::PROXQP_SOLVED;
-        break;
+        if (results.info.duality_gap <=
+            settings.eps_abs +
+              (settings.eps_rel + settings.eps_abs) * rhs_duality_gap) {
+          results.info.pri_res = primal_feasibility_lhs;
+          results.info.dua_res = dual_feasibility_lhs;
+          results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          break;
+        }
       }
 
       LDLT_TEMP_VEC_UNINIT(T, x_prev_e, n, stack);
@@ -1202,7 +1211,8 @@ qp_solve(Results<T>& results,
       VEG_BIND(
         auto,
         (primal_feasibility_lhs_new, dual_feasibility_lhs_new),
-        detail::unscaled_primal_dual_residual(primal_residual_eq_scaled,
+        detail::unscaled_primal_dual_residual(results,
+                                              primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
                                               dual_residual_scaled,
@@ -1211,20 +1221,25 @@ qp_solve(Results<T>& results,
                                               dual_feasibility_rhs_0,
                                               dual_feasibility_rhs_1,
                                               dual_feasibility_rhs_3,
+                                              rhs_duality_gap,
                                               precond,
                                               data,
                                               qp_scaled.as_const(),
-                                              detail::vec(x_e),
-                                              detail::vec(y_e),
-                                              detail::vec(z_e),
+                                              detail::vec_mut(x_e),
+                                              detail::vec_mut(y_e),
+                                              detail::vec_mut(z_e),
                                               stack));
 
       if (is_primal_feasible(primal_feasibility_lhs_new) &&
           is_dual_feasible(dual_feasibility_lhs_new)) {
-        results.info.pri_res = primal_feasibility_lhs_new;
-        results.info.dua_res = dual_feasibility_lhs_new;
-        results.info.status = QPSolverOutput::PROXQP_SOLVED;
-        break;
+        if (results.info.duality_gap <=
+            settings.eps_abs +
+              (settings.eps_abs + settings.eps_rel) * rhs_duality_gap) {
+          results.info.pri_res = primal_feasibility_lhs_new;
+          results.info.dua_res = dual_feasibility_lhs_new;
+          results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          break;
+        }
       }
 
       // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -1259,7 +1274,8 @@ qp_solve(Results<T>& results,
       VEG_BIND(
         auto,
         (_, dual_feasibility_lhs_new_2),
-        detail::unscaled_primal_dual_residual(primal_residual_eq_scaled,
+        detail::unscaled_primal_dual_residual(results,
+                                              primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
                                               dual_residual_scaled,
@@ -1268,12 +1284,13 @@ qp_solve(Results<T>& results,
                                               dual_feasibility_rhs_0,
                                               dual_feasibility_rhs_1,
                                               dual_feasibility_rhs_3,
+                                              rhs_duality_gap,
                                               precond,
                                               data,
                                               qp_scaled.as_const(),
-                                              detail::vec(x_e),
-                                              detail::vec(y_e),
-                                              detail::vec(z_e),
+                                              detail::vec_mut(x_e),
+                                              detail::vec_mut(y_e),
+                                              detail::vec_mut(z_e),
                                               stack));
       proxsuite::linalg::veg::unused(_);
 

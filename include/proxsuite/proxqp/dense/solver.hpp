@@ -985,6 +985,9 @@ qp_solve( //
   T primal_feasibility_in_lhs(0);
   T dual_feasibility_lhs(0);
 
+  T duality_gap(0);
+  T rhs_duality_gap(0);
+
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
     // compute primal residual
@@ -1002,13 +1005,17 @@ qp_solve( //
 
     global_dual_residual(qpresults,
                          qpwork,
+                         qpmodel,
                          ruiz,
                          dual_feasibility_lhs,
                          dual_feasibility_rhs_0,
                          dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3);
+                         dual_feasibility_rhs_3,
+                         rhs_duality_gap,
+                         duality_gap);
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
+    qpresults.info.duality_gap = duality_gap;
 
     T new_bcl_mu_in(qpresults.info.mu_in);
     T new_bcl_mu_eq(qpresults.info.mu_eq);
@@ -1059,8 +1066,9 @@ qp_solve( //
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                 << "| primal residual=" << qpresults.info.pri_res
                 << "| dual residual=" << qpresults.info.dua_res
-                << " | mu_in=" << qpresults.info.mu_in
-                << " | rho=" << qpresults.info.rho << std::endl;
+                << "| duality gap=" << qpresults.info.duality_gap
+                << "| mu_in=" << qpresults.info.mu_in
+                << "| rho=" << qpresults.info.rho << std::endl;
       ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
       ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
       ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
@@ -1079,8 +1087,12 @@ qp_solve( //
         qpresults.info.rho = rho_new;
       }
       if (is_dual_feasible) {
-        qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
-        break;
+        if (qpresults.info.duality_gap <=
+            qpsettings.eps_abs +
+              (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+          qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+          break;
+        }
       }
     }
     qpresults.info.iter_ext += 1; // We start a new external loop update
@@ -1138,12 +1150,16 @@ qp_solve( //
 
       global_dual_residual(qpresults,
                            qpwork,
+                           qpmodel,
                            ruiz,
                            dual_feasibility_lhs_new,
                            dual_feasibility_rhs_0,
                            dual_feasibility_rhs_1,
-                           dual_feasibility_rhs_3);
+                           dual_feasibility_rhs_3,
+                           rhs_duality_gap,
+                           duality_gap);
       qpresults.info.dua_res = dual_feasibility_lhs_new;
+      qpresults.info.duality_gap = duality_gap;
 
       is_dual_feasible =
         dual_feasibility_lhs_new <=
@@ -1154,8 +1170,12 @@ qp_solve( //
              std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
       if (is_dual_feasible) {
-        qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
-        break;
+        if (qpresults.info.duality_gap <=
+            qpsettings.eps_abs +
+              (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+          qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+          break;
+        }
       }
     }
     if (qpsettings.bcl_update) {
@@ -1190,12 +1210,16 @@ qp_solve( //
 
     global_dual_residual(qpresults,
                          qpwork,
+                         qpmodel,
                          ruiz,
                          dual_feasibility_lhs_new,
                          dual_feasibility_rhs_0,
                          dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3);
+                         dual_feasibility_rhs_3,
+                         rhs_duality_gap,
+                         duality_gap);
     qpresults.info.dua_res = dual_feasibility_lhs_new;
+    qpresults.info.duality_gap = duality_gap;
 
     if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
         dual_feasibility_lhs_new >= dual_feasibility_lhs &&
