@@ -19,6 +19,28 @@ Through **ProxSuite**, we aim at offering to the community scalable optimizers w
 - [CVXPY](https://www.cvxpy.org/) modeling language for convex optimization problems
 - [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming).
 
+## ProxSuite main features
+
+**Proxsuite** is fast:
+
+   - C++ template library,
+   - cache friendly.
+
+**Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
+
+   - dense, sparse and matrix free matrix factorization backends,
+   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results).
+
+**Proxsuite** is flexible:
+
+   - header only,
+   - C++ 14/17/20 compliant,
+   - Python and Julia bindings for easy code prototyping without sacrificing performances.
+
+**Proxsuite** is extensible.
+**Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
+**Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
+
 ## Getting started
 
 **ProxSuite** is distributed on many well-known package managers.
@@ -53,27 +75,20 @@ For the fastest performance use the following command to enable vectorization
 ```bash
 g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/benchmark_dense_qp.cpp -o benchmark_dense_qp $(pkg-config --cflags proxsuite)
 ```
-## ProxSuite main features
+### Using ProxSuite with CMake
+If you want to use ProxSuite with CMake, the following tiny example should help you:
+```cmake
+cmake_minimum_required(VERSION 3.10)
 
-**Proxsuite** is fast:
+project(Example CXX)
+find_package(proxsuite REQUIRED)
+set(CMAKE_CXX_STANDARD 17) # set(CMAKE_CXX_STANDARD 14) will work too
 
-   - C++ template library,
-   - cache friendly.
-
-**Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
-
-   - dense, sparse and matrix free matrix factorization backends,
-   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results).
-
-**Proxsuite** is flexible:
-
-   - header only,
-   - C++ 14/17/20 compliant,
-   - Python and Julia bindings for easy code prototyping without sacrificing performances.
-
-**Proxsuite** is extensible.
-**Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
-**Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
+add_executable(example example.cpp)
+target_link_libraries(example PUBLIC proxsuite::proxsuite`)
+```
+If you have compiled ProxSuite with the vectorization support, you might also use the CMake target `proxsuite::proxsuite-vectorized` to also link against SIMDE.
+Don't forget to use `-march=native` for getting the best performance.
 
 ## **ProxQP**
 
