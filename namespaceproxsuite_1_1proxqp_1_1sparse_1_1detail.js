@@ -15,7 +15,7 @@ var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
     [ "middle_cols_mut", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a7ef606dd610b9be01937f0542f67f6fe", null ],
     [ "top_rows_unchecked", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a697a3031c5e9a8ffc104b003359ac884", null ],
     [ "top_rows_mut_unchecked", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a9c961aba3d0b5fc16b0b3a908e22fd20", null ],
-    [ "global_primal_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a93e21ab0409626375d8e371d803b7d82", null ],
-    [ "global_dual_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#adb8373ca531ced04e79d112f395f300f", null ],
-    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#abe631f348381c4891c3f89ce58fe2a87", null ]
+    [ "global_primal_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a256d1f677a7aa9aa0dca06aeccf460ad", null ],
+    [ "global_dual_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#abfa4d6a743bffb4bbaf0318d51a10ca9", null ],
+    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#adf5ce96dfe0ba6ac4f1c7a779efb753c", null ]
 ];

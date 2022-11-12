@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.7</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -151,9 +151,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7d9536fbd8903d1db0198580423eceb2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a7d9536fbd8903d1db0198580423eceb2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a7d9536fbd8903d1db0198580423eceb2">proxsuite::proxqp::dense::print_setup_header</a> (const Settings&lt; T &gt; &amp;settings, Results&lt; T &gt; &amp;results, const Model&lt; T &gt; &amp;model)</td></tr>
-<tr class="separator:a7d9536fbd8903d1db0198580423eceb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93067012cee336f6202ed62de2c44f6e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a93067012cee336f6202ed62de2c44f6e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a93067012cee336f6202ed62de2c44f6e">proxsuite::proxqp::dense::print_setup_header</a> (const Settings&lt; T &gt; &amp;settings, const Results&lt; T &gt; &amp;results, const Model&lt; T &gt; &amp;model)</td></tr>
+<tr class="separator:a93067012cee336f6202ed62de2c44f6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0a58f4db1dc7eecef0979559b597876"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
 <tr class="memitem:af0a58f4db1dc7eecef0979559b597876"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#af0a58f4db1dc7eecef0979559b597876">proxsuite::proxqp::dense::save_data</a> (const std::string &amp;filename, const ::Eigen::MatrixBase&lt; Derived &gt; &amp;mat)</td></tr>
 <tr class="separator:af0a58f4db1dc7eecef0979559b597876"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,18 +163,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a05d28afe2f747a57c03ae08a18e6d6a9">proxsuite::proxqp::dense::negative_part</a> (T const &amp;expr) <a class="el" href="dense_2utils_8hpp.html#aeb62b65fbbf11de4cfad8e0bfb33639b">LDLT_DEDUCE_RET</a>((expr.array()&lt; 0).select(expr</td></tr>
 <tr class="separator:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a703565b2544310201b30adc296095af3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a703565b2544310201b30adc296095af3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a703565b2544310201b30adc296095af3">proxsuite::proxqp::dense::global_primal_residual</a> (const Model&lt; T &gt; &amp;qpmodel, Results&lt; T &gt; &amp;qpresults, Workspace&lt; T &gt; &amp;qpwork, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, T &amp;primal_feasibility_lhs, T &amp;primal_feasibility_eq_rhs_0, T &amp;primal_feasibility_in_rhs_0, T &amp;primal_feasibility_eq_lhs, T &amp;primal_feasibility_in_lhs)</td></tr>
-<tr class="separator:a703565b2544310201b30adc296095af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24c7e2a9432e182b361c296969eebace"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a24c7e2a9432e182b361c296969eebace"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a24c7e2a9432e182b361c296969eebace">proxsuite::proxqp::dense::global_primal_residual_infeasibility</a> (VectorViewMut&lt; T &gt; ATdy, VectorViewMut&lt; T &gt; CTdz, VectorViewMut&lt; T &gt; dy, VectorViewMut&lt; T &gt; dz, Workspace&lt; T &gt; &amp;qpwork, const Settings&lt; T &gt; &amp;qpsettings, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz)</td></tr>
-<tr class="separator:a24c7e2a9432e182b361c296969eebace"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbfa28ce93bf787bc33471a9bd4d08e7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:acbfa28ce93bf787bc33471a9bd4d08e7"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#acbfa28ce93bf787bc33471a9bd4d08e7">proxsuite::proxqp::dense::global_dual_residual_infeasibility</a> (VectorViewMut&lt; T &gt; Adx, VectorViewMut&lt; T &gt; Cdx, VectorViewMut&lt; T &gt; Hdx, VectorViewMut&lt; T &gt; dx, Workspace&lt; T &gt; &amp;qpwork, const Settings&lt; T &gt; &amp;qpsettings, const Model&lt; T &gt; &amp;qpmodel, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz)</td></tr>
-<tr class="separator:acbfa28ce93bf787bc33471a9bd4d08e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60be0a1f4035f84a1f9f214c105e0247"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a60be0a1f4035f84a1f9f214c105e0247"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a60be0a1f4035f84a1f9f214c105e0247">proxsuite::proxqp::dense::global_dual_residual</a> (Results&lt; T &gt; &amp;qpresults, Workspace&lt; T &gt; &amp;qpwork, preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, T &amp;dual_feasibility_lhs, T &amp;dual_feasibility_rhs_0, T &amp;dual_feasibility_rhs_1, T &amp;dual_feasibility_rhs_3)</td></tr>
-<tr class="separator:a60be0a1f4035f84a1f9f214c105e0247"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf6239bdbd99a56df7417fd11329e59d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aaf6239bdbd99a56df7417fd11329e59d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aaf6239bdbd99a56df7417fd11329e59d">proxsuite::proxqp::dense::global_primal_residual</a> (const Model&lt; T &gt; &amp;qpmodel, const Results&lt; T &gt; &amp;qpresults, Workspace&lt; T &gt; &amp;qpwork, const preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, T &amp;primal_feasibility_lhs, T &amp;primal_feasibility_eq_rhs_0, T &amp;primal_feasibility_in_rhs_0, T &amp;primal_feasibility_eq_lhs, T &amp;primal_feasibility_in_lhs)</td></tr>
+<tr class="separator:aaf6239bdbd99a56df7417fd11329e59d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7511844260fbecc87b025614de3d0729"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7511844260fbecc87b025614de3d0729"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a7511844260fbecc87b025614de3d0729">proxsuite::proxqp::dense::global_primal_residual_infeasibility</a> (VectorViewMut&lt; T &gt; ATdy, VectorViewMut&lt; T &gt; CTdz, VectorViewMut&lt; T &gt; dy, VectorViewMut&lt; T &gt; dz, Workspace&lt; T &gt; &amp;qpwork, const Settings&lt; T &gt; &amp;qpsettings, const preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz)</td></tr>
+<tr class="separator:a7511844260fbecc87b025614de3d0729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a904dc2a9e2726ec9fc81bf74d5198b83"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a904dc2a9e2726ec9fc81bf74d5198b83"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a904dc2a9e2726ec9fc81bf74d5198b83">proxsuite::proxqp::dense::global_dual_residual_infeasibility</a> (VectorViewMut&lt; T &gt; Adx, VectorViewMut&lt; T &gt; Cdx, VectorViewMut&lt; T &gt; Hdx, VectorViewMut&lt; T &gt; dx, Workspace&lt; T &gt; &amp;qpwork, const Settings&lt; T &gt; &amp;qpsettings, const Model&lt; T &gt; &amp;qpmodel, const preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz)</td></tr>
+<tr class="separator:a904dc2a9e2726ec9fc81bf74d5198b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612e94a920ced6983d0f6338059dc293"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a612e94a920ced6983d0f6338059dc293"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a612e94a920ced6983d0f6338059dc293">proxsuite::proxqp::dense::global_dual_residual</a> (Results&lt; T &gt; &amp;qpresults, Workspace&lt; T &gt; &amp;qpwork, const Model&lt; T &gt; &amp;qpmodel, const preconditioner::RuizEquilibration&lt; T &gt; &amp;ruiz, T &amp;dual_feasibility_lhs, T &amp;dual_feasibility_rhs_0, T &amp;dual_feasibility_rhs_1, T &amp;dual_feasibility_rhs_3, T &amp;rhs_duality_gap, T &amp;duality_gap)</td></tr>
+<tr class="separator:a612e94a920ced6983d0f6338059dc293"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="aeb62b65fbbf11de4cfad8e0bfb33639b" name="aeb62b65fbbf11de4cfad8e0bfb33639b"></a>
