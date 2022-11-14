@@ -7,6 +7,11 @@
 #ifndef PROXSUITE_PROXQP_DENSE_UTILS_HPP
 #define PROXSUITE_PROXQP_DENSE_UTILS_HPP
 
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <type_traits>
+
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
@@ -14,10 +19,7 @@
 #include <proxsuite/proxqp/utils/prints.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <type_traits>
+
 //#include <fmt/format.h>
 //#include <fmt/ostream.h>
 
