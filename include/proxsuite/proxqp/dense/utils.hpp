@@ -12,6 +12,7 @@
 #include <cmath>
 #include <type_traits>
 
+#include "proxsuite/helpers/common.hpp"
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
@@ -137,6 +138,7 @@ template<typename T>
 auto
 positive_part(T const& expr)
   LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
+
 /// @brief \brief Returns the negative part of an expression
 template<typename T>
 auto
@@ -392,7 +394,7 @@ global_dual_residual(Results<T>& qpresults,
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::abs(duality_gap);
-  T xHx = (qpwork.CTz).dot(qpresults.x);
+  const T xHx = (qpwork.CTz).dot(qpresults.x);
   duality_gap += xHx; // contains now xHx+g.Tx
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
 
@@ -419,18 +421,27 @@ global_dual_residual(Results<T>& qpresults,
     VectorViewMut<T>{ from_eigen, qpwork.dual_residual_scaled });
 
   ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-  T by = (qpmodel.b).dot(qpresults.y);
+  const T by = (qpmodel.b).dot(qpresults.y);
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
   duality_gap += by;
   ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
+
   ruiz.unscale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
-  T zu = positive_part(qpresults.z).dot(qpmodel.u);
+
+  const T zu =
+    positive_part(qpresults.z)
+      .dot(lower_than(qpmodel.u, helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
   duality_gap += zu;
-  T zl = negative_part(qpresults.z).dot(qpmodel.l);
+
+  const T zl =
+    negative_part(qpresults.z)
+      .dot(greater_than(qpmodel.l, -helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
   duality_gap += zl;
+
   ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+
   duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
   rhs_duality_gap /= sqrt_max_dim;
 }
