@@ -1,9 +1,11 @@
 #
 # Copyright (c) 2022, INRIA
 #
+import os
 import proxsuite
 import numpy as np
 import scipy.sparse as spa
+import scipy.io as spio
 import unittest
 
 
@@ -360,6 +362,48 @@ class DenseQpWrapper(unittest.TestCase):
 
         assert dua_res <= 1e-3  # default precision of the solver
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
+        print("dual residual = {} ".format(dua_res))
+        print("total number of iteration: {}".format(results.info.iter))
+        print(
+            "setup timing = {} ; solve time = {}".format(
+                results.info.setup_time, results.info.solve_time
+            )
+        )
+
+    def test_solve_qpsolvers_problem(self):
+        print(
+            "------------------------test case from qpsolvers with equality constraint and upper bound inequality constraints"
+        )
+        file_path = os.path.dirname(os.path.realpath(__file__))
+        data_path = os.path.join(file_path, "..", "data")
+        m = spio.loadmat(
+            os.path.join(data_path, "simple_qp_with_inifinity_lower_bound.mat"),
+            squeeze_me=True,
+        )
+        P = m["P"].astype(float)
+        q = m["q"].astype(float)
+        A = m["A"].astype(float).reshape((1, 3))
+        b = np.array([m["b"]]).reshape((1,))
+        C = m["C"].astype(float)
+        l = m["l"].astype(float)
+        u = m["u"].astype(float)
+
+        results = proxsuite.proxqp.dense.solve(P, q, A, b, C, l, u, verbose=False)
+        print("optimal x: {}".format(results.x))
+
+        dua_res = normInf(
+            P @ results.x + q + A.transpose() @ results.y + C.transpose() @ results.z
+        )
+        pri_res = max(
+            normInf(A @ results.x - b),
+            normInf(
+                np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
+            ),
+        )
+        assert dua_res <= 1e-5
+        assert pri_res <= 1e-5
+
+        print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 1, 3))
         print("dual residual = {} ".format(dua_res))
         print("total number of iteration: {}".format(results.info.iter))
         print(
