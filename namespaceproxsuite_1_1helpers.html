@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.9</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -118,12 +118,136 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a81683551c89b385e60e8fd5a506ce127"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Scalar &gt; </td></tr>
+<tr class="memitem:a81683551c89b385e60e8fd5a506ce127"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127">at_most</a> (T const &amp;expr, const Scalar value) <a class="el" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array()&lt; value).select(expr</td></tr>
+<tr class="memdesc:a81683551c89b385e60e8fd5a506ce127"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the part of the expression which is lower than value.  <a href="namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127">More...</a><br /></td></tr>
+<tr class="separator:a81683551c89b385e60e8fd5a506ce127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67d00d650a55b2443681bfca72f12b86"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Scalar &gt; </td></tr>
+<tr class="memitem:a67d00d650a55b2443681bfca72f12b86"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86">at_least</a> (T const &amp;expr, const Scalar value) <a class="el" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array() &gt; value).select(expr</td></tr>
+<tr class="memdesc:a67d00d650a55b2443681bfca72f12b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the part of the expression which is greater than value.  <a href="namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86">More...</a><br /></td></tr>
+<tr class="separator:a67d00d650a55b2443681bfca72f12b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3faae71fad6f45f688688dd282ccf78b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a3faae71fad6f45f688688dd282ccf78b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">positive_part</a> (T const &amp;expr) <a class="el" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array() &gt; 0).select(expr</td></tr>
+<tr class="memdesc:a3faae71fad6f45f688688dd282ccf78b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the positive part of an expression.  <a href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">More...</a><br /></td></tr>
+<tr class="separator:a3faae71fad6f45f688688dd282ccf78b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8252ca5df165a457499dd65f0bd89e65"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8252ca5df165a457499dd65f0bd89e65"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">negative_part</a> (T const &amp;expr) <a class="el" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array()&lt; 0).select(expr</td></tr>
+<tr class="memdesc:a8252ca5df165a457499dd65f0bd89e65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the negative part of an expression.  <a href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">More...</a><br /></td></tr>
+<tr class="separator:a8252ca5df165a457499dd65f0bd89e65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61c43faaa5f4151f1d3787d58aa74a4c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a61c43faaa5f4151f1d3787d58aa74a4c">printVersion</a> (const std::string &amp;delimiter=&quot;.&quot;)</td></tr>
 <tr class="separator:a61c43faaa5f4151f1d3787d58aa74a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a371a48139dc77f260fc23054f4a434a2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1helpers.html#a371a48139dc77f260fc23054f4a434a2">checkVersionAtLeast</a> (signed int major_version, signed int minor_version, signed int patch_version)</td></tr>
 <tr class="separator:a371a48139dc77f260fc23054f4a434a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a81683551c89b385e60e8fd5a506ce127" name="a81683551c89b385e60e8fd5a506ce127"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81683551c89b385e60e8fd5a506ce127">&#9670;&#160;</a></span>at_most()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Scalar &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto proxsuite::helpers::at_most </td>
+          <td>(</td>
+          <td class="paramtype">T const &amp;&#160;</td>
+          <td class="paramname"><em>expr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Scalar&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the part of the expression which is lower than value. </p>
+
+</div>
+</div>
+<a id="a67d00d650a55b2443681bfca72f12b86" name="a67d00d650a55b2443681bfca72f12b86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67d00d650a55b2443681bfca72f12b86">&#9670;&#160;</a></span>at_least()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Scalar &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto proxsuite::helpers::at_least </td>
+          <td>(</td>
+          <td class="paramtype">T const &amp;&#160;</td>
+          <td class="paramname"><em>expr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Scalar&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the part of the expression which is greater than value. </p>
+
+</div>
+</div>
+<a id="a3faae71fad6f45f688688dd282ccf78b" name="a3faae71fad6f45f688688dd282ccf78b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3faae71fad6f45f688688dd282ccf78b">&#9670;&#160;</a></span>positive_part()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto proxsuite::helpers::positive_part </td>
+          <td>(</td>
+          <td class="paramtype">T const &amp;&#160;</td>
+          <td class="paramname"><em>expr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the positive part of an expression. </p>
+
+</div>
+</div>
+<a id="a8252ca5df165a457499dd65f0bd89e65" name="a8252ca5df165a457499dd65f0bd89e65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8252ca5df165a457499dd65f0bd89e65">&#9670;&#160;</a></span>negative_part()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">auto proxsuite::helpers::negative_part </td>
+          <td>(</td>
+          <td class="paramtype">T const &amp;&#160;</td>
+          <td class="paramname"><em>expr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the negative part of an expression. </p>
+
+</div>
+</div>
 <a id="a61c43faaa5f4151f1d3787d58aa74a4c" name="a61c43faaa5f4151f1d3787d58aa74a4c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a61c43faaa5f4151f1d3787d58aa74a4c">&#9670;&#160;</a></span>printVersion()</h2>
 

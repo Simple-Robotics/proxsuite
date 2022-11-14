@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.9</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -110,7 +110,11 @@ $(document).ready(function(){initNavTree('sparse_2utils_8hpp.html',''); initResi
   <div class="headertitle"><div class="title">utils.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;<a class="el" href="dense_2core_8hpp_source.html">proxsuite/linalg/dense/core.hpp</a>&gt;</code><br />
+<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;Eigen/IterativeLinearSolvers&gt;</code><br />
+<code>#include &lt;unsupported/Eigen/IterativeSolvers&gt;</code><br />
+<code>#include &quot;<a class="el" href="common_8hpp_source.html">proxsuite/helpers/common.hpp</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="dense_2core_8hpp_source.html">proxsuite/linalg/dense/core.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="sparse_2core_8hpp_source.html">proxsuite/linalg/sparse/core.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="sparse_2factorize_8hpp_source.html">proxsuite/linalg/sparse/factorize.hpp</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="sparse_2update_8hpp_source.html">proxsuite/linalg/sparse/update.hpp</a>&gt;</code><br />
@@ -124,13 +128,10 @@ $(document).ready(function(){initNavTree('sparse_2utils_8hpp.html',''); initResi
 <code>#include &quot;<a class="el" href="sparse_2model_8hpp_source.html">proxsuite/proxqp/sparse/model.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sparse_2preconditioner_2ruiz_8hpp_source.html">proxsuite/proxqp/sparse/preconditioner/ruiz.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sparse_2preconditioner_2identity_8hpp_source.html">proxsuite/proxqp/sparse/preconditioner/identity.hpp</a>&quot;</code><br />
-<code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;Eigen/IterativeLinearSolvers&gt;</code><br />
-<code>#include &lt;unsupported/Eigen/IterativeSolvers&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for utils.hpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="sparse_2utils_8hpp__incl.svg" width="2759" height="1312"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="sparse_2utils_8hpp__incl.svg" width="2818" height="1312"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -176,12 +177,6 @@ Functions</h2></td></tr>
 <tr class="memitem:aa3c995adc4bd5230f3f7ef89e92573af"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
 <tr class="memitem:aa3c995adc4bd5230f3f7ef89e92573af"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#aa3c995adc4bd5230f3f7ef89e92573af">proxsuite::proxqp::sparse::print_setup_header</a> (const Settings&lt; T &gt; &amp;settings, Results&lt; T &gt; &amp;results, const Model&lt; T, I &gt; &amp;model)</td></tr>
 <tr class="separator:aa3c995adc4bd5230f3f7ef89e92573af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a475f4f1cb530f3ea0f8b560307349e9b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a475f4f1cb530f3ea0f8b560307349e9b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a475f4f1cb530f3ea0f8b560307349e9b">proxsuite::proxqp::sparse::detail::positive_part</a> (T const &amp;expr) <a class="el" href="macros_8hpp.html#ac37fabcc58aa72a02f6758e3eeb30560">VEG_DEDUCE_RET</a>((expr.array() &gt; 0).select(expr</td></tr>
-<tr class="separator:a475f4f1cb530f3ea0f8b560307349e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f5431111d9112a7f38f2214776582ae"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a7f5431111d9112a7f38f2214776582ae"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a7f5431111d9112a7f38f2214776582ae">proxsuite::proxqp::sparse::detail::negative_part</a> (T const &amp;expr) <a class="el" href="macros_8hpp.html#ac37fabcc58aa72a02f6758e3eeb30560">VEG_DEDUCE_RET</a>((expr.array()&lt; 0).select(expr</td></tr>
-<tr class="separator:a7f5431111d9112a7f38f2214776582ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cb076d5ef454c6d10c86eaec8d384dd"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
 <tr class="memitem:a6cb076d5ef454c6d10c86eaec8d384dd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a9a1345fd14d0ee76ef22246e1aae7c50">VEG_NO_INLINE</a> void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a6cb076d5ef454c6d10c86eaec8d384dd">proxsuite::proxqp::sparse::detail::noalias_gevmmv_add_impl</a> (VectorViewMut&lt; T &gt; out_l, VectorViewMut&lt; T &gt; out_r, <a class="el" href="structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html">proxsuite::linalg::sparse::MatRef</a>&lt; T, I &gt; a, VectorView&lt; T &gt; in_l, VectorView&lt; T &gt; in_r)</td></tr>
 <tr class="separator:a6cb076d5ef454c6d10c86eaec8d384dd"><td class="memSeparator" colspan="2">&#160;</td></tr>

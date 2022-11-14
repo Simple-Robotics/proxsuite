@@ -47,8 +47,6 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "qp_solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a09250b47d6deb1fbcfaf5b756d6b5261", null ],
     [ "print_setup_header", "namespaceproxsuite_1_1proxqp_1_1dense.html#a93067012cee336f6202ed62de2c44f6e", null ],
     [ "save_data", "namespaceproxsuite_1_1proxqp_1_1dense.html#af0a58f4db1dc7eecef0979559b597876", null ],
-    [ "positive_part", "namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4954581a819038c64d0a69d8e8ba91", null ],
-    [ "negative_part", "namespaceproxsuite_1_1proxqp_1_1dense.html#a05d28afe2f747a57c03ae08a18e6d6a9", null ],
     [ "global_primal_residual", "namespaceproxsuite_1_1proxqp_1_1dense.html#aaf6239bdbd99a56df7417fd11329e59d", null ],
     [ "global_primal_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1dense.html#a7511844260fbecc87b025614de3d0729", null ],
     [ "global_dual_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1dense.html#a904dc2a9e2726ec9fc81bf74d5198b83", null ],

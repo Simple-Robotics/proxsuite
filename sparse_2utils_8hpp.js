@@ -5,8 +5,6 @@ var sparse_2utils_8hpp =
     [ "VecMapMut", "sparse_2utils_8hpp.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
     [ "VecMap", "sparse_2utils_8hpp.html#a2860d2e80d0e47d632001cc274428e44", null ],
     [ "print_setup_header", "sparse_2utils_8hpp.html#aa3c995adc4bd5230f3f7ef89e92573af", null ],
-    [ "positive_part", "sparse_2utils_8hpp.html#a475f4f1cb530f3ea0f8b560307349e9b", null ],
-    [ "negative_part", "sparse_2utils_8hpp.html#a7f5431111d9112a7f38f2214776582ae", null ],
     [ "noalias_gevmmv_add_impl", "sparse_2utils_8hpp.html#a6cb076d5ef454c6d10c86eaec8d384dd", null ],
     [ "noalias_symhiv_add_impl", "sparse_2utils_8hpp.html#a192ea81eb89ea330f139bcda39f9caa5", null ],
     [ "noalias_gevmmv_add", "sparse_2utils_8hpp.html#a17d74d7e245428f1dc9c10eb04b24878", null ],

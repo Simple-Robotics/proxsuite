@@ -1,5 +1,7 @@
 var NAVTREEINDEX4 =
 {
+"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a0f82d86afa0f5dc965c5c15aca58dcfb":[12,0,1,0,1,2,0,10,122,18],
+"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a1625ef4fe09f68fa20d3ff6e02cd5c8e":[12,0,1,0,1,2,0,10,122,30],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a180bb5e381e316e2246b88c92770ee75":[12,0,1,0,1,2,0,10,122,21],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a1b56c1f00f793e4a40a27791a75f9348":[12,0,1,0,1,2,0,10,122,74],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a1f9e6e28618109482eaf45bb6b1f194b":[12,0,1,0,1,2,0,10,122,77],
@@ -194,8 +196,8 @@ var NAVTREEINDEX4 =
 "namespacemembers_enum.html":[10,1,4],
 "namespacemembers_eval.html":[10,1,5],
 "namespacemembers_f.html":[10,1,0,5],
-"namespacemembers_func.html":[10,1,1,0],
 "namespacemembers_func.html":[10,1,1],
+"namespacemembers_func.html":[10,1,1,0],
 "namespacemembers_func_b.html":[10,1,1,1],
 "namespacemembers_func_c.html":[10,1,1,2],
 "namespacemembers_func_d.html":[10,1,1,3],
@@ -240,14 +242,12 @@ var NAVTREEINDEX4 =
 "namespaceproxsuite.html#a80bbf7474fd9bb0798c123b76c0c9130":[10,0,1,5],
 "namespaceproxsuite_1_1detail.html":[10,0,1,0],
 "namespaceproxsuite_1_1helpers.html":[10,0,1,1],
-"namespaceproxsuite_1_1helpers.html#a371a48139dc77f260fc23054f4a434a2":[10,0,1,1,3],
-"namespaceproxsuite_1_1helpers.html#a61c43faaa5f4151f1d3787d58aa74a4c":[10,0,1,1,2],
+"namespaceproxsuite_1_1helpers.html#a371a48139dc77f260fc23054f4a434a2":[10,0,1,1,7],
+"namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b":[10,0,1,1,4],
+"namespaceproxsuite_1_1helpers.html#a61c43faaa5f4151f1d3787d58aa74a4c":[10,0,1,1,6],
+"namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86":[10,0,1,1,3],
+"namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127":[10,0,1,1,2],
+"namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65":[10,0,1,1,5],
 "namespaceproxsuite_1_1linalg.html":[10,0,1,2],
-"namespaceproxsuite_1_1linalg_1_1dense.html":[10,0,1,2,0],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a086c0466c284a944cbfe5c8e6ccfcb47":[10,0,1,2,0,9],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195":[10,0,1,2,0,17],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a38cdfd0861ff06f028b58ac151324dcb":[10,0,1,2,0,16],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a3c3e2bc488f86326cc0a5184faa9ab11":[10,0,1,2,0,6],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a460ed925fe95dd0fc7396478e5c6772a":[10,0,1,2,0,18],
-"namespaceproxsuite_1_1linalg_1_1dense.html#a46a769334f2c00931df89f2610e3e60c":[10,0,1,2,0,19]
+"namespaceproxsuite_1_1linalg_1_1dense.html":[10,0,1,2,0]
 };

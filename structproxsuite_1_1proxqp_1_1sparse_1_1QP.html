@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.9</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -193,8 +193,8 @@ struct proxsuite::proxqp::sparse::QP&lt; T, I &gt;</div><p >This class defines t
 <div class="line">        <span class="comment">// Verify solution accuracy</span></div>
 <div class="line">        T pri_res = std::max(</div>
 <div class="line">                        (qp.A * Qp.results.x - qp.b).lpNorm&lt;Eigen::Infinity&gt;(),</div>
-<div class="line">                        (<a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4954581a819038c64d0a69d8e8ba91">proxqp::dense::positive_part</a>(qp.C * Qp.results.x -</div>
-<div class="line">qp.u) + <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a05d28afe2f747a57c03ae08a18e6d6a9">proxqp::dense::negative_part</a>(qp.C * Qp.results.x - qp.l))</div>
+<div class="line">                        (<a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">helpers::positive_part</a>(qp.C * Qp.results.x -</div>
+<div class="line">qp.u) + <a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">helpers::negative_part</a>(qp.C * Qp.results.x - qp.l))</div>
 <div class="line">                                        .lpNorm&lt;Eigen::Infinity&gt;());</div>
 <div class="line">        T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() *</div>
 <div class="line">Qp.results.y + qp.C.transpose() * Qp.results.z) .lpNorm&lt;Eigen::Infinity&gt;();</div>
@@ -211,8 +211,8 @@ struct proxsuite::proxqp::sparse::QP&lt; T, I &gt;</div><p >This class defines t
 <div class="line">}</div>
 <div class="ttc" id="aassert__impl_8hpp_html_aaa8d005d06cd4e33683fba9135cae09e"><div class="ttname"><a href="assert__impl_8hpp.html#aaa8d005d06cd4e33683fba9135cae09e">VEG_ASSERT</a></div><div class="ttdeci">#define VEG_ASSERT(...)</div><div class="ttdef"><b>Definition:</b> <a href="assert__impl_8hpp_source.html#l00010">assert_impl.hpp:10</a></div></div>
 <div class="ttc" id="adense_8hpp_html"><div class="ttname"><a href="dense_8hpp.html">dense.hpp</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a05d28afe2f747a57c03ae08a18e6d6a9"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a05d28afe2f747a57c03ae08a18e6d6a9">proxsuite::proxqp::dense::negative_part</a></div><div class="ttdeci">auto negative_part(T const &amp;expr) LDLT_DEDUCE_RET((expr.array()&lt; 0).select(expr</div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a9b4954581a819038c64d0a69d8e8ba91"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4954581a819038c64d0a69d8e8ba91">proxsuite::proxqp::dense::positive_part</a></div><div class="ttdeci">auto positive_part(T const &amp;expr) LDLT_DEDUCE_RET((expr.array() &gt; 0).select(expr</div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a3faae71fad6f45f688688dd282ccf78b"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">proxsuite::helpers::positive_part</a></div><div class="ttdeci">auto positive_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array() &gt; 0).select(expr</div><div class="ttdoc">Returns the positive part of an expression.</div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a8252ca5df165a457499dd65f0bd89e65"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">proxsuite::helpers::negative_part</a></div><div class="ttdeci">auto negative_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array()&lt; 0).select(expr</div><div class="ttdoc">Returns the negative part of an expression.</div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1sparse_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with sparse backend.</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00090">wrapper.hpp:91</a></div></div>
 <div class="ttc" id="autil_2dbg_8hpp_html"><div class="ttname"><a href="util_2dbg_8hpp.html">dbg.hpp</a></div></div>
 </div><!-- fragment --> 

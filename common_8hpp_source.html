@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.9</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -127,10 +127,43 @@ $(document).ready(function(){initNavTree('common_8hpp_source.html',''); initResi
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>  }</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>};</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>} <span class="comment">// helpers</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>} <span class="comment">// proxsuite</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif </span><span class="comment">// ifndef PROXSUITE_HELPERS_COMMON_HPP</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">   27</a></span><span class="preprocessor">#define PROXSUITE_DEDUCE_RET(...)                                              \</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">  noexcept(noexcept(__VA_ARGS__))                                              \</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">    -&gt;typename std::remove_const&lt;decltype(__VA_ARGS__)&gt;::type                  \</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">  {                                                                            \</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">    return __VA_ARGS__;                                                        \</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">  }                                                                            \</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">  static_assert(true, &quot;.&quot;</span>)</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keyword">auto</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127">   38</a></span><a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127">at_most</a>(T <span class="keyword">const</span>&amp; expr, <span class="keyword">const</span> Scalar value) <a class="code hl_define" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>(</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  (expr.array() &lt; value).select(expr, T::Constant(expr.rows(), value)));</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">auto</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86">   44</a></span><a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86">at_least</a>(T <span class="keyword">const</span>&amp; expr, <span class="keyword">const</span> Scalar value) <a class="code hl_define" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>(</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  (expr.array() &gt; value).select(expr, T::Constant(expr.rows(), value)));</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keyword">auto</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">   50</a></span><a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">positive_part</a>(T <span class="keyword">const</span>&amp; expr)</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  <a class="code hl_define" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array() &gt; 0).select(expr, T::Zero(expr.rows())));</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keyword">auto</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">   56</a></span><a class="code hl_function" href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">negative_part</a>(T <span class="keyword">const</span>&amp; expr)</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  <a class="code hl_define" href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a>((expr.array() &lt; 0).select(expr, T::Zero(expr.rows())));</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>} <span class="comment">// helpers</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>} <span class="comment">// proxsuite</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="preprocessor">#endif </span><span class="comment">// ifndef PROXSUITE_HELPERS_COMMON_HPP</span></div>
+<div class="ttc" id="acommon_8hpp_html_a9d2496890d1f3fb611974cfc9f9c749e"><div class="ttname"><a href="common_8hpp.html#a9d2496890d1f3fb611974cfc9f9c749e">PROXSUITE_DEDUCE_RET</a></div><div class="ttdeci">#define PROXSUITE_DEDUCE_RET(...)</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00027">common.hpp:27</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a3faae71fad6f45f688688dd282ccf78b"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">proxsuite::helpers::positive_part</a></div><div class="ttdeci">auto positive_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array() &gt; 0).select(expr</div><div class="ttdoc">Returns the positive part of an expression.</div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a67d00d650a55b2443681bfca72f12b86"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86">proxsuite::helpers::at_least</a></div><div class="ttdeci">auto at_least(T const &amp;expr, const Scalar value) PROXSUITE_DEDUCE_RET((expr.array() &gt; value).select(expr</div><div class="ttdoc">Returns the part of the expression which is greater than value.</div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a81683551c89b385e60e8fd5a506ce127"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127">proxsuite::helpers::at_most</a></div><div class="ttdeci">auto at_most(T const &amp;expr, const Scalar value) PROXSUITE_DEDUCE_RET((expr.array()&lt; value).select(expr</div><div class="ttdoc">Returns the part of the expression which is lower than value.</div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a8252ca5df165a457499dd65f0bd89e65"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">proxsuite::helpers::negative_part</a></div><div class="ttdeci">auto negative_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array()&lt; 0).select(expr</div><div class="ttdoc">Returns the negative part of an expression.</div></div>
 <div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00014">common.hpp:14</a></div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace.</div></div>
 <div class="ttc" id="astructproxsuite_1_1helpers_1_1infinite__bound_html"><div class="ttname"><a href="structproxsuite_1_1helpers_1_1infinite__bound.html">proxsuite::helpers::infinite_bound</a></div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00018">common.hpp:19</a></div></div>

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.8</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.9</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -252,12 +252,6 @@ Functions</h2></td></tr>
 <tr class="memitem:af0a58f4db1dc7eecef0979559b597876"><td class="memTemplParams" colspan="2">template&lt;typename Derived &gt; </td></tr>
 <tr class="memitem:af0a58f4db1dc7eecef0979559b597876"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#af0a58f4db1dc7eecef0979559b597876">save_data</a> (const std::string &amp;filename, const ::Eigen::MatrixBase&lt; Derived &gt; &amp;mat)</td></tr>
 <tr class="separator:af0a58f4db1dc7eecef0979559b597876"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b4954581a819038c64d0a69d8e8ba91"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9b4954581a819038c64d0a69d8e8ba91"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a9b4954581a819038c64d0a69d8e8ba91">positive_part</a> (T const &amp;expr) <a class="el" href="dense_2utils_8hpp.html#aeb62b65fbbf11de4cfad8e0bfb33639b">LDLT_DEDUCE_RET</a>((expr.array() &gt; 0).select(expr</td></tr>
-<tr class="separator:a9b4954581a819038c64d0a69d8e8ba91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a05d28afe2f747a57c03ae08a18e6d6a9">negative_part</a> (T const &amp;expr) <a class="el" href="dense_2utils_8hpp.html#aeb62b65fbbf11de4cfad8e0bfb33639b">LDLT_DEDUCE_RET</a>((expr.array()&lt; 0).select(expr</td></tr>
-<tr class="separator:a05d28afe2f747a57c03ae08a18e6d6a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf6239bdbd99a56df7417fd11329e59d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aaf6239bdbd99a56df7417fd11329e59d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#aaf6239bdbd99a56df7417fd11329e59d">global_primal_residual</a> (const <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">Model</a>&lt; T &gt; &amp;qpmodel, const <a class="el" href="structproxsuite_1_1proxqp_1_1Results.html">Results</a>&lt; T &gt; &amp;qpresults, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html">Workspace</a>&lt; T &gt; &amp;qpwork, const <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html">preconditioner::RuizEquilibration</a>&lt; T &gt; &amp;ruiz, T &amp;primal_feasibility_lhs, T &amp;primal_feasibility_eq_rhs_0, T &amp;primal_feasibility_in_rhs_0, T &amp;primal_feasibility_eq_lhs, T &amp;primal_feasibility_in_lhs)</td></tr>
 <tr class="separator:aaf6239bdbd99a56df7417fd11329e59d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1807,7 +1801,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00030">30</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00033">33</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -1847,47 +1841,7 @@ template&lt;typename Derived &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00100">100</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a9b4954581a819038c64d0a69d8e8ba91" name="a9b4954581a819038c64d0a69d8e8ba91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b4954581a819038c64d0a69d8e8ba91">&#9670;&#160;</a></span>positive_part()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto proxsuite::proxqp::dense::positive_part </td>
-          <td>(</td>
-          <td class="paramtype">T const &amp;&#160;</td>
-          <td class="paramname"><em>expr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a05d28afe2f747a57c03ae08a18e6d6a9" name="a05d28afe2f747a57c03ae08a18e6d6a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05d28afe2f747a57c03ae08a18e6d6a9">&#9670;&#160;</a></span>negative_part()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto proxsuite::proxqp::dense::negative_part </td>
-          <td>(</td>
-          <td class="paramtype">T const &amp;&#160;</td>
-          <td class="paramname"><em>expr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00103">103</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -1976,7 +1930,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00149">149</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00136">136</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -2051,7 +2005,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00213">213</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00200">200</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -2133,7 +2087,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00271">271</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00258">258</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
@@ -2227,7 +2181,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00346">346</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2utils_8hpp_source.html#l00333">333</a> of file <a class="el" href="dense_2utils_8hpp_source.html">utils.hpp</a>.</p>
 
 </div>
 </div>
