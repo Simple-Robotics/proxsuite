@@ -376,7 +376,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
         file_path = os.path.dirname(os.path.realpath(__file__))
         data_path = os.path.join(file_path, "..", "data")
-        m = spio.loadmat(os.path.join(data_path, "qpsolvers_data.mat"), squeeze_me=True)
+        m = spio.loadmat(os.path.join(data_path, "simple_qp_with_inifinity_lower_bound.mat"), squeeze_me=True)
         P = m["P"].astype(float)
         q = m["q"].astype(float)
         A = m["A"].astype(float).reshape((1, 3))
