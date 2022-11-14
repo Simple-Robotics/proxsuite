@@ -5,7 +5,7 @@
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 
-using namespace proxsuite::proxqp;
+using namespace proxsuite;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -84,8 +84,10 @@ char const* files[] = {
 
 TEST_CASE("sparse maros meszaros using the API")
 {
+  using isize = proxsuite::proxqp::sparse::isize;
   using T = double;
   using I = mat_int32_t;
+
   for (auto const* file : files) {
     auto qp_raw = load_qp(file);
     isize n = qp_raw.P.rows();
@@ -151,8 +153,8 @@ TEST_CASE("sparse maros meszaros using the API")
           proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x -
                                                b),
           proxsuite::proxqp::dense::infty_norm(
-            sparse::detail::positive_part(CT.transpose() * qp.results.x - u) +
-            sparse::detail::negative_part(CT.transpose() * qp.results.x - l)));
+            helpers::positive_part(CT.transpose() * qp.results.x - u) +
+            helpers::negative_part(CT.transpose() * qp.results.x - l)));
         std::cout << "primal residual " << std::max(prim_eq, prim_in)
                   << std::endl;
       }
@@ -179,8 +181,8 @@ TEST_CASE("sparse maros meszaros using the API")
       prim_in = std::max(
         proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x - b),
         proxsuite::proxqp::dense::infty_norm(
-          sparse::detail::positive_part(CT.transpose() * qp.results.x - u) +
-          sparse::detail::negative_part(CT.transpose() * qp.results.x - l)));
+          helpers::positive_part(CT.transpose() * qp.results.x - u) +
+          helpers::negative_part(CT.transpose() * qp.results.x - l)));
       std::cout << "primal residual " << std::max(prim_eq, prim_in)
                 << std::endl;
     }

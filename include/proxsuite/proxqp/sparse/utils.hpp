@@ -6,6 +6,11 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_UTILS_HPP
 #define PROXSUITE_PROXQP_SPARSE_UTILS_HPP
 
+#include <iostream>
+#include <Eigen/IterativeLinearSolvers>
+#include <unsupported/Eigen/IterativeSolvers>
+
+#include "proxsuite/helpers/common.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
 #include <proxsuite/linalg/sparse/factorize.hpp>
@@ -20,10 +25,6 @@
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/identity.hpp"
-
-#include <iostream>
-#include <Eigen/IterativeLinearSolvers>
-#include <unsupported/Eigen/IterativeSolvers>
 
 namespace proxsuite {
 namespace proxqp {
@@ -98,15 +99,8 @@ print_setup_header(const Settings<T>& settings,
         << std::endl;
   }
 }
+
 namespace detail {
-template<typename T>
-auto
-positive_part(T const& expr)
-  VEG_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template<typename T>
-auto
-negative_part(T const& expr)
-  VEG_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
 template<typename T, typename I>
 VEG_NO_INLINE void
@@ -500,8 +494,8 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
   T eq_inf = dy.to_eigen().dot(qp_scaled.b.to_eigen());
-  T in_inf = positive_part(dz.to_eigen()).dot(qp_scaled.u.to_eigen()) -
-             positive_part(-dz.to_eigen()).dot(qp_scaled.l.to_eigen());
+  T in_inf = helpers::positive_part(dz.to_eigen()).dot(qp_scaled.u.to_eigen()) -
+             helpers::negative_part(dz.to_eigen()).dot(qp_scaled.l.to_eigen());
   ruiz.unscale_dual_in_place_eq(dy);
   ruiz.unscale_dual_in_place_in(dz);
 
@@ -657,27 +651,36 @@ unscaled_primal_dual_residual(
     precond.unscale_primal_in_place({ proxqp::from_eigen, x_e });
     results.info.duality_gap = x_e.dot(data.g); // contains gTx
     rhs_duality_gap = std::abs(results.info.duality_gap);
-    T xHx = (tmp).dot(x_e);
+
+    const T xHx = (tmp).dot(x_e);
     results.info.duality_gap += xHx;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
     tmp += data.g; // contains now Hx+g
     precond.scale_primal_in_place({ proxqp::from_eigen, x_e });
 
     precond.unscale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
-    T by = (data.b).dot(y_e);
+    const T by = (data.b).dot(y_e);
     results.info.duality_gap += by;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
     precond.scale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
+
     precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
-    T zl = (data.l).dot(detail::negative_part(z_e));
+
+    const T zl = helpers::negative_part(z_e).dot(
+      helpers::at_least(data.l, -helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zl;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
-    T zu = (data.u).dot(detail::positive_part(z_e));
+
+    const T zu = helpers::positive_part(z_e).dot(
+      helpers::at_most(data.u, helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
+
     precond.scale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
+
     results.info.duality_gap /=
       sqrt_max_dim; // in order to get an a-dimensional duality gap
+    rhs_duality_gap /= sqrt_max_dim;
   }
 
   {
@@ -719,8 +722,8 @@ unscaled_primal_dual_residual(
   auto l = data.l;
   auto u = data.u;
   primal_residual_in_scaled_lo =
-    positive_part(primal_residual_in_scaled_up - u) +
-    negative_part(primal_residual_in_scaled_up - l);
+    helpers::positive_part(primal_residual_in_scaled_up - u) +
+    helpers::negative_part(primal_residual_in_scaled_up - l);
 
   primal_residual_eq_scaled -= b;
   T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);

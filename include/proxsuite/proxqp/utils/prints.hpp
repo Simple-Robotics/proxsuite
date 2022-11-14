@@ -31,10 +31,10 @@ print_preambule()
 {
   print_line();
   std::cout
-    << "                              ProxQP  -  Primal Dual Proximal QP "
+    << "                              ProxQP - Primal-Dual Proximal QP "
        "Solver\n"
     << "     (c) Antoine Bambade, Sarah El Kazdadi, Fabian Schramm, Adrien "
-       "Taylor, "
+       "Taylor, and "
        "Justin Carpentier\n"
     << "                                         Inria Paris 2022        \n"
     << std::endl;

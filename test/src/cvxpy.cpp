@@ -42,8 +42,8 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
   Results<T> results = dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
-  T pri_res = (dense::positive_part(C * results.x - u) +
-               dense::negative_part(C * results.x - l))
+  T pri_res = (helpers::positive_part(C * results.x - u) +
+               helpers::negative_part(C * results.x - l))
                 .lpNorm<Eigen::Infinity>();
   T dua_res =
     (H * results.x + g + C.transpose() * results.z).lpNorm<Eigen::Infinity>();
@@ -82,8 +82,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
   Results<T> results = dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
-  T pri_res = (dense::positive_part(C * results.x - u) +
-               dense::negative_part(C * results.x - l))
+  T pri_res = (helpers::positive_part(C * results.x - u) +
+               helpers::negative_part(C * results.x - l))
                 .lpNorm<Eigen::Infinity>();
   T dua_res =
     (H * results.x + g + C.transpose() * results.z).lpNorm<Eigen::Infinity>();
@@ -140,8 +140,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
   z << 0.0;
   qp.solve(x, nullopt, z);
 
-  T pri_res = (dense::positive_part(C * qp.results.x - u) +
-               dense::negative_part(C * qp.results.x - l))
+  T pri_res = (helpers::positive_part(C * qp.results.x - u) +
+               helpers::negative_part(C * qp.results.x - l))
                 .lpNorm<Eigen::Infinity>();
   T dua_res = (H * qp.results.x + g + C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();

@@ -43,8 +43,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        0);
 
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)
@@ -93,8 +93,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        T(1.E-7));
   DOCTEST_CHECK(results.info.rho == T(1.E-7));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)
@@ -146,8 +146,8 @@ DOCTEST_TEST_CASE(
                                        T(1.E-2),
                                        T(1.E-2));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)
@@ -187,8 +187,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   Results<T> results = dense::solve<T>(
     qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs, 0);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)
@@ -240,8 +240,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        nullopt,
                                        verbose);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)
@@ -297,8 +297,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                        nullopt,
                                        initial_guess);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                       (dense::positive_part(qp.C * results.x - qp.u) +
-                        dense::negative_part(qp.C * results.x - qp.l))
+                       (helpers::positive_part(qp.C * results.x - qp.u) +
+                        helpers::negative_part(qp.C * results.x - qp.l))
                          .lpNorm<Eigen::Infinity>());
   T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y +
                qp.C.transpose() * results.z)

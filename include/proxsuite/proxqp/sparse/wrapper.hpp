@@ -68,8 +68,8 @@ p); auto g = ::proxsuite::proxqp::test::rand::vector_rand<T>(n); auto A =
         // Verify solution accuracy
         T pri_res = std::max(
                         (qp.A * Qp.results.x - qp.b).lpNorm<Eigen::Infinity>(),
-                        (proxqp::dense::positive_part(qp.C * Qp.results.x -
-qp.u) + proxqp::dense::negative_part(qp.C * Qp.results.x - qp.l))
+                        (helpers::positive_part(qp.C * Qp.results.x -
+qp.u) + helpers::negative_part(qp.C * Qp.results.x - qp.l))
                                         .lpNorm<Eigen::Infinity>());
         T dua_res = (qp.H * Qp.results.x + qp.g + qp.A.transpose() *
 Qp.results.y + qp.C.transpose() * Qp.results.z) .lpNorm<Eigen::Infinity>();
