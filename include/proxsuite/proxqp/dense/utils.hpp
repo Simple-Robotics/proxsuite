@@ -119,10 +119,25 @@ save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
     return __VA_ARGS__;                                                        \
   }                                                                            \
   static_assert(true, ".")
+
+/// @brief \brief Returns the part of the expression which is lower than value
+template<typename T, typename Scalar>
+auto
+lower_than(T const& expr, const Scalar value)
+  LDLT_DEDUCE_RET((expr.array() < value).select(expr, T::Zero(expr.rows())));
+
+/// @brief \brief Returns the part of the expression which is greater than value
+template<typename T, typename Scalar>
+auto
+greater_than(T const& expr, const Scalar value)
+  LDLT_DEDUCE_RET((expr.array() > value).select(expr, T::Zero(expr.rows())));
+
+/// @brief \brief Returns the positive part of an expression
 template<typename T>
 auto
 positive_part(T const& expr)
   LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
+/// @brief \brief Returns the negative part of an expression
 template<typename T>
 auto
 negative_part(T const& expr)
