@@ -102,30 +102,6 @@ print_setup_header(const Settings<T>& settings,
 
 namespace detail {
 
-/// @brief \brief Returns the part of the expression which is lower than value
-template<typename T, typename Scalar>
-auto
-lower_than(T const& expr, const Scalar value)
-  VEG_DEDUCE_RET((expr.array() < value).select(expr, T::Zero(expr.rows())));
-
-/// @brief \brief Returns the part of the expression which is greater than value
-template<typename T, typename Scalar>
-auto
-greater_than(T const& expr, const Scalar value)
-  VEG_DEDUCE_RET((expr.array() > value).select(expr, T::Zero(expr.rows())));
-
-/// @brief \brief Returns the positive part of an expression
-template<typename T>
-auto
-positive_part(T const& expr)
-  VEG_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-
-/// @brief \brief Returns the negative part of an expression
-template<typename T>
-auto
-negative_part(T const& expr)
-  VEG_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
-
 template<typename T, typename I>
 VEG_NO_INLINE void
 noalias_gevmmv_add_impl( //
@@ -518,8 +494,8 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
   T eq_inf = dy.to_eigen().dot(qp_scaled.b.to_eigen());
-  T in_inf = positive_part(dz.to_eigen()).dot(qp_scaled.u.to_eigen()) -
-             positive_part(-dz.to_eigen()).dot(qp_scaled.l.to_eigen());
+  T in_inf = helpers::positive_part(dz.to_eigen()).dot(qp_scaled.u.to_eigen()) -
+             helpers::negative_part(dz.to_eigen()).dot(qp_scaled.l.to_eigen());
   ruiz.unscale_dual_in_place_eq(dy);
   ruiz.unscale_dual_in_place_in(dz);
 
@@ -690,13 +666,13 @@ unscaled_primal_dual_residual(
 
     precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
 
-    const T zl = negative_part(z_e).dot(
-      greater_than(data.l, -helpers::infinite_bound<T>::value()));
+    const T zl = helpers::negative_part(z_e).dot(
+      helpers::greater_than(data.l, -helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zl;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
 
-    const T zu = positive_part(z_e).dot(
-      lower_than(data.u, helpers::infinite_bound<T>::value()));
+    const T zu = helpers::positive_part(z_e).dot(
+      helpers::lower_than(data.u, helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
 
@@ -746,8 +722,8 @@ unscaled_primal_dual_residual(
   auto l = data.l;
   auto u = data.u;
   primal_residual_in_scaled_lo =
-    positive_part(primal_residual_in_scaled_up - u) +
-    negative_part(primal_residual_in_scaled_up - l);
+    helpers::positive_part(primal_residual_in_scaled_up - u) +
+    helpers::negative_part(primal_residual_in_scaled_up - l);
 
   primal_residual_eq_scaled -= b;
   T primal_feasibility_eq_lhs = infty_norm(primal_residual_eq_scaled);

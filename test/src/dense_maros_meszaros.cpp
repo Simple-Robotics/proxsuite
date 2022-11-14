@@ -136,8 +136,8 @@ TEST_CASE("dense maros meszaros using the api")
 
         T prim_eq = proxqp::dense::infty_norm(A * x - b);
         T prim_in =
-          proxqp::dense::infty_norm(proxqp::dense::positive_part(C * x - u) +
-                                    proxqp::dense::negative_part(C * x - l));
+          proxqp::dense::infty_norm(helpers::positive_part(C * x - u) +
+                                    helpers::negative_part(C * x - l));
         std::cout << "primal residual " << std::max(prim_eq, prim_in)
                   << std::endl;
         std::cout << "dual residual "

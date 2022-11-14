@@ -1136,8 +1136,8 @@ qp_solve(Results<T>& results,
           primal_residual_in_scaled_up += alpha * Cdx;
 
           T err_in = std::max({
-            (infty_norm(detail::negative_part(primal_residual_in_scaled_lo) +
-                        detail::positive_part(primal_residual_in_scaled_up) -
+            (infty_norm(helpers::negative_part(primal_residual_in_scaled_lo) +
+                        helpers::positive_part(primal_residual_in_scaled_up) -
                         results.info.mu_in * z_e)),
             (infty_norm(primal_residual_eq_scaled)),
             (infty_norm(dual_residual_scaled)),

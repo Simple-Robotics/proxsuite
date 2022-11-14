@@ -44,8 +44,8 @@ DOCTEST_TEST_CASE(
 
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -94,8 +94,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -144,8 +144,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -198,8 +198,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -253,8 +253,8 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
     qp.solve();
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +

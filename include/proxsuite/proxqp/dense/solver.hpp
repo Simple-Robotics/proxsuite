@@ -459,8 +459,8 @@ compute_inner_loop_saddle_point(const Model<T>& qpmodel,
 {
 
   qpwork.active_part_z =
-    positive_part(qpwork.primal_residual_in_scaled_up) +
-    negative_part(qpwork.primal_residual_in_scaled_low) -
+    helpers::positive_part(qpwork.primal_residual_in_scaled_up) +
+    helpers::negative_part(qpwork.primal_residual_in_scaled_low) -
     qpresults.z * qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
                                         // + [Cx-l+z_prev*mu_in]- - z*mu_in
 
