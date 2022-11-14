@@ -6,6 +6,11 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_UTILS_HPP
 #define PROXSUITE_PROXQP_SPARSE_UTILS_HPP
 
+#include <iostream>
+#include <Eigen/IterativeLinearSolvers>
+#include <unsupported/Eigen/IterativeSolvers>
+
+#include "proxsuite/helpers/common.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
 #include <proxsuite/linalg/sparse/factorize.hpp>
@@ -20,10 +25,6 @@
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/identity.hpp"
-
-#include <iostream>
-#include <Eigen/IterativeLinearSolvers>
-#include <unsupported/Eigen/IterativeSolvers>
 
 namespace proxsuite {
 namespace proxqp {
@@ -98,11 +99,28 @@ print_setup_header(const Settings<T>& settings,
         << std::endl;
   }
 }
+
 namespace detail {
+
+/// @brief \brief Returns the part of the expression which is lower than value
+template<typename T, typename Scalar>
+auto
+lower_than(T const& expr, const Scalar value)
+  VEG_DEDUCE_RET((expr.array() < value).select(expr, T::Zero(expr.rows())));
+
+/// @brief \brief Returns the part of the expression which is greater than value
+template<typename T, typename Scalar>
+auto
+greater_than(T const& expr, const Scalar value)
+  VEG_DEDUCE_RET((expr.array() > value).select(expr, T::Zero(expr.rows())));
+
+/// @brief \brief Returns the positive part of an expression
 template<typename T>
 auto
 positive_part(T const& expr)
   VEG_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
+
+/// @brief \brief Returns the negative part of an expression
 template<typename T>
 auto
 negative_part(T const& expr)
@@ -657,27 +675,36 @@ unscaled_primal_dual_residual(
     precond.unscale_primal_in_place({ proxqp::from_eigen, x_e });
     results.info.duality_gap = x_e.dot(data.g); // contains gTx
     rhs_duality_gap = std::abs(results.info.duality_gap);
-    T xHx = (tmp).dot(x_e);
+
+    const T xHx = (tmp).dot(x_e);
     results.info.duality_gap += xHx;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
     tmp += data.g; // contains now Hx+g
     precond.scale_primal_in_place({ proxqp::from_eigen, x_e });
 
     precond.unscale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
-    T by = (data.b).dot(y_e);
+    const T by = (data.b).dot(y_e);
     results.info.duality_gap += by;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
     precond.scale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
+
     precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
-    T zl = (data.l).dot(detail::negative_part(z_e));
+
+    const T zl = negative_part(z_e).dot(
+      greater_than(data.l, -helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zl;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
-    T zu = (data.u).dot(detail::positive_part(z_e));
+
+    const T zu = positive_part(z_e).dot(
+      lower_than(data.u, helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
+
     precond.scale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
+
     results.info.duality_gap /=
       sqrt_max_dim; // in order to get an a-dimensional duality gap
+    rhs_duality_gap /= sqrt_max_dim;
   }
 
   {
