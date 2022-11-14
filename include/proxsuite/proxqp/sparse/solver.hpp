@@ -7,6 +7,8 @@
 #define PROXSUITE_PROXQP_SPARSE_SOLVER_HPP
 
 #include <chrono>
+#include <cmath>
+
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
 #include <proxsuite/linalg/sparse/factorize.hpp>
@@ -1408,6 +1410,10 @@ qp_solve(Results<T>& results,
     std::cout << "--------------------------------------------------------"
               << std::endl;
   }
+
+  assert(!std::isnan(results.info.pri_res));
+  assert(!std::isnan(results.info.dua_res));
+  assert(!std::isnan(results.info.duality_gap));
 
   work.set_dirty();
 }

@@ -1317,6 +1317,11 @@ qp_solve( //
               << std::endl;
   }
   qpwork.dirty = true;
+
+  assert(!std::isnan(qpresults.info.pri_res));
+  assert(!std::isnan(qpresults.info.dua_res));
+  assert(!std::isnan(qpresults.info.duality_gap));
+
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
