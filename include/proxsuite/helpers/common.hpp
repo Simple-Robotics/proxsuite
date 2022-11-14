@@ -35,14 +35,14 @@ struct infinite_bound
 /// @brief \brief Returns the part of the expression which is lower than value
 template<typename T, typename Scalar>
 auto
-lower_than(T const& expr, const Scalar value) PROXSUITE_DEDUCE_RET(
-  (expr.array() < value).select(expr, T::Zero(expr.rows())));
+at_most(T const& expr, const Scalar value) PROXSUITE_DEDUCE_RET(
+  (expr.array() < value).select(expr, T::Constant(expr.rows(), value)));
 
 /// @brief \brief Returns the part of the expression which is greater than value
 template<typename T, typename Scalar>
 auto
-greater_than(T const& expr, const Scalar value) PROXSUITE_DEDUCE_RET(
-  (expr.array() > value).select(expr, T::Zero(expr.rows())));
+at_least(T const& expr, const Scalar value) PROXSUITE_DEDUCE_RET(
+  (expr.array() > value).select(expr, T::Constant(expr.rows(), value)));
 
 /// @brief \brief Returns the positive part of an expression
 template<typename T>

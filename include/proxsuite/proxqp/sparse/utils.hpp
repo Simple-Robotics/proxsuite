@@ -667,12 +667,12 @@ unscaled_primal_dual_residual(
     precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
 
     const T zl = helpers::negative_part(z_e).dot(
-      helpers::greater_than(data.l, -helpers::infinite_bound<T>::value()));
+      helpers::at_least(data.l, -helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zl;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
 
     const T zu = helpers::positive_part(z_e).dot(
-      helpers::lower_than(data.u, helpers::infinite_bound<T>::value()));
+      helpers::at_most(data.u, helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
 

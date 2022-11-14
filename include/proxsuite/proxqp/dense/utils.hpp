@@ -398,13 +398,13 @@ global_dual_residual(Results<T>& qpresults,
 
   const T zu =
     helpers::positive_part(qpresults.z)
-      .dot(helpers::lower_than(qpmodel.u, helpers::infinite_bound<T>::value()));
+      .dot(helpers::at_most(qpmodel.u, helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
   duality_gap += zu;
 
-  const T zl = helpers::negative_part(qpresults.z)
-                 .dot(helpers::greater_than(
-                   qpmodel.l, -helpers::infinite_bound<T>::value()));
+  const T zl =
+    helpers::negative_part(qpresults.z)
+      .dot(helpers::at_least(qpmodel.l, -helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
   duality_gap += zl;
 
