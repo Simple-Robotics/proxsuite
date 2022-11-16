@@ -37,6 +37,12 @@ jobs:
             cxx_std: 17
             continue_on_error: true
 
+        exclude:
+          - name: macos-latest
+            build_type: Debug
+            cxx_std: 17
+            continue_on_error: false
+
     steps:
     - uses: actions/checkout@v2
 
