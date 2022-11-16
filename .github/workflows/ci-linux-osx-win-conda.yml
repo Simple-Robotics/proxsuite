@@ -1,5 +1,4 @@
 name: CI - Linux/OSX/Windows - Conda
-
 on:
   push:
   pull_request:
@@ -108,7 +107,6 @@ jobs:
 
     - name: Configure [Conda/Windows-2019]
       if: contains(matrix.os, 'windows-2019')
-      continue-on-error: ${{ matrix.continue_on_error }}
       shell: bash -l {0}
       run: |
         echo $(where ccache)
@@ -146,6 +144,7 @@ jobs:
         cmake --install . --config ${{ matrix.build_type }}
 
     - name: Test [Conda]
+      continue-on-error: ${{ matrix.continue_on_error }}
       shell: bash -l {0}
       run: |
         find $CONDA_PREFIX -name proxsuite*
