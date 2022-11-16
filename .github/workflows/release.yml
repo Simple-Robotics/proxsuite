@@ -1,7 +1,7 @@
 name: Release on GitHub & PyPI
 
 on:
-  # pull_request:
+  pull_request:
   release:
     types:
       - published
