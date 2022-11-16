@@ -13,24 +13,25 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
-        name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
+        # name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
+        name: [macos-latest]
         cxx_std: [17]
         continue_on_error: [false]
 
         include:
-          - name: ubuntu-latest
-            os: ubuntu-latest
+          # - name: ubuntu-latest
+          #   os: ubuntu-latest
           - name: macos-latest
             os: macos-latest
-          - name: windows-2019-clang-cl
-            os: windows-2019
-            compiler: clang-cl
-          - name: windows-latest
-            os: windows-latest
-          - name: macos-latest
-            os: macos-latest
-            build_type: Release
-            cxx_std: 14
+          # - name: windows-2019-clang-cl
+          #   os: windows-2019
+          #   compiler: clang-cl
+          # - name: windows-latest
+          #   os: windows-latest
+          # - name: macos-latest
+          #   os: macos-latest
+          #   build_type: Release
+          #   cxx_std: 14
           - name: macos-latest
             os: macos-latest
             build_type: Debug
