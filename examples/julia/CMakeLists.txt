@@ -1,5 +1,3 @@
-add_custom_target(example-jl)
-
 file(GLOB_RECURSE ${PROJECT_NAME}_JULIA_EXAMPLES *.jl)
 
 foreach(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})

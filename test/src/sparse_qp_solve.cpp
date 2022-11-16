@@ -78,11 +78,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -136,11 +135,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -197,11 +195,10 @@ DOCTEST_TEST_CASE(
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -268,11 +265,10 @@ DOCTEST_TEST_CASE(
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
     DOCTEST_CHECK(results.info.sparse_backend == SparseBackend::MatrixFree);
@@ -318,11 +314,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -379,11 +374,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
@@ -445,11 +439,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T dua_res = proxqp::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
-    T pri_res =
-      std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
-               proxqp::dense::infty_norm(
-                 sparse::detail::positive_part(qp.C * results.x - qp.u) +
-                 sparse::detail::negative_part(qp.C * results.x - qp.l)));
+    T pri_res = std::max(proxqp::dense::infty_norm(qp.A * results.x - qp.b),
+                         proxqp::dense::infty_norm(
+                           helpers::positive_part(qp.C * results.x - qp.u) +
+                           helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 

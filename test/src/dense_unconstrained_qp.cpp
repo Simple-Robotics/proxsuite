@@ -40,8 +40,8 @@ DOCTEST_TEST_CASE(
 
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -93,8 +93,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-      (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-       proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                  qp_random.A.transpose() * qp.results.y +
@@ -141,8 +141,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
       .lpNorm<Eigen::Infinity>());
   T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                qp_random.A.transpose() * qp.results.y +
@@ -189,8 +189,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (proxqp::dense::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     proxqp::dense::negative_part(qp_random.C * qp.results.x - qp_random.l))
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
       .lpNorm<Eigen::Infinity>());
   T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                qp_random.A.transpose() * qp.results.y +

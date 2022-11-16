@@ -264,7 +264,7 @@ struct RuizEquilibration
                              i64 max_iter_ = 10,
                              Symmetry sym_ = Symmetry::general,
                              std::ostream* logger = nullptr)
-    : delta(dim_ + n_eq_in)
+    : delta(Vec<T>::Ones(dim_ + n_eq_in))
     , c(1)
     , dim(dim_)
     , epsilon(epsilon_)
@@ -272,12 +272,11 @@ struct RuizEquilibration
     , sym(sym_)
     , logger_ptr(logger)
   {
-    delta.setOnes();
   }
   /*!
    * Prints ruiz equilibrator scaling variables.
    */
-  void print()
+  void print() const
   {
     // CHANGE: endl to newline
     *logger_ptr << " delta : " << delta << "\n\n";
@@ -396,9 +395,9 @@ struct RuizEquilibration
    * @param tmp_delta_preallocated temporary variable used for performing the
    * equilibration.
    */
-  void scale_qp(QpViewBox<T> qp,
+  void scale_qp(const QpViewBox<T> qp,
                 QpViewBoxMut<T> scaled_qp,
-                VectorViewMut<T> tmp_delta_preallocated)
+                VectorViewMut<T> tmp_delta_preallocated) const
   {
 
     /*
@@ -421,7 +420,7 @@ struct RuizEquilibration
    * Scales a primal variable in place.
    * @param primal primal variable.
    */
-  void scale_primal_in_place(VectorViewMut<T> primal)
+  void scale_primal_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() /= delta.array().head(dim);
   }
@@ -430,7 +429,7 @@ struct RuizEquilibration
    * @param dual dual variable (includes all equalities and inequalities
    * constraints).
    */
-  void scale_dual_in_place(VectorViewMut<T> dual)
+  void scale_dual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() /
                               delta.tail(delta.size() - dim).array() * c;
@@ -439,7 +438,7 @@ struct RuizEquilibration
    * Scales a dual equality constrained variable in place.
    * @param dual dual variable (includes equalities constraints only).
    */
-  void scale_dual_in_place_eq(VectorViewMut<T> dual)
+  void scale_dual_in_place_eq(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() =
       dual.as_const().to_eigen().array() /
@@ -449,7 +448,7 @@ struct RuizEquilibration
    * Scales a dual inequality constrained variable in place.
    * @param dual dual variable (includes inequalities constraints only).
    */
-  void scale_dual_in_place_in(VectorViewMut<T> dual)
+  void scale_dual_in_place_in(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() /
                               delta.tail(dual.to_eigen().size()).array() * c;
@@ -458,7 +457,7 @@ struct RuizEquilibration
    * Unscales a primal variable in place.
    * @param primal primal variable.
    */
-  void unscale_primal_in_place(VectorViewMut<T> primal)
+  void unscale_primal_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() *= delta.array().head(dim);
   }
@@ -466,7 +465,7 @@ struct RuizEquilibration
    * Unscales a dual variable in place.
    * @param dual dual variable (includes equalities constraints only).
    */
-  void unscale_dual_in_place(VectorViewMut<T> dual)
+  void unscale_dual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() *
                               delta.tail(delta.size() - dim).array() / c;
@@ -475,7 +474,7 @@ struct RuizEquilibration
    * Unscales a dual equality constrained variable in place.
    * @param dual dual variable (includes equalities constraints only).
    */
-  void unscale_dual_in_place_eq(VectorViewMut<T> dual)
+  void unscale_dual_in_place_eq(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() =
       dual.as_const().to_eigen().array() *
@@ -485,7 +484,7 @@ struct RuizEquilibration
    * Unscales a dual inequality constrained variable in place.
    * @param dual dual variable (includes inequalities constraints only).
    */
-  void unscale_dual_in_place_in(VectorViewMut<T> dual)
+  void unscale_dual_in_place_in(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() = dual.as_const().to_eigen().array() *
                               delta.tail(dual.to_eigen().size()).array() / c;
@@ -496,7 +495,7 @@ struct RuizEquilibration
    * @param primal primal residual (includes equality and inequality
    * constraints)
    */
-  void scale_primal_residual_in_place(VectorViewMut<T> primal)
+  void scale_primal_residual_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() *= delta.tail(delta.size() - dim).array();
   }
@@ -505,7 +504,7 @@ struct RuizEquilibration
    * Scales a primal equality constraint residual in place.
    * @param primal primal equality constraint residual.
    */
-  void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq)
+  void scale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) const
   {
     primal_eq.to_eigen().array() *=
       delta.middleRows(dim, primal_eq.to_eigen().size()).array();
@@ -514,7 +513,7 @@ struct RuizEquilibration
    * Scales a primal inequality constraint residual in place.
    * @param primal primal inequality constraint residual.
    */
-  void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in)
+  void scale_primal_residual_in_place_in(VectorViewMut<T> primal_in) const
   {
     primal_in.to_eigen().array() *=
       delta.tail(primal_in.to_eigen().size()).array();
@@ -523,7 +522,7 @@ struct RuizEquilibration
    * Scales a dual residual in place.
    * @param dual dual residual.
    */
-  void scale_dual_residual_in_place(VectorViewMut<T> dual)
+  void scale_dual_residual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() *= delta.head(dim).array() * c;
   }
@@ -532,7 +531,7 @@ struct RuizEquilibration
    * @param primal primal residual (includes equality and inequality
    * constraints).
    */
-  void unscale_primal_residual_in_place(VectorViewMut<T> primal)
+  void unscale_primal_residual_in_place(VectorViewMut<T> primal) const
   {
     primal.to_eigen().array() /= delta.tail(delta.size() - dim).array();
   }
@@ -540,7 +539,7 @@ struct RuizEquilibration
    * Unscales a primal equality constraint residual in place.
    * @param primal primal equality constraint residual.
    */
-  void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq)
+  void unscale_primal_residual_in_place_eq(VectorViewMut<T> primal_eq) const
   {
     primal_eq.to_eigen().array() /=
       delta.middleRows(dim, primal_eq.to_eigen().size()).array();
@@ -549,7 +548,7 @@ struct RuizEquilibration
    * Unscales a primal inequality constraint residual in place.
    * @param primal primal inequality constraint residual.
    */
-  void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in)
+  void unscale_primal_residual_in_place_in(VectorViewMut<T> primal_in) const
   {
     primal_in.to_eigen().array() /=
       delta.tail(primal_in.to_eigen().size()).array();
@@ -558,7 +557,7 @@ struct RuizEquilibration
    * Unscales a dual residual in place.
    * @param dual dual residual.
    */
-  void unscale_dual_residual_in_place(VectorViewMut<T> dual)
+  void unscale_dual_residual_in_place(VectorViewMut<T> dual) const
   {
     dual.to_eigen().array() /= delta.head(dim).array() * c;
   }

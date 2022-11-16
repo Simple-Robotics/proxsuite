@@ -7,6 +7,12 @@
 #ifndef PROXSUITE_PROXQP_DENSE_UTILS_HPP
 #define PROXSUITE_PROXQP_DENSE_UTILS_HPP
 
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <type_traits>
+
+#include "proxsuite/helpers/common.hpp"
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
@@ -14,10 +20,7 @@
 #include <proxsuite/proxqp/utils/prints.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <type_traits>
+
 //#include <fmt/format.h>
 //#include <fmt/ostream.h>
 
@@ -28,7 +31,7 @@ namespace dense {
 template<typename T>
 void
 print_setup_header(const Settings<T>& settings,
-                   Results<T>& results,
+                   const Results<T>& results,
                    const Model<T>& model)
 {
 
@@ -110,22 +113,6 @@ save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
   }
 }
 
-#define LDLT_DEDUCE_RET(...)                                                   \
-  noexcept(noexcept(__VA_ARGS__))                                              \
-    ->typename std::remove_const<decltype(__VA_ARGS__)>::type                  \
-  {                                                                            \
-    return __VA_ARGS__;                                                        \
-  }                                                                            \
-  static_assert(true, ".")
-template<typename T>
-auto
-positive_part(T const& expr)
-  LDLT_DEDUCE_RET((expr.array() > 0).select(expr, T::Zero(expr.rows())));
-template<typename T>
-auto
-negative_part(T const& expr)
-  LDLT_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
-
 /*!
  * Derives the global primal residual of the QP problem.
  *
@@ -147,9 +134,9 @@ negative_part(T const& expr)
 template<typename T>
 void
 global_primal_residual(const Model<T>& qpmodel,
-                       Results<T>& qpresults,
+                       const Results<T>& qpresults,
                        Workspace<T>& qpwork,
-                       preconditioner::RuizEquilibration<T>& ruiz,
+                       const preconditioner::RuizEquilibration<T>& ruiz,
                        T& primal_feasibility_lhs,
                        T& primal_feasibility_eq_rhs_0,
                        T& primal_feasibility_in_rhs_0,
@@ -180,8 +167,8 @@ global_primal_residual(const Model<T>& qpmodel,
   primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
 
   qpwork.primal_residual_in_scaled_low =
-    positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
-    negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
+    helpers::positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
+    helpers::negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
   qpwork.primal_residual_eq_scaled -= qpmodel.b;
 
   primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
@@ -210,13 +197,14 @@ global_primal_residual(const Model<T>& qpmodel,
  */
 template<typename T>
 bool
-global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
-                                     VectorViewMut<T> CTdz,
-                                     VectorViewMut<T> dy,
-                                     VectorViewMut<T> dz,
-                                     Workspace<T>& qpwork,
-                                     const Settings<T>& qpsettings,
-                                     preconditioner::RuizEquilibration<T>& ruiz)
+global_primal_residual_infeasibility(
+  VectorViewMut<T> ATdy,
+  VectorViewMut<T> CTdz,
+  VectorViewMut<T> dy,
+  VectorViewMut<T> dz,
+  Workspace<T>& qpwork,
+  const Settings<T>& qpsettings,
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is primal infeasible if the following four conditions hold:
@@ -235,8 +223,8 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
   T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
-  T in_inf = positive_part(dz.to_eigen()).dot(qpwork.u_scaled) -
-             positive_part(-dz.to_eigen()).dot(qpwork.l_scaled);
+  T in_inf = helpers::positive_part(dz.to_eigen()).dot(qpwork.u_scaled) -
+             helpers::negative_part(dz.to_eigen()).dot(qpwork.l_scaled);
   ruiz.unscale_dual_in_place_eq(dy);
   ruiz.unscale_dual_in_place_in(dz);
 
@@ -267,14 +255,15 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
  */
 template<typename T>
 bool
-global_dual_residual_infeasibility(VectorViewMut<T> Adx,
-                                   VectorViewMut<T> Cdx,
-                                   VectorViewMut<T> Hdx,
-                                   VectorViewMut<T> dx,
-                                   Workspace<T>& qpwork,
-                                   const Settings<T>& qpsettings,
-                                   const Model<T>& qpmodel,
-                                   preconditioner::RuizEquilibration<T>& ruiz)
+global_dual_residual_infeasibility(
+  VectorViewMut<T> Adx,
+  VectorViewMut<T> Cdx,
+  VectorViewMut<T> Hdx,
+  VectorViewMut<T> dx,
+  Workspace<T>& qpwork,
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is dual infeasible the two following conditions hold:
@@ -343,11 +332,14 @@ template<typename T>
 void
 global_dual_residual(Results<T>& qpresults,
                      Workspace<T>& qpwork,
-                     preconditioner::RuizEquilibration<T>& ruiz,
+                     const Model<T>& qpmodel,
+                     const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
                      T& dual_feasibility_rhs_0,
                      T& dual_feasibility_rhs_1,
-                     T& dual_feasibility_rhs_3)
+                     T& dual_feasibility_rhs_3,
+                     T& rhs_duality_gap,
+                     T& duality_gap)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -355,13 +347,27 @@ global_dual_residual(Results<T>& qpresults,
   // dual_feasibility_rhs_3 = norm(unscaled(CTz))
   //
   // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
+  const isize max_dim =
+    std::max(qpmodel.dim, std::max(qpmodel.n_eq, qpmodel.n_in));
+  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products
+
   qpwork.dual_residual_scaled = qpwork.g_scaled;
   qpwork.CTz.noalias() =
     qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
   qpwork.dual_residual_scaled += qpwork.CTz;
   ruiz.unscale_dual_residual_in_place(
-    VectorViewMut<T>{ from_eigen, qpwork.CTz });
+    VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
   dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+
+  ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
+  duality_gap = (qpmodel.g).dot(qpresults.x);
+  rhs_duality_gap = std::abs(duality_gap);
+  const T xHx = (qpwork.CTz).dot(qpresults.x);
+  duality_gap += xHx; // contains now xHx+g.Tx
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
+
+  ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
+
   qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
   qpwork.dual_residual_scaled += qpwork.CTz;
   ruiz.unscale_dual_residual_in_place(
@@ -381,6 +387,31 @@ global_dual_residual(Results<T>& qpresults,
 
   ruiz.scale_dual_residual_in_place(
     VectorViewMut<T>{ from_eigen, qpwork.dual_residual_scaled });
+
+  ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
+  const T by = (qpmodel.b).dot(qpresults.y);
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
+  duality_gap += by;
+  ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
+
+  ruiz.unscale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+
+  const T zu =
+    helpers::positive_part(qpresults.z)
+      .dot(helpers::at_most(qpmodel.u, helpers::infinite_bound<T>::value()));
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
+  duality_gap += zu;
+
+  const T zl =
+    helpers::negative_part(qpresults.z)
+      .dot(helpers::at_least(qpmodel.l, -helpers::infinite_bound<T>::value()));
+  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
+  duality_gap += zl;
+
+  ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+
+  duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
+  rhs_duality_gap /= sqrt_max_dim;
 }
 
 } // namespace dense
