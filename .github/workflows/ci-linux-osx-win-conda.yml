@@ -8,12 +8,14 @@ jobs:
   build-with-conda:
     name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
         name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
         cxx_std: [17]
+        continue_on_error: [false]
 
         include:
           - name: ubuntu-latest
@@ -29,6 +31,17 @@ jobs:
             os: macos-latest
             build_type: Release
             cxx_std: 14
+          - name: macos-latest
+            os: macos-latest
+            build_type: Debug
+            cxx_std: 17
+            continue_on_error: true
+
+        exclude:
+          - name: macos-latest
+            build_type: Debug
+            cxx_std: 17
+            continue_on_error: false
 
     steps:
     - uses: actions/checkout@v2
@@ -131,6 +144,7 @@ jobs:
         cmake --install . --config ${{ matrix.build_type }}
 
     - name: Test [Conda]
+      continue-on-error: ${{ matrix.continue_on_error }}
       shell: bash -l {0}
       run: |
         find $CONDA_PREFIX -name proxsuite*
