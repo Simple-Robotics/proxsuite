@@ -8,7 +8,7 @@ jobs:
   build-with-conda:
     name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.continue-on-error }}
+    continue-on-error: ${{ matrix.continue_on_error }}
 
     strategy:
       fail-fast: false
@@ -16,7 +16,7 @@ jobs:
         build_type: [Release, Debug]
         name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
         cxx_std: [17]
-        continue-on-error: [false]
+        continue_on_error: [false]
 
         include:
           - name: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
             os: macos-latest
             build_type: Debug
             cxx_std: 17
-            continue-on-error: true
+            continue_on_error: true
 
     steps:
     - uses: actions/checkout@v2
