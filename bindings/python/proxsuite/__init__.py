@@ -1,10 +1,6 @@
 import platform
 
-if (
-    "i386" in platform.processor()
-    or "x86_64" in platform.processor()
-    or "Intel64" in platform.processor()
-):
+if "arm" not in platform.processor():
     from . import instructionset
 
 
