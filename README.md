@@ -10,14 +10,17 @@
 </p>
 
 **ProxSuite** is a collection of open-source, numerically robuste, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms.
-While the first targeted application is Robotics, **ProxSuite** can be used in other contextes without any limits.
 Through **ProxSuite**, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
+While the first targeted application is Robotics, **ProxSuite** can be used in other contextes without any limits.
 
-**ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr).
+**ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr), localized in France.
 
-**ProxSuite** is integrated into:
-- [CVXPY](https://www.cvxpy.org/) modeling language for convex optimization problems
-- [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming).
+**ProxSuite** is already integrated into:
+- [CVXPY](https://www.cvxpy.org/) modeling language for convex optimization problems,
+- [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming),
+- [TSID](https://github.com/stack-of-tasks/tsid): robotic software for efficient robot inverse dynamics with contacts and based on [Pinocchio](https://github.com/stack-of-tasks/pinocchio).
+
+We are ready to integrate **ProxSuite** within other optimization ecosystems.
 
 ## ProxSuite main features
 
