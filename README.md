@@ -9,9 +9,9 @@
   <a href="https://anaconda.org/conda-forge/proxsuite"><img src="https://anaconda.org/conda-forge/proxsuite/badges/version.svg" alt="Conda version" height="20"></a>
 </p>
 
-**ProxSuite** is a collection of open-source, numerically robuste, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms.
+**ProxSuite** is a collection of open-source, numerically robust, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted on revisited primal-dual proximal algorithms.
 Through **ProxSuite**, we aim at offering to the community scalable optimizers which can deal with dense, sparse or matrix-free problems.
-While the first targeted application is Robotics, **ProxSuite** can be used in other contextes without any limits.
+While the first targeted application is Robotics, **ProxSuite** can be used in other contexts without any limits.
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr), localized in France.
 
