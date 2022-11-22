@@ -183,25 +183,25 @@ update(optional<MatRef<T>> H,
 {
   // check the model is valid
   if (g != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().rows(),
+    PROXSUITE_CHECK_ARGUMENT_SIZE(g.value().size(),
                                   model.dim,
                                   "the dimension wrt the primal variable x "
                                   "variable for updating g is not valid.");
   }
   if (b != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().rows(),
+    PROXSUITE_CHECK_ARGUMENT_SIZE(b.value().size(),
                                   model.n_eq,
                                   "the dimension wrt equality constrained "
                                   "variables for updating b is not valid.");
   }
   if (u != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().rows(),
+    PROXSUITE_CHECK_ARGUMENT_SIZE(u.value().size(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating u is not valid.");
   }
   if (l != nullopt) {
-    PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().rows(),
+    PROXSUITE_CHECK_ARGUMENT_SIZE(l.value().size(),
                                   model.n_in,
                                   "the dimension wrt inequality constrained "
                                   "variables for updating l is not valid.");
