@@ -136,7 +136,7 @@ struct QP
     // check the model is valid
     if (g != nullopt && g.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
-        g.value().rows(),
+        g.value().size(),
         model.dim,
         "the dimension wrt the primal variable x variable for initializing g "
         "is not valid.");
@@ -145,7 +145,7 @@ struct QP
     }
     if (b != nullopt && b.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
-        b.value().rows(),
+        b.value().size(),
         model.n_eq,
         "the dimension wrt equality constrained variables for initializing b "
         "is not valid.");
@@ -154,7 +154,7 @@ struct QP
     }
     if (u != nullopt && u.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u.value().rows(),
+        u.value().size(),
         model.n_in,
         "the dimension wrt inequality constrained variables for initializing u "
         "is not valid.");
@@ -163,7 +163,7 @@ struct QP
     }
     if (l != nullopt && l.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l.value().rows(),
+        l.value().size(),
         model.n_in,
         "the dimension wrt inequality constrained variables for initializing l "
         "is not valid.");
