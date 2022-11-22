@@ -89,8 +89,8 @@ ruiz_scale_qp_in_place( //
             T aux = sqrt(std::max({
               infty_norm(H.col(k).head(k)),
               infty_norm(H.row(k).tail(n - k)),
-              infty_norm(A.col(k)),
-              infty_norm(C.col(k)),
+              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+              n_in > 0 ? infty_norm(C.col(k)) : T(0),
             }));
             if (aux == T(0)) {
               delta(k) = T(1);
@@ -104,8 +104,8 @@ ruiz_scale_qp_in_place( //
             T aux = sqrt(std::max({
               infty_norm(H.col(k).head(k)),
               infty_norm(H.col(k).tail(n - k)),
-              infty_norm(A.col(k)),
-              infty_norm(C.col(k)),
+              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+              n_in > 0 ? infty_norm(C.col(k)) : T(0),
             }));
             if (aux == T(0)) {
               delta(k) = T(1);
@@ -118,8 +118,8 @@ ruiz_scale_qp_in_place( //
 
             T aux = sqrt(std::max({
               infty_norm(H.col(k)),
-              infty_norm(A.col(k)),
-              infty_norm(C.col(k)),
+              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+              n_in > 0 ? infty_norm(C.col(k)) : T(0),
             }));
             if (aux == T(0)) {
               delta(k) = T(1);
