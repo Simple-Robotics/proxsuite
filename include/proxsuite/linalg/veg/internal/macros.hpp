@@ -233,9 +233,8 @@
   concept test_return_##Name = __VA_ARGS__;                                    \
   }                                                                            \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
-  concept Name =                                                               \
-    _veg_detail::test_return_##Name<decltype((Expr)),                          \
-                                    __VEG_PP_REMOVE_PAREN1(TplNames)>;         \
+  concept Name = _veg_detail::test_return_                                     \
+  ##Name<decltype((Expr)), __VEG_PP_REMOVE_PAREN1(TplNames)>;                  \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
   concept xnothrow_##Name = noexcept(Expr);                                    \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
@@ -249,8 +248,7 @@
   namespace _ {                                                                \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
   struct Name : __VA_ARGS__                                                    \
-  {                                                                            \
-  };                                                                           \
+  {};                                                                          \
   }                                                                            \
   namespace {                                                                  \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
@@ -262,8 +260,7 @@
 #define __VEG_IMPL_DEF_CONCEPT(Tpl, Name, Value, ...)                          \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
   struct Name : __VA_ARGS__                                                    \
-  {                                                                            \
-  }
+  {}
 #endif
 
 #ifdef __clang__
@@ -332,7 +329,7 @@
     ::proxsuite::linalg::veg::meta::bool_constant<__VA_ARGS__>);               \
   VEG_TEMPLATE(                                                                \
     Tpl, requires(__VA_ARGS__), constexpr auto check_##Name, (_ = 0, int))     \
-  noexcept->::proxsuite::linalg::veg::meta::true_type
+  noexcept -> ::proxsuite::linalg::veg::meta::true_type
 
 #define __VEG_IMPL_SFINAE(_, Param)                                            \
   , ::proxsuite::linalg::veg::meta::                                           \
@@ -343,7 +340,7 @@
            typename ::proxsuite::linalg::veg::_detail::_meta::                 \
              enable_if<__VEG_PP_ID(__VEG_PP_UNWRAP Param), int>::type = 0>     \
   auto __VEG_PP_CAT(check_, __VEG_PP_HEAD Name_Tpl)() noexcept                 \
-    ->::proxsuite::linalg::veg::meta::true_type;
+    -> ::proxsuite::linalg::veg::meta::true_type;
 
 #define VEG_DEF_CONCEPT_BOOL_CONJUNCTION_IMPL(Tpl, Name, Base, Seq)            \
   __VEG_IMPL_DEF_CONCEPT(Tpl,                                                  \
@@ -352,7 +349,7 @@
                          __VEG_PP_REMOVE_PAREN1(Base));                        \
   template<__VEG_PP_REMOVE_PAREN(Tpl)                                          \
              __VEG_PP_TUPLE_FOR_EACH(__VEG_IMPL_SFINAE, _, Seq)>               \
-  auto check_##Name() noexcept->::proxsuite::linalg::veg::meta::true_type
+  auto check_##Name() noexcept -> ::proxsuite::linalg::veg::meta::true_type
 #define VEG_DEF_CONCEPT_BOOL_DISJUNCTION_IMPL(Tpl, Name, Base, Seq)            \
   __VEG_IMPL_DEF_CONCEPT(Tpl,                                                  \
                          Name,                                                 \
@@ -395,7 +392,8 @@
 #if VEG_HAS_CONCEPTS
 #define VEG_CONSTRAINED_MEMBER_FN(Constraint, Attr_Name, Params, ...)          \
   Attr_Name __VEG_PP_TUPLE_TRANSFORM_I(__VEG_IMPL_PARAM_EXPAND, _, Params)     \
-  __VA_ARGS__ requires __VEG_PP_CAT2(__VEG_IMPL_PREFIX_, Constraint)
+  __VA_ARGS__                                                                  \
+    requires __VEG_PP_CAT2(__VEG_IMPL_PREFIX_, Constraint)
 
 #define VEG_TEMPLATE_CVT(TParams, Constraint, Attr, ...)                       \
   template<__VEG_PP_REMOVE_PAREN(TParams)>                                     \
@@ -484,7 +482,8 @@
 #if VEG_HAS_CONCEPTS
 #define __VEG_IMPL_TEMPLATE(Attr_Name, TParams, Constraint, ...)               \
   template<__VEG_PP_REMOVE_PAREN(TParams)>                                     \
-  requires Constraint Attr_Name __VEG_PP_TUPLE_TRANSFORM_I(                    \
+    requires Constraint                                                        \
+  Attr_Name __VEG_PP_TUPLE_TRANSFORM_I(                                        \
     __VEG_IMPL_PARAM_EXPAND, _, (__VA_ARGS__))
 #else
 
@@ -589,7 +588,10 @@
   template<typename... Ts>                                                     \
   struct Name                                                                  \
   {                                                                            \
-    void apply(Ts&&... args) { Fn(VEG_FWD(args)...); }                         \
+    void apply(Ts&&... args)                                                   \
+    {                                                                          \
+      Fn(VEG_FWD(args)...);                                                    \
+    }                                                                          \
   };                                                                           \
   template struct Name<__VA_ARGS__>
 
@@ -624,8 +626,7 @@ struct enable_if
 };
 template<typename T>
 struct enable_if<false, T>
-{
-};
+{};
 
 template<typename U, typename V>
 using discard_1st = V;
@@ -707,8 +708,7 @@ namespace _detail {
 
 template<isize I>
 struct EmptyI
-{
-};
+{};
 
 using Empty = EmptyI<0>;
 using EmptyArr = Empty[];

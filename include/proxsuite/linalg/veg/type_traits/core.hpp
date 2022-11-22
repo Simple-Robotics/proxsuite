@@ -92,24 +92,20 @@ struct conjunction;
 
 template<>
 struct disjunction<> : false_type
-{
-};
+{};
 template<>
 struct conjunction<> : true_type
-{
-};
+{};
 
 template<typename First, typename... Preds>
 struct disjunction<First, Preds...>
   : if_t<First::value, First, disjunction<Preds...>>
-{
-};
+{};
 
 template<typename First, typename... Preds>
 struct conjunction<First, Preds...>
   : if_t<First::value, conjunction<Preds...>, First>
-{
-};
+{};
 } // namespace meta
 
 namespace _detail {
@@ -117,23 +113,19 @@ namespace _meta {
 
 template<typename T>
 struct decay_helper : meta::type_identity<T>
-{
-};
+{};
 template<typename Ret, typename... Args>
 struct decay_helper<Ret(Args...)> : meta::type_identity<Ret (*)(Args...)>
-{
-};
+{};
 #if defined(VEG_WITH_CXX17_SUPPORT)
 template<typename Ret, typename... Args>
 struct decay_helper<Ret(Args...) noexcept>
   : meta::type_identity<Ret (*)(Args...) noexcept>
-{
-};
+{};
 #endif
 template<typename T, usize N>
 struct decay_helper<T[N]> : meta::type_identity<T*>
-{
-};
+{};
 
 using namespace meta;
 
@@ -163,8 +155,7 @@ struct _detector<meta::void_t<Ftor<Args...>>, Ftor, Args...>
 
 template<typename Default, template<typename...> class Ftor, typename... Args>
 struct detector : _detector<void, Ftor, Args...>
-{
-};
+{};
 
 template<template<typename...> class Op, typename... Args>
 using is_detected = typename detector<_meta::none, Op, Args...>::value_type;
@@ -175,14 +166,12 @@ template<typename T>
 struct is_pointer
   : false_type
   , type_identity<T>
-{
-};
+{};
 template<typename T>
 struct is_pointer<T*>
   : true_type
   , type_identity<T>
-{
-};
+{};
 
 template<typename Base>
 struct baseof_wrapper : wrapper_base
@@ -197,39 +186,31 @@ using is_base_of =
 
 template<typename T>
 struct is_lvalue_reference : false_type
-{
-};
+{};
 template<typename T>
 struct is_lvalue_reference<T&> : true_type
-{
-};
+{};
 template<typename T>
 struct is_rvalue_reference : false_type
-{
-};
+{};
 template<typename T>
 struct is_rvalue_reference<T&&> : true_type
-{
-};
+{};
 
 template<typename T>
 struct is_const : false_type
-{
-};
+{};
 template<typename T>
 struct is_const<T const> : true_type
-{
-};
+{};
 
 template<typename T, typename = true_type>
 struct is_complete : false_type
-{
-};
+{};
 template<typename T>
 struct is_complete<T, bool_constant<sizeof(T) == sizeof(T)> /* NOLINT */>
   : true_type
-{
-};
+{};
 
 } // namespace _meta
 } // namespace _detail

@@ -758,8 +758,7 @@ namespace internal {
 template<typename T, typename I>
 struct traits<proxsuite::proxqp::sparse::detail::AugmentedKkt<T, I>>
   : Eigen::internal::traits<Eigen::SparseMatrix<T, Eigen::ColMajor, I>>
-{
-};
+{};
 
 template<typename Rhs, typename T, typename I>
 struct generic_product_impl<

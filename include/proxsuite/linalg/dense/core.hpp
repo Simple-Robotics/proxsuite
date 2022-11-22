@@ -104,7 +104,7 @@ static_assert(sizeof(f32) == 4, "f32 should be 32 bits");
 static_assert(sizeof(f64) == 8, "f64 should be 64 bits");
 
 #define LDLT_FN_IMPL3(Fn, Prefix, Suffix)                                      \
-  VEG_INLINE static auto Fn(Pack a, Pack b, Pack c) noexcept->Pack             \
+  VEG_INLINE static auto Fn(Pack a, Pack b, Pack c) noexcept -> Pack           \
   {                                                                            \
     return Pack{ simde_mm##Prefix##_##Fn##_##Suffix(                           \
       a.inner, b.inner, c.inner) };                                            \
@@ -116,11 +116,12 @@ static_assert(sizeof(f64) == 8, "f64 should be 64 bits");
   LDLT_FN_IMPL3(fnmadd, Prefix, Suffix); /* (-a * b + c) */
 
 #define LDLT_LOAD_STORE(Prefix, Suffix)                                        \
-  VEG_INLINE static auto load_unaligned(ScalarType const* ptr) noexcept->Pack  \
+  VEG_INLINE static auto load_unaligned(ScalarType const* ptr) noexcept        \
+    -> Pack                                                                    \
   {                                                                            \
     return Pack{ simde_mm##Prefix##_loadu_##Suffix(ptr) };                     \
   }                                                                            \
-  VEG_INLINE static auto broadcast(ScalarType value) noexcept->Pack            \
+  VEG_INLINE static auto broadcast(ScalarType value) noexcept -> Pack          \
   {                                                                            \
     return Pack{ simde_mm##Prefix##_set1_##Suffix(value) };                    \
   }                                                                            \

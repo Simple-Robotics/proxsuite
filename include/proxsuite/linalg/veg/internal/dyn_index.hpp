@@ -216,8 +216,7 @@ struct binary_traits<Dyn, Dyn>
 
 template<isize N>
 struct binary_traits<Fix<N>, Dyn> : binary_traits<Dyn, Dyn>
-{
-};
+{};
 
 template<>
 struct binary_traits<Fix<0>, Dyn> : binary_traits<Dyn, Dyn>

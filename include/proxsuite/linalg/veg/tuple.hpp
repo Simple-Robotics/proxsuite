@@ -94,8 +94,7 @@ using proxsuite::linalg::veg::Tuple;
 namespace tuple {
 template<typename ISeq, typename... Ts>
 struct IndexedTuple
-{
-};
+{};
 
 #if VEG_HAS_NO_UNIQUE_ADDRESS
 #define __VEG_IMPL_LEAF(Tuple, I, ...) /* NOLINT */                            \
@@ -842,25 +841,21 @@ template<usize... Is, typename... Ts>
 struct is_trivially_relocatable<
   tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>>
   : meta::bool_constant<(VEG_ALL_OF(is_trivially_relocatable<Ts>::value))>
-{
-};
+{};
 template<usize... Is, typename... Ts>
 struct is_trivially_constructible<
   tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>>
   : meta::bool_constant<(VEG_ALL_OF(is_trivially_constructible<Ts>::value))>
-{
-};
+{};
 
 template<typename... Ts>
 struct is_trivially_relocatable<tuple::Tuple<Ts...>>
   : meta::bool_constant<(VEG_ALL_OF(is_trivially_relocatable<Ts>::value))>
-{
-};
+{};
 template<typename... Ts>
 struct is_trivially_constructible<tuple::Tuple<Ts...>>
   : meta::bool_constant<(VEG_ALL_OF(is_trivially_constructible<Ts>::value))>
-{
-};
+{};
 } // namespace cpo
 } // namespace veg
 } // namespace linalg
@@ -870,8 +865,7 @@ template<typename... Ts>
 struct std::tuple_size<proxsuite::linalg::veg::Tuple<Ts...>>
   : ::proxsuite::linalg::veg::meta::constant<proxsuite::linalg::veg::usize,
                                              sizeof...(Ts)>
-{
-};
+{};
 template<proxsuite::linalg::veg::usize I, typename... Ts>
 struct std::tuple_element<I, proxsuite::linalg::veg::Tuple<Ts...>>
 {

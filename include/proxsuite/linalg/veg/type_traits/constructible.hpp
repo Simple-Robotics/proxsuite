@@ -61,7 +61,7 @@ VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT(typename T,
 VEG_CONCEPT_EXPR((typename T, typename... Ts),
                  (T, Ts...),
                  inplace_constructible,
-                 new (static_cast<void*>(nullptr)) T(VEG_DECLVAL(Ts&&)...),
+                 new(static_cast<void*>(nullptr)) T(VEG_DECLVAL(Ts&&)...),
                  true);
 
 VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD((typename T, typename... Ts),
@@ -114,8 +114,7 @@ namespace _cpo {
 
 template<bool, template<typename> class Trait, typename T>
 struct extract_members_deduce_trait_impl : meta::false_type
-{
-};
+{};
 
 template<template<typename> class Trait, typename Tuple>
 struct member_trait_and;
@@ -128,24 +127,21 @@ struct member_trait_and<
   Trait,
   SimpleITuple<_meta::integer_sequence<usize, Is...>, Ts Bases::*...>>
   : meta::bool_constant<VEG_ALL_OF(Trait<Ts>::value)>
-{
-};
+{};
 
 template<template<typename> class Trait, typename T>
 struct extract_members_deduce_trait_impl<true, Trait, T>
   : member_trait_and<
       Trait,
       decltype(_detail::member_extract_access<T>::Type::member_pointers())>
-{
-};
+{};
 
 template<template<typename> class Trait, typename T>
 struct extract_members_deduce_trait
   : extract_members_deduce_trait_impl<_detail::member_extract_access<T>::value,
                                       Trait,
                                       T>
-{
-};
+{};
 
 } // namespace _cpo
 } // namespace _detail
@@ -157,8 +153,7 @@ struct is_trivially_constructible
       VEG_CONCEPT(trivially_default_constructible<T>),
       meta::true_type,
       _detail::_cpo::extract_members_deduce_trait<is_trivially_relocatable, T>>
-{
-};
+{};
 
 template<typename T>
 struct is_trivially_relocatable
@@ -167,8 +162,7 @@ struct is_trivially_relocatable
         VEG_CONCEPT(trivially_move_constructible<T>),
       meta::true_type,
       _detail::_cpo::extract_members_deduce_trait<is_trivially_relocatable, T>>
-{
-};
+{};
 } // namespace cpo
 
 namespace _detail {
