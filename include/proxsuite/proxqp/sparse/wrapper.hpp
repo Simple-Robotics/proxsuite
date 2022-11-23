@@ -355,9 +355,7 @@ struct QP
               optional<T> mu_in = nullopt)
   {
     if (!work.internal.is_initialized) {
-      PROXSUITE_THROW_PRETTY(true,
-                             std::runtime_error,
-                             "init method needs to be called before update.")
+      init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
     }
     if (settings.compute_timings) {
       work.timer.stop();

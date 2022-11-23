@@ -6750,42 +6750,14 @@ TEST_CASE("ProxQP::dense: init must be called before update")
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
-  try {
-    // this should fail and throw an exception that we expect
-    qp.update(qp_random.H,
-              qp_random.g,
-              qp_random.A,
-              qp_random.b,
-              qp_random.C,
-              qp_random.l,
-              qp_random.u,
-              true);
-    DOCTEST_CHECK(false); // This should not be triggered becausec exception is
-                          // thrown before as qp is uninitialized
-  } catch (const std::exception& e) {
-    DOCTEST_CHECK(std::string(e.what()).find(
-                    "init method needs to be called before update") !=
-                  std::string::npos);
-  }
-
-  // init, update and solve
-  qp.init(qp_random.H,
-          qp_random.g,
-          qp_random.A,
-          qp_random.b,
-          qp_random.C,
-          qp_random.l,
-          qp_random.u);
-
-  qp_random.H *= 2.;
-  qp_random.g = utils::rand::vector_rand<T>(dim);
+  // call update without init, update calls init internally
   qp.update(qp_random.H,
             qp_random.g,
-            nullopt,
-            nullopt,
-            nullopt,
-            nullopt,
-            nullopt,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
             true);
 
   qp.solve();
@@ -6802,7 +6774,6 @@ TEST_CASE("ProxQP::dense: init must be called before update")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 
-  // update after qp has already been initialized and solved ones
   qp_random.H *= 2.;
   qp_random.g = utils::rand::vector_rand<T>(dim);
   qp.update(qp_random.H,
