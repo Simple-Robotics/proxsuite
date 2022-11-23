@@ -358,6 +358,7 @@ struct QP
   {
     if (!work.internal.is_initialized) {
       init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
+      return;
     }
     if (settings.compute_timings) {
       work.timer.stop();

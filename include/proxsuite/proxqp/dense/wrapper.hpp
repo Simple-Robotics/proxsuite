@@ -277,6 +277,7 @@ struct QP
   {
     if (!work.is_initialized) {
       init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
+      return;
     }
     // dense case
     work.refactorize = false;
