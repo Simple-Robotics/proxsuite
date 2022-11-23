@@ -429,14 +429,8 @@ struct EigenNoAlloc
   auto operator=(EigenNoAlloc const&) -> EigenNoAlloc& = delete;
 
 #if defined(EIGEN_RUNTIME_NO_MALLOC)
-  EigenNoAlloc() noexcept
-  {
-    Eigen::internal::set_is_malloc_allowed(false);
-  }
-  ~EigenNoAlloc() noexcept
-  {
-    Eigen::internal::set_is_malloc_allowed(true);
-  }
+  EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(false); }
+  ~EigenNoAlloc() noexcept { Eigen::internal::set_is_malloc_allowed(true); }
 #else
   EigenNoAlloc() = default;
 #endif

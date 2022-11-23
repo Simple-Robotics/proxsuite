@@ -24,12 +24,10 @@ using type_sequence = _detail::_meta::type_sequence<Ts...>*;
 
 template<typename Seq, typename... Bs>
 struct and_test : false_type
-{
-};
+{};
 template<typename Seq, typename... Bs>
 struct or_test : true_type
-{
-};
+{};
 
 template<usize Is, typename T>
 using indexed = T;
@@ -41,12 +39,10 @@ struct pack_size
 };
 template<usize... Is>
 struct and_test<index_sequence<Is...>, indexed<Is, true_type>...> : true_type
-{
-};
+{};
 template<usize... Is>
 struct or_test<index_sequence<Is...>, indexed<Is, false_type>...> : false_type
-{
-};
+{};
 
 } // namespace meta
 namespace _detail {
@@ -55,18 +51,15 @@ using namespace meta;
 
 template<typename ISeq, typename... Ts>
 struct all_same_impl : false_type
-{
-};
+{};
 template<usize... Is, typename T>
 struct all_same_impl<meta::index_sequence<Is...>,
                      discard_1st<decltype(Is), T>...> : true_type
-{
-};
+{};
 
 template<>
 struct all_same_impl<meta::index_sequence<>> : true_type
-{
-};
+{};
 } // namespace _meta
 } // namespace _detail
 
@@ -117,21 +110,17 @@ struct zip_type_seq2<F, F<Ts...>, F<Zipped...>>
 
 template<template<typename...> class F, typename T>
 struct specializes : meta::false_type
-{
-};
+{};
 template<template<typename...> class F, typename... Ts>
 struct specializes<F, F<Ts...>> : meta::true_type
-{
-};
+{};
 
 template<template<typename...> class F, typename T>
 struct specialize_len : meta::constant<usize, 0>
-{
-};
+{};
 template<template<typename...> class F, typename... Ts>
 struct specialize_len<F, F<Ts...>> : meta::constant<usize, sizeof...(Ts)>
-{
-};
+{};
 
 template<template<typename...> class F,
          typename... Ts,
@@ -204,16 +193,14 @@ namespace _detail {
 
 template<usize I, typename T>
 struct HollowLeaf
-{
-};
+{};
 
 template<typename ISeq, typename... Ts>
 struct HollowIndexedTuple;
 template<usize... Is, typename... Ts>
 struct HollowIndexedTuple<meta::index_sequence<Is...>, Ts...>
   : HollowLeaf<Is, Ts>...
-{
-};
+{};
 
 template<usize I, typename T>
 auto

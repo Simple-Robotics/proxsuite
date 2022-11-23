@@ -1056,8 +1056,7 @@ using namespace std;
 #else
 template<bool COND, typename T = void>
 struct enable_if
-{
-};
+{};
 
 template<typename T>
 struct enable_if<true, T>
@@ -1092,12 +1091,10 @@ struct remove_reference<T&&>
 
 template<typename T>
 struct is_rvalue_reference : false_type
-{
-};
+{};
 template<typename T>
 struct is_rvalue_reference<T&&> : true_type
-{
-};
+{};
 
 template<typename T>
 struct remove_const
@@ -1124,22 +1121,18 @@ struct underlying_type
 
 template<typename T>
 struct is_pointer : false_type
-{
-};
+{};
 template<typename T>
 struct is_pointer<T*> : true_type
-{
-};
+{};
 
 template<typename T>
 struct is_array : false_type
-{
-};
+{};
 // NOLINTNEXTLINE(*-avoid-c-arrays)
 template<typename T, size_t SIZE>
 struct is_array<T[SIZE]> : true_type
-{
-};
+{};
 #endif
 }
 
@@ -1164,23 +1157,20 @@ forward(typename types::remove_reference<T>::type&& t) DOCTEST_NOEXCEPT
 
 template<typename T>
 struct deferred_false : types::false_type
-{
-};
+{};
 
 // MSVS 2015 :(
 #if defined(_MSC_VER) && _MSC_VER <= 1900
 template<typename T, typename = void>
 struct has_global_insertion_operator : types::false_type
-{
-};
+{};
 
 template<typename T>
 struct has_global_insertion_operator<
   T,
   decltype(::operator<<(declval<std::ostream&>(), declval<const T&>()), void())>
   : types::true_type
-{
-};
+{};
 
 template<typename T, typename = void>
 struct has_insertion_operator
@@ -1208,8 +1198,7 @@ using insert_hack_t = insert_hack<T, has_global_insertion_operator<T>::value>;
 #else
 template<typename T, typename = void>
 struct has_insertion_operator : types::false_type
-{
-};
+{};
 #endif
 
 template<typename T>
@@ -1217,8 +1206,7 @@ struct has_insertion_operator<
   T,
   decltype(operator<<(declval<std::ostream&>(), declval<const T&>()), void())>
   : types::true_type
-{
-};
+{};
 
 DOCTEST_INTERFACE std::ostream*
 tlssPush();
@@ -1284,8 +1272,7 @@ struct StringMaker
   : public detail::StringMakerBase<detail::has_insertion_operator<T>::value ||
                                    detail::types::is_pointer<T>::value ||
                                    detail::types::is_array<T>::value>
-{
-};
+{};
 
 #ifndef DOCTEST_STRINGIFY
 #ifdef DOCTEST_CONFIG_DOUBLE_STRINGIFY
@@ -1625,9 +1612,9 @@ DOCTEST_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wunused-comparison")
 // instantiated due to SFINAE. Once the template is not instantiated it can look
 // for global operator using normal conversions.
 #define SFINAE_OP(ret, op)                                                     \
-  decltype(                                                                    \
-    (void)(doctest::detail::declval<L>() op doctest::detail::declval<R>()),    \
-    ret{})
+  decltype((void)(doctest::detail::declval<L>()                                \
+                    op doctest::detail::declval<R>()),                         \
+           ret{})
 
 #define DOCTEST_DO_BINARY_EXPRESSION_COMPARISON(op, op_str, op_macro)          \
   template<typename R>                                                         \
@@ -2642,7 +2629,9 @@ registerReporter(const char* name, int priority, bool isReporter)
   template<>                                                                   \
   struct iter<std::tuple<>>                                                    \
   {                                                                            \
-    iter(const char*, unsigned, int) {}                                        \
+    iter(const char*, unsigned, int)                                           \
+    {                                                                          \
+    }                                                                          \
   };                                                                           \
   }                                                                            \
   template<typename T>                                                         \
@@ -6949,10 +6938,7 @@ struct XmlReporter : public IReporter
     xml.ensureTagClosed();
   }
 
-  void subcase_end() override
-  {
-    xml.endElement();
-  }
+  void subcase_end() override { xml.endElement(); }
 
   void log_assert(const AssertData& rb) override
   {
@@ -7193,24 +7179,15 @@ struct JUnitReporter : public IReporter
   {
   }
 
-  unsigned line(unsigned l) const
-  {
-    return opt.no_line_numbers ? 0 : l;
-  }
+  unsigned line(unsigned l) const { return opt.no_line_numbers ? 0 : l; }
 
   // =========================================================================================
   // WHAT FOLLOWS ARE OVERRIDES OF THE VIRTUAL METHODS OF THE REPORTER INTERFACE
   // =========================================================================================
 
-  void report_query(const QueryData&) override
-  {
-    xml.writeDeclaration();
-  }
+  void report_query(const QueryData&) override { xml.writeDeclaration(); }
 
-  void test_run_start() override
-  {
-    xml.writeDeclaration();
-  }
+  void test_run_start() override { xml.writeDeclaration(); }
 
   void test_run_end(const TestRunStats& p) override
   {

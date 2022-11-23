@@ -61,8 +61,7 @@ struct relocate_pointer_trivial
 };
 template<typename T, bool = cpo::is_trivially_relocatable<T>::value>
 struct relocate_pointer : relocate_pointer_trivial
-{
-};
+{};
 
 template<typename T>
 struct relocate_pointer<T, false>
@@ -77,8 +76,7 @@ struct relocate_pointer<T, false>
 namespace collections {
 template<typename T>
 struct relocate_pointer : _detail::_collections::relocate_pointer<T>
-{
-};
+{};
 } // namespace collections
 
 namespace vector {
@@ -1021,13 +1019,11 @@ struct Vec : private _detail::_vector::adl::AdlBase,
 template<typename T, typename A>
 struct cpo::is_trivially_relocatable<Vec<T, A>>
   : cpo::is_trivially_relocatable<A>
-{
-};
+{};
 template<typename T, typename A>
 struct cpo::is_trivially_constructible<Vec<T, A>>
   : cpo::is_trivially_constructible<A>
-{
-};
+{};
 } // namespace veg
 } // namespace linalg
 } // namespace proxsuite

@@ -11,7 +11,7 @@
 #include <proxsuite/linalg/dense/ldlt.hpp>
 #include <proxsuite/proxqp/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-//#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+// #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
 namespace proxqp {

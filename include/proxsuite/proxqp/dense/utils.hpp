@@ -21,8 +21,8 @@
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 
-//#include <fmt/format.h>
-//#include <fmt/ostream.h>
+// #include <fmt/format.h>
+// #include <fmt/ostream.h>
 
 namespace proxsuite {
 namespace proxqp {

@@ -778,23 +778,14 @@ struct Workspace
   Timer<T> timer;
   Workspace() = default;
 
-  auto ldl_col_ptrs() const -> I const*
-  {
-    return internal.ldl.col_ptrs.ptr();
-  }
-  auto ldl_col_ptrs_mut() -> I*
-  {
-    return internal.ldl.col_ptrs.ptr_mut();
-  }
+  auto ldl_col_ptrs() const -> I const* { return internal.ldl.col_ptrs.ptr(); }
+  auto ldl_col_ptrs_mut() -> I* { return internal.ldl.col_ptrs.ptr_mut(); }
   auto stack_mut() -> proxsuite::linalg::veg::dynstack::DynStackMut
   {
     return internal.stack_mut();
   }
 
-  void set_dirty()
-  {
-    internal.dirty = true;
-  }
+  void set_dirty() { internal.dirty = true; }
 };
 
 } // namespace sparse
