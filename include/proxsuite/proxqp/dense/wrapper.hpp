@@ -240,6 +240,7 @@ struct QP
                                     results,
                                     ruiz,
                                     preconditioner_status);
+    work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
@@ -259,6 +260,8 @@ struct QP
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @note The init method should be called before update. If it has not been
+   * done before, init is called depending on the is_initialized flag.
    */
   void update(optional<MatRef<T>> H,
               optional<VecRef<T>> g,
@@ -272,6 +275,10 @@ struct QP
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
   {
+    if (!work.is_initialized) {
+      init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
+      return;
+    }
     // dense case
     work.refactorize = false;
     work.proximal_parameter_update = false;

@@ -6729,3 +6729,73 @@ DOCTEST_TEST_CASE(
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 }
+
+TEST_CASE("ProxQP::dense: init must be called before update")
+{
+
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-9);
+  utils::rand::set_seed(1);
+  dense::isize dim = 10;
+
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+  dense::QP<T> qp(dim, n_eq, n_in);
+
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+
+  // call update without init, update calls init internally
+  qp.update(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            true);
+
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.A.transpose() * qp.results.y +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+
+  qp_random.H *= 2.;
+  qp_random.g = utils::rand::vector_rand<T>(dim);
+  qp.update(qp_random.H,
+            qp_random.g,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            true);
+
+  qp.solve();
+
+  pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.A.transpose() * qp.results.y +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+}

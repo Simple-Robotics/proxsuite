@@ -109,6 +109,7 @@ struct QP
   {
     work.timer.stop();
     work.internal.do_symbolic_fact = true;
+    work.internal.is_initialized = false;
   }
   /*!
    * Default constructor using the sparsity structure of the matrices in entry.
@@ -317,6 +318,7 @@ struct QP
       };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
     }
+    work.internal.is_initialized = true;
 
     if (settings.compute_timings) {
       results.info.setup_time += work.timer.elapsed().user; // in microseconds
@@ -339,6 +341,8 @@ struct QP
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @note The init method should be called before update. If it has not been
+   * done before, init is called depending on the is_initialized flag.
    */
   void update(const optional<SparseMat<T, I>> H,
               optional<VecRef<T>> g,
@@ -352,6 +356,10 @@ struct QP
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
   {
+    if (!work.internal.is_initialized) {
+      init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
+      return;
+    }
     if (settings.compute_timings) {
       work.timer.stop();
       work.timer.start();
