@@ -155,7 +155,7 @@ struct Workspace
     // Whether the workspace is dirty
     bool dirty;
     bool proximal_parameter_update;
-    bool isInitialized;
+    bool is_initialized;
 
   } internal;
 

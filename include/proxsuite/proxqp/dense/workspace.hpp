@@ -91,7 +91,7 @@ struct Workspace
   bool dirty;
   bool refactorize;
   bool proximal_parameter_update;
-  bool isInitialized;
+  bool is_initialized;
 
   sparse::isize n_c; // final number of active inequalities
   /*!
@@ -143,7 +143,7 @@ struct Workspace
     , dirty(false)
     , refactorize(false)
     , proximal_parameter_update(false)
-    , isInitialized(false)
+    , is_initialized(false)
 
   {
     ldl.reserve_uninit(dim + n_eq + n_in);
@@ -253,7 +253,7 @@ struct Workspace
     dirty = false;
     refactorize = false;
     proximal_parameter_update = false;
-    isInitialized = false;
+    is_initialized = false;
     n_c = 0;
   }
 };
