@@ -393,7 +393,7 @@
 #define VEG_CONSTRAINED_MEMBER_FN(Constraint, Attr_Name, Params, ...)          \
   Attr_Name __VEG_PP_TUPLE_TRANSFORM_I(__VEG_IMPL_PARAM_EXPAND, _, Params)     \
   __VA_ARGS__                                                                  \
-    requires __VEG_PP_CAT2(__VEG_IMPL_PREFIX_, Constraint)
+  requires __VEG_PP_CAT2(__VEG_IMPL_PREFIX_, Constraint)
 
 #define VEG_TEMPLATE_CVT(TParams, Constraint, Attr, ...)                       \
   template<__VEG_PP_REMOVE_PAREN(TParams)>                                     \
