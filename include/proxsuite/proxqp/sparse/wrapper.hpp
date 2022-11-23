@@ -341,7 +341,7 @@ struct QP
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
-   * @note init should be called before cupdate. If not used properly,
+   * @note init should be called before update. If not used properly,
    * init is called automatically using the is_initialized flag.
    */
   void update(const optional<SparseMat<T, I>> H,
