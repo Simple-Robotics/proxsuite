@@ -35,19 +35,16 @@ namespace idx {
 namespace adl {
 template<typename T>
 struct IdxBase
-{
-};
+{};
 } // namespace adl
 } // namespace idx
 namespace _meta {
 template<typename T>
 struct is_fix : false_type
-{
-};
+{};
 template<isize N>
 struct is_fix<Fix<N>> : true_type
-{
-};
+{};
 } // namespace _meta
 } // namespace _detail
 

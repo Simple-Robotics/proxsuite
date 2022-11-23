@@ -120,7 +120,7 @@ struct mut
                constexpr auto
                operator(),
                (r, T&&))
-  const noexcept->RefMut<meta::uncvref_t<T>> { return mem::addressof(r); }
+  const noexcept -> RefMut<meta::uncvref_t<T>> { return mem::addressof(r); }
 };
 struct clone
 {

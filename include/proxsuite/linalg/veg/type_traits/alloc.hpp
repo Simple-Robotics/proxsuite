@@ -17,12 +17,10 @@ namespace veg {
 namespace mem {
 template<typename T>
 struct Alloc
-{
-};
+{};
 template<typename T>
 struct Cloner
-{
-};
+{};
 } // namespace mem
 namespace _detail {
 

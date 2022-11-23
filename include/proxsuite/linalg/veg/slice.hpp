@@ -231,8 +231,7 @@ VEG_NIEBLOID(init_list);
 
 template<typename T>
 struct cpo::is_trivially_constructible<Slice<T>> : meta::bool_constant<true>
-{
-};
+{};
 } // namespace veg
 } // namespace linalg
 } // namespace proxsuite

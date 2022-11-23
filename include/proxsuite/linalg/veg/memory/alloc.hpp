@@ -60,8 +60,7 @@ namespace detail {
 // Source: https://www.boost.org/doc/libs/1_65_0/boost/align/detail/min_size.hpp
 template<std::size_t A, std::size_t B>
 struct min_size : std::integral_constant<std::size_t, (A < B) ? A : B>
-{
-};
+{};
 
 template<class T>
 struct offset_value
@@ -74,8 +73,7 @@ struct offset_value
 // https://www.boost.org/doc/libs/1_65_0/boost/align/detail/alignment_of.hpp
 template<class T>
 struct alignment_of : min_size<sizeof(T), sizeof(offset_value<T>) - sizeof(T)>
-{
-};
+{};
 
 // Source:
 // https://www.boost.org/doc/libs/1_65_0/boost/align/detail/is_alignment.hpp
@@ -151,16 +149,14 @@ struct CopyAvailableFor
                       VEG_CONCEPT(copy_assignable<T>))
                      ? CopyAvailable::yes_maythrow
                      : CopyAvailable::no>
-{
-};
+{};
 template<typename T>
 struct DtorAvailableFor
   : meta::constant<mem::DtorAvailable,
                    VEG_CONCEPT(nothrow_destructible<T>)
                      ? DtorAvailable::yes_nothrow
                      : DtorAvailable::yes_maythrow>
-{
-};
+{};
 
 VEG_INLINE auto
 aligned_alloc(usize align, usize size) noexcept -> void*

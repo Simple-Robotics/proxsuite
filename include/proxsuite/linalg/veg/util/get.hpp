@@ -10,21 +10,17 @@ namespace veg {
 namespace meta {
 template<typename T>
 struct is_bounded_array : false_type
-{
-};
+{};
 template<typename T, usize N>
 struct is_bounded_array<T[N]> : true_type
-{
-};
+{};
 
 template<typename T>
 struct array_extent : constant<usize, 0>
-{
-};
+{};
 template<usize N, typename T>
 struct array_extent<T[N]> : constant<usize, N>
-{
-};
+{};
 } // namespace meta
 
 namespace _detail {
@@ -80,23 +76,20 @@ template<usize I, typename T>
 struct has_array_get
   : meta::bool_constant<meta::is_bounded_array<meta::uncvref_t<T>>::value>
   , array_get
-{
-};
+{};
 
 template<usize I, typename T>
 struct has_member_get
   : bool_constant<VEG_CONCEPT(
       detected<member_get::result_type, constant<usize, I>, T&&>)>
   , member_get
-{
-};
+{};
 template<usize I, typename T>
 struct has_adl_get
   : bool_constant<VEG_CONCEPT(
       detected<adl_get::result_type, constant<usize, I>, T&&>)>
   , adl_get
-{
-};
+{};
 
 } // namespace _meta
 } // namespace _detail

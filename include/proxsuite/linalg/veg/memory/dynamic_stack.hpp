@@ -158,8 +158,7 @@ namespace _detail {
 namespace _dynstack {
 template<typename T, bool = VEG_CONCEPT(trivially_destructible<T>)>
 struct DynStackArrayDtor
-{
-};
+{};
 
 template<typename T>
 struct DynStackArrayDtor<T, false>

@@ -70,14 +70,12 @@ namespace tl {
 namespace detail {
 template<class T>
 struct is_trivially_copy_constructible : std::is_trivially_copy_constructible<T>
-{
-};
+{};
 #ifdef _GLIBCXX_VECTOR
 template<class T, class A>
 struct is_trivially_copy_constructible<std::vector<T, A>>
   : std::is_trivially_copy_constructible<T>
-{
-};
+{};
 #endif
 }
 }
@@ -147,17 +145,14 @@ using conditional_t = typename std::conditional<B, T, F>::type;
 // std::conjunction from C++17
 template<class...>
 struct conjunction : std::true_type
-{
-};
+{};
 template<class B>
 struct conjunction<B> : B
-{
-};
+{};
 template<class B, class... Bs>
 struct conjunction<B, Bs...>
   : std::conditional<bool(B::value), conjunction<Bs...>, B>::type
-{
-};
+{};
 
 #if defined(_LIBCPP_VERSION) && __cplusplus == 201103L
 #define TL_TRAITS_LIBCXX_MEM_FN_WORKAROUND
@@ -169,50 +164,40 @@ struct conjunction<B, Bs...>
 #ifdef TL_TRAITS_LIBCXX_MEM_FN_WORKAROUND
 template<class T>
 struct is_pointer_to_non_const_member_func : std::false_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...)> : std::true_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...)&>
   : std::true_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...) &&>
   : std::true_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...) volatile>
   : std::true_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...) volatile&>
   : std::true_type
-{
-};
+{};
 template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...) volatile&&>
   : std::true_type
-{
-};
+{};
 
 template<class T>
 struct is_const_or_const_ref : std::false_type
-{
-};
+{};
 template<class T>
 struct is_const_or_const_ref<T const&> : std::true_type
-{
-};
+{};
 template<class T>
 struct is_const_or_const_ref<T const> : std::true_type
-{
-};
+{};
 #endif
 
 // std::invoke from C++17
@@ -269,13 +254,11 @@ using invoke_result_t = typename invoke_result<F, Us...>::type;
 // TODO make a version which works with MSVC 2015
 template<class T, class U = T>
 struct is_swappable : std::true_type
-{
-};
+{};
 
 template<class T, class U = T>
 struct is_nothrow_swappable : std::true_type
-{
-};
+{};
 #else
 // https://stackoverflow.com/questions/26744589/what-is-a-proper-way-to-implement-is-swappable-to-test-for-the-swappable-concept
 namespace swap_adl_tests {
@@ -313,19 +296,16 @@ struct is_std_swap_noexcept
   : std::integral_constant<bool,
                            std::is_nothrow_move_constructible<T>::value &&
                              std::is_nothrow_move_assignable<T>::value>
-{
-};
+{};
 
 template<class T, std::size_t N>
 struct is_std_swap_noexcept<T[N]> : is_std_swap_noexcept<T>
-{
-};
+{};
 
 template<class T, class U>
 struct is_adl_swap_noexcept
   : std::integral_constant<bool, noexcept(can_swap<T, U>(0))>
-{
-};
+{};
 } // namespace swap_adl_tests
 
 template<class T, class U = T>
@@ -336,8 +316,7 @@ struct is_swappable
         (!decltype(detail::swap_adl_tests::uses_std<T, U>(0))::value ||
          (std::is_move_assignable<T>::value &&
           std::is_move_constructible<T>::value))>
-{
-};
+{};
 
 template<class T, std::size_t N>
 struct is_swappable<T[N], T[N]>
@@ -346,8 +325,7 @@ struct is_swappable<T[N], T[N]>
       decltype(detail::swap_adl_tests::can_swap<T[N], T[N]>(0))::value &&
         (!decltype(detail::swap_adl_tests::uses_std<T[N], T[N]>(0))::value ||
          is_swappable<T, T>::value)>
-{
-};
+{};
 
 template<class T, class U = T>
 struct is_nothrow_swappable
@@ -358,8 +336,7 @@ struct is_nothrow_swappable
           detail::swap_adl_tests::is_std_swap_noexcept<T>::value) ||
          (!decltype(detail::swap_adl_tests::uses_std<T, U>(0))::value &&
           detail::swap_adl_tests::is_adl_swap_noexcept<T, U>::value))>
-{
-};
+{};
 #endif
 #endif
 
@@ -375,12 +352,10 @@ using void_t = typename voider<Ts...>::type;
 // Trait for checking if a type is a tl::optional
 template<class T>
 struct is_optional_impl : std::false_type
-{
-};
+{};
 template<class T>
 struct is_optional_impl<optional<T>> : std::true_type
-{
-};
+{};
 template<class T>
 using is_optional = is_optional_impl<decay_t<T>>;
 
@@ -397,8 +372,7 @@ struct returns_void_impl;
 template<class F, class... U>
 struct returns_void_impl<F, void_t<invoke_result_t<F, U...>>, U...>
   : std::is_void<invoke_result_t<F, U...>>
-{
-};
+{};
 template<class F, class... U>
 using returns_void = returns_void_impl<F, void, U...>;
 
@@ -561,10 +535,7 @@ struct optional_operations_base : optional_storage_base<T>
   TL_OPTIONAL_11_CONSTEXPR const T& get() const& { return this->m_value; }
   TL_OPTIONAL_11_CONSTEXPR T&& get() && { return std::move(this->m_value); }
 #ifndef TL_OPTIONAL_NO_CONSTRR
-  constexpr const T&& get() const&&
-  {
-    return std::move(this->m_value);
-  }
+  constexpr const T&& get() const&& { return std::move(this->m_value); }
 #endif
 };
 
@@ -1520,15 +1491,9 @@ public:
   }
 
   /// Returns the stored value
-  TL_OPTIONAL_11_CONSTEXPR T& operator*() &
-  {
-    return this->m_value;
-  }
+  TL_OPTIONAL_11_CONSTEXPR T& operator*() & { return this->m_value; }
 
-  constexpr const T& operator*() const&
-  {
-    return this->m_value;
-  }
+  constexpr const T& operator*() const& { return this->m_value; }
 
   TL_OPTIONAL_11_CONSTEXPR T&& operator*() &&
   {
@@ -1536,17 +1501,11 @@ public:
   }
 
 #ifndef TL_OPTIONAL_NO_CONSTRR
-  constexpr const T&& operator*() const&&
-  {
-    return std::move(this->m_value);
-  }
+  constexpr const T&& operator*() const&& { return std::move(this->m_value); }
 #endif
 
   /// Returns whether or not the optional has a value
-  constexpr bool has_value() const noexcept
-  {
-    return this->m_has_value;
-  }
+  constexpr bool has_value() const noexcept { return this->m_has_value; }
 
   constexpr explicit operator bool() const noexcept
   {
@@ -2432,37 +2391,19 @@ public:
     return *this = std::forward<U>(u);
   }
 
-  void swap(optional& rhs) noexcept
-  {
-    std::swap(m_value, rhs.m_value);
-  }
+  void swap(optional& rhs) noexcept { std::swap(m_value, rhs.m_value); }
 
   /// Returns a pointer to the stored value
-  constexpr const T* operator->() const noexcept
-  {
-    return m_value;
-  }
+  constexpr const T* operator->() const noexcept { return m_value; }
 
-  TL_OPTIONAL_11_CONSTEXPR T* operator->() noexcept
-  {
-    return m_value;
-  }
+  TL_OPTIONAL_11_CONSTEXPR T* operator->() noexcept { return m_value; }
 
   /// Returns the stored value
-  TL_OPTIONAL_11_CONSTEXPR T& operator*() noexcept
-  {
-    return *m_value;
-  }
+  TL_OPTIONAL_11_CONSTEXPR T& operator*() noexcept { return *m_value; }
 
-  constexpr const T& operator*() const noexcept
-  {
-    return *m_value;
-  }
+  constexpr const T& operator*() const noexcept { return *m_value; }
 
-  constexpr bool has_value() const noexcept
-  {
-    return m_value != nullptr;
-  }
+  constexpr bool has_value() const noexcept { return m_value != nullptr; }
 
   constexpr explicit operator bool() const noexcept
   {
@@ -2505,10 +2446,7 @@ public:
   }
 
   /// Destroys the stored value if one exists, making the optional empty
-  void reset() noexcept
-  {
-    m_value = nullptr;
-  }
+  void reset() noexcept { m_value = nullptr; }
 
 private:
   T* m_value;

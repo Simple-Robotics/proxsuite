@@ -52,20 +52,17 @@ template<typename T>
 struct has_member_addr
   : meta::bool_constant<VEG_CONCEPT(detected<member_addr::type, T&>)>
   , member_addr
-{
-};
+{};
 template<typename T>
 struct has_adl_addr
   : meta::bool_constant<VEG_CONCEPT(detected<adl_addr::type, T&>)>
   , adl_addr
-{
-};
+{};
 
 template<typename T>
 struct addr_impl
   : meta::disjunction<has_member_addr<T>, has_adl_addr<T>, builtin_addr>
-{
-};
+{};
 
 } // namespace _mem
 } // namespace _detail
