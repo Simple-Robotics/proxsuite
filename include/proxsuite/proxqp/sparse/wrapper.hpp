@@ -109,6 +109,7 @@ struct QP
   {
     work.timer.stop();
     work.internal.do_symbolic_fact = true;
+    work.internal.isInitialized = false;
   }
   /*!
    * Default constructor using the sparsity structure of the matrices in entry.
@@ -317,6 +318,7 @@ struct QP
       };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
     }
+    work.internal.isInitialized = true;
 
     if (settings.compute_timings) {
       results.info.setup_time += work.timer.elapsed().user; // in microseconds
@@ -352,6 +354,11 @@ struct QP
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
   {
+    if (!work.internal.isInitialized) {
+      PROXSUITE_THROW_PRETTY(true,
+                             std::runtime_error,
+                             "init method needs to be called before update.")
+    }
     if (settings.compute_timings) {
       work.timer.stop();
       work.timer.start();

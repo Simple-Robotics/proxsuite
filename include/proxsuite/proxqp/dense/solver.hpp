@@ -1317,6 +1317,7 @@ qp_solve( //
               << std::endl;
   }
   qpwork.dirty = true;
+  qpwork.isInitialized = true; // necessary because we call workspace cleanup
 
   assert(!std::isnan(qpresults.info.pri_res));
   assert(!std::isnan(qpresults.info.dua_res));

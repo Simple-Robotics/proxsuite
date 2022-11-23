@@ -240,6 +240,7 @@ struct QP
                                     results,
                                     ruiz,
                                     preconditioner_status);
+    work.isInitialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }
@@ -272,6 +273,11 @@ struct QP
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
   {
+    if (!work.isInitialized) {
+      PROXSUITE_THROW_PRETTY(true,
+                             std::runtime_error,
+                             "init method needs to be called before update.")
+    }
     // dense case
     work.refactorize = false;
     work.proximal_parameter_update = false;
