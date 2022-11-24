@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <optional>
 #include <Eigen/Core>
 #include <proxsuite/proxqp/dense/dense.hpp>
 

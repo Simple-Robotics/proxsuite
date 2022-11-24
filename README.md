@@ -74,9 +74,9 @@ This approach is available on Linux and Mac OS X.
 Installation from source is presented [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
 
 ### Compiling a first example program
-For the fastest performance use the following command to enable vectorization when compiling the simple [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/cpp/first_example.cpp).
+For the fastest performance use the following command to enable vectorization when compiling the simple [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/cpp/first_example_dense.cpp).
 ```bash
-g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/first_example.cpp -o first_example $(pkg-config --cflags proxsuite)
+g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/first_example_dense.cpp -o first_example_dense $(pkg-config --cflags proxsuite)
 ```
 ### Using ProxSuite with CMake
 If you want to use ProxSuite with CMake, the following tiny example should help you:
