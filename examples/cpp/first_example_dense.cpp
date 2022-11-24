@@ -1,11 +1,13 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <optional>
+#include <iostream>
 #include <Eigen/Core>
+#include <proxsuite/helpers/optional.hpp> // for c++14
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite::proxqp;
+using proxsuite::nullopt; // c++17 simply use std::nullopt
 
 int
 main()
@@ -26,13 +28,13 @@ main()
   g << -22.0, -14.5, 13.0;
 
   // inequality constraints C
-  Eigen::MatrixXd C = Eigen::MatrixXd(dim, dim);
+  Eigen::MatrixXd C = Eigen::MatrixXd(n_in, dim);
   C << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0;
 
-  Eigen::VectorXd l = Eigen::VectorXd(dim);
+  Eigen::VectorXd l = Eigen::VectorXd(n_in);
   l << -1.0, -1.0, -1.0;
 
-  Eigen::VectorXd u = Eigen::VectorXd(dim);
+  Eigen::VectorXd u = Eigen::VectorXd(n_in);
   u << 1.0, 1.0, 1.0;
 
   std::cout << "H:\n" << H << std::endl;
@@ -50,7 +52,7 @@ main()
 
   // initialize qp with matrices describing the problem
   // note: it is also possible to use update here
-  qp.init(H, g, std::nullopt, std::nullopt, C, l, u);
+  qp.init(H, g, nullopt, nullopt, C, l, u);
 
   qp.solve();
 

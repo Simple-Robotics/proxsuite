@@ -1,12 +1,14 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <optional>
 #include <random>
+#include <iostream>
 #include <Eigen/Core>
+#include <proxsuite/helpers/optional.hpp> // for c++14
 #include <proxsuite/proxqp/sparse/sparse.hpp>
 
 using namespace proxsuite::proxqp;
+using proxsuite::nullopt; // c++17 simply use std::nullopt
 
 int
 main()
@@ -44,15 +46,15 @@ main()
 
   // inequality constraints C: other way to define sparse matrix from  dense
   // matrix using sparseView
-  Eigen::MatrixXd C = Eigen::MatrixXd(n_in, n_in);
+  Eigen::MatrixXd C = Eigen::MatrixXd(n_in, dim);
   C << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0;
   Eigen::SparseMatrix<double> C_spa(n_in, dim);
   C_spa = C.sparseView();
 
-  Eigen::VectorXd l = Eigen::VectorXd(dim);
+  Eigen::VectorXd l = Eigen::VectorXd(n_in);
   l << -1.0, -1.0, -1.0;
 
-  Eigen::VectorXd u = Eigen::VectorXd(dim);
+  Eigen::VectorXd u = Eigen::VectorXd(n_in);
   u << 1.0, 1.0, 1.0;
 
   std::cout << "H:\n" << H_spa << std::endl;
@@ -70,7 +72,7 @@ main()
 
   // initialize qp with matrices describing the problem
   // note: it is also possible to use update here
-  qp.init(H_spa, g, std::nullopt, std::nullopt, C_spa, l, u);
+  qp.init(H_spa, g, nullopt, nullopt, C_spa, l, u);
 
   qp.solve();
 
