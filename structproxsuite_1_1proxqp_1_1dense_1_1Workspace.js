@@ -44,5 +44,6 @@ var structproxsuite_1_1proxqp_1_1dense_1_1Workspace =
     [ "dirty", "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a0a0744ac552fca61f9c3d4537fc27628", null ],
     [ "refactorize", "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a5e546e2d0f89e8b84230f1ebdebf4663", null ],
     [ "proximal_parameter_update", "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#adaf56f89b650c779d5c187a36ed21007", null ],
+    [ "is_initialized", "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ac18109c9cac042da9c3d0ffa46a6e69a", null ],
     [ "n_c", "structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a6ac3f61e9d25649bb6e7bfe15b9343c3", null ]
 ];
