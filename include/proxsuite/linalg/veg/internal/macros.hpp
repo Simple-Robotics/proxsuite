@@ -8,7 +8,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#if _WIN32
+#if _MSC_VER
 #define PROXSUITE_PRETTY_FUNCTION __FUNCSIG__
 #else
 #define PROXSUITE_PRETTY_FUNCTION __PRETTY_FUNCTION__
