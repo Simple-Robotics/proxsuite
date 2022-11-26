@@ -88,7 +88,12 @@ find_package(proxsuite REQUIRED)
 set(CMAKE_CXX_STANDARD 17) # set(CMAKE_CXX_STANDARD 14) will work too
 
 add_executable(example example.cpp)
-target_link_libraries(example PUBLIC proxsuite::proxsuite`)
+target_link_libraries(example PUBLIC proxsuite::proxsuite)
+
+# Vectorization support via SIMDE and activated by the compilation options '-march=native' or `-mavx2 -mavx512f`
+add_executable(example_with_full_vectorization_support example.cpp)
+target_link_libraries(example_with_full_vectorization_support PUBLIC proxsuite::proxsuite-vectorized)
+target_compile_options(example_with_full_vectorization_support PUBLIC "-march=native")
 ```
 If you have compiled ProxSuite with the vectorization support, you might also use the CMake target `proxsuite::proxsuite-vectorized` to also link against SIMDE.
 Don't forget to use `-march=native` for getting the best performance.
