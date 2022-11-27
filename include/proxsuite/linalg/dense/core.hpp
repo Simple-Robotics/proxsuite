@@ -9,7 +9,8 @@
 #include <proxsuite/linalg/veg/util/assert.hpp>
 #include <proxsuite/linalg/veg/memory/dynamic_stack.hpp>
 
-#ifndef __aarch64__
+#if !(defined(__aarch64__) || defined(__PPC64__) || defined(__ppc64__) ||      \
+      defined(_ARCH_PPC64))
 #include <immintrin.h>
 #endif
 
