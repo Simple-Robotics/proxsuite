@@ -1,6 +1,10 @@
 import platform
 
-if "arm" not in platform.processor():
+machine = platform.machine()
+has_vectorization_instructions = not machine.startswith(
+    ("arm", "aarch64", "power", "ppc64", "s390x", "sparc")
+)
+if has_vectorization_instructions:
     from . import instructionset
 
 
@@ -16,7 +20,7 @@ def load_main_module(globals):
         except ModuleNotFoundError:
             return False
 
-    if "arm" not in platform.processor():
+    if has_vectorization_instructions:
         all_modules = [
             ("proxsuite_pywrap_avx512", instructionset.has_AVX512F),
             ("proxsuite_pywrap_avx2", instructionset.has_AVX2),
@@ -32,3 +36,5 @@ def load_main_module(globals):
 load_main_module(globals=globals())
 del load_main_module
 del platform
+del has_vectorization_instructions
+del machine
