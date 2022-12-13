@@ -705,7 +705,7 @@ solve(
   optional<T> mu_in = nullopt,
   optional<bool> verbose = nullopt,
   bool compute_preconditioner = true,
-  bool compute_timings = true,
+  bool compute_timings = false,
   optional<isize> max_iter = nullopt,
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,

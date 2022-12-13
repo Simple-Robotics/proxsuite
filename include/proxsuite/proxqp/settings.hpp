@@ -182,7 +182,7 @@ struct Settings
                                           // once a problem
     bool update_preconditioner = true,
     bool compute_preconditioner = true,
-    bool compute_timings = true,
+    bool compute_timings = false,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
