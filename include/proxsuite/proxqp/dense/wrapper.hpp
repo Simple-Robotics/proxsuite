@@ -443,7 +443,7 @@ solve(
     Qp.settings.verbose = verbose.value();
   }
   if (max_iter != nullopt) {
-    Qp.settings.max_iter = verbose.value();
+    Qp.settings.max_iter = max_iter.value();
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
