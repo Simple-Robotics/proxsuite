@@ -87,29 +87,36 @@ struct Model
 
   bool is_valid()
   {
+#define PROXSUITE_CHECK_SIZE(size, expected_size)                              \
+  if (size != 0) {                                                             \
+    if (!(size == expected_size))                                              \
+      return false;                                                            \
+  }
+
     // check that all matrices and vectors of qpmodel have the correct size
     // and that H and C have expected properties
-    CHECK_DATA(g.size(), dim);
-    CHECK_DATA(b.size(), n_eq);
-    CHECK_DATA(u.size(), n_in);
-    CHECK_DATA(l.size(), n_in);
+    PROXSUITE_CHECK_SIZE(g.size(), dim);
+    PROXSUITE_CHECK_SIZE(b.size(), n_eq);
+    PROXSUITE_CHECK_SIZE(u.size(), n_in);
+    PROXSUITE_CHECK_SIZE(l.size(), n_in);
     if (H.size()) {
-      CHECK_DATA(H.rows(), dim);
-      CHECK_DATA(H.cols(), dim);
+      PROXSUITE_CHECK_SIZE(H.rows(), dim);
+      PROXSUITE_CHECK_SIZE(H.cols(), dim);
       if (!H.isApprox(H.transpose(), 0.0))
         return false;
     }
     if (A.size()) {
-      CHECK_DATA(A.rows(), n_eq);
-      CHECK_DATA(A.cols(), dim);
+      PROXSUITE_CHECK_SIZE(A.rows(), n_eq);
+      PROXSUITE_CHECK_SIZE(A.cols(), dim);
     }
     if (C.size()) {
-      CHECK_DATA(C.rows(), n_in);
-      CHECK_DATA(C.cols(), dim);
+      PROXSUITE_CHECK_SIZE(C.rows(), n_in);
+      PROXSUITE_CHECK_SIZE(C.cols(), dim);
       if (C.isZero())
         return false;
     }
     return true;
+#undef PROXSUITE_CHECK_SIZE
   }
 };
 } // namespace dense
