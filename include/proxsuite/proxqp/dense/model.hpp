@@ -89,56 +89,25 @@ struct Model
   {
     // check that all matrices and vectors of qpmodel have the correct size
     // and that H and C have expected properties
-    if (g.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        g.size(),
-        dim,
-        "the dimension wrt the primal variable x variable for initializing g "
-        "is not valid.");
-    }
-    if (b.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        b.size(),
-        n_eq,
-        "the dimension wrt equality constrained variables for initializing b "
-        "is not valid.");
-    }
-    if (u.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u.size(),
-        n_in,
-        "the dimension wrt inequality constrained variables for initializing u "
-        "is not valid.");
-    }
-    if (l.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l.size(),
-        n_in,
-        "the dimension wrt inequality constrained variables for initializing l "
-        "is not valid.");
-    }
+    CHECK_DATA(g.size(), dim);
+    CHECK_DATA(b.size(), n_eq);
+    CHECK_DATA(u.size(), n_in);
+    CHECK_DATA(l.size(), n_in);
     if (H.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.rows(), dim, "the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.cols(), dim, "the column dimension for initializing H is not valid.");
-
-      // Check that H is not only upper/lower triangular matrix
-      assert(H.isApprox(H.transpose()) && "H is not symmetric");
+      CHECK_DATA(H.rows(), dim);
+      CHECK_DATA(H.cols(), dim);
+      if (!H.isApprox(H.transpose(), 0.0))
+        return false;
     }
     if (A.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.rows(), n_eq, "the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.cols(), dim, "the column dimension for initializing A is not valid.");
+      CHECK_DATA(A.rows(), n_eq);
+      CHECK_DATA(A.cols(), dim);
     }
     if (C.size()) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.rows(), n_in, "the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.cols(), dim, "the column dimension for initializing C is not valid.");
-      // If user inputs C it cannot be only zeros
-      assert(!C.isZero() && "C contains only zeros, remove it.");
+      CHECK_DATA(C.rows(), n_in);
+      CHECK_DATA(C.cols(), dim);
+      if (C.isZero())
+        return false;
     }
     return true;
   }
