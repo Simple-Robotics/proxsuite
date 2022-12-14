@@ -264,6 +264,7 @@ update(optional<MatRef<T>> H,
   if (C != nullopt) {
     model.C = C.value();
   }
+  assert(model.isValid());
 }
 /*!
  * Setups the QP solver model.
@@ -383,6 +384,7 @@ setup( //
     qpmodel.l = l.value();
   } // else qpmodel.l remains initialized to a matrix with zero elements or zero
     // shape
+  assert(qpmodel.isValid());
 
   qpwork.H_scaled = qpmodel.H;
   qpwork.g_scaled = qpmodel.g;
