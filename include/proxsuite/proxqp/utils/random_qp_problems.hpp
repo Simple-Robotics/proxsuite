@@ -72,8 +72,7 @@ using proxqp::u64;
 is not available. Therefore, we use a random number generator from the stdlib
 instead of our custom Lehmer random number generator. The necessary lehmer
 functions used in in our code are remplaced with calls to the stdlib.*/
-std::random_device rd;
-std::mt19937 gen(rd());
+std::mt19937 gen(1234);
 std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
 std::normal_distribution<double> normal_dist;
 using u128 = u64;

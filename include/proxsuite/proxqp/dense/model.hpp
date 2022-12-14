@@ -84,6 +84,40 @@ struct Model
                                                    C_sparse, u, l };
     return res;
   }
+
+  bool is_valid()
+  {
+#define PROXSUITE_CHECK_SIZE(size, expected_size)                              \
+  if (size != 0) {                                                             \
+    if (!(size == expected_size))                                              \
+      return false;                                                            \
+  }
+
+    // check that all matrices and vectors of qpmodel have the correct size
+    // and that H and C have expected properties
+    PROXSUITE_CHECK_SIZE(g.size(), dim);
+    PROXSUITE_CHECK_SIZE(b.size(), n_eq);
+    PROXSUITE_CHECK_SIZE(u.size(), n_in);
+    PROXSUITE_CHECK_SIZE(l.size(), n_in);
+    if (H.size()) {
+      PROXSUITE_CHECK_SIZE(H.rows(), dim);
+      PROXSUITE_CHECK_SIZE(H.cols(), dim);
+      if (!H.isApprox(H.transpose(), 0.0))
+        return false;
+    }
+    if (A.size()) {
+      PROXSUITE_CHECK_SIZE(A.rows(), n_eq);
+      PROXSUITE_CHECK_SIZE(A.cols(), dim);
+    }
+    if (C.size()) {
+      PROXSUITE_CHECK_SIZE(C.rows(), n_in);
+      PROXSUITE_CHECK_SIZE(C.cols(), dim);
+      if (C.isZero())
+        return false;
+    }
+    return true;
+#undef PROXSUITE_CHECK_SIZE
+  }
 };
 } // namespace dense
 } // namespace proxqp

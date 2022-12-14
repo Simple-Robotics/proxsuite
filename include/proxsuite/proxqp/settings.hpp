@@ -182,7 +182,7 @@ struct Settings
                                           // once a problem
     bool update_preconditioner = true,
     bool compute_preconditioner = true,
-    bool compute_timings = true,
+    bool compute_timings = false,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -226,78 +226,6 @@ struct Settings
     , sparse_backend(sparse_backend)
   {
   }
-  /*
- void set(
-           T alpha_bcl_ = 0.1,
-           T beta_bcl_ = 0.9,
-           T refactor_dual_feasibility_threshold_ = 1e-2,
-           T refactor_rho_threshold_ = 1e-7,
-           T mu_min_eq_ = 1e-9,
-           T mu_min_in_ = 1e-8,
-           T mu_max_eq_inv_ = 1e9,
-           T mu_max_in_inv_ = 1e8,
-           T mu_update_factor_ = 0.1,
-           T mu_update_inv_factor_ = 10,
-           T cold_reset_mu_eq_ = 1. / 1.1,
-           T cold_reset_mu_in_ = 1. / 1.1,
-           T cold_reset_mu_eq_inv_ = 1.1,
-           T cold_reset_mu_in_inv_ = 1.1,
-           T eps_abs_ = 1.e-8,
-           T eps_rel_ = 0,
-           isize max_iter_ = 10000,
-           isize max_iter_in_ = 1500,
-           isize safe_guard_ = 1.E4,
-           isize nb_iterative_refinement_ = 10,
-           T eps_refact_ = 1.e-6, // before eps_refact_=1.e-6
-           bool VERBOSE = false,
-           InitialGuessStatus initial_guess_ =
-             InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT,
-           bool update_preconditioner_ = true,
-           bool compute_preconditioner_ = true,
-           bool compute_timings_ = true,
-           isize preconditioner_max_iter_ = 10,
-           T preconditioner_accuracy_ = 1.e-3,
-           T eps_primal_inf_ = 1.E-4,
-           T eps_dual_inf_ = 1.E-4,
-           bool bcl_update_ = true,
-           SparseBackend sparse_backend_ = SparseBackend::Automatic
- ){
-    alpha_bcl = alpha_bcl_;
-    beta_bcl = beta_bcl_ ;
-    refactor_dual_feasibility_threshold = refactor_dual_feasibility_threshold_;
-    refactor_rho_threshold = refactor_rho_threshold_;
-    mu_min_eq = mu_min_eq_;
-    mu_min_in = mu_min_in_;
-    mu_max_eq_inv = mu_max_eq_inv_;
-    mu_max_in_inv = mu_max_in_inv_;
-    mu_update_factor = mu_update_factor_;
-    mu_update_inv_factor = mu_update_inv_factor_;
-    cold_reset_mu_eq = cold_reset_mu_eq_;
-    cold_reset_mu_in = cold_reset_mu_in_;
-    cold_reset_mu_eq_inv = cold_reset_mu_eq_inv_;
-    cold_reset_mu_in_inv = cold_reset_mu_in_inv_;
-    eps_abs = eps_abs_;
-    eps_rel = eps_rel_;
-    max_iter = max_iter_;
-    max_iter_in = max_iter_in_;
-    safe_guard = safe_guard_;
-    nb_iterative_refinement = nb_iterative_refinement_;
-    eps_refact = eps_refact_;
-    verbose = VERBOSE;
-    initial_guess = initial_guess_;
-    update_preconditioner = update_preconditioner_;
-    compute_preconditioner = compute_preconditioner_;
-    compute_timings = compute_timings_;
-    preconditioner_max_iter = preconditioner_max_iter_;
-    preconditioner_accuracy = preconditioner_accuracy_;
-    eps_primal_inf = eps_primal_inf_;
-    eps_dual_inf = eps_dual_inf_;
-    bcl_update = bcl_update_;
-    sparse_backend = sparse_backend_;
-
-
- }
- */
 };
 
 } // namespace proxqp

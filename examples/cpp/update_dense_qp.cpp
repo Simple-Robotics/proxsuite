@@ -29,7 +29,7 @@ main()
   dense::Model<T> qp2 = utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // re update the model
-  qp.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.u, qp2.l);
+  qp.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.l, qp2.u);
   // solve it
   qp.solve();
   // print an optimal solution x,y and z

@@ -412,7 +412,7 @@ solve(
   optional<T> mu_in = nullopt,
   optional<bool> verbose = nullopt,
   bool compute_preconditioner = true,
-  bool compute_timings = true,
+  bool compute_timings = false,
   optional<isize> max_iter = nullopt,
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)
@@ -443,7 +443,7 @@ solve(
     Qp.settings.verbose = verbose.value();
   }
   if (max_iter != nullopt) {
-    Qp.settings.max_iter = verbose.value();
+    Qp.settings.max_iter = max_iter.value();
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
