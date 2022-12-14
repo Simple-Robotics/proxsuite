@@ -11,8 +11,6 @@ using Vec = dense::Vec<T>;
 int
 main()
 {
-  ::proxsuite::proxqp::utils::rand::set_seed(1);
-
   isize n = 10;
   isize n_eq(n / 4);
   isize n_in(n / 4);

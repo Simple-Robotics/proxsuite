@@ -74,6 +74,7 @@ instead of our custom Lehmer random number generator. The necessary lehmer
 functions used in in our code are remplaced with calls to the stdlib.*/
 std::random_device rd;
 std::mt19937 gen(rd());
+gen.seed(1234); // by default set a seed
 std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
 std::normal_distribution<double> normal_dist;
 using u128 = u64;
