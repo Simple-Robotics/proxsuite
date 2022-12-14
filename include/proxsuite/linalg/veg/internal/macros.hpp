@@ -24,6 +24,12 @@
     throw exception(ss.str());                                                 \
   }
 
+#define CHECK_DATA(size, expected_size)                                        \
+  if (size != 0) {                                                             \
+    if (!(size == expected_size))                                              \
+      return false;                                                            \
+  }
+
 #define PROXSUITE_CHECK_ARGUMENT_SIZE(size, expected_size, message)            \
   if (size != expected_size) {                                                 \
     std::ostringstream oss;                                                    \
