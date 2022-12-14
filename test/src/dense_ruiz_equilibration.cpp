@@ -13,8 +13,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   int dim = 5;
   int n_eq = 6;
   int n_in = 0;
-  auto sym = proxqp::Symmetry::upper; // 0 : upper triangular (by default), 1:
-                                      // lower triangular ; else full matrix
+  auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default), 1:
+                                        // lower triangular ; else full matrix
 
   Scalar sparsity_factor(0.15);
   Scalar strong_convexity_factor(0.01);
