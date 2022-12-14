@@ -31,7 +31,10 @@ exposeDenseModel(pybind11::module_ m)
     .def_readonly("dim", &Model<T>::dim)
     .def_readonly("n_eq", &Model<T>::n_eq)
     .def_readonly("n_in", &Model<T>::n_in)
-    .def_readonly("n_total", &Model<T>::n_total);
+    .def_readonly("n_total", &Model<T>::n_total)
+    .def("is_valid",
+         &Model<T>::isValid,
+         "Check if model is containing valid data.");
 }
 } // namespace python
 } // namespace dense
