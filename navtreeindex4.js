@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a0bd99aa523920cb51e43bff4b384e6bf":[12,0,1,0,1,2,0,10,122,49],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a0f82d86afa0f5dc965c5c15aca58dcfb":[12,0,1,0,1,2,0,10,122,18],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a1625ef4fe09f68fa20d3ff6e02cd5c8e":[12,0,1,0,1,2,0,10,122,30],
 "macros_8hpp.html#aae522d4ba2f2382dbadd8b7b7cadcc43a180bb5e381e316e2246b88c92770ee75":[12,0,1,0,1,2,0,10,122,21],
@@ -187,8 +188,8 @@ var NAVTREEINDEX4 =
 "modify_8hpp.html#af835537990398a809fec4755c1f9d1e8":[12,0,1,0,1,0,3,4],
 "modify_8hpp_source.html":[12,0,1,0,1,0,3],
 "namespaceEigen.html":[10,0,0],
-"namespacemembers.html":[10,1,0,0],
 "namespacemembers.html":[10,1,0],
+"namespacemembers.html":[10,1,0,0],
 "namespacemembers_b.html":[10,1,0,1],
 "namespacemembers_c.html":[10,1,0,2],
 "namespacemembers_d.html":[10,1,0,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "namespaceproxsuite_1_1helpers.html#a67d00d650a55b2443681bfca72f12b86":[10,0,1,1,3],
 "namespaceproxsuite_1_1helpers.html#a81683551c89b385e60e8fd5a506ce127":[10,0,1,1,2],
 "namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65":[10,0,1,1,5],
-"namespaceproxsuite_1_1linalg.html":[10,0,1,2],
-"namespaceproxsuite_1_1linalg_1_1dense.html":[10,0,1,2,0]
+"namespaceproxsuite_1_1linalg.html":[10,0,1,2]
 };

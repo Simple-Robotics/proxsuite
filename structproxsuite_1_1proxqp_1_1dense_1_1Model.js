@@ -2,6 +2,7 @@ var structproxsuite_1_1proxqp_1_1dense_1_1Model =
 [
     [ "Model", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1a622239c2f31446cad6d5406a0a626e", null ],
     [ "to_sparse", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab18fd6fc7f3e83bbf907f30270ca80c", null ],
+    [ "is_valid", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#af144dd21d5d7abe99e9c1603bf6d65a6", null ],
     [ "H", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39", null ],
     [ "g", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab44afb08fed7665a9a1b6b76123bc2e", null ],
     [ "A", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b", null ],

@@ -55,6 +55,6 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#ab9e4215822b98b7116a94171fd7658d3", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#abac125fdfd928439ba053632f11b7d97", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#ae07dd375e6c5428f02a60b2c0a3453ce", null ],
-    [ "solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75", null ],
+    [ "solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6f880437281a6ccde0b9cdcb9d4e0c6c", null ]
 ];

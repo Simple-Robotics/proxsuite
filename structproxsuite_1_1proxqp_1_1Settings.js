@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a03f93ffc1d74178deea7e444c817fac2", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a20b04f81fca00be39f4411fc5f0e9c06", null ],
     [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
     [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
     [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],

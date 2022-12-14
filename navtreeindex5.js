@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"namespaceproxsuite_1_1linalg_1_1dense.html":[10,0,1,2,0],
 "namespaceproxsuite_1_1linalg_1_1dense.html#a086c0466c284a944cbfe5c8e6ccfcb47":[10,0,1,2,0,9],
 "namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195":[10,0,1,2,0,17],
 "namespaceproxsuite_1_1linalg_1_1dense.html#a38cdfd0861ff06f028b58ac151324dcb":[10,0,1,2,0,16],
@@ -120,8 +121,8 @@ var NAVTREEINDEX5 =
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1__detail.html#af5d132bf736529873b8ad0349f193ff4":[10,0,1,2,1,0,7],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1concepts.html":[10,0,1,2,1,1],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1tags.html":[10,0,1,2,1,2],
-"namespaceproxsuite_1_1linalg_1_1sparse_1_1tags.html#ae9a1f14680d6c23304abaa86bc75822c":[10,0,1,2,1,12],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1tags.html#ae9a1f14680d6c23304abaa86bc75822c":[10,0,1,2,1,2,0],
+"namespaceproxsuite_1_1linalg_1_1sparse_1_1tags.html#ae9a1f14680d6c23304abaa86bc75822c":[10,0,1,2,1,12],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1util.html":[10,0,1,2,1,3],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1util.html#a03b17c7a67b3243bf599d47027d7436d":[10,0,1,2,1,3,2],
 "namespaceproxsuite_1_1linalg_1_1sparse_1_1util.html#a1fa3710da51e7005829120f31d7f6e32":[10,0,1,2,1,3,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43afd967d717eb4566c666002c0ee65221e":[10,0,1,2,2,51,53],
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43afecda797b8dd5b476ba52dd284896698":[10,0,1,2,2,51,84],
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43aff0a071d6a6aa003e103780e3d158c98":[10,0,1,2,2,51,51],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43affc0d9b54a1fe677c4c9e6b050e67c81":[10,0,1,2,2,51,13],
-"namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f":[10,0,1,2,2,37]
+"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43affc0d9b54a1fe677c4c9e6b050e67c81":[10,0,1,2,2,51,13]
 };

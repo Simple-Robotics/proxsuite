@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.13</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.14</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -104,7 +104,8 @@ $(document).ready(function(){initNavTree('dense_2model_8hpp.html',''); initResiz
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle"><div class="title">model.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -141,7 +142,45 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceproxsuite_1_1proxqp_1_1dense"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html">proxsuite::proxqp::dense</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ade4af3bcfd90cd0f894b7e2f274cf7b3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dense_2model_8hpp.html#ade4af3bcfd90cd0f894b7e2f274cf7b3">PROXSUITE_CHECK_SIZE</a>(size,  expected_size)</td></tr>
+<tr class="separator:ade4af3bcfd90cd0f894b7e2f274cf7b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ade4af3bcfd90cd0f894b7e2f274cf7b3" name="ade4af3bcfd90cd0f894b7e2f274cf7b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade4af3bcfd90cd0f894b7e2f274cf7b3">&#9670;&#160;</a></span>PROXSUITE_CHECK_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROXSUITE_CHECK_SIZE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">size, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">expected_size&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">if</span> (size != 0) {                                                             \</div>
+<div class="line">    if (!(size == expected_size))                                              \</div>
+<div class="line">      <span class="keywordflow">return</span> <span class="keyword">false</span>;                                                            \</div>
+<div class="line">  }</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.5-->

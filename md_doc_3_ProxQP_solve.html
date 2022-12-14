@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.13</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.14</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -138,10 +138,12 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">  isize n = 10;</div>
 <div class="line">  isize n_eq(n / 4);</div>
 <div class="line">  isize n_in(n / 4);</div>
-<div class="line">  T p = 0.15;            <span class="comment">// level of sparsity</span></div>
+<div class="line">  T p = 0.35;            <span class="comment">// level of sparsity</span></div>
 <div class="line">  T conditioning = 10.0; <span class="comment">// conditioning level for H</span></div>
-<div class="line">  <span class="keyword">auto</span> H = utils::rand::sparse_positive_definite_rand(n, conditioning, p);</div>
+<div class="line">  <span class="keyword">auto</span> H = utils::rand::sparse_positive_definite_rand(</div>
+<div class="line">    n, conditioning, p); <span class="comment">// upper triangular matrix</span></div>
 <div class="line">  Mat H_dense = Mat(H);</div>
+<div class="line">  H_dense.template triangularView&lt;Eigen::Lower&gt;() = H_dense.transpose();</div>
 <div class="line">  Vec g = utils::rand::vector_rand&lt;T&gt;(n);</div>
 <div class="line">  <span class="keyword">auto</span> A = utils::rand::sparse_matrix_rand&lt;T&gt;(n_eq, n, p);</div>
 <div class="line">  Mat A_dense = Mat(A);</div>
@@ -221,11 +223,11 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># solve the problem using the sparse backend</span></div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a27be17a9c7c9e46e081b3004bd9ac0dd">proxsuite.proxqp.sparse.solve</a>(H, g, A, b, C, l, u)</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#ad45ce1502d3a2539c504e36e9289815c">proxsuite.proxqp.sparse.solve</a>(H, g, A, b, C, l, u)</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># solve the problem using the dense backend</span></div>
 <div class="line"> </div>
-<div class="line">results2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H.toarray(), g, A.toarray(), b, C.toarray(), l, u</div>
 <div class="line">)</div>
 <div class="line"><span class="comment"># Note finally, that the matrices are in sparse format, when using the dense backend you</span></div>
@@ -235,8 +237,8 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(results.x))</div>
 <div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(results.y))</div>
 <div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(results.z))</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a92153c3ab310ba21882e8ed459c31f75"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75">proxsuite::proxqp::dense::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; MatRef&lt; T &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; MatRef&lt; T &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; MatRef&lt; T &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=true, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)</div><div class="ttdef"><b>Definition:</b> <a href="dense_2wrapper_8hpp_source.html#l00397">wrapper.hpp:397</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1sparse_html_a27be17a9c7c9e46e081b3004bd9ac0dd"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a27be17a9c7c9e46e081b3004bd9ac0dd">proxsuite::proxqp::sparse::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; SparseMat&lt; T, I &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; SparseMat&lt; T, I &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; SparseMat&lt; T, I &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=true, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, proxsuite::proxqp::SparseBackend sparse_backend=proxsuite::proxqp::SparseBackend::Automatic)</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00690">wrapper.hpp:690</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a234d6402f102f7ec25fc558837e69406"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite::proxqp::dense::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; MatRef&lt; T &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; MatRef&lt; T &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; MatRef&lt; T &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)</div><div class="ttdef"><b>Definition:</b> <a href="dense_2wrapper_8hpp_source.html#l00397">wrapper.hpp:397</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1sparse_html_ad45ce1502d3a2539c504e36e9289815c"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1sparse.html#ad45ce1502d3a2539c504e36e9289815c">proxsuite::proxqp::sparse::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; SparseMat&lt; T, I &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; SparseMat&lt; T, I &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; SparseMat&lt; T, I &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, proxsuite::proxqp::SparseBackend sparse_backend=proxsuite::proxqp::SparseBackend::Automatic)</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00690">wrapper.hpp:690</a></div></div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >The results of the solve call are available in the result object, which structure is described in <a class="el" href="2-ProxQP__api_8md.html">ProxQP API with examples</a> section (at "The results subclass" subsection).</p>
@@ -265,7 +267,7 @@ A single solve function for dense and sparse backends</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">compute_preconditioner   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, the preconditioner will be derived.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
+<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -373,7 +375,7 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># solve the problem using the sparse backend</span></div>
 <div class="line"><span class="comment"># and suppose you want to change the accuracy to 1.E-9 and rho initial value to 1.E-7</span></div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H=H, g=g, A=A, b=b, C=C, l=l, u=u, rho=1.0e-7, eps_abs=1.0e-9</div>
 <div class="line">)</div>
 <div class="line"><span class="comment"># Note that in python the order does not matter for rho and eps_abs</span></div>
@@ -433,7 +435,7 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">u = <span class="keywordtype">None</span></div>
 <div class="line">l = <span class="keywordtype">None</span></div>
 <div class="line"> </div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a92153c3ab310ba21882e8ed459c31f75">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H, g, A, b, C, l, u</div>
 <div class="line">)  <span class="comment"># it is equivalent to do as well proxsuite.proxqp.dense.solve(H, g)</span></div>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(results.x))</div>
