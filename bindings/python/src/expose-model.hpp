@@ -33,7 +33,7 @@ exposeDenseModel(pybind11::module_ m)
     .def_readonly("n_in", &Model<T>::n_in)
     .def_readonly("n_total", &Model<T>::n_total)
     .def("is_valid",
-         &Model<T>::isValid,
+         &Model<T>::is_valid,
          "Check if model is containing valid data.");
 }
 } // namespace python

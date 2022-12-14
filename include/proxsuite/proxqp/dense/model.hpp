@@ -85,7 +85,7 @@ struct Model
     return res;
   }
 
-  bool isValid()
+  bool is_valid()
   {
     // check that all matrices and vectors of qpmodel have the correct size
     // and that H and C have expected properties
