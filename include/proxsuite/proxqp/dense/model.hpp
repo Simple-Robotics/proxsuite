@@ -118,6 +118,13 @@ struct Model
     return true;
 #undef PROXSUITE_CHECK_SIZE
   }
+#ifdef PROXSUITE_WITH_SERIALIZATION
+  template<class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(H, g, A, b, C, l, u);
+  }
+#endif
 };
 } // namespace dense
 } // namespace proxqp
