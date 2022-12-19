@@ -11,6 +11,13 @@
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
+#ifdef PROXSUITE_WITH_SERIALIZATION
+#include <fstream>
+#include <string>
+#include <proxsuite/helpers/serialize.hpp>
+#include <proxsuite/helpers/filesystem.hpp>
+#include <cereal/archives/binary.hpp>
+#endif
 
 namespace proxsuite {
 namespace proxqp {
@@ -361,6 +368,49 @@ struct QP
     results.cleanup(settings);
     work.cleanup();
   }
+#ifdef PROXSUITE_WITH_SERIALIZATION
+  void saveToBinary(const std::string& folder_name, optional<int> i = nullopt)
+  {
+    namespace fs = std::filesystem;
+
+    // create folder if it does not exist already
+    if (!fs::is_directory(folder_name) || !fs::exists(folder_name)) {
+      fs::create_directory(folder_name);
+    }
+
+    // define filename
+    std::string bin_filename;
+    if (i != nullopt) {
+      bin_filename = "qp_model_" + std::to_string(i.value()) + ".bin";
+    } else {
+      bin_filename = "qp_model.bin";
+    }
+    fs::path full_path = folder_name + "/" + bin_filename;
+    std::ofstream outFile(full_path);
+
+    // use cereal
+    cereal::BinaryOutputArchive oarchive(outFile);
+    oarchive(model);
+  }
+
+  void loadFromBinary(const std::string& folder_name, optional<int> i = nullopt)
+  {
+    namespace fs = std::filesystem;
+
+    // define filename
+    std::string bin_filename;
+    if (i != nullopt) {
+      bin_filename = "qp_model_" + std::to_string(i.value()) + ".bin";
+    } else {
+      bin_filename = "qp_model.bin";
+    }
+    fs::path full_path = folder_name + "/" + bin_filename;
+
+    std::ifstream inFile(full_path);
+    cereal::BinaryInputArchive iarchive(inFile);
+    iarchive(model);
+  }
+#endif
 };
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
