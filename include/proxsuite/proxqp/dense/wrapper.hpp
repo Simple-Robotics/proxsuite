@@ -369,7 +369,8 @@ struct QP
     work.cleanup();
   }
 #ifdef PROXSUITE_WITH_SERIALIZATION
-  void saveToBinary(const std::string& folder_name, optional<int> i = nullopt)
+  void saveToBinary(const std::string& folder_name,
+                    optional<std::string> append_to_filename = nullopt)
   {
     namespace fs = std::filesystem;
 
@@ -380,8 +381,8 @@ struct QP
 
     // define filename
     std::string bin_filename;
-    if (i != nullopt) {
-      bin_filename = "qp_model_" + std::to_string(i.value()) + ".bin";
+    if (append_to_filename != nullopt) {
+      bin_filename = "qp_model_" + append_to_filename.value() + ".bin";
     } else {
       bin_filename = "qp_model.bin";
     }
@@ -393,14 +394,15 @@ struct QP
     oarchive(model);
   }
 
-  void loadFromBinary(const std::string& folder_name, optional<int> i = nullopt)
+  void loadFromBinary(const std::string& folder_name,
+                      optional<std::string> append_to_filename = nullopt)
   {
     namespace fs = std::filesystem;
 
     // define filename
     std::string bin_filename;
-    if (i != nullopt) {
-      bin_filename = "qp_model_" + std::to_string(i.value()) + ".bin";
+    if (append_to_filename != nullopt) {
+      bin_filename = "qp_model_" + append_to_filename.value() + ".bin";
     } else {
       bin_filename = "qp_model.bin";
     }
