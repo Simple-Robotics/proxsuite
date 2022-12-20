@@ -35,9 +35,8 @@ save(
   ar(rows);
   ar(cols);
 
-  for (int i = 0; i < rows; i++)
-    for (int j = 0; j < cols; j++)
-      ar(m(i, j));
+  for (int i = 0; i < m.size(); i++)
+    ar(m.data()[i]);
 }
 
 template<class Archive,
@@ -58,9 +57,8 @@ load(Archive& ar,
 
   m.resize(rows, cols);
 
-  for (int i = 0; i < rows; i++)
-    for (int j = 0; j < cols; j++)
-      ar(m(i, j));
+  for (int i = 0; i < m.size(); i++)
+    ar(m.data()[i]);
 }
 
 template<class Archive, typename T>
