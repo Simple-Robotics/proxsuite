@@ -17,6 +17,7 @@
 #include <proxsuite/helpers/serialize.hpp>
 #include <proxsuite/helpers/filesystem.hpp>
 #include <cereal/archives/binary.hpp>
+#include <cereal/archives/json.hpp>
 #endif
 
 namespace proxsuite {
@@ -410,6 +411,50 @@ struct QP
 
     std::ifstream inFile(full_path);
     cereal::BinaryInputArchive iarchive(inFile);
+    iarchive(model);
+  }
+
+  void saveToJSON(const std::string& folder_name,
+                  optional<std::string> append_to_filename = nullopt)
+  {
+    namespace fs = std::filesystem;
+
+    // create folder if it does not exist already
+    if (!fs::is_directory(folder_name) || !fs::exists(folder_name)) {
+      fs::create_directory(folder_name);
+    }
+
+    // define filename
+    std::string json_filename;
+    if (append_to_filename != nullopt) {
+      json_filename = "qp_model_" + append_to_filename.value() + ".json";
+    } else {
+      json_filename = "qp_model.json";
+    }
+    fs::path full_path = folder_name + "/" + json_filename;
+    std::ofstream outFile(full_path);
+
+    // use cereal
+    cereal::JSONOutputArchive oarchive(outFile);
+    oarchive(model);
+  }
+
+  void loadFromJSON(const std::string& folder_name,
+                    optional<std::string> append_to_filename = nullopt)
+  {
+    namespace fs = std::filesystem;
+
+    // define filename
+    std::string json_filename;
+    if (append_to_filename != nullopt) {
+      json_filename = "qp_model_" + append_to_filename.value() + ".json";
+    } else {
+      json_filename = "qp_model.json";
+    }
+    fs::path full_path = folder_name + "/" + json_filename;
+
+    std::ifstream inFile(full_path);
+    cereal::JSONInputArchive iarchive(inFile);
     iarchive(model);
   }
 #endif

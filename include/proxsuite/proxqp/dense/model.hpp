@@ -9,6 +9,9 @@
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
+#ifdef PROXSUITE_WITH_SERIALIZATION
+#include <cereal/cereal.hpp>
+#endif
 
 namespace proxsuite {
 namespace proxqp {
@@ -122,7 +125,13 @@ struct Model
   template<class Archive>
   void serialize(Archive& archive)
   {
-    archive(H, g, A, b, C, l, u);
+    archive(CEREAL_NVP(H),
+            CEREAL_NVP(g),
+            CEREAL_NVP(A),
+            CEREAL_NVP(b),
+            CEREAL_NVP(C),
+            CEREAL_NVP(l),
+            CEREAL_NVP(u));
   }
 #endif
 };

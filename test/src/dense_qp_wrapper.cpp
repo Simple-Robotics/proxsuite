@@ -6827,5 +6827,8 @@ DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
 
   qp.saveToBinary("tmp", "unittest");
   qp.loadFromBinary("tmp", "unittest");
+
+  qp.saveToJSON("tmp", "unittest");
+  qp.loadFromJSON("tmp", "unittest");
 }
 #endif
