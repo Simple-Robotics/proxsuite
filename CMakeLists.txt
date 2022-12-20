@@ -140,6 +140,7 @@ endif()
 if(BUILD_WITH_SERIALIZATION_MODULE)
   set(cereal_dir ${PROJECT_SOURCE_DIR}/external/cereal)
   set(cereal ${cereal_dir}/README.md)
+  find_package(Git REQUIRED)
   if(NOT EXISTS ${cereal})
     message("Initialize cereal submodule.")
     execute_process(
