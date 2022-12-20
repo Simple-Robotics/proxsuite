@@ -5,10 +5,10 @@
  * @file serialize.hpp
  */
 
-#ifndef PROXSUITE_HELPERS_SERIALIZE_HPP
-#define PROXSUITE_HELPERS_SERIALIZE_HPP
+#ifndef PROXSUITE_DENSE_SERIALIZE_HPP
+#define PROXSUITE_DENSE_SERIALIZE_HPP
 
-#include <Eigen/Eigen>
+#include <Eigen/Dense>
 #include <cereal/cereal.hpp>
 
 #include <fstream>
@@ -284,4 +284,4 @@ saveToJSON(const T& object, const std::string& filename)
 }
 }
 
-#endif /* end of include guard PROXSUITE_HELPERS_SERIALIZE_HPP */
+#endif /* end of include guard PROXSUITE_DENSE_SERIALIZE_HPP */
