@@ -7,6 +7,7 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/proxqp/dense/serialize.hpp>
 
 using T = double;
 using namespace proxsuite;
@@ -6825,10 +6826,10 @@ DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
           qp_random.l,
           qp_random.u);
 
-  qp.saveToBinary("tmp", "unittest");
-  qp.loadFromBinary("tmp", "unittest");
+  proxsuite::serialization::saveToBinary(qp.model, "tmp/qp_model.bin");
+  proxsuite::serialization::loadFromBinary(qp.model, "tmp/qp_model.bin");
 
-  qp.saveToJSON("tmp", "unittest");
-  qp.loadFromJSON("tmp", "unittest");
+  proxsuite::serialization::saveToJSON(qp.model, "tmp/qp_model.json");
+  proxsuite::serialization::loadFromJSON(qp.model, "tmp/qp_model.json");
 }
 #endif

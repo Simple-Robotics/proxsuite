@@ -125,7 +125,11 @@ struct Model
   template<class Archive>
   void serialize(Archive& archive)
   {
-    archive(CEREAL_NVP(H),
+    archive(CEREAL_NVP(dim),
+            CEREAL_NVP(n_eq),
+            CEREAL_NVP(n_in),
+            CEREAL_NVP(n_total),
+            CEREAL_NVP(H),
             CEREAL_NVP(g),
             CEREAL_NVP(A),
             CEREAL_NVP(b),

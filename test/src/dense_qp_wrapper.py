@@ -4504,6 +4504,52 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
+    def test_pickle(self):
+        import pickle
+
+        print("------------------------test pickle")
+        n = 10
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        rho = 1.0e-7
+        mu_eq = 1.0e-4
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp.init(
+            H,
+            np.asfortranarray(g),
+            A,
+            np.asfortranarray(b),
+            C,
+            np.asfortranarray(l),
+            np.asfortranarray(u),
+            True,
+            rho=rho,
+            mu_eq=mu_eq,
+        )
+
+        filename = "qp_model"
+
+        try:
+            with open(filename, "wb") as f:
+                pickle.dump(qp.model, f)
+        except:
+            dump_success = False
+        else:
+            dump_success = True
+
+        assert dump_success
+
+        try:
+            with open(filename, "rb") as f:
+                qp_model = pickle.load(f)
+        except:
+            read_success = False
+        else:
+            read_success = True
+
+        assert read_success
+
 
 if __name__ == "__main__":
     unittest.main()
