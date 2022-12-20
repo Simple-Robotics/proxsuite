@@ -8,7 +8,6 @@
 #ifndef PROXSUITE_HELPERS_SERIALIZE_HPP
 #define PROXSUITE_HELPERS_SERIALIZE_HPP
 
-#ifdef PROXSUITE_WITH_SERIALIZATION
 #include <Eigen/Eigen>
 #include <cereal/cereal.hpp>
 
@@ -78,7 +77,16 @@ serialize(Archive& archive, proxsuite::proxqp::dense::Model<T>& model)
           CEREAL_NVP(model.u));
 }
 
+template<class Archive>
+void
+serialize(Archive& archive, proxsuite::proxqp::SparseBackend& sb)
+{
+  auto sbi = static_cast<int>(sb);
+  archive(cereal::make_nvp("sbi", sbi));
+  sb = static_cast<proxsuite::proxqp::SparseBackend>(sbi);
 }
+
+} // namespace cereal
 
 namespace proxsuite {
 namespace serialization {
@@ -245,5 +253,4 @@ saveToJSON(const T& object, const std::string& filename)
 }
 }
 
-#endif
 #endif /* end of include guard PROXSUITE_HELPERS_SERIALIZE_HPP */

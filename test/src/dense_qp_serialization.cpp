@@ -4,13 +4,12 @@
 #include <doctest.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#ifdef PROXSUITE_WITH_SERIALIZATION
 #include <proxsuite/proxqp/dense/serialize.hpp>
 
 using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
-
-#ifdef PROXSUITE_WITH_SERIALIZATION
 
 DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
 {
