@@ -7,7 +7,6 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-#include <proxsuite/proxqp/dense/serialize.hpp>
 
 using T = double;
 using namespace proxsuite;

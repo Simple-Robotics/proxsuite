@@ -29,12 +29,12 @@ save(
   Archive& ar,
   Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> const& m)
 {
-  int32_t rows = m.rows();
-  int32_t cols = m.cols();
+  Eigen::Index rows = m.rows();
+  Eigen::Index cols = m.cols();
   ar(rows);
   ar(cols);
 
-  for (int i = 0; i < m.size(); i++)
+  for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
 }
 
@@ -49,14 +49,14 @@ inline void
 load(Archive& ar,
      Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>& m)
 {
-  int32_t rows;
-  int32_t cols;
+  Eigen::Index rows;
+  Eigen::Index cols;
   ar(rows);
   ar(cols);
 
   m.resize(rows, cols);
 
-  for (int i = 0; i < m.size(); i++)
+  for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
 }
 
@@ -77,13 +77,44 @@ serialize(Archive& archive, proxsuite::proxqp::dense::Model<T>& model)
           CEREAL_NVP(model.u));
 }
 
-template<class Archive>
+template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::SparseBackend& sb)
+serialize(Archive& archive, proxsuite::proxqp::Settings<T>& settings)
 {
-  auto sbi = static_cast<int>(sb);
-  archive(cereal::make_nvp("sbi", sbi));
-  sb = static_cast<proxsuite::proxqp::SparseBackend>(sbi);
+  archive(CEREAL_NVP(settings.default_rho),
+          CEREAL_NVP(settings.default_mu_eq),
+          CEREAL_NVP(settings.default_mu_in),
+          CEREAL_NVP(settings.alpha_bcl),
+          CEREAL_NVP(settings.beta_bcl),
+          CEREAL_NVP(settings.refactor_dual_feasibility_threshold),
+          CEREAL_NVP(settings.refactor_rho_threshold),
+          CEREAL_NVP(settings.mu_min_eq),
+          CEREAL_NVP(settings.mu_min_in),
+          CEREAL_NVP(settings.mu_max_eq_inv),
+          CEREAL_NVP(settings.mu_update_factor),
+          CEREAL_NVP(settings.mu_update_inv_factor),
+          CEREAL_NVP(settings.cold_reset_mu_eq),
+          CEREAL_NVP(settings.cold_reset_mu_in),
+          CEREAL_NVP(settings.cold_reset_mu_eq_inv),
+          CEREAL_NVP(settings.cold_reset_mu_in_inv),
+          CEREAL_NVP(settings.eps_abs),
+          CEREAL_NVP(settings.eps_rel),
+          CEREAL_NVP(settings.max_iter),
+          CEREAL_NVP(settings.max_iter_in),
+          CEREAL_NVP(settings.safe_guard),
+          CEREAL_NVP(settings.nb_iterative_refinement),
+          CEREAL_NVP(settings.eps_refact),
+          CEREAL_NVP(settings.verbose),
+          CEREAL_NVP(settings.initial_guess),
+          CEREAL_NVP(settings.update_preconditioner),
+          CEREAL_NVP(settings.compute_preconditioner),
+          CEREAL_NVP(settings.compute_timings),
+          CEREAL_NVP(settings.preconditioner_max_iter),
+          CEREAL_NVP(settings.preconditioner_accuracy),
+          CEREAL_NVP(settings.eps_primal_inf),
+          CEREAL_NVP(settings.eps_dual_inf),
+          CEREAL_NVP(settings.bcl_update),
+          CEREAL_NVP(settings.sparse_backend));
 }
 
 } // namespace cereal
