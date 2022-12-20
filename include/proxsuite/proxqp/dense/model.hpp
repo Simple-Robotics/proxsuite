@@ -121,23 +121,6 @@ struct Model
     return true;
 #undef PROXSUITE_CHECK_SIZE
   }
-#ifdef PROXSUITE_WITH_SERIALIZATION
-  template<class Archive>
-  void serialize(Archive& archive)
-  {
-    archive(CEREAL_NVP(dim),
-            CEREAL_NVP(n_eq),
-            CEREAL_NVP(n_in),
-            CEREAL_NVP(n_total),
-            CEREAL_NVP(H),
-            CEREAL_NVP(g),
-            CEREAL_NVP(A),
-            CEREAL_NVP(b),
-            CEREAL_NVP(C),
-            CEREAL_NVP(l),
-            CEREAL_NVP(u));
-  }
-#endif
 };
 } // namespace dense
 } // namespace proxqp
