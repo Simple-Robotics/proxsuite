@@ -35,9 +35,11 @@ DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
           qp_random.u);
 
   proxsuite::serialization::saveToBinary(qp.model, "qp_model.bin");
+  proxsuite::serialization::saveToJSON(qp.results, "results.json");
   proxsuite::serialization::loadFromBinary(qp.model, "qp_model.bin");
 
   proxsuite::serialization::saveToJSON(qp.model, "qp_model.json");
   proxsuite::serialization::loadFromJSON(qp.model, "qp_model.json");
+  proxsuite::serialization::loadFromJSON(qp.results, "results.json");
 }
 #endif
