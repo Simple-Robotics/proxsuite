@@ -62,6 +62,7 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
+option(BUILD_WITH_SERIALIZATION_MODULE "Add methods to serialize QP model" ON)
 
 set(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
@@ -134,6 +135,25 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
     INTERFACE simde)
   target_compile_definitions(proxsuite-vectorized INTERFACE PROXSUITE_VECTORIZE)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
+endif()
+
+if(BUILD_WITH_SERIALIZATION_MODULE)
+  set(cereal_dir ${PROJECT_SOURCE_DIR}/external/cereal)
+  set(cereal ${cereal_dir}/README.md)
+  if(NOT EXISTS ${cereal})
+    message("Initialize cereal submodule.")
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} submodule update --init ${cereal_dir}
+      WORKING_DIRECTORY ${cereal_dir} COMMAND_ERROR_IS_FATAL ANY)
+  endif()
+
+  target_include_directories(
+    proxsuite
+    INTERFACE
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/external/cereal/include>"
+      "$<INSTALL_INTERFACE:external/cereal/include>")
+  target_compile_definitions(proxsuite INTERFACE PROXSUITE_WITH_SERIALIZATION)
+
 endif()
 
 install(
