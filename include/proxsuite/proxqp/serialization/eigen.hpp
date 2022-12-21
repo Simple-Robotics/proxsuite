@@ -62,7 +62,7 @@ load(Archive& ar,
     ar(m.data()[i]);
 
   // Account for different storage orders
-  if (!_OptionsLoaded == _Options) {
+  if (!(_OptionsLoaded == _Options)) {
     m.transposeInPlace();
   }
 }
