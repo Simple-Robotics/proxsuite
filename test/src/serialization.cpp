@@ -4,7 +4,6 @@
 #include <doctest.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-#ifdef PROXSUITE_WITH_SERIALIZATION
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/model.hpp>
@@ -157,4 +156,3 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(row_matrix_loaded == row_matrix);
   DOCTEST_CHECK(col_matrix_loaded == row_matrix);
 }
-#endif
