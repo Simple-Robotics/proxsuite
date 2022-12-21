@@ -7,7 +7,11 @@
 #include <pybind11/eigen.h>
 #include <proxsuite/proxqp/dense/utils.hpp>
 #ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/dense/serialize.hpp>
+#include <proxsuite/proxqp/serialization/archive.hpp>
+#include <proxsuite/proxqp/serialization/eigen.hpp>
+#include <proxsuite/proxqp/serialization/model.hpp>
+#include <proxsuite/proxqp/serialization/results.hpp>
+#include <proxsuite/proxqp/serialization/settings.hpp>
 #endif
 
 namespace proxsuite {
