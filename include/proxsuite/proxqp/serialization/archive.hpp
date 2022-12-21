@@ -178,6 +178,53 @@ saveToJSON(const T& object, const std::string& filename)
     throw std::invalid_argument(exception_message);
   }
 }
+
+///
+/// \brief Loads an object from a XML file.
+///
+/// \tparam T Type of the object to deserialize.
+///
+/// \param[out] object Object in which the loaded data are copied.
+/// \param[in] filename Name of the file containing the serialized data.
+///
+template<typename T>
+inline void
+loadFromXML(T& object, const std::string& filename)
+{
+  std::ifstream ifs(filename.c_str());
+  if (ifs) {
+    cereal::XMLInputArchive ia(ifs);
+    ia(object);
+  } else {
+    const std::string exception_message(filename +
+                                        " does not seem to be a valid file.");
+    throw std::invalid_argument(exception_message);
+  }
+}
+
+///
+/// \brief Saves an object inside a XML file.
+///
+/// \tparam T Type of the object to deserialize.
+///
+/// \param[in] object Object in which the loaded data are copied.
+/// \param[in] filename Name of the file containing the serialized data.
+///
+template<typename T>
+void
+saveToXML(const T& object, const std::string& filename)
+{
+  std::ofstream ofs(filename.c_str());
+  if (ofs) {
+    cereal::XMLOutputArchive oa(ofs);
+    oa(object);
+  } else {
+    const std::string exception_message(filename +
+                                        " does not seem to be a valid file.");
+    throw std::invalid_argument(exception_message);
+  }
+}
+
 }
 }
 
