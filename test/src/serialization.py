@@ -5,6 +5,7 @@ import proxsuite
 import numpy as np
 import scipy.sparse as spa
 import unittest
+import pickle
 
 
 def generate_mixed_qp(n, seed=1):
@@ -37,6 +38,30 @@ def generate_mixed_qp(n, seed=1):
     return P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
+def generic_test(object, filename):
+
+    try:
+        with open(filename, "wb") as f:
+            pickle.dump(object, f)
+    except:
+        dump_success = False
+    else:
+        dump_success = True
+
+    assert dump_success
+
+    try:
+        with open(filename, "rb") as f:
+            loaded_object = pickle.load(f)
+    except:
+        read_success = False
+    else:
+        read_success = True
+
+    assert read_success
+    assert loaded_object == object
+
+
 class DenseqpWrapperSerialization(unittest.TestCase):
     def test_pickle(self):
         import pickle
@@ -62,27 +87,9 @@ class DenseqpWrapperSerialization(unittest.TestCase):
             mu_eq=mu_eq,
         )
 
-        filename = "qp_model"
-
-        try:
-            with open(filename, "wb") as f:
-                pickle.dump(qp.model, f)
-        except:
-            dump_success = False
-        else:
-            dump_success = True
-
-        assert dump_success
-
-        try:
-            with open(filename, "rb") as f:
-                qp_model = pickle.load(f)
-        except:
-            read_success = False
-        else:
-            read_success = True
-
-        assert read_success
+        generic_test(qp.model, "qp_model")
+        generic_test(qp.settings, "qp_settings")
+        generic_test(qp.results, "qp_results")
 
 
 if __name__ == "__main__":
