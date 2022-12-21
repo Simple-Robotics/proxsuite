@@ -11,14 +11,6 @@
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
-// #ifdef PROXSUITE_WITH_SERIALIZATION
-// #include <fstream>
-// #include <string>
-// #include <proxsuite/helpers/serialize.hpp>
-// #include <proxsuite/helpers/filesystem.hpp>
-// #include <cereal/archives/binary.hpp>
-// #include <cereal/archives/json.hpp>
-// #endif
 
 namespace proxsuite {
 namespace proxqp {
