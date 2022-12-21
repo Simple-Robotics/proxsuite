@@ -5,13 +5,12 @@
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 #include <proxsuite/proxqp/dense/utils.hpp>
 #ifdef PROXSUITE_WITH_SERIALIZATION
 #include <proxsuite/proxqp/serialization/archive.hpp>
 #include <proxsuite/proxqp/serialization/eigen.hpp>
 #include <proxsuite/proxqp/serialization/model.hpp>
-#include <proxsuite/proxqp/serialization/results.hpp>
-#include <proxsuite/proxqp/serialization/settings.hpp>
 #endif
 
 namespace proxsuite {
@@ -42,6 +41,8 @@ exposeDenseModel(pybind11::module_ m)
     .def("is_valid",
          &Model<T>::is_valid,
          "Check if model is containing valid data.")
+    .def(pybind11::self == pybind11::self)
+    .def(pybind11::self != pybind11::self)
 #ifdef PROXSUITE_WITH_SERIALIZATION
     .def(pybind11::pickle(
 

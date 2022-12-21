@@ -5,6 +5,12 @@
 #include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
+
+#ifdef PROXSUITE_WITH_SERIALIZATION
+#include <proxsuite/proxqp/serialization/archive.hpp>
+#include <proxsuite/proxqp/serialization/settings.hpp>
+#endif
 
 namespace proxsuite {
 namespace proxqp {
@@ -67,7 +73,23 @@ exposeSettings(pybind11::module_ m)
                    &Settings<T>::compute_preconditioner)
     .def_readwrite("update_preconditioner", &Settings<T>::update_preconditioner)
     .def_readwrite("verbose", &Settings<T>::verbose)
-    .def_readwrite("bcl_update", &Settings<T>::bcl_update);
+    .def_readwrite("bcl_update", &Settings<T>::bcl_update)
+    .def(pybind11::self == pybind11::self)
+    .def(pybind11::self != pybind11::self)
+#ifdef PROXSUITE_WITH_SERIALIZATION
+    .def(pybind11::pickle(
+
+      [](const Settings<T>& settings) {
+        return pybind11::bytes(
+          proxsuite::serialization::saveToString(settings));
+      },
+      [](pybind11::bytes& s) {
+        Settings<T> settings;
+        proxsuite::serialization::loadFromString(settings, s);
+        return settings;
+      }));
+#endif
+  ;
 }
 } // namespace python
 } // namespace proxqp
