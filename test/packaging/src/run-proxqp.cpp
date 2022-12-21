@@ -18,7 +18,7 @@ main()
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   dense::QP<T> Qp(dim, n_eq, n_in);                  // create the QP object
-  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.u, qp.l); // initialize the model
+  Qp.init(qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u); // initialize the model
   Qp.solve(); // solve the problem without warm start
 
   auto x_wm = utils::rand::vector_rand<T>(dim);

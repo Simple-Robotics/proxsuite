@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 3.10)
 
+if(DEFINED PROJECT_NAME)
+  set(PROXSUITE_AS_SUBPROJECT)
+endif()
+
 set(PROJECT_NAME proxsuite)
 set(PROJECT_DESCRIPTION "The Advanced Proximal Optimization Toolbox")
 set(PROJECT_URL "http://github.com/Simple-Robotics/proxsuite")
@@ -49,7 +53,6 @@ include(CMakeDependentOption)
 apply_default_apple_configuration()
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
-option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
 option(CHECK_RUNTIME_MALLOC
        "Check if some memory allocations are performed at runtime" OFF)
@@ -118,6 +121,8 @@ target_link_libraries(
 target_include_directories(
   proxsuite INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(
+  proxsuite INTERFACE "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>")
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
@@ -136,15 +141,17 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
-install(
-  TARGETS ${EXPORTED_TARGETS_LIST}
-  EXPORT ${TARGETS_EXPORT_NAME}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+if(NOT PROXSUITE_AS_SUBPROJECT)
+  install(
+    TARGETS ${EXPORTED_TARGETS_LIST}
+    EXPORT ${TARGETS_EXPORT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+endif(NOT PROXSUITE_AS_SUBPROJECT)
 
 add_subdirectory(bindings)
-if(BUILD_TESTING)
+if(BUILD_TESTING AND NOT PROXSUITE_AS_SUBPROJECT)
   add_subdirectory(test)
   add_subdirectory(examples)
 endif()
