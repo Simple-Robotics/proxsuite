@@ -228,6 +228,57 @@ struct Settings
   }
 };
 
+template<typename T>
+bool
+operator==(const Settings<T>& settings1, const Settings<T>& settings2)
+{
+  bool value =
+    settings1.default_rho == settings2.default_rho &&
+    settings1.default_mu_eq == settings2.default_mu_eq &&
+    settings1.default_mu_in == settings2.default_mu_in &&
+    settings1.alpha_bcl == settings2.alpha_bcl &&
+    settings1.alpha_bcl == settings2.alpha_bcl &&
+    settings1.refactor_dual_feasibility_threshold ==
+      settings2.refactor_dual_feasibility_threshold &&
+    settings1.refactor_rho_threshold == settings2.refactor_rho_threshold &&
+    settings1.mu_min_eq == settings2.mu_min_eq &&
+    settings1.mu_min_in == settings2.mu_min_in &&
+    settings1.mu_max_eq_inv == settings2.mu_max_eq_inv &&
+    settings1.mu_max_in_inv == settings2.mu_max_in_inv &&
+    settings1.mu_update_factor == settings2.mu_update_factor &&
+    settings1.mu_update_factor == settings2.mu_update_factor &&
+    settings1.cold_reset_mu_eq == settings2.cold_reset_mu_eq &&
+    settings1.cold_reset_mu_in == settings2.cold_reset_mu_in &&
+    settings1.cold_reset_mu_eq_inv == settings2.cold_reset_mu_eq_inv &&
+    settings1.cold_reset_mu_in_inv == settings2.cold_reset_mu_in_inv &&
+    settings1.eps_abs == settings2.eps_abs &&
+    settings1.eps_rel == settings2.eps_rel &&
+    settings1.max_iter == settings2.max_iter &&
+    settings1.max_iter_in == settings2.max_iter_in &&
+    settings1.safe_guard == settings2.safe_guard &&
+    settings1.nb_iterative_refinement == settings2.nb_iterative_refinement &&
+    settings1.eps_refact == settings2.eps_refact &&
+    settings1.verbose == settings2.verbose &&
+    settings1.initial_guess == settings2.initial_guess &&
+    settings1.update_preconditioner == settings2.update_preconditioner &&
+    settings1.compute_preconditioner == settings2.compute_preconditioner &&
+    settings1.compute_timings == settings2.compute_timings &&
+    settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
+    settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
+    settings1.eps_primal_inf == settings2.eps_primal_inf &&
+    settings1.eps_dual_inf == settings2.eps_dual_inf &&
+    settings1.bcl_update == settings2.bcl_update &&
+    settings1.sparse_backend == settings2.sparse_backend;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const Settings<T>& settings1, const Settings<T>& settings2)
+{
+  return !(settings1 == settings2);
+}
+
 } // namespace proxqp
 } // namespace proxsuite
 

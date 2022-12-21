@@ -163,6 +163,50 @@ struct Results
   }
 };
 
+template<typename T>
+bool
+operator==(const Info<T>& info1, const Info<T>& info2)
+{
+  bool value =
+    info1.mu_eq == info2.mu_eq && info1.mu_eq_inv == info2.mu_eq_inv &&
+    info1.mu_in == info2.mu_in && info1.mu_in_inv == info2.mu_in_inv &&
+    info1.rho == info2.rho && info1.nu == info2.nu &&
+    info1.iter == info2.iter && info1.iter_ext == info2.iter_ext &&
+    info1.mu_updates == info2.mu_updates &&
+    info1.rho_updates == info2.rho_updates && info1.status == info2.status &&
+    info1.setup_time == info2.setup_time &&
+    info1.solve_time == info2.solve_time && info1.run_time == info2.run_time &&
+    info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
+    info1.dua_res == info2.dua_res && info1.duality_gap == info2.duality_gap &&
+    info1.duality_gap == info2.duality_gap;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const Info<T>& info1, const Info<T>& info2)
+{
+  return !(info1 == info2);
+}
+
+template<typename T>
+bool
+operator==(const Results<T>& results1, const Results<T>& results2)
+{
+  bool value = results1.x == results2.x && results1.y == results2.y &&
+               //  results1.z == results2.z && results1.active_constraints ==
+               //  results2.active_constraints &&
+               results1.z == results2.z && results1.info == results2.info;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const Results<T>& results1, const Results<T>& results2)
+{
+  return !(results1 == results2);
+}
+
 } // namespace proxqp
 } // namespace proxsuite
 
