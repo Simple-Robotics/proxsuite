@@ -90,6 +90,7 @@ class DenseqpWrapperSerialization(unittest.TestCase):
         generic_test(qp.model, "qp_model")
         generic_test(qp.settings, "qp_settings")
         generic_test(qp.results, "qp_results")
+        generic_test(qp, "qp_wrapper")
 
 
 if __name__ == "__main__":

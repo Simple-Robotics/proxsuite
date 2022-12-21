@@ -5,6 +5,7 @@
 #include <proxsuite/proxqp/serialization/model.hpp>
 #include <proxsuite/proxqp/serialization/results.hpp>
 #include <proxsuite/proxqp/serialization/settings.hpp>
+#include <proxsuite/proxqp/serialization/wrapper.hpp>
 
 template<typename object>
 struct init;
@@ -42,6 +43,18 @@ struct init<proxsuite::proxqp::Settings<T>>
   {
     Settings settings;
     return settings;
+  }
+};
+
+template<typename T>
+struct init<proxsuite::proxqp::dense::QP<T>>
+{
+  typedef proxsuite::proxqp::dense::QP<T> QP;
+
+  static QP run()
+  {
+    QP qp(1, 0, 0);
+    return qp;
   }
 };
 

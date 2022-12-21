@@ -38,6 +38,8 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
   generic_test(qp.model, TEST_SERIALIZATION_FOLDER "/qp_model");
   generic_test(qp.settings, TEST_SERIALIZATION_FOLDER "/qp_settings");
   generic_test(qp.results, TEST_SERIALIZATION_FOLDER "/qp_results");
+
+  generic_test(qp, TEST_SERIALIZATION_FOLDER "/qp_wrapper");
 }
 
 DOCTEST_TEST_CASE(
