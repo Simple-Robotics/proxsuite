@@ -34,7 +34,7 @@ save(
   ar(cols);
 
   // TODO: remove assert and take storage order into account
-  assert(m.IsColMajor);
+  assert(!m.IsRowMajor);
   for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
 }
@@ -56,7 +56,7 @@ load(Archive& ar,
   ar(cols);
 
   // TODO: remove assert and take storage order into account
-  assert(m.IsColMajor);
+  assert(m.IsRowMajor);
 
   m.resize(rows, cols);
 
