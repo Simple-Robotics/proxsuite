@@ -5,11 +5,7 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/serialization/archive.hpp>
-#include <proxsuite/proxqp/serialization/eigen.hpp>
-#include <proxsuite/proxqp/serialization/model.hpp>
-#include <proxsuite/proxqp/serialization/results.hpp>
-#include <proxsuite/proxqp/serialization/settings.hpp>
+#include "serialization.hpp"
 
 using T = double;
 using namespace proxsuite;
@@ -38,14 +34,6 @@ DOCTEST_TEST_CASE("ProxQP::test serialization")
           qp_random.l,
           qp_random.u);
 
-  proxsuite::serialization::saveToBinary(qp.model, "qp_model.bin");
-  proxsuite::serialization::saveToJSON(qp.results, "results.json");
-  proxsuite::serialization::saveToXML(qp.results, "results.xml");
-  proxsuite::serialization::loadFromBinary(qp.model, "qp_model.bin");
-
-  proxsuite::serialization::saveToJSON(qp.model, "qp_model.json");
-  proxsuite::serialization::loadFromJSON(qp.model, "qp_model.json");
-  proxsuite::serialization::loadFromJSON(qp.results, "results.json");
-  proxsuite::serialization::loadFromXML(qp.results, "results.xml");
+  generic_test(qp.model, TEST_SERIALIZATION_FOLDER "/qp_model");
 }
 #endif

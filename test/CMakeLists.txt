@@ -42,9 +42,21 @@ proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
 # Test serialization
+macro(ADD_TEST_CFLAGS target flag)
+  set_property(
+    TARGET ${target}
+    APPEND_STRING
+    PROPERTY COMPILE_FLAGS " ${flag}")
+endmacro(ADD_TEST_CFLAGS)
+
+make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
 proxsuite_test(serialization src/serialization.cpp)
 target_compile_definitions(test-cpp-serialization
                            PRIVATE PROXSUITE_WITH_SERIALIZATION)
+add_test_cflags(
+  test-cpp-serialization
+  "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
+)
 target_include_directories(
   test-cpp-serialization PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
 
