@@ -11,7 +11,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE("ProxQP::test serialization")
+DOCTEST_TEST_CASE("test-cpp-serialization")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
@@ -33,7 +33,10 @@ DOCTEST_TEST_CASE("ProxQP::test serialization")
           qp_random.C,
           qp_random.l,
           qp_random.u);
+  qp.solve();
 
   generic_test(qp.model, TEST_SERIALIZATION_FOLDER "/qp_model");
+  generic_test(qp.settings, TEST_SERIALIZATION_FOLDER "/qp_settings");
+  generic_test(qp.results, TEST_SERIALIZATION_FOLDER "/qp_results");
 }
 #endif

@@ -9,15 +9,39 @@
 template<typename object>
 struct init;
 
-template<typename Scalar>
-struct init<proxsuite::proxqp::dense::Model<Scalar>>
+template<typename T>
+struct init<proxsuite::proxqp::dense::Model<T>>
 {
-  typedef proxsuite::proxqp::dense::Model<Scalar> Model;
+  typedef proxsuite::proxqp::dense::Model<T> Model;
 
   static Model run()
   {
     Model model(1, 0, 0);
     return model;
+  }
+};
+
+template<typename T>
+struct init<proxsuite::proxqp::Results<T>>
+{
+  typedef proxsuite::proxqp::Results<T> Results;
+
+  static Results run()
+  {
+    Results results;
+    return results;
+  }
+};
+
+template<typename T>
+struct init<proxsuite::proxqp::Settings<T>>
+{
+  typedef proxsuite::proxqp::Settings<T> Settings;
+
+  static Settings run()
+  {
+    Settings settings;
+    return settings;
   }
 };
 
