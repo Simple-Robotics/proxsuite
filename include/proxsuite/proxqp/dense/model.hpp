@@ -122,6 +122,27 @@ struct Model
 #undef PROXSUITE_CHECK_SIZE
   }
 };
+
+template<typename T>
+bool
+operator==(const Model<T>& model1, const Model<T>& model2)
+{
+  bool value = model1.dim == model2.dim && model1.n_eq == model2.n_eq &&
+               model1.n_in == model2.n_in && model1.n_total == model2.n_total &&
+               model1.H == model2.H && model1.g == model2.g &&
+               model1.A == model2.A && model1.b == model2.b &&
+               model1.C == model2.C && model1.l == model2.l &&
+               model1.u == model2.u;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const Model<T>& model1, const Model<T>& model2)
+{
+  return !(model1 == model2);
+}
+
 } // namespace dense
 } // namespace proxqp
 } // namespace proxsuite
