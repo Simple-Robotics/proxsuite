@@ -49,7 +49,6 @@ include(CMakeDependentOption)
 apply_default_apple_configuration()
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
-option(INSTALL_DOCUMENTATION "Generate and install the C++ documentation" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
 option(CHECK_RUNTIME_MALLOC
        "Check if some memory allocations are performed at runtime" OFF)
