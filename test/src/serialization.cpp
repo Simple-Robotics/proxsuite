@@ -11,7 +11,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE("test-cpp-serialization")
+DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
@@ -38,5 +38,22 @@ DOCTEST_TEST_CASE("test-cpp-serialization")
   generic_test(qp.model, TEST_SERIALIZATION_FOLDER "/qp_model");
   generic_test(qp.settings, TEST_SERIALIZATION_FOLDER "/qp_settings");
   generic_test(qp.results, TEST_SERIALIZATION_FOLDER "/qp_results");
+}
+
+DOCTEST_TEST_CASE(
+  "test serialization of eigen matrices with different storage orders")
+{
+  Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix;
+  Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix_loaded;
+  Eigen::Matrix<float, 2, 2, Eigen::ColMajor> col_matrix_loaded;
+
+  row_matrix << 1, 2, 3, 4;
+
+  proxsuite::serialization::saveToJSON(row_matrix, "row_matrix");
+  proxsuite::serialization::loadFromJSON(row_matrix_loaded, "row_matrix");
+  proxsuite::serialization::loadFromJSON(col_matrix_loaded, "row_matrix");
+
+  DOCTEST_CHECK(row_matrix_loaded == row_matrix);
+  DOCTEST_CHECK(col_matrix_loaded == row_matrix);
 }
 #endif
