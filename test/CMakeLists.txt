@@ -42,12 +42,11 @@ proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
 # Test serialization
-proxsuite_test(dense_qp_serialization src/dense_qp_serialization.cpp)
-target_compile_definitions(test-cpp-dense_qp_serialization
+proxsuite_test(serialization src/serialization.cpp)
+target_compile_definitions(test-cpp-serialization
                            PRIVATE PROXSUITE_WITH_SERIALIZATION)
 target_include_directories(
-  test-cpp-dense_qp_serialization
-  PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+  test-cpp-serialization PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
   proxsuite_test(dense_maros_meszaros src/dense_maros_meszaros.cpp)

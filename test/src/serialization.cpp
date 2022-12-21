@@ -15,7 +15,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
+DOCTEST_TEST_CASE("ProxQP::test serialization")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
@@ -40,10 +40,12 @@ DOCTEST_TEST_CASE("ProxQP::dense: test serialization")
 
   proxsuite::serialization::saveToBinary(qp.model, "qp_model.bin");
   proxsuite::serialization::saveToJSON(qp.results, "results.json");
+  proxsuite::serialization::saveToXML(qp.results, "results.xml");
   proxsuite::serialization::loadFromBinary(qp.model, "qp_model.bin");
 
   proxsuite::serialization::saveToJSON(qp.model, "qp_model.json");
   proxsuite::serialization::loadFromJSON(qp.model, "qp_model.json");
   proxsuite::serialization::loadFromJSON(qp.results, "results.json");
+  proxsuite::serialization::loadFromXML(qp.results, "results.xml");
 }
 #endif
