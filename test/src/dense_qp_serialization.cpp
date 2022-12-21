@@ -5,7 +5,11 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/dense/serialize.hpp>
+#include <proxsuite/proxqp/serialization/archive.hpp>
+#include <proxsuite/proxqp/serialization/eigen.hpp>
+#include <proxsuite/proxqp/serialization/model.hpp>
+#include <proxsuite/proxqp/serialization/results.hpp>
+#include <proxsuite/proxqp/serialization/settings.hpp>
 
 using T = double;
 using namespace proxsuite;
