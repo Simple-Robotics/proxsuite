@@ -32,9 +32,8 @@ save(
   Eigen::Index cols = m.cols();
   ar(rows);
   ar(cols);
+  ar(_Options);
 
-  // TODO: remove assert and take storage order into account
-  assert(!m.IsRowMajor);
   for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
 }
@@ -52,16 +51,20 @@ load(Archive& ar,
 {
   Eigen::Index rows;
   Eigen::Index cols;
+  int _OptionsLoaded;
   ar(rows);
   ar(cols);
-
-  // TODO: remove assert and take storage order into account
-  assert(m.IsRowMajor);
+  ar(_OptionsLoaded);
 
   m.resize(rows, cols);
 
   for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
+
+  // Account for different storage orders
+  if (!_OptionsLoaded == _Options) {
+    m.transposeInPlace();
+  }
 }
 
 // sparse matrices
