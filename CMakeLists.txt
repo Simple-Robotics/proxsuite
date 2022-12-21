@@ -121,6 +121,8 @@ target_link_libraries(
 target_include_directories(
   proxsuite INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
                       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(
+  proxsuite INTERFACE "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>")
 set(EXPORTED_TARGETS_LIST proxsuite)
 
 add_header_group(${PROJECT_NAME}_HEADERS)
