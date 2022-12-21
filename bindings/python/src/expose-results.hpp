@@ -4,11 +4,10 @@
 #include <proxsuite/proxqp/results.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 
-#ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/serialization/archive.hpp>
-#include <proxsuite/proxqp/serialization/results.hpp>
-#endif
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/results.hpp>
 
 #include "helpers.hpp"
 #include "optional.hpp"
@@ -69,7 +68,6 @@ exposeResults(pybind11::module_ m)
     .def_readwrite("info", &Results<T>::info)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
-#ifdef PROXSUITE_WITH_SERIALIZATION
     .def(pybind11::pickle(
 
       [](const Results<T>& results) {
@@ -80,7 +78,6 @@ exposeResults(pybind11::module_ m)
         proxsuite::serialization::loadFromString(results, s);
         return results;
       }));
-#endif
   ;
 }
 } // namespace python

@@ -2,16 +2,15 @@
 // Copyright (c) 2022 INRIA
 //
 
-#include <proxsuite/proxqp/dense/wrapper.hpp>
-#include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
-#ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/serialization/archive.hpp>
-#include <proxsuite/proxqp/serialization/wrapper.hpp>
-#endif
+
+#include <proxsuite/proxqp/dense/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/wrapper.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -121,7 +120,6 @@ exposeQpObjectDense(pybind11::module_ m)
          "classes.")
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
-#ifdef PROXSUITE_WITH_SERIALIZATION
     .def(pybind11::pickle(
 
       [](const dense::QP<T>& qp) {
@@ -132,7 +130,6 @@ exposeQpObjectDense(pybind11::module_ m)
         proxsuite::serialization::loadFromString(qp, s);
         return qp;
       }));
-#endif
   ;
 }
 } // namespace python

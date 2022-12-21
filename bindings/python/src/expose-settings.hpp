@@ -1,16 +1,14 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>
 
-#ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/serialization/archive.hpp>
-#include <proxsuite/proxqp/serialization/settings.hpp>
-#endif
+#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/settings.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -76,7 +74,6 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
-#ifdef PROXSUITE_WITH_SERIALIZATION
     .def(pybind11::pickle(
 
       [](const Settings<T>& settings) {
@@ -88,7 +85,6 @@ exposeSettings(pybind11::module_ m)
         proxsuite::serialization::loadFromString(settings, s);
         return settings;
       }));
-#endif
   ;
 }
 } // namespace python

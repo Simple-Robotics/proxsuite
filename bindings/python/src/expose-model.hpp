@@ -1,17 +1,17 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <proxsuite/proxqp/dense/model.hpp>
-#include <proxsuite/proxqp/sparse/model.hpp>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>
+
+#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/proxqp/sparse/model.hpp>
 #include <proxsuite/proxqp/dense/utils.hpp>
-#ifdef PROXSUITE_WITH_SERIALIZATION
-#include <proxsuite/proxqp/serialization/archive.hpp>
-#include <proxsuite/proxqp/serialization/eigen.hpp>
-#include <proxsuite/proxqp/serialization/model.hpp>
-#endif
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/eigen.hpp>
+#include <proxsuite/serialization/model.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -43,7 +43,6 @@ exposeDenseModel(pybind11::module_ m)
          "Check if model is containing valid data.")
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
-#ifdef PROXSUITE_WITH_SERIALIZATION
     .def(pybind11::pickle(
 
       [](const proxsuite::proxqp::dense::Model<T>& model) {
@@ -56,7 +55,6 @@ exposeDenseModel(pybind11::module_ m)
 
         return model;
       }));
-#endif
 }
 } // namespace python
 } // namespace dense

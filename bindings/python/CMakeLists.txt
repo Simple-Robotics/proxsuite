@@ -49,9 +49,8 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
   target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
-  target_compile_definitions(
-    ${target_name} PRIVATE PYTHON_MODULE_NAME=${target_name}
-                           PROXSUITE_WITH_SERIALIZATION)
+  target_compile_definitions(${target_name}
+                             PRIVATE PYTHON_MODULE_NAME=${target_name})
   target_include_directories(
     ${target_name} PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
   set_target_properties(

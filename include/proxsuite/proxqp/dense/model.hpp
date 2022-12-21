@@ -9,9 +9,6 @@
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
-#ifdef PROXSUITE_WITH_SERIALIZATION
-#include <cereal/cereal.hpp>
-#endif
 
 namespace proxsuite {
 namespace proxqp {
