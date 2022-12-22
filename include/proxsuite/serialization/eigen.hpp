@@ -66,8 +66,7 @@ load(Archive& ar,
 #if EIGEN_VERSION_AT_LEAST(3, 4, 0)
     m.transposeInPlace();
 #else
-    Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> m_t;
-    m_t = m.transpose();
+    Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> m_t(m.transpose());
     m = m_t;
 #endif
   }
