@@ -4,6 +4,10 @@
 #include <proxsuite/proxqp/results.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
+
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/results.hpp>
 
 #include "helpers.hpp"
 #include "optional.hpp"
@@ -61,7 +65,20 @@ exposeResults(pybind11::module_ m)
       Results<T>,
       z,
       "The dual solution associated to the inequality constraints.")
-    .def_readwrite("info", &Results<T>::info);
+    .def_readwrite("info", &Results<T>::info)
+    .def(pybind11::self == pybind11::self)
+    .def(pybind11::self != pybind11::self)
+    .def(pybind11::pickle(
+
+      [](const Results<T>& results) {
+        return pybind11::bytes(proxsuite::serialization::saveToString(results));
+      },
+      [](pybind11::bytes& s) {
+        Results<T> results;
+        proxsuite::serialization::loadFromString(results, s);
+        return results;
+      }));
+  ;
 }
 } // namespace python
 } // namespace proxqp

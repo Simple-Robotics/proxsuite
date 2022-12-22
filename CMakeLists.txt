@@ -141,6 +141,18 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
   list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
+if(BUILD_TESTING OR BUILD_PYTHON_INTERFACE)
+  # Download cereal for pything bindings and unittests
+  set(cereal_dir ${PROJECT_SOURCE_DIR}/external/cereal)
+  set(cereal ${cereal_dir}/README.md)
+  find_package(Git REQUIRED)
+  if(NOT EXISTS ${cereal})
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} submodule update --init ${cereal_dir}
+      WORKING_DIRECTORY ${cereal_dir} COMMAND_ERROR_IS_FATAL ANY)
+  endif()
+endif()
+
 if(NOT PROXSUITE_AS_SUBPROJECT)
   install(
     TARGETS ${EXPORTED_TARGETS_LIST}

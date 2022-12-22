@@ -2,12 +2,15 @@
 // Copyright (c) 2022 INRIA
 //
 
-#include <proxsuite/proxqp/dense/wrapper.hpp>
-#include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <proxsuite/proxqp/status.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
+
+#include <proxsuite/proxqp/dense/wrapper.hpp>
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
+#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/wrapper.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -114,7 +117,20 @@ exposeQpObjectDense(pybind11::module_ m)
     .def("cleanup",
          &dense::QP<T>::cleanup,
          "function used for cleaning the workspace and result "
-         "classes.");
+         "classes.")
+    .def(pybind11::self == pybind11::self)
+    .def(pybind11::self != pybind11::self)
+    .def(pybind11::pickle(
+
+      [](const dense::QP<T>& qp) {
+        return pybind11::bytes(proxsuite::serialization::saveToString(qp));
+      },
+      [](pybind11::bytes& s) {
+        proxsuite::proxqp::dense::QP<T> qp(1, 1, 1);
+        proxsuite::serialization::loadFromString(qp, s);
+        return qp;
+      }));
+  ;
 }
 } // namespace python
 } // namespace dense

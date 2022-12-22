@@ -451,6 +451,23 @@ solve(
 
   return Qp.results;
 }
+
+template<typename T>
+bool
+operator==(const QP<T>& qp1, const QP<T>& qp2)
+{
+  bool value = qp1.model == qp2.model && qp1.settings == qp2.settings &&
+               qp1.results == qp2.results;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const QP<T>& qp1, const QP<T>& qp2)
+{
+  return !(qp1 == qp2);
+}
+
 } // namespace dense
 } // namespace proxqp
 } // namespace proxsuite
