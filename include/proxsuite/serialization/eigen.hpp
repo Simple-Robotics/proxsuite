@@ -30,9 +30,15 @@ save(
 {
   Eigen::Index rows = m.rows();
   Eigen::Index cols = m.cols();
-  ar(rows);
-  ar(cols);
-  ar(_Options);
+  ar(CEREAL_NVP(rows));
+  ar(CEREAL_NVP(cols));
+  int storage_order;
+  if (m.IsRowMajor) {
+    storage_order = 1;
+  } else {
+    storage_order = 0;
+  }
+  ar(CEREAL_NVP(storage_order));
 
   for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
@@ -51,10 +57,10 @@ load(Archive& ar,
 {
   Eigen::Index rows;
   Eigen::Index cols;
-  int _OptionsLoaded;
-  ar(rows);
-  ar(cols);
-  ar(_OptionsLoaded);
+  int storage_order;
+  ar(CEREAL_NVP(rows));
+  ar(CEREAL_NVP(cols));
+  ar(CEREAL_NVP(storage_order));
 
   m.resize(rows, cols);
 
@@ -62,7 +68,7 @@ load(Archive& ar,
     ar(m.data()[i]);
 
   // Account for different storage orders
-  if (!(_OptionsLoaded == _Options)) {
+  if (!(storage_order == m.IsRowMajor)) {
 #if EIGEN_VERSION_AT_LEAST(3, 4, 0)
     m.transposeInPlace();
 #else
