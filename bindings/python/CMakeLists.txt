@@ -52,7 +52,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
   target_include_directories(
-    ${target_name} PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+    ${target_name} SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
   set_target_properties(
     ${target_name}
     PROPERTIES OUTPUT_NAME ${target_name}
