@@ -51,8 +51,6 @@ endmacro(ADD_TEST_CFLAGS)
 
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
 proxsuite_test(serialization src/serialization.cpp)
-target_compile_definitions(test-cpp-serialization
-                           PRIVATE PROXSUITE_WITH_SERIALIZATION)
 add_test_cflags(
   test-cpp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
