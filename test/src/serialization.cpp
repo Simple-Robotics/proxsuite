@@ -113,7 +113,6 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 

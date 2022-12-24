@@ -16,45 +16,35 @@
 namespace cereal {
 
 // dense matrices
-template<class Archive,
-         class _Scalar,
-         int _Rows,
-         int _Cols,
-         int _Options,
-         int _MaxRows,
-         int _MaxCols>
+template<class Archive, class Derived>
 inline void
-save(
-  Archive& ar,
-  Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols> const& m)
+save(Archive& ar, Eigen::PlainObjectBase<Derived> const& m)
 {
+  typedef Eigen::PlainObjectBase<Derived> PlainType;
+
   Eigen::Index rows = m.rows();
   Eigen::Index cols = m.cols();
-  ar(rows);
-  ar(cols);
-  ar(_Options);
+  ar(CEREAL_NVP(rows));
+  ar(CEREAL_NVP(cols));
+  bool is_row_major = PlainType::IsRowMajor;
+  ar(CEREAL_NVP(is_row_major));
 
   for (Eigen::Index i = 0; i < m.size(); i++)
     ar(m.data()[i]);
 }
 
-template<class Archive,
-         class _Scalar,
-         int _Rows,
-         int _Cols,
-         int _Options,
-         int _MaxRows,
-         int _MaxCols>
+template<class Archive, class Derived>
 inline void
-load(Archive& ar,
-     Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>& m)
+load(Archive& ar, Eigen::PlainObjectBase<Derived>& m)
 {
+  typedef Eigen::PlainObjectBase<Derived> PlainType;
+
   Eigen::Index rows;
   Eigen::Index cols;
-  int _OptionsLoaded;
-  ar(rows);
-  ar(cols);
-  ar(_OptionsLoaded);
+  bool is_row_major;
+  ar(CEREAL_NVP(rows));
+  ar(CEREAL_NVP(cols));
+  ar(CEREAL_NVP(is_row_major));
 
   m.resize(rows, cols);
 
@@ -62,8 +52,12 @@ load(Archive& ar,
     ar(m.data()[i]);
 
   // Account for different storage orders
-  if (!(_OptionsLoaded == _Options)) {
+  if (is_row_major != PlainType::IsRowMajor) {
+#if EIGEN_VERSION_AT_LEAST(3, 4, 0)
     m.transposeInPlace();
+#else
+    m = m.transpose().eval();
+#endif
   }
 }
 

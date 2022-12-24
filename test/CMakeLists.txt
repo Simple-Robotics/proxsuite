@@ -51,14 +51,13 @@ endmacro(ADD_TEST_CFLAGS)
 
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
 proxsuite_test(serialization src/serialization.cpp)
-target_compile_definitions(test-cpp-serialization
-                           PRIVATE PROXSUITE_WITH_SERIALIZATION)
 add_test_cflags(
   test-cpp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
 target_include_directories(
-  test-cpp-serialization PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+  test-cpp-serialization SYSTEM
+  PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
   proxsuite_test(dense_maros_meszaros src/dense_maros_meszaros.cpp)
