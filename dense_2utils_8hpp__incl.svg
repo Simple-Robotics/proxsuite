@@ -128,7 +128,7 @@
 <!-- Node71 -->
 <g id="node37" class="node">
 <title>Node71</title>
-<g id="a_node37"><a xlink:href="dense_2model_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node37"><a xlink:href="proxqp_2dense_2model_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1212.5,-503 1081.5,-503 1081.5,-473 1212.5,-473 1212.5,-503"/>
 <text text-anchor="start" x="1089.5" y="-491" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/dense</text>
 <text text-anchor="middle" x="1147" y="-480" font-family="Helvetica,sans-Serif" font-size="10.00">/model.hpp</text>
@@ -144,7 +144,7 @@
 <!-- Node78 -->
 <g id="node43" class="node">
 <title>Node78</title>
-<g id="a_node43"><a xlink:href="results_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node43"><a xlink:href="proxqp_2results_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1385,-563.5 1229,-563.5 1229,-544.5 1385,-544.5 1385,-563.5"/>
 <text text-anchor="middle" x="1307" y="-551.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/results.hpp</text>
 </a>
@@ -159,7 +159,7 @@
 <!-- Node82 -->
 <g id="node46" class="node">
 <title>Node82</title>
-<g id="a_node46"><a xlink:href="settings_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node46"><a xlink:href="proxqp_2settings_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1577,-497.5 1415,-497.5 1415,-478.5 1577,-478.5 1577,-497.5"/>
 <text text-anchor="middle" x="1496" y="-485.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/settings.hpp</text>
 </a>
@@ -917,7 +917,7 @@
 <!-- Node74 -->
 <g id="node40" class="node">
 <title>Node74</title>
-<g id="a_node40"><a xlink:href="sparse_2model_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node40"><a xlink:href="proxqp_2sparse_2model_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1253,-437 1119,-437 1119,-407 1253,-407 1253,-437"/>
 <text text-anchor="start" x="1127" y="-425" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/sparse</text>
 <text text-anchor="middle" x="1186" y="-414" font-family="Helvetica,sans-Serif" font-size="10.00">/model.hpp</text>

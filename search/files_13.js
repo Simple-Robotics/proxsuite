@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['settings_2ehpp_0',['settings.hpp',['../settings_8hpp.html',1,'']]],
+  ['settings_2ehpp_0',['settings.hpp',['../proxqp_2settings_8hpp.html',1,'(Global Namespace)'],['../serialization_2settings_8hpp.html',1,'(Global Namespace)']]],
   ['slice_2ehpp_1',['slice.hpp',['../slice_8hpp.html',1,'']]],
   ['solve_2ehpp_2',['solve.hpp',['../solve_8hpp.html',1,'']]],
   ['solver_2ehpp_3',['solver.hpp',['../dense_2solver_8hpp.html',1,'(Global Namespace)'],['../sparse_2solver_8hpp.html',1,'(Global Namespace)']]],

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.16</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -113,7 +113,7 @@ $(document).ready(function(){initNavTree('structproxsuite_1_1proxqp_1_1sparse_1_
 <p>This class defines the API of PROXQP solver with sparse backend.  
  <a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="sparse_2wrapper_8hpp_source.html">proxsuite/proxqp/sparse/wrapper.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">proxsuite/proxqp/sparse/wrapper.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -213,10 +213,10 @@ struct proxsuite::proxqp::sparse::QP&lt; T, I &gt;</div><p >This class defines t
 <div class="ttc" id="adense_8hpp_html"><div class="ttname"><a href="dense_8hpp.html">dense.hpp</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a3faae71fad6f45f688688dd282ccf78b"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a3faae71fad6f45f688688dd282ccf78b">proxsuite::helpers::positive_part</a></div><div class="ttdeci">auto positive_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array() &gt; 0).select(expr</div><div class="ttdoc">Returns the positive part of an expression.</div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1helpers_html_a8252ca5df165a457499dd65f0bd89e65"><div class="ttname"><a href="namespaceproxsuite_1_1helpers.html#a8252ca5df165a457499dd65f0bd89e65">proxsuite::helpers::negative_part</a></div><div class="ttdeci">auto negative_part(T const &amp;expr) PROXSUITE_DEDUCE_RET((expr.array()&lt; 0).select(expr</div><div class="ttdoc">Returns the negative part of an expression.</div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1sparse_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with sparse backend.</div><div class="ttdef"><b>Definition:</b> <a href="sparse_2wrapper_8hpp_source.html#l00090">wrapper.hpp:91</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1sparse_1_1QP_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html">proxsuite::proxqp::sparse::QP</a></div><div class="ttdoc">This class defines the API of PROXQP solver with sparse backend.</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2sparse_2wrapper_8hpp_source.html#l00090">wrapper.hpp:91</a></div></div>
 <div class="ttc" id="autil_2dbg_8hpp_html"><div class="ttname"><a href="util_2dbg_8hpp.html">dbg.hpp</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00090">90</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00090">90</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aef6a6cddf8898923f90f72f99cdf499e" name="aef6a6cddf8898923f90f72f99cdf499e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef6a6cddf8898923f90f72f99cdf499e">&#9670;&#160;</a></span>QP() <span class="overload">[1/2]</span></h2>
@@ -268,7 +268,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00103">103</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00103">103</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -322,7 +322,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00122">122</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00122">122</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -433,7 +433,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00165">165</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00165">165</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -544,7 +544,7 @@ template&lt;typename T , typename I &gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>The init method should be called before update. If it has not been done before, init is called depending on the is_initialized flag. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00347">347</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00347">347</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -574,7 +574,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Solves the <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QP.html" title="This class defines the API of PROXQP solver with sparse backend.">QP</a> problem using PRXOQP algorithm. </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00626">626</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00626">626</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -628,7 +628,7 @@ template&lt;typename T , typename I &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00641">641</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00641">641</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -658,7 +658,7 @@ template&lt;typename T , typename I &gt; </div>
 </div><div class="memdoc">
 <p >Clean-ups solver's results. </p>
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00656">656</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00656">656</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -677,7 +677,7 @@ template&lt;typename T , typename I &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00092">92</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00092">92</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -695,7 +695,7 @@ template&lt;typename T , typename I &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00093">93</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00093">93</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -713,7 +713,7 @@ template&lt;typename T , typename I &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00094">94</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00094">94</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -731,7 +731,7 @@ template&lt;typename T , typename I &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00095">95</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00095">95</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -749,12 +749,12 @@ template&lt;typename T , typename I &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="sparse_2wrapper_8hpp_source.html#l00096">96</a> of file <a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html#l00096">96</a> of file <a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/proxsuite/proxqp/sparse/<a class="el" href="sparse_2wrapper_8hpp_source.html">wrapper.hpp</a></li>
+<li>include/proxsuite/proxqp/sparse/<a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">wrapper.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

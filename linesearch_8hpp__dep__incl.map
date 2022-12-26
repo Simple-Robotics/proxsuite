@@ -1,6 +1,7 @@
 <map id="include/proxsuite/proxqp/dense/linesearch.hpp" name="include/proxsuite/proxqp/dense/linesearch.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,188,45"/>
-<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="5,93,188,133"/>
-<area shape="rect" id="node3" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="5,181,188,221"/>
+<area shape="rect" id="node1" title=" " alt="" coords="117,5,300,45"/>
+<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="117,93,300,133"/>
+<area shape="rect" id="node3" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="117,181,300,221"/>
 <area shape="rect" id="node4" href="$dense_8hpp.html" title=" " alt="" coords="5,269,188,309"/>
+<area shape="rect" id="node5" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="213,269,431,309"/>
 </map>

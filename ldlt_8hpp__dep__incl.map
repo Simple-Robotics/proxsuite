@@ -1,9 +1,10 @@
 <map id="include/proxsuite/linalg/dense/ldlt.hpp" name="include/proxsuite/linalg/dense/ldlt.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,180,45"/>
-<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="67,269,249,309"/>
-<area shape="rect" id="node5" href="$dense_2workspace_8hpp.html" title=" " alt="" coords="67,93,249,133"/>
-<area shape="rect" id="node3" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="67,357,249,397"/>
-<area shape="rect" id="node4" href="$dense_8hpp.html" title=" " alt="" coords="67,445,249,485"/>
-<area shape="rect" id="node6" href="$linesearch_8hpp.html" title=" " alt="" coords="67,181,249,221"/>
-<area shape="rect" id="node7" href="$dense_2utils_8hpp.html" title=" " alt="" coords="273,181,456,221"/>
+<area shape="rect" id="node1" title=" " alt="" coords="56,5,231,45"/>
+<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="117,269,300,309"/>
+<area shape="rect" id="node6" href="$dense_2workspace_8hpp.html" title=" " alt="" coords="117,93,300,133"/>
+<area shape="rect" id="node3" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="117,357,300,397"/>
+<area shape="rect" id="node4" href="$dense_8hpp.html" title=" " alt="" coords="5,445,188,485"/>
+<area shape="rect" id="node5" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="213,445,431,485"/>
+<area shape="rect" id="node7" href="$linesearch_8hpp.html" title=" " alt="" coords="117,181,300,221"/>
+<area shape="rect" id="node8" href="$dense_2utils_8hpp.html" title=" " alt="" coords="324,181,507,221"/>
 </map>

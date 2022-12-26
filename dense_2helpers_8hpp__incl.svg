@@ -21,7 +21,7 @@
 <!-- Node2 -->
 <g id="node2" class="node">
 <title>Node2</title>
-<g id="a_node2"><a xlink:href="results_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node2"><a xlink:href="proxqp_2results_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="992,-943 836,-943 836,-924 992,-924 992,-943"/>
 <text text-anchor="middle" x="914" y="-931" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/results.hpp</text>
 </a>
@@ -51,7 +51,7 @@
 <!-- Node58 -->
 <g id="node38" class="node">
 <title>Node58</title>
-<g id="a_node38"><a xlink:href="settings_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node38"><a xlink:href="proxqp_2settings_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1172,-888 1010,-888 1010,-869 1172,-869 1172,-888"/>
 <text text-anchor="middle" x="1091" y="-876" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/settings.hpp</text>
 </a>

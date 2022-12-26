@@ -1,6 +1,7 @@
 <map id="include/proxsuite/linalg/veg/util/dynstack_alloc.hpp" name="include/proxsuite/linalg/veg/util/dynstack_alloc.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,209,45"/>
-<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="16,93,199,133"/>
-<area shape="rect" id="node3" href="$dense_2wrapper_8hpp.html" title=" " alt="" coords="16,181,199,221"/>
-<area shape="rect" id="node4" href="$dense_8hpp.html" title=" " alt="" coords="16,269,199,309"/>
+<area shape="rect" id="node1" title=" " alt="" coords="107,5,311,45"/>
+<area shape="rect" id="node2" href="$dense_2solver_8hpp.html" title=" " alt="" coords="117,93,300,133"/>
+<area shape="rect" id="node3" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="117,181,300,221"/>
+<area shape="rect" id="node4" href="$dense_8hpp.html" title=" " alt="" coords="5,269,188,309"/>
+<area shape="rect" id="node5" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="213,269,431,309"/>
 </map>

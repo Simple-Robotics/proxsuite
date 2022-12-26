@@ -1,8 +1,8 @@
 <map id="include/proxsuite/proxqp/dense" name="include/proxsuite/proxqp/dense">
 <area shape="rect" id="node1" href="dir_1705c7da2126935c41561a728c3333cc.html" title="sparse" alt="" coords="178,136,243,161"/>
 <area shape="rect" id="node2" href="dir_20facd4f77d2dec2662dab4b835c14f3.html" title="utils" alt="" coords="268,136,319,161"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000002_000015.html" title="1" alt="" coords="183,110,192,125"/>
-<area shape="rect" id="edge3-headlabel" href="dir_000002_000018.html" title="1" alt="" coords="250,115,259,129"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000002_000016.html" title="1" alt="" coords="183,110,192,125"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000002_000019.html" title="1" alt="" coords="250,115,259,129"/>
 <area shape="rect" id="node4" href="dir_ce52d535f8285e510c0760b58f8aef39.html" title="preconditioner" alt="" coords="38,136,154,161"/>
 <area shape="rect" id="edge5-headlabel" href="dir_000002_000010.html" title="3" alt="" coords="110,115,120,129"/>
 <area shape="rect" id="node5" href="dir_13ac24c11e9edc13673a5341cdfa337c.html" title="helpers" alt="" coords="343,136,414,161"/>

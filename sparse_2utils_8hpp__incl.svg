@@ -178,7 +178,7 @@
 <!-- Node66 -->
 <g id="node37" class="node">
 <title>Node66</title>
-<g id="a_node37"><a xlink:href="settings_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node37"><a xlink:href="proxqp_2settings_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1731.57,-772.5 1569.57,-772.5 1569.57,-753.5 1731.57,-753.5 1731.57,-772.5"/>
 <text text-anchor="middle" x="1650.57" y="-760.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/settings.hpp</text>
 </a>
@@ -209,7 +209,7 @@
 <!-- Node73 -->
 <g id="node44" class="node">
 <title>Node73</title>
-<g id="a_node44"><a xlink:href="results_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node44"><a xlink:href="proxqp_2results_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1619.57,-838.5 1463.57,-838.5 1463.57,-819.5 1619.57,-819.5 1619.57,-838.5"/>
 <text text-anchor="middle" x="1541.57" y="-826.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/results.hpp</text>
 </a>
@@ -256,7 +256,7 @@
 <!-- Node79 -->
 <g id="node48" class="node">
 <title>Node79</title>
-<g id="a_node48"><a xlink:href="sparse_2model_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_node48"><a xlink:href="proxqp_2sparse_2model_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="754.57,-778 620.57,-778 620.57,-748 754.57,-748 754.57,-778"/>
 <text text-anchor="start" x="628.57" y="-766" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/sparse</text>
 <text text-anchor="middle" x="687.57" y="-755" font-family="Helvetica,sans-Serif" font-size="10.00">/model.hpp</text>

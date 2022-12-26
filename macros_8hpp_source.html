@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.2.16</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -1249,7 +1249,7 @@ $(document).ready(function(){initNavTree('macros_8hpp_source.html',''); initResi
 <div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Seq, auto Literal&gt;</div>
 <div class="line"><a id="l01149" name="l01149"></a><span class="lineno"> 1149</span><span class="keyword">struct </span>StrLiteralExpand;</div>
 <div class="line"><a id="l01150" name="l01150"></a><span class="lineno"> 1150</span> </div>
-<div class="line"><a id="l01151" name="l01151"></a><span class="lineno"> 1151</span><span class="keyword">template</span>&lt;<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a>... Is, StrLiteralImpl&lt;<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">isize</a>{ <span class="keyword">sizeof</span>...(Is) }&gt; L&gt;</div>
+<div class="line"><a id="l01151" name="l01151"></a><span class="lineno"> 1151</span><span class="keyword">template</span>&lt;<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#a01e7a8a0525b9b1598244c17812cc499">usize</a>... Is, StrLiteralImpl&lt;static_cast&lt;isize&gt;(<span class="keyword">sizeof</span>...(Is))&gt; L&gt;</div>
 <div class="line"><a id="l01152" name="l01152"></a><span class="lineno"> 1152</span><span class="keyword">struct </span>StrLiteralExpand&lt;_meta::<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a2abb390326a905c923b12c0c6248a88c">integer_sequence</a>&lt;usize, Is...&gt;, L&gt;</div>
 <div class="line"><a id="l01153" name="l01153"></a><span class="lineno"> 1153</span>{</div>
 <div class="line"><a id="l01154" name="l01154"></a><span class="lineno"> 1154</span>  <span class="keyword">using </span>Type = StrLiteralConstant&lt;L._[Is]...&gt;;</div>

@@ -35,6 +35,8 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "setup", "namespaceproxsuite_1_1proxqp_1_1dense.html#acf3e1faf929066ea740798d08af43d4b", null ],
     [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1dense.html#abdf36ab6383e41d5a3a26290f4079470", null ],
     [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1dense.html#a0e61ff8678ab095c388aeba57888b0a1", null ],
+    [ "operator==", "namespaceproxsuite_1_1proxqp_1_1dense.html#a759156df1b12305405335ecb35156f94", null ],
+    [ "operator!=", "namespaceproxsuite_1_1proxqp_1_1dense.html#af3fee2a85aef7a9e2f0d73b8b9cd3687", null ],
     [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8cb8a34c0abc1aabca3ded2a9a0112ca", null ],
     [ "mu_update", "namespaceproxsuite_1_1proxqp_1_1dense.html#a356b918b5a52ce263a515850c16429db", null ],
     [ "iterative_residual", "namespaceproxsuite_1_1proxqp_1_1dense.html#a7ae3afa3fdf062916c502d9ef98d695d", null ],
@@ -56,5 +58,7 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#abac125fdfd928439ba053632f11b7d97", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1proxqp_1_1dense.html#ae07dd375e6c5428f02a60b2c0a3453ce", null ],
     [ "solve", "namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406", null ],
+    [ "operator==", "namespaceproxsuite_1_1proxqp_1_1dense.html#aa4bae3b82093e8135634db36a01a6159", null ],
+    [ "operator!=", "namespaceproxsuite_1_1proxqp_1_1dense.html#ae6dbbd0fe09b5bf3e017336c6db984a2", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6f880437281a6ccde0b9cdcb9d4e0c6c", null ]
 ];
