@@ -14,7 +14,7 @@ jobs:
       matrix:
         build_type: [Release, Debug]
         name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
-        cxx_std: [17]
+        cxx_std: [17, 20]
         continue_on_error: [false]
 
         include:
