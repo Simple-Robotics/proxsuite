@@ -1148,7 +1148,7 @@ struct StrLiteralLen<StrLiteralImpl<N> const>
 template<typename Seq, auto Literal>
 struct StrLiteralExpand;
 
-template<usize... Is, StrLiteralImpl<isize{ sizeof...(Is) }> L>
+template<usize... Is, StrLiteralImpl<static_cast<isize>(sizeof...(Is))> L>
 struct StrLiteralExpand<_meta::integer_sequence<usize, Is...>, L>
 {
   using Type = StrLiteralConstant<L._[Is]...>;
