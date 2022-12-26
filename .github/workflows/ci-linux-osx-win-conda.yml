@@ -36,11 +36,20 @@ jobs:
             build_type: Debug
             cxx_std: 17
             continue_on_error: true
+          - name: macos-latest
+            os: macos-latest
+            build_type: Debug
+            cxx_std: 20
+            continue_on_error: true
 
         exclude:
           - name: macos-latest
             build_type: Debug
             cxx_std: 17
+            continue_on_error: false
+          - name: macos-latest
+            build_type: Debug
+            cxx_std: 20
             continue_on_error: false
 
     steps:
