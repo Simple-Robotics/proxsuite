@@ -6,7 +6,8 @@ jobs:
     strategy:
       matrix:
         env:
-          - {ROS_DISTRO: noetic}
+          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug}
+          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release}
     env:
       CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF  # Simde is not available yet
