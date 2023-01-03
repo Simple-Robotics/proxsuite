@@ -6009,10 +6009,6 @@ TEST_CASE("ProxQP::sparse: init must be called before update")
                               qp_random.C.cast<bool>());
   qp.settings.eps_abs = eps_abs;
 
-  T rho(1.e-7);
-  T mu_eq(1.e-4);
-  bool compute_preconditioner = true;
-
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
