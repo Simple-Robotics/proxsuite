@@ -1,4 +1,4 @@
-name: ROS-CI
+name: CI - Linux - ROS
 on: [push, pull_request]
 
 jobs:
@@ -12,9 +12,11 @@ jobs:
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF  # Simde is not available yet
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       # This step will fetch/store the directory used by ccache before/after the ci run
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
