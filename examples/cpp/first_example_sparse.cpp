@@ -25,7 +25,8 @@ main()
   // random utils to generate sparse matrix
   std::random_device rd;  // obtain a random number from hardware
   std::mt19937 gen(rd()); // seed the generator
-  std::uniform_int_distribution<> int_distr(0, static_cast<int>(dim) - 1); // define the range
+  std::uniform_int_distribution<> int_distr(
+    0, static_cast<int>(dim) - 1); // define the range
   std::uniform_real_distribution<> double_distr(0, 1);
 
   // cost H: first way to define sparse matrix from triplet list
