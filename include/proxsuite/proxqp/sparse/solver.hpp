@@ -841,9 +841,13 @@ qp_solve(Results<T>& results,
       }
       if (is_primal_feasible(primal_feasibility_lhs) &&
           is_dual_feasible(dual_feasibility_lhs)) {
+#ifdef PROXSUITE_CHECK_DUALITY_GAP
         if (results.info.duality_gap <=
             settings.eps_abs +
               (settings.eps_rel + settings.eps_abs) * rhs_duality_gap) {
+#else
+        if (true) {
+#endif
           results.info.pri_res = primal_feasibility_lhs;
           results.info.dua_res = dual_feasibility_lhs;
           results.info.status = QPSolverOutput::PROXQP_SOLVED;
@@ -1234,9 +1238,13 @@ qp_solve(Results<T>& results,
 
       if (is_primal_feasible(primal_feasibility_lhs_new) &&
           is_dual_feasible(dual_feasibility_lhs_new)) {
+#ifdef PROXSUITE_CHECK_DUALITY_GAP
         if (results.info.duality_gap <=
             settings.eps_abs +
               (settings.eps_abs + settings.eps_rel) * rhs_duality_gap) {
+#else
+        if (true) {
+#endif
           results.info.pri_res = primal_feasibility_lhs_new;
           results.info.dua_res = dual_feasibility_lhs_new;
           results.info.status = QPSolverOutput::PROXQP_SOLVED;

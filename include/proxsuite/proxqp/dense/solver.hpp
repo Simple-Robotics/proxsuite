@@ -1087,9 +1087,13 @@ qp_solve( //
         qpresults.info.rho = rho_new;
       }
       if (is_dual_feasible) {
+#ifdef PROXSUITE_CHECK_DUALITY_GAP
         if (qpresults.info.duality_gap <=
             qpsettings.eps_abs +
               (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+#else
+        if (true) {
+#endif
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
@@ -1170,9 +1174,13 @@ qp_solve( //
              std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
       if (is_dual_feasible) {
+#ifdef PROXSUITE_CHECK_DUALITY_GAP
         if (qpresults.info.duality_gap <=
             qpsettings.eps_abs +
               (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+#else
+        if (true) {
+#endif
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }

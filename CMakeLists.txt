@@ -65,6 +65,10 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
+option(
+  CHECK_DUALITY_GAP
+  "Check duality gap as stopping criteria in addition to primal and dual feasiblity."
+  OFF)
 
 set(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
@@ -114,6 +118,9 @@ if(MSVC)
   target_compile_options(proxsuite INTERFACE /permissive-)
   target_compile_options(proxsuite INTERFACE $<$<COMPILE_LANGUAGE:CXX>:/bigobj>)
 endif(MSVC)
+if(CHECK_DUALITY_GAP)
+  target_compile_definitions(proxsuite INTERFACE PROXSUITE_CHECK_DUALITY_GAP)
+endif(CHECK_DUALITY_GAP)
 target_link_libraries(
   proxsuite
   PUBLIC
