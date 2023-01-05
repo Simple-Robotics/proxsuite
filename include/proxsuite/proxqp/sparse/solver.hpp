@@ -829,10 +829,10 @@ qp_solve(Results<T>& results,
                   << std::endl;
         std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                   << "| primal residual=" << primal_feasibility_lhs
-                  << "| dual residual=" << dual_feasibility_lhs
-                  << "| dualality gap=" << results.info.duality_gap
-                  << "| mu_in=" << results.info.mu_in
-                  << "| rho=" << results.info.rho << std::endl;
+                  << " | dual residual=" << dual_feasibility_lhs
+                  << " | duality gap=" << results.info.duality_gap
+                  << " | mu_in=" << results.info.mu_in
+                  << " | rho=" << results.info.rho << std::endl;
         results.info.pri_res = primal_feasibility_lhs;
         results.info.dua_res = dual_feasibility_lhs;
         precond.scale_primal_in_place(VectorViewMut<T>{ from_eigen, x_e });
