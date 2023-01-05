@@ -56,6 +56,14 @@ auto
 negative_part(T const& expr)
   PROXSUITE_DEDUCE_RET((expr.array() < 0).select(expr, T::Zero(expr.rows())));
 
+/// @brief \brief Select the components of the expression if the condition is
+/// fullfiled. Otherwise, set the component to value
+template<typename Condition, typename T, typename Scalar>
+auto
+select(Condition const& condition, T const& expr, const Scalar value)
+  PROXSUITE_DEDUCE_RET((condition).select(expr,
+                                          T::Constant(expr.rows(), value)));
+
 } // helpers
 } // proxsuite
 
