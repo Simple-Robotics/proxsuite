@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 /** \file */
 
@@ -13,6 +13,7 @@
 #include "proxsuite/helpers/common.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
+#include "proxsuite/proxqp/sparse/workspace.hpp"
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
@@ -613,6 +614,7 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
 template<typename T, typename I, typename P>
 auto
 unscaled_primal_dual_residual(
+  const Workspace<T, I>& work,
   Results<T>& results,
   VecMapMut<T> primal_residual_eq_scaled,
   VecMapMut<T> primal_residual_in_scaled_lo,
@@ -666,13 +668,15 @@ unscaled_primal_dual_residual(
 
     precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
 
-    const T zl = helpers::negative_part(z_e).dot(
-      helpers::at_least(data.l, -helpers::infinite_bound<T>::value()));
+    const T zl =
+      helpers::select(work.active_set_low, results.z, 0)
+        .dot(helpers::at_least(data.l, -helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zl;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
 
-    const T zu = helpers::positive_part(z_e).dot(
-      helpers::at_most(data.u, helpers::infinite_bound<T>::value()));
+    const T zu =
+      helpers::select(work.active_set_up, results.z, 0)
+        .dot(helpers::at_most(data.u, helpers::infinite_bound<T>::value()));
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
 
