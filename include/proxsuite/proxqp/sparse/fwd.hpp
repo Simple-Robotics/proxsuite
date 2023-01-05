@@ -40,6 +40,7 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 template<typename T, typename I>
 using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
 // using Mat = Eigen::SparseMatrix<T, Eigen::RowMajor, I>;
+using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 } // namespace sparse
 } // namespace proxqp

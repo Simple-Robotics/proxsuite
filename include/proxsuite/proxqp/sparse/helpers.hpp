@@ -148,10 +148,22 @@ qp_setup(QpView<T, I> qp,
     results.z.resize(n_in);
     results.z.setZero();
   }
-  if (results.active_constraints.len() != n_in) {
-    results.active_constraints.resize(n_in);
+  if (work.active_inequalities.len() != n_in) {
+    work.active_inequalities.resize(n_in);
     for (isize i = 0; i < n_in; ++i) {
-      results.active_constraints[i] = false;
+      work.active_inequalities[i] = false;
+    }
+  }
+  if (work.active_set_up.rows() != n_in) {
+    work.active_set_up.resize(n_in);
+    for (isize i = 0; i < n_in; ++i) {
+      work.active_set_up[i] = false;
+    }
+  }
+  if (work.active_set_low.rows() != n_in) {
+    work.active_set_low.resize(n_in);
+    for (isize i = 0; i < n_in; ++i) {
+      work.active_set_low[i] = false;
     }
   }
   bool execute_preconditioner_or_not = false;
