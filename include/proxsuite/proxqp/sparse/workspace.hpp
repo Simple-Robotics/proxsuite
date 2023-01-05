@@ -158,7 +158,9 @@ struct Workspace
     bool is_initialized;
 
   } internal;
-
+  VecBool active_set_up;
+  VecBool active_set_low;
+  proxsuite::linalg::veg::Vec<bool> active_inequalities;
   isize lnnz;
   /*!
    * Constructor using the symbolic factorization.
@@ -200,6 +202,7 @@ struct Workspace
     isize n_eq = AT.ncols();
     isize n_in = CT.ncols();
     isize n_tot = n + n_eq + n_in;
+
 
     isize nnz_tot = H.nnz() + AT.nnz() + CT.nnz();
 

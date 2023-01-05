@@ -45,7 +45,6 @@ serialize(Archive& archive, proxsuite::proxqp::Results<T>& results)
   archive(CEREAL_NVP(results.x),
           CEREAL_NVP(results.y),
           CEREAL_NVP(results.z),
-          CEREAL_NVP(results.active_constraints),
           CEREAL_NVP(results.info));
 }
 

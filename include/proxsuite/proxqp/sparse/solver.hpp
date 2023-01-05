@@ -557,7 +557,7 @@ qp_solve(Results<T>& results,
       // ineq constraints initially inactive
       for (isize j = 0; j < n_in; ++j) {
         kkt_nnz_counts[n + n_eq + j] = 0;
-        results.active_constraints[j] = false;
+        work.active_inequalities[j] = false;
       }
       break;
     }
@@ -574,11 +574,11 @@ qp_solve(Results<T>& results,
         if (results.z(j) != 0) {
           kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
                                            kkt.col_start(usize(n + n_eq + j)));
-          results.active_constraints[j] = true;
+          work.active_inequalities[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
         } else {
           kkt_nnz_counts[n + n_eq + j] = 0;
-          results.active_constraints[j] = false;
+          work.active_inequalities[j] = false;
         }
       }
       break;
@@ -592,7 +592,7 @@ qp_solve(Results<T>& results,
       // ineq constraints initially inactive
       for (isize j = 0; j < n_in; ++j) {
         kkt_nnz_counts[n + n_eq + j] = 0;
-        results.active_constraints[j] = false;
+        work.active_inequalities[j] = false;
       }
       break;
     }
@@ -608,12 +608,12 @@ qp_solve(Results<T>& results,
         if (results.z(j) != 0) {
           kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
                                            kkt.col_start(usize(n + n_eq + j)));
-          results.active_constraints[j] = true;
+          work.active_inequalities[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
 
         } else {
           kkt_nnz_counts[n + n_eq + j] = 0;
-          results.active_constraints[j] = false;
+          work.active_inequalities[j] = false;
         }
       }
       break;
@@ -629,11 +629,11 @@ qp_solve(Results<T>& results,
         if (results.z(j) != 0) {
           kkt_nnz_counts[n + n_eq + j] = I(kkt.col_end(usize(n + n_eq + j)) -
                                            kkt.col_start(usize(n + n_eq + j)));
-          results.active_constraints[j] = true;
+          work.active_inequalities[j] = true;
           C_active_nnz += kkt_nnz_counts[n + n_eq + j];
         } else {
           kkt_nnz_counts[n + n_eq + j] = 0;
-          results.active_constraints[j] = false;
+          work.active_inequalities[j] = false;
         }
       }
       break;
@@ -656,7 +656,7 @@ qp_solve(Results<T>& results,
   I* ldl_row_indices = work.internal.ldl.row_indices.ptr_mut();
   T* ldl_values = work.internal.ldl.values.ptr_mut();
   proxsuite::linalg::veg::SliceMut<bool> active_constraints =
-    results.active_constraints.as_mut();
+    work.active_inequalities.as_mut();
 
   proxsuite::linalg::sparse::MatMut<T, I> ldl = {
     proxsuite::linalg::sparse::from_raw_parts,
@@ -883,14 +883,12 @@ qp_solve(Results<T>& results,
 
           // primal_dual_semi_smooth_newton_step
           {
-            LDLT_TEMP_VEC_UNINIT(bool, active_set_lo, n_in, stack);
-            LDLT_TEMP_VEC_UNINIT(bool, active_set_up, n_in, stack);
             LDLT_TEMP_VEC_UNINIT(bool, new_active_constraints, n_in, stack);
             auto rhs = dw;
 
-            active_set_lo.array() = primal_residual_in_scaled_lo.array() <= 0;
-            active_set_up.array() = primal_residual_in_scaled_up.array() >= 0;
-            new_active_constraints = active_set_lo || active_set_up;
+            work.active_set_low.array() = primal_residual_in_scaled_lo.array() <= 0;
+            work.active_set_up.array() = primal_residual_in_scaled_up.array() >= 0;
+            new_active_constraints = work.active_set_low || work.active_set_up;
 
             // active set change
             if (n_in > 0) {
@@ -961,10 +959,10 @@ qp_solve(Results<T>& results,
             rhs.segment(n, n_eq) = -primal_residual_eq_scaled;
 
             for (isize i = 0; i < n_in; ++i) {
-              if (active_set_up(i)) {
+              if (work.active_set_up(i)) {
                 rhs(n + n_eq + i) =
                   results.info.mu_in * z_e(i) - primal_residual_in_scaled_up(i);
-              } else if (active_set_lo(i)) {
+              } else if (work.active_set_low(i)) {
                 rhs(n + n_eq + i) =
                   results.info.mu_in * z_e(i) - primal_residual_in_scaled_lo(i);
               } else {
@@ -1329,7 +1327,7 @@ qp_solve(Results<T>& results,
             alpha = results.info.mu_eq - new_bcl_mu_eq;
 
           } else {
-            if (!results.active_constraints[j - n_eq]) {
+            if (!work.active_inequalities[j - n_eq]) {
               continue;
             }
             alpha = results.info.mu_in - new_bcl_mu_in;
