@@ -1100,7 +1100,6 @@ qp_solve( //
         }
       }
     }
-
     qpresults.info.iter_ext += 1; // We start a new external loop update
 
     qpwork.x_prev = qpresults.x;
