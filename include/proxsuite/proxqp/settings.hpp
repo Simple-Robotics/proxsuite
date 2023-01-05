@@ -137,8 +137,8 @@ struct Settings
    * @param compute_timings If set to true, timings will be computed by the
    * solver (setup time, solving time, and run time = setup time + solving
    * time).
-   * @param check_duality_gap If set to true, duality gap will be calculated and
-   * included in the stopping criterion.
+   * @param check_duality_gap If set to true, duality gap will be used as
+   * additional stopping criterion in addition to primal and dual feasiblity.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
