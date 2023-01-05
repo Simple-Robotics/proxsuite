@@ -203,7 +203,6 @@ struct Workspace
     isize n_in = CT.ncols();
     isize n_tot = n + n_eq + n_in;
 
-
     isize nnz_tot = H.nnz() + AT.nnz() + CT.nnz();
 
     // form the full kkt matrix

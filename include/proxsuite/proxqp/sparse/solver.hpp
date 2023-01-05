@@ -886,8 +886,10 @@ qp_solve(Results<T>& results,
             LDLT_TEMP_VEC_UNINIT(bool, new_active_constraints, n_in, stack);
             auto rhs = dw;
 
-            work.active_set_low.array() = primal_residual_in_scaled_lo.array() <= 0;
-            work.active_set_up.array() = primal_residual_in_scaled_up.array() >= 0;
+            work.active_set_low.array() =
+              primal_residual_in_scaled_lo.array() <= 0;
+            work.active_set_up.array() =
+              primal_residual_in_scaled_up.array() >= 0;
             new_active_constraints = work.active_set_low || work.active_set_up;
 
             // active set change
