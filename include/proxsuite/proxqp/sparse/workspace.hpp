@@ -27,14 +27,6 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
-///
-/// @brief This class defines the workspace of the sparse solver.
-///
-/*!
- * Workspace class of the sparse solver.
- */
-template<typename T, typename I>
-struct Workspace;
 
 template<typename T, typename I>
 void
@@ -113,6 +105,7 @@ struct Ldlt
   proxsuite::linalg::veg::Vec<I> row_indices;
   proxsuite::linalg::veg::Vec<T> values;
 };
+
 template<typename T, typename I>
 struct Workspace
 {
@@ -202,7 +195,6 @@ struct Workspace
     isize n_eq = AT.ncols();
     isize n_in = CT.ncols();
     isize n_tot = n + n_eq + n_in;
-
 
     isize nnz_tot = H.nnz() + AT.nnz() + CT.nnz();
 
