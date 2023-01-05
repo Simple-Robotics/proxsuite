@@ -60,4 +60,4 @@ struct QpViewMut
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_PROXQP_SPARSE_VIEWS_HPP */
