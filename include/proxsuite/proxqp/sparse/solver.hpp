@@ -842,8 +842,15 @@ qp_solve(Results<T>& results,
       }
       if (is_primal_feasible(primal_feasibility_lhs) &&
           is_dual_feasible(dual_feasibility_lhs)) {
-        if (std::abs(results.info.duality_gap) <=
-            settings.eps_abs + settings.eps_rel * rhs_duality_gap) {
+        if (settings.check_duality_gap) {
+          if (std::abs(results.info.duality_gap) <=
+              settings.eps_abs + settings.eps_rel * rhs_duality_gap) {
+            results.info.pri_res = primal_feasibility_lhs;
+            results.info.dua_res = dual_feasibility_lhs;
+            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            break;
+          }
+        } else {
           results.info.pri_res = primal_feasibility_lhs;
           results.info.dua_res = dual_feasibility_lhs;
           results.info.status = QPSolverOutput::PROXQP_SOLVED;
@@ -1235,8 +1242,15 @@ qp_solve(Results<T>& results,
 
       if (is_primal_feasible(primal_feasibility_lhs_new) &&
           is_dual_feasible(dual_feasibility_lhs_new)) {
-        if (std::fabs(results.info.duality_gap) <=
-            settings.eps_abs + settings.eps_rel * rhs_duality_gap) {
+        if (settings.check_duality_gap) {
+          if (std::fabs(results.info.duality_gap) <=
+              settings.eps_abs + settings.eps_rel * rhs_duality_gap) {
+            results.info.pri_res = primal_feasibility_lhs_new;
+            results.info.dua_res = dual_feasibility_lhs_new;
+            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            break;
+          }
+        } else {
           results.info.pri_res = primal_feasibility_lhs_new;
           results.info.dua_res = dual_feasibility_lhs_new;
           results.info.status = QPSolverOutput::PROXQP_SOLVED;

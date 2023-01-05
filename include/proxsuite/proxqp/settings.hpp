@@ -84,6 +84,7 @@ struct Settings
   bool update_preconditioner;
   bool compute_preconditioner;
   bool compute_timings;
+  bool check_duality_gap;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -136,6 +137,8 @@ struct Settings
    * @param compute_timings If set to true, timings will be computed by the
    * solver (setup time, solving time, and run time = setup time + solving
    * time).
+   * @param check_duality_gap If set to true, duality gap will be calculated and
+   * included in the stopping criterion.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -183,6 +186,7 @@ struct Settings
     bool update_preconditioner = true,
     bool compute_preconditioner = true,
     bool compute_timings = false,
+    bool check_duality_gap = false,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -218,6 +222,7 @@ struct Settings
     , update_preconditioner(update_preconditioner)
     , compute_preconditioner(compute_preconditioner)
     , compute_timings(compute_timings)
+    , check_duality_gap(check_duality_gap)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -263,6 +268,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.update_preconditioner == settings2.update_preconditioner &&
     settings1.compute_preconditioner == settings2.compute_preconditioner &&
     settings1.compute_timings == settings2.compute_timings &&
+    settings1.check_duality_gap == settings2.check_duality_gap &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

@@ -1074,8 +1074,13 @@ qp_solve( //
       ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
     }
     if (is_primal_feasible && is_dual_feasible) {
-      if (std::abs(qpresults.info.duality_gap) <=
-          qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
+      if (qpsettings.check_duality_gap) {
+        if (std::abs(qpresults.info.duality_gap) <=
+            qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
+          qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+          break;
+        }
+      } else {
         qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
         break;
       }
@@ -1155,8 +1160,13 @@ qp_solve( //
              std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
       if (is_dual_feasible) {
-        if (std::abs(qpresults.info.duality_gap) <=
-            qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
+        if (qpsettings.check_duality_gap) {
+          if (std::abs(qpresults.info.duality_gap) <=
+              qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
+            qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+            break;
+          }
+        } else {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
