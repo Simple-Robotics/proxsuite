@@ -51,10 +51,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
-  if(CHECK_DUALITY_GAP)
-    target_compile_definitions(${target_name}
-                               PRIVATE PROXSUITE_CHECK_DUALITY_GAP)
-  endif(CHECK_DUALITY_GAP)
+
   target_include_directories(
     ${target_name} SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
   set_target_properties(

@@ -45,6 +45,7 @@ serialize(Archive& archive, proxsuite::proxqp::Settings<T>& settings)
           CEREAL_NVP(settings.update_preconditioner),
           CEREAL_NVP(settings.compute_preconditioner),
           CEREAL_NVP(settings.compute_timings),
+          CEREAL_NVP(settings.check_duality_gap),
           CEREAL_NVP(settings.preconditioner_max_iter),
           CEREAL_NVP(settings.preconditioner_accuracy),
           CEREAL_NVP(settings.eps_primal_inf),
