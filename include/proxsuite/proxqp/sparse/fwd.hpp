@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 /** \file */
 #ifndef PROXSUITE_PROXQP_SPARSE_FWD_HPP
@@ -40,6 +40,16 @@ using Vec = Eigen::Matrix<T, DYN, 1>;
 template<typename T, typename I>
 using Mat = Eigen::SparseMatrix<T, Eigen::ColMajor, I>;
 // using Mat = Eigen::SparseMatrix<T, Eigen::RowMajor, I>;
+using VecBool = Eigen::Matrix<bool, DYN, 1>;
+
+///
+/// @brief This class defines the workspace of the sparse solver.
+///
+/*!
+ * Workspace class of the sparse solver.
+ */
+template<typename T, typename I>
+struct Workspace;
 
 } // namespace sparse
 } // namespace proxqp

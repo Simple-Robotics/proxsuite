@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 #include <proxsuite/proxqp/results.hpp>
 #include <pybind11/pybind11.h>
@@ -39,6 +39,7 @@ exposeResults(pybind11::module_ m)
     .def_readwrite("run_time", &Info<T>::run_time)
     .def_readwrite("setup_time", &Info<T>::setup_time)
     .def_readwrite("solve_time", &Info<T>::solve_time)
+    .def_readwrite("duality_gap", &Info<T>::duality_gap)
     .def_readwrite("pri_res", &Info<T>::pri_res)
     .def_readwrite("dua_res", &Info<T>::dua_res)
     .def_readwrite("objValue", &Info<T>::objValue)

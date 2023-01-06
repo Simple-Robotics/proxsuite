@@ -69,7 +69,6 @@ struct Results
   sparse::Vec<T> x;
   sparse::Vec<T> y;
   sparse::Vec<T> z;
-  proxsuite::linalg::veg::Vec<bool> active_constraints;
 
   Info<T> info;
 

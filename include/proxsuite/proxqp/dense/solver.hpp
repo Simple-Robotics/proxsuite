@@ -1065,34 +1065,24 @@ qp_solve( //
                 << std::endl;
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                 << "| primal residual=" << qpresults.info.pri_res
-                << "| dual residual=" << qpresults.info.dua_res
-                << "| duality gap=" << qpresults.info.duality_gap
-                << "| mu_in=" << qpresults.info.mu_in
-                << "| rho=" << qpresults.info.rho << std::endl;
+                << " | dual residual=" << qpresults.info.dua_res
+                << " | duality gap=" << qpresults.info.duality_gap
+                << " | mu_in=" << qpresults.info.mu_in
+                << " | rho=" << qpresults.info.rho << std::endl;
       ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
       ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
       ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
     }
-    if (is_primal_feasible) {
-
-      if (dual_feasibility_lhs >=
-            qpsettings.refactor_dual_feasibility_threshold &&
-          qpresults.info.rho != qpsettings.refactor_rho_threshold) {
-
-        T rho_new(qpsettings.refactor_rho_threshold);
-
-        refactorize(qpmodel, qpresults, qpwork, rho_new);
-        qpresults.info.rho_updates += 1;
-
-        qpresults.info.rho = rho_new;
-      }
-      if (is_dual_feasible) {
-        if (qpresults.info.duality_gap <=
-            qpsettings.eps_abs +
-              (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+    if (is_primal_feasible && is_dual_feasible) {
+      if (qpsettings.check_duality_gap) {
+        if (std::abs(qpresults.info.duality_gap) <=
+            qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
+      } else {
+        qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+        break;
       }
     }
     qpresults.info.iter_ext += 1; // We start a new external loop update
@@ -1170,9 +1160,13 @@ qp_solve( //
              std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
 
       if (is_dual_feasible) {
-        if (qpresults.info.duality_gap <=
-            qpsettings.eps_abs +
-              (qpsettings.eps_abs + qpsettings.eps_rel) * rhs_duality_gap) {
+        if (qpsettings.check_duality_gap) {
+          if (std::abs(qpresults.info.duality_gap) <=
+              qpsettings.eps_abs + qpsettings.eps_rel * rhs_duality_gap) {
+            qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+            break;
+          }
+        } else {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
