@@ -1,6 +1,7 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
+
 #include <doctest.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
@@ -8,6 +9,30 @@
 using namespace proxsuite;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
+
+template<typename T>
+void
+compute_primal_dual_feasibility(const PreprocessedQpSparse& preprocessed,
+                                const proxqp::Results<T>& results,
+                                T& primal_feasibility,
+                                T& dual_feasibility)
+{
+  dual_feasibility = proxsuite::proxqp::dense::infty_norm(
+    preprocessed.H.selfadjointView<Eigen::Upper>() * results.x +
+    preprocessed.g + preprocessed.AT * results.y + preprocessed.CT * results.z);
+
+  T prim_eq = proxsuite::proxqp::dense::infty_norm(
+    preprocessed.AT.transpose() * results.x - preprocessed.b);
+  T prim_in =
+    std::max(proxsuite::proxqp::dense::infty_norm(
+               preprocessed.AT.transpose() * results.x - preprocessed.b),
+             proxsuite::proxqp::dense::infty_norm(
+               helpers::positive_part(preprocessed.CT.transpose() * results.x -
+                                      preprocessed.u) +
+               helpers::negative_part(preprocessed.CT.transpose() * results.x -
+                                      preprocessed.l)));
+  primal_feasibility = std::max(prim_eq, prim_in);
+}
 
 char const* files[] = {
 
@@ -88,6 +113,9 @@ TEST_CASE("sparse maros meszaros using the API")
   using T = double;
   using I = mat_int32_t;
 
+  const T eps_abs_no_duality_gap = 2e-8;
+  const T eps_abs_with_duality_gap = 1e-5;
+
   for (auto const* file : files) {
     auto qp_raw = load_qp(file);
     isize n = qp_raw.P.rows();
@@ -96,7 +124,7 @@ TEST_CASE("sparse maros meszaros using the API")
     bool skip = (n > 1000 || n_eq_in > 1000);
     if (skip) {
       std::cout << " path: " << qp_raw.filename << " n: " << n
-                << " n_eq+n_in: " << n_eq_in << "skipping" << std::endl;
+                << " n_eq+n_in: " << n_eq_in << " - SKIPPING" << std::endl;
     } else {
       std::cout << " path: " << qp_raw.filename << " n: " << n
                 << " n_eq+n_in: " << n_eq_in << std::endl;
@@ -120,12 +148,9 @@ TEST_CASE("sparse maros meszaros using the API")
       qp.settings.max_iter = 1.E6;
       qp.settings.verbose = false;
 
-      qp.settings.eps_abs = 2e-8;
+      qp.settings.eps_abs = eps_abs_no_duality_gap;
       qp.settings.eps_rel = 0;
-      auto& eps = qp.settings.eps_abs;
       qp.init(H, g, AT.transpose(), b, CT.transpose(), l, u);
-      T prim_eq(0);
-      T prim_in(0);
 
       for (isize iter = 0; iter < 10; ++iter) {
         if (iter > 0)
@@ -133,58 +158,61 @@ TEST_CASE("sparse maros meszaros using the API")
             WARM_START_WITH_PREVIOUS_RESULT;
         qp.solve();
 
+        T primal_feasibility, dual_feasibility;
+        compute_primal_dual_feasibility(
+          preprocessed, qp.results, primal_feasibility, dual_feasibility);
+
+        CHECK(primal_feasibility < qp.settings.eps_abs);
+        CHECK(dual_feasibility < qp.settings.eps_abs);
+        CHECK(qp.results.info.pri_res < eps_abs_with_duality_gap);
+        CHECK(qp.results.info.dua_res < eps_abs_with_duality_gap);
+
+        std::cout << "dual feasibility: " << dual_feasibility << std::endl;
+
+        std::cout << "primal residual " << primal_feasibility << std::endl;
+      }
+
+      {
+        qp.solve();
+
         CHECK(proxsuite::proxqp::dense::infty_norm(
                 H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
-                AT * qp.results.y + CT * qp.results.z) <= eps);
+                AT * qp.results.y + CT * qp.results.z) <=
+              eps_abs_no_duality_gap);
         CHECK(proxsuite::proxqp::dense::infty_norm(
-                AT.transpose() * qp.results.x - b) <= eps);
+                AT.transpose() * qp.results.x - b) <= eps_abs_no_duality_gap);
         if (n_in > 0) {
-          CHECK((CT.transpose() * qp.results.x - l).minCoeff() > -eps);
-          CHECK((CT.transpose() * qp.results.x - u).maxCoeff() < eps);
+          CHECK((CT.transpose() * qp.results.x - l).minCoeff() >
+                -eps_abs_no_duality_gap);
+          CHECK((CT.transpose() * qp.results.x - u).maxCoeff() <
+                eps_abs_no_duality_gap);
         }
-        std::cout << "dual residual "
-                  << proxsuite::proxqp::dense::infty_norm(
-                       H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
-                       AT * qp.results.y + CT * qp.results.z)
-                  << std::endl;
-        T prim_eq = proxsuite::proxqp::dense::infty_norm(
-          AT.transpose() * qp.results.x - b);
-        T prim_in = std::max(
-          proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x -
-                                               b),
-          proxsuite::proxqp::dense::infty_norm(
-            helpers::positive_part(CT.transpose() * qp.results.x - u) +
-            helpers::negative_part(CT.transpose() * qp.results.x - l)));
-        std::cout << "primal residual " << std::max(prim_eq, prim_in)
-                  << std::endl;
+
+        T primal_feasibility, dual_feasibility;
+        compute_primal_dual_feasibility(
+          preprocessed, qp.results, primal_feasibility, dual_feasibility);
+
+        std::cout << "dual residual " << dual_feasibility << std::endl;
+
+        std::cout << "primal residual " << primal_feasibility << std::endl;
       }
 
-      qp.solve();
+      {
+        qp.settings.initial_guess =
+          proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.check_duality_gap = true;
+        qp.settings.eps_abs = eps_abs_with_duality_gap;
 
-      CHECK(proxsuite::proxqp::dense::infty_norm(
-              H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
-              AT * qp.results.y + CT * qp.results.z) <= eps);
-      CHECK(proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x -
-                                                 b) <= eps);
-      if (n_in > 0) {
-        CHECK((CT.transpose() * qp.results.x - l).minCoeff() > -eps);
-        CHECK((CT.transpose() * qp.results.x - u).maxCoeff() < eps);
+        qp.solve();
+
+        T primal_feasibility, dual_feasibility;
+        compute_primal_dual_feasibility(
+          preprocessed, qp.results, primal_feasibility, dual_feasibility);
+
+        CHECK(primal_feasibility < eps_abs_with_duality_gap);
+        CHECK(dual_feasibility < eps_abs_with_duality_gap);
+        CHECK(qp.results.info.duality_gap < eps_abs_with_duality_gap);
       }
-      std::cout << "dual residual "
-                << proxsuite::proxqp::dense::infty_norm(
-                     H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
-                     AT * qp.results.y + CT * qp.results.z)
-                << std::endl;
-
-      prim_eq =
-        proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x - b);
-      prim_in = std::max(
-        proxsuite::proxqp::dense::infty_norm(AT.transpose() * qp.results.x - b),
-        proxsuite::proxqp::dense::infty_norm(
-          helpers::positive_part(CT.transpose() * qp.results.x - u) +
-          helpers::negative_part(CT.transpose() * qp.results.x - l)));
-      std::cout << "primal residual " << std::max(prim_eq, prim_in)
-                << std::endl;
     }
   }
 }
