@@ -15,5 +15,5 @@ var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
     [ "top_rows_mut_unchecked", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a9c961aba3d0b5fc16b0b3a908e22fd20", null ],
     [ "global_primal_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a256d1f677a7aa9aa0dca06aeccf460ad", null ],
     [ "global_dual_residual_infeasibility", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#abfa4d6a743bffb4bbaf0318d51a10ca9", null ],
-    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#adf5ce96dfe0ba6ac4f1c7a779efb753c", null ]
+    [ "unscaled_primal_dual_residual", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#accb66156dcabf5ffb0392d9e95f2d5cb", null ]
 ];

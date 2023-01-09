@@ -12,7 +12,7 @@
 <area shape="rect" id="node38" href="$assignable_8hpp.html" title=" " alt="" coords="563,548,789,588"/>
 <area shape="rect" id="node39" href="$constructible_8hpp.html" title=" " alt="" coords="961,372,1201,412"/>
 <area shape="rect" id="node40" href="$invocable_8hpp.html" title=" " alt="" coords="633,460,852,500"/>
-<area shape="rect" id="node42" href="$primitives_8hpp.html" title=" " alt="" coords="167,460,390,500"/>
+<area shape="rect" id="node42" href="$primitives_8hpp.html" title=" " alt="" coords="169,460,391,500"/>
 <area shape="rect" id="node43" href="$tags_8hpp.html" title=" " alt="" coords="375,372,559,412"/>
 <area shape="rect" id="node44" href="$get_8hpp.html" title=" " alt="" coords="43,636,218,676"/>
 <area shape="rect" id="node45" href="$proxqp_2dense_2model_8hpp.html" title=" " alt="" coords="2845,915,3027,955"/>
@@ -26,9 +26,9 @@
 <area shape="rect" id="node20" href="$sparse_2core_8hpp.html" title=" " alt="" coords="281,1267,455,1307"/>
 <area shape="rect" id="node21" href="$dynstack__alloc_8hpp.html" title=" " alt="" coords="433,1003,637,1043"/>
 <area shape="rect" id="node15" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="1757,1091,1976,1131"/>
-<area shape="rect" id="node16" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="897,1619,1079,1659"/>
+<area shape="rect" id="node16" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="831,1619,1014,1659"/>
 <area shape="rect" id="node17" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="833,1443,1015,1483"/>
-<area shape="rect" id="node18" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="962,1531,1145,1571"/>
+<area shape="rect" id="node18" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="897,1531,1079,1571"/>
 <area shape="rect" id="node19" href="$sparse_2views_8hpp.html" title=" " alt="" coords="898,1355,1081,1395"/>
 <area shape="rect" id="node9" href="$ldlt_8hpp.html" title=" " alt="" coords="963,1267,1138,1307"/>
 <area shape="rect" id="node10" href="$dense_2solver_8hpp.html" title=" " alt="" coords="1766,1531,1949,1571"/>

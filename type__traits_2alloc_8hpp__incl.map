@@ -1,17 +1,17 @@
 <map id="include/proxsuite/linalg/veg/type_traits/alloc.hpp" name="include/proxsuite/linalg/veg/type_traits/alloc.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="810,5,997,45"/>
+<area shape="rect" id="node1" title=" " alt="" coords="865,5,1051,45"/>
 <area shape="rect" id="node2" href="$has__asan_8hpp.html" title=" " alt="" coords="5,93,175,133"/>
-<area shape="rect" id="node3" href="$ref_8hpp.html" title=" " alt="" coords="632,181,783,221"/>
+<area shape="rect" id="node3" href="$ref_8hpp.html" title=" " alt="" coords="631,181,781,221"/>
 <area shape="rect" id="node6" href="$typedefs_8hpp.html" title=" " alt="" coords="994,621,1159,661"/>
 <area shape="rect" id="node10" href="$macros_8hpp.html" title=" " alt="" coords="757,533,913,573"/>
 <area shape="rect" id="node13" href="$prologue_8hpp.html" title=" " alt="" coords="1319,621,1485,661"/>
 <area shape="rect" id="node15" href="$epilogue_8hpp.html" title=" " alt="" coords="333,621,497,661"/>
-<area shape="rect" id="node16" href="$constructible_8hpp.html" title=" " alt="" coords="1267,269,1479,309"/>
-<area shape="rect" id="node22" href="$assignable_8hpp.html" title=" " alt="" coords="937,269,1136,309"/>
-<area shape="rect" id="node23" href="$placement_8hpp.html" title=" " alt="" coords="1221,93,1404,133"/>
-<area shape="rect" id="node25" title=" " alt="" coords="1619,189,1686,214"/>
+<area shape="rect" id="node16" href="$constructible_8hpp.html" title=" " alt="" coords="1265,269,1477,309"/>
+<area shape="rect" id="node22" href="$assignable_8hpp.html" title=" " alt="" coords="935,269,1133,309"/>
+<area shape="rect" id="node23" href="$placement_8hpp.html" title=" " alt="" coords="1219,93,1401,133"/>
+<area shape="rect" id="node25" title=" " alt="" coords="1618,189,1685,214"/>
 <area shape="rect" id="node4" href="$tags_8hpp.html" title=" " alt="" coords="453,269,609,309"/>
-<area shape="rect" id="node19" href="$address_8hpp.html" title=" " alt="" coords="749,269,913,309"/>
+<area shape="rect" id="node19" href="$address_8hpp.html" title=" " alt="" coords="747,269,911,309"/>
 <area shape="rect" id="node5" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="883,357,1039,397"/>
 <area shape="rect" id="node9" href="$integer__seq_8hpp.html" title=" " alt="" coords="770,445,954,485"/>
 <area shape="rect" id="node7" title=" " alt="" coords="1313,709,1379,735"/>
@@ -23,5 +23,5 @@
 <area shape="rect" id="node18" title=" " alt="" coords="1216,365,1308,390"/>
 <area shape="rect" id="node20" href="$std_8hpp.html" title=" " alt="" coords="1283,445,1433,485"/>
 <area shape="rect" id="node21" title=" " alt="" coords="730,365,807,390"/>
-<area shape="rect" id="node24" href="$invocable_8hpp.html" title=" " alt="" coords="1217,181,1408,221"/>
+<area shape="rect" id="node24" href="$invocable_8hpp.html" title=" " alt="" coords="1215,181,1405,221"/>
 </map>

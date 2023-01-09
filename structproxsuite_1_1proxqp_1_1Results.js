@@ -8,6 +8,5 @@ var structproxsuite_1_1proxqp_1_1Results =
     [ "x", "structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f", null ],
     [ "y", "structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f", null ],
     [ "z", "structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb", null ],
-    [ "active_constraints", "structproxsuite_1_1proxqp_1_1Results.html#a5d19d99b013aac3affe9e07ce415ceca", null ],
     [ "info", "structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a", null ]
 ];

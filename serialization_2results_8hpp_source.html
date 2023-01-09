@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -148,34 +148,33 @@ $(document).ready(function(){initNavTree('serialization_2results_8hpp_source.htm
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  archive(CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">x</a>),</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>          CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">y</a>),</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>          CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">z</a>),</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>          CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a5d19d99b013aac3affe9e07ce415ceca">active_constraints</a>),</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>          CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a">info</a>));</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>}</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keywordtype">void</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="namespacecereal.html#ad411a082ec69d7438b45031b13751452">   54</a></span><a class="code hl_function" href="namespacecereal.html#a6f76caa86750a5977d09ed9be9002f8f">save</a>(Archive&amp; ar, <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html">proxsuite::linalg::veg::Vec&lt;bool&gt;</a> <span class="keyword">const</span>&amp; vec_bool)</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>{</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> len = vec_bool.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#ace717dc0bd9c459b2e081ae545921bac">len</a>();</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  ar(CEREAL_NVP(len));</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  <span class="keywordflow">for</span> (<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> i = 0; i &lt; len; i++)</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    ar(vec_bool[i]);</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>}</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keywordtype">void</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="namespacecereal.html#ae3f26b10273bd395c63cda9af72db86b">   64</a></span><a class="code hl_function" href="namespacecereal.html#abbb2f2cde410169833660e1e40566aea">load</a>(Archive&amp; ar, <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html">proxsuite::linalg::veg::Vec&lt;bool&gt;</a>&amp; vec_bool)</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>{</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> len;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  ar(len);</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>  vec_bool.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#adf5f4edab8a2cc3215e4e14914b875ea">reserve</a>(len);</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>  <span class="keywordflow">for</span> (<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> i = 0; i &lt; len; i++)</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    ar(vec_bool[i]);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>} <span class="comment">// namespace cereal</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard PROXSUITE_SERIALIZATION_RESULTS_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>          CEREAL_NVP(results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a">info</a>));</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>}</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">void</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="namespacecereal.html#ad411a082ec69d7438b45031b13751452">   53</a></span><a class="code hl_function" href="namespacecereal.html#a6f76caa86750a5977d09ed9be9002f8f">save</a>(Archive&amp; ar, <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html">proxsuite::linalg::veg::Vec&lt;bool&gt;</a> <span class="keyword">const</span>&amp; vec_bool)</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>{</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> len = vec_bool.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#ace717dc0bd9c459b2e081ae545921bac">len</a>();</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  ar(CEREAL_NVP(len));</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  <span class="keywordflow">for</span> (<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> i = 0; i &lt; len; i++)</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    ar(vec_bool[i]);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>}</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> Archive&gt;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keywordtype">void</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="namespacecereal.html#ae3f26b10273bd395c63cda9af72db86b">   63</a></span><a class="code hl_function" href="namespacecereal.html#abbb2f2cde410169833660e1e40566aea">load</a>(Archive&amp; ar, <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html">proxsuite::linalg::veg::Vec&lt;bool&gt;</a>&amp; vec_bool)</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>{</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> len;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  ar(len);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  vec_bool.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#adf5f4edab8a2cc3215e4e14914b875ea">reserve</a>(len);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>  <span class="keywordflow">for</span> (<a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg.html#ac1e2ec3344d2681c2b7e156325cae45f">proxsuite::linalg::veg::isize</a> i = 0; i &lt; len; i++)</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    ar(vec_bool[i]);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>} <span class="comment">// namespace cereal</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard PROXSUITE_SERIALIZATION_RESULTS_HPP */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="anamespacecereal_html"><div class="ttname"><a href="namespacecereal.html">cereal</a></div><div class="ttdef"><b>Definition:</b> <a href="eigen_8hpp_source.html#l00016">eigen.hpp:16</a></div></div>
 <div class="ttc" id="anamespacecereal_html_a6f76caa86750a5977d09ed9be9002f8f"><div class="ttname"><a href="namespacecereal.html#a6f76caa86750a5977d09ed9be9002f8f">cereal::save</a></div><div class="ttdeci">void save(Archive &amp;ar, Eigen::PlainObjectBase&lt; Derived &gt; const &amp;m)</div><div class="ttdef"><b>Definition:</b> <a href="eigen_8hpp_source.html#l00021">eigen.hpp:21</a></div></div>
 <div class="ttc" id="anamespacecereal_html_aae8f00a3364cc7946faf780f2a73467f"><div class="ttname"><a href="namespacecereal.html#aae8f00a3364cc7946faf780f2a73467f">cereal::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;archive, proxsuite::proxqp::dense::Model&lt; T &gt; &amp;model)</div><div class="ttdef"><b>Definition:</b> <a href="serialization_2model_8hpp_source.html#l00018">model.hpp:18</a></div></div>
@@ -207,8 +206,7 @@ $(document).ready(function(){initNavTree('serialization_2results_8hpp_source.htm
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Info_html_afe94c45d1916373672433a577df9a8e4"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Info.html#afe94c45d1916373672433a577df9a8e4">proxsuite::proxqp::Info::solve_time</a></div><div class="ttdeci">T solve_time</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00047">results.hpp:47</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html">proxsuite::proxqp::Results</a></div><div class="ttdoc">This class stores all the results of PROXQP solvers with sparse and dense backends.</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00064">results.hpp:65</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a1be314db5179afe99216d9564ee35ffb"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">proxsuite::proxqp::Results::z</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; z</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00071">results.hpp:71</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a5d19d99b013aac3affe9e07ce415ceca"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a5d19d99b013aac3affe9e07ce415ceca">proxsuite::proxqp::Results::active_constraints</a></div><div class="ttdeci">proxsuite::linalg::veg::Vec&lt; bool &gt; active_constraints</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00072">results.hpp:72</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a9815e12eaaf54fb2b6a371e5771cfe0a"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a">proxsuite::proxqp::Results::info</a></div><div class="ttdeci">Info&lt; T &gt; info</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00074">results.hpp:74</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a9815e12eaaf54fb2b6a371e5771cfe0a"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a">proxsuite::proxqp::Results::info</a></div><div class="ttdeci">Info&lt; T &gt; info</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00073">results.hpp:73</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ab412e8dbd9325586ca0d8b299a31b21f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">proxsuite::proxqp::Results::y</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; y</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00070">results.hpp:70</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ad05a360234a4dce744c868b6aad72f8f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">proxsuite::proxqp::Results::x</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; x</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2results_8hpp_source.html#l00069">results.hpp:69</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

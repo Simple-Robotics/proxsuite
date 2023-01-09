@@ -1,6 +1,6 @@
 <map id="proxsuite::linalg::sparse::MatMut&lt; T, I &gt;" name="proxsuite::linalg::sparse::MatMut&lt; T, I &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="140,300,313,340"/>
+<area shape="rect" id="node1" title=" " alt="" coords="101,300,275,340"/>
 <area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="5,109,216,164"/>
 <area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,216,60"/>
-<area shape="rect" id="node4" title=" " alt="" coords="239,124,291,149"/>
+<area shape="rect" id="node4" title=" " alt="" coords="241,124,293,149"/>
 </map>

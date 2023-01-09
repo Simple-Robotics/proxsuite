@@ -1,10 +1,10 @@
 <map id="include/proxsuite/linalg/sparse/update.hpp" name="include/proxsuite/linalg/sparse/update.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="111,5,286,45"/>
-<area shape="rect" id="node2" href="$rowmod_8hpp.html" title=" " alt="" coords="111,93,286,133"/>
-<area shape="rect" id="node3" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="79,445,262,485"/>
-<area shape="rect" id="node6" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="94,269,277,309"/>
-<area shape="rect" id="node7" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="209,357,391,397"/>
-<area shape="rect" id="node8" href="$sparse_2views_8hpp.html" title=" " alt="" coords="274,181,457,221"/>
-<area shape="rect" id="node4" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="79,533,262,573"/>
-<area shape="rect" id="node5" href="$sparse_8hpp.html" title=" " alt="" coords="79,621,262,661"/>
+<area shape="rect" id="node1" title=" " alt="" coords="98,5,273,45"/>
+<area shape="rect" id="node2" href="$rowmod_8hpp.html" title=" " alt="" coords="227,93,402,133"/>
+<area shape="rect" id="node3" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="130,445,313,485"/>
+<area shape="rect" id="node6" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="259,269,442,309"/>
+<area shape="rect" id="node7" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="130,357,313,397"/>
+<area shape="rect" id="node8" href="$sparse_2views_8hpp.html" title=" " alt="" coords="94,181,277,221"/>
+<area shape="rect" id="node4" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="130,533,313,573"/>
+<area shape="rect" id="node5" href="$sparse_8hpp.html" title=" " alt="" coords="130,621,313,661"/>
 </map>
