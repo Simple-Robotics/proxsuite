@@ -39,7 +39,8 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             bool,
                             optional<isize>,
-                            proxsuite::proxqp::InitialGuessStatus>(
+                            proxsuite::proxqp::InitialGuessStatus,
+                            bool>(
       &dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
@@ -83,7 +84,12 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v(
       "initial_guess",
       proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-      "maximum number of iteration."));
+      "maximum number of iteration."),
+    pybind11::arg_v(
+      "check_duality_gap",
+      false,
+      "if set to true, include the duality gap in absolute and relative "
+      "stopping criteria."));
 }
 
 } // namespace python
