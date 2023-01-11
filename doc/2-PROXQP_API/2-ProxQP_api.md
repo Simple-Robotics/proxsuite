@@ -35,7 +35,7 @@ $$\begin{equation}\label{qp:kkt}\tag{KKT}
 
 where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
 
-In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:
+In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:
 
 $$\begin{equation}\label{eq:approx_qp_sol}
 \begin{aligned}
@@ -49,7 +49,7 @@ $$\begin{equation}\label{eq:approx_qp_sol}
 \end{aligned}
 \end{equation}$$
 
-The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf)). Hence more generally the following stopping criterion can be used.
+The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's [convergence](https://osqp.org/docs/solver/index.html#convergence) criteria or [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) in the corresponding paper). Hence more generally the following stopping criterion can be used:
 
 $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \begin{aligned}
