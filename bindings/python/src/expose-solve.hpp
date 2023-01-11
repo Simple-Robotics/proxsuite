@@ -40,8 +40,7 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             optional<isize>,
                             proxsuite::proxqp::InitialGuessStatus,
-                            bool>(
-      &dense::solve<T>),
+                            bool>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
