@@ -95,6 +95,7 @@ Different options are available for the solve function. In the table below you h
 | z                                   | 0                                               | Warm start value for the dual Lagrange multiplier for inequality constraints.
 | eps_abs                             | 1.E-5                                           | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                                               | Relative stopping criterion of the solver.
+| check_duality_gap                   | False                                           | If set to true, include the duality gap in absolute and relative stopping criteria.
 | mu_eq                               | 1.E-3                                           | Proximal step size wrt equality constraints multiplier.
 | mu_in                               | 1.E-1                                           | Proximal step size wrt inequality constraints multiplier.
 | rho                                 | 1.E-6                                           | Proximal step size wrt primal variable.

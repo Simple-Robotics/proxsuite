@@ -301,6 +301,7 @@ In this table you have on the three columns from left to right: the name of the 
 | ----------------------------------- | ---------------------------------- | -----------------------------------------
 | eps_abs                             | 1.E-5                              | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                                  | Relative stopping criterion of the solver.
+| check_duality_gap                   | False                              | If set to true, include the duality gap in absolute and relative stopping criteria.
 | VERBOSE                             | False                              | If set to true, the solver prints information at each loop.
 | default_rho                         | 1.E-6                              | Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).
 | default_mu_eq                       | 1.E-3                              | Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).
