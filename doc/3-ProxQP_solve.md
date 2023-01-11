@@ -49,7 +49,7 @@ $$\begin{equation}\label{eq:approx_qp_sol}
 \end{aligned}
 \end{equation}$$
 
-The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf)). Hence more generally the following stopping criterion can be used.
+The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's [convergence](https://osqp.org/docs/solver/index.html#convergence) criteria or [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) in the corresponding paper). Hence more generally the following stopping criterion can be used:
 
 $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \begin{aligned}
@@ -62,6 +62,20 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
     \right.
 \end{aligned}
 \end{equation}$$
+
+This stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. If the problem is *strictly* convex, that is, if it's Hessian $H$ is positive definite, then strong duality holds and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
+
+$$\begin{equation}\label{eq:approx_qp_sol}
+\begin{aligned}
+    &\left\{
+    \begin{array}{ll}
+        r_g := | x^T H x + g^T x + b^T y + u^T z^+ + l^T z^- | \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}} \max(\|x^T H x\|, \|g^T x\|, \|b^T y\|, \|u^T z^+\|, \|l^T z^-\|) \\
+    \end{array}
+    \right.
+\end{aligned}
+\end{equation}$$
+
+ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as ProxQP is also designed to work with problems that are not strictly convex where strong duality doesn't hold; that is, where the duality gap can be non-zero at an optimal solution. Enable this option if you know that your problem is strictly convex and want a strong guarantee that the returned solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper).
 
 \section OverviewAsingleSolveFunction A single solve function for dense and sparse backends
 
