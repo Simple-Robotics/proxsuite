@@ -148,7 +148,11 @@ solveSparseQp(pybind11::module_ m)
                     proxsuite::proxqp::InitialGuessStatus::
                       EQUALITY_CONSTRAINED_INITIAL_GUESS),
     pybind11::arg_v("sparse_backend",
-                    proxsuite::proxqp::SparseBackend::Automatic));
+                    proxsuite::proxqp::SparseBackend::Automatic),
+    pybind11::arg_v("check_duality_gap",
+                    false,
+                    "if set to true, include the duality gap in absolute and "
+                    "relative stopping criteria."));
 }
 
 } // namespace python
