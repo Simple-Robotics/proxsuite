@@ -102,7 +102,6 @@ template<typename T, typename I>
 void
 solveSparseQp(pybind11::module_ m)
 {
-
   m.def(
     "solve",
     &sparse::solve<T, I>,
