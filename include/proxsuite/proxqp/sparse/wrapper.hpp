@@ -684,6 +684,8 @@ struct QP
  * @param max_iter maximum number of iteration.
  * @param initial_guess initial guess option for warm starting or not the
  * initial iterate values.
+ * @param check_duality_gap If set to true, include the duality gap in absolute
+ * and relative stopping criteria.
  */
 template<typename T, typename I>
 proxqp::Results<T>
@@ -710,7 +712,8 @@ solve(
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
   proxsuite::proxqp::SparseBackend sparse_backend =
-    proxsuite::proxqp::SparseBackend::Automatic)
+    proxsuite::proxqp::SparseBackend::Automatic,
+  bool check_duality_gap = false)
 {
 
   isize n(0);
@@ -728,6 +731,7 @@ solve(
 
   proxqp::sparse::QP<T, I> Qp(n, n_eq, n_in);
   Qp.settings.initial_guess = initial_guess;
+  Qp.settings.check_duality_gap = check_duality_gap;
 
   if (eps_abs != nullopt) {
     Qp.settings.eps_abs = eps_abs.value();
