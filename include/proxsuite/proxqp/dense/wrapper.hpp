@@ -418,7 +418,7 @@ solve(
   optional<isize> max_iter = nullopt,
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  bool check_duality_gap = false,
+  bool check_duality_gap = false)
 {
   isize n(0);
   isize n_eq(0);
