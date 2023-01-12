@@ -35,7 +35,7 @@ $$\begin{equation}\label{qp:kkt}\tag{KKT}
 
 where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
 
-In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:
+In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:
 
 $$\begin{equation}\label{eq:approx_qp_sol}
 \begin{aligned}
@@ -63,19 +63,15 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \end{aligned}
 \end{equation}$$
 
-This stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. If the problem is *strictly* convex, that is, if it's Hessian $H$ is positive definite, then strong duality holds and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
+It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, then strong duality holds (see e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
 
-$$\begin{equation}\label{eq:approx_qp_sol}
+$$\begin{equation}\label{eq:approx_dg_sol}
 \begin{aligned}
-    &\left\{
-    \begin{array}{ll}
-        r_g := | x^T H x + g^T x + b^T y + u^T z^+ + l^T z^- | \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}} \max(\|x^T H x\|, \|g^T x\|, \|b^T y\|, \|u^T z^+\|, \|l^T z^-\|) \\
-    \end{array}
-    \right.
+        r_g := | x^T H x + g^T x + b^T y + u^T [z]_+ + l^T [z]_- | \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}} \max(\|x^T H x\|, \|g^T x\|, \|b^T y\|, \|u^T [z]_+\|, \|l^T [z]_-\|), \\
 \end{aligned}
 \end{equation}$$
 
-ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as ProxQP is also designed to work with problems that are not strictly convex where strong duality doesn't hold; that is, where the duality gap can be non-zero at an optimal solution. Enable this option if you know that your problem is strictly convex and want a strong guarantee that the returned solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper).
+where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as  other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). Note finally that meeting all these criteria can be difficult for ill-conditioned problems.
 
 \section OverviewAsingleSolveFunction A single solve function for dense and sparse backends
 
