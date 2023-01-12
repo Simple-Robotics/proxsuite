@@ -35,7 +35,7 @@ $$\begin{equation}\label{qp:kkt}\tag{KKT}
 
 where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
 
-In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:
+In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:
 
 $$\begin{equation}\label{eq:approx_qp_sol}
 \begin{aligned}
@@ -49,7 +49,7 @@ $$\begin{equation}\label{eq:approx_qp_sol}
 \end{aligned}
 \end{equation}$$
 
-The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf)). Hence more generally the following stopping criterion can be used.
+The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's [convergence](https://osqp.org/docs/solver/index.html#convergence) criteria or [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) in the corresponding paper). Hence more generally the following stopping criterion can be used:
 
 $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \begin{aligned}
@@ -62,6 +62,16 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
     \right.
 \end{aligned}
 \end{equation}$$
+
+It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, then strong duality holds (see e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
+
+$$\begin{equation}\label{eq:approx_dg_sol}
+\begin{aligned}
+        r_g := | x^T H x + g^T x + b^T y + u^T [z]_+ + l^T [z]_- | \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}} \max(\|x^T H x\|, \|g^T x\|, \|b^T y\|, \|u^T [z]_+\|, \|l^T [z]_-\|), \\
+\end{aligned}
+\end{equation}$$
+
+where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as  other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). Note finally that meeting all these criteria can be difficult for ill-conditioned problems.
 
 \section OverviewAsingleSolveFunction A single solve function for dense and sparse backends
 
@@ -95,6 +105,7 @@ Different options are available for the solve function. In the table below you h
 | z                                   | 0                                               | Warm start value for the dual Lagrange multiplier for inequality constraints.
 | eps_abs                             | 1.E-5                                           | Asbolute stopping criterion of the solver.
 | eps_rel                             | 0                                               | Relative stopping criterion of the solver.
+| check_duality_gap                   | False                                           | If set to true, include the duality gap in absolute and relative stopping criteria.
 | mu_eq                               | 1.E-3                                           | Proximal step size wrt equality constraints multiplier.
 | mu_in                               | 1.E-1                                           | Proximal step size wrt inequality constraints multiplier.
 | rho                                 | 1.E-6                                           | Proximal step size wrt primal variable.

@@ -70,6 +70,7 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("compute_preconditioner",
                    &Settings<T>::compute_preconditioner)
     .def_readwrite("update_preconditioner", &Settings<T>::update_preconditioner)
+    .def_readwrite("check_duality_gap", &Settings<T>::check_duality_gap)
     .def_readwrite("verbose", &Settings<T>::verbose)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
     .def(pybind11::self == pybind11::self)
