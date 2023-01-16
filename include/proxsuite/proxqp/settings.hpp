@@ -84,7 +84,10 @@ struct Settings
   bool update_preconditioner;
   bool compute_preconditioner;
   bool compute_timings;
+
   bool check_duality_gap;
+  T eps_gap_abs;
+  T eps_gap_rel;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -227,6 +230,8 @@ struct Settings
     , compute_preconditioner(compute_preconditioner)
     , compute_timings(compute_timings)
     , check_duality_gap(check_duality_gap)
+    , eps_gap_abs(eps_gap_abs)
+    , eps_gap_rel(eps_gap_rel)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
