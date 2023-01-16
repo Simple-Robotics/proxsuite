@@ -139,6 +139,8 @@ struct Settings
    * time).
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
+   * @param eps_gap_abs absolute duality-gap stopping criterion.
+   * @param eps_gap_rel relative duality-gap stopping criterion.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -187,6 +189,8 @@ struct Settings
     bool compute_preconditioner = true,
     bool compute_timings = false,
     bool check_duality_gap = false,
+    T eps_gap_abs = 1.e-4,
+    T eps_gap_rel = 0,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
