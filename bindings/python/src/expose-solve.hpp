@@ -88,7 +88,15 @@ solveDenseQp(pybind11::module_ m)
       "check_duality_gap",
       false,
       "if set to true, include the duality gap in absolute and relative "
-      "stopping criteria."));
+      "stopping criteria."),
+    pybind11::arg_v(
+      "eps_gap_abs",
+      nullopt,
+      "absolute accuracy threshold used for the duality-gap stopping criterion."),
+    pybind11::arg_v(
+      "eps_gap_rel",
+      nullopt,
+      "relative accuracy threshold used for the duality-gap stopping criterion."));
 }
 
 } // namespace python
@@ -151,7 +159,13 @@ solveSparseQp(pybind11::module_ m)
     pybind11::arg_v("check_duality_gap",
                     false,
                     "if set to true, include the duality gap in absolute and "
-                    "relative stopping criteria."));
+                    "relative stopping criteria."),
+    pybind11::arg_v("eps_gap_abs",
+                    nullopt,
+                    "absolute accuracy threshold used for the duality-gap stopping criterion."),
+    pybind11::arg_v("eps_gap_rel",
+                    nullopt,
+                    "relative accuracy threshold used for the duality-gap stopping criterion."));
 }
 
 } // namespace python
