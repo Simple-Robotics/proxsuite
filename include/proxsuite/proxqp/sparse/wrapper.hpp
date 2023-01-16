@@ -686,8 +686,10 @@ struct QP
  * initial iterate values.
  * @param check_duality_gap If set to true, include the duality gap in absolute
  * and relative stopping criteria.
- * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap criterion.
- * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap criterion.
+ * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
+ * criterion.
+ * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
+ * criterion.
  */
 template<typename T, typename I>
 proxqp::Results<T>
