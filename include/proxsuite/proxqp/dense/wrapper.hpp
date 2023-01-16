@@ -393,8 +393,8 @@ struct QP
  * initial iterate values.
  * @param check_duality_gap If set to true, include the duality gap in absolute
  * and relative stopping criteria.
- * @param eps_gap_abs absolute accuracy threshold for the duality-gap criterion.
- * @param eps_gap_rel relative accuracy threshold for the duality-gap criterion.
+ * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap criterion.
+ * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap criterion.
  */
 template<typename T>
 proxqp::Results<T>
@@ -421,8 +421,8 @@ solve(
   proxsuite::proxqp::InitialGuessStatus initial_guess =
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
   bool check_duality_gap = false,
-  optional<T> eps_gap_abs = nullopt,
-  optional<T> eps_gap_rel = nullopt)
+  optional<T> eps_duality_gap_abs = nullopt,
+  optional<T> eps_duality_gap_rel = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -453,11 +453,11 @@ solve(
   if (max_iter != nullopt) {
     Qp.settings.max_iter = max_iter.value();
   }
-  if (eps_gap_abs != nullopt) {
-    Qp.settings.eps_gap_abs = eps_gap_abs.value();
+  if (eps_duality_gap_abs != nullopt) {
+    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
   }
-  if (eps_gap_rel != nullopt) {
-    Qp.settings.eps_gap_rel = eps_gap_rel.value();
+  if (eps_duality_gap_rel != nullopt) {
+    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);

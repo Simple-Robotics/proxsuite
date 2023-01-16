@@ -86,8 +86,8 @@ struct Settings
   bool compute_timings;
 
   bool check_duality_gap;
-  T eps_gap_abs;
-  T eps_gap_rel;
+  T eps_duality_gap_abs;
+  T eps_duality_gap_rel;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -142,8 +142,8 @@ struct Settings
    * time).
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
-   * @param eps_gap_abs absolute duality-gap stopping criterion.
-   * @param eps_gap_rel relative duality-gap stopping criterion.
+   * @param eps_duality_gap_abs absolute duality-gap stopping criterion.
+   * @param eps_duality_gap_rel relative duality-gap stopping criterion.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -192,8 +192,8 @@ struct Settings
     bool compute_preconditioner = true,
     bool compute_timings = false,
     bool check_duality_gap = false,
-    T eps_gap_abs = 1.e-4,
-    T eps_gap_rel = 0,
+    T eps_duality_gap_abs = 1.e-4,
+    T eps_duality_gap_rel = 0,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -230,8 +230,8 @@ struct Settings
     , compute_preconditioner(compute_preconditioner)
     , compute_timings(compute_timings)
     , check_duality_gap(check_duality_gap)
-    , eps_gap_abs(eps_gap_abs)
-    , eps_gap_rel(eps_gap_rel)
+    , eps_duality_gap_abs(eps_duality_gap_abs)
+    , eps_duality_gap_rel(eps_duality_gap_rel)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -278,8 +278,8 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.compute_preconditioner == settings2.compute_preconditioner &&
     settings1.compute_timings == settings2.compute_timings &&
     settings1.check_duality_gap == settings2.check_duality_gap &&
-    settings1.eps_gap_abs == settings2.eps_gap_abs &&
-    settings1.eps_gap_rel == settings2.eps_gap_rel &&
+    settings1.eps_duality_gap_abs == settings2.eps_duality_gap_abs &&
+    settings1.eps_duality_gap_rel == settings2.eps_duality_gap_rel &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

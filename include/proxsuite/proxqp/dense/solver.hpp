@@ -1076,7 +1076,7 @@ qp_solve( //
     if (is_primal_feasible && is_dual_feasible) {
       if (qpsettings.check_duality_gap) {
         if (std::abs(qpresults.info.duality_gap) <=
-            qpsettings.eps_gap_abs + qpsettings.eps_gap_rel * rhs_duality_gap) {
+            qpsettings.eps_duality_gap_abs + qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
           qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           break;
         }
@@ -1162,8 +1162,8 @@ qp_solve( //
       if (is_dual_feasible) {
         if (qpsettings.check_duality_gap) {
           if (std::abs(qpresults.info.duality_gap) <=
-              qpsettings.eps_gap_abs +
-                qpsettings.eps_gap_rel * rhs_duality_gap) {
+              qpsettings.eps_duality_gap_abs +
+                qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
             qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
             break;
           }

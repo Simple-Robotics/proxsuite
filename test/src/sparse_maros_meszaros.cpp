@@ -202,7 +202,7 @@ TEST_CASE("sparse maros meszaros using the API")
           proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.settings.check_duality_gap = true;
         qp.settings.eps_abs = eps_abs_with_duality_gap;
-        qp.settings.eps_gap_abs = eps_abs_with_duality_gap;
+        qp.settings.eps_duality_gap_abs = eps_abs_with_duality_gap;
 
         qp.solve();
 
