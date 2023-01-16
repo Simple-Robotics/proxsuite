@@ -347,9 +347,6 @@ global_dual_residual(Results<T>& qpresults,
   // dual_feasibility_rhs_3 = norm(unscaled(CTz))
   //
   // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
-  const isize max_dim =
-    std::max(qpmodel.dim, std::max(qpmodel.n_eq, qpmodel.n_in));
-  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
   qpwork.CTz.noalias() =
@@ -409,9 +406,6 @@ global_dual_residual(Results<T>& qpresults,
   duality_gap += zl;
 
   ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
-
-  duality_gap /= sqrt_max_dim; // in order to get an a-dimensional duality gap
-  rhs_duality_gap /= sqrt_max_dim;
 }
 
 } // namespace dense
