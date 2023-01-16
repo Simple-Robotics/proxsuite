@@ -278,6 +278,8 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.compute_preconditioner == settings2.compute_preconditioner &&
     settings1.compute_timings == settings2.compute_timings &&
     settings1.check_duality_gap == settings2.check_duality_gap &&
+    settings1.eps_gap_abs == settings2.eps_gap_abs &&
+    settings1.eps_gap_rel == settings2.eps_gap_rel &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&
