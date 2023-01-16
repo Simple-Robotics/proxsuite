@@ -649,7 +649,7 @@ unscaled_primal_dual_residual(
     dual_feasibility_rhs_0 = infty_norm(tmp);
     precond.unscale_primal_in_place({ proxqp::from_eigen, x_e });
     results.info.duality_gap = x_e.dot(data.g); // contains gTx
-    rhs_duality_gap = std::abs(results.info.duality_gap);
+    rhs_duality_gap = std::fabs(results.info.duality_gap);
 
     const T xHx = (tmp).dot(x_e);
     results.info.duality_gap += xHx;

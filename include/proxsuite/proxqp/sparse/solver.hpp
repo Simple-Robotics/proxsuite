@@ -843,7 +843,7 @@ qp_solve(Results<T>& results,
       if (is_primal_feasible(primal_feasibility_lhs) &&
           is_dual_feasible(dual_feasibility_lhs)) {
         if (settings.check_duality_gap) {
-          if (std::abs(results.info.duality_gap) <=
+          if (std::fabs(results.info.duality_gap) <=
               settings.eps_duality_gap_abs +
                 settings.eps_duality_gap_rel * rhs_duality_gap) {
             results.info.pri_res = primal_feasibility_lhs;
