@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.2</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -110,10 +110,13 @@ $(document).ready(function(){initNavTree('md_doc_2_PROXQP_API_2_ProxQP_api.html'
 <p >For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,<a href="https://web.stanford.edu/~boyd/cvxbook/">Section 5.2.3</a>} and <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">Section 2, page 5</a> for more details). For \eqref{eq:QP}, the KKT system is given by the set of equations:</p>
 <p >$$\begin{equation}\label{qp:kkt}\tag{KKT} \begin{aligned} &amp;\left\{ \begin{array}{ll} Hx+g+A^Ty+C^Tz = 0, \\ Ax-b = 0, \\ Cx \leq u, \\ z\odot[Cx-u] = 0,\\ \end{array} \right. \end{aligned} \end{equation}$$</p>
 <p >where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).</p>
-<p >In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:</p>
+<p >In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:</p>
 <p >$$\begin{equation}\label{eq:approx_qp_sol} \begin{aligned} &amp;\left\{ \begin{array}{ll} |Hx+g+A^Ty+C^Tz|_{\infty} \leq \epsilon_{abs}, \\ |Ax-b|_{\infty} \leq \epsilon_{abs}, \\ |[Cx-u]_+|_{\infty}\leq \epsilon_{abs}. \\ \end{array} \right. \end{aligned} \end{equation}$$</p>
-<p >The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">section 3.4</a>). Hence more generally the following stopping criterion can be used.</p>
+<p >The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's <a href="https://osqp.org/docs/solver/index.html#convergence">convergence</a> criteria or <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">section 3.4</a> in the corresponding paper). Hence more generally the following stopping criterion can be used:</p>
 <p >$$\begin{equation}\label{eq:approx_qp_sol_relative_criterion} \begin{aligned} &amp;\left\{ \begin{array}{ll} |Hx+g+A^Ty+C^Tz|_{\infty} \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}}\max(|Hx|_{\infty},|A^Ty|_{\infty},|C^Tz|_{\infty},|g|_{\infty}), \\ |Ax-b|_{\infty} \leq \epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(|Ax|_{\infty},|b|_{\infty}), \\ |[Cx-u]_+|_{\infty}\leq \epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(|Cx|_{\infty},|u|_{\infty}). \\ \end{array} \right. \end{aligned} \end{equation}$$</p>
+<p >It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, then strong duality holds (see e.g., <a href="https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf">Theorem 2</a> from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the <em>duality gap</em> $r_g$:</p>
+<p >$$\begin{equation}\label{eq:approx_dg_sol} \begin{aligned} r_g := | x^T H x + g^T x + b^T y + u^T [z]_+ + l^T [z]_- | \leq \epsilon^{\text{gap}}_{\text{abs}} + \epsilon^{\text{gap}}_{\text{rel}} \max(|x^T H x|, |g^T x|, |b^T y|, |u^T [z]_+|, |l^T [z]_-|), \ \end{aligned} \end{equation}$$</p>
+<p >where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the <code>check_duality_gap</code> option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's <a href="https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions">optimality conditions checks</a> as well as <a href="https://doi.org/10.1137/20M1366307">section 7.2</a> in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.</p>
 <h1><a class="anchor" id="OverviewAPIstructure"></a>
 ProxQP unified API for dense and sparse backends</h1>
 <p >ProxQP algorithm is implemented in two versions specialized for dense and sparse matrices. One simple and unified API has been designed for loading the dense and sparse backends. Concretely, it contains three methods:</p><ul>
@@ -1084,56 +1087,62 @@ The solver's settings</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">eps_rel   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Relative stopping criterion of the solver.    </td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">check_duality_gap   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, include the duality gap in absolute and relative stopping criteria.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">eps_duality_gap_abs   </td><td class="markdownTableBodyNone">1.E-4   </td><td class="markdownTableBodyNone">Asbolute duality-gap stopping criterion of the solver.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">eps_duality_gap_rel   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Relative duality-gap stopping criterion of the solver.    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">VERBOSE   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, the solver prints information at each loop.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">default_rho   </td><td class="markdownTableBodyNone">1.E-6   </td><td class="markdownTableBodyNone">Default rho parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes rho to this value).    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">default_mu_eq   </td><td class="markdownTableBodyNone">1.E-3   </td><td class="markdownTableBodyNone">Default mu_eq parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_eq to this value).    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">default_mu_in   </td><td class="markdownTableBodyNone">1.E-1   </td><td class="markdownTableBodyNone">Default mu_in parameter of result class (i.e., for each initial guess, except WARM_START_WITH_PREVIOUS_RESULT, after a new solve or update, the solver initializes mu_in to this value).    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">max_iter_in   </td><td class="markdownTableBodyNone">1500   </td><td class="markdownTableBodyNone">Maximal number of authorized inner iterations.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">initial_guess   </td><td class="markdownTableBodyNone">EQUALITY_CONSTRAINED_INITIAL_GUESS   </td><td class="markdownTableBodyNone">Sets the initial guess option for initilizing x, y and z.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">mu_min_eq   </td><td class="markdownTableBodyNone">1.E-9   </td><td class="markdownTableBodyNone">Minimal authorized value for mu_eq.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">mu_min_in   </td><td class="markdownTableBodyNone">1.E-8   </td><td class="markdownTableBodyNone">Minimal authorized value for mu_in.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">mu_update_factor   </td><td class="markdownTableBodyNone">0.1   </td><td class="markdownTableBodyNone">Factor used for updating mu_eq and mu_in.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">eps_primal_inf   </td><td class="markdownTableBodyNone">1.E-4   </td><td class="markdownTableBodyNone">Threshold under which primal infeasibility is detected.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">eps_dual_inf   </td><td class="markdownTableBodyNone">1.E-4   </td><td class="markdownTableBodyNone">Threshold under which dual infeasibility is detected.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">update_preconditioner   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, the preconditioner will be re-derived with the update method, otherwise it uses previous one.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">compute_preconditioner   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, the preconditioner will be derived with the init method.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">alpha_bcl   </td><td class="markdownTableBodyNone">0.1   </td><td class="markdownTableBodyNone">alpha parameter of the BCL algorithm.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">beta_bcl   </td><td class="markdownTableBodyNone">0.9   </td><td class="markdownTableBodyNone">beta parameter of the BCL algorithm.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">refactor_dual_feasibility_threshold   </td><td class="markdownTableBodyNone">1.E-2   </td><td class="markdownTableBodyNone">Threshold above which refactorization is performed to change rho parameter.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">refactor_rho_threshold   </td><td class="markdownTableBodyNone">1.E-7   </td><td class="markdownTableBodyNone">New rho parameter used if the refactor_dual_feasibility_threshold condition has been satisfied.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">cold_reset_mu_eq   </td><td class="markdownTableBodyNone">1./1.1   </td><td class="markdownTableBodyNone">Value used for cold restarting mu_eq.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">cold_reset_mu_in   </td><td class="markdownTableBodyNone">1./1.1   </td><td class="markdownTableBodyNone">Value used for cold restarting mu_in.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">nb_iterative_refinement   </td><td class="markdownTableBodyNone">10   </td><td class="markdownTableBodyNone">Maximal number of iterative refinements.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">eps_refact   </td><td class="markdownTableBodyNone">1.E-6   </td><td class="markdownTableBodyNone">Threshold value below which the ldlt is refactorized factorization in the iterative refinement loop.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">safe_guard   </td><td class="markdownTableBodyNone">1.E4   </td><td class="markdownTableBodyNone">Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">preconditioner_max_iter   </td><td class="markdownTableBodyNone">10   </td><td class="markdownTableBodyNone">Maximal number of authorized iterations for the preconditioner.    </td></tr>
+<td class="markdownTableBodyNone">safe_guard   </td><td class="markdownTableBodyNone">1.E4   </td><td class="markdownTableBodyNone">Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).    </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">preconditioner_max_iter   </td><td class="markdownTableBodyNone">10   </td><td class="markdownTableBodyNone">Maximal number of authorized iterations for the preconditioner.    </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">preconditioner_accuracy   </td><td class="markdownTableBodyNone">1.E-3   </td><td class="markdownTableBodyNone">Accuracy level of the preconditioner.   </td></tr>
 </table>
 <h2><a class="anchor" id="OverviewInitialGuess"></a>

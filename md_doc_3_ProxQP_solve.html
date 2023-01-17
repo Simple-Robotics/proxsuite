@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.2</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -110,10 +110,13 @@ $(document).ready(function(){initNavTree('md_doc_3_ProxQP_solve.html',''); initR
 <p >For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,<a href="https://web.stanford.edu/~boyd/cvxbook/">Section 5.2.3</a>} and <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">Section 2, page 5</a> for more details). For \eqref{eq:QP}, the KKT system is given by the set of equations:</p>
 <p >$$\begin{equation}\label{qp:kkt}\tag{KKT} \begin{aligned} &amp;\left\{ \begin{array}{ll} Hx+g+A^Ty+C^Tz = 0, \\ Ax-b = 0, \\ Cx \leq u, \\ z\odot[Cx-u] = 0,\\ \end{array} \right. \end{aligned} \end{equation}$$</p>
 <p >where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).</p>
-<p >In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following natural absolute stopping criterion:</p>
+<p >In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:</p>
 <p >$$\begin{equation}\label{eq:approx_qp_sol} \begin{aligned} &amp;\left\{ \begin{array}{ll} |Hx+g+A^Ty+C^Tz|_{\infty} \leq \epsilon_{abs}, \\ |Ax-b|_{\infty} \leq \epsilon_{abs}, \\ |[Cx-u]_+|_{\infty}\leq \epsilon_{abs}. \\ \end{array} \right. \end{aligned} \end{equation}$$</p>
-<p >The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">section 3.4</a>). Hence more generally the following stopping criterion can be used.</p>
+<p >The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's <a href="https://osqp.org/docs/solver/index.html#convergence">convergence</a> criteria or <a href="https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf">section 3.4</a> in the corresponding paper). Hence more generally the following stopping criterion can be used:</p>
 <p >$$\begin{equation}\label{eq:approx_qp_sol_relative_criterion} \begin{aligned} &amp;\left\{ \begin{array}{ll} |Hx+g+A^Ty+C^Tz|_{\infty} \leq \epsilon_{\text{abs}} + \epsilon_{\text{rel}}\max(|Hx|_{\infty},|A^Ty|_{\infty},|C^Tz|_{\infty},|g|_{\infty}), \\ |Ax-b|_{\infty} \leq \epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(|Ax|_{\infty},|b|_{\infty}), \\ |[Cx-u]_+|_{\infty}\leq \epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(|Cx|_{\infty},|u|_{\infty}). \\ \end{array} \right. \end{aligned} \end{equation}$$</p>
+<p >It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, then strong duality holds (see e.g., <a href="https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf">Theorem 2</a> from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the <em>duality gap</em> $r_g$:</p>
+<p >$$\begin{equation}\label{eq:approx_dg_sol} \begin{aligned} r_g := | x^T H x + g^T x + b^T y + u^T [z]_+ + l^T [z]_- | \leq \epsilon^{\text{gap}}_{\text{abs}} + \epsilon^{\text{gap}}_{\text{rel}} \max(|x^T H x|, |g^T x|, |b^T y|, |u^T [z]_+|, |l^T [z]_-|), \ \end{aligned} \end{equation}$$</p>
+<p >where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the <code>check_duality_gap</code> option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's <a href="https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions">optimality conditions checks</a> as well as <a href="https://doi.org/10.1137/20M1366307">section 7.2</a> in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.</p>
 <h1><a class="anchor" id="OverviewAsingleSolveFunction"></a>
 A single solve function for dense and sparse backends</h1>
 <p >If if you don't want to pass through <a class="el" href="2-ProxQP__api_8md.html">ProxQP API</a>, it is also possible to use one single solve function. We will show how to do so with examples.</p>
@@ -223,11 +226,11 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># solve the problem using the sparse backend</span></div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#ad45ce1502d3a2539c504e36e9289815c">proxsuite.proxqp.sparse.solve</a>(H, g, A, b, C, l, u)</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a3e8ffe0e13a40b80f6584d2babf8a3bf">proxsuite.proxqp.sparse.solve</a>(H, g, A, b, C, l, u)</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># solve the problem using the dense backend</span></div>
 <div class="line"> </div>
-<div class="line">results2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results2 = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8e68f9f73674068bb165ad6a09dab574">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H.toarray(), g, A.toarray(), b, C.toarray(), l, u</div>
 <div class="line">)</div>
 <div class="line"><span class="comment"># Note finally, that the matrices are in sparse format, when using the dense backend you</span></div>
@@ -237,8 +240,8 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(results.x))</div>
 <div class="line">print(<span class="stringliteral">&quot;optimal y: {}&quot;</span>.format(results.y))</div>
 <div class="line">print(<span class="stringliteral">&quot;optimal z: {}&quot;</span>.format(results.z))</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a234d6402f102f7ec25fc558837e69406"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite::proxqp::dense::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; MatRef&lt; T &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; MatRef&lt; T &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; MatRef&lt; T &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS)</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2dense_2wrapper_8hpp_source.html#l00397">wrapper.hpp:397</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1sparse_html_ad45ce1502d3a2539c504e36e9289815c"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1sparse.html#ad45ce1502d3a2539c504e36e9289815c">proxsuite::proxqp::sparse::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; SparseMat&lt; T, I &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; SparseMat&lt; T, I &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; SparseMat&lt; T, I &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, proxsuite::proxqp::SparseBackend sparse_backend=proxsuite::proxqp::SparseBackend::Automatic)</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2sparse_2wrapper_8hpp_source.html#l00690">wrapper.hpp:690</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a8e68f9f73674068bb165ad6a09dab574"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8e68f9f73674068bb165ad6a09dab574">proxsuite::proxqp::dense::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; MatRef&lt; T &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; MatRef&lt; T &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; MatRef&lt; T &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, bool check_duality_gap=false, optional&lt; T &gt; eps_duality_gap_abs=nullopt, optional&lt; T &gt; eps_duality_gap_rel=nullopt)</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2dense_2wrapper_8hpp_source.html#l00403">wrapper.hpp:403</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1sparse_html_a3e8ffe0e13a40b80f6584d2babf8a3bf"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a3e8ffe0e13a40b80f6584d2babf8a3bf">proxsuite::proxqp::sparse::solve</a></div><div class="ttdeci">proxqp::Results&lt; T &gt; solve(optional&lt; SparseMat&lt; T, I &gt; &gt; H, optional&lt; VecRef&lt; T &gt; &gt; g, optional&lt; SparseMat&lt; T, I &gt; &gt; A, optional&lt; VecRef&lt; T &gt; &gt; b, optional&lt; SparseMat&lt; T, I &gt; &gt; C, optional&lt; VecRef&lt; T &gt; &gt; l, optional&lt; VecRef&lt; T &gt; &gt; u, optional&lt; VecRef&lt; T &gt; &gt; x=nullopt, optional&lt; VecRef&lt; T &gt; &gt; y=nullopt, optional&lt; VecRef&lt; T &gt; &gt; z=nullopt, optional&lt; T &gt; eps_abs=nullopt, optional&lt; T &gt; eps_rel=nullopt, optional&lt; T &gt; rho=nullopt, optional&lt; T &gt; mu_eq=nullopt, optional&lt; T &gt; mu_in=nullopt, optional&lt; bool &gt; verbose=nullopt, bool compute_preconditioner=true, bool compute_timings=false, optional&lt; isize &gt; max_iter=nullopt, proxsuite::proxqp::InitialGuessStatus initial_guess=proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS, proxsuite::proxqp::SparseBackend sparse_backend=proxsuite::proxqp::SparseBackend::Automatic, bool check_duality_gap=false, optional&lt; T &gt; eps_duality_gap_abs=nullopt, optional&lt; T &gt; eps_duality_gap_rel=nullopt)</div><div class="ttdef"><b>Definition:</b> <a href="proxqp_2sparse_2wrapper_8hpp_source.html#l00696">wrapper.hpp:696</a></div></div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <p >The results of the solve call are available in the result object, which structure is described in <a class="el" href="2-ProxQP__api_8md.html">ProxQP API with examples</a> section (at "The results subclass" subsection).</p>
@@ -257,20 +260,26 @@ A single solve function for dense and sparse backends</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">eps_rel   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Relative stopping criterion of the solver.    </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">check_duality_gap   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, include the duality gap in absolute and relative stopping criteria.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">eps_duality_gap_abs   </td><td class="markdownTableBodyNone">1.E-4   </td><td class="markdownTableBodyNone">Asbolute duality-gap stopping criterion of the solver.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">eps_duality_gap_rel   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Relative duality-gap stopping criterion of the solver.    </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">mu_eq   </td><td class="markdownTableBodyNone">1.E-3   </td><td class="markdownTableBodyNone">Proximal step size wrt equality constraints multiplier.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">mu_in   </td><td class="markdownTableBodyNone">1.E-1   </td><td class="markdownTableBodyNone">Proximal step size wrt inequality constraints multiplier.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">rho   </td><td class="markdownTableBodyNone">1.E-6   </td><td class="markdownTableBodyNone">Proximal step size wrt primal variable.    </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">VERBOSE   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, the solver prints information at each loop.    </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">compute_preconditioner   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, the preconditioner will be derived.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
+<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">initial_guess   </td><td class="markdownTableBodyNone">EQUALITY_CONSTRAINED_INITIAL_GUESS   </td><td class="markdownTableBodyNone">Sets the initial guess option for initilizing x, y and z.   </td></tr>
 </table>
 <p >All other settings are set to their default values detailed in <a class="el" href="2-ProxQP__api_8md.html">ProxQP API with examples</a> differents subsections of "The settings subclass" section.</p>
@@ -375,7 +384,7 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># solve the problem using the sparse backend</span></div>
 <div class="line"><span class="comment"># and suppose you want to change the accuracy to 1.E-9 and rho initial value to 1.E-7</span></div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8e68f9f73674068bb165ad6a09dab574">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H=H, g=g, A=A, b=b, C=C, l=l, u=u, rho=1.0e-7, eps_abs=1.0e-9</div>
 <div class="line">)</div>
 <div class="line"><span class="comment"># Note that in python the order does not matter for rho and eps_abs</span></div>
@@ -435,7 +444,7 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">u = <span class="keywordtype">None</span></div>
 <div class="line">l = <span class="keywordtype">None</span></div>
 <div class="line"> </div>
-<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a234d6402f102f7ec25fc558837e69406">proxsuite.proxqp.dense.solve</a>(</div>
+<div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a8e68f9f73674068bb165ad6a09dab574">proxsuite.proxqp.dense.solve</a>(</div>
 <div class="line">    H, g, A, b, C, l, u</div>
 <div class="line">)  <span class="comment"># it is equivalent to do as well proxsuite.proxqp.dense.solve(H, g)</span></div>
 <div class="line">print(<span class="stringliteral">&quot;optimal x: {}&quot;</span>.format(results.x))</div>

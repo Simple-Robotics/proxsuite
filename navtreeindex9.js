@@ -241,7 +241,7 @@ var NAVTREEINDEX9 =
 "proxqp_2dense_2model_8hpp.html#af3fee2a85aef7a9e2f0d73b8b9cd3687":[12,0,1,0,2,0,5,3],
 "proxqp_2dense_2model_8hpp_source.html":[12,0,1,0,2,0,5],
 "proxqp_2dense_2wrapper_8hpp.html":[12,0,1,0,2,0,10],
-"proxqp_2dense_2wrapper_8hpp.html#a234d6402f102f7ec25fc558837e69406":[12,0,1,0,2,0,10,1],
+"proxqp_2dense_2wrapper_8hpp.html#a8e68f9f73674068bb165ad6a09dab574":[12,0,1,0,2,0,10,1],
 "proxqp_2dense_2wrapper_8hpp.html#aa4bae3b82093e8135634db36a01a6159":[12,0,1,0,2,0,10,2],
 "proxqp_2dense_2wrapper_8hpp.html#ae6dbbd0fe09b5bf3e017336c6db984a2":[12,0,1,0,2,0,10,3],
 "proxqp_2dense_2wrapper_8hpp_source.html":[12,0,1,0,2,0,10],

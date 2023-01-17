@@ -1,5 +1,9 @@
 var NAVTREEINDEX24 =
 {
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1c467ee4ea65a6bb8ad265f4e9de95df":[10,0,2,3,4,1,1,10],
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1c467ee4ea65a6bb8ad265f4e9de95df":[11,0,0,3,2,1,0,10],
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1cda12e11200e66cfb5a29bbf06f315d":[11,0,0,3,2,1,0,16],
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1cda12e11200e66cfb5a29bbf06f315d":[10,0,2,3,4,1,1,16],
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1f7175f0acdd860e47724ea43f597bb0":[11,0,0,3,2,1,0,15],
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a1f7175f0acdd860e47724ea43f597bb0":[10,0,2,3,4,1,1,15],
 "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html#a23d3842fb171b2595930d6a5c427b1e4":[11,0,0,3,2,1,0,5],
@@ -245,9 +249,5 @@ var NAVTREEINDEX24 =
 "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01true_01_4.html#aec6dd1d36be42edf78b927619981541b":[10,0,4,0,22,2],
 "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01true_01_4.html#aec6dd1d36be42edf78b927619981541b":[11,0,2,0,22,2],
 "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html":[11,0,2,0,23],
-"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html":[10,0,4,0,23],
-"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html#a6ad8a5f6bbc13864979406fc66512b5d":[10,0,4,0,23,2],
-"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html#a6ad8a5f6bbc13864979406fc66512b5d":[11,0,2,0,23,2],
-"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html#a82badfc206eb4142fdab622b6ea74b95":[11,0,2,0,23,0],
-"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html#a82badfc206eb4142fdab622b6ea74b95":[10,0,4,0,23,0]
+"structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html":[10,0,4,0,23]
 };

@@ -184,10 +184,10 @@ var NAVTREEINDEX6 =
 "namespaceproxsuite_1_1linalg_1_1veg_1_1cpo.html":[10,0,2,2,2,6],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1dynstack.html":[10,0,2,2,2,7],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html":[10,0,2,2,2,8],
-"namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24":[10,0,2,2,2,8,0],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24":[10,0,2,2,2,52],
-"namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#aace788d5a99480afb21f8d3f61332a79":[10,0,2,2,2,53],
+"namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#a2eed6d9494eae5a4b02296b6d4745c24":[10,0,2,2,2,8,0],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#aace788d5a99480afb21f8d3f61332a79":[10,0,2,2,2,8,1],
+"namespaceproxsuite_1_1linalg_1_1veg_1_1literals.html#aace788d5a99480afb21f8d3f61332a79":[10,0,2,2,2,53],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html":[10,0,2,2,2,9],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a1377bf0d5708c8c3925b78e55109dd2e":[10,0,2,2,2,9,26],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a3b4f7b11222d8500a6bfefd906f3fcf2":[10,0,2,2,2,9,22],
@@ -245,9 +245,9 @@ var NAVTREEINDEX6 =
 "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html":[10,0,2,2,2,12],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a1f0aae5035cb83cbe401aa54cf518d2b":[10,0,2,2,2,12,5],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a1f0aae5035cb83cbe401aa54cf518d2b":[10,0,2,2,2,59],
-"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a383fdf3596b66d156f3520e5d112e602":[10,0,2,2,2,70],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a383fdf3596b66d156f3520e5d112e602":[10,0,2,2,2,12,9],
-"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a495c0dfc6aa4a53e3469b8419d290194":[10,0,2,2,2,72],
+"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a383fdf3596b66d156f3520e5d112e602":[10,0,2,2,2,70],
 "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a495c0dfc6aa4a53e3469b8419d290194":[10,0,2,2,2,12,11],
-"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a58723b9f8703ce0c3b890dc846ce4918":[10,0,2,2,2,68]
+"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a495c0dfc6aa4a53e3469b8419d290194":[10,0,2,2,2,72],
+"namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#a58723b9f8703ce0c3b890dc846ce4918":[10,0,2,2,2,12,7]
 };

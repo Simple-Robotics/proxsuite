@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a1c34d8863e244d9038b26f48e4930476", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a19393e9f8fc2d5c4d7b2f1bae563b93d", null ],
     [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
     [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
     [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],
@@ -31,6 +31,8 @@ var structproxsuite_1_1proxqp_1_1Settings =
     [ "compute_preconditioner", "structproxsuite_1_1proxqp_1_1Settings.html#ae123f020e871c433542531dc08eb7744", null ],
     [ "compute_timings", "structproxsuite_1_1proxqp_1_1Settings.html#a3b25078879ec2229c575df3043b295bd", null ],
     [ "check_duality_gap", "structproxsuite_1_1proxqp_1_1Settings.html#a4dd2f356585303f82961f3572cfe71c5", null ],
+    [ "eps_duality_gap_abs", "structproxsuite_1_1proxqp_1_1Settings.html#ae1f2e3183c5728a32cf1e7058d144d92", null ],
+    [ "eps_duality_gap_rel", "structproxsuite_1_1proxqp_1_1Settings.html#a67c61d3a99b92799f3fa66f286a57817", null ],
     [ "preconditioner_max_iter", "structproxsuite_1_1proxqp_1_1Settings.html#a724066db6e7ae44b95eb603c72f17ee7", null ],
     [ "preconditioner_accuracy", "structproxsuite_1_1proxqp_1_1Settings.html#acc106f3d790b5ed5855c9340a5f3f779", null ],
     [ "eps_primal_inf", "structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24", null ],
