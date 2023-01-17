@@ -686,6 +686,10 @@ struct QP
  * initial iterate values.
  * @param check_duality_gap If set to true, include the duality gap in absolute
  * and relative stopping criteria.
+ * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
+ * criterion.
+ * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
+ * criterion.
  */
 template<typename T, typename I>
 proxqp::Results<T>
@@ -713,7 +717,9 @@ solve(
     proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
   proxsuite::proxqp::SparseBackend sparse_backend =
     proxsuite::proxqp::SparseBackend::Automatic,
-  bool check_duality_gap = false)
+  bool check_duality_gap = false,
+  optional<T> eps_duality_gap_abs = nullopt,
+  optional<T> eps_duality_gap_rel = nullopt)
 {
 
   isize n(0);
@@ -744,6 +750,12 @@ solve(
   }
   if (max_iter != nullopt) {
     Qp.settings.max_iter = max_iter.value();
+  }
+  if (eps_duality_gap_abs != nullopt) {
+    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
+  }
+  if (eps_duality_gap_rel != nullopt) {
+    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.sparse_backend = sparse_backend;

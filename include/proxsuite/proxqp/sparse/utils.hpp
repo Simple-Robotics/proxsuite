@@ -637,9 +637,6 @@ unscaled_primal_dual_residual(
 {
   isize n = x_e.rows();
 
-  const isize max_dim = std::max(data.dim, std::max(data.n_eq, data.n_in));
-  const T sqrt_max_dim(std::sqrt(max_dim)); // for normalizing scalar products
-
   LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
   dual_residual_scaled = qp_scaled.g.to_eigen();
   {
@@ -652,7 +649,7 @@ unscaled_primal_dual_residual(
     dual_feasibility_rhs_0 = infty_norm(tmp);
     precond.unscale_primal_in_place({ proxqp::from_eigen, x_e });
     results.info.duality_gap = x_e.dot(data.g); // contains gTx
-    rhs_duality_gap = std::abs(results.info.duality_gap);
+    rhs_duality_gap = std::fabs(results.info.duality_gap);
 
     const T xHx = (tmp).dot(x_e);
     results.info.duality_gap += xHx;
@@ -681,10 +678,6 @@ unscaled_primal_dual_residual(
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
 
     precond.scale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
-
-    results.info.duality_gap /=
-      sqrt_max_dim; // in order to get an a-dimensional duality gap
-    rhs_duality_gap /= sqrt_max_dim;
   }
 
   {
