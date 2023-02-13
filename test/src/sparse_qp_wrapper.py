@@ -45,7 +45,6 @@ def generate_mixed_qp(n, seed=1):
 
 
 class SparseqpWrapper(unittest.TestCase):
-
     # TESTS OF GENERAL METHODS OF THE API
 
     def test_case_update_rho(self):
@@ -175,7 +174,6 @@ class SparseqpWrapper(unittest.TestCase):
         assert (qp.results.x == qp2.results.x).all()
 
     def test_case_update_mu(self):
-
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update mus"
         )
@@ -228,7 +226,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_no_equilibration_at_initialization(self):
-
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no equilibration at initialization"
         )
@@ -281,7 +278,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_with_equilibration_at_initialization(self):
-
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test with equilibration at initialization"
         )
@@ -334,7 +330,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_no_initial_guess(self):
-
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
         )
@@ -387,7 +382,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_no_initial_guess_and_update(self):
-
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
         )
@@ -479,7 +473,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_starting(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test with warm start---"
         )
@@ -534,7 +527,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_previous_result(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test with warm start with previous result---"
         )
@@ -663,7 +655,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_cold_start_with_previous_result(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test with cold start with previous result---"
         )
@@ -794,7 +785,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_equilibration_option(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option---"
         )
@@ -897,7 +887,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_equilibration_option_at_update(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option at update---"
         )
@@ -1065,7 +1054,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_other_initialization(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test warm start with other initialization---"
         )
@@ -1116,7 +1104,6 @@ class SparseqpWrapper(unittest.TestCase):
     # TESTS ALL INITIAL GUESS OPTIONS FOR MULTIPLE SOLVES AT ONCE
 
     def test_case_multiple_solve_with_no_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess---"
         )
@@ -1243,7 +1230,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_multiple_solve_with_equality_constrained_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess---"
         )
@@ -1374,7 +1360,6 @@ class SparseqpWrapper(unittest.TestCase):
     def test_case_warm_start_with_previous_result_starting_with_equality_constraints_initial_guess(
         self,
     ):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess---"
         )
@@ -1507,7 +1492,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_previous_result_starting_with_no_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess---"
         )
@@ -1638,7 +1622,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_cold_start_with_previous_result_starting_with_no_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess---"
         )
@@ -1769,7 +1752,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_no_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess---"
         )
@@ -1901,7 +1883,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_no_initial_guess_and_different_init(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test solve from warm start and no initial guess with other initialization---"
         )
@@ -1985,7 +1966,6 @@ class SparseqpWrapper(unittest.TestCase):
     # TESTS WITH UPDATE + INITIAL GUESS OPTIONS
 
     def test_case_multiple_solve_with_no_initial_guess_and_update(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess and update---"
         )
@@ -2127,7 +2107,6 @@ class SparseqpWrapper(unittest.TestCase):
     def test_case_multiple_solve_with_equality_constrained_initial_guess_and_update(
         self,
     ):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess and update---"
         )
@@ -2271,7 +2250,6 @@ class SparseqpWrapper(unittest.TestCase):
     def test_case_warm_start_with_previous_result_starting_with_equality_constraints_initial_guess_and_update(
         self,
     ):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess and update---"
         )
@@ -2419,7 +2397,6 @@ class SparseqpWrapper(unittest.TestCase):
     def test_case_warm_start_with_previous_result_starting_with_no_initial_guess_and_update(
         self,
     ):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess and update---"
         )
@@ -2565,7 +2542,6 @@ class SparseqpWrapper(unittest.TestCase):
     def test_case_cold_start_with_previous_result_starting_with_no_initial_guess_and_update(
         self,
     ):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess and update---"
         )
@@ -2698,7 +2674,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_warm_start_with_no_initial_guess_and_update(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess and update---"
         )
@@ -2840,7 +2815,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_initialization_with_rho_for_different_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test initializaton with rho for different initial guess---"
         )
@@ -3060,7 +3034,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_update_g_for_different_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test update g for different initial guess---"
         )
@@ -3361,7 +3334,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_update_A_for_different_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---"
         )
@@ -3657,7 +3629,6 @@ class SparseqpWrapper(unittest.TestCase):
         )
 
     def test_case_update_rho_update_for_different_initial_guess(self):
-
         print(
             "---testing sparse random strongly convex qp with equality and inequality constraints: test update rho for different initial guess---"
         )

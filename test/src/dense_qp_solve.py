@@ -47,7 +47,6 @@ def generate_mixed_qp(n, seed=1):
 
 
 class DenseQpWrapper(unittest.TestCase):
-
     # TESTS DENSE SOLVE FUNCTION
 
     def test_case_basic_solve(self):
