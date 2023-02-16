@@ -13,6 +13,7 @@
   <build_depend>git</build_depend>
   <build_depend>doxygen</build_depend>
   <depend>eigen</depend>
+  <depend>libsimde-dev</depend>
   <!-- There is no key for simde yet - deactivating for now. -->
   <!-- <depend>simde</depend> -->
   <depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</depend>
