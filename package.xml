@@ -14,8 +14,6 @@
   <build_depend>doxygen</build_depend>
   <depend>eigen</depend>
   <depend>simde</depend>
-  <!-- There is no key for simde yet - deactivating for now. -->
-  <!-- <depend>simde</depend> -->
   <depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</depend>
   <depend condition="$ROS_PYTHON_VERSION == 3">python3-numpy</depend>
   <depend condition="$ROS_PYTHON_VERSION == 2">python-scipy</depend>
