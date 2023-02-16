@@ -36,7 +36,8 @@ endif()
 # --- OPTIONS  ---------------------------------------
 # Need to be set before including base.cmake
 # ----------------------------------------------------
-option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+option(BUILD_DOCUMENTATION "Build the documentation." OFF)
+option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_USE_TEMPLATE_CSS YES)
 
