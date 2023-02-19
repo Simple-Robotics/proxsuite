@@ -6,11 +6,15 @@ jobs:
     strategy:
       matrix:
         env:
-          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug}
-          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release}
+          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
+          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
+          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
+          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
+          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
     env:
       CCACHE_DIR: /github/home/.ccache # Enable ccache
-      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF  # Simde is not available yet
+      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since jammy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
