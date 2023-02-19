@@ -14,7 +14,7 @@ jobs:
           - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
     env:
       CCACHE_DIR: /github/home/.ccache # Enable ccache
-      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since jammy
+      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
