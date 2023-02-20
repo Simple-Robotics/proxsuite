@@ -678,7 +678,7 @@ public:
       Eigen::InnerStride<DYN>{ stride + 1 },
     };
   }
-  auto d_mut() noexcept -> DView
+  auto d_mut() noexcept -> DViewMut
   {
     return {
       ld_storage.ptr_mut(),
@@ -687,8 +687,8 @@ public:
       Eigen::InnerStride<DYN>{ stride + 1 },
     };
   }
-  auto p() -> Perm { return { VecMapISize(perm.ptr(), dim()) }; }
-  auto pt() -> Perm { return { VecMapISize(perm_inv.ptr(), dim()) }; }
+  auto p() const -> Perm { return { VecMapISize(perm.ptr(), dim()) }; }
+  auto pt() const -> Perm { return { VecMapISize(perm_inv.ptr(), dim()) }; }
 
   /*!
    * Returns the memory storage requirements for a factorization of a matrix
