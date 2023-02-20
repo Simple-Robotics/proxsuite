@@ -678,7 +678,7 @@ public:
       Eigen::InnerStride<DYN>{ stride + 1 },
     };
   }
-  auto d_mut() noexcept -> DView
+  auto d_mut() noexcept -> DViewMut
   {
     return {
       ld_storage.ptr_mut(),
