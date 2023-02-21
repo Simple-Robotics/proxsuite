@@ -13,7 +13,7 @@ jobs:
           - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
     env:
-      CCACHE_DIR: /github/home/.ccache # Enable ccache
+      #CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
       PRERELEASE: true
     runs-on: ubuntu-latest
@@ -22,10 +22,10 @@ jobs:
         with:
           submodules: recursive
       # This step will fetch/store the directory used by ccache before/after the ci run
-      - uses: actions/cache@v3
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
+      #- uses: actions/cache@v3
+      #  with:
+      #    path: ${{ env.CCACHE_DIR }}
+      #    key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
       # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{ matrix.env }}
