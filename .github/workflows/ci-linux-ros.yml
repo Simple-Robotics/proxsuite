@@ -15,6 +15,7 @@ jobs:
     env:
       CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
+      PRERELEASE: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
