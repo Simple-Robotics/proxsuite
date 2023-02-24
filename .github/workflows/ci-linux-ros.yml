@@ -27,5 +27,9 @@ jobs:
       #    path: ${{ env.CCACHE_DIR }}
       #    key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
       # Run industrial_ci
+      - name: Display environment variables
+        env: ${{ matrix.env }}
+        run: |
+          echo "CMAKE_ARGS: "$CMAKE_ARGS
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{ matrix.env }}
