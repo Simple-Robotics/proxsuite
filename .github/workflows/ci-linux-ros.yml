@@ -10,12 +10,13 @@ jobs:
           - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
           - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          - {ROS_DISTRO: humble, PRERELEASE: true}
           - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          - {ROS_DISTRO: rolling, PRERELEASE: true}
     env:
       #CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
-      PRERELEASE: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,9 +28,5 @@ jobs:
       #    path: ${{ env.CCACHE_DIR }}
       #    key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
       # Run industrial_ci
-      - name: Display environment variables
-        env: ${{ matrix.env }}
-        run: |
-          echo "CMAKE_ARGS: "$CMAKE_ARGS
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{ matrix.env }}
