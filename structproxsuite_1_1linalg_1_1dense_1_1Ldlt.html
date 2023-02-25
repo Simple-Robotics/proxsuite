@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.2</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.3.3</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -150,12 +150,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae6efb17f76fed57dab043f25bae63b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab173d194d1463a12449df4d00655d344"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#ab173d194d1463a12449df4d00655d344">d</a> () const noexcept -&gt; DView</td></tr>
 <tr class="separator:ab173d194d1463a12449df4d00655d344"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1378731a8df78a6d687ec9ee2a8cdddc"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a1378731a8df78a6d687ec9ee2a8cdddc">d_mut</a> () noexcept -&gt; DView</td></tr>
-<tr class="separator:a1378731a8df78a6d687ec9ee2a8cdddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90573f9d1f94d2a67d21a41b5c13d754"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a90573f9d1f94d2a67d21a41b5c13d754">p</a> () -&gt; Perm</td></tr>
-<tr class="separator:a90573f9d1f94d2a67d21a41b5c13d754"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3960f70f10a4f3cf92f85c72f733a1f"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#af3960f70f10a4f3cf92f85c72f733a1f">pt</a> () -&gt; Perm</td></tr>
-<tr class="separator:af3960f70f10a4f3cf92f85c72f733a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d08e0f055172d4ef38906483368d502"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a7d08e0f055172d4ef38906483368d502">d_mut</a> () noexcept -&gt; DViewMut</td></tr>
+<tr class="separator:a7d08e0f055172d4ef38906483368d502"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af32ccd7d5e18659430e4ad08b10b78cb"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#af32ccd7d5e18659430e4ad08b10b78cb">p</a> () const -&gt; Perm</td></tr>
+<tr class="separator:af32ccd7d5e18659430e4ad08b10b78cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a183831c0c1932d26314a7768d14a4ec9"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a183831c0c1932d26314a7768d14a4ec9">pt</a> () const -&gt; Perm</td></tr>
+<tr class="separator:a183831c0c1932d26314a7768d14a4ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafb9d559bfcd8cf6748aac278b8ade43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#aafb9d559bfcd8cf6748aac278b8ade43">factorize</a> (Eigen::Ref&lt; ColMat const &gt; mat, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
 <tr class="separator:aafb9d559bfcd8cf6748aac278b8ade43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ffae854d050e593d9e7ac948471416d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a8ffae854d050e593d9e7ac948471416d">solve_in_place</a> (Eigen::Ref&lt; Vec &gt; rhs, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack) const</td></tr>
@@ -1141,8 +1141,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a1378731a8df78a6d687ec9ee2a8cdddc" name="a1378731a8df78a6d687ec9ee2a8cdddc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1378731a8df78a6d687ec9ee2a8cdddc">&#9670;&#160;</a></span>d_mut()</h2>
+<a id="a7d08e0f055172d4ef38906483368d502" name="a7d08e0f055172d4ef38906483368d502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d08e0f055172d4ef38906483368d502">&#9670;&#160;</a></span>d_mut()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1156,7 +1156,7 @@ template&lt;typename T &gt; </div>
           <td class="memname">auto <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html">proxsuite::linalg::dense::Ldlt</a>&lt; T &gt;::d_mut </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt; DView
+          <td> -&gt; DViewMut
   </td>
         </tr>
       </table>
@@ -1171,8 +1171,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a90573f9d1f94d2a67d21a41b5c13d754" name="a90573f9d1f94d2a67d21a41b5c13d754"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90573f9d1f94d2a67d21a41b5c13d754">&#9670;&#160;</a></span>p()</h2>
+<a id="af32ccd7d5e18659430e4ad08b10b78cb" name="af32ccd7d5e18659430e4ad08b10b78cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af32ccd7d5e18659430e4ad08b10b78cb">&#9670;&#160;</a></span>p()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1186,7 +1186,7 @@ template&lt;typename T &gt; </div>
           <td class="memname">auto <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html">proxsuite::linalg::dense::Ldlt</a>&lt; T &gt;::p </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt; Perm </td>
+          <td> const -&gt; Perm </td>
         </tr>
       </table>
   </td>
@@ -1200,8 +1200,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="af3960f70f10a4f3cf92f85c72f733a1f" name="af3960f70f10a4f3cf92f85c72f733a1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3960f70f10a4f3cf92f85c72f733a1f">&#9670;&#160;</a></span>pt()</h2>
+<a id="a183831c0c1932d26314a7768d14a4ec9" name="a183831c0c1932d26314a7768d14a4ec9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a183831c0c1932d26314a7768d14a4ec9">&#9670;&#160;</a></span>pt()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1215,7 +1215,7 @@ template&lt;typename T &gt; </div>
           <td class="memname">auto <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html">proxsuite::linalg::dense::Ldlt</a>&lt; T &gt;::pt </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> -&gt; Perm </td>
+          <td> const -&gt; Perm </td>
         </tr>
       </table>
   </td>
