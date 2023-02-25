@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://opensource.org/licenses/BSD-2-Clause"><img src="https://img.shields.io/badge/License-BSD%202--Clause-green.svg" alt="License"/></a>
+  <a href="https://simple-robotics.github.io/proxsuite/"><img src="https://img.shields.io/badge/docs-online-brightgreen" alt="Documentation"/></a>
   <a href="https://github.com/Simple-Robotics/proxsuite/actions/workflows/ci-linux-osx-win-conda.yml"><img src="https://github.com/Simple-Robotics/proxsuite/actions/workflows/ci-linux-osx-win-conda.yml/badge.svg?branch=main" alt="CI - Linux/OSX/Windows - Conda"></a>
   <a href="https://badge.fury.io/py/proxsuite"><img src="https://badge.fury.io/py/proxsuite.svg" alt="PyPI version" height="20"></a>
   <a href="https://anaconda.org/conda-forge/proxsuite"><img src="https://anaconda.org/conda-forge/proxsuite/badges/version.svg" alt="Conda version" height="20"></a>
@@ -42,6 +43,10 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
 **Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
+
+## Documentation
+
+The online **ProxSuite** documentation of the last release is available [here](https://simple-robotics.github.io/proxsuite/).
 
 ## Getting started
 
@@ -140,7 +145,3 @@ This chart above reports performance profiles of different solvers. It is classi
 ## Installation procedure
 
 Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
-
-## Documentation
-
-The online **ProxSuite** documentation of the last release is available [here](https://simple-robotics.github.io/proxsuite/).
