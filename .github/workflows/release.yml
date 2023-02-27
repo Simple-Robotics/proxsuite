@@ -11,9 +11,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.os }} ${{ matrix.python-version }}
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [ubuntu-latest, macos-latest, self-hosted-arm64]
+        os: [ubuntu-latest, macos-latest, self-hosted-arm64, windows-2019, windows-latest]
+        include:
+          - os: windows-2019
+            toolset: ClangCl
+          - os: windows-latest
+            toolset: v143
         exclude:
           - os: self-hosted-arm64
             python-version: 3.7
@@ -34,7 +40,7 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
@@ -44,7 +50,7 @@ jobs:
           activate-environment: proxsuite
 
       - name: Install dependencies [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
@@ -52,7 +58,7 @@ jobs:
           mamba install doxygen graphviz eigen simde cmake compilers
 
       - name: Print environment [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           conda info
@@ -62,6 +68,35 @@ jobs:
       - name: Build wheel
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         shell: bash -l {0}
+        run: |
+          pip wheel . -w dist
+
+      - name: Turn off cmeel testing and set toolset in pyproject.toml [windows]
+        if: contains(matrix.os, 'windows')
+        uses: jannekem/run-python-script-action@v1
+        with:
+          script: |
+            import subprocess
+            import sys
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "tomlkit"])
+            import os
+            print("Directory contents:")
+            for f in os.listdir():
+                print(f)
+            import tomlkit
+            with open("pyproject.toml") as f:
+                doc = tomlkit.load(f)
+            doc["build-system"]["configure-args"] = "-T${{ matrix.toolset }}","-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"
+            with open("pyproject.toml", "w") as f:
+                tomlkit.dump(doc, f)
+
+      - name: Build wheel on windows
+        if: contains(matrix.os, 'windows')
+        shell: bash -l {0}
+        env :
+          CMEEL_RUN_TESTS: False
+          CMEEL_JOBS: 1
+          CMEEL_LOG_LEVEL: Debug
         run: |
           pip wheel . -w dist
 
