@@ -3,12 +3,24 @@
   <name>proxsuite</name>
   <version>0.3.3</version>
   <description>The Advanced Proximal Optimization Toolbox</description>
-  <maintainer email="antoine.bambade@inria.fr">Antoine Bambade</maintainer>
-  <maintainer email="fabian.schramm@inria.fr">Fabian Schramm</maintainer>
+  <!-- Project maintainers -->
   <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
+
+  <!-- ROS buildfarm release -->
+  <maintainer email="opensource@wolfgangmerkt.com">Wolfgang Merkt</maintainer>
+
   <license>BSD-2</license>
 
-  <url type="website">https://github.com/Simple-Robotics/proxsuite</url>
+  <!-- Core authors - cf. CITATION.bib and CITATION.cff -->
+  <author email="antoine.bambade@inria.fr">Antoine Bambade</author>
+  <author>Adrien Taylor</author>
+  <author email="fabian.schramm@inria.fr">Fabian Schramm</author>
+  <author>Sarah El-Kazdadi</author>
+  <author email="justin.carpentier@inria.fr">Justin Carpentier</author>
+
+  <url type="website">https://simple-robotics.github.io/proxsuite</url>
+  <url type="repository">https://github.com/Simple-Robotics/proxsuite</url>
+  <url type="bugtracker">https://github.com/Simple-Robotics/proxsuite/issues</url>
 
   <build_depend>git</build_depend>
   <build_depend>doxygen</build_depend>
