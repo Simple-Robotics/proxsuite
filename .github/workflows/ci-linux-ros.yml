@@ -14,7 +14,7 @@ jobs:
           - {name: "Rolling / Debug / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Rolling / Release / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
           - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
-          - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
+          - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel github:stack-of-tasks/eiquadprog#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
     name: ${{ matrix.env.name }}
     env:
       #CCACHE_DIR: /github/home/.ccache # Enable ccache
