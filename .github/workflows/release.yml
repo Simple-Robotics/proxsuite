@@ -71,29 +71,11 @@ jobs:
         run: |
           pip wheel . -w dist
 
-      - name: Turn off cmeel testing and set toolset in pyproject.toml [windows]
-        if: contains(matrix.os, 'windows')
-        uses: jannekem/run-python-script-action@v1
-        with:
-          script: |
-            import subprocess
-            import sys
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "tomlkit"])
-            import os
-            print("Directory contents:")
-            for f in os.listdir():
-                print(f)
-            import tomlkit
-            with open("pyproject.toml") as f:
-                doc = tomlkit.load(f)
-            doc["build-system"]["configure-args"] = "-T${{ matrix.toolset }}","-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"
-            with open("pyproject.toml", "w") as f:
-                tomlkit.dump(doc, f)
-
       - name: Build wheel on windows
         if: contains(matrix.os, 'windows')
         shell: bash -l {0}
         env :
+          CMEEL_CMAKE_ARGS: "-T${{ matrix.toolset }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DINSTALL_DOCUMENTATION=OFF"
           CMEEL_RUN_TESTS: False
           CMEEL_JOBS: 1
           CMEEL_LOG_LEVEL: Debug
