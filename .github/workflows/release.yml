@@ -11,9 +11,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.os }} ${{ matrix.python-version }}
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [ubuntu-latest, macos-latest, self-hosted-arm64]
+        os: [ubuntu-latest, macos-latest, self-hosted-arm64, windows-2019, windows-latest]
+        include:
+          - os: windows-2019
+            toolset: ClangCl
+          - os: windows-latest
+            toolset: v143
         exclude:
           - os: self-hosted-arm64
             python-version: 3.7
@@ -34,7 +40,7 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
@@ -44,7 +50,7 @@ jobs:
           activate-environment: proxsuite
 
       - name: Install dependencies [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
@@ -52,7 +58,7 @@ jobs:
           mamba install doxygen graphviz eigen simde cmake compilers
 
       - name: Print environment [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           conda info
@@ -62,6 +68,17 @@ jobs:
       - name: Build wheel
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         shell: bash -l {0}
+        run: |
+          pip wheel . -w dist
+
+      - name: Build wheel on windows
+        if: contains(matrix.os, 'windows')
+        shell: bash -l {0}
+        env :
+          CMEEL_CMAKE_ARGS: "-T${{ matrix.toolset }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DINSTALL_DOCUMENTATION=OFF"
+          CMEEL_RUN_TESTS: False
+          CMEEL_JOBS: 1
+          CMEEL_LOG_LEVEL: Debug
         run: |
           pip wheel . -w dist
 
