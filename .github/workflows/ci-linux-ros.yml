@@ -6,14 +6,16 @@ jobs:
     strategy:
       matrix:
         env:
-          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
-          - {ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
-          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: humble, PRERELEASE: true}
-          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: rolling, PRERELEASE: true}
+          - {name: "Noetic / Debug", ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
+          - {name: "Noetic / Release", ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
+          - {name: "Humble / Debug / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
+          - {name: "Humble / Release / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
+          - {name: "Rolling / Debug / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
+          - {name: "Rolling / Release / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
+          - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel github:stack-of-tasks/eiquadprog#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
+    name: ${{ matrix.env.name }}
     env:
       #CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble

@@ -168,3 +168,31 @@ if(BUILD_TESTING AND NOT PROXSUITE_AS_SUBPROJECT)
   add_subdirectory(test)
   add_subdirectory(examples)
 endif()
+
+# catkin/ament/colcon integration (ROS1/2)
+install(FILES package.xml DESTINATION share/${PROJECT_NAME})
+# Allows Colcon to find non-Ament packages when using workspace underlays
+file(
+  WRITE
+  ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME}
+  "")
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME}
+  DESTINATION share/ament_index/resource_index/packages)
+file(
+  WRITE
+  ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv
+  "prepend-non-duplicate;AMENT_PREFIX_PATH;")
+install(
+  FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv
+  DESTINATION share/${PROJECT_NAME}/hook)
+if(BUILD_PYTHON_INTERFACE)
+  file(WRITE
+       ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv
+       "prepend-non-duplicate;PYTHONPATH;${PYTHON_SITELIB}")
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv
+    DESTINATION share/${PROJECT_NAME}/hook)
+endif(BUILD_PYTHON_INTERFACE)
