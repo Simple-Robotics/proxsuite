@@ -11,7 +11,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.os }} ${{ matrix.python-version }}
     strategy:
-      fail-fast: false
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         os: [ubuntu-latest, macos-latest, self-hosted-arm64, windows-2019, windows-latest]
@@ -82,24 +81,11 @@ jobs:
         run: |
           pip wheel . -w dist
 
-      - name: Turn off vectorization in pyproject.toml [arm64]
-        if: contains(matrix.os, 'self-hosted')
-        uses: jannekem/run-python-script-action@v1
-        with:
-          script: |
-            import os
-            print("Directory contents:")
-            for f in os.listdir():
-                print(f)
-            import tomlkit
-            with open("pyproject.toml") as f:
-                doc = tomlkit.load(f)
-            doc["build-system"]["configure-args"] = "-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=OFF","-DINSTALL_DOCUMENTATION:BOOL=OFF"
-            with open("pyproject.toml", "w") as f:
-                tomlkit.dump(doc, f)
 
       - name: Build wheel on self-hosted
         if: contains(matrix.os, 'self-hosted')
+        env :
+          CMEEL_CMAKE_ARGS: "-DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF -DINSTALL_DOCUMENTATION=OFF"
         shell: bash -l {0}
         run: |
           conda activate proxarm-py${{ matrix.python-version }}
