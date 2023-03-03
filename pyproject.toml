@@ -10,7 +10,6 @@ dependencies = ["numpy","scipy"]
 [project.urls]
 homepage = "https://github.com/Simple-Robotics/proxsuite"
 repository = "https://github.com/Simple-Robotics/proxsuite.git"
-changelog = "https://github.com/Simple-Robotics/proxsuite/CHANGELOG.md"
 
 [build-system]
 requires = ["cmeel[build]"]
