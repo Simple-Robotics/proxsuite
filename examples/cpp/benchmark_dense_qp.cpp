@@ -68,6 +68,7 @@ main()
 
     for (int i = 0; i < N; i++) {
       dense::QP<T> qp(dim, n_eq, n_in);
+      qp.settings.compute_timings = true; // compute all timings
       qp.settings.max_iter = 10000;
       qp.settings.max_iter_in = 1000;
       qp.settings.eps_abs = 1e-5;
