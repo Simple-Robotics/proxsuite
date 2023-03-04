@@ -1,4 +1,4 @@
-name: Release on GitHub & PyPI
+name: Release on PyPI [Windows, Mac]
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [ubuntu-latest, macos-latest, self-hosted-arm64, windows-2019, windows-latest]
+        os: [macos-latest, self-hosted-arm64, windows-2019, windows-latest]
         include:
           - os: windows-2019
             toolset: ClangCl
@@ -23,10 +23,6 @@ jobs:
           - os: self-hosted-arm64
             python-version: 3.7
     steps:
-      - name: Set docker for linux
-        if: contains(matrix.os, 'ubuntu')
-        uses: docker://quay.io/pypa/manylinux_2_24_x86_64
-
       - uses: actions/checkout@v2
         with:
           submodules: recursive
@@ -39,7 +35,7 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
@@ -49,7 +45,7 @@ jobs:
           activate-environment: proxsuite
 
       - name: Install dependencies [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
@@ -57,7 +53,7 @@ jobs:
           mamba install doxygen graphviz eigen simde cmake compilers
 
       - name: Print environment [Conda]
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           conda info
@@ -65,7 +61,7 @@ jobs:
           env
 
       - name: Build wheel
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'macos')
         shell: bash -l {0}
         run: |
           pip wheel . -w dist
