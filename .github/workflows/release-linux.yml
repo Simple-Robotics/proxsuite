@@ -21,7 +21,7 @@ jobs:
       - run: python -m pip install -U pip
       - run: python -m pip install cibuildwheel
       - run: touch setup.py
-      - run: python -m cibuildwheel --output-dir wh
+      - run: python -m cibuildwheel --output-dir dist
         env:
           CIBW_BUILD: cp37-*manylinux*_x86_64 cp38-*manylinux*_x86_64 cp39-*manylinux*_x86_64 cp310-*manylinux*_x86_64 cp311-*manylinux*_x86_64
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
@@ -29,7 +29,8 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: wh
+          name: dist
+          path: dist
 
   release:
     needs: "build-wheel"
