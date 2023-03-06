@@ -12,6 +12,10 @@ homepage = "https://github.com/Simple-Robotics/proxsuite"
 repository = "https://github.com/Simple-Robotics/proxsuite.git"
 
 [build-system]
-requires = ["cmeel[build]"]
+requires = [
+    "cmeel[build]",
+    "cmeel-eigen",
+    "cmeel-simde",
+    ]
 build-backend = "cmeel.build"
 configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF"]
