@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>proxsuite</name>
-  <version>0.3.5</version>
+  <version>0.3.6</version>
   <description>The Advanced Proximal Optimization Toolbox</description>
   <!-- Project maintainers -->
   <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
