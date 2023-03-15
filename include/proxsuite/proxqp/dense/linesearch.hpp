@@ -227,6 +227,15 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
   // (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv * norm(Adx-dy*mu_eq)**2
   qpwork.err.head(qpmodel.dim) =
     qpresults.info.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
+  // T b(qpresults.x.dot(qpwork.Hdx) +
+  //     (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
+  //     qpresults.info.mu_eq_inv *
+  //       (qpwork.Adx)
+  //         .dot(qpwork.primal_residual_eq_scaled +
+  //              qpresults.y * qpresults.info.mu_eq)); // contains now: b =
+  //                                                    // dx.dot(H.dot(x) +
+  //                                                    // rho*(x-xe) +  g)  +
+
   T b(qpresults.x.dot(qpwork.Hdx) +
       (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
       qpresults.info.mu_eq_inv *
@@ -236,7 +245,6 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
                                                      // dx.dot(H.dot(x) +
                                                      // rho*(x-xe) +  g)  +
   // mu_eq_inv * Adx.dot(res_eq)
-
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpresults.se;
   b += qpresults.info.nu * qpresults.info.mu_eq_inv *
        qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
