@@ -303,6 +303,7 @@ setup_equilibration(Workspace<T>& qpwork,
   };
   ruiz.scale_qp_in_place(qp_scaled,
                          execute_preconditioner,
+                         qpsettings.primal_infeasibility_solving,
                          qpsettings.preconditioner_max_iter,
                          qpsettings.preconditioner_accuracy,
                          hessian_type,

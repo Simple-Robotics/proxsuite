@@ -34,6 +34,7 @@ ruiz_scale_qp_in_place( //
   QpViewBoxMut<T> qp,
   T epsilon,
   isize max_iter,
+  bool preconditioning_for_infeasible_problems,
   Symmetry sym,
   HessianType HessianType,
   const bool box_constraints,
@@ -190,6 +191,11 @@ ruiz_scale_qp_in_place( //
             delta(k + n + n_eq + n_in) = T(1) / sqrt(i_scaled[k] + machine_eps);
           }
         }
+      }
+      if (preconditioning_for_infeasible_problems) {
+        T mean = delta.segment(n, n_eq + n_in).mean();
+        delta.segment(n, n_eq + n_in).setOnes();
+        delta.segment(n, n_eq + n_in).array() *= mean;
       }
     }
     {
@@ -395,6 +401,7 @@ struct RuizEquilibration
    */
   void scale_qp_in_place(QpViewBoxMut<T> qp,
                          bool execute_preconditioner,
+                         bool preconditioning_for_infeasible_problems,
                          const isize max_iter,
                          const T epsilon,
                          const HessianType& HessianType,
