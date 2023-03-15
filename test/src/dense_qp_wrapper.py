@@ -130,6 +130,47 @@ class DenseqpWrapper(unittest.TestCase):
             assert normInf(y_prev - qp.results.y) == 0
             assert normInf(z_prev - qp.results.z) == 0
 
+    def test_case_deterministic_behavior(self):
+        print("------------------------test the result is deterministic")
+        n = 100
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp.settings.eps_abs = 1.0e-9
+        qp.settings.verbose = False
+        qp.init(
+            H=H,
+            g=np.asfortranarray(g),
+            A=A,
+            b=np.asfortranarray(b),
+            C=C,
+            l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
+        )
+        qp.solve()
+        x_prev = np.copy(qp.results.x)
+        y_prev = np.copy(qp.results.y)
+        z_prev = np.copy(qp.results.z)
+        for i in range(20):
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.eps_abs = 1.0e-9
+            qp.settings.verbose = False
+            qp.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+            )
+            qp.solve()
+            assert normInf(x_prev - qp.results.x) == 0
+            assert normInf(y_prev - qp.results.y) == 0
+            assert normInf(z_prev - qp.results.z) == 0
+
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
