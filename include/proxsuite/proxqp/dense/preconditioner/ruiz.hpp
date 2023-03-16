@@ -192,11 +192,12 @@ ruiz_scale_qp_in_place( //
           }
         }
       }
-      if (preconditioning_for_infeasible_problems) {
-        T mean = delta.segment(n, n_eq + n_in).mean();
-        delta.segment(n, n_eq + n_in).setOnes();
-        delta.segment(n, n_eq + n_in).array() *= mean;
-      }
+      // removed as non deterministic when using avx
+      // https://gitlab.com/libeigen/eigen/-/issues/1728
+      // if (preconditioning_for_infeasible_problems) {
+      //   T mean = delta.segment(n, n_eq_in).mean();
+      //   delta.segment(n,n_eq_in).setConstant(mean);
+      // }
     }
     {
 
