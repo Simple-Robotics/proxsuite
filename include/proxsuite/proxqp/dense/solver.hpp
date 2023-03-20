@@ -518,7 +518,6 @@ iterative_solve_with_permut_fact( //
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
-
       } else {
         it_stability = 0;
       }
@@ -528,6 +527,10 @@ iterative_solve_with_permut_fact( //
       preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     }
   }
+  if (err >= eps && qpsettings.verbose) {
+    std::cout << "after refact err " << err << std::endl;
+  }
+
   qpwork.rhs.head(inner_pb_dim).setZero();
 }
 /*!
