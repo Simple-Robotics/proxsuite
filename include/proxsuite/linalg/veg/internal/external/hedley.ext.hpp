@@ -1832,12 +1832,13 @@ HEDLEY_DIAGNOSTIC_POP
   HEDLEY_IBM_VERSION_CHECK(12, 1, 0) || HEDLEY_ARM_VERSION_CHECK(5, 3, 0)
 #if defined(__INTPTR_TYPE__)
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
-  _Generic(                                                                    \
-    (1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0), int* : 1, void* : 0)
+  _Generic((1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0),               \
+    int*: 1,                                                                   \
+    void*: 0)
 #else
 #include <stdint.h>
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
-  _Generic((1 ? (void*)((intptr_t)*0) : (int*)0), int* : 1, void* : 0)
+  _Generic((1 ? (void*)((intptr_t)*0) : (int*)0), int*: 1, void*: 0)
 #endif
 #elif defined(HEDLEY_GCC_VERSION) || defined(HEDLEY_INTEL_VERSION) ||          \
   defined(HEDLEY_TINYC_VERSION) || defined(HEDLEY_TI_ARMCL_VERSION) ||         \

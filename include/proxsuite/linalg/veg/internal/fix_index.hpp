@@ -195,7 +195,7 @@ struct Error
   }
 };
 
-using parser = auto(*)(char, Error) -> u64;
+using parser = auto (*)(char, Error) -> u64;
 constexpr auto
 parse_digit_2(char c, Error e) VEG_NOEXCEPT->u64
 {

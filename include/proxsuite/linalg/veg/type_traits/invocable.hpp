@@ -11,7 +11,7 @@ namespace veg {
 namespace _detail {
 namespace _meta {
 template<typename Fn, typename... Args>
-using call_expr = decltype(VEG_DECLVAL(Fn &&)(VEG_DECLVAL(Args &&)...));
+using call_expr = decltype(VEG_DECLVAL(Fn&&)(VEG_DECLVAL(Args&&)...));
 } // namespace _meta
 } // namespace _detail
 namespace meta {

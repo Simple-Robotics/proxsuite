@@ -233,8 +233,9 @@
   concept test_return_##Name = __VA_ARGS__;                                    \
   }                                                                            \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
-  concept Name = _veg_detail::test_return_                                     \
-  ##Name<decltype((Expr)), __VEG_PP_REMOVE_PAREN1(TplNames)>;                  \
+  concept Name =                                                               \
+    _veg_detail::test_return_##Name<decltype((Expr)),                          \
+                                    __VEG_PP_REMOVE_PAREN1(TplNames)>;         \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
   concept xnothrow_##Name = noexcept(Expr);                                    \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
@@ -327,9 +328,11 @@
     Name,                                                                      \
     (__VA_ARGS__),                                                             \
     ::proxsuite::linalg::veg::meta::bool_constant<__VA_ARGS__>);               \
-  VEG_TEMPLATE(                                                                \
-    Tpl, requires(__VA_ARGS__), constexpr auto check_##Name, (_ = 0, int))     \
-  noexcept -> ::proxsuite::linalg::veg::meta::true_type
+  VEG_TEMPLATE(Tpl,                                                            \
+               requires(__VA_ARGS__),                                          \
+               constexpr auto check_##Name,                                    \
+               (_ = 0, int)) noexcept                                          \
+    -> ::proxsuite::linalg::veg::meta::true_type
 
 #define __VEG_IMPL_SFINAE(_, Param)                                            \
   , ::proxsuite::linalg::veg::meta::                                           \
@@ -1096,7 +1099,8 @@ HEDLEY_DIAGNOSTIC_PUSH
 
 template<typename Char,
          Char... Cs>
-constexpr auto operator""__veglib_const_literal_gnuc() noexcept // NOLINT
+constexpr auto
+operator""__veglib_const_literal_gnuc() noexcept // NOLINT
   -> proxsuite::linalg::veg::StrLiteralConstant<
     proxsuite::linalg::veg::CharUnit(Cs)...>
 {
@@ -1159,7 +1163,8 @@ struct StrLiteralExpand<_meta::integer_sequence<usize, Is...>, L>
 } // namespace proxsuite
 
 template<proxsuite::linalg::veg::_detail::StrLiteralImpl S>
-constexpr auto operator""__veglib_const_literal_cpp20() noexcept ->
+constexpr auto
+operator""__veglib_const_literal_cpp20() noexcept ->
   typename proxsuite::linalg::veg::_detail::StrLiteralExpand< //
     proxsuite::linalg::veg::_detail::_meta::make_index_sequence<
       proxsuite::linalg::veg::_detail::StrLiteralLen<decltype(S)>::value>,
