@@ -33,7 +33,7 @@ get() = delete;
 struct array_get
 {
   template<typename I, typename T>
-  using result_type = decltype(VEG_DECLVAL(T &&)[I::value]);
+  using result_type = decltype(VEG_DECLVAL(T&&)[I::value]);
 
   template<usize I, typename T>
   VEG_INLINE static constexpr auto apply(T&& arr)
@@ -46,7 +46,7 @@ struct array_get
 struct member_get
 {
   template<typename I, typename T>
-  using result_type = decltype(VEG_DECLVAL(T &&).template get<I::value>());
+  using result_type = decltype(VEG_DECLVAL(T&&).template get<I::value>());
   template<usize I, typename T>
   VEG_INLINE static constexpr auto apply(T&& arg)
     VEG_DEDUCE_RET(VEG_FWD(arg).template get<I>());
@@ -54,7 +54,7 @@ struct member_get
 struct adl_get
 {
   template<typename I, typename T>
-  using result_type = decltype(get<I::value>(VEG_DECLVAL(T &&)));
+  using result_type = decltype(get<I::value>(VEG_DECLVAL(T&&)));
 
   template<usize I, typename T>
   VEG_INLINE static constexpr auto apply(T&& arg)
@@ -68,9 +68,9 @@ struct none_found : true_type
 };
 
 template<typename I, typename T>
-using member_get_expr = decltype(VEG_DECLVAL(T &&).template get<I::value>());
+using member_get_expr = decltype(VEG_DECLVAL(T&&).template get<I::value>());
 template<typename I, typename T>
-using adl_get_expr = decltype(get<I::value>(VEG_DECLVAL(T &&)));
+using adl_get_expr = decltype(get<I::value>(VEG_DECLVAL(T&&)));
 
 template<usize I, typename T>
 struct has_array_get

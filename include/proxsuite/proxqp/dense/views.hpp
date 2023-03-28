@@ -602,8 +602,7 @@ struct VectorView
                requires(LDLT_CONCEPT(eigen_vector_view<Vec, T>)),
                VEG_INLINE VectorView,
                (/*tag*/, FromEigen),
-               (vec, Vec const&))
-  noexcept
+               (vec, Vec const&)) noexcept
     : data(vec.data())
     , dim(vec.rows())
   {
@@ -648,8 +647,7 @@ struct VectorViewMut
                requires(LDLT_CONCEPT(eigen_vector_view_mut<Vec, T>)),
                VEG_INLINE VectorViewMut,
                (/*tag*/, FromEigen),
-               (vec, Vec&&))
-  noexcept
+               (vec, Vec&&)) noexcept
     : data(vec.data())
     , dim(vec.rows())
   {
@@ -704,8 +702,7 @@ struct StridedVectorView
                requires(LDLT_CONCEPT(eigen_strided_vector_view<Vec, T>)),
                VEG_INLINE StridedVectorView,
                (/*tag*/, FromEigen),
-               (vec, Vec const&))
-  noexcept
+               (vec, Vec const&)) noexcept
     : data(vec.data())
     , dim(vec.rows())
     , stride(vec.innerStride())
@@ -763,8 +760,7 @@ struct StridedVectorViewMut
                requires(LDLT_CONCEPT(eigen_strided_vector_view_mut<Vec, T>)),
                VEG_INLINE StridedVectorViewMut,
                (/*tag*/, FromEigen),
-               (vec, Vec&&))
-  noexcept
+               (vec, Vec&&)) noexcept
     : data(vec.data())
     , dim(vec.rows())
     , stride(vec.innerStride())
@@ -834,8 +830,7 @@ struct MatrixView
                         eigen::GetLayout<unref<Mat>>::value == L),
                VEG_INLINE MatrixView,
                (/*tag*/, FromEigen),
-               (mat, Mat const&))
-  noexcept
+               (mat, Mat const&)) noexcept
     : data(mat.data())
     , rows(mat.rows())
     , cols(mat.cols())
@@ -941,8 +936,7 @@ struct MatrixViewMut
                         eigen::GetLayout<unref<Mat>>::value == L),
                VEG_INLINE MatrixViewMut,
                (/*tag*/, FromEigen),
-               (mat, Mat&&))
-  noexcept
+               (mat, Mat&&)) noexcept
     : data(mat.data())
     , rows(mat.rows())
     , cols(mat.cols())

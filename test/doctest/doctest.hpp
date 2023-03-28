@@ -2629,9 +2629,7 @@ registerReporter(const char* name, int priority, bool isReporter)
   template<>                                                                   \
   struct iter<std::tuple<>>                                                    \
   {                                                                            \
-    iter(const char*, unsigned, int)                                           \
-    {                                                                          \
-    }                                                                          \
+    iter(const char*, unsigned, int) {}                                        \
   };                                                                           \
   }                                                                            \
   template<typename T>                                                         \
