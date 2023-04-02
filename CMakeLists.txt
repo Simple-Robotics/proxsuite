@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 if(DEFINED PROJECT_NAME)
-  set(PROXSUITE_AS_SUBPROJECT)
+  set(PROXSUITE_AS_SUBPROJECT ON)
 endif()
 
 set(PROJECT_NAME proxsuite)
