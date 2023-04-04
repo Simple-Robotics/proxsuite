@@ -52,6 +52,7 @@ include(CMakeDependentOption)
 
 # If needed, set CMake policy for APPLE systems
 apply_default_apple_configuration()
+set_default_cmake_build_type(Release)
 
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
 option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
