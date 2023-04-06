@@ -528,8 +528,10 @@ iterative_solve_with_permut_fact( //
     }
   }
   if (err >= eps && qpsettings.verbose) {
-    std::cout << "after refact err " << err << std::endl;
+    // std::cout << "after refact err " << err << std::endl;
+    std::cout << "refact err " << err << std::endl;
   }
+  qpresults.info.iterative_residual = err;
 
   qpwork.rhs.head(inner_pb_dim).setZero();
 }

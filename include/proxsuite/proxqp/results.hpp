@@ -50,6 +50,7 @@ struct Info
   T pri_res;
   T dua_res;
   T duality_gap;
+  T iterative_residual;
   //// sparse backend used by solver, either CholeskySparse or MatrixFree
   SparseBackend sparse_backend;
   //// quadratic cost minimal eigenvalue estimate
@@ -141,6 +142,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.duality_gap = 0.;
+    info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
@@ -171,6 +173,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.duality_gap = 0.;
+    info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
   }
