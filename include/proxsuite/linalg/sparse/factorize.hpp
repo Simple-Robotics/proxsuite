@@ -252,7 +252,7 @@ auto
 etree_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
-  return { n* isize{ sizeof(I) }, alignof(I) };
+  return { n * isize{ sizeof(I) }, alignof(I) };
 }
 
 /*!
@@ -719,7 +719,7 @@ auto
 amd_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize /*n*/, isize nnz) noexcept
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
-  return { nnz* isize{ sizeof(char) }, alignof(char) };
+  return { nnz * isize{ sizeof(char) }, alignof(char) };
 }
 
 template<typename I>
@@ -770,14 +770,14 @@ symmetric_permute_symbolic_req(proxsuite::linalg::veg::Tag<I> /*tag*/,
                                isize n) noexcept
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
-  return { n* isize{ sizeof(I) }, alignof(I) };
+  return { n * isize{ sizeof(I) }, alignof(I) };
 }
 template<typename I>
 auto
 symmetric_permute_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
-  return { n* isize{ sizeof(I) }, alignof(I) };
+  return { n * isize{ sizeof(I) }, alignof(I) };
 }
 
 template<typename I>
@@ -949,7 +949,7 @@ factorize_symbolic_req(proxsuite::linalg::veg::Tag<I> tag,
         StackReq{ n * sz, al } & StackReq{ sparse::amd_req(tag, n, nnz) };
       HEDLEY_FALL_THROUGH;
     case Ordering::user_provided:
-      perm_req = perm_req& StackReq{ (n + 1 + nnz) * sz, al };
+      perm_req = perm_req & StackReq{ (n + 1 + nnz) * sz, al };
       perm_req = perm_req & _detail::symmetric_permute_symbolic_req(tag, n);
     default:
       break;
@@ -1131,7 +1131,7 @@ factorize_numeric_req(proxsuite::linalg::veg::Tag<T> /*ttag*/,
             & (symb_perm_req                  //
                & (StackReq{ 2 * n * sz, al }  //
                   & (StackReq{ n * tsz, tal } //
-                     & StackReq{ n* isize{ sizeof(bool) }, alignof(bool) }))));
+                     & StackReq{ n * isize{ sizeof(bool) }, alignof(bool) }))));
 }
 
 /*!

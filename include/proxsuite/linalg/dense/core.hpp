@@ -841,7 +841,7 @@ temp_mat_req(proxsuite::linalg::veg::Tag<T> /*tag*/,
              isize cols) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return {
-    _detail::adjusted_stride<T>(rows) * cols* isize{ sizeof(T) },
+    _detail::adjusted_stride<T>(rows) * cols * isize{ sizeof(T) },
     _detail::align<T>(),
   };
 }
@@ -852,7 +852,7 @@ temp_vec_req(proxsuite::linalg::veg::Tag<T> /*tag*/, isize rows) noexcept
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return {
-    rows* isize{ sizeof(T) },
+    rows * isize{ sizeof(T) },
     _detail::align<T>(),
   };
 }

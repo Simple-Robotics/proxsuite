@@ -149,10 +149,10 @@ add_row_req( //
   isize max_nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   using proxsuite::linalg::veg::dynstack::StackReq;
-  auto numerical_work = StackReq{ n* isize{ sizeof(T) }, isize{ alignof(T) } };
+  auto numerical_work = StackReq{ n * isize{ sizeof(T) }, isize{ alignof(T) } };
   auto permuted_indices =
     StackReq{ (id_perm ? 0 : nnz) * isize{ sizeof(I) }, isize{ alignof(I) } };
-  auto pattern_diff = StackReq{ n* isize{ sizeof(I) }, isize{ alignof(I) } };
+  auto pattern_diff = StackReq{ n * isize{ sizeof(I) }, isize{ alignof(I) } };
   auto merge =
     merge_second_col_into_first_req(proxsuite::linalg::veg::Tag<I>{}, n);
   auto update = sparse::rank1_update_req(proxsuite::linalg::veg::Tag<T>{},

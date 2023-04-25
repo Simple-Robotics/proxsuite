@@ -23,7 +23,7 @@ merge_second_col_into_first_req(proxsuite::linalg::veg::Tag<I> /*tag*/,
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return {
-    second_size* isize{ sizeof(I) },
+    second_size * isize{ sizeof(I) },
     alignof(I),
   };
 }
@@ -175,15 +175,16 @@ rank1_update_req( //
   isize col_nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   using proxsuite::linalg::veg::dynstack::StackReq;
-  StackReq permuted_indices = { id_perm ? 0 : (col_nnz* isize{ sizeof(I) }),
+  StackReq permuted_indices = { id_perm ? 0 : (col_nnz * isize{ sizeof(I) }),
                                 isize{ alignof(I) } };
-  StackReq difference = { n* isize{ sizeof(I) }, isize{ alignof(I) } };
+  StackReq difference = { n * isize{ sizeof(I) }, isize{ alignof(I) } };
   difference = difference & difference;
 
   StackReq merge = sparse::merge_second_col_into_first_req(
     proxsuite::linalg::veg::Tag<I>{}, n);
 
-  StackReq numerical_workspace = { n* isize{ sizeof(T) }, isize{ alignof(T) } };
+  StackReq numerical_workspace = { n * isize{ sizeof(T) },
+                                   isize{ alignof(T) } };
 
   return permuted_indices & ((difference & merge) | numerical_workspace);
 }
