@@ -300,11 +300,11 @@ public:
     -> proxsuite::linalg::veg::dynstack::StackReq
   {
     auto w_req = proxsuite::linalg::veg::dynstack::StackReq{
-      _detail::adjusted_stride<T>(n) * r* isize{ sizeof(T) },
+      _detail::adjusted_stride<T>(n) * r * isize{ sizeof(T) },
       _detail::align<T>(),
     };
     auto alpha_req = proxsuite::linalg::veg::dynstack::StackReq{
-      r* isize{ sizeof(T) },
+      r * isize{ sizeof(T) },
       alignof(T),
     };
     return w_req & alpha_req;
@@ -321,7 +321,7 @@ public:
     -> proxsuite::linalg::veg::dynstack::StackReq
   {
     return proxsuite::linalg::veg::dynstack::StackReq{
-      r* isize{ sizeof(isize) },
+      r * isize{ sizeof(isize) },
       alignof(isize),
     } &
            proxsuite::linalg::dense::ldlt_delete_rows_and_cols_req(
@@ -486,15 +486,15 @@ public:
   {
     using proxsuite::linalg::veg::dynstack::StackReq;
     auto algo_req = StackReq{
-      2 * r* isize{ sizeof(isize) },
+      2 * r * isize{ sizeof(isize) },
       alignof(isize),
     };
     auto w_req = StackReq{
-      _detail::adjusted_stride<T>(n) * r* isize{ sizeof(T) },
+      _detail::adjusted_stride<T>(n) * r * isize{ sizeof(T) },
       _detail::align<T>(),
     };
     auto alpha_req = StackReq{
-      r* isize{ sizeof(T) },
+      r * isize{ sizeof(T) },
       alignof(T),
     };
     return algo_req & w_req & alpha_req;
@@ -755,7 +755,7 @@ public:
     -> proxsuite::linalg::veg::dynstack::StackReq
   {
     return {
-      n* isize{ sizeof(T) },
+      n * isize{ sizeof(T) },
       _detail::align<T>(),
     };
   }

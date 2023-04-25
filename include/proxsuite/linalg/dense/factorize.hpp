@@ -286,7 +286,7 @@ factorize_unblocked_req(proxsuite::linalg::veg::Tag<T> /*tag*/,
   -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return {
-    n* isize{ sizeof(T) },
+    n * isize{ sizeof(T) },
     _detail::align<T>(),
   };
 }
@@ -302,7 +302,7 @@ factorize_blocked_req(proxsuite::linalg::veg::Tag<T> tag,
          proxsuite::linalg::veg::dynstack::StackReq{
            _detail::adjusted_stride<T>(
              _detail::max2(n - block_size, isize(0))) *
-             block_size* isize{ sizeof(T) },
+             block_size * isize{ sizeof(T) },
            _detail::align<T>(),
          };
 }
