@@ -78,9 +78,9 @@ DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
 
 DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
 {
-  dense::isize dim = 500;
-  dense::isize n_eq(10);
-  dense::isize n_in(10);
+  sparse::isize dim = 500;
+  sparse::isize n_eq(10);
+  sparse::isize n_in(10);
 
   T eps_abs = T(1e-9);
   T sparsity_factor = 0.15;
@@ -134,5 +134,66 @@ DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
 
   for (int i = 0; i < num_qps; i++) {
     CHECK(qps[i].results.x == qps_compare[i].results.x);
+  }
+}
+
+
+DOCTEST_TEST_CASE("test sparse vector QP")
+{
+  sparse::isize dim = 500;
+  sparse::isize n_eq(10);
+  sparse::isize n_in(10);
+
+  T eps_abs = T(1e-9);
+  T sparsity_factor = 0.15;
+  T strong_convexity_factor = 0.01;
+
+  int num_qps = 64;
+  std::vector<sparse::QP<T, I>> qps_compare;
+
+  sparse::VectorQP<T, I> qps_vector = sparse::VectorQP<T, I>(num_qps);
+  // qps_vector.init_qp_in_place(dim, n_eq, n_in);
+  // Generate two lists with identical QPs
+  for (int i = 0; i < num_qps; i++) {
+    auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
+    utils::rand::set_seed(i);
+    sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0.0;
+    qp.settings.verbose = false;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+
+    qps_compare.emplace_back(dim, n_eq, n_in);
+    auto& qp_compare = qps_compare.back();
+    qp_compare.settings.eps_abs = eps_abs;
+    qp_compare.settings.eps_rel = 0.0;
+    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp_compare.init(qp_random.H,
+                    qp_random.g,
+                    qp_random.A,
+                    qp_random.b,
+                    qp_random.C,
+                    qp_random.l,
+                    qp_random.u);
+  }
+
+  for (int i = 0; i < num_qps; i++) {
+    qps_compare[i].solve();
+  }
+
+  const size_t NUM_THREADS = (size_t)omp_get_max_threads();
+  proxsuite::proxqp::parallel::qp_solve_in_parallel((size_t)(NUM_THREADS / 2),
+                                                    qps_vector);
+
+  for (int i = 0; i < num_qps; i++) {
+    CHECK(qps_vector[i].results.x == qps_compare[i].results.x);
   }
 }
