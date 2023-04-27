@@ -41,6 +41,11 @@ proxsuite_test(sparse_qp_solve src/sparse_qp_solve.cpp)
 proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
+if(BUILD_WITH_OPENMP_SUPPORT)
+  proxsuite_test(parallel src/parallel_qp_solve.cpp)
+  target_link_libraries(test-cpp-parallel OpenMP::OpenMP_CXX)
+endif()
+
 # Test serialization
 macro(ADD_TEST_CFLAGS target flag)
   set_property(
