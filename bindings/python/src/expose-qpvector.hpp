@@ -29,7 +29,10 @@ exposeQpVectorDense(pybind11::module_ m)
     .def("insert",
          &dense::VectorQP<T>::insert,
          "inserts a qp at the end of the vector of qps.")
-    .def("get", &dense::VectorQP<T>::get, "get the qp.");
+    .def("get",
+         &dense::VectorQP<T>::get,
+         pybind11::return_value_policy::reference,
+         "get the qp.");
 }
 } // namespace python
 } // namespace dense
