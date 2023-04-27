@@ -39,6 +39,7 @@ main(int /*argc*/, const char** /*argv*/)
   std::cout << "--" << std::endl;
 
   // Generate and initialize Qps
+  Timer<T> timer;
   for (int i = 0; i < num_qps; i++) {
     utils::rand::set_seed(i);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
@@ -57,9 +58,35 @@ main(int /*argc*/, const char** /*argv*/)
             qp_random.u);
     qps.push_back(qp);
   }
+  timer.stop();
+  std::cout << "time to generate and initialize vector of qps (push back): \t"
+            << timer.elapsed().user * 1e-3 << "ms" << std::endl;
+
+  dense::VectorQP<T> qps_vector = dense::VectorQP<T>(num_qps);
+  timer.start();
+  for (int i = 0; i < num_qps; i++) {
+    utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+  }
+  timer.stop();
+  std::cout << "time to generate and initialize vector of qps (in-place): \t"
+            << timer.elapsed().user * 1e-3 << "ms" << std::endl;
   std::cout << "Generation done.\n" << std::endl;
 
-  Timer<T> timer;
+  timer.start();
   for (int j = 0; j < smooth; j++) {
     for (int i = 0; i < num_qps; i++) {
       qps[i].solve();
@@ -70,8 +97,22 @@ main(int /*argc*/, const char** /*argv*/)
             << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
 
   const size_t NUM_THREADS = (size_t)omp_get_max_threads();
+
+  std::cout << "using VectorQP" << std::endl;
   for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
-    Timer<T> timer;
+    timer.start();
+    for (int j = 0; j < smooth; j++) {
+      proxsuite::proxqp::parallel::qp_solve_in_parallel(num_threads, qps_vector);
+    }
+    timer.stop();
+    std::cout << "mean solve time in parallel (" << num_threads
+              << " threads):\t" << timer.elapsed().user * 1e-3 / smooth << "ms"
+              << std::endl;
+  }
+
+  std::cout << "using std::vector of QPs" << std::endl;
+  for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
+    timer.start();
     for (int j = 0; j < smooth; j++) {
       proxsuite::proxqp::parallel::qp_solve_in_parallel(num_threads, qps);
     }
@@ -80,4 +121,5 @@ main(int /*argc*/, const char** /*argv*/)
               << " threads):\t" << timer.elapsed().user * 1e-3 / smooth << "ms"
               << std::endl;
   }
+
 }
