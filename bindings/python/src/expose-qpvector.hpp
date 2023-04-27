@@ -9,7 +9,6 @@ namespace proxqp {
 using proxsuite::linalg::veg::isize;
 
 namespace dense {
-
 namespace python {
 
 template<typename T>
@@ -36,6 +35,44 @@ exposeQpVectorDense(pybind11::module_ m)
 }
 } // namespace python
 } // namespace dense
+
+namespace sparse {
+namespace python {
+
+template<typename T, typename I>
+void
+exposeQpVectorSparse(pybind11::module_ m)
+{
+
+  ::pybind11::class_<sparse::VectorQP<T, I>>(m, "VectorQP")
+    .def(
+      ::pybind11::init<i64>(),
+      pybind11::arg_v("batch_size", 0, "number of QPs to be stored."),
+      "Default constructor using the BatchSize of qp models to store.") // constructor
+    .def("init_qp_in_place",
+         static_cast<proxsuite::proxqp::sparse::QP<T, I>& (
+           sparse::VectorQP<T, I>::*)(const sparse::SparseMat<bool, I>&,
+                                      const sparse::SparseMat<bool, I>&,
+                                      const sparse::SparseMat<bool, I>&)>(
+           &sparse::VectorQP<T, I>::init_qp_in_place),
+         pybind11::return_value_policy::reference,
+         "init a sparse QP in place and return a reference to it.")
+    .def("init_qp_in_place",
+         static_cast<proxsuite::proxqp::sparse::QP<T, I>& (
+           sparse::VectorQP<T, I>::*)(sparse::isize,
+                                      sparse::isize,
+                                      sparse::isize)>(
+           &sparse::VectorQP<T, I>::init_qp_in_place),
+         pybind11::return_value_policy::reference,
+         "init a sparse QP in place and return a reference to it.")
+    .def("get",
+         &sparse::VectorQP<T, I>::get,
+         pybind11::return_value_policy::reference,
+         "get the qp.");
+}
+
+} // namespace python
+} // namespace sparse
 
 } // namespace proxqp
 } // namespace proxsuite
