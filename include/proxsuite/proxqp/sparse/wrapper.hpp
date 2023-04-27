@@ -765,6 +765,58 @@ solve(
   return Qp.results;
 }
 
+
+///// BatchQP object
+template<typename T, typename I>
+struct VectorQP
+{
+  /*!
+   * A vector of QP aligned of size BatchSize
+   * specified by the user.
+   */
+  std::vector<QP<T, I>> vector_qp;
+  sparse::isize m_size;
+
+  VectorQP(long unsigned int batchSize)
+  {
+    if (vector_qp.max_size() != batchSize) {
+      vector_qp.clear();
+      vector_qp.reserve(batchSize);
+    }
+    m_size = 0;
+  }
+
+  /*!
+   * Init a QP in place and return a reference to it
+   */
+  QP<T, I>&
+  init_qp_in_place(sparse::isize dim, sparse::isize n_eq, sparse::isize n_in)
+  { 
+    vector_qp.emplace_back(dim, n_eq, n_in);
+    auto& qp = vector_qp.back();
+    m_size++;
+    return qp;
+  };
+
+  /*!
+   * Inserts a qp to the end of vector_qp
+   */
+  void insert(QP<T, I>& qp) { vector_qp.emplace_back(qp); };
+
+  /*!
+   * Access qp at position i
+   */
+  QP<T, I>& get(isize i) { return vector_qp.at(i); };
+
+  /*!
+   * Access qp at position i
+   */
+  QP<T, I>& operator[](isize i) { return vector_qp.at(i); };
+
+  sparse::isize
+  size() { return m_size; };
+};
+
 } // namespace sparse
 } // namespace proxqp
 } // namespace proxsuite
