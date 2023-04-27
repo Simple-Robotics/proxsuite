@@ -20,6 +20,8 @@ exposeCommon(pybind11::module_ m)
 {
   exposeResults<T>(m);
   exposeSettings<T>(m);
+  m.def("omp_get_max_threads",&omp_get_max_threads,
+        "Returns an upper bound on the number of threads that could be used.");
 }
 
 template<typename T, typename I>
@@ -40,6 +42,15 @@ exposeDenseAlgorithms(pybind11::module_ m)
   dense::python::solveDenseQp<T>(m);
 }
 
+#ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
+  template<typename T>
+  void
+  exposeDenseParallel(pybind11::module_ m)
+  {
+    dense::python::solveDenseQpParallel<T>(m);
+  }
+#endif
+
 PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
 {
   m.doc() = R"pbdoc(
@@ -59,6 +70,7 @@ PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
   pybind11::module_ dense_module =
     proxqp_module.def_submodule("dense", "Dense solver of proxQP");
   exposeDenseAlgorithms<f64>(dense_module);
+  exposeDenseParallel<f64>(dense_module);
   pybind11::module_ sparse_module =
     proxqp_module.def_submodule("sparse", "Sparse solver of proxQP");
   exposeSparseAlgorithms<f64, int32_t>(sparse_module);

@@ -10,5 +10,6 @@
 #include "expose-workspace.hpp"
 #include "expose-qpobject.hpp"
 #include "expose-solve.hpp"
+#include "expose-parallel.hpp"
 
 #endif /* end of include guard proxsuite_python_algorithms_hpp */
