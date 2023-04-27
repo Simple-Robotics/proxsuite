@@ -37,7 +37,7 @@ endif()
 # Need to be set before including base.cmake
 # ----------------------------------------------------
 option(BUILD_DOCUMENTATION "Build the documentation." OFF)
-OPTION(BUILD_BENCHMARK "Build the benchmarks" OFF)
+option(BUILD_BENCHMARK "Build the benchmarks" OFF)
 option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_USE_TEMPLATE_CSS YES)
@@ -188,6 +188,8 @@ if(BUILD_TESTING AND NOT PROXSUITE_AS_SUBPROJECT)
   add_subdirectory(test)
   add_subdirectory(examples)
 endif()
+
+add_subdirectory(benchmark)
 
 # catkin/ament/colcon integration (ROS1/2)
 install(FILES package.xml DESTINATION share/${PROJECT_NAME})

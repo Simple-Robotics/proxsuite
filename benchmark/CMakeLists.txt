@@ -1,0 +1,21 @@
+add_custom_target(bench)
+
+macro(proxsuite_benchmark bench_name)
+  if(BUILD_BENCHMARK)
+    add_executable(${bench_name} ${bench_name}.cpp)
+  else(BUILD_BENCHMARK)
+    add_executable(${bench_name} EXCLUDE_FROM_ALL ${bench_name}.cpp)
+  endif(BUILD_BENCHMARK)
+
+  if(BUILD_WITH_VECTORIZATION_SUPPORT)
+    target_link_libraries(${bench_name} PUBLIC proxsuite-vectorized)
+  else()
+    target_link_libraries(${bench_name} PUBLIC proxsuite)
+  endif()
+  add_dependencies(bench ${bench_name})
+endmacro(proxsuite_benchmark)
+
+if(BUILD_WITH_OPENMP_SUPPORT)
+  proxsuite_benchmark(timings-parallel)
+  target_link_libraries(timings-parallel PRIVATE OpenMP::OpenMP_CXX)
+endif(BUILD_WITH_OPENMP_SUPPORT)
