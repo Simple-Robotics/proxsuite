@@ -614,6 +614,7 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
 template<typename T, typename I, typename P>
 auto
 unscaled_primal_dual_residual(
+  Workspace<T, I>& work,
   Results<T>& results,
   const Settings<T>& settings,
   VecMapMut<T> primal_residual_eq_scaled,
