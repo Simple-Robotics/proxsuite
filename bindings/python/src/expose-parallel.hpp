@@ -26,12 +26,23 @@ solveDenseQpParallel(pybind11::module_ m)
     m, "VectorDenseQP");
 
   m.def("solve_in_parallel",
-        &parallel::qp_solve_in_parallel<T>,
+        pybind11::overload_cast<optional<const size_t>,
+                                std::vector<proxqp::dense::QP<T>>&>(
+          &parallel::qp_solve_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
                         "number of threads used for the computation."),
         pybind11::arg_v("qps", "List of initialized dense Qps."));
-}
+
+  m.def("solve_in_parallel",
+        pybind11::overload_cast<optional<const size_t>,
+                                proxqp::dense::VectorQP<T>&>(
+          &parallel::qp_solve_in_parallel<T>),
+        "Function for solving a list of dense QPs in parallel.",
+        pybind11::arg_v("num_threads",
+                        nullopt,
+                        "number of threads used for the computation."),
+        pybind11::arg_v("qps", "List of initialized dense Qps."));
 
 } // namespace python
 } // namespace dense
