@@ -765,7 +765,6 @@ solve(
   return Qp.results;
 }
 
-
 ///// BatchQP object
 template<typename T, typename I>
 struct VectorQP
@@ -789,10 +788,24 @@ struct VectorQP
   /*!
    * Init a QP in place and return a reference to it
    */
-  QP<T, I>&
-  init_qp_in_place(sparse::isize dim, sparse::isize n_eq, sparse::isize n_in)
-  { 
+  QP<T, I>& init_qp_in_place(sparse::isize dim,
+                             sparse::isize n_eq,
+                             sparse::isize n_in)
+  {
     vector_qp.emplace_back(dim, n_eq, n_in);
+    auto& qp = vector_qp.back();
+    m_size++;
+    return qp;
+  };
+
+  /*!
+   * Init a QP in place and return a reference to it
+   */
+  QP<T, I>& init_qp_in_place(const sparse::SparseMat<bool, I>& H,
+                             const sparse::SparseMat<bool, I>& A,
+                             const sparse::SparseMat<bool, I>& C)
+  {
+    vector_qp.emplace_back(H.rows(), A.rows(), C.rows());
     auto& qp = vector_qp.back();
     m_size++;
     return qp;
@@ -813,8 +826,7 @@ struct VectorQP
    */
   QP<T, I>& operator[](isize i) { return vector_qp.at(i); };
 
-  sparse::isize
-  size() { return m_size; };
+  sparse::isize size() { return m_size; };
 };
 
 } // namespace sparse
