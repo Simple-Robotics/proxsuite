@@ -11,7 +11,7 @@
 #include <pybind11/stl_bind.h> // For binding STL containers
 
 PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double>>)
-
+PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::Vec<double>>)
 namespace proxsuite {
 namespace proxqp {
 using proxsuite::linalg::veg::isize;
@@ -43,6 +43,17 @@ solveDenseQpParallel(pybind11::module_ m)
     pybind11::arg_v("qps", "List of initialized dense Qps."),
     pybind11::arg_v(
       "num_threads", nullopt, "number of threads used for the computation."));
+
+  m.def("solve_backward_in_parallel",
+        &parallel::qp_solve_backward_in_parallel<T>,
+        "Function for solving a list of dense QPs in parallel.",
+        pybind11::arg_v("num_threads",
+                        nullopt,
+                        "number of threads used for the computation."),
+        pybind11::arg_v("qps", "List of initialized dense Qps."),
+        pybind11::arg_v("loss_derivatives", "List of loss derivatives."),
+        pybind11::arg_v(
+          "eps", "Backward pass accuracy for deriving solution Jacobians."));
 }
 
 } // namespace python
