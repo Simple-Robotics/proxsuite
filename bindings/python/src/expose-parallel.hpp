@@ -26,18 +26,15 @@ solveDenseQpParallel(pybind11::module_ m)
   pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(
     m, "VectorQP");
 
-
- 
   m.def("solve_in_parallel",
         pybind11::overload_cast<optional<const size_t>,
-                              std::vector<proxqp::dense::QP<T>>&
-        >(&parallel::qp_solve_in_parallel<T>),
+                                std::vector<proxqp::dense::QP<T>>&>(
+          &parallel::qp_solve_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
                         nullopt,
                         "number of threads used for the computation."),
         pybind11::arg_v("qps", "List of initialized dense Qps."));
-
 
   m.def("solve_in_parallel",
         pybind11::overload_cast<std::vector<proxqp::dense::QP<T>>&,
@@ -67,10 +64,9 @@ solveDenseQpParallel(pybind11::module_ m)
 
   m.def("solve_backward_in_parallel",
         pybind11::overload_cast<optional<const size_t>,
-                              proxqp::dense::VectorQP<T>&,
-                              std::vector<proxqp::dense::Vec<T>>&,
-                              T
-        >(&parallel::qp_solve_backward_in_parallel<T>),
+                                proxqp::dense::VectorQP<T>&,
+                                std::vector<proxqp::dense::Vec<T>>&,
+                                T>(&parallel::qp_solve_backward_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
                         nullopt,
@@ -82,10 +78,9 @@ solveDenseQpParallel(pybind11::module_ m)
 
   m.def("solve_backward_in_parallel",
         pybind11::overload_cast<optional<const size_t>,
-                              std::vector<proxqp::dense::QP<T>>&,
-                              std::vector<proxqp::dense::Vec<T>>&,
-                              T
-        >(&parallel::qp_solve_backward_in_parallel<T>),
+                                std::vector<proxqp::dense::QP<T>>&,
+                                std::vector<proxqp::dense::Vec<T>>&,
+                                T>(&parallel::qp_solve_backward_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
                         nullopt,
