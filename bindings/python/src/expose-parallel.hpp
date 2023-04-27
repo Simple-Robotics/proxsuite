@@ -43,9 +43,30 @@ solveDenseQpParallel(pybind11::module_ m)
                         nullopt,
                         "number of threads used for the computation."),
         pybind11::arg_v("qps", "List of initialized dense Qps."));
+}
 
 } // namespace python
 } // namespace dense
+
+namespace sparse {
+namespace python {
+template<typename T, typename I>
+void
+solveSparseQpParallel(pybind11::module_ m)
+{
+  m.def("solve_in_parallel",
+        pybind11::overload_cast<optional<const size_t>,
+                                proxqp::sparse::VectorQP<T, I>&>(
+          &parallel::qp_solve_in_parallel<T, I>),
+        "Function for solving a list of sparse QPs in parallel.",
+        pybind11::arg_v("num_threads",
+                        nullopt,
+                        "number of threads used for the computation."),
+        pybind11::arg_v("qps", "List of initialized sparse Qps."));
+}
+
+}
+}
 
 } // namespace proxqp
 } // namespace proxsuite
