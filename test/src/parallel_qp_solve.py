@@ -47,8 +47,7 @@ def generate_mixed_qp(n, seed=1):
 class ParallelWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
 
-    def test_parallel(self):
-        print("------------------------parallel solving")
+    def test_dense_parallel(self):
         n = 10  # dimension
         batch_size = 64
         qps = []
@@ -98,53 +97,107 @@ class ParallelWrapper(unittest.TestCase):
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qps_compare[i].results.x, rtol=1e-8)
 
+    def test_dense_parallel_custom_VectorQP(self):
+        n = 10  # dimension
+        batch_size = 64
+        qps = []
+        qp_vector = proxsuite.proxqp.dense.VectorQP()
 
-    def test_parallel_custom_VectorQP(self):
-            print("------------------------parallel solving")
-            n = 10  # dimension
-            batch_size = 64
-            qps = []
-            qp_vector = proxsuite.proxqp.dense.VectorQP()
+        for i in range(batch_size):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
 
-            for i in range(batch_size):
-                H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
-                n_eq = A.shape[0]
-                n_in = C.shape[0]
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.eps_abs = 1.0e-9
+            qp.settings.verbose = False
+            qp.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+                rho=1.0e-7,
+            )
+            qps.append(qp)
 
-                qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-                qp.settings.eps_abs = 1.0e-9
-                qp.settings.verbose = False
-                qp.init(
-                    H=H,
-                    g=np.asfortranarray(g),
-                    A=A,
-                    b=np.asfortranarray(b),
-                    C=C,
-                    l=np.asfortranarray(l),
-                    u=np.asfortranarray(u),
-                    rho=1.0e-7,
-                )
-                qps.append(qp)
+            qp_compare = qp_vector.init_qp_in_place(n, n_eq, n_in)
+            qp_compare.settings.eps_abs = 1.0e-9
+            qp_compare.settings.verbose = False
+            qp_compare.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+                rho=1.0e-7,
+            )
 
-                qp_compare = qp_vector.init_qp_in_place(n, n_eq, n_in)
-                qp_compare.settings.eps_abs = 1.0e-9
-                qp_compare.settings.verbose = False
-                qp_compare.init(
-                                H=H,
-                                g=np.asfortranarray(g),
-                                A=A,
-                                b=np.asfortranarray(b),
-                                C=C,
-                                l=np.asfortranarray(l),
-                                u=np.asfortranarray(u),
-                                rho=1.0e-7,
-                )
+        for qp in qps:
+            qp.solve()
 
-            for qp in qps:
-                qp.solve()
+        num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
+        proxsuite.proxqp.dense.solve_in_parallel(num_threads, qp_vector)
 
-            num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
-            proxsuite.proxqp.dense.solve_in_parallel(num_threads, qp_vector)
+        for i in range(batch_size):
+            assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
 
-            for i in range(batch_size):
-                assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
+    def test_sparse_parallel_custom_VectorQP(self):
+        n = 10  # dimension
+        batch_size = 64
+        qps = []
+        qp_vector = proxsuite.proxqp.sparse.VectorQP()
+
+        for i in range(batch_size):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+
+            H_ = H != 0.0
+            A_ = A != 0.0
+            C_ = C != 0.0
+            qp = proxsuite.proxqp.sparse.QP(H_, A_, C_)
+            qp.settings.eps_abs = 1.0e-9
+            qp.settings.verbose = False
+            qp.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+                rho=1.0e-7,
+            )
+            qps.append(qp)
+
+            qp_compare = qp_vector.init_qp_in_place(H_, A_, C_)
+            qp_compare.settings.eps_abs = 1.0e-9
+            qp_compare.settings.verbose = False
+            qp_compare.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+                rho=1.0e-7,
+            )
+
+        for qp in qps:
+            qp.solve()
+
+        num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
+        proxsuite.proxqp.sparse.solve_in_parallel(num_threads, qp_vector)
+
+        for i in range(batch_size):
+            assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
+
+
+if __name__ == "__main__":
+    unittest.main()
