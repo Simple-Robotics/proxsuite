@@ -6,6 +6,10 @@
 #include <proxsuite/proxqp/dense/workspace.hpp>
 #include <proxsuite/proxqp/dense/utils.hpp>
 
+#include <proxsuite/serialization/archive.hpp>
+#include <proxsuite/serialization/eigen.hpp>
+#include <proxsuite/serialization/workspace.hpp>
+#include "helpers.hpp"
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
@@ -14,7 +18,8 @@ template<typename T>
 void
 exposeWorkspaceDense(pybind11::module_ m)
 {
-  ::pybind11::class_<Workspace<T>>(m, "Workspace")
+  ::pybind11::class_<proxsuite::proxqp::dense::Workspace<T>>(
+    m, "workspace", pybind11::module_local())
     .def(::pybind11::init<i64, i64, i64>(),
          pybind11::arg_v("n", 0, "primal dimension."),
          pybind11::arg_v("n_eq", 0, "number of equality constraints."),
@@ -44,29 +49,41 @@ exposeWorkspaceDense(pybind11::module_ m)
     .def_readonly("dw_aug", &Workspace<T>::dw_aug)
     .def_readonly("rhs", &Workspace<T>::rhs)
     .def_readonly("err", &Workspace<T>::err)
-    .def_readonly("primal_feasibility_rhs_1_eq",
-                  &Workspace<T>::primal_feasibility_rhs_1_eq)
-    .def_readonly("primal_feasibility_rhs_1_in_u",
-                  &Workspace<T>::primal_feasibility_rhs_1_in_u)
-    .def_readonly("primal_feasibility_rhs_1_in_l",
-                  &Workspace<T>::primal_feasibility_rhs_1_in_l)
     .def_readonly("dual_feasibility_rhs_2",
                   &Workspace<T>::dual_feasibility_rhs_2)
     .def_readonly("correction_guess_rhs_g",
                   &Workspace<T>::correction_guess_rhs_g)
+    .def_readonly("correction_guess_rhs_b",
+                  &Workspace<T>::correction_guess_rhs_b)
     .def_readonly("alpha", &Workspace<T>::alpha)
     .def_readonly("dual_residual_scaled", &Workspace<T>::dual_residual_scaled)
-    .def_readonly("primal_residual_eq_scaled",
-                  &Workspace<T>::primal_residual_eq_scaled)
     .def_readonly("primal_residual_in_scaled_up",
                   &Workspace<T>::primal_residual_in_scaled_up)
-    .def_readonly("primal_residual_in_scaled_low",
-                  &Workspace<T>::primal_residual_in_scaled_low)
     .def_readonly("primal_residual_in_scaled_up_plus_alphaCdx",
                   &Workspace<T>::primal_residual_in_scaled_up_plus_alphaCdx)
     .def_readonly("primal_residual_in_scaled_low_plus_alphaCdx",
                   &Workspace<T>::primal_residual_in_scaled_low_plus_alphaCdx)
-    .def_readonly("CTz", &Workspace<T>::CTz);
+    .def_readonly("CTz", &Workspace<T>::CTz)
+    .def_readonly("constraints_changed", &Workspace<T>::constraints_changed)
+    .def_readonly("dirty", &Workspace<T>::dirty)
+    .def_readonly("refactorize", &Workspace<T>::refactorize)
+    .def_readonly("proximal_parameter_update",
+                  &Workspace<T>::proximal_parameter_update)
+    .def_readonly("is_initialized", &Workspace<T>::is_initialized)
+    .def_readonly("n_c", &Workspace<T>::n_c)
+    .def(pybind11::pickle(
+
+      [](const Workspace<T>& workspace) {
+        return pybind11::bytes(
+          proxsuite::serialization::saveToString(workspace));
+      },
+      [](pybind11::bytes& s) {
+        Workspace<T> workspace;
+        proxsuite::serialization::loadFromString(workspace, s);
+        return workspace;
+      }));
+
+  ;
 }
 } // namespace python
 } // namespace dense

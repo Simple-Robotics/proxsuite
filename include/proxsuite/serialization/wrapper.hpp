@@ -19,6 +19,6 @@ serialize(Archive& archive, proxsuite::proxqp::dense::QP<T>& qp)
 {
   archive(
     CEREAL_NVP(qp.model), CEREAL_NVP(qp.results), CEREAL_NVP(qp.settings));
-}
+} // CEREAL_NVP(qp.ruiz), ,CEREAL_NVP(qp.ruiz)
 } // namespace cereal
 #endif /* end of include guard PROXSUITE_SERIALIZATION_WRAPPER_HPP */

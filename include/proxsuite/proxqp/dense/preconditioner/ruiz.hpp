@@ -695,6 +695,29 @@ struct RuizEquilibration
   }
 };
 
+template<typename T>
+bool
+operator==(const RuizEquilibration<T>& ruiz1, const RuizEquilibration<T>& ruiz2)
+{
+  bool value =
+    // ruiz1.delta == ruiz2.delta &&
+    ruiz1.c == ruiz2.c
+    // ruiz1.dim == ruiz2.dim
+    // ruiz1.epsilon == ruiz2.epsilon &&
+    // ruiz1.max_iter == ruiz2.max_iter &&
+    // ruiz1.sym == ruiz2.sym &&
+    // ruiz1.logger_ptr == ruiz2.logger_ptr
+    ;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const RuizEquilibration<T>& ruiz1, const RuizEquilibration<T>& ruiz2)
+{
+  return !(ruiz1 == ruiz2);
+}
+
 } // namespace preconditioner
 } // namespace dense
 } // namespace proxqp

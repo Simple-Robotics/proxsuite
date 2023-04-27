@@ -36,6 +36,16 @@ exposeQpObjectDense(pybind11::module_ m)
     .value("Diagonal", proxsuite::proxqp::HessianType::Diagonal)
     .export_values();
 
+  // ::pybind11::class_<proxsuite::proxqp::dense::preconditioner::RuizEquilibration<T>>(m,
+  // "ruiz", pybind11::module_local())
+  //   .def(::pybind11::init(), "Default constructor.")
+  //   .def_readwrite("mu_eq", &RuizEquilibration<T>::delta)
+  //   .def_readwrite("mu_in", &RuizEquilibration<T>::c)
+  //   .def_readwrite("rho", &RuizEquilibration<T>::dim)
+  //   .def_readwrite("iter", &RuizEquilibration<T>::epsilon)
+  //   .def_readwrite("iter_ext", &RuizEquilibration<T>::max_iter)
+  //   .def_readwrite("run_time", &RuizEquilibration<T>::sym);
+
   ::pybind11::class_<dense::QP<T>>(m, "QP")
     .def(
       ::pybind11::init<i64,

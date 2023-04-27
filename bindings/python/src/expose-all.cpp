@@ -42,6 +42,7 @@ template<typename T>
 void
 exposeDenseAlgorithms(pybind11::module_ m)
 {
+  dense::python::exposeWorkspaceDense<T>(m);
   dense::python::exposeDenseModel<T>(m);
   dense::python::exposeQpObjectDense<T>(m);
   dense::python::exposeQPVectorDense<T>(m);

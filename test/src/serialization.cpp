@@ -9,6 +9,7 @@
 #include <proxsuite/serialization/model.hpp>
 #include <proxsuite/serialization/results.hpp>
 #include <proxsuite/serialization/settings.hpp>
+#include <proxsuite/serialization/ruiz.hpp>
 #include <proxsuite/serialization/wrapper.hpp>
 
 template<typename object>
@@ -49,7 +50,6 @@ struct init<proxsuite::proxqp::Settings<T>>
     return settings;
   }
 };
-
 template<typename T>
 struct init<proxsuite::proxqp::dense::QP<T>>
 {
