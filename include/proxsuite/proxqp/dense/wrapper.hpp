@@ -1312,6 +1312,44 @@ public:
     model.backward_data.initialize(model.dim, model.n_eq, model.n_in);
     if (!check) {
 
+      // if (settings.multiprocessing_reallocation){
+      //   // reallocate stuff not serialized for the moment
+      //   work = Workspace<T>(model.dim, model.n_eq, model.n_in);
+      //   ruiz = preconditioner::RuizEquilibration<T>{ model.dim, model.n_eq +
+      //   model.n_in } ; work.H_scaled = model.H; work.g_scaled = model.g;
+      //   work.A_scaled = model.A;
+      //   work.b_scaled = model.b;
+      //   work.C_scaled = model.C;
+      //   work.u_scaled =
+      //     (model.u.array() <= T(1.E20))
+      //       .select(model.u,
+      //               Eigen::Matrix<T, Eigen::Dynamic,
+      //               1>::Zero(model.n_in).array() +
+      //                 T(1.E20));
+      //   work.l_scaled =
+      //     (model.l.array() >= T(-1.E20))
+      //       .select(model.l,
+      //               Eigen::Matrix<T, Eigen::Dynamic,
+      //               1>::Zero(model.n_in).array() -
+      //                 T(1.E20));
+
+      //   work.dual_feasibility_rhs_2 = infty_norm(model.g);
+      //   PreconditionerStatus preconditioner_status =
+      //   proxsuite::proxqp::PreconditionerStatus::EXECUTE; switch
+      //   (preconditioner_status) {
+      //     case PreconditionerStatus::EXECUTE:
+      //       setup_equilibration(work, settings, ruiz, true);
+      //       break;
+      //     case PreconditionerStatus::IDENTITY:
+      //       setup_equilibration(work, settings, ruiz, false);
+      //       break;
+      //     case PreconditionerStatus::KEEP:
+      //       // keep previous one
+      //       setup_equilibration(work, settings, ruiz, false);
+      //       break;
+      //   }
+      // }
+
       /// derive solution
       work.CTz.noalias() = model.C * results.x + results.z;
       work.active_set_up.array() = (work.CTz - model.u).array() >= 0.;
@@ -1325,6 +1363,7 @@ public:
       results.info.mu_eq = 5.E-5;
       results.info.mu_in = 5.E-5;
       results.info.rho = rho_new;
+
       // a large amount of constraints might have changed
       // so in order to avoid to much refactorization later in the
       // iterative refinement, a factorization from scratch is directly
@@ -1350,13 +1389,13 @@ public:
       results.info.mu_in = rho_new;
       work.constraints_changed = true;
       refactorize(model, results, work, rho_new);
-      */
       bool check_bis = numactive_inequalities == work.n_c;
       if (!check_bis) {
         std::cout << "work.n_c "
                   << " numactive_inequalities " << numactive_inequalities
                   << std::endl;
       }
+      */
       work.rhs.head(model.dim) =
         loss_derivative.head(model.dim); //-loss_derivative.head(model.dim);
       // std::cout << "work.active_set_up " << work.active_set_up << std::endl;
@@ -1416,15 +1455,21 @@ public:
         work.dw_aug.tail(model.n_in) * results.x.transpose();
       model.backward_data.dL_dC.noalias() +=
         results.z * work.dw_aug.head(model.dim).transpose();
+      // std::cout << "work.active_set_up " << work.active_set_up<< std::endl;
 
-      model.backward_data.dL_du = -work.dw_aug.tail(model.n_in);
-      // (work.active_set_up)
-      //   .select(-work.dw_aug.tail(model.n_in),
-      //           Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
-      model.backward_data.dL_dl = -work.dw_aug.tail(model.n_in);
-      // (work.active_set_low)
-      //   .select(-work.dw_aug.tail(model.n_in),
-      //           Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
+      // model.backward_data.dL_du = -work.dw_aug.tail(model.n_in);
+      model.backward_data.dL_du =
+        (work.active_set_up)
+          .select(-work.dw_aug.tail(model.n_in),
+                  Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
+      // std::cout << "work.active_set_low " << work.active_set_low <<
+      // std::endl;
+
+      // model.backward_data.dL_dl = -work.dw_aug.tail(model.n_in);
+      model.backward_data.dL_dl =
+        (work.active_set_low)
+          .select(-work.dw_aug.tail(model.n_in),
+                  Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
 
       model.backward_data.dL_dA.noalias() =
         work.dw_aug.segment(model.dim, model.n_eq) * results.x.transpose();
