@@ -52,7 +52,7 @@ var searchData=
   ['parse_5fdigit_5f8_49',['parse_digit_8',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aef9cc41dfe989f0044ef3ce2bd4eab1c',1,'proxsuite::linalg::veg::_detail']]],
   ['parse_5fint_50',['parse_int',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a3a9a77103d04ba9d99d9aeebefe65d04',1,'proxsuite::linalg::veg::_detail']]],
   ['parse_5fnum_51',['parse_num',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a6163a39a4814295e9ef40fd0dd322c08',1,'proxsuite::linalg::veg::_detail']]],
-  ['parser_52',['parser',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa95499c0584fd83b4968c2f0dc8c452a',1,'proxsuite::linalg::veg::_detail']]],
+  ['parser_52',['parser',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a383e7f72be5668bd354b8b1c036d440e',1,'proxsuite::linalg::veg::_detail']]],
   ['percent_53',['PERCENT',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a6865d19576ae60f95fd4e61333404352',1,'proxsuite::linalg::veg']]],
   ['period_54',['PERIOD',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ade58a28573783fe95304a260ccd90362',1,'proxsuite::linalg::veg']]],
   ['perm_55',['perm',['../structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#af1ffa5108dbbef068a8e36e0951d4da7',1,'proxsuite::proxqp::sparse::Ldlt']]],

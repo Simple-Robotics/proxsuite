@@ -1,8 +1,8 @@
 <map id="include/proxsuite/proxqp/sparse/preconditioner/identity.hpp" name="include/proxsuite/proxqp/sparse/preconditioner/identity.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="19,5,201,60"/>
-<area shape="rect" id="node2" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="5,284,188,324"/>
-<area shape="rect" id="node5" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="109,108,292,148"/>
-<area shape="rect" id="node3" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="5,372,188,412"/>
-<area shape="rect" id="node4" href="$sparse_8hpp.html" title=" " alt="" coords="5,460,188,500"/>
-<area shape="rect" id="node6" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="135,196,317,236"/>
+<area shape="rect" id="node1" title=" " alt="" coords="19,5,201,67"/>
+<area shape="rect" id="node2" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="5,300,188,345"/>
+<area shape="rect" id="node5" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="108,115,290,160"/>
+<area shape="rect" id="node3" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="5,393,188,438"/>
+<area shape="rect" id="node4" href="$sparse_8hpp.html" title=" " alt="" coords="5,486,188,530"/>
+<area shape="rect" id="node6" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="133,208,316,252"/>
 </map>

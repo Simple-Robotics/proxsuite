@@ -2,7 +2,7 @@ var searchData=
 [
   ['c_5ffloat_0',['c_float',['../namespaceproxsuite_1_1proxqp_1_1utils.html#a650ecc15a52850da1b1ed5c7da717fa6',1,'proxsuite::proxqp::utils']]],
   ['c_5fint_1',['c_int',['../namespaceproxsuite_1_1proxqp_1_1utils.html#a0ffa0df170a2d30e3f1a7fe86a097745',1,'proxsuite::proxqp::utils']]],
-  ['call_5fexpr_2',['call_expr',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta.html#af682ec2b7d5f4baee1e297ed6cd14b93',1,'proxsuite::linalg::veg::_detail::_meta']]],
+  ['call_5fexpr_2',['call_expr',['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta.html#a24b95e96ec296505659b26ab9221d85b',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['carray_3',['CArray',['../namespaceproxsuite_1_1linalg_1_1veg.html#a6dd746a91c319f43ad76c410334026d0',1,'proxsuite::linalg::veg']]],
   ['cmpeq_4',['CmpEq',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html#a69bffba6f7d1953babf706eefacf3a10',1,'proxsuite::linalg::veg::_detail::binary_traits']]],
   ['cmpge_5',['CmpGE',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html#a5ccb3a61e73e4c41dafc8b7a488a44fa',1,'proxsuite::linalg::veg::_detail::binary_traits']]],
@@ -10,7 +10,7 @@ var searchData=
   ['cmple_7',['CmpLE',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html#a24a19301d2591182950dea900b740bff',1,'proxsuite::linalg::veg::_detail::binary_traits']]],
   ['cmplt_8',['CmpLT',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html#ab2ecf4bbc33a633f474ed24fdf97d215',1,'proxsuite::linalg::veg::_detail::binary_traits']]],
   ['cmpneq_9',['CmpNEq',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html#a7e1e22e1e720d5ab4b7a06bb2b0a73f1',1,'proxsuite::linalg::veg::_detail::binary_traits']]],
-  ['col_10',['Col',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01false_01_4.html#aec77c819f2649d4a0c523b6ffd7239f4',1,'proxsuite::linalg::dense::_detail::RowColAccessImpl&lt; false &gt;::Col()'],['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01true_01_4.html#ab86a243c5226ddd52e2a5496b0a31a99',1,'proxsuite::linalg::dense::_detail::RowColAccessImpl&lt; true &gt;::Col()']]],
+  ['col_10',['Col',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01false_01_4.html#a8c92d5cb229f41102c7c4d9406496e8c',1,'proxsuite::linalg::dense::_detail::RowColAccessImpl&lt; false &gt;::Col()'],['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl_3_01true_01_4.html#affba73e2d8cee2977c147a6d06947d05',1,'proxsuite::linalg::dense::_detail::RowColAccessImpl&lt; true &gt;::Col()']]],
   ['coltovec_11',['ColToVec',['../namespaceproxsuite_1_1proxqp_1_1detail.html#a8524bebe576fa3059e14cbbd4939c018',1,'proxsuite::proxqp::detail']]],
   ['coltovecmut_12',['ColToVecMut',['../namespaceproxsuite_1_1proxqp_1_1detail.html#a94a8cc9d0cb3a98941131e19c885d0cd',1,'proxsuite::proxqp::detail']]],
   ['comptimecols_13',['CompTimeCols',['../namespaceproxsuite_1_1proxqp_1_1eigen.html#a037b2d95277474861f6b75500fabfc94',1,'proxsuite::proxqp::eigen']]],

@@ -49,7 +49,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1__detail =
     [ "SimpleLeaf", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1SimpleLeaf.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1SimpleLeaf" ],
     [ "WithArg", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg" ],
     [ "Wrapper", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Wrapper.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Wrapper" ],
-    [ "parser", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa95499c0584fd83b4968c2f0dc8c452a", null ],
+    [ "parser", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a383e7f72be5668bd354b8b1c036d440e", null ],
     [ "Empty", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a917ab6594dad2c9e153675dd2cd6274e", null ],
     [ "EmptyArr", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a9231417c436af289092fe0da65abd62f", null ],
     [ "SimpleTuple", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#af2a75221ca940c3e7b37812b7fe0602b", null ],

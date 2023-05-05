@@ -1,14 +1,14 @@
 <map id="include/proxsuite/proxqp/dense/fwd.hpp" name="include/proxsuite/proxqp/dense/fwd.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="152,5,335,45"/>
-<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,181,188,221"/>
-<area shape="rect" id="node7" href="$proxqp_2dense_2model_8hpp.html" title=" " alt="" coords="471,93,653,133"/>
-<area shape="rect" id="node12" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="134,93,353,133"/>
-<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="264,269,447,309"/>
-<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="135,357,317,397"/>
-<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="23,445,205,485"/>
-<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="230,445,449,485"/>
-<area shape="rect" id="node8" href="$linesearch_8hpp.html" title=" " alt="" coords="471,181,653,221"/>
-<area shape="rect" id="node9" href="$dense_2utils_8hpp.html" title=" " alt="" coords="264,181,447,221"/>
-<area shape="rect" id="node10" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="678,181,905,221"/>
-<area shape="rect" id="node11" href="$serialization_2model_8hpp.html" title=" " alt="" coords="929,181,1147,221"/>
+<area shape="rect" id="node1" title=" " alt="" coords="152,5,334,50"/>
+<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,191,188,235"/>
+<area shape="rect" id="node7" href="$proxqp_2dense_2model_8hpp.html" title=" " alt="" coords="468,98,650,143"/>
+<area shape="rect" id="node12" href="$dense_2preconditioner_2ruiz_8hpp.html" title=" " alt="" coords="134,98,352,143"/>
+<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="261,283,444,328"/>
+<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="133,376,316,421"/>
+<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="21,469,204,513"/>
+<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="228,469,445,513"/>
+<area shape="rect" id="node8" href="$linesearch_8hpp.html" title=" " alt="" coords="468,191,650,235"/>
+<area shape="rect" id="node9" href="$dense_2utils_8hpp.html" title=" " alt="" coords="261,191,444,235"/>
+<area shape="rect" id="node10" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="674,191,900,235"/>
+<area shape="rect" id="node11" href="$serialization_2model_8hpp.html" title=" " alt="" coords="924,191,1141,235"/>
 </map>

@@ -1,12 +1,12 @@
 <map id="proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface&lt; D, I &gt;" name="proxsuite::linalg::sparse::_detail::SymbolicMatRefInterface&lt; D, I &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,239,216,294"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="274,5,485,75"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="264,99,495,168"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="274,192,485,261"/>
-<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="294,285,465,325"/>
-<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html" title=" " alt="" coords="272,349,487,389"/>
-<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="274,414,485,469"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="565,207,738,247"/>
-<area shape="rect" id="node9" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="565,389,738,429"/>
-<area shape="rect" id="node10" href="$structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut.html" title=" " alt="" coords="543,453,760,493"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,262,215,324"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="273,5,482,84"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="263,108,492,187"/>
+<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="273,211,482,289"/>
+<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="293,313,462,358"/>
+<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html" title=" " alt="" coords="271,382,484,427"/>
+<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="273,451,482,513"/>
+<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="562,228,734,272"/>
+<area shape="rect" id="node9" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="562,425,734,470"/>
+<area shape="rect" id="node10" href="$structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut.html" title=" " alt="" coords="540,494,756,539"/>
 </map>

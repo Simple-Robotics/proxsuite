@@ -1,13 +1,13 @@
 <map id="include/proxsuite/proxqp/utils/prints.hpp" name="include/proxsuite/proxqp/utils/prints.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="343,5,525,45"/>
-<area shape="rect" id="node2" href="$dense_2utils_8hpp.html" title=" " alt="" coords="240,93,423,133"/>
-<area shape="rect" id="node7" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="460,93,643,133"/>
-<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="215,181,397,221"/>
-<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="215,269,397,309"/>
-<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="5,357,188,397"/>
-<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="213,357,431,397"/>
-<area shape="rect" id="node8" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="464,269,647,309"/>
-<area shape="rect" id="node11" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="473,181,656,221"/>
-<area shape="rect" id="node9" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="464,357,647,397"/>
-<area shape="rect" id="node10" href="$sparse_8hpp.html" title=" " alt="" coords="464,445,647,485"/>
+<area shape="rect" id="node1" title=" " alt="" coords="340,5,522,50"/>
+<area shape="rect" id="node2" href="$dense_2utils_8hpp.html" title=" " alt="" coords="237,98,420,143"/>
+<area shape="rect" id="node7" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="456,98,638,143"/>
+<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="213,191,396,235"/>
+<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="213,283,396,328"/>
+<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="5,376,188,421"/>
+<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="212,376,429,421"/>
+<area shape="rect" id="node8" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="461,283,644,328"/>
+<area shape="rect" id="node11" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="469,191,652,235"/>
+<area shape="rect" id="node9" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="461,376,644,421"/>
+<area shape="rect" id="node10" href="$sparse_8hpp.html" title=" " alt="" coords="461,469,644,513"/>
 </map>

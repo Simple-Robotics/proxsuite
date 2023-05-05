@@ -1,10 +1,10 @@
 <map id="tl::detail::optional_move_assign_base&lt; T, false &gt;" name="tl::detail::optional_move_assign_base&lt; T, false &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="68,584,248,639"/>
-<area shape="rect" id="node2" href="$structtl_1_1detail_1_1optional__copy__assign__base.html" title=" " alt="" coords="71,480,245,535"/>
-<area shape="rect" id="node3" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="69,391,247,431"/>
-<area shape="rect" id="node4" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="72,301,244,341"/>
-<area shape="rect" id="node5" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="71,212,245,252"/>
-<area shape="rect" id="node6" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,123,253,163"/>
-<area shape="rect" id="node7" href="$structtl_1_1detail_1_1optional__storage__base_1_1dummy.html" title=" " alt="" coords="5,5,180,60"/>
-<area shape="rect" id="node8" title=" " alt="" coords="204,20,243,45"/>
+<area shape="rect" id="node1" title=" " alt="" coords="68,619,248,681"/>
+<area shape="rect" id="node2" href="$structtl_1_1detail_1_1optional__copy__assign__base.html" title=" " alt="" coords="71,508,245,570"/>
+<area shape="rect" id="node3" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="69,414,247,459"/>
+<area shape="rect" id="node4" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="72,320,244,365"/>
+<area shape="rect" id="node5" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="71,226,245,271"/>
+<area shape="rect" id="node6" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,253,177"/>
+<area shape="rect" id="node7" href="$structtl_1_1detail_1_1optional__storage__base_1_1dummy.html" title=" " alt="" coords="5,5,180,67"/>
+<area shape="rect" id="node8" title=" " alt="" coords="204,22,242,50"/>
 </map>

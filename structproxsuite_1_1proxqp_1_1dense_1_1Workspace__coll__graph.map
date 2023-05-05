@@ -1,8 +1,8 @@
 <map id="proxsuite::proxqp::dense::Workspace&lt; T &gt;" name="proxsuite::proxqp::dense::Workspace&lt; T &gt;">
-<area shape="rect" id="node1" title="This class defines the workspace of the dense solver." alt="" coords="611,134,789,174"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="301,99,500,139"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="51,5,206,60"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,85,252,154"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="21,179,236,233"/>
-<area shape="rect" id="node6" title=" " alt="" coords="375,164,427,189"/>
+<area shape="rect" id="node1" title="This class defines the workspace of the dense solver." alt="" coords="607,145,785,189"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="300,109,497,153"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="51,5,205,67"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,92,251,170"/>
+<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="21,195,235,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="373,177,424,205"/>
 </map>

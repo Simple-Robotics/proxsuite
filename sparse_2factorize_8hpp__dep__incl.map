@@ -1,9 +1,9 @@
 <map id="include/proxsuite/linalg/sparse/factorize.hpp" name="include/proxsuite/linalg/sparse/factorize.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="103,5,278,45"/>
-<area shape="rect" id="node2" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="99,357,282,397"/>
-<area shape="rect" id="node5" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="294,181,477,221"/>
-<area shape="rect" id="node6" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="165,269,347,309"/>
-<area shape="rect" id="node7" href="$sparse_2views_8hpp.html" title=" " alt="" coords="35,93,218,133"/>
-<area shape="rect" id="node3" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="99,445,282,485"/>
-<area shape="rect" id="node4" href="$sparse_8hpp.html" title=" " alt="" coords="99,533,282,573"/>
+<area shape="rect" id="node1" title=" " alt="" coords="103,5,277,50"/>
+<area shape="rect" id="node2" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="99,376,281,421"/>
+<area shape="rect" id="node5" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="291,191,473,235"/>
+<area shape="rect" id="node6" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="163,283,345,328"/>
+<area shape="rect" id="node7" href="$sparse_2views_8hpp.html" title=" " alt="" coords="35,98,217,143"/>
+<area shape="rect" id="node3" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="99,469,281,513"/>
+<area shape="rect" id="node4" href="$sparse_8hpp.html" title=" " alt="" coords="99,561,281,606"/>
 </map>

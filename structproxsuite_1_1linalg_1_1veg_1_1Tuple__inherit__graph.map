@@ -1,11 +1,11 @@
 <map id="proxsuite::linalg::veg::Tuple&lt; Ts &gt;" name="proxsuite::linalg::veg::Tuple&lt; Ts &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="280,345,415,385"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="483,5,737,60"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="463,85,757,213"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="524,237,696,306"/>
-<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="513,330,707,399"/>
-<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="485,424,735,479"/>
-<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="519,503,701,587"/>
-<area shape="rect" id="node9" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="525,611,695,681"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html" title=" " alt="" coords="5,330,232,399"/>
+<area shape="rect" id="node1" title=" " alt="" coords="280,382,414,427"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="483,5,736,67"/>
+<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="462,91,756,238"/>
+<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="524,262,695,341"/>
+<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="512,365,706,444"/>
+<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="485,468,734,530"/>
+<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="519,554,699,649"/>
+<area shape="rect" id="node9" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="525,673,694,752"/>
+<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html" title=" " alt="" coords="5,365,232,444"/>
 </map>

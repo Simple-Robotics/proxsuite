@@ -1,14 +1,14 @@
 <map id="include/proxsuite/linalg/veg/type_traits/tags.hpp" name="include/proxsuite/linalg/veg/type_traits/tags.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="939,5,1123,45"/>
-<area shape="rect" id="node2" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="801,93,957,133"/>
-<area shape="rect" id="node10" href="$prologue_8hpp.html" title=" " alt="" coords="803,357,968,397"/>
-<area shape="rect" id="node12" href="$epilogue_8hpp.html" title=" " alt="" coords="993,357,1157,397"/>
-<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="5,357,171,397"/>
-<area shape="rect" id="node6" href="$integer__seq_8hpp.html" title=" " alt="" coords="657,181,841,221"/>
-<area shape="rect" id="node4" title=" " alt="" coords="8,445,75,471"/>
-<area shape="rect" id="node5" title=" " alt="" coords="99,445,170,471"/>
-<area shape="rect" id="node7" href="$macros_8hpp.html" title=" " alt="" coords="634,269,790,309"/>
-<area shape="rect" id="node8" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="195,357,429,397"/>
-<area shape="rect" id="node9" href="$preprocessor_8hpp.html" title=" " alt="" coords="453,357,643,397"/>
-<area shape="rect" id="node11" title=" " alt="" coords="667,365,778,390"/>
+<area shape="rect" id="node1" title=" " alt="" coords="933,5,1117,50"/>
+<area shape="rect" id="node2" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="795,98,951,143"/>
+<area shape="rect" id="node10" href="$prologue_8hpp.html" title=" " alt="" coords="799,376,963,421"/>
+<area shape="rect" id="node12" href="$epilogue_8hpp.html" title=" " alt="" coords="987,376,1151,421"/>
+<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="5,376,170,421"/>
+<area shape="rect" id="node6" href="$integer__seq_8hpp.html" title=" " alt="" coords="652,191,835,235"/>
+<area shape="rect" id="node4" title=" " alt="" coords="10,469,75,496"/>
+<area shape="rect" id="node5" title=" " alt="" coords="100,469,169,496"/>
+<area shape="rect" id="node7" href="$macros_8hpp.html" title=" " alt="" coords="630,283,785,328"/>
+<area shape="rect" id="node8" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="194,376,426,421"/>
+<area shape="rect" id="node9" href="$preprocessor_8hpp.html" title=" " alt="" coords="451,376,641,421"/>
+<area shape="rect" id="node11" title=" " alt="" coords="665,385,774,412"/>
 </map>

@@ -1,9 +1,9 @@
 <map id="include/proxsuite/proxqp/dense/preconditioner/ruiz.hpp" name="include/proxsuite/proxqp/dense/preconditioner/ruiz.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="194,5,413,45"/>
-<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,93,188,133"/>
-<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="173,269,356,309"/>
-<area shape="rect" id="node7" href="$dense_2utils_8hpp.html" title=" " alt="" coords="212,93,395,133"/>
-<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="173,181,356,221"/>
-<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="61,357,244,397"/>
-<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="269,357,487,397"/>
+<area shape="rect" id="node1" title=" " alt="" coords="194,5,412,50"/>
+<area shape="rect" id="node2" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,98,188,143"/>
+<area shape="rect" id="node4" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="173,283,356,328"/>
+<area shape="rect" id="node7" href="$dense_2utils_8hpp.html" title=" " alt="" coords="212,98,394,143"/>
+<area shape="rect" id="node3" href="$dense_2solver_8hpp.html" title=" " alt="" coords="173,191,356,235"/>
+<area shape="rect" id="node5" href="$dense_8hpp.html" title=" " alt="" coords="61,376,244,421"/>
+<area shape="rect" id="node6" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="268,376,485,421"/>
 </map>

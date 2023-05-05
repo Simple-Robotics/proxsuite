@@ -1,13 +1,13 @@
 <map id="include/proxsuite/linalg/veg/type_traits/core.hpp" name="include/proxsuite/linalg/veg/type_traits/core.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="755,5,939,45"/>
-<area shape="rect" id="node2" href="$typedefs_8hpp.html" title=" " alt="" coords="5,269,171,309"/>
-<area shape="rect" id="node5" href="$integer__seq_8hpp.html" title=" " alt="" coords="691,93,875,133"/>
-<area shape="rect" id="node9" href="$prologue_8hpp.html" title=" " alt="" coords="991,269,1156,309"/>
-<area shape="rect" id="node11" href="$epilogue_8hpp.html" title=" " alt="" coords="802,269,966,309"/>
-<area shape="rect" id="node3" title=" " alt="" coords="8,357,75,383"/>
-<area shape="rect" id="node4" title=" " alt="" coords="99,357,170,383"/>
-<area shape="rect" id="node6" href="$macros_8hpp.html" title=" " alt="" coords="617,181,773,221"/>
-<area shape="rect" id="node7" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="195,269,429,309"/>
-<area shape="rect" id="node8" href="$preprocessor_8hpp.html" title=" " alt="" coords="453,269,643,309"/>
-<area shape="rect" id="node10" title=" " alt="" coords="667,277,778,302"/>
+<area shape="rect" id="node1" title=" " alt="" coords="751,5,934,50"/>
+<area shape="rect" id="node2" href="$typedefs_8hpp.html" title=" " alt="" coords="5,283,170,328"/>
+<area shape="rect" id="node5" href="$integer__seq_8hpp.html" title=" " alt="" coords="687,98,870,143"/>
+<area shape="rect" id="node9" href="$prologue_8hpp.html" title=" " alt="" coords="985,283,1150,328"/>
+<area shape="rect" id="node11" href="$epilogue_8hpp.html" title=" " alt="" coords="798,283,961,328"/>
+<area shape="rect" id="node3" title=" " alt="" coords="10,376,75,404"/>
+<area shape="rect" id="node4" title=" " alt="" coords="100,376,169,404"/>
+<area shape="rect" id="node6" href="$macros_8hpp.html" title=" " alt="" coords="614,191,769,235"/>
+<area shape="rect" id="node7" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="194,283,426,328"/>
+<area shape="rect" id="node8" href="$preprocessor_8hpp.html" title=" " alt="" coords="451,283,641,328"/>
+<area shape="rect" id="node10" title=" " alt="" coords="665,292,774,320"/>
 </map>

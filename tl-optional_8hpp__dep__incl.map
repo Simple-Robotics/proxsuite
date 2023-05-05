@@ -1,20 +1,20 @@
 <map id="include/proxsuite/helpers/tl&#45;optional.hpp" name="include/proxsuite/helpers/tl&#45;optional.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="597,5,783,45"/>
-<area shape="rect" id="node2" href="$optional_8hpp.html" title=" " alt="" coords="597,93,783,133"/>
-<area shape="rect" id="node3" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,269,188,309"/>
-<area shape="rect" id="node8" href="$proxqp_2results_8hpp.html" title=" " alt="" coords="599,181,781,221"/>
-<area shape="rect" id="node18" href="$sparse_2helpers_8hpp.html" title=" " alt="" coords="1003,181,1185,221"/>
-<area shape="rect" id="node4" href="$dense_2solver_8hpp.html" title=" " alt="" coords="176,357,359,397"/>
-<area shape="rect" id="node5" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="139,445,321,485"/>
-<area shape="rect" id="node6" href="$dense_8hpp.html" title=" " alt="" coords="121,533,304,573"/>
-<area shape="rect" id="node7" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="329,533,547,573"/>
-<area shape="rect" id="node9" href="$linesearch_8hpp.html" title=" " alt="" coords="212,269,395,309"/>
-<area shape="rect" id="node10" href="$dense_2utils_8hpp.html" title=" " alt="" coords="419,269,601,309"/>
-<area shape="rect" id="node11" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="764,533,947,573"/>
-<area shape="rect" id="node12" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="764,621,947,661"/>
-<area shape="rect" id="node14" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="728,357,911,397"/>
-<area shape="rect" id="node15" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="829,445,1012,485"/>
-<area shape="rect" id="node16" href="$sparse_2views_8hpp.html" title=" " alt="" coords="888,269,1071,309"/>
-<area shape="rect" id="node17" href="$serialization_2results_8hpp.html" title=" " alt="" coords="1095,269,1314,309"/>
-<area shape="rect" id="node13" href="$sparse_8hpp.html" title=" " alt="" coords="764,709,947,749"/>
+<area shape="rect" id="node1" title=" " alt="" coords="596,5,781,50"/>
+<area shape="rect" id="node2" href="$optional_8hpp.html" title=" " alt="" coords="596,98,781,143"/>
+<area shape="rect" id="node3" href="$dense_2helpers_8hpp.html" title=" " alt="" coords="5,283,188,328"/>
+<area shape="rect" id="node8" href="$proxqp_2results_8hpp.html" title=" " alt="" coords="597,191,780,235"/>
+<area shape="rect" id="node18" href="$sparse_2helpers_8hpp.html" title=" " alt="" coords="1000,191,1182,235"/>
+<area shape="rect" id="node4" href="$dense_2solver_8hpp.html" title=" " alt="" coords="176,376,358,421"/>
+<area shape="rect" id="node5" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="139,469,321,513"/>
+<area shape="rect" id="node6" href="$dense_8hpp.html" title=" " alt="" coords="121,561,304,606"/>
+<area shape="rect" id="node7" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="328,561,545,606"/>
+<area shape="rect" id="node9" href="$linesearch_8hpp.html" title=" " alt="" coords="212,283,394,328"/>
+<area shape="rect" id="node10" href="$dense_2utils_8hpp.html" title=" " alt="" coords="419,283,601,328"/>
+<area shape="rect" id="node11" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="763,561,945,606"/>
+<area shape="rect" id="node12" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="763,654,945,699"/>
+<area shape="rect" id="node14" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="725,376,908,421"/>
+<area shape="rect" id="node15" href="$sparse_2workspace_8hpp.html" title=" " alt="" coords="827,469,1009,513"/>
+<area shape="rect" id="node16" href="$sparse_2views_8hpp.html" title=" " alt="" coords="884,283,1066,328"/>
+<area shape="rect" id="node17" href="$serialization_2results_8hpp.html" title=" " alt="" coords="1091,283,1308,328"/>
+<area shape="rect" id="node13" href="$sparse_8hpp.html" title=" " alt="" coords="763,747,945,791"/>
 </map>

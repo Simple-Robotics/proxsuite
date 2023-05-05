@@ -1,8 +1,8 @@
 <map id="proxsuite::proxqp::sparse::Model&lt; T, I &gt;" name="proxsuite::proxqp::sparse::Model&lt; T, I &gt;">
-<area shape="rect" id="node1" title="This class stores the model of the QP problem." alt="" coords="685,108,848,148"/>
-<area shape="rect" id="node2" title=" " alt="" coords="373,70,425,95"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="332,152,467,192"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,66,221,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="5,145,283,199"/>
-<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,223,251,278"/>
+<area shape="rect" id="node1" title="This class stores the model of the QP problem." alt="" coords="683,125,846,170"/>
+<area shape="rect" id="node2" title=" " alt="" coords="373,84,424,112"/>
+<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="331,174,465,219"/>
+<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,81,220,142"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,166,282,228"/>
+<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,251,250,313"/>
 </map>
