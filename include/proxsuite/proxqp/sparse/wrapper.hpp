@@ -798,18 +798,18 @@ struct VectorQP
     return qp;
   };
 
-  /*!
-   * Init a QP in place and return a reference to it
-   */
-  QP<T, I>& init_qp_in_place(const sparse::SparseMat<bool, I>& H,
-                             const sparse::SparseMat<bool, I>& A,
-                             const sparse::SparseMat<bool, I>& C)
-  {
-    vector_qp.emplace_back(H.rows(), A.rows(), C.rows());
-    auto& qp = vector_qp.back();
-    m_size++;
-    return qp;
-  };
+  // /*!
+  //  * Init a QP in place and return a reference to it
+  //  */
+  // QP<T, I>& init_qp_in_place(const sparse::SparseMat<bool, I>& H,
+  //                            const sparse::SparseMat<bool, I>& A,
+  //                            const sparse::SparseMat<bool, I>& C)
+  // {
+  //   vector_qp.emplace_back(H.rows(), A.rows(), C.rows());
+  //   auto& qp = vector_qp.back();
+  //   m_size++;
+  //   return qp;
+  // };
 
   /*!
    * Inserts a qp to the end of vector_qp

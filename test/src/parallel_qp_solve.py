@@ -175,7 +175,8 @@ class ParallelWrapper(unittest.TestCase):
             )
             qps.append(qp)
 
-            qp_compare = qp_vector.init_qp_in_place(H_, A_, C_)
+            # qp_compare = qp_vector.init_qp_in_place(H_, A_, C_)
+            qp_compare = qp_vector.init_qp_in_place(H.shape[0], A.shape[0], C.shape[0])
             qp_compare.settings.eps_abs = 1.0e-9
             qp_compare.settings.verbose = False
             qp_compare.init(
