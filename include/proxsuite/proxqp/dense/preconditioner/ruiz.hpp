@@ -76,6 +76,7 @@ ruiz_scale_qp_in_place( //
   LDLT_TEMP_VEC(T, delta, n + n_eq + n_constraints, stack);
   i64 iter = 1;
   while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
+
     if (logger_ptr != nullptr) {
       *logger_ptr                                   //
         << "j : "                                   //

@@ -268,7 +268,7 @@ exposeQpObjectDense(pybind11::module_ m)
          "function used for cleaning the workspace and result "
          "classes.")
     .def("compute_backward",
-         &dense::QP<T>::compute_backward,
+         &dense::QP<T>::compute_backward_full,
          "compute the backward jacobians wrt a loss jacobians.")
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)

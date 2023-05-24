@@ -7,6 +7,7 @@
 
 #ifndef PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
@@ -1289,6 +1290,47 @@ public:
       model.backward_data.dL_dg = work.dw_aug.head(model.dim);
     }
   }
+  void compute_extended_conservative_jacobians(Workspace<T>& work,
+                                               Model<T>& model,
+                                               Settings<T>& settings,
+                                               Results<T>& results,
+                                               Mat<T>& dG_dv,
+                                               Vec<T>& dG_dtheta,
+                                               bool sparse_mode = true,
+                                               T eps = 1.E-3)
+  {
+    // allocate once an equality QP used for computing then all jacobians
+    if (sparse_mode) {
+      using c_int = long long;
+      proxqp::sparse::QP<T, c_int> qp(dG_dv.cols(), dG_dv.rows(), 0);
+      qp.settings.eps_abs = eps;
+      qp.init(std::nullopt,
+              std::nullopt,
+              dG_dv.sparseView(),
+              dG_dtheta,
+              std::nullopt,
+              std::nullopt,
+              std::nullopt);
+    } else {
+      proxqp::dense::QP<T> qp(dG_dv.cols(), dG_dv.rows(), 0);
+      qp.settings.eps_abs = eps;
+      qp.init(std::nullopt,
+              std::nullopt,
+              dG_dv,
+              dG_dtheta,
+              std::nullopt,
+              std::nullopt,
+              std::nullopt);
+    }
+    // TODO perform jacobian calculus with parallel linear system solving
+    // compute_jacobians_wrt_dH(work, model, settings, results);
+    // compute_jacobians_wrt_dg(work, model, settings, results);
+    // compute_jacobians_wrt_dA(work, model, settings, results);
+    // compute_jacobians_wrt_db(work, model, settings, results);
+    // compute_jacobians_wrt_dC(work, model, settings, results);
+    // compute_jacobians_wrt_du(work, model, settings, results);
+    // compute_jacobians_wrt_dl(work, model, settings, results);
+  }
   void compute_backward(Vec<T>& loss_derivative, T eps = 1.E-4)
   {
     bool check = results.info.status != QPSolverOutput::PROXQP_SOLVED &&
@@ -1317,6 +1359,7 @@ public:
       work.active_set_up.array() = (work.CTz - model.u).array() >= 0.;
       work.active_set_low.array() = (work.CTz - model.l).array() <= 0.;
       work.active_inequalities = work.active_set_up || work.active_set_low;
+      // std::cout << "J " << work.active_inequalities << std::endl;
       isize numactive_inequalities = work.active_inequalities.count();
       isize inner_pb_dim = model.dim + model.n_eq + numactive_inequalities;
       work.rhs.setZero();
@@ -1331,6 +1374,7 @@ public:
       // iterative refinement, a factorization from scratch is directly
       // performed with new mu and rho as well to enable more stability
       proxsuite::proxqp::dense::setup_factorization(work, model, results);
+      // std::cout << "kkt " << work.kkt << std::endl;
       work.n_c = 0;
       for (isize i = 0; i < model.n_in; i++) {
         work.current_bijection_map(i) = i;
@@ -1341,7 +1385,9 @@ public:
 
       work.rhs.head(model.dim) =
         loss_derivative.head(model.dim); //-loss_derivative.head(model.dim);
-
+      // std::cout << "rhs " << work.rhs << std::endl;
+      // std::cout << "ldlt " << work.ldl.dbg_reconstructed_matrix() <<
+      // std::endl;
       ruiz.scale_dual_residual_in_place(
         VectorViewMut<T>{ from_eigen, work.rhs.head(model.dim) });
       if (!work.rhs.segment(model.dim, model.n_eq).isZero()) {
@@ -1384,6 +1430,7 @@ public:
         // }
       }
       work.dw_aug.tail(model.n_in) = work.active_part_z;
+      // std::cout << "sol " << work.dw_aug << std::endl;
       ruiz.unscale_primal_in_place(
         VectorViewMut<T>{ from_eigen, work.dw_aug.head(model.dim) });
       ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{
@@ -1422,19 +1469,10 @@ public:
       model.backward_data.dL_dg = work.dw_aug.head(model.dim);
     }
   }
-  void compute_backward_(VecRef<T> loss_derivative, T eps = 1.E-4)
+  void compute_backward_full(Vec<T>& loss_derivative, T eps = 1.E-4)
   {
-    bool check = results.info.status != QPSolverOutput::PROXQP_SOLVED &&
-                 results.info.status !=
-                   QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE &&
-                 results.info.status != QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+    bool check = results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
     if (check) {
-      // Add it as option warning without max iter reached
-      // PROXSUITE_THROW_PRETTY(
-      //   true,
-      //   std::invalid_argument,
-      //   "the QP problem has not been solved, so computing the derivatives "
-      //   "is not valid.");
       PROXSUITE_THROW_PRETTY(
         true,
         std::invalid_argument,
@@ -1454,14 +1492,15 @@ public:
       isize inner_pb_dim = model.dim + model.n_eq + numactive_inequalities;
       work.rhs.setZero();
       // work.dw_aug.setZero(); zeroed in active_set_change
-      T rho_new = 1.e-4;
-      results.info.mu_eq = rho_new;
-      results.info.mu_in = rho_new;
+      T rho_new = 1.e-3;
+      results.info.mu_eq = 5.E-5;
+      results.info.mu_in = 5.E-5;
+      results.info.rho = rho_new;
+
       // a large amount of constraints might have changed
       // so in order to avoid to much refactorization later in the
       // iterative refinement, a factorization from scratch is directly
       // performed with new mu and rho as well to enable more stability
-      // std::cout << "A scaled " << work.A_scaled << std::endl;
       proxsuite::proxqp::dense::setup_factorization(work, model, results);
       work.n_c = 0;
       for (isize i = 0; i < model.n_in; i++) {
@@ -1469,22 +1508,13 @@ public:
         work.new_bijection_map(i) = i;
       }
       linesearch::active_set_change(model, results, work);
-      bool check_bis = numactive_inequalities == work.n_c;
-      if (!check_bis) {
-        std::cout << "work.n_c "
-                  << " numactive_inequalities " << numactive_inequalities
-                  << std::endl;
-      }
-      work.rhs.head(model.dim) =
-        loss_derivative.head(model.dim); //-loss_derivative.head(model.dim);
-      // std::cout << "work.active_set_up " << work.active_set_up << std::endl;
-      // std::cout << "work.rhs " << work.rhs<< std::endl;
+      work.constraints_changed = false; // no refactorization afterwords
 
+      work.rhs = loss_derivative; // take full derivatives
       ruiz.scale_dual_residual_in_place(
         VectorViewMut<T>{ from_eigen, work.rhs.head(model.dim) });
       if (!work.rhs.segment(model.dim, model.n_eq).isZero()) {
         work.rhs.segment(model.dim, model.n_eq) =
-          // -loss_derivative.segment(model.dim, model.n_eq);
           loss_derivative.segment(model.dim, model.n_eq);
         ruiz.scale_primal_residual_in_place_eq(VectorViewMut<T>{
           from_eigen, work.rhs.segment(model.dim, model.n_eq) });
@@ -1493,9 +1523,8 @@ public:
         for (isize i = 0; i < model.n_in; i++) {
           isize j = work.current_bijection_map(i);
           if (j < work.n_c) {
-            work.rhs(j + model.dim + model.n_eq) = loss_derivative(
-              i + model.dim +
-              model.n_eq); //-loss_derivative(i + model.dim + model.n_eq);
+            work.rhs(j + model.dim + model.n_eq) =
+              loss_derivative(i + model.dim + model.n_eq);
           }
           ruiz.scale_primal_residual_in_place_in(
             VectorViewMut<T>{ from_eigen, work.rhs.tail(model.n_in) });
@@ -1522,6 +1551,7 @@ public:
         // }
       }
       work.dw_aug.tail(model.n_in) = work.active_part_z;
+      // std::cout << "sol " << work.dw_aug << std::endl;
       ruiz.unscale_primal_in_place(
         VectorViewMut<T>{ from_eigen, work.dw_aug.head(model.dim) });
       ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{
@@ -1535,14 +1565,17 @@ public:
       model.backward_data.dL_dC.noalias() +=
         results.z * work.dw_aug.head(model.dim).transpose();
 
-      model.backward_data.dL_du = -work.dw_aug.tail(model.n_in);
-      // (work.active_set_up)
-      //   .select(-work.dw_aug.tail(model.n_in),
-      //           Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
-      model.backward_data.dL_dl = -work.dw_aug.tail(model.n_in);
-      // (work.active_set_low)
-      //   .select(-work.dw_aug.tail(model.n_in),
-      //           Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
+      // model.backward_data.dL_du = -work.dw_aug.tail(model.n_in);
+      model.backward_data.dL_du =
+        (work.active_set_up)
+          .select(-work.dw_aug.tail(model.n_in),
+                  Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
+
+      // model.backward_data.dL_dl = -work.dw_aug.tail(model.n_in);
+      model.backward_data.dL_dl =
+        (work.active_set_low)
+          .select(-work.dw_aug.tail(model.n_in),
+                  Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(model.n_in));
 
       model.backward_data.dL_dA.noalias() =
         work.dw_aug.segment(model.dim, model.n_eq) * results.x.transpose();
