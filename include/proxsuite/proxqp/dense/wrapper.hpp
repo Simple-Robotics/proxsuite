@@ -1543,12 +1543,9 @@ public:
         isize i = work.current_bijection_map(j);
         if (i < work.n_c) {
           work.active_part_z(j) = work.dw_aug(model.dim + model.n_eq + i);
+        } else {
+          work.active_part_z(j) = loss_derivative(model.dim + model.n_eq + i);
         }
-        // we actually don't care of the part below for jacobian calculus
-        // else {
-        //   work.active_part_z(j) = -loss_derivative(model.dim + model.n_eq +
-        //   j);
-        // }
       }
       work.dw_aug.tail(model.n_in) = work.active_part_z;
       // std::cout << "sol " << work.dw_aug << std::endl;
