@@ -103,7 +103,6 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    // qp.compute_backward_full(loss_derivatives[i], eps);
     dense::compute_backward_full(qp, loss_derivatives[i], eps);
   }
 }
@@ -130,7 +129,6 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    // qp.compute_backward_full(loss_derivatives[i], eps);
     dense::compute_backward_full(qp, loss_derivatives[i], eps);
   }
 }
