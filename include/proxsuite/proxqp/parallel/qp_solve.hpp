@@ -5,7 +5,8 @@
 #ifndef PROXSUITE_PROXQP_PARALLEL_QPSOLVE_HPP
 #define PROXSUITE_PROXQP_PARALLEL_QPSOLVE_HPP
 
-#include "proxsuite/proxqp/dense/wrapper.hpp"
+// #include "proxsuite/proxqp/dense/wrapper.hpp"
+#include "proxsuite/proxqp/dense/compute_ECJ.hpp"
 #include "proxsuite/proxqp/sparse/wrapper.hpp"
 #include "proxsuite/proxqp/parallel/omp.hpp"
 
@@ -102,7 +103,8 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    qp.compute_backward(loss_derivatives[i], eps);
+    // qp.compute_backward_full(loss_derivatives[i], eps);
+    dense::compute_backward_full(qp, loss_derivatives[i], eps);
   }
 }
 
@@ -128,7 +130,8 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    qp.compute_backward(loss_derivatives[i], eps);
+    // qp.compute_backward_full(loss_derivatives[i], eps);
+    dense::compute_backward_full(qp, loss_derivatives[i], eps);
   }
 }
 } // namespace dense

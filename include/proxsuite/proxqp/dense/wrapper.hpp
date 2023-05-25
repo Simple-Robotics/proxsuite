@@ -1290,47 +1290,7 @@ public:
       model.backward_data.dL_dg = work.dw_aug.head(model.dim);
     }
   }
-  void compute_extended_conservative_jacobians(Workspace<T>& work,
-                                               Model<T>& model,
-                                               Settings<T>& settings,
-                                               Results<T>& results,
-                                               Mat<T>& dG_dv,
-                                               Vec<T>& dG_dtheta,
-                                               bool sparse_mode = true,
-                                               T eps = 1.E-3)
-  {
-    // allocate once an equality QP used for computing then all jacobians
-    if (sparse_mode) {
-      using c_int = long long;
-      proxqp::sparse::QP<T, c_int> qp(dG_dv.cols(), dG_dv.rows(), 0);
-      qp.settings.eps_abs = eps;
-      qp.init(std::nullopt,
-              std::nullopt,
-              dG_dv.sparseView(),
-              dG_dtheta,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt);
-    } else {
-      proxqp::dense::QP<T> qp(dG_dv.cols(), dG_dv.rows(), 0);
-      qp.settings.eps_abs = eps;
-      qp.init(std::nullopt,
-              std::nullopt,
-              dG_dv,
-              dG_dtheta,
-              std::nullopt,
-              std::nullopt,
-              std::nullopt);
-    }
-    // TODO perform jacobian calculus with parallel linear system solving
-    // compute_jacobians_wrt_dH(work, model, settings, results);
-    // compute_jacobians_wrt_dg(work, model, settings, results);
-    // compute_jacobians_wrt_dA(work, model, settings, results);
-    // compute_jacobians_wrt_db(work, model, settings, results);
-    // compute_jacobians_wrt_dC(work, model, settings, results);
-    // compute_jacobians_wrt_du(work, model, settings, results);
-    // compute_jacobians_wrt_dl(work, model, settings, results);
-  }
+
   void compute_backward(Vec<T>& loss_derivative, T eps = 1.E-4)
   {
     bool check = results.info.status != QPSolverOutput::PROXQP_SOLVED &&
