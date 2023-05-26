@@ -66,6 +66,7 @@ solveDenseQpParallel(pybind11::module_ m)
         pybind11::overload_cast<optional<const size_t>,
                                 proxqp::dense::VectorQP<T>&,
                                 std::vector<proxqp::dense::Vec<T>>&,
+                                T,
                                 T>(&parallel::qp_solve_backward_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
@@ -74,12 +75,17 @@ solveDenseQpParallel(pybind11::module_ m)
         pybind11::arg_v("qps", "List of initialized dense Qps."),
         pybind11::arg_v("loss_derivatives", "List of loss derivatives."),
         pybind11::arg_v(
-          "eps", "Backward pass accuracy for deriving solution Jacobians."));
+          "eps", "Backward pass accuracy for deriving solution Jacobians."),
+        pybind11::arg_v("tol_fwd_bwd_computation",
+                        1.,
+                        "Tolerance level above which backward pass is computed "
+                        "using forward mode."));
 
   m.def("solve_backward_in_parallel",
         pybind11::overload_cast<optional<const size_t>,
                                 std::vector<proxqp::dense::QP<T>>&,
                                 std::vector<proxqp::dense::Vec<T>>&,
+                                T,
                                 T>(&parallel::qp_solve_backward_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
@@ -88,7 +94,11 @@ solveDenseQpParallel(pybind11::module_ m)
         pybind11::arg_v("qps", "List of initialized dense Qps."),
         pybind11::arg_v("loss_derivatives", "List of loss derivatives."),
         pybind11::arg_v(
-          "eps", "Backward pass accuracy for deriving solution Jacobians."));
+          "eps", "Backward pass accuracy for deriving solution Jacobians."),
+        pybind11::arg_v("tol_fwd_bwd_computation",
+                        1.,
+                        "Tolerance level above which backward pass is computed "
+                        "using forward mode."));
 }
 
 } // namespace python

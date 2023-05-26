@@ -87,7 +87,8 @@ qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
   std::vector<proxqp::dense::QP<T>>& qps,
   std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
-  T eps = 1.E-4)
+  T eps = 1.E-4,
+  T tol_for_forward_backward_computation = 1.)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -103,7 +104,8 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    dense::compute_backward(qp, loss_derivatives[i], eps);
+    dense::compute_backward(
+      qp, loss_derivatives[i], eps, tol_for_forward_backward_computation);
   }
 }
 
@@ -113,7 +115,8 @@ qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
   proxqp::dense::VectorQP<T>& qps,
   std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
-  T eps = 1.E-4)
+  T eps = 1.E-4,
+  T tol_for_forward_backward_computation = 1.)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -129,7 +132,8 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    dense::compute_backward(qp, loss_derivatives[i], eps);
+    dense::compute_backward(
+      qp, loss_derivatives[i], eps, tol_for_forward_backward_computation);
   }
 }
 } // namespace dense
