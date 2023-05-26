@@ -43,10 +43,6 @@ struct BackwardData
   Vec<T> dL_du;
   // dL_dl
   Vec<T> dL_dl;
-  // dL_dse
-  Vec<T> dL_dse;
-  // dL_dsi
-  Vec<T> dL_dsi;
 
   bool is_valid(isize dim, isize n_eq, isize n_in)
   {
@@ -104,18 +100,6 @@ struct BackwardData
     } else {
       return false;
     }
-    // dL_dse
-    if (dL_dse.size()) {
-      PROXSUITE_CHECK_SIZE(dL_dse.rows(), n_eq);
-    } else {
-      return false;
-    }
-    // dL_dsi
-    if (dL_dsi.size()) {
-      PROXSUITE_CHECK_SIZE(dL_dsi.rows(), n_in);
-    } else {
-      return false;
-    }
     return true;
 #undef PROXSUITE_CHECK_SIZE
   }
@@ -132,8 +116,6 @@ struct BackwardData
       dL_dC.resize(n_in, dim);
       dL_du.resize(n_in);
       dL_dl.resize(n_in);
-      // dL_dse.resize(n_eq);
-      // dL_dsi.resize(n_in);
     }
     dL_dH.setZero();
     dL_dg.setZero();
@@ -142,8 +124,6 @@ struct BackwardData
     dL_dC.setZero();
     dL_du.setZero();
     dL_dl.setZero();
-    // dL_dse.setZero();
-    // dL_dsi.setZero();
   }
 };
 

@@ -18,8 +18,7 @@ template<typename T>
 void
 compute_backward(dense::QP<T>& solved_qp,
                  Vec<T>& loss_derivative,
-                 T eps = 1.E-4,
-                 T tol_for_forward_backward_computation = 1.)
+                 T eps = 1.E-4)
 {
   bool check =
     solved_qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
@@ -98,16 +97,13 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.work,
       eps,
       inner_pb_dim); // /!\ the full rhs is zeroed inside
-    if (solved_qp.results.info.iterative_residual <
-        tol_for_forward_backward_computation) {
-      compute_backward_ESG(solved_qp, loss_derivative);
-    }
+    compute_backward_ESG(solved_qp, loss_derivative);
   }
 }
 
 template<typename T>
 void
-compute_backward_ESG(dense::QP<T>& solved_qp, Vec<T>& loss_derivative)
+compute_backward_loss_ESG(dense::QP<T>& solved_qp, Vec<T>& loss_derivative)
 {
   // use active_part_z as a temporary variable to derive unpermutted dz step
   solved_qp.work.active_part_z.setZero();
@@ -131,7 +127,7 @@ compute_backward_ESG(dense::QP<T>& solved_qp, Vec<T>& loss_derivative)
   solved_qp.ruiz.unscale_dual_in_place_in(VectorViewMut<T>{
     from_eigen, solved_qp.work.dw_aug.tail(solved_qp.model.n_in) });
 
-  /// compute bawkward derivatives
+  /// compute backward derivatives
   solved_qp.model.backward_data.dL_dC.noalias() =
     solved_qp.work.dw_aug.tail(solved_qp.model.n_in) *
     solved_qp.results.x.transpose();
