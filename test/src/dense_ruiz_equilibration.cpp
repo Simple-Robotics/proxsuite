@@ -13,8 +13,10 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   int dim = 5;
   int n_eq = 6;
   int n_in = 0;
-  auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default), 1:
-                                        // lower triangular ; else full matrix
+  // auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default),
+  // 1:
+  auto sym = proxqp::Symmetry::lower; // 0 : upper triangular (by default), 1:
+                                      // lower triangular ; else full matrix
 
   Scalar sparsity_factor(0.15);
   Scalar strong_convexity_factor(0.01);
@@ -34,7 +36,6 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
     default: {
     }
   }
-
   proxqp::dense::QP<Scalar> qp{ dim, n_eq, n_in }; // creating QP object
   qp.init(qp_random.H,
           qp_random.g,
