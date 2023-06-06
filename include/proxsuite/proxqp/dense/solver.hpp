@@ -455,14 +455,22 @@ template<typename T>
 auto
 compute_inner_loop_saddle_point(const Model<T>& qpmodel,
                                 Results<T>& qpresults,
-                                Workspace<T>& qpwork) -> T
+                                Workspace<T>& qpwork,
+                                const Settings<T>& qpsettings) -> T
 {
 
   qpwork.active_part_z =
     helpers::positive_part(qpwork.primal_residual_in_scaled_up) +
-    helpers::negative_part(qpwork.primal_residual_in_scaled_low) -
-    qpresults.z * qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
-                                        // + [Cx-l+z_prev*mu_in]- - z*mu_in
+    helpers::negative_part(qpwork.primal_residual_in_scaled_low);
+  if (qpsettings.gpdal_merit_function) {
+    qpwork.active_part_z -=
+      qpsettings.alpha_gpdal * qpresults.z *
+      qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+  } else {
+    qpwork.active_part_z -=
+      qpresults.z * qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+                                          // + [Cx-l+z_prev*mu_in]- - z*mu_in
+  }
 
   T err = infty_norm(qpwork.active_part_z);
   qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
@@ -503,9 +511,12 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
    *  primal_residual_in_scaled_up = Cx-u+mu_in(z_prev)
    *  primal_residual_in_scaled_low = Cx-l+mu_in(z_prev)
    */
-
+  // primal_residual_in_scaled_up = Cx-u+mu_in(z_prev) + mu_in(alpha_gdpal - 1)
+  // * z
   qpwork.active_set_up.array() =
     (qpwork.primal_residual_in_scaled_up.array() >= 0);
+  // primal_residual_in_scaled_low = Cx-l+mu_in(z_prev) + mu_in(alpha_gdpal - 1)
+  // * z
   qpwork.active_set_low.array() =
     (qpwork.primal_residual_in_scaled_low.array() <= 0);
   qpwork.active_inequalities = qpwork.active_set_up || qpwork.active_set_low;
@@ -521,21 +532,43 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
 
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
     -qpwork.primal_residual_eq_scaled;
-  for (isize i = 0; i < qpmodel.n_in; i++) {
-    isize j = qpwork.current_bijection_map(i);
-    if (j < qpwork.n_c) {
-      if (qpwork.active_set_up(i)) {
-        qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
-          -qpwork.primal_residual_in_scaled_up(i) +
-          qpresults.z(i) * qpresults.info.mu_in;
-      } else if (qpwork.active_set_low(i)) {
-        qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
-          -qpwork.primal_residual_in_scaled_low(i) +
-          qpresults.z(i) * qpresults.info.mu_in;
+  if (qpsettings.gpdal_merit_function) {
+    for (isize i = 0; i < qpmodel.n_in; i++) {
+      isize j = qpwork.current_bijection_map(i);
+      if (j < qpwork.n_c) {
+        if (qpwork.active_set_up(i)) {
+          qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+            -qpwork.primal_residual_in_scaled_up(i) +
+            qpresults.z(i) * qpresults.info.mu_in * qpsettings.alpha_gpdal;
+        } else if (qpwork.active_set_low(i)) {
+          qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+            -qpwork.primal_residual_in_scaled_low(i) +
+            qpresults.z(i) * qpresults.info.mu_in * qpsettings.alpha_gpdal;
+        }
+      } else {
+        qpwork.rhs.head(qpmodel.dim) +=
+          qpresults.z(i) *
+          qpwork.C_scaled.row(i); // unactive unrelevant columns
       }
-    } else {
-      qpwork.rhs.head(qpmodel.dim) +=
-        qpresults.z(i) * qpwork.C_scaled.row(i); // unactive unrelevant columns
+    }
+  } else {
+    for (isize i = 0; i < qpmodel.n_in; i++) {
+      isize j = qpwork.current_bijection_map(i);
+      if (j < qpwork.n_c) {
+        if (qpwork.active_set_up(i)) {
+          qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+            -qpwork.primal_residual_in_scaled_up(i) +
+            qpresults.z(i) * qpresults.info.mu_in;
+        } else if (qpwork.active_set_low(i)) {
+          qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq) =
+            -qpwork.primal_residual_in_scaled_low(i) +
+            qpresults.z(i) * qpresults.info.mu_in;
+        }
+      } else {
+        qpwork.rhs.head(qpmodel.dim) +=
+          qpresults.z(i) *
+          qpwork.C_scaled.row(i); // unactive unrelevant columns
+      }
     }
   }
 
@@ -626,12 +659,15 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
 
     Adx.noalias() += qpwork.A_scaled * dx;
     ATdy.noalias() += qpwork.A_scaled.transpose() * dy;
-
     Cdx.noalias() += qpwork.C_scaled * dx;
+    if (qpsettings.gpdal_merit_function) {
+      Cdx.noalias() +=
+        (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * dz;
+    }
     CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
 
     if (qpmodel.n_in > 0) {
-      linesearch::primal_dual_ls(qpmodel, qpresults, qpwork);
+      linesearch::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
     }
     auto alpha = qpwork.alpha;
 
@@ -664,7 +700,8 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     qpwork.dual_residual_scaled +=
       alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
 
-    err_in = dense::compute_inner_loop_saddle_point(qpmodel, qpresults, qpwork);
+    err_in = dense::compute_inner_loop_saddle_point(
+      qpmodel, qpresults, qpwork, qpsettings);
     /* for debug
     if (qpsettings.verbose) {
             std::cout << "           " << iter << "              " <<
@@ -1105,7 +1142,12 @@ qp_solve( //
       qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
     qpwork.primal_residual_in_scaled_low -=
       qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
-
+    if (qpsettings.gpdal_merit_function) {
+      qpwork.primal_residual_in_scaled_up +=
+        (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
+      qpwork.primal_residual_in_scaled_low +=
+        (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
+    }
     primal_dual_newton_semi_smooth(
       qpsettings, qpmodel, qpresults, qpwork, ruiz, bcl_eta_in);
 
