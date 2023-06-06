@@ -75,6 +75,8 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("eps_duality_gap_rel", &Settings<T>::eps_duality_gap_rel)
     .def_readwrite("verbose", &Settings<T>::verbose)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
+    .def_readwrite("gpdal_merit_function", &Settings<T>::gpdal_merit_function)
+    .def_readwrite("alpha_gpdal", &Settings<T>::alpha_gpdal)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
     .def(pybind11::pickle(

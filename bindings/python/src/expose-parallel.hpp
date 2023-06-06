@@ -9,7 +9,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h> // For binding STL containers
 
-PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double> >);
+PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double>>)
 
 namespace proxsuite {
 namespace proxqp {
@@ -22,15 +22,15 @@ template<typename T>
 void
 solveDenseQpParallel(pybind11::module_ m)
 {
-  pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(m, "VectorDenseQP");
+  pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(
+    m, "VectorDenseQP");
 
-  m.def(
-    "solve_in_parallel",
-    &parallel::qp_solve_in_parallel<T>,
-    "Function for solving a list of dense QPs in parallel.",
-    pybind11::arg_v("num_threads", "number of threads used for the computation."),
-    pybind11::arg_v("qps", "List of initialized dense Qps.")
-  );
+  m.def("solve_in_parallel",
+        &parallel::qp_solve_in_parallel<T>,
+        "Function for solving a list of dense QPs in parallel.",
+        pybind11::arg_v("num_threads",
+                        "number of threads used for the computation."),
+        pybind11::arg_v("qps", "List of initialized dense Qps."));
 }
 
 } // namespace python
