@@ -30,6 +30,12 @@ exposeSettings(pybind11::module_ m)
            InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT)
     .export_values();
 
+  ::pybind11::enum_<MeritFunctionType>(
+    m, "MeritFunctionType", pybind11::module_local())
+    .value("GPDAL", MeritFunctionType::GPDAL)
+    .value("PDAL", MeritFunctionType::PDAL)
+    .export_values();
+
   ::pybind11::enum_<SparseBackend>(m, "SparseBackend", pybind11::module_local())
     .value("Automatic", SparseBackend::Automatic)
     .value("MatrixFree", SparseBackend::MatrixFree)
@@ -75,7 +81,7 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("eps_duality_gap_rel", &Settings<T>::eps_duality_gap_rel)
     .def_readwrite("verbose", &Settings<T>::verbose)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
-    .def_readwrite("gpdal_merit_function", &Settings<T>::gpdal_merit_function)
+    .def_readwrite("merit_function_type", &Settings<T>::merit_function_type)
     .def_readwrite("alpha_gpdal", &Settings<T>::alpha_gpdal)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)

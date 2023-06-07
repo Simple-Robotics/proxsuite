@@ -5,11 +5,13 @@
 #ifndef PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
+#include <iostream>
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/settings.hpp"
+#include <signal.h>
 #include <cmath>
 
 namespace proxsuite {
@@ -367,6 +369,12 @@ primal_dual_ls(const Model<T>& qpmodel,
   // 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
   // dx)-u +ze/mu_in = 0
 
+  // std::cout << "qpwork.Cdx " << qpwork.Cdx<< std::endl;
+  // std::cout << "qpwork.primal_residual_in_scaled_up " <<
+  // qpwork.primal_residual_in_scaled_up<< std::endl; std::cout <<
+  // "qpwork.primal_residual_in_scaled_low " <<
+  // qpwork.primal_residual_in_scaled_low<< std::endl;
+
   for (isize i = 0; i < qpmodel.n_in; i++) {
 
     if (qpwork.Cdx(i) != 0.) {
@@ -428,13 +436,16 @@ primal_dual_ls(const Model<T>& qpmodel,
      * break the loop
      */
     T gr(0);
-    if (qpsettings.gpdal_merit_function) {
-      gr =
-        gpdal_derivative_results(qpmodel, qpresults, qpwork, qpsettings, alpha_)
-          .grad;
-    } else {
-      gr =
-        primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_).grad;
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL:
+        gr = gpdal_derivative_results(
+               qpmodel, qpresults, qpwork, qpsettings, alpha_)
+               .grad;
+        break;
+      case MeritFunctionType::PDAL:
+        gr = primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_)
+               .grad;
+        break;
     }
 
     if (gr < T(0)) {
@@ -455,14 +466,18 @@ primal_dual_ls(const Model<T>& qpmodel,
    * "gradient_norm"
    */
   if (alpha_last_neg == T(0)) {
-    if (qpsettings.gpdal_merit_function) {
-      last_neg_grad = gpdal_derivative_results(
-                        qpmodel, qpresults, qpwork, qpsettings, alpha_last_neg)
-                        .grad;
-    } else {
-      last_neg_grad = primal_dual_derivative_results(
-                        qpmodel, qpresults, qpwork, alpha_last_neg)
-                        .grad;
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL:
+        last_neg_grad =
+          gpdal_derivative_results(
+            qpmodel, qpresults, qpwork, qpsettings, alpha_last_neg)
+            .grad;
+        break;
+      case MeritFunctionType::PDAL:
+        last_neg_grad = primal_dual_derivative_results(
+                          qpmodel, qpresults, qpwork, alpha_last_neg)
+                          .grad;
+        break;
     }
   }
   if (alpha_first_pos == infty) {
@@ -471,22 +486,25 @@ primal_dual_ls(const Model<T>& qpmodel,
      * the optimal alpha is within the interval
      * [last_alpha_neg, +∞)
      */
-    if (qpsettings.gpdal_merit_function) {
-      PrimalDualDerivativeResult<T> res = gpdal_derivative_results(
-        qpmodel, qpresults, qpwork, qpsettings, 2 * alpha_last_neg + 1);
-      auto& a = res.a;
-      auto& b = res.b;
-      // grad = a * alpha + b
-      // grad = 0 => alpha = -b/a
-      qpwork.alpha = -b / a;
-    } else {
-      PrimalDualDerivativeResult<T> res = primal_dual_derivative_results(
-        qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
-      auto& a = res.a;
-      auto& b = res.b;
-      // grad = a * alpha + b
-      // grad = 0 => alpha = -b/a
-      qpwork.alpha = -b / a;
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL: {
+        PrimalDualDerivativeResult<T> res = gpdal_derivative_results(
+          qpmodel, qpresults, qpwork, qpsettings, 2 * alpha_last_neg + 1);
+        auto& a = res.a;
+        auto& b = res.b;
+        // grad = a * alpha + b
+        // grad = 0 => alpha = -b/a
+        qpwork.alpha = -b / a;
+      } break;
+      case MeritFunctionType::PDAL: {
+        PrimalDualDerivativeResult<T> res = primal_dual_derivative_results(
+          qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
+        auto& a = res.a;
+        auto& b = res.b;
+        // grad = a * alpha + b
+        // grad = 0 => alpha = -b/a
+        qpwork.alpha = -b / a;
+      } break;
     }
   } else {
     /*

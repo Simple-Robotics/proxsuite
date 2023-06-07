@@ -35,7 +35,6 @@ compute_primal_dual_feasibility(const PreprocessedQpSparse& preprocessed,
 }
 
 char const* files[] = {
-
   MAROS_MESZAROS_DIR "AUG2D.mat",    MAROS_MESZAROS_DIR "AUG2DC.mat",
   MAROS_MESZAROS_DIR "AUG2DCQP.mat", MAROS_MESZAROS_DIR "AUG2DQP.mat",
   MAROS_MESZAROS_DIR "AUG3D.mat",    MAROS_MESZAROS_DIR "AUG3DC.mat",
