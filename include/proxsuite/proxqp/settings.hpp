@@ -22,6 +22,12 @@ enum struct SparseBackend
   SparseCholesky, // sparse cholesky backend.
   MatrixFree,     // iterative matrix free sparse backend.
 };
+// MERIT FUNCTION
+enum struct MeritFunctionType
+{
+  GPDAL, // Generalized Primal Dual Augmented Lagrangian
+  PDAL,  // Primal Dual Augmented Lagrangian
+};
 
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
@@ -94,7 +100,7 @@ struct Settings
   T eps_primal_inf;
   T eps_dual_inf;
   bool bcl_update;
-  bool gpdal_merit_function;
+  MeritFunctionType merit_function_type;
   T alpha_gpdal;
 
   SparseBackend sparse_backend;
@@ -201,8 +207,8 @@ struct Settings
     T eps_primal_inf = 1.E-4,
     T eps_dual_inf = 1.E-4,
     bool bcl_update = true,
-    bool gpdal_merit_function = false,
-    T alpha_gpdal = 0.5,
+    MeritFunctionType merit_function_type = MeritFunctionType::PDAL,
+    T alpha_gpdal = 0.9,
     SparseBackend sparse_backend = SparseBackend::Automatic)
     : default_rho(default_rho)
     , default_mu_eq(default_mu_eq)
@@ -241,7 +247,7 @@ struct Settings
     , eps_primal_inf(eps_primal_inf)
     , eps_dual_inf(eps_dual_inf)
     , bcl_update(bcl_update)
-    , gpdal_merit_function(gpdal_merit_function)
+    , merit_function_type(merit_function_type)
     , alpha_gpdal(alpha_gpdal)
     , sparse_backend(sparse_backend)
   {
@@ -291,7 +297,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.eps_primal_inf == settings2.eps_primal_inf &&
     settings1.eps_dual_inf == settings2.eps_dual_inf &&
     settings1.bcl_update == settings2.bcl_update &&
-    settings1.gpdal_merit_function == settings2.gpdal_merit_function &&
+    settings1.merit_function_type == settings2.merit_function_type &&
     settings1.alpha_gpdal == settings2.alpha_gpdal &&
     settings1.sparse_backend == settings2.sparse_backend;
   return value;
