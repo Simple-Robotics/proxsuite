@@ -51,7 +51,9 @@ function(list_filter list regular_expression dest_list)
       list(REMOVE_ITEM list ${elt})
     endif()
   endforeach(elt ${list})
-  set(${dest_list} ${list} PARENT_SCOPE)
+  set(${dest_list}
+      ${list}
+      PARENT_SCOPE)
 endfunction(list_filter)
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
