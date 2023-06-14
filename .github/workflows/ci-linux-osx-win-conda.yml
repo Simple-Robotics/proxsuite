@@ -138,7 +138,7 @@ jobs:
       shell: bash -l {0}
       run: |
         cd build
-        cmake --build . --config ${{ matrix.build_type }} -v
+        cmake --build . --config ${{ matrix.build_type }} -v -j 1
 
     - name: Build documentation [Conda]
       shell: bash -l {0}
