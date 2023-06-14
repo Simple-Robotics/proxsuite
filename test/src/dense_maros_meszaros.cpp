@@ -119,7 +119,6 @@ TEST_CASE("dense maros meszaros using the api")
       proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
       qp.init(H, g, A, b, C, l, u);
 
-      qp.settings.verbose = false;
       qp.settings.eps_abs = 2e-8;
       qp.settings.eps_rel = 0;
       auto& eps = qp.settings.eps_abs;
