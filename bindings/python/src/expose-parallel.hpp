@@ -30,8 +30,7 @@ solveDenseQpParallel(pybind11::module_ m)
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("num_threads",
                         "number of threads used for the computation."),
-        pybind11::arg_v("qps", "List of initialized dense Qps.")
-  );
+        pybind11::arg_v("qps", "List of initialized dense Qps."));
 }
 
 } // namespace python
