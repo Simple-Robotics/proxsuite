@@ -39,6 +39,7 @@ template<typename T>
 void
 refactorize(const Model<T>& qpmodel,
             Results<T>& qpresults,
+            const Settings<T>& qpsettings,
             Workspace<T>& qpwork,
             T rho_new)
 {
@@ -64,7 +65,15 @@ refactorize(const Model<T>& qpmodel,
   isize n_c = qpwork.n_c;
 
   LDLT_TEMP_MAT(T, new_cols, n + n_eq + n_c, n_c, stack);
-  T mu_in_neg = -qpresults.info.mu_in;
+  T mu_in_neg(0);
+  switch (qpsettings.merit_function_type) {
+    case MeritFunctionType::GPDAL:
+      mu_in_neg = -qpsettings.alpha_gpdal * qpresults.info.mu_in;
+      break;
+    case MeritFunctionType::PDAL:
+      mu_in_neg = -qpresults.info.mu_in;
+      break;
+  }
   for (isize i = 0; i < n_in; ++i) {
     isize j = qpwork.current_bijection_map[i];
     if (j < n_c) {
@@ -96,6 +105,7 @@ template<typename T>
 void
 mu_update(const Model<T>& qpmodel,
           Results<T>& qpresults,
+          const Settings<T>& qpsettings,
           Workspace<T>& qpwork,
           T mu_eq_new,
           T mu_in_new)
@@ -113,8 +123,17 @@ mu_update(const Model<T>& qpmodel,
   }
 
   LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
+  T delta_mu_in(0);
+  switch (qpsettings.merit_function_type) {
+    case MeritFunctionType::GPDAL:
+      delta_mu_in = qpsettings.alpha_gpdal * (qpresults.info.mu_in - mu_in_new);
+      break;
+    case MeritFunctionType::PDAL:
+      delta_mu_in = qpresults.info.mu_in - mu_in_new;
+      break;
+  }
   rank_update_alpha.head(n_eq).setConstant(qpresults.info.mu_eq - mu_eq_new);
-  rank_update_alpha.tail(n_c).setConstant(qpresults.info.mu_in - mu_in_new);
+  rank_update_alpha.tail(n_c).setConstant(delta_mu_in);
 
   {
     auto _indices = stack.make_new_for_overwrite(
@@ -146,6 +165,7 @@ template<typename T>
 void
 iterative_residual(const Model<T>& qpmodel,
                    Results<T>& qpresults,
+                   const Settings<T>& qpsettings,
                    Workspace<T>& qpwork,
                    isize inner_pb_dim)
 {
@@ -167,9 +187,20 @@ iterative_residual(const Model<T>& qpmodel,
     if (j < qpwork.n_c) {
       qpwork.err.head(qpmodel.dim).noalias() -=
         qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpwork.C_scaled.row(i);
-      qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
-        (qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
-         qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpresults.info.mu_in);
+      switch (qpsettings.merit_function_type) {
+        case MeritFunctionType::GPDAL:
+          qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
+            (qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
+             qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+               qpsettings.alpha_gpdal * qpresults.info.mu_in);
+          break;
+        case MeritFunctionType::PDAL:
+          qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
+            (qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
+             qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+               qpresults.info.mu_in);
+          break;
+      }
     }
   }
   qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() -=
@@ -210,17 +241,11 @@ iterative_solve_with_permut_fact( //
   };
   qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-  iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+  iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
   ++it;
   T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
-  /* to put in debuger mode
-  if (qpsettings.verbose) {
-          std::cout << "infty_norm(res) " <<
-  infty_norm(qpwork.err.head(inner_pb_dim))
-                                                  << std::endl;
-  }
-  */
+
   while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
     if (it >= qpsettings.nb_iterative_refinement) {
@@ -232,7 +257,7 @@ iterative_solve_with_permut_fact( //
     qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
     qpwork.err.head(inner_pb_dim).setZero();
-    iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
     if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
       it_stability += 1;
@@ -244,35 +269,21 @@ iterative_solve_with_permut_fact( //
       break;
     }
     preverr = infty_norm(qpwork.err.head(inner_pb_dim));
-    /* to put in debug mode
-    if (qpsettings.verbose) {
-            std::cout << "infty_norm(res) "
-                                                    <<
-    infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
-    }
-    */
   }
 
   if (infty_norm(qpwork.err.head(inner_pb_dim)) >=
       std::max(eps, qpsettings.eps_refact)) {
-    refactorize(qpmodel, qpresults, qpwork, qpresults.info.rho);
+    refactorize(qpmodel, qpresults, qpsettings, qpwork, qpresults.info.rho);
     it = 0;
     it_stability = 0;
 
     qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
     qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-    iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
     preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     ++it;
-    /* to put in debug mode
-    if (qpsettings.verbose) {
-            std::cout << "infty_norm(res) "
-                                                    <<
-    infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
-    }
-    */
     while (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps) {
 
       if (it >= qpsettings.nb_iterative_refinement) {
@@ -283,7 +294,8 @@ iterative_solve_with_permut_fact( //
       qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
       qpwork.err.head(inner_pb_dim).setZero();
-      iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+      iterative_residual<T>(
+        qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
@@ -295,13 +307,6 @@ iterative_solve_with_permut_fact( //
         break;
       }
       preverr = infty_norm(qpwork.err.head(inner_pb_dim));
-      /* to put in debug mode
-      if (qpsettings.verbose) {
-              std::cout << "infty_norm(res) "
-                                                      <<
-      infty_norm(qpwork.err.head(inner_pb_dim)) << std::endl;
-      }
-      */
     }
   }
   qpwork.rhs.head(inner_pb_dim).setZero();
@@ -506,6 +511,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const Model<T>& qpmodel,
                                     Results<T>& qpresults,
                                     Workspace<T>& qpwork,
+                                    // isize iter,
                                     T eps)
 {
 
@@ -528,7 +534,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
   qpwork.rhs.setZero();
   qpwork.dw_aug.setZero();
 
-  linesearch::active_set_change(qpmodel, qpresults, qpwork);
+  linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
 
   qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
 
@@ -637,7 +643,6 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       qpresults.info.iter += qpsettings.max_iter_in + 1;
       break;
     }
-    // std::cout << "inner iter " << iter << std::endl;
     primal_dual_semi_smooth_newton_step<T>(
       qpsettings, qpmodel, qpresults, qpwork, eps_int);
 
@@ -654,7 +659,6 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     auto dx = qpwork.dw_aug.head(qpmodel.dim);
     auto dy = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
     auto dz = qpwork.dw_aug.segment(qpmodel.dim + qpmodel.n_eq, qpmodel.n_in);
-
     Hdx.setZero();
     Adx.setZero();
     Cdx.setZero();
@@ -900,7 +904,7 @@ qp_solve( //
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -916,7 +920,7 @@ qp_solve( //
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
@@ -957,7 +961,7 @@ qp_solve( //
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -981,7 +985,7 @@ qp_solve( //
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
@@ -1007,7 +1011,7 @@ qp_solve( //
               qpwork.active_inequalities[i] = false;
             }
           }
-          linesearch::active_set_change(qpmodel, qpresults, qpwork);
+          linesearch::active_set_change(qpmodel, qpresults, qpsettings, qpwork);
           break;
         }
       }
@@ -1290,7 +1294,8 @@ qp_solve( //
       {
         ++qpresults.info.mu_updates;
       }
-      mu_update(qpmodel, qpresults, qpwork, new_bcl_mu_eq, new_bcl_mu_in);
+      mu_update(
+        qpmodel, qpresults, qpsettings, qpwork, new_bcl_mu_eq, new_bcl_mu_in);
     }
 
     qpresults.info.mu_eq = new_bcl_mu_eq;

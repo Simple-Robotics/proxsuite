@@ -135,6 +135,14 @@ ldl_iter_solve_noalias(
     if (solve_iter > 0) {
       T mu_eq_neg = -results.info.mu_eq;
       T mu_in_neg = -results.info.mu_in;
+      // switch (settings.merit_function_type) {
+      //   case MeritFunctionType::GPDAL:
+      //     mu_in_neg = -settings.alpha_gpdal*results.info.mu_in;
+      //     break;
+      //   case MeritFunctionType::PDAL:
+      //     mu_in_neg = -results.info.mu_in;
+      //     break;
+      // }
       detail::noalias_symhiv_add(err, kkt_active.to_eigen(), sol_e);
       err_x += results.info.rho * sol_x;
       err_y += mu_eq_neg * sol_y;
@@ -678,7 +686,7 @@ qp_solve(Results<T>& results,
   auto y_e = y.to_eigen();
   auto z_e = z.to_eigen();
   sparse::refactorize<T, I>(
-    work, results, kkt_active, active_constraints, data, stack, xtag);
+    work, results, settings, kkt_active, active_constraints, data, stack, xtag);
   switch (settings.initial_guess) {
     case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
       LDLT_TEMP_VEC_UNINIT(T, rhs, n_tot, stack);
@@ -870,14 +878,14 @@ qp_solve(Results<T>& results,
 
       // Cx + 1/mu_in * z_prev
       primal_residual_in_scaled_up += results.info.mu_in * z_prev_e;
-      switch (settings.merit_function_type) {
-        case MeritFunctionType::GPDAL:
-          primal_residual_in_scaled_up +=
-            (settings.alpha_gpdal - 1.) * results.info.mu_in * z_e;
-          break;
-        case MeritFunctionType::PDAL:
-          break;
-      }
+      // switch (settings.merit_function_type) { NOT activated for the moment
+      //   case MeritFunctionType::GPDAL:
+      //     primal_residual_in_scaled_up +=
+      //       (settings.alpha_gpdal - 1.) * results.info.mu_in * results.z;
+      //     break;
+      //   case MeritFunctionType::PDAL:
+      //     break;
+      // }
       primal_residual_in_scaled_lo = primal_residual_in_scaled_up;
 
       // Cx - l + 1/mu_in * z_prev
@@ -936,15 +944,18 @@ qp_solve(Results<T>& results,
                       kkt.row_indices() + zx(kkt.col_start(usize(idx))),
                       kkt.values() + zx(kkt.col_start(usize(idx))),
                     };
-
-                    ldl =
-                      proxsuite::linalg::sparse::add_row(ldl,
-                                                         etree,
-                                                         perm_inv,
-                                                         idx,
-                                                         new_col,
-                                                         -results.info.mu_in,
-                                                         stack);
+                    T mu_in_neg = -results.info.mu_in;
+                    // switch (settings.merit_function_type)
+                    // {
+                    // case MeritFunctionType::GPDAL:
+                    //   mu_in_neg = -settings.alpha_gpdal * results.info.mu_in;
+                    //   break;
+                    // case MeritFunctionType::PDAL:
+                    //   mu_in_neg = -results.info.mu_in;
+                    //   break;
+                    // }
+                    ldl = proxsuite::linalg::sparse::add_row(
+                      ldl, etree, perm_inv, idx, new_col, mu_in_neg, stack);
                   }
                   active_constraints[i] = new_active_constraints[i];
 
@@ -964,6 +975,7 @@ qp_solve(Results<T>& results,
                 if (removed || added) {
                   refactorize(work,
                               results,
+                              settings,
                               kkt_active,
                               active_constraints,
                               data,
@@ -972,41 +984,53 @@ qp_solve(Results<T>& results,
                 }
               }
             }
-
+            rhs.setZero();
             rhs.head(n) = -dual_residual_scaled;
             rhs.segment(n, n_eq) = -primal_residual_eq_scaled;
-            switch (settings.merit_function_type) {
-              case MeritFunctionType::GPDAL:
-                for (isize i = 0; i < n_in; ++i) {
-                  if (work.active_set_up(i)) {
-                    rhs(n + n_eq + i) =
-                      -primal_residual_in_scaled_up(i) +
-                      z_e(i) * results.info.mu_in * settings.alpha_gpdal;
-                  } else if (work.active_set_low(i)) {
-                    rhs(n + n_eq + i) =
-                      -primal_residual_in_scaled_lo(i) +
-                      z_e(i) * results.info.mu_in * settings.alpha_gpdal;
-                  } else {
-                    rhs(n + n_eq + i) = -z_e(i);
-                    rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
-                  }
-                }
-                break;
-              case MeritFunctionType::PDAL:
-                for (isize i = 0; i < n_in; ++i) {
-                  if (work.active_set_up(i)) {
-                    rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
-                                        primal_residual_in_scaled_up(i);
-                  } else if (work.active_set_low(i)) {
-                    rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
-                                        primal_residual_in_scaled_lo(i);
-                  } else {
-                    rhs(n + n_eq + i) = -z_e(i);
-                    rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
-                  }
-                }
-                break;
+            for (isize i = 0; i < n_in; ++i) {
+              if (work.active_set_up(i)) {
+                rhs(n + n_eq + i) =
+                  results.info.mu_in * z_e(i) - primal_residual_in_scaled_up(i);
+              } else if (work.active_set_low(i)) {
+                rhs(n + n_eq + i) =
+                  results.info.mu_in * z_e(i) - primal_residual_in_scaled_lo(i);
+              } else {
+                rhs(n + n_eq + i) = -z_e(i);
+                rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
+              }
             }
+            // switch (settings.merit_function_type) {
+            //   case MeritFunctionType::GPDAL:
+            //     for (isize i = 0; i < n_in; ++i) {
+            //       if (work.active_set_up(i)) {
+            //         rhs(n + n_eq + i) =
+            //           -primal_residual_in_scaled_up(i) +
+            //           z_e(i) * results.info.mu_in * settings.alpha_gpdal;
+            //       } else if (work.active_set_low(i)) {
+            //         rhs(n + n_eq + i) =
+            //           -primal_residual_in_scaled_lo(i) +
+            //           z_e(i) * results.info.mu_in * settings.alpha_gpdal;
+            //       } else {
+            //         rhs(n + n_eq + i) = -z_e(i);
+            //         rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
+            //       }
+            //     }
+            //     break;
+            //   case MeritFunctionType::PDAL:
+            //     for (isize i = 0; i < n_in; ++i) {
+            //       if (work.active_set_up(i)) {
+            //         rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
+            //                             primal_residual_in_scaled_up(i);
+            //       } else if (work.active_set_low(i)) {
+            //         rhs(n + n_eq + i) = results.info.mu_in * z_e(i) -
+            //                             primal_residual_in_scaled_lo(i);
+            //       } else {
+            //         rhs(n + n_eq + i) = -z_e(i);
+            //         rhs.head(n) += z_e(i) * CT_scaled.to_eigen().col(i);
+            //       }
+            //     }
+            //     break;
+            // }
             ldl_solve_in_place(
               { proxqp::from_eigen, rhs },
               { proxqp::from_eigen,
@@ -1041,14 +1065,14 @@ qp_solve(Results<T>& results,
           detail::noalias_symhiv_add(Hdx, H_scaled.to_eigen(), dx);
           detail::noalias_gevmmv_add(Adx, ATdy, AT_scaled.to_eigen(), dx, dy);
           detail::noalias_gevmmv_add(Cdx, CTdz, CT_scaled.to_eigen(), dx, dz);
-          switch (settings.merit_function_type) {
-            case MeritFunctionType::GPDAL:
-              Cdx.noalias() +=
-                (settings.alpha_gpdal - 1.) * results.info.mu_in * dz;
-              break;
-            case MeritFunctionType::PDAL:
-              break;
-          }
+          // switch (settings.merit_function_type) {
+          //   case MeritFunctionType::GPDAL:
+          //     Cdx.noalias() +=
+          //       (settings.alpha_gpdal - 1.) * results.info.mu_in * dz;
+          //     break;
+          //   case MeritFunctionType::PDAL:
+          //     break;
+          // }
           T alpha = 1;
           // primal dual line search
           if (n_in > 0) {
@@ -1100,66 +1124,69 @@ qp_solve(Results<T>& results,
               };
             };
 
-            auto gpdal_derivative_results =
-              [&](T alpha_cur) -> PrimalDualGradResult<T> {
-              LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
-              LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
-              {
-                LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
-                LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
+            // auto gpdal_derivative_results =
+            //   [&](T alpha_cur) -> PrimalDualGradResult<T> {
+            //   LDLT_TEMP_VEC_UNINIT(T, Cdx_active, n_in, stack);
+            //   LDLT_TEMP_VEC_UNINIT(T, active_part_z, n_in, stack);
+            //   {
+            //     LDLT_TEMP_VEC_UNINIT(T, tmp_lo, n_in, stack);
+            //     LDLT_TEMP_VEC_UNINIT(T, tmp_up, n_in, stack);
 
-                auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
+            //     auto zero = Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_in);
 
-                tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
-                tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
-                Cdx_active =
-                  (tmp_lo.array() < 0 || tmp_up.array() > 0).select(Cdx, zero);
-                active_part_z = (tmp_lo.array() < 0)
-                                  .select(primal_residual_in_scaled_lo, zero) +
-                                (tmp_up.array() > 0)
-                                  .select(primal_residual_in_scaled_up, zero);
-              }
+            //     tmp_lo = primal_residual_in_scaled_lo + alpha_cur * Cdx;
+            //     tmp_up = primal_residual_in_scaled_up + alpha_cur * Cdx;
+            //     Cdx_active =
+            //       (tmp_lo.array() < 0 || tmp_up.array() > 0).select(Cdx,
+            //       zero);
+            //     active_part_z = (tmp_lo.array() < 0)
+            //                       .select(primal_residual_in_scaled_lo, zero)
+            //                       +
+            //                     (tmp_up.array() > 0)
+            //                       .select(primal_residual_in_scaled_up,
+            //                       zero);
+            //   }
 
-              T a = dx.dot(Hdx) +                         //
-                    results.info.rho * dx.squaredNorm() + //
-                    results.info.mu_eq_inv * Adx.squaredNorm() +
-                    +results.info.mu_in_inv * Cdx_active.squaredNorm() /
-                      settings.alpha_gpdal +
-                    results.info.mu_eq *
-                      (results.info.mu_eq_inv * Adx - dy).squaredNorm() +
-                    results.info.mu_in * (1. - settings.alpha_gpdal) *
-                      (dz).squaredNorm();
+            //   T a = dx.dot(Hdx) +                         //
+            //         results.info.rho * dx.squaredNorm() + //
+            //         results.info.mu_eq_inv * Adx.squaredNorm() +
+            //         +results.info.mu_in_inv * Cdx_active.squaredNorm() /
+            //           settings.alpha_gpdal + results.info.mu_eq_inv *
+            //           (Adx - results.info.mu_eq *dy).squaredNorm() +
+            //         results.info.mu_in * (1. - settings.alpha_gpdal) *
+            //           (dz).squaredNorm();
 
-              T b =
-                x_e.dot(Hdx) +                                               //
-                (results.info.rho * (x_e - x_prev_e) + g_scaled_e).dot(dx) + //
-                Adx.dot(results.info.mu_eq_inv * primal_residual_eq_scaled +
-                        y_e) + //
-                results.info.mu_in_inv * Cdx_active.dot(active_part_z) /
-                  settings.alpha_gpdal + //
-                primal_residual_eq_scaled.dot(results.info.mu_eq_inv * Adx -
-                                              dy) + //
-                (z_e).dot(dz) * results.info.mu_in *
-                  (1. - settings.alpha_gpdal);
+            //   T b =
+            //     x_e.dot(Hdx) + // (results.info.rho * (x_e - x_prev_e) +
+            //     g_scaled_e).dot(dx) + // results.info.mu_eq_inv * Adx.dot(
+            //     primal_residual_eq_scaled +
+            //             y_e * results.info.mu_eq) + //
+            //     results.info.mu_in_inv * Cdx_active.dot(active_part_z) /
+            //       settings.alpha_gpdal + //
+            //     results.info.mu_eq_inv * primal_residual_eq_scaled.dot( Adx -
+            //                                   dy * results.info.mu_eq) + //
+            //     (z_e).dot(dz) * results.info.mu_in *
+            //       (1. - settings.alpha_gpdal);
 
-              return {
-                a,
-                b,
-                a * alpha_cur + b,
-              };
-            };
+            //   return {
+            //     a,
+            //     b,
+            //     a * alpha_cur + b,
+            //   };
+            // };
 
             LDLT_TEMP_VEC_UNINIT(T, alphas, 2 * n_in, stack);
             isize alphas_count = 0;
+            const T machine_eps = std::numeric_limits<T>::epsilon();
 
             for (isize i = 0; i < n_in; ++i) {
               T alpha_candidates[2] = {
-                -primal_residual_in_scaled_lo(i) / (Cdx(i)),
-                -primal_residual_in_scaled_up(i) / (Cdx(i)),
+                -primal_residual_in_scaled_lo(i) / (Cdx(i) + machine_eps),
+                -primal_residual_in_scaled_up(i) / (Cdx(i) + machine_eps),
               };
 
               for (auto alpha_candidate : alpha_candidates) {
-                if (alpha_candidate > 0) {
+                if (alpha_candidate > machine_eps) {
                   alphas[alphas_count] = alpha_candidate;
                   ++alphas_count;
                 }
@@ -1169,27 +1196,25 @@ qp_solve(Results<T>& results,
             alphas_count =
               std::unique(alphas.data(), alphas.data() + alphas_count) -
               alphas.data();
-
-            if (alphas_count > 0 && alphas[0] <= 1) {
+            if (alphas_count > 0) { //&& alphas[0] <= 1
               auto infty = std::numeric_limits<T>::infinity();
 
               T last_neg_grad = 0;
               T alpha_last_neg = 0;
               T first_pos_grad = 0;
               T alpha_first_pos = infty;
-
               {
                 for (isize i = 0; i < alphas_count; ++i) {
                   T alpha_cur = alphas[i];
-                  T gr(0);
-                  switch (settings.merit_function_type) {
-                    case MeritFunctionType::GPDAL:
-                      gr = gpdal_derivative_results(alpha_cur).grad;
-                      break;
-                    case MeritFunctionType::PDAL:
-                      gr = primal_dual_gradient_norm(alpha_cur).grad;
-                      break;
-                  }
+                  T gr = primal_dual_gradient_norm(alpha_cur).grad;
+                  // switch (settings.merit_function_type) {
+                  //   case MeritFunctionType::GPDAL:
+                  //     gr = gpdal_derivative_results(alpha_cur).grad;
+                  //     break;
+                  //   case MeritFunctionType::PDAL:
+                  //     gr = primal_dual_gradient_norm(alpha_cur).grad;
+                  //     break;
+                  // }
 
                   if (gr < 0) {
                     alpha_last_neg = alpha_cur;
@@ -1202,30 +1227,34 @@ qp_solve(Results<T>& results,
                 }
 
                 if (alpha_last_neg == 0) {
-                  switch (settings.merit_function_type) {
-                    case MeritFunctionType::GPDAL:
-                      last_neg_grad =
-                        gpdal_derivative_results(alpha_last_neg).grad;
-                      break;
-                    case MeritFunctionType::PDAL:
-                      last_neg_grad =
-                        primal_dual_gradient_norm(alpha_last_neg).grad;
-                      break;
-                  }
+                  last_neg_grad =
+                    primal_dual_gradient_norm(alpha_last_neg).grad;
+                  // switch (settings.merit_function_type) {
+                  //   case MeritFunctionType::GPDAL:
+                  //     last_neg_grad =
+                  //       gpdal_derivative_results(alpha_last_neg).grad;
+                  //     break;
+                  //   case MeritFunctionType::PDAL:
+                  //     last_neg_grad =
+                  //       primal_dual_gradient_norm(alpha_last_neg).grad;
+                  //     break;
+                  // }
                 }
                 if (alpha_first_pos == infty) {
-                  switch (settings.merit_function_type) {
-                    case MeritFunctionType::GPDAL: {
-                      auto res =
-                        gpdal_derivative_results(2 * alpha_last_neg + 1);
-                      alpha = -res.b / res.a;
-                    } break;
-                    case MeritFunctionType::PDAL: {
-                      auto res =
-                        primal_dual_gradient_norm(2 * alpha_last_neg + 1);
-                      alpha = -res.b / res.a;
-                    } break;
-                  }
+                  auto res = primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+                  alpha = -res.b / res.a;
+                  // switch (settings.merit_function_type) {
+                  //   case MeritFunctionType::GPDAL: {
+                  //     auto res =
+                  //       gpdal_derivative_results(2 * alpha_last_neg + 1);
+                  //     alpha = -res.b / res.a;
+                  //   } break;
+                  //   case MeritFunctionType::PDAL: {
+                  //     auto res =
+                  //       primal_dual_gradient_norm(2 * alpha_last_neg + 1);
+                  //     alpha = -res.b / res.a;
+                  //   } break;
+                  // }
                 } else {
                   alpha = alpha_last_neg -
                           last_neg_grad * (alpha_first_pos - alpha_last_neg) /
@@ -1233,16 +1262,18 @@ qp_solve(Results<T>& results,
                 }
               }
             } else {
-              switch (settings.merit_function_type) {
-                case MeritFunctionType::GPDAL: {
-                  auto res = gpdal_derivative_results(T(0));
-                  alpha = -res.b / res.a;
-                } break;
-                case MeritFunctionType::PDAL: {
-                  auto res = primal_dual_gradient_norm(T(0));
-                  alpha = -res.b / res.a;
-                } break;
-              }
+              auto res = primal_dual_gradient_norm(T(0));
+              alpha = -res.b / res.a;
+              // switch (settings.merit_function_type) {
+              //   case MeritFunctionType::GPDAL: {
+              //     auto res = gpdal_derivative_results(T(0));
+              //     alpha = -res.b / res.a;
+              //   } break;
+              //   case MeritFunctionType::PDAL: {
+              //     auto res = primal_dual_gradient_norm(T(0));
+              //     alpha = -res.b / res.a;
+              //   } break;
+              // }
             }
           }
           if (alpha * infty_norm(dw) < T(1e-11) && iter_inner > 0) {
@@ -1259,29 +1290,35 @@ qp_solve(Results<T>& results,
           primal_residual_in_scaled_lo += alpha * Cdx;
           primal_residual_in_scaled_up += alpha * Cdx;
 
-          T err_in(0);
-          switch (settings.merit_function_type) {
-            case MeritFunctionType::GPDAL:
-              err_in = std::max({
-                (infty_norm(
-                  helpers::negative_part(primal_residual_in_scaled_lo) +
-                  helpers::positive_part(primal_residual_in_scaled_up) -
-                  settings.alpha_gpdal * results.info.mu_in * z_e)),
-                (infty_norm(primal_residual_eq_scaled)),
-                (infty_norm(dual_residual_scaled)),
-              });
-              break;
-            case MeritFunctionType::PDAL:
-              err_in = std::max({
-                (infty_norm(
-                  helpers::negative_part(primal_residual_in_scaled_lo) +
-                  helpers::positive_part(primal_residual_in_scaled_up) -
-                  results.info.mu_in * z_e)),
-                (infty_norm(primal_residual_eq_scaled)),
-                (infty_norm(dual_residual_scaled)),
-              });
-              break;
-          }
+          T err_in = std::max({
+            (infty_norm(helpers::negative_part(primal_residual_in_scaled_lo) +
+                        helpers::positive_part(primal_residual_in_scaled_up) -
+                        results.info.mu_in * z_e)),
+            (infty_norm(primal_residual_eq_scaled)),
+            (infty_norm(dual_residual_scaled)),
+          });
+          // switch (settings.merit_function_type) {
+          //   case MeritFunctionType::GPDAL:
+          //     err_in = std::max({
+          //       (infty_norm(
+          //         helpers::negative_part(primal_residual_in_scaled_lo) +
+          //         helpers::positive_part(primal_residual_in_scaled_up) -
+          //         settings.alpha_gpdal * results.info.mu_in * z_e)),
+          //       (infty_norm(primal_residual_eq_scaled)),
+          //       (infty_norm(dual_residual_scaled)),
+          //     });
+          //     break;
+          //   case MeritFunctionType::PDAL:
+          //     err_in = std::max({
+          //       (infty_norm(
+          //         helpers::negative_part(primal_residual_in_scaled_lo) +
+          //         helpers::positive_part(primal_residual_in_scaled_up) -
+          //         results.info.mu_in * z_e)),
+          //       (infty_norm(primal_residual_eq_scaled)),
+          //       (infty_norm(dual_residual_scaled)),
+          //     });
+          //     break;
+          // }
           /* put in debug mode
           if (settings.verbose) {
                   std::cout << "--inner iter " << iter_inner << " iner error "
@@ -1480,6 +1517,15 @@ qp_solve(Results<T>& results,
               continue;
             }
             alpha = results.info.mu_in - new_bcl_mu_in;
+            // switch (settings.merit_function_type)
+            // {
+            // case MeritFunctionType::GPDAL:
+            //   alpha = settings.alpha_gpdal * (results.info.mu_in -
+            //   new_bcl_mu_in); break;
+            // case MeritFunctionType::PDAL:
+            //   alpha = results.info.mu_in - new_bcl_mu_in;
+            //   break;
+            // }
           }
           T value = 1;
           proxsuite::linalg::sparse::VecRef<T, I> w{
@@ -1492,8 +1538,14 @@ qp_solve(Results<T>& results,
           ldl = rank1_update(ldl, etree, perm_inv, w, alpha, stack);
         }
       } else {
-        refactorize(
-          work, results, kkt_active, active_constraints, data, stack, xtag);
+        refactorize(work,
+                    results,
+                    settings,
+                    kkt_active,
+                    active_constraints,
+                    data,
+                    stack,
+                    xtag);
       }
     }
 

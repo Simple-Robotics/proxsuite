@@ -369,12 +369,6 @@ primal_dual_ls(const Model<T>& qpmodel,
   // 1.1 add solutions of equations C(x+alpha dx)-l +ze/mu_in = 0 and C(x+alpha
   // dx)-u +ze/mu_in = 0
 
-  // std::cout << "qpwork.Cdx " << qpwork.Cdx<< std::endl;
-  // std::cout << "qpwork.primal_residual_in_scaled_up " <<
-  // qpwork.primal_residual_in_scaled_up<< std::endl; std::cout <<
-  // "qpwork.primal_residual_in_scaled_low " <<
-  // qpwork.primal_residual_in_scaled_low<< std::endl;
-
   for (isize i = 0; i < qpmodel.n_in; i++) {
 
     if (qpwork.Cdx(i) != 0.) {
@@ -403,12 +397,21 @@ primal_dual_ls(const Model<T>& qpmodel,
   qpwork.alphas.resize(new_len);
 
   n_alpha = qpwork.alphas.len();
-
-  if (n_alpha == 0 || qpwork.alphas[0] > 1) {
-    qpwork.alpha = 1;
+  if (n_alpha == 0) { //
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL: {
+        auto res = gpdal_derivative_results(
+          qpmodel, qpresults, qpwork, qpsettings, T(0));
+        qpwork.alpha = -res.b / res.a;
+      } break;
+      case MeritFunctionType::PDAL: {
+        auto res =
+          primal_dual_derivative_results(qpmodel, qpresults, qpwork, T(0));
+        qpwork.alpha = -res.b / res.a;
+      } break;
+    }
     return;
   }
-
   ////////// STEP 2 ///////////
   auto infty = std::numeric_limits<T>::infinity();
 
@@ -514,9 +517,9 @@ primal_dual_ls(const Model<T>& qpmodel,
      * is an affine function in alpha
      */
 
-    qpwork.alpha = alpha_last_neg - last_neg_grad *
-                                      (alpha_first_pos - alpha_last_neg) /
-                                      (first_pos_grad - last_neg_grad);
+    qpwork.alpha = std::abs(alpha_last_neg -
+                            last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+                              (first_pos_grad - last_neg_grad));
   }
 }
 
@@ -533,6 +536,7 @@ template<typename T>
 void
 active_set_change(const Model<T>& qpmodel,
                   Results<T>& qpresults,
+                  const Settings<T>& qpsettings,
                   Workspace<T>& qpwork)
 {
 
@@ -634,7 +638,16 @@ active_set_change(const Model<T>& qpmodel,
     auto planned_to_add = _planned_to_add.ptr_mut();
 
     isize planned_to_add_count = 0;
-    T mu_in_neg = -qpresults.info.mu_in;
+    T mu_in_neg(0);
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL:
+        mu_in_neg = -qpsettings.alpha_gpdal * qpresults.info.mu_in;
+        break;
+      case MeritFunctionType::PDAL:
+        mu_in_neg = -qpresults.info.mu_in;
+        break;
+    }
+
     isize n_c = n_c_f;
     for (isize i = 0; i < qpmodel.n_in; i++) {
       if (qpwork.active_inequalities(i)) {
