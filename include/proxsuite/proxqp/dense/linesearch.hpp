@@ -5,13 +5,11 @@
 #ifndef PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
-#include <iostream>
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/settings.hpp"
-#include <signal.h>
 #include <cmath>
 
 namespace proxsuite {
@@ -536,7 +534,6 @@ template<typename T>
 void
 active_set_change(const Model<T>& qpmodel,
                   Results<T>& qpresults,
-                  const Settings<T>& qpsettings,
                   Workspace<T>& qpwork)
 {
 
@@ -638,15 +635,7 @@ active_set_change(const Model<T>& qpmodel,
     auto planned_to_add = _planned_to_add.ptr_mut();
 
     isize planned_to_add_count = 0;
-    T mu_in_neg(0);
-    switch (qpsettings.merit_function_type) {
-      case MeritFunctionType::GPDAL:
-        mu_in_neg = -qpsettings.alpha_gpdal * qpresults.info.mu_in;
-        break;
-      case MeritFunctionType::PDAL:
-        mu_in_neg = -qpresults.info.mu_in;
-        break;
-    }
+    T mu_in_neg(-qpresults.info.mu_in);
 
     isize n_c = n_c_f;
     for (isize i = 0; i < qpmodel.n_in; i++) {

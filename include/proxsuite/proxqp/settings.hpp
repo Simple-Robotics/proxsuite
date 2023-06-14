@@ -208,7 +208,7 @@ struct Settings
     T eps_dual_inf = 1.E-4,
     bool bcl_update = true,
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
-    T alpha_gpdal = 0.999,
+    T alpha_gpdal = 0.95,
     SparseBackend sparse_backend = SparseBackend::Automatic)
     : default_rho(default_rho)
     , default_mu_eq(default_mu_eq)
