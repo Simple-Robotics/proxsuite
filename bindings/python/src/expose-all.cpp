@@ -43,6 +43,7 @@ exposeDenseAlgorithms(pybind11::module_ m)
 {
   dense::python::exposeDenseModel<T>(m);
   dense::python::exposeQpObjectDense<T>(m);
+  dense::python::exposeQpVectorDense<T>(m);
   dense::python::solveDenseQp<T>(m);
 }
 
@@ -58,7 +59,6 @@ exposeSparseParallel(pybind11::module_ m)
 {
   sparse::python::solveSparseQpParallel<T, I>(m);
 }
-#endif
 
 PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
 {

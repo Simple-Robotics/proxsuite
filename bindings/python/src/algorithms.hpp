@@ -9,6 +9,7 @@
 #include "expose-settings.hpp"
 #include "expose-workspace.hpp"
 #include "expose-qpobject.hpp"
+#include "expose-qpvector.hpp"
 #include "expose-solve.hpp"
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
 #include "expose-parallel.hpp"
