@@ -150,19 +150,21 @@ iterative_residual(const Model<T>& qpmodel,
                    Workspace<T>& qpwork,
                    isize inner_pb_dim)
 {
-
+  auto& Hdx = qpwork.Hdx;
+  auto& Adx = qpwork.Adx;
+  auto& ATdy = qpwork.CTz;
   qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
 
-  qpwork.err.head(qpmodel.dim).noalias() -=
-    qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
-    qpwork.dw_aug.head(qpmodel.dim);
+  Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
+                  qpwork.dw_aug.head(qpmodel.dim);
+  qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
   qpwork.err.head(qpmodel.dim) -=
     qpresults.info.rho * qpwork.dw_aug.head(qpmodel.dim);
 
   // PERF: fuse {A, C}_scaled multiplication operations
-  qpwork.err.head(qpmodel.dim).noalias() -=
-    qpwork.A_scaled.transpose() *
-    qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+  ATdy.noalias() = qpwork.A_scaled.transpose() *
+                   qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
+  qpwork.err.head(qpmodel.dim).noalias() -= ATdy;
   for (isize i = 0; i < qpmodel.n_in; i++) {
     isize j = qpwork.current_bijection_map(i);
     if (j < qpwork.n_c) {
@@ -173,8 +175,8 @@ iterative_residual(const Model<T>& qpmodel,
          qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpresults.info.mu_in);
     }
   }
-  qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() -=
-    qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim);
+  Adx.noalias() = qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim);
+  qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).noalias() -= Adx;
   qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) +=
     qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.info.mu_eq;
 }
@@ -480,7 +482,6 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const Model<T>& qpmodel,
                                     Results<T>& qpresults,
                                     Workspace<T>& qpwork,
-                                    // isize iter,
                                     T eps)
 {
 
@@ -612,32 +613,32 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       qpresults.info.iter += qpsettings.max_iter_in + 1;
       break;
     }
-    primal_dual_semi_smooth_newton_step<T>(
-      qpsettings, qpmodel, qpresults, qpwork, eps_int);
-
     proxsuite::linalg::veg::dynstack::DynStackMut stack{
       proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
     };
-    LDLT_TEMP_VEC(T, ATdy, qpmodel.dim, stack);
-    LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
+    primal_dual_semi_smooth_newton_step<T>(
+      qpsettings, qpmodel, qpresults, qpwork, eps_int);
+
+    // LDLT_TEMP_VEC(T, ATdy, qpmodel.dim, stack);
 
     auto& Hdx = qpwork.Hdx;
     auto& Adx = qpwork.Adx;
     auto& Cdx = qpwork.Cdx;
+    auto& ATdy = qpwork.CTz;
 
     auto dx = qpwork.dw_aug.head(qpmodel.dim);
     auto dy = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
     auto dz = qpwork.dw_aug.segment(qpmodel.dim + qpmodel.n_eq, qpmodel.n_in);
-    Hdx.setZero();
-    Adx.setZero();
-    Cdx.setZero();
+    // Hdx.setZero();
+    // Adx.setZero();
+    // Cdx.setZero();
 
-    Hdx.noalias() +=
-      qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
+    // Hdx.noalias() +=
+    //   qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
 
-    Adx.noalias() += qpwork.A_scaled * dx;
-    ATdy.noalias() += qpwork.A_scaled.transpose() * dy;
-    Cdx.noalias() += qpwork.C_scaled * dx;
+    // Adx.noalias() += qpwork.A_scaled * dx;
+    // ATdy.noalias() += qpwork.A_scaled.transpose() * dy;
+    Cdx.noalias() = qpwork.C_scaled * dx;
     switch (qpsettings.merit_function_type) {
       case MeritFunctionType::GPDAL:
         Cdx.noalias() +=
@@ -646,7 +647,8 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       case MeritFunctionType::PDAL:
         break;
     }
-    CTdz.noalias() += qpwork.C_scaled.transpose() * dz;
+    LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
+    CTdz.noalias() = qpwork.C_scaled.transpose() * dz;
     if (qpmodel.n_in > 0) {
       linesearch::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
     }
