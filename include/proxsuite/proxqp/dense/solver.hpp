@@ -619,8 +619,6 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     primal_dual_semi_smooth_newton_step<T>(
       qpsettings, qpmodel, qpresults, qpwork, eps_int);
 
-    // LDLT_TEMP_VEC(T, ATdy, qpmodel.dim, stack);
-
     auto& Hdx = qpwork.Hdx;
     auto& Adx = qpwork.Adx;
     auto& Cdx = qpwork.Cdx;
@@ -629,15 +627,6 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     auto dx = qpwork.dw_aug.head(qpmodel.dim);
     auto dy = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
     auto dz = qpwork.dw_aug.segment(qpmodel.dim + qpmodel.n_eq, qpmodel.n_in);
-    // Hdx.setZero();
-    // Adx.setZero();
-    // Cdx.setZero();
-
-    // Hdx.noalias() +=
-    //   qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
-
-    // Adx.noalias() += qpwork.A_scaled * dx;
-    // ATdy.noalias() += qpwork.A_scaled.transpose() * dy;
     Cdx.noalias() = qpwork.C_scaled * dx;
     switch (qpsettings.merit_function_type) {
       case MeritFunctionType::GPDAL:
