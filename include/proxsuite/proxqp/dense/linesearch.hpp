@@ -36,7 +36,136 @@ struct PrimalDualDerivativeResult
   T grad;
   VEG_REFLECT(PrimalDualDerivativeResult, a, b, grad);
 };
+/*!
+ * Stores first derivative and coefficient of the univariate second order
+ * polynomial merit function to be canceled by the exact generalized primal-dual
+ * linesearch.
+ *
+ * @param a second order polynomial coefficient of the merit function used in
+ * the linesearch.
+ * @param b first order polynomial coefficient of the merit function used in the
+ * linesearch.
+ * @param grad derivative of the merit function used in the linesearch.
+ */
+template<typename T>
+auto
+gpdal_derivative_results(const Model<T>& qpmodel,
+                         Results<T>& qpresults,
+                         Workspace<T>& qpwork,
+                         const Settings<T>& qpsettings,
+                         T alpha) -> PrimalDualDerivativeResult<T>
+{
 
+  /*
+   * the function computes the first derivative of phi(alpha) at outer step k
+   * and inner step l
+   *
+   * phi(alpha) = f(x_l+alpha dx) + rho/2 |x_l + alpha dx - x_k|**2
+   *              + mu_eq_inv/2 (|A(x_l+alpha dx)-d+y_k * mu_eq|**2)
+   *              + mu_eq_inv * nu /2 (|A(x_l+alpha dx)-d+y_k * mu_eq -
+   * (y_l+alpha dy)
+   * |**2)
+   *              + mu_in_inv/2 ( | [C(x_l+alpha dx) - u + z_k * mu_in]_+ |**2
+   *                         +| [C(x_l+alpha dx) - l + z_k * mu_in]_- |**2
+   *                         )
+   * 				+ mu_in_inv * nu / 2 ( | [C(x_l+alpha dx) - u +
+   * z_k
+   * * mu_in]_+
+   * + [C(x_l+alpha dx) - l + z_k * mu_in]_- - (z+alpha dz) * mu_in |**2 with
+   * f(x) = 0.5 * x^THx + g^Tx phi is a second order polynomial in alpha. Below
+   * are computed its coefficients a0 and b0 in order to compute the desired
+   * gradient a0 * alpha + b0
+   */
+
+  qpwork.primal_residual_in_scaled_up_plus_alphaCdx =
+    qpwork.primal_residual_in_scaled_up + qpwork.Cdx * alpha;
+  qpwork.primal_residual_in_scaled_low_plus_alphaCdx =
+    qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
+
+  T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
+      qpresults.info.mu_eq_inv * (qpwork.Adx).squaredNorm() +
+      qpresults.info.rho *
+        qpwork.dw_aug.head(qpmodel.dim)
+          .squaredNorm()); // contains now: a = dx.dot(H.dot(dx)) + rho *
+                           // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2
+
+  qpwork.err.segment(qpmodel.dim, qpmodel.n_eq) =
+    qpwork.Adx -
+    qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq) * qpresults.info.mu_eq;
+  a +=
+    qpwork.err.segment(qpmodel.dim, qpmodel.n_eq).squaredNorm() *
+    qpresults.info
+      .mu_eq_inv; // contains now: a = dx.dot(H.dot(dx)) + rho * norm(dx)**2 +
+  // (mu_eq_inv) * norm(Adx)**2 + mu_eq_inv * norm(Adx-dy*mu_eq)**2
+  qpwork.err.head(qpmodel.dim) =
+    qpresults.info.rho * (qpresults.x - qpwork.x_prev) + qpwork.g_scaled;
+  T b(qpresults.x.dot(qpwork.Hdx) +
+      (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
+      qpresults.info.mu_eq_inv *
+        (qpwork.Adx)
+          .dot(qpwork.primal_residual_eq_scaled +
+               qpresults.y * qpresults.info.mu_eq)); // contains now: b =
+                                                     // dx.dot(H.dot(x) +
+                                                     // rho*(x-xe) +  g)  +
+  // mu_eq_inv * Adx.dot(res_eq)
+
+  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
+    qpwork.primal_residual_eq_scaled;
+  b += qpresults.info.mu_eq_inv *
+       qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
+         .dot(qpwork.rhs.segment(
+           qpmodel.dim,
+           qpmodel.n_eq)); // contains now: b = dx.dot(H.dot(x) + rho*(x-xe)
+  // +  g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+  // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq)
+
+  // derive Cdx_act
+  qpwork.err.tail(qpmodel.n_in) =
+    ((qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.)) ||
+     (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.)))
+      .select(qpwork.Cdx,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
+
+  a += qpresults.info.mu_in_inv * qpwork.err.tail(qpmodel.n_in).squaredNorm() /
+       qpsettings.alpha_gpdal; // contains now: a = dx.dot(H.dot(dx)) + rho *
+  // norm(dx)**2 + (mu_eq_inv) * norm(Adx)**2 + nu*mu_eq_inv *
+  // norm(Adx-dy*mu_eq)**2 +
+  // norm(dw_act)**2 / (mu_in * (alpha_gpdal))
+  a += qpresults.info.mu_in * (1. - qpsettings.alpha_gpdal) *
+       qpwork.dw_aug.tail(qpmodel.n_in).squaredNorm();
+  // add norm(z)**2 * mu_in * (1-alpha)
+
+  // derive vector [w-u]_+ + [w-l]--
+  qpwork.active_part_z =
+    (qpwork.primal_residual_in_scaled_up_plus_alphaCdx.array() > T(0.))
+      .select(qpwork.primal_residual_in_scaled_up,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in)) +
+    (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.))
+      .select(qpwork.primal_residual_in_scaled_low,
+              Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in));
+
+  b +=
+    qpresults.info.mu_in_inv *
+    qpwork.active_part_z.dot(qpwork.err.tail(qpmodel.n_in)) /
+    qpsettings.alpha_gpdal; // contains now: b = dx.dot(H.dot(x) + rho*(x-xe) +
+  // g)  + mu_eq_inv * Adx.dot(res_eq) + nu*mu_eq_inv *
+  // (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) + mu_in
+  // * dw_act.dot([w-u]_+ + [w-l]--) / alpha_gpdal
+
+  // contains now b =  dx.dot(H.dot(x) + rho*(x-xe) +  g)  + mu_eq_inv *
+  // Adx.dot(res_eq) + nu*mu_eq_inv * (Adx-dy*mu_eq).dot(res_eq-y*mu_eq) +
+  // mu_in_inv
+  // * Cdx_act.dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]--) + nu*mu_in_inv
+  // (Cdx_act-dz*mu_in).dot([Cx-u+ze*mu_in]_+ + [Cx-l+ze*mu_in]-- - z*mu_in)
+  b += qpresults.info.mu_in * (1. - qpsettings.alpha_gpdal) *
+       qpwork.dw_aug.tail(qpmodel.n_in).dot(qpresults.z);
+
+  return {
+    a,
+    b,
+    a * alpha + b,
+  };
+}
 /*!
  * Stores first derivative and coefficient of the univariate second order
  * polynomial merit function to be canceled by the exact primal-dual linesearch.
@@ -173,7 +302,6 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
     a * alpha + b,
   };
 }
-
 /*!
  * Performs the exact primaldual linesearch algorithm.
  *
@@ -186,7 +314,8 @@ template<typename T>
 void
 primal_dual_ls(const Model<T>& qpmodel,
                Results<T>& qpresults,
-               Workspace<T>& qpwork)
+               Workspace<T>& qpwork,
+               const Settings<T>& qpsettings)
 {
 
   /*
@@ -266,12 +395,21 @@ primal_dual_ls(const Model<T>& qpmodel,
   qpwork.alphas.resize(new_len);
 
   n_alpha = qpwork.alphas.len();
-
-  if (n_alpha == 0 || qpwork.alphas[0] > 1) {
-    qpwork.alpha = 1;
+  if (n_alpha == 0) { //
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL: {
+        auto res = gpdal_derivative_results(
+          qpmodel, qpresults, qpwork, qpsettings, T(0));
+        qpwork.alpha = -res.b / res.a;
+      } break;
+      case MeritFunctionType::PDAL: {
+        auto res =
+          primal_dual_derivative_results(qpmodel, qpresults, qpwork, T(0));
+        qpwork.alpha = -res.b / res.a;
+      } break;
+    }
     return;
   }
-
   ////////// STEP 2 ///////////
   auto infty = std::numeric_limits<T>::infinity();
 
@@ -298,8 +436,18 @@ primal_dual_ls(const Model<T>& qpmodel,
      * (noted first_grad_pos) and alpha (first_alpha_pos), and
      * break the loop
      */
-    T gr =
-      primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_).grad;
+    T gr(0);
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL:
+        gr = gpdal_derivative_results(
+               qpmodel, qpresults, qpwork, qpsettings, alpha_)
+               .grad;
+        break;
+      case MeritFunctionType::PDAL:
+        gr = primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_)
+               .grad;
+        break;
+    }
 
     if (gr < T(0)) {
       alpha_last_neg = alpha_;
@@ -319,9 +467,19 @@ primal_dual_ls(const Model<T>& qpmodel,
    * "gradient_norm"
    */
   if (alpha_last_neg == T(0)) {
-    last_neg_grad =
-      primal_dual_derivative_results(qpmodel, qpresults, qpwork, alpha_last_neg)
-        .grad;
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL:
+        last_neg_grad =
+          gpdal_derivative_results(
+            qpmodel, qpresults, qpwork, qpsettings, alpha_last_neg)
+            .grad;
+        break;
+      case MeritFunctionType::PDAL:
+        last_neg_grad = primal_dual_derivative_results(
+                          qpmodel, qpresults, qpwork, alpha_last_neg)
+                          .grad;
+        break;
+    }
   }
   if (alpha_first_pos == infty) {
     /*
@@ -329,13 +487,26 @@ primal_dual_ls(const Model<T>& qpmodel,
      * the optimal alpha is within the interval
      * [last_alpha_neg, +∞)
      */
-    PrimalDualDerivativeResult<T> res = primal_dual_derivative_results(
-      qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
-    auto& a = res.a;
-    auto& b = res.b;
-    // grad = a * alpha + b
-    // grad = 0 => alpha = -b/a
-    qpwork.alpha = -b / a;
+    switch (qpsettings.merit_function_type) {
+      case MeritFunctionType::GPDAL: {
+        PrimalDualDerivativeResult<T> res = gpdal_derivative_results(
+          qpmodel, qpresults, qpwork, qpsettings, 2 * alpha_last_neg + 1);
+        auto& a = res.a;
+        auto& b = res.b;
+        // grad = a * alpha + b
+        // grad = 0 => alpha = -b/a
+        qpwork.alpha = -b / a;
+      } break;
+      case MeritFunctionType::PDAL: {
+        PrimalDualDerivativeResult<T> res = primal_dual_derivative_results(
+          qpmodel, qpresults, qpwork, 2 * alpha_last_neg + 1);
+        auto& a = res.a;
+        auto& b = res.b;
+        // grad = a * alpha + b
+        // grad = 0 => alpha = -b/a
+        qpwork.alpha = -b / a;
+      } break;
+    }
   } else {
     /*
      * 2.3
@@ -344,9 +515,9 @@ primal_dual_ls(const Model<T>& qpmodel,
      * is an affine function in alpha
      */
 
-    qpwork.alpha = alpha_last_neg - last_neg_grad *
-                                      (alpha_first_pos - alpha_last_neg) /
-                                      (first_pos_grad - last_neg_grad);
+    qpwork.alpha = std::abs(alpha_last_neg -
+                            last_neg_grad * (alpha_first_pos - alpha_last_neg) /
+                              (first_pos_grad - last_neg_grad));
   }
 }
 
@@ -464,7 +635,8 @@ active_set_change(const Model<T>& qpmodel,
     auto planned_to_add = _planned_to_add.ptr_mut();
 
     isize planned_to_add_count = 0;
-    T mu_in_neg = -qpresults.info.mu_in;
+    T mu_in_neg(-qpresults.info.mu_in);
+
     isize n_c = n_c_f;
     for (isize i = 0; i < qpmodel.n_in; i++) {
       if (qpwork.active_inequalities(i)) {
