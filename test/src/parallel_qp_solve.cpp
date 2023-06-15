@@ -137,7 +137,6 @@ DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
   }
 }
 
-
 DOCTEST_TEST_CASE("test sparse vector QP")
 {
   sparse::isize dim = 500;

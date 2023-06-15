@@ -102,7 +102,8 @@ main(int /*argc*/, const char** /*argv*/)
   for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
     timer.start();
     for (int j = 0; j < smooth; j++) {
-      proxsuite::proxqp::parallel::qp_solve_in_parallel(num_threads, qps_vector);
+      proxsuite::proxqp::parallel::qp_solve_in_parallel(num_threads,
+                                                        qps_vector);
     }
     timer.stop();
     std::cout << "mean solve time in parallel (" << num_threads
@@ -121,5 +122,4 @@ main(int /*argc*/, const char** /*argv*/)
               << " threads):\t" << timer.elapsed().user * 1e-3 / smooth << "ms"
               << std::endl;
   }
-
 }
