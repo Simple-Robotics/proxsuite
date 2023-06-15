@@ -29,6 +29,7 @@ main(int /*argc*/, const char** /*argv*/)
   int num_qps = 1024;
   const int smooth = 10;
   std::vector<proxqp::dense::QP<T>> qps;
+  qps.reserve(num_qps);
 
   std::cout << "--" << std::endl;
   std::cout << "dim: " << dim << std::endl;

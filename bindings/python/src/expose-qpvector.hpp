@@ -53,9 +53,6 @@ exposeQpVectorSparse(pybind11::module_ m)
          &sparse::VectorQP<T, I>::init_qp_in_place,
          pybind11::return_value_policy::reference,
          "init a sparse QP in place and return a reference to it.")
-    .def("insert",
-         &sparse::VectorQP<T, I>::insert,
-         "inserts a qp at the end of the vector of qps.")
     .def("get",
          &sparse::VectorQP<T, I>::get,
          pybind11::return_value_policy::reference,
