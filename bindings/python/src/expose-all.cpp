@@ -20,9 +20,11 @@ exposeCommon(pybind11::module_ m)
 {
   exposeResults<T>(m);
   exposeSettings<T>(m);
+#ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
   m.def("omp_get_max_threads",
         &omp_get_max_threads,
         "Returns an upper bound on the number of threads that could be used.");
+#endif
 }
 
 template<typename T, typename I>
