@@ -15,14 +15,14 @@ namespace parallel {
 
 template<typename T>
 void
-qp_solve_in_parallel(optional<const size_t> num_threads,
-                     std::vector<proxqp::dense::QP<T>>& qps)
+qp_solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
+                     optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
   } else {
     size_t NUM_THREADS =
-      std::max((size_t)(omp_get_max_threads() / 2 - 2), (size_t)(1));
+      std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
     set_default_omp_options(NUM_THREADS);
   }
   typedef proxqp::dense::QP<T> qp_dense;
@@ -37,14 +37,14 @@ qp_solve_in_parallel(optional<const size_t> num_threads,
 
 template<typename T>
 void
-qp_solve_in_parallel(optional<const size_t> num_threads,
-                     proxqp::dense::BatchQP<T>& qps)
+qp_solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
+                     optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
   } else {
     size_t NUM_THREADS =
-      std::max((size_t)(omp_get_max_threads() / 2 - 2), (size_t)(1));
+      std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
     set_default_omp_options(NUM_THREADS);
   }
   typedef proxqp::dense::QP<T> qp_dense;
@@ -59,14 +59,14 @@ qp_solve_in_parallel(optional<const size_t> num_threads,
 
 template<typename T, typename I>
 void
-qp_solve_in_parallel(optional<const size_t> num_threads,
-                     proxqp::sparse::BatchQP<T, I>& qps)
+qp_solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
+                     optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
   } else {
     size_t NUM_THREADS =
-      std::max((size_t)(omp_get_max_threads() / 2 - 2), (size_t)(1));
+      std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
     set_default_omp_options(NUM_THREADS);
   }
 
@@ -82,10 +82,16 @@ qp_solve_in_parallel(optional<const size_t> num_threads,
 
 template<typename T, typename I>
 void
-qp_solve_in_parallel(const size_t num_threads,
-                     std::vector<proxqp::sparse::QP<T, I>>& qps)
+qp_solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
+                     optional<const size_t> num_threads = nullopt)
 {
-  set_default_omp_options(num_threads);
+  if (num_threads != nullopt) {
+    set_default_omp_options(num_threads.value());
+  } else {
+    size_t NUM_THREADS =
+      std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
+    set_default_omp_options(NUM_THREADS);
+  }
 
   typedef proxqp::sparse::QP<T, I> qp_sparse;
   const Eigen::DenseIndex batch_size = qps.size();

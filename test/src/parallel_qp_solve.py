@@ -92,7 +92,7 @@ class ParallelWrapper(unittest.TestCase):
             qp.solve()
 
         num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
-        proxsuite.proxqp.dense.solve_in_parallel(num_threads, qps_compare)
+        proxsuite.proxqp.dense.solve_in_parallel(qps_compare, num_threads)
 
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qps_compare[i].results.x, rtol=1e-8)
@@ -141,7 +141,7 @@ class ParallelWrapper(unittest.TestCase):
             qp.solve()
 
         num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
-        proxsuite.proxqp.dense.solve_in_parallel(num_threads, qp_vector)
+        proxsuite.proxqp.dense.solve_in_parallel(qp_vector, num_threads)
 
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
@@ -194,7 +194,7 @@ class ParallelWrapper(unittest.TestCase):
             qp.solve()
 
         num_threads = proxsuite.proxqp.omp_get_max_threads() - 1
-        proxsuite.proxqp.sparse.solve_in_parallel(num_threads, qp_vector)
+        proxsuite.proxqp.sparse.solve_in_parallel(qp_vector, num_threads)
 
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)

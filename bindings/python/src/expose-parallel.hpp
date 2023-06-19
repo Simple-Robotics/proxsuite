@@ -26,23 +26,23 @@ solveDenseQpParallel(pybind11::module_ m)
     m, "VectorDenseQP");
 
   m.def("solve_in_parallel",
-        pybind11::overload_cast<optional<const size_t>,
-                                std::vector<proxqp::dense::QP<T>>&>(
+        pybind11::overload_cast<std::vector<proxqp::dense::QP<T>>&,
+                                optional<const size_t>>(
           &parallel::qp_solve_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
+        pybind11::arg_v("qps", "List of initialized dense Qps."),
         pybind11::arg_v("num_threads",
                         nullopt,
-                        "number of threads used for the computation."),
-        pybind11::arg_v("qps", "List of initialized dense Qps."));
+                        "number of threads used for the computation."));
 
   m.def(
     "solve_in_parallel",
-    pybind11::overload_cast<optional<const size_t>, proxqp::dense::BatchQP<T>&>(
+    pybind11::overload_cast<proxqp::dense::BatchQP<T>&, optional<const size_t>>(
       &parallel::qp_solve_in_parallel<T>),
     "Function for solving a list of dense QPs in parallel.",
+    pybind11::arg_v("qps", "List of initialized dense Qps."),
     pybind11::arg_v(
-      "num_threads", nullopt, "number of threads used for the computation."),
-    pybind11::arg_v("qps", "List of initialized dense Qps."));
+      "num_threads", nullopt, "number of threads used for the computation."));
 }
 
 } // namespace python
@@ -55,14 +55,14 @@ void
 solveSparseQpParallel(pybind11::module_ m)
 {
   m.def("solve_in_parallel",
-        pybind11::overload_cast<optional<const size_t>,
-                                proxqp::sparse::BatchQP<T, I>&>(
+        pybind11::overload_cast<proxqp::sparse::BatchQP<T, I>&,
+                                optional<const size_t>>(
           &parallel::qp_solve_in_parallel<T, I>),
         "Function for solving a list of sparse QPs in parallel.",
+        pybind11::arg_v("qps", "List of initialized sparse Qps."),
         pybind11::arg_v("num_threads",
                         nullopt,
-                        "number of threads used for the computation."),
-        pybind11::arg_v("qps", "List of initialized sparse Qps."));
+                        "number of threads used for the computation."));
 }
 
 } // namespace python
