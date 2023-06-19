@@ -495,11 +495,11 @@ struct VectorQP
   std::vector<QP<T>> vector_qp;
   dense::isize m_size;
 
-  VectorQP(long unsigned int batchSize)
+  explicit VectorQP(size_t batch_size)
   {
-    if (vector_qp.max_size() != batchSize) {
+    if (vector_qp.max_size() != batch_size) {
       vector_qp.clear();
-      vector_qp.reserve(batchSize);
+      vector_qp.reserve(batch_size);
     }
     m_size = 0;
   }

@@ -23,7 +23,7 @@ exposeCommon(pybind11::module_ m)
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
   m.def("omp_get_max_threads",
         &omp_get_max_threads,
-        "Returns an upper bound on the number of threads that could be used.");
+        "Returns the max number of threads that could be used by OpenMP.");
 #endif
 }
 
