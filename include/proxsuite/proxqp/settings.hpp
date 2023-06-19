@@ -28,7 +28,12 @@ enum struct MeritFunctionType
   GPDAL, // Generalized Primal Dual Augmented Lagrangian
   PDAL,  // Primal Dual Augmented Lagrangian
 };
-
+// COST FUNCTION TYPE
+enum struct ProblemType
+{
+  LP, // Linear Program
+  QP, // Quadratic Program
+};
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
 {
@@ -102,6 +107,7 @@ struct Settings
   bool bcl_update;
   MeritFunctionType merit_function_type;
   T alpha_gpdal;
+  ProblemType problem_type;
 
   SparseBackend sparse_backend;
   /*!
@@ -209,6 +215,7 @@ struct Settings
     bool bcl_update = true,
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
     T alpha_gpdal = 0.95,
+    ProblemType problem_type = ProblemType::QP,
     SparseBackend sparse_backend = SparseBackend::Automatic)
     : default_rho(default_rho)
     , default_mu_eq(default_mu_eq)
@@ -249,6 +256,7 @@ struct Settings
     , bcl_update(bcl_update)
     , merit_function_type(merit_function_type)
     , alpha_gpdal(alpha_gpdal)
+    , problem_type(problem_type)
     , sparse_backend(sparse_backend)
   {
   }
@@ -299,6 +307,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.bcl_update == settings2.bcl_update &&
     settings1.merit_function_type == settings2.merit_function_type &&
     settings1.alpha_gpdal == settings2.alpha_gpdal &&
+    settings1.problem_type == settings2.problem_type &&
     settings1.sparse_backend == settings2.sparse_backend;
   return value;
 }

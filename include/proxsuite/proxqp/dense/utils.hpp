@@ -333,6 +333,7 @@ void
 global_dual_residual(Results<T>& qpresults,
                      Workspace<T>& qpwork,
                      const Model<T>& qpmodel,
+                     const Settings<T>& qpsettings,
                      const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
                      T& dual_feasibility_rhs_0,
@@ -349,20 +350,31 @@ global_dual_residual(Results<T>& qpresults,
   // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
-  qpwork.CTz.noalias() =
-    qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
-  qpwork.dual_residual_scaled += qpwork.CTz;
-  ruiz.unscale_dual_residual_in_place(
-    VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
-  dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
-
+  switch (qpsettings.problem_type) {
+    case ProblemType::LP:
+      dual_feasibility_rhs_0 = 0;
+      break;
+    case ProblemType::QP:
+      qpwork.CTz.noalias() =
+        qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      ruiz.unscale_dual_residual_in_place(
+        VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
+      dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+      break;
+  }
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::fabs(duality_gap);
-  const T xHx = (qpwork.CTz).dot(qpresults.x);
-  duality_gap += xHx; // contains now xHx+g.Tx
-  rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
-
+  switch (qpsettings.problem_type) {
+    case ProblemType::LP:
+      break;
+    case ProblemType::QP:
+      const T xHx = (qpwork.CTz).dot(qpresults.x);
+      duality_gap += xHx; // contains now xHx+g.Tx
+      rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
+      break;
+  }
   ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
 
   qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
