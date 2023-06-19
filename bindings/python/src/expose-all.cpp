@@ -47,6 +47,7 @@ exposeDenseAlgorithms(pybind11::module_ m)
   dense::python::solveDenseQp<T>(m);
 }
 
+#ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
 template<typename T>
 void
 exposeDenseParallel(pybind11::module_ m)
@@ -59,6 +60,7 @@ exposeSparseParallel(pybind11::module_ m)
 {
   sparse::python::solveSparseQpParallel<T, I>(m);
 }
+#endif
 
 PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
 {
