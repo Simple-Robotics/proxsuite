@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2023 INRIA
 //
+
 #include <proxsuite/proxqp/dense/wrapper.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/parallel/qp_solve.hpp>
@@ -23,7 +24,7 @@ void
 solveDenseQpParallel(pybind11::module_ m)
 {
   pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(
-    m, "VectorDenseQP");
+    m, "VectorQP");
 
   m.def("solve_in_parallel",
         pybind11::overload_cast<std::vector<proxqp::dense::QP<T>>&,
