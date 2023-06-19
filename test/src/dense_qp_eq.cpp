@@ -158,7 +158,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
   }
 }
 
-DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
+DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
                   "linear cost and increasing dimension using wrapper API and  "
                   "the dedicated LP interface")
 {
