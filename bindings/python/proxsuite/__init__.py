@@ -1,4 +1,5 @@
 import platform
+import numpy  # for OpenMP proper linkage
 
 machine = platform.machine()
 has_vectorization_instructions = not machine.startswith(
