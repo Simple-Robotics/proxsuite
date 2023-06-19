@@ -147,6 +147,7 @@ template<typename T>
 void
 iterative_residual(const Model<T>& qpmodel,
                    Results<T>& qpresults,
+                   const Settings<T>& qpsettings,
                    Workspace<T>& qpwork,
                    isize inner_pb_dim)
 {
@@ -154,9 +155,14 @@ iterative_residual(const Model<T>& qpmodel,
   auto& Adx = qpwork.Adx;
   auto& ATdy = qpwork.CTz;
   qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
-
-  Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
-                  qpwork.dw_aug.head(qpmodel.dim);
+  switch (qpsettings.problem_type) {
+    case ProblemType::LP:
+      break;
+    case ProblemType::QP:
+      Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
+                      qpwork.dw_aug.head(qpmodel.dim);
+      break;
+  }
   qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
   qpwork.err.head(qpmodel.dim) -=
     qpresults.info.rho * qpwork.dw_aug.head(qpmodel.dim);
@@ -213,7 +219,7 @@ iterative_solve_with_permut_fact( //
   };
   qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-  iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+  iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
   ++it;
   T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
@@ -229,7 +235,7 @@ iterative_solve_with_permut_fact( //
     qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
     qpwork.err.head(inner_pb_dim).setZero();
-    iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
     if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
       it_stability += 1;
@@ -252,7 +258,7 @@ iterative_solve_with_permut_fact( //
     qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
     qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-    iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
     preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     ++it;
@@ -266,7 +272,8 @@ iterative_solve_with_permut_fact( //
       qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
       qpwork.err.head(inner_pb_dim).setZero();
-      iterative_residual<T>(qpmodel, qpresults, qpwork, inner_pb_dim);
+      iterative_residual<T>(
+        qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
@@ -837,7 +844,13 @@ qp_solve( //
     }
     if (qpsettings.initial_guess !=
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
-      qpwork.H_scaled = qpmodel.H;
+      switch (qpsettings.problem_type) {
+        case ProblemType::LP:
+          break;
+        case ProblemType::QP:
+          qpwork.H_scaled = qpmodel.H;
+          break;
+      }
       qpwork.g_scaled = qpmodel.g;
       qpwork.A_scaled = qpmodel.A;
       qpwork.b_scaled = qpmodel.b;
@@ -846,7 +859,8 @@ qp_solve( //
       qpwork.l_scaled = qpmodel.l;
       proxsuite::proxqp::dense::setup_equilibration(
         qpwork, qpsettings, ruiz, false); // reuse previous equilibration
-      proxsuite::proxqp::dense::setup_factorization(qpwork, qpmodel, qpresults);
+      proxsuite::proxqp::dense::setup_factorization(
+        qpwork, qpmodel, qpsettings, qpresults);
     }
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
@@ -896,7 +910,7 @@ qp_solve( //
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
         proxsuite::proxqp::dense::setup_factorization(
-          qpwork, qpmodel, qpresults);
+          qpwork, qpmodel, qpsettings, qpresults);
         compute_equality_constrained_initial_guess(
           qpwork, qpsettings, qpmodel, qpresults);
         break;
@@ -912,7 +926,7 @@ qp_solve( //
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
           { proxsuite::proxqp::from_eigen, qpresults.z });
-        setup_factorization(qpwork, qpmodel, qpresults);
+        setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
         qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
@@ -925,7 +939,7 @@ qp_solve( //
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
-        setup_factorization(qpwork, qpmodel, qpresults);
+        setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
         break;
       }
       case InitialGuessStatus::WARM_START: {
@@ -936,7 +950,7 @@ qp_solve( //
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
           { proxsuite::proxqp::from_eigen, qpresults.z });
-        setup_factorization(qpwork, qpmodel, qpresults);
+        setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
         qpwork.n_c = 0;
         for (isize i = 0; i < qpmodel.n_in; i++) {
           if (qpresults.z[i] != 0) {
@@ -962,7 +976,7 @@ qp_solve( //
         if (qpwork.refactorize) { // refactorization only when one of the
                                   // matrices has changed or one proximal
                                   // parameter has changed
-          setup_factorization(qpwork, qpmodel, qpresults);
+          setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
           qpwork.n_c = 0;
           for (isize i = 0; i < qpmodel.n_in; i++) {
             if (qpresults.z[i] != 0) {
@@ -1014,6 +1028,7 @@ qp_solve( //
     global_dual_residual(qpresults,
                          qpwork,
                          qpmodel,
+                         qpsettings,
                          ruiz,
                          dual_feasibility_lhs,
                          dual_feasibility_rhs_0,
@@ -1157,6 +1172,7 @@ qp_solve( //
       global_dual_residual(qpresults,
                            qpwork,
                            qpmodel,
+                           qpsettings,
                            ruiz,
                            dual_feasibility_lhs_new,
                            dual_feasibility_rhs_0,
@@ -1222,6 +1238,7 @@ qp_solve( //
     global_dual_residual(qpresults,
                          qpwork,
                          qpmodel,
+                         qpsettings,
                          ruiz,
                          dual_feasibility_lhs_new,
                          dual_feasibility_rhs_0,

@@ -68,6 +68,7 @@ template<typename T>
 void
 setup_factorization(Workspace<T>& qpwork,
                     const Model<T>& qpmodel,
+                    const Settings<T>& qpsettings,
                     Results<T>& qpresults)
 {
 
@@ -75,8 +76,13 @@ setup_factorization(Workspace<T>& qpwork,
     proxsuite::linalg::veg::from_slice_mut,
     qpwork.ldl_stack.as_mut(),
   };
-
-  qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+  switch (qpsettings.problem_type) {
+    case ProblemType::QP:
+      qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+      break;
+    case ProblemType::LP:
+      break;
+  }
   qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
     qpresults.info.rho;
   qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
@@ -124,6 +130,7 @@ setup_equilibration(Workspace<T>& qpwork,
                          execute_preconditioner,
                          qpsettings.preconditioner_max_iter,
                          qpsettings.preconditioner_accuracy,
+                         qpsettings.problem_type,
                          stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 }
@@ -385,8 +392,13 @@ setup( //
   } // else qpmodel.l remains initialized to a matrix with zero elements or zero
     // shape
   assert(qpmodel.is_valid());
-
-  qpwork.H_scaled = qpmodel.H;
+  switch (qpsettings.problem_type) {
+    case ProblemType::LP:
+      break;
+    case ProblemType::QP:
+      qpwork.H_scaled = qpmodel.H;
+      break;
+  }
   qpwork.g_scaled = qpmodel.g;
   qpwork.A_scaled = qpmodel.A;
   qpwork.b_scaled = qpmodel.b;

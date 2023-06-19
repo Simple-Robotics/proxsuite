@@ -85,6 +85,7 @@ TEST_CASE("upper part")
     execute_preconditioner,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
+    settings.problem_type,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
@@ -166,6 +167,7 @@ TEST_CASE("lower part")
     execute_preconditioner,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
+    settings.problem_type,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));

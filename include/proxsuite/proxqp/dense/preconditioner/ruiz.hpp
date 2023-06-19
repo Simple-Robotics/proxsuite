@@ -10,6 +10,7 @@
 #include "proxsuite/proxqp/dense/views.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
+#include <proxsuite/proxqp/settings.hpp>
 #include <ostream>
 
 #include <Eigen/Core>
@@ -34,12 +35,12 @@ ruiz_scale_qp_in_place( //
   T epsilon,
   isize max_iter,
   Symmetry sym,
+  ProblemType problem_type,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
 
   T c(1);
   auto S = delta_.to_eigen();
-
   auto H = qp.H.to_eigen();
   auto g = qp.g.to_eigen();
   auto A = qp.A.to_eigen();
@@ -65,7 +66,13 @@ ruiz_scale_qp_in_place( //
   LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
   i64 iter = 1;
-
+  switch (problem_type) {
+    case ProblemType::LP:
+      delta.head(n).setOnes();
+      break;
+    case ProblemType::QP:
+      break;
+  }
   while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
     if (logger_ptr != nullptr) {
       *logger_ptr                                   //
@@ -83,54 +90,59 @@ ruiz_scale_qp_in_place( //
 
     // normalization vector
     {
-      for (isize k = 0; k < n; ++k) {
-        switch (sym) {
-          case Symmetry::upper: { // upper triangular part
-            T aux = sqrt(std::max({
-              infty_norm(H.col(k).head(k)),
-              infty_norm(H.row(k).tail(n - k)),
-              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
-              n_in > 0 ? infty_norm(C.col(k)) : T(0),
-            }));
-            if (aux == T(0)) {
-              delta(k) = T(1);
-            } else {
-              delta(k) = T(1) / (aux + machine_eps);
-            }
-            break;
-          }
-          case Symmetry::lower: { // lower triangular part
+      switch (problem_type) {
+        case ProblemType::LP:
+          break;
+        case ProblemType::QP:
+          for (isize k = 0; k < n; ++k) {
+            switch (sym) {
+              case Symmetry::upper: { // upper triangular part
+                T aux = sqrt(std::max({
+                  infty_norm(H.col(k).head(k)),
+                  infty_norm(H.row(k).tail(n - k)),
+                  n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+                  n_in > 0 ? infty_norm(C.col(k)) : T(0),
+                }));
+                if (aux == T(0)) {
+                  delta(k) = T(1);
+                } else {
+                  delta(k) = T(1) / (aux + machine_eps);
+                }
+                break;
+              }
+              case Symmetry::lower: { // lower triangular part
 
-            T aux = sqrt(std::max({
-              infty_norm(H.col(k).head(k)),
-              infty_norm(H.col(k).tail(n - k)),
-              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
-              n_in > 0 ? infty_norm(C.col(k)) : T(0),
-            }));
-            if (aux == T(0)) {
-              delta(k) = T(1);
-            } else {
-              delta(k) = T(1) / (aux + machine_eps);
-            }
-            break;
-          }
-          case Symmetry::general: {
+                T aux = sqrt(std::max({
+                  infty_norm(H.col(k).head(k)),
+                  infty_norm(H.col(k).tail(n - k)),
+                  n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+                  n_in > 0 ? infty_norm(C.col(k)) : T(0),
+                }));
+                if (aux == T(0)) {
+                  delta(k) = T(1);
+                } else {
+                  delta(k) = T(1) / (aux + machine_eps);
+                }
+                break;
+              }
+              case Symmetry::general: {
 
-            T aux = sqrt(std::max({
-              infty_norm(H.col(k)),
-              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
-              n_in > 0 ? infty_norm(C.col(k)) : T(0),
-            }));
-            if (aux == T(0)) {
-              delta(k) = T(1);
-            } else {
-              delta(k) = T(1) / (aux + machine_eps);
+                T aux = sqrt(std::max({
+                  infty_norm(H.col(k)),
+                  n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+                  n_in > 0 ? infty_norm(C.col(k)) : T(0),
+                }));
+                if (aux == T(0)) {
+                  delta(k) = T(1);
+                } else {
+                  delta(k) = T(1) / (aux + machine_eps);
+                }
+                break;
+              }
             }
-            break;
           }
-        }
+          break;
       }
-
       for (isize k = 0; k < n_eq; ++k) {
         T aux = sqrt(infty_norm(A.row(k)));
         if (aux == T(0)) {
@@ -160,72 +172,77 @@ ruiz_scale_qp_in_place( //
       l.array() *= delta.tail(n_in).array();
 
       // normalize H
-      switch (sym) {
-        case Symmetry::upper: {
-          // upper triangular part
-          for (isize j = 0; j < n; ++j) {
-            H.col(j).head(j + 1) *= delta(j);
-          }
-          // normalisation des lignes
-          for (isize i = 0; i < n; ++i) {
-            H.row(i).tail(n - i) *= delta(i);
-          }
+      switch (problem_type) {
+        case ProblemType::LP:
           break;
-        }
-        case Symmetry::lower: {
-          // lower triangular part
-          for (isize j = 0; j < n; ++j) {
-            H.col(j).tail(n - j) *= delta(j);
+        case ProblemType::QP:
+          switch (sym) {
+            case Symmetry::upper: {
+              // upper triangular part
+              for (isize j = 0; j < n; ++j) {
+                H.col(j).head(j + 1) *= delta(j);
+              }
+              // normalisation des lignes
+              for (isize i = 0; i < n; ++i) {
+                H.row(i).tail(n - i) *= delta(i);
+              }
+              break;
+            }
+            case Symmetry::lower: {
+              // lower triangular part
+              for (isize j = 0; j < n; ++j) {
+                H.col(j).tail(n - j) *= delta(j);
+              }
+              // normalisation des lignes
+              for (isize i = 0; i < n; ++i) {
+                H.row(i).head(i + 1) *= delta(i);
+              }
+              break;
+            }
+            case Symmetry::general: {
+              // all matrix
+              H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
+              break;
+            }
+            default:
+              break;
           }
-          // normalisation des lignes
-          for (isize i = 0; i < n; ++i) {
-            H.row(i).head(i + 1) *= delta(i);
+
+          // additional normalization for the cost function
+          switch (sym) {
+            case Symmetry::upper: {
+              // upper triangular part
+              T tmp = T(0);
+              for (isize j = 0; j < n; ++j) {
+                tmp += proxqp::dense::infty_norm(H.row(j).tail(n - j));
+              }
+              gamma = 1 / std::max(tmp / T(n), T(1));
+              break;
+            }
+            case Symmetry::lower: {
+              // lower triangular part
+              T tmp = T(0);
+              for (isize j = 0; j < n; ++j) {
+                tmp += proxqp::dense::infty_norm(H.col(j).tail(n - j));
+              }
+              gamma = 1 / std::max(tmp / T(n), T(1));
+              break;
+            }
+            case Symmetry::general: {
+              // all matrix
+              gamma =
+                1 / std::max(
+                      T(1),
+                      (H.colwise().template lpNorm<Eigen::Infinity>()).mean());
+              break;
+            }
+            default:
+              break;
           }
-          break;
-        }
-        case Symmetry::general: {
-          // all matrix
-          H = delta.head(n).asDiagonal() * H * delta.head(n).asDiagonal();
-          break;
-        }
-        default:
+          H *= gamma;
           break;
       }
-
-      // additional normalization for the cost function
-      switch (sym) {
-        case Symmetry::upper: {
-          // upper triangular part
-          T tmp = T(0);
-          for (isize j = 0; j < n; ++j) {
-            tmp += proxqp::dense::infty_norm(H.row(j).tail(n - j));
-          }
-          gamma = 1 / std::max(tmp / T(n), T(1));
-          break;
-        }
-        case Symmetry::lower: {
-          // lower triangular part
-          T tmp = T(0);
-          for (isize j = 0; j < n; ++j) {
-            tmp += proxqp::dense::infty_norm(H.col(j).tail(n - j));
-          }
-          gamma = 1 / std::max(tmp / T(n), T(1));
-          break;
-        }
-        case Symmetry::general: {
-          // all matrix
-          gamma =
-            1 /
-            std::max(T(1),
-                     (H.colwise().template lpNorm<Eigen::Infinity>()).mean());
-          break;
-        }
-        default:
-          break;
-      }
-
       g *= gamma;
-      H *= gamma;
 
       S.array() *= delta.array(); // coefficientwise product
       c *= gamma;
@@ -316,6 +333,7 @@ struct RuizEquilibration
                          bool execute_preconditioner,
                          const isize max_iter,
                          const T epsilon,
+                         const ProblemType problem_type,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
     if (execute_preconditioner) {
@@ -326,6 +344,7 @@ struct RuizEquilibration
                                          epsilon,
                                          max_iter,
                                          sym,
+                                         problem_type,
                                          stack);
     } else {
 
@@ -397,6 +416,7 @@ struct RuizEquilibration
    */
   void scale_qp(const QpViewBox<T> qp,
                 QpViewBoxMut<T> scaled_qp,
+                bool execute_preconditioner,
                 VectorViewMut<T> tmp_delta_preallocated) const
   {
 
@@ -413,7 +433,11 @@ struct RuizEquilibration
     scaled_qp.b.to_eigen() = qp.b.to_eigen();
     scaled_qp.d.to_eigen() = qp.d.to_eigen();
 
-    scale_qp_in_place(scaled_qp, tmp_delta_preallocated, epsilon, max_iter);
+    scale_qp_in_place(scaled_qp,
+                      execute_preconditioner,
+                      tmp_delta_preallocated,
+                      epsilon,
+                      max_iter);
   }
   // modifies variables in place
   /*!

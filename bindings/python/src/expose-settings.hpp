@@ -35,6 +35,10 @@ exposeSettings(pybind11::module_ m)
     .value("GPDAL", MeritFunctionType::GPDAL)
     .value("PDAL", MeritFunctionType::PDAL)
     .export_values();
+  ::pybind11::enum_<ProblemType>(m, "problem_type", pybind11::module_local())
+    .value("QP", ProblemType::QP)
+    .value("LP", ProblemType::LP)
+    .export_values();
 
   ::pybind11::enum_<SparseBackend>(m, "SparseBackend", pybind11::module_local())
     .value("Automatic", SparseBackend::Automatic)
@@ -83,6 +87,7 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
     .def_readwrite("merit_function_type", &Settings<T>::merit_function_type)
     .def_readwrite("alpha_gpdal", &Settings<T>::alpha_gpdal)
+    .def_readwrite("problem_type", &Settings<T>::problem_type)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
     .def(pybind11::pickle(
