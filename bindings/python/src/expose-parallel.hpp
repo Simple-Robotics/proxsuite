@@ -27,8 +27,7 @@ solveDenseQpParallel(pybind11::module_ m)
 
   m.def("solve_in_parallel",
         pybind11::overload_cast<std::vector<proxqp::dense::QP<T>>&,
-                                optional<const size_t>>(
-          &parallel::qp_solve_in_parallel<T>),
+                                optional<const size_t>>(&solve_in_parallel<T>),
         "Function for solving a list of dense QPs in parallel.",
         pybind11::arg_v("qps", "List of initialized dense Qps."),
         pybind11::arg_v("num_threads",
@@ -38,7 +37,7 @@ solveDenseQpParallel(pybind11::module_ m)
   m.def(
     "solve_in_parallel",
     pybind11::overload_cast<proxqp::dense::BatchQP<T>&, optional<const size_t>>(
-      &parallel::qp_solve_in_parallel<T>),
+      &solve_in_parallel<T>),
     "Function for solving a list of dense QPs in parallel.",
     pybind11::arg_v("qps", "List of initialized dense Qps."),
     pybind11::arg_v(
@@ -54,15 +53,14 @@ template<typename T, typename I>
 void
 solveSparseQpParallel(pybind11::module_ m)
 {
-  m.def("solve_in_parallel",
-        pybind11::overload_cast<proxqp::sparse::BatchQP<T, I>&,
-                                optional<const size_t>>(
-          &parallel::qp_solve_in_parallel<T, I>),
-        "Function for solving a list of sparse QPs in parallel.",
-        pybind11::arg_v("qps", "List of initialized sparse Qps."),
-        pybind11::arg_v("num_threads",
-                        nullopt,
-                        "number of threads used for the computation."));
+  m.def(
+    "solve_in_parallel",
+    pybind11::overload_cast<proxqp::sparse::BatchQP<T, I>&,
+                            optional<const size_t>>(&solve_in_parallel<T, I>),
+    "Function for solving a list of sparse QPs in parallel.",
+    pybind11::arg_v("qps", "List of initialized sparse Qps."),
+    pybind11::arg_v(
+      "num_threads", nullopt, "number of threads used for the computation."));
 }
 
 } // namespace python

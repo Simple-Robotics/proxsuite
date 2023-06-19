@@ -68,8 +68,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
   }
 
   const size_t NUM_THREADS = (size_t)omp_get_max_threads();
-  proxsuite::proxqp::parallel::qp_solve_in_parallel(qps_compare,
-                                                    (size_t)(NUM_THREADS / 2));
+  proxsuite::proxqp::solve_in_parallel(qps_compare, (size_t)(NUM_THREADS / 2));
 
   for (int i = 0; i < num_qps; i++) {
     CHECK(qps[i].results.x == qps_compare[i].results.x);
@@ -125,7 +124,7 @@ DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
     qps_compare[i].solve();
   }
 
-  proxsuite::proxqp::parallel::qp_solve_in_parallel(qps_vector);
+  proxsuite::proxqp::solve_in_parallel(qps_vector);
 
   for (int i = 0; i < num_qps; i++) {
     CHECK(qps_vector[i].results.x == qps_compare[i].results.x);
@@ -185,8 +184,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
   }
 
   const size_t NUM_THREADS = (size_t)omp_get_max_threads();
-  proxsuite::proxqp::parallel::qp_solve_in_parallel(qps_compare,
-                                                    (size_t)(NUM_THREADS / 2));
+  proxsuite::proxqp::solve_in_parallel(qps_compare, (size_t)(NUM_THREADS / 2));
 
   for (int i = 0; i < num_qps; i++) {
     CHECK(qps[i].results.x == qps_compare[i].results.x);
@@ -245,8 +243,7 @@ DOCTEST_TEST_CASE("test sparse BatchQP")
   }
 
   const size_t NUM_THREADS = (size_t)omp_get_max_threads();
-  proxsuite::proxqp::parallel::qp_solve_in_parallel(qps_vector,
-                                                    (size_t)(NUM_THREADS / 2));
+  proxsuite::proxqp::solve_in_parallel(qps_vector, (size_t)(NUM_THREADS / 2));
 
   for (int i = 0; i < num_qps; i++) {
     CHECK(qps_vector[i].results.x == qps_compare[i].results.x);

@@ -11,12 +11,11 @@
 
 namespace proxsuite {
 namespace proxqp {
-namespace parallel {
 
 template<typename T>
 void
-qp_solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
-                     optional<const size_t> num_threads = nullopt)
+solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
+                  optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -37,8 +36,8 @@ qp_solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
 
 template<typename T>
 void
-qp_solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
-                     optional<const size_t> num_threads = nullopt)
+solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
+                  optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -59,8 +58,8 @@ qp_solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
 
 template<typename T, typename I>
 void
-qp_solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
-                     optional<const size_t> num_threads = nullopt)
+solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
+                  optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -82,8 +81,8 @@ qp_solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
 
 template<typename T, typename I>
 void
-qp_solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
-                     optional<const size_t> num_threads = nullopt)
+solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
+                  optional<const size_t> num_threads = nullopt)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -103,8 +102,7 @@ qp_solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
   }
 }
 
-}
-}
-} // namespace proxsuite::proxqp::parallel
+} // namespace proxqp
+} // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_PROXQP_PARALLEL_QPSOLVE_HPP */
