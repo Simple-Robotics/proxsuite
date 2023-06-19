@@ -66,7 +66,13 @@ ruiz_scale_qp_in_place( //
   LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
   i64 iter = 1;
-
+  switch (problem_type) {
+    case ProblemType::LP:
+      delta.head(n).setOnes();
+      break;
+    case ProblemType::QP:
+      break;
+  }
   while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
     if (logger_ptr != nullptr) {
       *logger_ptr                                   //
@@ -86,7 +92,6 @@ ruiz_scale_qp_in_place( //
     {
       switch (problem_type) {
         case ProblemType::LP:
-          delta.head(n).setOnes();
           break;
         case ProblemType::QP:
           for (isize k = 0; k < n; ++k) {
