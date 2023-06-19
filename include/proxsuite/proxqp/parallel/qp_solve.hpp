@@ -16,7 +16,7 @@ namespace dense {
 template<typename T>
 void
 solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
-                  optional<const size_t> num_threads = nullopt)
+                  const optional<size_t> num_threads = nullopt)
 {
   size_t NUM_THREADS =
     std::max((size_t)(omp_get_max_threads() / 2),
@@ -39,7 +39,7 @@ solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
 template<typename T>
 void
 solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
-                  optional<const size_t> num_threads = nullopt)
+                  const optional<size_t> num_threads = nullopt)
 {
   size_t NUM_THREADS =
     std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
@@ -63,7 +63,7 @@ namespace sparse {
 template<typename T, typename I>
 void
 solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
-                  optional<const size_t> num_threads = nullopt)
+                  const optional<size_t> num_threads = nullopt)
 {
   size_t NUM_THREADS =
     std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
@@ -85,7 +85,7 @@ solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
 template<typename T, typename I>
 void
 solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
-                  optional<const size_t> num_threads = nullopt)
+                  const optional<size_t> num_threads = nullopt)
 {
   size_t NUM_THREADS =
     std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
