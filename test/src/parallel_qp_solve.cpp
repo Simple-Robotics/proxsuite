@@ -150,7 +150,7 @@ DOCTEST_TEST_CASE("test sparse vector QP")
   int num_qps = 64;
   std::vector<sparse::QP<T, I>> qps_compare;
 
-  sparse::VectorQP<T, I> qps_vector = sparse::VectorQP<T, I>(num_qps);
+  sparse::BatchQP<T, I> qps_vector = sparse::BatchQP<T, I>(num_qps);
   // qps_vector.init_qp_in_place(dim, n_eq, n_in);
   // Generate two lists with identical QPs
   for (int i = 0; i < num_qps; i++) {

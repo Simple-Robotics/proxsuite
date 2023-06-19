@@ -38,7 +38,7 @@ qp_solve_in_parallel(optional<const size_t> num_threads,
 template<typename T>
 void
 qp_solve_in_parallel(optional<const size_t> num_threads,
-                     proxqp::dense::VectorQP<T>& qps)
+                     proxqp::dense::BatchQP<T>& qps)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -60,7 +60,7 @@ qp_solve_in_parallel(optional<const size_t> num_threads,
 template<typename T, typename I>
 void
 qp_solve_in_parallel(optional<const size_t> num_threads,
-                     proxqp::sparse::VectorQP<T, I>& qps)
+                     proxqp::sparse::BatchQP<T, I>& qps)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());

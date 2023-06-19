@@ -16,20 +16,20 @@ void
 exposeQpVectorDense(pybind11::module_ m)
 {
 
-  ::pybind11::class_<dense::VectorQP<T>>(m, "VectorQP")
+  ::pybind11::class_<dense::BatchQP<T>>(m, "BatchQP")
     .def(
       ::pybind11::init<i64>(),
       pybind11::arg_v("batch_size", 0, "number of QPs to be stored."),
       "Default constructor using the BatchSize of qp models to store.") // constructor
     .def("init_qp_in_place",
-         &dense::VectorQP<T>::init_qp_in_place,
+         &dense::BatchQP<T>::init_qp_in_place,
          pybind11::return_value_policy::reference,
          "init a dense QP in place and return a reference to it.")
     .def("insert",
-         &dense::VectorQP<T>::insert,
+         &dense::BatchQP<T>::insert,
          "inserts a qp at the end of the vector of qps.")
     .def("get",
-         &dense::VectorQP<T>::get,
+         &dense::BatchQP<T>::get,
          pybind11::return_value_policy::reference,
          "get the qp.");
 }
@@ -44,17 +44,17 @@ void
 exposeQpVectorSparse(pybind11::module_ m)
 {
 
-  ::pybind11::class_<sparse::VectorQP<T, I>>(m, "VectorQP")
+  ::pybind11::class_<sparse::BatchQP<T, I>>(m, "BatchQP")
     .def(
       ::pybind11::init<i64>(),
       pybind11::arg_v("batch_size", 0, "number of QPs to be stored."),
       "Default constructor using the BatchSize of qp models to store.") // constructor
     .def("init_qp_in_place",
-         &sparse::VectorQP<T, I>::init_qp_in_place,
+         &sparse::BatchQP<T, I>::init_qp_in_place,
          pybind11::return_value_policy::reference,
          "init a sparse QP in place and return a reference to it.")
     .def("get",
-         &sparse::VectorQP<T, I>::get,
+         &sparse::BatchQP<T, I>::get,
          pybind11::return_value_policy::reference,
          "get the qp.");
 }

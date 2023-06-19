@@ -97,11 +97,11 @@ class ParallelWrapper(unittest.TestCase):
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qps_compare[i].results.x, rtol=1e-8)
 
-    def test_dense_parallel_custom_VectorQP(self):
+    def test_dense_parallel_custom_BatchQP(self):
         n = 10  # dimension
         batch_size = 64
         qps = []
-        qp_vector = proxsuite.proxqp.dense.VectorQP()
+        qp_vector = proxsuite.proxqp.dense.BatchQP()
 
         for i in range(batch_size):
             H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
@@ -146,11 +146,11 @@ class ParallelWrapper(unittest.TestCase):
         for i in range(batch_size):
             assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
 
-    def test_sparse_parallel_custom_VectorQP(self):
+    def test_sparse_parallel_custom_BatchQP(self):
         n = 10  # dimension
         batch_size = 64
         qps = []
-        qp_vector = proxsuite.proxqp.sparse.VectorQP()
+        qp_vector = proxsuite.proxqp.sparse.BatchQP()
 
         for i in range(batch_size):
             H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)

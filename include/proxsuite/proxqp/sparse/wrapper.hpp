@@ -767,7 +767,7 @@ solve(
 
 ///// BatchQP object
 template<typename T, typename I>
-struct VectorQP
+struct BatchQP
 {
   /*!
    * A vector of QP aligned of size BatchSize
@@ -776,7 +776,7 @@ struct VectorQP
   std::vector<QP<T, I>> vector_qp;
   sparse::isize m_size;
 
-  VectorQP(long unsigned int batchSize)
+  BatchQP(long unsigned int batchSize)
   {
     if (vector_qp.max_size() != batchSize) {
       vector_qp.clear();

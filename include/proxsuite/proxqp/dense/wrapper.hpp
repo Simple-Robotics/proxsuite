@@ -486,7 +486,7 @@ operator!=(const QP<T>& qp1, const QP<T>& qp2)
 
 ///// BatchQP object
 template<typename T>
-struct VectorQP
+struct BatchQP
 {
   /*!
    * A vector of QP aligned of size BatchSize
@@ -495,7 +495,7 @@ struct VectorQP
   std::vector<QP<T>> vector_qp;
   dense::isize m_size;
 
-  explicit VectorQP(size_t batch_size)
+  explicit BatchQP(size_t batch_size)
   {
     if (vector_qp.max_size() != batch_size) {
       vector_qp.clear();

@@ -60,10 +60,10 @@ main(int /*argc*/, const char** /*argv*/)
     qps.push_back(qp);
   }
   timer.stop();
-  std::cout << "time to generate and initialize vector of qps (push back): \t"
+  std::cout << "time to generate and initialize std::vector of dense qps: \t"
             << timer.elapsed().user * 1e-3 << "ms" << std::endl;
 
-  dense::VectorQP<T> qps_vector = dense::VectorQP<T>(num_qps);
+  dense::BatchQP<T> qps_vector = dense::BatchQP<T>(num_qps);
   timer.start();
   for (int i = 0; i < num_qps; i++) {
     utils::rand::set_seed(i);
@@ -83,7 +83,7 @@ main(int /*argc*/, const char** /*argv*/)
             qp_random.u);
   }
   timer.stop();
-  std::cout << "time to generate and initialize vector of qps (in-place): \t"
+  std::cout << "time to generate and initialize dense:BatchQP: \t\t\t"
             << timer.elapsed().user * 1e-3 << "ms" << std::endl;
   std::cout << "Generation done.\n" << std::endl;
 
@@ -99,7 +99,7 @@ main(int /*argc*/, const char** /*argv*/)
 
   const size_t NUM_THREADS = (size_t)omp_get_max_threads();
 
-  std::cout << "using VectorQP" << std::endl;
+  std::cout << "using BatchQP" << std::endl;
   for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
     timer.start();
     for (int j = 0; j < smooth; j++) {
