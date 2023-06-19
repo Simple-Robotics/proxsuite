@@ -11,6 +11,7 @@
 
 namespace proxsuite {
 namespace proxqp {
+namespace dense {
 
 template<typename T>
 void
@@ -55,7 +56,9 @@ solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
     qp.solve();
   }
 }
+} // namespace dense
 
+namespace sparse {
 template<typename T, typename I>
 void
 solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
@@ -101,6 +104,7 @@ solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
     qp.solve();
   }
 }
+} // namespace sparse
 
 } // namespace proxqp
 } // namespace proxsuite
