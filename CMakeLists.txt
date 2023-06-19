@@ -85,6 +85,7 @@ cmake_dependent_option(
 
 if(BUILD_WITH_OPENMP_SUPPORT)
   find_package(OpenMP REQUIRED)
+  separate_arguments(OpenMP_CXX_FLAGS UNIX_COMMAND "${OpenMP_CXX_FLAGS}")
 endif(BUILD_WITH_OPENMP_SUPPORT)
 
 set(CMAKE_MODULE_PATH
