@@ -34,7 +34,7 @@ num_qps = 128
 
 # qps = []
 timings = {}
-qps = proxsuite.proxqp.dense.VectorDenseQP()
+qps = proxsuite.proxqp.dense.VectorQP()
 
 tic = perf_counter_ns()
 for j in range(num_qps):

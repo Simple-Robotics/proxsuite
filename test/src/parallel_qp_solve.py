@@ -51,7 +51,7 @@ class ParallelWrapper(unittest.TestCase):
         n = 10  # dimension
         batch_size = 64
         qps = []
-        qps_compare = proxsuite.proxqp.dense.VectorDenseQP()
+        qps_compare = proxsuite.proxqp.dense.VectorQP()
 
         for i in range(batch_size):
             H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
