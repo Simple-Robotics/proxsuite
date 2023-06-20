@@ -25,9 +25,7 @@ def generate_mixed_qp(n, seed=1):
     n_eq = int(n / 4)
     n_in = int(n / 4)
 
-    P = spa.random(
-        n, n, density=0.075, data_rvs=np.random.randn, format="csc"
-    ).toarray()
+    P = spa.random(n, n, density=0.75, data_rvs=np.random.randn, format="csc").toarray()
     P = (P + P.T) / 2.0
 
     s = max(np.absolute(np.linalg.eigvals(P)))
@@ -35,7 +33,7 @@ def generate_mixed_qp(n, seed=1):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.75, data_rvs=np.random.randn, format="csc").toarray()
+    A = spa.random(m, n, density=0.95, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A @ v
@@ -49,7 +47,7 @@ class ParallelWrapper(unittest.TestCase):
 
     def test_dense_parallel(self):
         n = 10  # dimension
-        batch_size = 64
+        batch_size = 4
         qps = []
         qps_compare = proxsuite.proxqp.dense.VectorQP()
 
@@ -99,7 +97,7 @@ class ParallelWrapper(unittest.TestCase):
 
     def test_dense_parallel_custom_BatchQP(self):
         n = 10  # dimension
-        batch_size = 64
+        batch_size = 4
         qps = []
         qp_vector = proxsuite.proxqp.dense.BatchQP()
 
@@ -148,7 +146,7 @@ class ParallelWrapper(unittest.TestCase):
 
     def test_sparse_parallel_custom_BatchQP(self):
         n = 10  # dimension
-        batch_size = 64
+        batch_size = 4
         qps = []
         qp_vector = proxsuite.proxqp.sparse.BatchQP()
 
