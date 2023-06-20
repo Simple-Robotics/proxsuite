@@ -41,6 +41,14 @@ proxsuite_test(sparse_qp_solve src/sparse_qp_solve.cpp)
 proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
+if(BUILD_WITH_OPENMP_SUPPORT)
+  add_executable(test-cpp-parallel src/parallel_qp_solve.cpp)
+  target_link_libraries(test-cpp-parallel PRIVATE doctest proxsuite)
+  target_link_libraries(test-cpp-parallel PRIVATE OpenMP::OpenMP_CXX)
+  doctest_discover_tests(test-cpp-parallel)
+  add_dependencies(build_tests test-cpp-parallel)
+endif()
+
 # Test serialization
 macro(ADD_TEST_CFLAGS target flag)
   set_property(
@@ -66,6 +74,12 @@ endif()
 
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC)
+    list_filter("${${PROJECT_NAME}_PYTHON_UNITTEST}" "parallel_qp_solve"
+                ${PROJECT_NAME}_PYTHON_UNITTEST)
+  endif()
+
   foreach(TEST_FILE ${${PROJECT_NAME}_PYTHON_UNITTEST})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/" "" TEST_FILE ${TEST_FILE})

@@ -37,6 +37,7 @@ endif()
 # Need to be set before including base.cmake
 # ----------------------------------------------------
 option(BUILD_DOCUMENTATION "Build the documentation." OFF)
+option(BUILD_BENCHMARK "Build the benchmarks" OFF)
 option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_USE_TEMPLATE_CSS YES)
@@ -47,6 +48,16 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
+if(APPLE) # Use the handmade approach
+  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
+                        ${CMAKE_MODULE_PATH})
+elseif(UNIX)
+  if(${CMAKE_VERSION} VERSION_GREATER "3.20.0" OR ${CMAKE_VERSION}
+                                                  VERSION_EQUAL "3.20.0")
+    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
+                          ${CMAKE_MODULE_PATH})
+  endif()
+endif(APPLE)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
 include(CMakeDependentOption)
 
@@ -67,6 +78,15 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
+option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" ON)
+cmake_dependent_option(
+  LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON
+  BUILD_WITH_OPENMP_SUPPORT OFF)
+
+if(BUILD_WITH_OPENMP_SUPPORT)
+  find_package(OpenMP REQUIRED)
+  separate_arguments(OpenMP_CXX_FLAGS UNIX_COMMAND "${OpenMP_CXX_FLAGS}")
+endif(BUILD_WITH_OPENMP_SUPPORT)
 
 set(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
@@ -169,6 +189,8 @@ if(BUILD_TESTING AND NOT PROXSUITE_AS_SUBPROJECT)
   add_subdirectory(test)
   add_subdirectory(examples)
 endif()
+
+add_subdirectory(benchmark)
 
 # catkin/ament/colcon integration (ROS1/2)
 install(FILES package.xml DESTINATION share/${PROJECT_NAME})

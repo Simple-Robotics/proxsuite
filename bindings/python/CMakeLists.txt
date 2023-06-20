@@ -45,6 +45,17 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
     DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endif()
 
+function(list_filter list regular_expression dest_list)
+  foreach(elt ${list})
+    if(${elt} MATCHES ${regular_expression})
+      list(REMOVE_ITEM list ${elt})
+    endif()
+  endforeach(elt ${list})
+  set(${dest_list}
+      ${list}
+      PARENT_SCOPE)
+endfunction(list_filter)
+
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(python ${target_name})
@@ -54,6 +65,20 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
+
+  if(BUILD_WITH_OPENMP_SUPPORT)
+    target_compile_options(${target_name} PRIVATE ${OpenMP_CXX_FLAGS})
+    target_compile_definitions(${target_name}
+                               PRIVATE -DPROXSUITE_PYTHON_INTERFACE_WITH_OPENMP)
+    target_include_directories(${target_name} SYSTEM
+                               PRIVATE ${OpenMP_CXX_INCLUDE_DIR})
+    if(LINK_PYTHON_INTERFACE_TO_OPENMP)
+      target_link_libraries(${target_name} PRIVATE ${OpenMP_CXX_LIBRARIES})
+    endif(LINK_PYTHON_INTERFACE_TO_OPENMP)
+  else(BUILD_WITH_OPENMP_SUPPORT)
+    list_filter("${PYWRAP_HEADERS}" "expose-parallel" PYWRAP_HEADERS)
+  endif(BUILD_WITH_OPENMP_SUPPORT)
+
   target_include_directories(
     ${target_name} SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
   set_target_properties(

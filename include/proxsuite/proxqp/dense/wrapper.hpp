@@ -484,6 +484,57 @@ operator!=(const QP<T>& qp1, const QP<T>& qp2)
   return !(qp1 == qp2);
 }
 
+///// BatchQP object
+template<typename T>
+struct BatchQP
+{
+  /*!
+   * A vector of QP aligned of size BatchSize
+   * specified by the user.
+   */
+  std::vector<QP<T>> vector_qp;
+  dense::isize m_size;
+
+  explicit BatchQP(size_t batch_size)
+  {
+    if (vector_qp.max_size() != batch_size) {
+      vector_qp.clear();
+      vector_qp.reserve(batch_size);
+    }
+    m_size = 0;
+  }
+
+  /*!
+   * Init a QP in place and return a reference to it
+   */
+  QP<T>& init_qp_in_place(dense::isize dim,
+                          dense::isize n_eq,
+                          dense::isize n_in)
+  {
+    vector_qp.emplace_back(dim, n_eq, n_in);
+    auto& qp = vector_qp.back();
+    m_size++;
+    return qp;
+  };
+
+  /*!
+   * Inserts a qp to the end of vector_qp
+   */
+  void insert(QP<T>& qp) { vector_qp.emplace_back(qp); };
+
+  /*!
+   * Access qp at position i
+   */
+  QP<T>& get(isize i) { return vector_qp.at(i); };
+
+  /*!
+   * Access qp at position i
+   */
+  QP<T>& operator[](isize i) { return vector_qp.at(i); };
+
+  dense::isize size() { return m_size; };
+};
+
 } // namespace dense
 } // namespace proxqp
 } // namespace proxsuite

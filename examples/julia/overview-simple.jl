@@ -18,7 +18,7 @@ function generate_mixed_qp(n, seed=1)
     m = n_eq + n_in
 
     P = spa.random(
-        n, n, density=0.075, data_rvs=np.random.randn, format="csc"
+        n, n, density=0.85, data_rvs=np.random.randn, format="csc"
         ).toarray()
     P = (P + np.transpose(P)) / 2.0
 
@@ -26,7 +26,7 @@ function generate_mixed_qp(n, seed=1)
     P += (np.abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
+    A = spa.random(m, n, density=0.85, data_rvs=np.random.randn, format="csc")
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A * v
