@@ -189,3 +189,34 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(ccache -s)
+
+  check:
+    if: always()
+
+    needs:
+    - [conda:ubuntu-latest:Debug:c++17]
+    - [conda:ubuntu-latest:Release:c++17]
+    - [conda:ubuntu-latest:Debug:c++20]
+    - [conda:ubuntu-latest:Release:c++20]
+    - [conda:macos-latest:Debug:c++17]
+    - [conda:macos-latest:Release:c++17]
+    - [conda:macos-latest:Debug:c++20]
+    - [conda:macos-latest:Release:c++20]
+    - [conda:windows-2019-clang-cl:Debug:c++17]
+    - [conda:windows-2019-clang-cl:Release:c++17]
+    - [conda:windows-2019-clang-cl:Debug:c++20]
+    - [conda:windows-2019-clang-cl:Release:c++20]
+    - [conda:windows-latest:Debug:c++17]
+    - [conda:windows-latest:Release:c++17]
+    - [conda:windows-latest:Debug:c++20]
+    - [conda:windows-latest:Release:c++20]
+
+    runs-on: Ubuntu-latest
+
+    steps:
+    - name: Check if all pipelines succeeded
+      uses: re-actors/alls-green@release/v1
+      with:
+        allowed-failures: docs, linters
+        allowed-skips: non-voting-flaky-job
+        jobs: ${{ toJSON(needs) }}
