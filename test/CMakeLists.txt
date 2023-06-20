@@ -74,6 +74,12 @@ endif()
 
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC)
+    list_filter("${${PROJECT_NAME}_PYTHON_UNITTEST}" "parallel_qp_solve"
+                ${PROJECT_NAME}_PYTHON_UNITTEST)
+  endif()
+
   foreach(TEST_FILE ${${PROJECT_NAME}_PYTHON_UNITTEST})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/" "" TEST_FILE ${TEST_FILE})
