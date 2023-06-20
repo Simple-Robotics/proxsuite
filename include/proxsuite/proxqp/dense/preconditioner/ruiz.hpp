@@ -66,13 +66,6 @@ ruiz_scale_qp_in_place( //
   LDLT_TEMP_VEC(T, delta, n + n_eq + n_in, stack);
 
   i64 iter = 1;
-  switch (problem_type) {
-    case ProblemType::LP:
-      delta.head(n).setOnes();
-      break;
-    case ProblemType::QP:
-      break;
-  }
   while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
     if (logger_ptr != nullptr) {
       *logger_ptr                                   //
@@ -87,11 +80,21 @@ ruiz_scale_qp_in_place( //
     } else {
       ++iter;
     }
-
     // normalization vector
     {
       switch (problem_type) {
         case ProblemType::LP:
+          for (isize k = 0; k < n; ++k) {
+            T aux = sqrt(std::max({
+              n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+              n_in > 0 ? infty_norm(C.col(k)) : T(0),
+            }));
+            if (aux == T(0)) {
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
+          }
           break;
         case ProblemType::QP:
           for (isize k = 0; k < n; ++k) {

@@ -585,7 +585,6 @@ active_set_change(const Model<T>& qpmodel,
    */
 
   qpwork.dw_aug.setZero();
-
   isize n_c_f = qpwork.n_c;
   qpwork.new_bijection_map = qpwork.current_bijection_map;
 
