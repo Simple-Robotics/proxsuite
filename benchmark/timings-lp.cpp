@@ -22,7 +22,8 @@ main(int /*argc*/, const char** /*argv*/)
   T elapsed_time = 0.0;
   proxqp::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
-  for (proxqp::isize dim = 10; dim < 1101; dim += 100) {
+  for (proxqp::isize dim = 10; dim <= 1000;
+       dim = (dim == 10) ? 100 : dim + 100) {
 
     if (dim == 10) {
       smooth = 1000;
@@ -44,12 +45,12 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     timer.stop();
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.problem_type = proxqp::ProblemType::LP;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
-      proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
-      qp.settings.eps_abs = eps_abs;
-      qp.settings.eps_rel = 0;
-      qp.settings.problem_type = proxqp::ProblemType::LP;
-      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       timer.start();
       qp.init(qp_random.H,
               qp_random.g,
@@ -74,11 +75,11 @@ main(int /*argc*/, const char** /*argv*/)
               << std::endl;
 
     elapsed_time = 0.0;
+    proxqp::dense::QP<T> qp_compare{ dim, n_eq, n_in };
+    qp_compare.settings.eps_abs = eps_abs;
+    qp_compare.settings.eps_rel = 0;
+    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
-      proxqp::dense::QP<T> qp_compare{ dim, n_eq, n_in };
-      qp_compare.settings.eps_abs = eps_abs;
-      qp_compare.settings.eps_rel = 0;
-      qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       timer.start();
       qp_compare.init(qp_random.H,
                       qp_random.g,
@@ -100,7 +101,7 @@ main(int /*argc*/, const char** /*argv*/)
                   << qp_compare.results.info.iter << std::endl;
       }
     }
-    std::cout << "timings QP: \t" << timer.elapsed().user * 1e-3 / smooth
-              << "ms" << std::endl;
+    std::cout << "timings QP: \t" << elapsed_time * 1e-3 / smooth << "ms"
+              << std::endl;
   }
 }
