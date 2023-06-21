@@ -17,14 +17,15 @@ main(int /*argc*/, const char** /*argv*/)
   Timer<T> timer;
   int smooth = 0;
 
-  T sparsity_factor = 0.15;
+  T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
+  T elapsed_time = 0.0;
   proxqp::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
   for (proxqp::isize dim = 10; dim < 1101; dim += 100) {
 
     if (dim == 10) {
-      smooth = 10000;
+      smooth = 1000;
     } else {
       smooth = 100;
     }
@@ -41,14 +42,15 @@ main(int /*argc*/, const char** /*argv*/)
     auto y_sol = proxqp::utils::rand::vector_rand<T>(n_eq);
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
-    proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
-    qp.settings.eps_abs = eps_abs;
-    qp.settings.eps_rel = 0;
-
-    qp.settings.problem_type = proxqp::ProblemType::LP;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-    timer.start();
+    elapsed_time = 0.0;
+    timer.stop();
     for (int j = 0; j < smooth; j++) {
+      proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
+      qp.settings.eps_abs = eps_abs;
+      qp.settings.eps_rel = 0;
+      qp.settings.problem_type = proxqp::ProblemType::LP;
+      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      timer.start();
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -57,19 +59,27 @@ main(int /*argc*/, const char** /*argv*/)
               qp_random.l,
               qp_random.u);
       qp.solve();
+      timer.stop();
+      elapsed_time += timer.elapsed().user;
+      if (qp.results.info.pri_res > eps_abs ||
+          qp.results.info.dua_res > eps_abs) {
+        std::cout << "dual residual " << qp.results.info.dua_res
+                  << "; primal residual " << qp.results.info.pri_res
+                  << std::endl;
+        std::cout << "total number of iteration: " << qp.results.info.iter
+                  << std::endl;
+      }
     }
-    timer.stop();
-    std::cout << "timings LP: \t" << timer.elapsed().user * 1e-3 / smooth
-              << "ms" << std::endl;
+    std::cout << "timings LP: \t" << elapsed_time * 1e-3 / smooth << "ms"
+              << std::endl;
 
-    proxqp::dense::QP<T> qp_compare{ dim, n_eq, n_in };
-    qp_compare.settings.eps_abs = eps_abs;
-    qp_compare.settings.eps_rel = 0;
-
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-
-    timer.start();
+    elapsed_time = 0.0;
     for (int j = 0; j < smooth; j++) {
+      proxqp::dense::QP<T> qp_compare{ dim, n_eq, n_in };
+      qp_compare.settings.eps_abs = eps_abs;
+      qp_compare.settings.eps_rel = 0;
+      qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      timer.start();
       qp_compare.init(qp_random.H,
                       qp_random.g,
                       qp_random.A,
@@ -78,8 +88,18 @@ main(int /*argc*/, const char** /*argv*/)
                       qp_random.l,
                       qp_random.u);
       qp_compare.solve();
+      timer.stop();
+      elapsed_time += timer.elapsed().user;
+
+      if (qp_compare.results.info.pri_res > eps_abs ||
+          qp_compare.results.info.dua_res > eps_abs) {
+        std::cout << "dual residual " << qp_compare.results.info.dua_res
+                  << "; primal residual " << qp_compare.results.info.pri_res
+                  << std::endl;
+        std::cout << "total number of iteration: "
+                  << qp_compare.results.info.iter << std::endl;
+      }
     }
-    timer.stop();
     std::cout << "timings QP: \t" << timer.elapsed().user * 1e-3 / smooth
               << "ms" << std::endl;
   }
