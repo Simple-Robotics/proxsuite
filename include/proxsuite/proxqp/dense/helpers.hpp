@@ -81,6 +81,7 @@ setup_factorization(Workspace<T>& qpwork,
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
     case ProblemType::LP:
+      qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).setZero();
       break;
   }
   qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=

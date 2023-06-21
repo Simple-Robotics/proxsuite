@@ -46,7 +46,6 @@ refactorize(const Model<T>& qpmodel,
   if (!qpwork.constraints_changed && rho_new == qpresults.info.rho) {
     return;
   }
-
   qpwork.dw_aug.setZero();
   qpwork.kkt.diagonal().head(qpmodel.dim).array() +=
     rho_new - qpresults.info.rho;
@@ -161,9 +160,9 @@ iterative_residual(const Model<T>& qpmodel,
     case ProblemType::QP:
       Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
                       qpwork.dw_aug.head(qpmodel.dim);
+      qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
       break;
   }
-  qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
   qpwork.err.head(qpmodel.dim) -=
     qpresults.info.rho * qpwork.dw_aug.head(qpmodel.dim);
 
@@ -229,7 +228,6 @@ iterative_solve_with_permut_fact( //
     if (it >= qpsettings.nb_iterative_refinement) {
       break;
     }
-
     ++it;
     qpwork.ldl.solve_in_place(qpwork.err.head(inner_pb_dim), stack);
     qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
@@ -661,7 +659,6 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       */
       break;
     }
-
     qpresults.x += alpha * dx;
 
     // contains now :  C(x+alpha dx)-u + z_prev * mu_in
@@ -672,11 +669,18 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
 
     qpwork.primal_residual_eq_scaled +=
       alpha * (Adx - qpresults.info.mu_eq * dy);
-
     qpresults.y += alpha * dy;
     qpresults.z += alpha * dz;
-    qpwork.dual_residual_scaled +=
-      alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
+    switch (qpsettings.problem_type) {
+      case ProblemType::LP:
+        qpwork.dual_residual_scaled +=
+          alpha * (qpresults.info.rho * dx + ATdy + CTdz);
+        break;
+      case ProblemType::QP:
+        qpwork.dual_residual_scaled +=
+          alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
+        break;
+    }
 
     err_in = dense::compute_inner_loop_saddle_point(
       qpmodel, qpresults, qpwork, qpsettings);

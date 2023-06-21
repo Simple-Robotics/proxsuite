@@ -15,6 +15,8 @@ macro(proxsuite_benchmark bench_name)
   add_dependencies(bench ${bench_name})
 endmacro(proxsuite_benchmark)
 
+proxsuite_benchmark(timings-lp)
+
 if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_benchmark(timings-parallel)
   target_link_libraries(timings-parallel PRIVATE OpenMP::OpenMP_CXX)
