@@ -189,3 +189,17 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(ccache -s)
+
+  check:
+    if: always()
+    name: check-ci-linux-osx-win-conda
+
+    needs:
+    - build-with-conda
+
+    runs-on: Ubuntu-latest
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
