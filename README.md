@@ -32,7 +32,8 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
 **Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
 
    - dense, sparse and matrix-free matrix factorization backends,
-   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results).
+   - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results),
+   - dedicated features for handling more efficiently box constraints, or linear programs.
 
 **Proxsuite** is flexible:
 
@@ -40,6 +41,7 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
    - C++ 14/17/20 compliant,
    - Python and Julia bindings for easy code prototyping without sacrificing performance.
 
+**Proxsuite** has a dedicated feature for solving batch of QPs.
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
 **Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.

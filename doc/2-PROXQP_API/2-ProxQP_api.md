@@ -109,6 +109,24 @@ For loading ProxQP with dense backend it is as simple as the following code belo
 
 The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision). Note that for model to be valid, the primal dimension (i.e., n) must be strictly positive. If it is not the case an assertion will be raised precising this issue.
 
+The dense backend has also a specific feature for handling more efficiently box inequality constraints. To benefit from it, constructors are overloaded as follows
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/loading_dense_qp_with_box_constraints.cpp</th>
+    <th>examples/python/loading_dense_qp_with_box_constraints.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include loading_dense_qp_with_box_constraints.cpp
+    </td>
+    <td valign="top">
+      \include loading_dense_qp_with_box_constraints.py
+    </td>
+  </tr>
+</table>
+
+
 For loading ProxQP with sparse backend they are two possibilities:
 * one can use as before the dimensions of the QP problem (i.e., n, n_eq and n_in)
 * or one can use the sparsity structure of the matrices defining the QP problem. More precisely, if H designs the quadratic cost of the model, A the equality constraint matrix, and C the inequality constraint matrix, one can pass in entry a boolean mask of these matrices (i.e., matrices with true value when one entry is non zero) for initializing the Qp object.
@@ -145,6 +163,23 @@ Once you have defined a Qp object, the init method enables you setting up the QP
     </td>
     <td valign="top">
       \include init_dense_qp.py
+    </td>
+  </tr>
+</table>
+
+If you use the specific feature of the dense backend for handling box constraints, the init method uses simply as follows
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/init_dense_qp_with_box.cpp</th>
+    <th>examples/python/init_dense_qp_with_box.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include init_dense_qp_with_box.cpp
+    </td>
+    <td valign="top">
+      \include init_dense_qp_with_box.py
     </td>
   </tr>
 </table>
@@ -425,6 +460,8 @@ $$\begin{equation}\label{eq:approx_qp_sol_rel}
 \end{aligned}
 \end{equation}$$
 accordingly with the parameters eps_abs and eps_rel chosen by the user.
+
+Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first $$n_in$$ elements of z correspond to multipliers associated to the linear inequality formed with $$C$$ matrix, whereas the last $$d$$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
 
 \subsection OverviewInfoClass The info subclass
 

@@ -31,6 +31,8 @@ struct Model
   Vec<T> b;
   Vec<T> u;
   Vec<T> l;
+  Vec<T> u_box;
+  Vec<T> l_box;
 
   ///// model sizes
   isize dim;
@@ -44,7 +46,7 @@ struct Model
    * @param n_eq number of equality constraints.
    * @param n_in number of inequality constraints.
    */
-  Model(isize dim, isize n_eq, isize n_in)
+  Model(isize dim, isize n_eq, isize n_in, bool box_constraints = false)
     : H(dim, dim)
     , g(dim)
     , A(n_eq, dim)
@@ -73,6 +75,17 @@ struct Model
                                    // problem is only lower bounded)
     l.fill(-infinite_bound_value); // in case it appears l is nullopt (i.e., the
                                    // problem is only upper bounded)
+
+    if (box_constraints) {
+      u_box.resize(dim);
+      l_box.resize(dim);
+      u_box.fill(
+        +infinite_bound_value); // in case it appears u is nullopt (i.e., the
+                                // problem is only lower bounded)
+      l_box.fill(
+        -infinite_bound_value); // in case it appears l is nullopt (i.e., the
+                                // problem is only upper bounded)
+    }
   }
 
   proxsuite::proxqp::sparse::SparseModel<T> to_sparse()
@@ -85,7 +98,7 @@ struct Model
     return res;
   }
 
-  bool is_valid()
+  bool is_valid(const bool box_constraints)
   {
 #define PROXSUITE_CHECK_SIZE(size, expected_size)                              \
   if (size != 0) {                                                             \
@@ -99,6 +112,10 @@ struct Model
     PROXSUITE_CHECK_SIZE(b.size(), n_eq);
     PROXSUITE_CHECK_SIZE(u.size(), n_in);
     PROXSUITE_CHECK_SIZE(l.size(), n_in);
+    if (box_constraints) {
+      PROXSUITE_CHECK_SIZE(u_box.size(), dim);
+      PROXSUITE_CHECK_SIZE(l_box.size(), dim);
+    }
     if (H.size()) {
       PROXSUITE_CHECK_SIZE(H.rows(), dim);
       PROXSUITE_CHECK_SIZE(H.cols(), dim);
@@ -129,7 +146,8 @@ operator==(const Model<T>& model1, const Model<T>& model2)
                model1.H == model2.H && model1.g == model2.g &&
                model1.A == model2.A && model1.b == model2.b &&
                model1.C == model2.C && model1.l == model2.l &&
-               model1.u == model2.u;
+               model1.u == model2.u && model1.l_box == model2.l_box &&
+               model1.u_box == model2.u_box;
   return value;
 }
 

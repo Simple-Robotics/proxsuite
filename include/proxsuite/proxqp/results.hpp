@@ -79,12 +79,18 @@ struct Results
    * @param n_eq dimension of the number of equality constraints.
    * @param n_in dimension of the number of inequality constraints.
    */
-  Results(isize dim = 0, isize n_eq = 0, isize n_in = 0)
+  Results(isize dim = 0,
+          isize n_eq = 0,
+          isize n_in = 0,
+          bool box_constraints = false)
     : x(dim)
     , y(n_eq)
-    , z(n_in)
   {
-
+    if (box_constraints) {
+      z.resize(dim + n_in);
+    } else {
+      z.resize(n_in);
+    }
     x.setZero();
     y.setZero();
     z.setZero();
@@ -193,8 +199,6 @@ bool
 operator==(const Results<T>& results1, const Results<T>& results2)
 {
   bool value = results1.x == results2.x && results1.y == results2.y &&
-               //  results1.z == results2.z && results1.active_constraints ==
-               //  results2.active_constraints &&
                results1.z == results2.z && results1.info == results2.info;
   return value;
 }

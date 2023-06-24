@@ -11,7 +11,6 @@
 
 using T = double;
 using namespace proxsuite;
-
 DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
 {
   proxqp::isize dim = 30;
@@ -54,7 +53,6 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   DOCTEST_CHECK((H * qp.results.x + g + A.transpose() * qp.results.y)
                   .lpNorm<Eigen::Infinity>() <= eps_abs);
 }
-
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
                   "and increasing dimension with the wrapper API")
 {
@@ -102,7 +100,6 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
               << std::endl;
   }
 }
-
 DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
                   "linar cost and increasing dimension using wrapper API")
 {

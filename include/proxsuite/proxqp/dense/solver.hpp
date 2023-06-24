@@ -40,6 +40,7 @@ void
 refactorize(const Model<T>& qpmodel,
             Results<T>& qpresults,
             Workspace<T>& qpwork,
+            const isize n_constraints,
             T rho_new)
 {
 
@@ -64,11 +65,18 @@ refactorize(const Model<T>& qpmodel,
 
   LDLT_TEMP_MAT(T, new_cols, n + n_eq + n_c, n_c, stack);
   T mu_in_neg(-qpresults.info.mu_in);
-  for (isize i = 0; i < n_in; ++i) {
+  for (isize i = 0; i < n_constraints; ++i) {
     isize j = qpwork.current_bijection_map[i];
     if (j < n_c) {
       auto col = new_cols.col(j);
-      col.head(n) = qpwork.C_scaled.row(i);
+      if (i >= n_in) {
+        // I_scaled = D which is the diagonal matrix
+        // scaling x
+        // col(i-n_in) = ruiz.delta[i-qpmodel.n_in];
+        col(i - n_in) = qpwork.i_scaled[i - qpmodel.n_in];
+      } else {
+        col.head(n) = qpwork.C_scaled.row(i);
+      }
       col.segment(n, n_eq + n_c).setZero();
       col(n + n_eq + j) = mu_in_neg;
     }
@@ -148,6 +156,7 @@ iterative_residual(const Model<T>& qpmodel,
                    Results<T>& qpresults,
                    const Settings<T>& qpsettings,
                    Workspace<T>& qpwork,
+                   const isize n_constraints,
                    isize inner_pb_dim)
 {
   auto& Hdx = qpwork.Hdx;
@@ -170,14 +179,36 @@ iterative_residual(const Model<T>& qpmodel,
   ATdy.noalias() = qpwork.A_scaled.transpose() *
                    qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
   qpwork.err.head(qpmodel.dim).noalias() -= ATdy;
-  for (isize i = 0; i < qpmodel.n_in; i++) {
+  if (n_constraints > qpmodel.n_in) {
+    // there are box constraints
+    qpwork.active_part_z.tail(qpmodel.dim) = qpwork.dw_aug.head(qpmodel.dim);
+    qpwork.active_part_z.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+    // ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,qpwork.active_part_z.tail(qpmodel.dim)});
+  }
+  for (isize i = 0; i < n_constraints; i++) {
     isize j = qpwork.current_bijection_map(i);
     if (j < qpwork.n_c) {
-      qpwork.err.head(qpmodel.dim).noalias() -=
-        qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpwork.C_scaled.row(i);
-      qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
-        (qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
-         qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) * qpresults.info.mu_in);
+      if (i >= qpmodel.n_in) {
+        // I_scaled * dz_box_scaled = unscale_primally(dz_box)
+        qpwork.err(i - qpmodel.n_in) -=
+          // qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+          // ruiz.delta(i-qpmodel.n_in);
+          qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+          qpwork.i_scaled(i - qpmodel.n_in);
+        // I_scaled * dx_scaled = dx_unscaled
+        qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
+          (qpwork.active_part_z[i] -
+           qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+             qpresults.info.mu_in);
+      } else {
+        qpwork.err.head(qpmodel.dim).noalias() -=
+          qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+          qpwork.C_scaled.row(i);
+        qpwork.err(qpmodel.dim + qpmodel.n_eq + j) -=
+          (qpwork.C_scaled.row(i).dot(qpwork.dw_aug.head(qpmodel.dim)) -
+           qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + j) *
+             qpresults.info.mu_in);
+      }
     }
   }
   Adx.noalias() = qpwork.A_scaled * qpwork.dw_aug.head(qpmodel.dim);
@@ -204,6 +235,7 @@ iterative_solve_with_permut_fact( //
   const Model<T>& qpmodel,
   Results<T>& qpresults,
   Workspace<T>& qpwork,
+  const isize n_constraints,
   T eps,
   isize inner_pb_dim)
 {
@@ -218,7 +250,8 @@ iterative_solve_with_permut_fact( //
   };
   qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-  iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
+  iterative_residual<T>(
+    qpmodel, qpresults, qpsettings, qpwork, n_constraints, inner_pb_dim);
 
   ++it;
   T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
@@ -233,7 +266,8 @@ iterative_solve_with_permut_fact( //
     qpwork.dw_aug.head(inner_pb_dim) += qpwork.err.head(inner_pb_dim);
 
     qpwork.err.head(inner_pb_dim).setZero();
-    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
+    iterative_residual<T>(
+      qpmodel, qpresults, qpsettings, qpwork, n_constraints, inner_pb_dim);
 
     if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
       it_stability += 1;
@@ -249,14 +283,15 @@ iterative_solve_with_permut_fact( //
 
   if (infty_norm(qpwork.err.head(inner_pb_dim)) >=
       std::max(eps, qpsettings.eps_refact)) {
-    refactorize(qpmodel, qpresults, qpwork, qpresults.info.rho);
+    refactorize(qpmodel, qpresults, qpwork, n_constraints, qpresults.info.rho);
     it = 0;
     it_stability = 0;
 
     qpwork.dw_aug.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
     qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
-    iterative_residual<T>(qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
+    iterative_residual<T>(
+      qpmodel, qpresults, qpsettings, qpwork, n_constraints, inner_pb_dim);
 
     preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     ++it;
@@ -271,7 +306,7 @@ iterative_solve_with_permut_fact( //
 
       qpwork.err.head(inner_pb_dim).setZero();
       iterative_residual<T>(
-        qpmodel, qpresults, qpsettings, qpwork, inner_pb_dim);
+        qpmodel, qpresults, qpsettings, qpwork, n_constraints, inner_pb_dim);
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
@@ -448,12 +483,30 @@ compute_inner_loop_saddle_point(const Model<T>& qpmodel,
       qpwork.active_part_z -=
         qpsettings.alpha_gpdal * qpresults.z *
         qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+
+      // qpwork.active_part_z.head(qpmodel.n_in) -=
+      //   qpsettings.alpha_gpdal * qpresults.z.head(qpmodel.n_in) *
+      //   qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+      // if (box_constraints){
+      //   qpwork.active_part_z.tail(qpmodel.dim) -=
+      //     qpsettings.alpha_gpdal * qpresults.z.tail(qpmodel.dim) *
+      //     qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+      // }
       break;
     case MeritFunctionType::PDAL:
       qpwork.active_part_z -=
         qpresults.z *
         qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
                               // + [Cx-l+z_prev*mu_in]- - z*mu_in
+      // qpwork.active_part_z.head(qpmodel.n_in) -=
+      //   qpresults.z.head(qpmodel.n_in) *
+      //   qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+      //                         // + [Cx-l+z_prev*mu_in]- - z*mu_in
+      // if (box_constraints){
+      //   qpwork.active_part_z.tail(qpmodel.dim) -=
+      //     qpresults.z.tail(qpmodel.dim) *
+      //     qpresults.info.mu_in; // contains now : [Cx-u+z_prev*mu_in]+
+      // }
       break;
   }
 
@@ -487,6 +540,8 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const Model<T>& qpmodel,
                                     Results<T>& qpresults,
                                     Workspace<T>& qpwork,
+                                    const bool box_constraints,
+                                    const isize n_constraints,
                                     T eps)
 {
 
@@ -508,16 +563,22 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
   isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + numactive_inequalities;
   qpwork.rhs.setZero();
   qpwork.dw_aug.setZero();
-
-  linesearch::active_set_change(qpmodel, qpresults, qpwork);
-
+  linesearch::active_set_change(qpmodel, qpresults, n_constraints, qpwork);
   qpwork.rhs.head(qpmodel.dim) = -qpwork.dual_residual_scaled;
+
+  if (box_constraints) {
+    // use active_part_z as tmp variable in order to unscale primarilly z
+    // as I_scaled.T * z_scaled = unscale_primarilly_(z_scaled)
+    qpwork.active_part_z.tail(qpmodel.dim) = qpresults.z.tail(qpmodel.dim);
+    qpwork.active_part_z.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+    // ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,qpwork.active_part_z.tail(qpmodel.dim)});
+  }
 
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
     -qpwork.primal_residual_eq_scaled;
   switch (qpsettings.merit_function_type) {
     case MeritFunctionType::GPDAL:
-      for (isize i = 0; i < qpmodel.n_in; i++) {
+      for (isize i = 0; i < n_constraints; i++) {
         isize j = qpwork.current_bijection_map(i);
         if (j < qpwork.n_c) {
           if (qpwork.active_set_up(i)) {
@@ -530,14 +591,18 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
               qpresults.z(i) * qpresults.info.mu_in * qpsettings.alpha_gpdal;
           }
         } else {
-          qpwork.rhs.head(qpmodel.dim) +=
-            qpresults.z(i) *
-            qpwork.C_scaled.row(i); // unactive unrelevant columns
+          // unactive unrelevant columns
+          if (i >= qpmodel.n_in) {
+            qpwork.rhs(i - qpmodel.n_in) += qpwork.active_part_z(i);
+          } else {
+            qpwork.rhs.head(qpmodel.dim) +=
+              qpresults.z(i) * qpwork.C_scaled.row(i);
+          }
         }
       }
       break;
     case MeritFunctionType::PDAL:
-      for (isize i = 0; i < qpmodel.n_in; i++) {
+      for (isize i = 0; i < n_constraints; i++) {
         isize j = qpwork.current_bijection_map(i);
         if (j < qpwork.n_c) {
           if (qpwork.active_set_up(i)) {
@@ -550,9 +615,13 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
               qpresults.z(i) * qpresults.info.mu_in;
           }
         } else {
-          qpwork.rhs.head(qpmodel.dim) +=
-            qpresults.z(i) *
-            qpwork.C_scaled.row(i); // unactive unrelevant columns
+          if (i >= qpmodel.n_in) {
+            // unactive unrelevant columns
+            qpwork.rhs(i - qpmodel.n_in) += qpwork.active_part_z(i);
+          } else {
+            qpwork.rhs.head(qpmodel.dim) +=
+              qpresults.z(i) * qpwork.C_scaled.row(i);
+          }
         }
       }
       break;
@@ -562,11 +631,12 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
     qpmodel,
     qpresults,
     qpwork,
+    n_constraints,
     eps,
     inner_pb_dim);
 
   // use active_part_z as a temporary variable to derive unpermutted dz step
-  for (isize j = 0; j < qpmodel.n_in; ++j) {
+  for (isize j = 0; j < n_constraints; ++j) {
     isize i = qpwork.current_bijection_map(j);
     if (i < qpwork.n_c) {
       qpwork.active_part_z(j) = qpwork.dw_aug(qpmodel.dim + qpmodel.n_eq + i);
@@ -574,7 +644,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
       qpwork.active_part_z(j) = -qpresults.z(j);
     }
   }
-  qpwork.dw_aug.tail(qpmodel.n_in) = qpwork.active_part_z;
+  qpwork.dw_aug.tail(n_constraints) = qpwork.active_part_z;
 }
 /*!
  * Performs the Newton semismooth algorithm to minimize the primal-dual
@@ -594,6 +664,8 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                const Model<T>& qpmodel,
                                Results<T>& qpresults,
                                Workspace<T>& qpwork,
+                               const bool box_constraints,
+                               const isize n_constraints,
                                preconditioner::RuizEquilibration<T>& ruiz,
                                T eps_int)
 {
@@ -621,18 +693,45 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     proxsuite::linalg::veg::dynstack::DynStackMut stack{
       proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
     };
-    primal_dual_semi_smooth_newton_step<T>(
-      qpsettings, qpmodel, qpresults, qpwork, eps_int);
+    primal_dual_semi_smooth_newton_step<T>(qpsettings,
+                                           qpmodel,
+                                           qpresults,
+                                           qpwork,
+                                           box_constraints,
+                                           n_constraints,
+                                           eps_int);
 
     auto& Hdx = qpwork.Hdx;
     auto& Adx = qpwork.Adx;
     auto& Cdx = qpwork.Cdx;
     auto& ATdy = qpwork.CTz;
-
     auto dx = qpwork.dw_aug.head(qpmodel.dim);
     auto dy = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-    auto dz = qpwork.dw_aug.segment(qpmodel.dim + qpmodel.n_eq, qpmodel.n_in);
-    Cdx.noalias() = qpwork.C_scaled * dx;
+    auto dz = qpwork.dw_aug.tail(n_constraints);
+    LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
+    if (qpmodel.n_in > 0) {
+      Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
+      CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
+    }
+    if (box_constraints) {
+      // use active_part_z as tmp variable in order to unscale primarilly dz
+      // as I_scaled.T * dz_scaled = unscale_primarilly_(dz_scaled)
+
+      // qpwork.active_part_z.tail(qpmodel.dim) = dz.tail(qpmodel.dim);
+      // ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,qpwork.active_part_z.tail(qpmodel.dim)});
+      // CTdz.noalias() += qpwork.active_part_z.tail(qpmodel.dim);
+      // Cdx.tail(qpmodel.dim) = dx;
+      // // I_scaled * dx_scaled = dx_unscaled
+      // ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,
+      // Cdx.tail(qpmodel.dim)});
+
+      qpwork.active_part_z.tail(qpmodel.dim) = dz.tail(qpmodel.dim);
+      qpwork.active_part_z.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+      CTdz.noalias() += qpwork.active_part_z.tail(qpmodel.dim);
+
+      Cdx.tail(qpmodel.dim) = dx;
+      Cdx.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+    }
     switch (qpsettings.merit_function_type) {
       case MeritFunctionType::GPDAL:
         Cdx.noalias() +=
@@ -641,10 +740,9 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       case MeritFunctionType::PDAL:
         break;
     }
-    LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
-    CTdz.noalias() = qpwork.C_scaled.transpose() * dz;
-    if (qpmodel.n_in > 0) {
-      linesearch::primal_dual_ls(qpmodel, qpresults, qpwork, qpsettings);
+    if (qpmodel.n_in > 0 || box_constraints) {
+      linesearch::primal_dual_ls(
+        qpmodel, qpresults, qpwork, qpsettings, n_constraints);
     }
     auto alpha = qpwork.alpha;
 
@@ -717,7 +815,9 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                            VectorViewMut<T>{ from_eigen, dy },
                                            VectorViewMut<T>{ from_eigen, dz },
                                            qpwork,
+                                           qpmodel,
                                            qpsettings,
+                                           box_constraints,
                                            ruiz);
 
     bool is_dual_infeasible =
@@ -728,6 +828,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                          qpwork,
                                          qpsettings,
                                          qpmodel,
+                                         box_constraints,
                                          ruiz);
 
     if (is_primal_infeasible) {
@@ -776,6 +877,7 @@ qp_solve( //
   const Model<T>& qpmodel,
   Results<T>& qpresults,
   Workspace<T>& qpwork,
+  const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
   /*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
@@ -786,7 +888,10 @@ qp_solve( //
   std::cout << "test " << test << std::endl;
   */
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
-
+  isize n_constraints(qpmodel.n_in);
+  if (box_constraints) {
+    n_constraints += qpmodel.dim;
+  }
   if (qpsettings.compute_timings) {
     qpwork.timer.stop();
     qpwork.timer.start();
@@ -798,29 +903,33 @@ qp_solve( //
                       // executed (and without any intermediary model update)
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-        qpwork.cleanup();
+        qpwork.cleanup(box_constraints);
         qpresults.cleanup(qpsettings);
         break;
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         // keep solutions but restart workspace and results
-        qpwork.cleanup();
+        qpwork.cleanup(box_constraints);
         qpresults.cold_start(qpsettings);
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen, qpresults.x });
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
-        qpwork.cleanup();
+        qpwork.cleanup(box_constraints);
         qpresults.cleanup(qpsettings);
         break;
       }
       case InitialGuessStatus::WARM_START: {
-        qpwork.cleanup();
+        qpwork.cleanup(box_constraints);
         qpresults.cold_start(
           qpsettings); // because there was already a solve,
                        // precond was already computed if set so
@@ -831,7 +940,11 @@ qp_solve( //
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
@@ -842,7 +955,11 @@ qp_solve( //
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         break;
       }
     }
@@ -862,27 +979,32 @@ qp_solve( //
       qpwork.u_scaled = qpmodel.u;
       qpwork.l_scaled = qpmodel.l;
       proxsuite::proxqp::dense::setup_equilibration(
-        qpwork, qpsettings, ruiz, false); // reuse previous equilibration
+        qpwork,
+        qpsettings,
+        box_constraints,
+        ruiz,
+        false); // reuse previous equilibration
       proxsuite::proxqp::dense::setup_factorization(
         qpwork, qpmodel, qpsettings, qpresults);
     }
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
         compute_equality_constrained_initial_guess(
-          qpwork, qpsettings, qpmodel, qpresults);
+          qpwork, qpsettings, qpmodel, n_constraints, qpresults);
         break;
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         //!\ TODO in a quicker way
         qpwork.n_c = 0;
-        for (isize i = 0; i < qpmodel.n_in; i++) {
+        for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
           } else {
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(
+          qpmodel, qpresults, n_constraints, qpwork);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -891,14 +1013,15 @@ qp_solve( //
       case InitialGuessStatus::WARM_START: {
         //!\ TODO in a quicker way
         qpwork.n_c = 0;
-        for (isize i = 0; i < qpmodel.n_in; i++) {
+        for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
           } else {
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(
+          qpmodel, qpresults, n_constraints, qpwork);
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
@@ -916,7 +1039,7 @@ qp_solve( //
         proxsuite::proxqp::dense::setup_factorization(
           qpwork, qpmodel, qpsettings, qpresults);
         compute_equality_constrained_initial_guess(
-          qpwork, qpsettings, qpmodel, qpresults);
+          qpwork, qpsettings, qpmodel, n_constraints, qpresults);
         break;
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
@@ -929,17 +1052,22 @@ qp_solve( //
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
         qpwork.n_c = 0;
-        for (isize i = 0; i < qpmodel.n_in; i++) {
+        for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
           } else {
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(
+          qpmodel, qpresults, n_constraints, qpwork);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -953,17 +1081,22 @@ qp_solve( //
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
         qpwork.n_c = 0;
-        for (isize i = 0; i < qpmodel.n_in; i++) {
+        for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
             qpwork.active_inequalities[i] = true;
           } else {
             qpwork.active_inequalities[i] = false;
           }
         }
-        linesearch::active_set_change(qpmodel, qpresults, qpwork);
+        linesearch::active_set_change(
+          qpmodel, qpresults, n_constraints, qpwork);
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
@@ -976,26 +1109,30 @@ qp_solve( //
         ruiz.scale_dual_in_place_eq(
           { proxsuite::proxqp::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z });
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
         if (qpwork.refactorize) { // refactorization only when one of the
                                   // matrices has changed or one proximal
                                   // parameter has changed
           setup_factorization(qpwork, qpmodel, qpsettings, qpresults);
           qpwork.n_c = 0;
-          for (isize i = 0; i < qpmodel.n_in; i++) {
+          for (isize i = 0; i < n_constraints; i++) {
             if (qpresults.z[i] != 0) {
               qpwork.active_inequalities[i] = true;
             } else {
               qpwork.active_inequalities[i] = false;
             }
           }
-          linesearch::active_set_change(qpmodel, qpresults, qpwork);
+          linesearch::active_set_change(
+            qpmodel, qpresults, n_constraints, qpwork);
           break;
         }
       }
     }
   }
-
   T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
   T bcl_eta_ext = bcl_eta_ext_init;
   T bcl_eta_in(1);
@@ -1023,6 +1160,7 @@ qp_solve( //
                            qpresults,
                            qpwork,
                            ruiz,
+                           box_constraints,
                            primal_feasibility_lhs,
                            primal_feasibility_eq_rhs_0,
                            primal_feasibility_in_rhs_0,
@@ -1033,6 +1171,7 @@ qp_solve( //
                          qpwork,
                          qpmodel,
                          qpsettings,
+                         box_constraints,
                          ruiz,
                          dual_feasibility_lhs,
                          dual_feasibility_rhs_0,
@@ -1040,6 +1179,7 @@ qp_solve( //
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
                          duality_gap);
+
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
     qpresults.info.duality_gap = duality_gap;
@@ -1073,8 +1213,11 @@ qp_solve( //
       ruiz.unscale_dual_in_place_eq(
         VectorViewMut<T>{ from_eigen, qpresults.y });
       ruiz.unscale_dual_in_place_in(
-        VectorViewMut<T>{ from_eigen, qpresults.z });
-
+        VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
+      if (box_constraints) {
+        ruiz.unscale_box_dual_in_place_in(
+          VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+      }
       {
         // EigenAllowAlloc _{};
         qpresults.info.objValue = 0;
@@ -1098,7 +1241,12 @@ qp_solve( //
                 << " | rho=" << qpresults.info.rho << std::endl;
       ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
       ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-      ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+      ruiz.scale_dual_in_place_in(
+        VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
+      if (box_constraints) {
+        ruiz.scale_box_dual_in_place_in(
+          VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+      }
     }
     if (is_primal_feasible && is_dual_feasible) {
       if (qpsettings.check_duality_gap) {
@@ -1121,9 +1269,16 @@ qp_solve( //
 
     // primal dual version from gill and robinson
 
-    ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
-      from_eigen,
-      qpwork.primal_residual_in_scaled_up }); // contains now scaled(Cx)
+    ruiz.scale_primal_residual_in_place_in(
+      VectorViewMut<T>{ from_eigen,
+                        qpwork.primal_residual_in_scaled_up.head(
+                          qpmodel.n_in) }); // contains now scaled(Cx)
+    if (box_constraints) {
+      ruiz.scale_box_primal_residual_in_place_in(
+        VectorViewMut<T>{ from_eigen,
+                          qpwork.primal_residual_in_scaled_up.tail(
+                            qpmodel.dim) }); // contains now scaled(x)
+    }
     qpwork.primal_residual_in_scaled_up +=
       qpwork.z_prev *
       qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
@@ -1136,28 +1291,46 @@ qp_solve( //
         break;
     }
     qpwork.primal_residual_in_scaled_low = qpwork.primal_residual_in_scaled_up;
-    qpwork.primal_residual_in_scaled_up -=
+    qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
       qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
-    qpwork.primal_residual_in_scaled_low -=
+    qpwork.primal_residual_in_scaled_low.head(qpmodel.n_in) -=
       qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
-    primal_dual_newton_semi_smooth(
-      qpsettings, qpmodel, qpresults, qpwork, ruiz, bcl_eta_in);
+    if (box_constraints) {
+      // qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+      //   qpmodel.u_box; // contains now scaled(Cx-u+z_prev*mu_in)
+      // qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim) -=
+      //   qpmodel.l_box; // contains now scaled(Cx-l+z_prev*mu_in)
+
+      qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+        qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+      qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim) -=
+        qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    }
+
+    primal_dual_newton_semi_smooth(qpsettings,
+                                   qpmodel,
+                                   qpresults,
+                                   qpwork,
+                                   box_constraints,
+                                   n_constraints,
+                                   ruiz,
+                                   bcl_eta_in);
 
     if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
         qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
       // certificate of infeasibility
       qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
       qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-      qpresults.z = qpwork.dw_aug.tail(qpmodel.n_in);
+      qpresults.z = qpwork.dw_aug.tail(n_constraints);
       break;
     }
-
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
     global_primal_residual(qpmodel,
                            qpresults,
                            qpwork,
                            ruiz,
+                           box_constraints,
                            primal_feasibility_lhs_new,
                            primal_feasibility_eq_rhs_0,
                            primal_feasibility_in_rhs_0,
@@ -1177,6 +1350,7 @@ qp_solve( //
                            qpwork,
                            qpmodel,
                            qpsettings,
+                           box_constraints,
                            ruiz,
                            dual_feasibility_lhs_new,
                            dual_feasibility_rhs_0,
@@ -1243,6 +1417,7 @@ qp_solve( //
                          qpwork,
                          qpmodel,
                          qpsettings,
+                         box_constraints,
                          ruiz,
                          dual_feasibility_lhs_new,
                          dual_feasibility_rhs_0,
@@ -1286,7 +1461,12 @@ qp_solve( //
 
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-  ruiz.unscale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+  ruiz.unscale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
+  if (box_constraints) {
+    ruiz.unscale_box_dual_in_place_in(
+      VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+  }
 
   {
     // EigenAllowAlloc _{};

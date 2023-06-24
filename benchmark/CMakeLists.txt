@@ -16,6 +16,7 @@ macro(proxsuite_benchmark bench_name)
 endmacro(proxsuite_benchmark)
 
 proxsuite_benchmark(timings-lp)
+proxsuite_benchmark(timings-box-constraints)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_benchmark(timings-parallel)

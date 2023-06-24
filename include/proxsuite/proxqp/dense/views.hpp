@@ -1361,6 +1361,9 @@ struct QpViewBox
   MatrixView<Scalar, layout> C;
   VectorView<Scalar> u;
   VectorView<Scalar> l;
+  VectorView<Scalar> I;
+  VectorView<Scalar> u_box;
+  VectorView<Scalar> l_box;
 };
 
 template<typename T>
@@ -1398,13 +1401,15 @@ struct QpViewBoxMut
   MatrixViewMut<Scalar, layout> C;
   VectorViewMut<Scalar> u;
   VectorViewMut<Scalar> l;
+  VectorViewMut<Scalar> I;
+  VectorViewMut<Scalar> l_box;
+  VectorViewMut<Scalar> u_box;
 
   VEG_INLINE constexpr auto as_const() const noexcept -> QpViewBox<Scalar>
   {
-    return {
-      H.as_const(), g.as_const(), A.as_const(), b.as_const(),
-      C.as_const(), u.as_const(), l.as_const(),
-    };
+    return { H.as_const(),     g.as_const(),    A.as_const(), b.as_const(),
+             C.as_const(),     u.as_const(),    l.as_const(), I.as_const(),
+             u_box.as_const(), l_box.as_const() };
   }
 };
 

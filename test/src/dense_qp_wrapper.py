@@ -44,6 +44,49 @@ def generate_mixed_qp(n, seed=1):
     return P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
+def generate_mixed_qp_with_box(n, seed=1):
+    """
+    Generate sparse problem in dense QP format
+    """
+    np.random.seed(seed)
+
+    m = int(n / 4) + int(n / 4)
+    # m  = n
+    n_eq = int(n / 4)
+    n_in = int(n / 4)
+
+    P = spa.random(
+        n, n, density=0.075, data_rvs=np.random.randn, format="csc"
+    ).toarray()
+    P = (P + P.T) / 2.0
+
+    s = max(np.absolute(np.linalg.eigvals(P)))
+    P += (abs(s) + 1e-02) * spa.eye(n)
+    P = spa.coo_matrix(P)
+    print("sparsity of P : {}".format((P.nnz) / (n**2)))
+    q = np.random.randn(n)
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
+    v = np.random.randn(n)  # Fictitious solution
+    delta = np.random.rand(m)  # To get inequality
+    u = A @ v
+    l = -1.0e20 * np.ones(m)
+    delta_box = np.random.rand(n)
+    u_box = v + delta_box
+    l_box = v - delta_box
+
+    return (
+        P.toarray(),
+        q,
+        A[:n_eq, :],
+        u[:n_eq],
+        A[n_in:, :],
+        u[n_in:],
+        l[n_in:],
+        u_box,
+        l_box,
+    )
+
+
 class DenseqpWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
 
@@ -4474,6 +4517,181 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
+
+    def test_z_ordering_with_box_constraints_interface(self):
+        print(
+            "------------------------test check ordering of z when there are box constraints"
+        )
+
+        n = 50
+        n_test = 1000
+        eps = 1.0e-9
+        # inequality and box constraints case
+        for i in range(n_test):
+            H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n, i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp.init(H, g, A, b, C, l, u, l_box, u_box)
+            qp.settings.eps_abs = eps
+            qp.solve()
+
+            dua_res = normInf(
+                H @ qp.results.x
+                + g
+                + A.transpose() @ qp.results.y
+                + C.transpose() @ qp.results.z[:n_in]
+                + qp.results.z[n_in:]
+            )
+            pri_res = max(
+                normInf(A @ qp.results.x - b),
+                normInf(
+                    np.maximum(C @ qp.results.x - u, 0)
+                    + np.minimum(C @ qp.results.x - l, 0)
+                ),
+                normInf(
+                    np.maximum(qp.results.x - u_box, 0)
+                    + np.minimum(qp.results.x - l_box, 0)
+                ),
+            )
+            assert dua_res <= eps
+            assert pri_res <= eps
+        # no inequality and box constraints case
+        for i in range(n_test):
+            H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n, i)
+            n_eq = A.shape[0]
+            n_in = 0
+            C = np.zeros((n_in, n))
+            u = np.zeros(n_in)
+            l = np.zeros(n_in)
+
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp.init(H, g, A, b, C, l, u, l_box, u_box)
+            qp.settings.eps_abs = eps
+            qp.solve()
+
+            dua_res = normInf(
+                H @ qp.results.x
+                + g
+                + A.transpose() @ qp.results.y
+                + C.transpose() @ qp.results.z[:n_in]
+                + qp.results.z[n_in:]
+            )
+            pri_res = max(
+                normInf(A @ qp.results.x - b),
+                normInf(
+                    np.maximum(C @ qp.results.x - u, 0)
+                    + np.minimum(C @ qp.results.x - l, 0)
+                ),
+                normInf(
+                    np.maximum(qp.results.x - u_box, 0)
+                    + np.minimum(qp.results.x - l_box, 0)
+                ),
+            )
+            assert dua_res <= eps
+            assert pri_res <= eps
+        # # no inequality, no equalities and box constraints case
+        for i in range(n_test):
+            H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n, i)
+            n_eq = 0
+            n_in = 0
+            C = np.zeros((n_in, n))
+            u = np.zeros(n_in)
+            l = np.zeros(n_in)
+            A = np.zeros((n_eq, n))
+            b = np.zeros(n_eq)
+
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp.init(H, g, A, b, C, l, u, l_box, u_box)
+            qp.settings.eps_abs = eps
+            qp.settings.verbose = True
+            qp.solve()
+
+            dua_res = normInf(
+                H @ qp.results.x
+                + g
+                + A.transpose() @ qp.results.y
+                + C.transpose() @ qp.results.z[:n_in]
+                + qp.results.z[n_in:]
+            )
+            pri_res = max(
+                normInf(A @ qp.results.x - b),
+                normInf(
+                    np.maximum(C @ qp.results.x - u, 0)
+                    + np.minimum(C @ qp.results.x - l, 0)
+                ),
+                normInf(
+                    np.maximum(qp.results.x - u_box, 0)
+                    + np.minimum(qp.results.x - l_box, 0)
+                ),
+            )
+            assert dua_res <= eps
+            assert pri_res <= eps
+
+    def test_updates_with_box_constraints_interface(self):
+        print(
+            "------------------------test check updates work when there are box constraints"
+        )
+        n = 50
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        eps = 1.0e-9
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        u_box = np.ones(n) * 100
+        l_box = -np.ones(n) * 100
+
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp.init(H, g, A, b, C, l, u, l_box, u_box)
+        qp.settings.eps_abs = eps
+        qp.solve()
+
+        dua_res = normInf(
+            H @ qp.results.x
+            + g
+            + A.transpose() @ qp.results.y
+            + C.transpose() @ qp.results.z[:n_in]
+            + qp.results.z[n_in:]
+        )
+        pri_res = max(
+            normInf(A @ qp.results.x - b),
+            normInf(
+                np.maximum(C @ qp.results.x - u, 0)
+                + np.minimum(C @ qp.results.x - l, 0)
+            ),
+            normInf(
+                np.maximum(qp.results.x - u_box, 0)
+                + np.minimum(qp.results.x - l_box, 0)
+            ),
+        )
+        assert dua_res <= eps
+        assert pri_res <= eps
+        u_box += 10
+        l_box -= 10
+
+        qp.update(l=l, u=u, u_box=u_box, l_box=l_box)
+        qp.solve()
+
+        dua_res = normInf(
+            H @ qp.results.x
+            + g
+            + A.transpose() @ qp.results.y
+            + C.transpose() @ qp.results.z[:n_in]
+            + qp.results.z[n_in:]
+        )
+        pri_res = max(
+            normInf(A @ qp.results.x - b),
+            normInf(
+                np.maximum(C @ qp.results.x - u, 0)
+                + np.minimum(C @ qp.results.x - l, 0)
+            ),
+            normInf(
+                np.maximum(qp.results.x - u_box, 0)
+                + np.minimum(qp.results.x - l_box, 0)
+            ),
+        )
+        assert dua_res <= eps
+        assert pri_res <= eps
 
 
 if __name__ == "__main__":

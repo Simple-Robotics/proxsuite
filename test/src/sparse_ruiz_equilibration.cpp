@@ -43,12 +43,13 @@ TEST_CASE("upper part")
   Eigen::Matrix<T, -1, -1, Eigen::RowMajor> C_scaled_dense = CT.transpose();
   auto l_scaled_dense = l;
   auto u_scaled_dense = u;
+  bool box_constraints(false);
 
   proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
     n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::UPPER,
   };
   proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
-    n, n_eq + n_in, 1e-3, 10, Symmetry::upper,
+    n, n_eq, n_in, box_constraints, 1e-3, 10, Symmetry::upper,
   };
   VEG_MAKE_STACK(stack,
                  ruiz.scale_qp_in_place_req(
@@ -56,7 +57,9 @@ TEST_CASE("upper part")
 
   bool execute_preconditioner = true;
   proxsuite::proxqp::Settings<T> settings;
-
+  proxqp::dense::Vec<T> u_scaled_box(0);
+  proxqp::dense::Vec<T> l_scaled_box(0);
+  proxqp::dense::Vec<T> eye(0);
   ruiz.scale_qp_in_place(
     {
       { proxsuite::linalg::sparse::from_eigen, H_scaled },
@@ -71,9 +74,8 @@ TEST_CASE("upper part")
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
-
   ruiz_dense.scale_qp_in_place(
-    {
+    proxqp::dense::QpViewBoxMut<T>{
       { proxqp::from_eigen, H_scaled_dense },
       { proxqp::from_eigen, g_scaled_dense },
       { proxqp::from_eigen, A_scaled_dense },
@@ -81,11 +83,15 @@ TEST_CASE("upper part")
       { proxqp::from_eigen, C_scaled_dense },
       { proxqp::from_eigen, l_scaled_dense },
       { proxqp::from_eigen, u_scaled_dense },
+      { proxqp::from_eigen, u_scaled_box },
+      { proxqp::from_eigen, l_scaled_box },
+      { proxqp::from_eigen, eye },
     },
     execute_preconditioner,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     settings.problem_type,
+    box_constraints,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
@@ -128,11 +134,13 @@ TEST_CASE("lower part")
   auto l_scaled_dense = l;
   auto u_scaled_dense = u;
 
+  bool box_constraints(false);
+
   proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
     n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::LOWER,
   };
   proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
-    n, n_eq + n_in, 1e-3, 10, Symmetry::lower,
+    n, n_eq, n_in, box_constraints, 1e-3, 10, Symmetry::lower,
   };
   VEG_MAKE_STACK(stack,
                  ruiz.scale_qp_in_place_req(
@@ -153,9 +161,11 @@ TEST_CASE("lower part")
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
-
+  proxqp::dense::Vec<T> u_scaled_box(0);
+  proxqp::dense::Vec<T> l_scaled_box(0);
+  proxqp::dense::Vec<T> eye(0);
   ruiz_dense.scale_qp_in_place(
-    {
+    proxqp::dense::QpViewBoxMut<T>{
       { proxqp::from_eigen, H_scaled_dense },
       { proxqp::from_eigen, g_scaled_dense },
       { proxqp::from_eigen, A_scaled_dense },
@@ -163,11 +173,15 @@ TEST_CASE("lower part")
       { proxqp::from_eigen, C_scaled_dense },
       { proxqp::from_eigen, l_scaled_dense },
       { proxqp::from_eigen, u_scaled_dense },
+      { proxqp::from_eigen, u_scaled_box },
+      { proxqp::from_eigen, l_scaled_box },
+      { proxqp::from_eigen, eye },
     },
     execute_preconditioner,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     settings.problem_type,
+    box_constraints,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));

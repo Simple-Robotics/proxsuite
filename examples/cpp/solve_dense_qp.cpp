@@ -35,4 +35,29 @@ main()
   std::cout << "optimal x: " << qp.results.x << std::endl;
   std::cout << "optimal y: " << qp.results.y << std::endl;
   std::cout << "optimal z: " << qp.results.z << std::endl;
+
+  // Another example if you have box constraints (for the dense backend only for
+  // the moment)
+  dense::QP<T> qp2(dim, n_eq, n_in, true); // create the QP object
+  // some trivial boxes
+  dense::Vec<T> u_box(dim);
+  dense::Vec<T> l_box(dim);
+  u_box.setZero();
+  l_box.setZero();
+  u_box.array() += 1.E10;
+  l_box.array() -= 1.E10;
+  qp2.init(qp_random.H,
+           qp_random.g,
+           qp_random.A,
+           qp_random.b,
+           qp_random.C,
+           qp_random.l,
+           qp_random.u,
+           l_box,
+           u_box); // initialize the model with the boxes
+  qp2.solve();     // solve the problem
+  // An important note regarding the inequality multipliers
+  // auto z_ineq = qp.results.z.head(n_in); contains the multiplier associated
+  // to qp_random.C z_box = qp.results.z.tail(dim); the last dim elements
+  // correspond to multiplier associated to the box constraints
 }

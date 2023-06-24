@@ -10,7 +10,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h> // For binding STL containers
 
-PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double>>);
+PYBIND11_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double>>)
 
 namespace proxsuite {
 namespace proxqp {

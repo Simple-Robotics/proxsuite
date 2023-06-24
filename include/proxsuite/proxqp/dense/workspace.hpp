@@ -40,6 +40,10 @@ struct Workspace
   Vec<T> u_scaled;
   Vec<T> l_scaled;
 
+  Vec<T> u_box_scaled;
+  Vec<T> l_box_scaled;
+  Vec<T> i_scaled;
+
   ///// Initial variable loading
 
   Vec<T> x_prev;
@@ -100,7 +104,10 @@ struct Workspace
    * @param n_eq number of equality constraints.
    * @param n_in number of inequality constraints.
    */
-  Workspace(isize dim = 0, isize n_eq = 0, isize n_in = 0)
+  Workspace(isize dim = 0,
+            isize n_eq = 0,
+            isize n_in = 0,
+            bool box_constraints = false)
     : //
       // ruiz(preconditioner::RuizEquilibration<T>{dim, n_eq + n_in}),
     ldl{}
@@ -114,30 +121,11 @@ struct Workspace
     , l_scaled(n_in)
     , x_prev(dim)
     , y_prev(n_eq)
-    , z_prev(n_in)
     , kkt(dim + n_eq, dim + n_eq)
-    , current_bijection_map(n_in)
-    , new_bijection_map(n_in)
-    , active_set_up(n_in)
-    , active_set_low(n_in)
-    , active_inequalities(n_in)
     , Hdx(dim)
-    , Cdx(n_in)
     , Adx(n_eq)
-    , active_part_z(n_in)
-    , dw_aug(dim + n_eq + n_in)
-    , rhs(dim + n_eq + n_in)
-    , err(dim + n_eq + n_in)
-    ,
-
-    dual_residual_scaled(dim)
+    , dual_residual_scaled(dim)
     , primal_residual_eq_scaled(n_eq)
-    , primal_residual_in_scaled_up(n_in)
-    , primal_residual_in_scaled_low(n_in)
-    ,
-
-    primal_residual_in_scaled_up_plus_alphaCdx(n_in)
-    , primal_residual_in_scaled_low_plus_alphaCdx(n_in)
     , CTz(dim)
     , constraints_changed(false)
     , dirty(false)
@@ -146,30 +134,107 @@ struct Workspace
     , is_initialized(false)
 
   {
-    ldl.reserve_uninit(dim + n_eq + n_in);
-    ldl_stack.resize_for_overwrite(
-      proxsuite::linalg::veg::dynstack::StackReq(
 
-        proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
+    if (box_constraints) {
+      u_box_scaled.resize(dim);
+      u_box_scaled.setZero();
+      l_box_scaled.resize(dim);
+      l_box_scaled.setZero();
+      i_scaled.resize(dim);
+      i_scaled.setOnes();
 
-        (proxsuite::linalg::dense::temp_vec_req(
-           proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in) &
-         proxsuite::linalg::veg::dynstack::StackReq{
-           isize{ sizeof(isize) } * (n_eq + n_in), alignof(isize) } &
-         proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
-           dim + n_eq + n_in, n_eq + n_in)) |
+      z_prev.resize(dim + n_in);
+      ldl.reserve_uninit(dim + n_eq + n_in + dim);
+      ldl_stack.resize_for_overwrite(
+        proxsuite::linalg::veg::dynstack::StackReq(
 
-        (proxsuite::linalg::dense::temp_mat_req(
-           proxsuite::linalg::veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
-         proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
-           dim + n_eq + n_in, n_in)) |
+          proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq + n_in +
+                                                           dim) |
 
-        proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq +
-                                                              n_in))
+          (proxsuite::linalg::dense::temp_vec_req(
+             proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in + dim) &
+           proxsuite::linalg::veg::dynstack::StackReq{
+             isize{ sizeof(isize) } * (n_eq + n_in + dim), alignof(isize) } &
+           proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+             dim + n_eq + n_in + dim, n_eq + n_in + dim)) |
 
-        .alloc_req());
+          (proxsuite::linalg::dense::temp_mat_req(
+             proxsuite::linalg::veg::Tag<T>{},
+             dim + n_eq + n_in + dim,
+             n_in + dim) &
+           proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+             dim + n_eq + n_in + dim, n_in + dim)) |
 
-    alphas.reserve(2 * n_in);
+          proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq +
+                                                                n_in + dim))
+
+          .alloc_req());
+
+      current_bijection_map.resize(n_in + dim);
+      new_bijection_map.resize(n_in + dim);
+      for (isize i = 0; i < n_in + dim; i++) {
+        current_bijection_map(i) = i;
+        new_bijection_map(i) = i;
+      }
+      active_set_up.resize(n_in + dim);
+      active_set_low.resize(n_in + dim);
+      active_inequalities.resize(n_in + dim);
+      active_part_z.resize(n_in + dim);
+      dw_aug.resize(dim + n_eq + n_in + dim);
+      rhs.resize(dim + n_eq + n_in + dim);
+      err.resize(dim + n_eq + n_in + dim);
+      primal_residual_in_scaled_up.resize(dim + n_in);
+      primal_residual_in_scaled_low.resize(dim + n_in);
+      primal_residual_in_scaled_up_plus_alphaCdx.resize(dim + n_in);
+      primal_residual_in_scaled_low_plus_alphaCdx.resize(dim + n_in);
+      Cdx.resize(n_in + dim);
+      alphas.reserve(2 * n_in + 2 * dim);
+    } else {
+      z_prev.resize(n_in);
+      ldl.reserve_uninit(dim + n_eq + n_in);
+      ldl_stack.resize_for_overwrite(
+        proxsuite::linalg::veg::dynstack::StackReq(
+
+          proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq + n_in) |
+
+          (proxsuite::linalg::dense::temp_vec_req(
+             proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in) &
+           proxsuite::linalg::veg::dynstack::StackReq{
+             isize{ sizeof(isize) } * (n_eq + n_in), alignof(isize) } &
+           proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+             dim + n_eq + n_in, n_eq + n_in)) |
+
+          (proxsuite::linalg::dense::temp_mat_req(
+             proxsuite::linalg::veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
+           proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+             dim + n_eq + n_in, n_in)) |
+
+          proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq +
+                                                                n_in))
+
+          .alloc_req());
+
+      current_bijection_map.resize(n_in);
+      new_bijection_map.resize(n_in);
+      for (isize i = 0; i < n_in; i++) {
+        current_bijection_map(i) = i;
+        new_bijection_map(i) = i;
+      }
+      active_set_up.resize(n_in);
+      active_set_low.resize(n_in);
+      active_inequalities.resize(n_in);
+      active_part_z.resize(n_in);
+      dw_aug.resize(dim + n_eq + n_in);
+      rhs.resize(dim + n_eq + n_in);
+      err.resize(dim + n_eq + n_in);
+      primal_residual_in_scaled_up.resize(n_in);
+      primal_residual_in_scaled_low.resize(n_in);
+      primal_residual_in_scaled_up_plus_alphaCdx.resize(n_in);
+      primal_residual_in_scaled_low_plus_alphaCdx.resize(n_in);
+      Cdx.resize(n_in);
+      alphas.reserve(2 * n_in);
+    }
+
     H_scaled.setZero();
     g_scaled.setZero();
     A_scaled.setZero();
@@ -181,10 +246,6 @@ struct Workspace
     y_prev.setZero();
     z_prev.setZero();
     kkt.setZero();
-    for (isize i = 0; i < n_in; i++) {
-      current_bijection_map(i) = i;
-      new_bijection_map(i) = i;
-    }
     Hdx.setZero();
     Cdx.setZero();
     Adx.setZero();
@@ -211,9 +272,10 @@ struct Workspace
   /*!
    * Clean-ups solver's workspace.
    */
-  void cleanup()
+  void cleanup(const bool box_constraints)
   {
     isize n_in = C_scaled.rows();
+    isize dim = H_scaled.rows();
     H_scaled.setZero();
     g_scaled.setZero();
     A_scaled.setZero();
@@ -243,12 +305,16 @@ struct Workspace
     x_prev.setZero();
     y_prev.setZero();
     z_prev.setZero();
-
-    for (isize i = 0; i < n_in; i++) {
+    isize n_constraints(n_in);
+    if (box_constraints) {
+      n_constraints += dim;
+    }
+    for (isize i = 0; i < n_constraints; i++) {
       current_bijection_map(i) = i;
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
     }
+
     constraints_changed = false;
     dirty = false;
     refactorize = false;

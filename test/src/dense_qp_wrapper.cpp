@@ -159,7 +159,6 @@ DOCTEST_TEST_CASE(
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
 }
-
 DOCTEST_TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update H")
@@ -6796,6 +6795,357 @@ TEST_CASE("ProxQP::dense: init must be called before update")
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+}
+// test of the box constraints interface
+TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
+{
+  dense::isize n_test(1000);
+  double sparsity_factor = 1.;
+  T eps_abs = T(1e-9);
+  dense::isize dim = 15;
+
+  // mixing ineq and box constraints
+  for (isize i = 0; i < n_test; i++) {
+    utils::rand::set_seed(i);
+    dense::isize n_eq(dim / 4);
+    dense::isize n_in(dim / 4);
+    T strong_convexity_factor(1.e-2);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    // ineq and boxes
+    Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
+      utils::rand::vector_rand<T>(dim);
+    Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
+    for (proxqp::isize i = 0; i < n_in; ++i) {
+      delta(i) = utils::rand::uniform_rand();
+    }
+    qp_random.u = qp_random.C * x_sol + delta;
+    qp_random.b = qp_random.A * x_sol;
+    Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+    u_box.setZero();
+    Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+    l_box.setZero();
+    for (proxqp::isize i = 0; i < dim; ++i) {
+      T shift = utils::rand::uniform_rand();
+      u_box(i) = x_sol(i) + shift;
+      l_box(i) = x_sol(i) - shift;
+    }
+    /////////////////// for debuging
+    // using Mat =
+    //   Eigen::Matrix<T,
+    //                 Eigen::Dynamic,
+    //                 Eigen::Dynamic, Eigen::ColMajor>;
+    // Mat C_enlarged(dim+n_in,dim);
+    // C_enlarged.setZero();
+    // C_enlarged.topLeftCorner(n_in,dim) = qp_random.C;
+    // C_enlarged.bottomLeftCorner(dim,dim).diagonal().array() += 1.;
+    // Eigen::Matrix<T, Eigen::Dynamic, 1> u_enlarged(n_in+dim);
+    // Eigen::Matrix<T, Eigen::Dynamic, 1> l_enlarged(n_in+dim);
+    // u_enlarged.head(n_in) = qp_random.u;
+    // u_enlarged.tail(dim) = u_box;
+    // l_enlarged.head(n_in) = qp_random.l;
+    // l_enlarged.tail(dim) = l_box;
+    // std::cout << "n " << dim << " n_eq " << n_eq << " n_in "<< n_in <<
+    // std::endl; std::cout << "=================qp compare" << std::endl;
+    // proxqp::dense::QP<T> qp_compare{ dim, n_eq, dim + n_in, false};
+    // qp_compare.settings.eps_abs = eps_abs;
+    // qp_compare.settings.eps_rel = 0;
+    // qp_compare.settings.max_iter = 10;
+    // qp_compare.settings.max_iter_in = 10;
+    // qp_compare.settings.verbose = true;
+    // qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    // qp_compare.init(qp_random.H,
+    //                 qp_random.g,
+    //                 qp_random.A,
+    //                 qp_random.b,
+    //                 C_enlarged,
+    //                 l_enlarged,
+    //                 u_enlarged,
+    //                 true);
+    // qp_compare.solve();
+    // std::cout << "=================qp compare end" << std::endl;
+    ////////////////
+
+    dense::QP<T> qp(dim, n_eq, n_in, true);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            l_box,
+            u_box,
+            true);
+    qp.solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    pri_res = std::max(pri_res,
+                       (helpers::positive_part(qp.results.x - u_box) +
+                        helpers::negative_part(qp.results.x - l_box))
+                         .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z.head(n_in) +
+                 qp.results.z.tail(dim))
+                  .lpNorm<Eigen::Infinity>();
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+  }
+  // idem but without ineq constraints
+  for (isize i = 0; i < n_test; i++) {
+    utils::rand::set_seed(i);
+    dense::isize n_eq(dim / 4);
+    dense::isize n_in(0);
+    T strong_convexity_factor(1.e-2);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    // ineq and boxes
+    Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
+      utils::rand::vector_rand<T>(dim);
+    Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
+    for (proxqp::isize i = 0; i < n_in; ++i) {
+      delta(i) = utils::rand::uniform_rand();
+    }
+    qp_random.u = qp_random.C * x_sol + delta;
+    qp_random.b = qp_random.A * x_sol;
+    Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+    u_box.setZero();
+    Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+    l_box.setZero();
+    for (proxqp::isize i = 0; i < dim; ++i) {
+      T shift = utils::rand::uniform_rand();
+      u_box(i) = x_sol(i) + shift;
+      l_box(i) = x_sol(i) - shift;
+    }
+
+    dense::QP<T> qp(dim, n_eq, n_in, true);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            l_box,
+            u_box);
+
+    qp.solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    pri_res = std::max(pri_res,
+                       (helpers::positive_part(qp.results.x - u_box) +
+                        helpers::negative_part(qp.results.x - l_box))
+                         .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z.head(n_in) +
+                 qp.results.z.tail(dim))
+                  .lpNorm<Eigen::Infinity>();
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+  }
+  // idem but without ineq and without eq constraints
+  for (isize i = 0; i < n_test; i++) {
+    dense::isize n_eq(0);
+    dense::isize n_in(0);
+    T strong_convexity_factor(1.e-2);
+    using Mat =
+      Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor>;
+    Mat eye(dim, dim);
+    eye.setZero();
+    eye.diagonal().array() += 1.;
+
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    // ineq and boxes
+    Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
+      utils::rand::vector_rand<T>(dim);
+    Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
+    for (proxqp::isize i = 0; i < n_in; ++i) {
+      delta(i) = utils::rand::uniform_rand();
+    }
+    qp_random.u = qp_random.C * x_sol + delta;
+    qp_random.b = qp_random.A * x_sol;
+    Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+    u_box.setZero();
+    Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+    l_box.setZero();
+    for (proxqp::isize i = 0; i < dim; ++i) {
+      T shift = utils::rand::uniform_rand();
+      u_box(i) = x_sol(i) + shift;
+      l_box(i) = x_sol(i) - shift;
+    }
+    // make a qp to compare
+    dense::QP<T> qp_compare(dim, n_eq, dim, false);
+    qp_compare.settings.eps_abs = eps_abs;
+    qp_compare.settings.eps_rel = 0;
+    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp_compare.settings.compute_preconditioner = true;
+    qp_compare.init(qp_random.H,
+                    qp_random.g,
+                    qp_random.A,
+                    qp_random.b,
+                    eye,
+                    l_box,
+                    u_box,
+                    true);
+
+    qp_compare.solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp_compare.results.x - qp_random.b)
+        .lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp_compare.results.x -
+                              qp_random.u) +
+       helpers::negative_part(qp_random.C * qp_compare.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    pri_res = std::max(pri_res,
+                       (helpers::positive_part(qp_compare.results.x - u_box) +
+                        helpers::negative_part(qp_compare.results.x - l_box))
+                         .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp_compare.results.x + qp_random.g +
+                 qp_random.C.transpose() * qp_compare.results.z.head(n_in) +
+                 qp_random.A.transpose() * qp_compare.results.y +
+                 qp_compare.results.z.tail(dim))
+                  .lpNorm<Eigen::Infinity>();
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    // ineq and boxes
+    dense::QP<T> qp(dim, n_eq, n_in, true);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.compute_preconditioner = true;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            l_box,
+            u_box,
+            true);
+
+    qp.solve();
+
+    pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    pri_res = std::max(pri_res,
+                       (helpers::positive_part(qp.results.x - u_box) +
+                        helpers::negative_part(qp.results.x - l_box))
+                         .lpNorm<Eigen::Infinity>());
+    dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.A.transpose() * qp.results.y +
+               qp_random.C.transpose() * qp.results.z.head(n_in) +
+               qp.results.z.tail(dim))
+                .lpNorm<Eigen::Infinity>();
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+  }
+}
+TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
+{
+
+  double sparsity_factor = 1.;
+  T eps_abs = T(1e-9);
+  dense::isize dim = 50;
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  // ineq and boxes
+  dense::QP<T> qp(dim, n_eq, n_in, true);
+  Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+  u_box.setZero();
+  u_box.array() += 1.E2;
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+  l_box.setZero();
+  l_box.array() -= 1.E2;
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u,
+          l_box,
+          u_box);
+
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  pri_res = std::max(pri_res,
+                     (helpers::positive_part(qp.results.x - u_box) +
+                      helpers::negative_part(qp.results.x - l_box))
+                       .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp_random.H * qp.results.x + qp_random.g +
+     qp_random.A.transpose() * qp.results.y +
+     qp_random.C.transpose() * qp.results.z.head(n_in) + qp.results.z.tail(dim))
+      .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+
+  u_box.array() += 1.E1;
+  l_box.array() -= 1.E1;
+
+  qp.update(nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
+            qp_random.l,
+            qp_random.u,
+            l_box,
+            u_box);
+
+  qp.solve();
+
+  pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  pri_res = std::max(pri_res,
+                     (helpers::positive_part(qp.results.x - u_box) +
+                      helpers::negative_part(qp.results.x - l_box))
+                       .lpNorm<Eigen::Infinity>());
+  dua_res =
+    (qp_random.H * qp.results.x + qp_random.g +
+     qp_random.A.transpose() * qp.results.y +
+     qp_random.C.transpose() * qp.results.z.head(n_in) + qp.results.z.tail(dim))
+      .lpNorm<Eigen::Infinity>();
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 }

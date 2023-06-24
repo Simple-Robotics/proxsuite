@@ -26,11 +26,15 @@ exposeQpObjectDense(pybind11::module_ m)
 {
 
   ::pybind11::class_<dense::QP<T>>(m, "QP")
-    .def(::pybind11::init<i64, i64, i64>(),
-         pybind11::arg_v("n", 0, "primal dimension."),
-         pybind11::arg_v("n_eq", 0, "number of equality constraints."),
-         pybind11::arg_v("n_in", 0, "number of inequality constraints."),
-         "Default constructor using QP model dimensions.") // constructor
+    .def(
+      ::pybind11::init<i64, i64, i64, bool>(),
+      pybind11::arg_v("n", 0, "primal dimension."),
+      pybind11::arg_v("n_eq", 0, "number of equality constraints."),
+      pybind11::arg_v("n_in", 0, "number of inequality constraints."),
+      pybind11::arg_v("box_constraints",
+                      false,
+                      "specify or not a QP with box inequality constraints."),
+      "Default constructor using QP model dimensions.") // constructor
     .def_readwrite(
       "results",
       &dense::QP<T>::results,
@@ -41,7 +45,9 @@ exposeQpObjectDense(pybind11::module_ m)
       "settings", &dense::QP<T>::settings, "Settings of the solver.")
     .def_readwrite(
       "model", &dense::QP<T>::model, "class containing the QP model")
-
+    .def("is_box_constrained",
+         &dense::QP<T>::is_box_constrained,
+         "precise whether or not the QP is designed with box constraints.")
     .def("init",
          static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
                                             optional<dense::VecRef<T>>,
@@ -62,6 +68,41 @@ exposeQpObjectDense(pybind11::module_ m)
          pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
          pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
          pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+         pybind11::arg_v("compute_preconditioner",
+                         true,
+                         "execute the preconditioner for reducing "
+                         "ill-conditioning and speeding up solver execution."),
+         pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
+         pybind11::arg_v(
+           "mu_eq", nullopt, "dual equality constraint proximal parameter"),
+         pybind11::arg_v(
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+    .def("init",
+         static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::MatRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            optional<dense::VecRef<T>>,
+                                            bool compute_preconditioner,
+                                            optional<T>,
+                                            optional<T>,
+                                            optional<T>)>(&dense::QP<T>::init),
+         "function for initialize the QP model.",
+         pybind11::arg_v("H", nullopt, "quadratic cost"),
+         pybind11::arg_v("g", nullopt, "linear cost"),
+         pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+         pybind11::arg_v("b", nullopt, "equality constraint vector"),
+         pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+         pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+         pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+         pybind11::arg_v(
+           "l_box", nullopt, "upper box inequality constraint vector"),
+         pybind11::arg_v(
+           "u_box", nullopt, "lower box inequality constraint vector"),
          pybind11::arg_v("compute_preconditioner",
                          true,
                          "execute the preconditioner for reducing "
@@ -103,6 +144,45 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
       pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
       pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v(
+        "update_preconditioner",
+        true,
+        "update the preconditioner considering new matrices entries for "
+        "reducing ill-conditioning and speeding up solver execution. If set up "
+        "to false, use previous derived preconditioner."),
+      pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
+      pybind11::arg_v(
+        "mu_eq", nullopt, "dual equality constraint proximal parameter"),
+      pybind11::arg_v(
+        "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+    .def(
+      "update",
+      static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         optional<dense::MatRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         optional<dense::MatRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         optional<dense::VecRef<T>>,
+                                         bool update_preconditioner,
+                                         optional<T>,
+                                         optional<T>,
+                                         optional<T>)>(&dense::QP<T>::update),
+      "function used for updating matrix or vector entry of the model using "
+      "dense matrix entries.",
+      pybind11::arg_v("H", nullopt, "quadratic cost"),
+      pybind11::arg_v("g", nullopt, "linear cost"),
+      pybind11::arg_v("A", nullopt, "equality constraint matrix"),
+      pybind11::arg_v("b", nullopt, "equality constraint vector"),
+      pybind11::arg_v("C", nullopt, "inequality constraint matrix"),
+      pybind11::arg_v("l", nullopt, "upper inequality constraint vector"),
+      pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
+      pybind11::arg_v(
+        "l_box", nullopt, "upper box inequality constraint vector"),
+      pybind11::arg_v(
+        "u_box", nullopt, "lower box inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
         true,

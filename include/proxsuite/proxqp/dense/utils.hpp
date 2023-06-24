@@ -137,6 +137,7 @@ global_primal_residual(const Model<T>& qpmodel,
                        const Results<T>& qpresults,
                        Workspace<T>& qpwork,
                        const preconditioner::RuizEquilibration<T>& ruiz,
+                       const bool box_constraints,
                        T& primal_feasibility_lhs,
                        T& primal_feasibility_eq_rhs_0,
                        T& primal_feasibility_in_rhs_0,
@@ -157,18 +158,39 @@ global_primal_residual(const Model<T>& qpmodel,
   // primal_residual_in_scaled_u = unscaled(Cx)
   // primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
   qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
-  qpwork.primal_residual_in_scaled_up.noalias() = qpwork.C_scaled * qpresults.x;
-
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
+    qpwork.C_scaled * qpresults.x;
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) = qpresults.x;
+    // qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim).array() *=
+    // qpwork.i_scaled.array();
+    ruiz.unscale_primal_in_place(VectorViewMut<T>{
+      from_eigen, qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) });
+    // ruiz.unscale_box_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,
+    // qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim)});
+  }
   ruiz.unscale_primal_residual_in_place_eq(
     VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });
   primal_feasibility_eq_rhs_0 = infty_norm(qpwork.primal_residual_eq_scaled);
-  ruiz.unscale_primal_residual_in_place_in(
-    VectorViewMut<T>{ from_eigen, qpwork.primal_residual_in_scaled_up });
-  primal_feasibility_in_rhs_0 = infty_norm(qpwork.primal_residual_in_scaled_up);
-
-  qpwork.primal_residual_in_scaled_low =
-    helpers::positive_part(qpwork.primal_residual_in_scaled_up - qpmodel.u) +
-    helpers::negative_part(qpwork.primal_residual_in_scaled_up - qpmodel.l);
+  ruiz.unscale_primal_residual_in_place_in(VectorViewMut<T>{
+    from_eigen, qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) });
+  primal_feasibility_in_rhs_0 =
+    infty_norm(qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in));
+  qpwork.primal_residual_in_scaled_low.head(qpmodel.n_in) =
+    helpers::positive_part(
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.u) +
+    helpers::negative_part(
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.l);
+  if (box_constraints) {
+    primal_feasibility_in_rhs_0 = std::max(
+      primal_feasibility_in_rhs_0,
+      infty_norm(qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim)));
+    qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim) =
+      helpers::positive_part(
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.u_box) +
+      helpers::negative_part(
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.l_box);
+  }
   qpwork.primal_residual_eq_scaled -= qpmodel.b;
 
   primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
@@ -203,7 +225,9 @@ global_primal_residual_infeasibility(
   VectorViewMut<T> dy,
   VectorViewMut<T> dz,
   Workspace<T>& qpwork,
+  const Model<T>& qpmodel,
   const Settings<T>& qpsettings,
+  const bool box_constraints,
   const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
@@ -223,10 +247,24 @@ global_primal_residual_infeasibility(
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
   T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
-  T in_inf = helpers::positive_part(dz.to_eigen()).dot(qpwork.u_scaled) -
-             helpers::negative_part(dz.to_eigen()).dot(qpwork.l_scaled);
+  T in_inf = helpers::positive_part(dz.to_eigen().head(qpmodel.n_in))
+               .dot(qpwork.u_scaled) -
+             helpers::negative_part(dz.to_eigen().head(qpmodel.n_in))
+               .dot(qpwork.l_scaled);
   ruiz.unscale_dual_in_place_eq(dy);
-  ruiz.unscale_dual_in_place_in(dz);
+  ruiz.unscale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, dz.to_eigen().head(qpmodel.n_in) });
+  if (box_constraints) {
+    // in_inf+=
+    // helpers::positive_part(dz.to_eigen().tail(qpmodel.dim)).dot(qpmodel.u) -
+    //          helpers::negative_part(dz.to_eigen().tail(qpmodel.dim)).dot(qpmodel.l);
+    in_inf += helpers::positive_part(dz.to_eigen().tail(qpmodel.dim))
+                .dot(qpwork.u_box_scaled) -
+              helpers::negative_part(dz.to_eigen().tail(qpmodel.dim))
+                .dot(qpwork.l_box_scaled);
+    ruiz.unscale_box_dual_in_place_in(
+      VectorViewMut<T>{ from_eigen, dz.to_eigen().tail(qpmodel.dim) });
+  }
 
   T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
   T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
@@ -263,6 +301,7 @@ global_dual_residual_infeasibility(
   Workspace<T>& qpwork,
   const Settings<T>& qpsettings,
   const Model<T>& qpmodel,
+  const bool box_constraints,
   const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
@@ -301,7 +340,20 @@ global_dual_residual_infeasibility(
       first_cond = first_cond && Cdx_i <= bound;
     }
   }
-
+  if (box_constraints) {
+    for (i64 iter = 0; iter < qpmodel.dim; ++iter) {
+      T dx_i = dx.to_eigen()[iter];
+      // if (qpmodel.u_box[iter] <= 1.E20 && qpmodel.l_box[iter] >= -1.E20) {
+      if (qpwork.u_box_scaled[iter] <= 1.E20 &&
+          qpwork.l_box_scaled[iter] >= -1.E20) {
+        first_cond = first_cond && dx_i <= bound && dx_i >= bound_neg;
+      } else if (qpwork.u_box_scaled[iter] > 1.E20) {
+        first_cond = first_cond && dx_i >= bound_neg;
+      } else if (qpwork.l_box_scaled[iter] < -1.E20) {
+        first_cond = first_cond && dx_i <= bound;
+      }
+    }
+  }
   bound *= ruiz.c;
   bound_neg *= ruiz.c;
   bool second_cond_alt1 =
@@ -334,6 +386,7 @@ global_dual_residual(Results<T>& qpresults,
                      Workspace<T>& qpwork,
                      const Model<T>& qpmodel,
                      const Settings<T>& qpsettings,
+                     const bool box_constraints,
                      const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
                      T& dual_feasibility_rhs_0,
@@ -350,6 +403,7 @@ global_dual_residual(Results<T>& qpresults,
   // dual_residual_scaled = scaled(Hx + g + ATy + CTz)
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
+
   switch (qpsettings.problem_type) {
     case ProblemType::LP:
       dual_feasibility_rhs_0 = 0;
@@ -383,11 +437,25 @@ global_dual_residual(Results<T>& qpresults,
     VectorViewMut<T>{ from_eigen, qpwork.CTz });
   dual_feasibility_rhs_1 = infty_norm(qpwork.CTz);
 
-  qpwork.CTz.noalias() = qpwork.C_scaled.transpose() * qpresults.z;
+  qpwork.CTz.noalias() =
+    qpwork.C_scaled.transpose() * qpresults.z.head(qpmodel.n_in);
   qpwork.dual_residual_scaled += qpwork.CTz;
   ruiz.unscale_dual_residual_in_place(
     VectorViewMut<T>{ from_eigen, qpwork.CTz });
   dual_feasibility_rhs_3 = infty_norm(qpwork.CTz);
+  if (box_constraints) {
+    qpwork.CTz.noalias() = qpresults.z.tail(qpmodel.dim);
+    // FALSE : we should add I_scaled * z_scaled and I_scaled = D, so we
+    // unscaled z_scaled to unscale then the dual residual
+    // ruiz.unscale_primal_in_place(VectorViewMut<T>{from_eigen,qpwork.CTz});
+    qpwork.CTz.array() *= qpwork.i_scaled.array();
+
+    qpwork.dual_residual_scaled += qpwork.CTz;
+    ruiz.unscale_dual_residual_in_place(
+      VectorViewMut<T>{ from_eigen, qpwork.CTz });
+    dual_feasibility_rhs_3 =
+      std::max(infty_norm(qpwork.CTz), dual_feasibility_rhs_3);
+  }
 
   ruiz.unscale_dual_residual_in_place(
     VectorViewMut<T>{ from_eigen, qpwork.dual_residual_scaled });
@@ -403,21 +471,51 @@ global_dual_residual(Results<T>& qpresults,
   duality_gap += by;
   ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
 
-  ruiz.unscale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+  ruiz.unscale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
 
-  const T zu =
-    helpers::select(qpwork.active_set_up, qpresults.z, 0)
+  T zu =
+    helpers::select(qpwork.active_set_up.head(qpmodel.n_in),
+                    qpresults.z.head(qpmodel.n_in),
+                    0)
       .dot(helpers::at_most(qpmodel.u, helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
   duality_gap += zu;
 
-  const T zl =
-    helpers::select(qpwork.active_set_low, qpresults.z, 0)
+  T zl =
+    helpers::select(qpwork.active_set_low.head(qpmodel.n_in),
+                    qpresults.z.head(qpmodel.n_in),
+                    0)
       .dot(helpers::at_least(qpmodel.l, -helpers::infinite_bound<T>::value()));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
   duality_gap += zl;
 
-  ruiz.scale_dual_in_place_in(VectorViewMut<T>{ from_eigen, qpresults.z });
+  ruiz.scale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
+
+  if (box_constraints) {
+    ruiz.unscale_box_dual_in_place_in(
+      VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+
+    zu = helpers::select(qpwork.active_set_up.tail(qpmodel.dim),
+                         qpresults.z.tail(qpmodel.dim),
+                         0)
+           .dot(helpers::at_most(qpmodel.u_box,
+                                 helpers::infinite_bound<T>::value()));
+    rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
+    duality_gap += zu;
+
+    zl = helpers::select(qpwork.active_set_low.tail(qpmodel.dim),
+                         qpresults.z.tail(qpmodel.dim),
+                         0)
+           .dot(helpers::at_least(qpmodel.l_box,
+                                  -helpers::infinite_bound<T>::value()));
+    rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
+    duality_gap += zl;
+
+    ruiz.scale_box_dual_in_place_in(
+      VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+  }
 }
 
 } // namespace dense
