@@ -2,6 +2,7 @@ if(UNIX)
   set(PYTHON_COMPONENTS Development.Module)
 endif()
 include(../../cmake-module/python.cmake)
+include(../../cmake-module/python-helpers.cmake)
 
 findpython(REQUIRED Development.Module)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
@@ -136,4 +137,6 @@ foreach(python ${PYTHON_FILES})
   install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/proxsuite/${python}"
           DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endforeach(python)
+
+python_build_get_target(compile_pyc)
 add_dependencies(python ${compile_pyc})
