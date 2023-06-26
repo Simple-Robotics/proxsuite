@@ -22,7 +22,8 @@ endif()
 macro(proxsuite_test name path)
   add_executable(test-cpp-${name} ${path})
   doctest_discover_tests(test-cpp-${name})
-  target_link_libraries(test-cpp-${name} proxsuite doctest proxsuite-test-util)
+  target_link_libraries(test-cpp-${name} PUBLIC proxsuite doctest
+                                                proxsuite-test-util)
   target_compile_definitions(test-cpp-${name}
                              PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
   add_dependencies(build_tests test-cpp-${name})
