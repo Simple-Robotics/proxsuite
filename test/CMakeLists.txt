@@ -73,7 +73,8 @@ endif()
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
 
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC)
+  if((CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC) OR NOT
+                                                     BUILD_WITH_OPENMP_SUPPORT)
     list_filter("${${PROJECT_NAME}_PYTHON_UNITTEST}" "parallel_qp_solve"
                 ${PROJECT_NAME}_PYTHON_UNITTEST)
   endif()
