@@ -92,7 +92,7 @@ main(int /*argc*/, const char** /*argv*/)
       }
     }
     std::cout << "timings QP with box constraints feature : \t"
-              << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
+              << elapsed_time * 1e-3 / smooth << " ms" << std::endl;
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{ dim, n_eq, dim + n_in, false };
@@ -122,6 +122,6 @@ main(int /*argc*/, const char** /*argv*/)
       }
     }
     std::cout << "timings QP without box constraints feature : \t"
-              << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
+              << elapsed_time * 1e-3 / smooth << " ms" << std::endl;
   }
 }

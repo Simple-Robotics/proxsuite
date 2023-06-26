@@ -71,7 +71,7 @@ main(int /*argc*/, const char** /*argv*/)
                   << std::endl;
       }
     }
-    std::cout << "timings LP: \t" << elapsed_time * 1e-3 / smooth << "ms"
+    std::cout << "timings LP: \t" << elapsed_time * 1e-3 / smooth << " ms"
               << std::endl;
 
     elapsed_time = 0.0;
@@ -101,7 +101,7 @@ main(int /*argc*/, const char** /*argv*/)
                   << qp_compare.results.info.iter << std::endl;
       }
     }
-    std::cout << "timings QP: \t" << elapsed_time * 1e-3 / smooth << "ms"
+    std::cout << "timings QP: \t" << elapsed_time * 1e-3 / smooth << " ms"
               << std::endl;
   }
 }
