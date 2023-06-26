@@ -67,7 +67,7 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.model, solved_qp.results, solved_qp.work);
     solved_qp.work.constraints_changed = false; // no refactorization afterwords
 
-    solved_qp.work.rhs = loss_derivative; // take full derivatives
+    solved_qp.work.rhs = -loss_derivative; // take full derivatives
     solved_qp.ruiz.scale_dual_residual_in_place(VectorViewMut<T>{
       from_eigen, solved_qp.work.rhs.head(solved_qp.model.dim) });
     if (!solved_qp.work.rhs.segment(solved_qp.model.dim, solved_qp.model.n_eq)
