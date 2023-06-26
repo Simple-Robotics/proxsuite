@@ -73,7 +73,7 @@ compute_backward(dense::QP<T>& solved_qp,
     if (!solved_qp.work.rhs.segment(solved_qp.model.dim, solved_qp.model.n_eq)
            .isZero()) {
       solved_qp.work.rhs.segment(solved_qp.model.dim, solved_qp.model.n_eq) =
-        loss_derivative.segment(solved_qp.model.dim, solved_qp.model.n_eq);
+        -loss_derivative.segment(solved_qp.model.dim, solved_qp.model.n_eq);
       solved_qp.ruiz.scale_primal_residual_in_place_eq(
         VectorViewMut<T>{ from_eigen,
                           solved_qp.work.rhs.segment(solved_qp.model.dim,
@@ -84,7 +84,7 @@ compute_backward(dense::QP<T>& solved_qp,
         isize j = solved_qp.work.current_bijection_map(i);
         if (j < solved_qp.work.n_c) {
           solved_qp.work.rhs(j + solved_qp.model.dim + solved_qp.model.n_eq) =
-            loss_derivative(i + solved_qp.model.dim + solved_qp.model.n_eq);
+            -loss_derivative(i + solved_qp.model.dim + solved_qp.model.n_eq);
         }
         solved_qp.ruiz.scale_primal_residual_in_place_in(VectorViewMut<T>{
           from_eigen, solved_qp.work.rhs.tail(solved_qp.model.n_in) });
