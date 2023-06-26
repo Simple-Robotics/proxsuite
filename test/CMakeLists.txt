@@ -42,11 +42,8 @@ proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
-  add_executable(test-cpp-parallel src/parallel_qp_solve.cpp)
-  target_link_libraries(test-cpp-parallel PRIVATE doctest proxsuite)
+  proxsuite_test(parallel src/parallel_qp_solve.cpp)
   target_link_libraries(test-cpp-parallel PRIVATE OpenMP::OpenMP_CXX)
-  doctest_discover_tests(test-cpp-parallel)
-  add_dependencies(build_tests test-cpp-parallel)
 endif()
 
 # Test serialization
