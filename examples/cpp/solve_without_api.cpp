@@ -73,15 +73,15 @@ main()
                                                         u,
                                                         l_box,
                                                         u_box,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt,
-                                                        std::nullopt);
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt,
+                                                        proxsuite::nullopt);
   // print an optimal solution x,y and z
   std::cout << "optimal x from dense solver: " << results_dense_solver.x
             << std::endl;
