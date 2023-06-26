@@ -321,7 +321,12 @@ global_dual_residual_infeasibility(
   // entry are changed in place
   ruiz.unscale_dual_residual_in_place(Hdx);
   ruiz.unscale_primal_residual_in_place_eq(Adx);
-  ruiz.unscale_primal_residual_in_place_in(Cdx);
+  ruiz.unscale_primal_residual_in_place_in(
+    VectorViewMut<T>{ from_eigen, Cdx.to_eigen().head(qpmodel.n_in) });
+  if (box_constraints) {
+    ruiz.unscale_box_primal_residual_in_place_in(
+      VectorViewMut<T>{ from_eigen, Cdx.to_eigen().tail(qpmodel.dim) });
+  }
   T gdx = (dx.to_eigen()).dot(qpwork.g_scaled);
   ruiz.unscale_primal_in_place(dx);
 
