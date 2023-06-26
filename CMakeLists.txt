@@ -78,7 +78,8 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
-option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" ON)
+option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support"
+       OFF)
 cmake_dependent_option(
   LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON
   BUILD_WITH_OPENMP_SUPPORT OFF)
