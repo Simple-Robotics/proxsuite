@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 INRIA
+# Copyright (c) 2022-2023 INRIA
 #
 
 cmake_minimum_required(VERSION 3.10)
@@ -48,7 +48,7 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
-if(APPLE) # Use the handmade approach
+if(APPLE OR WIN32) # Use the handmade approach
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
                         ${CMAKE_MODULE_PATH})
 elseif(UNIX)
