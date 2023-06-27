@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 INRIA
+# Copyright (c) 2022-2023 INRIA
 #
 
 cmake_minimum_required(VERSION 3.10)
@@ -48,7 +48,7 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
-if(APPLE) # Use the handmade approach
+if(APPLE OR WIN32) # Use the handmade approach
   set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
                         ${CMAKE_MODULE_PATH})
 elseif(UNIX)
@@ -78,7 +78,8 @@ option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support."
 option(BUILD_BINDINGS_WITH_AVX512_SUPPORT
        "Build the bindings with AVX512 support." ON)
 option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
-option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" ON)
+option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support"
+       OFF)
 cmake_dependent_option(
   LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON
   BUILD_WITH_OPENMP_SUPPORT OFF)

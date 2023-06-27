@@ -35,6 +35,7 @@ void
 compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
                                            const Settings<T>& qpsettings,
                                            const Model<T>& qpmodel,
+                                           const isize n_constraints,
                                            Results<T>& qpresults)
 {
 
@@ -46,6 +47,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
     qpmodel,
     qpresults,
     qpwork,
+    n_constraints,
     T(1),
     qpmodel.dim + qpmodel.n_eq);
 
@@ -112,15 +114,17 @@ template<typename T>
 void
 setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
+                    const bool box_constraints,
                     preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
 
   QpViewBoxMut<T> qp_scaled{
-    { from_eigen, qpwork.H_scaled }, { from_eigen, qpwork.g_scaled },
-    { from_eigen, qpwork.A_scaled }, { from_eigen, qpwork.b_scaled },
-    { from_eigen, qpwork.C_scaled }, { from_eigen, qpwork.u_scaled },
-    { from_eigen, qpwork.l_scaled }
+    { from_eigen, qpwork.H_scaled },     { from_eigen, qpwork.g_scaled },
+    { from_eigen, qpwork.A_scaled },     { from_eigen, qpwork.b_scaled },
+    { from_eigen, qpwork.C_scaled },     { from_eigen, qpwork.u_scaled },
+    { from_eigen, qpwork.l_scaled },     { from_eigen, qpwork.i_scaled },
+    { from_eigen, qpwork.l_box_scaled }, { from_eigen, qpwork.u_box_scaled },
   };
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
@@ -132,6 +136,7 @@ setup_equilibration(Workspace<T>& qpwork,
                          qpsettings.preconditioner_max_iter,
                          qpsettings.preconditioner_accuracy,
                          qpsettings.problem_type,
+                         box_constraints,
                          stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 }
@@ -186,8 +191,11 @@ update(optional<MatRef<T>> H,
        optional<MatRef<T>> C,
        optional<VecRef<T>> l,
        optional<VecRef<T>> u,
+       optional<VecRef<T>> l_box,
+       optional<VecRef<T>> u_box,
        Model<T>& model,
-       Workspace<T>& work)
+       Workspace<T>& work,
+       const bool box_constraints)
 {
   // check the model is valid
   if (g != nullopt) {
@@ -258,6 +266,15 @@ update(optional<MatRef<T>> H,
   if (l != nullopt) {
     model.l = l.value().eval();
   }
+  if (u_box != nullopt && box_constraints) {
+    model.u_box = u_box.value();
+  } // else qpmodel.u_box remains initialized to a matrix with zero elements or
+    // zero shape
+
+  if (l_box != nullopt && box_constraints) {
+    model.l_box = l_box.value();
+  } // else qpmodel.l_box remains initialized to a matrix with zero elements or
+    // zero shape
 
   if (H != nullopt || A != nullopt || C != nullopt) {
     work.refactorize = true;
@@ -272,7 +289,7 @@ update(optional<MatRef<T>> H,
   if (C != nullopt) {
     model.C = C.value();
   }
-  assert(model.is_valid());
+  assert(model.is_valid(box_constraints));
 }
 /*!
  * Setups the QP solver model.
@@ -303,10 +320,13 @@ setup( //
   optional<MatRef<T>> C,
   optional<VecRef<T>> l,
   optional<VecRef<T>> u,
+  optional<VecRef<T>> l_box,
+  optional<VecRef<T>> u_box,
   Settings<T>& qpsettings,
   Model<T>& qpmodel,
   Workspace<T>& qpwork,
   Results<T>& qpresults,
+  const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status)
 {
@@ -318,7 +338,7 @@ setup( //
       } else {
         qpresults.cleanup(qpsettings);
       }
-      qpwork.cleanup();
+      qpwork.cleanup(box_constraints);
       break;
     }
     case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
@@ -328,7 +348,7 @@ setup( //
       } else {
         qpresults.cold_start(qpsettings);
       }
-      qpwork.cleanup();
+      qpwork.cleanup(box_constraints);
       break;
     }
     case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -337,7 +357,7 @@ setup( //
       } else {
         qpresults.cleanup(qpsettings);
       }
-      qpwork.cleanup();
+      qpwork.cleanup(box_constraints);
       break;
     }
     case InitialGuessStatus::WARM_START: {
@@ -348,13 +368,14 @@ setup( //
       } else {
         qpresults.cleanup(qpsettings);
       }
-      qpwork.cleanup();
+      qpwork.cleanup(box_constraints);
       break;
     }
     case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
       if (qpwork.refactorize || qpwork.proximal_parameter_update) {
-        qpwork.cleanup(); // meaningful for when there is an upate of the model
-                          // and one wants to warm start with previous result
+        qpwork.cleanup(box_constraints); // meaningful for when there is an
+                                         // upate of the model and one wants to
+                                         // warm start with previous result
         qpwork.refactorize = true;
       }
       qpresults.cleanup_statistics();
@@ -392,7 +413,16 @@ setup( //
     qpmodel.l = l.value();
   } // else qpmodel.l remains initialized to a matrix with zero elements or zero
     // shape
-  assert(qpmodel.is_valid());
+  if (u_box != nullopt) {
+    qpmodel.u_box = u_box.value();
+  } // else qpmodel.u_box remains initialized to a matrix with zero elements or
+    // zero shape
+
+  if (l_box != nullopt) {
+    qpmodel.l_box = l_box.value();
+  } // else qpmodel.l_box remains initialized to a matrix with zero elements or
+    // zero shape
+  assert(qpmodel.is_valid(box_constraints));
   switch (qpsettings.problem_type) {
     case ProblemType::LP:
       break;
@@ -414,19 +444,30 @@ setup( //
       .select(qpmodel.l,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.n_in).array() -
                 T(1.E20));
+  if (box_constraints) {
+    qpwork.u_box_scaled =
+      (qpmodel.u_box.array() <= T(1.E20))
+        .select(qpmodel.u_box,
+                Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.dim).array() +
+                  T(1.E20));
+    qpwork.l_box_scaled =
+      (qpmodel.l_box.array() >= T(-1.E20))
+        .select(qpmodel.l_box,
+                Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(qpmodel.dim).array() -
+                  T(1.E20));
+  }
 
   qpwork.dual_feasibility_rhs_2 = infty_norm(qpmodel.g);
-
   switch (preconditioner_status) {
     case PreconditionerStatus::EXECUTE:
-      setup_equilibration(qpwork, qpsettings, ruiz, true);
+      setup_equilibration(qpwork, qpsettings, box_constraints, ruiz, true);
       break;
     case PreconditionerStatus::IDENTITY:
-      setup_equilibration(qpwork, qpsettings, ruiz, false);
+      setup_equilibration(qpwork, qpsettings, box_constraints, ruiz, false);
       break;
     case PreconditionerStatus::KEEP:
       // keep previous one
-      setup_equilibration(qpwork, qpsettings, ruiz, false);
+      setup_equilibration(qpwork, qpsettings, box_constraints, ruiz, false);
       break;
   }
 }

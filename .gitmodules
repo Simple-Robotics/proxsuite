@@ -7,3 +7,5 @@
 [submodule "external/cereal"]
 	path = external/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "cmake"]
+	url = https://github.com/jrl-umi3218/jrl-cmakemodules.git

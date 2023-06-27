@@ -64,7 +64,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "time to generate and initialize std::vector of dense qps: \t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
 
     timer.start();
     for (int j = 0; j < smooth; j++) {
@@ -90,7 +90,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "time to generate and initialize dense:BatchQP: \t\t\t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
 
     for (int j = 0; j < smooth; j++) {
       std::vector<proxqp::sparse::QP<T, I>> qps;
@@ -118,7 +118,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "time to generate and initialize std::vector of sparse qps: \t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
 
     timer.start();
     for (int j = 0; j < smooth; j++) {
@@ -145,7 +145,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "time to generate and initialize sparse:BatchQP: \t\t\t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
   }
 
   {
@@ -203,7 +203,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "mean solve time in serial: \t\t\t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
 
     const size_t NUM_THREADS = (size_t)omp_get_max_threads();
 
@@ -216,7 +216,7 @@ main(int /*argc*/, const char** /*argv*/)
       timer.stop();
       std::cout << "mean solve time in parallel (" << num_threads
                 << " threads):\t" << timer.elapsed().user * 1e-3 / smooth
-                << "ms" << std::endl;
+                << " ms" << std::endl;
     }
 
     std::cout << "\nparallel using std::vector of dense QPs" << std::endl;
@@ -228,7 +228,7 @@ main(int /*argc*/, const char** /*argv*/)
       timer.stop();
       std::cout << "mean solve time in parallel (" << num_threads
                 << " threads):\t" << timer.elapsed().user * 1e-3 / smooth
-                << "ms" << std::endl;
+                << " ms" << std::endl;
     }
   }
 
@@ -289,7 +289,7 @@ main(int /*argc*/, const char** /*argv*/)
     }
     timer.stop();
     std::cout << "mean solve time in serial: \t\t\t"
-              << timer.elapsed().user * 1e-3 / smooth << "ms" << std::endl;
+              << timer.elapsed().user * 1e-3 / smooth << " ms" << std::endl;
 
     const size_t NUM_THREADS = (size_t)omp_get_max_threads();
 
@@ -302,7 +302,7 @@ main(int /*argc*/, const char** /*argv*/)
       timer.stop();
       std::cout << "mean solve time in parallel (" << num_threads
                 << " threads):\t" << timer.elapsed().user * 1e-3 / smooth
-                << "ms" << std::endl;
+                << " ms" << std::endl;
     }
 
     std::cout << "\nparallel using std::vector of sparse QPs" << std::endl;
@@ -314,7 +314,7 @@ main(int /*argc*/, const char** /*argv*/)
       timer.stop();
       std::cout << "mean solve time in parallel (" << num_threads
                 << " threads):\t" << timer.elapsed().user * 1e-3 / smooth
-                << "ms" << std::endl;
+                << " ms" << std::endl;
     }
   }
 }

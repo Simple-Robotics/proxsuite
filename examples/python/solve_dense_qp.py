@@ -46,3 +46,15 @@ qp.solve(np.random.randn(n), np.random.randn(n_eq), np.random.randn(n_in))
 print("optimal x: {}".format(qp.results.x))
 print("optimal y: {}".format(qp.results.y))
 print("optimal z: {}".format(qp.results.z))
+# Another example if you have box constraints (for the dense backend only for the moment)
+qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+l_box = -np.ones(n) * 1.0e10
+u_box = np.ones(n) * 1.0e10
+qp2.init(H, g, A, b, C, l, u, l_box, u_box)
+qp2.solve()
+# An important note regarding the inequality multipliers
+z_ineq = qp.results.z[:n_in]  # contains the multiplier associated to qp_random.C
+z_box = qp.results.z[
+    n_in:
+]  # the last dim elements correspond to multiplier associated to
+# the box constraints

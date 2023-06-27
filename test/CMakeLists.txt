@@ -22,7 +22,8 @@ endif()
 macro(proxsuite_test name path)
   add_executable(test-cpp-${name} ${path})
   doctest_discover_tests(test-cpp-${name})
-  target_link_libraries(test-cpp-${name} proxsuite doctest proxsuite-test-util)
+  target_link_libraries(test-cpp-${name} PUBLIC proxsuite doctest
+                                                proxsuite-test-util)
   target_compile_definitions(test-cpp-${name}
                              PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
   add_dependencies(build_tests test-cpp-${name})
@@ -42,11 +43,8 @@ proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
-  add_executable(test-cpp-parallel src/parallel_qp_solve.cpp)
-  target_link_libraries(test-cpp-parallel PRIVATE doctest proxsuite)
+  proxsuite_test(parallel src/parallel_qp_solve.cpp)
   target_link_libraries(test-cpp-parallel PRIVATE OpenMP::OpenMP_CXX)
-  doctest_discover_tests(test-cpp-parallel)
-  add_dependencies(build_tests test-cpp-parallel)
 endif()
 
 # Test serialization
@@ -75,7 +73,8 @@ endif()
 if(BUILD_PYTHON_INTERFACE)
   file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_UNITTEST *.py)
 
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC)
+  if((CMAKE_BUILD_TYPE STREQUAL "Debug" AND MSVC) OR NOT
+                                                     BUILD_WITH_OPENMP_SUPPORT)
     list_filter("${${PROJECT_NAME}_PYTHON_UNITTEST}" "parallel_qp_solve"
                 ${PROJECT_NAME}_PYTHON_UNITTEST)
   endif()
