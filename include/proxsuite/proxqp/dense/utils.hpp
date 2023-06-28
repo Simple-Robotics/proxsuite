@@ -35,7 +35,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T>& model,
                    const bool box_constraints,
                    const DenseBackend& dense_backend,
-                   const HESSIAN_TYPE& problem_type)
+                   const HESSIAN_TYPE& hessian_type)
 {
 
   proxsuite::proxqp::print_preambule();
@@ -75,7 +75,7 @@ print_setup_header(const Settings<T>& settings,
     case DenseBackend::Automatic:
       break;
   }
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::DENSE:
       std::cout << "          problem type: Quadratic Program, " << std::endl;
       break;
@@ -428,7 +428,7 @@ global_dual_residual(Results<T>& qpresults,
                      T& dual_feasibility_rhs_3,
                      T& rhs_duality_gap,
                      T& duality_gap,
-                     const HESSIAN_TYPE& problem_type)
+                     const HESSIAN_TYPE& hessian_type)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -439,7 +439,7 @@ global_dual_residual(Results<T>& qpresults,
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
 
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::ZERO:
       dual_feasibility_rhs_0 = 0;
       break;
@@ -464,7 +464,7 @@ global_dual_residual(Results<T>& qpresults,
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::fabs(duality_gap);
   T xHx(0);
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::ZERO:
       break;
     case HESSIAN_TYPE::DENSE:

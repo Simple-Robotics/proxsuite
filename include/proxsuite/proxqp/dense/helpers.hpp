@@ -37,7 +37,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
                                            const Model<T>& qpmodel,
                                            const isize n_constraints,
                                            const DenseBackend& dense_backend,
-                                           const HESSIAN_TYPE& problem_type,
+                                           const HESSIAN_TYPE& hessian_type,
                                            Results<T>& qpresults)
 {
 
@@ -51,7 +51,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
     qpwork,
     n_constraints,
     dense_backend,
-    problem_type,
+    hessian_type,
     T(1),
     qpmodel.dim + qpmodel.n_eq);
 
@@ -76,14 +76,14 @@ setup_factorization(Workspace<T>& qpwork,
                     const Model<T>& qpmodel,
                     Results<T>& qpresults,
                     const DenseBackend& dense_backend,
-                    const HESSIAN_TYPE& problem_type)
+                    const HESSIAN_TYPE& hessian_type)
 {
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut,
     qpwork.ldl_stack.as_mut(),
   };
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::DENSE:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
@@ -134,7 +134,7 @@ void
 setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
                     const bool box_constraints,
-                    const HESSIAN_TYPE problem_type,
+                    const HESSIAN_TYPE hessian_type,
                     preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
@@ -155,7 +155,7 @@ setup_equilibration(Workspace<T>& qpwork,
                          execute_preconditioner,
                          qpsettings.preconditioner_max_iter,
                          qpsettings.preconditioner_accuracy,
-                         problem_type,
+                         hessian_type,
                          box_constraints,
                          stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
@@ -349,7 +349,7 @@ setup( //
   const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status,
-  const HESSIAN_TYPE problem_type)
+  const HESSIAN_TYPE hessian_type)
 {
 
   switch (qpsettings.initial_guess) {
@@ -444,7 +444,7 @@ setup( //
   } // else qpmodel.l_box remains initialized to a matrix with zero elements or
     // zero shape
   assert(qpmodel.is_valid(box_constraints));
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::ZERO:
       break;
     case HESSIAN_TYPE::DENSE:
@@ -485,16 +485,16 @@ setup( //
   switch (preconditioner_status) {
     case PreconditionerStatus::EXECUTE:
       setup_equilibration(
-        qpwork, qpsettings, box_constraints, problem_type, ruiz, true);
+        qpwork, qpsettings, box_constraints, hessian_type, ruiz, true);
       break;
     case PreconditionerStatus::IDENTITY:
       setup_equilibration(
-        qpwork, qpsettings, box_constraints, problem_type, ruiz, false);
+        qpwork, qpsettings, box_constraints, hessian_type, ruiz, false);
       break;
     case PreconditionerStatus::KEEP:
       // keep previous one
       setup_equilibration(
-        qpwork, qpsettings, box_constraints, problem_type, ruiz, false);
+        qpwork, qpsettings, box_constraints, hessian_type, ruiz, false);
       break;
   }
 }

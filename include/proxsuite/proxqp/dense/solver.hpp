@@ -244,13 +244,13 @@ iterative_residual(const Model<T>& qpmodel,
                    Workspace<T>& qpwork,
                    const isize n_constraints,
                    isize inner_pb_dim,
-                   const HESSIAN_TYPE& problem_type)
+                   const HESSIAN_TYPE& hessian_type)
 {
   auto& Hdx = qpwork.Hdx;
   auto& Adx = qpwork.Adx;
   auto& ATdy = qpwork.CTz;
   qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
-  switch (problem_type) {
+  switch (hessian_type) {
     case HESSIAN_TYPE::ZERO:
       break;
     case HESSIAN_TYPE::DENSE:
@@ -404,7 +404,7 @@ iterative_solve_with_permut_fact( //
   Workspace<T>& qpwork,
   const isize n_constraints,
   const DenseBackend& dense_backend,
-  const HESSIAN_TYPE& problem_type,
+  const HESSIAN_TYPE& hessian_type,
   T eps,
   isize inner_pb_dim)
 {
@@ -426,7 +426,7 @@ iterative_solve_with_permut_fact( //
                       inner_pb_dim,
                       stack);
   iterative_residual<T>(
-    qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, problem_type);
+    qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, hessian_type);
 
   ++it;
   T preverr = infty_norm(qpwork.err.head(inner_pb_dim));
@@ -449,7 +449,7 @@ iterative_solve_with_permut_fact( //
 
     qpwork.err.head(inner_pb_dim).setZero();
     iterative_residual<T>(
-      qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, problem_type);
+      qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, hessian_type);
 
     if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
       it_stability += 1;
@@ -486,7 +486,7 @@ iterative_solve_with_permut_fact( //
     // qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
 
     iterative_residual<T>(
-      qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, problem_type);
+      qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, hessian_type);
 
     preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     ++it;
@@ -509,7 +509,7 @@ iterative_solve_with_permut_fact( //
 
       qpwork.err.head(inner_pb_dim).setZero();
       iterative_residual<T>(
-        qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, problem_type);
+        qpmodel, qpresults, qpwork, n_constraints, inner_pb_dim, hessian_type);
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
@@ -746,7 +746,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const bool box_constraints,
                                     const isize n_constraints,
                                     const DenseBackend& dense_backend,
-                                    const HESSIAN_TYPE& problem_type,
+                                    const HESSIAN_TYPE& hessian_type,
                                     T eps)
 {
 
@@ -840,7 +840,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
     qpwork,
     n_constraints,
     dense_backend,
-    problem_type,
+    hessian_type,
     eps,
     inner_pb_dim);
 
@@ -877,7 +877,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                const isize n_constraints,
                                preconditioner::RuizEquilibration<T>& ruiz,
                                const DenseBackend& dense_backend,
-                               const HESSIAN_TYPE& problem_type,
+                               const HESSIAN_TYPE& hessian_type,
                                T eps_int)
 {
 
@@ -911,7 +911,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                            box_constraints,
                                            n_constraints,
                                            dense_backend,
-                                           problem_type,
+                                           hessian_type,
                                            eps_int);
 
     auto& Hdx = qpwork.Hdx;
@@ -982,7 +982,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
       alpha * (Adx - qpresults.info.mu_eq * dy);
     qpresults.y += alpha * dy;
     qpresults.z += alpha * dz;
-    switch (problem_type) {
+    switch (hessian_type) {
       case HESSIAN_TYPE::ZERO:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + ATdy + CTdz);
@@ -1096,7 +1096,7 @@ qp_solve( //
   Workspace<T>& qpwork,
   const bool box_constraints,
   const DenseBackend& dense_backend,
-  const HESSIAN_TYPE& problem_type,
+  const HESSIAN_TYPE& hessian_type,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
   /*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
@@ -1121,7 +1121,7 @@ qp_solve( //
                               qpmodel,
                               box_constraints,
                               dense_backend,
-                              problem_type);
+                              hessian_type);
   }
   if (qpwork.dirty) { // the following is used when a solve has already been
                       // executed (and without any intermediary model update)
@@ -1189,7 +1189,7 @@ qp_solve( //
     }
     if (qpsettings.initial_guess !=
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
-      switch (problem_type) {
+      switch (hessian_type) {
         case HESSIAN_TYPE::ZERO:
           break;
         case HESSIAN_TYPE::DENSE:
@@ -1209,11 +1209,11 @@ qp_solve( //
         qpwork,
         qpsettings,
         box_constraints,
-        problem_type,
+        hessian_type,
         ruiz,
         false); // reuse previous equilibration
       proxsuite::proxqp::dense::setup_factorization(
-        qpwork, qpmodel, qpresults, dense_backend, problem_type);
+        qpwork, qpmodel, qpresults, dense_backend, hessian_type);
     }
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
@@ -1222,7 +1222,7 @@ qp_solve( //
                                                    qpmodel,
                                                    n_constraints,
                                                    dense_backend,
-                                                   problem_type,
+                                                   hessian_type,
                                                    qpresults);
         break;
       }
@@ -1270,13 +1270,13 @@ qp_solve( //
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
         proxsuite::proxqp::dense::setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, problem_type);
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         compute_equality_constrained_initial_guess(qpwork,
                                                    qpsettings,
                                                    qpmodel,
                                                    n_constraints,
                                                    dense_backend,
-                                                   problem_type,
+                                                   hessian_type,
                                                    qpresults);
         break;
       }
@@ -1296,7 +1296,7 @@ qp_solve( //
             { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, problem_type);
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         qpwork.n_c = 0;
         for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
@@ -1311,7 +1311,7 @@ qp_solve( //
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
         setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, problem_type);
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         break;
       }
       case InitialGuessStatus::WARM_START: {
@@ -1327,7 +1327,7 @@ qp_solve( //
             { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, problem_type);
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         qpwork.n_c = 0;
         for (isize i = 0; i < n_constraints; i++) {
           if (qpresults.z[i] != 0) {
@@ -1359,7 +1359,7 @@ qp_solve( //
                                   // matrices has changed or one proximal
                                   // parameter has changed
           setup_factorization(
-            qpwork, qpmodel, qpresults, dense_backend, problem_type);
+            qpwork, qpmodel, qpresults, dense_backend, hessian_type);
           qpwork.n_c = 0;
           for (isize i = 0; i < n_constraints; i++) {
             if (qpresults.z[i] != 0) {
@@ -1420,7 +1420,7 @@ qp_solve( //
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
                          duality_gap,
-                         problem_type);
+                         hessian_type);
 
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
@@ -1557,7 +1557,7 @@ qp_solve( //
                                    n_constraints,
                                    ruiz,
                                    dense_backend,
-                                   problem_type,
+                                   hessian_type,
                                    bcl_eta_in);
 
     if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
@@ -1601,7 +1601,7 @@ qp_solve( //
                            dual_feasibility_rhs_3,
                            rhs_duality_gap,
                            duality_gap,
-                           problem_type);
+                           hessian_type);
       qpresults.info.dua_res = dual_feasibility_lhs_new;
       qpresults.info.duality_gap = duality_gap;
 
@@ -1668,7 +1668,7 @@ qp_solve( //
                          dual_feasibility_rhs_3,
                          rhs_duality_gap,
                          duality_gap,
-                         problem_type);
+                         hessian_type);
     qpresults.info.dua_res = dual_feasibility_lhs_new;
     qpresults.info.duality_gap = duality_gap;
 

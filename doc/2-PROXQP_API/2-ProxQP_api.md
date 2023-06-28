@@ -395,7 +395,7 @@ In this table you have on the three columns from left to right: the name of the 
 | safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
 | preconditioner_max_iter             | 10                                 | Maximal number of authorized iterations for the preconditioner.
 | preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
-| problem_type                        | DENSE                              | Defines the type of problem solved (DENSE, ZERO or DIAGONAL). In case ZERO or DIAGONAL option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
+| HESSIAN_TYPE                        | DENSE                              | Defines the type of problem solved (DENSE, ZERO or DIAGONAL). In case ZERO or DIAGONAL option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
 
 \subsection OverviewInitialGuess The different initial guesses
 

@@ -118,7 +118,7 @@ private:
   // not supposed to change
   DenseBackend dense_backend;
   bool box_constraints;
-  HESSIAN_TYPE problem_type;
+  HESSIAN_TYPE hessian_type;
 
 public:
   Results<T> results;
@@ -132,7 +132,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DIAGONAL)
+   * @param _hessian_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -140,7 +140,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HESSIAN_TYPE _problem_type,
+     proxsuite::proxqp::HESSIAN_TYPE _hessian_type,
      DenseBackend _dense_backend)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
@@ -148,7 +148,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(_problem_type)
+    , hessian_type(_hessian_type)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -165,7 +165,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DIAGONAL)
+   * @param _hessian_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -174,14 +174,14 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _hessian_type)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
                                             _n_eq,
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(_problem_type)
+    , hessian_type(_hessian_type)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -198,21 +198,21 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DIAGONAL)
+   * @param _hessian_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(_problem_type)
+    , hessian_type(_hessian_type)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -229,7 +229,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DIAGONAL)
+   * @param _hessian_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -244,7 +244,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(HESSIAN_TYPE::DENSE)
+    , hessian_type(HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -270,7 +270,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
+    , hessian_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -287,19 +287,19 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type specify that there are (or not) box constraints.
+   * @param _hessian_type specify that there are (or not) box constraints.
    */
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
-     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
                                             _n_in,
                                             false))
     , box_constraints(false)
-    , problem_type(_problem_type)
+    , hessian_type(_hessian_type)
     , results(_dim, _n_eq, _n_in, false, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
@@ -321,7 +321,7 @@ public:
                                             _n_in,
                                             false))
     , box_constraints(false)
-    , problem_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
+    , hessian_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, false, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
@@ -332,7 +332,7 @@ public:
   }
   bool is_box_constrained() const { return box_constraints; };
   DenseBackend which_dense_backend() const { return dense_backend; };
-  HESSIAN_TYPE which_problem_type() const { return problem_type; };
+  HESSIAN_TYPE which_hessian_type() const { return hessian_type; };
   /*!
    * Setups the QP model (with dense matrix format) and equilibrates it if
    * specified by the user.
@@ -484,7 +484,7 @@ public:
                                     box_constraints,
                                     ruiz,
                                     preconditioner_status,
-                                    problem_type);
+                                    hessian_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -684,7 +684,7 @@ public:
                                     box_constraints,
                                     ruiz,
                                     preconditioner_status,
-                                    problem_type);
+                                    hessian_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -784,7 +784,7 @@ public:
                                     box_constraints,
                                     ruiz,
                                     preconditioner_status,
-                                    problem_type);
+                                    hessian_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -890,7 +890,7 @@ public:
                                     box_constraints,
                                     ruiz,
                                     preconditioner_status,
-                                    problem_type);
+                                    hessian_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -908,7 +908,7 @@ public:
       work,
       box_constraints,
       dense_backend,
-      problem_type,
+      hessian_type,
       ruiz);
   };
   /*!
@@ -929,7 +929,7 @@ public:
       work,
       box_constraints,
       dense_backend,
-      problem_type,
+      hessian_type,
       ruiz);
   };
   /*!

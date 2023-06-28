@@ -30,7 +30,7 @@ exposeQpObjectDense(pybind11::module_ m)
     .value("PrimalLDLT", DenseBackend::PrimalLDLT)
     .export_values();
 
-  ::pybind11::enum_<HESSIAN_TYPE>(m, "problem_type", pybind11::module_local())
+  ::pybind11::enum_<HESSIAN_TYPE>(m, "hessian_type", pybind11::module_local())
     .value("DENSE", proxsuite::proxqp::HESSIAN_TYPE::DENSE)
     .value("ZERO", proxsuite::proxqp::HESSIAN_TYPE::ZERO)
     .value("DIAGONAL", proxsuite::proxqp::HESSIAN_TYPE::DIAGONAL)
@@ -51,7 +51,7 @@ exposeQpObjectDense(pybind11::module_ m)
         "box_constraints",
         false,
         "specify or not that the QP has box inequality constraints."),
-      pybind11::arg_v("problem_type",
+      pybind11::arg_v("hessian_type",
                       proxsuite::proxqp::HESSIAN_TYPE::DENSE,
                       "specify  the problem type to be solved."),
       pybind11::arg_v("dense_backend",
@@ -71,8 +71,8 @@ exposeQpObjectDense(pybind11::module_ m)
     .def("is_box_constrained",
          &dense::QP<T>::is_box_constrained,
          "precise whether or not the QP is designed with box constraints.")
-    .def("which_problem_type",
-         &dense::QP<T>::which_problem_type,
+    .def("which_hessian_type",
+         &dense::QP<T>::which_hessian_type,
          "precise which problem type is to be solved.")
     .def("which_dense_backend",
          &dense::QP<T>::which_dense_backend,

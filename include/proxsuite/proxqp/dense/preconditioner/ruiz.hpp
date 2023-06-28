@@ -35,7 +35,7 @@ ruiz_scale_qp_in_place( //
   T epsilon,
   isize max_iter,
   Symmetry sym,
-  HESSIAN_TYPE problem_type,
+  HESSIAN_TYPE hessian_type,
   const bool box_constraints,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
@@ -89,7 +89,7 @@ ruiz_scale_qp_in_place( //
     }
     // normalization vector
     {
-      switch (problem_type) {
+      switch (hessian_type) {
         case HESSIAN_TYPE::ZERO:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ n_eq > 0 ? infty_norm(A.col(k)) : T(0),
@@ -206,7 +206,7 @@ ruiz_scale_qp_in_place( //
       l.array() *= delta.segment(n + n_eq, n_in).array();
 
       // normalize H
-      switch (problem_type) {
+      switch (hessian_type) {
         case HESSIAN_TYPE::ZERO:
           break;
         case HESSIAN_TYPE::DENSE:
@@ -392,7 +392,7 @@ struct RuizEquilibration
                          bool execute_preconditioner,
                          const isize max_iter,
                          const T epsilon,
-                         const HESSIAN_TYPE& problem_type,
+                         const HESSIAN_TYPE& hessian_type,
                          const bool box_constraints,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
@@ -404,7 +404,7 @@ struct RuizEquilibration
                                          epsilon,
                                          max_iter,
                                          sym,
-                                         problem_type,
+                                         hessian_type,
                                          box_constraints,
                                          stack);
     } else {
@@ -429,7 +429,7 @@ struct RuizEquilibration
           delta.head(n).asDiagonal();
 
       // normalize H
-      switch (problem_type) {
+      switch (hessian_type) {
         case HESSIAN_TYPE::DENSE:
           switch (sym) {
             case Symmetry::upper: {
