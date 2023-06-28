@@ -26,8 +26,8 @@ enum struct SparseBackend
 enum struct DenseBackend
 {
   Automatic,     // the solver will select the appropriate dense backend.
-  PrimalDualLdl, // Factorization of the regularized KKT matrix.
-  PrimalLdl,     // Factorize the H+rho I + mu_inv ATA + etc..
+  PrimalDualLDLT, // Factorization of the full regularized KKT matrix.
+  PrimalLDLT,     // Factorize only the primal Hessian corresponding to H+rho I + 1/mu AT*A.
 };
 // MERIT FUNCTION
 enum struct MeritFunctionType
