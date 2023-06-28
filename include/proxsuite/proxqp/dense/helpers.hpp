@@ -134,7 +134,7 @@ void
 setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
                     const bool box_constraints,
-                    const ProblemType& problem_type,
+                    const ProblemType problem_type,
                     preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
