@@ -22,10 +22,10 @@ main(int /*argc*/, const char** /*argv*/)
   T elapsed_time = 0.0;
   proxqp::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
-  for (proxqp::isize dim = 100; dim <= 300; dim = dim + 100) {
+  for (proxqp::isize dim = 100; dim <= 500; dim = dim + 100) {
 
-    proxqp::isize n_eq(dim * 2);
-    proxqp::isize n_in(dim * 2);
+    proxqp::isize n_eq(dim / 2);
+    proxqp::isize n_in(dim / 2);
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << " box: " << dim << std::endl;
     T strong_convexity_factor(1.e-2);

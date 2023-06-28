@@ -38,7 +38,12 @@ exposeQpObjectDense(pybind11::module_ m)
 
   ::pybind11::class_<dense::QP<T>>(m, "QP")
     .def(
-      ::pybind11::init<i64, i64, i64, bool, proxsuite::proxqp::ProblemType>(),
+      ::pybind11::init<i64,
+                       i64,
+                       i64,
+                       bool,
+                       proxsuite::proxqp::ProblemType,
+                       proxsuite::proxqp::DenseBackend>(),
       pybind11::arg_v("n", 0, "primal dimension."),
       pybind11::arg_v("n_eq", 0, "number of equality constraints."),
       pybind11::arg_v("n_in", 0, "number of inequality constraints."),
@@ -49,6 +54,9 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v("problem_type",
                       proxsuite::proxqp::ProblemType::QuadraticProgram,
                       "specify  the problem type to be solved."),
+      pybind11::arg_v("dense_backend",
+                      proxsuite::proxqp::DenseBackend::Automatic,
+                      "specify which backend using for solving the problem."),
       "Default constructor using QP model dimensions.") // constructor
     .def_readwrite(
       "results",

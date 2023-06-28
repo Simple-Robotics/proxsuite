@@ -15,7 +15,7 @@ int
 main(int /*argc*/, const char** /*argv*/)
 {
   Timer<T> timer;
-  int smooth = 10;
+  int smooth = 100;
 
   T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
@@ -127,8 +127,8 @@ main(int /*argc*/, const char** /*argv*/)
                   << qp_compare.results.info.iter << std::endl;
       }
     }
-    std::cout << "timings QP PrimalDualLdl             : \t"
-              << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
+    std::cout << "timings QP PrimalDualLdl : \t" << elapsed_time * 1e-3 / smooth
+              << "ms" << std::endl;
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare_bis{
       dim, n_eq, n_in, true, DenseBackend::Automatic
@@ -161,7 +161,7 @@ main(int /*argc*/, const char** /*argv*/)
                   << qp_compare_bis.results.info.iter << std::endl;
       }
     }
-    std::cout << "timings QP Automatic             : \t"
-              << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
+    std::cout << "timings QP Automatic : \t" << elapsed_time * 1e-3 / smooth
+              << "ms" << std::endl;
   }
 }

@@ -205,7 +205,11 @@ public:
      isize _n_in,
      bool _box_constraints,
      proxsuite::proxqp::ProblemType _problem_type)
-    : dense_backend(DenseBackend::PrimalDualLdl)
+    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            _box_constraints))
     , box_constraints(_box_constraints)
     , problem_type(_problem_type)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
@@ -259,13 +263,17 @@ public:
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : dense_backend(DenseBackend::PrimalDualLdl)
+    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            _box_constraints))
     , box_constraints(_box_constraints)
     , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
-    , results(_dim, _n_eq, _n_in, _box_constraints, DenseBackend::PrimalDualLdl)
-    , settings(DenseBackend::PrimalDualLdl)
+    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, DenseBackend::PrimalDualLdl)
+    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
                                                  _n_eq,
                                                  _n_in,
@@ -306,13 +314,17 @@ public:
    * @param _n_in number of inequality constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in)
-    : dense_backend(DenseBackend::PrimalDualLdl)
+    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            false))
     , box_constraints(false)
     , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
-    , results(_dim, _n_eq, _n_in, false, DenseBackend::PrimalDualLdl)
-    , settings(DenseBackend::PrimalDualLdl)
+    , results(_dim, _n_eq, _n_in, false, dense_backend)
+    , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false, DenseBackend::PrimalDualLdl)
+    , work(_dim, _n_eq, _n_in, false, dense_backend)
     , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
   {
     work.timer.stop();
