@@ -22,6 +22,13 @@ enum struct SparseBackend
   SparseCholesky, // sparse cholesky backend.
   MatrixFree,     // iterative matrix free sparse backend.
 };
+// Sparse backend specifications
+enum struct DenseBackend
+{
+  Automatic,     // the solver will select the appropriate dense backend.
+  PrimalDualLdl, // Factorization of the regularized KKT matrix.
+  PrimalLdl,     // Factorize the H+rho I + mu_inv ATA + etc..
+};
 // MERIT FUNCTION
 enum struct MeritFunctionType
 {
@@ -31,8 +38,9 @@ enum struct MeritFunctionType
 // COST FUNCTION TYPE
 enum struct ProblemType
 {
-  LP, // Linear Program
-  QP, // Quadratic Program
+  LinearProgram,    // Linear Program
+  QuadraticProgram, // Quadratic Program
+  DiagonalHessian   // Quadratic Program with diagonal Hessian
 };
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
@@ -43,6 +51,18 @@ operator<<(std::ostream& os, const SparseBackend& sparse_backend)
     os << "SparseCholesky";
   } else {
     os << "MatrixFree";
+  }
+  return os;
+}
+inline std::ostream&
+operator<<(std::ostream& os, const DenseBackend& dense_backend)
+{
+  if (dense_backend == DenseBackend::PrimalDualLdl) {
+    os << "PrimalDualLdl";
+  } else if (dense_backend == DenseBackend::PrimalLdl) {
+    os << "PrimalLdl";
+  } else {
+    os << "Automatic";
   }
   return os;
 }
@@ -107,7 +127,6 @@ struct Settings
   bool bcl_update;
   MeritFunctionType merit_function_type;
   T alpha_gpdal;
-  ProblemType problem_type;
 
   SparseBackend sparse_backend;
   /*!
@@ -172,7 +191,7 @@ struct Settings
    */
 
   Settings(
-    T default_rho = 1.E-6,
+    DenseBackend dense_backend = DenseBackend::PrimalDualLdl,
     T default_mu_eq = 1.E-3,
     T default_mu_in = 1.E-1,
     T alpha_bcl = 0.1,
@@ -215,10 +234,8 @@ struct Settings
     bool bcl_update = true,
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
     T alpha_gpdal = 0.95,
-    ProblemType problem_type = ProblemType::QP,
     SparseBackend sparse_backend = SparseBackend::Automatic)
-    : default_rho(default_rho)
-    , default_mu_eq(default_mu_eq)
+    : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
     , beta_bcl(beta_bcl)
@@ -256,9 +273,19 @@ struct Settings
     , bcl_update(bcl_update)
     , merit_function_type(merit_function_type)
     , alpha_gpdal(alpha_gpdal)
-    , problem_type(problem_type)
     , sparse_backend(sparse_backend)
   {
+    switch (dense_backend) {
+      case DenseBackend::PrimalDualLdl:
+        default_rho = 1.E-6;
+        break;
+      case DenseBackend::PrimalLdl:
+        default_rho = 1.E-5;
+        break;
+      case DenseBackend::Automatic:
+        default_rho = 1.E-6;
+        break;
+    }
   }
 };
 
@@ -307,7 +334,6 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.bcl_update == settings2.bcl_update &&
     settings1.merit_function_type == settings2.merit_function_type &&
     settings1.alpha_gpdal == settings2.alpha_gpdal &&
-    settings1.problem_type == settings2.problem_type &&
     settings1.sparse_backend == settings2.sparse_backend;
   return value;
 }

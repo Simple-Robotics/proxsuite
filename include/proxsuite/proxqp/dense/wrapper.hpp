@@ -78,10 +78,46 @@ Qp.results.y + qp.C.transpose() * Qp.results.z) .lpNorm<Eigen::Infinity>();
  */
 ///// QP object
 template<typename T>
+DenseBackend
+dense_backend_choice(DenseBackend _dense_backend,
+                     isize dim,
+                     isize n_eq,
+                     isize n_in,
+                     bool box_constraints)
+{
+  if (_dense_backend == DenseBackend::Automatic) {
+    isize n_constraints(n_in);
+    if (box_constraints) {
+      n_constraints += dim;
+    }
+    T threshold(1.5);
+    T frequence(0.2);
+    T PrimalDualLdlCost =
+      0.5 * std::pow(T(n_eq) / T(dim), 2) +
+      0.17 * (std::pow(T(n_eq) / T(dim), 3) +
+              std::pow(T(n_constraints) / T(dim), 3)) +
+      frequence * std::pow(T(n_eq + n_constraints) / T(dim), 2) / T(dim);
+    T PrimalLdlCost = threshold * ((0.5 * T(n_eq) + T(n_constraints)) / T(dim) +
+                                   frequence / T(dim));
+    bool choice = PrimalDualLdlCost > PrimalLdlCost;
+    if (choice) {
+      return DenseBackend::PrimalLdl;
+    } else {
+      return DenseBackend::PrimalDualLdl;
+    }
+  } else {
+    return _dense_backend;
+  }
+}
+template<typename T>
 struct QP
 {
 private:
+  // structure of the problem
+  // not supposed to change
+  DenseBackend dense_backend;
   bool box_constraints;
+  ProblemType problem_type;
 
 public:
   Results<T> results;
@@ -95,14 +131,27 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
+   * @param _problem_type problem type (QP, LP, DiagonalHessian)
    * @param _box_constraints specify that there are (or not) box constraints.
+   * @param _dense_backend specify which factorization is used.
    */
-  QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : box_constraints(_box_constraints)
-    , results(_dim, _n_eq, _n_in, _box_constraints)
-    , settings()
+  QP(isize _dim,
+     isize _n_eq,
+     isize _n_in,
+     bool _box_constraints,
+     proxsuite::proxqp::ProblemType _problem_type,
+     DenseBackend _dense_backend)
+    : dense_backend(dense_backend_choice<T>(_dense_backend,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            _box_constraints))
+    , box_constraints(_box_constraints)
+    , problem_type(_problem_type)
+    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints)
+    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
                                                  _n_eq,
                                                  _n_in,
@@ -115,21 +164,162 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
+   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _box_constraints specify that there are (or not) box constraints.
+   * @param _dense_backend specify which factorization is used.
    */
-  QP(isize _dim, isize _n_eq, isize _n_in)
-    : box_constraints(false)
-    , results(_dim, _n_eq, _n_in, false)
-    , settings()
+  QP(isize _dim,
+     isize _n_eq,
+     isize _n_in,
+     bool _box_constraints,
+     DenseBackend _dense_backend,
+     proxsuite::proxqp::ProblemType _problem_type)
+    : dense_backend(dense_backend_choice<T>(_dense_backend,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            _box_constraints))
+    , box_constraints(_box_constraints)
+    , problem_type(_problem_type)
+    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , settings(dense_backend)
+    , model(_dim, _n_eq, _n_in, _box_constraints)
+    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
+                                                 _n_eq,
+                                                 _n_in,
+                                                 _box_constraints })
+  {
+    work.timer.stop();
+  }
+  /*!
+   * Default constructor using QP model dimensions.
+   * @param _dim primal variable dimension.
+   * @param _n_eq number of equality constraints.
+   * @param _n_in number of inequality constraints.
+   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _box_constraints specify that there are (or not) box constraints.
+   */
+  QP(isize _dim,
+     isize _n_eq,
+     isize _n_in,
+     bool _box_constraints,
+     proxsuite::proxqp::ProblemType _problem_type)
+    : dense_backend(DenseBackend::PrimalDualLdl)
+    , box_constraints(_box_constraints)
+    , problem_type(_problem_type)
+    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , settings(dense_backend)
+    , model(_dim, _n_eq, _n_in, _box_constraints)
+    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
+                                                 _n_eq,
+                                                 _n_in,
+                                                 _box_constraints })
+  {
+    work.timer.stop();
+  }
+  /*!
+   * Default constructor using QP model dimensions.
+   * @param _dim primal variable dimension.
+   * @param _n_eq number of equality constraints.
+   * @param _n_in number of inequality constraints.
+   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _box_constraints specify that there are (or not) box constraints.
+   * @param _dense_backend specify which factorization is used.
+   */
+  QP(isize _dim,
+     isize _n_eq,
+     isize _n_in,
+     bool _box_constraints,
+     DenseBackend _dense_backend)
+    : dense_backend(dense_backend_choice<T>(_dense_backend,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            _box_constraints))
+    , box_constraints(_box_constraints)
+    , problem_type(ProblemType::QuadraticProgram)
+    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , settings(dense_backend)
+    , model(_dim, _n_eq, _n_in, _box_constraints)
+    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
+    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
+                                                 _n_eq,
+                                                 _n_in,
+                                                 _box_constraints })
+  {
+    work.timer.stop();
+  }
+  /*!
+   * Default constructor using QP model dimensions.
+   * @param _dim primal variable dimension.
+   * @param _n_eq number of equality constraints.
+   * @param _n_in number of inequality constraints.
+   * @param _box_constraints specify that there are (or not) box constraints.
+   */
+  QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
+    : dense_backend(DenseBackend::PrimalDualLdl)
+    , box_constraints(_box_constraints)
+    , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
+    , results(_dim, _n_eq, _n_in, _box_constraints, DenseBackend::PrimalDualLdl)
+    , settings(DenseBackend::PrimalDualLdl)
+    , model(_dim, _n_eq, _n_in, _box_constraints)
+    , work(_dim, _n_eq, _n_in, _box_constraints, DenseBackend::PrimalDualLdl)
+    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
+                                                 _n_eq,
+                                                 _n_in,
+                                                 _box_constraints })
+  {
+    work.timer.stop();
+  }
+  /*!
+   * Default constructor using QP model dimensions.
+   * @param _dim primal variable dimension.
+   * @param _n_eq number of equality constraints.
+   * @param _n_in number of inequality constraints.
+   * @param _problem_type specify that there are (or not) box constraints.
+   */
+  QP(isize _dim,
+     isize _n_eq,
+     isize _n_in,
+     proxsuite::proxqp::ProblemType _problem_type)
+    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
+                                            _dim,
+                                            _n_eq,
+                                            _n_in,
+                                            false))
+    , box_constraints(false)
+    , problem_type(_problem_type)
+    , results(_dim, _n_eq, _n_in, false, dense_backend)
+    , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false)
+    , work(_dim, _n_eq, _n_in, false, dense_backend)
     , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
   {
     work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
+   * @param _dim primal variable dimension.
+   * @param _n_eq number of equality constraints.
+   * @param _n_in number of inequality constraints.
    */
+  QP(isize _dim, isize _n_eq, isize _n_in)
+    : dense_backend(DenseBackend::PrimalDualLdl)
+    , box_constraints(false)
+    , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
+    , results(_dim, _n_eq, _n_in, false, DenseBackend::PrimalDualLdl)
+    , settings(DenseBackend::PrimalDualLdl)
+    , model(_dim, _n_eq, _n_in, false)
+    , work(_dim, _n_eq, _n_in, false, DenseBackend::PrimalDualLdl)
+    , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
+  {
+    work.timer.stop();
+  }
   bool is_box_constrained() const { return box_constraints; };
+  DenseBackend which_dense_backend() const { return dense_backend; };
+  ProblemType which_problem_type() const { return problem_type; };
   /*!
    * Setups the QP model (with dense matrix format) and equilibrates it if
    * specified by the user.
@@ -280,7 +470,8 @@ public:
                                     results,
                                     box_constraints,
                                     ruiz,
-                                    preconditioner_status);
+                                    preconditioner_status,
+                                    problem_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -479,7 +670,8 @@ public:
                                     results,
                                     box_constraints,
                                     ruiz,
-                                    preconditioner_status);
+                                    preconditioner_status,
+                                    problem_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -578,7 +770,8 @@ public:
                                     results,
                                     box_constraints,
                                     ruiz,
-                                    preconditioner_status);
+                                    preconditioner_status,
+                                    problem_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -683,7 +876,8 @@ public:
                                     results,
                                     box_constraints,
                                     ruiz,
-                                    preconditioner_status);
+                                    preconditioner_status,
+                                    problem_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -700,6 +894,8 @@ public:
       results,
       work,
       box_constraints,
+      dense_backend,
+      problem_type,
       ruiz);
   };
   /*!
@@ -719,6 +915,8 @@ public:
       results,
       work,
       box_constraints,
+      dense_backend,
+      problem_type,
       ruiz);
   };
   /*!
@@ -807,7 +1005,7 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, false);
+  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLdl);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 
@@ -920,7 +1118,7 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, true);
+  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLdl);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 

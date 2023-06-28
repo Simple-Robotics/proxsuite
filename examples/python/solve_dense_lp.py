@@ -19,9 +19,13 @@ C = np.array(
 u = np.array([4.0, 1.0, 3.0, 2.0])
 
 # Initialize ProxQP problem
-problem = proxsuite.proxqp.dense.QP(n=g.shape[0], n_eq=0, n_in=u.shape[0])
+problem = proxsuite.proxqp.dense.QP(
+    n=g.shape[0],
+    n_eq=0,
+    n_in=u.shape[0],
+    problem_type=proxsuite.proxqp.dense.problem_type.LinearProgram,
+)
 problem.settings.eps_abs = 1.0e-9
-problem.settings.problem_type = proxsuite.proxqp.problem_type.LP
 problem.init(None, g, None, None, C, None, u)
 
 # Solve problem and print solution

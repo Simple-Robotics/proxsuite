@@ -82,7 +82,8 @@ struct Results
   Results(isize dim = 0,
           isize n_eq = 0,
           isize n_in = 0,
-          bool box_constraints = false)
+          bool box_constraints = false,
+          DenseBackend dense_backend = DenseBackend::PrimalDualLdl)
     : x(dim)
     , y(n_eq)
   {
@@ -94,8 +95,17 @@ struct Results
     x.setZero();
     y.setZero();
     z.setZero();
-
-    info.rho = 1e-6;
+    switch (dense_backend) {
+      case DenseBackend::PrimalDualLdl:
+        info.rho = 1e-6;
+        break;
+      case DenseBackend::PrimalLdl:
+        info.rho = 1.E-5;
+        break;
+      case DenseBackend::Automatic:
+        info.rho = 1.E-6;
+        break;
+    }
     info.mu_eq_inv = 1e3;
     info.mu_eq = 1e-3;
     info.mu_in_inv = 1e1;

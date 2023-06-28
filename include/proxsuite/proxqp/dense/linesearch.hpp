@@ -546,6 +546,7 @@ template<typename T>
 void
 active_set_change(const Model<T>& qpmodel,
                   Results<T>& qpresults,
+                  const DenseBackend& dense_backend,
                   const isize n_constraints,
                   Workspace<T>& qpwork)
 {
@@ -597,7 +598,6 @@ active_set_change(const Model<T>& qpmodel,
    * new_bijection_map(n_in) = n_c_f
    */
 
-  qpwork.dw_aug.setZero();
   isize n_c_f = qpwork.n_c;
   qpwork.new_bijection_map = qpwork.current_bijection_map;
 
@@ -632,12 +632,52 @@ active_set_change(const Model<T>& qpmodel,
       }
     }
     std::sort(planned_to_delete, planned_to_delete + planned_to_delete_count);
-    qpwork.ldl.delete_at(planned_to_delete, planned_to_delete_count, stack);
+    switch (dense_backend) {
+      case DenseBackend::PrimalDualLdl:
+        qpwork.ldl.delete_at(planned_to_delete, planned_to_delete_count, stack);
+        break;
+      case DenseBackend::PrimalLdl: {
+        // for (isize i=0; i < planned_to_delete_count; i++){
+        //   isize index = planned_to_delete[i] - (qpmodel.dim + qpmodel.n_eq);
+        //   if (index >= qpmodel.n_in){
+        //     // bow constraint
+        //     qpwork.kkt(index-qpmodel.n_in,index-qpmodel.n_in) -=
+        //     qpresults.info.mu_in_inv *
+        //     std::pow(qpwork.i_scaled[index-qpmodel.n_in],2) ;
+        //   }else{
+        //     // generic ineq constraints
+        //     qpwork.kkt.noalias() -= qpresults.info.mu_in_inv *
+        //     qpwork.C_scaled.row(index).transpose() *
+        //     qpwork.C_scaled.row(index) ;
+        //   }
+        // }
+        LDLT_TEMP_MAT_UNINIT(
+          T, new_cols, qpmodel.dim, planned_to_delete_count, stack);
+        qpwork.dw_aug.head(planned_to_delete_count).setOnes();
+        T mu_in_inv_neg(-qpresults.info.mu_in_inv);
+        qpwork.dw_aug.head(planned_to_delete_count).array() *= mu_in_inv_neg;
+        for (isize i = 0; i < planned_to_delete_count; ++i) {
+          isize index = planned_to_delete[i] - (qpmodel.dim + qpmodel.n_eq);
+          auto col = new_cols.col(i);
+          if (index >= qpmodel.n_in) {
+            // box constraint
+            col.setZero();
+            col[index - qpmodel.n_in] = qpwork.i_scaled[index - qpmodel.n_in];
+          } else {
+            // generic ineq constraints
+            col = qpwork.C_scaled.row(index);
+          }
+        }
+        qpwork.ldl.rank_r_update(
+          new_cols, qpwork.dw_aug.head(planned_to_delete_count), stack);
+      } break;
+      case DenseBackend::Automatic:
+        break;
+    }
     if (planned_to_delete_count > 0) {
       qpwork.constraints_changed = true;
     }
   }
-
   // ajout au nouvel active set, suppression pour le nouvel unactive set
 
   {
@@ -668,34 +708,77 @@ active_set_change(const Model<T>& qpmodel,
       }
     }
     {
-      isize n = qpmodel.dim;
-      isize n_eq = qpmodel.n_eq;
-      LDLT_TEMP_MAT_UNINIT(
-        T, new_cols, n + n_eq + n_c_f, planned_to_add_count, stack);
+      switch (dense_backend) {
+        case DenseBackend::PrimalDualLdl: {
+          isize n = qpmodel.dim;
+          isize n_eq = qpmodel.n_eq;
+          LDLT_TEMP_MAT_UNINIT(
+            T, new_cols, n + n_eq + n_c_f, planned_to_add_count, stack);
 
-      for (isize k = 0; k < planned_to_add_count; ++k) {
-        isize index = planned_to_add[k];
-        auto col = new_cols.col(k);
-        if (index >= qpmodel.n_in) {
-          col.head(n).setZero();
-          // I_scaled = ED which is the diagonal matrix
-          // col[index-qpmodel.n_in] = ruiz.delta[index-qpmodel.n_in];
-          col[index - qpmodel.n_in] = qpwork.i_scaled[index - qpmodel.n_in];
-        } else {
-          col.head(n) = (qpwork.C_scaled.row(index));
+          for (isize k = 0; k < planned_to_add_count; ++k) {
+            isize index = planned_to_add[k];
+            auto col = new_cols.col(k);
+            if (index >= qpmodel.n_in) {
+              col.head(n).setZero();
+              // I_scaled = ED which is the diagonal matrix
+              col[index - qpmodel.n_in] = qpwork.i_scaled[index - qpmodel.n_in];
+            } else {
+              col.head(n) = (qpwork.C_scaled.row(index));
+            }
+            col.tail(n_eq + n_c_f).setZero();
+            col[n + n_eq + n_c + k] = mu_in_neg;
+          }
+          qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
+        } break;
+        case DenseBackend::PrimalLdl: {
+          // too slow
+          // for (isize i=0; i < planned_to_add_count; ++i){
+          //   isize index = planned_to_add[i];
+          //   if (index >= qpmodel.n_in){
+          //     // bow constraint
+          //     qpwork.kkt(index-qpmodel.n_in,index-qpmodel.n_in) +=
+          //     qpresults.info.mu_in_inv *
+          //     std::pow(qpwork.i_scaled[index-qpmodel.n_in],2) ;
+          //   }else{
+          //     // generic ineq constraints
+          //     qpwork.kkt.noalias() += qpresults.info.mu_in_inv *
+          //     qpwork.C_scaled.row(index).transpose() *
+          //     qpwork.C_scaled.row(index) ;
+          //   }
+          // }
+          LDLT_TEMP_MAT_UNINIT(
+            T, new_cols, qpmodel.dim, planned_to_add_count, stack);
+          qpwork.dw_aug.head(planned_to_add_count).setOnes();
+          qpwork.dw_aug.head(planned_to_add_count).array() *=
+            qpresults.info.mu_in_inv;
+          for (isize i = 0; i < planned_to_add_count; ++i) {
+            isize index = planned_to_add[i];
+            auto col = new_cols.col(i);
+            if (index >= qpmodel.n_in) {
+              // box constraint
+              col.setZero();
+              col[index - qpmodel.n_in] = qpwork.i_scaled[index - qpmodel.n_in];
+            } else {
+              // generic ineq constraints
+              col.head(qpmodel.dim) = qpwork.C_scaled.row(index);
+            }
+          }
+          qpwork.ldl.rank_r_update(
+            new_cols, qpwork.dw_aug.head(planned_to_add_count), stack);
         }
-        col.tail(n_eq + n_c_f).setZero();
-        col[n + n_eq + n_c + k] = mu_in_neg;
+        // qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
+        break;
+        case DenseBackend::Automatic:
+          break;
       }
-      qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
     }
     if (planned_to_add_count > 0) {
       qpwork.constraints_changed = true;
     }
   }
+
   qpwork.n_c = n_c_f;
   qpwork.current_bijection_map = qpwork.new_bijection_map;
-  qpwork.dw_aug.setZero();
 }
 
 } // namespace linesearch

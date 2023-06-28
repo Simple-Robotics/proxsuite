@@ -24,16 +24,31 @@ template<typename T>
 void
 exposeQpObjectDense(pybind11::module_ m)
 {
+  ::pybind11::enum_<DenseBackend>(m, "DenseBackend", pybind11::module_local())
+    .value("Automatic", DenseBackend::Automatic)
+    .value("PrimalDualLdl", DenseBackend::PrimalDualLdl)
+    .value("PrimalLdl", DenseBackend::PrimalLdl)
+    .export_values();
+
+  ::pybind11::enum_<ProblemType>(m, "problem_type", pybind11::module_local())
+    .value("QuadraticProgram", proxsuite::proxqp::ProblemType::QuadraticProgram)
+    .value("LinearProgram", proxsuite::proxqp::ProblemType::LinearProgram)
+    .value("DiagonalHessian", proxsuite::proxqp::ProblemType::DiagonalHessian)
+    .export_values();
 
   ::pybind11::class_<dense::QP<T>>(m, "QP")
     .def(
-      ::pybind11::init<i64, i64, i64, bool>(),
+      ::pybind11::init<i64, i64, i64, bool, proxsuite::proxqp::ProblemType>(),
       pybind11::arg_v("n", 0, "primal dimension."),
       pybind11::arg_v("n_eq", 0, "number of equality constraints."),
       pybind11::arg_v("n_in", 0, "number of inequality constraints."),
-      pybind11::arg_v("box_constraints",
-                      false,
-                      "specify or not a QP with box inequality constraints."),
+      pybind11::arg_v(
+        "box_constraints",
+        false,
+        "specify or not that the QP has box inequality constraints."),
+      pybind11::arg_v("problem_type",
+                      proxsuite::proxqp::ProblemType::QuadraticProgram,
+                      "specify  the problem type to be solved."),
       "Default constructor using QP model dimensions.") // constructor
     .def_readwrite(
       "results",
@@ -48,6 +63,12 @@ exposeQpObjectDense(pybind11::module_ m)
     .def("is_box_constrained",
          &dense::QP<T>::is_box_constrained,
          "precise whether or not the QP is designed with box constraints.")
+    .def("which_problem_type",
+         &dense::QP<T>::which_problem_type,
+         "precise which problem type is to be solved.")
+    .def("which_dense_backend",
+         &dense::QP<T>::which_dense_backend,
+         "precise which dense backend is chosen.")
     .def("init",
          static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
                                             optional<dense::VecRef<T>>,

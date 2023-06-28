@@ -737,11 +737,9 @@ public:
       proxsuite::linalg::dense::_detail::apply_permutation_tri_lower(
         ld_col_mut(), work, perm.ptr());
     }
-
     for (isize i = 0; i < n; ++i) {
       maybe_sorted_diag[i] = ld_col()(i, i);
     }
-
     proxsuite::linalg::dense::factorize(ld_col_mut(), stack);
   }
 
@@ -780,6 +778,24 @@ public:
 
     for (isize i = 0; i < n; ++i) {
       rhs[i] = work[perm_inv[i]];
+    }
+  }
+
+  void dual_solve_in_place(
+    Eigen::Ref<Vec> rhs,
+    isize n,
+    proxsuite::linalg::veg::dynstack::DynStackMut stack) const
+  {
+    isize m = rhs.rows();
+    LDLT_TEMP_VEC_UNINIT(T, work, m, stack);
+
+    for (isize i = 0; i < m; ++i) {
+      work[i] = rhs[perm[n + i] -
+                    n]; // n are the first n entries that are not considered
+    }
+    proxsuite::linalg::dense::solve(ld_col().bottomRightCorner(m, m), work);
+    for (isize i = 0; i < m; ++i) {
+      rhs[i] = work[perm_inv[n + i] - n];
     }
   }
 
