@@ -349,7 +349,7 @@ setup( //
   const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status,
-  const ProblemType& problem_type)
+  const ProblemType problem_type)
 {
 
   switch (qpsettings.initial_guess) {
