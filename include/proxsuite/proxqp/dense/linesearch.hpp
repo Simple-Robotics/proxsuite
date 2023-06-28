@@ -633,10 +633,10 @@ active_set_change(const Model<T>& qpmodel,
     }
     std::sort(planned_to_delete, planned_to_delete + planned_to_delete_count);
     switch (dense_backend) {
-      case DenseBackend::PrimalDualLdl:
+      case DenseBackend::PrimalDualLDLT:
         qpwork.ldl.delete_at(planned_to_delete, planned_to_delete_count, stack);
         break;
-      case DenseBackend::PrimalLdl: {
+      case DenseBackend::PrimalLDLT: {
         // for (isize i=0; i < planned_to_delete_count; i++){
         //   isize index = planned_to_delete[i] - (qpmodel.dim + qpmodel.n_eq);
         //   if (index >= qpmodel.n_in){
@@ -709,7 +709,7 @@ active_set_change(const Model<T>& qpmodel,
     }
     {
       switch (dense_backend) {
-        case DenseBackend::PrimalDualLdl: {
+        case DenseBackend::PrimalDualLDLT: {
           isize n = qpmodel.dim;
           isize n_eq = qpmodel.n_eq;
           LDLT_TEMP_MAT_UNINIT(
@@ -730,7 +730,7 @@ active_set_change(const Model<T>& qpmodel,
           }
           qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
         } break;
-        case DenseBackend::PrimalLdl: {
+        case DenseBackend::PrimalLDLT: {
           // too slow
           // for (isize i=0; i < planned_to_add_count; ++i){
           //   isize index = planned_to_add[i];

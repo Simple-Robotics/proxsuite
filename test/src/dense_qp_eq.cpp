@@ -180,7 +180,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
     proxqp::dense::QP<T> qp{
-      dim, n_eq, n_in, proxqp::ProblemType::LinearProgram
+      dim, n_eq, n_in, proxqp::HESSIAN_TYPE::ZERO
     }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;

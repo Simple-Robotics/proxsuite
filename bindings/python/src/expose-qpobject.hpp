@@ -26,14 +26,14 @@ exposeQpObjectDense(pybind11::module_ m)
 {
   ::pybind11::enum_<DenseBackend>(m, "DenseBackend", pybind11::module_local())
     .value("Automatic", DenseBackend::Automatic)
-    .value("PrimalDualLdl", DenseBackend::PrimalDualLdl)
-    .value("PrimalLdl", DenseBackend::PrimalLdl)
+    .value("PrimalDualLDLT", DenseBackend::PrimalDualLDLT)
+    .value("PrimalLDLT", DenseBackend::PrimalLDLT)
     .export_values();
 
-  ::pybind11::enum_<ProblemType>(m, "problem_type", pybind11::module_local())
-    .value("QuadraticProgram", proxsuite::proxqp::ProblemType::QuadraticProgram)
-    .value("LinearProgram", proxsuite::proxqp::ProblemType::LinearProgram)
-    .value("DiagonalHessian", proxsuite::proxqp::ProblemType::DiagonalHessian)
+  ::pybind11::enum_<HESSIAN_TYPE>(m, "problem_type", pybind11::module_local())
+    .value("DENSE", proxsuite::proxqp::HESSIAN_TYPE::DENSE)
+    .value("ZERO", proxsuite::proxqp::HESSIAN_TYPE::ZERO)
+    .value("DIAGONAL", proxsuite::proxqp::HESSIAN_TYPE::DIAGONAL)
     .export_values();
 
   ::pybind11::class_<dense::QP<T>>(m, "QP")
@@ -42,7 +42,7 @@ exposeQpObjectDense(pybind11::module_ m)
                        i64,
                        i64,
                        bool,
-                       proxsuite::proxqp::ProblemType,
+                       proxsuite::proxqp::HESSIAN_TYPE,
                        proxsuite::proxqp::DenseBackend>(),
       pybind11::arg_v("n", 0, "primal dimension."),
       pybind11::arg_v("n_eq", 0, "number of equality constraints."),
@@ -52,7 +52,7 @@ exposeQpObjectDense(pybind11::module_ m)
         false,
         "specify or not that the QP has box inequality constraints."),
       pybind11::arg_v("problem_type",
-                      proxsuite::proxqp::ProblemType::QuadraticProgram,
+                      proxsuite::proxqp::HESSIAN_TYPE::DENSE,
                       "specify  the problem type to be solved."),
       pybind11::arg_v("dense_backend",
                       proxsuite::proxqp::DenseBackend::Automatic,

@@ -35,7 +35,7 @@ ruiz_scale_qp_in_place( //
   T epsilon,
   isize max_iter,
   Symmetry sym,
-  ProblemType problem_type,
+  HESSIAN_TYPE problem_type,
   const bool box_constraints,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
@@ -90,7 +90,7 @@ ruiz_scale_qp_in_place( //
     // normalization vector
     {
       switch (problem_type) {
-        case ProblemType::LinearProgram:
+        case HESSIAN_TYPE::ZERO:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ n_eq > 0 ? infty_norm(A.col(k)) : T(0),
                                     n_in > 0 ? infty_norm(C.col(k)) : T(0),
@@ -102,7 +102,7 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
-        case ProblemType::QuadraticProgram:
+        case HESSIAN_TYPE::DENSE:
           for (isize k = 0; k < n; ++k) {
             switch (sym) {
               case Symmetry::upper: { // upper triangular part
@@ -151,7 +151,7 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
-        case ProblemType::DiagonalHessian:
+        case HESSIAN_TYPE::DIAGONAL:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ std::abs(H(k, k)),
                                     n_eq > 0 ? infty_norm(A.col(k)) : T(0),
@@ -207,9 +207,9 @@ ruiz_scale_qp_in_place( //
 
       // normalize H
       switch (problem_type) {
-        case ProblemType::LinearProgram:
+        case HESSIAN_TYPE::ZERO:
           break;
-        case ProblemType::QuadraticProgram:
+        case HESSIAN_TYPE::DENSE:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -273,7 +273,7 @@ ruiz_scale_qp_in_place( //
               break;
           }
           break;
-        case ProblemType::DiagonalHessian:
+        case HESSIAN_TYPE::DIAGONAL:
           // H = delta.head(n).asDiagonal() * H.asDiagonal() *
           // delta.head(n).asDiagonal();
           H.diagonal().array() *=
@@ -392,7 +392,7 @@ struct RuizEquilibration
                          bool execute_preconditioner,
                          const isize max_iter,
                          const T epsilon,
-                         const ProblemType& problem_type,
+                         const HESSIAN_TYPE& problem_type,
                          const bool box_constraints,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
@@ -430,7 +430,7 @@ struct RuizEquilibration
 
       // normalize H
       switch (problem_type) {
-        case ProblemType::QuadraticProgram:
+        case HESSIAN_TYPE::DENSE:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -464,9 +464,9 @@ struct RuizEquilibration
           }
           break;
 
-        case ProblemType::LinearProgram:
+        case HESSIAN_TYPE::ZERO:
           break;
-        case ProblemType::DiagonalHessian:
+        case HESSIAN_TYPE::DIAGONAL:
           // H = delta.head(n).asDiagonal() * H.asDiagonal() *
           // delta.head(n).asDiagonal();
           H.diagonal().array() *=

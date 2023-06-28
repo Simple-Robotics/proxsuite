@@ -64,7 +64,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     timer.stop();
-    proxqp::dense::QP<T> qp{ dim, n_eq, n_in, true, DenseBackend::PrimalLdl };
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in, true, DenseBackend::PrimalLDLT };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
     // qp.settings.verbose = true;
@@ -92,12 +92,12 @@ main(int /*argc*/, const char** /*argv*/)
                   << std::endl;
       }
     }
-    std::cout << "timings QP PrimalLdl backend : \t"
+    std::cout << "timings QP PrimalLDLT backend : \t"
               << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{
-      dim, n_eq, n_in, true, DenseBackend::PrimalDualLdl
+      dim, n_eq, n_in, true, DenseBackend::PrimalDualLDLT
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;
@@ -127,8 +127,8 @@ main(int /*argc*/, const char** /*argv*/)
                   << qp_compare.results.info.iter << std::endl;
       }
     }
-    std::cout << "timings QP PrimalDualLdl : \t" << elapsed_time * 1e-3 / smooth
-              << "ms" << std::endl;
+    std::cout << "timings QP PrimalDualLDLT : \t"
+              << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare_bis{
       dim, n_eq, n_in, true, DenseBackend::Automatic

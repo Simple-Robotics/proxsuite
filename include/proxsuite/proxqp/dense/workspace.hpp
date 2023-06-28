@@ -107,7 +107,7 @@ struct Workspace
             isize n_eq = 0,
             isize n_in = 0,
             bool box_constraints = false,
-            DenseBackend dense_backend = DenseBackend::PrimalDualLdl)
+            DenseBackend dense_backend = DenseBackend::PrimalDualLDLT)
     : ldl{}
     , H_scaled(dim, dim)
     , g_scaled(dim)
@@ -142,7 +142,7 @@ struct Workspace
       z_prev.resize(dim + n_in);
       // TODO appropriate heuristic for automatic choice
       switch (dense_backend) {
-        case DenseBackend::PrimalDualLdl:
+        case DenseBackend::PrimalDualLDLT:
           kkt.resize(dim + n_eq, dim + n_eq);
           ldl.reserve_uninit(dim + n_eq + n_in + dim);
           ldl_stack.resize_for_overwrite(
@@ -171,7 +171,7 @@ struct Workspace
               // TODO optimize here
               .alloc_req());
           break;
-        case DenseBackend::PrimalLdl:
+        case DenseBackend::PrimalLDLT:
           kkt.resize(dim, dim);
           ldl.reserve_uninit(dim);
           ldl_stack.resize_for_overwrite(
@@ -224,7 +224,7 @@ struct Workspace
       z_prev.resize(n_in);
 
       switch (dense_backend) {
-        case DenseBackend::PrimalDualLdl:
+        case DenseBackend::PrimalDualLDLT:
           kkt.resize(dim + n_eq, dim + n_eq);
           ldl.reserve_uninit(dim + n_eq + n_in);
           ldl_stack.resize_for_overwrite(
@@ -250,7 +250,7 @@ struct Workspace
               // end todo optimize here
               .alloc_req());
           break;
-        case DenseBackend::PrimalLdl:
+        case DenseBackend::PrimalLDLT:
           kkt.resize(dim, dim);
           ldl.reserve_uninit(dim);
           ldl_stack.resize_for_overwrite(

@@ -37,7 +37,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
                                            const Model<T>& qpmodel,
                                            const isize n_constraints,
                                            const DenseBackend& dense_backend,
-                                           const ProblemType& problem_type,
+                                           const HESSIAN_TYPE& problem_type,
                                            Results<T>& qpresults)
 {
 
@@ -76,7 +76,7 @@ setup_factorization(Workspace<T>& qpwork,
                     const Model<T>& qpmodel,
                     Results<T>& qpresults,
                     const DenseBackend& dense_backend,
-                    const ProblemType& problem_type)
+                    const HESSIAN_TYPE& problem_type)
 {
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
@@ -84,20 +84,20 @@ setup_factorization(Workspace<T>& qpwork,
     qpwork.ldl_stack.as_mut(),
   };
   switch (problem_type) {
-    case ProblemType::QuadraticProgram:
+    case HESSIAN_TYPE::DENSE:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
-    case ProblemType::LinearProgram:
+    case HESSIAN_TYPE::ZERO:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).setZero();
       break;
-    case ProblemType::DiagonalHessian:
+    case HESSIAN_TYPE::DIAGONAL:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
   }
   qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() +=
     qpresults.info.rho;
   switch (dense_backend) {
-    case DenseBackend::PrimalDualLdl:
+    case DenseBackend::PrimalDualLDLT:
       qpwork.kkt.block(0, qpmodel.dim, qpmodel.dim, qpmodel.n_eq) =
         qpwork.A_scaled.transpose();
       qpwork.kkt.block(qpmodel.dim, 0, qpmodel.n_eq, qpmodel.dim) =
@@ -108,7 +108,7 @@ setup_factorization(Workspace<T>& qpwork,
         .setConstant(-qpresults.info.mu_eq);
       qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
       break;
-    case DenseBackend::PrimalLdl:
+    case DenseBackend::PrimalLDLT:
       qpwork.kkt.noalias() += qpresults.info.mu_eq_inv *
                               (qpwork.A_scaled.transpose() * qpwork.A_scaled);
       qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
@@ -134,7 +134,7 @@ void
 setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
                     const bool box_constraints,
-                    const ProblemType problem_type,
+                    const HESSIAN_TYPE problem_type,
                     preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
@@ -349,7 +349,7 @@ setup( //
   const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status,
-  const ProblemType problem_type)
+  const HESSIAN_TYPE problem_type)
 {
 
   switch (qpsettings.initial_guess) {
@@ -445,12 +445,12 @@ setup( //
     // zero shape
   assert(qpmodel.is_valid(box_constraints));
   switch (problem_type) {
-    case ProblemType::LinearProgram:
+    case HESSIAN_TYPE::ZERO:
       break;
-    case ProblemType::QuadraticProgram:
+    case HESSIAN_TYPE::DENSE:
       qpwork.H_scaled = qpmodel.H;
       break;
-    case ProblemType::DiagonalHessian:
+    case HESSIAN_TYPE::DIAGONAL:
       qpwork.H_scaled = qpmodel.H;
       break;
   }

@@ -74,7 +74,7 @@ TEST_CASE("upper part")
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
-  ProblemType problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram);
+  HESSIAN_TYPE problem_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE);
   ruiz_dense.scale_qp_in_place(
     proxqp::dense::QpViewBoxMut<T>{
       { proxqp::from_eigen, H_scaled_dense },
@@ -165,7 +165,7 @@ TEST_CASE("lower part")
   proxqp::dense::Vec<T> u_scaled_box(0);
   proxqp::dense::Vec<T> l_scaled_box(0);
   proxqp::dense::Vec<T> eye(0);
-  ProblemType problem_type(ProblemType::QuadraticProgram);
+  HESSIAN_TYPE problem_type(HESSIAN_TYPE::DENSE);
   ruiz_dense.scale_qp_in_place(
     proxqp::dense::QpViewBoxMut<T>{
       { proxqp::from_eigen, H_scaled_dense },

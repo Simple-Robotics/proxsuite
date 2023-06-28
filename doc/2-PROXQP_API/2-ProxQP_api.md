@@ -127,8 +127,8 @@ The dense backend has also a specific feature for handling more efficiently box 
 </table>
 
 Furthermore, the dense version of ProxQP has two different backends with different advantages:
-* PrimalDualLdl: it factorizes a regularized version of the KKT system and benefits from great accuracy and stability. Nethertheless if the primal dimension (i.e., the one of x) is far smaller than the dimensions of the constraints, it will be slower than PrimalLdl backend.
-* PrimalLdl: it factorizes at the beginning the matrix $$H+\rho I+\frac{1}{\mu_{eq}} A^\top A$$ and goes on then with rank one updates. It is less accurate than PrimalDualLdl backend, but it will be far quicker if it happens that the primal dimension if much smaller than the ones of the constraints.
+* PrimalDualLDLT: it factorizes a regularized version of the KKT system and benefits from great accuracy and stability. Nethertheless if the primal dimension (i.e., the one of x) is far smaller than the dimensions of the constraints, it will be slower than PrimalLDLT backend.
+* PrimalLDLT: it factorizes at the beginning the matrix $$H+\rho I+\frac{1}{\mu_{eq}} A^\top A$$ and goes on then with rank one updates. It is less accurate than PrimalDualLDLT backend, but it will be far quicker if it happens that the primal dimension if much smaller than the ones of the constraints.
 
 The QP constructor uses by default an automatic choice for deciding which backend suits a priori bests user's needs. It is based on a heuristic comparing a priori computational complexity of each backends. However, if you have more insights of your needs (e.g., accuracy specifications, primal dimension is known to be far larger than the one of the constraints etc.), we encourage you to specify directly in the constructor which backend to use. It is as simple as following:
 
@@ -395,7 +395,7 @@ In this table you have on the three columns from left to right: the name of the 
 | safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
 | preconditioner_max_iter             | 10                                 | Maximal number of authorized iterations for the preconditioner.
 | preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
-| problem_type                        | QuadraticProgram                   | Defines the type of problem solved (QuadraticProgram, LinearProrgram or DiagonalHessian). In case LinearProgram or DiagonalHessian option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
+| problem_type                        | DENSE                              | Defines the type of problem solved (DENSE, ZERO or DIAGONAL). In case ZERO or DIAGONAL option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
 
 \subsection OverviewInitialGuess The different initial guesses
 

@@ -37,11 +37,11 @@ enum struct MeritFunctionType
   PDAL,  // Primal Dual Augmented Lagrangian
 };
 // COST FUNCTION TYPE
-enum struct ProblemType
+enum struct HESSIAN_TYPE
 {
-  LinearProgram,    // Linear Program
-  QuadraticProgram, // Quadratic Program
-  DiagonalHessian   // Quadratic Program with diagonal Hessian
+  ZERO,    // Linear Program
+  DENSE,   // Quadratic Program
+  DIAGONAL // Quadratic Program with diagonal Hessian
 };
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
@@ -58,10 +58,10 @@ operator<<(std::ostream& os, const SparseBackend& sparse_backend)
 inline std::ostream&
 operator<<(std::ostream& os, const DenseBackend& dense_backend)
 {
-  if (dense_backend == DenseBackend::PrimalDualLdl) {
-    os << "PrimalDualLdl";
-  } else if (dense_backend == DenseBackend::PrimalLdl) {
-    os << "PrimalLdl";
+  if (dense_backend == DenseBackend::PrimalDualLDLT) {
+    os << "PrimalDualLDLT";
+  } else if (dense_backend == DenseBackend::PrimalLDLT) {
+    os << "PrimalLDLT";
   } else {
     os << "Automatic";
   }
@@ -192,7 +192,7 @@ struct Settings
    */
 
   Settings(
-    DenseBackend dense_backend = DenseBackend::PrimalDualLdl,
+    DenseBackend dense_backend = DenseBackend::PrimalDualLDLT,
     T default_mu_eq = 1.E-3,
     T default_mu_in = 1.E-1,
     T alpha_bcl = 0.1,
@@ -277,10 +277,10 @@ struct Settings
     , sparse_backend(sparse_backend)
   {
     switch (dense_backend) {
-      case DenseBackend::PrimalDualLdl:
+      case DenseBackend::PrimalDualLDLT:
         default_rho = 1.E-6;
         break;
-      case DenseBackend::PrimalLdl:
+      case DenseBackend::PrimalLDLT:
         default_rho = 1.E-5;
         break;
       case DenseBackend::Automatic:

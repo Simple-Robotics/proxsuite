@@ -7,9 +7,13 @@ n_in = 2
 # n_eq equality constraints
 # n_in generic type of inequality constraints
 # and dim box inequality constraints
-#  we specify PrimalDualLdl backend
+#  we specify PrimalDualLDLT backend
 qp = proxsuite.proxqp.dense.QP(
-    n, n_eq, n_in, True, dense_backend=proxsuite.proxqp.dense.DenseBackend.PrimalDualLdl
+    n,
+    n_eq,
+    n_in,
+    True,
+    dense_backend=proxsuite.proxqp.dense.DenseBackend.PrimalDualLDLT,
 )
 # true specifies we take into accounts box constraints
 # n_in are any other type of inequality constraints
@@ -20,9 +24,9 @@ qp = proxsuite.proxqp.dense.QP(
 # n_eq equality constraints
 # O generic type of inequality constraints
 # and dim box inequality constraints
-#  we specify PrimalLdl backend
+#  we specify PrimalLDLT backend
 qp2 = proxsuite.proxqp.dense.QP(
-    n, n_eq, 0, True, dense_backend=proxsuite.proxqp.dense.DenseBackend.PrimalLdl
+    n, n_eq, 0, True, dense_backend=proxsuite.proxqp.dense.DenseBackend.PrimalLDLT
 )
 # true specifies we take into accounts box constraints
 # we don't need to precise n_in = dim, it is taken

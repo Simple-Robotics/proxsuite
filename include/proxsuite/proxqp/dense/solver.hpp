@@ -53,7 +53,7 @@ refactorize(const Model<T>& qpmodel,
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
   switch (dense_backend) {
-    case DenseBackend::PrimalDualLdl: {
+    case DenseBackend::PrimalDualLDLT: {
       qpwork.kkt.diagonal().head(qpmodel.dim).array() +=
         rho_new - qpresults.info.rho;
       qpwork.kkt.diagonal().segment(qpmodel.dim, qpmodel.n_eq).array() =
@@ -85,7 +85,7 @@ refactorize(const Model<T>& qpmodel,
       }
       qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
     } break;
-    case DenseBackend::PrimalLdl: {
+    case DenseBackend::PrimalLDLT: {
       qpwork.kkt.noalias() =
         qpwork.H_scaled + (qpwork.A_scaled.transpose() * qpwork.A_scaled) *
                             qpresults.info.mu_eq_inv;
@@ -147,7 +147,7 @@ mu_update(const Model<T>& qpmodel,
     return;
   }
   switch (dense_backend) {
-    case DenseBackend::PrimalDualLdl: {
+    case DenseBackend::PrimalDualLDLT: {
       LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
 
       rank_update_alpha.head(n_eq).setConstant(qpresults.info.mu_eq -
@@ -168,7 +168,7 @@ mu_update(const Model<T>& qpmodel,
           indices, n_eq + n_c, rank_update_alpha, stack);
       }
     } break;
-    case DenseBackend::PrimalLdl: {
+    case DenseBackend::PrimalLDLT: {
       // we refactorize there for the moment
       proxsuite::linalg::veg::dynstack::DynStackMut stack{
         proxsuite::linalg::veg::from_slice_mut,
@@ -244,21 +244,21 @@ iterative_residual(const Model<T>& qpmodel,
                    Workspace<T>& qpwork,
                    const isize n_constraints,
                    isize inner_pb_dim,
-                   const ProblemType& problem_type)
+                   const HESSIAN_TYPE& problem_type)
 {
   auto& Hdx = qpwork.Hdx;
   auto& Adx = qpwork.Adx;
   auto& ATdy = qpwork.CTz;
   qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
   switch (problem_type) {
-    case ProblemType::LinearProgram:
+    case HESSIAN_TYPE::ZERO:
       break;
-    case ProblemType::QuadraticProgram:
+    case HESSIAN_TYPE::DENSE:
       Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
                       qpwork.dw_aug.head(qpmodel.dim);
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
       break;
-    case ProblemType::DiagonalHessian:
+    case HESSIAN_TYPE::DIAGONAL:
       Hdx.array() = qpwork.H_scaled.diagonal().array() *
                     qpwork.dw_aug.head(qpmodel.dim).array();
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
@@ -322,10 +322,10 @@ solve_linear_system(proxsuite::proxqp::dense::Vec<T>& dw,
 {
 
   switch (dense_backend) {
-    case DenseBackend::PrimalDualLdl:
+    case DenseBackend::PrimalDualLDLT:
       qpwork.ldl.solve_in_place(dw.head(inner_pb_dim), stack);
       break;
-    case DenseBackend::PrimalLdl:
+    case DenseBackend::PrimalLDLT:
       // find dx
       dw.head(qpmodel.dim).noalias() += qpresults.info.mu_eq_inv *
                                         qpwork.A_scaled.transpose() *
@@ -404,7 +404,7 @@ iterative_solve_with_permut_fact( //
   Workspace<T>& qpwork,
   const isize n_constraints,
   const DenseBackend& dense_backend,
-  const ProblemType& problem_type,
+  const HESSIAN_TYPE& problem_type,
   T eps,
   isize inner_pb_dim)
 {
@@ -746,7 +746,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const bool box_constraints,
                                     const isize n_constraints,
                                     const DenseBackend& dense_backend,
-                                    const ProblemType& problem_type,
+                                    const HESSIAN_TYPE& problem_type,
                                     T eps)
 {
 
@@ -877,7 +877,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                const isize n_constraints,
                                preconditioner::RuizEquilibration<T>& ruiz,
                                const DenseBackend& dense_backend,
-                               const ProblemType& problem_type,
+                               const HESSIAN_TYPE& problem_type,
                                T eps_int)
 {
 
@@ -983,15 +983,15 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     qpresults.y += alpha * dy;
     qpresults.z += alpha * dz;
     switch (problem_type) {
-      case ProblemType::LinearProgram:
+      case HESSIAN_TYPE::ZERO:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + ATdy + CTdz);
         break;
-      case ProblemType::QuadraticProgram:
+      case HESSIAN_TYPE::DENSE:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
         break;
-      case ProblemType::DiagonalHessian:
+      case HESSIAN_TYPE::DIAGONAL:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
         break;
@@ -1096,7 +1096,7 @@ qp_solve( //
   Workspace<T>& qpwork,
   const bool box_constraints,
   const DenseBackend& dense_backend,
-  const ProblemType& problem_type,
+  const HESSIAN_TYPE& problem_type,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
   /*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
@@ -1190,12 +1190,12 @@ qp_solve( //
     if (qpsettings.initial_guess !=
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       switch (problem_type) {
-        case ProblemType::LinearProgram:
+        case HESSIAN_TYPE::ZERO:
           break;
-        case ProblemType::QuadraticProgram:
+        case HESSIAN_TYPE::DENSE:
           qpwork.H_scaled = qpmodel.H;
           break;
-        case ProblemType::DiagonalHessian:
+        case HESSIAN_TYPE::DIAGONAL:
           qpwork.H_scaled = qpmodel.H;
           break;
       }

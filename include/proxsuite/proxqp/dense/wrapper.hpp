@@ -92,18 +92,19 @@ dense_backend_choice(DenseBackend _dense_backend,
     }
     T threshold(1.5);
     T frequence(0.2);
-    T PrimalDualLdlCost =
+    T PrimalDualLDLTCost =
       0.5 * std::pow(T(n_eq) / T(dim), 2) +
       0.17 * (std::pow(T(n_eq) / T(dim), 3) +
               std::pow(T(n_constraints) / T(dim), 3)) +
       frequence * std::pow(T(n_eq + n_constraints) / T(dim), 2) / T(dim);
-    T PrimalLdlCost = threshold * ((0.5 * T(n_eq) + T(n_constraints)) / T(dim) +
-                                   frequence / T(dim));
-    bool choice = PrimalDualLdlCost > PrimalLdlCost;
+    T PrimalLDLTCost =
+      threshold *
+      ((0.5 * T(n_eq) + T(n_constraints)) / T(dim) + frequence / T(dim));
+    bool choice = PrimalDualLDLTCost > PrimalLDLTCost;
     if (choice) {
-      return DenseBackend::PrimalLdl;
+      return DenseBackend::PrimalLDLT;
     } else {
-      return DenseBackend::PrimalDualLdl;
+      return DenseBackend::PrimalDualLDLT;
     }
   } else {
     return _dense_backend;
@@ -117,7 +118,7 @@ private:
   // not supposed to change
   DenseBackend dense_backend;
   bool box_constraints;
-  ProblemType problem_type;
+  HESSIAN_TYPE problem_type;
 
 public:
   Results<T> results;
@@ -131,7 +132,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _problem_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -139,7 +140,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::ProblemType _problem_type,
+     proxsuite::proxqp::HESSIAN_TYPE _problem_type,
      DenseBackend _dense_backend)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
@@ -164,7 +165,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _problem_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -173,7 +174,7 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::proxqp::ProblemType _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
                                             _n_eq,
@@ -197,14 +198,14 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _problem_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::ProblemType _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -228,7 +229,7 @@ public:
    * @param _dim primal variable dimension.
    * @param _n_eq number of equality constraints.
    * @param _n_in number of inequality constraints.
-   * @param _problem_type problem type (QP, LP, DiagonalHessian)
+   * @param _problem_type problem type (QP, LP, DIAGONAL)
    * @param _box_constraints specify that there are (or not) box constraints.
    * @param _dense_backend specify which factorization is used.
    */
@@ -243,7 +244,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(ProblemType::QuadraticProgram)
+    , problem_type(HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -269,7 +270,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
+    , problem_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -291,7 +292,7 @@ public:
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
-     proxsuite::proxqp::ProblemType _problem_type)
+     proxsuite::proxqp::HESSIAN_TYPE _problem_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -320,7 +321,7 @@ public:
                                             _n_in,
                                             false))
     , box_constraints(false)
-    , problem_type(proxsuite::proxqp::ProblemType::QuadraticProgram)
+    , problem_type(proxsuite::proxqp::HESSIAN_TYPE::DENSE)
     , results(_dim, _n_eq, _n_in, false, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
@@ -331,7 +332,7 @@ public:
   }
   bool is_box_constrained() const { return box_constraints; };
   DenseBackend which_dense_backend() const { return dense_backend; };
-  ProblemType which_problem_type() const { return problem_type; };
+  HESSIAN_TYPE which_problem_type() const { return problem_type; };
   /*!
    * Setups the QP model (with dense matrix format) and equilibrates it if
    * specified by the user.
@@ -1017,7 +1018,7 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLdl);
+  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 
@@ -1130,7 +1131,7 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLdl);
+  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 

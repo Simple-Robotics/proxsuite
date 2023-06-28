@@ -23,7 +23,7 @@ problem = proxsuite.proxqp.dense.QP(
     n=g.shape[0],
     n_eq=0,
     n_in=u.shape[0],
-    problem_type=proxsuite.proxqp.dense.problem_type.LinearProgram,
+    problem_type=proxsuite.proxqp.dense.problem_type.ZERO,
 )
 problem.settings.eps_abs = 1.0e-9
 problem.init(None, g, None, None, C, None, u)

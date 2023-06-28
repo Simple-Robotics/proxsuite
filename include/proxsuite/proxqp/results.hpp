@@ -83,7 +83,7 @@ struct Results
           isize n_eq = 0,
           isize n_in = 0,
           bool box_constraints = false,
-          DenseBackend dense_backend = DenseBackend::PrimalDualLdl)
+          DenseBackend dense_backend = DenseBackend::PrimalDualLDLT)
     : x(dim)
     , y(n_eq)
   {
@@ -96,10 +96,10 @@ struct Results
     y.setZero();
     z.setZero();
     switch (dense_backend) {
-      case DenseBackend::PrimalDualLdl:
+      case DenseBackend::PrimalDualLDLT:
         info.rho = 1e-6;
         break;
-      case DenseBackend::PrimalLdl:
+      case DenseBackend::PrimalLDLT:
         info.rho = 1.E-5;
         break;
       case DenseBackend::Automatic:
