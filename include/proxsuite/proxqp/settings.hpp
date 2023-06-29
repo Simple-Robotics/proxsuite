@@ -37,11 +37,11 @@ enum struct MeritFunctionType
   PDAL,  // Primal Dual Augmented Lagrangian
 };
 // COST FUNCTION TYPE
-enum struct HESSIAN_TYPE
+enum struct HessianType
 {
-  ZERO,    // Linear Program
-  DENSE,   // Quadratic Program
-  DIAGONAL // Quadratic Program with diagonal Hessian
+  Zero,    // Linear Program
+  Dense,   // Quadratic Program
+  Diagonal // Quadratic Program with diagonal Hessian
 };
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)

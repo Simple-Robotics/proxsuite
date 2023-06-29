@@ -244,21 +244,21 @@ iterative_residual(const Model<T>& qpmodel,
                    Workspace<T>& qpwork,
                    const isize n_constraints,
                    isize inner_pb_dim,
-                   const HESSIAN_TYPE& hessian_type)
+                   const HessianType& hessian_type)
 {
   auto& Hdx = qpwork.Hdx;
   auto& Adx = qpwork.Adx;
   auto& ATdy = qpwork.CTz;
   qpwork.err.head(inner_pb_dim) = qpwork.rhs.head(inner_pb_dim);
   switch (hessian_type) {
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       break;
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() *
                       qpwork.dw_aug.head(qpmodel.dim);
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       Hdx.array() = qpwork.H_scaled.diagonal().array() *
                     qpwork.dw_aug.head(qpmodel.dim).array();
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
@@ -404,7 +404,7 @@ iterative_solve_with_permut_fact( //
   Workspace<T>& qpwork,
   const isize n_constraints,
   const DenseBackend& dense_backend,
-  const HESSIAN_TYPE& hessian_type,
+  const HessianType& hessian_type,
   T eps,
   isize inner_pb_dim)
 {
@@ -746,7 +746,7 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
                                     const bool box_constraints,
                                     const isize n_constraints,
                                     const DenseBackend& dense_backend,
-                                    const HESSIAN_TYPE& hessian_type,
+                                    const HessianType& hessian_type,
                                     T eps)
 {
 
@@ -877,7 +877,7 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                                const isize n_constraints,
                                preconditioner::RuizEquilibration<T>& ruiz,
                                const DenseBackend& dense_backend,
-                               const HESSIAN_TYPE& hessian_type,
+                               const HessianType& hessian_type,
                                T eps_int)
 {
 
@@ -983,15 +983,15 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
     qpresults.y += alpha * dy;
     qpresults.z += alpha * dz;
     switch (hessian_type) {
-      case HESSIAN_TYPE::ZERO:
+      case HessianType::Zero:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + ATdy + CTdz);
         break;
-      case HESSIAN_TYPE::DENSE:
+      case HessianType::Dense:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
         break;
-      case HESSIAN_TYPE::DIAGONAL:
+      case HessianType::Diagonal:
         qpwork.dual_residual_scaled +=
           alpha * (qpresults.info.rho * dx + Hdx + ATdy + CTdz);
         break;
@@ -1096,7 +1096,7 @@ qp_solve( //
   Workspace<T>& qpwork,
   const bool box_constraints,
   const DenseBackend& dense_backend,
-  const HESSIAN_TYPE& hessian_type,
+  const HessianType& hessian_type,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
   /*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
@@ -1190,12 +1190,12 @@ qp_solve( //
     if (qpsettings.initial_guess !=
         InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
       switch (hessian_type) {
-        case HESSIAN_TYPE::ZERO:
+        case HessianType::Zero:
           break;
-        case HESSIAN_TYPE::DENSE:
+        case HessianType::Dense:
           qpwork.H_scaled = qpmodel.H;
           break;
-        case HESSIAN_TYPE::DIAGONAL:
+        case HessianType::Diagonal:
           qpwork.H_scaled = qpmodel.H;
           break;
       }

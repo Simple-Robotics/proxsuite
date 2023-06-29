@@ -35,7 +35,7 @@ ruiz_scale_qp_in_place( //
   T epsilon,
   isize max_iter,
   Symmetry sym,
-  HESSIAN_TYPE hessian_type,
+  HessianType HessianType,
   const bool box_constraints,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
@@ -89,8 +89,8 @@ ruiz_scale_qp_in_place( //
     }
     // normalization vector
     {
-      switch (hessian_type) {
-        case HESSIAN_TYPE::ZERO:
+      switch (HessianType) {
+        case HessianType::Zero:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ n_eq > 0 ? infty_norm(A.col(k)) : T(0),
                                     n_in > 0 ? infty_norm(C.col(k)) : T(0),
@@ -102,7 +102,7 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
-        case HESSIAN_TYPE::DENSE:
+        case HessianType::Dense:
           for (isize k = 0; k < n; ++k) {
             switch (sym) {
               case Symmetry::upper: { // upper triangular part
@@ -151,7 +151,7 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
-        case HESSIAN_TYPE::DIAGONAL:
+        case HessianType::Diagonal:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ std::abs(H(k, k)),
                                     n_eq > 0 ? infty_norm(A.col(k)) : T(0),
@@ -206,10 +206,10 @@ ruiz_scale_qp_in_place( //
       l.array() *= delta.segment(n + n_eq, n_in).array();
 
       // normalize H
-      switch (hessian_type) {
-        case HESSIAN_TYPE::ZERO:
+      switch (HessianType) {
+        case HessianType::Zero:
           break;
-        case HESSIAN_TYPE::DENSE:
+        case HessianType::Dense:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -273,7 +273,7 @@ ruiz_scale_qp_in_place( //
               break;
           }
           break;
-        case HESSIAN_TYPE::DIAGONAL:
+        case HessianType::Diagonal:
           // H = delta.head(n).asDiagonal() * H.asDiagonal() *
           // delta.head(n).asDiagonal();
           H.diagonal().array() *=
@@ -392,7 +392,7 @@ struct RuizEquilibration
                          bool execute_preconditioner,
                          const isize max_iter,
                          const T epsilon,
-                         const HESSIAN_TYPE& hessian_type,
+                         const HessianType& HessianType,
                          const bool box_constraints,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
@@ -404,7 +404,7 @@ struct RuizEquilibration
                                          epsilon,
                                          max_iter,
                                          sym,
-                                         hessian_type,
+                                         HessianType,
                                          box_constraints,
                                          stack);
     } else {
@@ -429,8 +429,8 @@ struct RuizEquilibration
           delta.head(n).asDiagonal();
 
       // normalize H
-      switch (hessian_type) {
-        case HESSIAN_TYPE::DENSE:
+      switch (HessianType) {
+        case HessianType::Dense:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -464,9 +464,9 @@ struct RuizEquilibration
           }
           break;
 
-        case HESSIAN_TYPE::ZERO:
+        case HessianType::Zero:
           break;
-        case HESSIAN_TYPE::DIAGONAL:
+        case HessianType::Diagonal:
           // H = delta.head(n).asDiagonal() * H.asDiagonal() *
           // delta.head(n).asDiagonal();
           H.diagonal().array() *=

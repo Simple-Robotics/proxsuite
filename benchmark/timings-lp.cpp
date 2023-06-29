@@ -46,7 +46,7 @@ main(int /*argc*/, const char** /*argv*/)
     elapsed_time = 0.0;
     timer.stop();
     proxqp::dense::QP<T> qp{
-      dim, n_eq, n_in, false, proxqp::HESSIAN_TYPE::ZERO
+      dim, n_eq, n_in, false, proxqp::HessianType::Zero
     };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
@@ -77,7 +77,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{
-      dim, n_eq, n_in, false, proxqp::HESSIAN_TYPE::DENSE
+      dim, n_eq, n_in, false, proxqp::HessianType::Dense
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;

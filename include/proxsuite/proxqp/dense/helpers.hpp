@@ -37,7 +37,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
                                            const Model<T>& qpmodel,
                                            const isize n_constraints,
                                            const DenseBackend& dense_backend,
-                                           const HESSIAN_TYPE& hessian_type,
+                                           const HessianType& hessian_type,
                                            Results<T>& qpresults)
 {
 
@@ -76,7 +76,7 @@ setup_factorization(Workspace<T>& qpwork,
                     const Model<T>& qpmodel,
                     Results<T>& qpresults,
                     const DenseBackend& dense_backend,
-                    const HESSIAN_TYPE& hessian_type)
+                    const HessianType& hessian_type)
 {
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
@@ -84,13 +84,13 @@ setup_factorization(Workspace<T>& qpwork,
     qpwork.ldl_stack.as_mut(),
   };
   switch (hessian_type) {
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim).setZero();
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       qpwork.kkt.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
   }
@@ -134,7 +134,7 @@ void
 setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
                     const bool box_constraints,
-                    const HESSIAN_TYPE hessian_type,
+                    const HessianType hessian_type,
                     preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
@@ -349,7 +349,7 @@ setup( //
   const bool box_constraints,
   preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status,
-  const HESSIAN_TYPE hessian_type)
+  const HessianType hessian_type)
 {
 
   switch (qpsettings.initial_guess) {
@@ -445,12 +445,12 @@ setup( //
     // zero shape
   assert(qpmodel.is_valid(box_constraints));
   switch (hessian_type) {
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       break;
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       qpwork.H_scaled = qpmodel.H;
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       qpwork.H_scaled = qpmodel.H;
       break;
   }

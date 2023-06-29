@@ -35,7 +35,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T>& model,
                    const bool box_constraints,
                    const DenseBackend& dense_backend,
-                   const HESSIAN_TYPE& hessian_type)
+                   const HessianType& hessian_type)
 {
 
   proxsuite::proxqp::print_preambule();
@@ -76,13 +76,13 @@ print_setup_header(const Settings<T>& settings,
       break;
   }
   switch (hessian_type) {
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       std::cout << "          problem type: Quadratic Program, " << std::endl;
       break;
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       std::cout << "          problem type: Linear Program, " << std::endl;
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       std::cout
         << "          problem type: Quadratic Program with diagonal Hessian, "
         << std::endl;
@@ -428,7 +428,7 @@ global_dual_residual(Results<T>& qpresults,
                      T& dual_feasibility_rhs_3,
                      T& rhs_duality_gap,
                      T& duality_gap,
-                     const HESSIAN_TYPE& hessian_type)
+                     const HessianType& hessian_type)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -440,10 +440,10 @@ global_dual_residual(Results<T>& qpresults,
   qpwork.dual_residual_scaled = qpwork.g_scaled;
 
   switch (hessian_type) {
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       dual_feasibility_rhs_0 = 0;
       break;
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       qpwork.CTz.noalias() =
         qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
       qpwork.dual_residual_scaled += qpwork.CTz;
@@ -451,7 +451,7 @@ global_dual_residual(Results<T>& qpresults,
         VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
       dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       qpwork.CTz.array() =
         qpwork.H_scaled.diagonal().array() * qpresults.x.array();
       qpwork.dual_residual_scaled += qpwork.CTz;
@@ -465,14 +465,14 @@ global_dual_residual(Results<T>& qpresults,
   rhs_duality_gap = std::fabs(duality_gap);
   T xHx(0);
   switch (hessian_type) {
-    case HESSIAN_TYPE::ZERO:
+    case HessianType::Zero:
       break;
-    case HESSIAN_TYPE::DENSE:
+    case HessianType::Dense:
       xHx = (qpwork.CTz).dot(qpresults.x);
       duality_gap += xHx; // contains now xHx+g.Tx
       rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
       break;
-    case HESSIAN_TYPE::DIAGONAL:
+    case HessianType::Diagonal:
       xHx = (qpwork.CTz).dot(qpresults.x);
       duality_gap += xHx; // contains now xHx+g.Tx
       rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
