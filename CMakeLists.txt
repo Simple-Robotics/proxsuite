@@ -49,13 +49,15 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
 if(APPLE OR WIN32) # Use the handmade approach
-  set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
-                        ${CMAKE_MODULE_PATH})
+  set(CMAKE_MODULE_PATH
+      ${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/OpenMP
+      ${CMAKE_MODULE_PATH})
 elseif(UNIX)
   if(${CMAKE_VERSION} VERSION_GREATER "3.20.0" OR ${CMAKE_VERSION}
                                                   VERSION_EQUAL "3.20.0")
-    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake/find-external/OpenMP
-                          ${CMAKE_MODULE_PATH})
+    set(CMAKE_MODULE_PATH
+        ${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/OpenMP
+        ${CMAKE_MODULE_PATH})
   endif()
 endif(APPLE OR WIN32)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
