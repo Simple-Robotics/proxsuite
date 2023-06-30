@@ -35,7 +35,7 @@ ruiz_scale_qp_in_place( //
   T epsilon,
   isize max_iter,
   Symmetry sym,
-  ProblemType problem_type,
+  HessianType HessianType,
   const bool box_constraints,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
@@ -89,8 +89,8 @@ ruiz_scale_qp_in_place( //
     }
     // normalization vector
     {
-      switch (problem_type) {
-        case ProblemType::LP:
+      switch (HessianType) {
+        case HessianType::Zero:
           for (isize k = 0; k < n; ++k) {
             T aux = sqrt(std::max({ n_eq > 0 ? infty_norm(A.col(k)) : T(0),
                                     n_in > 0 ? infty_norm(C.col(k)) : T(0),
@@ -102,7 +102,7 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
-        case ProblemType::QP:
+        case HessianType::Dense:
           for (isize k = 0; k < n; ++k) {
             switch (sym) {
               case Symmetry::upper: { // upper triangular part
@@ -151,6 +151,19 @@ ruiz_scale_qp_in_place( //
             }
           }
           break;
+        case HessianType::Diagonal:
+          for (isize k = 0; k < n; ++k) {
+            T aux = sqrt(std::max({ std::abs(H(k, k)),
+                                    n_eq > 0 ? infty_norm(A.col(k)) : T(0),
+                                    n_in > 0 ? infty_norm(C.col(k)) : T(0),
+                                    box_constraints ? i_scaled[k] : T(0) }));
+            if (aux == T(0)) {
+              delta(k) = T(1);
+            } else {
+              delta(k) = T(1) / (aux + machine_eps);
+            }
+          }
+          break;
       }
       for (isize k = 0; k < n_eq; ++k) {
         T aux = sqrt(infty_norm(A.row(k)));
@@ -193,10 +206,10 @@ ruiz_scale_qp_in_place( //
       l.array() *= delta.segment(n + n_eq, n_in).array();
 
       // normalize H
-      switch (problem_type) {
-        case ProblemType::LP:
+      switch (HessianType) {
+        case HessianType::Zero:
           break;
-        case ProblemType::QP:
+        case HessianType::Dense:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -228,7 +241,6 @@ ruiz_scale_qp_in_place( //
             default:
               break;
           }
-
           // additional normalization for the cost function
           switch (sym) {
             case Symmetry::upper: {
@@ -260,6 +272,20 @@ ruiz_scale_qp_in_place( //
             default:
               break;
           }
+          break;
+        case HessianType::Diagonal:
+          // H = delta.head(n).asDiagonal() * H.asDiagonal() *
+          // delta.head(n).asDiagonal();
+          H.diagonal().array() *=
+            delta.head(n)
+              .array(); //* H.asDiagonal() * delta.head(n).asDiagonal();
+          H.diagonal().array() *=
+            delta.head(n)
+              .array(); //* H.asDiagonal() * delta.head(n).asDiagonal();
+          gamma =
+            1 /
+            std::max(T(1),
+                     (H.diagonal().template lpNorm<Eigen::Infinity>()) / T(n));
           H *= gamma;
           break;
       }
@@ -366,7 +392,7 @@ struct RuizEquilibration
                          bool execute_preconditioner,
                          const isize max_iter,
                          const T epsilon,
-                         const ProblemType problem_type,
+                         const HessianType& HessianType,
                          const bool box_constraints,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
@@ -378,7 +404,7 @@ struct RuizEquilibration
                                          epsilon,
                                          max_iter,
                                          sym,
-                                         problem_type,
+                                         HessianType,
                                          box_constraints,
                                          stack);
     } else {
@@ -403,8 +429,8 @@ struct RuizEquilibration
           delta.head(n).asDiagonal();
 
       // normalize H
-      switch (problem_type) {
-        case ProblemType::QP:
+      switch (HessianType) {
+        case HessianType::Dense:
           switch (sym) {
             case Symmetry::upper: {
               // upper triangular part
@@ -438,7 +464,17 @@ struct RuizEquilibration
           }
           break;
 
-        case ProblemType::LP:
+        case HessianType::Zero:
+          break;
+        case HessianType::Diagonal:
+          // H = delta.head(n).asDiagonal() * H.asDiagonal() *
+          // delta.head(n).asDiagonal();
+          H.diagonal().array() *=
+            delta.head(n)
+              .array(); //* H.asDiagonal() * delta.head(n).asDiagonal();
+          H.diagonal().array() *=
+            delta.head(n)
+              .array(); //* H.asDiagonal() * delta.head(n).asDiagonal();
           break;
       }
 

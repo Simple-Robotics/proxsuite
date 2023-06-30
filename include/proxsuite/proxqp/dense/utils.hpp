@@ -32,7 +32,10 @@ template<typename T>
 void
 print_setup_header(const Settings<T>& settings,
                    const Results<T>& results,
-                   const Model<T>& model)
+                   const Model<T>& model,
+                   const bool box_constraints,
+                   const DenseBackend& dense_backend,
+                   const HessianType& hessian_type)
 {
 
   proxsuite::proxqp::print_preambule();
@@ -57,7 +60,34 @@ print_setup_header(const Settings<T>& settings,
             << ", mu_in = " << results.info.mu_in << "," << std::endl;
   std::cout << "          max_iter = " << settings.max_iter
             << ", max_iter_in = " << settings.max_iter_in << "," << std::endl;
-
+  if (box_constraints) {
+    std::cout << "          box constraints: on, " << std::endl;
+  } else {
+    std::cout << "          box constraints: off, " << std::endl;
+  }
+  switch (dense_backend) {
+    case DenseBackend::PrimalDualLDLT:
+      std::cout << "          dense backend: PrimalDualLDLT, " << std::endl;
+      break;
+    case DenseBackend::PrimalLDLT:
+      std::cout << "          dense backend: PrimalLDLT, " << std::endl;
+      break;
+    case DenseBackend::Automatic:
+      break;
+  }
+  switch (hessian_type) {
+    case HessianType::Dense:
+      std::cout << "          problem type: Quadratic Program, " << std::endl;
+      break;
+    case HessianType::Zero:
+      std::cout << "          problem type: Linear Program, " << std::endl;
+      break;
+    case HessianType::Diagonal:
+      std::cout
+        << "          problem type: Quadratic Program with diagonal Hessian, "
+        << std::endl;
+      break;
+  }
   if (settings.compute_preconditioner) {
     std::cout << "          scaling: on, " << std::endl;
   } else {
@@ -73,7 +103,7 @@ print_setup_header(const Settings<T>& settings,
       std::cout << "          initial guess: warm start. \n" << std::endl;
       break;
     case InitialGuessStatus::NO_INITIAL_GUESS:
-      std::cout << "          initial guess: initial guess. \n" << std::endl;
+      std::cout << "          initial guess: no initial guess. \n" << std::endl;
       break;
     case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:
       std::cout
@@ -390,7 +420,6 @@ void
 global_dual_residual(Results<T>& qpresults,
                      Workspace<T>& qpwork,
                      const Model<T>& qpmodel,
-                     const Settings<T>& qpsettings,
                      const bool box_constraints,
                      const preconditioner::RuizEquilibration<T>& ruiz,
                      T& dual_feasibility_lhs,
@@ -398,7 +427,8 @@ global_dual_residual(Results<T>& qpresults,
                      T& dual_feasibility_rhs_1,
                      T& dual_feasibility_rhs_3,
                      T& rhs_duality_gap,
-                     T& duality_gap)
+                     T& duality_gap,
+                     const HessianType& hessian_type)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -409,13 +439,21 @@ global_dual_residual(Results<T>& qpresults,
 
   qpwork.dual_residual_scaled = qpwork.g_scaled;
 
-  switch (qpsettings.problem_type) {
-    case ProblemType::LP:
+  switch (hessian_type) {
+    case HessianType::Zero:
       dual_feasibility_rhs_0 = 0;
       break;
-    case ProblemType::QP:
+    case HessianType::Dense:
       qpwork.CTz.noalias() =
         qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      ruiz.unscale_dual_residual_in_place(
+        VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
+      dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+      break;
+    case HessianType::Diagonal:
+      qpwork.CTz.array() =
+        qpwork.H_scaled.diagonal().array() * qpresults.x.array();
       qpwork.dual_residual_scaled += qpwork.CTz;
       ruiz.unscale_dual_residual_in_place(
         VectorViewMut<T>{ from_eigen, qpwork.CTz }); // contains unscaled Hx
@@ -425,11 +463,17 @@ global_dual_residual(Results<T>& qpresults,
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   duality_gap = (qpmodel.g).dot(qpresults.x);
   rhs_duality_gap = std::fabs(duality_gap);
-  switch (qpsettings.problem_type) {
-    case ProblemType::LP:
+  T xHx(0);
+  switch (hessian_type) {
+    case HessianType::Zero:
       break;
-    case ProblemType::QP:
-      const T xHx = (qpwork.CTz).dot(qpresults.x);
+    case HessianType::Dense:
+      xHx = (qpwork.CTz).dot(qpresults.x);
+      duality_gap += xHx; // contains now xHx+g.Tx
+      rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
+      break;
+    case HessianType::Diagonal:
+      xHx = (qpwork.CTz).dot(qpresults.x);
       duality_gap += xHx; // contains now xHx+g.Tx
       rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
       break;

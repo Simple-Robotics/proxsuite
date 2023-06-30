@@ -179,10 +179,11 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
       n_eq); // make sure the LP is bounded within the feasible set
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
-    proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    proxqp::dense::QP<T> qp{
+      dim, n_eq, n_in, proxqp::HessianType::Zero
+    }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
-    qp.settings.problem_type = proxqp::ProblemType::LP;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,

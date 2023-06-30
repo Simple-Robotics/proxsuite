@@ -24,16 +24,39 @@ template<typename T>
 void
 exposeQpObjectDense(pybind11::module_ m)
 {
+  ::pybind11::enum_<DenseBackend>(m, "DenseBackend", pybind11::module_local())
+    .value("Automatic", DenseBackend::Automatic)
+    .value("PrimalDualLDLT", DenseBackend::PrimalDualLDLT)
+    .value("PrimalLDLT", DenseBackend::PrimalLDLT)
+    .export_values();
+
+  ::pybind11::enum_<HessianType>(m, "HessianType", pybind11::module_local())
+    .value("Dense", proxsuite::proxqp::HessianType::Dense)
+    .value("Zero", proxsuite::proxqp::HessianType::Zero)
+    .value("Diagonal", proxsuite::proxqp::HessianType::Diagonal)
+    .export_values();
 
   ::pybind11::class_<dense::QP<T>>(m, "QP")
     .def(
-      ::pybind11::init<i64, i64, i64, bool>(),
+      ::pybind11::init<i64,
+                       i64,
+                       i64,
+                       bool,
+                       proxsuite::proxqp::HessianType,
+                       proxsuite::proxqp::DenseBackend>(),
       pybind11::arg_v("n", 0, "primal dimension."),
       pybind11::arg_v("n_eq", 0, "number of equality constraints."),
       pybind11::arg_v("n_in", 0, "number of inequality constraints."),
-      pybind11::arg_v("box_constraints",
-                      false,
-                      "specify or not a QP with box inequality constraints."),
+      pybind11::arg_v(
+        "box_constraints",
+        false,
+        "specify or not that the QP has box inequality constraints."),
+      pybind11::arg_v("hessian_type",
+                      proxsuite::proxqp::HessianType::Dense,
+                      "specify the problem type to be solved."),
+      pybind11::arg_v("dense_backend",
+                      proxsuite::proxqp::DenseBackend::Automatic,
+                      "specify which backend using for solving the problem."),
       "Default constructor using QP model dimensions.") // constructor
     .def_readwrite(
       "results",
@@ -48,6 +71,12 @@ exposeQpObjectDense(pybind11::module_ m)
     .def("is_box_constrained",
          &dense::QP<T>::is_box_constrained,
          "precise whether or not the QP is designed with box constraints.")
+    .def("which_hessian_type",
+         &dense::QP<T>::which_hessian_type,
+         "precise which problem type is to be solved.")
+    .def("which_dense_backend",
+         &dense::QP<T>::which_dense_backend,
+         "precise which dense backend is chosen.")
     .def("init",
          static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
                                             optional<dense::VecRef<T>>,

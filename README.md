@@ -33,7 +33,7 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
 
    - dense, sparse and matrix-free matrix factorization backends,
    - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results),
-   - dedicated features for handling more efficiently box constraints, or linear programs.
+   - dedicated features for handling more efficiently box constraints, linear programs, QP with diagonal Hessian, or with far more constraints than primal variables.
 
 **Proxsuite** is flexible:
 

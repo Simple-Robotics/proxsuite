@@ -86,6 +86,8 @@ TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
   using isize = proxqp::utils::isize;
+  proxsuite::proxqp::Timer<T> timer;
+  T elapsed_time = 0.0;
 
   for (auto const* file : files) {
     auto qp = load_qp(file);
@@ -115,12 +117,16 @@ TEST_CASE("dense maros meszaros using the api")
       isize dim = H.rows();
       isize n_eq = A.rows();
       isize n_in = C.rows();
-
-      proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+      timer.stop();
+      timer.start();
+      proxqp::dense::QP<T> qp{
+        dim, n_eq, n_in, false, proxsuite::proxqp::DenseBackend::Automatic
+      }; // creating QP object
       qp.init(H, g, A, b, C, l, u);
 
       qp.settings.eps_abs = 2e-8;
       qp.settings.eps_rel = 0;
+      // qp.settings.verbose = true;
       auto& eps = qp.settings.eps_abs;
 
       for (size_t it = 0; it < 2; ++it) {
@@ -153,6 +159,9 @@ TEST_CASE("dense maros meszaros using the api")
           CHECK(qp.results.info.iter == 0);
         }
       }
+      timer.stop();
+      elapsed_time += timer.elapsed().user;
     }
   }
+  std::cout << "timings total : \t" << elapsed_time * 1e-3 << "ms" << std::endl;
 }
