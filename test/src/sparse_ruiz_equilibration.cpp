@@ -94,7 +94,7 @@ TEST_CASE("upper part")
     settings.preconditioner_accuracy,
     HessianType,
     box_constraints,
-    // settings.primal_infeasibility_solving,
+    settings.primal_infeasibility_solving,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
@@ -187,7 +187,7 @@ TEST_CASE("lower part")
     settings.preconditioner_accuracy,
     HessianType,
     box_constraints,
-    // settings.primal_infeasibility_solving,
+    settings.primal_infeasibility_solving,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));

@@ -42,9 +42,8 @@ solveDenseQp(pybind11::module_ m)
                             proxsuite::proxqp::InitialGuessStatus,
                             bool,
                             optional<T>,
-                            optional<T>
-                            // bool
-                            >(&dense::solve<T>),
+                            optional<T>,
+                            bool>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -100,12 +99,11 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("eps_duality_gap_rel",
                     nullopt,
                     "relative accuracy threshold used for the duality-gap "
-                    "stopping criterion.")
-    // pybind11::arg_v("primal_infeasibility_solving",
-    //                 false,
-    //                 "solves the closest feasible problem in L2 sense "
-    //                 "if the qp appears to be infeasible.")
-  );
+                    "stopping criterion."),
+    pybind11::arg_v("primal_infeasibility_solving",
+                    false,
+                    "solves the closest feasible problem in L2 sense "
+                    "if the qp appears to be infeasible."));
 
   m.def(
     "solve",
@@ -133,9 +131,8 @@ solveDenseQp(pybind11::module_ m)
                             proxsuite::proxqp::InitialGuessStatus,
                             bool,
                             optional<T>,
-                            optional<T>
-                            // bool
-                            >(&dense::solve<T>),
+                            optional<T>,
+                            bool>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -193,12 +190,11 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("eps_duality_gap_rel",
                     nullopt,
                     "relative accuracy threshold used for the duality-gap "
-                    "stopping criterion.")
-    // pybind11::arg_v("primal_infeasibility_solving",
-    //                 false,
-    //                 "solves the closest feasible problem in L2 sense "
-    //                 "if the qp appears to be infeasible.")
-  );
+                    "stopping criterion."),
+    pybind11::arg_v("primal_infeasibility_solving",
+                    false,
+                    "solves the closest feasible problem in L2 sense "
+                    "if the qp appears to be infeasible."));
 }
 
 } // namespace python

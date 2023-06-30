@@ -731,8 +731,6 @@ unscaled_primal_dual_residual(
 
   if ((settings.primal_infeasibility_solving &&
        results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)) {
-    results.se = primal_residual_eq_scaled;
-    results.si = primal_residual_in_scaled_lo;
     tmp.setZero();
     {
       results.se = primal_residual_eq_scaled;

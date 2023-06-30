@@ -82,9 +82,7 @@ struct Workspace
   T alpha;
 
   Vec<T> dual_residual_scaled;
-  Vec<T> primal_residual_eq_scaled;
   Vec<T> primal_residual_in_scaled_up;
-  Vec<T> primal_residual_in_scaled_low;
 
   Vec<T> primal_residual_in_scaled_up_plus_alphaCdx;
   Vec<T> primal_residual_in_scaled_low_plus_alphaCdx;
@@ -121,14 +119,12 @@ struct Workspace
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
-    , primal_residual_eq_scaled(n_eq)
     , CTz(dim)
     , constraints_changed(false)
     , dirty(false)
     , refactorize(false)
     , proximal_parameter_update(false)
     , is_initialized(false)
-
   {
 
     if (box_constraints) {
@@ -215,7 +211,6 @@ struct Workspace
       rhs.resize(dim + n_eq + n_in + dim);
       err.resize(dim + n_eq + n_in + dim);
       primal_residual_in_scaled_up.resize(dim + n_in);
-      primal_residual_in_scaled_low.resize(dim + n_in);
       primal_residual_in_scaled_up_plus_alphaCdx.resize(dim + n_in);
       primal_residual_in_scaled_low_plus_alphaCdx.resize(dim + n_in);
       Cdx.resize(n_in + dim);
@@ -291,7 +286,6 @@ struct Workspace
       rhs.resize(dim + n_eq + n_in);
       err.resize(dim + n_eq + n_in);
       primal_residual_in_scaled_up.resize(n_in);
-      primal_residual_in_scaled_low.resize(n_in);
       primal_residual_in_scaled_up_plus_alphaCdx.resize(n_in);
       primal_residual_in_scaled_low_plus_alphaCdx.resize(n_in);
       Cdx.resize(n_in);
@@ -323,9 +317,7 @@ struct Workspace
     alpha = 1.;
 
     dual_residual_scaled.setZero();
-    primal_residual_eq_scaled.setZero();
     primal_residual_in_scaled_up.setZero();
-    primal_residual_in_scaled_low.setZero();
 
     primal_residual_in_scaled_up_plus_alphaCdx.setZero();
     primal_residual_in_scaled_low_plus_alphaCdx.setZero();
@@ -357,9 +349,7 @@ struct Workspace
     alpha = 1.;
 
     dual_residual_scaled.setZero();
-    primal_residual_eq_scaled.setZero();
     primal_residual_in_scaled_up.setZero();
-    primal_residual_in_scaled_low.setZero();
 
     primal_residual_in_scaled_up_plus_alphaCdx.setZero();
     primal_residual_in_scaled_low_plus_alphaCdx.setZero();

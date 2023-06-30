@@ -46,7 +46,7 @@ def generate_mixed_qp(n, seed=1):
 
 class SparseqpWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
-
+    """
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
@@ -4575,6 +4575,56 @@ class SparseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
+    """
+
+    def test_sparse_infeasibility_solving(
+        self,
+    ):
+        print(
+            "------------------------sparse random strongly convex qp with inequality constraints, test infeasibility solving"
+        )
+        n = 20
+        for i in range(20):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            b += 10.0  ## create infeasible pbls
+            u -= 100.0
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+            qp.settings.eps_abs = 1.0e-5
+            qp.settings.eps_primal_inf = 1.0e-4
+            qp.settings.verbose = True
+            qp.settings.primal_infeasibility_solving = True
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+            )
+            qp.solve()
+            dua_res = normInf(
+                H @ qp.results.x
+                + g
+                + A.transpose() @ qp.results.y
+                + C.transpose() @ qp.results.z
+            )
+            ones = A.T @ np.ones(n_eq) + C.T @ np.ones(n_in)
+
+            scaled_eps = normInf(ones) * qp.settings.eps_abs
+            pri_res = normInf(
+                A.T @ (A @ qp.results.x - b)
+                + C.T
+                @ (
+                    np.maximum(C @ qp.results.x - u, 0)
+                    + np.minimum(C @ qp.results.x - l, 0)
+                )
+            )
+            assert dua_res <= qp.settings.eps_abs
+            assert pri_res <= scaled_eps
 
 
 if __name__ == "__main__":

@@ -1394,9 +1394,9 @@ qp_solve(Results<T>& results,
       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       primal_dual_newton_semi_smooth();
-      if ((results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
-           results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) &&
-          !settings.primal_infeasibility_solving) {
+      if ((results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
+           !settings.primal_infeasibility_solving) ||
+          results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
         // certificate of infeasibility
         results.x = dw_prev.head(data.dim);
         results.y = dw_prev.segment(data.dim, data.n_eq);
@@ -1413,11 +1413,9 @@ qp_solve(Results<T>& results,
         LDLT_TEMP_VEC(T, rhs_n_in, n_in, stack);
         rhs_n_eq.setConstant(T(1));
         rhs_n_in.setConstant(T(1));
-        rhs_dim.noalias() = AT_scaled.to_eigen() * rhs_n_eq;
-        scaled_eps = infty_norm(rhs_dim);
-        rhs_dim.noalias() = CT_scaled.to_eigen() * rhs_n_in;
-        scaled_eps += infty_norm(rhs_dim);
-        scaled_eps *= settings.eps_abs;
+        rhs_dim.noalias() =
+          AT_scaled.to_eigen() * rhs_n_eq + CT_scaled.to_eigen() * rhs_n_in;
+        scaled_eps = infty_norm(rhs_dim) * settings.eps_abs;
       }
       // VEG bind : met le résultat tuple de unscaled_primal_dual_residual dans
       // (primal_feasibility_lhs_new, dual_feasibility_lhs_new) en guessant leur
@@ -1651,8 +1649,14 @@ qp_solve(Results<T>& results,
                   << "Dual infeasible" << std::endl;
         break;
       }
-      default: {
-        assert(false && "Should never happened");
+      case QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
+        std::cout << "status:       "
+                  << "Solved closest primal feasible" << std::endl;
+        break;
+      }
+      case QPSolverOutput::PROXQP_NOT_RUN: {
+        std::cout << "status:       "
+                  << "Solver not run" << std::endl;
         break;
       }
     }

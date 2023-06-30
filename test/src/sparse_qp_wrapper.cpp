@@ -6085,19 +6085,15 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
             qp_random.u);
     qp.solve();
 
-    T scaled_eps(0);
     Vec<T> rhs_dim(dim);
     Vec<T> rhs_n_eq(n_eq);
     rhs_n_eq.setOnes();
     Vec<T> rhs_n_in(n_in);
     rhs_n_in.setOnes();
-    rhs_dim.noalias() = qp_random.A.transpose() * rhs_n_eq;
+    rhs_dim.noalias() =
+      qp_random.A.transpose() * rhs_n_eq + qp_random.C.transpose() * rhs_n_in;
     // detail::noalias_gevmmv_add(Adx, rhs_dim, AT_scaled, dx, rhs_n_eq);
-    scaled_eps = (rhs_dim).lpNorm<Eigen::Infinity>();
-    rhs_dim.noalias() = qp_random.C.transpose() * rhs_n_in;
-    // detail::noalias_gevmmv_add(Adx, rhs_dim, CT_scaled, dx, rhs_n_in);
-    scaled_eps += (rhs_dim).lpNorm<Eigen::Infinity>();
-    scaled_eps *= eps_abs;
+    T scaled_eps = (rhs_dim).lpNorm<Eigen::Infinity>() * eps_abs;
 
     T pri_res =
       (qp_random.A.transpose() * (qp_random.A * qp.results.x - qp_random.b) +

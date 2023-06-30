@@ -164,7 +164,8 @@ save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
 template<typename T>
 void
 global_primal_residual(const Model<T>& qpmodel,
-                       const Results<T>& qpresults,
+                       Results<T>& qpresults,
+                       const Settings<T>& qpsettings,
                        Workspace<T>& qpwork,
                        const preconditioner::RuizEquilibration<T>& ruiz,
                        const bool box_constraints,
@@ -187,7 +188,8 @@ global_primal_residual(const Model<T>& qpmodel,
   // INDETERMINATE:
   // primal_residual_in_scaled_u = unscaled(Cx)
   // primal_residual_in_scaled_l = unscaled([Cx - u]+ + [Cx - l]-)
-  qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
+  // qpwork.primal_residual_eq_scaled.noalias() = qpwork.A_scaled * qpresults.x;
+  qpresults.se.noalias() = qpwork.A_scaled * qpresults.x;
   qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
     qpwork.C_scaled * qpresults.x;
   if (box_constraints) {
@@ -199,37 +201,49 @@ global_primal_residual(const Model<T>& qpmodel,
     // ruiz.unscale_box_primal_residual_in_place_in(VectorViewMut<T>{from_eigen,
     // qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim)});
   }
+  // ruiz.unscale_primal_residual_in_place_eq(
+  //   VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });
+  // primal_feasibility_eq_rhs_0 = infty_norm(qpwork.primal_residual_eq_scaled);
   ruiz.unscale_primal_residual_in_place_eq(
-    VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });
-  primal_feasibility_eq_rhs_0 = infty_norm(qpwork.primal_residual_eq_scaled);
+    VectorViewMut<T>{ from_eigen, qpresults.se });
+  primal_feasibility_eq_rhs_0 = infty_norm(qpresults.se);
   ruiz.unscale_primal_residual_in_place_in(VectorViewMut<T>{
     from_eigen, qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) });
   primal_feasibility_in_rhs_0 =
     infty_norm(qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in));
-  qpwork.primal_residual_in_scaled_low.head(qpmodel.n_in) =
+  qpresults.si.head(qpmodel.n_in) =
     helpers::positive_part(
       qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.u) +
     helpers::negative_part(
       qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.l);
   if (box_constraints) {
     primal_feasibility_in_rhs_0 = std::max(
-      primal_feasibility_in_rhs_0,
-      infty_norm(qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim)));
-    qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim) =
+      primal_feasibility_in_rhs_0, infty_norm(qpresults.si.tail(qpmodel.dim)));
+    qpresults.si.tail(qpmodel.dim) =
       helpers::positive_part(
         qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.u_box) +
       helpers::negative_part(
         qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.l_box);
   }
-  qpwork.primal_residual_eq_scaled -= qpmodel.b;
+  // qpwork.primal_residual_eq_scaled -= qpmodel.b;
+  qpresults.se -= qpmodel.b;
 
-  primal_feasibility_in_lhs = infty_norm(qpwork.primal_residual_in_scaled_low);
-  primal_feasibility_eq_lhs = infty_norm(qpwork.primal_residual_eq_scaled);
+  primal_feasibility_in_lhs = infty_norm(qpresults.si);
+  // primal_feasibility_eq_lhs = infty_norm(qpwork.primal_residual_eq_scaled);
+  primal_feasibility_eq_lhs = infty_norm(qpresults.se);
   primal_feasibility_lhs =
     std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
-
+  if (qpsettings.primal_infeasibility_solving &&
+      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+    qpwork.rhs.head(qpmodel.dim).noalias() =
+      qpmodel.A.transpose() * qpresults.se;
+    qpwork.rhs.head(qpmodel.dim).noalias() +=
+      qpmodel.C.transpose() * qpresults.si;
+    primal_feasibility_lhs = infty_norm(qpwork.rhs.head(qpmodel.dim));
+  }
   ruiz.scale_primal_residual_in_place_eq(
-    VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });
+    VectorViewMut<T>{ from_eigen, qpresults.se });
+  // VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });
 }
 
 /*!
@@ -276,11 +290,11 @@ global_primal_residual_infeasibility(
   }
   ruiz.unscale_dual_residual_in_place(ATdy);
   ruiz.unscale_dual_residual_in_place(CTdz);
-  T eq_inf = dy.to_eigen().dot(qpwork.b_scaled);
-  T in_inf = helpers::positive_part(dz.to_eigen().head(qpmodel.n_in))
-               .dot(qpwork.u_scaled) -
-             helpers::negative_part(dz.to_eigen().head(qpmodel.n_in))
-               .dot(qpwork.l_scaled);
+  T lower_bound_1 = dy.to_eigen().dot(qpwork.b_scaled) +
+                    helpers::positive_part(dz.to_eigen().head(qpmodel.n_in))
+                      .dot(qpwork.u_scaled) -
+                    helpers::negative_part(dz.to_eigen().head(qpmodel.n_in))
+                      .dot(qpwork.l_scaled);
   ruiz.unscale_dual_in_place_eq(dy);
   ruiz.unscale_dual_in_place_in(
     VectorViewMut<T>{ from_eigen, dz.to_eigen().head(qpmodel.n_in) });
@@ -288,19 +302,19 @@ global_primal_residual_infeasibility(
     // in_inf+=
     // helpers::positive_part(dz.to_eigen().tail(qpmodel.dim)).dot(qpmodel.u) -
     //          helpers::negative_part(dz.to_eigen().tail(qpmodel.dim)).dot(qpmodel.l);
-    in_inf += helpers::positive_part(dz.to_eigen().tail(qpmodel.dim))
-                .dot(qpwork.u_box_scaled) -
-              helpers::negative_part(dz.to_eigen().tail(qpmodel.dim))
-                .dot(qpwork.l_box_scaled);
+    lower_bound_1 += helpers::positive_part(dz.to_eigen().tail(qpmodel.dim))
+                       .dot(qpwork.u_box_scaled) -
+                     helpers::negative_part(dz.to_eigen().tail(qpmodel.dim))
+                       .dot(qpwork.l_box_scaled);
     ruiz.unscale_box_dual_in_place_in(
       VectorViewMut<T>{ from_eigen, dz.to_eigen().tail(qpmodel.dim) });
   }
+  T upper_bound =
+    qpsettings.eps_primal_inf *
+    std::max(infty_norm(dy.to_eigen()), infty_norm(dz.to_eigen()));
+  T lower_bound_2 = infty_norm(ATdy.to_eigen() + CTdz.to_eigen());
 
-  T bound_y = qpsettings.eps_primal_inf * infty_norm(dy.to_eigen());
-  T bound_z = qpsettings.eps_primal_inf * infty_norm(dz.to_eigen());
-
-  res = infty_norm(ATdy.to_eigen()) <= bound_y && eq_inf <= -bound_y &&
-        infty_norm(CTdz.to_eigen()) <= bound_z && in_inf <= -bound_z;
+  res = lower_bound_2 <= upper_bound && lower_bound_1 <= -upper_bound;
   return res;
 }
 

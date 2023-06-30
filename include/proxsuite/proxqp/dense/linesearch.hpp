@@ -80,7 +80,7 @@ gpdal_derivative_results(const Model<T>& qpmodel,
   qpwork.primal_residual_in_scaled_up_plus_alphaCdx =
     qpwork.primal_residual_in_scaled_up + qpwork.Cdx * alpha;
   qpwork.primal_residual_in_scaled_low_plus_alphaCdx =
-    qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
+    qpresults.si + qpwork.Cdx * alpha;
 
   T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
       qpresults.info.mu_eq_inv * (qpwork.Adx).squaredNorm() +
@@ -103,14 +103,13 @@ gpdal_derivative_results(const Model<T>& qpmodel,
       (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
       qpresults.info.mu_eq_inv *
         (qpwork.Adx)
-          .dot(qpwork.primal_residual_eq_scaled +
+          .dot(qpresults.se +
                qpresults.y * qpresults.info.mu_eq)); // contains now: b =
                                                      // dx.dot(H.dot(x) +
                                                      // rho*(x-xe) +  g)  +
   // mu_eq_inv * Adx.dot(res_eq)
 
-  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
-    qpwork.primal_residual_eq_scaled;
+  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpresults.se;
   b += qpresults.info.mu_eq_inv *
        qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
          .dot(qpwork.rhs.segment(
@@ -141,7 +140,7 @@ gpdal_derivative_results(const Model<T>& qpmodel,
       .select(qpwork.primal_residual_in_scaled_up,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_constraints)) +
     (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.))
-      .select(qpwork.primal_residual_in_scaled_low,
+      .select(qpresults.si,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_constraints));
 
   b +=
@@ -209,7 +208,7 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
   qpwork.primal_residual_in_scaled_up_plus_alphaCdx =
     qpwork.primal_residual_in_scaled_up + qpwork.Cdx * alpha;
   qpwork.primal_residual_in_scaled_low_plus_alphaCdx =
-    qpwork.primal_residual_in_scaled_low + qpwork.Cdx * alpha;
+    qpresults.si + qpwork.Cdx * alpha;
 
   T a(qpwork.dw_aug.head(qpmodel.dim).dot(qpwork.Hdx) +
       qpresults.info.mu_eq_inv * (qpwork.Adx).squaredNorm() +
@@ -232,14 +231,13 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
       (qpwork.err.head(qpmodel.dim)).dot(qpwork.dw_aug.head(qpmodel.dim)) +
       qpresults.info.mu_eq_inv *
         (qpwork.Adx)
-          .dot(qpwork.primal_residual_eq_scaled +
+          .dot(qpresults.se +
                qpresults.y * qpresults.info.mu_eq)); // contains now: b =
                                                      // dx.dot(H.dot(x) +
                                                      // rho*(x-xe) +  g)  +
   // mu_eq_inv * Adx.dot(res_eq)
 
-  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
-    qpwork.primal_residual_eq_scaled;
+  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpresults.se;
   b += qpresults.info.nu * qpresults.info.mu_eq_inv *
        qpwork.err.segment(qpmodel.dim, qpmodel.n_eq)
          .dot(qpwork.rhs.segment(
@@ -268,7 +266,7 @@ primal_dual_derivative_results(const Model<T>& qpmodel,
       .select(qpwork.primal_residual_in_scaled_up,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_constraints)) +
     (qpwork.primal_residual_in_scaled_low_plus_alphaCdx.array() < T(0.))
-      .select(qpwork.primal_residual_in_scaled_low,
+      .select(qpresults.si,
               Eigen::Matrix<T, Eigen::Dynamic, 1>::Zero(n_constraints));
 
   b += qpresults.info.mu_in_inv *
@@ -377,8 +375,7 @@ primal_dual_ls(const Model<T>& qpmodel,
       if (alpha_ > machine_eps) {
         qpwork.alphas.push(alpha_);
       }
-      alpha_ = -qpwork.primal_residual_in_scaled_low(i) /
-               (qpwork.Cdx(i) + machine_eps);
+      alpha_ = -qpresults.si(i) / (qpwork.Cdx(i) + machine_eps);
       if (alpha_ > machine_eps) {
         qpwork.alphas.push(alpha_);
       }
@@ -526,7 +523,6 @@ primal_dual_ls(const Model<T>& qpmodel,
      * [last_alpha_neg,first_alpha_pos] and can be computed exactly as phi'
      * is an affine function in alpha
      */
-
     qpwork.alpha = std::abs(alpha_last_neg -
                             last_neg_grad * (alpha_first_pos - alpha_last_neg) /
                               (first_pos_grad - last_neg_grad));

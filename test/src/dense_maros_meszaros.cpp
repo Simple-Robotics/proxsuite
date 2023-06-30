@@ -126,7 +126,6 @@ TEST_CASE("dense maros meszaros using the api")
 
       qp.settings.eps_abs = 2e-8;
       qp.settings.eps_rel = 0;
-      // qp.settings.verbose = true;
       auto& eps = qp.settings.eps_abs;
 
       for (size_t it = 0; it < 2; ++it) {
@@ -149,6 +148,7 @@ TEST_CASE("dense maros meszaros using the api")
                   << proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
                                                C.transpose() * z)
                   << std::endl;
+        std::cout << "iter " << qp.results.info.iter << std::endl;
         CHECK(proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
                                         C.transpose() * z) < 2 * eps);
         CHECK(proxqp::dense::infty_norm(A * x - b) > -eps);
