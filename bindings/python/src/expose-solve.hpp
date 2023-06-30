@@ -103,7 +103,7 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the qp appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."));
 
   m.def(
     "solve",
