@@ -73,6 +73,21 @@ $$\begin{equation}\label{eq:approx_dg_sol}
 
 where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
 
+Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $$\ell_2$$ sense, and (x,y,z) will satisfy
+
+$$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
+\begin{aligned}
+    &\left\{
+    \begin{array}{ll}
+        \|Hx+g+A^Ty+C^Tz\|_{\infty} \leq  \epsilon_{\text{abs}} + \epsilon_{\text{rel}}\max(\|Hx\|_{\infty},\|A^Ty\|_{\infty},\|C^Tz\|_{\infty},\|g\|_{\infty}), \\\
+        \|A^\top(Ax-b)+C^\top[Cx-u]_+\|_{\infty} \leq \|A^\top 1 + C^\top 1\|_{\infty}*\epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(\|Ax\|_{\infty},\|b\|_{\infty}), \\\
+    \end{array}
+    \right.
+\end{aligned}
+\end{equation}$$
+
+You can find more details on these subjects (and how to activate this feature with ProxQP) in the subsections describing the Settings and Results classes. You can also find more technical references with [this work](https://hal.science/hal-01057577).
+
 \section OverviewAPIstructure ProxQP unified API for dense and sparse backends
 
 ProxQP algorithm is implemented in two versions specialized for dense and sparse matrices. One simple and unified API has been designed for loading the dense and sparse backends. Concretely, it contains three methods:
@@ -395,7 +410,8 @@ In this table you have on the three columns from left to right: the name of the 
 | safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
 | preconditioner_max_iter             | 10                                 | Maximal number of authorized iterations for the preconditioner.
 | preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
-| HessianType                         | Dense                               | Defines the type of problem solved (Dense, Zero or Diagonal). In case Zero or Diagonal option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
+| HessianType                         | Dense                              | Defines the type of problem solved (Dense, Zero or Diagonal). In case Zero or Diagonal option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
+| primal_infeasibility_solving        | False                              | If set to true, it solves the closest primal feasible problem if primal infeasibility is detected.
 
 \subsection OverviewInitialGuess The different initial guesses
 
@@ -464,6 +480,8 @@ The result subclass is composed of:
 * x: a primal solution,
 * y: a Lagrange optimal multiplier for equality constraints,
 * z: a Lagrange optimal multiplier for inequality constraints,
+* se: the optimal shift in $$\ell_2$$ with respect to equality constraints,
+* si: the optimal shift in $$\ell_2$$ with respect to inequality constraints,
 * info: a subclass which containts some information about the solver's execution.
 
 If the solver has solved the problem, the triplet (x,y,z) satisfies:
@@ -480,6 +498,33 @@ $$\begin{equation}\label{eq:approx_qp_sol_rel}
 \end{aligned}
 \end{equation}$$
 accordingly with the parameters eps_abs and eps_rel chosen by the user.
+
+If the problem is primal infeasible and you have enable the solver to solve the closest feasible problem, then (x,y,z) will satisfies
+$$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
+\begin{aligned}
+    &\left\{
+    \begin{array}{ll}
+        \|Hx+g+A^Ty+C^Tz\|_{\infty} \leq  \epsilon_{\text{abs}} + \epsilon_{\text{rel}}\max(\|Hx\|_{\infty},\|A^Ty\|_{\infty},\|C^Tz\|_{\infty},\|g\|_{\infty}), \\\
+        \|A^\top(Ax-b)+C^\top[Cx-u]_+\|_{\infty} \leq \|A^\top 1 + C^\top 1\|_{\infty}*\epsilon_{\text{abs}} +\epsilon_{\text{rel}}\max(\|Ax\|_{\infty},\|b\|_{\infty}), \\\
+    \end{array}
+    \right.
+\end{aligned}
+\end{equation}$$
+
+(se, si) stands in this context for the optimal shifts in $$\ell_2$$ sense which enables recovering a primal feasible problem. More precisely, they are derived such that
+
+$$\begin{equation}\label{eq:QP_primal_feasible}\tag{QP_feas}
+\begin{aligned}
+    \min_{x\in\mathbb{R}^{d}} & \quad \frac{1}{2}x^{T}Hx+g^{T}x \\\
+    \text{s.t.}&\left\{
+    \begin{array}{ll}
+         Ax = b+se, \\\
+        Cx \leq u+si, \\\
+    \end{array}
+    \right.
+\end{aligned}
+\end{equation}\\\
+defines a primal feasible problem.
 
 Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first $$n_in$$ elements of z correspond to multipliers associated to the linear inequality formed with $$C$$ matrix, whereas the last $$d$$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
 
