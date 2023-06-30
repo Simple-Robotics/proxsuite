@@ -119,6 +119,7 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(where ccache)
+        ls C:\\Miniconda3\\envs\\proxsuite\\Library\\lib
         git submodule update --init
         mkdir build
         cd build
@@ -129,6 +130,7 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(where ccache)
+        ls C:\\Miniconda3\\envs\\proxsuite\\Library\\lib
         git submodule update --init
         mkdir build
         cd build
