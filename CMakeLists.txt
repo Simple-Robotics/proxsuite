@@ -49,7 +49,7 @@ project(${PROJECT_NAME} ${PROJECT_ARGS})
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
 
-if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.26.0")
+if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.26.0" OR WIN32)
   set(CMAKE_MODULE_PATH
       ${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/OpenMP
       ${CMAKE_MODULE_PATH})
