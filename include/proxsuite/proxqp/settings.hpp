@@ -130,6 +130,8 @@ struct Settings
   T alpha_gpdal;
 
   SparseBackend sparse_backend;
+  bool primal_infeasibility_solving;
+  isize frequence_infeasibility_check;
   /*!
    * Default constructor.
    * @param default_rho default rho parameter of result class
@@ -189,6 +191,10 @@ struct Settings
    * used.
    * @param sparse_backend Default automatic. User can choose between sparse
    * cholesky or iterative matrix free sparse backend.
+   * @param primal_infeasibility_solving solves the closest primal feasible
+   * problem if activated
+   * @param frequence_infeasibility_check frequence at which infeasibility is
+   * checked
    */
 
   Settings(
@@ -230,12 +236,14 @@ struct Settings
     T eps_duality_gap_rel = 0,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
-    T eps_primal_inf = 1.E-4,
-    T eps_dual_inf = 1.E-4,
+    T eps_primal_inf = 1.E-11,
+    T eps_dual_inf = 1.E-11,
     bool bcl_update = true,
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
     T alpha_gpdal = 0.95,
-    SparseBackend sparse_backend = SparseBackend::Automatic)
+    SparseBackend sparse_backend = SparseBackend::Automatic,
+    bool primal_infeasibility_solving = false,
+    isize frequence_infeasibility_check = 20)
     : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
@@ -275,6 +283,8 @@ struct Settings
     , merit_function_type(merit_function_type)
     , alpha_gpdal(alpha_gpdal)
     , sparse_backend(sparse_backend)
+    , primal_infeasibility_solving(primal_infeasibility_solving)
+    , frequence_infeasibility_check(frequence_infeasibility_check)
   {
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
@@ -335,7 +345,11 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.bcl_update == settings2.bcl_update &&
     settings1.merit_function_type == settings2.merit_function_type &&
     settings1.alpha_gpdal == settings2.alpha_gpdal &&
-    settings1.sparse_backend == settings2.sparse_backend;
+    settings1.sparse_backend == settings2.sparse_backend &&
+    settings1.primal_infeasibility_solving ==
+      settings2.primal_infeasibility_solving &&
+    settings1.frequence_infeasibility_check ==
+      settings2.frequence_infeasibility_check;
   return value;
 }
 

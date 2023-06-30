@@ -18,9 +18,11 @@ enum struct QPSolverOutput
 {
   PROXQP_SOLVED,           // the problem is solved.
   PROXQP_MAX_ITER_REACHED, // the maximum number of iterations has been reached.
-  PROXQP_PRIMAL_INFEASIBLE, // the problem is primal infeasible.
-  PROXQP_DUAL_INFEASIBLE,   // the problem is dual infeasible.
-  PROXQP_NOT_RUN            // the solver has not been run yet.
+  PROXQP_PRIMAL_INFEASIBLE,              // the problem is primal infeasible.
+  PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE, // the closest (in L2 sense) feasible
+                                         // problem is solved.
+  PROXQP_DUAL_INFEASIBLE,                // the problem is dual infeasible.
+  PROXQP_NOT_RUN                         // the solver has not been run yet.
 };
 // INITIAL GUESS STATUS
 enum struct InitialGuessStatus

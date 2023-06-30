@@ -70,6 +70,11 @@ struct Results
   sparse::Vec<T> y;
   sparse::Vec<T> z;
 
+  sparse::Vec<T> se; // optimal shift to the closest feasible problem wrt
+                     // equality constraints
+  sparse::Vec<T> si; // optimal shift to the closest feasible problem wrt
+                     // inequality constraints
+
   Info<T> info;
 
   ////// SOLUTION STATUS
@@ -86,15 +91,20 @@ struct Results
           DenseBackend dense_backend = DenseBackend::PrimalDualLDLT)
     : x(dim)
     , y(n_eq)
+    , se(n_eq)
   {
     if (box_constraints) {
       z.resize(dim + n_in);
+      si.resize(dim + n_in);
     } else {
       z.resize(n_in);
+      si.resize(n_in);
     }
     x.setZero();
     y.setZero();
     z.setZero();
+    se.setZero();
+    si.setZero();
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
         info.rho = 1e-6;
@@ -134,6 +144,8 @@ struct Results
     x.setZero();
     y.setZero();
     z.setZero();
+    se.setZero();
+    si.setZero();
     cold_start(settings);
   }
   void cleanup_statistics()
@@ -174,6 +186,8 @@ struct Results
     x.setZero();
     y.setZero();
     z.setZero();
+    se.setZero();
+    si.setZero();
     cleanup_statistics();
   }
 };

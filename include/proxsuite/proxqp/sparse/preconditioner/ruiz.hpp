@@ -115,6 +115,7 @@ ruiz_scale_qp_in_place( //
   QpViewMut<T, I> qp,
   T epsilon,
   isize max_iter,
+  bool preconditioning_for_infeasible_problems,
   Symmetry sym,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
@@ -181,32 +182,41 @@ ruiz_scale_qp_in_place( //
       }
     }
     using namespace proxsuite::linalg::sparse::util;
-    for (usize j = 0; j < usize(n_eq); ++j) {
-      T a_row_norm = 0;
-      qp.AT.to_eigen();
-      usize col_start = qp.AT.col_start(j);
-      usize col_end = qp.AT.col_end(j);
+    if (preconditioning_for_infeasible_problems) {
+      delta.tail(n_eq + n_in).setOnes();
+    } else {
+      for (usize j = 0; j < usize(n_eq); ++j) {
+        T a_row_norm = 0;
+        qp.AT.to_eigen();
+        usize col_start = qp.AT.col_start(j);
+        usize col_end = qp.AT.col_end(j);
 
-      for (usize p = col_start; p < col_end; ++p) {
-        T aji = fabs(ATx[p]);
-        a_row_norm = std::max(a_row_norm, aji);
+        for (usize p = col_start; p < col_end; ++p) {
+          T aji = fabs(ATx[p]);
+          a_row_norm = std::max(a_row_norm, aji);
+        }
+        delta(n + isize(j)) = T(1) / (machine_eps + sqrt(a_row_norm));
       }
 
-      delta(n + isize(j)) = T(1) / (machine_eps + sqrt(a_row_norm));
-    }
+      for (usize j = 0; j < usize(n_in); ++j) {
+        T c_row_norm = 0;
+        usize col_start = qp.CT.col_start(j);
+        usize col_end = qp.CT.col_end(j);
 
-    for (usize j = 0; j < usize(n_in); ++j) {
-      T c_row_norm = 0;
-      usize col_start = qp.CT.col_start(j);
-      usize col_end = qp.CT.col_end(j);
-
-      for (usize p = col_start; p < col_end; ++p) {
-        T cji = fabs(CTx[p]);
-        c_row_norm = std::max(c_row_norm, cji);
+        for (usize p = col_start; p < col_end; ++p) {
+          T cji = fabs(CTx[p]);
+          c_row_norm = std::max(c_row_norm, cji);
+        }
+        delta(n + n_eq + isize(j)) = T(1) / (machine_eps + sqrt(c_row_norm));
       }
-
-      delta(n + n_eq + isize(j)) = T(1) / (machine_eps + sqrt(c_row_norm));
     }
+
+    // removed as non deterministic when using avx
+    // https://gitlab.com/libeigen/eigen/-/issues/1728
+    // if (preconditioning_for_infeasible_problems) {
+    //   T mean = delta.segment(n, n_eq_in).mean();
+    //   delta.segment(n,n_eq_in).setConstant(mean);
+    // }
 
     // normalize A
     for (usize j = 0; j < usize(n_eq); ++j) {
@@ -362,6 +372,7 @@ struct RuizEquilibration
 
   void scale_qp_in_place(QpViewMut<T, I> qp,
                          bool execute_preconditioner,
+                         bool preconditioning_for_infeasible_problems,
                          const isize max_iter,
                          const T epsilon,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
@@ -373,6 +384,7 @@ struct RuizEquilibration
         qp,
         epsilon,
         max_iter,
+        preconditioning_for_infeasible_problems,
         sym,
         stack);
     } else {

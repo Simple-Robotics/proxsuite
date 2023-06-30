@@ -529,6 +529,7 @@ The solver has five status:
 * PROXQP_SOLVED: the problem is solved.
 * PROXQP_MAX_ITER_REACHED: the maximum number of iterations has been reached.
 * PROXQP_PRIMAL_INFEASIBLE: the problem is primal infeasible.
+* PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: the closest feasible problem in L2 sense is solved.
 * PROXQP_DUAL_INFEASIBLE: the problem is dual infeasible.
 * PROXQP_NOT_RUN: the solver has not been run yet.
 
