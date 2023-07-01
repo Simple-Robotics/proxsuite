@@ -10,14 +10,14 @@
   <a href="https://anaconda.org/conda-forge/proxsuite"><img src="https://anaconda.org/conda-forge/proxsuite/badges/version.svg" alt="Conda version" height="20"></a>
 </p>
 
-**ProxSuite** is a collection of open-source, numerically robust, precise and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted in revisited primal-dual proximal algorithms.
-Through **ProxSuite**, we aim to offer the community scalable optimizers that can deal with dense, sparse or matrix-free problems. While the first targeted application is Robotics, **ProxSuite** can be used in other contexts without limits.
+**ProxSuite** is a collection of open-source, numerically robust, precise, and efficient numerical solvers (e.g., LPs, QPs, etc.) rooted in revisited primal-dual proximal algorithms.
+Through **ProxSuite**, we aim to offer the community scalable optimizers that deal with dense, sparse, or matrix-free problems. While the first targeted application is Robotics, **ProxSuite** can be used in other contexts without limits.
 
 **ProxSuite** is actively developped and supported by the [Willow](https://www.di.ens.fr/willow/) and [Sierra](https://www.di.ens.fr/sierra/) research groups, joint research teams between [Inria](https://www.inria.fr/en), [École Normale Supérieure de Paris](https://www.ens.fr) and [Centre National de la Recherche Scientifique](https://www.cnrs.fr) localized in France.
 
 **ProxSuite** is already integrated into:
 - [CVXPY](https://www.cvxpy.org/) modeling language for convex optimization problems,
-- [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming),
+- [CasADi](https://web.casadi.org/)'s symbolic framework for numerical optimization in general and optimal control. ProxQP is available in CasADi as a plugin to [solve quadratic programs](https://web.casadi.org/docs/#quadratic-programming),
 - [TSID](https://github.com/stack-of-tasks/tsid): robotic software for efficient robot inverse dynamics with contacts and based on [Pinocchio](https://github.com/stack-of-tasks/pinocchio).
 
 We are ready to integrate **ProxSuite** within other optimization ecosystems.
@@ -31,7 +31,7 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
 
 **Proxsuite** is versatile, offering through a unified API advanced algorithms specialized for efficiently exploiting problem structures:
 
-   - dense, sparse and matrix-free matrix factorization backends,
+   - dense, sparse, and matrix-free matrix factorization backends,
    - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results),
    - dedicated features for handling more efficiently box constraints, linear programs, QP with diagonal Hessian, or with far more constraints than primal variables.
 
@@ -41,11 +41,11 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
    - C++ 14/17/20 compliant,
    - Python and Julia bindings for easy code prototyping without sacrificing performance.
 
-**Proxsuite** has a dedicated feature for solving batch of QPs.
-**Proxsuite** has a dedicated feature for solving closest feasible QPs (in $$\ell_2$$ sense) if they appear to be primal infeasible.
+**Proxsuite** has a dedicated feature for solving batches of QPs.
+**Proxsuite** has a dedicated feature for solving the closest feasible QPs if they appear to be primal infeasible.
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
-**Proxsuite** is supported and tested on Windows, Mac OS X, Unix and Linux.
+**Proxsuite** is supported and tested on Windows, Mac OS X, Unix, and Linux.
 
 ## Documentation
 
@@ -53,7 +53,7 @@ The online **ProxSuite** documentation of the last release is available [here](h
 
 ## Getting started
 
-**ProxSuite** is distributed on many well-known package managers.
+**ProxSuite** is distributed to many well-known package managers.
 
 ### Quick install with <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:
 
@@ -81,7 +81,7 @@ This approach is available on Linux and Mac OS X.
 Installation from source is presented [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
 
 ### Compiling a first example program
-For the fastest performance use the following command to enable vectorization when compiling the simple [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/cpp/first_example_dense.cpp).
+For the fastest performance, use the following command to enable vectorization when compiling the simple [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/cpp/first_example_dense.cpp).
 ```bash
 g++ -O3 -march=native -DNDEBUG -std=gnu++17 -DPROXSUITE_VECTORIZE examples/first_example_dense.cpp -o first_example_dense $(pkg-config --cflags proxsuite)
 ```
@@ -103,7 +103,7 @@ target_link_libraries(example_with_full_vectorization_support PUBLIC proxsuite::
 target_compile_options(example_with_full_vectorization_support PUBLIC "-march=native")
 ```
 If you have compiled ProxSuite with the vectorization support, you might also use the CMake target `proxsuite::proxsuite-vectorized` to also link against SIMDE.
-Don't forget to use `-march=native` for getting the best performance.
+Don't forget to use `-march=native` to get the best performance.
 
 ## **ProxQP**
 
@@ -133,7 +133,7 @@ For dense Convex Quadratic Programs with inequality and equality constraints, wh
   <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/time_series_barplot_Random Mixed QP_dense_eps_abs_1e-6.jpg" width="600" alt="Random Mixed QP_dense_eps_abs_1e-6" align="center"/>
 </p>
 
-On the y-axis, you can see timings in seconds, and on the x-axis dimension wrt to the primal variable of the random Quadratic problems generated (the number of constraints of the generated problem is half the size of its primal dimension). For every dimension, the problem is generated over different seeds and timings are obtained as averages over successive runs for the same problems. This chart shows for every benchmarked solver and random Quadratic program generated, barplot timings including median (as a dot) and minimal and maximal values obtained (defining the amplitude of the bar). You can see that **ProxQP** is always below over solvers, which means it is the quickest for this test.
+On the y-axis, you can see timings in seconds, and on the x-axis dimension wrt to the primal variable of the random Quadratic problems generated (the number of constraints of the generated problem is half the size of its primal dimension). For every dimension, the problem is generated over different seeds, and timings are obtained as averages over successive runs for the same problems. This chart shows for every benchmarked solver and random Quadratic program generated, barplot timings, including median (as a dot) and minimal and maximal values obtained (defining the amplitude of the bar). You can see that **ProxQP** is always below over solvers, which means it is the quickest for this test.
 
 For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Problems/marmes.shtml), when asking for high accuracy (e.g., 1e-9), one obtains the results below.
 
@@ -141,7 +141,7 @@ For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Pr
   <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/performance_profile_maros_meszaros_problems_high_accuracy.jpg" width="600" alt="maros_meszaros_problems_high_accuracy" align="center"/>
 </p>
 
-The chart above reports the performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on y-axis) as a function of certain runtime (on x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher on the chart the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=1$), and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
+The chart above reports the performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on the y-axis) as a function of certain runtime (on the x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher, the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=1$) and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
 
 *Note: All these results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.*
 
