@@ -157,6 +157,7 @@ setup_equilibration(Workspace<T>& qpwork,
                          qpsettings.preconditioner_accuracy,
                          hessian_type,
                          box_constraints,
+                         qpsettings.primal_infeasibility_solving,
                          stack);
   qpwork.correction_guess_rhs_g = infty_norm(qpwork.g_scaled);
 }

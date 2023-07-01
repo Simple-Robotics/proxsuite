@@ -37,6 +37,7 @@ ruiz_scale_qp_in_place( //
   Symmetry sym,
   HessianType HessianType,
   const bool box_constraints,
+  bool preconditioning_for_infeasible_problems,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
   T c(1);
@@ -165,25 +166,29 @@ ruiz_scale_qp_in_place( //
           }
           break;
       }
-      for (isize k = 0; k < n_eq; ++k) {
-        T aux = sqrt(infty_norm(A.row(k)));
-        if (aux == T(0)) {
-          delta(n + k) = T(1);
-        } else {
-          delta(n + k) = T(1) / (aux + machine_eps);
+      if (preconditioning_for_infeasible_problems) {
+        delta.tail(n_eq + n_constraints).setOnes();
+      } else {
+        for (isize k = 0; k < n_eq; ++k) {
+          T aux = sqrt(infty_norm(A.row(k)));
+          if (aux == T(0)) {
+            delta(n + k) = T(1);
+          } else {
+            delta(n + k) = T(1) / (aux + machine_eps);
+          }
         }
-      }
-      for (isize k = 0; k < n_in; ++k) {
-        T aux = sqrt(infty_norm(C.row(k)));
-        if (aux == T(0)) {
-          delta(k + n + n_eq) = T(1);
-        } else {
-          delta(k + n + n_eq) = T(1) / (aux + machine_eps);
+        for (isize k = 0; k < n_in; ++k) {
+          T aux = sqrt(infty_norm(C.row(k)));
+          if (aux == T(0)) {
+            delta(k + n + n_eq) = T(1);
+          } else {
+            delta(k + n + n_eq) = T(1) / (aux + machine_eps);
+          }
         }
-      }
-      if (box_constraints) {
-        for (isize k = 0; k < n; ++k) {
-          delta(k + n + n_eq + n_in) = T(1) / sqrt(i_scaled[k] + machine_eps);
+        if (box_constraints) {
+          for (isize k = 0; k < n; ++k) {
+            delta(k + n + n_eq + n_in) = T(1) / sqrt(i_scaled[k] + machine_eps);
+          }
         }
       }
     }
@@ -394,19 +399,22 @@ struct RuizEquilibration
                          const T epsilon,
                          const HessianType& HessianType,
                          const bool box_constraints,
+                         const bool preconditioning_for_infeasible_problems,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
     if (execute_preconditioner) {
       delta.setOnes();
-      c = detail::ruiz_scale_qp_in_place({ proxqp::from_eigen, delta },
-                                         logger_ptr,
-                                         qp,
-                                         epsilon,
-                                         max_iter,
-                                         sym,
-                                         HessianType,
-                                         box_constraints,
-                                         stack);
+      c =
+        detail::ruiz_scale_qp_in_place({ proxqp::from_eigen, delta },
+                                       logger_ptr,
+                                       qp,
+                                       epsilon,
+                                       max_iter,
+                                       sym,
+                                       HessianType,
+                                       box_constraints,
+                                       preconditioning_for_infeasible_problems,
+                                       stack);
     } else {
 
       auto H = qp.H.to_eigen();

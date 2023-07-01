@@ -83,6 +83,10 @@ exposeSettings(pybind11::module_ m)
     .def_readwrite("bcl_update", &Settings<T>::bcl_update)
     .def_readwrite("merit_function_type", &Settings<T>::merit_function_type)
     .def_readwrite("alpha_gpdal", &Settings<T>::alpha_gpdal)
+    .def_readwrite("primal_infeasibility_solving",
+                   &Settings<T>::primal_infeasibility_solving)
+    .def_readwrite("frequence_infeasibility_check",
+                   &Settings<T>::frequence_infeasibility_check)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
     .def(pybind11::pickle(

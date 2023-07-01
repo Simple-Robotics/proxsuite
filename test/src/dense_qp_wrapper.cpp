@@ -7149,3 +7149,61 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 }
+TEST_CASE("ProxQP::dense: test primal infeasibility solving")
+{
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5);
+  utils::rand::set_seed(1);
+  dense::isize dim = 20;
+
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  for (isize i = 0; i < 20; ++i) {
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    proxqp::dense::QP<T> qp(dim, n_eq, n_in);
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = 0;
+    // create infeasible problem
+    qp_random.b.array() += T(10.);
+    qp_random.u.array() -= T(100.);
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.primal_infeasibility_solving = true;
+    qp.settings.eps_primal_inf = T(1.E-4);
+    qp.settings.eps_dual_inf = T(1.E-4);
+    qp.settings.verbose = true;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+    qp.solve();
+
+    proxsuite::proxqp::utils::Vec<T> rhs_dim(dim);
+    proxsuite::proxqp::utils::Vec<T> rhs_n_eq(n_eq);
+    rhs_n_eq.setOnes();
+    proxsuite::proxqp::utils::Vec<T> rhs_n_in(n_in);
+    rhs_n_in.setOnes();
+    rhs_dim.noalias() =
+      qp_random.A.transpose() * rhs_n_eq + qp_random.C.transpose() * rhs_n_in;
+    T scaled_eps = (rhs_dim).lpNorm<Eigen::Infinity>() * eps_abs;
+
+    T pri_res =
+      (qp_random.A.transpose() * (qp_random.A * qp.results.x - qp_random.b) +
+       qp_random.C.transpose() *
+         (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+          helpers::negative_part(qp_random.C * qp.results.x - qp_random.l)))
+        .lpNorm<Eigen::Infinity>();
+    T dua_res = (qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x +
+                 qp_random.g + qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
+                  .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(pri_res <= scaled_eps);
+    DOCTEST_CHECK(dua_res <= eps_abs);
+  }
+}

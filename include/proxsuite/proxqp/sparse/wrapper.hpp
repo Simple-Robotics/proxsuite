@@ -719,7 +719,8 @@ solve(
     proxsuite::proxqp::SparseBackend::Automatic,
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt)
+  optional<T> eps_duality_gap_rel = nullopt,
+  bool primal_infeasibility_solving = false)
 {
 
   isize n(0);
@@ -759,6 +760,7 @@ solve(
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.sparse_backend = sparse_backend;
+  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
   Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
   Qp.solve(x, y, z);
 

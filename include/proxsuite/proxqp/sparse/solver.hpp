@@ -735,6 +735,7 @@ qp_solve(Results<T>& results,
     }
   }
   T rhs_duality_gap(0);
+  T scaled_eps(settings.eps_abs);
 
   for (isize iter = 0; iter < settings.max_iter; ++iter) {
 
@@ -763,7 +764,7 @@ qp_solve(Results<T>& results,
 
       // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
       auto is_primal_feasible = [&](T primal_feasibility_lhs) -> bool {
-        T rhs_pri = settings.eps_abs;
+        T rhs_pri = scaled_eps;
         if (settings.eps_rel != 0) {
           rhs_pri +=
             settings.eps_rel * std::max({ primal_feasibility_eq_rhs_0,
@@ -791,6 +792,7 @@ qp_solve(Results<T>& results,
         (primal_feasibility_lhs, dual_feasibility_lhs),
         detail::unscaled_primal_dual_residual(work,
                                               results,
+                                              settings,
                                               primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
@@ -856,13 +858,23 @@ qp_solve(Results<T>& results,
                 settings.eps_duality_gap_rel * rhs_duality_gap) {
             results.info.pri_res = primal_feasibility_lhs;
             results.info.dua_res = dual_feasibility_lhs;
-            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            if (settings.primal_infeasibility_solving) {
+              results.info.status =
+                QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+            } else {
+              results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            }
             break;
           }
         } else {
           results.info.pri_res = primal_feasibility_lhs;
           results.info.dua_res = dual_feasibility_lhs;
-          results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          if (settings.primal_infeasibility_solving) {
+            results.info.status =
+              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+          } else {
+            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          }
           break;
         }
       }
@@ -1335,52 +1347,75 @@ qp_solve(Results<T>& results,
                       << "| inner residual=" << err_in << " | alpha=" << alpha
                       << std::endl;
           }
+          if (iter_inner % settings.frequence_infeasibility_check == 0 ||
+              settings.primal_infeasibility_solving) {
+            // compute primal and dual infeasibility criteria
+            bool is_primal_infeasible = proxsuite::proxqp::sparse::detail::
+              global_primal_residual_infeasibility(
+                VectorViewMut<T>{ from_eigen, ATdy },
+                VectorViewMut<T>{ from_eigen, CTdz },
+                VectorViewMut<T>{ from_eigen, dy },
+                VectorViewMut<T>{ from_eigen, dz },
+                qp_scaled.as_const(),
+                settings,
+                precond);
+            bool is_dual_infeasible = proxsuite::proxqp::sparse::detail::
+              global_dual_residual_infeasibility(
+                VectorViewMut<T>{ from_eigen, Adx },
+                VectorViewMut<T>{ from_eigen, Cdx },
+                VectorViewMut<T>{ from_eigen, Hdx },
+                VectorViewMut<T>{ from_eigen, dx },
+                qp_scaled.as_const(),
+                settings,
+                data,
+                precond);
+            if (is_primal_infeasible) {
+              results.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+              if (!settings.primal_infeasibility_solving) {
+                results.info.iter += iter_inner + 1;
+                dw_prev = dw;
+                break;
+              }
+            } else if (is_dual_infeasible) {
+              if (!settings.primal_infeasibility_solving) {
+                results.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+                results.info.iter += iter_inner + 1;
+                dw_prev = dw;
+                break;
+              }
+            }
+          }
           if (err_in <= bcl_eta_in) {
             results.info.iter += iter_inner + 1;
             return;
-          }
-
-          // compute primal and dual infeasibility criteria
-          bool is_primal_infeasible = proxsuite::proxqp::sparse::detail::
-            global_primal_residual_infeasibility(
-              VectorViewMut<T>{ from_eigen, ATdy },
-              VectorViewMut<T>{ from_eigen, CTdz },
-              VectorViewMut<T>{ from_eigen, dy },
-              VectorViewMut<T>{ from_eigen, dz },
-              qp_scaled.as_const(),
-              settings,
-              precond);
-          bool is_dual_infeasible = proxsuite::proxqp::sparse::detail::
-            global_dual_residual_infeasibility(
-              VectorViewMut<T>{ from_eigen, Adx },
-              VectorViewMut<T>{ from_eigen, Cdx },
-              VectorViewMut<T>{ from_eigen, Hdx },
-              VectorViewMut<T>{ from_eigen, dx },
-              qp_scaled.as_const(),
-              settings,
-              data,
-              precond);
-          if (is_primal_infeasible) {
-            results.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
-            dw_prev = dw;
-            break;
-          } else if (is_dual_infeasible) {
-            results.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
-            dw_prev = dw;
-            break;
           }
         }
       };
       // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
       primal_dual_newton_semi_smooth();
-      if (results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ||
+      if ((results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
+           !settings.primal_infeasibility_solving) ||
           results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
         // certificate of infeasibility
         results.x = dw_prev.head(data.dim);
         results.y = dw_prev.segment(data.dim, data.n_eq);
         results.z = dw_prev.tail(data.n_in);
+        // NOTE: values are unscaled at the end, so do the certificates of
+        // infeasibility
         break;
+      }
+      if (scaled_eps == settings.eps_abs &&
+          settings.primal_infeasibility_solving &&
+          results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+        LDLT_TEMP_VEC(T, rhs_dim, n, stack);
+        LDLT_TEMP_VEC(T, rhs_n_eq, n_eq, stack);
+        LDLT_TEMP_VEC(T, rhs_n_in, n_in, stack);
+        rhs_n_eq.setConstant(T(1));
+        rhs_n_in.setConstant(T(1));
+        rhs_dim.noalias() =
+          AT_scaled.to_eigen() * rhs_n_eq + CT_scaled.to_eigen() * rhs_n_in;
+        scaled_eps = infty_norm(rhs_dim) * settings.eps_abs;
       }
       // VEG bind : met le résultat tuple de unscaled_primal_dual_residual dans
       // (primal_feasibility_lhs_new, dual_feasibility_lhs_new) en guessant leur
@@ -1390,6 +1425,7 @@ qp_solve(Results<T>& results,
         (primal_feasibility_lhs_new, dual_feasibility_lhs_new),
         detail::unscaled_primal_dual_residual(work,
                                               results,
+                                              settings,
                                               primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
@@ -1416,13 +1452,26 @@ qp_solve(Results<T>& results,
                 settings.eps_duality_gap_rel * rhs_duality_gap) {
             results.info.pri_res = primal_feasibility_lhs_new;
             results.info.dua_res = dual_feasibility_lhs_new;
-            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            if (settings.primal_infeasibility_solving &&
+                results.info.status ==
+                  QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+              results.info.status =
+                QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+            } else {
+              results.info.status = QPSolverOutput::PROXQP_SOLVED;
+            }
             break;
           }
         } else {
           results.info.pri_res = primal_feasibility_lhs_new;
           results.info.dua_res = dual_feasibility_lhs_new;
-          results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          if (settings.primal_infeasibility_solving &&
+              results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+            results.info.status =
+              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+          } else {
+            results.info.status = QPSolverOutput::PROXQP_SOLVED;
+          }
           break;
         }
       }
@@ -1461,6 +1510,7 @@ qp_solve(Results<T>& results,
         (_, dual_feasibility_lhs_new_2),
         detail::unscaled_primal_dual_residual(work,
                                               results,
+                                              settings,
                                               primal_residual_eq_scaled,
                                               primal_residual_in_scaled_lo,
                                               primal_residual_in_scaled_up,
@@ -1599,8 +1649,14 @@ qp_solve(Results<T>& results,
                   << "Dual infeasible" << std::endl;
         break;
       }
-      default: {
-        assert(false && "Should never happened");
+      case QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
+        std::cout << "status:       "
+                  << "Solved closest primal feasible" << std::endl;
+        break;
+      }
+      case QPSolverOutput::PROXQP_NOT_RUN: {
+        std::cout << "status:       "
+                  << "Solver not run" << std::endl;
         break;
       }
     }

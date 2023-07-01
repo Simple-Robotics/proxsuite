@@ -25,6 +25,8 @@ exposeResults(pybind11::module_ m)
     .value("PROXQP_SOLVED", QPSolverOutput::PROXQP_SOLVED)
     .value("PROXQP_MAX_ITER_REACHED", QPSolverOutput::PROXQP_MAX_ITER_REACHED)
     .value("PROXQP_PRIMAL_INFEASIBLE", QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
+    .value("PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE",
+           QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE)
     .value("PROXQP_DUAL_INFEASIBLE", QPSolverOutput::PROXQP_DUAL_INFEASIBLE)
     .value("PROXQP_NOT_RUN", QPSolverOutput::PROXQP_NOT_RUN)
     .export_values();
@@ -66,6 +68,14 @@ exposeResults(pybind11::module_ m)
       Results<T>,
       z,
       "The dual solution associated to the inequality constraints.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(
+      Results<T>,
+      se,
+      "Optimal shift to the closest feasible problem wrt equality constraints.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(Results<T>,
+                                      si,
+                                      "Pptimal shift to the closest feasible "
+                                      "problem wrt inequality constraints.")
     .def_readwrite("info", &Results<T>::info)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)

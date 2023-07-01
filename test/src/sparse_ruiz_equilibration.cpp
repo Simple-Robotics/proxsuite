@@ -71,6 +71,7 @@ TEST_CASE("upper part")
       { proxsuite::linalg::sparse::from_eigen, u_scaled },
     },
     execute_preconditioner,
+    settings.primal_infeasibility_solving,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
@@ -93,6 +94,7 @@ TEST_CASE("upper part")
     settings.preconditioner_accuracy,
     HessianType,
     box_constraints,
+    settings.primal_infeasibility_solving,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));
@@ -159,6 +161,7 @@ TEST_CASE("lower part")
       { proxsuite::linalg::sparse::from_eigen, u_scaled },
     },
     execute_preconditioner,
+    settings.primal_infeasibility_solving,
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
@@ -184,6 +187,7 @@ TEST_CASE("lower part")
     settings.preconditioner_accuracy,
     HessianType,
     box_constraints,
+    settings.primal_infeasibility_solving,
     stack);
 
   CHECK(H_scaled.toDense().isApprox(H_scaled_dense));

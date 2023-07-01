@@ -720,6 +720,7 @@ struct Workspace
     DynStackMut stack = stack_mut();
     precond.scale_qp_in_place(qp_scaled,
                               execute_or_not,
+                              settings.primal_infeasibility_solving,
                               settings.preconditioner_max_iter,
                               settings.preconditioner_accuracy,
                               stack);
