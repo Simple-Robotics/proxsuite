@@ -130,13 +130,44 @@ add_header_group(PYWRAP_HEADERS)
 add_source_group(PYWRAP_SOURCES)
 
 # --- INSTALL SCRIPTS
-set(PYTHON_FILES __init__.py)
 
-foreach(python ${PYTHON_FILES})
-  python_build(${PROJECT_NAME} ${python})
-  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/proxsuite/${python}"
+# On Windows, we need to enforce the environment variable KMP_DUPLICATE_LIB_OK
+# to True to to allow the program to continue to execute with OpenMP support
+if(WIN32
+   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+   AND BUILD_WITH_OPENMP_SUPPORT)
+  set(OPENMP_KMP_DUPLICATE_LIB_OK_SCRIPT
+      "import os\n" "os.environ[\"KMP_DUPLICATE_LIB_OK\"] = \"1\"\n\n")
+
+  if(CMAKE_GENERATOR MATCHES "Visual Studio|Xcode")
+    set(PYTHON_MODULE_DIR "${CMAKE_CURRENT_BINARY_DIR}/proxsuite/$<CONFIG>")
+  else()
+    set(PYTHON_MODULE_DIR "${CMAKE_CURRENT_BINARY_DIR}/proxsuite")
+  endif()
+
+  set(original_init_dot_py_file ${CMAKE_CURRENT_LIST_DIR}/proxsuite/__init__.py)
+  set(generated_init_dot_py_file
+      ${CMAKE_CURRENT_BINARY_DIR}/proxsuite/__init__.py)
+  set(generated_init_dot_pyc_file ${PYTHON_MODULE_DIR}/__init__.pyc)
+
+  # Copy content of the __init__.py file
+  file(READ ${original_init_dot_py_file} INIT_CONTENT)
+  # Create a new __init__.py file containing both the content of __init__.py
+  # prepended with the OPENMP_KMP_DUPLICATE_LIB_OK_SCRIPT content
+  file(WRITE ${generated_init_dot_py_file}
+       ${OPENMP_KMP_DUPLICATE_LIB_OK_SCRIPT})
+  file(APPEND ${generated_init_dot_py_file} ${INIT_CONTENT})
+
+  python_build_file(${generated_init_dot_py_file}
+                    ${generated_init_dot_pyc_file})
+  install(FILES "${generated_init_dot_py_file}"
           DESTINATION ${${PYWRAP}_INSTALL_DIR})
-endforeach(python)
+
+else()
+  python_build(${PROJECT_NAME} __init__.py)
+  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/proxsuite/__init__.py"
+          DESTINATION ${${PYWRAP}_INSTALL_DIR})
+endif()
 
 python_build_get_target(compile_pyc)
 add_dependencies(python ${compile_pyc})
