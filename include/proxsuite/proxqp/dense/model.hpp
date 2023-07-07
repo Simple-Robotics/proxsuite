@@ -100,18 +100,16 @@ struct Model
 
   bool is_valid(const bool box_constraints)
   {
-#define PROXSUITE_CHECK_SIZE(size, expected_size)                              \
-  if (size != 0) {                                                             \
-    if (!(size == expected_size))                                              \
-      return false;                                                            \
-  }
-
     // check that all matrices and vectors of qpmodel have the correct size
     // and that H and C have expected properties
     PROXSUITE_CHECK_ARGUMENT_SIZE(g.size(), dim, "g has not the expected size.")
     PROXSUITE_CHECK_ARGUMENT_SIZE(b.size(), n_eq, "b has not the expected size.")
     PROXSUITE_CHECK_ARGUMENT_SIZE(l.size(), n_in, "l has not the expected size.")
     PROXSUITE_CHECK_ARGUMENT_SIZE(u.size(), n_in, "u has not the expected size.")
+    if (box_constraints) {
+      PROXSUITE_CHECK_ARGUMENT_SIZE(u_box.size(), dim, "u_box has not the expected size");
+      PROXSUITE_CHECK_ARGUMENT_SIZE(l_box.size(), dim, "l_box has not the expected size");
+    }
     if (H.size()) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(H.rows(), dim, "H has not the expected number of rows.");
       PROXSUITE_CHECK_ARGUMENT_SIZE(H.cols(), dim, "H has not the expected number of cols.");
@@ -127,7 +125,6 @@ struct Model
       PROXSUITE_THROW_PRETTY(C.isZero(), std::invalid_argument, "C is zero, while n_in != 0.");
     }
     return true;
-#undef PROXSUITE_CHECK_SIZE
   }
 };
 
