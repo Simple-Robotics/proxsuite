@@ -1201,14 +1201,14 @@ struct BatchQP
    * A vector of QP aligned of size BatchSize
    * specified by the user.
    */
-  std::vector<QP<T>> vector_qp;
+  std::vector<QP<T>> qp_vector;
   dense::isize m_size;
 
   explicit BatchQP(size_t batch_size)
   {
-    if (vector_qp.max_size() != batch_size) {
-      vector_qp.clear();
-      vector_qp.reserve(batch_size);
+    if (qp_vector.max_size() != batch_size) {
+      qp_vector.clear();
+      qp_vector.reserve(batch_size);
     }
     m_size = 0;
   }
@@ -1220,26 +1220,36 @@ struct BatchQP
                           dense::isize n_eq,
                           dense::isize n_in)
   {
-    vector_qp.emplace_back(dim, n_eq, n_in);
-    auto& qp = vector_qp.back();
+    qp_vector.emplace_back(dim, n_eq, n_in);
+    auto& qp = qp_vector.back();
     m_size++;
     return qp;
   };
 
   /*!
-   * Inserts a qp to the end of vector_qp
+   * Inserts a QP to the end of qp_vector
    */
-  void insert(QP<T>& qp) { vector_qp.emplace_back(qp); };
+  void insert(const QP<T>& qp) { qp_vector.emplace_back(qp); };
 
   /*!
-   * Access qp at position i
+   * Access QP at position i
    */
-  QP<T>& get(isize i) { return vector_qp.at(i); };
+  QP<T>& get(isize i) { return qp_vector.at(size_t(i)); };
 
   /*!
-   * Access qp at position i
+   * Access QP at position i
    */
-  QP<T>& operator[](isize i) { return vector_qp.at(i); };
+  const QP<T>& get(isize i) const { return qp_vector.at(size_t(i)); };
+
+  /*!
+   * Access QP at position i
+   */
+  QP<T>& operator[](isize i) { return get(i); };
+
+  /*!
+   * Access QP at position i
+   */
+  const QP<T>& operator[](isize i) const { return get(i); };
 
   dense::isize size() { return m_size; };
 };
