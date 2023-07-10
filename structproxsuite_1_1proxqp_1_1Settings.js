@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a19393e9f8fc2d5c4d7b2f1bae563b93d", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a569bfe88e857aada57394fb248b09914", null ],
     [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
     [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
     [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],
@@ -38,5 +38,9 @@ var structproxsuite_1_1proxqp_1_1Settings =
     [ "eps_primal_inf", "structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24", null ],
     [ "eps_dual_inf", "structproxsuite_1_1proxqp_1_1Settings.html#a8b11a745706778cfb57273d00e02391d", null ],
     [ "bcl_update", "structproxsuite_1_1proxqp_1_1Settings.html#a175999aba3e97149fe7cc5aedb48f262", null ],
-    [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc", null ]
+    [ "merit_function_type", "structproxsuite_1_1proxqp_1_1Settings.html#a07c273af5cc236360ec40cf27950474f", null ],
+    [ "alpha_gpdal", "structproxsuite_1_1proxqp_1_1Settings.html#a581173d5249a30e419b40c0a4828b643", null ],
+    [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc", null ],
+    [ "primal_infeasibility_solving", "structproxsuite_1_1proxqp_1_1Settings.html#a50bf93df04a4bb32e17e4754f3fb0525", null ],
+    [ "frequence_infeasibility_check", "structproxsuite_1_1proxqp_1_1Settings.html#abfacb34c8a7af08b9ad35eb83f20e1f7", null ]
 ];

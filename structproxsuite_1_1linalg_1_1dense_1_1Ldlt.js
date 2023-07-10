@@ -29,6 +29,7 @@ var structproxsuite_1_1linalg_1_1dense_1_1Ldlt =
     [ "factorize", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#aafb9d559bfcd8cf6748aac278b8ade43", null ],
     [ "solve_in_place_req", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a72c2a2db74739b66373c475efbce5ec7", null ],
     [ "solve_in_place", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a8ffae854d050e593d9e7ac948471416d", null ],
+    [ "dual_solve_in_place", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a47e8bc610146cdfa3aa8ecac40217c5b", null ],
     [ "dbg_reconstructed_matrix_internal", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a5755750aee18f3ba173ac7151a39bf19", null ],
     [ "dbg_reconstructed_matrix", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a720f987cb6b565fe9afbb9fc4646e9c7", null ]
 ];

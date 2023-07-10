@@ -7,5 +7,5 @@ var searchData=
   ['old_5frem_5fbytes_4',['old_rem_bytes',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html#a191d349f99672055ebbfa815a3ed92b6',1,'proxsuite::linalg::veg::_detail::_dynstack::cleanup']]],
   ['out_5',['out',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01true_01_4.html#abfb576bf73dfa079f954a7727f80b86f',1,'proxsuite::linalg::veg::_detail::_collections::CloneImpl&lt; true &gt;']]],
   ['out_5fend_6',['out_end',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneImpl_3_01true_01_4.html#a76c4609a924f95dff330d40d2473e4fc',1,'proxsuite::linalg::veg::_detail::_collections::CloneImpl&lt; true &gt;']]],
-  ['outer_5fstride_7',['outer_stride',['../structproxsuite_1_1proxqp_1_1MatrixView.html#a900ec68232bbadd8def8dfb1389ad2e0',1,'proxsuite::proxqp::MatrixView::outer_stride()'],['../structproxsuite_1_1proxqp_1_1MatrixViewMut.html#a7bf57ca1a97007f2ad7fb2ee2a2d5662',1,'proxsuite::proxqp::MatrixViewMut::outer_stride()']]]
+  ['outer_5fstride_7',['outer_stride',['../structproxsuite_1_1proxqp_1_1MatrixView.html#a900ec68232bbadd8def8dfb1389ad2e0',1,'proxsuite::proxqp::MatrixView::outer_stride'],['../structproxsuite_1_1proxqp_1_1MatrixViewMut.html#a7bf57ca1a97007f2ad7fb2ee2a2d5662',1,'proxsuite::proxqp::MatrixViewMut::outer_stride']]]
 ];

@@ -1,9 +1,15 @@
 <map id="proxsuite::proxqp::dense::preconditioner::RuizEquilibration&lt; T &gt;" name="proxsuite::proxqp::dense::preconditioner::RuizEquilibration&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="13,346,190,408"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,253,57,281"/>
-<area shape="rect" id="node3" title=" " alt="" coords="81,253,122,281"/>
-<area shape="rect" id="node4" title=" " alt="" coords="146,253,249,281"/>
-<area shape="rect" id="node5" title=" " alt="" coords="126,159,270,204"/>
-<area shape="rect" id="node6" title=" " alt="" coords="113,82,282,110"/>
-<area shape="rect" id="node7" title=" " alt="" coords="145,5,251,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="13,380,190,442"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,253,57,281"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="42,294,68,355,82,378,77,381,63,357,37,296"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="81,253,122,281"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,296,104,379,99,379,99,296"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="146,253,249,281"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="195,296,185,327,169,358,147,381,143,378,165,354,180,325,190,295"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="126,159,270,204"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="200,219,200,253,195,253,195,219"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="113,82,282,110"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="200,125,200,159,195,159,195,125"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="145,5,251,33"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="200,48,200,82,195,82,195,48"/>
 </map>

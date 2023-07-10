@@ -10,7 +10,7 @@ var searchData=
   ['eps_5fprimal_5finf_7',['eps_primal_inf',['../structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24',1,'proxsuite::proxqp::Settings']]],
   ['eps_5frefact_8',['eps_refact',['../structproxsuite_1_1proxqp_1_1Settings.html#a6100d1843aa26123a83f7b9b731c3a1b',1,'proxsuite::proxqp::Settings']]],
   ['eps_5frel_9',['eps_rel',['../structproxsuite_1_1proxqp_1_1Settings.html#a22e40696e71c11d41f0b08ba55f09bf3',1,'proxsuite::proxqp::Settings']]],
-  ['epsilon_10',['epsilon',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aa298aa59d9e6b56fafd1127c428df444',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration::epsilon()'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#ab1fbac8d89e1fe08564b831084d348fc',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration::epsilon()']]],
+  ['epsilon_10',['epsilon',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aa298aa59d9e6b56fafd1127c428df444',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration::epsilon'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#ab1fbac8d89e1fe08564b831084d348fc',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration::epsilon']]],
   ['err_11',['err',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#aed2a9e83eaa34c7825c918a218c6db5e',1,'proxsuite::proxqp::dense::Workspace']]],
   ['etree_12',['etree',['../structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html#a73593eee323c9f27a262c109f74bfb21',1,'proxsuite::proxqp::sparse::Ldlt']]]
 ];

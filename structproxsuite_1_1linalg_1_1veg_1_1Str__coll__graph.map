@@ -1,4 +1,5 @@
 <map id="proxsuite::linalg::veg::Str" name="proxsuite::linalg::veg::Str">
-<area shape="rect" id="node1" title=" " alt="" coords="28,132,162,177"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="5,5,185,67"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="28,132,162,177"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="5,5,185,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,82,98,131,92,131,92,82"/>
 </map>

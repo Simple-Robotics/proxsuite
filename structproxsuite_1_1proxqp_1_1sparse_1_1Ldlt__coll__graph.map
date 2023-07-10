@@ -1,7 +1,11 @@
 <map id="proxsuite::proxqp::sparse::Ldlt&lt; T, I &gt;" name="proxsuite::proxqp::sparse::Ldlt&lt; T, I &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="590,99,737,144"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="331,99,465,144"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,5,220,67"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,91,282,152"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,176,250,238"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="590,99,737,144"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="331,99,465,144"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="480,119,590,119,590,124,480,124"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,5,220,67"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="235,61,283,76,338,96,336,101,281,81,234,66"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,91,282,152"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="297,119,331,119,331,124,297,124"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,176,250,238"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="260,168,281,162,336,142,338,147,283,167,262,174"/>
 </map>

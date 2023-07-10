@@ -1,10 +1,17 @@
 <map id="proxsuite::linalg::veg::_detail::_collections::VecImpl&lt; T, A, Dtor, Copy &gt;" name="proxsuite::linalg::veg::_detail::_collections::VecImpl&lt; T, A, Dtor, Copy &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,289,219,350"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="267,5,561,135"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="346,159,482,203"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="315,228,513,273"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="347,297,481,342"/>
-<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="318,366,510,428"/>
-<area shape="rect" id="node7" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="347,452,481,497"/>
-<area shape="rect" id="node8" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="336,521,492,582"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,289,219,350"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="267,5,561,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,275,196,210,229,175,265,144,279,133,283,138,268,148,233,179,200,213,146,278"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="346,159,482,203"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="161,277,210,243,266,213,305,199,344,189,346,194,306,204,268,218,213,248,164,282"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="315,228,513,273"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="233,289,314,270,315,275,234,294"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="347,297,481,342"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="234,317,346,317,346,322,234,322"/>
+<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="318,366,510,428"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="234,348,318,370,317,375,233,353"/>
+<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="347,452,481,497"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="157,358,208,400,268,437,307,452,347,462,346,467,305,457,265,442,205,404,153,362"/>
+<area shape="rect" id="Node000008" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="336,521,492,582"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="140,362,193,436,228,474,268,507,301,524,336,536,334,541,299,529,265,511,225,478,189,440,136,365"/>
 </map>

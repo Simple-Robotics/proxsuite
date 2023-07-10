@@ -1,4 +1,5 @@
 <map id="proxsuite::linalg::veg::meta::or_test&lt; Seq, Bs &gt;" name="proxsuite::linalg::veg::meta::or_test&lt; Seq, Bs &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,81,157,143"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="39,5,123,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,81,157,143"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="39,5,123,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,48,84,81,78,81,78,48"/>
 </map>

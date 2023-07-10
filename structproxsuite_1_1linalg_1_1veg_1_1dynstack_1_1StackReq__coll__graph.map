@@ -1,4 +1,5 @@
 <map id="proxsuite::linalg::veg::dynstack::StackReq" name="proxsuite::linalg::veg::dynstack::StackReq">
-<area shape="rect" id="node1" title=" " alt="" coords="5,149,187,194"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="6,5,186,67"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,149,187,194"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="6,5,186,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,82,99,149,93,149,93,82"/>
 </map>

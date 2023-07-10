@@ -18,5 +18,6 @@ var namespaceproxsuite =
     ] ],
     [ "optional", "namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d", null ],
     [ "nullopt_t", "namespaceproxsuite.html#a80bbf7474fd9bb0798c123b76c0c9130", null ],
+    [ "set_default_omp_options", "namespaceproxsuite.html#a6675e7ed2e2d28549b6113fc240d026d", null ],
     [ "nullopt", "namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635", null ]
 ];

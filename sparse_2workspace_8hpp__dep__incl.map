@@ -1,7 +1,15 @@
 <map id="include/proxsuite/proxqp/sparse/workspace.hpp" name="include/proxsuite/proxqp/sparse/workspace.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="69,5,252,50"/>
-<area shape="rect" id="node2" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="5,191,188,235"/>
-<area shape="rect" id="node5" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="69,98,252,143"/>
-<area shape="rect" id="node3" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="5,283,188,328"/>
-<area shape="rect" id="node4" href="$sparse_8hpp.html" title=" " alt="" coords="5,376,188,421"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="172,5,354,50"/>
+<area shape="rect" id="Node000002" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="108,191,290,235"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,60,180,77,163,99,157,122,161,146,172,169,184,189,180,192,167,171,156,147,152,122,158,97,176,74,198,56"/>
+<area shape="rect" id="Node000006" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="172,98,354,143"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="257,65,258,98,253,98,252,65"/>
+<area shape="rect" id="Node000003" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="108,283,290,328"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="202,250,202,283,197,283,197,250"/>
+<area shape="rect" id="Node000004" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,376,188,421"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="166,340,123,378,119,374,162,336"/>
+<area shape="rect" id="Node000005" href="$sparse_8hpp.html" title=" " alt="" coords="212,376,394,421"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="237,336,280,373,277,378,233,340"/>
+<area shape="poly" id="edge7_Node000006_Node000001" title=" " alt="" coords="269,83,268,50,274,50,275,83"/>
+<area shape="poly" id="edge6_Node000006_Node000002" title=" " alt="" coords="242,156,216,192,212,189,237,153"/>
 </map>

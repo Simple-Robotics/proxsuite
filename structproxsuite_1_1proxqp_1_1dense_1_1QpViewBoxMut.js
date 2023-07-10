@@ -8,5 +8,8 @@ var structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut =
     [ "b", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#aa65056f5ad6336bba581331f3e013d30", null ],
     [ "C", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a07b76fca359553edce496ea9a1bc7ff7", null ],
     [ "u", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a9a7c30cbbc9b0d7da48821271683945c", null ],
-    [ "l", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a62c8a8486be79e07a875b8dd08e2711b", null ]
+    [ "l", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a62c8a8486be79e07a875b8dd08e2711b", null ],
+    [ "I", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a78f2c3ec3d3046ba8f07f4e5d0f88433", null ],
+    [ "l_box", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#af79f281e5f7555f4626c125f74aa5a75", null ],
+    [ "u_box", "structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#a1c29af5e8736572337eff1fb0aaf9427", null ]
 ];

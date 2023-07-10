@@ -53,6 +53,8 @@ var hierarchy =
     [ "B", null, [
       [ "tl::detail::conjunction< B >", "structtl_1_1detail_1_1conjunction_3_01B_01_4.html", null ]
     ] ],
+    [ "proxsuite::proxqp::dense::BatchQP< T >", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html", null ],
+    [ "proxsuite::proxqp::sparse::BatchQP< T, I >", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html", null ],
     [ "proxsuite::linalg::veg::_detail::binary_traits< L, R >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html", null ],
     [ "proxsuite::linalg::veg::_detail::binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4.html", [
       [ "proxsuite::linalg::veg::_detail::binary_traits< Dyn, Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4.html", null ],

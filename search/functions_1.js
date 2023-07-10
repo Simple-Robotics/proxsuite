@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['active_5fset_5fchange_0',['active_set_change',['../namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html#a53f63547308089351f9023832f460381',1,'proxsuite::proxqp::dense::linesearch']]],
+  ['active_5fset_5fchange_0',['active_set_change',['../namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html#aa7095c5785fec1231f32581521401747',1,'proxsuite::proxqp::dense::linesearch']]],
   ['add_5frow_1',['add_row',['../namespaceproxsuite_1_1linalg_1_1sparse.html#a82050235c2a096a1dea4cad699a4e8b0',1,'proxsuite::linalg::sparse']]],
   ['add_5frow_5freq_2',['add_row_req',['../namespaceproxsuite_1_1linalg_1_1sparse.html#ac959d85677fcab27b1afaa10cc3abc46',1,'proxsuite::linalg::sparse']]],
   ['adjusted_5flayout_3',['adjusted_layout',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Alloc_3_01proxsuite_1_1linalg_1_1dense_1_1__detail_1_1SimdAlignedSystemAlloc_01_4.html#af8d0dc167900adddcc507f294b89d955',1,'proxsuite::linalg::veg::mem::Alloc&lt; proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc &gt;']]],

@@ -1,6 +1,9 @@
 <map id="proxsuite::linalg::veg::_detail::_mem::ManagedAlloc&lt; A &gt;" name="proxsuite::linalg::veg::_detail::_mem::ManagedAlloc&lt; A &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="35,209,190,271"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout.html" title=" " alt="" coords="5,99,145,144"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="169,99,309,144"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html" title=" " alt="" coords="138,5,340,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="35,209,190,271"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout.html" title=" " alt="" coords="5,99,145,144"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,157,105,208,100,210,84,159"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="169,99,309,144"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,156,147,211,143,207,204,152"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html" title=" " alt="" coords="138,5,340,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="242,65,242,99,236,99,236,65"/>
 </map>

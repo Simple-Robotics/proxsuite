@@ -1,4 +1,5 @@
 <map id="proxsuite::proxqp::dense::Model&lt; T &gt;" name="proxsuite::proxqp::dense::Model&lt; T &gt;">
-<area shape="rect" id="node1" title="This class stores the model of the QP problem." alt="" coords="5,149,152,194"/>
-<area shape="rect" id="node2" title=" " alt="" coords="53,5,104,33"/>
+<area shape="rect" id="Node000001" title="This class stores the model of the QP problem." alt="" coords="5,149,152,194"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="53,5,104,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,48,81,149,76,149,76,48"/>
 </map>

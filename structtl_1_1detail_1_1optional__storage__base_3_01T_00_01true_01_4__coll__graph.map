@@ -1,4 +1,6 @@
 <map id="tl::detail::optional_storage_base&lt; T, true &gt;" name="tl::detail::optional_storage_base&lt; T, true &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,98,193,143"/>
-<area shape="rect" id="node2" title=" " alt="" coords="80,5,118,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,98,193,143"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="209,111,219,120,211,129,194,132,193,127,209,124,214,120,206,116"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="80,5,118,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,48,102,97,96,97,96,48"/>
 </map>

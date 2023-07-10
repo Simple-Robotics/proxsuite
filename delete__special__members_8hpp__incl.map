@@ -1,8 +1,13 @@
 <map id="include/proxsuite/linalg/veg/internal/delete_special_members.hpp" name="include/proxsuite/linalg/veg/internal/delete_special_members.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="175,5,376,67"/>
-<area shape="rect" id="node2" href="$prologue_8hpp.html" title=" " alt="" coords="5,115,170,160"/>
-<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="193,115,358,160"/>
-<area shape="rect" id="node6" href="$epilogue_8hpp.html" title=" " alt="" coords="382,115,545,160"/>
-<area shape="rect" id="node4" title=" " alt="" coords="196,208,262,235"/>
-<area shape="rect" id="node5" title=" " alt="" coords="286,208,356,235"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="175,5,376,67"/>
+<area shape="rect" id="Node000002" href="$prologue_8hpp.html" title=" " alt="" coords="5,115,170,160"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="219,70,143,110,140,105,217,65"/>
+<area shape="rect" id="Node000003" href="$typedefs_8hpp.html" title=" " alt="" coords="193,115,358,160"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="278,68,278,100,273,100,273,68"/>
+<area shape="rect" id="Node000006" href="$epilogue_8hpp.html" title=" " alt="" coords="382,115,545,160"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="334,65,411,105,408,110,332,70"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="196,208,262,235"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="266,161,246,196,241,193,261,159"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="286,208,356,235"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="290,159,309,193,304,196,285,161"/>
 </map>

@@ -1,7 +1,11 @@
 <map id="include/proxsuite/proxqp/dense/fwd.hpp" name="include/proxsuite/proxqp/dense/fwd.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="60,5,243,50"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,98,111,126"/>
-<area shape="rect" id="node3" href="$common_8hpp.html" title=" " alt="" coords="134,98,358,126"/>
-<area shape="rect" id="node4" title=" " alt="" coords="104,174,257,201"/>
-<area shape="rect" id="node5" title=" " alt="" coords="281,174,339,201"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="60,5,243,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,111,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,52,86,90,82,86,125,48"/>
+<area shape="rect" id="Node000003" href="$common_8hpp.html" title=" " alt="" coords="134,98,358,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,48,221,86,218,90,174,52"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="104,174,257,201"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="236,128,204,164,200,161,232,124"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="281,174,339,201"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="259,124,291,161,287,164,255,128"/>
 </map>

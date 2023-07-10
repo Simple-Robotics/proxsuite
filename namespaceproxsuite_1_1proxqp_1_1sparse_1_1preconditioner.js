@@ -4,7 +4,7 @@ var namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner =
       [ "rowwise_infty_norm", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1detail.html#aa0e1b4d7859b60da43a60f9319cce465", null ],
       [ "colwise_infty_norm_symhi", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1detail.html#a5e42cb3151b8ad78eba59afd4e60a76b", null ],
       [ "colwise_infty_norm_symlo", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1detail.html#ac89e267030f0c62493c694443311f328", null ],
-      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1detail.html#aa82374dfbef9d82057efa6c2d2d2208c", null ]
+      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1detail.html#aaa04687c33ec3368a0b54a9c3b9d1447", null ]
     ] ],
     [ "Identity", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity" ],
     [ "RuizEquilibration", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration" ],

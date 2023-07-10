@@ -1,11 +1,19 @@
 <map id="include/proxsuite/linalg/veg/internal/macros.hpp" name="include/proxsuite/linalg/veg/internal/macros.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="554,5,737,50"/>
-<area shape="rect" id="node2" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="5,98,238,143"/>
-<area shape="rect" id="node3" href="$typedefs_8hpp.html" title=" " alt="" coords="262,98,426,143"/>
-<area shape="rect" id="node6" href="$preprocessor_8hpp.html" title=" " alt="" coords="450,98,641,143"/>
-<area shape="rect" id="node7" href="$prologue_8hpp.html" title=" " alt="" coords="665,98,829,143"/>
-<area shape="rect" id="node8" title=" " alt="" coords="854,107,963,134"/>
-<area shape="rect" id="node9" href="$epilogue_8hpp.html" title=" " alt="" coords="987,98,1150,143"/>
-<area shape="rect" id="node4" title=" " alt="" coords="265,191,330,218"/>
-<area shape="rect" id="node5" title=" " alt="" coords="355,191,424,218"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="554,5,737,50"/>
+<area shape="rect" id="Node000002" href="$hedley_8ext_8hpp.html" title=" " alt="" coords="5,98,238,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="554,47,253,99,252,94,553,42"/>
+<area shape="rect" id="Node000003" href="$typedefs_8hpp.html" title=" " alt="" coords="262,98,426,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="574,53,431,96,429,91,573,48"/>
+<area shape="rect" id="Node000006" href="$preprocessor_8hpp.html" title=" " alt="" coords="450,98,641,143"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="624,52,582,90,578,86,620,48"/>
+<area shape="rect" id="Node000007" href="$prologue_8hpp.html" title=" " alt="" coords="665,98,829,143"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="671,48,714,86,710,90,668,52"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="854,107,963,134"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="709,48,857,99,855,104,708,53"/>
+<area shape="rect" id="Node000009" href="$epilogue_8hpp.html" title=" " alt="" coords="987,98,1150,143"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="738,45,973,95,972,100,737,51"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="265,191,330,218"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="334,144,314,179,310,176,330,142"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="355,191,424,218"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="358,142,377,176,373,179,354,144"/>
 </map>

@@ -2,6 +2,7 @@ var namespaceproxsuite_1_1proxqp_1_1sparse =
 [
     [ "detail", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail" ],
     [ "preconditioner", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner" ],
+    [ "BatchQP", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP" ],
     [ "Ldlt", "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt" ],
     [ "Model", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html", "structproxsuite_1_1proxqp_1_1sparse_1_1Model" ],
     [ "PrimalDualGradResult", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult.html", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult" ],
@@ -17,6 +18,8 @@ var namespaceproxsuite_1_1proxqp_1_1sparse =
     [ "Vec", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a2a08151eb36728cb266172d4b9ff86f5", null ],
     [ "Mat", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a35112b8f605b306b546040d1fd9119ef", null ],
     [ "VecBool", "namespaceproxsuite_1_1proxqp_1_1sparse.html#aaffdd209878a7bd214d05c6b699f485e", null ],
+    [ "solve_in_parallel", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a4df01d0b00a2b8dba05bfa47e62ccf39", null ],
+    [ "solve_in_parallel", "namespaceproxsuite_1_1proxqp_1_1sparse.html#afb1821e3f6dcfa877c71e3a5c68f0384", null ],
     [ "update_proximal_parameters", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a46e3b1532480633e6d18189282bb272d", null ],
     [ "warm_start", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a0a5e73e4206441a05dfcde640c39cb1e", null ],
     [ "qp_setup", "namespaceproxsuite_1_1proxqp_1_1sparse.html#adce70965d198a96746b041b659fed279", null ],
@@ -30,7 +33,7 @@ var namespaceproxsuite_1_1proxqp_1_1sparse =
     [ "reconstruction_error", "namespaceproxsuite_1_1proxqp_1_1sparse.html#af790d437a41c805e3cc857155aaadd54", null ],
     [ "qp_solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a5ba249322aabb491b34d2dfcb4b8660b", null ],
     [ "print_setup_header", "namespaceproxsuite_1_1proxqp_1_1sparse.html#aa3c995adc4bd5230f3f7ef89e92573af", null ],
-    [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a30ad3bf95fdd46b74e665bd34dfc56e6", null ],
-    [ "solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a3e8ffe0e13a40b80f6584d2babf8a3bf", null ],
+    [ "refactorize", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a11f5b3a80c82c9c42371ea9d476a457f", null ],
+    [ "solve", "namespaceproxsuite_1_1proxqp_1_1sparse.html#a9a22000b3bd088d108dcc7d5be97ed42", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1sparse.html#ac9ede8007c247085583031077cdd1084", null ]
 ];

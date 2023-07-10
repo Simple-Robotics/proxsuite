@@ -1,6 +1,11 @@
 <map id="include/proxsuite/proxqp/dense/solver.hpp" name="include/proxsuite/proxqp/dense/solver.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="117,5,300,50"/>
-<area shape="rect" id="node2" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="117,98,300,143"/>
-<area shape="rect" id="node3" href="$dense_8hpp.html" title=" " alt="" coords="5,191,188,235"/>
-<area shape="rect" id="node4" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="212,191,429,235"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="212,5,394,50"/>
+<area shape="rect" id="Node000002" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="212,98,394,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="306,65,306,98,301,98,301,65"/>
+<area shape="rect" id="Node000003" href="$dense_8hpp.html" title=" " alt="" coords="5,191,188,235"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="242,151,147,193,145,188,240,146"/>
+<area shape="rect" id="Node000004" href="$qp__solve_8hpp.html" title=" " alt="" coords="212,191,394,235"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="306,157,306,190,301,190,301,157"/>
+<area shape="rect" id="Node000005" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,191,636,235"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="371,146,475,188,473,193,369,151"/>
 </map>

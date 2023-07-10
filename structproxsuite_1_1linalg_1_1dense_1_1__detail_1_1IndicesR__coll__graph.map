@@ -1,4 +1,5 @@
 <map id="proxsuite::linalg::dense::_detail::IndicesR" name="proxsuite::linalg::dense::_detail::IndicesR">
-<area shape="rect" id="node1" title=" " alt="" coords="5,149,181,194"/>
-<area shape="rect" id="node2" title=" " alt="" coords="67,5,119,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,149,181,194"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="67,5,119,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,48,96,149,90,149,90,48"/>
 </map>

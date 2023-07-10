@@ -1,11 +1,19 @@
 <map id="include/proxsuite/helpers/optional.hpp" name="include/proxsuite/helpers/optional.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="114,5,300,50"/>
-<area shape="rect" id="node2" href="$fwd_8hpp.html" title=" " alt="" coords="56,107,193,134"/>
-<area shape="rect" id="node4" href="$tl-optional_8hpp.html" title=" " alt="" coords="244,98,391,143"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,191,97,218"/>
-<area shape="rect" id="node5" title=" " alt="" coords="120,191,206,218"/>
-<area shape="rect" id="node6" title=" " alt="" coords="229,191,316,218"/>
-<area shape="rect" id="node7" title=" " alt="" coords="340,191,389,218"/>
-<area shape="rect" id="node8" title=" " alt="" coords="412,191,503,218"/>
-<area shape="rect" id="node9" title=" " alt="" coords="528,191,587,218"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="105,5,290,50"/>
+<area shape="rect" id="Node000002" href="$fwd_8hpp.html" title=" " alt="" coords="46,107,184,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,52,139,97,135,93,176,49"/>
+<area shape="rect" id="Node000004" href="$tl-optional_8hpp.html" title=" " alt="" coords="216,98,363,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="221,48,260,86,256,90,218,52"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,191,97,218"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="107,136,72,181,68,178,103,133"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="120,191,169,218"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="252,146,181,185,179,181,250,141"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="192,191,278,218"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="278,145,254,179,250,177,273,142"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="301,191,388,218"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="306,142,330,177,325,179,302,145"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="412,191,503,218"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="335,141,419,181,416,186,333,146"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="528,191,587,218"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="362,141,515,187,513,192,360,146"/>
 </map>

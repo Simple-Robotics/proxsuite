@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ordering_0',['Ordering',['../namespaceproxsuite_1_1linalg_1_1sparse.html#a9f5e6365e7297cc9234dcad50b0cfdeb',1,'proxsuite::linalg::sparse']]]
+  ['layout_0',['Layout',['../namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90',1,'proxsuite::proxqp']]]
 ];

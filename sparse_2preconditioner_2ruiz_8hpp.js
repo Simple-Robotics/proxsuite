@@ -8,5 +8,5 @@ var sparse_2preconditioner_2ruiz_8hpp =
     [ "rowwise_infty_norm", "sparse_2preconditioner_2ruiz_8hpp.html#aa0e1b4d7859b60da43a60f9319cce465", null ],
     [ "colwise_infty_norm_symhi", "sparse_2preconditioner_2ruiz_8hpp.html#a5e42cb3151b8ad78eba59afd4e60a76b", null ],
     [ "colwise_infty_norm_symlo", "sparse_2preconditioner_2ruiz_8hpp.html#ac89e267030f0c62493c694443311f328", null ],
-    [ "ruiz_scale_qp_in_place", "sparse_2preconditioner_2ruiz_8hpp.html#aa82374dfbef9d82057efa6c2d2d2208c", null ]
+    [ "ruiz_scale_qp_in_place", "sparse_2preconditioner_2ruiz_8hpp.html#aaa04687c33ec3368a0b54a9c3b9d1447", null ]
 ];

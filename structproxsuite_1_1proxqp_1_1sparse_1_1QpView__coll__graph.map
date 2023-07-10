@@ -1,6 +1,9 @@
 <map id="proxsuite::proxqp::sparse::QpView&lt; T, I &gt;" name="proxsuite::proxqp::sparse::QpView&lt; T, I &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="539,61,711,106"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="302,61,471,106"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,215,84"/>
-<area shape="rect" id="node4" title=" " alt="" coords="84,108,136,136"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="539,61,711,106"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="302,61,471,106"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="486,81,539,81,539,86,486,86"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,215,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="230,57,278,63,302,67,301,72,277,69,229,62"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="84,108,136,136"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="150,123,210,125,277,120,332,104,334,109,278,125,211,131,150,129"/>
 </map>

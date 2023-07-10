@@ -1,5 +1,7 @@
 <map id="include/proxsuite/linalg/veg/internal/std.hpp" name="include/proxsuite/linalg/veg/internal/std.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="7,5,181,50"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,98,71,126"/>
-<area shape="rect" id="node3" title=" " alt="" coords="95,98,205,126"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="7,5,181,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,71,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,52,57,87,53,84,77,49"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="95,98,205,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="111,49,135,84,131,87,107,52"/>
 </map>

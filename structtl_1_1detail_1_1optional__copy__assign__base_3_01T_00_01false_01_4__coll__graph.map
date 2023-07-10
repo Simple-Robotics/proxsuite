@@ -1,9 +1,15 @@
 <map id="tl::detail::optional_copy_assign_base&lt; T, false &gt;" name="tl::detail::optional_copy_assign_base&lt; T, false &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="71,508,245,570"/>
-<area shape="rect" id="node2" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="69,414,247,459"/>
-<area shape="rect" id="node3" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="72,320,244,365"/>
-<area shape="rect" id="node4" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="71,226,245,271"/>
-<area shape="rect" id="node5" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,253,177"/>
-<area shape="rect" id="node6" href="$structtl_1_1detail_1_1optional__storage__base_1_1dummy.html" title=" " alt="" coords="5,5,180,67"/>
-<area shape="rect" id="node7" title=" " alt="" coords="204,22,242,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="71,508,245,570"/>
+<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="69,414,247,459"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="161,474,161,508,155,508,155,474"/>
+<area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="72,320,244,365"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="161,380,161,414,155,414,155,380"/>
+<area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="71,226,245,271"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="161,286,161,320,155,320,155,286"/>
+<area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,253,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="161,192,161,226,155,226,155,192"/>
+<area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1optional__storage__base_1_1dummy.html" title=" " alt="" coords="5,5,180,67"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="109,79,122,107,139,130,135,133,118,109,104,82"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="204,22,242,50"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="216,65,196,109,179,133,175,130,192,107,212,63"/>
 </map>

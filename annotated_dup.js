@@ -422,6 +422,7 @@ var annotated_dup =
             [ "IdentityPrecond", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1IdentityPrecond.html", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1IdentityPrecond" ],
             [ "RuizEquilibration", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration" ]
           ] ],
+          [ "BatchQP", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP" ],
           [ "EigenAllowAlloc", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc.html", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc" ],
           [ "Model", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html", "structproxsuite_1_1proxqp_1_1dense_1_1Model" ],
           [ "QP", "structproxsuite_1_1proxqp_1_1dense_1_1QP.html", "structproxsuite_1_1proxqp_1_1dense_1_1QP" ],
@@ -460,6 +461,7 @@ var annotated_dup =
             [ "Identity", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity.html", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1Identity" ],
             [ "RuizEquilibration", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html", "structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration" ]
           ] ],
+          [ "BatchQP", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP" ],
           [ "Ldlt", "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1Ldlt" ],
           [ "Model", "structproxsuite_1_1proxqp_1_1sparse_1_1Model.html", "structproxsuite_1_1proxqp_1_1sparse_1_1Model" ],
           [ "PrimalDualGradResult", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult.html", "structproxsuite_1_1proxqp_1_1sparse_1_1PrimalDualGradResult" ],

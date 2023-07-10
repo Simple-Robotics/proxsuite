@@ -1,8 +1,13 @@
 <map id="proxsuite::proxqp::dense::Workspace&lt; T &gt;" name="proxsuite::proxqp::dense::Workspace&lt; T &gt;">
-<area shape="rect" id="node1" title="This class defines the workspace of the dense solver." alt="" coords="607,145,785,189"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="300,109,497,153"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="51,5,205,67"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,92,251,170"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="21,195,235,256"/>
-<area shape="rect" id="node6" title=" " alt="" coords="373,177,424,205"/>
+<area shape="rect" id="Node000001" title="This class defines the workspace of the dense solver." alt="" coords="607,145,785,189"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="300,109,497,153"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="512,142,607,153,607,159,512,147"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="51,5,205,67"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="220,65,252,76,334,105,332,110,250,81,218,70"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,92,251,170"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="266,128,299,128,299,134,266,134"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="21,195,235,256"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="231,187,332,151,333,156,233,192"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="373,177,424,205"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="439,188,583,181,607,178,608,184,584,186,440,193"/>
 </map>

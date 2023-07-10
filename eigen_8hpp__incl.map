@@ -1,6 +1,9 @@
 <map id="include/proxsuite/serialization/eigen.hpp" name="include/proxsuite/serialization/eigen.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="77,5,295,50"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,98,111,126"/>
-<area shape="rect" id="node3" title=" " alt="" coords="135,98,237,126"/>
-<area shape="rect" id="node4" title=" " alt="" coords="261,98,394,126"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="77,5,295,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,111,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,53,92,92,89,87,151,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="135,98,237,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,50,189,83,183,83,183,50"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="261,98,394,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="225,48,294,88,291,93,222,53"/>
 </map>

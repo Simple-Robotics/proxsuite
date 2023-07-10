@@ -48,10 +48,25 @@ var namespaceproxsuite_1_1proxqp =
       [ "SparseCholesky", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa84a54df9bcae79cadd31cac885d6ab7f", null ],
       [ "MatrixFree", "namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1faf2674a258348188d6a3ee81d2669255a", null ]
     ] ],
+    [ "DenseBackend", "namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4d", [
+      [ "Automatic", "namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4da086247a9b57fde6eefee2a0c4752242d", null ],
+      [ "PrimalDualLDLT", "namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4dab4f7bded840147d550a4d42bbe2d1d89", null ],
+      [ "PrimalLDLT", "namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4daa09d6cde8b8a15c43a4b4a5447840641", null ]
+    ] ],
+    [ "MeritFunctionType", "namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d", [
+      [ "GPDAL", "namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363da232489276f6b94e51a8299a12c400539", null ],
+      [ "PDAL", "namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363dabc555b66f928868587ca811e9f119770", null ]
+    ] ],
+    [ "HessianType", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af", [
+      [ "Zero", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769afad7ed4ee1df437474d005188535f74875", null ],
+      [ "Dense", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769afa9a71a13863c84ba34fc41595fc2ee0c6", null ],
+      [ "Diagonal", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769afa9ac677ee4eec25d9e59707a661d2c5e1", null ]
+    ] ],
     [ "QPSolverOutput", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd", [
       [ "PROXQP_SOLVED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b", null ],
       [ "PROXQP_MAX_ITER_REACHED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649", null ],
       [ "PROXQP_PRIMAL_INFEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda66e00e0c26e39203330a20482a6e0bb8", null ],
+      [ "PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda61374950fdc1df5f8230b7bc86f52b4c", null ],
       [ "PROXQP_DUAL_INFEASIBLE", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda0b2b43352fa11bbd96bef01d07c3cbed", null ],
       [ "PROXQP_NOT_RUN", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda911da665938abf5871d00e431bac179f", null ]
     ] ],
@@ -79,6 +94,7 @@ var namespaceproxsuite_1_1proxqp =
     [ "operator==", "namespaceproxsuite_1_1proxqp.html#aef5f1a2dc1c5e496ec723761acce93d7", null ],
     [ "operator!=", "namespaceproxsuite_1_1proxqp.html#ab0f740bd1b6255bced827ff8a882b63a", null ],
     [ "operator<<", "namespaceproxsuite_1_1proxqp.html#a1df5f823a7615dfa6621ebc32a637502", null ],
+    [ "operator<<", "namespaceproxsuite_1_1proxqp.html#aab50b7b893891c8e0d7e6071c7c7c43f", null ],
     [ "operator==", "namespaceproxsuite_1_1proxqp.html#a8d98a3e26cc65fc6f0847dd7b91f4672", null ],
     [ "operator!=", "namespaceproxsuite_1_1proxqp.html#a22d2703815960b8774870ac2cad50bb3", null ],
     [ "print_line", "namespaceproxsuite_1_1proxqp.html#a6110ed9a1376cba698a791a111dcc5f2", null ],

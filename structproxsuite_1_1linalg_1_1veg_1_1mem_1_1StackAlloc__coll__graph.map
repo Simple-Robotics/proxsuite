@@ -1,5 +1,7 @@
 <map id="proxsuite::linalg::veg::mem::StackAlloc&lt; MaxAlign &gt;" name="proxsuite::linalg::veg::mem::StackAlloc&lt; MaxAlign &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="37,225,200,286"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc.html" title=" " alt="" coords="36,115,201,177"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html" title=" " alt="" coords="5,5,232,67"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="37,225,200,286"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc.html" title=" " alt="" coords="36,115,201,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,191,121,224,116,224,116,191"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html" title=" " alt="" coords="5,5,232,67"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,82,121,114,116,114,116,82"/>
 </map>

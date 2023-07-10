@@ -1,8 +1,13 @@
 <map id="proxsuite::linalg::veg::dynstack::DynStackArray&lt; T &gt;" name="proxsuite::linalg::veg::dynstack::DynStackArray&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="829,113,1084,158"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html" title=" " alt="" coords="527,44,780,89"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html" title=" " alt="" coords="307,36,478,97"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html" title=" " alt="" coords="5,5,213,50"/>
-<area shape="rect" id="node5" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="19,74,199,136"/>
-<area shape="rect" id="node6" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html" title=" " alt="" coords="563,112,744,191"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="829,113,1084,158"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html" title=" " alt="" coords="527,44,780,89"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="769,90,857,110,855,115,768,95"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html" title=" " alt="" coords="307,36,478,97"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="493,64,527,64,527,69,493,69"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html" title=" " alt="" coords="5,5,213,50"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="228,41,306,52,306,57,227,46"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html" title=" " alt="" coords="19,74,199,136"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="213,88,306,75,306,81,214,93"/>
+<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html" title=" " alt="" coords="563,112,744,191"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="759,143,829,140,829,145,759,149"/>
 </map>

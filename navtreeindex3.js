@@ -1,9 +1,12 @@
 var NAVTREEINDEX3 =
 {
+"get_8hpp.html#ac73528fd99757a33ed6a77d1260d0ab2":[12,0,1,0,1,2,3,4,19],
+"get_8hpp.html#af00b11840815bdc9f5aeb348a90cfd0d":[12,0,1,0,1,2,3,4,21],
+"get_8hpp.html#af5c26631a1fa6de25b22ac0ebf5b4848":[12,0,1,0,1,2,3,4,12],
 "get_8hpp.html#af66ba28b5584bf6783e75871523677f5":[12,0,1,0,1,2,3,4,20],
 "get_8hpp_source.html":[12,0,1,0,1,2,3,4],
-"globals.html":[12,1,0,0],
 "globals.html":[12,1,0],
+"globals.html":[12,1,0,0],
 "globals_d.html":[12,1,0,1],
 "globals_defs.html":[12,1,1],
 "globals_defs.html":[12,1,1,0],
@@ -191,9 +194,10 @@ var NAVTREEINDEX3 =
 "ldlt_8hpp.html":[12,0,1,0,1,0,2],
 "ldlt_8hpp_source.html":[12,0,1,0,1,0,2],
 "linesearch_8hpp.html":[12,0,1,0,2,0,4],
-"linesearch_8hpp.html#a0109c94344ba68788fc35d9aa8d11678":[12,0,1,0,2,0,4,1],
-"linesearch_8hpp.html#a53f63547308089351f9023832f460381":[12,0,1,0,2,0,4,3],
-"linesearch_8hpp.html#a809a15f88bbe367c4d8ca64c0c03b6c3":[12,0,1,0,2,0,4,2],
+"linesearch_8hpp.html#a0b239ce8970e28a0e63080d5678be4f2":[12,0,1,0,2,0,4,1],
+"linesearch_8hpp.html#aa7095c5785fec1231f32581521401747":[12,0,1,0,2,0,4,4],
+"linesearch_8hpp.html#ace4116e055769e37e3bc0cab6d45b65b":[12,0,1,0,2,0,4,2],
+"linesearch_8hpp.html#ad909d99c87bbff37eeb37d5ffca5d257":[12,0,1,0,2,0,4,3],
 "linesearch_8hpp_source.html":[12,0,1,0,2,0,4],
 "macros_8hpp.html":[12,0,1,0,1,2,0,10],
 "macros_8hpp.html#a015c7c9516ab685a782bb60b216af850":[12,0,1,0,1,2,0,10,55],
@@ -245,9 +249,5 @@ var NAVTREEINDEX3 =
 "macros_8hpp.html#a9087fb4c15212107761609645b9460f8":[12,0,1,0,1,2,0,10,123],
 "macros_8hpp.html#a917ab6594dad2c9e153675dd2cd6274e":[12,0,1,0,1,2,0,10,110],
 "macros_8hpp.html#a9231417c436af289092fe0da65abd62f":[12,0,1,0,1,2,0,10,111],
-"macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b":[12,0,1,0,1,2,0,10,40],
-"macros_8hpp.html#a93ebd45c8c1d5f40cea52034f55ee165":[12,0,1,0,1,2,0,10,48],
-"macros_8hpp.html#a97155c5ae6fa5286c6f8ea6c486eddee":[12,0,1,0,1,2,0,10,53],
-"macros_8hpp.html#a99cac9ca22548cd427f18d961d4dff3b":[12,0,1,0,1,2,0,10,46],
-"macros_8hpp.html#a9a1345fd14d0ee76ef22246e1aae7c50":[12,0,1,0,1,2,0,10,41]
+"macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b":[12,0,1,0,1,2,0,10,40]
 };

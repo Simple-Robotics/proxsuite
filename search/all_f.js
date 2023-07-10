@@ -1,7 +1,7 @@
 var searchData=
 [
   ['keep_0',['KEEP',['../namespaceproxsuite_1_1proxqp.html#ae3aacefdb4b7177de8c2005bab169f08a60cba2874369bd3790e14ea5f8a7bc58',1,'proxsuite::proxqp']]],
-  ['kkt_1',['kkt',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ad26dd41b50bfc17961a697f5316b146e',1,'proxsuite::proxqp::dense::Workspace::kkt()'],['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad220943707b391c8d64b6bfc912964e5',1,'proxsuite::proxqp::sparse::Model::kkt()']]],
+  ['kkt_1',['kkt',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#ad26dd41b50bfc17961a697f5316b146e',1,'proxsuite::proxqp::dense::Workspace::kkt'],['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#ad220943707b391c8d64b6bfc912964e5',1,'proxsuite::proxqp::sparse::Model::kkt()']]],
   ['kkt_5factive_2',['kkt_active',['../structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html#a67cbddc99a48e2cdfd55288b845b124d',1,'proxsuite::proxqp::sparse::detail::AugmentedKkt::Raw']]],
   ['kkt_5fcol_5fptrs_3',['kkt_col_ptrs',['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a096e89dfa9a2e33811ed01bb39d8f9ab',1,'proxsuite::proxqp::sparse::Model']]],
   ['kkt_5fcol_5fptrs_5funscaled_4',['kkt_col_ptrs_unscaled',['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#af52f24d741a5aa3a8d9e0679248a6bf4',1,'proxsuite::proxqp::sparse::Model']]],

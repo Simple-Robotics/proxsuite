@@ -1,6 +1,9 @@
 <map id="proxsuite::linalg::veg::_detail::_slice::adl::AdlBase" name="proxsuite::linalg::veg::_detail::_slice::adl::AdlBase">
-<area shape="rect" id="node1" title=" " alt="" coords="87,5,229,67"/>
-<area shape="rect" id="node2" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="5,115,148,160"/>
-<area shape="rect" id="node3" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="172,115,306,160"/>
-<area shape="rect" id="node4" href="$structproxsuite_1_1linalg_1_1veg_1_1SliceMut.html" title=" " alt="" coords="166,208,313,252"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="87,5,229,67"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="5,115,148,160"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,80,96,116,92,113,122,77"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="172,115,306,160"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="194,77,223,113,219,116,190,80"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1SliceMut.html" title=" " alt="" coords="166,208,313,252"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="242,174,242,207,237,207,237,174"/>
 </map>

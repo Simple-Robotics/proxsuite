@@ -1,4 +1,5 @@
 <map id="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;" name="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="10,98,224,160"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,229,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="10,98,224,160"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,229,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="120,65,120,98,114,98,114,65"/>
 </map>

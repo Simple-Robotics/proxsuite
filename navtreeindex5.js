@@ -1,5 +1,9 @@
 var NAVTREEINDEX5 =
 {
+"namespacemembers_h.html":[10,1,0,7],
+"namespacemembers_i.html":[10,1,0,8],
+"namespacemembers_l.html":[10,1,0,9],
+"namespacemembers_m.html":[10,1,0,10],
 "namespacemembers_n.html":[10,1,0,11],
 "namespacemembers_o.html":[10,1,0,12],
 "namespacemembers_p.html":[10,1,0,13],
@@ -15,7 +19,8 @@ var NAVTREEINDEX5 =
 "namespacemembers_y.html":[10,1,0,21],
 "namespaceproxsuite.html":[10,0,2],
 "namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d":[10,0,2,5],
-"namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635":[10,0,2,7],
+"namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635":[10,0,2,8],
+"namespaceproxsuite.html#a6675e7ed2e2d28549b6113fc240d026d":[10,0,2,7],
 "namespaceproxsuite.html#a80bbf7474fd9bb0798c123b76c0c9130":[10,0,2,6],
 "namespaceproxsuite_1_1detail.html":[10,0,2,0],
 "namespaceproxsuite_1_1helpers.html":[10,0,2,1],
@@ -244,10 +249,5 @@ var NAVTREEINDEX5 =
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43aba48b9dfe5aab528ca3d04bb0bfde43b":[10,0,2,2,2,51,33],
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43abaaceccc27b1d4e0968c999583f97de5":[10,0,2,2,2,51,27],
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43abc21e6484530fc9d0313cb816b733396":[10,0,2,2,2,51,17],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43abd7779465a9d0bb992ef8c5838afc333":[10,0,2,2,2,51,41],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43abeb2f1f24c849679435c23c4dee0df5a":[10,0,2,2,2,51,69],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ac26853774873740fb506b92c3749e2f9":[10,0,2,2,2,51,89],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ac279a999704a7cdb67e57962b91a0fe6":[10,0,2,2,2,51,42],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ac3171c80da15bc00106afa75baa9aa2c":[10,0,2,2,2,51,61],
-"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ac3fe4107f3981a0dd62fb2c17ee3fa6c":[10,0,2,2,2,51,86]
+"namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43abd7779465a9d0bb992ef8c5838afc333":[10,0,2,2,2,51,41]
 };

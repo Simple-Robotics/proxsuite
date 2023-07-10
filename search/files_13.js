@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['settings_2ehpp_0',['settings.hpp',['../proxqp_2settings_8hpp.html',1,'(Global Namespace)'],['../serialization_2settings_8hpp.html',1,'(Global Namespace)']]],
-  ['slice_2ehpp_1',['slice.hpp',['../slice_8hpp.html',1,'']]],
-  ['solve_2ehpp_2',['solve.hpp',['../solve_8hpp.html',1,'']]],
-  ['solver_2ehpp_3',['solver.hpp',['../dense_2solver_8hpp.html',1,'(Global Namespace)'],['../sparse_2solver_8hpp.html',1,'(Global Namespace)']]],
-  ['sparse_2ehpp_4',['sparse.hpp',['../sparse_8hpp.html',1,'']]],
-  ['stack_5falloc_2ehpp_5',['stack_alloc.hpp',['../stack__alloc_8hpp.html',1,'']]],
-  ['status_2ehpp_6',['status.hpp',['../status_8hpp.html',1,'']]],
-  ['std_2ehpp_7',['std.hpp',['../std_8hpp.html',1,'']]]
+  ['random_5fqp_5fproblems_2ehpp_0',['random_qp_problems.hpp',['../random__qp__problems_8hpp.html',1,'']]],
+  ['ref_2ehpp_1',['ref.hpp',['../ref_8hpp.html',1,'']]],
+  ['results_2ehpp_2',['results.hpp',['../proxqp_2results_8hpp.html',1,'(Global Namespace)'],['../serialization_2results_8hpp.html',1,'(Global Namespace)']]],
+  ['rowmod_2ehpp_3',['rowmod.hpp',['../rowmod_8hpp.html',1,'']]],
+  ['ruiz_2ehpp_4',['ruiz.hpp',['../dense_2preconditioner_2ruiz_8hpp.html',1,'(Global Namespace)'],['../sparse_2preconditioner_2ruiz_8hpp.html',1,'(Global Namespace)']]]
 ];
