@@ -13,7 +13,7 @@ namespace python {
 
 template<typename T>
 void
-exposeQpVectorDense(pybind11::module_ m)
+exposeQPVectorDense(pybind11::module_ m)
 {
 
   ::pybind11::class_<dense::BatchQP<T>>(m, "BatchQP")
@@ -41,7 +41,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-exposeQpVectorSparse(pybind11::module_ m)
+exposeQPVectorSparse(pybind11::module_ m)
 {
 
   ::pybind11::class_<sparse::BatchQP<T, I>>(m, "BatchQP")
