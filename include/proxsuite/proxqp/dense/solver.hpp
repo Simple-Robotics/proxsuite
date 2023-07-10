@@ -259,6 +259,11 @@ iterative_residual(const Model<T>& qpmodel,
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
       break;
     case HessianType::Diagonal:
+#ifndef NDEBUG
+      PROXSUITE_THROW_PRETTY(!qpwork.H_scaled.isDiagonal(),
+                             std::invalid_argument,
+                             "H is not diagonal.");
+#endif
       Hdx.array() = qpwork.H_scaled.diagonal().array() *
                     qpwork.dw_aug.head(qpmodel.dim).array();
       qpwork.err.head(qpmodel.dim).noalias() -= Hdx;
