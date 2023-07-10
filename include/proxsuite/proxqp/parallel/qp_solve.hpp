@@ -27,8 +27,8 @@ solve_in_parallel(std::vector<proxqp::dense::QP<T>>& qps,
   set_default_omp_options(NUM_THREADS);
 
   typedef proxqp::dense::QP<T> qp_dense;
-  const Eigen::DenseIndex batch_size = qps.size();
-  Eigen::DenseIndex i = 0;
+  const size_t batch_size = qps.size();
+  size_t i = 0;
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
