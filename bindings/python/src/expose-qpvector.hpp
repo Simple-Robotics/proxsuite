@@ -13,7 +13,7 @@ namespace python {
 
 template<typename T>
 void
-exposeQpVectorDense(pybind11::module_ m)
+exposeQPVectorDense(pybind11::module_ m)
 {
 
   ::pybind11::class_<dense::BatchQP<T>>(m, "BatchQP")
@@ -29,7 +29,8 @@ exposeQpVectorDense(pybind11::module_ m)
          &dense::BatchQP<T>::insert,
          "inserts a qp at the end of the vector of qps.")
     .def("get",
-         &dense::BatchQP<T>::get,
+         (dense::QP<T> & (dense::BatchQP<T>::*)(isize)) &
+           dense::BatchQP<T>::get,
          pybind11::return_value_policy::reference,
          "get the qp.");
 }
@@ -41,7 +42,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-exposeQpVectorSparse(pybind11::module_ m)
+exposeQPVectorSparse(pybind11::module_ m)
 {
 
   ::pybind11::class_<sparse::BatchQP<T, I>>(m, "BatchQP")
@@ -54,7 +55,8 @@ exposeQpVectorSparse(pybind11::module_ m)
          pybind11::return_value_policy::reference,
          "init a sparse QP in place and return a reference to it.")
     .def("get",
-         &sparse::BatchQP<T, I>::get,
+         (sparse::QP<T, I> & (sparse::BatchQP<T, I>::*)(isize)) &
+           sparse::BatchQP<T, I>::get,
          pybind11::return_value_policy::reference,
          "get the qp.");
 }

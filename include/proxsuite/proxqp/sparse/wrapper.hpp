@@ -775,14 +775,14 @@ struct BatchQP
    * A vector of QP aligned of size BatchSize
    * specified by the user.
    */
-  std::vector<QP<T, I>> vector_qp;
+  std::vector<QP<T, I>> qp_vector;
   sparse::isize m_size;
 
   BatchQP(long unsigned int batchSize)
   {
-    if (vector_qp.max_size() != batchSize) {
-      vector_qp.clear();
-      vector_qp.reserve(batchSize);
+    if (qp_vector.max_size() != batchSize) {
+      qp_vector.clear();
+      qp_vector.reserve(batchSize);
     }
     m_size = 0;
   }
@@ -794,8 +794,8 @@ struct BatchQP
                              sparse::isize n_eq,
                              sparse::isize n_in)
   {
-    vector_qp.emplace_back(dim, n_eq, n_in);
-    auto& qp = vector_qp.back();
+    qp_vector.emplace_back(dim, n_eq, n_in);
+    auto& qp = qp_vector.back();
     m_size++;
     return qp;
   };
@@ -807,26 +807,36 @@ struct BatchQP
   //                            const sparse::SparseMat<bool, I>& A,
   //                            const sparse::SparseMat<bool, I>& C)
   // {
-  //   vector_qp.emplace_back(H.rows(), A.rows(), C.rows());
-  //   auto& qp = vector_qp.back();
+  //   qp_vector.emplace_back(H.rows(), A.rows(), C.rows());
+  //   auto& qp = qp_vector.back();
   //   m_size++;
   //   return qp;
   // };
 
   /*!
-   * Inserts a qp to the end of vector_qp
+   * Inserts a qp to the end of qp_vector
    */
-  void insert(QP<T, I>& qp) { vector_qp.emplace_back(qp); };
+  void insert(QP<T, I>& qp) { qp_vector.emplace_back(qp); };
 
   /*!
-   * Access qp at position i
+   * Access QP at position i
    */
-  QP<T, I>& get(isize i) { return vector_qp.at(i); };
+  QP<T, I>& get(isize i) { return qp_vector.at(size_t(i)); };
 
   /*!
-   * Access qp at position i
+   * Access QP at position i
    */
-  QP<T, I>& operator[](isize i) { return vector_qp.at(i); };
+  const QP<T, I>& get(isize i) const { return qp_vector.at(size_t(i)); };
+
+  /*!
+   * Access QP at position i
+   */
+  QP<T, I>& operator[](isize i) { return get(i); };
+
+  /*!
+   * Access QP at position i
+   */
+  const QP<T, I>& operator[](isize i) const { return get(i); };
 
   sparse::isize size() { return m_size; };
 };

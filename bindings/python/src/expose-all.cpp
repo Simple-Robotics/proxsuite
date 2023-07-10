@@ -33,7 +33,7 @@ exposeSparseAlgorithms(pybind11::module_ m)
 {
   sparse::python::exposeSparseModel<T, I>(m);
   sparse::python::exposeQpObjectSparse<T, I>(m);
-  sparse::python::exposeQpVectorSparse<T, I>(m);
+  sparse::python::exposeQPVectorSparse<T, I>(m);
   sparse::python::solveSparseQp<T, I>(m);
 }
 
@@ -43,7 +43,7 @@ exposeDenseAlgorithms(pybind11::module_ m)
 {
   dense::python::exposeDenseModel<T>(m);
   dense::python::exposeQpObjectDense<T>(m);
-  dense::python::exposeQpVectorDense<T>(m);
+  dense::python::exposeQPVectorDense<T>(m);
   dense::python::solveDenseQp<T>(m);
 }
 
