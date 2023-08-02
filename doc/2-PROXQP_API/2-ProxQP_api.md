@@ -1,6 +1,6 @@
 ## ProxQP API with examples
 
-ProxQP solves convex quadratic programs, which consists in minimizing a convex quadratic cost under some linear constraints. It is mathematically described as:
+ProxQP solves convex quadratic programs, which minimize a convex quadratic cost under some linear constraints. It is mathematically described as:
 
 $$\begin{equation}\label{eq:QP}\tag{QP}
 \begin{aligned}
@@ -15,9 +15,9 @@ $$\begin{equation}\label{eq:QP}\tag{QP}
 \end{equation}\\\
 \text{with } H\in\mathbb{R}^{d\times d}, A\in\mathbb{R}^{n_\text{eq}\times d}, C\in\mathbb{R}^{n_\text{in}\times d}, b\in\mathbb{R}^{n_\text{eq}}, u\in\mathbb{R}^{n_\text{in}}.
 $$
-H is a real symmetric positive semi-definite matrix. d is the problem dimension (i.e., the number of primal variables), while n_eq and n_in are the numbers of equality and inequality constraints respectively.
+H is a real symmetric positive semi-definite matrix. d is the problem dimension (i.e., the number of primal variables), while n_eq and n_in are the numbers of equality and inequality constraints, respectively.
 
-For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,[Section 5.2.3](https://web.stanford.edu/~boyd/cvxbook/)} and [Section 2, page 5](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) for more details).
+For linearly constrained convex optimization problems such as \eqref{eq:QP}, strong duality holds, and the associated KKT conditions are necessary and sufficient for ensuring a primal-dual point (x,y,z) to be optimal (see, e.g.,[Section 5.2.3](https://web.stanford.edu/~boyd/cvxbook/)} and [Section 2, page 5](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) for more details).
 For \eqref{eq:QP}, the KKT system is given by the set of equations:
 
 $$\begin{equation}\label{qp:kkt}\tag{KKT}
@@ -33,7 +33,7 @@ $$\begin{equation}\label{qp:kkt}\tag{KKT}
 \end{aligned}
 \end{equation}$$
 
-where the last equation involves the Hadamard product (i.e., for two vectors u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
+where the last equation involves the Hadamard product (i.e., for two vectors, u and v, the Hadamard product is the vector whose ith entry is u_i v_i).
 
 In practice, we look for a triplet (x,y,z) satisfying these optimality conditions \eqref{qp:kkt} up to a certain level of absolute accuracy (dependent of the application), leading us to the following absolute stopping criterion on the primal and dual residuals:
 
@@ -49,7 +49,7 @@ $$\begin{equation}\label{eq:approx_qp_sol}
 \end{aligned}
 \end{equation}$$
 
-The infite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early-stopping, as absolute targets might not bet reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details see, e.g., OSQP's [convergence](https://osqp.org/docs/solver/index.html#convergence) criteria or [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) in the corresponding paper). Hence more generally the following stopping criterion can be used:
+The infinite norm is preferred to the L2 norm as it is independent of the problem dimensions. It is also common to consider relative convergence criteria for early stopping, as absolute targets might not be reached due to numerical issues. ProxQP provides it in a similar way as OSQP (for more details, see, e.g., OSQP's [convergence](https://osqp.org/docs/solver/index.html#convergence) criteria or [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) in the corresponding paper). Hence more generally, the following stopping criterion can be used:
 
 $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \begin{aligned}
@@ -63,7 +63,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \end{aligned}
 \end{equation}$$
 
-It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, then strong duality holds (see e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
+It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, strong duality holds (see, e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
 
 $$\begin{equation}\label{eq:approx_dg_sol}
 \begin{aligned}
@@ -71,9 +71,9 @@ $$\begin{equation}\label{eq:approx_dg_sol}
 \end{aligned}
 \end{equation}$$
 
-where $[z]_+$ and $[z]_-$ stand for the projection of z onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check in general this criterion. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
+where $[z]_+$ and $[z]_-$ stand for the z projection onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check this criterion in general. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
 
-Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $$\ell_2$$ sense, and (x,y,z) will satisfy
+Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $$\ell_2$$ sense, and (x,y,z) will satisfy.
 
 $$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
 \begin{aligned}
@@ -90,22 +90,22 @@ You can find more details on these subjects (and how to activate this feature wi
 
 \section OverviewAPIstructure ProxQP unified API for dense and sparse backends
 
-ProxQP algorithm is implemented in two versions specialized for dense and sparse matrices. One simple and unified API has been designed for loading the dense and sparse backends. Concretely, it contains three methods:
+ProxQP algorithm is implemented in two versions specialized for dense and sparse matrices. One simple and unified API has been designed for loading dense and sparse backends. Concretely, it contains three methods:
 * init : for initializing the QP model, along with some parameters,
 * solve : for solving the QP problem,
 * update : for updating some parameters of the QP model.
 
-In what follows, we will make several examples for illustrating how to use this API in C++ and python. Some subttle differences exist nevertheless between the dense and sparse backends, and we will point them out when needed. We will also present all solver's possible settings and show where are stored the results. We will then give some recommandations about which backend to use considering your needs.
+In what follows, we will make several examples to illustrate how to use this API in C++ and Python. Some subtle differences exist, nevertheless, between the dense and sparse backends, and we will point them out when needed. We will also present all solver's possible settings and show where the results are stored. We will then give some recommendations about which backend to use, considering your needs.
 
 \subsection OverviewAPI The API structure
 
-When creating a Qp object in C++ or python, it contains automatically the following sub-classes:
+When creating a Qp object in C++ or Python, it automatically contains the following sub-classes:
 * model: a class storing the QP problem model which we want to solve,
 * results: a class storing the main solver's results,
 * settings: a class with all solver's settings,
-* work: a class (not exposed in python), with auxiliary variables used by the solver for its subroutines.
+* work: a class (not exposed in Python), with auxiliary variables the solver uses for its subroutines.
 
-For loading ProxQP with dense backend it is as simple as the following code below:
+For loading ProxQP with the dense backend, it is as simple as the following code below:
 
 <table class="manual">
   <tr>
@@ -122,9 +122,9 @@ For loading ProxQP with dense backend it is as simple as the following code belo
   </tr>
 </table>
 
-The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floatting precision of the QP model (in the example above in C++ a double precision). Note that for model to be valid, the primal dimension (i.e., n) must be strictly positive. If it is not the case an assertion will be raised precising this issue.
+The dimensions of the problem (i.e., n is the dimension of primal variable x, n_eq the number of equality constraints, and n_in the number of inequality constraints) are used for allocating the space needed for the Qp object. The dense Qp object is templated by the floating precision of the QP model (in the example above in C++ a double precision). Note that for the model to be valid, the primal dimension (i.e., n) must be strictly positive. If it is not the case, an assertion will be raised precising this issue.
 
-The dense backend has also a specific feature for handling more efficiently box inequality constraints. To benefit from it, constructors are overloaded as follows
+The dense backend also has a specific feature for efficiently handling box inequality constraints. To benefit from it, constructors are overloaded as follows:
 
 <table class="manual">
   <tr>
@@ -142,10 +142,10 @@ The dense backend has also a specific feature for handling more efficiently box 
 </table>
 
 Furthermore, the dense version of ProxQP has two different backends with different advantages:
-* PrimalDualLDLT: it factorizes a regularized version of the KKT system and benefits from great accuracy and stability. Nethertheless if the primal dimension (i.e., the one of x) is far smaller than the dimensions of the constraints, it will be slower than PrimalLDLT backend.
-* PrimalLDLT: it factorizes at the beginning the matrix $$H+\rho I+\frac{1}{\mu_{eq}} A^\top A$$ and goes on then with rank one updates. It is less accurate than PrimalDualLDLT backend, but it will be far quicker if it happens that the primal dimension if much smaller than the ones of the constraints.
+* PrimalDualLDLT: it factorizes a regularized version of the KKT system and benefits from great accuracy and stability. Nevertheless, if the primal dimension (i.e., the one of x) is far smaller than the dimensions of the constraints, it will be slower than PrimalLDLT backend.
+* PrimalLDLT: it factorizes at the beginning the matrix $$H+\rho I+\frac{1}{\mu_{eq}} A^\top A$$ and goes on then with rank one updates. It is less accurate than PrimalDualLDLT backend, but it will be far quicker if it happens that the primal dimension is much smaller than the ones of the constraints.
 
-The QP constructor uses by default an automatic choice for deciding which backend suits a priori bests user's needs. It is based on a heuristic comparing a priori computational complexity of each backends. However, if you have more insights of your needs (e.g., accuracy specifications, primal dimension is known to be far larger than the one of the constraints etc.), we encourage you to specify directly in the constructor which backend to use. It is as simple as following:
+The QP constructor uses, by default, an automatic choice for deciding which backend suits a priori bests user's needs. It is based on a heuristic comparing a priori computational complexity of each backend. However, if you have more insights into your needs (e.g., accuracy specifications, primal dimension is known to be far larger than the one of the constraints etc.), we encourage you to specify directly in the constructor which backend to use. It is as simple as the following:
 
 <table class="manual">
   <tr>
@@ -162,7 +162,7 @@ The QP constructor uses by default an automatic choice for deciding which backen
   </tr>
 </table>
 
-For loading ProxQP with sparse backend they are two possibilities:
+For loading ProxQP with the sparse backend, they are two possibilities:
 * one can use as before the dimensions of the QP problem (i.e., n, n_eq and n_in)
 * or one can use the sparsity structure of the matrices defining the QP problem. More precisely, if H designs the quadratic cost of the model, A the equality constraint matrix, and C the inequality constraint matrix, one can pass in entry a boolean mask of these matrices (i.e., matrices with true value when one entry is non zero) for initializing the Qp object.
 
@@ -181,11 +181,11 @@ For loading ProxQP with sparse backend they are two possibilities:
   </tr>
 </table>
 
-The sparse Qp object is templated by the floatting precision of the QP model (in the example above a double precision), and the integer precision used for the different types of non zero indices used (for the associated sparse matrix representation used).
+The sparse Qp object is templated by the floating precision of the QP model (in the example above, a double precision) and the integer precision used for the different types of non-zero indices used (for the associated sparse matrix representation used).
 
 \subsection explanationInitMethod The init method
 
-Once you have defined a Qp object, the init method enables you setting up the QP problem to be solved (the example is given for the dense backend, it is similar for sparse backend).
+Once you have defined a Qp object, the init method enables you to set up the QP problem to be solved (the example is given for the dense backend, it is similar for the sparse backend).
 
 <table class="manual">
   <tr>
@@ -202,7 +202,7 @@ Once you have defined a Qp object, the init method enables you setting up the QP
   </tr>
 </table>
 
-If you use the specific feature of the dense backend for handling box constraints, the init method uses simply as follows
+If you use the specific feature of the dense backend for handling box constraints, the init method uses simply as follows:
 
 <table class="manual">
   <tr>
@@ -219,7 +219,7 @@ If you use the specific feature of the dense backend for handling box constraint
   </tr>
 </table>
 
-Note that with its dense backend, ProxQP solver manipulates matrices in dense representations (in the same spirit, the solver with sparse backend manipulates entries in sparse format). In the example above the matrices are originally in sparse format, and eventually converted into dense format. Note that if some elements of your QP model are not defined (for example a QP without linear cost or inequality constraints), you can either pass a None argument, or a matrix with zero shape for specifying it. We provide an example below in cpp and python (for the dense case, it is similar with sparse backend).
+Note that with its dense backend, ProxQP solver manipulates matrices in dense representations (in the same spirit, the solver with sparse backend manipulates entries in sparse format). In the example above, the matrices are originally in sparse format and eventually converted into dense format. Note that if some elements of your QP model are not defined (for example, a QP without linear cost or inequality constraints), you can either pass a None argument or a matrix with zero shapes for specifying it. We provide an example below in cpp and Python (for the dense case, it is similar with sparse backend).
 
 <table class="manual">
   <tr>
@@ -237,12 +237,12 @@ Note that with its dense backend, ProxQP solver manipulates matrices in dense re
 </table>
 
 With the init method, you can also setting-up on the same time some other parameters in the following order:
-* compute_preconditioner: a boolean parameter for executing or not the preconditioner. The preconditioner is an algorithm used (for the moment we use [Ruiz equilibrator](https://cds.cern.ch/record/585592/files/CM-P00040415.pdf)) for reducing the ill-conditioning of the QP problem, and hence speeding-up the solver and increasing its accuracy. It consists mostly of an heuristic involving linear scalings. Note that for very ill-conditioned QP problem, when one asks for a very accurate solution, the unscaling procedure can become less precise (we provide some remarks about this subject in section 6.D of the [following paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf)). By default its value is set to true.
-* rho: the proximal step size wrt primal variable. Reducing its value speed-ups convergence wrt primal variable (but increases as well ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-7. By default its value is set to 1.e-6.
-* mu_eq: the proximal step size wrt equality constrained multiplier. Reducing its value speed-ups convergence wrt equality constrained variable (but increases as well ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-9. By default its value is set to 1.e-3.
-* mu_in: the proximal step size wrt inequality constrained multiplier. Reducing its value speed-ups convergence wrt inequality constrained variable (but increases as well ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-9. By default its value is set to 1.e-1.
+* compute_preconditioner: a boolean parameter for executing or not the preconditioner. The preconditioner is an algorithm used (for the moment, we use [Ruiz equilibrator](https://cds.cern.ch/record/585592/files/CM-P00040415.pdf)) for reducing the ill-conditioning of the QP problem, and hence speeding-up the solver and increasing its accuracy. It consists mostly of a heuristic involving linear scalings. Note that for very ill-conditioned QP problem, when one asks for a very accurate solution, the unscaling procedure can become less precise (we provide some remarks about this subject in section 6.D of the [following paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf)). By default, its value is set to true.
+* rho: the proximal step size wrt primal variable. Reducing its value speed-ups convergence wrt the primal variable (but increases as well the ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-7. By default, its value is set to 1.e-6.
+* mu_eq: the proximal step size wrt equality constrained multiplier. Reducing its value speed-ups convergence wrt equality-constrained variables (but increases as well the ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-9. By default, its value is set to 1.e-3.
+* mu_in: the proximal step size wrt inequality constrained multiplier. Reducing its value speed-ups convergence wrt inequality-constrained variable (but increases as well the ill-conditioning of sub-problems to solve). The minimal value it can take is 1.e-9. By default, its value is set to 1.e-1.
 
-We provide below one example in C++ and python.
+We provide below one example in C++ and Python.
 
 <table class="manual">
   <tr>
@@ -259,7 +259,7 @@ We provide below one example in C++ and python.
   </tr>
 </table>
 
-Furthermore, some settings must be defined before the init method to take effect. For example, if you want the solver to compute the runtime properly (the sum of the setup time and the solving time), you must set this option before the init method (which is part of the setup time). We provide below an example.
+Furthermore, some settings must be defined before the init method takes effect. For example, if you want the solver to compute the runtime properly (the sum of the setup time and the solving time), you must set this option before the init method (which is part of the setup time). We provide below an example.
 
 <table class="manual">
   <tr>
@@ -295,7 +295,7 @@ Once you have defined a Qp object and initialized it with a model, the solve met
   </tr>
 </table>
 
-Before ending this section, we will talk about how to activate some other settings before launching the solve method. To do so, you only need to define your desired settings (for example, the stopping criterion accuracy threshold eps_abs, or the verbose option) after initializing the Qp object. They will be then taken into account only if there are set before the solve method (otherwise, they will be taken into account when a next solve or update method is called). The full description of all the settings is provided at a dedicated section below. Here we just give an example to illustrate the mentioned notion above.
+Before ending this section, we will talk about how to activate some other settings before launching the solve method. To do so, you only need to define your desired settings (for example, the stopping criterion accuracy threshold eps_abs, or the verbose option) after initializing the Qp object. They will then be taken into account only if there are set before the solve method (otherwise, they will be taken into account when the next solve or update method is called). The full description of all the settings is provided in a dedicated section below. Here we just give an example to illustrate the mentioned notion above.
 
 <table class="manual">
   <tr>
@@ -330,9 +330,9 @@ The update method is used to update the model or a parameter of the problem, as 
     </td>
   </tr>
 </table>
-Contrary to the init method, the compute_preconditioner boolean parameter becomes update_preconditioner, which enables you keeping the previous preconditioner (if set to false) to equilibrate the new updated problem, or to re-compute the preconditioner with the new values of the problem (if set to true). By default the update_preconditioner parameter is set to true.
+Contrary to the init method, the compute_preconditioner boolean parameter becomes update_preconditioner, which enables you to keep the previous preconditioner (if set to false) to equilibrate the new updated problem, or to re-compute the preconditioner with the new values of the problem (if set to true). By default, the update_preconditioner parameter is set to false.
 
-The major difference between the dense and sparse API is that in the sparse case only, if you change matrices of the model, the update will take effect only if the matrices have the same sparsity structure (i.e., the non zero values are located at the same place). Hence, if the matrices have a different sparsity structure, you must create a new Qp object to solve the new problem. We provide an example below.
+The major difference between the dense and sparse API is that in the sparse case only if you change the matrices of the model, the update will take effect only if the matrices have the same sparsity structure (i.e., the non-zero values are located at the same place). Hence, if the matrices have a different sparsity structure, you must create a new Qp object to solve the new problem. We provide an example below.
 
 <table class="manual">
   <tr>
@@ -350,7 +350,7 @@ The major difference between the dense and sparse API is that in the sparse case
 </table>
 
 
-Finally, if you want to change your initial guess option when updating the problem, you must change it in the setting before the update to take effect for the next solve (otherwise it will keep the previous one set). It is important especially for the WARM_START_WITH_PREVIOUS_RESULT initial guess option (set by default in the solver). Indeed, in this case, if no matrix is updated, the workspace keeps the previous factorization in the update method, which adds considerable speed-up for the next solve. We provide below an example in the dense case.
+Finally, if you want to change your initial guess option when updating the problem, you must change it in the setting before the update takes effect for the next solve (otherwise, it will keep the previous one set). It is important, especially for the WARM_START_WITH_PREVIOUS_RESULT initial guess option (set by default in the solver). Indeed, in this case, if no matrix is updated, the workspace keeps the previous factorization in the update method, which adds considerable speed up for the next solving. We provide below an example in the dense case.
 
 <table class="manual">
   <tr>
@@ -371,11 +371,11 @@ Note that one subsection is dedicated to the different initial guess options bel
 
 \section OverviewSettings The settings subclass
 
-In this section you will find first the solver's settings, and then a subsection detailing the different initial guess options.
+In this section, you will find first the solver's settings and then a subsection detailing the different initial guess options.
 
 \subsection OverviewAllSettings The solver's settings
 
-In this table you have on the three columns from left to right: the name of the setting, its default value and then a short description of it.
+In this table, you have the three columns from left to right: the name of the setting, its default value, and then a short description of it.
 
 | Setting                             | Default value                      | Description
 | ----------------------------------- | ---------------------------------- | -----------------------------------------
@@ -406,11 +406,11 @@ In this table you have on the three columns from left to right: the name of the 
 | cold_reset_mu_eq                    | 1./1.1                             | Value used for cold restarting mu_eq.
 | cold_reset_mu_in                    | 1./1.1                             | Value used for cold restarting mu_in.
 | nb_iterative_refinement             | 10                                 | Maximal number of iterative refinements.
-| eps_refact                          | 1.E-6                              | Threshold value below which the ldlt is refactorized factorization in the iterative refinement loop.
-| safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iteration is superior to safe_guard, the BCL scheme accept always the multipliers (hence the scheme is a pure proximal point algorithm).
+| eps_refact                          | 1.E-6                              | Threshold value below which the Cholesky factorization is refactorized factorization in the iterative refinement loop.
+| safe_guard                          | 1.E4                               | Safeguard parameter ensuring global convergence of the scheme. More precisely, if the total number of iterations is superior to safe_guard, the BCL scheme accepts always the multipliers (hence the scheme is a pure proximal point algorithm).
 | preconditioner_max_iter             | 10                                 | Maximal number of authorized iterations for the preconditioner.
 | preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
-| HessianType                         | Dense                              | Defines the type of problem solved (Dense, Zero or Diagonal). In case Zero or Diagonal option are used, the solver optimize perform internally linear algebra operations involving the Hessian H.
+| HessianType                         | Dense                              | Defines the type of problem solved (Dense, Zero, or Diagonal). In case the Zero or Diagonal option is used, the solver exploits the Hessian structure to evaluate the Cholesky factorization efficiently.
 | primal_infeasibility_solving        | False                              | If set to true, it solves the closest primal feasible problem if primal infeasibility is detected.
 
 \subsection OverviewInitialGuess The different initial guesses
@@ -426,7 +426,7 @@ The different options will be commented below in the introduced order above.
 
 \subsubsection OverviewNoInitialGuess No initial guess
 
-If set to this option, the solver will start with no initial guess, which means that the initial values of x, y and z are the 0 vector.
+If set to this option, the solver will start with no initial guess, which means that the initial values of x, y, and z are the 0 vector.
 
 \subsubsection OverviewEqualityConstrainedInitialGuess Equality constrained initial guess
 
@@ -443,15 +443,15 @@ x \\\ y
 -g \\\
 b
 \end{bmatrix}$$
-z stays to 0. In general this option warm starts well equality constrained QP.
+z stays to 0. In general, this option warm starts well equality constrained QP.
 
-\subsubsection OverviewWarmStartWithPreviousResult Warm start with previous result
+\subsubsection OverviewWarmStartWithPreviousResult Warm start with the previous result
 
-If set to this option, the solver will warm start x, y and z with the values of the previous problem solved and it will keep all the last parameters of the solver (i.e., proximal step sizes for example, and the full workspace with the ldlt factorization etc.). Hence, if the new problem to solve is the same as the previous one, the problem is warm started at the solution (and zero iteration will be executed).
+If set to this option, the solver will warm start x, y, and z with the values of the previous problem solved and it will keep all the last parameters of the solver (i.e., proximal step sizes, for example, and the full workspace with the Cholesky factorization etc.). Hence, if the new problem to solve is the same as the previous one, the problem is warm-started at the solution (and zero iteration will be executed).
 
-This option has been thought initially for being used in optimal control like problems, when the next problem to be solved is closed to the previous one. Indeed, if the problem changes only slightly, it is reasonable to warm start the new problem with the value of the previous one for speeding the whole runtime.
+This option was initially thought to be used in optimal control-like problems when the next problem to be solved is close to the previous one. Indeed, if the problem changes only slightly, it is reasonable to warm start the new problem with the value of the previous one for speeding the whole runtime.
 
-Note however, that if your update involves new matrices or that you decide to change parameters involved in the ldlt factorization (i.e., the proximal step sizes), then for consistency, the solver will automatically refactorize the ldlt with these updates (and taking into account the last values of x, y and z for the active set).
+Note, however, that if your update involves new matrices or you decide to change parameters involved in the Cholesky factorization (i.e., the proximal step sizes), then for consistency, the solver will automatically refactorize the Cholesky with these updates (and taking into account the last values of x, y, and z for the active set).
 
 Finally, note that this option is set by default in the solver. At the first solve, as there is no previous results, x, y and z are warm started with the 0 vector value.
 
@@ -459,7 +459,7 @@ Finally, note that this option is set by default in the solver. At the first sol
 
 If set to this option, the solver expects then a warm start at the solve method.
 
-Note, that it is not necessary to set this option through the command below (for example in C++) before the update or solve method call.
+Note, that it is unnecessary to set this option through the command below (for example, in C++) before the update or solve method call.
 \code
 Qp.settings.initial_guess = proxsuite::qp::InitialGuessStatus::WARM_START;
 \endcode
@@ -470,13 +470,13 @@ It is sufficient to just add the warm start in the solve method, and the solver 
 
 If set to this option, the solver will warm start x, y and z with the values of the previous problem solved. Contrary to the WARM_START_WITH_PREVIOUS_RESULT option, all other parameters of the solver (i.e., proximal step sizes for example, and the full workspace with the ldlt factorization etc.) are re-set to their default values (hence a factorization is reperformed taking into account of z warm start for the active set, but with default values of proximal step sizes).
 
-This option has also been thought initially for being used in optimal control like problems, when the next problem to be solved is closed to the previous one. Indeed, if the problem changes only slightly, it is reasonable to warm start the new problem with the value of the previous one for speeding the whole runtime.
+This option has also been thought initially for being used in optimal control-like problems when the next problem to be solved is close to the previous one. Indeed, if the problem changes only slightly, it is reasonable to warm start the new problem with the value of the previous one for speeding the whole runtime.
 
-Note finally that at the first solve, as there is no previous results, x, y and z are warm started with the 0 vector value.
+Note finally that at the first solve, as there are no previous results, x, y, and z are warm started with the 0 vector value.
 
 \section OverviewResults The results subclass
 
-The result subclass is composed of:
+The result subclass is composed of the following:
 * x: a primal solution,
 * y: a Lagrange optimal multiplier for equality constraints,
 * z: a Lagrange optimal multiplier for inequality constraints,
@@ -499,7 +499,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_rel}
 \end{equation}$$
 accordingly with the parameters eps_abs and eps_rel chosen by the user.
 
-If the problem is primal infeasible and you have enable the solver to solve the closest feasible problem, then (x,y,z) will satisfies
+If the problem is primal infeasible and you have enabled the solver to solve the closest feasible problem, then (x,y,z) will satisfy.
 $$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
 \begin{aligned}
     &\left\{
@@ -530,7 +530,7 @@ Note that if you use the dense backend and its specific feature for handling box
 
 \subsection OverviewInfoClass The info subclass
 
-In this table you have on the three columns from left to right: the name of the info subclass item, its default value and then a short description of it.
+In this table you have on the three columns from left to right: the name of the info subclass item, its default value, and then a short description of it.
 
 | Info item                           | Default value                  | Description
 | ----------------------------------- | ------------------------------ | -----------------------------------------
@@ -542,15 +542,15 @@ In this table you have on the three columns from left to right: the name of the 
 | mu_updates                          | 0                              | Total number of mu updates.
 | rho_updates                         | 0                              | Total number of rho updates.
 | status                              | PROXQP_NOT_RUN                 | Status of the solver.
-| setup_time                          | 0                              | Setup time (takes into account the equlibration procedure).
+| setup_time                          | 0                              | Setup time (takes into account the equilibration procedure).
 | solve_time                          | 0                              | Solve time (takes into account the first factorization).
-| run_time                            | 0                              | the sum of the setupe time and the solve time.
+| run_time                            | 0                              | the sum of the setup time and the solve time.
 | objValue                            | 0                              | The objective value to minimize.
 | pri_res                             | 0                              | The primal residual.
 | dua_res                             | 0                              | The dual residual.
 
 
-Note finally that when initializing a QP object, by default the proximal step sizes (i.e., rho, mu_eq and mu_in) are set up by the default values defined in the Setting class. Hence, when doing multiple solves, if not specified, their values are re-set respectively to default_rho, default_mu_eq and default_mu_in. A small example is given below in c++ and python.
+Note finally that when initializing a QP object, by default, the proximal step sizes (i.e., rho, mu_eq, and mu_in) are set up by the default values defined in the Setting class. Hence, when doing multiple solves, if not specified, their values are re-set respectively to default_rho, default_mu_eq, and default_mu_in. A small example is given below in C++ and Python.
 
 <table class="manual">
   <tr>
@@ -578,7 +578,7 @@ The solver has five status:
 * PROXQP_DUAL_INFEASIBLE: the problem is dual infeasible.
 * PROXQP_NOT_RUN: the solver has not been run yet.
 
-Infeasibility is detected using the necessary conditions exposed in [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf). More precisely, primal infeasibility is assumed if the following conditions are matched for some non zeros dy and dz (according the eps_prim_inf variable set by the user):
+Infeasibility is detected using the necessary conditions exposed in [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf). More precisely, primal infeasibility is assumed if the following conditions are matched for some non zeros dy and dz (according to the eps_prim_inf variable set by the user):
 
 $$\begin{equation}\label{eq:approx_qp_sol_prim_inf}\tag{PrimalInfeas}
 \begin{aligned}
@@ -593,7 +593,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_prim_inf}\tag{PrimalInfeas}
 \end{aligned}
 \end{equation}$$
 
-Dual infeasibility is assumed if the following two conditions are matched for some non zero dx (according the eps_dual_inf variable set by the user):
+Dual infeasibility is assumed if the following two conditions are matched for some non-zero dx (according to the eps_dual_inf variable set by the user):
 
 $$\begin{equation}\label{eq:approx_qp_sol_dual_inf}\tag{DualInfeas}
 \begin{aligned}
@@ -609,46 +609,46 @@ $$\begin{equation}\label{eq:approx_qp_sol_dual_inf}\tag{DualInfeas}
 \end{aligned}
 \end{equation}$$
 
-If the problem turns out to be primal or dual infeasible, then x, y and z stored in the results class will be the certificate of primal or dual infeasibility. More precisely:
+If the problem turns out to be primal or dual infeasible, then x, y, and z stored in the results class will be the certificate of primal or dual infeasibility. More precisely:
 * if the problem is dual infeasible, Qp.results.x will be the certificate dx of dual infeasibility satisfying \eqref{eq:approx_qp_sol_dual_inf} at precisifion Qp.settings.eps_dual_inf specified by the user,
-* if the problem is primal infeasible, Qp.results.y and and Qp.results.z will be respectively the certificates dy and dz of primal infeasibility satisfying \eqref{eq:approx_qp_sol_prim_inf} at precisifion Qp.settings.eps_primal_inf specified by the user.
+* if the problem is primal infeasible, Qp.results.y and Qp.results.z will be, respectively, the certificates dy and dz of primal infeasibility satisfying \eqref{eq:approx_qp_sol_prim_inf} at precision Qp.settings.eps_primal_inf specified by the user.
 
 
 \section OverviewWhichBackend Which backend to use?
 
-We have the following generic advices for choosing between the sparse and dense backend. If your problem is not:
-* too large (less than some thousands variables),
+We have the following generic advice for choosing between the sparse and dense backend. If your problem is not:
+* too large (less than some thousand variables),
 * and too sparse (a sparsity ratio of your matrices greater than 0.1),
 
-then we recommand using the solver with dense backend.
+then we recommend using the solver with the dense backend.
 
 
 The sparsity ratio of matrix A is defined as:
 
 $$ \text{sparsity}(A) = \frac{\text{nnz}(A)}{\text{number}_{\text{row}}(A) * \text{number}_{\text{col}}(A)}, $$
 
-which accounts for the percentage of non zero elements in matrix A.
+which accounts for the percentage of non-zero elements in matrix A.
 
 \section OverviewBenchmark Some important remarks when computing timings
 
-We provide first some details about what is measured in the setup and solve time of ProxQP, which is of some importance when doing benchmarks with other solvers, as they can measure different things in a feature with a similar name.
+We first provide some details about what is measured in the setup and solve time of ProxQP, which is of some importance when doing benchmarks with other solvers, as they can measure different things in a feature with a similar name.
 
 Then we conclude this documentation section with some compilation options for ProxQP which can considerably speed up the solver, considering your OS architecture.
 
 \subsection OverviewTimings What do the timings take into account?
 
-An important remark about quadratic programming solver is that they all rely at some point on a factorization matrix algorithm, which constitutes the time bottle neck of the solver (as the factorization has a cubic order of complexity wrt dimension of the matrix to factorize).
+An important remark about quadratic programming solver is that they all rely at some point on a factorization matrix algorithm, which constitutes the time bottleneck of the solver (as the factorization has a cubic order of complexity wrt dimension of the matrix to factorize).
 
-Available solvers have often a similar API as the one we propose, with first an "init" method for initializing the model, and then a "solve" method for solving the QP problem. For not biasing the benchmarks, it is important to know where is done the first matrix factorization, as it constitutes a considerable cost. In our API, we have decided to make the first factorization in the solve method, as we consider that factorizing the problem is part of the solving part. Hence in terms of timing:
+Available solvers often have a similar API as the one we propose, with first an "init" method for initializing the model, and then a "solve" method for solving the QP problem. For not biasing the benchmarks, it is important to know where is done the first matrix factorization, as it constitutes a considerable cost. In our API, we have decided to make the first factorization in the solve method, as we consider that factorizing the problem is part of the solving part. Hence in terms of timing:
 * results.info.setup_time: measures only the initialization of the model and also the preconditioning procedure (if it has been activated),
 * results.info.solve_time: measures everything else (including the first factorization),
 * results.info.run_time = results.info.setup_time + results.info.solve_time.
 
-It is important to notice that some other solvers API have made different choices. For example, OSQP measures in the setup time the first factorization of the system (at the time [ProxQP algorithm](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf) was published). Hence our recommandation is that for benchmarking ProxQP against other solvers you should compare ProxQP runtime against the other solvers' runtime (i.e., everything from what constitutes their setup to their solve method). Otherwise, the benchmarks won't take into account timings that are comparable.
+It is important to notice that some other solvers API have made different choices. For example, OSQP measures in the setup time the first factorization of the system (at the time [ProxQP algorithm](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf) was published). Hence we recommend that for benchmarking ProxQP against other solvers, you should compare ProxQP runtime against the other solvers' runtime (i.e., everything from what constitutes their setup to their solve method). Otherwise, the benchmarks won't take into comparable account timings.
 
 \subsection OverviewArchitectureOptions Architecture options when compiling ProxSuite
 
-We highly encourage you to enable the vectorization of the underlying linear algebra for the best performances. You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
+We highly encourage you to enable the vectorization of the underlying linear algebra for the best performance. You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
 
 \code
 mkdir build && cd build
