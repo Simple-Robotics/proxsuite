@@ -46,7 +46,7 @@ var NAVTREE =
         [ "The different initial guesses", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewInitialGuess", [
           [ "No initial guess", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewNoInitialGuess", null ],
           [ "Equality constrained initial guess", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewEqualityConstrainedInitialGuess", null ],
-          [ "Warm start with previous result", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWarmStartWithPreviousResult", null ],
+          [ "Warm start with the previous result", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWarmStartWithPreviousResult", null ],
           [ "Warm start", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWarmStart", null ],
           [ "Cold start with previous result", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewColdStartWithPreviousResult", null ]
         ] ]
