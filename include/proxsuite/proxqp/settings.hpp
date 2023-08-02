@@ -170,9 +170,9 @@ struct Settings
    * @param initial_guess sets the initial guess option for initilizing x, y
    * and z.
    * @param update_preconditioner If set to true, the preconditioner will be
-   * re-derived with the update method.
+   * re-computed when calling the update method.
    * @param compute_preconditioner If set to true, the preconditioner will be
-   * derived with the init method.
+   * computed with the init method.
    * @param compute_timings If set to true, timings will be computed by the
    * solver (setup time, solving time, and run time = setup time + solving
    * time).
@@ -228,7 +228,7 @@ struct Settings
                                           // EQUALITY_CONSTRAINED_INITIAL_GUESS,
                                           // as most often we run only
                                           // once a problem
-    bool update_preconditioner = true,
+    bool update_preconditioner = false,
     bool compute_preconditioner = true,
     bool compute_timings = false,
     bool check_duality_gap = false,

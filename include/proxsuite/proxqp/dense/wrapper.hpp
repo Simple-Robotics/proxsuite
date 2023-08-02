@@ -715,7 +715,7 @@ public:
               optional<MatRef<T>> C,
               optional<VecRef<T>> l,
               optional<VecRef<T>> u,
-              bool update_preconditioner = true,
+              bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
@@ -821,7 +821,7 @@ public:
               optional<VecRef<T>> u,
               optional<VecRef<T>> l_box,
               optional<VecRef<T>> u_box,
-              bool update_preconditioner = true,
+              bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)
