@@ -351,7 +351,7 @@ struct QP
               const optional<SparseMat<T, I>> C,
               optional<VecRef<T>> l,
               optional<VecRef<T>> u,
-              bool update_preconditioner = true,
+              bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
               optional<T> mu_in = nullopt)

@@ -175,7 +175,7 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
-        true,
+        false,
         "update the preconditioner considering new matrices entries for "
         "reducing ill-conditioning and speeding up solver execution. If set up "
         "to false, use previous derived preconditioner."),
@@ -214,7 +214,7 @@ exposeQpObjectDense(pybind11::module_ m)
         "u_box", nullopt, "lower box inequality constraint vector"),
       pybind11::arg_v(
         "update_preconditioner",
-        true,
+        false,
         "update the preconditioner considering new matrices entries for "
         "reducing ill-conditioning and speeding up solver execution. If set up "
         "to false, use previous derived preconditioner."),
@@ -312,7 +312,7 @@ exposeQpObjectSparse(pybind11::module_ m)
          pybind11::arg_v("u", nullopt, "lower inequality constraint vector"),
          pybind11::arg_v(
            "update_preconditioner",
-           true,
+           false,
            "update the preconditioner or re-use previous derived for reducing "
            "ill-conditioning and speeding up solver execution."),
          pybind11::arg_v("rho", nullopt, "primal proximal parameter"),

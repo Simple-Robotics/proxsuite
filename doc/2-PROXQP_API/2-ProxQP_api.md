@@ -397,7 +397,7 @@ In this table you have on the three columns from left to right: the name of the 
 | mu_update_factor                    | 0.1                                | Factor used for updating mu_eq and mu_in.
 | eps_primal_inf                      | 1.E-4                              | Threshold under which primal infeasibility is detected.
 | eps_dual_inf                        | 1.E-4                              | Threshold under which dual infeasibility is detected.
-| update_preconditioner               | True                               | If set to true, the preconditioner will be re-derived with the update method, otherwise it uses previous one.
+| update_preconditioner               | False                              | If set to true, the preconditioner will be re-derived with the update method, otherwise it uses previous one.
 | compute_preconditioner              | True                               | If set to true, the preconditioner will be derived with the init method.
 | alpha_bcl                           | 0.1                                | alpha parameter of the BCL algorithm.
 | beta_bcl                            | 0.9                                | beta parameter of the BCL algorithm.
