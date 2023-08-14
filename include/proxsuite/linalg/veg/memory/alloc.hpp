@@ -165,13 +165,13 @@ aligned_alloc(usize align, usize size) noexcept -> void*
 #if defined(_WIN32)
   return _aligned_malloc((size + mask) & ~mask, align);
 #elif defined(__APPLE__)
-#ifdef PROXSUITE_WITH_CPP_17
+#if defined(PROXSUITE_WITH_CPP_17) && defined(_LIBCPP_HAS_ALIGNED_ALLOC)
   return alignment::aligned_alloc(align, (size + mask) & ~mask);
 #else
   return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);
 #endif
 #else
-#ifdef PROXSUITE_WITH_CPP_17
+#if defined(PROXSUITE_WITH_CPP_17) && defined(_LIBCPP_HAS_ALIGNED_ALLOC)
   return std::aligned_alloc(align, (size + mask) & ~mask);
 #else
   return alignment::detail::aligned_alloc(align, (size + mask) & ~mask);
