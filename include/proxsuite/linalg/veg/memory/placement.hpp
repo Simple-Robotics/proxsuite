@@ -41,7 +41,7 @@
 
 #if VEG_HAS_BUILTIN(__builtin_launder) || __GNUC__ >= 7
 #define VEG_LAUNDER(p) (__builtin_launder(p))
-#elif defined(VEG_WITH_CXX17_SUPPORT)
+#elif defined(VEG_WITH_CXX17_SUPPORT) && __GNUC__ >= 6
 #include <new>
 #define VEG_LAUNDER(p) (::std::launder(p))
 #else
