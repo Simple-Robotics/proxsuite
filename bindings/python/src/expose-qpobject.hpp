@@ -88,6 +88,7 @@ exposeQpObjectDense(pybind11::module_ m)
                                             bool compute_preconditioner,
                                             optional<T>,
                                             optional<T>,
+                                            optional<T>,
                                             optional<T>)>(&dense::QP<T>::init),
          "function for initialize the QP model.",
          pybind11::arg_v("H", nullopt, "quadratic cost"),
@@ -105,7 +106,11 @@ exposeQpObjectDense(pybind11::module_ m)
          pybind11::arg_v(
            "mu_eq", nullopt, "dual equality constraint proximal parameter"),
          pybind11::arg_v(
-           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"),
+         pybind11::arg_v("manual_minimal_H_eigenvalue",
+                         nullopt,
+                         "manual minimal H eigenvalue proposed to regularize H"
+                         " in case it is non convex."))
     .def("init",
          static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
                                             optional<dense::VecRef<T>>,
@@ -117,6 +122,7 @@ exposeQpObjectDense(pybind11::module_ m)
                                             optional<dense::VecRef<T>>,
                                             optional<dense::VecRef<T>>,
                                             bool compute_preconditioner,
+                                            optional<T>,
                                             optional<T>,
                                             optional<T>,
                                             optional<T>)>(&dense::QP<T>::init),
@@ -140,7 +146,11 @@ exposeQpObjectDense(pybind11::module_ m)
          pybind11::arg_v(
            "mu_eq", nullopt, "dual equality constraint proximal parameter"),
          pybind11::arg_v(
-           "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+           "mu_in", nullopt, "dual inequality constraint proximal parameter"),
+         pybind11::arg_v("manual_minimal_H_eigenvalue",
+                         nullopt,
+                         "manual minimal H eigenvalue proposed to regularize H"
+                         " in case it is non convex."))
     .def("solve",
          static_cast<void (dense::QP<T>::*)()>(&dense::QP<T>::solve),
          "function used for solving the QP problem, using default parameters.")
@@ -163,6 +173,7 @@ exposeQpObjectDense(pybind11::module_ m)
                                          bool update_preconditioner,
                                          optional<T>,
                                          optional<T>,
+                                         optional<T>,
                                          optional<T>)>(&dense::QP<T>::update),
       "function used for updating matrix or vector entry of the model using "
       "dense matrix entries.",
@@ -183,7 +194,11 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v(
         "mu_eq", nullopt, "dual equality constraint proximal parameter"),
       pybind11::arg_v(
-        "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+        "mu_in", nullopt, "dual inequality constraint proximal parameter"),
+      pybind11::arg_v("manual_minimal_H_eigenvalue",
+                      nullopt,
+                      "manual minimal H eigenvalue proposed to regularize H"
+                      " in case it is non convex."))
     .def(
       "update",
       static_cast<void (dense::QP<T>::*)(optional<dense::MatRef<T>>,
@@ -196,6 +211,7 @@ exposeQpObjectDense(pybind11::module_ m)
                                          optional<dense::VecRef<T>>,
                                          optional<dense::VecRef<T>>,
                                          bool update_preconditioner,
+                                         optional<T>,
                                          optional<T>,
                                          optional<T>,
                                          optional<T>)>(&dense::QP<T>::update),
@@ -222,7 +238,11 @@ exposeQpObjectDense(pybind11::module_ m)
       pybind11::arg_v(
         "mu_eq", nullopt, "dual equality constraint proximal parameter"),
       pybind11::arg_v(
-        "mu_in", nullopt, "dual inequality constraint proximal parameter"))
+        "mu_in", nullopt, "dual inequality constraint proximal parameter"),
+      pybind11::arg_v("manual_minimal_H_eigenvalue",
+                      nullopt,
+                      "manual minimal H eigenvalue proposed to regularize H"
+                      " in case it is non convex."))
     .def("cleanup",
          &dense::QP<T>::cleanup,
          "function used for cleaning the workspace and result "

@@ -348,6 +348,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    */
   void init(optional<MatRef<T>> H,
             optional<VecRef<T>> g,
@@ -359,7 +360,8 @@ public:
             bool compute_preconditioner = true,
             optional<T> rho = nullopt,
             optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt)
+            optional<T> mu_in = nullopt,
+            optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == true,
@@ -465,6 +467,14 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
+    const bool H_update = H != nullopt;
+    if (H_update) {
+      model.H = H.value();
+      proxsuite::proxqp::dense::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          settings, results, work, model, manual_minimal_H_eigenvalue);
+    }
+    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
     typedef optional<VecRef<T>> optional_VecRef;
@@ -509,6 +519,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    */
   void init(optional<MatRef<T>> H,
             optional<VecRef<T>> g,
@@ -522,7 +533,8 @@ public:
             bool compute_preconditioner = true,
             optional<T> rho = nullopt,
             optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt)
+            optional<T> mu_in = nullopt,
+            optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
 
     // dense case
@@ -666,6 +678,14 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
+    const bool H_update = H != nullopt;
+    if (H_update) {
+      model.H = H.value();
+      proxsuite::proxqp::dense::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          settings, results, work, model, manual_minimal_H_eigenvalue);
+    }
+    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
     proxsuite::proxqp::dense::setup(H,
@@ -705,6 +725,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    * @note The init method should be called before update. If it has not been
    * done before, init is called depending on the is_initialized flag.
    */
@@ -718,7 +739,8 @@ public:
               bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
+              optional<T> mu_in = nullopt,
+              optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == true,
@@ -744,6 +766,7 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
+    const bool H_update = H != nullopt;
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt);
@@ -762,6 +785,13 @@ public:
                                        work,
                                        box_constraints);
     }
+    if (H_update) {
+      model.H = H.value();
+      proxsuite::proxqp::dense::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          settings, results, work, model, manual_minimal_H_eigenvalue);
+    }
+    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
 
@@ -809,6 +839,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    * @note The init method should be called before update. If it has not been
    * done before, init is called depending on the is_initialized flag.
    */
@@ -824,7 +855,8 @@ public:
               bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
+              optional<T> mu_in = nullopt,
+              optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == false && (l_box != nullopt || u_box != nullopt),
@@ -861,6 +893,7 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
+    const bool H_update = H != nullopt;
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt && u_box == nullopt &&
@@ -869,6 +902,13 @@ public:
       proxsuite::proxqp::dense::update(
         H, g, A, b, C, l, u, l_box, u_box, model, work, box_constraints);
     }
+    if (H_update) {
+      model.H = H.value();
+      proxsuite::proxqp::dense::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          settings, results, work, model, manual_minimal_H_eigenvalue);
+    }
+    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
     typedef optional<MatRef<T>> optional_MatRef;

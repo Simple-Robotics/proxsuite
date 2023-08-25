@@ -51,7 +51,12 @@ exposeResults(pybind11::module_ m)
     .def_readwrite("sparse_backend",
                    &Info<T>::sparse_backend,
                    "Sparse backend used to solve the qp, either SparseCholesky "
-                   "or MatrixFree.");
+                   "or MatrixFree.")
+    .def_readwrite("minimal_H_eigenvalue_estimate",
+                   &Info<T>::minimal_H_eigenvalue_estimate,
+                   "By default it equals 0, in order to get an estimate, set "
+                   "appropriately the setting option "
+                   "find_H_minimal_eigenvalue.");
 
   ::pybind11::class_<Results<T>>(m, "Results", pybind11::module_local())
     .def(::pybind11::init<i64, i64, i64>(),
