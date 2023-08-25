@@ -4742,6 +4742,111 @@ class DenseqpWrapper(unittest.TestCase):
             assert dua_res <= qp.settings.eps_abs
             assert pri_res <= scaled_eps
 
+    def test_minimal_eigenvalue_estimation_nonconvex_eigen_option(
+        self,
+    ):
+        print(
+            "------------------------dense non convex qp with inequality constraints, estimate minimal eigenvalue with eigen method"
+        )
+        n = 50
+        tol = 1.0e-3
+        for i in range(50):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.verbose = False
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.find_minimal_H_eigenvalue = (
+                proxsuite.proxqp.HessianCostRegularization.EigenRegularization
+            )
+            vals, _ = spa.linalg.eigs(H, which="SR")
+            min_eigenvalue = float(np.min(vals))
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+            )
+            assert (
+                np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+                <= tol
+            )
+
+    def test_minimal_eigenvalue_estimation_nonconvex_manual_option(
+        self,
+    ):
+        print(
+            "------------------------dense non convex qp with inequality constraints, estimate minimal eigenvalue with manual option"
+        )
+        n = 50
+        tol = 1.0e-3
+        for i in range(50):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.verbose = False
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.find_minimal_H_eigenvalue = (
+                proxsuite.proxqp.HessianCostRegularization.Manual
+            )
+            vals, _ = spa.linalg.eigs(H, which="SR")
+            min_eigenvalue = float(np.min(vals))
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+                manual_minimal_H_eigenvalue=min_eigenvalue,
+            )
+            assert (
+                np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+                <= tol
+            )
+
+    def test_minimal_eigenvalue_estimation_nonconvex_power_iter_option(
+        self,
+    ):
+        print(
+            "------------------------dense non convex qp with inequality constraints, estimate minimal eigenvalue with power iter option"
+        )
+        n = 50
+        tol = 1.0e-3
+        for i in range(50):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.verbose = False
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.find_minimal_H_eigenvalue = (
+                proxsuite.proxqp.HessianCostRegularization.PowerIteration
+            )
+            qp.settings.nb_power_iteration = 10000
+            vals, _ = spa.linalg.eigs(H, which="SR")
+            min_eigenvalue = float(np.min(vals))
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+                manual_minimal_H_eigenvalue=min_eigenvalue,
+            )
+            assert (
+                np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+                <= tol
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

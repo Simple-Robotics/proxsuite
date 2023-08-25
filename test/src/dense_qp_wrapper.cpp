@@ -11,7 +11,7 @@
 using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
-/*
+
 DOCTEST_TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
@@ -7207,13 +7207,11 @@ TEST_CASE("ProxQP::dense: test primal infeasibility solving")
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 }
-*/
-/*
-TEST_CASE("ProxQP::dense: test estimate of minimal eigenvalue in non convex case
-using Eigen")
+
+TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
 {
   double sparsity_factor = 1.;
-  T tol =  T(1e-6);
+  T tol = T(1e-6);
   utils::rand::set_seed(1);
   dense::isize dim = 2;
   dense::isize n_eq(dim);
@@ -7233,16 +7231,18 @@ using Eigen")
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
     qp.settings.find_minimal_H_eigenvalue =
-HessianCostRegularization::EigenRegularization; qp.settings.initial_guess =
-InitialGuessStatus::NO_INITIAL_GUESS; qp.init(qp_random.H, qp_random.g,
+      HessianCostRegularization::EigenRegularization;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
             qp_random.A,
             qp_random.b,
             qp_random.C,
             qp_random.l,
             qp_random.u);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate+1) <=
-tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <=
+                  tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7261,15 +7261,17 @@ tol);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
     qp.settings.find_minimal_H_eigenvalue =
-HessianCostRegularization::EigenRegularization; qp.settings.initial_guess =
-InitialGuessStatus::NO_INITIAL_GUESS; qp.init(qp_random.H, qp_random.g,
+      HessianCostRegularization::EigenRegularization;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
             qp_random.A,
             qp_random.b,
             qp_random.C,
             qp_random.l,
             qp_random.u);
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate-minimal_eigenvalue)
-<= tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7280,33 +7282,35 @@ InitialGuessStatus::NO_INITIAL_GUESS; qp.init(qp_random.H, qp_random.g,
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
-    qp_random.H.diagonal().array() += 100 * random_diag.array(); // add some
-random values to dense matrix Eigen::SelfAdjointEigenSolver<dense::Mat<T>>
-es(qp_random.H,Eigen::EigenvaluesOnly); T minimal_eigenvalue =
-T(es.eigenvalues().minCoeff());
+    qp_random.H.diagonal().array() += 100 * random_diag.array();
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
+    T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
     qp.settings.find_minimal_H_eigenvalue =
-HessianCostRegularization::EigenRegularization; qp.settings.initial_guess =
-InitialGuessStatus::NO_INITIAL_GUESS; qp.init(qp_random.H, qp_random.g,
+      HessianCostRegularization::EigenRegularization;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
             qp_random.A,
             qp_random.b,
             qp_random.C,
             qp_random.l,
             qp_random.u);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate-minimal_eigenvalue)
-<= tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
   }
 }
 
-TEST_CASE("ProxQP::dense: test estimate of minimal eigenvalue in non convex case
-using manual choice")
+TEST_CASE(
+  "ProxQP::dense: test estimate of minimal eigenvalue using manual choice")
 {
   double sparsity_factor = 1.;
-  T tol =  T(1e-6);
+  T tol = T(1e-6);
   utils::rand::set_seed(1);
   dense::isize dim = 2;
   dense::isize n_eq(dim);
@@ -7340,8 +7344,8 @@ using manual choice")
             nullopt,
             -1);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate+1) <=
-tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <=
+                  tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7373,8 +7377,8 @@ tol);
             nullopt,
             nullopt,
             minimal_eigenvalue);
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate-minimal_eigenvalue)
-<= tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7385,10 +7389,10 @@ tol);
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
-    qp_random.H.diagonal().array() += 100 * random_diag.array(); // add some
-random values to dense matrix Eigen::SelfAdjointEigenSolver<dense::Mat<T>>
-es(qp_random.H,Eigen::EigenvaluesOnly); T minimal_eigenvalue =
-T(es.eigenvalues().minCoeff());
+    qp_random.H.diagonal().array() += 100 * random_diag.array();
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
+    T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
@@ -7408,13 +7412,13 @@ T(es.eigenvalues().minCoeff());
             nullopt,
             minimal_eigenvalue);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate-minimal_eigenvalue)
-<= tol);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
   }
 }
-*/
-TEST_CASE("ProxQP::dense: test estimate of minimal eigenvalue in non convex "
-          "case using power iteration")
+
+TEST_CASE(
+  "ProxQP::dense: test estimate of minimal eigenvalue using power iteration")
 {
   double sparsity_factor = 1.;
   T tol = T(1e-3);
@@ -7423,38 +7427,38 @@ TEST_CASE("ProxQP::dense: test estimate of minimal eigenvalue in non convex "
   dense::isize n_eq(dim);
   dense::isize n_in(dim);
   T strong_convexity_factor(1.e-2);
-  // for (isize i = 0; i < 1; ++i) {
-  //   // trivial test
-  //   ::proxsuite::proxqp::utils::rand::set_seed(i);
-  //   proxqp::dense::Model<T> qp_random =
-  //   proxqp::utils::dense_strongly_convex_qp(
-  //     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  for (isize i = 0; i < 1; ++i) {
+    // trivial test
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  //   qp_random.H.setZero();
-  //   qp_random.H.diagonal().setOnes();
-  //   qp_random.H.diagonal().tail(1).setConstant(-0.5);
+    qp_random.H.setZero();
+    qp_random.H.diagonal().setOnes();
+    qp_random.H.diagonal().tail(1).setConstant(-0.5);
 
-  //   proxqp::dense::QP<T> qp(dim, n_eq, n_in);
-  //   qp.settings.max_iter = 1;
-  //   qp.settings.max_iter_in = 1;
-  //   qp.settings.find_minimal_H_eigenvalue =
-  //   HessianCostRegularization::PowerIteration; qp.settings.initial_guess =
-  //   InitialGuessStatus::NO_INITIAL_GUESS; qp.init(qp_random.H,
-  //           qp_random.g,
-  //           qp_random.A,
-  //           qp_random.b,
-  //           qp_random.C,
-  //           qp_random.l,
-  //           qp_random.u,
-  //           true,
-  //           nullopt,
-  //           nullopt,
-  //           nullopt,
-  //           nullopt);
+    proxqp::dense::QP<T> qp(dim, n_eq, n_in);
+    qp.settings.max_iter = 1;
+    qp.settings.max_iter_in = 1;
+    qp.settings.find_minimal_H_eigenvalue =
+      HessianCostRegularization::PowerIteration;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            nullopt);
 
-  //   DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate+0.5)
-  //   <= tol);
-  // }
+    DOCTEST_CHECK(
+      std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 0.5) <= tol);
+  }
   dim = 50;
   n_eq = dim;
   n_in = dim;
