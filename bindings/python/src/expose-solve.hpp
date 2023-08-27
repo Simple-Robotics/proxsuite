@@ -43,7 +43,12 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             optional<T>,
                             optional<T>,
-                            bool>(&dense::solve<T>),
+                            bool,
+                            optional<isize>,
+                            optional<T>,
+                            HessianCostRegularization,
+                            optional<T>,
+                            optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -103,7 +108,33 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("nb_power_iteration",
+                    1000,
+                    "Number of power iteration iteration used by default "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("power_iteration_accuracy",
+                    1.E-6,
+                    "Accuracy target of the power iteration algorithm "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("find_minimal_H_eigenvalue",
+                    HessianCostRegularization::NoRegularization,
+                    "Option for estimating the minimal eigen value of H "
+                    "and regularizing default_rho following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."),
+    pybind11::arg_v("rho_regularization_scaling",
+                    1.5,
+                    "Scaling for regularizing default_rho according to the "
+                    "minimal eigen value of H "
+                    "following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."));
 
   m.def(
     "solve",
@@ -132,7 +163,12 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             optional<T>,
                             optional<T>,
-                            bool>(&dense::solve<T>),
+                            bool,
+                            optional<isize>,
+                            optional<T>,
+                            HessianCostRegularization,
+                            optional<T>,
+                            optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -194,7 +230,33 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("nb_power_iteration",
+                    1000,
+                    "Number of power iteration iteration used by default "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("power_iteration_accuracy",
+                    1.E-6,
+                    "Accuracy target of the power iteration algorithm "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("find_minimal_H_eigenvalue",
+                    HessianCostRegularization::NoRegularization,
+                    "Option for estimating the minimal eigen value of H "
+                    "and regularizing default_rho following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."),
+    pybind11::arg_v("rho_regularization_scaling",
+                    1.5,
+                    "Scaling for regularizing default_rho according to the "
+                    "minimal eigen value of H "
+                    "following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."));
 }
 
 } // namespace python
@@ -269,7 +331,33 @@ solveSparseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("nb_power_iteration",
+                    1000,
+                    "Number of power iteration iteration used by default "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("power_iteration_accuracy",
+                    1.E-6,
+                    "Accuracy target of the power iteration algorithm "
+                    "for estimating the lowest eigenvalue of H."),
+    pybind11::arg_v("find_minimal_H_eigenvalue",
+                    HessianCostRegularization::NoRegularization,
+                    "Option for estimating the minimal eigen value of H "
+                    "and regularizing default_rho following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."),
+    pybind11::arg_v("rho_regularization_scaling",
+                    1.5,
+                    "Scaling for regularizing default_rho according to the "
+                    "minimal eigen value of H "
+                    "following "
+                    "default_rho=rho_regularization_scaling*abs(default_H_"
+                    "eigenvalue_estimate)."
+                    "This option can be used for solving non convex QPs."));
 }
 
 } // namespace python

@@ -1044,7 +1044,13 @@ solve(
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false)
+  bool primal_infeasibility_solving = false,
+  optional<isize> nb_power_iteration = nullopt,
+  optional<T> power_iteration_accuracy = nullopt,
+  HessianCostRegularization find_minimal_H_eigenvalue =
+    HessianCostRegularization::NoRegularization,
+  optional<T> manual_minimal_H_eigenvalue = nullopt,
+  optional<T> rho_regularization_scaling = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1082,8 +1088,34 @@ solve(
     Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
+  Qp.settings.find_minimal_H_eigenvalue = find_minimal_H_eigenvalue;
+  if (nb_power_iteration != nullopt) {
+    Qp.settings.nb_power_iteration = nb_power_iteration.value();
+  }
+  if (power_iteration_accuracy != nullopt) {
+    Qp.settings.power_iteration_accuracy = power_iteration_accuracy.value();
+  }
+  if (rho_regularization_scaling != nullopt) {
+    Qp.settings.rho_regularization_scaling = rho_regularization_scaling.value();
+  }
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            manual_minimal_H_eigenvalue.value());
+  } else {
+    Qp.init(
+      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
+  }
   Qp.solve(x, y, z);
 
   return Qp.results;
@@ -1159,7 +1191,13 @@ solve(
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false)
+  bool primal_infeasibility_solving = false,
+  optional<isize> nb_power_iteration = nullopt,
+  optional<T> power_iteration_accuracy = nullopt,
+  HessianCostRegularization find_minimal_H_eigenvalue =
+    HessianCostRegularization::NoRegularization,
+  optional<T> manual_minimal_H_eigenvalue = nullopt,
+  optional<T> rho_regularization_scaling = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1197,20 +1235,48 @@ solve(
     Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
+  Qp.settings.find_minimal_H_eigenvalue = find_minimal_H_eigenvalue;
+  if (nb_power_iteration != nullopt) {
+    Qp.settings.nb_power_iteration = nb_power_iteration.value();
+  }
+  if (power_iteration_accuracy != nullopt) {
+    Qp.settings.power_iteration_accuracy = power_iteration_accuracy.value();
+  }
+  if (rho_regularization_scaling != nullopt) {
+    Qp.settings.rho_regularization_scaling = rho_regularization_scaling.value();
+  }
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  Qp.init(H,
-          g,
-          A,
-          b,
-          C,
-          l,
-          u,
-          l_box,
-          u_box,
-          compute_preconditioner,
-          rho,
-          mu_eq,
-          mu_in);
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            l_box,
+            u_box,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            manual_minimal_H_eigenvalue.value());
+  } else {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            l_box,
+            u_box,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            nullopt);
+  }
   Qp.solve(x, y, z);
 
   return Qp.results;
