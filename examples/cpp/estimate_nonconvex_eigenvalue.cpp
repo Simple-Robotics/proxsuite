@@ -19,16 +19,16 @@ main()
   dense::Vec<T> diag(dim);
   diag.setOnes();
   qp_random.H.diagonal().array() -=
-    diag.array(); // add some nonpositive values dense matrix
+    2. * diag.array(); // add some nonpositive values dense matrix
   Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
                                                   Eigen::EigenvaluesOnly);
   T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
+  // choose scaling for regularizing default_rho accordingly
+  dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   // choose the option for estimating this eigenvalue
   qp.settings.find_minimal_H_eigenvalue =
     HessianCostRegularization::EigenRegularization;
-  // choose scaling for regularizing default_rho accordingly
   qp.settings.rho_regularization_scaling = T(1.5);
-  dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

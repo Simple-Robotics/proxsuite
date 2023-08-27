@@ -444,7 +444,7 @@ The solver has four options for estimating the minimal eigenvalue of H within th
 
 This option is particularly usefull when solving QP with non convex quadratics. Indeed, if default_rho is set to a value strictly higher than the minimal eigenvalue of H, then ProxQP is guaranteed for find a local minimum to the problem since it relies on a Proximal Method of Multipliers (for more detail for example this [work](https://arxiv.org/pdf/2010.02653.pdf) providing convergence proof of this property).
 
-More precisely, when HessianCostRegularization is set to a value different of NoRegularization, then ProxQP first estimate a minimal eigenvalue for H and then update default_rho following the rule: default_rho = rho_regularization_scaling * abs(default_H_eigenvalue_estimate), which guarantees for appropriate scaling than the proximal step-size is larger than the minimal eigenvalue of H. We provide below examples in C++ and python for using this feature appropriately
+More precisely, when HessianCostRegularization is set to a value different of NoRegularization, then ProxQP first estimate a minimal eigenvalue for H and then update default_rho following the rule: default_rho = rho_regularization_scaling * abs(default_H_eigenvalue_estimate), which guarantees for appropriate scaling than the proximal step-size is larger than the minimal eigenvalue of H. We provide below examples in C++ and python for using this feature appropriately with the dense backend (it is similar with the sparse one)
 
 <table class="manual">
   <tr>
