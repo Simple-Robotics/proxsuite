@@ -50,6 +50,8 @@ enum struct HessianCostRegularization
   Manual,             // add a manual value
   PowerIteration,     // Process a power iteration algorithm
   EigenRegularization // Use Eigen's method to estimate the minimal eigenvalue
+                      // watch out, the last option is only available for dense
+                      // matrices!
 };
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)

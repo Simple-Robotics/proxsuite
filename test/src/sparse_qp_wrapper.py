@@ -14,7 +14,7 @@ def normInf(x):
         return np.linalg.norm(x, np.inf)
 
 
-def generate_mixed_qp(n, seed=1):
+def generate_mixed_qp(n, seed=1, reg=0.01):
     """
     Generate problem in QP format
     """
@@ -31,7 +31,7 @@ def generate_mixed_qp(n, seed=1):
     P = (P + P.T) / 2.0
 
     s = max(np.absolute(np.linalg.eigvals(P)))
-    P += (abs(s) + 1e-02) * spa.eye(n)
+    P += (abs(s) + reg) * spa.eye(n)
     P = spa.coo_matrix(P)
     print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
@@ -46,7 +46,6 @@ def generate_mixed_qp(n, seed=1):
 
 class SparseqpWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
-    """
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
@@ -4575,7 +4574,6 @@ class SparseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-    """
 
     def test_sparse_infeasibility_solving(
         self,
@@ -4625,6 +4623,114 @@ class SparseqpWrapper(unittest.TestCase):
             )
             assert dua_res <= qp.settings.eps_abs
             assert pri_res <= scaled_eps
+
+    # def test_minimal_eigenvalue_estimation_nonconvex_eigen_option(
+    #     self,
+    # ):
+    #     print(
+    #         "------------------------dense non convex qp with inequality constraints, estimate minimal eigenvalue with eigen method"
+    #     )
+    #     n = 50
+    #     tol = 1.0
+    #     for i in range(50):
+    #         H, g, A, b, C, u, l = generate_mixed_qp(n, i,-0.01)
+    #         n_eq = A.shape[0]
+    #         n_in = C.shape[0]
+    #         qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+    #         qp.settings.verbose = False
+    #         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+    #         qp.settings.find_minimal_H_eigenvalue = (
+    #             proxsuite.proxqp.HessianCostRegularization.EigenRegularization
+    #         )
+    #         vals, _ = spa.linalg.eigs(H, which="SR")
+    #         min_eigenvalue = float(np.min(vals))
+    #         qp.init(
+    #             H,
+    #             np.asfortranarray(g),
+    #             A,
+    #             np.asfortranarray(b),
+    #             C,
+    #             np.asfortranarray(l),
+    #             np.asfortranarray(u),
+    #         )
+    #         print(f"{min_eigenvalue=}")
+    #         print(f"{qp.results.info.minimal_H_eigenvalue_estimate=}")
+    #         input()
+    #         assert (
+    #             np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+    #             <= tol
+    #         )
+
+    def test_minimal_eigenvalue_estimation_nonconvex_manual_option(
+        self,
+    ):
+        print(
+            "------------------------dense non convex qp with inequality constraints, estimate minimal eigenvalue with manual option"
+        )
+        n = 50
+        tol = 1.0e-3
+        for i in range(50):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+            qp.settings.verbose = False
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.find_minimal_H_eigenvalue = (
+                proxsuite.proxqp.HessianCostRegularization.Manual
+            )
+            vals, _ = spa.linalg.eigs(H, which="SR")
+            min_eigenvalue = float(np.min(vals))
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+                manual_minimal_H_eigenvalue=min_eigenvalue,
+            )
+            assert (
+                np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+                <= tol
+            )
+
+    def test_minimal_eigenvalue_estimation_nonconvex_power_iter_option(
+        self,
+    ):
+        print(
+            "------------------------sparse non convex qp with inequality constraints, estimate minimal eigenvalue with power iter option"
+        )
+        n = 50
+        tol = 1.0
+        for i in range(50):
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
+            n_eq = A.shape[0]
+            n_in = C.shape[0]
+            qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
+            qp.settings.verbose = False
+            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.find_minimal_H_eigenvalue = (
+                proxsuite.proxqp.HessianCostRegularization.PowerIteration
+            )
+            qp.settings.nb_power_iteration = 10000
+            vals, _ = spa.linalg.eigs(H, which="SR")
+            min_eigenvalue = float(np.min(vals))
+            qp.init(
+                H,
+                np.asfortranarray(g),
+                A,
+                np.asfortranarray(b),
+                C,
+                np.asfortranarray(l),
+                np.asfortranarray(u),
+                manual_minimal_H_eigenvalue=min_eigenvalue,
+            )
+            assert (
+                np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
+                <= tol
+            )
 
 
 if __name__ == "__main__":

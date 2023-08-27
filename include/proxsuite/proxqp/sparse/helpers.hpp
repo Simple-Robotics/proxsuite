@@ -11,6 +11,7 @@
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
 #include <Eigen/Eigenvalues>
+#include <iostream>
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
@@ -147,14 +148,21 @@ update_default_rho_with_minimal_Hessian_eigen_value(
         std::abs(results.info.minimal_H_eigenvalue_estimate);
     } break;
     case HessianCostRegularization::EigenRegularization: {
-      Eigen::SelfAdjointEigenSolver<SparseMat<T, I>> es(qp_scaled.H.to_eigen(),
-                                                        Eigen::EigenvaluesOnly);
-      settings.default_H_eigenvalue_estimate = T(es.eigenvalues()[0]);
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
+      // Eigen::EigenSolver<SparseMat<T, I>> es(qp_scaled.H.to_eigen(),
+      //                                                   Eigen::EigenvaluesOnly);
+      // std::cout << "es.eigenvalues() " << es.eigenvalues() << std::endl;
+      // settings.default_H_eigenvalue_estimate = T(es.eigenvalues()[0]);
+      // results.info.minimal_H_eigenvalue_estimate =
+      //   settings.default_H_eigenvalue_estimate;
+      // settings.default_rho =
+      //   settings.rho_regularization_scaling *
+      //   std::abs(results.info.minimal_H_eigenvalue_estimate);
+      PROXSUITE_THROW_PRETTY(
+        true,
+        std::invalid_argument,
+        "wrong setting setup: Eigen Solver not compatible for sparse "
+        "matrices. Use a different setting option for estimating "
+        "minimal eigenvalues of the Hessian H.");
     } break;
   }
 }

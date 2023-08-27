@@ -14,7 +14,7 @@ def normInf(x):
         return np.linalg.norm(x, np.inf)
 
 
-def generate_mixed_qp(n, seed=1):
+def generate_mixed_qp(n, seed=1, reg=0.01):
     """
     Generate sparse problem in dense QP format
     """
@@ -31,7 +31,7 @@ def generate_mixed_qp(n, seed=1):
     P = (P + P.T) / 2.0
 
     s = max(np.absolute(np.linalg.eigvals(P)))
-    P += (abs(s) + 1e-02) * spa.eye(n)
+    P += (abs(s) + reg) * spa.eye(n)
     P = spa.coo_matrix(P)
     print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
@@ -4751,7 +4751,7 @@ class DenseqpWrapper(unittest.TestCase):
         n = 50
         tol = 1.0e-3
         for i in range(50):
-            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
@@ -4785,7 +4785,7 @@ class DenseqpWrapper(unittest.TestCase):
         n = 50
         tol = 1.0e-3
         for i in range(50):
-            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
@@ -4820,7 +4820,7 @@ class DenseqpWrapper(unittest.TestCase):
         n = 50
         tol = 1.0e-3
         for i in range(50):
-            H, g, A, b, C, u, l = generate_mixed_qp(n, i)
+            H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
