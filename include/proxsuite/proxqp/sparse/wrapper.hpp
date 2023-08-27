@@ -172,7 +172,8 @@ struct QP
             bool compute_preconditioner_ = true,
             optional<T> rho = nullopt,
             optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt)
+            optional<T> mu_in = nullopt,
+            optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     if (settings.compute_timings) {
       work.timer.stop();
@@ -293,6 +294,7 @@ struct QP
     if (H != nullopt) {
       SparseMat<T, I> H_triu =
         (H.value()).template triangularView<Eigen::Upper>();
+
       sparse::QpView<T, I> qp = {
         { proxsuite::linalg::sparse::from_eigen, H_triu },
         { proxsuite::linalg::sparse::from_eigen, model.g },
@@ -303,6 +305,9 @@ struct QP
         { proxsuite::linalg::sparse::from_eigen, model.u }
       };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
+      proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        settings, results, model, qp, stack, manual_minimal_H_eigenvalue);
     } else {
       SparseMat<T, I> H_triu(model.dim, model.dim);
       H_triu.setZero();
@@ -354,7 +359,8 @@ struct QP
               bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
+              optional<T> mu_in = nullopt,
+              optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     if (!work.internal.is_initialized) {
       init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
@@ -615,6 +621,11 @@ struct QP
              ruiz,
              preconditioner_status); // store model value + performs scaling
                                      // according to chosen options
+    if (H != nullopt) {
+      proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        settings, results, model, qp, stack, manual_minimal_H_eigenvalue);
+    }
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
     }

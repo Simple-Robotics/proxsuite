@@ -10,11 +10,154 @@
 
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
-
+#include <Eigen/Eigenvalues>
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 
+template<typename T, typename I>
+T
+power_iteration(Settings<T>& settings,
+                const QpView<T, I> qp_scaled,
+                Model<T, I>& model,
+                proxsuite::linalg::veg::dynstack::DynStackMut stack)
+{
+  // computes maximal eigen value of the bottom right matrix of the LDLT
+  LDLT_TEMP_VEC_UNINIT(T, rhs, model.dim, stack);
+  LDLT_TEMP_VEC_UNINIT(T, err_v, model.dim, stack);
+  LDLT_TEMP_VEC_UNINIT(T, dw_aug, model.dim, stack);
+
+  rhs.setZero();
+  // stores eigenvector
+  rhs.array() += 1. / std::sqrt(model.dim);
+  // stores Hx
+  dw_aug.setZero();
+  detail::noalias_symhiv_add(
+    detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+  T eig = 0;
+  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+
+    rhs = dw_aug / dw_aug.norm();
+    dw_aug.setZero();
+    detail::noalias_symhiv_add(
+      detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+    // calculate associated eigenvalue
+    eig = rhs.dot(dw_aug);
+    // calculate associated error
+    err_v = dw_aug - eig * rhs;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    // std::cout << "power iteration max: i " << i << " err " << err <<
+    // std::endl;
+    if (err <= settings.power_iteration_accuracy) {
+      break;
+    }
+  }
+  return eig;
+}
+template<typename T, typename I>
+T
+min_eigen_value_via_modified_power_iteration(
+  Settings<T>& settings,
+  const QpView<T, I> qp_scaled,
+  Model<T, I>& model,
+  proxsuite::linalg::veg::dynstack::DynStackMut stack,
+  T max_eigen_value)
+{
+  // performs power iteration on the matrix: max_eigen_value I - H
+  // estimates then the minimal eigenvalue with: minimal_eigenvalue =
+  // max_eigen_value - eig
+  LDLT_TEMP_VEC_UNINIT(T, rhs, model.dim, stack);
+  LDLT_TEMP_VEC_UNINIT(T, err_v, model.dim, stack);
+  LDLT_TEMP_VEC_UNINIT(T, dw_aug, model.dim, stack);
+
+  rhs.setZero();
+  // stores eigenvector
+  rhs.array() += 1. / std::sqrt(model.dim);
+  // stores Hx
+  dw_aug.setZero();
+  detail::noalias_symhiv_add(
+    detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+  dw_aug.array() *= (-1.);
+  dw_aug += max_eigen_value * rhs;
+  T eig = 0;
+  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+
+    rhs = dw_aug / dw_aug.norm();
+    dw_aug.setZero();
+    detail::noalias_symhiv_add(
+      detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+    dw_aug.array() *= (-1.);
+    dw_aug += max_eigen_value * rhs;
+    // calculate associated eigenvalue
+    eig = rhs.dot(dw_aug);
+    // calculate associated error
+    err_v = dw_aug - eig * rhs;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    // std::cout << "power iteration min: i " << i << " err " << err <<
+    // std::endl;
+    if (err <= settings.power_iteration_accuracy) {
+      break;
+    }
+  }
+  T minimal_eigenvalue = max_eigen_value - eig;
+  return minimal_eigenvalue;
+}
+/*!
+ * Estimate H minimal eigenvalue
+ * @param settings solver settings
+ * @param results solver results.
+ * @param model solver model.
+ * @param work solver workspace.
+ */
+template<typename T, typename I>
+void
+update_default_rho_with_minimal_Hessian_eigen_value(
+  Settings<T>& settings,
+  Results<T>& results,
+  Model<T, I>& model,
+  const QpView<T, I> qp_scaled,
+  proxsuite::linalg::veg::dynstack::DynStackMut stack,
+  optional<T> manual_minimal_H_eigenvalue)
+{
+  switch (settings.find_minimal_H_eigenvalue) {
+    case HessianCostRegularization::NoRegularization: {
+    } break;
+
+    case HessianCostRegularization::Manual: {
+      settings.default_H_eigenvalue_estimate =
+        manual_minimal_H_eigenvalue.value();
+      results.info.minimal_H_eigenvalue_estimate =
+        settings.default_H_eigenvalue_estimate;
+      settings.default_rho =
+        settings.rho_regularization_scaling *
+        std::abs(results.info.minimal_H_eigenvalue_estimate);
+    } break;
+
+    case HessianCostRegularization::PowerIteration: {
+      T dominant_eigen_value =
+        power_iteration<T, I>(settings, qp_scaled, model, stack);
+      T min_eigenvalue = min_eigen_value_via_modified_power_iteration<T, I>(
+        settings, qp_scaled, model, stack, (dominant_eigen_value));
+      settings.default_H_eigenvalue_estimate =
+        std::min(min_eigenvalue, dominant_eigen_value);
+      results.info.minimal_H_eigenvalue_estimate =
+        settings.default_H_eigenvalue_estimate;
+      settings.default_rho =
+        settings.rho_regularization_scaling *
+        std::abs(results.info.minimal_H_eigenvalue_estimate);
+    } break;
+    case HessianCostRegularization::EigenRegularization: {
+      Eigen::SelfAdjointEigenSolver<SparseMat<T, I>> es(qp_scaled.H.to_eigen(),
+                                                        Eigen::EigenvaluesOnly);
+      settings.default_H_eigenvalue_estimate = T(es.eigenvalues()[0]);
+      results.info.minimal_H_eigenvalue_estimate =
+        settings.default_H_eigenvalue_estimate;
+      settings.default_rho =
+        settings.rho_regularization_scaling *
+        std::abs(results.info.minimal_H_eigenvalue_estimate);
+    } break;
+  }
+}
 /*!
  * Update the proximal parameters of the results object.
  *
