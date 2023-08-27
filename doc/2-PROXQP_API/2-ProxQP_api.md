@@ -73,7 +73,7 @@ $$\begin{equation}\label{eq:approx_dg_sol}
 
 where $[z]_+$ and $[z]_-$ stand for the z projection onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check this criterion in general. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
 
-Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $$\ell_2$$ sense, and (x,y,z) will satisfy.
+Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $\ell_2$ sense, and (x,y,z) will satisfy.
 
 $$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
 \begin{aligned}
@@ -412,6 +412,12 @@ In this table, you have the three columns from left to right: the name of the se
 | preconditioner_accuracy             | 1.E-3                              | Accuracy level of the preconditioner.
 | HessianType                         | Dense                              | Defines the type of problem solved (Dense, Zero, or Diagonal). In case the Zero or Diagonal option is used, the solver exploits the Hessian structure to evaluate the Cholesky factorization efficiently.
 | primal_infeasibility_solving        | False                              | If set to true, it solves the closest primal feasible problem if primal infeasibility is detected.
+| nb_power_iteration                  | 1000                               | Number of power iteration iteration used by default for estimating H lowest eigenvalue.
+| power_iteration_accuracy            | 1.E-6                              | If set to true, it solves the closest primal feasible problem if primal infeasibility is detected.
+| primal_infeasibility_solving        | False                              | Accuracy target of the power iteration algorithm for estimating the lowest eigenvalue of H.
+| find_minimal_H_eigenvalue           | NoRegularization                   | Option for estimating the minimal eigen value of H and regularizing default_rho  default_rho=rho_regularization_scaling*abs(default_H_eigenvalue_estimate). This option can be used for solving non convex QPs.
+| default_H_eigenvalue_estimate       | 0.                                 | Default estimate of the minimal eigen value of H.
+| rho_regularization_scaling          | 1.5                                | Scaling for regularizing default_rho according to the minimal eigen value of H.
 
 \subsection OverviewInitialGuess The different initial guesses
 
@@ -423,6 +429,37 @@ The solver has five different possible initial guesses for warm starting or not 
 * COLD_START_WITH_PREVIOUS_RESULT.
 
 The different options will be commented below in the introduced order above.
+
+\subsubsection OverviewNoInitialGuess No initial guess
+
+If set to this option, the solver will start with no initial guess, which means that the initial values of x, y, and z are the 0 vector.
+
+\subsection OverviewEstimatingHminimalEigenValue The different options for estimating H minimal Eigenvalue
+
+The solver has four options for estimating the minimal eigenvalue of H within the struct HessianCostRegularization:
+* NoRegularization : set by default, it means the solver does not try to estimate it,
+* Manual: the user can provide an estimate of it through the init method,
+* PowerIteration: a power iteration algorithm will be used for estimating H minimal eigenvalue,
+* EigenRegularization: in case the dense backend is used, the solver make use of Eigen method for estimating it.
+
+This option is particularly usefull when solving QP with non convex quadratics. Indeed, if default_rho is set to a value strictly higher than the minimal eigenvalue of H, then ProxQP is guaranteed for find a local minimum to the problem since it relies on a Proximal Method of Multipliers (for more detail for example this [work](https://arxiv.org/pdf/2010.02653.pdf) providing convergence proof of this property).
+
+More precisely, when HessianCostRegularization is set to a value different of NoRegularization, then ProxQP first estimate a minimal eigenvalue for H and then update default_rho following the rule: default_rho = rho_regularization_scaling * abs(default_H_eigenvalue_estimate), which guarantees for appropriate scaling than the proximal step-size is larger than the minimal eigenvalue of H. We provide below examples in C++ and python for using this feature appropriately
+
+<table class="manual">
+  <tr>
+    <th>examples/cpp/estimate_nonconvex_eigenvalue.cpp</th>
+    <th>examples/python/estimate_nonconvex_eigenvalue.py</th>
+  </tr>
+  <tr>
+    <td valign="top">
+      \include estimate_nonconvex_eigenvalue.cpp
+    </td>
+    <td valign="top">
+      \include estimate_nonconvex_eigenvalue.py
+    </td>
+  </tr>
+</table>
 
 \subsubsection OverviewNoInitialGuess No initial guess
 
@@ -480,8 +517,8 @@ The result subclass is composed of the following:
 * x: a primal solution,
 * y: a Lagrange optimal multiplier for equality constraints,
 * z: a Lagrange optimal multiplier for inequality constraints,
-* se: the optimal shift in $$\ell_2$$ with respect to equality constraints,
-* si: the optimal shift in $$\ell_2$$ with respect to inequality constraints,
+* se: the optimal shift in $\ell_2$ with respect to equality constraints,
+* si: the optimal shift in $\ell_2$ with respect to inequality constraints,
 * info: a subclass which containts some information about the solver's execution.
 
 If the solver has solved the problem, the triplet (x,y,z) satisfies:
@@ -500,7 +537,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_rel}
 accordingly with the parameters eps_abs and eps_rel chosen by the user.
 
 If the problem is primal infeasible and you have enabled the solver to solve the closest feasible problem, then (x,y,z) will satisfy.
-$$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
+$$\begin{equation}\label{eq:approx_closest_qp_sol_rel_bis}
 \begin{aligned}
     &\left\{
     \begin{array}{ll}
@@ -511,9 +548,9 @@ $$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
 \end{aligned}
 \end{equation}$$
 
-(se, si) stands in this context for the optimal shifts in $$\ell_2$$ sense which enables recovering a primal feasible problem. More precisely, they are derived such that
+(se, si) stands in this context for the optimal shifts in $\ell_2$ sense which enables recovering a primal feasible problem. More precisely, they are derived such that
 
-$$\begin{equation}\label{eq:QP_primal_feasible}\tag{QP_feas}
+\begin{equation}\label{eq:QP_primal_feasible}\tag{QP_feas}
 \begin{aligned}
     \min_{x\in\mathbb{R}^{d}} & \quad \frac{1}{2}x^{T}Hx+g^{T}x \\\
     \text{s.t.}&\left\{
@@ -526,7 +563,7 @@ $$\begin{equation}\label{eq:QP_primal_feasible}\tag{QP_feas}
 \end{equation}\\\
 defines a primal feasible problem.
 
-Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first $$n_in$$ elements of z correspond to multipliers associated to the linear inequality formed with $$C$$ matrix, whereas the last $$d$$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
+Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first $n_{in}$ elements of z correspond to multipliers associated to the linear inequality formed with $C$ matrix, whereas the last $d$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
 
 \subsection OverviewInfoClass The info subclass
 
