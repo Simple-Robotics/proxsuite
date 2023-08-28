@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 
+
 def extract_nBatch_double_sided(Q, p, A, b, G, l, u):
     dims = [3, 2, 3, 2, 3, 2, 2]
     params = [Q, p, A, b, G, l, u]
@@ -8,6 +9,7 @@ def extract_nBatch_double_sided(Q, p, A, b, G, l, u):
         if param.ndimension() == dim:
             return param.size(0)
     return 1
+
 
 def extract_nBatch_(Q, p, G, A, b):
     dims = [3, 2, 3, 3, 2]
@@ -20,7 +22,8 @@ def extract_nBatch_(Q, p, G, A, b):
 
 # from qpth: https://github.com/locuslab/qpth/blob/master/qpth/util.py
 def print_header(msg):
-    print('===>', msg)
+    print("===>", msg)
+
 
 def to_np(t):
     if t is None:
@@ -30,8 +33,10 @@ def to_np(t):
     else:
         return t.cpu().numpy()
 
+
 def bger(x, y):
     return x.unsqueeze(2).bmm(y.unsqueeze(1))
+
 
 def get_sizes(G, A=None):
     if G.dim() == 2:
@@ -46,12 +51,14 @@ def get_sizes(G, A=None):
     # nBatch = batchedTensor.size(0) if batchedTensor is not None else None
     return nineq, nz, neq, nBatch
 
+
 def bdiag(d):
     nBatch, sz = d.size()
     D = torch.zeros(nBatch, sz, sz).type_as(d)
     I = torch.eye(sz).repeat(nBatch, 1, 1).type_as(d).bool()
     D[I] = d.squeeze().view(-1)
     return D
+
 
 def expandParam(X, nBatch, nDim):
     if X.ndimension() in (0, nDim) or X.nelement() == 0:
@@ -61,6 +68,7 @@ def expandParam(X, nBatch, nDim):
     else:
         raise RuntimeError("Unexpected number of dimensions.")
 
+
 def extract_nBatch(Q, p, G, h, A, b):
     dims = [3, 2, 3, 2, 3, 2]
     params = [Q, p, G, h, A, b]
@@ -68,4 +76,3 @@ def extract_nBatch(Q, p, G, h, A, b):
         if param.ndimension() == dim:
             return param.size(0)
     return 1
-
