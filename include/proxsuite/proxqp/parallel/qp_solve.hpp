@@ -62,7 +62,7 @@ solve_in_parallel(proxqp::dense::BatchQP<T>& qps,
 template<typename T>
 void
 qp_solve_in_parallel(optional<const size_t> num_threads,
-                     proxqp::dense::VectorQP<T>& qps)
+                     proxqp::dense::BatchQP<T>& qps)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -87,8 +87,7 @@ qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
   std::vector<proxqp::dense::QP<T>>& qps,
   std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
-  T eps = 1.E-4,
-  T tol_for_forward_backward_computation = 1.)
+  T eps = 1.E-4)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -104,8 +103,7 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    dense::compute_backward(
-      qp, loss_derivatives[i], eps, tol_for_forward_backward_computation);
+    dense::compute_backward(qp, loss_derivatives[i], eps);
   }
 }
 
@@ -113,10 +111,9 @@ template<typename T>
 void
 qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
-  proxqp::dense::VectorQP<T>& qps,
+  proxqp::dense::BatchQP<T>& qps,
   std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
-  T eps = 1.E-4,
-  T tol_for_forward_backward_computation = 1.)
+  T eps = 1.E-4)
 {
   if (num_threads != nullopt) {
     set_default_omp_options(num_threads.value());
@@ -132,8 +129,7 @@ qp_solve_backward_in_parallel(
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < batch_size; i++) {
     qp_dense& qp = qps[i];
-    dense::compute_backward(
-      qp, loss_derivatives[i], eps, tol_for_forward_backward_computation);
+    dense::compute_backward(qp, loss_derivatives[i], eps);
   }
 }
 } // namespace dense
@@ -161,27 +157,27 @@ solve_in_parallel(proxqp::sparse::BatchQP<T, I>& qps,
   }
 }
 // TODO: debug
-// template<typename T, typename I>
-// void
-// solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
-//                   const optional<size_t> num_threads = nullopt)
-// {
-//   size_t NUM_THREADS =
-//     std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
-//   if (num_threads != nullopt) {
-//     NUM_THREADS = num_threads.value();
-//   }
-//   set_default_omp_options(NUM_THREADS);
+template<typename T, typename I>
+void
+solve_in_parallel(std::vector<proxqp::sparse::QP<T, I>>& qps,
+                  const optional<size_t> num_threads = nullopt)
+{
+  size_t NUM_THREADS =
+    std::max((size_t)(omp_get_max_threads() / 2), (size_t)(1));
+  if (num_threads != nullopt) {
+    NUM_THREADS = num_threads.value();
+  }
+  set_default_omp_options(NUM_THREADS);
 
-//   typedef proxqp::sparse::QP<T, I> qp_sparse;
-//   const Eigen::DenseIndex batch_size = qps.size();
-//   Eigen::DenseIndex i = 0;
-// #pragma omp parallel for schedule(dynamic)
-//   for (i = 0; i < batch_size; i++) {
-//     qp_sparse& qp = qps[i];
-//     qp.solve();
-//   }
-// }
+  typedef proxqp::sparse::QP<T, I> qp_sparse;
+  const Eigen::DenseIndex batch_size = qps.size();
+  Eigen::DenseIndex i = 0;
+#pragma omp parallel for schedule(dynamic)
+  for (i = 0; i < batch_size; i++) {
+    qp_sparse& qp = qps[i];
+    qp.solve();
+  }
+}
 } // namespace sparse
 
 } // namespace proxqp

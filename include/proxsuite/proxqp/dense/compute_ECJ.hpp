@@ -13,7 +13,6 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
-
 template<typename T>
 void
 compute_backward(dense::QP<T>& solved_qp,
@@ -57,14 +56,21 @@ compute_backward(dense::QP<T>& solved_qp,
     // iterative refinement, a factorization from scratch is directly
     // performed with new mu and rho as well to enable more stability
     proxsuite::proxqp::dense::setup_factorization(
-      solved_qp.work, solved_qp.model, solved_qp.results);
+      solved_qp.work,
+      solved_qp.model,
+      solved_qp.results,
+      solved_qp.which_dense_backend(),
+      solved_qp.which_hessian_type());
     solved_qp.work.n_c = 0;
     for (isize i = 0; i < solved_qp.model.n_in; i++) {
       solved_qp.work.current_bijection_map(i) = i;
       solved_qp.work.new_bijection_map(i) = i;
     }
-    linesearch::active_set_change(
-      solved_qp.model, solved_qp.results, solved_qp.work);
+    linesearch::active_set_change(solved_qp.model,
+                                  solved_qp.results,
+                                  solved_qp.which_dense_backend(),
+                                  solved_qp.work.n_c,
+                                  solved_qp.work);
     solved_qp.work.constraints_changed = false; // no refactorization afterwords
 
     solved_qp.work.rhs = -loss_derivative; // take full derivatives
@@ -95,9 +101,12 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.model,
       solved_qp.results,
       solved_qp.work,
+      solved_qp.work.n_c,
+      solved_qp.which_dense_backend(),
+      solved_qp.which_hessian_type(),
       eps,
       inner_pb_dim); // /!\ the full rhs is zeroed inside
-    compute_backward_ESG(solved_qp, loss_derivative);
+    compute_backward_loss_ESG(solved_qp, loss_derivative);
   }
 }
 
