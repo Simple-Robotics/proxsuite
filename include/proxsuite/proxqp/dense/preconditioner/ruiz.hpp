@@ -38,7 +38,6 @@ ruiz_scale_qp_in_place( //
   Symmetry sym,
   HessianType HessianType,
   const bool box_constraints,
-  bool preconditioning_for_infeasible_problems,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
   T c(1);
@@ -408,7 +407,6 @@ struct RuizEquilibration
                          const T epsilon,
                          const HessianType& HessianType,
                          const bool box_constraints,
-                         const bool preconditioning_for_infeasible_problems,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
     if (execute_preconditioner) {
@@ -419,10 +417,10 @@ struct RuizEquilibration
                                        qp,
                                        epsilon,
                                        max_iter,
+                                       preconditioning_for_infeasible_problems,
                                        sym,
                                        HessianType,
                                        box_constraints,
-                                       preconditioning_for_infeasible_problems,
                                        stack);
     } else {
 

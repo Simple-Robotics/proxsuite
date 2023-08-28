@@ -78,11 +78,6 @@ struct Results
                      // inequality constraints
   proxsuite::linalg::veg::Vec<bool> active_constraints;
 
-  sparse::Vec<T> se; // optimal shift to the closest feasible problem wrt
-                     // equality constraints
-  sparse::Vec<T> si; // optimal shift to the closest feasible problem wrt
-                     // inequality constraints
-
   Info<T> info;
 
   ////// SOLUTION STATUS
