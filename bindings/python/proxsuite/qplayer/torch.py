@@ -9,7 +9,9 @@ from torch.autograd import Function
 from .utils import expandParam, extract_nBatch, extract_nBatch_double_sided, bger
 
 
-def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibility=True):
+def QPFunction(
+    eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True
+):
     class QPFunctionFn(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
@@ -23,6 +25,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
             b, _ = expandParam(b_, nBatch, 2)
 
             ctx.vector_of_qps = proxsuite.proxqp.dense.BatchQP()
+
             ctx.nBatch = nBatch
 
             _, nineq, nz = G.size()
@@ -35,6 +38,13 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
                 ctx.cpu = max(1, int(ctx.cpu / 2))
 
             zhats = torch.Tensor(nBatch, ctx.nz).type_as(Q)
+            y = None
+            # if loss_over_y:
+            # y = torch.Tensor(nBatch, ctx.neq).type_as(Q)
+            z = None
+            # if loss_over_z:
+            # z = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
+            res = 0.0
             for i in range(nBatch):
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = True
@@ -74,13 +84,18 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
             proxsuite.proxqp.dense.solve_in_parallel(
                 num_threads=ctx.cpu, qps=ctx.vector_of_qps
             )
+
             for i in range(nBatch):
                 zhats[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.x)
+                # if (loss_over_y):
+                #     y[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.y)
+                # if (loss_over_z):
+                #     z[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.z)
 
-            return zhats
+            return zhats, y, z
 
         @staticmethod
-        def backward(ctx, dl_dzhat):
+        def backward(ctx, dl_dzhat, dl_dy, dl_dz):
             nBatch, dim, neq, nineq = ctx.nBatch, ctx.nz, ctx.neq, ctx.nineq
             dQs = torch.Tensor(nBatch, ctx.nz, ctx.nz)
             dps = torch.Tensor(nBatch, ctx.nz)
@@ -94,12 +109,16 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
             if ctx.cpu is not None:
                 ctx.cpu = max(1, int(ctx.cpu / 2))
 
-            n_tot = dim + neq + nineq  # max size
+            n_tot = dim + neq + nineq
             vector_of_loss_derivatives = proxsuite.proxqp.dense.VectorLossDerivatives()
 
             for i in range(nBatch):
                 rhs = np.zeros(n_tot)
-                rhs[:dim] = -dl_dzhat[i]
+                rhs[:dim] = dl_dzhat[i]
+                if dl_dy != None:
+                    rhs[dim : dim + neq] = dl_dy[i]
+                if dl_dz != None:
+                    rhs[dim + neq :] = dl_dz[i]
                 vector_of_loss_derivatives.append(rhs)
 
             proxsuite.proxqp.dense.solve_backward_in_parallel(
@@ -107,7 +126,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
                 qps=ctx.vector_of_qps,
                 loss_derivatives=vector_of_loss_derivatives,
                 eps=eps_backward,
-            )
+            )  # try with systematic fwd bwd
 
             for i in range(nBatch):
                 dQs[i] = torch.Tensor(
@@ -427,7 +446,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structual_feasibilit
 
             return grads
 
-    if structual_feasibility:
+    if structural_feasibility:
         return QPFunctionFn.apply
     else:
         return QPFunctionFn_infeas.apply

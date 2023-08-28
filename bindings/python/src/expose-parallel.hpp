@@ -23,6 +23,10 @@ template<typename T>
 void
 solveDenseQpParallel(pybind11::module_ m)
 {
+
+  pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::Vec<T>>>(
+    m, "VectorLossDerivatives");
+
   pybind11::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(
     m, "VectorQP");
 
