@@ -175,6 +175,7 @@ struct Results
     info.mu_in_inv = 1e1;
     info.mu_in = 1e-1;
     info.nu = 1.;
+    info.minimal_H_eigenvalue_estimate = 0.;
     if (settings != nullopt) {
       info.rho = settings.value().default_rho;
       info.mu_eq = settings.value().default_mu_eq;

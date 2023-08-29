@@ -4639,8 +4639,8 @@ class SparseqpWrapper(unittest.TestCase):
     #         qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
     #         qp.settings.verbose = False
     #         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-    #         qp.settings.find_minimal_H_eigenvalue = (
-    #             proxsuite.proxqp.HessianCostRegularization.EigenRegularization
+    #         qp.settings.estimate_method_option = (
+    #             proxsuite.proxqp.EigenValueEstimateMethodOption.EigenRegularization
     #         )
     #         vals, _ = spa.linalg.eigs(H, which="SR")
     #         min_eigenvalue = float(np.min(vals))
@@ -4676,9 +4676,6 @@ class SparseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            qp.settings.find_minimal_H_eigenvalue = (
-                proxsuite.proxqp.HessianCostRegularization.Manual
-            )
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
@@ -4711,10 +4708,9 @@ class SparseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            qp.settings.find_minimal_H_eigenvalue = (
-                proxsuite.proxqp.HessianCostRegularization.PowerIteration
+            estimate_minimal_eigen_value = proxsuite.proxqp.sparse.estimate_minimal_eigen_value_of_symmetric_matrix(
+                H, 1.0e-10, 100000
             )
-            qp.settings.nb_power_iteration = 10000
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
@@ -4725,8 +4721,14 @@ class SparseqpWrapper(unittest.TestCase):
                 C,
                 np.asfortranarray(l),
                 np.asfortranarray(u),
-                manual_minimal_H_eigenvalue=min_eigenvalue,
+                manual_minimal_H_eigenvalue=estimate_minimal_eigen_value,
             )
+            # vals_bis, _ = spa.linalg.eigs(H, which="LM")
+            # print(f"{vals_bis}=")
+            # print(f"{vals}=")
+            # print(f"{min_eigenvalue=}")
+            # print(f"{qp.results.info.minimal_H_eigenvalue_estimate=}")
+            # input()
             assert (
                 np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
                 <= tol

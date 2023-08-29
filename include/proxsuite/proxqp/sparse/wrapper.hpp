@@ -305,9 +305,9 @@ struct QP
         { proxsuite::linalg::sparse::from_eigen, model.u }
       };
       qp_setup(qp, results, model, work, settings, ruiz, preconditioner_status);
-      proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        settings, results, model, qp, stack, manual_minimal_H_eigenvalue);
+      proxsuite::proxqp::sparse::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          manual_minimal_H_eigenvalue, results, settings);
     } else {
       SparseMat<T, I> H_triu(model.dim, model.dim);
       H_triu.setZero();
@@ -622,9 +622,9 @@ struct QP
              preconditioner_status); // store model value + performs scaling
                                      // according to chosen options
     if (H != nullopt) {
-      proxsuite::linalg::veg::dynstack::DynStackMut stack = work.stack_mut();
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        settings, results, model, qp, stack, manual_minimal_H_eigenvalue);
+      proxsuite::proxqp::sparse::
+        update_default_rho_with_minimal_Hessian_eigen_value(
+          manual_minimal_H_eigenvalue, results, settings);
     }
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -732,12 +732,7 @@ solve(
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
   bool primal_infeasibility_solving = false,
-  optional<isize> nb_power_iteration = nullopt,
-  optional<T> power_iteration_accuracy = nullopt,
-  HessianCostRegularization find_minimal_H_eigenvalue =
-    HessianCostRegularization::NoRegularization,
-  optional<T> manual_minimal_H_eigenvalue = nullopt,
-  optional<T> rho_regularization_scaling = nullopt)
+  optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
 
   isize n(0);
@@ -777,16 +772,6 @@ solve(
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.sparse_backend = sparse_backend;
-  Qp.settings.find_minimal_H_eigenvalue = find_minimal_H_eigenvalue;
-  if (nb_power_iteration != nullopt) {
-    Qp.settings.nb_power_iteration = nb_power_iteration.value();
-  }
-  if (power_iteration_accuracy != nullopt) {
-    Qp.settings.power_iteration_accuracy = power_iteration_accuracy.value();
-  }
-  if (rho_regularization_scaling != nullopt) {
-    Qp.settings.rho_regularization_scaling = rho_regularization_scaling.value();
-  }
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
   if (manual_minimal_H_eigenvalue != nullopt) {
     Qp.init(H,

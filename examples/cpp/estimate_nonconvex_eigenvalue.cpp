@@ -26,16 +26,23 @@ main()
   // choose scaling for regularizing default_rho accordingly
   dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   // choose the option for estimating this eigenvalue
-  qp.settings.find_minimal_H_eigenvalue =
-    HessianCostRegularization::EigenRegularization;
-  qp.settings.rho_regularization_scaling = T(1.5);
+  T estimate_minimal_eigen_value =
+    dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
+  bool compute_preconditioner = false;
+  // input the estimate for making rho appropriate
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
           qp_random.b,
           qp_random.C,
           qp_random.l,
-          qp_random.u);
+          qp_random.u,
+          compute_preconditioner,
+          std::nullopt,
+          std::nullopt,
+          std::nullopt,
+          estimate_minimal_eigen_value);
   // print the estimates
   std::cout << "ProxQP estimate "
             << qp.results.info.minimal_H_eigenvalue_estimate << std::endl;

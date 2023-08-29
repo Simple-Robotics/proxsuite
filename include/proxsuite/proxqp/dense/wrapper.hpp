@@ -467,16 +467,11 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
-    const bool H_update = H != nullopt;
-    if (H_update) {
-      model.H = H.value();
-      proxsuite::proxqp::dense::
-        update_default_rho_with_minimal_Hessian_eigen_value(
-          settings, results, work, model, manual_minimal_H_eigenvalue);
-    }
-    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(H,
                                     g,
@@ -678,16 +673,11 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
     }
-    const bool H_update = H != nullopt;
-    if (H_update) {
-      model.H = H.value();
-      proxsuite::proxqp::dense::
-        update_default_rho_with_minimal_Hessian_eigen_value(
-          settings, results, work, model, manual_minimal_H_eigenvalue);
-    }
-    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     proxsuite::proxqp::dense::setup(H,
                                     g,
                                     A,
@@ -766,7 +756,6 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
-    const bool H_update = H != nullopt;
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt);
@@ -785,16 +774,11 @@ public:
                                        work,
                                        box_constraints);
     }
-    if (H_update) {
-      model.H = H.value();
-      proxsuite::proxqp::dense::
-        update_default_rho_with_minimal_Hessian_eigen_value(
-          settings, results, work, model, manual_minimal_H_eigenvalue);
-    }
-    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(/* avoid double assignation */
@@ -893,7 +877,6 @@ public:
     } else {
       preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
     }
-    const bool H_update = H != nullopt;
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt && u_box == nullopt &&
@@ -902,15 +885,11 @@ public:
       proxsuite::proxqp::dense::update(
         H, g, A, b, C, l, u, l_box, u_box, model, work, box_constraints);
     }
-    if (H_update) {
-      model.H = H.value();
-      proxsuite::proxqp::dense::
-        update_default_rho_with_minimal_Hessian_eigen_value(
-          settings, results, work, model, manual_minimal_H_eigenvalue);
-    }
-    // be carefull that if rho != nullopt then it erases the one updated above
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(/* avoid double assignation */
@@ -1045,12 +1024,7 @@ solve(
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
   bool primal_infeasibility_solving = false,
-  optional<isize> nb_power_iteration = nullopt,
-  optional<T> power_iteration_accuracy = nullopt,
-  HessianCostRegularization find_minimal_H_eigenvalue =
-    HessianCostRegularization::NoRegularization,
-  optional<T> manual_minimal_H_eigenvalue = nullopt,
-  optional<T> rho_regularization_scaling = nullopt)
+  optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1088,16 +1062,6 @@ solve(
     Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
-  Qp.settings.find_minimal_H_eigenvalue = find_minimal_H_eigenvalue;
-  if (nb_power_iteration != nullopt) {
-    Qp.settings.nb_power_iteration = nb_power_iteration.value();
-  }
-  if (power_iteration_accuracy != nullopt) {
-    Qp.settings.power_iteration_accuracy = power_iteration_accuracy.value();
-  }
-  if (rho_regularization_scaling != nullopt) {
-    Qp.settings.rho_regularization_scaling = rho_regularization_scaling.value();
-  }
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
   if (manual_minimal_H_eigenvalue != nullopt) {
     Qp.init(H,
@@ -1192,12 +1156,7 @@ solve(
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
   bool primal_infeasibility_solving = false,
-  optional<isize> nb_power_iteration = nullopt,
-  optional<T> power_iteration_accuracy = nullopt,
-  HessianCostRegularization find_minimal_H_eigenvalue =
-    HessianCostRegularization::NoRegularization,
-  optional<T> manual_minimal_H_eigenvalue = nullopt,
-  optional<T> rho_regularization_scaling = nullopt)
+  optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1235,16 +1194,6 @@ solve(
     Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
   }
   Qp.settings.compute_timings = compute_timings;
-  Qp.settings.find_minimal_H_eigenvalue = find_minimal_H_eigenvalue;
-  if (nb_power_iteration != nullopt) {
-    Qp.settings.nb_power_iteration = nb_power_iteration.value();
-  }
-  if (power_iteration_accuracy != nullopt) {
-    Qp.settings.power_iteration_accuracy = power_iteration_accuracy.value();
-  }
-  if (rho_regularization_scaling != nullopt) {
-    Qp.settings.rho_regularization_scaling = rho_regularization_scaling.value();
-  }
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
   if (manual_minimal_H_eigenvalue != nullopt) {
     Qp.init(H,

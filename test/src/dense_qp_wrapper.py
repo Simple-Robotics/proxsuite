@@ -4757,8 +4757,13 @@ class DenseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            qp.settings.find_minimal_H_eigenvalue = (
-                proxsuite.proxqp.HessianCostRegularization.EigenRegularization
+            estimate_minimal_eigen_value = (
+                proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
+                    H,
+                    proxsuite.proxqp.EigenValueEstimateMethodOption.ExactMethod,
+                    1.0e-6,
+                    10000,
+                )
             )
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
@@ -4770,6 +4775,7 @@ class DenseqpWrapper(unittest.TestCase):
                 C,
                 np.asfortranarray(l),
                 np.asfortranarray(u),
+                manual_minimal_H_eigenvalue=estimate_minimal_eigen_value,
             )
             assert (
                 np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)
@@ -4791,9 +4797,6 @@ class DenseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            qp.settings.find_minimal_H_eigenvalue = (
-                proxsuite.proxqp.HessianCostRegularization.Manual
-            )
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
@@ -4823,13 +4826,18 @@ class DenseqpWrapper(unittest.TestCase):
             H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
+
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            qp.settings.find_minimal_H_eigenvalue = (
-                proxsuite.proxqp.HessianCostRegularization.PowerIteration
+            estimate_minimal_eigen_value = (
+                proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
+                    H,
+                    proxsuite.proxqp.EigenValueEstimateMethodOption.PowerIteration,
+                    1.0e-6,
+                    10000,
+                )
             )
-            qp.settings.nb_power_iteration = 10000
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
@@ -4840,7 +4848,7 @@ class DenseqpWrapper(unittest.TestCase):
                 C,
                 np.asfortranarray(l),
                 np.asfortranarray(u),
-                manual_minimal_H_eigenvalue=min_eigenvalue,
+                manual_minimal_H_eigenvalue=estimate_minimal_eigen_value,
             )
             assert (
                 np.abs(min_eigenvalue - qp.results.info.minimal_H_eigenvalue_estimate)

@@ -161,14 +161,4 @@ Note that if some elements of your QP model are not defined (for example a QP wi
   </tr>
 </table>
 
-Finally, note that you can also you ProxQP for solving QP with non convex quadratic. For doing so, you need first to estimate the smallest eigenvalue of the quadratic cost H. ProxQP has four internal options for estimating using the setting HessianCostRegularization:
-* NoRegularization : set by default, it means the solver does not try to estimate it,
-* Manual: the user can provide an estimate of it through the init method,
-* PowerIteration: a power iteration algorithm will be used for estimating H minimal eigenvalue,
-* EigenRegularization: in case the dense backend is used, the solver make use of Eigen method for estimating it.
-
-This option is particularly usefull when solving QP with non convex quadratics. Indeed, if default_rho is set to a value strictly higher than the minimal eigenvalue of H, then ProxQP is guaranteed for find a local minimum to the problem since it relies on a Proximal Method of Multipliers (for more detail for example this [work](https://arxiv.org/pdf/2010.02653.pdf) providing convergence proof of this property).
-
-More precisely, when HessianCostRegularization is set to a value different of NoRegularization, then ProxQP first estimate a minimal eigenvalue for H and then update default_rho following the rule: default_rho = rho_regularization_scaling * abs(default_H_eigenvalue_estimate), which guarantees for appropriate scaling than the proximal step-size is larger than the minimal eigenvalue of H. We provide below examples in C++ and python for using this feature appropriately with the dense backend (it is similar with the sparse one).
-
-The solve function enables using this option directly by passing accordingly the parameters "HessianCostRegularization" and "rho_regularization_scaling". You can find more details in [ProxQP API with examples](2-ProxQP_api.md) about the different other settings that can be used for setting other related parameters (e.g., for using PowerIteration algorithm with other options).
+Finally, note that you can also you ProxQP for solving QP with non convex quadratic. For doing so, you just need to provide to the solve function an estimate of the smallest eigenvalue of the quadratic cost H. The solver environment provides an independent function for estimating the minimal eigenvalue of a dense or sparse symmetric matrix. It is named "estimate_minimal_eigen_value_of_symmetric_matrix". You can find more details in [ProxQP API with examples](2-ProxQP_api.md) about the different other settings that can be used for setting other related parameters (e.g., for using a Power Iteration algorithm).

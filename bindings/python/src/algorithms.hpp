@@ -11,6 +11,7 @@
 #include "expose-qpobject.hpp"
 #include "expose-qpvector.hpp"
 #include "expose-solve.hpp"
+#include "expose-helpers.hpp"
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
 #include "expose-parallel.hpp"
 #endif

@@ -6140,8 +6140,8 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
 //     qp.settings.max_iter = 1;
 //     qp.settings.max_iter_in = 1;
-//     qp.settings.find_minimal_H_eigenvalue =
-//       HessianCostRegularization::EigenRegularization;
+//     qp.settings.estimate_method_option =
+//       EigenValueEstimateMethodOption::EigenRegularization;
 //     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 //     SparseMat<T> H_sparse = qp_random.H.sparseView();
 //     SparseMat<T> A_sparse = qp_random.A.sparseView();
@@ -6171,8 +6171,8 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
 //     qp.settings.max_iter = 1;
 //     qp.settings.max_iter_in = 1;
-//     qp.settings.find_minimal_H_eigenvalue =
-//       HessianCostRegularization::EigenRegularization;
+//     qp.settings.estimate_method_option =
+//       EigenValueEstimateMethodOption::EigenRegularization;
 //     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 //     SparseMat<T> H_sparse = qp_random.H.sparseView();
 //     SparseMat<T> A_sparse = qp_random.A.sparseView();
@@ -6219,7 +6219,6 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue = HessianCostRegularization::Manual;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
@@ -6253,13 +6252,12 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue = HessianCostRegularization::Manual;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
-    Eigen::SelfAdjointEigenSolver<SparseMat<T>> es(H_sparse,
-                                                   Eigen::EigenvaluesOnly);
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
     qp.init(H_sparse,
             qp_random.g,
@@ -6309,20 +6307,25 @@ TEST_CASE(
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.nb_power_iteration = 10000;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::PowerIteration;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
+    T estimate_minimal_eigen_value =
+      sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
+        H_sparse, 1.E-6, 10000);
     qp.init(H_sparse,
             qp_random.g,
             A_sparse,
             qp_random.b,
             C_sparse,
             qp_random.l,
-            qp_random.u);
+            qp_random.u,
+            true,
+            std::nullopt,
+            std::nullopt,
+            std::nullopt,
+            estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);
   }
@@ -6340,15 +6343,15 @@ TEST_CASE(
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.nb_power_iteration = 10000;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::PowerIteration;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
-    Eigen::SelfAdjointEigenSolver<SparseMat<T>> es(H_sparse,
-                                                   Eigen::EigenvaluesOnly);
+    T estimate_minimal_eigen_value =
+      sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
+        H_sparse, 1.E-6, 10000);
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
     qp.init(H_sparse,
             qp_random.g,
@@ -6356,7 +6359,12 @@ TEST_CASE(
             qp_random.b,
             C_sparse,
             qp_random.l,
-            qp_random.u);
+            qp_random.u,
+            true,
+            std::nullopt,
+            std::nullopt,
+            std::nullopt,
+            estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= 1.);
   }

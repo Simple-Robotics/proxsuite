@@ -7227,11 +7227,13 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().setOnes();
     qp_random.H.diagonal().tail(1).setConstant(-1.);
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::EigenRegularization;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7239,7 +7241,12 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             qp_random.b,
             qp_random.C,
             qp_random.l,
-            qp_random.u);
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            estimate_minimal_eigen_value);
 
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <=
                   tol);
@@ -7257,11 +7264,13 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::EigenRegularization;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7269,7 +7278,12 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             qp_random.b,
             qp_random.C,
             qp_random.l,
-            qp_random.u);
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);
   }
@@ -7287,11 +7301,13 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
                                                     Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::EigenRegularization;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7299,7 +7315,12 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             qp_random.b,
             qp_random.C,
             qp_random.l,
-            qp_random.u);
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            estimate_minimal_eigen_value);
 
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);
@@ -7329,7 +7350,6 @@ TEST_CASE(
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue = HessianCostRegularization::Manual;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7363,7 +7383,6 @@ TEST_CASE(
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue = HessianCostRegularization::Manual;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7397,7 +7416,6 @@ TEST_CASE(
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue = HessianCostRegularization::Manual;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7437,11 +7455,16 @@ TEST_CASE(
     qp_random.H.diagonal().setOnes();
     qp_random.H.diagonal().tail(1).setConstant(-0.5);
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H,
+        EigenValueEstimateMethodOption::PowerIteration,
+        1.E-6,
+        10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::PowerIteration;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7454,7 +7477,7 @@ TEST_CASE(
             nullopt,
             nullopt,
             nullopt,
-            nullopt);
+            estimate_minimal_eigen_value);
 
     DOCTEST_CHECK(
       std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 0.5) <= tol);
@@ -7472,13 +7495,17 @@ TEST_CASE(
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H,
+        EigenValueEstimateMethodOption::PowerIteration,
+        1.E-6,
+        10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::PowerIteration;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-    qp.settings.nb_power_iteration = 1000;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7490,7 +7517,7 @@ TEST_CASE(
             nullopt,
             nullopt,
             nullopt,
-            nullopt);
+            estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);
   }
@@ -7509,12 +7536,16 @@ TEST_CASE(
                                                     Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+        qp_random.H,
+        EigenValueEstimateMethodOption::PowerIteration,
+        1.E-6,
+        10000);
+
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.nb_power_iteration = 10000;
-    qp.settings.find_minimal_H_eigenvalue =
-      HessianCostRegularization::PowerIteration;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7527,7 +7558,7 @@ TEST_CASE(
             nullopt,
             nullopt,
             nullopt,
-            nullopt);
+            estimate_minimal_eigen_value);
 
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);

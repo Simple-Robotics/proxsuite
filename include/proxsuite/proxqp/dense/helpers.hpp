@@ -23,34 +23,33 @@ namespace dense {
 
 template<typename T>
 T
-power_iteration(Settings<T>& settings, Model<T>& model, Workspace<T>& work)
+power_iteration(Mat<T>& H,
+                Vec<T>& dw,
+                Vec<T>& rhs,
+                Vec<T>& err_v,
+                T power_iteration_accuracy,
+                isize nb_power_iteration)
 {
   // computes maximal eigen value of the bottom right matrix of the LDLT
-
-  work.rhs.head(model.dim).setZero();
+  isize dim = H.rows();
+  rhs.setZero();
   // stores eigenvector
-  work.rhs.head(model.dim).array() += 1. / std::sqrt(model.dim);
+  rhs.array() += 1. / std::sqrt(dim);
   // stores Hx
-  work.dw_aug.head(model.dim).noalias() =
-    model.H.template selfadjointView<Eigen::Lower>() *
-    work.rhs.head(model.dim); // Hx
+  dw.noalias() = H.template selfadjointView<Eigen::Lower>() * rhs; // Hx
   T eig = 0;
-  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+  for (isize i = 0; i < nb_power_iteration; i++) {
 
-    work.rhs.head(model.dim) =
-      work.dw_aug.head(model.dim) / work.dw_aug.head(model.dim).norm();
-    work.dw_aug.head(model.dim).noalias() =
-      (model.H.template selfadjointView<Eigen::Lower>() *
-       work.rhs.head(model.dim));
+    rhs = dw / dw.norm();
+    dw.noalias() = (H.template selfadjointView<Eigen::Lower>() * rhs);
     // calculate associated eigenvalue
-    eig = work.rhs.head(model.dim).dot(work.dw_aug.head(model.dim));
+    eig = rhs.dot(dw);
     // calculate associated error
-    work.err.head(model.dim) =
-      work.dw_aug.head(model.dim) - eig * work.rhs.head(model.dim);
-    T err = proxsuite::proxqp::dense::infty_norm(work.err.head(model.dim));
+    err_v = dw - eig * rhs;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v);
     // std::cout << "power iteration max: i " << i << " err " << err <<
     // std::endl;
-    if (err <= settings.power_iteration_accuracy) {
+    if (err <= power_iteration_accuracy) {
       break;
     }
   }
@@ -58,103 +57,118 @@ power_iteration(Settings<T>& settings, Model<T>& model, Workspace<T>& work)
 }
 template<typename T>
 T
-min_eigen_value_via_modified_power_iteration(Settings<T>& settings,
-                                             Model<T>& model,
-                                             Workspace<T>& work,
-                                             T max_eigen_value)
+min_eigen_value_via_modified_power_iteration(Mat<T>& H,
+                                             Vec<T>& dw,
+                                             Vec<T>& rhs,
+                                             Vec<T>& err_v,
+                                             T max_eigen_value,
+                                             T power_iteration_accuracy,
+                                             isize nb_power_iteration)
 {
   // performs power iteration on the matrix: max_eigen_value I - H
   // estimates then the minimal eigenvalue with: minimal_eigenvalue =
   // max_eigen_value - eig
-  work.rhs.head(model.dim).setZero();
+  isize dim = H.rows();
+  rhs.setZero();
   // stores eigenvector
-  work.rhs.head(model.dim).array() += 1. / std::sqrt(model.dim);
+  rhs.array() += 1. / std::sqrt(dim);
   // stores Hx
-  work.dw_aug.head(model.dim).noalias() =
-    -(model.H.template selfadjointView<Eigen::Lower>() *
-      work.rhs.head(model.dim)); // Hx
-  work.dw_aug.head(model.dim) += max_eigen_value * work.rhs.head(model.dim);
+  dw.noalias() = -(H.template selfadjointView<Eigen::Lower>() * rhs); // Hx
+  dw += max_eigen_value * rhs;
   T eig = 0;
-  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+  for (isize i = 0; i < nb_power_iteration; i++) {
 
-    work.rhs.head(model.dim) =
-      work.dw_aug.head(model.dim) / work.dw_aug.head(model.dim).norm();
-    work.dw_aug.head(model.dim).noalias() =
-      -(model.H.template selfadjointView<Eigen::Lower>() *
-        work.rhs.head(model.dim));
-    work.dw_aug.head(model.dim) += max_eigen_value * work.rhs.head(model.dim);
+    rhs = dw / dw.norm();
+    dw.noalias() = -(H.template selfadjointView<Eigen::Lower>() * rhs);
+    dw += max_eigen_value * rhs;
     // calculate associated eigenvalue
-    eig = work.rhs.head(model.dim).dot(work.dw_aug.head(model.dim));
+    eig = rhs.dot(dw);
     // calculate associated error
-    work.err.head(model.dim) =
-      work.dw_aug.head(model.dim) - eig * work.rhs.head(model.dim);
-    T err = proxsuite::proxqp::dense::infty_norm(work.err.head(model.dim));
+    err_v = dw - eig * rhs;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v);
     // std::cout << "power iteration min: i " << i << " err " << err <<
     // std::endl;
-    if (err <= settings.power_iteration_accuracy) {
+    if (err <= power_iteration_accuracy) {
       break;
     }
   }
   T minimal_eigenvalue = max_eigen_value - eig;
   return minimal_eigenvalue;
 }
-
+/////// SETUP ////////
+/*!
+ * Estimate minimal eigenvalue of a symmetric Matrix
+ * @param H symmetric matrix.
+ * @param EigenValueEstimateMethodOption
+ * @param power_iteration_accuracy power iteration algorithm accuracy tracked
+ * @param nb_power_iteration maximal number of power iteration executed
+ *
+ */
+template<typename T>
+T
+estimate_minimal_eigen_value_of_symmetric_matrix(
+  Mat<T>& H,
+  EigenValueEstimateMethodOption estimate_method_option,
+  T power_iteration_accuracy,
+  isize nb_power_iteration)
+{
+  PROXSUITE_THROW_PRETTY((!H.isApprox(H.transpose(), 0.0)),
+                         std::invalid_argument,
+                         "H is not symmetric.");
+  if (H.size()) {
+    PROXSUITE_CHECK_ARGUMENT_SIZE(
+      H.rows(),
+      H.cols(),
+      "H has a number of rows different of the number of columns.");
+  }
+  isize dim = H.rows();
+  T res(0.);
+  switch (estimate_method_option) {
+    case EigenValueEstimateMethodOption::PowerIteration: {
+      Vec<T> dw(dim);
+      Vec<T> rhs(dim);
+      Vec<T> err(dim);
+      T dominant_eigen_value = power_iteration<T>(
+        H, dw, rhs, err, power_iteration_accuracy, nb_power_iteration);
+      T min_eigenvalue = min_eigen_value_via_modified_power_iteration<T>(
+        H,
+        dw,
+        rhs,
+        err,
+        dominant_eigen_value,
+        power_iteration_accuracy,
+        nb_power_iteration);
+      res = std::min(min_eigenvalue, dominant_eigen_value);
+    } break;
+    case EigenValueEstimateMethodOption::ExactMethod: {
+      Eigen::SelfAdjointEigenSolver<Mat<T>> es(H, Eigen::EigenvaluesOnly);
+      res = T(es.eigenvalues()[0]);
+    } break;
+  }
+  return res;
+}
 /////// SETUP ////////
 /*!
  * Estimate H minimal eigenvalue
  * @param settings solver settings
  * @param results solver results.
- * @param model solver model.
- * @param work solver workspace.
+ * @param manual_minimal_H_eigenvalue minimal H eigenvalue estimate.
  */
 template<typename T>
 void
 update_default_rho_with_minimal_Hessian_eigen_value(
-  Settings<T>& settings,
+  optional<T> manual_minimal_H_eigenvalue,
   Results<T>& results,
-  Workspace<T>& work,
-  Model<T>& model,
-  optional<T> manual_minimal_H_eigenvalue)
+  Settings<T>& settings)
 {
-  switch (settings.find_minimal_H_eigenvalue) {
-    case HessianCostRegularization::NoRegularization: {
-    } break;
-
-    case HessianCostRegularization::Manual: {
-      settings.default_H_eigenvalue_estimate =
-        manual_minimal_H_eigenvalue.value();
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
-    } break;
-
-    case HessianCostRegularization::PowerIteration: {
-      T dominant_eigen_value = power_iteration<T>(settings, model, work);
-      T min_eigenvalue = min_eigen_value_via_modified_power_iteration<T>(
-        settings, model, work, (dominant_eigen_value));
-      // std::cout << "dominant_eigen_value " << dominant_eigen_value <<
-      // std::endl; std::cout << "min_eigenvalue " << min_eigenvalue <<
-      // std::endl;
-      settings.default_H_eigenvalue_estimate =
-        std::min(min_eigenvalue, dominant_eigen_value);
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
-    } break;
-    case HessianCostRegularization::EigenRegularization: {
-      Eigen::SelfAdjointEigenSolver<Mat<T>> es(model.H, Eigen::EigenvaluesOnly);
-      settings.default_H_eigenvalue_estimate = T(es.eigenvalues()[0]);
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
-    } break;
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    settings.default_H_eigenvalue_estimate =
+      manual_minimal_H_eigenvalue.value();
+    results.info.minimal_H_eigenvalue_estimate =
+      settings.default_H_eigenvalue_estimate;
   }
+  settings.default_rho += std::abs(results.info.minimal_H_eigenvalue_estimate);
+  results.info.rho = settings.default_rho;
 }
 /*!
  * Computes the equality constrained initial guess of a QP problem.

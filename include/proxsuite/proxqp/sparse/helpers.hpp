@@ -10,7 +10,6 @@
 
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
-#include <Eigen/Eigenvalues>
 #include <iostream>
 namespace proxsuite {
 namespace proxqp {
@@ -18,38 +17,39 @@ namespace sparse {
 
 template<typename T, typename I>
 T
-power_iteration(Settings<T>& settings,
-                const QpView<T, I> qp_scaled,
-                Model<T, I>& model,
-                proxsuite::linalg::veg::dynstack::DynStackMut stack)
+power_iteration(SparseMat<T, I>& H,
+                sparse::Vec<T>& dw,
+                sparse::Vec<T>& rhs,
+                sparse::Vec<T>& err_v,
+                T power_iteration_accuracy,
+                isize nb_power_iteration)
 {
   // computes maximal eigen value of the bottom right matrix of the LDLT
-  LDLT_TEMP_VEC_UNINIT(T, rhs, model.dim, stack);
-  LDLT_TEMP_VEC_UNINIT(T, err_v, model.dim, stack);
-  LDLT_TEMP_VEC_UNINIT(T, dw_aug, model.dim, stack);
-
+  isize dim = H.rows();
   rhs.setZero();
   // stores eigenvector
-  rhs.array() += 1. / std::sqrt(model.dim);
+  rhs.array() += 1. / std::sqrt(dim);
   // stores Hx
-  dw_aug.setZero();
-  detail::noalias_symhiv_add(
-    detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+  dw.setZero();
+  // detail::noalias_symhiv_add(
+  // detail::vec_mut(dw), H, detail::vec_mut(rhs));
+  dw = H * rhs;
   T eig = 0;
-  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+  for (isize i = 0; i < nb_power_iteration; i++) {
 
-    rhs = dw_aug / dw_aug.norm();
-    dw_aug.setZero();
-    detail::noalias_symhiv_add(
-      detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
+    rhs = dw / dw.norm();
+    dw.setZero();
+    // detail::noalias_symhiv_add(
+    // detail::vec_mut(dw), H, detail::vec_mut(rhs));
+    dw = H * rhs;
     // calculate associated eigenvalue
-    eig = rhs.dot(dw_aug);
+    eig = rhs.dot(dw);
     // calculate associated error
-    err_v = dw_aug - eig * rhs;
+    err_v = dw - eig * rhs;
     T err = proxsuite::proxqp::dense::infty_norm(err_v);
     // std::cout << "power iteration max: i " << i << " err " << err <<
     // std::endl;
-    if (err <= settings.power_iteration_accuracy) {
+    if (err <= power_iteration_accuracy) {
       break;
     }
   }
@@ -57,114 +57,117 @@ power_iteration(Settings<T>& settings,
 }
 template<typename T, typename I>
 T
-min_eigen_value_via_modified_power_iteration(
-  Settings<T>& settings,
-  const QpView<T, I> qp_scaled,
-  Model<T, I>& model,
-  proxsuite::linalg::veg::dynstack::DynStackMut stack,
-  T max_eigen_value)
+min_eigen_value_via_modified_power_iteration(SparseMat<T, I>& H,
+                                             sparse::Vec<T>& dw,
+                                             sparse::Vec<T>& rhs,
+                                             sparse::Vec<T>& err_v,
+                                             T max_eigen_value,
+                                             T power_iteration_accuracy,
+                                             isize nb_power_iteration)
 {
   // performs power iteration on the matrix: max_eigen_value I - H
   // estimates then the minimal eigenvalue with: minimal_eigenvalue =
   // max_eigen_value - eig
-  LDLT_TEMP_VEC_UNINIT(T, rhs, model.dim, stack);
-  LDLT_TEMP_VEC_UNINIT(T, err_v, model.dim, stack);
-  LDLT_TEMP_VEC_UNINIT(T, dw_aug, model.dim, stack);
-
+  isize dim = H.rows();
   rhs.setZero();
   // stores eigenvector
-  rhs.array() += 1. / std::sqrt(model.dim);
+  rhs.array() += 1. / std::sqrt(dim);
   // stores Hx
-  dw_aug.setZero();
-  detail::noalias_symhiv_add(
-    detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
-  dw_aug.array() *= (-1.);
-  dw_aug += max_eigen_value * rhs;
+  dw.setZero();
+  // does not work below with full symmetry...
+  // detail::noalias_symhiv_add(
+  // detail::vec_mut(dw), H, detail::vec_mut(rhs));
+  dw.noalias() = H * rhs;
+  dw.array() *= (-1.);
+  dw += max_eigen_value * rhs;
   T eig = 0;
-  for (isize i = 0; i < settings.nb_power_iteration; i++) {
+  for (isize i = 0; i < nb_power_iteration; i++) {
 
-    rhs = dw_aug / dw_aug.norm();
-    dw_aug.setZero();
-    detail::noalias_symhiv_add(
-      detail::vec_mut(dw_aug), qp_scaled.H.to_eigen(), detail::vec_mut(rhs));
-    dw_aug.array() *= (-1.);
-    dw_aug += max_eigen_value * rhs;
+    rhs = dw / dw.norm();
+    dw.setZero();
+    // idem
+    // detail::noalias_symhiv_add(
+    // detail::vec_mut(dw), H, detail::vec_mut(rhs));
+    dw.noalias() = H * rhs;
+    dw.array() *= (-1.);
+    dw += max_eigen_value * rhs;
     // calculate associated eigenvalue
-    eig = rhs.dot(dw_aug);
+    eig = rhs.dot(dw);
     // calculate associated error
-    err_v = dw_aug - eig * rhs;
+    err_v = dw - eig * rhs;
     T err = proxsuite::proxqp::dense::infty_norm(err_v);
     // std::cout << "power iteration min: i " << i << " err " << err <<
     // std::endl;
-    if (err <= settings.power_iteration_accuracy) {
+    if (err <= power_iteration_accuracy) {
       break;
     }
   }
   T minimal_eigenvalue = max_eigen_value - eig;
   return minimal_eigenvalue;
 }
+/////// SETUP ////////
+/*!
+ * Estimate minimal eigenvalue of a symmetric Matrix via power iteration
+ * @param H symmetric matrix.
+ * @param power_iteration_accuracy power iteration algorithm accuracy tracked
+ * @param nb_power_iteration maximal number of power iteration executed
+ *
+ */
+template<typename T, typename I>
+T
+estimate_minimal_eigen_value_of_symmetric_matrix(SparseMat<T, I>& H,
+                                                 T power_iteration_accuracy,
+                                                 isize nb_power_iteration)
+{
+  PROXSUITE_THROW_PRETTY((!H.isApprox(H.transpose(), 0.0)),
+                         std::invalid_argument,
+                         "H is not symmetric.");
+  PROXSUITE_CHECK_ARGUMENT_SIZE(
+    H.rows(),
+    H.cols(),
+    "H has a number of rows different of the number of columns.");
+  isize dim = H.rows();
+  T res(0.);
+  sparse::Vec<T> dw(dim);
+  sparse::Vec<T> rhs(dim);
+  sparse::Vec<T> err(dim);
+  T dominant_eigen_value = power_iteration<T, I>(
+    H, dw, rhs, err, power_iteration_accuracy, nb_power_iteration);
+  T min_eigenvalue =
+    min_eigen_value_via_modified_power_iteration<T, I>(H,
+                                                       dw,
+                                                       rhs,
+                                                       err,
+                                                       dominant_eigen_value,
+                                                       power_iteration_accuracy,
+                                                       nb_power_iteration);
+  // std::cout << "dominant_eigen_value " << dominant_eigen_value<< "
+  // min_eigenvalue " << min_eigenvalue << std::endl;
+  res = std::min(min_eigenvalue, dominant_eigen_value);
+  return res;
+}
+/////// SETUP ////////
 /*!
  * Estimate H minimal eigenvalue
  * @param settings solver settings
  * @param results solver results.
- * @param model solver model.
- * @param work solver workspace.
+ * @param manual_minimal_H_eigenvalue minimal H eigenvalue estimate.
  */
-template<typename T, typename I>
+template<typename T>
 void
 update_default_rho_with_minimal_Hessian_eigen_value(
-  Settings<T>& settings,
+  optional<T> manual_minimal_H_eigenvalue,
   Results<T>& results,
-  Model<T, I>& model,
-  const QpView<T, I> qp_scaled,
-  proxsuite::linalg::veg::dynstack::DynStackMut stack,
-  optional<T> manual_minimal_H_eigenvalue)
+  Settings<T>& settings)
 {
-  switch (settings.find_minimal_H_eigenvalue) {
-    case HessianCostRegularization::NoRegularization: {
-    } break;
-
-    case HessianCostRegularization::Manual: {
-      settings.default_H_eigenvalue_estimate =
-        manual_minimal_H_eigenvalue.value();
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
-    } break;
-
-    case HessianCostRegularization::PowerIteration: {
-      T dominant_eigen_value =
-        power_iteration<T, I>(settings, qp_scaled, model, stack);
-      T min_eigenvalue = min_eigen_value_via_modified_power_iteration<T, I>(
-        settings, qp_scaled, model, stack, (dominant_eigen_value));
-      settings.default_H_eigenvalue_estimate =
-        std::min(min_eigenvalue, dominant_eigen_value);
-      results.info.minimal_H_eigenvalue_estimate =
-        settings.default_H_eigenvalue_estimate;
-      settings.default_rho =
-        settings.rho_regularization_scaling *
-        std::abs(results.info.minimal_H_eigenvalue_estimate);
-    } break;
-    case HessianCostRegularization::EigenRegularization: {
-      // Eigen::EigenSolver<SparseMat<T, I>> es(qp_scaled.H.to_eigen(),
-      //                                                   Eigen::EigenvaluesOnly);
-      // std::cout << "es.eigenvalues() " << es.eigenvalues() << std::endl;
-      // settings.default_H_eigenvalue_estimate = T(es.eigenvalues()[0]);
-      // results.info.minimal_H_eigenvalue_estimate =
-      //   settings.default_H_eigenvalue_estimate;
-      // settings.default_rho =
-      //   settings.rho_regularization_scaling *
-      //   std::abs(results.info.minimal_H_eigenvalue_estimate);
-      PROXSUITE_THROW_PRETTY(
-        true,
-        std::invalid_argument,
-        "wrong setting setup: Eigen Solver not compatible for sparse "
-        "matrices. Use a different setting option for estimating "
-        "minimal eigenvalues of the Hessian H.");
-    } break;
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    settings.default_H_eigenvalue_estimate =
+      manual_minimal_H_eigenvalue.value();
+    results.info.minimal_H_eigenvalue_estimate =
+      settings.default_H_eigenvalue_estimate;
   }
+  settings.default_rho += std::abs(results.info.minimal_H_eigenvalue_estimate);
+  results.info.rho = settings.default_rho;
 }
 /*!
  * Update the proximal parameters of the results object.

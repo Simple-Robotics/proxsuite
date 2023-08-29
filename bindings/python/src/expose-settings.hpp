@@ -41,13 +41,10 @@ exposeSettings(pybind11::module_ m)
     .value("MatrixFree", SparseBackend::MatrixFree)
     .value("SparseCholesky", SparseBackend::SparseCholesky)
     .export_values();
-  ::pybind11::enum_<HessianCostRegularization>(
-    m, "HessianCostRegularization", pybind11::module_local())
-    .value("NoRegularization", HessianCostRegularization::NoRegularization)
-    .value("Manual", HessianCostRegularization::Manual)
-    .value("PowerIteration", HessianCostRegularization::PowerIteration)
-    .value("EigenRegularization",
-           HessianCostRegularization::EigenRegularization)
+  ::pybind11::enum_<EigenValueEstimateMethodOption>(
+    m, "EigenValueEstimateMethodOption", pybind11::module_local())
+    .value("PowerIteration", EigenValueEstimateMethodOption::PowerIteration)
+    .value("ExactMethod", EigenValueEstimateMethodOption::ExactMethod)
     .export_values();
 
   ::pybind11::class_<Settings<T>>(m, "Settings", pybind11::module_local())
@@ -95,15 +92,8 @@ exposeSettings(pybind11::module_ m)
                    &Settings<T>::primal_infeasibility_solving)
     .def_readwrite("frequence_infeasibility_check",
                    &Settings<T>::frequence_infeasibility_check)
-    .def_readwrite("nb_power_iteration", &Settings<T>::nb_power_iteration)
-    .def_readwrite("power_iteration_accuracy",
-                   &Settings<T>::power_iteration_accuracy)
-    .def_readwrite("find_minimal_H_eigenvalue",
-                   &Settings<T>::find_minimal_H_eigenvalue)
     .def_readwrite("default_H_eigenvalue_estimate",
                    &Settings<T>::default_H_eigenvalue_estimate)
-    .def_readwrite("rho_regularization_scaling",
-                   &Settings<T>::rho_regularization_scaling)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
     .def(pybind11::pickle(

@@ -44,14 +44,12 @@ enum struct HessianType
   Diagonal // Quadratic Program with diagonal Hessian
 };
 // Augment the minimal eigen value of H with some regularizer
-enum struct HessianCostRegularization
+enum struct EigenValueEstimateMethodOption
 {
-  NoRegularization,   // default
-  Manual,             // add a manual value
-  PowerIteration,     // Process a power iteration algorithm
-  EigenRegularization // Use Eigen's method to estimate the minimal eigenvalue
-                      // watch out, the last option is only available for dense
-                      // matrices!
+  PowerIteration, // Process a power iteration algorithm
+  ExactMethod     // Use Eigen's method to estimate the minimal eigenvalue
+                  // watch out, the last option is only available for dense
+                  // matrices!
 };
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
@@ -142,11 +140,7 @@ struct Settings
   SparseBackend sparse_backend;
   bool primal_infeasibility_solving;
   isize frequence_infeasibility_check;
-  isize nb_power_iteration;
-  T power_iteration_accuracy;
-  HessianCostRegularization find_minimal_H_eigenvalue;
   T default_H_eigenvalue_estimate;
-  T rho_regularization_scaling;
   /*!
    * Default constructor.
    * @param default_rho default rho parameter of result class
@@ -210,17 +204,10 @@ struct Settings
    * problem if activated
    * @param frequence_infeasibility_check frequence at which infeasibility is
    * checked
-   * @param nb_power_iteration number of power iteration executed for estimating
-   * lowest H eigenvalue
-   * @param power_iteration_accuracy accuracy tracked for finding minimal H
-   * eigenvalue when executing power iteration
    * @param find_H_minimal_eigenvalue track the minimal eigen value of the
    * quadratic cost H
    * @param default_H_eigenvalue_estimate default H eigenvalue estimate (i.e.,
    * if we make a model update and H does not change this one is used)
-   * @param rho_regularization_scaling when an estimate of the minimal
-   * eigenvalue of H is found default_rho equals rho_regularization_scaling *
-   * |minimal_H_eigenvalue_estimate|
    */
 
   Settings(
@@ -270,12 +257,7 @@ struct Settings
     SparseBackend sparse_backend = SparseBackend::Automatic,
     bool primal_infeasibility_solving = false,
     isize frequence_infeasibility_check = 1,
-    isize nb_power_iteration = 1000, // watch out, power iteration is slow..
-    T power_iteration_accuracy = 1.E-6,
-    HessianCostRegularization find_minimal_H_eigenvalue =
-      HessianCostRegularization::NoRegularization,
-    T default_H_eigenvalue_estimate = 0.,
-    T rho_regularization_scaling = 1.5)
+    T default_H_eigenvalue_estimate = 0.)
     : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
@@ -317,11 +299,7 @@ struct Settings
     , sparse_backend(sparse_backend)
     , primal_infeasibility_solving(primal_infeasibility_solving)
     , frequence_infeasibility_check(frequence_infeasibility_check)
-    , nb_power_iteration(nb_power_iteration)
-    , power_iteration_accuracy(power_iteration_accuracy)
-    , find_minimal_H_eigenvalue(find_minimal_H_eigenvalue)
     , default_H_eigenvalue_estimate(default_H_eigenvalue_estimate)
-    , rho_regularization_scaling(rho_regularization_scaling)
   {
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
@@ -387,14 +365,8 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
       settings2.primal_infeasibility_solving &&
     settings1.frequence_infeasibility_check ==
       settings2.frequence_infeasibility_check &&
-    settings1.nb_power_iteration == settings2.nb_power_iteration &&
-    settings1.power_iteration_accuracy == settings2.power_iteration_accuracy &&
-    settings1.find_minimal_H_eigenvalue ==
-      settings2.find_minimal_H_eigenvalue &&
     settings1.default_H_eigenvalue_estimate ==
-      settings2.default_H_eigenvalue_estimate &&
-    settings1.rho_regularization_scaling ==
-      settings2.rho_regularization_scaling;
+      settings2.default_H_eigenvalue_estimate;
   return value;
 }
 

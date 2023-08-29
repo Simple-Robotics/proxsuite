@@ -415,7 +415,7 @@ In this table, you have the three columns from left to right: the name of the se
 | nb_power_iteration                  | 1000                               | Number of power iteration iteration used by default for estimating H lowest eigenvalue.
 | power_iteration_accuracy            | 1.E-6                              | If set to true, it solves the closest primal feasible problem if primal infeasibility is detected.
 | primal_infeasibility_solving        | False                              | Accuracy target of the power iteration algorithm for estimating the lowest eigenvalue of H.
-| find_minimal_H_eigenvalue           | NoRegularization                   | Option for estimating the minimal eigen value of H and regularizing default_rho  default_rho=rho_regularization_scaling*abs(default_H_eigenvalue_estimate). This option can be used for solving non convex QPs.
+| estimate_method_option           | NoRegularization                   | Option for estimating the minimal eigen value of H and regularizing default_rho  default_rho=rho_regularization_scaling*abs(default_H_eigenvalue_estimate). This option can be used for solving non convex QPs.
 | default_H_eigenvalue_estimate       | 0.                                 | Default estimate of the minimal eigen value of H.
 | rho_regularization_scaling          | 1.5                                | Scaling for regularizing default_rho according to the minimal eigen value of H.
 
@@ -436,15 +436,13 @@ If set to this option, the solver will start with no initial guess, which means 
 
 \subsection OverviewEstimatingHminimalEigenValue The different options for estimating H minimal Eigenvalue
 
-The solver has four options for estimating the minimal eigenvalue of H within the struct HessianCostRegularization:
-* NoRegularization : set by default, it means the solver does not try to estimate it,
-* Manual: the user can provide an estimate of it through the init method,
+The solver environment provides an independent function for estimating the minimal eigenvalue of a dense or sparse symmetric matrix. It is named "estimate_minimal_eigen_value_of_symmetric_matrix". In the sparse case, it uses a power iteration algorithm (with two options: the maximal number of iterations and the accuracy target for the estimate). In the dense case, we provide two options within the struct EigenValueEstimateMethodOption:
 * PowerIteration: a power iteration algorithm will be used for estimating H minimal eigenvalue,
-* EigenRegularization: in case the dense backend is used, the solver make use of Eigen method for estimating it.
+* ExactMethod: in this case, an exact method from EigenSolver is used to provide an estimate.
 
-This option is particularly usefull when solving QP with non convex quadratics. Indeed, if default_rho is set to a value strictly higher than the minimal eigenvalue of H, then ProxQP is guaranteed for find a local minimum to the problem since it relies on a Proximal Method of Multipliers (for more detail for example this [work](https://arxiv.org/pdf/2010.02653.pdf) providing convergence proof of this property).
+Estimating minimal eigenvalue is particularly usefull for solving QP with non convex quadratics. Indeed, if default_rho is set to a value strictly higher than the minimal eigenvalue of H, then ProxQP is guaranteed for find a local minimum to the problem since it relies on a Proximal Method of Multipliers (for more detail for example this [work](https://arxiv.org/pdf/2010.02653.pdf) providing convergence proof of this property).
 
-More precisely, when HessianCostRegularization is set to a value different of NoRegularization, then ProxQP first estimate a minimal eigenvalue for H and then update default_rho following the rule: default_rho = rho_regularization_scaling * abs(default_H_eigenvalue_estimate), which guarantees for appropriate scaling than the proximal step-size is larger than the minimal eigenvalue of H. We provide below examples in C++ and python for using this feature appropriately with the dense backend (it is similar with the sparse one)
+More precisely, ProxQP API enables the user to provide for the init or update methods estimate of the minimal eigenvalue of H (i.e., manual_minimal_H_eigenvalue). It the values are not empty, then the values of primal proximal step size rho will be updated according to: rho = rho + abs(manual_minimal_H_eigenvalue). It guarantees that the proximal step-size is larger than the minimal eigenvalue of H and hence to converging towards a local minimum of the QP. We provide below examples in C++ and python for using this feature appropriately with the dense backend (it is similar with the sparse one)
 
 <table class="manual">
   <tr>

@@ -37,14 +37,15 @@ qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random non convex QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-qp.init(H, g, A, b, C, l, u)
-qp.settings.find_minimal_H_eigenvalue = (
-    proxsuite.proxqp.HessianCostRegularization.EigenRegularization
+estimate_minimal_eigen_value = (
+    proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
+        H, proxsuite.proxqp.EigenValueEstimateMethodOption.ExactMethod
+    )
 )
-qp.settings.rho_regularization_scaling = 1.5
+qp.init(H, g, A, b, C, l, u, manual_minimal_H_eigenvalue=estimate_minimal_eigen_value)
 vals, _ = spa.linalg.eigs(H, which="SR")
 min_eigenvalue = float(np.min(vals))
 # print the estimates
 print(f"{min_eigenvalue=}")
-print(f"{qp.settings.find_minimal_H_eigenvalue=}")
-print(f"{qp.settings.default_rho=}")
+print(f"{estimate_minimal_eigen_value=}")
+print(f"{qp.results.info.minimal_H_eigenvalue_estimate=}")
