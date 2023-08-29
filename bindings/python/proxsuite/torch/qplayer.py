@@ -9,9 +9,72 @@ from torch.autograd import Function
 from .utils import expandParam, extract_nBatch, extract_nBatch_double_sided, bger
 
 
-def QPFunction(
-    eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True
-):
+def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True):
+    '''
+    Solve a batch of Quadratic Programming (QP) problems.
+
+    This function solves QP problems of the form:
+        min 0.5*z'*Q*z + p'*z
+        s.t. l <= G*z <= h
+             A*z = b
+
+    The QP can be infeasible - in this case the solver will return a solution to 
+    the closest feasible QP.
+
+    Args:
+        eps (float, optional): Tolerance for the primal infeasibility. Defaults to 1e-9.
+        maxIter (int, optional): Maximum number of iterations. Defaults to 1000.
+        eps_backward (float, optional): Tolerance for the backward pass. Defaults to 1e-4.
+        structural_feasibility (bool, optional): Whether to solve the QP with structural feasibility. Defaults to True.
+
+    Returns:
+        QPFunctionFn or QPFunctionFn_infeas: A callable object that represents the QP problem solver.
+        We disinguish two cases:
+            1. The QP is feasible. In this case, we solve the QP problem.
+            2. The QP is infeasible. In this case, we solve the closest feasible QP problem.
+
+    The callable object has two main methods:
+
+    Forward:
+        Solve the QP problem.
+
+        Args:
+            Q (torch.Tensor): Batch of quadratic cost matrices of size (nBatch, n, n) or (n, n).
+            p (torch.Tensor): Batch of linear cost vectors of size (nBatch, n) or (n).
+            A (torch.Tensor, optional): Batch of eq. constraint matrices of size (nBatch, p, n) or (p, n).
+            b (torch.Tensor, optional): Batch of eq. constraint vectors of size (nBatch, p) or (p).
+            G (torch.Tensor): Batch of ineq. constraint matrices of size (nBatch, m, n) or (m, n).
+            l (torch.Tensor): Batch of ineq. lower bound vectors of size (nBatch, m) or (m).
+            u (torch.Tensor): Batch of ineq. upper bound vectors of size (nBatch, m) or (m).
+
+        Returns:
+            zhats (torch.Tensor): Batch of optimal primal solutions of size (nBatch, n).
+            lams (torch.Tensor): Batch of dual variables for eq. constraint of size (nBatch, m).
+            nus (torch.Tensor): Batch of dual variables  for ineq. constraints of size (nBatch, p).
+            Only for infeasible case:
+                s_e (torch.Tensor): Batch of slack variables for eq. constraints of size (nBatch, m).
+                s_i (torch.Tensor): Batch of slack variables for ineq. constraints of size (nBatch, p).
+
+    Backward:
+        Compute the gradients of the QP problem wrt its parameters.
+
+        Args:
+            dl_dzhat (torch.Tensor): Batch of gradients of size (nBatch, n).
+            dl_dlams (torch.Tensor, optional): Batch of gradients of size (nBatch, p).
+            dl_dnus (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
+            Only for infeasible case:
+                dl_ds_e (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
+                dl_ds_i (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
+
+        Returns:
+            dQs (torch.Tensor): Batch of gradients of size (nBatch, n, n).
+            dps (torch.Tensor): Batch of gradients of size (nBatch, n).
+            dAs (torch.Tensor): Batch of gradients of size (nBatch, p, n).
+            dbs (torch.Tensor): Batch of gradients of size (nBatch, p).
+            dGs (torch.Tensor): Batch of gradients of size (nBatch, m, n).
+            dls (torch.Tensor): Batch of gradients of size (nBatch, m).
+            dus (torch.Tensor): Batch of gradients of size (nBatch, m).
+    '''
     class QPFunctionFn(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
