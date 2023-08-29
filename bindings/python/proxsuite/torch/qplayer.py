@@ -38,13 +38,9 @@ def QPFunction(
                 ctx.cpu = max(1, int(ctx.cpu / 2))
 
             zhats = torch.Tensor(nBatch, ctx.nz).type_as(Q)
-            y = None
-            # if loss_over_y:
-            # y = torch.Tensor(nBatch, ctx.neq).type_as(Q)
-            z = None
-            # if loss_over_z:
-            # z = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
-            res = 0.0
+            lams = torch.Tensor(nBatch, ctx.neq).type_as(Q)
+            nus = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
+
             for i in range(nBatch):
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = True
@@ -87,15 +83,13 @@ def QPFunction(
 
             for i in range(nBatch):
                 zhats[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.x)
-                # if (loss_over_y):
-                #     y[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.y)
-                # if (loss_over_z):
-                #     z[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.z)
+                lams[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.y)
+                nus[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.z)
 
-            return zhats, y, z
+            return zhats, lams, nus
 
         @staticmethod
-        def backward(ctx, dl_dzhat, dl_dy, dl_dz):
+        def backward(ctx, dl_dzhat, dl_dlams, dl_dnus):
             nBatch, dim, neq, nineq = ctx.nBatch, ctx.nz, ctx.neq, ctx.nineq
             dQs = torch.Tensor(nBatch, ctx.nz, ctx.nz)
             dps = torch.Tensor(nBatch, ctx.nz)
@@ -115,10 +109,10 @@ def QPFunction(
             for i in range(nBatch):
                 rhs = np.zeros(n_tot)
                 rhs[:dim] = dl_dzhat[i]
-                if dl_dy != None:
-                    rhs[dim : dim + neq] = dl_dy[i]
-                if dl_dz != None:
-                    rhs[dim + neq :] = dl_dz[i]
+                if dl_dlams != None:
+                    rhs[dim : dim + neq] = dl_dlams[i]
+                if dl_dnus != None:
+                    rhs[dim + neq :] = dl_dnus[i]
                 vector_of_loss_derivatives.append(rhs)
 
             proxsuite.proxqp.dense.solve_backward_in_parallel(
@@ -157,7 +151,10 @@ def QPFunction(
 
     class QPFunctionFn_infeas(Function):
         @staticmethod
-        def forward(ctx, Q_, p_, G_, h_, A_, b_):
+        # def forward(ctx, Q_, p_, G_, h_, A_, b_):
+        def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
+            h_ = torch.cat((-l_, u_), 1)
+            G_ = torch.cat((-G_, G_), 1)
             nBatch = extract_nBatch(Q_, p_, G_, h_, A_, b_)
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
@@ -245,10 +242,10 @@ def QPFunction(
             ctx.nus = nus
             ctx.slacks = slacks
             ctx.save_for_backward(zhats, s_e, Q_, p_, G_, h_, A_, b_)
-            return zhats, s_e, s_i
+            return zhats, lams, nus, s_e, s_i
 
         @staticmethod
-        def backward(ctx, dl_dzhat, dl_ds_e, dl_ds_i):
+        def backward(ctx, dl_dzhat, dl_dlams, dl_dnus, dl_ds_e, dl_ds_i):
             zhats, s_e, Q, p, G, h, A, b = ctx.saved_tensors
             nBatch = extract_nBatch(Q, p, G, h, A, b)
 
@@ -343,6 +340,10 @@ def QPFunction(
 
                 rhs = np.zeros(kkt.shape[0])
                 rhs[:dim] = -dl_dzhat[i]
+                if dl_dlams != None:
+                    rhs[dim : dim + n_eq] = -dl_dlams[i]
+                if dl_dnus != None:
+                    rhs[dim + n_eq : dim + n_eq + n_in] = -dl_dnus[i]
                 if dl_ds_e != None:
                     if dl_ds_e.shape[0] != 0:
                         rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]
