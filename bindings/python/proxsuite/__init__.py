@@ -1,6 +1,6 @@
 import platform
 import numpy  # for OpenMP proper linkage
-from .qplayer.torch import QPFunction
+from .torch.qplayer import QPFunction
 
 machine = platform.machine()
 has_vectorization_instructions = not machine.startswith(
@@ -40,4 +40,3 @@ del load_main_module
 del platform
 del has_vectorization_instructions
 del machine
-del QPFunction

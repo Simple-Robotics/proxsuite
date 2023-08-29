@@ -174,20 +174,19 @@ endif()
 python_build_get_target(compile_pyc)
 add_dependencies(python ${compile_pyc})
 
-
-SET(PYTHON_FILES
-  qplayer/__init__.py
-  qplayer/torch.py
-  qplayer/utils.py
+set(PYTHON_FILES
+  torch/__init__.py
+  torch/qplayer.py
+  torch/utils.py
 )
 
 file(MAKE_DIRECTORY
-    ${${PYWRAP}_INSTALL_DIR}/qplayer)
+    ${${PYWRAP}_INSTALL_DIR}/torch)
 
-FOREACH(python ${PYTHON_FILES})
+foreach(python ${PYTHON_FILES})
   PYTHON_BUILD(${PROJECT_NAME} ${python})
   get_filename_component(pysubmodule ${python} PATH)
   get_filename_component(pyname ${python} NAME)
   set(MODULE_NAME ${PROJECT_NAME}/${pysubmodule})
   python_install_on_site(${MODULE_NAME} ${pyname})
-ENDFOREACH(python)
+endforeach(python)
