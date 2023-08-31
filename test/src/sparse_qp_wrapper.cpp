@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 #include <iostream>
 #include <proxsuite/proxqp/sparse/sparse.hpp>
@@ -6311,7 +6311,7 @@ TEST_CASE(
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
-    T estimate_minimal_eigen_value =
+    const T estimate_minimal_eigen_value =
       sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
         H_sparse, 1.E-6, 10000);
     qp.init(H_sparse,
@@ -6322,9 +6322,9 @@ TEST_CASE(
             qp_random.l,
             qp_random.u,
             true,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= tol);
@@ -6352,7 +6352,7 @@ TEST_CASE(
         H_sparse, 1.E-6, 10000);
     Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
                                                     Eigen::EigenvaluesOnly);
-    T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
+    const T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
     qp.init(H_sparse,
             qp_random.g,
             A_sparse,
@@ -6361,9 +6361,9 @@ TEST_CASE(
             qp_random.l,
             qp_random.u,
             true,
-            std::nullopt,
-            std::nullopt,
-            std::nullopt,
+            nullopt,
+            nullopt,
+            nullopt,
             estimate_minimal_eigen_value);
     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
                            minimal_eigenvalue) <= 1.);
