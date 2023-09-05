@@ -1,6 +1,7 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
+using namespace proxsuite;
 using namespace proxsuite::proxqp;
 using T = double;
 
@@ -39,9 +40,9 @@ main()
           qp_random.l,
           qp_random.u,
           compute_preconditioner,
-          std::nullopt,
-          std::nullopt,
-          std::nullopt,
+          nullopt,
+          nullopt,
+          nullopt,
           estimate_minimal_eigen_value);
   // print the estimates
   std::cout << "ProxQP estimate "
