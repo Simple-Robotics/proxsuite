@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 #include <iostream>
 #include <proxsuite/proxqp/sparse/sparse.hpp>
@@ -13,6 +13,7 @@ using namespace proxsuite::proxqp::utils;
 using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
+
 DOCTEST_TEST_CASE(
   "ProxQP::sparse: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
@@ -6049,6 +6050,7 @@ TEST_CASE("ProxQP::sparse: init must be called before update")
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 }
+
 TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 {
   double sparsity_factor = 0.15;
@@ -6107,5 +6109,263 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
                   .lpNorm<Eigen::Infinity>();
     DOCTEST_CHECK(pri_res <= scaled_eps);
     DOCTEST_CHECK(dua_res <= eps_abs);
+  }
+}
+// TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using Eigen")
+// {
+//   double sparsity_factor = 0.25;
+//   T tol = T(1e-6);
+//   utils::rand::set_seed(1);
+//   dense::isize dim = 2;
+//   dense::isize n_eq(dim);
+//   dense::isize n_in(dim);
+//   T strong_convexity_factor(1.e-2);
+//   dim = 50;
+//   n_eq = dim;
+//   n_in = dim;
+//   for (isize i = 0; i < 20; ++i) {
+//     ::proxsuite::proxqp::utils::rand::set_seed(i);
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
+//       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+//     // proxqp::sparse::SparseModel<T> qp_random =
+//     // utils::sparse_strongly_convex_qp(
+//     //   dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+//     qp_random.H.setZero();
+//     dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+//     qp_random.H.diagonal().array() += random_diag.array();
+//     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
+
+//     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+//     qp.settings.max_iter = 1;
+//     qp.settings.max_iter_in = 1;
+//     qp.settings.estimate_method_option =
+//       EigenValueEstimateMethodOption::EigenRegularization;
+//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+//     SparseMat<T> H_sparse = qp_random.H.sparseView();
+//     SparseMat<T> A_sparse = qp_random.A.sparseView();
+//     SparseMat<T> C_sparse = qp_random.C.sparseView();
+//     qp.init(H_sparse,
+//             qp_random.g,
+//             A_sparse,
+//             qp_random.b,
+//             C_sparse,
+//             qp_random.l,
+//             qp_random.u);
+//     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+//                            minimal_eigenvalue) <= tol);
+//   }
+//   dim = 50;
+//   n_eq = dim;
+//   n_in = dim;
+//   for (isize i = 0; i < 20; ++i) {
+//     ::proxsuite::proxqp::utils::rand::set_seed(i);
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
+//       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+//     dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+//     qp_random.H.diagonal().array() += 100 * random_diag.array();
+
+//     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+//     qp.settings.max_iter = 1;
+//     qp.settings.max_iter_in = 1;
+//     qp.settings.estimate_method_option =
+//       EigenValueEstimateMethodOption::EigenRegularization;
+//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+//     SparseMat<T> H_sparse = qp_random.H.sparseView();
+//     SparseMat<T> A_sparse = qp_random.A.sparseView();
+//     SparseMat<T> C_sparse = qp_random.C.sparseView();
+//     Eigen::SelfAdjointEigenSolver<SparseMat<T>> es(H_sparse,
+//                                                    Eigen::EigenvaluesOnly);
+//     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
+//     qp.init(H_sparse,
+//             qp_random.g,
+//             A_sparse,
+//             qp_random.b,
+//             C_sparse,
+//             qp_random.l,
+//             qp_random.u);
+//     DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+//                            minimal_eigenvalue) <= 1.);
+//   }
+// }
+TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
+{
+  double sparsity_factor = 0.25;
+  T tol = T(1e-6);
+  utils::rand::set_seed(1);
+  dense::isize dim = 2;
+  dense::isize n_eq(dim);
+  dense::isize n_in(dim);
+  T strong_convexity_factor(1.e-2);
+  dim = 50;
+  n_eq = dim;
+  n_in = dim;
+  for (isize i = 0; i < 20; ++i) {
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    // proxqp::sparse::SparseModel<T> qp_random =
+    // utils::sparse_strongly_convex_qp(
+    //   dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    qp_random.H.setZero();
+    dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+    qp_random.H.diagonal().array() += random_diag.array();
+    T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
+
+    proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+    qp.settings.max_iter = 1;
+    qp.settings.max_iter_in = 1;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    SparseMat<T> H_sparse = qp_random.H.sparseView();
+    SparseMat<T> A_sparse = qp_random.A.sparseView();
+    SparseMat<T> C_sparse = qp_random.C.sparseView();
+    qp.init(H_sparse,
+            qp_random.g,
+            A_sparse,
+            qp_random.b,
+            C_sparse,
+            qp_random.l,
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            minimal_eigenvalue);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
+  }
+  dim = 50;
+  n_eq = dim;
+  n_in = dim;
+  for (isize i = 0; i < 20; ++i) {
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+    qp_random.H.diagonal().array() += 100 * random_diag.array();
+
+    proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+    qp.settings.max_iter = 1;
+    qp.settings.max_iter_in = 1;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    SparseMat<T> H_sparse = qp_random.H.sparseView();
+    SparseMat<T> A_sparse = qp_random.A.sparseView();
+    SparseMat<T> C_sparse = qp_random.C.sparseView();
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
+    T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
+    qp.init(H_sparse,
+            qp_random.g,
+            A_sparse,
+            qp_random.b,
+            C_sparse,
+            qp_random.l,
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            minimal_eigenvalue);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= 1.);
+  }
+}
+
+TEST_CASE(
+  "ProxQP::sparse: estimate of minimal eigenvalues using Power iteration")
+{
+  double sparsity_factor = 0.25;
+  T tol = T(1e-6);
+  utils::rand::set_seed(1);
+  dense::isize dim = 2;
+  dense::isize n_eq(dim);
+  dense::isize n_in(dim);
+  T strong_convexity_factor(1.e-2);
+  dim = 50;
+  n_eq = dim;
+  n_in = dim;
+  for (isize i = 0; i < 20; ++i) {
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    // proxqp::sparse::SparseModel<T> qp_random =
+    // utils::sparse_strongly_convex_qp(
+    //   dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    qp_random.H.setZero();
+    dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+    qp_random.H.diagonal().array() += random_diag.array();
+    T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
+    // std::cout << "qp_random.H" << std::endl;
+    // std::cout << qp_random.H << std::endl;
+    // std::cout << "minimal_eigenvalue " << minimal_eigenvalue << std::endl;
+    proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+    qp.settings.max_iter = 1;
+    qp.settings.max_iter_in = 1;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    SparseMat<T> H_sparse = qp_random.H.sparseView();
+    SparseMat<T> A_sparse = qp_random.A.sparseView();
+    SparseMat<T> C_sparse = qp_random.C.sparseView();
+    const T estimate_minimal_eigen_value =
+      sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
+        H_sparse, 1.E-6, 10000);
+    qp.init(H_sparse,
+            qp_random.g,
+            A_sparse,
+            qp_random.b,
+            C_sparse,
+            qp_random.l,
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            estimate_minimal_eigen_value);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= tol);
+  }
+  dim = 50;
+  n_eq = dim;
+  n_in = dim;
+  for (isize i = 0; i < 20; ++i) {
+    ::proxsuite::proxqp::utils::rand::set_seed(i);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    dense::Vec<T> random_diag = proxqp::utils::rand::vector_rand<T>(dim);
+    qp_random.H.diagonal().array() += 100 * random_diag.array();
+
+    proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
+    qp.settings.max_iter = 1;
+    qp.settings.max_iter_in = 1;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    SparseMat<T> H_sparse = qp_random.H.sparseView();
+    SparseMat<T> A_sparse = qp_random.A.sparseView();
+    SparseMat<T> C_sparse = qp_random.C.sparseView();
+    T estimate_minimal_eigen_value =
+      sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
+        H_sparse, 1.E-6, 10000);
+    Eigen::SelfAdjointEigenSolver<dense::Mat<T>> es(qp_random.H,
+                                                    Eigen::EigenvaluesOnly);
+    const T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
+    qp.init(H_sparse,
+            qp_random.g,
+            A_sparse,
+            qp_random.b,
+            C_sparse,
+            qp_random.l,
+            qp_random.u,
+            true,
+            nullopt,
+            nullopt,
+            nullopt,
+            estimate_minimal_eigen_value);
+    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                           minimal_eigenvalue) <= 1.);
   }
 }

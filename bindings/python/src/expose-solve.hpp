@@ -43,7 +43,8 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             optional<T>,
                             optional<T>,
-                            bool>(&dense::solve<T>),
+                            bool,
+                            optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -103,7 +104,10 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."));
 
   m.def(
     "solve",
@@ -132,7 +136,8 @@ solveDenseQp(pybind11::module_ m)
                             bool,
                             optional<T>,
                             optional<T>,
-                            bool>(&dense::solve<T>),
+                            bool,
+                            optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using PROXQP sparse backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -194,7 +199,10 @@ solveDenseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."));
 }
 
 } // namespace python
@@ -269,7 +277,10 @@ solveSparseQp(pybind11::module_ m)
     pybind11::arg_v("primal_infeasibility_solving",
                     false,
                     "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."));
+                    "if the QP problem appears to be infeasible."),
+    pybind11::arg_v("default_H_eigenvalue_estimate",
+                    0.,
+                    "Default estimate of the minimal eigen value of H."));
 }
 
 } // namespace python

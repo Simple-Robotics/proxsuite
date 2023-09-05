@@ -42,6 +42,7 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
    - Python and Julia bindings for easy code prototyping without sacrificing performance.
 
 **Proxsuite** has a dedicated feature for solving batches of QPs.
+**Proxsuite** has a dedicated feature for solving nonconvex QPs.
 **Proxsuite** has a dedicated feature for solving the closest feasible QPs if they appear to be primal infeasible.
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.

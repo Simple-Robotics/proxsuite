@@ -35,6 +35,7 @@ exposeSparseAlgorithms(pybind11::module_ m)
   sparse::python::exposeQpObjectSparse<T, I>(m);
   sparse::python::exposeQPVectorSparse<T, I>(m);
   sparse::python::solveSparseQp<T, I>(m);
+  sparse::python::exposeSparseHelpers<T, I>(m);
 }
 
 template<typename T>
@@ -45,6 +46,7 @@ exposeDenseAlgorithms(pybind11::module_ m)
   dense::python::exposeQpObjectDense<T>(m);
   dense::python::exposeQPVectorDense<T>(m);
   dense::python::solveDenseQp<T>(m);
+  dense::python::exposeDenseHelpers<T>(m);
 }
 
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP

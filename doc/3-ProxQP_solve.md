@@ -160,3 +160,5 @@ Note that if some elements of your QP model are not defined (for example a QP wi
     </td>
   </tr>
 </table>
+
+Finally, note that you can also you ProxQP for solving QP with non convex quadratic. For doing so, you just need to provide to the solve function an estimate of the smallest eigenvalue of the quadratic cost H. The solver environment provides an independent function for estimating the minimal eigenvalue of a dense or sparse symmetric matrix. It is named "estimate_minimal_eigen_value_of_symmetric_matrix". You can find more details in [ProxQP API with examples](2-ProxQP_api.md) about the different other settings that can be used for setting other related parameters (e.g., for using a Power Iteration algorithm).

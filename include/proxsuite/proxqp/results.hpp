@@ -52,6 +52,8 @@ struct Info
   T duality_gap;
   //// sparse backend used by solver, either CholeskySparse or MatrixFree
   SparseBackend sparse_backend;
+  //// quadratic cost minimal eigenvalue estimate
+  T minimal_H_eigenvalue_estimate;
 };
 ///
 /// @brief This class stores all the results of PROXQP solvers with sparse and
@@ -134,6 +136,7 @@ struct Results
     info.duality_gap = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
+    info.minimal_H_eigenvalue_estimate = 0.;
   }
   /*!
    * cleanups the Result variables and set the info variables to their initial
@@ -172,12 +175,15 @@ struct Results
     info.mu_in_inv = 1e1;
     info.mu_in = 1e-1;
     info.nu = 1.;
+    info.minimal_H_eigenvalue_estimate = 0.;
     if (settings != nullopt) {
       info.rho = settings.value().default_rho;
       info.mu_eq = settings.value().default_mu_eq;
       info.mu_eq_inv = T(1) / info.mu_eq;
       info.mu_in = settings.value().default_mu_in;
       info.mu_in_inv = T(1) / info.mu_in;
+      info.minimal_H_eigenvalue_estimate =
+        settings.value().default_H_eigenvalue_estimate;
     }
     cleanup_statistics();
   }
@@ -207,7 +213,8 @@ operator==(const Info<T>& info1, const Info<T>& info2)
     info1.solve_time == info2.solve_time && info1.run_time == info2.run_time &&
     info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
     info1.dua_res == info2.dua_res && info1.duality_gap == info2.duality_gap &&
-    info1.duality_gap == info2.duality_gap;
+    info1.duality_gap == info2.duality_gap &&
+    info1.minimal_H_eigenvalue_estimate == info2.minimal_H_eigenvalue_estimate;
   return value;
 }
 

@@ -348,6 +348,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    */
   void init(optional<MatRef<T>> H,
             optional<VecRef<T>> g,
@@ -359,7 +360,8 @@ public:
             bool compute_preconditioner = true,
             optional<T> rho = nullopt,
             optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt)
+            optional<T> mu_in = nullopt,
+            optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == true,
@@ -467,6 +469,9 @@ public:
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(H,
                                     g,
@@ -509,6 +514,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    */
   void init(optional<MatRef<T>> H,
             optional<VecRef<T>> g,
@@ -522,7 +528,8 @@ public:
             bool compute_preconditioner = true,
             optional<T> rho = nullopt,
             optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt)
+            optional<T> mu_in = nullopt,
+            optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
 
     // dense case
@@ -668,6 +675,9 @@ public:
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     proxsuite::proxqp::dense::setup(H,
                                     g,
                                     A,
@@ -705,6 +715,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    * @note The init method should be called before update. If it has not been
    * done before, init is called depending on the is_initialized flag.
    */
@@ -718,7 +729,8 @@ public:
               bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
+              optional<T> mu_in = nullopt,
+              optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == true,
@@ -764,7 +776,9 @@ public:
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(/* avoid double assignation */
@@ -809,6 +823,7 @@ public:
    * @param rho proximal step size wrt primal variable.
    * @param mu_eq proximal step size wrt equality constrained multiplier.
    * @param mu_in proximal step size wrt inequality constrained multiplier.
+   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
    * @note The init method should be called before update. If it has not been
    * done before, init is called depending on the is_initialized flag.
    */
@@ -824,7 +839,8 @@ public:
               bool update_preconditioner = false,
               optional<T> rho = nullopt,
               optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt)
+              optional<T> mu_in = nullopt,
+              optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
     PROXSUITE_THROW_PRETTY(
       box_constraints == false && (l_box != nullopt || u_box != nullopt),
@@ -871,6 +887,9 @@ public:
     }
     proxsuite::proxqp::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
+    proxsuite::proxqp::dense::
+      update_default_rho_with_minimal_Hessian_eigen_value(
+        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
     proxsuite::proxqp::dense::setup(/* avoid double assignation */
@@ -1004,7 +1023,8 @@ solve(
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false)
+  bool primal_infeasibility_solving = false,
+  optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1043,7 +1063,23 @@ solve(
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  Qp.init(H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in);
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            manual_minimal_H_eigenvalue.value());
+  } else {
+    Qp.init(
+      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
+  }
   Qp.solve(x, y, z);
 
   return Qp.results;
@@ -1119,7 +1155,8 @@ solve(
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false)
+  bool primal_infeasibility_solving = false,
+  optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1158,19 +1195,37 @@ solve(
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  Qp.init(H,
-          g,
-          A,
-          b,
-          C,
-          l,
-          u,
-          l_box,
-          u_box,
-          compute_preconditioner,
-          rho,
-          mu_eq,
-          mu_in);
+  if (manual_minimal_H_eigenvalue != nullopt) {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            l_box,
+            u_box,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            manual_minimal_H_eigenvalue.value());
+  } else {
+    Qp.init(H,
+            g,
+            A,
+            b,
+            C,
+            l,
+            u,
+            l_box,
+            u_box,
+            compute_preconditioner,
+            rho,
+            mu_eq,
+            mu_in,
+            nullopt);
+  }
   Qp.solve(x, y, z);
 
   return Qp.results;

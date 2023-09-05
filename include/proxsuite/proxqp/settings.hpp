@@ -43,6 +43,14 @@ enum struct HessianType
   Dense,   // Quadratic Program
   Diagonal // Quadratic Program with diagonal Hessian
 };
+// Augment the minimal eigen value of H with some regularizer
+enum struct EigenValueEstimateMethodOption
+{
+  PowerIteration, // Process a power iteration algorithm
+  ExactMethod     // Use Eigen's method to estimate the minimal eigenvalue
+                  // watch out, the last option is only available for dense
+                  // matrices!
+};
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
 {
@@ -132,6 +140,7 @@ struct Settings
   SparseBackend sparse_backend;
   bool primal_infeasibility_solving;
   isize frequence_infeasibility_check;
+  T default_H_eigenvalue_estimate;
   /*!
    * Default constructor.
    * @param default_rho default rho parameter of result class
@@ -195,6 +204,10 @@ struct Settings
    * problem if activated
    * @param frequence_infeasibility_check frequence at which infeasibility is
    * checked
+   * @param find_H_minimal_eigenvalue track the minimal eigen value of the
+   * quadratic cost H
+   * @param default_H_eigenvalue_estimate default H eigenvalue estimate (i.e.,
+   * if we make a model update and H does not change this one is used)
    */
 
   Settings(
@@ -243,7 +256,8 @@ struct Settings
     T alpha_gpdal = 0.95,
     SparseBackend sparse_backend = SparseBackend::Automatic,
     bool primal_infeasibility_solving = false,
-    isize frequence_infeasibility_check = 20)
+    isize frequence_infeasibility_check = 1,
+    T default_H_eigenvalue_estimate = 0.)
     : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
@@ -285,6 +299,7 @@ struct Settings
     , sparse_backend(sparse_backend)
     , primal_infeasibility_solving(primal_infeasibility_solving)
     , frequence_infeasibility_check(frequence_infeasibility_check)
+    , default_H_eigenvalue_estimate(default_H_eigenvalue_estimate)
   {
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
@@ -349,7 +364,9 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.primal_infeasibility_solving ==
       settings2.primal_infeasibility_solving &&
     settings1.frequence_infeasibility_check ==
-      settings2.frequence_infeasibility_check;
+      settings2.frequence_infeasibility_check &&
+    settings1.default_H_eigenvalue_estimate ==
+      settings2.default_H_eigenvalue_estimate;
   return value;
 }
 

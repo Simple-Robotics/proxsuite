@@ -41,6 +41,11 @@ exposeSettings(pybind11::module_ m)
     .value("MatrixFree", SparseBackend::MatrixFree)
     .value("SparseCholesky", SparseBackend::SparseCholesky)
     .export_values();
+  ::pybind11::enum_<EigenValueEstimateMethodOption>(
+    m, "EigenValueEstimateMethodOption", pybind11::module_local())
+    .value("PowerIteration", EigenValueEstimateMethodOption::PowerIteration)
+    .value("ExactMethod", EigenValueEstimateMethodOption::ExactMethod)
+    .export_values();
 
   ::pybind11::class_<Settings<T>>(m, "Settings", pybind11::module_local())
     .def(::pybind11::init(), "Default constructor.") // constructor
@@ -87,6 +92,8 @@ exposeSettings(pybind11::module_ m)
                    &Settings<T>::primal_infeasibility_solving)
     .def_readwrite("frequence_infeasibility_check",
                    &Settings<T>::frequence_infeasibility_check)
+    .def_readwrite("default_H_eigenvalue_estimate",
+                   &Settings<T>::default_H_eigenvalue_estimate)
     .def(pybind11::self == pybind11::self)
     .def(pybind11::self != pybind11::self)
     .def(pybind11::pickle(
