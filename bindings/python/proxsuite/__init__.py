@@ -1,6 +1,12 @@
 import platform
 import numpy  # for OpenMP proper linkage
-from .torch.qplayer import QPFunction
+try:
+    import torch
+    from .torch.qplayer import QPFunction
+except ImportError:
+    import warnings
+    warnings.warn("PyTorch not found, QPFunction not available.")
+    del warnings
 
 machine = platform.machine()
 has_vectorization_instructions = not machine.startswith(
