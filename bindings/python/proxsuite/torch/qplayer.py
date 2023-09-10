@@ -9,8 +9,10 @@ from torch.autograd import Function
 from .utils import expandParam, extract_nBatch, extract_nBatch_double_sided, bger
 
 
-def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True):
-    '''
+def QPFunction(
+    eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True
+):
+    """
     Solve a batch of Quadratic Programming (QP) problems.
 
     This function solves QP problems of the form:
@@ -18,7 +20,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
         s.t. l <= G*z <= h
              A*z = b
 
-    The QP can be infeasible - in this case the solver will return a solution to 
+    The QP can be infeasible - in this case the solver will return a solution to
     the closest feasible QP.
 
     Args:
@@ -74,7 +76,8 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
             dGs (torch.Tensor): Batch of gradients of size (nBatch, m, n).
             dls (torch.Tensor): Batch of gradients of size (nBatch, m).
             dus (torch.Tensor): Batch of gradients of size (nBatch, m).
-    '''
+    """
+
     class QPFunctionFn(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
@@ -216,8 +219,8 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
         @staticmethod
         # def forward(ctx, Q_, p_, G_, h_, A_, b_):
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
-            h_ = torch.cat((-l_, u_), 1)
-            G_ = torch.cat((-G_, G_), 1)
+            h_ = torch.cat((-l_, u_), 0)
+            G_ = torch.cat((-G_, G_), 0)
             nBatch = extract_nBatch(Q_, p_, G_, h_, A_, b_)
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
@@ -232,8 +235,8 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
             ctx.neq, ctx.nineq, ctx.nz = neq, nineq, nz
 
             zhats = torch.Tensor(nBatch, ctx.nz).type_as(Q)
-            lams = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
-            nus = (
+            nus = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
+            lams = (
                 torch.Tensor(nBatch, ctx.neq).type_as(Q)
                 if ctx.neq > 0
                 else torch.Tensor()
@@ -294,10 +297,10 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
             for i in range(nBatch):
                 si = -h[i] + G[i] @ vector_of_qps.get(i).results.x
                 zhats[i] = torch.Tensor(vector_of_qps.get(i).results.x)
-                lams[i] = torch.Tensor(vector_of_qps.get(i).results.z)
+                nus[i] = torch.Tensor(vector_of_qps.get(i).results.z)
                 slacks[i] = torch.Tensor(si)
                 if neq > 0:
-                    nus[i] = torch.Tensor(vector_of_qps.get(i).results.y)
+                    lams[i] = torch.Tensor(vector_of_qps.get(i).results.y)
                     s_e[i] = torch.Tensor(vector_of_qps.get(i).results.se)
                 s_i[i] = torch.Tensor(vector_of_qps.get(i).results.si)
 
@@ -323,9 +326,11 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
             dx = torch.zeros((nBatch, Q.shape[1]))
             dnu = None
             b_5 = None
-            dlam = torch.zeros((nBatch, nineq))
+            dlam = None
+            if nineq > 0:
+                dnu = torch.zeros((nBatch, nineq))
             if neq > 0:
-                dnu = torch.zeros((nBatch, neq))
+                dlam = torch.zeros((nBatch, neq))
                 b_5 = torch.zeros((nBatch, Q.shape[1]))
 
             b_6 = torch.zeros((nBatch, Q.shape[1]))
@@ -350,7 +355,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
                 if A is not None:
                     if A.shape[0] != 0:
                         A_i = A[i].numpy()
-                z_i = ctx.lams[i]
+                z_i = ctx.nus[i]
                 s_i = ctx.slacks[i]  # G @ z_- h = slacks
 
                 dim = Q_i.shape[0]
@@ -450,10 +455,10 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
                     np.float64(vector_of_qps.get(i).results.x[:dim])
                 )
                 if n_eq > 0:
-                    dnu[i] = torch.from_numpy(
+                    dlam[i] = torch.from_numpy(
                         np.float64(vector_of_qps.get(i).results.x[dim : dim + n_eq])
                     )
-                dlam[i] = torch.from_numpy(
+                dnu[i] = torch.from_numpy(
                     np.float64(
                         vector_of_qps.get(i).results.x[dim + n_eq : dim + n_eq + n_in]
                     )
@@ -476,22 +481,22 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
 
             dps = dx
             dGs = (
-                bger(dlam.double(), zhats.double())
-                + bger(ctx.lams.double(), dx.double())
+                bger(dnu.double(), zhats.double())
+                + bger(ctx.nus.double(), dx.double())
                 + bger(P_2_c_s_i.double(), b_6.double())
             )
             if G_e:
                 dGs = dGs.mean(0)
-            dhs = -dlam
+            dhs = -dnu
             if h_e:
                 dhs = dhs.mean(0)
             if neq > 0:
                 dAs = (
-                    bger(dnu.double(), zhats.double())
-                    + bger(ctx.nus.double(), dx.double())
+                    bger(dlam.double(), zhats.double())
+                    + bger(ctx.lams.double(), dx.double())
                     + bger(s_e.double(), b_5.double())
                 )
-                dbs = -dnu
+                dbs = -dlam
                 if A_e:
                     dAs = dAs.mean(0)
                 if b_e:
@@ -506,7 +511,7 @@ def QPFunction(eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibili
             if p_e:
                 dps = dps.mean(0)
 
-            grads = (dQs, dps, dGs, dhs, dAs, dbs)
+            grads = (dQs, dps, dAs, dbs, dGs[nineq:, :], -dhs[:nineq], dhs[nineq:])
 
             return grads
 
