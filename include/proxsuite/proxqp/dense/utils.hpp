@@ -217,13 +217,18 @@ global_primal_residual(const Model<T>& qpmodel,
     helpers::negative_part(
       qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.l);
   if (box_constraints) {
-    primal_feasibility_in_rhs_0 = std::max(
-      primal_feasibility_in_rhs_0, infty_norm(qpresults.si.tail(qpmodel.dim)));
     qpresults.si.tail(qpmodel.dim) =
       helpers::positive_part(
         qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.u_box) +
       helpers::negative_part(
         qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.l_box);
+    qpwork.active_part_z.tail(qpmodel.dim) =
+      qpresults.x - qpresults.si.tail(qpmodel.dim);
+    primal_feasibility_in_rhs_0 =
+      std::max(primal_feasibility_in_rhs_0,
+               infty_norm(qpwork.active_part_z.tail(qpmodel.dim)));
+    primal_feasibility_in_rhs_0 =
+      std::max(primal_feasibility_in_rhs_0, infty_norm(qpresults.x));
   }
   // qpwork.primal_residual_eq_scaled -= qpmodel.b;
   qpresults.se -= qpmodel.b;
