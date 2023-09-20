@@ -28,6 +28,7 @@ exposeQPVectorDense(pybind11::module_ m)
     .def("insert",
          &dense::BatchQP<T>::insert,
          "inserts a qp at the end of the vector of qps.")
+    .def("size", &dense::BatchQP<T>::size)
     .def("get",
          (dense::QP<T> & (dense::BatchQP<T>::*)(isize)) &
            dense::BatchQP<T>::get,
