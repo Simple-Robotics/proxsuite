@@ -10,7 +10,11 @@ from .utils import expandParam, extract_nBatch, extract_nBatch_double_sided, bge
 
 
 def QPFunction(
-    eps=1e-9, maxIter=1000, eps_backward=1.0e-4, structural_feasibility=True
+    eps=1e-9,
+    maxIter=1000,
+    eps_backward=1.0e-4,
+    omp_parallel=False,
+    structural_feasibility=True,
 ):
     """
     Solve a batch of Quadratic Programming (QP) problems.
@@ -27,6 +31,7 @@ def QPFunction(
         eps (float, optional): Tolerance for the primal infeasibility. Defaults to 1e-9.
         maxIter (int, optional): Maximum number of iterations. Defaults to 1000.
         eps_backward (float, optional): Tolerance for the backward pass. Defaults to 1e-4.
+        omp_parallel (bool, optional): Whether to solve the QP in parallel. Requires that proxsuite is compiled with openmp support. Defaults to False.
         structural_feasibility (bool, optional): Whether to solve the QP with structural feasibility. Defaults to True.
 
     Returns:
@@ -77,6 +82,8 @@ def QPFunction(
             dls (torch.Tensor): Batch of gradients of size (nBatch, m).
             dus (torch.Tensor): Batch of gradients of size (nBatch, m).
     """
+    global proxqp_parallel
+    proxqp_parallel = omp_parallel
 
     class QPFunctionFn(Function):
         @staticmethod
@@ -143,9 +150,13 @@ def QPFunction(
                     H=H__, g=p__, A=A__, b=b__, C=G__, l=l__, u=u__, rho=default_rho
                 )
 
-            proxsuite.proxqp.dense.solve_in_parallel(
-                num_threads=ctx.cpu, qps=ctx.vector_of_qps
-            )
+            if proxqp_parallel:
+                proxsuite.proxqp.dense.solve_in_parallel(
+                    num_threads=ctx.cpu, qps=ctx.vector_of_qps
+                )
+            else:
+                for i in range(ctx.vector_of_qps.size()):
+                    ctx.vector_of_qps.get(i).solve()
 
             for i in range(nBatch):
                 zhats[i] = torch.Tensor(ctx.vector_of_qps.get(i).results.x)
@@ -170,23 +181,41 @@ def QPFunction(
                 ctx.cpu = max(1, int(ctx.cpu / 2))
 
             n_tot = dim + neq + nineq
-            vector_of_loss_derivatives = proxsuite.proxqp.dense.VectorLossDerivatives()
 
-            for i in range(nBatch):
-                rhs = np.zeros(n_tot)
-                rhs[:dim] = dl_dzhat[i]
-                if dl_dlams != None:
-                    rhs[dim : dim + neq] = dl_dlams[i]
-                if dl_dnus != None:
-                    rhs[dim + neq :] = dl_dnus[i]
-                vector_of_loss_derivatives.append(rhs)
+            if proxqp_parallel:
+                vector_of_loss_derivatives = (
+                    proxsuite.proxqp.dense.VectorLossDerivatives()
+                )
 
-            proxsuite.proxqp.dense.solve_backward_in_parallel(
-                num_threads=ctx.cpu,
-                qps=ctx.vector_of_qps,
-                loss_derivatives=vector_of_loss_derivatives,
-                eps=eps_backward,
-            )  # try with systematic fwd bwd
+                for i in range(nBatch):
+                    rhs = np.zeros(n_tot)
+                    rhs[:dim] = dl_dzhat[i]
+                    if dl_dlams != None:
+                        rhs[dim : dim + neq] = dl_dlams[i]
+                    if dl_dnus != None:
+                        rhs[dim + neq :] = dl_dnus[i]
+                    vector_of_loss_derivatives.append(rhs)
+
+                proxsuite.proxqp.dense.solve_backward_in_parallel(
+                    num_threads=ctx.cpu,
+                    qps=ctx.vector_of_qps,
+                    loss_derivatives=vector_of_loss_derivatives,
+                    eps=eps_backward,
+                )  # try with systematic fwd bwd
+            else:
+                for i in range(nBatch):
+                    rhs = np.zeros(n_tot)
+                    rhs[:dim] = dl_dzhat[i]
+                    if dl_dlams != None:
+                        rhs[dim : dim + neq] = dl_dlams[i]
+                    if dl_dnus != None:
+                        rhs[dim + neq :] = dl_dnus[i]
+                    qpi = ctx.vector_of_qps.get(i)
+                    proxsuite.proxqp.dense.compute_backward(
+                        qp=qpi,
+                        loss_derivative=rhs,
+                        eps=eps_backward,
+                    )
 
             for i in range(nBatch):
                 dQs[i] = torch.Tensor(
@@ -290,9 +319,13 @@ def QPFunction(
 
                 qp.init(H=H__, g=p__, A=A__, b=b__, C=G__, l=l, u=u__, rho=default_rho)
 
-            proxsuite.proxqp.dense.solve_in_parallel(
-                num_threads=ctx.cpu, qps=vector_of_qps
-            )
+            if proxqp_parallel:
+                proxsuite.proxqp.dense.solve_in_parallel(
+                    num_threads=ctx.cpu, qps=vector_of_qps
+                )
+            else:
+                for i in range(vector_of_qps.size()):
+                    vector_of_qps.get(i).solve()
 
             for i in range(nBatch):
                 si = -h[i] + G[i] @ vector_of_qps.get(i).results.x
@@ -446,9 +479,13 @@ def QPFunction(
                     u,
                 )
 
-            proxsuite.proxqp.sparse.solve_in_parallel(
-                num_threads=ctx.cpu, qps=vector_of_qps
-            )
+            if proxqp_parallel:
+                proxsuite.proxqp.sparse.solve_in_parallel(
+                    num_threads=ctx.cpu, qps=vector_of_qps
+                )
+            else:
+                for i in range(vector_of_qps.size()):
+                    vector_of_qps.get(i).solve()
 
             for i in range(nBatch):
                 dx[i] = torch.from_numpy(
