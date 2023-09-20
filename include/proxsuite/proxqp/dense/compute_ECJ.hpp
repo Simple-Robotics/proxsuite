@@ -46,9 +46,12 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.model.dim + solved_qp.model.n_eq + numactive_inequalities;
     solved_qp.work.rhs.setZero();
     // work.dw_aug.setZero(); zeroed in active_set_change
-    T rho_new = T(1.e-3);
-    solved_qp.results.info.mu_eq = T(5.E-5);
-    solved_qp.results.info.mu_in = T(5.E-5);
+    // T rho_new = T(1.e-3);
+    // solved_qp.results.info.mu_eq = T(5.E-5);
+    // solved_qp.results.info.mu_in = T(5.E-5);
+    T rho_new = T(1.e-7);
+    solved_qp.results.info.mu_eq = T(1.E-7);
+    solved_qp.results.info.mu_in = T(1.E-7);
     solved_qp.results.info.rho = rho_new;
 
     // a large amount of constraints might have changed
