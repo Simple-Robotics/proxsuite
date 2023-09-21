@@ -13,11 +13,26 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
+/*!
+ *  Computes the backward pass for the QP solver.
+ *
+ *  @param solved_qp The solved quadratic programming (QP) problem.
+ *  @param loss_derivative The derivative of the loss function wrt the solution
+ * of the QP.
+ *  @param eps The epsilon value for the iterative refinement, with a default
+ * value of 1.E-4.
+ *  @param rho_new The new primal proximal parameter, with a default value
+ * of 1.E-6.
+ *  @param mu_new The new dual proximal parameter used for both equality and
+ * inequality, with a default value of 1.E-6.
+ */
 template<typename T>
 void
 compute_backward(dense::QP<T>& solved_qp,
                  Vec<T>& loss_derivative,
-                 T eps = 1.E-4)
+                 T eps = 1.E-4,
+                 T rho_new = 1.E-6,
+                 T mu_new = 1.E-6)
 {
   bool check =
     solved_qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
@@ -46,13 +61,9 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.model.dim + solved_qp.model.n_eq + numactive_inequalities;
     solved_qp.work.rhs.setZero();
     // work.dw_aug.setZero(); zeroed in active_set_change
-    // T rho_new = T(1.e-3);
-    // solved_qp.results.info.mu_eq = T(5.E-5);
-    // solved_qp.results.info.mu_in = T(5.E-5);
-    T rho_new = T(1.e-7);
-    solved_qp.results.info.mu_eq = T(1.E-7);
-    solved_qp.results.info.mu_in = T(1.E-7);
     solved_qp.results.info.rho = rho_new;
+    solved_qp.results.info.mu_eq = mu_new;
+    solved_qp.results.info.mu_in = mu_new;
 
     // a large amount of constraints might have changed
     // so in order to avoid to much refactorization later in the
@@ -74,7 +85,7 @@ compute_backward(dense::QP<T>& solved_qp,
                                   solved_qp.which_dense_backend(),
                                   solved_qp.work.n_c,
                                   solved_qp.work);
-    solved_qp.work.constraints_changed = false; // no refactorization afterwords
+    solved_qp.work.constraints_changed = false; // no refactorization afterwards
 
     solved_qp.work.rhs = -loss_derivative; // take full derivatives
     solved_qp.ruiz.scale_dual_residual_in_place(VectorViewMut<T>{
