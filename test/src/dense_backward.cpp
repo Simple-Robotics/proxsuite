@@ -43,7 +43,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
   Eigen::MatrixXd dx_dg = Eigen::MatrixXd::Zero(dim, dim);
   for (int i = 0; i < dim; i++) {
     loss_derivative(i) = T(1);
-    dense::compute_backward(qp, loss_derivative, 1e-5);
+    dense::compute_backward(qp, loss_derivative, 1e-5, 1e-7, 1e-7);
     dx_dg.row(i) = qp.model.backward_data.dL_dg;
     loss_derivative(i) = T(0);
   }
@@ -109,7 +109,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   Eigen::MatrixXd dx_db = Eigen::MatrixXd::Zero(dim, n_eq);
   for (int i = 0; i < dim; i++) {
     loss_derivative(i) = 1;
-    dense::compute_backward(qp, loss_derivative, 1e-5);
+    dense::compute_backward(qp, loss_derivative, 1e-5, 1e-7, 1e-7);
     dx_db.row(i) = qp.model.backward_data.dL_db;
     loss_derivative(i) = 0;
   }
