@@ -472,11 +472,10 @@ def QPFunction(
                 )
 
                 qp.settings.primal_infeasibility_solving = True
-                qp.settings.eps_abs = 1.0e-4
+                qp.settings.eps_abs = eps_backward
                 qp.settings.max_iter = 10
-                default_rho = 1.0e-3
-                qp.settings.default_rho = default_rho
-                qp.settings.refactor_rho_threshold = default_rho
+                qp.settings.default_rho = rho_backward
+                qp.settings.refactor_rho_threshold = rho_backward
                 qp.init(
                     H,
                     g,
