@@ -13,6 +13,8 @@ def QPFunction(
     eps=1e-9,
     maxIter=1000,
     eps_backward=1.0e-4,
+    rho_backward=1.0e-6,
+    mu_backward=1.0e-6,
     omp_parallel=False,
     structural_feasibility=True,
 ):
@@ -31,6 +33,8 @@ def QPFunction(
         eps (float, optional): Tolerance for the primal infeasibility. Defaults to 1e-9.
         maxIter (int, optional): Maximum number of iterations. Defaults to 1000.
         eps_backward (float, optional): Tolerance for the backward pass. Defaults to 1e-4.
+        rho_backward (float, optional): The new value for the primal proximal parameter. Defaults to 1e-6.
+        mu_backward (float, optional): The new dual proximal parameter used for both equality and inequality. Defaults to 1e-6.
         omp_parallel (bool, optional): Whether to solve the QP in parallel. Requires that proxsuite is compiled with openmp support. Defaults to False.
         structural_feasibility (bool, optional): Whether to solve the QP with structural feasibility. Defaults to True.
 
@@ -201,6 +205,8 @@ def QPFunction(
                     qps=ctx.vector_of_qps,
                     loss_derivatives=vector_of_loss_derivatives,
                     eps=eps_backward,
+                    rho_backward=rho_backward,
+                    mu_backward=mu_backward,
                 )  # try with systematic fwd bwd
             else:
                 for i in range(nBatch):
@@ -215,6 +221,8 @@ def QPFunction(
                         qp=qpi,
                         loss_derivative=rhs,
                         eps=eps_backward,
+                        rho_backward=rho_backward,
+                        mu_backward=mu_backward,
                     )
 
             for i in range(nBatch):
