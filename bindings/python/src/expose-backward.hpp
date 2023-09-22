@@ -28,10 +28,10 @@ backward(pybind11::module_ m)
     pybind11::arg_v("loss_derivative", "Derivate of loss wrt to qp solution."),
     pybind11::arg_v(
       "eps", 1e-4, "Backward pass accuracy for deriving solution Jacobians."),
-    pybind11::arg_v("rho_new",
+    pybind11::arg_v("rho_backward",
                     1e-6,
                     "New primal proximal parameter for iterative refinement."),
-    pybind11::arg_v("mu_new",
+    pybind11::arg_v("mu_backward",
                     1e-6,
                     "New dual proximal parameter used both for inequality and "
                     "equality for iterative refinement."));
