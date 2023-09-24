@@ -55,6 +55,7 @@ exposeQPVectorSparse(pybind11::module_ m)
          &sparse::BatchQP<T, I>::init_qp_in_place,
          pybind11::return_value_policy::reference,
          "init a sparse QP in place and return a reference to it.")
+    .def("size", &sparse::BatchQP<T, I>::size)
     .def("get",
          (sparse::QP<T, I> & (sparse::BatchQP<T, I>::*)(isize)) &
            sparse::BatchQP<T, I>::get,
