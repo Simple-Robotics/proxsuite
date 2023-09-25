@@ -474,8 +474,8 @@ def QPFunction(
                 qp.settings.primal_infeasibility_solving = True
                 qp.settings.eps_abs = eps_backward
                 qp.settings.max_iter = 10
-                qp.settings.default_rho = rho_backward
-                qp.settings.refactor_rho_threshold = rho_backward
+                qp.settings.default_rho = 1.0e-3
+                qp.settings.refactor_rho_threshold = 1.0e-3
                 qp.init(
                     H,
                     g,
