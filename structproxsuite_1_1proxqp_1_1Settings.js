@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1Settings =
 [
-    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#a406009a42aae347f847c8212eebb9f4c", null ],
+    [ "Settings", "structproxsuite_1_1proxqp_1_1Settings.html#adaed31f9a8a7664177c128f46716a358", null ],
     [ "default_rho", "structproxsuite_1_1proxqp_1_1Settings.html#abb76c84c6272aa074543ffb7c966d6c9", null ],
     [ "default_mu_eq", "structproxsuite_1_1proxqp_1_1Settings.html#a3b964f117a16005d4b3c6b48179db16f", null ],
     [ "default_mu_in", "structproxsuite_1_1proxqp_1_1Settings.html#a3dfcdf85c73dfb841e6f509e481ee8b5", null ],
@@ -42,5 +42,6 @@ var structproxsuite_1_1proxqp_1_1Settings =
     [ "alpha_gpdal", "structproxsuite_1_1proxqp_1_1Settings.html#a581173d5249a30e419b40c0a4828b643", null ],
     [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc", null ],
     [ "primal_infeasibility_solving", "structproxsuite_1_1proxqp_1_1Settings.html#a50bf93df04a4bb32e17e4754f3fb0525", null ],
-    [ "frequence_infeasibility_check", "structproxsuite_1_1proxqp_1_1Settings.html#abfacb34c8a7af08b9ad35eb83f20e1f7", null ]
+    [ "frequence_infeasibility_check", "structproxsuite_1_1proxqp_1_1Settings.html#abfacb34c8a7af08b9ad35eb83f20e1f7", null ],
+    [ "default_H_eigenvalue_estimate", "structproxsuite_1_1proxqp_1_1Settings.html#a3f3baccba053cad3c66f1ac392a34f80", null ]
 ];

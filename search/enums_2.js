@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hessiantype_0',['HessianType',['../namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af',1,'proxsuite::proxqp']]]
+  ['eigenvalueestimatemethodoption_0',['EigenValueEstimateMethodOption',['../namespaceproxsuite_1_1proxqp.html#a9a93feb350ddabd2909f0caec77b9e87',1,'proxsuite::proxqp']]]
 ];

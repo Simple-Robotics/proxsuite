@@ -40,7 +40,7 @@
 <!-- Node3 -->
 <g id="Node000003" class="node">
 <title>Node3</title>
-<g id="a_Node000003"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html" target="_top" xlink:title=" ">
+<g id="a_Node000003"><a xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="354.5,-116.62 226,-116.62 226,-70.38 354.5,-70.38 354.5,-116.62"/>
 <text text-anchor="start" x="234" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
 <text text-anchor="start" x="234" y="-90.38" font-family="Helvetica,sans-Serif" font-size="10.00">veg::_detail::_dynstack</text>

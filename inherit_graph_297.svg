@@ -11,10 +11,10 @@
 <!-- Node0 -->
 <g id="Node000000" class="node">
 <title>Node0</title>
-<g id="a_Node000000"><a xlink:href="structproxsuite_1_1proxqp_1_1Results.html" target="_top" xlink:title="This class stores all the results of PROXQP solvers with sparse and dense backends.">
+<g id="a_Node000000"><a xlink:href="structproxsuite_1_1proxqp_1_1Settings.html" target="_top" xlink:title="This class defines the settings of PROXQP solvers with sparse and dense backends.">
 <polygon fill="white" stroke="#666666" points="107.5,-33.5 0,-33.5 0,0 107.5,0 107.5,-33.5"/>
 <text text-anchor="start" x="8" y="-20" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::proxqp::</text>
-<text text-anchor="middle" x="53.75" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">Results&lt; T &gt;</text>
+<text text-anchor="middle" x="53.75" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">Settings&lt; T &gt;</text>
 </a>
 </g>
 </g>

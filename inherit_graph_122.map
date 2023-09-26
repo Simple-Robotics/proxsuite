@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq_3_01meta_1_1true__type_07eff65470006726a7233b4b1d7a63dc.html" title=" " alt="" coords="5,5,169,101"/>
+<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html" title=" " alt="" coords="5,32,148,93"/>
+<area shape="rect" id="Node000001" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="196,5,338,50"/>
+<area shape="poly" id="edge77_Node000000_Node000001" title=" " alt="" coords="162,44,195,38,196,43,163,49"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="200,75,334,119"/>
+<area shape="poly" id="edge78_Node000000_Node000002" title=" " alt="" coords="163,75,200,82,199,87,162,81"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1SliceMut.html" title=" " alt="" coords="386,75,533,119"/>
+<area shape="poly" id="edge79_Node000002_Node000003" title=" " alt="" coords="349,94,386,94,386,100,349,100"/>
 </map>

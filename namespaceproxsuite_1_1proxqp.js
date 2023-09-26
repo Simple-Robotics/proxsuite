@@ -62,6 +62,10 @@ var namespaceproxsuite_1_1proxqp =
       [ "Dense", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769afa9a71a13863c84ba34fc41595fc2ee0c6", null ],
       [ "Diagonal", "namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769afa9ac677ee4eec25d9e59707a661d2c5e1", null ]
     ] ],
+    [ "EigenValueEstimateMethodOption", "namespaceproxsuite_1_1proxqp.html#a9a93feb350ddabd2909f0caec77b9e87", [
+      [ "PowerIteration", "namespaceproxsuite_1_1proxqp.html#a9a93feb350ddabd2909f0caec77b9e87ab7544e6733f34623b54866c88ac4b51b", null ],
+      [ "ExactMethod", "namespaceproxsuite_1_1proxqp.html#a9a93feb350ddabd2909f0caec77b9e87a16584f845cb8e77c86e0e2390c932e5e", null ]
+    ] ],
     [ "QPSolverOutput", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd", [
       [ "PROXQP_SOLVED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda7f65db49f362aac2e6fc599e7d79bc4b", null ],
       [ "PROXQP_MAX_ITER_REACHED", "namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fda650f851b65e064200e78619d9c0e6649", null ],

@@ -90,9 +90,7 @@ var annotated_dup =
               [ "member_trait_and< Trait, SimpleITuple< _meta::integer_sequence< usize, Is... >, Ts Bases::*... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1member__trait__and_3_01Trait_00_01Simplc5b492ef828350d9630bf5ebc812c047.html", null ]
             ] ],
             [ "_dynstack", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack.html", [
-              [ "cleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup" ],
               [ "default_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1default__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1default__init__fn" ],
-              [ "DynAllocBase", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase" ],
               [ "DynStackArrayDtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html", null ],
               [ "DynStackArrayDtor< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4" ],
               [ "no_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn" ],
@@ -216,10 +214,6 @@ var annotated_dup =
             ] ],
             [ "Array_", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Array__.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Array__" ],
             [ "binary_traits", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits" ],
-            [ "binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4" ],
-            [ "binary_traits< Dyn, Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4" ],
-            [ "binary_traits< Fix< 0 >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4" ],
-            [ "binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", null ],
             [ "binary_traits< Fix< N >, Fix< M > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4" ],
             [ "char_seq", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq" ],
             [ "CopyFn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn" ],
@@ -490,7 +484,6 @@ var annotated_dup =
       ] ]
     ] ],
     [ "std", "namespacestd.html", [
-      [ "hash< tl::optional< T > >", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4.html", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4" ],
       [ "tuple_element< I, proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__element_3_01I_00_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", "structstd_1_1tuple__element_3_01I_00_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4" ],
       [ "tuple_size< proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__size_3_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ]
     ] ],

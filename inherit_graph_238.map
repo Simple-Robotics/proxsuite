@@ -1,3 +1,37 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html" title=" " alt="" coords="5,5,189,84"/>
+<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html" title=" " alt="" coords="5,417,232,496"/>
+<area shape="rect" id="Node000001" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="323,5,553,67"/>
+<area shape="poly" id="edge126_Node000000_Node000001" title=" " alt="" coords="125,401,141,328,170,241,190,196,214,152,244,112,278,77,299,62,322,51,324,56,301,67,281,81,248,116,219,155,195,198,175,243,146,330,130,403"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="326,91,550,152"/>
+<area shape="poly" id="edge127_Node000000_Node000002" title=" " alt="" coords="132,402,153,345,184,281,225,217,250,188,278,162,300,148,324,137,326,142,303,153,281,166,254,191,229,220,188,283,158,347,137,404"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="280,177,596,306"/>
+<area shape="poly" id="edge129_Node000000_Node000004" title=" " alt="" coords="169,404,220,360,278,317,298,305,300,309,281,321,224,364,173,408"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="323,331,553,392"/>
+<area shape="poly" id="edge130_Node000000_Node000005" title=" " alt="" coords="245,412,279,402,322,389,323,394,280,407,247,417"/>
+<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="323,417,553,496"/>
+<area shape="poly" id="edge131_Node000000_Node000006" title=" " alt="" coords="246,454,323,454,323,459,246,459"/>
+<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="323,520,553,582"/>
+<area shape="poly" id="edge132_Node000000_Node000007" title=" " alt="" coords="247,495,280,506,324,518,322,523,279,511,245,500"/>
+<area shape="rect" id="Node000008" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="322,606,554,685"/>
+<area shape="poly" id="edge133_Node000000_Node000008" title=" " alt="" coords="169,504,221,550,281,591,323,611,320,616,278,596,218,554,166,508"/>
+<area shape="rect" id="Node000009" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="323,709,553,771"/>
+<area shape="poly" id="edge134_Node000000_Node000009" title=" " alt="" coords="144,508,167,554,197,605,236,654,281,695,324,717,322,722,278,700,232,657,193,608,162,557,139,511"/>
+<area shape="rect" id="Node000010" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="371,795,505,840"/>
+<area shape="poly" id="edge135_Node000000_Node000010" title=" " alt="" coords="133,509,152,573,181,647,201,684,224,720,251,752,281,781,302,794,324,803,371,813,370,818,322,808,299,798,278,785,247,756,220,723,196,687,176,649,147,574,128,510"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="715,91,868,152"/>
+<area shape="poly" id="edge128_Node000002_Node000003" title=" " alt="" coords="565,119,714,119,714,124,565,124"/>
+<area shape="rect" id="Node000011" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="665,419,918,480"/>
+<area shape="poly" id="edge136_Node000010_Node000011" title=" " alt="" coords="519,815,560,804,578,794,594,781,618,746,627,711,625,675,619,639,612,602,610,565,618,528,642,490,663,473,666,477,646,494,623,530,615,566,617,602,624,638,631,675,632,711,623,748,598,785,581,799,562,809,520,820"/>
+<area shape="rect" id="Node000012" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="644,504,938,651"/>
+<area shape="poly" id="edge137_Node000010_Node000012" title=" " alt="" coords="519,812,559,801,594,781,607,767,614,754,620,725,624,695,631,679,642,662,654,649,658,653,646,666,635,681,630,696,625,726,619,756,611,771,598,785,561,806,521,817"/>
+<area shape="rect" id="Node000013" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="706,676,877,754"/>
+<area shape="poly" id="edge138_Node000010_Node000013" title=" " alt="" coords="519,799,595,780,704,743,706,748,597,785,520,804"/>
+<area shape="rect" id="Node000014" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="694,778,888,857"/>
+<area shape="poly" id="edge139_Node000010_Node000014" title=" " alt="" coords="520,815,694,815,694,820,520,820"/>
+<area shape="rect" id="Node000015" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="667,881,916,943"/>
+<area shape="poly" id="edge140_Node000010_Node000015" title=" " alt="" coords="520,837,674,878,673,883,519,842"/>
+<area shape="rect" id="Node000016" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="701,967,881,1063"/>
+<area shape="poly" id="edge141_Node000010_Node000016" title=" " alt="" coords="482,847,557,899,645,952,702,979,699,984,643,957,554,903,479,851"/>
+<area shape="rect" id="Node000017" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html" title=" " alt="" coords="707,1086,876,1165"/>
+<area shape="poly" id="edge142_Node000010_Node000017" title=" " alt="" coords="461,851,491,901,533,960,585,1020,646,1073,675,1090,707,1103,705,1108,673,1095,642,1077,581,1024,529,963,486,904,456,854"/>
 </map>

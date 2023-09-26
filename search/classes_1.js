@@ -4,7 +4,7 @@ var searchData=
   ['addressof_1',['addressof',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb_1_1addressof.html',1,'proxsuite::linalg::veg::mem::nb']]],
   ['adl_5faddr_2',['adl_addr',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1adl__addr.html',1,'proxsuite::linalg::veg::_detail::_mem']]],
   ['adl_5fget_3',['adl_get',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1adl__get.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
-  ['adlbase_4',['AdlBase',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html',1,'proxsuite::linalg::veg::_detail::_slice::adl::AdlBase'],['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html',1,'proxsuite::linalg::veg::_detail::_vector::adl::AdlBase']]],
+  ['adlbase_4',['adlbase',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html',1,'proxsuite::linalg::veg::_detail::_slice::adl::AdlBase'],['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html',1,'proxsuite::linalg::veg::_detail::_vector::adl::AdlBase']]],
   ['align_5fnext_5',['align_next',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb_1_1align__next.html',1,'proxsuite::linalg::veg::mem::nb']]],
   ['align_5fprev_6',['align_prev',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb_1_1align__prev.html',1,'proxsuite::linalg::veg::mem::nb']]],
   ['alignment_5fof_7',['alignment_of',['../structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1alignment__of.html',1,'proxsuite::linalg::veg::alignment::detail']]],

@@ -11,11 +11,11 @@
 <!-- Node0 -->
 <g id="Node000000" class="node">
 <title>Node0</title>
-<g id="a_Node000000"><a xlink:href="structproxsuite_1_1proxqp_1_1detail_1_1ElementAccess_3_01Layout_1_1colmajor_01_4.html" target="_top" xlink:title=" ">
+<g id="a_Node000000"><a xlink:href="structproxsuite_1_1proxqp_1_1detail_1_1ElementAccess_3_01Layout_1_1rowmajor_01_4.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="124,-46.25 0,-46.25 0,0 124,0 124,-46.25"/>
 <text text-anchor="start" x="8" y="-32.75" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::proxqp::</text>
 <text text-anchor="start" x="8" y="-20" font-family="Helvetica,sans-Serif" font-size="10.00">detail::ElementAccess</text>
-<text text-anchor="middle" x="62" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; Layout::colmajor &gt;</text>
+<text text-anchor="middle" x="62" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; Layout::rowmajor &gt;</text>
 </a>
 </g>
 </g>

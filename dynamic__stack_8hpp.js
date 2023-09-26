@@ -7,8 +7,6 @@ var dynamic__stack_8hpp =
     [ "proxsuite::linalg::veg::_detail::_dynstack::zero_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1zero__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1zero__init__fn" ],
     [ "proxsuite::linalg::veg::_detail::_dynstack::no_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn" ],
     [ "proxsuite::linalg::veg::dynstack::DynStackMut", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut" ],
-    [ "proxsuite::linalg::veg::_detail::_dynstack::cleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup" ],
-    [ "proxsuite::linalg::veg::_detail::_dynstack::DynAllocBase", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase" ],
     [ "proxsuite::linalg::veg::dynstack::DynStackAlloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc" ],
     [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray" ],
     [ "max2", "dynamic__stack_8hpp.html#a6a12239db198b7340e1e7b9a08d5affa", null ],

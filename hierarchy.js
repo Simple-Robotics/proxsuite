@@ -56,11 +56,7 @@ var hierarchy =
     [ "proxsuite::proxqp::dense::BatchQP< T >", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html", null ],
     [ "proxsuite::proxqp::sparse::BatchQP< T, I >", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html", null ],
     [ "proxsuite::linalg::veg::_detail::binary_traits< L, R >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html", null ],
-    [ "proxsuite::linalg::veg::_detail::binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4.html", [
-      [ "proxsuite::linalg::veg::_detail::binary_traits< Dyn, Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::binary_traits< Fix< 0 >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", null ]
-    ] ],
+    [ "proxsuite::linalg::veg::_detail::binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits.html", null ],
     [ "proxsuite::linalg::veg::_detail::binary_traits< Fix< N >, Fix< M > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html", null ],
     [ "proxsuite::linalg::veg::mem::nb::bit_cast< To >", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1nb_1_1bit__cast.html", null ],
     [ "proxsuite::linalg::veg::Boolean< T >", "structproxsuite_1_1linalg_1_1veg_1_1Boolean.html", null ],
@@ -75,7 +71,6 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::char_seq< Chars >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq.html", null ],
     [ "proxsuite::linalg::sparse::util::nb::checked_non_negative_plus", "structproxsuite_1_1linalg_1_1sparse_1_1util_1_1nb_1_1checked__non__negative__plus.html", null ],
     [ "proxsuite::linalg::veg::_detail::_collections::Cleanup< T, A, C >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1Cleanup.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_dynstack::cleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html", null ],
     [ "proxsuite::linalg::veg::nb::clone", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1clone.html", null ],
     [ "proxsuite::linalg::veg::_detail::_collections::CloneFn< NoThrow, T, A, C >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFn.html", null ],
     [ "proxsuite::linalg::veg::_detail::_collections::CloneFromImpl< false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1CloneFromImpl_3_01false_01_4.html", null ],
@@ -192,10 +187,8 @@ var hierarchy =
     [ "tl::detail::optional_storage_base< T, bool >::dummy", "structtl_1_1detail_1_1optional__storage__base_1_1dummy.html", null ],
     [ "tl::detail::optional_storage_base< T, true >::dummy", "structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4_1_1dummy.html", null ],
     [ "proxsuite::linalg::veg::Dyn", "structproxsuite_1_1linalg_1_1veg_1_1Dyn.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_dynstack::DynAllocBase", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html", [
-      [ "proxsuite::linalg::veg::dynstack::DynStackAlloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html", [
-        [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", null ]
-      ] ]
+    [ "proxsuite::linalg::veg::dynstack::DynStackAlloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html", [
+      [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::_detail::_dynstack::DynStackArrayDtor< T, bool >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html", [
       [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", null ]
@@ -232,7 +225,6 @@ var hierarchy =
     [ "proxsuite::linalg::veg::tuple::nb::for_each", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1for__each.html", null ],
     [ "proxsuite::linalg::veg::tuple::nb::for_each_i", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1for__each__i.html", null ],
     [ "proxsuite::linalg::veg::nb::get< I >", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1get.html", null ],
-    [ "std::hash< tl::optional< T > >", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::HollowIndexedTuple< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1HollowIndexedTuple.html", null ],
     [ "proxsuite::linalg::veg::_detail::HollowLeaf< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1HollowLeaf.html", null ],
     [ "proxsuite::linalg::veg::_detail::HollowLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1HollowLeaf.html", [

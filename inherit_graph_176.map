@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1Defer.html" title=" " alt="" coords="5,5,141,50"/>
+<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html" title=" " alt="" coords="5,5,258,50"/>
+<area shape="rect" id="Node000001" href="$structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html" title=" " alt="" coords="306,48,561,93"/>
+<area shape="poly" id="edge114_Node000000_Node000001" title=" " alt="" coords="273,45,306,50,305,55,272,50"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html" title=" " alt="" coords="41,74,222,152"/>
+<area shape="poly" id="edge115_Node000002_Node000001" title=" " alt="" coords="236,96,305,86,306,91,237,101"/>
 </map>

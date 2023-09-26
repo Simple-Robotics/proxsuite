@@ -1,8 +1,6 @@
 var namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack =
 [
-    [ "cleanup", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup" ],
     [ "default_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1default__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1default__init__fn" ],
-    [ "DynAllocBase", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase" ],
     [ "DynStackArrayDtor", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor.html", null ],
     [ "DynStackArrayDtor< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4" ],
     [ "no_init_fn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn" ],

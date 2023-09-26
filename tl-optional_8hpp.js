@@ -44,7 +44,6 @@ var tl_optional_8hpp =
     [ "tl::optional< T >", "classtl_1_1optional.html", "classtl_1_1optional" ],
     [ "tl::detail::i_am_secret", "structtl_1_1detail_1_1i__am__secret.html", null ],
     [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", "classtl_1_1optional_3_01T_01_6_01_4" ],
-    [ "std::hash< tl::optional< T > >", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4.html", "structstd_1_1hash_3_01tl_1_1optional_3_01T_01_4_01_4" ],
     [ "TL_OPTIONAL_VERSION_MAJOR", "tl-optional_8hpp.html#aa70d2d557d853f3c3120cbb62a64ea4f", null ],
     [ "TL_OPTIONAL_VERSION_MINOR", "tl-optional_8hpp.html#adb15831f471c567a5e38bcd0036d6dd3", null ],
     [ "TL_OPTIONAL_VERSION_PATCH", "tl-optional_8hpp.html#a05047b5f3f649025182fec20aaaf9ee4", null ],

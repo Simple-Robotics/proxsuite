@@ -13,7 +13,6 @@ var searchData=
   ['status_10',['status',['../structproxsuite_1_1proxqp_1_1Info.html#a7ec030095d08febf145c54d46f34d51f',1,'proxsuite::proxqp::Info']]],
   ['storage_11',['storage',['../structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#ac91d3e884be411da6f8f1bfb84ccc331',1,'proxsuite::proxqp::sparse::Workspace']]],
   ['stride_12',['stride',['../structproxsuite_1_1proxqp_1_1StridedVectorView.html#af0522a5604e7c932da95c4b4ff9a5402',1,'proxsuite::proxqp::StridedVectorView::stride'],['../structproxsuite_1_1proxqp_1_1StridedVectorViewMut.html#ac1109efbcb1914c548551e13c8896609',1,'proxsuite::proxqp::StridedVectorViewMut::stride']]],
-  ['success_13',['success',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1cleanup.html#ab17ea4904abc04c9d1c2d7993a38cabb',1,'proxsuite::linalg::veg::_detail::_dynstack::cleanup']]],
-  ['sym_14',['sym',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#af7d470a6b11d88797843e0211a16a221',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration::sym'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#aa455a986368e857349f88ab08c6e3dfc',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration::sym']]],
-  ['system_15',['system',['../structproxsuite_1_1proxqp_1_1CPUTimes.html#a374db5e40f5df55ee933a101d6aba84c',1,'proxsuite::proxqp::CPUTimes']]]
+  ['sym_13',['sym',['../structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#af7d470a6b11d88797843e0211a16a221',1,'proxsuite::proxqp::dense::preconditioner::RuizEquilibration::sym'],['../structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#aa455a986368e857349f88ab08c6e3dfc',1,'proxsuite::proxqp::sparse::preconditioner::RuizEquilibration::sym']]],
+  ['system_14',['system',['../structproxsuite_1_1proxqp_1_1CPUTimes.html#a374db5e40f5df55ee933a101d6aba84c',1,'proxsuite::proxqp::CPUTimes']]]
 ];

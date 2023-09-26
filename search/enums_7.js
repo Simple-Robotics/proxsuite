@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['preconditionerstatus_0',['PreconditionerStatus',['../namespaceproxsuite_1_1proxqp.html#ae3aacefdb4b7177de8c2005bab169f08',1,'proxsuite::proxqp']]]
+  ['ordering_0',['Ordering',['../namespaceproxsuite_1_1linalg_1_1sparse.html#a9f5e6365e7297cc9234dcad50b0cfdeb',1,'proxsuite::linalg::sparse']]]
 ];

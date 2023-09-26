@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1no__init__fn.html" title=" " alt="" coords="5,5,177,67"/>
+<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html" title=" " alt="" coords="5,48,232,110"/>
+<area shape="rect" id="Node000001" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc.html" title=" " alt="" coords="280,48,445,110"/>
+<area shape="poly" id="edge19_Node000000_Node000001" title=" " alt="" coords="247,76,279,76,279,82,247,82"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1MonotonicAlloc.html" title=" " alt="" coords="493,5,688,67"/>
+<area shape="poly" id="edge20_Node000001_Node000002" title=" " alt="" coords="459,58,492,52,493,57,460,63"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1mem_1_1StackAlloc.html" title=" " alt="" coords="509,91,672,152"/>
+<area shape="poly" id="edge21_Node000001_Node000003" title=" " alt="" coords="460,94,509,104,508,109,459,100"/>
 </map>
