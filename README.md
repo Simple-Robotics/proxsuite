@@ -33,7 +33,14 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
 
    - dense, sparse, and matrix-free matrix factorization backends,
    - advanced warm-starting options (e.g., equality-constrained initial guess, warm-start or cold-start options from previous results),
-   - dedicated features for handling more efficiently box constraints, linear programs, QP with diagonal Hessian, or with far more constraints than primal variables.
+
+
+with dedicated features for
+   - handling more efficiently box constraints, linear programs, QP with diagonal Hessian, or with far more constraints than primal variables,
+   - solving nonconvex QPs,
+   - solving batches of QPs in parallel,
+   - solving the closest feasible QP if the QP appears to be primal infeasible,
+   - differentiating feasible and infeasible QPs.
 
 **Proxsuite** is flexible:
 
@@ -41,9 +48,6 @@ We are ready to integrate **ProxSuite** within other optimization ecosystems.
    - C++ 14/17/20 compliant,
    - Python and Julia bindings for easy code prototyping without sacrificing performance.
 
-**Proxsuite** has a dedicated feature for solving batches of QPs.
-**Proxsuite** has a dedicated feature for solving nonconvex QPs.
-**Proxsuite** has a dedicated feature for solving the closest feasible QPs if they appear to be primal infeasible.
 **Proxsuite** is extensible.
 **Proxsuite** is reliable and extensively tested, showing the best performances on the hardest problems of the literature.
 **Proxsuite** is supported and tested on Windows, Mac OS X, Unix, and Linux.
@@ -145,6 +149,9 @@ For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Pr
 The chart above reports the performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on the y-axis) as a function of certain runtime (on the x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher, the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=1$) and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
 
 *Note: All these results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.*
+
+## **QPlayer**
+Proxsuite also provides an efficient differentiable QP solver for PyTorch. See the [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/python/qplayer_sudoku.py) about how to include QPLayer into a learning pipeline and the [preprint](https://inria.hal.science/hal-04133055/document) for technical details.
 
 ## Installation procedure
 
