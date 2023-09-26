@@ -127,7 +127,6 @@ where $x \in \mathbb{R}^n$ is the optimization variable. The objective function 
 ### Citing **ProxQP**
 
 If you are using **ProxQP** for your work, we encourage you to [cite the related paper](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf/).
-
 ### Numerical benchmarks
 
 The numerical benchmarks of **ProxQP** against other commercial and open-source solvers are available [here](https://github.com/Simple-Robotics/proxqp_benchmark).
@@ -149,10 +148,23 @@ For hard problems from the [Maros Meszaros testset](http://www.cuter.rl.ac.uk/Pr
 The chart above reports the performance profiles of different solvers. It is classic for benchmarking solvers. Performance profiles correspond to the fraction of problems solved (on the y-axis) as a function of certain runtime (on the x-axis, measured in terms of a multiple of the runtime of the fastest solver for that problem). So the higher, the better. You can see that **ProxQP** solves the quickest over 60% of the problems (i.e., for $\tau=1$) and that for solving about 90% of the problems, it is at most 2 times slower than the fastest solvers solving these problems (i.e., for $\tau\approx2$).
 
 *Note: All these results have been obtained with a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz CPU.*
+## **QPLayer**
 
-## **QPlayer**
-Proxsuite also provides an efficient differentiable QP solver for PyTorch. See the [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/python/qplayer_sudoku.py) about how to include QPLayer into a learning pipeline and the [preprint](https://inria.hal.science/hal-04133055/document) for technical details.
+**QPLayer** enables to use a QP as a layer within standard learning architectures. More precisely, QPLayer differentiates over $\theta$ the primal and dual solutions of QP of the form
 
+$$
+\begin{align}
+\min_{x} &  ~\frac{1}{2}x^{T}H(\theta)x+g(\theta)^{T}x \\
+\text{s.t.} & ~A(\theta) x = b(\theta) \\
+& ~l(\theta) \leq C(\theta) x \leq u(\theta)
+\end{align}
+$$
+where $x \in \mathbb{R}^n$ is the optimization variable. The objective function is defined by a positive semidefinite matrix $H(\theta) \in \mathcal{S}^n_+$ and a vector $g(\theta) \in \mathbb{R}^n$. The linear constraints are defined by the equality-contraint matrix $A(\theta) \in \mathbb{R}^{n_\text{eq} \times n}$ and the inequality-constraint matrix $C(\theta) \in \mathbb{R}^{n_\text{in} \times n}$ and the vectors $b \in \mathbb{R}^{n_\text{eq}}$, $l(\theta) \in \mathbb{R}^{n_\text{in}}$ and $u(\theta) \in \mathbb{R}^{n_\text{in}}$ so that $b_i \in \mathbb{R},~ \forall i = 1,...,n_\text{eq}$ and $l_i \in \mathbb{R} \cup \{ -\infty \}$ and $u_i \in \mathbb{R} \cup \{ +\infty \}, ~\forall i = 1,...,n_\text{in}$.
+
+**QPLayer** is able to learn more structured architectures. For example, $\theta$ can consists only in learning some elements of $A$ while letting $b$ fixed (see e.g., the [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/python/qplayer_sudoku.py) about how to include QPLayer into a learning pipeline). **QPLayer** can also differentiates over LPs. Finally, **QPLayer** allows for parallelized calculus over CPUs, and is interfaced with **PyTorch**.
+### Citing **QPLayer**
+
+If you are using **QPLayer** for your work, we encourage you to [cite the related paper](https://inria.hal.science/hal-04133055/file/QPLayer_Preprint.pdf).
 ## Installation procedure
 
-Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).
+Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/6-installation.md).
