@@ -168,4 +168,4 @@ where $x \in \mathbb{R}^n$ is the optimization variable. The objective function 
 If you are using **QPLayer** for your work, we encourage you to [cite the related paper](https://inria.hal.science/hal-04133055/file/QPLayer_Preprint.pdf).
 ## Installation procedure
 
-Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/6-installation.md).
+Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/main/doc/5-installation.md).

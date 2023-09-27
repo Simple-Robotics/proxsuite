@@ -1,6 +1,6 @@
 <!--
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 // Author: Antoine Bambade, Sarah El Kazdadi, Adrien Taylor, Justin Carpentier
 //
 -->
