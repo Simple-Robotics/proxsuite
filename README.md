@@ -159,9 +159,10 @@ $$
 & ~l(\theta) \leq C(\theta) x \leq u(\theta)
 \end{align}
 $$
+
 where $x \in \mathbb{R}^n$ is the optimization variable. The objective function is defined by a positive semidefinite matrix $H(\theta) \in \mathcal{S}^n_+$ and a vector $g(\theta) \in \mathbb{R}^n$. The linear constraints are defined by the equality-contraint matrix $A(\theta) \in \mathbb{R}^{n_\text{eq} \times n}$ and the inequality-constraint matrix $C(\theta) \in \mathbb{R}^{n_\text{in} \times n}$ and the vectors $b \in \mathbb{R}^{n_\text{eq}}$, $l(\theta) \in \mathbb{R}^{n_\text{in}}$ and $u(\theta) \in \mathbb{R}^{n_\text{in}}$ so that $b_i \in \mathbb{R},~ \forall i = 1,...,n_\text{eq}$ and $l_i \in \mathbb{R} \cup \{ -\infty \}$ and $u_i \in \mathbb{R} \cup \{ +\infty \}, ~\forall i = 1,...,n_\text{in}$.
 
-**QPLayer** is able to learn more structured architectures. For example, $\theta$ can consists only in learning some elements of $A$ while letting $b$ fixed (see e.g., the [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/python/qplayer_sudoku.py) about how to include QPLayer into a learning pipeline). **QPLayer** can also differentiates over LPs. Finally, **QPLayer** allows for parallelized calculus over CPUs, and is interfaced with **PyTorch**.
+**QPLayer** is able to learn more structured architectures. For example, $\theta$ can consists only in learning some elements of $A$ while letting $b$ fixed (see e.g., the [example](https://github.com/Simple-Robotics/proxsuite/blob/main/examples/python/qplayer_sudoku.py) about how to include QPLayer into a learning pipeline). **QPLayer** can also differentiates over LPs. **QPLayer** allows for parallelized calculus over CPUs, and is interfaced with **PyTorch**.
 ### Citing **QPLayer**
 
 If you are using **QPLayer** for your work, we encourage you to [cite the related paper](https://inria.hal.science/hal-04133055/file/QPLayer_Preprint.pdf).
