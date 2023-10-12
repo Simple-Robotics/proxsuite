@@ -174,17 +174,12 @@ endif()
 python_build_get_target(compile_pyc)
 add_dependencies(python ${compile_pyc})
 
-set(PYTHON_FILES
-  torch/__init__.py
-  torch/qplayer.py
-  torch/utils.py
-)
+set(PYTHON_FILES torch/__init__.py torch/qplayer.py torch/utils.py)
 
-file(MAKE_DIRECTORY
-    ${${PYWRAP}_INSTALL_DIR}/torch)
+file(MAKE_DIRECTORY ${${PYWRAP}_INSTALL_DIR}/torch)
 
 foreach(python ${PYTHON_FILES})
-  PYTHON_BUILD(${PROJECT_NAME} ${python})
+  python_build(${PROJECT_NAME} ${python})
   get_filename_component(pysubmodule ${python} PATH)
   get_filename_component(pyname ${python} NAME)
   set(MODULE_NAME ${PROJECT_NAME}/${pysubmodule})
