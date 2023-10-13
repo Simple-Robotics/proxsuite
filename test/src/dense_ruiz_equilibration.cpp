@@ -1,3 +1,7 @@
+//
+// Copyright (c) 2022-2023 INRIA
+//
+#include <iostream>
 #include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
@@ -13,12 +17,12 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   int dim = 5;
   int n_eq = 6;
   int n_in = 0;
-  // auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default),
+  auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default),
   // 1:
-  auto sym = proxqp::Symmetry::lower; // 0 : upper triangular (by default), 1:
-                                      // lower triangular ; else full matrix
+  // auto sym = proxqp::Symmetry::lower; // 0 : upper triangular (by default),
+  // 1: lower triangular ; else full matrix
 
-  Scalar sparsity_factor(0.15);
+  Scalar sparsity_factor(0.75);
   Scalar strong_convexity_factor(0.01);
   proxqp::dense::Model<Scalar> qp_random =
     proxqp::utils::dense_strongly_convex_qp(

@@ -43,7 +43,7 @@ Setup Time consumption(dense): 0.0592621s
 Solve Time consumption(dense): 0.101507s
 
 */
-
+#include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 

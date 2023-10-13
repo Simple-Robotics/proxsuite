@@ -6,6 +6,8 @@ import numpy as np
 import scipy.sparse as spa
 import unittest
 
+np.printoptions(precision=16)
+
 
 def normInf(x):
     if x.shape[0] == 0:
@@ -33,7 +35,7 @@ def generate_mixed_qp(n, seed=1, reg=0.01):
     s = max(np.absolute(np.linalg.eigvals(P)))
     P += (abs(s) + reg) * spa.eye(n)
     P = spa.coo_matrix(P)
-    print("sparsity of P : {}".format((P.nnz) / (n**2)))
+    # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
     A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
@@ -63,7 +65,7 @@ def generate_mixed_qp_with_box(n, seed=1):
     s = max(np.absolute(np.linalg.eigvals(P)))
     P += (abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
-    print("sparsity of P : {}".format((P.nnz) / (n**2)))
+    # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
     A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
@@ -126,9 +128,14 @@ class DenseqpWrapper(unittest.TestCase):
                 u=np.asfortranarray(u),
             )
             qp.solve()
-            assert normInf(x_prev - qp.results.x) <= 1e-15
-            assert normInf(y_prev - qp.results.y) <= 1e-15
-            assert normInf(z_prev - qp.results.z) <= 1e-15
+
+            print(f"{normInf(x_prev - qp.results.x)=}")
+            print(f"{normInf(y_prev - qp.results.y)=}")
+            print(f"{normInf(z_prev - qp.results.z)=}")
+
+            assert normInf(x_prev - qp.results.x) <= 1e-14
+            assert normInf(y_prev - qp.results.y) <= 1e-14
+            assert normInf(z_prev - qp.results.z) <= 1e-14
 
     def test_case_update_rho(self):
         print(

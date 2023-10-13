@@ -107,6 +107,7 @@ if(DEFINED CMAKE_CXX_STANDARD)
 else()
   set(CMAKE_CXX_STANDARD 17)
 endif()
+message(STATUS "[Proxsuite] Using C++ standard: ${CMAKE_CXX_STANDARD}")
 
 # Handle Windows context
 if(MSVC)

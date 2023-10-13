@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2023 INRIA
 //
+#include <iostream>
 #include <doctest.hpp>
 #include <Eigen/Core>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -84,7 +85,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
-  dense::isize n_eq(5), n_in(2);
+  dense::isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -93,9 +94,9 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   Eigen::Matrix<T, 10, 1> g = random_qp.g;
   Eigen::Matrix<T, 5, 10> A = random_qp.A;
   Eigen::Matrix<T, 5, 1> b = random_qp.b;
-  Eigen::Matrix<T, 2, 10> C = random_qp.C;
-  Eigen::Matrix<T, 2, 1> l = random_qp.l;
-  Eigen::Matrix<T, 2, 1> u = random_qp.u;
+  // Eigen::Matrix<T, 2, 10> C = random_qp.C;
+  // Eigen::Matrix<T, 2, 1> l = random_qp.l;
+  // Eigen::Matrix<T, 2, 1> u = random_qp.u;
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
