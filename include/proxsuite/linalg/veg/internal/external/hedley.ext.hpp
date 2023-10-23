@@ -50,7 +50,7 @@
 #undef HEDLEY_VERSION_ENCODE
 #endif
 #define HEDLEY_VERSION_ENCODE(major, minor, revision)                          \
-  (((major)*1000000) + ((minor)*1000) + (revision))
+  (((major) * 1000000) + ((minor) * 1000) + (revision))
 
 #if defined(HEDLEY_VERSION_DECODE_MAJOR)
 #undef HEDLEY_VERSION_DECODE_MAJOR
@@ -194,7 +194,7 @@
 #elif defined(__SUNPRO_C)
 #define HEDLEY_SUNPRO_VERSION                                                  \
   HEDLEY_VERSION_ENCODE(                                                       \
-    (__SUNPRO_C >> 8) & 0xf, (__SUNPRO_C >> 4) & 0xf, (__SUNPRO_C)&0xf)
+    (__SUNPRO_C >> 8) & 0xf, (__SUNPRO_C >> 4) & 0xf, (__SUNPRO_C) & 0xf)
 #elif defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x1000)
 #define HEDLEY_SUNPRO_VERSION                                                  \
   HEDLEY_VERSION_ENCODE(                                                       \
@@ -204,7 +204,7 @@
 #elif defined(__SUNPRO_CC)
 #define HEDLEY_SUNPRO_VERSION                                                  \
   HEDLEY_VERSION_ENCODE(                                                       \
-    (__SUNPRO_CC >> 8) & 0xf, (__SUNPRO_CC >> 4) & 0xf, (__SUNPRO_CC)&0xf)
+    (__SUNPRO_CC >> 8) & 0xf, (__SUNPRO_CC >> 4) & 0xf, (__SUNPRO_CC) & 0xf)
 #endif
 
 #if defined(HEDLEY_SUNPRO_VERSION_CHECK)
@@ -1817,12 +1817,12 @@ HEDLEY_DIAGNOSTIC_POP
 #if defined(__INTPTR_TYPE__)
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
   __builtin_types_compatible_p(                                                \
-    __typeof__((1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0)), int*)
+    __typeof__((1 ? (void*)((__INTPTR_TYPE__)((expr) * 0)) : (int*)0)), int*)
 #else
 #include <stdint.h>
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
   __builtin_types_compatible_p(                                                \
-    __typeof__((1 ? (void*)((intptr_t)((expr)*0)) : (int*)0)), int*)
+    __typeof__((1 ? (void*)((intptr_t)((expr) * 0)) : (int*)0)), int*)
 #endif
 #elif (defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) &&           \
        !defined(HEDLEY_SUNPRO_VERSION) && !defined(HEDLEY_PGI_VERSION) &&      \
@@ -1832,13 +1832,13 @@ HEDLEY_DIAGNOSTIC_POP
   HEDLEY_IBM_VERSION_CHECK(12, 1, 0) || HEDLEY_ARM_VERSION_CHECK(5, 3, 0)
 #if defined(__INTPTR_TYPE__)
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
-  _Generic((1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0),               \
+  _Generic((1 ? (void*)((__INTPTR_TYPE__)((expr) * 0)) : (int*)0),             \
     int*: 1,                                                                   \
     void*: 0)
 #else
 #include <stdint.h>
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
-  _Generic((1 ? (void*)((intptr_t)*0) : (int*)0), int*: 1, void*: 0)
+  _Generic((1 ? (void*)((intptr_t) * 0) : (int*)0), int*: 1, void*: 0)
 #endif
 #elif defined(HEDLEY_GCC_VERSION) || defined(HEDLEY_INTEL_VERSION) ||          \
   defined(HEDLEY_TINYC_VERSION) || defined(HEDLEY_TI_ARMCL_VERSION) ||         \
@@ -1847,7 +1847,7 @@ HEDLEY_DIAGNOSTIC_POP
   defined(HEDLEY_TI_CL7X_VERSION) || defined(HEDLEY_TI_CLPRU_VERSION) ||       \
   defined(__clang__)
 #define HEDLEY_IS_CONSTEXPR_(expr)                                             \
-  (sizeof(void) != sizeof(*(1 ? ((void*)((expr)*0L))                           \
+  (sizeof(void) != sizeof(*(1 ? ((void*)((expr) * 0L))                         \
                               : ((struct { char v[sizeof(void) * 2]; }*)1))))
 #endif
 #endif

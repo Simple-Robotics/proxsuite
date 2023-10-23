@@ -53,8 +53,8 @@ struct FnInfo<auto(Args...)->Ret_>
   template auto __VA_ARGS__(                                                   \
     LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                                 \
       typename ::proxsuite::proxqp::detail::FnInfo<                            \
-        decltype(__VA_ARGS__)>::template Arg<(NParams)-1>)                     \
-    ->typename ::proxsuite::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
+        decltype(__VA_ARGS__)>::template Arg<(NParams)-1>) ->                  \
+    typename ::proxsuite::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
   extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 
