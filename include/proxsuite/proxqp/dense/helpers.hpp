@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 /**
  * @file helpers.hpp
@@ -23,10 +23,10 @@ namespace dense {
 
 template<typename T>
 T
-power_iteration(Mat<T>& H,
-                Vec<T>& dw,
-                Vec<T>& rhs,
-                Vec<T>& err_v,
+power_iteration(MatRef<T> H,
+                VecRefMut<T> dw,
+                VecRefMut<T> rhs,
+                VecRefMut<T> err_v,
                 T power_iteration_accuracy,
                 isize nb_power_iteration)
 {
@@ -57,10 +57,10 @@ power_iteration(Mat<T>& H,
 }
 template<typename T>
 T
-min_eigen_value_via_modified_power_iteration(Mat<T>& H,
-                                             Vec<T>& dw,
-                                             Vec<T>& rhs,
-                                             Vec<T>& err_v,
+min_eigen_value_via_modified_power_iteration(MatRef<T> H,
+                                             VecRefMut<T> dw,
+                                             VecRefMut<T> rhs,
+                                             VecRefMut<T> err_v,
                                              T max_eigen_value,
                                              T power_iteration_accuracy,
                                              isize nb_power_iteration)
@@ -107,7 +107,7 @@ min_eigen_value_via_modified_power_iteration(Mat<T>& H,
 template<typename T>
 T
 estimate_minimal_eigen_value_of_symmetric_matrix(
-  Mat<T>& H,
+  MatRef<T> H,
   EigenValueEstimateMethodOption estimate_method_option,
   T power_iteration_accuracy,
   isize nb_power_iteration)
