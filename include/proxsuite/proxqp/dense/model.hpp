@@ -120,9 +120,12 @@ struct Model
         H.rows(), dim, "H has not the expected number of rows.");
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         H.cols(), dim, "H has not the expected number of cols.");
-      PROXSUITE_THROW_PRETTY((!H.isApprox(H.transpose(), 0.0)),
-                             std::invalid_argument,
-                             "H is not symmetric.");
+      PROXSUITE_THROW_PRETTY(
+        (!H.isApprox(
+          H.transpose(),
+          std::numeric_limits<typename decltype(H)::Scalar>::epsilon())),
+        std::invalid_argument,
+        "H is not symmetric.");
     }
     if (A.size()) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
