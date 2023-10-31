@@ -29,7 +29,7 @@ namespace dense {
 template<typename T>
 void
 compute_backward(dense::QP<T>& solved_qp,
-                 Vec<T>& loss_derivative,
+                 VecRef<T> loss_derivative,
                  T eps = 1.E-4,
                  T rho_new = 1.E-6,
                  T mu_new = 1.E-6)
@@ -126,7 +126,7 @@ compute_backward(dense::QP<T>& solved_qp,
 
 template<typename T>
 void
-compute_backward_loss_ESG(dense::QP<T>& solved_qp, Vec<T>& loss_derivative)
+compute_backward_loss_ESG(dense::QP<T>& solved_qp, VecRef<T> loss_derivative)
 {
   // use active_part_z as a temporary variable to derive unpermutted dz step
   solved_qp.work.active_part_z.setZero();
