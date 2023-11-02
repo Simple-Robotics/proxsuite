@@ -145,7 +145,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   }
 }
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with saturating inequality constraints)")
+DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
+                  "saturating inequality constraints)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -156,7 +157,6 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with saturatin
   T strong_convexity_factor(1.e-1);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-
 
   std::cout << "creating random  qp " << std::endl;
   Eigen::Matrix<T, 10, 10> H = random_qp.H;
@@ -175,7 +175,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with saturatin
   qp.init(H, g, nullopt, nullopt, C, l, nullopt);
   std::cout << "solving qp " << std::endl;
   qp.solve();
-  std::cout << "active ineq  " << qp.work.active_inequalities.count() << std::endl;
+  std::cout << "active ineq  " << qp.work.active_inequalities.count()
+            << std::endl;
 
   // Compute dx_dg using backward function
   Eigen::VectorXd loss_derivative = Eigen::VectorXd::Zero(dim + n_eq + n_in);
