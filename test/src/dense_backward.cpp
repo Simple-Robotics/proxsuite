@@ -151,21 +151,25 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
   utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  dense::isize dim = 6;
 
-  dense::isize n_eq(0), n_in(2);
+  dense::isize n_eq(0), n_in(12);
   T strong_convexity_factor(1.e-1);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   std::cout << "creating random  qp " << std::endl;
-  Eigen::Matrix<T, 10, 10> H = random_qp.H;
-  Eigen::Matrix<T, 10, 1> g = random_qp.g;
+  Eigen::Matrix<T, 6, 6> H = random_qp.H;
+  Eigen::Matrix<T, 6, 1> g = random_qp.g;
   // Eigen::Matrix<T, 5, 10> A = random_qp.A;
   // Eigen::Matrix<T, 5, 1> b = random_qp.b;
-  Eigen::Matrix<T, 2, 10> C = random_qp.C;
-  Eigen::Matrix<T, 2, 1> l = random_qp.l;
+  Eigen::Matrix<T, 12, 6> C = random_qp.C;
+  Eigen::Matrix<T, 12, 1> l = random_qp.l;
   l(0) = 1e3;
+  l(1) = 1e3;
+  l(2) = 1e3;
+  l(3) = 1e3;
+  l(9) = 1e3;
   // Eigen::Matrix<T, 2, 1> u = random_qp.u;
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
