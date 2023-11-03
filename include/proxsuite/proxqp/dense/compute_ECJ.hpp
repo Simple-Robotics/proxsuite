@@ -83,7 +83,7 @@ compute_backward(dense::QP<T>& solved_qp,
     linesearch::active_set_change(solved_qp.model,
                                   solved_qp.results,
                                   solved_qp.which_dense_backend(),
-                                  solved_qp.work.n_c,
+                                  solved_qp.model.n_in,
                                   solved_qp.work);
     solved_qp.work.constraints_changed = false; // no refactorization afterwards
 
@@ -115,7 +115,7 @@ compute_backward(dense::QP<T>& solved_qp,
       solved_qp.model,
       solved_qp.results,
       solved_qp.work,
-      solved_qp.work.n_c,
+      solved_qp.model.n_in,
       solved_qp.which_dense_backend(),
       solved_qp.which_hessian_type(),
       eps,
