@@ -7564,3 +7564,27 @@ TEST_CASE(
                            minimal_eigenvalue) <= tol);
   }
 }
+
+DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
+                  "works for epsilon precision")
+{
+  Eigen::Matrix<T, 3, 3> matrix = Eigen::Matrix<T, 3, 3>::Random();
+  Eigen::Matrix<T, 3, 3> symmetric_mat = matrix + matrix.transpose();
+
+  symmetric_mat(0, 1) =
+    symmetric_mat(1, 0) + std::numeric_limits<double>::epsilon();
+
+  // compare the two checks for symmetry with and without tolerance
+  bool is_symmetric_without_tolerance =
+    symmetric_mat.isApprox(symmetric_mat.transpose(), 0.0);
+  bool is_symmetric_with_tolerance = symmetric_mat.isApprox(
+    symmetric_mat.transpose(),
+    std::numeric_limits<typename decltype(symmetric_mat)::Scalar>::epsilon());
+  DOCTEST_CHECK(is_symmetric_without_tolerance == false);
+  DOCTEST_CHECK(is_symmetric_with_tolerance == true);
+
+  // initialize a model with a symmetric matrix as Hessian, this runs
+  // model.is_valid() that performs the check above
+  proxqp::dense::QP<T> qp(3, 0, 0);
+  qp.init(symmetric_mat, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt);
+}
