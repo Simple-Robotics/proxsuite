@@ -112,9 +112,10 @@ estimate_minimal_eigen_value_of_symmetric_matrix(
   T power_iteration_accuracy,
   isize nb_power_iteration)
 {
-  PROXSUITE_THROW_PRETTY((!H.isApprox(H.transpose(), 0.0)),
-                         std::invalid_argument,
-                         "H is not symmetric.");
+  PROXSUITE_THROW_PRETTY(
+    (!H.isApprox(H.transpose(), std::numeric_limits<T>::epsilon())),
+    std::invalid_argument,
+    "H is not symmetric.");
   if (H.size()) {
     PROXSUITE_CHECK_ARGUMENT_SIZE(
       H.rows(),
