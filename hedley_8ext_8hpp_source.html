@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -163,7 +163,7 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif</span></div>
 <div class="foldopen" id="foldopen00052" data-start="" data-end="">
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="hedley_8ext_8hpp.html#a7ff986d7e621dc76dfb91cf1609527f0">   52</a></span><span class="preprocessor">#define HEDLEY_VERSION_ENCODE(major, minor, revision)                          \</span></div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">  (((major)*1000000) + ((minor)*1000) + (revision))</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">  (((major) * 1000000) + ((minor) * 1000) + (revision))</span></div>
 </div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#if defined(HEDLEY_VERSION_DECODE_MAJOR)</span></div>
@@ -308,7 +308,7 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="preprocessor">#elif defined(__SUNPRO_C)</span></div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#define HEDLEY_SUNPRO_VERSION                                                  \</span></div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">  HEDLEY_VERSION_ENCODE(                                                       \</span></div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">    (__SUNPRO_C &gt;&gt; 8) &amp; 0xf, (__SUNPRO_C &gt;&gt; 4) &amp; 0xf, (__SUNPRO_C)&amp;0xf)</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="preprocessor">    (__SUNPRO_C &gt;&gt; 8) &amp; 0xf, (__SUNPRO_C &gt;&gt; 4) &amp; 0xf, (__SUNPRO_C) &amp; 0xf)</span></div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="preprocessor">#elif defined(__SUNPRO_CC) &amp;&amp; (__SUNPRO_CC &gt; 0x1000)</span></div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#define HEDLEY_SUNPRO_VERSION                                                  \</span></div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="preprocessor">  HEDLEY_VERSION_ENCODE(                                                       \</span></div>
@@ -318,7 +318,7 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="preprocessor">#elif defined(__SUNPRO_CC)</span></div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="preprocessor">#define HEDLEY_SUNPRO_VERSION                                                  \</span></div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="preprocessor">  HEDLEY_VERSION_ENCODE(                                                       \</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="preprocessor">    (__SUNPRO_CC &gt;&gt; 8) &amp; 0xf, (__SUNPRO_CC &gt;&gt; 4) &amp; 0xf, (__SUNPRO_CC)&amp;0xf)</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="preprocessor">    (__SUNPRO_CC &gt;&gt; 8) &amp; 0xf, (__SUNPRO_CC &gt;&gt; 4) &amp; 0xf, (__SUNPRO_CC) &amp; 0xf)</span></div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="preprocessor">#if defined(HEDLEY_SUNPRO_VERSION_CHECK)</span></div>
@@ -1961,12 +1961,12 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l01817" name="l01817"></a><span class="lineno"> 1817</span><span class="preprocessor">#if defined(__INTPTR_TYPE__)</span></div>
 <div class="line"><a id="l01818" name="l01818"></a><span class="lineno"> 1818</span><span class="preprocessor">#define HEDLEY_IS_CONSTEXPR_(expr)                                             \</span></div>
 <div class="line"><a id="l01819" name="l01819"></a><span class="lineno"> 1819</span><span class="preprocessor">  __builtin_types_compatible_p(                                                \</span></div>
-<div class="line"><a id="l01820" name="l01820"></a><span class="lineno"> 1820</span><span class="preprocessor">    __typeof__((1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0)), int*)</span></div>
+<div class="line"><a id="l01820" name="l01820"></a><span class="lineno"> 1820</span><span class="preprocessor">    __typeof__((1 ? (void*)((__INTPTR_TYPE__)((expr) * 0)) : (int*)0)), int*)</span></div>
 <div class="line"><a id="l01821" name="l01821"></a><span class="lineno"> 1821</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l01822" name="l01822"></a><span class="lineno"> 1822</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a id="l01823" name="l01823"></a><span class="lineno"> 1823</span><span class="preprocessor">#define HEDLEY_IS_CONSTEXPR_(expr)                                             \</span></div>
 <div class="line"><a id="l01824" name="l01824"></a><span class="lineno"> 1824</span><span class="preprocessor">  __builtin_types_compatible_p(                                                \</span></div>
-<div class="line"><a id="l01825" name="l01825"></a><span class="lineno"> 1825</span><span class="preprocessor">    __typeof__((1 ? (void*)((intptr_t)((expr)*0)) : (int*)0)), int*)</span></div>
+<div class="line"><a id="l01825" name="l01825"></a><span class="lineno"> 1825</span><span class="preprocessor">    __typeof__((1 ? (void*)((intptr_t)((expr) * 0)) : (int*)0)), int*)</span></div>
 <div class="line"><a id="l01826" name="l01826"></a><span class="lineno"> 1826</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l01827" name="l01827"></a><span class="lineno"> 1827</span><span class="preprocessor">#elif (defined(__STDC_VERSION__) &amp;&amp; (__STDC_VERSION__ &gt;= 201112L) &amp;&amp;           \</span></div>
 <div class="line"><a id="l01828" name="l01828"></a><span class="lineno"> 1828</span><span class="preprocessor">       !defined(HEDLEY_SUNPRO_VERSION) &amp;&amp; !defined(HEDLEY_PGI_VERSION) &amp;&amp;      \</span></div>
@@ -1976,13 +1976,13 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l01832" name="l01832"></a><span class="lineno"> 1832</span><span class="preprocessor">  HEDLEY_IBM_VERSION_CHECK(12, 1, 0) || HEDLEY_ARM_VERSION_CHECK(5, 3, 0)</span></div>
 <div class="line"><a id="l01833" name="l01833"></a><span class="lineno"> 1833</span><span class="preprocessor">#if defined(__INTPTR_TYPE__)</span></div>
 <div class="line"><a id="l01834" name="l01834"></a><span class="lineno"> 1834</span><span class="preprocessor">#define HEDLEY_IS_CONSTEXPR_(expr)                                             \</span></div>
-<div class="line"><a id="l01835" name="l01835"></a><span class="lineno"> 1835</span><span class="preprocessor">  _Generic((1 ? (void*)((__INTPTR_TYPE__)((expr)*0)) : (int*)0),               \</span></div>
+<div class="line"><a id="l01835" name="l01835"></a><span class="lineno"> 1835</span><span class="preprocessor">  _Generic((1 ? (void*)((__INTPTR_TYPE__)((expr) * 0)) : (int*)0),             \</span></div>
 <div class="line"><a id="l01836" name="l01836"></a><span class="lineno"> 1836</span><span class="preprocessor">    int*: 1,                                                                   \</span></div>
 <div class="line"><a id="l01837" name="l01837"></a><span class="lineno"> 1837</span><span class="preprocessor">    void*: 0)</span></div>
 <div class="line"><a id="l01838" name="l01838"></a><span class="lineno"> 1838</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l01839" name="l01839"></a><span class="lineno"> 1839</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a id="l01840" name="l01840"></a><span class="lineno"> 1840</span><span class="preprocessor">#define HEDLEY_IS_CONSTEXPR_(expr)                                             \</span></div>
-<div class="line"><a id="l01841" name="l01841"></a><span class="lineno"> 1841</span><span class="preprocessor">  _Generic((1 ? (void*)((intptr_t)*0) : (int*)0), int*: 1, void*: 0)</span></div>
+<div class="line"><a id="l01841" name="l01841"></a><span class="lineno"> 1841</span><span class="preprocessor">  _Generic((1 ? (void*)((intptr_t) * 0) : (int*)0), int*: 1, void*: 0)</span></div>
 <div class="line"><a id="l01842" name="l01842"></a><span class="lineno"> 1842</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l01843" name="l01843"></a><span class="lineno"> 1843</span><span class="preprocessor">#elif defined(HEDLEY_GCC_VERSION) || defined(HEDLEY_INTEL_VERSION) ||          \</span></div>
 <div class="line"><a id="l01844" name="l01844"></a><span class="lineno"> 1844</span><span class="preprocessor">  defined(HEDLEY_TINYC_VERSION) || defined(HEDLEY_TI_ARMCL_VERSION) ||         \</span></div>
@@ -1991,7 +1991,7 @@ $(document).ready(function(){initNavTree('hedley_8ext_8hpp_source.html',''); ini
 <div class="line"><a id="l01847" name="l01847"></a><span class="lineno"> 1847</span><span class="preprocessor">  defined(HEDLEY_TI_CL7X_VERSION) || defined(HEDLEY_TI_CLPRU_VERSION) ||       \</span></div>
 <div class="line"><a id="l01848" name="l01848"></a><span class="lineno"> 1848</span><span class="preprocessor">  defined(__clang__)</span></div>
 <div class="line"><a id="l01849" name="l01849"></a><span class="lineno"> 1849</span><span class="preprocessor">#define HEDLEY_IS_CONSTEXPR_(expr)                                             \</span></div>
-<div class="line"><a id="l01850" name="l01850"></a><span class="lineno"> 1850</span><span class="preprocessor">  (sizeof(void) != sizeof(*(1 ? ((void*)((expr)*0L))                           \</span></div>
+<div class="line"><a id="l01850" name="l01850"></a><span class="lineno"> 1850</span><span class="preprocessor">  (sizeof(void) != sizeof(*(1 ? ((void*)((expr) * 0L))                         \</span></div>
 <div class="line"><a id="l01851" name="l01851"></a><span class="lineno"> 1851</span><span class="preprocessor">                              : ((struct { char v[sizeof(void) * 2]; }*)1))))</span></div>
 <div class="line"><a id="l01852" name="l01852"></a><span class="lineno"> 1852</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l01853" name="l01853"></a><span class="lineno"> 1853</span><span class="preprocessor">#endif</span></div>

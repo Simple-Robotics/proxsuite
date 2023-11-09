@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -298,10 +298,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a443bda61fc4bce60db0d51e08101e83f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1util.html#a443bda61fc4bce60db0d51e08101e83f">proxsuite::linalg::dense::util::noalias_mul_add</a> (Dst &amp;&amp;dst, Lhs const &amp;lhs, Rhs const &amp;rhs, T factor)</td></tr>
 <tr class="separator:a443bda61fc4bce60db0d51e08101e83f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a492f939daf7eeeaea62d1b6d0ed450eb" id="r_a492f939daf7eeeaea62d1b6d0ed450eb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a492f939daf7eeeaea62d1b6d0ed450eb"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1linalg_1_1dense.html#a492f939daf7eeeaea62d1b6d0ed450eb">proxsuite::linalg::dense::temp_mat_req</a> (proxsuite::linalg::veg::Tag&lt; T &gt;, isize rows, isize cols) noexcept -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
+<tr class="memitem:a492f939daf7eeeaea62d1b6d0ed450eb"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1linalg_1_1dense.html#a492f939daf7eeeaea62d1b6d0ed450eb">proxsuite::linalg::dense::temp_mat_req</a> (<a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag</a>&lt; T &gt;, isize rows, isize cols) noexcept -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
 <tr class="separator:a492f939daf7eeeaea62d1b6d0ed450eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c3e2bc488f86326cc0a5184faa9ab11" id="r_a3c3e2bc488f86326cc0a5184faa9ab11"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a3c3e2bc488f86326cc0a5184faa9ab11"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1linalg_1_1dense.html#a3c3e2bc488f86326cc0a5184faa9ab11">proxsuite::linalg::dense::temp_vec_req</a> (proxsuite::linalg::veg::Tag&lt; T &gt;, isize rows) noexcept -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
+<tr class="memitem:a3c3e2bc488f86326cc0a5184faa9ab11"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1linalg_1_1dense.html#a3c3e2bc488f86326cc0a5184faa9ab11">proxsuite::linalg::dense::temp_vec_req</a> (<a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag</a>&lt; T &gt;, isize rows) noexcept -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
 <tr class="separator:a3c3e2bc488f86326cc0a5184faa9ab11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -369,7 +369,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  <span class="keyword">auto</span> <a class="code hl_define" href="dense_2core_8hpp.html#a12dbf5c568c007210c7dfeb05d73567e">LDLT_ID</a>(vec_storage) = (Stack).Make(                                    \</div>
-<div class="line">    ::proxsuite::linalg::veg::Tag&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(Type)&gt;{},              \</div>
+<div class="line">    <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">::proxsuite::linalg::veg::Tag</a>&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(Type)&gt;{},              \</div>
 <div class="line">    (Rows),                                                                    \</div>
 <div class="line">    <a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#af15c9cabec2a5bedbbfc018075000ad2">::proxsuite::linalg::dense::_detail::align</a>&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(          \</div>
 <div class="line">      Type)&gt;());                                                               \</div>
@@ -388,6 +388,7 @@ Functions</h2></td></tr>
 <div class="ttc" id="adense_2core_8hpp_html_a12dbf5c568c007210c7dfeb05d73567e"><div class="ttname"><a href="dense_2core_8hpp.html#a12dbf5c568c007210c7dfeb05d73567e">LDLT_ID</a></div><div class="ttdeci">#define LDLT_ID(id)</div><div class="ttdef"><b>Definition</b> <a href="dense_2core_8hpp_source.html#l00025">core.hpp:25</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1dense_1_1__detail_html_af15c9cabec2a5bedbbfc018075000ad2"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#af15c9cabec2a5bedbbfc018075000ad2">proxsuite::linalg::dense::_detail::align</a></div><div class="ttdeci">auto align() noexcept -&gt; isize</div><div class="ttdef"><b>Definition</b> <a href="dense_2core_8hpp_source.html#l00340">core.hpp:340</a></div></div>
 <div class="ttc" id="apreprocessor_8hpp_html_aa5a5044036e4077839b120e5d78b8267"><div class="ttname"><a href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a></div><div class="ttdeci">#define __VEG_PP_REMOVE_PAREN(...)</div><div class="ttdef"><b>Definition</b> <a href="preprocessor_8hpp_source.html#l00425">preprocessor.hpp:425</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1Ref_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Ref</a></div><div class="ttdef"><b>Definition</b> <a href="ref_8hpp_source.html#l00029">ref.hpp:30</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00027">27</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
@@ -448,7 +449,7 @@ Functions</h2></td></tr>
 <div class="line">    <a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a3477d5e91e141686c97ff221418ccb34">::proxsuite::linalg::dense::_detail::adjusted_stride</a>&lt;                      \</div>
 <div class="line">      __VEG_PP_REMOVE_PAREN(Type)&gt;(<a class="code hl_define" href="dense_2core_8hpp.html#a12dbf5c568c007210c7dfeb05d73567e">LDLT_ID</a>(rows));                             \</div>
 <div class="line">  <span class="keyword">auto</span> <a class="code hl_define" href="dense_2core_8hpp.html#a12dbf5c568c007210c7dfeb05d73567e">LDLT_ID</a>(vec_storage) = (Stack).Make(                                    \</div>
-<div class="line">    ::proxsuite::linalg::veg::Tag&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(Type)&gt;{},              \</div>
+<div class="line">    <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">::proxsuite::linalg::veg::Tag</a>&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(Type)&gt;{},              \</div>
 <div class="line">    LDLT_ID(stride) * <a class="code hl_define" href="dense_2core_8hpp.html#a12dbf5c568c007210c7dfeb05d73567e">LDLT_ID</a>(cols),                                           \</div>
 <div class="line">    <a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#af15c9cabec2a5bedbbfc018075000ad2">::proxsuite::linalg::dense::_detail::align</a>&lt;<a class="code hl_define" href="preprocessor_8hpp.html#aa5a5044036e4077839b120e5d78b8267">__VEG_PP_REMOVE_PAREN</a>(          \</div>
 <div class="line">      Type)&gt;());                                                               \</div>

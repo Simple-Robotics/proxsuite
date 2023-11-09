@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -670,11 +670,11 @@ $(document).ready(function(){initNavTree('linesearch_8hpp_source.html',''); init
 <div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>  <span class="comment">// suppression pour le nouvel active set, ajout dans le nouvel unactive set</span></div>
 <div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span> </div>
 <div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>  <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack{</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    proxsuite::linalg::veg::from_slice_mut, qpwork.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a5ddceb4c94dacc041c66d18bb6de7b0f">ldl_stack</a>.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#a7e9fa8c6fbb14eb4ab185c9e8a683eba">as_mut</a>()</div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::from_slice_mut</a>, qpwork.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a5ddceb4c94dacc041c66d18bb6de7b0f">ldl_stack</a>.<a class="code hl_function" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#a7e9fa8c6fbb14eb4ab185c9e8a683eba">as_mut</a>()</div>
 <div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>  };</div>
 <div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>  {</div>
 <div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>    <span class="keyword">auto</span> _planned_to_delete = stack.make_new_for_overwrite(</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>      proxsuite::linalg::veg::Tag&lt;isize&gt;{}, isize(n_constraints));</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>      <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;isize&gt;</a>{}, isize(n_constraints));</div>
 <div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>    isize* planned_to_delete = _planned_to_delete.ptr_mut();</div>
 <div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>    isize planned_to_delete_count = 0;</div>
 <div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span> </div>
@@ -748,7 +748,7 @@ $(document).ready(function(){initNavTree('linesearch_8hpp_source.html',''); init
 <div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span> </div>
 <div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>  {</div>
 <div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>    <span class="keyword">auto</span> _planned_to_add = stack.make_new_for_overwrite(</div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>      proxsuite::linalg::veg::Tag&lt;isize&gt;{}, n_constraints);</div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>      <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;isize&gt;</a>{}, n_constraints);</div>
 <div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>    <span class="keyword">auto</span> planned_to_add = _planned_to_add.ptr_mut();</div>
 <div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span> </div>
 <div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>    isize planned_to_add_count = 0;</div>
@@ -873,6 +873,7 @@ $(document).ready(function(){initNavTree('linesearch_8hpp_source.html',''); init
 <div class="ttc" id="aproxqp_2dense_2model_8hpp_html"><div class="ttname"><a href="proxqp_2dense_2model_8hpp.html">model.hpp</a></div></div>
 <div class="ttc" id="aproxqp_2results_8hpp_html"><div class="ttname"><a href="proxqp_2results_8hpp.html">results.hpp</a></div></div>
 <div class="ttc" id="aproxqp_2settings_8hpp_html"><div class="ttname"><a href="proxqp_2settings_8hpp.html">settings.hpp</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1Ref_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Ref</a></div><div class="ttdef"><b>Definition</b> <a href="ref_8hpp_source.html#l00029">ref.hpp:30</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl_html_a7e9fa8c6fbb14eb4ab185c9e8a683eba"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html#a7e9fa8c6fbb14eb4ab185c9e8a683eba">proxsuite::linalg::veg::_detail::_collections::VecImpl::as_mut</a></div><div class="ttdeci">VEG_NODISCARD VEG_INLINE auto as_mut() VEG_NOEXCEPT -&gt; SliceMut&lt; T &gt;</div><div class="ttdef"><b>Definition</b> <a href="vec_8hpp_source.html#l00957">vec.hpp:957</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a></div><div class="ttdef"><b>Definition</b> <a href="dynamic__stack_8hpp_source.html#l00219">dynamic_stack.hpp:220</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html">proxsuite::proxqp::Results</a></div><div class="ttdoc">This class stores all the results of PROXQP solvers with sparse and dense backends.</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00066">results.hpp:67</a></div></div>

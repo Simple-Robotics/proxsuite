@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -215,7 +215,7 @@ $(document).ready(function(){initNavTree('modify_8hpp_source.html',''); initResi
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>  <span class="keyword">auto</span> w_stride = _detail::adjusted_stride&lt;T&gt;(n - first - r);</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  proxsuite::linalg::veg::Tag&lt;T&gt; tag;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;T&gt;</a> tag;</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>  <span class="keyword">auto</span> _w = stack.make_new(tag, r * w_stride, _detail::align&lt;T&gt;());</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>  <span class="keyword">auto</span> _alpha = stack.make_new_for_overwrite(tag, r);</div>
@@ -259,7 +259,7 @@ $(document).ready(function(){initNavTree('modify_8hpp_source.html',''); initResi
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>{</div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  <span class="keyword">using </span>T = <span class="keyword">typename</span> Mat::Scalar;</div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>  proxsuite::linalg::veg::Tag&lt;T&gt; tag;</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>  <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;T&gt;</a> tag;</div>
 <div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
 <div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>  isize <span class="keyword">const</span> new_n = ld.rows();</div>
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>  isize <span class="keyword">const</span> r = a_1.cols();</div>
@@ -391,7 +391,7 @@ $(document).ready(function(){initNavTree('modify_8hpp_source.html',''); initResi
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keyword">auto</span></div>
 <div class="foldopen" id="foldopen00269" data-start="{" data-end="}">
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1dense.html#ade5108c002b38c38c384885deca39351">  269</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense.html#ade5108c002b38c38c384885deca39351">ldlt_delete_rows_and_cols_req</a>(proxsuite::linalg::veg::Tag&lt;T&gt; <span class="comment">/*tag*/</span>,</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1dense.html#ade5108c002b38c38c384885deca39351">  269</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense.html#ade5108c002b38c38c384885deca39351">ldlt_delete_rows_and_cols_req</a>(<a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;T&gt;</a> <span class="comment">/*tag*/</span>,</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                              isize n,</div>
 <div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>                              isize r) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>  -&gt; <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></div>
@@ -426,7 +426,7 @@ $(document).ready(function(){initNavTree('modify_8hpp_source.html',''); initResi
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="keyword">auto</span></div>
 <div class="foldopen" id="foldopen00300" data-start="{" data-end="}">
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195">  300</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195">ldlt_insert_rows_and_cols_req</a>(proxsuite::linalg::veg::Tag&lt;T&gt; tag,</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195">  300</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1dense.html#a0a2b7362a118f8ac2eafc6471555d195">ldlt_insert_rows_and_cols_req</a>(<a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag&lt;T&gt;</a> tag,</div>
 <div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                              isize n,</div>
 <div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>                              isize r) <span class="keyword">noexcept</span></div>
 <div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>  -&gt; <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></div>
@@ -495,6 +495,7 @@ $(document).ready(function(){initNavTree('modify_8hpp_source.html',''); initResi
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR_html_a416d6daef72aab8824a321f83ff47222"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a416d6daef72aab8824a321f83ff47222">proxsuite::linalg::dense::_detail::IndicesR::indices</a></div><div class="ttdeci">isize const  * indices</div><div class="ttdef"><b>Definition</b> <a href="modify_8hpp_source.html#l00063">modify.hpp:63</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR_html_a5cbbeee82141e402283cde1eee0533ac"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a5cbbeee82141e402283cde1eee0533ac">proxsuite::linalg::dense::_detail::IndicesR::current_col</a></div><div class="ttdeci">isize current_col</div><div class="ttdef"><b>Definition</b> <a href="modify_8hpp_source.html#l00060">modify.hpp:60</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR_html_ad801b2478f3e611b55c3896860c8d02b"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#ad801b2478f3e611b55c3896860c8d02b">proxsuite::linalg::dense::_detail::IndicesR::r</a></div><div class="ttdeci">isize r</div><div class="ttdef"><b>Definition</b> <a href="modify_8hpp_source.html#l00062">modify.hpp:62</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1Ref_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Ref</a></div><div class="ttdef"><b>Definition</b> <a href="ref_8hpp_source.html#l00029">ref.hpp:30</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a></div><div class="ttdef"><b>Definition</b> <a href="dynamic__stack_8hpp_source.html#l00219">dynamic_stack.hpp:220</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut_html_ac16483c7720347e2aaf3187526474bbd"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html#ac16483c7720347e2aaf3187526474bbd">proxsuite::linalg::veg::dynstack::DynStackMut::ptr_mut</a></div><div class="ttdeci">VEG_NODISCARD auto ptr_mut() const VEG_NOEXCEPT -&gt; void *</div><div class="ttdef"><b>Definition</b> <a href="dynamic__stack_8hpp_source.html#l00234">dynamic_stack.hpp:234</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq_html"><div class="ttname"><a href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></div><div class="ttdef"><b>Definition</b> <a href="dynamic__stack_8hpp_source.html#l00034">dynamic_stack.hpp:35</a></div></div>
