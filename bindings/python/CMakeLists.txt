@@ -1,13 +1,11 @@
 if(UNIX)
   set(PYTHON_COMPONENTS Development.Module)
 endif()
+
 include(../../cmake-module/python.cmake)
 include(../../cmake-module/python-helpers.cmake)
 
 findpython(REQUIRED Development.Module)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-add_subdirectory(external/pybind11
-                 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
   set(${PYWRAP}_INSTALL_DIR ${PYTHON_SITELIB}/${PROJECT_NAME})
@@ -15,6 +13,10 @@ else()
   set(${PYWRAP}_INSTALL_DIR
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+add_subdirectory(external/pybind11
+                 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 
 add_custom_target(python)
 
@@ -171,3 +173,15 @@ endif()
 
 python_build_get_target(compile_pyc)
 add_dependencies(python ${compile_pyc})
+
+set(PYTHON_FILES torch/__init__.py torch/qplayer.py torch/utils.py)
+
+file(MAKE_DIRECTORY ${${PYWRAP}_INSTALL_DIR}/torch)
+
+foreach(python ${PYTHON_FILES})
+  python_build(${PROJECT_NAME} ${python})
+  get_filename_component(pysubmodule ${python} PATH)
+  get_filename_component(pyname ${python} NAME)
+  set(MODULE_NAME ${PROJECT_NAME}/${pysubmodule})
+  python_install_on_site(${MODULE_NAME} ${pyname})
+endforeach(python)

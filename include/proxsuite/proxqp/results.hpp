@@ -50,6 +50,7 @@ struct Info
   T pri_res;
   T dua_res;
   T duality_gap;
+  T iterative_residual;
   //// sparse backend used by solver, either CholeskySparse or MatrixFree
   SparseBackend sparse_backend;
   //// quadratic cost minimal eigenvalue estimate
@@ -71,11 +72,11 @@ struct Results
   sparse::Vec<T> x;
   sparse::Vec<T> y;
   sparse::Vec<T> z;
-
   sparse::Vec<T> se; // optimal shift to the closest feasible problem wrt
                      // equality constraints
   sparse::Vec<T> si; // optimal shift to the closest feasible problem wrt
                      // inequality constraints
+  proxsuite::linalg::veg::Vec<bool> active_constraints;
 
   Info<T> info;
 
@@ -93,7 +94,9 @@ struct Results
           DenseBackend dense_backend = DenseBackend::PrimalDualLDLT)
     : x(dim)
     , y(n_eq)
+    , z(n_in)
     , se(n_eq)
+    , si(n_in)
   {
     if (box_constraints) {
       z.resize(dim + n_in);
@@ -134,6 +137,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.duality_gap = 0.;
+    info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
@@ -164,6 +168,7 @@ struct Results
     info.pri_res = 0.;
     info.dua_res = 0.;
     info.duality_gap = 0.;
+    info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
   }

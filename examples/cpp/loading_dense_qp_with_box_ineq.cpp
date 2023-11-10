@@ -1,3 +1,4 @@
+#include <iostream>
 #include "proxsuite/proxqp/dense/dense.hpp"
 
 using namespace proxsuite::proxqp;

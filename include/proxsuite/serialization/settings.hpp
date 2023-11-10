@@ -53,7 +53,8 @@ serialize(Archive& archive, proxsuite::proxqp::Settings<T>& settings)
           CEREAL_NVP(settings.eps_primal_inf),
           CEREAL_NVP(settings.eps_dual_inf),
           CEREAL_NVP(settings.bcl_update),
-          CEREAL_NVP(settings.sparse_backend));
+          CEREAL_NVP(settings.sparse_backend),
+          CEREAL_NVP(settings.primal_infeasibility_solving));
 }
 } // namespace cereal
 

@@ -2,6 +2,7 @@
 // Copyright (c) 2022-2023 INRIA
 //
 
+#include <iostream>
 #include <doctest.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>

@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <iostream>
 #include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>

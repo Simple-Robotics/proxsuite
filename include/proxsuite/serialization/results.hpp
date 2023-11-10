@@ -35,6 +35,7 @@ serialize(Archive& archive, proxsuite::proxqp::Info<T>& info)
           CEREAL_NVP(info.pri_res),
           CEREAL_NVP(info.dua_res),
           CEREAL_NVP(info.duality_gap),
+          CEREAL_NVP(info.iterative_residual),
           CEREAL_NVP(info.sparse_backend));
 }
 
@@ -45,6 +46,9 @@ serialize(Archive& archive, proxsuite::proxqp::Results<T>& results)
   archive(CEREAL_NVP(results.x),
           CEREAL_NVP(results.y),
           CEREAL_NVP(results.z),
+          CEREAL_NVP(results.se),
+          CEREAL_NVP(results.si),
+          CEREAL_NVP(results.active_constraints),
           CEREAL_NVP(results.info));
 }
 

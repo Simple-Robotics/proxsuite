@@ -7,6 +7,7 @@
 
 #ifndef PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
+#include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>

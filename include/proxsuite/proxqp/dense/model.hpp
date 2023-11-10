@@ -9,7 +9,7 @@
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
-
+#include "proxsuite/proxqp/dense/backward_data.hpp"
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
@@ -39,6 +39,9 @@ struct Model
   isize n_eq;
   isize n_in;
   isize n_total;
+
+  ///// Derivative data
+  BackwardData<T> backward_data;
 
   /*!
    * Default constructor.

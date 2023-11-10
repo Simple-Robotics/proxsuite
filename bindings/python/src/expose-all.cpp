@@ -42,11 +42,18 @@ template<typename T>
 void
 exposeDenseAlgorithms(pybind11::module_ m)
 {
+  dense::python::exposeWorkspaceDense<T>(m);
   dense::python::exposeDenseModel<T>(m);
   dense::python::exposeQpObjectDense<T>(m);
   dense::python::exposeQPVectorDense<T>(m);
   dense::python::solveDenseQp<T>(m);
   dense::python::exposeDenseHelpers<T>(m);
+}
+template<typename T>
+void
+exposeBackward(pybind11::module_ m)
+{
+  dense::python::backward<T>(m);
 }
 
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
@@ -83,6 +90,7 @@ PYBIND11_MODULE(PYTHON_MODULE_NAME, m)
   pybind11::module_ dense_module =
     proxqp_module.def_submodule("dense", "Dense solver of proxQP");
   exposeDenseAlgorithms<f64>(dense_module);
+  exposeBackward<f64>(dense_module);
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
   exposeDenseParallel<f64>(dense_module);
 #endif

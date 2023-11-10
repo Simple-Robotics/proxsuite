@@ -34,10 +34,10 @@ ruiz_scale_qp_in_place( //
   QpViewBoxMut<T> qp,
   T epsilon,
   isize max_iter,
+  bool preconditioning_for_infeasible_problems,
   Symmetry sym,
   HessianType HessianType,
   const bool box_constraints,
-  bool preconditioning_for_infeasible_problems,
   proxsuite::linalg::veg::dynstack::DynStackMut stack) -> T
 {
   T c(1);
@@ -75,6 +75,7 @@ ruiz_scale_qp_in_place( //
   LDLT_TEMP_VEC(T, delta, n + n_eq + n_constraints, stack);
   i64 iter = 1;
   while (infty_norm((1 - delta.array()).matrix()) > epsilon) {
+
     if (logger_ptr != nullptr) {
       *logger_ptr                                   //
         << "j : "                                   //
@@ -191,6 +192,12 @@ ruiz_scale_qp_in_place( //
           }
         }
       }
+      // removed as non deterministic when using avx
+      // https://gitlab.com/libeigen/eigen/-/issues/1728
+      // if (preconditioning_for_infeasible_problems) {
+      //   T mean = delta.segment(n, n_eq_in).mean();
+      //   delta.segment(n,n_eq_in).setConstant(mean);
+      // }
     }
     {
 
@@ -395,11 +402,11 @@ struct RuizEquilibration
    */
   void scale_qp_in_place(QpViewBoxMut<T> qp,
                          bool execute_preconditioner,
+                         bool preconditioning_for_infeasible_problems,
                          const isize max_iter,
                          const T epsilon,
                          const HessianType& HessianType,
                          const bool box_constraints,
-                         const bool preconditioning_for_infeasible_problems,
                          proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
     if (execute_preconditioner) {
@@ -410,10 +417,10 @@ struct RuizEquilibration
                                        qp,
                                        epsilon,
                                        max_iter,
+                                       preconditioning_for_infeasible_problems,
                                        sym,
                                        HessianType,
                                        box_constraints,
-                                       preconditioning_for_infeasible_problems,
                                        stack);
     } else {
 
@@ -686,6 +693,29 @@ struct RuizEquilibration
     dual.to_eigen().array() /= delta.head(dim).array() * c;
   }
 };
+
+template<typename T>
+bool
+operator==(const RuizEquilibration<T>& ruiz1, const RuizEquilibration<T>& ruiz2)
+{
+  bool value =
+    // ruiz1.delta == ruiz2.delta &&
+    ruiz1.c == ruiz2.c
+    // ruiz1.dim == ruiz2.dim
+    // ruiz1.epsilon == ruiz2.epsilon &&
+    // ruiz1.max_iter == ruiz2.max_iter &&
+    // ruiz1.sym == ruiz2.sym &&
+    // ruiz1.logger_ptr == ruiz2.logger_ptr
+    ;
+  return value;
+}
+
+template<typename T>
+bool
+operator!=(const RuizEquilibration<T>& ruiz1, const RuizEquilibration<T>& ruiz2)
+{
+  return !(ruiz1 == ruiz2);
+}
 
 } // namespace preconditioner
 } // namespace dense

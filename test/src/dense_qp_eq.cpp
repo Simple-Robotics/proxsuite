@@ -1,13 +1,13 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <iostream>
 #include <doctest.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-#include <iostream>
 
 using T = double;
 using namespace proxsuite;

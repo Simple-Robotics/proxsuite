@@ -1,3 +1,4 @@
+#include <iostream>
 #include "proxsuite/proxqp/dense/dense.hpp"
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 

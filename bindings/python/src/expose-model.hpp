@@ -12,7 +12,7 @@
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/model.hpp>
-
+#include "helpers.hpp"
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
@@ -21,6 +21,41 @@ template<typename T>
 void
 exposeDenseModel(pybind11::module_ m)
 {
+
+  ::pybind11::class_<proxsuite::proxqp::dense::BackwardData<T>>(
+    m, "BackwardData", pybind11::module_local())
+    .def(::pybind11::init(), "Default constructor.")
+    .def(
+      "initialize",
+      &proxsuite::proxqp::dense::BackwardData<T>::initialize,
+      pybind11::arg_v("n", 0, "primal dimension."),
+      pybind11::arg_v("n_eq", 0, "number of equality constraints."),
+      pybind11::arg_v("n_in", 0, "number of inequality constraints."),
+      "Initialize the jacobians (allocate memory if not already done) and set"
+      " by default their value to zero.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dH, "dL_dH.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dg, "dL_dg.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dA, "dL_dA.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_db, "dL_db.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dC, "dL_dC.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_du, "dL_du.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dl, "dL_dl.")
+    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dl, "dL_dl.");
+  // .def_readonly("dL_dH", &proxsuite::proxqp::dense::BackwardData<T>::dL_dH)
+  // .def_readonly("dL_dg", &proxsuite::proxqp::dense::BackwardData<T>::dL_dg)
+  // .def_readonly("dL_dA", &proxsuite::proxqp::dense::BackwardData<T>::dL_dA)
+  // .def_readonly("dL_db",
+  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_db)
+  // .def_readonly("dL_dC",
+  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_dC)
+  // .def_readonly("dL_du", &proxsuite::proxqp::dense::BackwardData<T>::dL_du)
+  // .def_readonly("dL_dl",
+  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_dl)
+  // .def_readonly("dL_du", &proxsuite::proxqp::dense::BackwardData<T>::dL_du);
+  // .def_readonly("dL_dse", &proxsuite::proxqp::dense::BackwardData<T>::dL_dse)
+  // .def_readonly("dL_dsi",
+  // &proxsuite::proxqp::dense::BackwardData<T>::dL_dsi);
+
   ::pybind11::class_<proxsuite::proxqp::dense::Model<T>>(m, "model")
     .def(::pybind11::init<i64, i64, i64>(),
          pybind11::arg_v("n", 0, "primal dimension."),
@@ -38,6 +73,7 @@ exposeDenseModel(pybind11::module_ m)
     .def_readonly("n_eq", &Model<T>::n_eq)
     .def_readonly("n_in", &Model<T>::n_in)
     .def_readonly("n_total", &Model<T>::n_total)
+    .def_readwrite("backward_data", &Model<T>::backward_data)
     .def("is_valid",
          &Model<T>::is_valid,
          "Check if model is containing valid data.")

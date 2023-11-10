@@ -58,5 +58,10 @@ for j in range(1, num_threads):
     proxsuite.proxqp.dense.solve_in_parallel(j, qps)
     timings[f"solve_parallel_{j}_threads"] = (perf_counter_ns() - tic) * 1e-6
 
+
+tic = perf_counter_ns()
+proxsuite.proxqp.dense.solve_in_parallel(qps=qps)
+timings[f"solve_parallel_heuristics_threads"] = (perf_counter_ns() - tic) * 1e-6
+
 for k, v in timings.items():
     print(f"{k}: {v}ms")

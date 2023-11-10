@@ -1,10 +1,12 @@
 #
-# Copyright (c) 2022, INRIA
+# Copyright (c) 2022-2023, INRIA
 #
 import proxsuite
 import numpy as np
 import scipy.sparse as spa
 import unittest
+
+np.printoptions(precision=16)
 
 
 def normInf(x):
@@ -33,7 +35,7 @@ def generate_mixed_qp(n, seed=1, reg=0.01):
     s = max(np.absolute(np.linalg.eigvals(P)))
     P += (abs(s) + reg) * spa.eye(n)
     P = spa.coo_matrix(P)
-    print("sparsity of P : {}".format((P.nnz) / (n**2)))
+    # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
     A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
@@ -63,7 +65,7 @@ def generate_mixed_qp_with_box(n, seed=1):
     s = max(np.absolute(np.linalg.eigvals(P)))
     P += (abs(s) + 1e-02) * spa.eye(n)
     P = spa.coo_matrix(P)
-    print("sparsity of P : {}".format((P.nnz) / (n**2)))
+    # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
     A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
@@ -89,6 +91,52 @@ def generate_mixed_qp_with_box(n, seed=1):
 
 class DenseqpWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
+    def test_case_deterministic_behavior(self):
+        print("------------------------test the result is deterministic")
+        n = 100
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp.settings.eps_abs = 1.0e-9
+        qp.settings.verbose = False
+        qp.init(
+            H=H,
+            g=np.asfortranarray(g),
+            A=A,
+            b=np.asfortranarray(b),
+            C=C,
+            l=np.asfortranarray(l),
+            u=np.asfortranarray(u),
+        )
+        qp.solve()
+        x_prev = np.copy(qp.results.x)
+        y_prev = np.copy(qp.results.y)
+        z_prev = np.copy(qp.results.z)
+        for i in range(20):
+            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp.settings.eps_abs = 1.0e-9
+            qp.settings.verbose = False
+            qp.init(
+                H=H,
+                g=np.asfortranarray(g),
+                A=A,
+                b=np.asfortranarray(b),
+                C=C,
+                l=np.asfortranarray(l),
+                u=np.asfortranarray(u),
+            )
+            qp.solve()
+
+            print(f"{normInf(x_prev - qp.results.x)=}")
+            print(f"{normInf(y_prev - qp.results.y)=}")
+            print(f"{normInf(z_prev - qp.results.z)=}")
+
+            assert normInf(x_prev - qp.results.x) <= 1e-14
+            assert normInf(y_prev - qp.results.y) <= 1e-14
+            assert normInf(z_prev - qp.results.z) <= 1e-14
+
     def test_case_update_rho(self):
         print(
             "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"

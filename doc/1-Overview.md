@@ -1,6 +1,6 @@
 <!--
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 // Author: Antoine Bambade, Sarah El Kazdadi, Adrien Taylor, Justin Carpentier
 //
 -->
@@ -13,6 +13,7 @@ ProxSuite is a library which provides efficient solvers for solving constrained 
 
 
 For the moment, the library offers ProxQP solver, which is a C++ implementation of the [ProxQP algorithm](https://hal.inria.fr/hal-03683733/file/Yet_another_QP_solver_for_robotics_and_beyond.pdf) for solving convex QPs. It is planned to release soon [an extension](https://hal.archives-ouvertes.fr/hal-03680510/document) for dealing with non linear inequality constraints as well.
+
 
 
 In this doc, you will find the usual description of the library functionalities and a quick tutorial with examples on how to use the API.

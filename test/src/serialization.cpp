@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include <iostream>
 #include <doctest.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
@@ -9,6 +10,7 @@
 #include <proxsuite/serialization/model.hpp>
 #include <proxsuite/serialization/results.hpp>
 #include <proxsuite/serialization/settings.hpp>
+#include <proxsuite/serialization/ruiz.hpp>
 #include <proxsuite/serialization/wrapper.hpp>
 
 template<typename object>
@@ -49,7 +51,6 @@ struct init<proxsuite::proxqp::Settings<T>>
     return settings;
   }
 };
-
 template<typename T>
 struct init<proxsuite::proxqp::dense::QP<T>>
 {

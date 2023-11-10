@@ -518,7 +518,6 @@ iterative_solve_with_permut_fact( //
 
       if (infty_norm(qpwork.err.head(inner_pb_dim)) > preverr) {
         it_stability += 1;
-
       } else {
         it_stability = 0;
       }
@@ -528,6 +527,13 @@ iterative_solve_with_permut_fact( //
       preverr = infty_norm(qpwork.err.head(inner_pb_dim));
     }
   }
+  if (infty_norm(qpwork.err.head(inner_pb_dim)) >= eps && qpsettings.verbose) {
+    // std::cout << "after refact err " << err << std::endl;
+    std::cout << "refact err " << infty_norm(qpwork.err.head(inner_pb_dim))
+              << std::endl;
+  }
+  qpresults.info.iterative_residual = infty_norm(qpwork.err.head(inner_pb_dim));
+
   qpwork.rhs.head(inner_pb_dim).setZero();
 }
 /*!
@@ -1112,6 +1118,7 @@ qp_solve( //
                               dense_backend,
                               hessian_type);
   }
+  // std::cout << "qpwork.dirty " << qpwork.dirty << std::endl;
   if (qpwork.dirty) { // the following is used when a solve has already been
                       // executed (and without any intermediary model update)
     switch (qpsettings.initial_guess) {
@@ -1162,6 +1169,7 @@ qp_solve( //
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
         // keep workspace and results solutions except statistics
+        // std::cout << "i keep previous solution" << std::endl;
         qpresults.cleanup_statistics();
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen, qpresults.x });
@@ -1248,7 +1256,7 @@ qp_solve( //
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
         // keep workspace and results solutions except statistics
-
+        // std::cout << "i use previous solution" << std::endl;
         // meaningful for when one wants to warm start with previous result with
         // the same QP model
         break;
@@ -1330,7 +1338,7 @@ qp_solve( //
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
-
+        // std::cout << "i refactorize from previous solution" << std::endl;
         ruiz.scale_primal_in_place(
           { proxsuite::proxqp::from_eigen,
             qpresults

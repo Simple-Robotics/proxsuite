@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2023 INRIA
 //
 /** \file */
 #ifndef PROXSUITE_PROXQP_DENSE_FWD_HPP
@@ -24,6 +24,8 @@ template<typename T>
 using Vec = Eigen::Matrix<T, DYN, 1>;
 template<typename T>
 using VecRef = Eigen::Ref<Vec<T> const>;
+template<typename T>
+using VecRefMut = Eigen::Ref<Vec<T>>;
 
 template<typename T, int l = layout>
 using Mat = Eigen::Matrix<T, DYN, DYN, l>;
