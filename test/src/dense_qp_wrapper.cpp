@@ -13,7 +13,6 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-/*
 DOCTEST_TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
@@ -7230,7 +7229,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().tail(1).setConstant(-1.);
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
 
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -7267,7 +7266,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
 
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -7304,7 +7303,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
 
     proxqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -7458,7 +7457,7 @@ TEST_CASE(
     qp_random.H.diagonal().tail(1).setConstant(-0.5);
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7498,7 +7497,7 @@ TEST_CASE(
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7539,7 +7538,7 @@ TEST_CASE(
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     T estimate_minimal_eigen_value =
-      dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7591,10 +7590,8 @@ DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
   qp.init(symmetric_mat, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt);
 }
 
-*/
-
-TEST_CASE(
-  "ProxQP::dense: test memory allocation when estimating biggest eigenvalue with power iteration")
+TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
+          "eigenvalue with power iteration")
 {
   double sparsity_factor = 1.;
   T tol = T(1e-3);
@@ -7615,7 +7612,6 @@ TEST_CASE(
   qp_random.H.diagonal().tail(1).setConstant(-0.5);
   H = qp_random.H;
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
-  dense::power_iteration<T, Eigen::ColMajor>(
-    H, dw, rhs, err_v, 1.E-6, 10000);
+  dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
