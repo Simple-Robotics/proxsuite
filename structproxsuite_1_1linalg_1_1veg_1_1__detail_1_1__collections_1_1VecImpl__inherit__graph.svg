@@ -66,9 +66,9 @@
 <g id="Node000004" class="node">
 <title>Node4</title>
 <g id="a_Node000004"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="380.38,-265.88 232.38,-265.88 232.38,-232.38 380.38,-232.38 380.38,-265.88"/>
-<text text-anchor="start" x="240.38" y="-252.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
-<text text-anchor="middle" x="306.38" y="-239.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; unsigned char &gt;</text>
+<polygon fill="white" stroke="#666666" points="356.75,-265.88 256,-265.88 256,-232.38 356.75,-232.38 356.75,-265.88"/>
+<text text-anchor="start" x="264" y="-252.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
+<text text-anchor="middle" x="306.38" y="-239.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; bool &gt;</text>
 </a>
 </g>
 </g>
@@ -76,7 +76,7 @@
 <g id="edge3_Node000001_Node000004" class="edge">
 <title>Node1&#45;&gt;Node4</title>
 <g id="a_edge3_Node000001_Node000004"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M170.93,-217.97C191.23,-222.67 212.54,-227.61 232.06,-232.13"/>
+<path fill="none" stroke="#63b8ff" d="M170.97,-217.98C199.89,-224.68 230.86,-231.86 255.78,-237.63"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="171.95,-214.38 161.42,-215.53 170.37,-221.2 171.95,-214.38"/>
 </a>
 </g>
@@ -85,9 +85,9 @@
 <g id="Node000005" class="node">
 <title>Node5</title>
 <g id="a_Node000005"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="356.75,-213.88 256,-213.88 256,-180.38 356.75,-180.38 356.75,-213.88"/>
-<text text-anchor="start" x="264" y="-200.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
-<text text-anchor="middle" x="306.38" y="-187.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; I &gt;</text>
+<polygon fill="white" stroke="#666666" points="380.38,-213.88 232.38,-213.88 232.38,-180.38 380.38,-180.38 380.38,-213.88"/>
+<text text-anchor="start" x="240.38" y="-200.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
+<text text-anchor="middle" x="306.38" y="-187.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; unsigned char &gt;</text>
 </a>
 </g>
 </g>
@@ -95,7 +95,7 @@
 <g id="edge4_Node000001_Node000005" class="edge">
 <title>Node1&#45;&gt;Node5</title>
 <g id="a_edge4_Node000001_Node000005"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M171.35,-197.12C200.16,-197.12 230.97,-197.12 255.78,-197.12"/>
+<path fill="none" stroke="#63b8ff" d="M171.21,-197.12C191.42,-197.12 212.63,-197.12 232.06,-197.12"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="171.42,-193.63 161.42,-197.12 171.42,-200.63 171.42,-193.63"/>
 </a>
 </g>
@@ -104,10 +104,9 @@
 <g id="Node000006" class="node">
 <title>Node6</title>
 <g id="a_Node000006"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="378.12,-162.25 234.62,-162.25 234.62,-116 378.12,-116 378.12,-162.25"/>
-<text text-anchor="start" x="242.62" y="-148.75" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
-<text text-anchor="start" x="242.62" y="-136" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; proxsuite</text>
-<text text-anchor="middle" x="306.38" y="-123.25" font-family="Helvetica,sans-Serif" font-size="10.00">::linalg::veg::mem::byte &gt;</text>
+<polygon fill="white" stroke="#666666" points="356.75,-161.88 256,-161.88 256,-128.38 356.75,-128.38 356.75,-161.88"/>
+<text text-anchor="start" x="264" y="-148.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
+<text text-anchor="middle" x="306.38" y="-135.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; I &gt;</text>
 </a>
 </g>
 </g>
@@ -115,8 +114,8 @@
 <g id="edge5_Node000001_Node000006" class="edge">
 <title>Node1&#45;&gt;Node6</title>
 <g id="a_edge5_Node000001_Node000006"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M170.99,-173.86C192.04,-168.42 214.18,-162.7 234.28,-157.5"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="170.23,-170.7 161.42,-176.59 171.98,-177.48 170.23,-170.7"/>
+<path fill="none" stroke="#63b8ff" d="M170.97,-176.27C199.89,-169.57 230.86,-162.39 255.78,-156.62"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="170.37,-173.05 161.42,-178.72 171.95,-179.87 170.37,-173.05"/>
 </a>
 </g>
 </g>
@@ -124,9 +123,10 @@
 <g id="Node000007" class="node">
 <title>Node7</title>
 <g id="a_Node000007"><a xlink:href="structproxsuite_1_1linalg_1_1veg_1_1Vec.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="356.75,-97.88 256,-97.88 256,-64.38 356.75,-64.38 356.75,-97.88"/>
-<text text-anchor="start" x="264" y="-84.38" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
-<text text-anchor="middle" x="306.38" y="-71.62" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; bool &gt;</text>
+<polygon fill="white" stroke="#666666" points="378.12,-110.25 234.62,-110.25 234.62,-64 378.12,-64 378.12,-110.25"/>
+<text text-anchor="start" x="242.62" y="-96.75" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite::linalg::</text>
+<text text-anchor="start" x="242.62" y="-84" font-family="Helvetica,sans-Serif" font-size="10.00">veg::Vec&lt; proxsuite</text>
+<text text-anchor="middle" x="306.38" y="-71.25" font-family="Helvetica,sans-Serif" font-size="10.00">::linalg::veg::mem::byte &gt;</text>
 </a>
 </g>
 </g>
@@ -134,8 +134,8 @@
 <g id="edge6_Node000001_Node000007" class="edge">
 <title>Node1&#45;&gt;Node7</title>
 <g id="a_edge6_Node000001_Node000007"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M112.37,-166.44C134.17,-146.75 164.81,-122.14 196,-107.12 214.55,-98.19 236.39,-92.21 255.65,-88.26"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="110.45,-163.37 105.47,-172.71 115.2,-168.52 110.45,-163.37"/>
+<path fill="none" stroke="#63b8ff" d="M118.74,-167.11C140.36,-151.08 168.57,-132.05 196,-119.12 207.99,-113.48 221.2,-108.59 234.16,-104.46"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="117.08,-164.73 111.2,-173.54 121.29,-170.32 117.08,-164.73"/>
 </a>
 </g>
 </g>

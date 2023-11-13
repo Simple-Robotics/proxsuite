@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -108,13 +108,13 @@ $(document).ready(function(){initNavTree('qp__solve_8hpp.html',''); initResizabl
   <div class="headertitle"><div class="title">qp_solve.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="proxqp_2dense_2wrapper_8hpp_source.html">proxsuite/proxqp/dense/wrapper.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="compute__ECJ_8hpp_source.html">proxsuite/proxqp/dense/compute_ECJ.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="proxqp_2sparse_2wrapper_8hpp_source.html">proxsuite/proxqp/sparse/wrapper.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="omp_8hpp_source.html">proxsuite/proxqp/parallel/omp.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for qp_solve.hpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="qp__solve_8hpp__incl.svg" width="4584" height="1075"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="qp__solve_8hpp__incl.svg" width="4430" height="1446"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 <p><a href="qp__solve_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -138,6 +138,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a314b81919935a56d0d454504eb0f190e" id="r_a314b81919935a56d0d454504eb0f190e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a314b81919935a56d0d454504eb0f190e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a314b81919935a56d0d454504eb0f190e">proxsuite::proxqp::dense::solve_in_parallel</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html">proxqp::dense::BatchQP</a>&lt; T &gt; &amp;qps, const <a class="el" href="namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d">optional</a>&lt; size_t &gt; num_threads=<a class="el" href="namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635">nullopt</a>)</td></tr>
 <tr class="separator:a314b81919935a56d0d454504eb0f190e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0387cfbe34cbdb09a2dbcb40ca50ed44" id="r_a0387cfbe34cbdb09a2dbcb40ca50ed44"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0387cfbe34cbdb09a2dbcb40ca50ed44"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a0387cfbe34cbdb09a2dbcb40ca50ed44">proxsuite::proxqp::dense::qp_solve_in_parallel</a> (<a class="el" href="namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d">optional</a>&lt; const size_t &gt; num_threads, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html">proxqp::dense::BatchQP</a>&lt; T &gt; &amp;qps)</td></tr>
+<tr class="separator:a0387cfbe34cbdb09a2dbcb40ca50ed44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4276db4c928ab371a4a45918f6fca4ac" id="r_a4276db4c928ab371a4a45918f6fca4ac"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4276db4c928ab371a4a45918f6fca4ac"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a4276db4c928ab371a4a45918f6fca4ac">proxsuite::proxqp::dense::qp_solve_backward_in_parallel</a> (<a class="el" href="namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d">optional</a>&lt; const size_t &gt; num_threads, std::vector&lt; <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">proxqp::dense::QP</a>&lt; T &gt; &gt; &amp;qps, std::vector&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">proxqp::dense::Vec</a>&lt; T &gt; &gt; &amp;loss_derivatives, T eps=1.E-4, T rho_new=1.E-6, T mu_new=1.E-6)</td></tr>
+<tr class="separator:a4276db4c928ab371a4a45918f6fca4ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ae27449545fc7a976ebcdb8c0721031" id="r_a0ae27449545fc7a976ebcdb8c0721031"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0ae27449545fc7a976ebcdb8c0721031"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a0ae27449545fc7a976ebcdb8c0721031">proxsuite::proxqp::dense::qp_solve_backward_in_parallel</a> (<a class="el" href="namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d">optional</a>&lt; const size_t &gt; num_threads, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html">proxqp::dense::BatchQP</a>&lt; T &gt; &amp;qps, std::vector&lt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c">proxqp::dense::Vec</a>&lt; T &gt; &gt; &amp;loss_derivatives, T eps=1.E-4, T rho_new=1.E-6, T mu_new=1.E-6)</td></tr>
+<tr class="separator:a0ae27449545fc7a976ebcdb8c0721031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4df01d0b00a2b8dba05bfa47e62ccf39" id="r_a4df01d0b00a2b8dba05bfa47e62ccf39"><td class="memTemplParams" colspan="2">template&lt;typename T , typename I &gt; </td></tr>
 <tr class="memitem:a4df01d0b00a2b8dba05bfa47e62ccf39"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a4df01d0b00a2b8dba05bfa47e62ccf39">proxsuite::proxqp::sparse::solve_in_parallel</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html">proxqp::sparse::BatchQP</a>&lt; T, I &gt; &amp;qps, const <a class="el" href="namespaceproxsuite.html#a1eeae7eb9d7bea74660cab2210a3b66d">optional</a>&lt; size_t &gt; num_threads=<a class="el" href="namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635">nullopt</a>)</td></tr>
 <tr class="separator:a4df01d0b00a2b8dba05bfa47e62ccf39"><td class="memSeparator" colspan="2">&#160;</td></tr>

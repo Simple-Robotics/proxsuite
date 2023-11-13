@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -162,12 +162,13 @@ $(document).ready(function(){initNavTree('serialization_2settings_8hpp_source.ht
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24">eps_primal_inf</a>),</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a8b11a745706778cfb57273d00e02391d">eps_dual_inf</a>),</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a175999aba3e97149fe7cc5aedb48f262">bcl_update</a>),</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc">sparse_backend</a>));</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a0b4234ae406cb59a4ccf70fb8d6af1fc">sparse_backend</a>),</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>          CEREAL_NVP(settings.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Settings.html#a50bf93df04a4bb32e17e4754f3fb0525">primal_infeasibility_solving</a>));</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>}</div>
 </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>} <span class="comment">// namespace cereal</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard PROXSUITE_SERIALIZATION_SETTINGS_HPP */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>} <span class="comment">// namespace cereal</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard PROXSUITE_SERIALIZATION_SETTINGS_HPP */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="anamespacecereal_html"><div class="ttname"><a href="namespacecereal.html">cereal</a></div><div class="ttdef"><b>Definition</b> <a href="eigen_8hpp_source.html#l00016">eigen.hpp:16</a></div></div>
 <div class="ttc" id="anamespacecereal_html_aae8f00a3364cc7946faf780f2a73467f"><div class="ttname"><a href="namespacecereal.html#aae8f00a3364cc7946faf780f2a73467f">cereal::serialize</a></div><div class="ttdeci">void serialize(Archive &amp;archive, proxsuite::proxqp::dense::Model&lt; T &gt; &amp;model)</div><div class="ttdef"><b>Definition</b> <a href="serialization_2model_8hpp_source.html#l00018">model.hpp:18</a></div></div>
 <div class="ttc" id="aproxqp_2settings_8hpp_html"><div class="ttname"><a href="proxqp_2settings_8hpp.html">settings.hpp</a></div></div>
@@ -185,6 +186,7 @@ $(document).ready(function(){initNavTree('serialization_2settings_8hpp_source.ht
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a3dffdd487b107b6d08f57dfea1d5d871"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a3dffdd487b107b6d08f57dfea1d5d871">proxsuite::proxqp::Settings::alpha_bcl</a></div><div class="ttdeci">T alpha_bcl</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00095">settings.hpp:95</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a47cafb3180c6604d04f8eae8c9c0c654"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a47cafb3180c6604d04f8eae8c9c0c654">proxsuite::proxqp::Settings::safe_guard</a></div><div class="ttdeci">isize safe_guard</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00118">settings.hpp:118</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a4dd2f356585303f82961f3572cfe71c5"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a4dd2f356585303f82961f3572cfe71c5">proxsuite::proxqp::Settings::check_duality_gap</a></div><div class="ttdeci">bool check_duality_gap</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00128">settings.hpp:128</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a50bf93df04a4bb32e17e4754f3fb0525"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a50bf93df04a4bb32e17e4754f3fb0525">proxsuite::proxqp::Settings::primal_infeasibility_solving</a></div><div class="ttdeci">bool primal_infeasibility_solving</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00141">settings.hpp:141</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a549e9bca8d337e409ec4f15751480b24"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a549e9bca8d337e409ec4f15751480b24">proxsuite::proxqp::Settings::eps_primal_inf</a></div><div class="ttdeci">T eps_primal_inf</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00134">settings.hpp:134</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a54c8b3f19bcab9fdf7feeafb05ec5061"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a54c8b3f19bcab9fdf7feeafb05ec5061">proxsuite::proxqp::Settings::update_preconditioner</a></div><div class="ttdeci">bool update_preconditioner</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00124">settings.hpp:124</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1Settings_html_a5b89004a27b65af57dda8530e3fe1b01"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Settings.html#a5b89004a27b65af57dda8530e3fe1b01">proxsuite::proxqp::Settings::mu_min_eq</a></div><div class="ttdeci">T mu_min_eq</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2settings_8hpp_source.html#l00101">settings.hpp:101</a></div></div>

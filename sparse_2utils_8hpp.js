@@ -17,5 +17,5 @@ var sparse_2utils_8hpp =
     [ "top_rows_mut_unchecked", "sparse_2utils_8hpp.html#a9c961aba3d0b5fc16b0b3a908e22fd20", null ],
     [ "global_primal_residual_infeasibility", "sparse_2utils_8hpp.html#a256d1f677a7aa9aa0dca06aeccf460ad", null ],
     [ "global_dual_residual_infeasibility", "sparse_2utils_8hpp.html#abfa4d6a743bffb4bbaf0318d51a10ca9", null ],
-    [ "unscaled_primal_dual_residual", "sparse_2utils_8hpp.html#a68e6f196e231632f59390deba96d3060", null ]
+    [ "unscaled_primal_dual_residual", "sparse_2utils_8hpp.html#ae87124fd4924cda725838446368f5afb", null ]
 ];

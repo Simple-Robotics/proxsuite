@@ -15,5 +15,6 @@ var structproxsuite_1_1proxqp_1_1dense_1_1Model =
     [ "dim", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a65cc80eafcd5a5c9aadca68c427e2869", null ],
     [ "n_eq", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ad990a0ddc1463ba309338c1aa49189a8", null ],
     [ "n_in", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab80dc12d7baf60a2e8f268fada47d6a2", null ],
-    [ "n_total", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a73cbc3d2d1bb59f5b6ee8a573ac29baf", null ]
+    [ "n_total", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a73cbc3d2d1bb59f5b6ee8a573ac29baf", null ],
+    [ "backward_data", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a8f0a041ef2d9d4efff933be4691da699", null ]
 ];

@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.5.1</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.0</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -110,13 +110,13 @@ $(document).ready(function(){initNavTree('namespaceproxsuite_1_1proxqp_1_1dense_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1363d829243eb64991eab46d79ac3cf7" id="r_a1363d829243eb64991eab46d79ac3cf7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a1363d829243eb64991eab46d79ac3cf7"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a1363d829243eb64991eab46d79ac3cf7">ruiz_scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; delta_, std::ostream *logger_ptr, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; qp, T epsilon, isize max_iter, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059">Symmetry</a> sym, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a> <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a>, const bool box_constraints, bool preconditioning_for_infeasible_problems, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack) -&gt; T</td></tr>
-<tr class="separator:a1363d829243eb64991eab46d79ac3cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33" id="r_a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a8eefe9fdeaa7b60e693eaffc67b4ee33">ruiz_scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; delta_, std::ostream *logger_ptr, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; qp, T epsilon, isize max_iter, bool preconditioning_for_infeasible_problems, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059">Symmetry</a> sym, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a> <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a>, const bool box_constraints, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack) -&gt; T</td></tr>
+<tr class="separator:a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a1363d829243eb64991eab46d79ac3cf7" name="a1363d829243eb64991eab46d79ac3cf7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1363d829243eb64991eab46d79ac3cf7">&#9670;&#160;</a></span>ruiz_scale_qp_in_place()</h2>
+<a id="a8eefe9fdeaa7b60e693eaffc67b4ee33" name="a8eefe9fdeaa7b60e693eaffc67b4ee33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eefe9fdeaa7b60e693eaffc67b4ee33">&#9670;&#160;</a></span>ruiz_scale_qp_in_place()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -156,6 +156,12 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>preconditioning_for_infeasible_problems</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059">Symmetry</a>&#160;</td>
           <td class="paramname"><em>sym</em>, </td>
         </tr>
@@ -174,12 +180,6 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>preconditioning_for_infeasible_problems</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype"><a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a>&#160;</td>
           <td class="paramname"><em>stack</em>&#160;</td>
         </tr>
@@ -192,7 +192,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html#l00031">31</a> of file <a class="el" href="dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="proxqp_2dense_2preconditioner_2ruiz_8hpp_source.html#l00031">31</a> of file <a class="el" href="proxqp_2dense_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 
 </div>
 </div>

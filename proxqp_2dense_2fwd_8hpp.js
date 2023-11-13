@@ -3,6 +3,7 @@ var proxqp_2dense_2fwd_8hpp =
     [ "SparseMat", "proxqp_2dense_2fwd_8hpp.html#ac21857857a10d600d2b78816c3e0839d", null ],
     [ "Vec", "proxqp_2dense_2fwd_8hpp.html#ac741dbc0ed11cbdaf81b142548c2691c", null ],
     [ "VecRef", "proxqp_2dense_2fwd_8hpp.html#a8f6fa5675a6421853608bd788a7d3207", null ],
+    [ "VecRefMut", "proxqp_2dense_2fwd_8hpp.html#af481b19d90a2194bb7bd57f31ef64759", null ],
     [ "Mat", "proxqp_2dense_2fwd_8hpp.html#a9a4b8d33572b9fdddd269630a01432a2", null ],
     [ "MatRef", "proxqp_2dense_2fwd_8hpp.html#a8ba2eac56d273ede6afafa50e67958a3", null ],
     [ "VecMap", "proxqp_2dense_2fwd_8hpp.html#a9c648ae1f4b65db4ca05464cd50d94cc", null ],

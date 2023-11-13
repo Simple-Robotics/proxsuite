@@ -1,7 +1,7 @@
 var searchData=
 [
   ['h_0',['h',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html#ab716393ff03d105635f956b488709ad4',1,'proxsuite::proxqp::dense::QpViewMut::H'],['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBox.html#a724cd441bf5af9d01269cdd2c0e4e06c',1,'proxsuite::proxqp::dense::QpViewBox::H'],['../structproxsuite_1_1proxqp_1_1dense_1_1QpView.html#a142e99bec7a022e13faf9d487228aa2d',1,'proxsuite::proxqp::dense::QpView::H'],['../structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39',1,'proxsuite::proxqp::dense::Model::H'],['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html#abdf8c2d24f904d6f5fac01f9739e120a',1,'proxsuite::proxqp::dense::QpViewBoxMut::H'],['../structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a66613eb6d918fb3a49d0fa05fd606869',1,'proxsuite::proxqp::sparse::SparseModel::H'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpView.html#abe49ef91cfc0409af002d0f77a34877d',1,'proxsuite::proxqp::sparse::QpView::H'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html#afbd78d16f03324f9d0853202b95b6fcc',1,'proxsuite::proxqp::sparse::QpViewMut::H']]],
-  ['h_20minimal_20eigenvalue_1',['The different options for estimating H minimal Eigenvalue',['../md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewEstimatingHminimalEigenValue',1,'']]],
+  ['h_20minimal_20eigenvalue_1',['The different options for estimating H minimal Eigenvalue',['../md_doc_22-ProxQP__api.html#OverviewEstimatingHminimalEigenValue',1,'']]],
   ['h_5fnnz_2',['H_nnz',['../structproxsuite_1_1proxqp_1_1sparse_1_1Model.html#a8dd6ac943bc23e8400f0c46ee543e455',1,'proxsuite::proxqp::sparse::Model']]],
   ['h_5fscaled_3',['H_scaled',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a8d17594b71ea99aa2dc55e7818e0fa87',1,'proxsuite::proxqp::dense::Workspace']]],
   ['hard_5freset_4',['hard_reset',['../structtl_1_1detail_1_1optional__operations__base.html#afdfe78c71a13c173e8658aa5073d6d54',1,'tl::detail::optional_operations_base']]],
@@ -207,5 +207,6 @@ var searchData=
   ['hollowleaf_204',['HollowLeaf',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1HollowLeaf.html',1,'proxsuite::linalg::veg::_detail']]],
   ['hollowleaf_3c_20is_2c_20ts_20_3e_205',['HollowLeaf&lt; Is, Ts &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1HollowLeaf.html',1,'proxsuite::linalg::veg::_detail']]],
   ['how_20to_20cite_20proxsuite_206',['How to cite ProxSuite?',['../index.html#OverviewCite',1,'']]],
-  ['how_20to_20install_20proxsuite_207',['How to install ProxSuite?',['../index.html#OverviewInstall',1,'']]]
+  ['how_20to_20cite_20qplayer_207',['How to cite QPLayer ?',['../md_doc_24-qplayer.html#QPLayerCite',1,'']]],
+  ['how_20to_20install_20proxsuite_208',['How to install ProxSuite?',['../index.html#OverviewInstall',1,'']]]
 ];

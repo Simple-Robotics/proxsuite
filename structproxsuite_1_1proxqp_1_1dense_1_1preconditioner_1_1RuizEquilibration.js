@@ -3,7 +3,7 @@ var structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration =
     [ "RuizEquilibration", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a556f55d5e72ee69e8edd042a8aba959c", null ],
     [ "print", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aaa623cd4f16afb2ad8b0439082a36d58", null ],
     [ "scale_qp_in_place_req", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a1f60bd67dd103752839cfa09d660b8a9", null ],
-    [ "scale_qp_in_place", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#aefa268c502621612c4caff83036e7450", null ],
+    [ "scale_qp_in_place", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#af432a92d3280c296e128ba505d1c0175", null ],
     [ "scale_primal_in_place", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a5ae695bbf5fb3c646ed1a033ba24165c", null ],
     [ "scale_dual_in_place", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a8f21c2566ccd41015d7b3a515d3f8836", null ],
     [ "scale_dual_in_place_eq", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#adb881a2cbb3d9422a4058fe308f1063d", null ],

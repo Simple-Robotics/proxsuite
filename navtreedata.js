@@ -34,41 +34,40 @@ var NAVTREE =
     [ "About Python wrappings", "index.html#OverviewPython", null ],
     [ "How to cite ProxSuite?", "index.html#OverviewCite", null ],
     [ "Where to go from here?", "index.html#OverviewConclu", null ],
-    [ "ProxQP API with examples", "md_doc_22-PROXQP__API_22-ProxQP__api.html", [
-      [ "ProxQP unified API for dense and sparse backends", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewAPIstructure", [
-        [ "The API structure", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewAPI", null ],
-        [ "The init method", "md_doc_22-PROXQP__API_22-ProxQP__api.html#explanationInitMethod", null ],
-        [ "The solve method", "md_doc_22-PROXQP__API_22-ProxQP__api.html#explanationSolveMethod", null ],
-        [ "The update method", "md_doc_22-PROXQP__API_22-ProxQP__api.html#explanationUpdateMethod", null ]
+    [ "ProxQP API with examples", "md_doc_22-ProxQP__api.html", [
+      [ "ProxQP unified API for dense and sparse backends", "md_doc_22-ProxQP__api.html#OverviewAPIstructure", [
+        [ "The API structure", "md_doc_22-ProxQP__api.html#OverviewAPI", null ],
+        [ "The init method", "md_doc_22-ProxQP__api.html#explanationInitMethod", null ],
+        [ "The solve method", "md_doc_22-ProxQP__api.html#explanationSolveMethod", null ],
+        [ "The update method", "md_doc_22-ProxQP__api.html#explanationUpdateMethod", null ]
       ] ],
-      [ "The settings subclass", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewSettings", [
-        [ "The solver's settings", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewAllSettings", null ],
-        [ "The different initial guesses", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewInitialGuess", [
-          [ "No initial guess", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewNoInitialGuess", null ]
+      [ "The settings subclass", "md_doc_22-ProxQP__api.html#OverviewSettings", [
+        [ "The solver's settings", "md_doc_22-ProxQP__api.html#OverviewAllSettings", null ],
+        [ "The different initial guesses", "md_doc_22-ProxQP__api.html#OverviewInitialGuess", [
+          [ "No initial guess", "md_doc_22-ProxQP__api.html#OverviewNoInitialGuess", null ]
         ] ],
-        [ "The different options for estimating H minimal Eigenvalue", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewEstimatingHminimalEigenValue", [
-          [ "Equality constrained initial guess", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewEqualityConstrainedInitialGuess", null ],
-          [ "Warm start with the previous result", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWarmStartWithPreviousResult", null ],
-          [ "Warm start", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWarmStart", null ],
-          [ "Cold start with previous result", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewColdStartWithPreviousResult", null ]
+        [ "The different options for estimating H minimal Eigenvalue", "md_doc_22-ProxQP__api.html#OverviewEstimatingHminimalEigenValue", [
+          [ "Equality constrained initial guess", "md_doc_22-ProxQP__api.html#OverviewEqualityConstrainedInitialGuess", null ],
+          [ "Warm start with the previous result", "md_doc_22-ProxQP__api.html#OverviewWarmStartWithPreviousResult", null ],
+          [ "Warm start", "md_doc_22-ProxQP__api.html#OverviewWarmStart", null ],
+          [ "Cold start with previous result", "md_doc_22-ProxQP__api.html#OverviewColdStartWithPreviousResult", null ]
         ] ]
       ] ],
-      [ "The results subclass", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewResults", [
-        [ "The info subclass", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewInfoClass", null ],
-        [ "The solver's status", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewSolverStatus", null ]
+      [ "The results subclass", "md_doc_22-ProxQP__api.html#OverviewResults", [
+        [ "The info subclass", "md_doc_22-ProxQP__api.html#OverviewInfoClass", null ],
+        [ "The solver's status", "md_doc_22-ProxQP__api.html#OverviewSolverStatus", null ]
       ] ],
-      [ "Which backend to use?", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewWhichBackend", null ],
-      [ "Some important remarks when computing timings", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewBenchmark", [
-        [ "What do the timings take into account?", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewTimings", null ],
-        [ "Architecture options when compiling ProxSuite", "md_doc_22-PROXQP__API_22-ProxQP__api.html#OverviewArchitectureOptions", null ]
+      [ "Which backend to use?", "md_doc_22-ProxQP__api.html#OverviewWhichBackend", null ],
+      [ "Some important remarks when computing timings", "md_doc_22-ProxQP__api.html#OverviewBenchmark", [
+        [ "What do the timings take into account?", "md_doc_22-ProxQP__api.html#OverviewTimings", null ],
+        [ "Architecture options when compiling ProxSuite", "md_doc_22-ProxQP__api.html#OverviewArchitectureOptions", null ]
       ] ]
     ] ],
     [ "ProxQP solve function without API", "md_doc_23-ProxQP__solve.html", [
       [ "A single solve function for dense and sparse backends", "md_doc_23-ProxQP__solve.html#OverviewAsingleSolveFunction", null ]
     ] ],
-    [ "Linear solvers API with examples", "md_doc_24-linearsolvers.html", [
-      [ "Dense linear solver", "md_doc_24-linearsolvers.html#OverviewDense", null ],
-      [ "Sparse linear solver", "md_doc_24-linearsolvers.html#OverviewSparse", null ]
+    [ "QPLayer", "md_doc_24-qplayer.html", [
+      [ "How to cite QPLayer ?", "md_doc_24-qplayer.html#QPLayerCite", null ]
     ] ],
     [ "Installation", "md_doc_25-installation.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -108,32 +107,32 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "address_8hpp.html",
-"classtl_1_1optional_3_01T_01_6_01_4.html#a71e275dea087ea60a60ee38b39b40d15",
+"classtl_1_1optional_3_01T_01_6_01_4.html#a6c339f3b244efa1915efd31d824b9d25",
 "dense_2views_8hpp.html#a11de089956c90146573853cda2941473",
-"get_8hpp.html#a6b5d3f5529533b36bc8d72a31336831e",
-"macros_8hpp.html#a9087fb4c15212107761609645b9460f8",
+"get_8hpp.html#a9de5b5c3581dec9a025c2702acb93fee",
+"macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b",
 "namespacemembers_func_t.html",
 "namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43ab736c00bb44fe7188d305cb2f3c72279",
 "namespaceproxsuite_1_1linalg_1_1veg_1_1meta_1_1nb.html",
-"namespaceproxsuite_1_1proxqp_1_1sparse.html#a03cc034874dbb17022d8996835154843",
-"preprocessor_8hpp.html#a1ceb15d8b3dfbf43c9f2ec6ec96ba271",
-"prologue_8hpp.html#a80928f93d0e43e3053fb76d4e83fcf03",
-"sparse_2solver_8hpp.html#a1b12a295287ebefe88ccdfdb164f337c",
-"structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#ab173d194d1463a12449df4d00655d344",
-"structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html#af26de7d15d3075a254b52f72979fe004",
-"structproxsuite_1_1linalg_1_1veg_1_1Fix.html#a5c5f7843de36a59644207c53879f6aee",
-"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg.html#a59c56c694c87a1bdb4edbf20d5eb8aef",
-"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1ManagedAlloc.html#a427fffafd8872a7c6d774448f1b32e7f",
-"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1zip__type__seq2_3_01F_00_01F_3_01Ts_8_296bf3865960d353995853a151ca4dd5.html#ae88be208f804d02ef921e5ee25d63c83",
-"structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html#aa4a0ef2c98a38489f4a1531f47abcd8a",
-"structproxsuite_1_1linalg_1_1veg_1_1meta_1_1nb_1_1is__consteval.html#a0d1a7ba1c216826748129a0f07a7ab27",
-"structproxsuite_1_1proxqp_1_1Info.html#a7ec030095d08febf145c54d46f34d51f",
-"structproxsuite_1_1proxqp_1_1StridedVectorViewMut.html#ac45febce90e76a0d11b179cd90afd2ce",
-"structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html",
-"structproxsuite_1_1proxqp_1_1detail_1_1DetectedImpl_3_01Void_3_01F_3_01Ts_8_8_8_01_4_01_4_00_01F2ffd9abc2f7171836425854b294c9e6f.html#a59e4ed0c18691a02462bdf05239067a9",
-"structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a516b900ad0135214d3f9b327aba0e26b",
-"structtl_1_1detail_1_1optional__copy__assign__base_3_01T_00_01false_01_4.html#a706147734aa595c6b575b1250a965bab",
-"tl-optional_8hpp.html#a28faef14fa0efb12848f0cd4c087740e"
+"namespaceproxsuite_1_1proxqp_1_1detail.html#affa230df4f9eb47b24ee572fc5858c21",
+"preprocessor_8hpp.html#a127f0307adda0d8001d0f929b6dc613b",
+"prologue_8hpp.html#a50e4dd422e6cb7cec350d28f493825db",
+"sparse_2factorize_8hpp.html#a88ce2ea48e0e22dc7bf536a803c87c88",
+"structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html#a60c19ebebae23ff5c93f4274d16ca0b5",
+"structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html#a2ebfcca8061e9b96f21f496f889a46d7",
+"structproxsuite_1_1linalg_1_1veg_1_1Dyn.html#a7ddcabb26b2b3fbd5e5600daf8fe07e3",
+"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1NoMoveAssign.html#a765196ed3b9a20444abe30ef9c42abe8",
+"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html#a5b202300cea5c6297827102a5e60359a",
+"structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1uncvlref_3_01T_01const_01_6_01_4.html#a144d8be0572843ec74e1e19cdd5f00ab",
+"structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html#a46dec376c915f8e376cc94061e498f26",
+"structproxsuite_1_1linalg_1_1veg_1_1meta_1_1apply__wrapper.html#a2e5c20cac056216f657b79fc61847861",
+"structproxsuite_1_1proxqp_1_1CPUTimes.html#a6c5fc889a2b72d6ac1074357cb9b4070",
+"structproxsuite_1_1proxqp_1_1Settings.html#afdb9d491ac29a8a7503a385c791a5c0c",
+"structproxsuite_1_1proxqp_1_1dense_1_1QpView.html#a3a424fa7640720e4fad92e14ab57280c",
+"structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html#a5ae695bbf5fb3c646ed1a033ba24165c",
+"structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a66663416c86cac0e2b51a3f11ee4b07e",
+"structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html#adbd4ae454910bada130c6a1c8243550d",
+"structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4.html#a90144dced619427e9c250ff214609f01"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

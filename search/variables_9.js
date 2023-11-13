@@ -16,5 +16,6 @@ var searchData=
   ['is_5funreachable_13',['is_unreachable',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1DeferUnreachable.html#abc535c68cfed440612dfa6e8966ee887',1,'proxsuite::linalg::veg::_detail::_mem::DeferUnreachable']]],
   ['iter_14',['iter',['../structproxsuite_1_1proxqp_1_1Info.html#a533b2bf01b5d34c824bc78e55e0b39dd',1,'proxsuite::proxqp::Info']]],
   ['iter_5fext_15',['iter_ext',['../structproxsuite_1_1proxqp_1_1Info.html#ab6ca13756f03d98715b3c635af73b76b',1,'proxsuite::proxqp::Info']]],
-  ['ith_3c_20static_5fcast_3c_20usize_20_3e_28i_29_2c_20ts_2e_2e_2e_20_3e_16',['ith&lt; static_cast&lt; usize &gt;(I), Ts... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html#aae56cc60931c55da9dd0f2b60e06ee51',1,'proxsuite::linalg::veg::tuple::IndexedTuple&lt; meta::index_sequence&lt; Is... &gt;, Ts... &gt;']]]
+  ['iterative_5fresidual_16',['iterative_residual',['../structproxsuite_1_1proxqp_1_1Info.html#a5d6312e02edaadaa21c096951759f688',1,'proxsuite::proxqp::Info']]],
+  ['ith_3c_20static_5fcast_3c_20usize_20_3e_28i_29_2c_20ts_2e_2e_2e_20_3e_17',['ith&lt; static_cast&lt; usize &gt;(I), Ts... &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html#aae56cc60931c55da9dd0f2b60e06ee51',1,'proxsuite::linalg::veg::tuple::IndexedTuple&lt; meta::index_sequence&lt; Is... &gt;, Ts... &gt;']]]
 ];

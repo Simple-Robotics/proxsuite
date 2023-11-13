@@ -10,7 +10,11 @@ var namespaces_dup =
       [ "serialize", "namespacecereal.html#a312b8abfd7c5abd89eff238a21a14eb8", null ],
       [ "save", "namespacecereal.html#ad411a082ec69d7438b45031b13751452", null ],
       [ "load", "namespacecereal.html#ae3f26b10273bd395c63cda9af72db86b", null ],
+      [ "serialize", "namespacecereal.html#a880de50b31d4daa10e3be32241c22417", null ],
       [ "serialize", "namespacecereal.html#a69b9d325eaf4ffbb0d5462de35ab84f3", null ],
+      [ "serialize", "namespacecereal.html#ac511ce3713d1e34e9f86e6074432f03b", null ],
+      [ "save", "namespacecereal.html#af20f684a3c124cd1d231a9db46cf00e9", null ],
+      [ "load", "namespacecereal.html#a322d030fe225468388d680a36d2ae187", null ],
       [ "serialize", "namespacecereal.html#a2b910474a4da856ce5b425767f1c9e04", null ]
     ] ],
     [ "Eigen", "namespaceEigen.html", null ],

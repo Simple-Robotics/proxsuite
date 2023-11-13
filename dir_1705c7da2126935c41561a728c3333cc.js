@@ -8,6 +8,6 @@ var dir_1705c7da2126935c41561a728c3333cc =
     [ "sparse.hpp", "sparse_8hpp.html", null ],
     [ "utils.hpp", "sparse_2utils_8hpp.html", "sparse_2utils_8hpp" ],
     [ "views.hpp", "sparse_2views_8hpp.html", "sparse_2views_8hpp" ],
-    [ "workspace.hpp", "sparse_2workspace_8hpp.html", "sparse_2workspace_8hpp" ],
+    [ "workspace.hpp", "proxqp_2sparse_2workspace_8hpp.html", "proxqp_2sparse_2workspace_8hpp" ],
     [ "wrapper.hpp", "proxqp_2sparse_2wrapper_8hpp.html", "proxqp_2sparse_2wrapper_8hpp" ]
 ];

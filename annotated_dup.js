@@ -416,6 +416,7 @@ var annotated_dup =
             [ "IdentityPrecond", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1IdentityPrecond.html", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1IdentityPrecond" ],
             [ "RuizEquilibration", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration.html", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1RuizEquilibration" ]
           ] ],
+          [ "BackwardData", "structproxsuite_1_1proxqp_1_1dense_1_1BackwardData.html", "structproxsuite_1_1proxqp_1_1dense_1_1BackwardData" ],
           [ "BatchQP", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP" ],
           [ "EigenAllowAlloc", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc.html", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc" ],
           [ "Model", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html", "structproxsuite_1_1proxqp_1_1dense_1_1Model" ],

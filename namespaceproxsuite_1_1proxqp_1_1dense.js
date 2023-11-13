@@ -1,11 +1,12 @@
 var namespaceproxsuite_1_1proxqp_1_1dense =
 [
     [ "detail", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html", [
-      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a1363d829243eb64991eab46d79ac3cf7", null ]
+      [ "ruiz_scale_qp_in_place", "namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html#a8eefe9fdeaa7b60e693eaffc67b4ee33", null ]
     ] ],
     [ "linesearch", "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch.html", "namespaceproxsuite_1_1proxqp_1_1dense_1_1linesearch" ],
     [ "nb", "namespaceproxsuite_1_1proxqp_1_1dense_1_1nb.html", "namespaceproxsuite_1_1proxqp_1_1dense_1_1nb" ],
     [ "preconditioner", "namespaceproxsuite_1_1proxqp_1_1dense_1_1preconditioner.html", "namespaceproxsuite_1_1proxqp_1_1dense_1_1preconditioner" ],
+    [ "BackwardData", "structproxsuite_1_1proxqp_1_1dense_1_1BackwardData.html", "structproxsuite_1_1proxqp_1_1dense_1_1BackwardData" ],
     [ "BatchQP", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html", "structproxsuite_1_1proxqp_1_1dense_1_1BatchQP" ],
     [ "EigenAllowAlloc", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc.html", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc" ],
     [ "Model", "structproxsuite_1_1proxqp_1_1dense_1_1Model.html", "structproxsuite_1_1proxqp_1_1dense_1_1Model" ],
@@ -18,6 +19,7 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "SparseMat", "namespaceproxsuite_1_1proxqp_1_1dense.html#ac21857857a10d600d2b78816c3e0839d", null ],
     [ "Vec", "namespaceproxsuite_1_1proxqp_1_1dense.html#ac741dbc0ed11cbdaf81b142548c2691c", null ],
     [ "VecRef", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8f6fa5675a6421853608bd788a7d3207", null ],
+    [ "VecRefMut", "namespaceproxsuite_1_1proxqp_1_1dense.html#af481b19d90a2194bb7bd57f31ef64759", null ],
     [ "Mat", "namespaceproxsuite_1_1proxqp_1_1dense.html#a9a4b8d33572b9fdddd269630a01432a2", null ],
     [ "MatRef", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8ba2eac56d273ede6afafa50e67958a3", null ],
     [ "VecMap", "namespaceproxsuite_1_1proxqp_1_1dense.html#a9c648ae1f4b65db4ca05464cd50d94cc", null ],
@@ -28,9 +30,11 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "VecISize", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8ae2f5cbe213a7576ca2f87456152e38", null ],
     [ "VecMapBool", "namespaceproxsuite_1_1proxqp_1_1dense.html#a3f4ea49715162a0f00c4e05b7eb81ef1", null ],
     [ "VecBool", "namespaceproxsuite_1_1proxqp_1_1dense.html#a04b7d81d34e355e2cb705c61227cfc97", null ],
-    [ "power_iteration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a014d2daeeb476e42afd321ec80110591", null ],
-    [ "min_eigen_value_via_modified_power_iteration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a89321c67df763e2bd81042efc979a1d8", null ],
-    [ "estimate_minimal_eigen_value_of_symmetric_matrix", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8a95de5b38ba140b310fee9c3ee64846", null ],
+    [ "compute_backward", "namespaceproxsuite_1_1proxqp_1_1dense.html#aa3d257d71f76cede22fe3d1914381d6f", null ],
+    [ "compute_backward_loss_ESG", "namespaceproxsuite_1_1proxqp_1_1dense.html#a894042e3a4def0b9aae08ef624a3b3b6", null ],
+    [ "power_iteration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a8e05cb489be7f495bbcfacefdbbcf8e6", null ],
+    [ "min_eigen_value_via_modified_power_iteration", "namespaceproxsuite_1_1proxqp_1_1dense.html#a3e38b6332fd966852849aadfcea01a6d", null ],
+    [ "estimate_minimal_eigen_value_of_symmetric_matrix", "namespaceproxsuite_1_1proxqp_1_1dense.html#a167336c93a85e5d33dbcee9ba1322631", null ],
     [ "update_default_rho_with_minimal_Hessian_eigen_value", "namespaceproxsuite_1_1proxqp_1_1dense.html#ac92ed10f043fb2b185cd6227346ff296", null ],
     [ "compute_equality_constrained_initial_guess", "namespaceproxsuite_1_1proxqp_1_1dense.html#adf3a062d72893c2cf51b500e69ab9a38", null ],
     [ "setup_factorization", "namespaceproxsuite_1_1proxqp_1_1dense.html#a03fbf14661ed141b573975f9aa74cace", null ],
@@ -70,5 +74,8 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "operator!=", "namespaceproxsuite_1_1proxqp_1_1dense.html#ae6dbbd0fe09b5bf3e017336c6db984a2", null ],
     [ "solve_in_parallel", "namespaceproxsuite_1_1proxqp_1_1dense.html#ace1fc72159dd81df18bce20e188014a0", null ],
     [ "solve_in_parallel", "namespaceproxsuite_1_1proxqp_1_1dense.html#a314b81919935a56d0d454504eb0f190e", null ],
+    [ "qp_solve_in_parallel", "namespaceproxsuite_1_1proxqp_1_1dense.html#a0387cfbe34cbdb09a2dbcb40ca50ed44", null ],
+    [ "qp_solve_backward_in_parallel", "namespaceproxsuite_1_1proxqp_1_1dense.html#a4276db4c928ab371a4a45918f6fca4ac", null ],
+    [ "qp_solve_backward_in_parallel", "namespaceproxsuite_1_1proxqp_1_1dense.html#a0ae27449545fc7a976ebcdb8c0721031", null ],
     [ "DYN", "namespaceproxsuite_1_1proxqp_1_1dense.html#a6f880437281a6ccde0b9cdcb9d4e0c6c", null ]
 ];

@@ -18,6 +18,7 @@ var structproxsuite_1_1proxqp_1_1Info =
     [ "pri_res", "structproxsuite_1_1proxqp_1_1Info.html#a729ee967ad5ad5cb87233de2fc30514a", null ],
     [ "dua_res", "structproxsuite_1_1proxqp_1_1Info.html#a078039aabc1c7d6ffa5cddaf1982b789", null ],
     [ "duality_gap", "structproxsuite_1_1proxqp_1_1Info.html#a0e14fb903a5441b90b7da4d8947b4a6c", null ],
+    [ "iterative_residual", "structproxsuite_1_1proxqp_1_1Info.html#a5d6312e02edaadaa21c096951759f688", null ],
     [ "sparse_backend", "structproxsuite_1_1proxqp_1_1Info.html#a846f580dc75073ebe1e94e98702b7749", null ],
     [ "minimal_H_eigenvalue_estimate", "structproxsuite_1_1proxqp_1_1Info.html#aa0e41293393ff9c51a5c0725d8d5ea24", null ]
 ];

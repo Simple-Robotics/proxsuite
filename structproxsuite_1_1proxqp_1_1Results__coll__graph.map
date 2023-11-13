@@ -1,0 +1,11 @@
+<map id="proxsuite::proxqp::Results&lt; T &gt;" name="proxsuite::proxqp::Results&lt; T &gt;">
+<area shape="rect" id="Node000001" title="This class stores all the results of PROXQP solvers with sparse and dense backends." alt="" coords="594,109,738,153"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="289,109,423,153"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="438,128,594,128,594,134,438,134"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="46,5,199,67"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="214,66,241,76,307,106,305,110,239,81,212,71"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,92,240,170"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="254,128,288,128,288,134,254,134"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="16,195,229,256"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="221,186,239,179,304,151,306,156,241,184,223,191"/>
+</map>

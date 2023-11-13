@@ -10,5 +10,6 @@ var structproxsuite_1_1proxqp_1_1Results =
     [ "z", "structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb", null ],
     [ "se", "structproxsuite_1_1proxqp_1_1Results.html#abc45525fa7629407c261ef457ca4e8cc", null ],
     [ "si", "structproxsuite_1_1proxqp_1_1Results.html#a409d915cd4a3e64661ea1bdc18266ce3", null ],
+    [ "active_constraints", "structproxsuite_1_1proxqp_1_1Results.html#a5d19d99b013aac3affe9e07ce415ceca", null ],
     [ "info", "structproxsuite_1_1proxqp_1_1Results.html#a9815e12eaaf54fb2b6a371e5771cfe0a", null ]
 ];

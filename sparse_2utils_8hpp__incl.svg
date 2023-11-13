@@ -132,7 +132,7 @@
 <!-- Node60 -->
 <g id="Node000060" class="node">
 <title>Node60</title>
-<g id="a_Node000060"><a xlink:href="sparse_2workspace_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_Node000060"><a xlink:href="proxqp_2sparse_2workspace_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1112.12,-893 978.38,-893 978.38,-859.5 1112.12,-859.5 1112.12,-893"/>
 <text text-anchor="start" x="986.38" y="-879.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/sparse</text>
 <text text-anchor="middle" x="1045.25" y="-866.75" font-family="Helvetica,sans-Serif" font-size="10.00">/workspace.hpp</text>
@@ -339,7 +339,7 @@
 <!-- Node83 -->
 <g id="Node000083" class="node">
 <title>Node83</title>
-<g id="a_Node000083"><a xlink:href="sparse_2preconditioner_2ruiz_8hpp.html" target="_top" xlink:title=" ">
+<g id="a_Node000083"><a xlink:href="proxqp_2sparse_2preconditioner_2ruiz_8hpp.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="1128.12,-615 994.38,-615 994.38,-581.5 1128.12,-581.5 1128.12,-615"/>
 <text text-anchor="start" x="1002.38" y="-601.5" font-family="Helvetica,sans-Serif" font-size="10.00">proxsuite/proxqp/sparse</text>
 <text text-anchor="middle" x="1061.25" y="-588.75" font-family="Helvetica,sans-Serif" font-size="10.00">/preconditioner/ruiz.hpp</text>

@@ -1,8 +1,5 @@
 var NAVTREEINDEX3 =
 {
-"get_8hpp.html#a6b5d3f5529533b36bc8d72a31336831e":[12,0,1,0,1,2,3,4,16],
-"get_8hpp.html#a8c464a195514b1be55a9d5392e956401":[12,0,1,0,1,2,3,4,18],
-"get_8hpp.html#a8ec8f0726a393417a1f414a8f59f9427":[12,0,1,0,1,2,3,4,14],
 "get_8hpp.html#a9de5b5c3581dec9a025c2702acb93fee":[12,0,1,0,1,2,3,4,17],
 "get_8hpp.html#ac73528fd99757a33ed6a77d1260d0ab2":[12,0,1,0,1,2,3,4,19],
 "get_8hpp.html#af00b11840815bdc9f5aeb348a90cfd0d":[12,0,1,0,1,2,3,4,21],
@@ -197,12 +194,12 @@ var NAVTREEINDEX3 =
 "invocable_8hpp_source.html":[12,0,1,0,1,2,2,4],
 "ldlt_8hpp.html":[12,0,1,0,1,0,2],
 "ldlt_8hpp_source.html":[12,0,1,0,1,0,2],
-"linesearch_8hpp.html":[12,0,1,0,2,0,4],
-"linesearch_8hpp.html#a0b239ce8970e28a0e63080d5678be4f2":[12,0,1,0,2,0,4,1],
-"linesearch_8hpp.html#aa7095c5785fec1231f32581521401747":[12,0,1,0,2,0,4,4],
-"linesearch_8hpp.html#ace4116e055769e37e3bc0cab6d45b65b":[12,0,1,0,2,0,4,2],
-"linesearch_8hpp.html#ad909d99c87bbff37eeb37d5ffca5d257":[12,0,1,0,2,0,4,3],
-"linesearch_8hpp_source.html":[12,0,1,0,2,0,4],
+"linesearch_8hpp.html":[12,0,1,0,2,0,6],
+"linesearch_8hpp.html#a0b239ce8970e28a0e63080d5678be4f2":[12,0,1,0,2,0,6,1],
+"linesearch_8hpp.html#aa7095c5785fec1231f32581521401747":[12,0,1,0,2,0,6,4],
+"linesearch_8hpp.html#ace4116e055769e37e3bc0cab6d45b65b":[12,0,1,0,2,0,6,2],
+"linesearch_8hpp.html#ad909d99c87bbff37eeb37d5ffca5d257":[12,0,1,0,2,0,6,3],
+"linesearch_8hpp_source.html":[12,0,1,0,2,0,6],
 "macros_8hpp.html":[12,0,1,0,1,2,0,10],
 "macros_8hpp.html#a015c7c9516ab685a782bb60b216af850":[12,0,1,0,1,2,0,10,55],
 "macros_8hpp.html#a01e7a8a0525b9b1598244c17812cc499":[12,0,1,0,1,2,0,10,109],
@@ -249,5 +246,8 @@ var NAVTREEINDEX3 =
 "macros_8hpp.html#a80313300cefd390d25f7db922be7c641":[12,0,1,0,1,2,0,10,121],
 "macros_8hpp.html#a81af152eb16629b9315bf2c459cf02f5":[12,0,1,0,1,2,0,10,125],
 "macros_8hpp.html#a89394db0bff078cfb16f3d48b7a3d957":[12,0,1,0,1,2,0,10,34],
-"macros_8hpp.html#a8aa8cf6426861f8f6b31b070188db99b":[12,0,1,0,1,2,0,10,82]
+"macros_8hpp.html#a8aa8cf6426861f8f6b31b070188db99b":[12,0,1,0,1,2,0,10,82],
+"macros_8hpp.html#a9087fb4c15212107761609645b9460f8":[12,0,1,0,1,2,0,10,123],
+"macros_8hpp.html#a917ab6594dad2c9e153675dd2cd6274e":[12,0,1,0,1,2,0,10,110],
+"macros_8hpp.html#a9231417c436af289092fe0da65abd62f":[12,0,1,0,1,2,0,10,111]
 };

@@ -1,7 +1,16 @@
 <map id="include/proxsuite/proxqp/sparse/wrapper.hpp" name="include/proxsuite/proxqp/sparse/wrapper.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="108,5,290,50"/>
-<area shape="rect" id="Node000002" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,98,188,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="166,62,123,100,119,96,162,58"/>
-<area shape="rect" id="Node000003" href="$sparse_8hpp.html" title=" " alt="" coords="212,98,394,143"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="237,58,280,95,277,100,233,62"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="583,5,765,50"/>
+<area shape="rect" id="Node000002" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="324,98,506,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="599,58,478,100,476,95,597,53"/>
+<area shape="rect" id="Node000004" href="$qp__solve_8hpp.html" title=" " alt="" coords="293,283,476,328"/>
+<area shape="poly" id="edge6_Node000001_Node000004" title=" " alt="" coords="683,64,687,103,685,149,674,196,664,218,650,237,623,256,580,271,477,294,476,289,578,266,620,251,647,233,660,215,669,194,680,149,681,103,678,64"/>
+<area shape="rect" id="Node000007" href="$sparse_8hpp.html" title=" " alt="" coords="711,98,893,143"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="718,57,773,95,770,100,715,61"/>
+<area shape="rect" id="Node000003" href="$compute__ECJ_8hpp.html" title=" " alt="" coords="5,191,188,235"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="326,150,173,193,172,188,324,145"/>
+<area shape="rect" id="Node000005" href="$dense_8hpp.html" title=" " alt="" coords="212,191,394,235"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="379,154,332,192,328,188,376,150"/>
+<area shape="rect" id="Node000006" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,191,636,235"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="455,150,502,188,499,192,451,154"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="180,238,316,280,315,285,178,243"/>
 </map>
