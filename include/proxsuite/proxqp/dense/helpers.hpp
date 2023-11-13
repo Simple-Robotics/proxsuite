@@ -21,9 +21,9 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
-template<typename T>
+template<typename T, int l>
 T
-power_iteration(MatRef<T> H,
+power_iteration(MatRef<T, l> H,
                 VecRefMut<T> dw,
                 VecRefMut<T> rhs,
                 VecRefMut<T> err_v,
@@ -55,9 +55,9 @@ power_iteration(MatRef<T> H,
   }
   return eig;
 }
-template<typename T>
+template<typename T, int l>
 T
-min_eigen_value_via_modified_power_iteration(MatRef<T> H,
+min_eigen_value_via_modified_power_iteration(MatRef<T, l> H,
                                              VecRefMut<T> dw,
                                              VecRefMut<T> rhs,
                                              VecRefMut<T> err_v,
@@ -104,10 +104,10 @@ min_eigen_value_via_modified_power_iteration(MatRef<T> H,
  * @param nb_power_iteration maximal number of power iteration executed
  *
  */
-template<typename T>
+template<typename T, int l>
 T
 estimate_minimal_eigen_value_of_symmetric_matrix(
-  MatRef<T> H,
+  MatRef<T, l> H,
   EigenValueEstimateMethodOption estimate_method_option,
   T power_iteration_accuracy,
   isize nb_power_iteration)

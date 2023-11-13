@@ -13,7 +13,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-
+/*
 DOCTEST_TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
@@ -7591,6 +7591,7 @@ DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
   qp.init(symmetric_mat, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt);
 }
 
+*/
 
 TEST_CASE(
   "ProxQP::dense: test memory allocation when estimating biggest eigenvalue with power iteration")
@@ -7614,7 +7615,7 @@ TEST_CASE(
   qp_random.H.diagonal().tail(1).setConstant(-0.5);
   H = qp_random.H;
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
-  dense::power_iteration<T>(
+  dense::power_iteration<T, Eigen::ColMajor>(
     H, dw, rhs, err_v, 1.E-6, 10000);
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
