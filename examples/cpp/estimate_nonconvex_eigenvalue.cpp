@@ -29,7 +29,7 @@ main()
   dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   // choose the option for estimating this eigenvalue
   T estimate_minimal_eigen_value =
-    dense::estimate_minimal_eigen_value_of_symmetric_matrix<T>(
+    dense::estimate_minimal_eigen_value_of_symmetric_matrix(
       qp_random.H, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);
   bool compute_preconditioner = false;
   // input the estimate for making rho appropriate

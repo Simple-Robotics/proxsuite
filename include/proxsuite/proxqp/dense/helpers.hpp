@@ -21,32 +21,39 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
-template<typename T>
+template<typename T,
+         typename MatIn,
+         typename VecIn1,
+         typename VecIn2,
+         typename VecIn3>
 T
-power_iteration(MatRef<T> H,
-                VecRefMut<T> dw,
-                VecRefMut<T> rhs,
-                VecRefMut<T> err_v,
+power_iteration(const Eigen::MatrixBase<MatIn>& H,
+                const Eigen::MatrixBase<VecIn1>& dw,
+                const Eigen::MatrixBase<VecIn2>& rhs,
+                const Eigen::MatrixBase<VecIn3>& err_v,
                 T power_iteration_accuracy,
                 isize nb_power_iteration)
 {
+  auto& dw_cc = dw.const_cast_derived();
+  auto& rhs_cc = rhs.const_cast_derived();
+  auto& err_v_cc = err_v.const_cast_derived();
   // computes maximal eigen value of the bottom right matrix of the LDLT
   isize dim = H.rows();
-  rhs.setZero();
+  rhs_cc.setZero();
   // stores eigenvector
-  rhs.array() += 1. / std::sqrt(dim);
+  rhs_cc.array() += 1. / std::sqrt(dim);
   // stores Hx
-  dw.noalias() = H.template selfadjointView<Eigen::Lower>() * rhs; // Hx
+  dw_cc.noalias() = H.template selfadjointView<Eigen::Lower>() * rhs_cc; // Hx
   T eig = 0;
   for (isize i = 0; i < nb_power_iteration; i++) {
 
-    rhs = dw / dw.norm();
-    dw.noalias() = (H.template selfadjointView<Eigen::Lower>() * rhs);
+    rhs_cc = dw_cc / dw_cc.norm();
+    dw_cc.noalias() = (H.template selfadjointView<Eigen::Lower>() * rhs_cc);
     // calculate associated eigenvalue
-    eig = rhs.dot(dw);
+    eig = rhs.dot(dw_cc);
     // calculate associated error
-    err_v = dw - eig * rhs;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    err_v_cc = dw_cc - eig * rhs_cc;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v_cc);
     // std::cout << "power iteration max: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {
@@ -55,37 +62,46 @@ power_iteration(MatRef<T> H,
   }
   return eig;
 }
-template<typename T>
+template<typename T,
+         typename MatIn,
+         typename VecIn1,
+         typename VecIn2,
+         typename VecIn3>
 T
-min_eigen_value_via_modified_power_iteration(MatRef<T> H,
-                                             VecRefMut<T> dw,
-                                             VecRefMut<T> rhs,
-                                             VecRefMut<T> err_v,
-                                             T max_eigen_value,
-                                             T power_iteration_accuracy,
-                                             isize nb_power_iteration)
+min_eigen_value_via_modified_power_iteration(
+  const Eigen::MatrixBase<MatIn>& H,
+  const Eigen::MatrixBase<VecIn1>& dw,
+  const Eigen::MatrixBase<VecIn2>& rhs,
+  const Eigen::MatrixBase<VecIn3>& err_v,
+  T max_eigen_value,
+  T power_iteration_accuracy,
+  isize nb_power_iteration)
 {
   // performs power iteration on the matrix: max_eigen_value I - H
   // estimates then the minimal eigenvalue with: minimal_eigenvalue =
   // max_eigen_value - eig
+  auto& dw_cc = dw.const_cast_derived();
+  auto& rhs_cc = rhs.const_cast_derived();
+  auto& err_v_cc = err_v.const_cast_derived();
   isize dim = H.rows();
-  rhs.setZero();
+  rhs_cc.setZero();
   // stores eigenvector
-  rhs.array() += 1. / std::sqrt(dim);
+  rhs_cc.array() += 1. / std::sqrt(dim);
   // stores Hx
-  dw.noalias() = -(H.template selfadjointView<Eigen::Lower>() * rhs); // Hx
-  dw += max_eigen_value * rhs;
+  dw_cc.noalias() =
+    -(H.template selfadjointView<Eigen::Lower>() * rhs_cc); // Hx
+  dw_cc += max_eigen_value * rhs_cc;
   T eig = 0;
   for (isize i = 0; i < nb_power_iteration; i++) {
 
-    rhs = dw / dw.norm();
-    dw.noalias() = -(H.template selfadjointView<Eigen::Lower>() * rhs);
-    dw += max_eigen_value * rhs;
+    rhs_cc = dw_cc / dw_cc.norm();
+    dw_cc.noalias() = -(H.template selfadjointView<Eigen::Lower>() * rhs_cc);
+    dw_cc += max_eigen_value * rhs_cc;
     // calculate associated eigenvalue
-    eig = rhs.dot(dw);
+    eig = rhs_cc.dot(dw_cc);
     // calculate associated error
-    err_v = dw - eig * rhs;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    err_v_cc = dw_cc - eig * rhs_cc;
+    T err = proxsuite::proxqp::dense::infty_norm(err_v_cc);
     // std::cout << "power iteration min: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {
@@ -104,10 +120,10 @@ min_eigen_value_via_modified_power_iteration(MatRef<T> H,
  * @param nb_power_iteration maximal number of power iteration executed
  *
  */
-template<typename T>
+template<typename T, typename MatIn>
 T
 estimate_minimal_eigen_value_of_symmetric_matrix(
-  MatRef<T> H,
+  const Eigen::MatrixBase<MatIn>& H,
   EigenValueEstimateMethodOption estimate_method_option,
   T power_iteration_accuracy,
   isize nb_power_iteration)
@@ -129,16 +145,16 @@ estimate_minimal_eigen_value_of_symmetric_matrix(
       Vec<T> dw(dim);
       Vec<T> rhs(dim);
       Vec<T> err(dim);
-      T dominant_eigen_value = power_iteration<T>(
+      T dominant_eigen_value = power_iteration(
         H, dw, rhs, err, power_iteration_accuracy, nb_power_iteration);
-      T min_eigenvalue = min_eigen_value_via_modified_power_iteration<T>(
-        H,
-        dw,
-        rhs,
-        err,
-        dominant_eigen_value,
-        power_iteration_accuracy,
-        nb_power_iteration);
+      T min_eigenvalue =
+        min_eigen_value_via_modified_power_iteration(H,
+                                                     dw,
+                                                     rhs,
+                                                     err,
+                                                     dominant_eigen_value,
+                                                     power_iteration_accuracy,
+                                                     nb_power_iteration);
       res = std::min(min_eigenvalue, dominant_eigen_value);
     } break;
     case EigenValueEstimateMethodOption::ExactMethod: {
