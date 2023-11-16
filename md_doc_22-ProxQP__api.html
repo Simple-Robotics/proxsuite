@@ -37,7 +37,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.0</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.1</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -1492,7 +1492,7 @@ The different options for estimating H minimal Eigenvalue</h2>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1QP.html">dense::QP&lt;T&gt;</a> qp(dim, n_eq, n_in); <span class="comment">// create the QP object</span></div>
 <div class="line">  <span class="comment">// choose the option for estimating this eigenvalue</span></div>
 <div class="line">  T estimate_minimal_eigen_value =</div>
-<div class="line">    dense::estimate_minimal_eigen_value_of_symmetric_matrix&lt;T&gt;(</div>
+<div class="line">    dense::estimate_minimal_eigen_value_of_symmetric_matrix(</div>
 <div class="line">      qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39">H</a>, EigenValueEstimateMethodOption::ExactMethod, 1.E-6, 10000);</div>
 <div class="line">  <span class="keywordtype">bool</span> compute_preconditioner = <span class="keyword">false</span>;</div>
 <div class="line">  <span class="comment">// input the estimate for making rho appropriate</span></div>
@@ -1554,7 +1554,7 @@ The different options for estimating H minimal Eigenvalue</h2>
 <div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
 <div class="line"><span class="comment"># initialize the model of the problem to solve</span></div>
 <div class="line">estimate_minimal_eigen_value = (</div>
-<div class="line">    <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a167336c93a85e5d33dbcee9ba1322631">proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix</a>(</div>
+<div class="line">    <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1dense.html#a563e4c08493269225b551dce31f0d08d">proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix</a>(</div>
 <div class="line">        H, proxsuite.proxqp.EigenValueEstimateMethodOption.ExactMethod</div>
 <div class="line">    )</div>
 <div class="line">)</div>
@@ -1565,7 +1565,7 @@ The different options for estimating H minimal Eigenvalue</h2>
 <div class="line">print(f<span class="stringliteral">&quot;{min_eigenvalue=}&quot;</span>)</div>
 <div class="line">print(f<span class="stringliteral">&quot;{estimate_minimal_eigen_value=}&quot;</span>)</div>
 <div class="line">print(f<span class="stringliteral">&quot;{qp.results.info.minimal_H_eigenvalue_estimate=}&quot;</span>)</div>
-<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a167336c93a85e5d33dbcee9ba1322631"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a167336c93a85e5d33dbcee9ba1322631">proxsuite::proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix</a></div><div class="ttdeci">T estimate_minimal_eigen_value_of_symmetric_matrix(MatRef&lt; T &gt; H, EigenValueEstimateMethodOption estimate_method_option, T power_iteration_accuracy, isize nb_power_iteration)</div><div class="ttdef"><b>Definition</b> <a href="dense_2helpers_8hpp_source.html#l00109">helpers.hpp:109</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_a563e4c08493269225b551dce31f0d08d"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#a563e4c08493269225b551dce31f0d08d">proxsuite::proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix</a></div><div class="ttdeci">T estimate_minimal_eigen_value_of_symmetric_matrix(const Eigen::MatrixBase&lt; MatIn &gt; &amp;H, EigenValueEstimateMethodOption estimate_method_option, T power_iteration_accuracy, isize nb_power_iteration)</div><div class="ttdef"><b>Definition</b> <a href="dense_2helpers_8hpp_source.html#l00125">helpers.hpp:125</a></div></div>
 </div><!-- fragment -->   </td></tr>
 </table>
 <h3><a class="anchor" id="OverviewNoInitialGuess"></a>
