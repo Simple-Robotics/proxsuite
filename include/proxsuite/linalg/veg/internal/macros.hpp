@@ -5,6 +5,7 @@
 #include "proxsuite/linalg/veg/internal/preprocessor.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 #include <initializer_list>
+#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +129,7 @@
 #endif
 
 #if defined(VEG_WITH_CXX17_SUPPORT)
-#define VEG_DECLVAL(...) (static_cast<__VA_ARGS__ (*)() noexcept>(nullptr)())
+#define VEG_DECLVAL(...) (std::declval<__VA_ARGS__>())
 #else
 #define VEG_DECLVAL(...)                                                       \
   (::proxsuite::linalg::veg::_detail::_meta::declval<__VA_ARGS__>())
