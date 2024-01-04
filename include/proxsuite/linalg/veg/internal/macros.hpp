@@ -5,6 +5,7 @@
 #include "proxsuite/linalg/veg/internal/preprocessor.hpp"
 #include "proxsuite/linalg/veg/internal/prologue.hpp"
 #include <initializer_list>
+#include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -127,12 +128,7 @@
 #define VEG_HAS_CONCEPTS 0
 #endif
 
-#if defined(VEG_WITH_CXX17_SUPPORT)
-#define VEG_DECLVAL(...) (static_cast<__VA_ARGS__ (*)() noexcept>(nullptr)())
-#else
-#define VEG_DECLVAL(...)                                                       \
-  (::proxsuite::linalg::veg::_detail::_meta::declval<__VA_ARGS__>())
-#endif
+#define VEG_DECLVAL(...) (std::declval<__VA_ARGS__>())
 
 #if defined(__clang__)
 #define VEG_ARROW(...)                                                         \
@@ -665,9 +661,6 @@ struct unref<T&>
   using type = T;
 };
 
-template<typename T>
-auto
-declval() VEG_ALWAYS_NOEXCEPT->T;
 } // namespace _meta
 } // namespace _detail
 
