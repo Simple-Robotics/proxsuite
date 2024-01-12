@@ -147,6 +147,8 @@ TEST_CASE("sparse maros meszaros using the API")
                                              CT.transpose().cast<bool>());
       qp.settings.eps_abs = eps_abs_no_duality_gap;
       qp.settings.eps_rel = 0;
+      qp.settings.eps_primal_inf = 1e-12;
+      qp.settings.eps_dual_inf = 1e-12;
       qp.init(H, g, AT.transpose(), b, CT.transpose(), l, u);
 
       for (isize iter = 0; iter < 2; ++iter) {

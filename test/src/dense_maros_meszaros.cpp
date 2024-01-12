@@ -126,6 +126,8 @@ TEST_CASE("dense maros meszaros using the api")
 
       qp.settings.eps_abs = 2e-8;
       qp.settings.eps_rel = 0;
+      qp.settings.eps_primal_inf = 1e-12;
+      qp.settings.eps_dual_inf = 1e-12;
       auto& eps = qp.settings.eps_abs;
 
       for (size_t it = 0; it < 2; ++it) {
