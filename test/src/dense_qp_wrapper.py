@@ -4583,6 +4583,21 @@ class DenseqpWrapper(unittest.TestCase):
             qp.settings.eps_abs = eps
             qp.solve()
 
+            # if infeasibility is detected, we relax the tolerance and solve again
+            if (
+                qp.results.info.status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE
+            ):
+                print(f"[{i}] {qp.results.info.status=}, solve again.")
+                qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+                qp.init(H, g, A, b, C, l, u, l_box, u_box)
+                qp.settings.eps_abs = eps
+                qp.settings.eps_primal_inf = 1e-12
+                qp.settings.eps_dual_inf = 1e-12
+                qp.solve()
+
+            assert qp.results.info.status == proxsuite.proxqp.PROXQP_SOLVED
+
             dua_res = normInf(
                 H @ qp.results.x
                 + g
@@ -4616,6 +4631,21 @@ class DenseqpWrapper(unittest.TestCase):
             qp.init(H, g, A, b, C, l, u, l_box, u_box)
             qp.settings.eps_abs = eps
             qp.solve()
+
+            # if infeasibility is detected, we relax the tolerance and solve again
+            if (
+                qp.results.info.status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE
+            ):
+                print(f"[{i}] {qp.results.info.status=}, solve again.")
+                qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+                qp.init(H, g, A, b, C, l, u, l_box, u_box)
+                qp.settings.eps_abs = eps
+                qp.settings.eps_primal_inf = 1e-12
+                qp.settings.eps_dual_inf = 1e-12
+                qp.solve()
+
+            assert qp.results.info.status == proxsuite.proxqp.PROXQP_SOLVED
 
             dua_res = normInf(
                 H @ qp.results.x
