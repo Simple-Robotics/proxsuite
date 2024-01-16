@@ -63,7 +63,7 @@ $$\begin{equation}\label{eq:approx_qp_sol_relative_criterion}
 \end{aligned}
 \end{equation}$$
 
-It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, strong duality holds (see, e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* $r_g$:
+It is important to note that this stopping criterion on primal and dual residuals is not enough to guarantee that the returned solution satisfies all \eqref{qp:kkt} conditions. Indeed, as the problem has affine constraints and the objective is quadratic and convex, then as soon as the primal or the dual problem is feasible, strong duality holds (see, e.g., [Theorem 2](https://people.eecs.berkeley.edu/~elghaoui/Teaching/EE227A/lecture8.pdf) from L. El Ghaoui's lesson) and to satisfy all optimality conditions we need to add a third criterion on the *duality gap* \f$r_g\f$:
 
 $$\begin{equation}\label{eq:approx_dg_sol}
 \begin{aligned}
@@ -71,9 +71,9 @@ $$\begin{equation}\label{eq:approx_dg_sol}
 \end{aligned}
 \end{equation}$$
 
-where $[z]_+$ and $[z]_-$ stand for the z projection onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check this criterion in general. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds $\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}$ for the duality gap can differ from those $\epsilon_{\text{abs}}, \epsilon_{\text{rel}}$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is $\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
+where \f$[z]_+\f$ and \f$[z]_-\f$ stand for the z projection onto the positive and negative orthant. ProxQP provides the ``check_duality_gap`` option to include this duality gap in the stopping criterion. Note that it is disabled by default, as other solvers don't check this criterion in general. Enable this option if you want a stronger guarantee that your solution is optimal. ProxQP will then check the same termination condition as SCS (for more details see, e.g., SCS's [optimality conditions checks](https://www.cvxgrp.org/scs/algorithm/index.html#optimality-conditions) as well as [section 7.2](https://doi.org/10.1137/20M1366307) in the corresponding paper). The absolute and relative thresholds \f$\epsilon^{\text{gap}}_{\text{abs}}, \epsilon^{\text{gap}}_{\text{rel}}\f$ for the duality gap can differ from those \f$\epsilon_{\text{abs}}, \epsilon_{\text{rel}}\f$ for residuals because, contrary to residuals which result from an infinite norm, the duality gap scales with the square root of the problem dimension (thus it is numerically harder to achieve a given duality gap for larger problems). A recommended choice is \f$\epsilon^{\text{gap}}_{\text{abs}} = \epsilon_{\text{abs}} \sqrt{\max(n, n_{\text{eq}}, n_{\text{ineq}})}\f$. Note finally that meeting all residual and duality-gap criteria can be difficult for ill-conditioned problems.
 
-Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in $\ell_2$ sense, and (x,y,z) will satisfy.
+Finally, note that ProxQP has a specific feature for handling primal infeasibility. More precisely, if the problem appears to be primal infeasible, it will solve the closest primal feasible problem in \f$\ell_2\f$ sense, and (x,y,z) will satisfy.
 
 $$\begin{equation}\label{eq:approx_closest_qp_sol_rel}
 \begin{aligned}
@@ -515,8 +515,8 @@ The result subclass is composed of the following:
 * x: a primal solution,
 * y: a Lagrange optimal multiplier for equality constraints,
 * z: a Lagrange optimal multiplier for inequality constraints,
-* se: the optimal shift in $\ell_2$ with respect to equality constraints,
-* si: the optimal shift in $\ell_2$ with respect to inequality constraints,
+* se: the optimal shift in \f$\ell_2\f$ with respect to equality constraints,
+* si: the optimal shift in \f$\ell_2\f$ with respect to inequality constraints,
 * info: a subclass which containts some information about the solver's execution.
 
 If the solver has solved the problem, the triplet (x,y,z) satisfies:
@@ -546,7 +546,7 @@ $$\begin{equation}\label{eq:approx_closest_qp_sol_rel_bis}
 \end{aligned}
 \end{equation}$$
 
-(se, si) stands in this context for the optimal shifts in $\ell_2$ sense which enables recovering a primal feasible problem. More precisely, they are derived such that
+(se, si) stands in this context for the optimal shifts in \f$\ell_2\f$ sense which enables recovering a primal feasible problem. More precisely, they are derived such that
 
 \begin{equation}\label{eq:QP_primal_feasible}\tag{QP_feas}
 \begin{aligned}
@@ -561,7 +561,7 @@ $$\begin{equation}\label{eq:approx_closest_qp_sol_rel_bis}
 \end{equation}\\\
 defines a primal feasible problem.
 
-Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first $n_{in}$ elements of z correspond to multipliers associated to the linear inequality formed with $C$ matrix, whereas the last $d$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
+Note that if you use the dense backend and its specific feature for handling box inequality constraints, then the first \f$n_{in}\f$ elements of z correspond to multipliers associated to the linear inequality formed with \f$C\f$ matrix, whereas the last \f$d\f$ elements correspond to multipliers associated to the box inequality constraints (see for example solve_dense_qp.cpp or solve_dense_qp.py).
 
 \subsection OverviewInfoClass The info subclass
 
