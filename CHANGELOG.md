@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 We add the implementation of [QPLayer](https://inria.hal.science/hal-04133055/file/QPLayer_Preprint.pdf).
 **QPLayer** enables to use a QP as a layer within standard learning architectures.
 **QPLayer** allows for parallelized calculus over CPUs, and is interfaced with **PyTorch**.
-**QPLayer** can also differentiate over LPs. 
+**QPLayer** can also differentiate over LPs.
 
 ### What's Changed
 * QPLayer: efficient differentiation of convex quadratic optimization by [@fabinsch,](https://github.com/fabinsch,) [@Bambade](https://github.com/Bambade) and [@quentinll](https://github.com/quentinll) ([#264](https://github.com/Simple-Robotics/proxsuite/pull/264))
