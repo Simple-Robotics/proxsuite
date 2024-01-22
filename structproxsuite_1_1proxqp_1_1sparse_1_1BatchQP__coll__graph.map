@@ -1,7 +1,9 @@
 <map id="proxsuite::proxqp::sparse::BatchQP&lt; T, I &gt;" name="proxsuite::proxqp::sparse::BatchQP&lt; T, I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="67,132,244,177"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,172,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,79,127,107,142,130,137,133,122,109,107,82"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="196,22,248,50"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="215,65,195,109,177,133,173,130,190,107,210,63"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="67,225,244,269"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,172,160"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,172,127,199,142,223,137,226,122,202,107,174"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="69,5,108,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="91,49,91,98,86,98,86,49"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="196,115,248,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="215,159,195,202,177,226,173,223,190,199,210,156"/>
 </map>

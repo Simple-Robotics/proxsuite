@@ -6,7 +6,7 @@ var type__traits_2alloc_8hpp =
     [ "proxsuite::linalg::veg::mem::AllocBlock", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1AllocBlock" ],
     [ "proxsuite::linalg::veg::mem::Layout", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1Layout" ],
     [ "proxsuite::linalg::veg::mem::RelocFn", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn" ],
-    [ "byte", "type__traits_2alloc_8hpp.html#aaf71e95f8105797c322dcfc3194f61db", null ],
+    [ "byte", "type__traits_2alloc_8hpp.html#a0afd090596ec4be5e615062637f1eb58", null ],
     [ "throw_bad_alloc", "type__traits_2alloc_8hpp.html#ae2a3ceecb798c800a2d7e5287a475619", null ],
     [ "terminate", "type__traits_2alloc_8hpp.html#aaaa018bfbd94923135b274f338d4015a", null ],
     [ "memmove", "type__traits_2alloc_8hpp.html#aae872f8ff5772ee91305e119d3510dfe", null ],

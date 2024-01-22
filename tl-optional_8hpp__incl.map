@@ -1,13 +1,13 @@
 <map id="include/proxsuite/helpers/tl&#45;optional.hpp" name="include/proxsuite/helpers/tl&#45;optional.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="137,5,322,50"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,98,54,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="177,53,68,98,66,93,175,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="177,53,69,97,67,92,175,48"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="78,98,163,126"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="202,53,151,91,148,87,199,48"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="202,53,152,90,148,86,199,48"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="186,98,273,126"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="232,50,232,83,227,83,227,50"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="232,50,232,82,227,82,227,50"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="297,98,389,126"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="261,48,314,87,311,91,258,53"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="261,48,314,86,311,91,258,53"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="413,98,473,126"/>
 <area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="287,48,400,91,398,96,285,53"/>
 </map>

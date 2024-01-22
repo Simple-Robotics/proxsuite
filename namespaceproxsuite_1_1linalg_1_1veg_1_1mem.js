@@ -19,7 +19,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1mem =
     [ "RelocFn", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1RelocFn" ],
     [ "StackAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1StackAlloc.html", null ],
     [ "SystemAlloc", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1mem_1_1SystemAlloc" ],
-    [ "byte", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#aaf71e95f8105797c322dcfc3194f61db", null ],
+    [ "byte", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#a0afd090596ec4be5e615062637f1eb58", null ],
     [ "CopyAvailable", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5f", [
       [ "no", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5fa7fa3b767c460b54a2be4d49030b349c7", null ],
       [ "yes_maythrow", "namespaceproxsuite_1_1linalg_1_1veg_1_1mem.html#af70c8c9fe3409803cdf933f93271ce5fac242c4b5c866c6f70c80f3d2bfc58505", null ],

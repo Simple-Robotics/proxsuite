@@ -1,26 +1,26 @@
 <map id="include/proxsuite/proxqp/dense/backward_data.hpp" name="include/proxsuite/proxqp/dense/backward_data.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="423,5,618,50"/>
 <area shape="rect" id="Node000002" href="$proxqp_2dense_2model_8hpp.html" title=" " alt="" coords="429,98,612,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="523,65,523,98,518,98,518,65"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="523,66,523,98,518,98,518,66"/>
 <area shape="rect" id="Node000003" href="$linesearch_8hpp.html" title=" " alt="" coords="109,191,292,235"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="431,150,278,193,276,188,429,145"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="430,150,278,193,276,188,429,145"/>
 <area shape="rect" id="Node000010" href="$dense_2utils_8hpp.html" title=" " alt="" coords="316,191,498,235"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="484,154,436,192,433,188,481,150"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="483,155,436,192,433,188,480,150"/>
 <area shape="rect" id="Node000011" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="522,191,748,235"/>
-<area shape="poly" id="edge11_Node000002_Node000011" title=" " alt="" coords="561,150,609,188,606,192,557,154"/>
+<area shape="poly" id="edge11_Node000002_Node000011" title=" " alt="" coords="561,150,609,188,606,192,558,154"/>
 <area shape="rect" id="Node000012" href="$serialization_2model_8hpp.html" title=" " alt="" coords="772,191,989,235"/>
-<area shape="poly" id="edge12_Node000002_Node000012" title=" " alt="" coords="621,144,795,188,794,193,620,149"/>
+<area shape="poly" id="edge12_Node000002_Node000012" title=" " alt="" coords="622,144,795,188,794,193,621,149"/>
 <area shape="rect" id="Node000004" href="$dense_2solver_8hpp.html" title=" " alt="" coords="212,283,394,328"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="237,243,280,281,277,285,234,247"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="238,244,280,281,277,285,234,248"/>
 <area shape="rect" id="Node000005" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="212,376,394,421"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="306,343,306,376,301,376,301,343"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="306,344,306,376,301,376,301,344"/>
 <area shape="rect" id="Node000006" href="$compute__ECJ_8hpp.html" title=" " alt="" coords="5,469,188,513"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="242,429,147,471,145,466,240,424"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="241,430,147,471,145,466,239,425"/>
 <area shape="rect" id="Node000008" href="$dense_8hpp.html" title=" " alt="" coords="212,469,394,513"/>
-<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="306,435,306,468,301,468,301,435"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="306,436,306,468,301,468,301,436"/>
 <area shape="rect" id="Node000009" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,469,636,513"/>
-<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="371,424,475,466,473,471,369,429"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="372,424,475,466,473,471,370,429"/>
 <area shape="rect" id="Node000007" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,561,188,606"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="99,528,99,561,94,561,94,528"/>
-<area shape="poly" id="edge10_Node000010_Node000004" title=" " alt="" coords="373,247,330,285,326,281,370,243"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="99,529,99,561,94,561,94,529"/>
+<area shape="poly" id="edge10_Node000010_Node000004" title=" " alt="" coords="373,248,330,285,326,281,369,244"/>
 </map>

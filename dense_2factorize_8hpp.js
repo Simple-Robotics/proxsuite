@@ -1,6 +1,6 @@
 var dense_2factorize_8hpp =
 [
-    [ "factorize_recursive_threshold", "dense_2factorize_8hpp.html#a4ec9c56aaa0ffb7bb0595b2d841f85da", null ],
+    [ "factorize_recursive_threshold", "dense_2factorize_8hpp.html#a6d073858edf29b3d81024691487cf952", null ],
     [ "compute_permutation_impl", "dense_2factorize_8hpp.html#af891aca62190337bf81fa66c79211c0a", null ],
     [ "compute_permutation", "dense_2factorize_8hpp.html#a2ef802a1895b2e3cc7ceb31e159d6c66", null ],
     [ "apply_permutation_tri_lower", "dense_2factorize_8hpp.html#a18dbc5bc26e80a36e8aee897ea5a3026", null ],

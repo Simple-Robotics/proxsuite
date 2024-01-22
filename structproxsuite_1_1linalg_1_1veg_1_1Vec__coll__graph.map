@@ -1,9 +1,9 @@
 <map id="proxsuite::linalg::veg::Vec&lt; T, A, Dtor, Copy &gt;" name="proxsuite::linalg::veg::Vec&lt; T, A, Dtor, Copy &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="330,91,486,152"/>
 <area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,5,220,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="235,61,282,76,330,92,329,97,281,81,234,66"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,61,282,76,330,92,329,97,281,81,234,66"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,91,282,152"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="297,119,329,119,329,124,297,124"/>
 <area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,176,250,238"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="260,168,281,162,329,146,330,151,282,167,261,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="260,168,281,162,329,146,330,151,282,167,262,173"/>
 </map>

@@ -1,15 +1,15 @@
 <map id="tl::detail::optional_move_assign_base&lt; T, bool &gt;" name="tl::detail::optional_move_assign_base&lt; T, bool &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="10,486,190,547"/>
 <area shape="rect" id="Node000007" href="$classtl_1_1optional.html" title=" " alt="" coords="35,595,165,623"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="103,562,103,595,97,595,97,562"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="103,563,103,595,97,595,97,563"/>
 <area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__copy__assign__base.html" title=" " alt="" coords="13,376,187,438"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,452,103,485,97,485,97,452"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,453,103,485,97,485,97,453"/>
 <area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="11,283,189,328"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="103,343,103,376,97,376,97,343"/>
 <area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="14,191,186,235"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="103,250,103,283,97,283,97,250"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="103,251,103,283,97,283,97,251"/>
 <area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="13,98,187,143"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="103,157,103,190,97,190,97,157"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="103,158,103,190,97,190,97,158"/>
 <area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="5,5,195,50"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="103,65,103,98,97,98,97,65"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="103,66,103,98,97,98,97,66"/>
 </map>

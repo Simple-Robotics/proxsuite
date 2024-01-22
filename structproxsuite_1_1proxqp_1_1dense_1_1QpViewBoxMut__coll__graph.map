@@ -1,10 +1,10 @@
 <map id="proxsuite::proxqp::dense::QpViewBoxMut&lt; Scalar &gt;" name="proxsuite::proxqp::dense::QpViewBoxMut&lt; Scalar &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="459,78,627,139"/>
 <area shape="rect" id="Node000002" href="$structproxsuite_1_1proxqp_1_1MatrixViewMut.html" title=" " alt="" coords="188,22,367,83"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="382,52,436,60,478,74,477,80,434,66,381,57"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="383,52,436,60,478,74,477,80,434,66,382,57"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,95,57,122"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="71,97,187,70,188,75,72,102"/>
 <area shape="rect" id="Node000004" href="$structproxsuite_1_1proxqp_1_1VectorViewMut.html" title=" " alt="" coords="183,125,372,169"/>
-<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="72,119,81,121,183,137,182,142,80,127,70,124"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="339,172,386,183,410,184,434,179,473,161,507,137,510,142,476,166,436,185,411,189,385,189,338,177"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="72,119,81,121,183,137,182,142,80,127,71,124"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="340,173,387,183,411,184,434,179,473,161,507,137,510,142,476,166,436,185,411,189,386,189,338,178"/>
 </map>

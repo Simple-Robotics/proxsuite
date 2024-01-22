@@ -1,18 +1,18 @@
 <map id="include/proxsuite/proxqp/sparse" name="include/proxsuite/proxqp/sparse">
 <area shape="rect" id="node1" href="dir_20facd4f77d2dec2662dab4b835c14f3.html" title="utils" alt="" coords="177,141,226,168"/>
 <area shape="rect" id="node2" href="dir_35fc67a0d6ba4213a0c30d725ba6d4d5.html" title="dense" alt="" coords="250,141,310,168"/>
-<area shape="poly" id="edge2" href="dir_000016_000019.html" alt="" coords="136,91,178,129,175,133,132,95"/>
+<area shape="poly" id="edge2" href="dir_000016_000019.html" alt="" coords="136,91,178,128,174,132,132,95"/>
 <area shape="rect" id="edge2-headlabel" href="dir_000016_000019.html" title="1" alt="" coords="175,114,183,131"/>
-<area shape="poly" id="edge3" href="dir_000016_000001.html" alt="" coords="148,90,239,132,237,137,146,95"/>
+<area shape="poly" id="edge3" href="dir_000016_000001.html" alt="" coords="148,90,239,132,237,136,146,95"/>
 <area shape="rect" id="edge3-headlabel" href="dir_000016_000001.html" title="5" alt="" coords="235,117,243,134"/>
 <area shape="rect" id="node4" href="dir_51d06c7a0157f1c31e4268a6474c6a9b.html" title="preconditioner" alt="" coords="37,141,152,168"/>
-<area shape="poly" id="edge4" href="dir_000016_000011.html" alt="" coords="118,93,106,128,101,126,113,91"/>
+<area shape="poly" id="edge4" href="dir_000016_000011.html" alt="" coords="118,93,107,127,101,125,113,91"/>
 <area shape="rect" id="edge4-headlabel" href="dir_000016_000011.html" title="4" alt="" coords="109,118,117,135"/>
 <area shape="rect" id="node5" href="dir_13ac24c11e9edc13673a5341cdfa337c.html" title="helpers" alt="" coords="335,141,404,168"/>
-<area shape="poly" id="edge1" href="dir_000016_000004.html" alt="" coords="153,87,321,136,319,141,151,92"/>
+<area shape="poly" id="edge1" href="dir_000016_000004.html" alt="" coords="153,87,320,136,319,141,151,92"/>
 <area shape="rect" id="edge1-headlabel" href="dir_000016_000004.html" title="3" alt="" coords="315,121,323,138"/>
 <area shape="rect" id="node6" href="dir_689374dfda2501bdd2dd3b1ee53cd298.html" title="linalg" alt="" coords="429,141,486,168"/>
-<area shape="poly" id="edge5" href="dir_000016_000007.html" alt="" coords="152,83,264,104,415,138,414,143,263,109,151,88"/>
+<area shape="poly" id="edge5" href="dir_000016_000007.html" alt="" coords="152,83,264,104,414,138,413,143,263,109,151,88"/>
 <area shape="rect" id="edge5-headlabel" href="dir_000016_000007.html" title="27" alt="" coords="405,123,421,140"/>
 <area shape="rect" id="clust2" href="dir_1705c7da2126935c41561a728c3333cc.html" alt="" coords="27,54,163,179"/>
 <area shape="rect" id="clust1" href="dir_01caf7e9e8b3e7ed928385229a2afbb9.html" title="proxqp" alt="" coords="16,16,321,190"/>

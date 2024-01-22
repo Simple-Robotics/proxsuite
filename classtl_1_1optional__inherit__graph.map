@@ -1,19 +1,19 @@
 <map id="tl::optional&lt; T &gt;" name="tl::optional&lt; T &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="1399,108,1529,135"/>
 <area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__move__assign__base.html" title=" " alt="" coords="1151,5,1330,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1337,70,1427,105,1425,110,1335,75"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1338,70,1427,105,1425,110,1336,75"/>
 <area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1optional__copy__assign__base.html" title=" " alt="" coords="909,5,1082,67"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1097,34,1151,34,1151,39,1097,39"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1098,34,1151,34,1151,39,1098,39"/>
 <area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1optional__move__base.html" title=" " alt="" coords="683,14,861,59"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="875,34,908,34,908,39,875,39"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="876,34,908,34,908,39,876,39"/>
 <area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="464,14,635,59"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="650,34,683,34,683,39,650,39"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="651,34,683,34,683,39,651,39"/>
 <area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="243,14,416,59"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="430,34,464,34,464,39,430,39"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="431,34,464,34,464,39,431,39"/>
 <area shape="rect" id="Node000007" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="5,14,195,59"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="209,34,242,34,242,39,209,39"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="210,34,242,34,242,39,210,39"/>
 <area shape="rect" id="Node000008" href="$structtl_1_1detail_1_1optional__delete__ctor__base.html" title=" " alt="" coords="1138,91,1343,152"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1358,119,1399,119,1399,124,1358,124"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1359,119,1399,119,1399,124,1359,124"/>
 <area shape="rect" id="Node000009" href="$structtl_1_1detail_1_1optional__delete__assign__base.html" title=" " alt="" coords="1130,176,1351,238"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1335,168,1425,133,1427,138,1337,173"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1336,168,1425,133,1427,138,1338,173"/>
 </map>

@@ -1,7 +1,7 @@
 <map id="proxsuite::linalg::veg::_detail::_vector::VecAlloc&lt; T, A &gt;" name="proxsuite::linalg::veg::_detail::_vector::VecAlloc&lt; T, A &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="552,14,705,76"/>
 <area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Tuple.html" title=" " alt="" coords="280,14,504,76"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="519,42,551,42,551,47,519,47"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="520,42,551,42,551,47,520,47"/>
 <area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html" title=" " alt="" coords="5,5,232,84"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="247,42,279,42,279,47,247,47"/>
 </map>

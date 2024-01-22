@@ -4,5 +4,5 @@ var searchData=
   ['ampersand_1',['AMPERSAND',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a45ee338d502ff3cc6741dbf80f83fd25',1,'proxsuite::linalg::veg']]],
   ['asterisk_2',['ASTERISK',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a71ad0fa6a6a3e480ec3446bce7073e63',1,'proxsuite::linalg::veg']]],
   ['at_5fsign_3',['AT_SIGN',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43adc34ccb5f0baef64839da68c7b78580b',1,'proxsuite::linalg::veg']]],
-  ['automatic_4',['automatic',['../namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d',1,'proxsuite::proxqp::Automatic'],['../namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4da086247a9b57fde6eefee2a0c4752242d',1,'proxsuite::proxqp::Automatic']]]
+  ['automatic_4',['Automatic',['../namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d',1,'proxsuite::proxqp::Automatic'],['../namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4da086247a9b57fde6eefee2a0c4752242d',1,'proxsuite::proxqp::Automatic']]]
 ];

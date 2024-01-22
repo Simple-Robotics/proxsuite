@@ -1,11 +1,11 @@
 var proxqp_2sparse_2fwd_8hpp =
 [
-    [ "DMat", "proxqp_2sparse_2fwd_8hpp.html#a628e40ee7538e56e877b141f9174a396", null ],
-    [ "SparseMat", "proxqp_2sparse_2fwd_8hpp.html#a25504493b8d32d6b98e7ad499caf65d8", null ],
-    [ "VecRef", "proxqp_2sparse_2fwd_8hpp.html#a0ab3f6e1948594a38f3fde91b3cfb4fb", null ],
-    [ "MatRef", "proxqp_2sparse_2fwd_8hpp.html#a0782818befb4af8a530a90fa3edfe62d", null ],
-    [ "Vec", "proxqp_2sparse_2fwd_8hpp.html#a2a08151eb36728cb266172d4b9ff86f5", null ],
-    [ "Mat", "proxqp_2sparse_2fwd_8hpp.html#a35112b8f605b306b546040d1fd9119ef", null ],
-    [ "VecBool", "proxqp_2sparse_2fwd_8hpp.html#aaffdd209878a7bd214d05c6b699f485e", null ],
+    [ "DMat", "proxqp_2sparse_2fwd_8hpp.html#ad86ae8f1c121c9207d9505f3b47998ec", null ],
+    [ "SparseMat", "proxqp_2sparse_2fwd_8hpp.html#a7256137c14ed444abfdc0c47ab4fb0a0", null ],
+    [ "VecRef", "proxqp_2sparse_2fwd_8hpp.html#aa5218b103ba1aef5f9f55a556f9701c6", null ],
+    [ "MatRef", "proxqp_2sparse_2fwd_8hpp.html#aa9a41727ab932ed8954062df687ef623", null ],
+    [ "Vec", "proxqp_2sparse_2fwd_8hpp.html#adb04a7a1439dcd5099cdbc3d9df027f1", null ],
+    [ "Mat", "proxqp_2sparse_2fwd_8hpp.html#af45aac1028df2aceb6ee3a76ebc1888f", null ],
+    [ "VecBool", "proxqp_2sparse_2fwd_8hpp.html#ae1691bfe488ba7b6308d6d017d87ffb7", null ],
     [ "DYN", "proxqp_2sparse_2fwd_8hpp.html#ac9ede8007c247085583031077cdd1084", null ]
 ];

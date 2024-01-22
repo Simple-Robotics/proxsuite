@@ -1,8 +1,8 @@
 var namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail =
 [
     [ "AugmentedKkt", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt" ],
-    [ "VecMapMut", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
-    [ "VecMap", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a2860d2e80d0e47d632001cc274428e44", null ],
+    [ "VecMapMut", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#add54b256fcb6816a2835e84f692ebd6f", null ],
+    [ "VecMap", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#afa722bda8ffbc2b509688a911bef3d5d", null ],
     [ "noalias_gevmmv_add_impl", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a6cb076d5ef454c6d10c86eaec8d384dd", null ],
     [ "noalias_symhiv_add_impl", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a192ea81eb89ea330f139bcda39f9caa5", null ],
     [ "noalias_gevmmv_add", "namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a17d74d7e245428f1dc9c10eb04b24878", null ],

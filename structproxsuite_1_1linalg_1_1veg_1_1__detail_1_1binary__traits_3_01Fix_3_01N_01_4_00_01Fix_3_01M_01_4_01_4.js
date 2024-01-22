@@ -1,7 +1,7 @@
 var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4 =
 [
-    [ "Div", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a366bf45856e19e4944285e7dca2df5a0", null ],
-    [ "Mod", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a3f3a46f5c99d71eb084a45bbb7ebb0f3", null ],
+    [ "Div", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a6156731cc9fb583696e646579b9edbf6", null ],
+    [ "Mod", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a56630b4dc02b75822e1d1b8161cb79de", null ],
     [ "VEG_OP", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a2194b5bbe6950d33cb70049866480ec1", null ],
     [ "VEG_OP", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a25ee873cffeb235c2111eee2a7edb3f4", null ],
     [ "VEG_OP", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html#a1a2df2136301746063c4d99fd063f7ae", null ],

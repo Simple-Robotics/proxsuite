@@ -2,8 +2,8 @@ var sparse_2utils_8hpp =
 [
     [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt" ],
     [ "proxsuite::proxqp::sparse::detail::AugmentedKkt< T, I >::Raw", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html", "structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw" ],
-    [ "VecMapMut", "sparse_2utils_8hpp.html#ac0e5d8bb606e37f5b5708090a2e00b3c", null ],
-    [ "VecMap", "sparse_2utils_8hpp.html#a2860d2e80d0e47d632001cc274428e44", null ],
+    [ "VecMapMut", "sparse_2utils_8hpp.html#add54b256fcb6816a2835e84f692ebd6f", null ],
+    [ "VecMap", "sparse_2utils_8hpp.html#afa722bda8ffbc2b509688a911bef3d5d", null ],
     [ "print_setup_header", "sparse_2utils_8hpp.html#aa3c995adc4bd5230f3f7ef89e92573af", null ],
     [ "noalias_gevmmv_add_impl", "sparse_2utils_8hpp.html#a6cb076d5ef454c6d10c86eaec8d384dd", null ],
     [ "noalias_symhiv_add_impl", "sparse_2utils_8hpp.html#a192ea81eb89ea330f139bcda39f9caa5", null ],

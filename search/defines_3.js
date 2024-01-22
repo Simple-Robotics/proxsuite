@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['lazy_5fproduct_0',['lazy_product',['../dense_2views_8hpp.html#a343cb6a82136d73ddd53c069c13a1099',1,'LAZY_PRODUCT:&#160;views.hpp'],['../dense_2core_8hpp.html#a343cb6a82136d73ddd53c069c13a1099',1,'LAZY_PRODUCT:&#160;core.hpp']]],
+  ['lazy_5fproduct_0',['LAZY_PRODUCT',['../dense_2core_8hpp.html#a343cb6a82136d73ddd53c069c13a1099',1,'LAZY_PRODUCT:&#160;core.hpp'],['../dense_2views_8hpp.html#a343cb6a82136d73ddd53c069c13a1099',1,'LAZY_PRODUCT:&#160;views.hpp']]],
   ['ldlt_5farithmetic_5fimpl_1',['LDLT_ARITHMETIC_IMPL',['../dense_2core_8hpp.html#accbd649d02f39f37b62a02dd1fc6f246',1,'core.hpp']]],
   ['ldlt_5fcheck_5fconcept_2',['LDLT_CHECK_CONCEPT',['../dense_2views_8hpp.html#a7949af506ade02a9c5000faa2c1c369e',1,'views.hpp']]],
   ['ldlt_5fconcept_3',['LDLT_CONCEPT',['../dense_2views_8hpp.html#ad6e361144fbd0a35c22b45c24b963b30',1,'views.hpp']]],

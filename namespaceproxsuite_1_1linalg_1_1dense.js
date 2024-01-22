@@ -18,8 +18,8 @@ var namespaceproxsuite_1_1linalg_1_1dense =
       [ "noalias_mul_add", "namespaceproxsuite_1_1linalg_1_1dense_1_1util.html#a443bda61fc4bce60db0d51e08101e83f", null ]
     ] ],
     [ "Ldlt", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt.html", "structproxsuite_1_1linalg_1_1dense_1_1Ldlt" ],
-    [ "f32", "namespaceproxsuite_1_1linalg_1_1dense.html#adb5eaa4317724174d1d5a6267cb231f6", null ],
-    [ "f64", "namespaceproxsuite_1_1linalg_1_1dense.html#a834f5388e3e40ab99e4276b9d369d8d2", null ],
+    [ "f32", "namespaceproxsuite_1_1linalg_1_1dense.html#a055427638dc256cd845746f174cbb747", null ],
+    [ "f64", "namespaceproxsuite_1_1linalg_1_1dense.html#a4e4aeb2d8b04223d3ac46652f12ad186", null ],
     [ "temp_mat_req", "namespaceproxsuite_1_1linalg_1_1dense.html#a492f939daf7eeeaea62d1b6d0ed450eb", null ],
     [ "temp_vec_req", "namespaceproxsuite_1_1linalg_1_1dense.html#a3c3e2bc488f86326cc0a5184faa9ab11", null ],
     [ "factorize_unblocked_req", "namespaceproxsuite_1_1linalg_1_1dense.html#a8f6d360def165967c54b66b99b9b3752", null ],

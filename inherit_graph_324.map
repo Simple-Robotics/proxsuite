@@ -1,5 +1,15 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,31,101,59"/>
-<area shape="rect" id="Node000001" href="$structtl_1_1detail_1_1returns__void__impl_3_01F_00_01void__t_3_01invoke__result__t_3_01F_00_01U_d550cf27283c1c228efcceae556d7c6b.html" title=" " alt="" coords="149,5,307,84"/>
-<area shape="poly" id="edge158_Node000000_Node000001" title=" " alt="" coords="115,42,148,42,148,47,115,47"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,153,168,180"/>
+<area shape="rect" id="Node000001" href="$structtl_1_1detail_1_1is__nothrow__swappable.html" title=" " alt="" coords="265,5,419,50"/>
+<area shape="poly" id="edge153_Node000000_Node000001" title=" " alt="" coords="110,139,156,99,214,60,263,41,265,46,217,65,159,103,114,143"/>
+<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1is__swappable.html" title=" " alt="" coords="256,75,428,119"/>
+<area shape="poly" id="edge154_Node000000_Node000002" title=" " alt="" coords="154,145,256,117,258,123,155,151"/>
+<area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1is__swappable_3_01T_0fN_0e_00_01T_0fN_0e_4.html" title=" " alt="" coords="256,144,428,189"/>
+<area shape="poly" id="edge155_Node000000_Node000003" title=" " alt="" coords="183,164,256,164,256,169,183,169"/>
+<area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__adl__swap__noexcept.html" title=" " alt="" coords="235,213,449,275"/>
+<area shape="poly" id="edge156_Node000000_Node000004" title=" " alt="" coords="150,183,239,210,237,215,149,188"/>
+<area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept.html" title=" " alt="" coords="216,299,468,343"/>
+<area shape="poly" id="edge157_Node000000_Node000005" title=" " alt="" coords="111,190,156,238,185,263,217,284,242,296,239,300,214,289,182,267,153,242,107,194"/>
+<area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept_3_01T_0fN_0e_4.html" title=" " alt="" coords="516,290,730,352"/>
+<area shape="poly" id="edge158_Node000005_Node000006" title=" " alt="" coords="484,318,515,318,515,324,484,324"/>
 </map>

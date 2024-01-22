@@ -1,9 +1,9 @@
 <map id="include/proxsuite/linalg/veg/internal/terminate.hpp" name="include/proxsuite/linalg/veg/internal/terminate.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="137,5,337,50"/>
 <area shape="rect" id="Node000002" href="$prologue_8hpp.html" title=" " alt="" coords="5,98,170,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,53,136,93,134,88,200,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,53,137,92,134,88,200,48"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="194,107,280,134"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="240,50,240,91,234,91,234,50"/>
 <area shape="rect" id="Node000004" href="$epilogue_8hpp.html" title=" " alt="" coords="303,98,467,143"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="274,48,339,88,336,93,271,53"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="274,48,338,88,336,92,271,53"/>
 </map>

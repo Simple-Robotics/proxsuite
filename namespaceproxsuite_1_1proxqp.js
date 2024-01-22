@@ -4,10 +4,10 @@ var namespaceproxsuite_1_1proxqp =
     [ "dense", "namespaceproxsuite_1_1proxqp_1_1dense.html", "namespaceproxsuite_1_1proxqp_1_1dense" ],
     [ "detail", "namespaceproxsuite_1_1proxqp_1_1detail.html", "namespaceproxsuite_1_1proxqp_1_1detail" ],
     [ "eigen", "namespaceproxsuite_1_1proxqp_1_1eigen.html", [
-      [ "CompTimeCols", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a037b2d95277474861f6b75500fabfc94", null ],
-      [ "CompTimeRows", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a0969b7b58fee8a6374dab7c6e5963b46", null ],
-      [ "CompTimeInnerStride", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a0f9409eaef02ceae5e1445cf80e1f96a", null ],
-      [ "GetLayout", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a3d4cdfed9bf5c74f7390b0fccaa5c81a", null ]
+      [ "CompTimeCols", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a2cb64c5513d082129ffd4f38ee368569", null ],
+      [ "CompTimeRows", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a6cce1cf422464d8de7c3fd07302e7e86", null ],
+      [ "CompTimeInnerStride", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a5882872650b6d5e5729f4e3cbc0eb92c", null ],
+      [ "GetLayout", "namespaceproxsuite_1_1proxqp_1_1eigen.html#a9b01ec3e1219c32fbe17463af02dca00", null ]
     ] ],
     [ "sparse", "namespaceproxsuite_1_1proxqp_1_1sparse.html", "namespaceproxsuite_1_1proxqp_1_1sparse" ],
     [ "tags", "namespaceproxsuite_1_1proxqp_1_1tags.html", [
@@ -30,10 +30,10 @@ var namespaceproxsuite_1_1proxqp =
     [ "Timer", "structproxsuite_1_1proxqp_1_1Timer.html", "structproxsuite_1_1proxqp_1_1Timer" ],
     [ "VectorView", "structproxsuite_1_1proxqp_1_1VectorView.html", "structproxsuite_1_1proxqp_1_1VectorView" ],
     [ "VectorViewMut", "structproxsuite_1_1proxqp_1_1VectorViewMut.html", "structproxsuite_1_1proxqp_1_1VectorViewMut" ],
-    [ "usize", "namespaceproxsuite_1_1proxqp.html#a2a0ae3913c2bd1ca157ca065a71deb02", null ],
-    [ "f32", "namespaceproxsuite_1_1proxqp.html#aa2aaa0aa9846808d541649f9f8924778", null ],
-    [ "f64", "namespaceproxsuite_1_1proxqp.html#a2c0794e34f7a3d2533446473c0411e28", null ],
-    [ "unref", "namespaceproxsuite_1_1proxqp.html#a6a8ef187cb353e9c16018d7df24b95f5", null ],
+    [ "usize", "namespaceproxsuite_1_1proxqp.html#a53463d21e0d053ef58f614a8ad0976d5", null ],
+    [ "f32", "namespaceproxsuite_1_1proxqp.html#a8f892aa236c53245bf03af7397d2a44e", null ],
+    [ "f64", "namespaceproxsuite_1_1proxqp.html#a8cd42e7e606b9cff85735e1d54933456", null ],
+    [ "unref", "namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c", null ],
     [ "Symmetry", "namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059", [
       [ "general", "namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a958153f1b8b96ec4c4eb2147429105d9", null ],
       [ "lower", "namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a81e073b428b50247daba38531dcf412a", null ],

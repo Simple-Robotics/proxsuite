@@ -1,15 +1,15 @@
 <map id="include/proxsuite/proxqp/dense/linesearch.hpp" name="include/proxsuite/proxqp/dense/linesearch.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="212,5,394,50"/>
 <area shape="rect" id="Node000002" href="$dense_2solver_8hpp.html" title=" " alt="" coords="212,98,394,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="306,65,306,98,301,98,301,65"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="306,66,306,98,301,98,301,66"/>
 <area shape="rect" id="Node000003" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="212,191,394,235"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="306,157,306,190,301,190,301,157"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="306,158,306,190,301,190,301,158"/>
 <area shape="rect" id="Node000004" href="$compute__ECJ_8hpp.html" title=" " alt="" coords="5,283,188,328"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="242,244,147,285,145,280,240,239"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="241,244,147,285,145,280,239,239"/>
 <area shape="rect" id="Node000006" href="$dense_8hpp.html" title=" " alt="" coords="212,283,394,328"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="306,250,306,283,301,283,301,250"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="306,251,306,283,301,283,301,251"/>
 <area shape="rect" id="Node000007" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,283,636,328"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="371,239,475,280,473,285,369,244"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="372,239,475,280,473,285,370,244"/>
 <area shape="rect" id="Node000005" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,376,188,421"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="99,343,99,376,94,376,94,343"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="99,344,99,376,94,376,94,344"/>
 </map>
