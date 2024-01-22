@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+* Fix Python tests with scipy>=1.12 ([#299](https://github.com/Simple-Robotics/proxsuite/pull/299))
+
 ## [0.6.2] - 2024-01-22
 
 ### Fixed
