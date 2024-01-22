@@ -7,9 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Fixed
-- Fix Windows build ([#290](https://github.com/Simple-Robotics/proxsuite/pull/290))
-- Fix math formulae in documentation ([#294](https://github.com/Simple-Robotics/proxsuite/pull/294))
-- Restore correc values for infeasibility ([#292](https://github.com/Simple-Robotics/proxsuite/pull/292))
+* Fix Windows build ([#290](https://github.com/Simple-Robotics/proxsuite/pull/290))
+* Fix math formulae in documentation ([#294](https://github.com/Simple-Robotics/proxsuite/pull/294))
+* Restore correc values for infeasibility ([#292](https://github.com/Simple-Robotics/proxsuite/pull/292))
+* Handles CPU/GPU transfer in `QPFunctionFn`'s `backward` function ([#297](https://github.com/Simple-Robotics/proxsuite/pull/297))
+
 
 ## [0.6.1] - 2023-11-16
 
