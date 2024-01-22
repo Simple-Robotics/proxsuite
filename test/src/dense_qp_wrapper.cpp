@@ -7594,7 +7594,6 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
           "eigenvalue with power iteration")
 {
   double sparsity_factor = 1.;
-  T tol = T(1e-3);
   utils::rand::set_seed(1);
   dense::isize dim = 2;
   dense::isize n_eq(dim);
