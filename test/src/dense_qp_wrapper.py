@@ -3319,7 +3319,7 @@ class DenseqpWrapper(unittest.TestCase):
             "---testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---"
         )
         n = 10
-        H, g, A_old, b, C, u, l = generate_mixed_qp(n)
+        H, g, A_old, b_old, C, u, l = generate_mixed_qp(n)
         n_eq = A_old.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
@@ -3330,16 +3330,14 @@ class DenseqpWrapper(unittest.TestCase):
             H,
             np.asfortranarray(g),
             A_old,
-            np.asfortranarray(b),
+            np.asfortranarray(b_old),
             C,
             np.asfortranarray(l),
             np.asfortranarray(u),
             True,
         )
         qp.solve()
-        A = spa.random(
-            n_eq, n, density=0.15, data_rvs=np.random.randn, format="csc"
-        ).toarray()
+        _, _, A_new, b_new, _, _, _ = generate_mixed_qp(n, seed=2)
         dua_res = normInf(
             H @ qp.results.x
             + g
@@ -3347,7 +3345,7 @@ class DenseqpWrapper(unittest.TestCase):
             + C.transpose() @ qp.results.z
         )
         pri_res = max(
-            normInf(A_old @ qp.results.x - b),
+            normInf(A_old @ qp.results.x - b_old),
             normInf(
                 np.maximum(C @ qp.results.x - u, 0)
                 + np.minimum(C @ qp.results.x - l, 0)
@@ -3355,17 +3353,17 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        qp.update(A=A)
-        assert normInf(qp.model.A - A) <= 1.0e-9
+        qp.update(A=A_new, b=b_new)
+        assert normInf(qp.model.A - A_new) <= 1.0e-9
         qp.solve()
         dua_res = normInf(
             H @ qp.results.x
             + g
-            + A.transpose() @ qp.results.y
+            + A_new.transpose() @ qp.results.y
             + C.transpose() @ qp.results.z
         )
         pri_res = max(
-            normInf(A @ qp.results.x - b),
+            normInf(A_new @ qp.results.x - b_new),
             normInf(
                 np.maximum(C @ qp.results.x - u, 0)
                 + np.minimum(C @ qp.results.x - l, 0)
@@ -3392,7 +3390,7 @@ class DenseqpWrapper(unittest.TestCase):
             H,
             np.asfortranarray(g),
             A_old,
-            np.asfortranarray(b),
+            np.asfortranarray(b_old),
             C,
             np.asfortranarray(l),
             np.asfortranarray(u),
@@ -3406,7 +3404,7 @@ class DenseqpWrapper(unittest.TestCase):
             + C.transpose() @ qp2.results.z
         )
         pri_res = max(
-            normInf(A_old @ qp2.results.x - b),
+            normInf(A_old @ qp2.results.x - b_old),
             normInf(
                 np.maximum(C @ qp2.results.x - u, 0)
                 + np.minimum(C @ qp2.results.x - l, 0)
@@ -3414,17 +3412,17 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        qp2.update(A=A)
-        assert normInf(qp.model.A - A) <= 1.0e-9
+        qp2.update(A=A_new, b=b_new)
+        assert normInf(qp.model.A - A_new) <= 1.0e-9
         qp2.solve()
         dua_res = normInf(
             H @ qp2.results.x
             + g
-            + A.transpose() @ qp2.results.y
+            + A_new.transpose() @ qp2.results.y
             + C.transpose() @ qp2.results.z
         )
         pri_res = max(
-            normInf(A @ qp2.results.x - b),
+            normInf(A_new @ qp2.results.x - b_new),
             normInf(
                 np.maximum(C @ qp2.results.x - u, 0)
                 + np.minimum(C @ qp2.results.x - l, 0)
@@ -3451,7 +3449,7 @@ class DenseqpWrapper(unittest.TestCase):
             H,
             np.asfortranarray(g),
             A_old,
-            np.asfortranarray(b),
+            np.asfortranarray(b_old),
             C,
             np.asfortranarray(l),
             np.asfortranarray(u),
@@ -3465,7 +3463,7 @@ class DenseqpWrapper(unittest.TestCase):
             + C.transpose() @ qp3.results.z
         )
         pri_res = max(
-            normInf(A_old @ qp3.results.x - b),
+            normInf(A_old @ qp3.results.x - b_old),
             normInf(
                 np.maximum(C @ qp3.results.x - u, 0)
                 + np.minimum(C @ qp3.results.x - l, 0)
@@ -3473,17 +3471,17 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        qp3.update(A=A)
-        assert normInf(qp.model.A - A) <= 1.0e-9
+        qp3.update(A=A_new, b=b_new)
+        assert normInf(qp.model.A - A_new) <= 1.0e-9
         qp3.solve()
         dua_res = normInf(
             H @ qp3.results.x
             + g
-            + A.transpose() @ qp3.results.y
+            + A_new.transpose() @ qp3.results.y
             + C.transpose() @ qp3.results.z
         )
         pri_res = max(
-            normInf(A @ qp3.results.x - b),
+            normInf(A_new @ qp3.results.x - b_new),
             normInf(
                 np.maximum(C @ qp3.results.x - u, 0)
                 + np.minimum(C @ qp3.results.x - l, 0)
@@ -3510,7 +3508,7 @@ class DenseqpWrapper(unittest.TestCase):
             H,
             np.asfortranarray(g),
             A_old,
-            np.asfortranarray(b),
+            np.asfortranarray(b_old),
             C,
             np.asfortranarray(l),
             np.asfortranarray(u),
@@ -3524,7 +3522,7 @@ class DenseqpWrapper(unittest.TestCase):
             + C.transpose() @ qp4.results.z
         )
         pri_res = max(
-            normInf(A_old @ qp4.results.x - b),
+            normInf(A_old @ qp4.results.x - b_old),
             normInf(
                 np.maximum(C @ qp4.results.x - u, 0)
                 + np.minimum(C @ qp4.results.x - l, 0)
@@ -3532,17 +3530,17 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        qp4.update(A=A)
-        assert normInf(qp.model.A - A) <= 1.0e-9
+        qp4.update(A=A_new, b=b_new)
+        assert normInf(qp.model.A - A_new) <= 1.0e-9
         qp4.solve()
         dua_res = normInf(
             H @ qp4.results.x
             + g
-            + A.transpose() @ qp4.results.y
+            + A_new.transpose() @ qp4.results.y
             + C.transpose() @ qp4.results.z
         )
         pri_res = max(
-            normInf(A @ qp4.results.x - b),
+            normInf(A_new @ qp4.results.x - b_new),
             normInf(
                 np.maximum(C @ qp4.results.x - u, 0)
                 + np.minimum(C @ qp4.results.x - l, 0)
@@ -3567,7 +3565,7 @@ class DenseqpWrapper(unittest.TestCase):
             H,
             np.asfortranarray(g),
             A_old,
-            np.asfortranarray(b),
+            np.asfortranarray(b_old),
             C,
             np.asfortranarray(l),
             np.asfortranarray(u),
@@ -3581,7 +3579,7 @@ class DenseqpWrapper(unittest.TestCase):
             + C.transpose() @ qp5.results.z
         )
         pri_res = max(
-            normInf(A_old @ qp5.results.x - b),
+            normInf(A_old @ qp5.results.x - b_old),
             normInf(
                 np.maximum(C @ qp5.results.x - u, 0)
                 + np.minimum(C @ qp5.results.x - l, 0)
@@ -3589,17 +3587,17 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        qp5.update(A=A)
-        assert normInf(qp.model.A - A) <= 1.0e-9
+        qp5.update(A=A_new, b=b_new)
+        assert normInf(qp.model.A - A_new) <= 1.0e-9
         qp5.solve()
         dua_res = normInf(
             H @ qp5.results.x
             + g
-            + A.transpose() @ qp5.results.y
+            + A_new.transpose() @ qp5.results.y
             + C.transpose() @ qp5.results.z
         )
         pri_res = max(
-            normInf(A @ qp5.results.x - b),
+            normInf(A_new @ qp5.results.x - b_new),
             normInf(
                 np.maximum(C @ qp5.results.x - u, 0)
                 + np.minimum(C @ qp5.results.x - l, 0)
