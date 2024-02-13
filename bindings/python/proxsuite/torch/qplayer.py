@@ -120,7 +120,7 @@ def QPFunction(
 
             for i in range(nBatch):
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
-                qp.settings.primal_infeasibility_solving = True
+                qp.settings.primal_infeasibility_solving = False
                 qp.settings.max_iter = maxIter
                 qp.settings.max_iter_in = 100
                 default_rho = 5.0e-5
