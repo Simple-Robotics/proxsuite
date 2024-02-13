@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### What's Changed
+* Changed `primal_infeasibility_solving` to `False` for feasible QPs ([#302](https://github.com/Simple-Robotics/proxsuite/pull/302))
+
 ## [0.6.3] - 2024-01-23
 
 ### Fixed
