@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.3</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.4</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -123,7 +123,7 @@ Collaboration diagram for proxsuite::proxqp::Settings&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a863fba31ec65f4d6dfa900f18b4f8de1" id="r_a863fba31ec65f4d6dfa900f18b4f8de1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a863fba31ec65f4d6dfa900f18b4f8de1">Settings</a> (<a class="el" href="namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4d">DenseBackend</a> dense_backend=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4dab4f7bded840147d550a4d42bbe2d1d89">DenseBackend::PrimalDualLDLT</a>, T <a class="el" href="#a3b964f117a16005d4b3c6b48179db16f">default_mu_eq</a>=1.E-3, T <a class="el" href="#a3dfcdf85c73dfb841e6f509e481ee8b5">default_mu_in</a>=1.E-1, T <a class="el" href="#a3dffdd487b107b6d08f57dfea1d5d871">alpha_bcl</a>=0.1, T <a class="el" href="#af3ab3bd10e449f60b8e0c60c636363b1">beta_bcl</a>=0.9, T <a class="el" href="#afdb9d491ac29a8a7503a385c791a5c0c">refactor_dual_feasibility_threshold</a>=1e-2, T <a class="el" href="#aa6c24a82f3dc405552ed7a243c75e24f">refactor_rho_threshold</a>=1e-7, T <a class="el" href="#a5b89004a27b65af57dda8530e3fe1b01">mu_min_eq</a>=1e-9, T <a class="el" href="#a8feaf39a9749620a4bea7ddccc7cfe2d">mu_min_in</a>=1e-8, T <a class="el" href="#ab5a200e1d6b6c1661e1d5b9619743d88">mu_max_eq_inv</a>=1e9, T <a class="el" href="#aca7fd621a270e700134cca193a13f014">mu_max_in_inv</a>=1e8, T <a class="el" href="#abcc768ec868ef4e85c9c7c96644c146b">mu_update_factor</a>=0.1, T <a class="el" href="#a06b089b1f6df4de7a52c4c6222f6f78a">mu_update_inv_factor</a>=10, T <a class="el" href="#a2817946ef5785036019bf462d4815dc6">cold_reset_mu_eq</a>=1./1.1, T <a class="el" href="#aefd23c21f9e8d6e7ea3c327476f2c0a1">cold_reset_mu_in</a>=1./1.1, T <a class="el" href="#a1b440eeef649107a87fed97838812e52">cold_reset_mu_eq_inv</a>=1.1, T <a class="el" href="#a6978be850a43560ad143623b2d7a3436">cold_reset_mu_in_inv</a>=1.1, T <a class="el" href="#a624b45826fe104e586c58290f7cf424c">eps_abs</a>=1.e-5, T <a class="el" href="#a22e40696e71c11d41f0b08ba55f09bf3">eps_rel</a>=0, isize <a class="el" href="#a03139cb8fd8e02c4746943126d622101">max_iter</a>=10000, isize <a class="el" href="#ae610ae912fb5277ae46f0e7acdba21a6">max_iter_in</a>=1500, isize <a class="el" href="#a47cafb3180c6604d04f8eae8c9c0c654">safe_guard</a>=1.E4, isize <a class="el" href="#a65499e85dedd33b94ad33ee8b90ed612">nb_iterative_refinement</a>=10, T <a class="el" href="#a6100d1843aa26123a83f7b9b731c3a1b">eps_refact</a>=1.e-6, bool <a class="el" href="#a63b7d94ce07a31da6d5165e4564fa1bd">verbose</a>=false, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">InitialGuessStatus</a> <a class="el" href="#acabc33da38f1d3400dec16653f6453e2">initial_guess</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3a7c1916eead021556161e1f37e259239f">InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS</a>, bool <a class="el" href="#a54c8b3f19bcab9fdf7feeafb05ec5061">update_preconditioner</a>=false, bool <a class="el" href="#ae123f020e871c433542531dc08eb7744">compute_preconditioner</a>=true, bool <a class="el" href="#a3b25078879ec2229c575df3043b295bd">compute_timings</a>=false, bool <a class="el" href="#a4dd2f356585303f82961f3572cfe71c5">check_duality_gap</a>=false, T <a class="el" href="#ae1f2e3183c5728a32cf1e7058d144d92">eps_duality_gap_abs</a>=1.e-4, T <a class="el" href="#a67c61d3a99b92799f3fa66f286a57817">eps_duality_gap_rel</a>=0, isize <a class="el" href="#a724066db6e7ae44b95eb603c72f17ee7">preconditioner_max_iter</a>=10, T <a class="el" href="#acc106f3d790b5ed5855c9340a5f3f779">preconditioner_accuracy</a>=1.e-3, T <a class="el" href="#a549e9bca8d337e409ec4f15751480b24">eps_primal_inf</a>=1.E-4, T <a class="el" href="#a8b11a745706778cfb57273d00e02391d">eps_dual_inf</a>=1.E-4, bool <a class="el" href="#a175999aba3e97149fe7cc5aedb48f262">bcl_update</a>=true, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d">MeritFunctionType</a> <a class="el" href="#a07c273af5cc236360ec40cf27950474f">merit_function_type</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363da232489276f6b94e51a8299a12c400539">MeritFunctionType::GPDAL</a>, T <a class="el" href="#a581173d5249a30e419b40c0a4828b643">alpha_gpdal</a>=0.95, <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> <a class="el" href="#a0b4234ae406cb59a4ccf70fb8d6af1fc">sparse_backend</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d">SparseBackend::Automatic</a>, bool <a class="el" href="#a50bf93df04a4bb32e17e4754f3fb0525">primal_infeasibility_solving</a>=false, isize <a class="el" href="#abfacb34c8a7af08b9ad35eb83f20e1f7">frequence_infeasibility_check</a>=1, T <a class="el" href="#a3f3baccba053cad3c66f1ac392a34f80">default_H_eigenvalue_estimate</a>=0.)</td></tr>
+<tr class="memitem:a863fba31ec65f4d6dfa900f18b4f8de1" id="r_a863fba31ec65f4d6dfa900f18b4f8de1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a863fba31ec65f4d6dfa900f18b4f8de1">Settings</a> (<a class="el" href="namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4d">DenseBackend</a> dense_backend=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a291802fc385dc44b8275a7ec91839d4dab4f7bded840147d550a4d42bbe2d1d89">DenseBackend::PrimalDualLDLT</a>, T <a class="el" href="#a3b964f117a16005d4b3c6b48179db16f">default_mu_eq</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-3, T <a class="el" href="#a3dfcdf85c73dfb841e6f509e481ee8b5">default_mu_in</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-1, T <a class="el" href="#a3dffdd487b107b6d08f57dfea1d5d871">alpha_bcl</a>=0.1, T <a class="el" href="#af3ab3bd10e449f60b8e0c60c636363b1">beta_bcl</a>=0.9, T <a class="el" href="#afdb9d491ac29a8a7503a385c791a5c0c">refactor_dual_feasibility_threshold</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-2, T <a class="el" href="#aa6c24a82f3dc405552ed7a243c75e24f">refactor_rho_threshold</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-7, T <a class="el" href="#a5b89004a27b65af57dda8530e3fe1b01">mu_min_eq</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-9, T <a class="el" href="#a8feaf39a9749620a4bea7ddccc7cfe2d">mu_min_in</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-8, T <a class="el" href="#ab5a200e1d6b6c1661e1d5b9619743d88">mu_max_eq_inv</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e9</a>, T <a class="el" href="#aca7fd621a270e700134cca193a13f014">mu_max_in_inv</a>=1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e8</a>, T <a class="el" href="#abcc768ec868ef4e85c9c7c96644c146b">mu_update_factor</a>=0.1, T <a class="el" href="#a06b089b1f6df4de7a52c4c6222f6f78a">mu_update_inv_factor</a>=10, T <a class="el" href="#a2817946ef5785036019bf462d4815dc6">cold_reset_mu_eq</a>=1./1.1, T <a class="el" href="#aefd23c21f9e8d6e7ea3c327476f2c0a1">cold_reset_mu_in</a>=1./1.1, T <a class="el" href="#a1b440eeef649107a87fed97838812e52">cold_reset_mu_eq_inv</a>=1.1, T <a class="el" href="#a6978be850a43560ad143623b2d7a3436">cold_reset_mu_in_inv</a>=1.1, T <a class="el" href="#a624b45826fe104e586c58290f7cf424c">eps_abs</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-5, T <a class="el" href="#a22e40696e71c11d41f0b08ba55f09bf3">eps_rel</a>=0, isize <a class="el" href="#a03139cb8fd8e02c4746943126d622101">max_iter</a>=10000, isize <a class="el" href="#ae610ae912fb5277ae46f0e7acdba21a6">max_iter_in</a>=1500, isize <a class="el" href="#a47cafb3180c6604d04f8eae8c9c0c654">safe_guard</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E4</a>, isize <a class="el" href="#a65499e85dedd33b94ad33ee8b90ed612">nb_iterative_refinement</a>=10, T <a class="el" href="#a6100d1843aa26123a83f7b9b731c3a1b">eps_refact</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-6, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a63b7d94ce07a31da6d5165e4564fa1bd">verbose</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a>, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">InitialGuessStatus</a> <a class="el" href="#acabc33da38f1d3400dec16653f6453e2">initial_guess</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3a7c1916eead021556161e1f37e259239f">InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a54c8b3f19bcab9fdf7feeafb05ec5061">update_preconditioner</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#ae123f020e871c433542531dc08eb7744">compute_preconditioner</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">true</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a3b25078879ec2229c575df3043b295bd">compute_timings</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a4dd2f356585303f82961f3572cfe71c5">check_duality_gap</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a>, T <a class="el" href="#ae1f2e3183c5728a32cf1e7058d144d92">eps_duality_gap_abs</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-4, T <a class="el" href="#a67c61d3a99b92799f3fa66f286a57817">eps_duality_gap_rel</a>=0, isize <a class="el" href="#a724066db6e7ae44b95eb603c72f17ee7">preconditioner_max_iter</a>=10, T <a class="el" href="#acc106f3d790b5ed5855c9340a5f3f779">preconditioner_accuracy</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-3, T <a class="el" href="#a549e9bca8d337e409ec4f15751480b24">eps_primal_inf</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-4, T <a class="el" href="#a8b11a745706778cfb57273d00e02391d">eps_dual_inf</a>=1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-4, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a175999aba3e97149fe7cc5aedb48f262">bcl_update</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">true</a>, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d">MeritFunctionType</a> <a class="el" href="#a07c273af5cc236360ec40cf27950474f">merit_function_type</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363da232489276f6b94e51a8299a12c400539">MeritFunctionType::GPDAL</a>, T <a class="el" href="#a581173d5249a30e419b40c0a4828b643">alpha_gpdal</a>=0.95, <a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> <a class="el" href="#a0b4234ae406cb59a4ccf70fb8d6af1fc">sparse_backend</a>=<a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1fa086247a9b57fde6eefee2a0c4752242d">SparseBackend::Automatic</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="#a50bf93df04a4bb32e17e4754f3fb0525">primal_infeasibility_solving</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a>, isize <a class="el" href="#abfacb34c8a7af08b9ad35eb83f20e1f7">frequence_infeasibility_check</a>=1, T <a class="el" href="#a3f3baccba053cad3c66f1ac392a34f80">default_H_eigenvalue_estimate</a>=0.)</td></tr>
 <tr class="separator:a863fba31ec65f4d6dfa900f18b4f8de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -176,17 +176,17 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a65499e85dedd33b94ad33ee8b90ed612"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6100d1843aa26123a83f7b9b731c3a1b" id="r_a6100d1843aa26123a83f7b9b731c3a1b"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6100d1843aa26123a83f7b9b731c3a1b">eps_refact</a></td></tr>
 <tr class="separator:a6100d1843aa26123a83f7b9b731c3a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63b7d94ce07a31da6d5165e4564fa1bd" id="r_a63b7d94ce07a31da6d5165e4564fa1bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63b7d94ce07a31da6d5165e4564fa1bd">verbose</a></td></tr>
+<tr class="memitem:a63b7d94ce07a31da6d5165e4564fa1bd" id="r_a63b7d94ce07a31da6d5165e4564fa1bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63b7d94ce07a31da6d5165e4564fa1bd">verbose</a></td></tr>
 <tr class="separator:a63b7d94ce07a31da6d5165e4564fa1bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acabc33da38f1d3400dec16653f6453e2" id="r_acabc33da38f1d3400dec16653f6453e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">InitialGuessStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acabc33da38f1d3400dec16653f6453e2">initial_guess</a></td></tr>
 <tr class="separator:acabc33da38f1d3400dec16653f6453e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54c8b3f19bcab9fdf7feeafb05ec5061" id="r_a54c8b3f19bcab9fdf7feeafb05ec5061"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a54c8b3f19bcab9fdf7feeafb05ec5061">update_preconditioner</a></td></tr>
+<tr class="memitem:a54c8b3f19bcab9fdf7feeafb05ec5061" id="r_a54c8b3f19bcab9fdf7feeafb05ec5061"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a54c8b3f19bcab9fdf7feeafb05ec5061">update_preconditioner</a></td></tr>
 <tr class="separator:a54c8b3f19bcab9fdf7feeafb05ec5061"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae123f020e871c433542531dc08eb7744" id="r_ae123f020e871c433542531dc08eb7744"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae123f020e871c433542531dc08eb7744">compute_preconditioner</a></td></tr>
+<tr class="memitem:ae123f020e871c433542531dc08eb7744" id="r_ae123f020e871c433542531dc08eb7744"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae123f020e871c433542531dc08eb7744">compute_preconditioner</a></td></tr>
 <tr class="separator:ae123f020e871c433542531dc08eb7744"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b25078879ec2229c575df3043b295bd" id="r_a3b25078879ec2229c575df3043b295bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b25078879ec2229c575df3043b295bd">compute_timings</a></td></tr>
+<tr class="memitem:a3b25078879ec2229c575df3043b295bd" id="r_a3b25078879ec2229c575df3043b295bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b25078879ec2229c575df3043b295bd">compute_timings</a></td></tr>
 <tr class="separator:a3b25078879ec2229c575df3043b295bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4dd2f356585303f82961f3572cfe71c5" id="r_a4dd2f356585303f82961f3572cfe71c5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4dd2f356585303f82961f3572cfe71c5">check_duality_gap</a></td></tr>
+<tr class="memitem:a4dd2f356585303f82961f3572cfe71c5" id="r_a4dd2f356585303f82961f3572cfe71c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4dd2f356585303f82961f3572cfe71c5">check_duality_gap</a></td></tr>
 <tr class="separator:a4dd2f356585303f82961f3572cfe71c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1f2e3183c5728a32cf1e7058d144d92" id="r_ae1f2e3183c5728a32cf1e7058d144d92"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1f2e3183c5728a32cf1e7058d144d92">eps_duality_gap_abs</a></td></tr>
 <tr class="separator:ae1f2e3183c5728a32cf1e7058d144d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -200,7 +200,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a549e9bca8d337e409ec4f15751480b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b11a745706778cfb57273d00e02391d" id="r_a8b11a745706778cfb57273d00e02391d"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b11a745706778cfb57273d00e02391d">eps_dual_inf</a></td></tr>
 <tr class="separator:a8b11a745706778cfb57273d00e02391d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a175999aba3e97149fe7cc5aedb48f262" id="r_a175999aba3e97149fe7cc5aedb48f262"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a175999aba3e97149fe7cc5aedb48f262">bcl_update</a></td></tr>
+<tr class="memitem:a175999aba3e97149fe7cc5aedb48f262" id="r_a175999aba3e97149fe7cc5aedb48f262"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a175999aba3e97149fe7cc5aedb48f262">bcl_update</a></td></tr>
 <tr class="separator:a175999aba3e97149fe7cc5aedb48f262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07c273af5cc236360ec40cf27950474f" id="r_a07c273af5cc236360ec40cf27950474f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d">MeritFunctionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07c273af5cc236360ec40cf27950474f">merit_function_type</a></td></tr>
 <tr class="separator:a07c273af5cc236360ec40cf27950474f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,7 +208,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a581173d5249a30e419b40c0a4828b643"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b4234ae406cb59a4ccf70fb8d6af1fc" id="r_a0b4234ae406cb59a4ccf70fb8d6af1fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b4234ae406cb59a4ccf70fb8d6af1fc">sparse_backend</a></td></tr>
 <tr class="separator:a0b4234ae406cb59a4ccf70fb8d6af1fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50bf93df04a4bb32e17e4754f3fb0525" id="r_a50bf93df04a4bb32e17e4754f3fb0525"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50bf93df04a4bb32e17e4754f3fb0525">primal_infeasibility_solving</a></td></tr>
+<tr class="memitem:a50bf93df04a4bb32e17e4754f3fb0525" id="r_a50bf93df04a4bb32e17e4754f3fb0525"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50bf93df04a4bb32e17e4754f3fb0525">primal_infeasibility_solving</a></td></tr>
 <tr class="separator:a50bf93df04a4bb32e17e4754f3fb0525"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfacb34c8a7af08b9ad35eb83f20e1f7" id="r_abfacb34c8a7af08b9ad35eb83f20e1f7"><td class="memItemLeft" align="right" valign="top">isize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abfacb34c8a7af08b9ad35eb83f20e1f7">frequence_infeasibility_check</a></td></tr>
 <tr class="separator:abfacb34c8a7af08b9ad35eb83f20e1f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -216,7 +216,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a3f3baccba053cad3c66f1ac392a34f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T&gt;<br />
 struct proxsuite::proxqp::Settings&lt; T &gt;</div><p>This class defines the settings of PROXQP solvers with sparse and dense backends. </p>
 <p><a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html" title="This class defines the settings of PROXQP solvers with sparse and dense backends.">Settings</a> class, which defines the parameters used by the dense and sparse solver (and its preconditioner). </p>
 
@@ -228,7 +228,7 @@ struct proxsuite::proxqp::Settings&lt; T &gt;</div><p>This class defines the set
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -241,12 +241,12 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>default_mu_eq</em><span class="paramdefsep"> = </span><span class="paramdefval">1.E-3</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>default_mu_eq</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-3</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>default_mu_in</em><span class="paramdefsep"> = </span><span class="paramdefval">1.E-1</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>default_mu_in</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-1</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -261,32 +261,32 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>refactor_dual_feasibility_threshold</em><span class="paramdefsep"> = </span><span class="paramdefval">1e-2</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>refactor_dual_feasibility_threshold</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-2</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>refactor_rho_threshold</em><span class="paramdefsep"> = </span><span class="paramdefval">1e-7</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>refactor_rho_threshold</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-7</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_min_eq</em><span class="paramdefsep"> = </span><span class="paramdefval">1e-9</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_min_eq</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-9</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_min_in</em><span class="paramdefsep"> = </span><span class="paramdefval">1e-8</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_min_in</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-8</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_max_eq_inv</em><span class="paramdefsep"> = </span><span class="paramdefval">1e9</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_max_eq_inv</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e9</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_max_in_inv</em><span class="paramdefsep"> = </span><span class="paramdefval">1e8</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>mu_max_in_inv</em><span class="paramdefsep"> = </span><span class="paramdefval">1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e8</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -321,7 +321,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_abs</em><span class="paramdefsep"> = </span><span class="paramdefval">1.e-5</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_abs</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-5</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -341,7 +341,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>safe_guard</em><span class="paramdefsep"> = </span><span class="paramdefval">1.E4</span>, </span></td>
+          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>safe_guard</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E4</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -351,12 +351,12 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_refact</em><span class="paramdefsep"> = </span><span class="paramdefval">1.e-6</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_refact</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-6</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>verbose</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>verbose</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -366,27 +366,27 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>update_preconditioner</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>update_preconditioner</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>compute_preconditioner</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>compute_preconditioner</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">true</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>compute_timings</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>compute_timings</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>check_duality_gap</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>check_duality_gap</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_duality_gap_abs</em><span class="paramdefsep"> = </span><span class="paramdefval">1.e-4</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_duality_gap_abs</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-4</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -401,22 +401,22 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>preconditioner_accuracy</em><span class="paramdefsep"> = </span><span class="paramdefval">1.e-3</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>preconditioner_accuracy</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-3</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_primal_inf</em><span class="paramdefsep"> = </span><span class="paramdefval">1.E-4</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_primal_inf</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-4</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_dual_inf</em><span class="paramdefsep"> = </span><span class="paramdefval">1.E-4</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>eps_dual_inf</em><span class="paramdefsep"> = </span><span class="paramdefval">1.<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">E</a>-4</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bcl_update</em><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>bcl_update</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">true</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -436,7 +436,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>primal_infeasibility_solving</em><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </span></td>
+          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>primal_infeasibility_solving</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">false</a></span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -498,7 +498,7 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramname">primal_infeasibility_solving</td><td>solves the closest primal feasible problem if activated </td></tr>
     <tr><td class="paramname">frequence_infeasibility_check</td><td>frequence at which infeasibility is checked </td></tr>
     <tr><td class="paramname">find_H_minimal_eigenvalue</td><td>track the minimal eigen value of the quadratic cost H </td></tr>
-    <tr><td class="paramname">default_H_eigenvalue_estimate</td><td>default H eigenvalue estimate (i.e., if we make a model update and H does not change this one is used) </td></tr>
+    <tr><td class="paramname">default_H_eigenvalue_estimate</td><td>default H eigenvalue estimate (<a class="el" href="classtl_1_1optional.html#a01ad4287b5186f3e2d4973bd92fe15f1" title="Constructs an optional that does not contain a value.">i.e</a>., if we make a model update and H does not change this one is used) </td></tr>
   </table>
   </dd>
 </dl>
@@ -514,7 +514,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::default_rho</td>
@@ -532,7 +532,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::default_mu_eq</td>
@@ -550,7 +550,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::default_mu_in</td>
@@ -568,7 +568,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::alpha_bcl</td>
@@ -586,7 +586,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::beta_bcl</td>
@@ -604,7 +604,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::refactor_dual_feasibility_threshold</td>
@@ -622,7 +622,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::refactor_rho_threshold</td>
@@ -640,7 +640,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_min_eq</td>
@@ -658,7 +658,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_min_in</td>
@@ -676,7 +676,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_max_eq_inv</td>
@@ -694,7 +694,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_max_in_inv</td>
@@ -712,7 +712,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_update_factor</td>
@@ -730,7 +730,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::mu_update_inv_factor</td>
@@ -748,7 +748,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::cold_reset_mu_eq</td>
@@ -766,7 +766,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::cold_reset_mu_in</td>
@@ -784,7 +784,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::cold_reset_mu_eq_inv</td>
@@ -802,7 +802,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::cold_reset_mu_in_inv</td>
@@ -820,7 +820,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_abs</td>
@@ -838,7 +838,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_rel</td>
@@ -856,7 +856,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::max_iter</td>
@@ -874,7 +874,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::max_iter_in</td>
@@ -892,7 +892,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::safe_guard</td>
@@ -910,7 +910,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::nb_iterative_refinement</td>
@@ -928,7 +928,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_refact</td>
@@ -946,10 +946,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::verbose</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::verbose</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -964,7 +964,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a415d3d2e727acf7261e7b3708abc1db3">InitialGuessStatus</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::initial_guess</td>
@@ -982,10 +982,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::update_preconditioner</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::update_preconditioner</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1000,10 +1000,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::compute_preconditioner</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::compute_preconditioner</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1018,10 +1018,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::compute_timings</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::compute_timings</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1036,10 +1036,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::check_duality_gap</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::check_duality_gap</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1054,7 +1054,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_duality_gap_abs</td>
@@ -1072,7 +1072,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_duality_gap_rel</td>
@@ -1090,7 +1090,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::preconditioner_max_iter</td>
@@ -1108,7 +1108,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::preconditioner_accuracy</td>
@@ -1126,7 +1126,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_primal_inf</td>
@@ -1144,7 +1144,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::eps_dual_inf</td>
@@ -1162,10 +1162,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::bcl_update</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::bcl_update</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1180,7 +1180,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d">MeritFunctionType</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::merit_function_type</td>
@@ -1198,7 +1198,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::alpha_gpdal</td>
@@ -1216,7 +1216,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceproxsuite_1_1proxqp.html#acab609dfd23d8843cdcfda5004246a1f">SparseBackend</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::sparse_backend</td>
@@ -1234,10 +1234,10 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::primal_infeasibility_solving</td>
+          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::primal_infeasibility_solving</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1252,7 +1252,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::frequence_infeasibility_check</td>
@@ -1270,7 +1270,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T &gt; </div>
+template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1Settings.html">proxsuite::proxqp::Settings</a>&lt; T &gt;::default_H_eigenvalue_estimate</td>
