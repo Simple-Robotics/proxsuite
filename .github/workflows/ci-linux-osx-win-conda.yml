@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
-        name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest]
+        name: [ubuntu-latest, macos-latest, windows-2019-clang-cl, windows-latest, macos-14]
         cxx_std: [17, 20]
         continue_on_error: [false]
 
@@ -22,6 +22,8 @@ jobs:
             os: ubuntu-latest
           - name: macos-latest
             os: macos-latest
+          - name: macos-14
+            os: macos-14
           - name: windows-2019-clang-cl
             os: windows-2019
             compiler: clang-cl
@@ -56,12 +58,21 @@ jobs:
     - uses: actions/checkout@v2
 
     - uses: conda-incubator/setup-miniconda@v2
+      if: matrix.os != 'macos-14'
       with:
         miniforge-variant: Mambaforge
         miniforge-version: latest
         channels: conda-forge
         python-version: "3.10"
         activate-environment: proxsuite
+
+    - uses: conda-incubator/setup-miniconda@v3
+      if: matrix.os == 'macos-14'
+      with:
+        channels: conda-forge
+        python-version: "3.10"
+        activate-environment: proxsuite
+        installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
 
     - name: Install dependencies [Conda]
       shell: bash -l {0}
