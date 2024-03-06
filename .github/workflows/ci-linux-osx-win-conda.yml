@@ -87,7 +87,7 @@ jobs:
         mamba install libmatio numpy scipy
 
     - name: Install julia [macOS/Linux]
-      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
         mamba install julia
@@ -106,7 +106,7 @@ jobs:
         env
 
     - name: Configure [Conda/Linux&macOS]
-      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
         echo $(whereis ccache)
@@ -116,8 +116,20 @@ jobs:
         cd build
         cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=ON -DOpenMP_ROOT=$CONDA_PREFIX
 
+    - name: Configure [Conda/macOS14]
+      if: contains(matrix.os, 'macos-14')
+      shell: bash -l {0}
+      run: |
+        echo $(whereis ccache)
+        echo $(which ccache)
+        git submodule update --init
+        mkdir build
+        cd build
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DOpenMP_ROOT=$CONDA_PREFIX
+
+
     - name: Configure [Conda/macOS-debug/CheckMalloc]
-      if: contains(matrix.os, 'macos') && contains(matrix.build_type, 'Debug')
+      if: contains(matrix.os, 'macos-latest') && contains(matrix.build_type, 'Debug')
       shell: bash -l {0}
       run: |
         echo $(whereis ccache)
