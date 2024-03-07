@@ -52,13 +52,13 @@ class QPLayer(nn.Module):
         self.maxIter = maxIter
         self.omp_parallel = omp_parallel
         nx = (n**2) ** 3
-        self.Q = Variable(torch.zeros(nx, nx).double())
-        self.G = Variable(-torch.eye(nx).double())
-        self.u = Variable(torch.zeros(nx).double())
-        self.l = Variable(-1.0e20 * torch.ones(nx).double())
+        self.Q = torch.zeros(nx, nx, dtype=torch.float64)
+        self.G = -torch.eye(nx, dtype=torch.float64)
+        self.u = torch.zeros(nx, dtype=torch.float64)
+        self.l = -1.0e20 * torch.ones(nx, dtype=torch.float64)
         t = get_sudoku_matrix(n)
-        self.A = Parameter(torch.rand(t.shape).double())
-        self.log_z0 = Parameter(torch.zeros(nx).double())
+        self.A = Parameter(torch.rand(t.shape, dtype=torch.float64))
+        self.log_z0 = Parameter(torch.zeros(nx, dtype=torch.float64))
 
     def forward(self, puzzles):
         nBatch = puzzles.size(0)
@@ -78,14 +78,14 @@ class QPlayer_Learn_feasibility(nn.Module):
 
         nx = (n**2) ** 3
         Qpenalty = 0.0
-        self.Q = Variable(Qpenalty * torch.eye(nx).double())
+        self.Q = Qpenalty * torch.eye(nx, dtype=torch.float64)
 
-        self.G = Variable(-torch.eye(nx).double())
-        self.h = Variable(torch.zeros(nx).double())
-        self.l = Variable(-1.0e20 * torch.ones(nx).double())
+        self.G = -torch.eye(nx, dtype=torch.float64)
+        self.h = torch.zeros(nx, dtype=torch.float64)
+        self.l = -1.0e20 * torch.ones(nx, dtype=torch.float64)
         t = get_sudoku_matrix(n)
-        self.A = Parameter(torch.rand(t.shape).double())
-        self.b = Variable(torch.ones(self.A.size(0)).double())
+        self.A = Parameter(torch.rand(t.shape, dtype=torch.float64))
+        self.b = torch.ones(self.A.size(0), dtype=torch.float64)
 
     def forward(self, puzzles):
         nBatch = puzzles.size(0)
@@ -103,15 +103,13 @@ class QPlayer_Learn_feasibility(nn.Module):
 def train(args, epoch, model, trainX, trainY, optimizer):
     batchSz = args.batchSz
 
-    batch_data_t = torch.FloatTensor(
-        batchSz, trainX.size(1), trainX.size(2), trainX.size(3)
+    batch_data = torch.empty(
+        (batchSz, trainX.size(1), trainX.size(2), trainX.size(3)), dtype=torch.float32
     )
-    batch_targets_t = torch.FloatTensor(
-        batchSz, trainY.size(1), trainX.size(2), trainX.size(3)
+    batch_targets = torch.empty(
+        (batchSz, trainY.size(1), trainX.size(2), trainX.size(3)), dtype=torch.float32
     )
 
-    batch_data = Variable(batch_data_t, requires_grad=False)
-    batch_targets = Variable(batch_targets_t, requires_grad=False)
     for i in range(0, trainX.size(0), batchSz):
         start = time.time()
         batch_data.data[:] = trainX[i : i + batchSz]
@@ -140,14 +138,12 @@ def test(args, epoch, model, testX, testY):
     batchSz = args.testBatchSz
 
     test_loss = 0
-    batch_data_t = torch.FloatTensor(
-        batchSz, testX.size(1), testX.size(2), testX.size(3)
+    batch_data = torch.empty(
+        (batchSz, testX.size(1), testX.size(2), testX.size(3)), dtype=torch.float32
     )
-    batch_targets_t = torch.FloatTensor(
-        batchSz, testY.size(1), testX.size(2), testX.size(3)
+    batch_targets = torch.empty(
+        (batchSz, testY.size(1), testX.size(2), testX.size(3)), dtype=torch.float32
     )
-    batch_data = Variable(batch_data_t)
-    batch_targets = Variable(batch_targets_t)
 
     nErr = 0
     for i in range(0, testX.size(0), batchSz):
