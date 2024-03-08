@@ -2,18 +2,9 @@ import torch
 import numpy as np
 
 
-def extract_nBatch_double_sided(Q, p, A, b, G, l, u):
+def extract_nBatch(Q, p, A, b, G, l, u):
     dims = [3, 2, 3, 2, 3, 2, 2]
     params = [Q, p, A, b, G, l, u]
-    for param, dim in zip(params, dims):
-        if param.ndimension() == dim:
-            return param.size(0)
-    return 1
-
-
-def extract_nBatch_(Q, p, G, A, b):
-    dims = [3, 2, 3, 3, 2]
-    params = [Q, p, G, A, b]
     for param, dim in zip(params, dims):
         if param.ndimension() == dim:
             return param.size(0)
@@ -67,12 +58,3 @@ def expandParam(X, nBatch, nDim):
         return X.unsqueeze(0).expand(*([nBatch] + list(X.size()))), True
     else:
         raise RuntimeError("Unexpected number of dimensions.")
-
-
-def extract_nBatch(Q, p, G, h, A, b):
-    dims = [3, 2, 3, 2, 3, 2]
-    params = [Q, p, G, h, A, b]
-    for param, dim in zip(params, dims):
-        if param.ndimension() == dim:
-            return param.size(0)
-    return 1
