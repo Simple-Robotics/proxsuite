@@ -13,14 +13,14 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [macos-latest, self-hosted-arm64, windows-2019, windows-latest]
+        os: [macos-latest, macos-14, windows-2019, windows-latest]
         include:
           - os: windows-2019
             toolset: ClangCl
           - os: windows-latest
             toolset: v143
         exclude:
-          - os: self-hosted-arm64
+          - os: macos-14
             python-version: 3.7
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'windows')
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
@@ -43,6 +43,15 @@ jobs:
           channels: conda-forge
           python-version: ${{ matrix.python-version }}
           activate-environment: proxsuite
+
+      - name: Setup conda
+        if: matrix.os == 'macos-14'
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          channels: conda-forge
+          python-version: ${{ matrix.python-version }}
+          activate-environment: proxsuite
+          installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
 
       - name: Install dependencies [Conda]
         if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
@@ -75,19 +84,6 @@ jobs:
           CMEEL_JOBS: 1
           CMEEL_LOG_LEVEL: Debug
         run: |
-          pip wheel . -w dist
-
-
-      - name: Build wheel on self-hosted
-        if: contains(matrix.os, 'self-hosted')
-        env :
-          CMEEL_CMAKE_ARGS: "-DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF -DINSTALL_DOCUMENTATION=OFF"
-        shell: bash -l {0}
-        run: |
-          conda activate proxarm-py${{ matrix.python-version }}
-          conda info
-          mamba list
-          env
           pip wheel . -w dist
 
       - name: Move proxsuite to specific dist folder
