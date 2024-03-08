@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### What's Changed
+* Change from torch.Tensor to torch.empty or torch.tensor and specify type explicitly ([#308](https://github.com/Simple-Robotics/proxsuite/pull/308))
+* Fix handling of batch of inequality constraints in `QPFunctionFn_infeas`. The derivations in qplayer was done for single-sided constraints, that's the reason for the concatenation but the expansion of batchsize dimension was not working properly ([#308](https://github.com/Simple-Robotics/proxsuite/pull/308))
 * Switch from self-hosted runner for macos-14-ARM to runner from github ([#306](https://github.com/Simple-Robotics/proxsuite/pull/306))
 
 ## [0.6.4] - 2024-03-01
