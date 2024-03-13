@@ -249,8 +249,8 @@ dense_ltsolve(DenseVecMut<T> x, MatRef<T, I> l) noexcept(false)
  */
 template<typename I>
 auto
-etree_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
-  -> proxsuite::linalg::veg::dynstack::StackReq
+etree_req(proxsuite::linalg::veg::Tag<I> /*tag*/,
+          isize n) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return { n * isize{ sizeof(I) }, alignof(I) };
 }
@@ -456,8 +456,8 @@ postorder_depth_first_search( //
  */
 template<typename I>
 auto
-postorder_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize n) noexcept
-  -> proxsuite::linalg::veg::dynstack::StackReq
+postorder_req(proxsuite::linalg::veg::Tag<I> /*tag*/,
+              isize n) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return { (3 * n) * isize(sizeof(I)), alignof(I) };
 }
@@ -716,8 +716,9 @@ column_counts(I* counts,
 
 template<typename I>
 auto
-amd_req(proxsuite::linalg::veg::Tag<I> /*tag*/, isize /*n*/, isize nnz) noexcept
-  -> proxsuite::linalg::veg::dynstack::StackReq
+amd_req(proxsuite::linalg::veg::Tag<I> /*tag*/,
+        isize /*n*/,
+        isize nnz) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return { nnz * isize{ sizeof(char) }, alignof(char) };
 }

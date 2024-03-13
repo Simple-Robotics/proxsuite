@@ -204,10 +204,10 @@ struct HollowIndexedTuple<meta::index_sequence<Is...>, Ts...>
 
 template<usize I, typename T>
 auto
-get_type(HollowLeaf<I, T> const*) VEG_NOEXCEPT->T;
+get_type(HollowLeaf<I, T> const*) VEG_NOEXCEPT -> T;
 template<typename T, usize I>
 auto
-get_idx(HollowLeaf<I, T> const*) VEG_NOEXCEPT->meta::constant<usize, I>;
+get_idx(HollowLeaf<I, T> const*) VEG_NOEXCEPT -> meta::constant<usize, I>;
 
 template<usize I>
 struct pack_ith_elem

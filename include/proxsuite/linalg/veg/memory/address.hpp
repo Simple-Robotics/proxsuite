@@ -29,7 +29,7 @@ struct member_addr
   using type = decltype(void(VEG_DECLVAL(T&).operator&()));
 
   template<typename T>
-  VEG_INLINE static auto apply(T& var) VEG_NOEXCEPT->T*
+  VEG_INLINE static auto apply(T& var) VEG_NOEXCEPT -> T*
   {
     using char_ref = char&;
     return static_cast<T*>(static_cast<void*>(&char_ref(var)));
@@ -43,7 +43,7 @@ struct adl_addr : member_addr
 struct builtin_addr : meta::true_type
 {
   template<typename T>
-  VEG_INLINE static constexpr auto apply(T& var) VEG_NOEXCEPT->T*
+  VEG_INLINE static constexpr auto apply(T& var) VEG_NOEXCEPT -> T*
   {
     return &var;
   }

@@ -277,9 +277,9 @@ realloc_and_append( //
   mem::AllocBlock out,
   usize out_len,
   T const* in,
-  usize in_len) VEG_NOEXCEPT_IF(VEG_CONCEPT(alloc::nothrow_grow<A>) &&
-                                VEG_CONCEPT(alloc::nothrow_clone<C, T, A>))
-  -> mem::AllocBlock
+  usize in_len)
+  VEG_NOEXCEPT_IF(VEG_CONCEPT(alloc::nothrow_grow<A>) &&
+                  VEG_CONCEPT(alloc::nothrow_clone<C, T, A>)) -> mem::AllocBlock
 {
 
   if (in_len == 0) {
@@ -950,34 +950,34 @@ public:
     this->push_with_unchecked(unsafe, _detail::MoveFn<T>{ VEG_FWD(value) });
   }
 
-  VEG_NODISCARD VEG_INLINE auto as_ref() const VEG_NOEXCEPT->Slice<T>
+  VEG_NODISCARD VEG_INLINE auto as_ref() const VEG_NOEXCEPT -> Slice<T>
   {
     return { unsafe, from_raw_parts, ptr(), len() };
   }
-  VEG_NODISCARD VEG_INLINE auto as_mut() VEG_NOEXCEPT->SliceMut<T>
+  VEG_NODISCARD VEG_INLINE auto as_mut() VEG_NOEXCEPT -> SliceMut<T>
   {
     return { unsafe, from_raw_parts, ptr_mut(), len() };
   }
 
-  VEG_NODISCARD VEG_INLINE auto ptr() const VEG_NOEXCEPT->T const*
+  VEG_NODISCARD VEG_INLINE auto ptr() const VEG_NOEXCEPT -> T const*
   {
     return this->raw_ref().get().data;
   }
-  VEG_NODISCARD VEG_INLINE auto ptr_mut() VEG_NOEXCEPT->T*
+  VEG_NODISCARD VEG_INLINE auto ptr_mut() VEG_NOEXCEPT -> T*
   {
     return const_cast<T*>(this->ptr());
   }
-  VEG_NODISCARD VEG_INLINE auto len() const VEG_NOEXCEPT->isize
+  VEG_NODISCARD VEG_INLINE auto len() const VEG_NOEXCEPT -> isize
   {
     auto& raw = this->raw_ref().get();
     return isize(raw.end - raw.data);
   }
-  VEG_NODISCARD VEG_INLINE auto capacity() const VEG_NOEXCEPT->isize
+  VEG_NODISCARD VEG_INLINE auto capacity() const VEG_NOEXCEPT -> isize
   {
     auto& raw = this->raw_ref().get();
     return isize(raw.end_alloc - raw.data);
   }
-  VEG_NODISCARD VEG_INLINE auto byte_capacity() const VEG_NOEXCEPT->isize
+  VEG_NODISCARD VEG_INLINE auto byte_capacity() const VEG_NOEXCEPT -> isize
   {
     auto& raw = this->raw_ref().get();
     return meta::is_consteval()

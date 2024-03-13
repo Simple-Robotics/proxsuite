@@ -198,12 +198,12 @@ struct binary_traits<Dyn, Dyn>
   using Div = Dyn;
   using Mod = Dyn;
 
-  VEG_NODISCARD static constexpr auto div_fn(Dyn a, Dyn b) VEG_NOEXCEPT->Div
+  VEG_NODISCARD static constexpr auto div_fn(Dyn a, Dyn b) VEG_NOEXCEPT -> Div
   {
     return VEG_INTERNAL_ASSERT_PRECONDITION(isize(b) != isize(0)),
            isize(a) / isize(b);
   }
-  VEG_NODISCARD static constexpr auto mod_fn(Dyn a, Dyn b) VEG_NOEXCEPT->Mod
+  VEG_NODISCARD static constexpr auto mod_fn(Dyn a, Dyn b) VEG_NOEXCEPT -> Mod
   {
 
     return VEG_INTERNAL_ASSERT_PRECONDITION(isize(b) != isize(0)),
@@ -224,7 +224,7 @@ struct binary_traits<Fix<0>, Dyn> : binary_traits<Dyn, Dyn>
   using Mul = Fix<0>;
   VEG_NODISCARD
   constexpr VEG_INLINE static auto mul_fn(Fix<0> /*a*/,
-                                          Dyn /*b*/) VEG_NOEXCEPT->Mul
+                                          Dyn /*b*/) VEG_NOEXCEPT -> Mul
   {
     return {};
   }
@@ -234,7 +234,8 @@ template<isize N>
 struct binary_traits<Dyn, Fix<N>> : binary_traits<Dyn, Dyn>
 {
   using Mul = typename binary_traits<Fix<N>, Dyn>::Mul;
-  VEG_INLINE static constexpr auto mul_fn(Dyn a, Fix<N> /*b*/) VEG_NOEXCEPT->Mul
+  VEG_INLINE static constexpr auto mul_fn(Dyn a,
+                                          Fix<N> /*b*/) VEG_NOEXCEPT -> Mul
   {
     return binary_traits<Fix<N>, Dyn>::mul_fn({}, a);
   }
@@ -243,12 +244,12 @@ struct binary_traits<Dyn, Fix<N>> : binary_traits<Dyn, Dyn>
   using Mod = meta::if_t<N == 0, void, Dyn>;
 
   VEG_NODISCARD VEG_INLINE static constexpr auto div_fn(Dyn a, Fix<N> /*b*/)
-    VEG_NOEXCEPT->Div
+    VEG_NOEXCEPT -> Div
   {
     return Div(isize(a) / N);
   }
   VEG_NODISCARD VEG_INLINE static constexpr auto mod_fn(Dyn a, Fix<N> /*b*/)
-    VEG_NOEXCEPT->Mod
+    VEG_NOEXCEPT -> Mod
   {
     return Mod(isize(a) % N);
   }

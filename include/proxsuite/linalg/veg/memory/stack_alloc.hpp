@@ -76,8 +76,8 @@ struct BumpAllocLayout
     return blk;
   }
 
-  auto _grow_last_unchecked(void* ptr, usize new_byte_size) noexcept
-    -> mem::AllocBlock
+  auto _grow_last_unchecked(void* ptr,
+                            usize new_byte_size) noexcept -> mem::AllocBlock
   {
     auto rem_bytes = usize(end_ptr - static_cast<mem::byte*>(ptr));
     auto given_bytes = _align(new_byte_size);
@@ -157,8 +157,8 @@ struct Alloc<BumpAlloc<MaxAlign>>
   using ImplMut = _detail::_mem::BumpAllocLayout<MaxAlign>&;
   using RefMut = proxsuite::linalg::veg::RefMut<BumpAlloc<MaxAlign>>;
 
-  VEG_INLINE static auto alloc(RefMut ref, mem::Layout layout) noexcept
-    -> AllocBlock
+  VEG_INLINE static auto alloc(RefMut ref,
+                               mem::Layout layout) noexcept -> AllocBlock
   {
     return ImplMut(ref.get())._alloc(layout);
   }
@@ -184,8 +184,8 @@ struct Alloc<StackAlloc<MaxAlign>>
   using ImplMut = _detail::_mem::BumpAllocLayout<MaxAlign>&;
   using RefMut = proxsuite::linalg::veg::RefMut<StackAlloc<MaxAlign>>;
 
-  VEG_INLINE static auto alloc(RefMut ref, mem::Layout layout) noexcept
-    -> AllocBlock
+  VEG_INLINE static auto alloc(RefMut ref,
+                               mem::Layout layout) noexcept -> AllocBlock
   {
     return ImplMut(ref.get())._alloc(layout);
   }
@@ -211,8 +211,8 @@ struct Alloc<MonotonicAlloc<MaxAlign>>
   using ImplMut = _detail::_mem::BumpAllocLayout<MaxAlign>&;
   using RefMut = proxsuite::linalg::veg::RefMut<MonotonicAlloc<MaxAlign>>;
 
-  VEG_INLINE static auto alloc(RefMut ref, mem::Layout layout) noexcept
-    -> AllocBlock
+  VEG_INLINE static auto alloc(RefMut ref,
+                               mem::Layout layout) noexcept -> AllocBlock
   {
     return ImplMut(ref.get())._alloc(layout);
   }

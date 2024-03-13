@@ -226,8 +226,9 @@ positive_definite_rand(isize n, Scalar cond) -> Mat<Scalar, colmajor>
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand(isize n, Scalar cond, Scalar p)
-  -> SparseMat<Scalar>
+sparse_positive_definite_rand(isize n,
+                              Scalar cond,
+                              Scalar p) -> SparseMat<Scalar>
 {
   auto H = SparseMat<Scalar>(n, n);
 
@@ -276,8 +277,9 @@ sparse_positive_definite_rand(isize n, Scalar cond, Scalar p)
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand_compressed(isize n, Scalar rho, Scalar p)
-  -> SparseMat<Scalar>
+sparse_positive_definite_rand_compressed(isize n,
+                                         Scalar rho,
+                                         Scalar p) -> SparseMat<Scalar>
 {
   auto H = SparseMat<Scalar>(n, n);
 
@@ -306,8 +308,9 @@ sparse_positive_definite_rand_compressed(isize n, Scalar rho, Scalar p)
 
 template<typename Scalar>
 auto
-sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, Scalar p)
-  -> Mat<Scalar, colmajor>
+sparse_positive_definite_rand_not_compressed(isize n,
+                                             Scalar rho,
+                                             Scalar p) -> Mat<Scalar, colmajor>
 {
   auto H = Mat<Scalar, colmajor>(n, n);
   H.setZero();
@@ -352,8 +355,9 @@ sparse_matrix_rand(isize nrows, isize ncols, Scalar p) -> SparseMat<Scalar>
 
 template<typename Scalar>
 auto
-sparse_matrix_rand_not_compressed(isize nrows, isize ncols, Scalar p)
-  -> Mat<Scalar, colmajor>
+sparse_matrix_rand_not_compressed(isize nrows,
+                                  isize ncols,
+                                  Scalar p) -> Mat<Scalar, colmajor>
 {
   auto A = Mat<Scalar, colmajor>(nrows, ncols);
   A.setZero();
@@ -412,8 +416,9 @@ template<typename MatLhs,
          typename MatRhs,
          typename T = typename MatLhs::Scalar>
 auto
-matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
-  -> Mat<T, proxqp::colmajor>
+matmul3(MatLhs const& a,
+        MatMid const& b,
+        MatRhs const& c) -> Mat<T, proxqp::colmajor>
 {
   return matmul(matmul(a, b), c);
 }

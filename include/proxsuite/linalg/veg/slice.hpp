@@ -46,10 +46,10 @@ public:
 
   VEG_NODISCARD
   VEG_INLINE
-  constexpr auto ptr() const VEG_NOEXCEPT->T const* { return data; }
+  constexpr auto ptr() const VEG_NOEXCEPT -> T const* { return data; }
   VEG_NODISCARD
   VEG_INLINE
-  constexpr auto len() const VEG_NOEXCEPT->isize { return size; }
+  constexpr auto len() const VEG_NOEXCEPT -> isize { return size; }
 
   VEG_NODISCARD
   VEG_INLINE
@@ -61,13 +61,13 @@ public:
   VEG_NODISCARD
   VEG_INLINE
   constexpr auto get_unchecked(Unsafe /*tag*/,
-                               isize idx) const VEG_NOEXCEPT->Ref<T>
+                               isize idx) const VEG_NOEXCEPT -> Ref<T>
   {
     return ref(*(data + idx));
   }
 
-  VEG_NODISCARD VEG_INLINE constexpr auto split_at(isize idx) const
-    VEG_NOEXCEPT->Tuple<Slice<T>, Slice<T>>
+  VEG_NODISCARD VEG_INLINE constexpr auto split_at(isize idx) const VEG_NOEXCEPT
+    -> Tuple<Slice<T>, Slice<T>>
   {
     return VEG_INTERNAL_ASSERT_PRECONDITION(usize(idx) <= usize(len())),
            Tuple<Slice<T>, Slice<T>>{
@@ -87,8 +87,8 @@ public:
            };
   }
 
-  VEG_NODISCARD VEG_INLINE auto as_bytes() const
-    VEG_NOEXCEPT->Slice<unsigned char>
+  VEG_NODISCARD VEG_INLINE auto as_bytes() const VEG_NOEXCEPT
+    -> Slice<unsigned char>
   {
     return {
       unsafe,
@@ -145,12 +145,12 @@ struct SliceMut : private Slice<T>
   VEG_NODISCARD
   VEG_INLINE
   VEG_CPP14(constexpr)
-  auto get_mut_unchecked(Unsafe /*tag*/, isize idx) VEG_NOEXCEPT->RefMut<T>
+  auto get_mut_unchecked(Unsafe /*tag*/, isize idx) VEG_NOEXCEPT -> RefMut<T>
   {
     return mut(const_cast<T&>(*(this->data + idx)));
   }
   VEG_NODISCARD VEG_INLINE auto as_mut_bytes()
-    VEG_NOEXCEPT->SliceMut<unsigned char>
+    VEG_NOEXCEPT -> SliceMut<unsigned char>
   {
     return {
       unsafe,
