@@ -6,7 +6,7 @@ import torch
 import proxsuite
 
 from torch.autograd import Function
-from .utils import expandParam, extract_nBatch, extract_nBatch_double_sided, bger
+from .utils import expandParam, extract_nBatch, bger
 
 
 def QPFunction(
@@ -92,7 +92,7 @@ def QPFunction(
     class QPFunctionFn(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
-            nBatch = extract_nBatch_double_sided(Q_, p_, A_, b_, G_, l_, u_)
+            nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
             G, _ = expandParam(G_, nBatch, 3)
@@ -114,9 +114,9 @@ def QPFunction(
             if ctx.cpu is not None:
                 ctx.cpu = max(1, int(ctx.cpu / 2))
 
-            zhats = torch.empty((nBatch, ctx.nz)).type_as(Q)
-            lams = torch.empty((nBatch, ctx.neq)).type_as(Q)
-            nus = torch.empty((nBatch, ctx.nineq)).type_as(Q)
+            zhats = torch.empty((nBatch, ctx.nz), dtype=Q.dtype)
+            lams = torch.empty((nBatch, ctx.neq), dtype=Q.dtype)
+            nus = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
 
             for i in range(nBatch):
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
@@ -255,37 +255,39 @@ def QPFunction(
 
     class QPFunctionFn_infeas(Function):
         @staticmethod
-        # def forward(ctx, Q_, p_, G_, h_, A_, b_):
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
-            h_ = torch.cat((-l_, u_), 0)
-            G_ = torch.cat((-G_, G_), 0)
-            nBatch = extract_nBatch(Q_, p_, G_, h_, A_, b_)
+            nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
+
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
             G, _ = expandParam(G_, nBatch, 3)
-            h, _ = expandParam(h_, nBatch, 2)
+            u, _ = expandParam(u_, nBatch, 2)
+            l, _ = expandParam(l_, nBatch, 2)
             A, _ = expandParam(A_, nBatch, 3)
             b, _ = expandParam(b_, nBatch, 2)
+
+            h = torch.cat((-l, u), axis=1)  # single-sided inequality
+            G = torch.cat((-G, G), axis=1)  # single-sided inequality
 
             _, nineq, nz = G.size()
             neq = A.size(1) if A.nelement() > 0 else 0
             assert neq > 0 or nineq > 0
             ctx.neq, ctx.nineq, ctx.nz = neq, nineq, nz
 
-            zhats = torch.Tensor(nBatch, ctx.nz).type_as(Q)
-            nus = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
+            zhats = torch.empty((nBatch, ctx.nz), dtype=Q.dtype)
+            nus = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
             lams = (
-                torch.Tensor(nBatch, ctx.neq).type_as(Q)
+                torch.empty(nBatch, ctx.neq, dtype=Q.dtype)
                 if ctx.neq > 0
-                else torch.Tensor()
+                else torch.empty()
             )
             s_e = (
-                torch.Tensor(nBatch, ctx.neq).type_as(Q)
+                torch.empty(nBatch, ctx.neq, dtype=Q.dtype)
                 if ctx.neq > 0
-                else torch.Tensor()
+                else torch.empty()
             )
-            slacks = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
-            s_i = torch.Tensor(nBatch, ctx.nineq).type_as(Q)
+            slacks = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
+            s_i = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
 
             vector_of_qps = proxsuite.proxqp.dense.BatchQP()
 
@@ -338,31 +340,35 @@ def QPFunction(
 
             for i in range(nBatch):
                 si = -h[i] + G[i] @ vector_of_qps.get(i).results.x
-                zhats[i] = torch.Tensor(vector_of_qps.get(i).results.x)
-                nus[i] = torch.Tensor(vector_of_qps.get(i).results.z)
-                slacks[i] = torch.Tensor(si)
+                zhats[i] = torch.tensor(vector_of_qps.get(i).results.x)
+                nus[i] = torch.tensor(vector_of_qps.get(i).results.z)
+                slacks[i] = si.clone().detach()
                 if neq > 0:
-                    lams[i] = torch.Tensor(vector_of_qps.get(i).results.y)
-                    s_e[i] = torch.Tensor(vector_of_qps.get(i).results.se)
-                s_i[i] = torch.Tensor(vector_of_qps.get(i).results.si)
+                    lams[i] = torch.tensor(vector_of_qps.get(i).results.y)
+                    s_e[i] = torch.tensor(vector_of_qps.get(i).results.se)
+                s_i[i] = torch.tensor(vector_of_qps.get(i).results.si)
 
             ctx.lams = lams
             ctx.nus = nus
             ctx.slacks = slacks
-            ctx.save_for_backward(zhats, s_e, Q_, p_, G_, h_, A_, b_)
+            ctx.save_for_backward(zhats, s_e, Q_, p_, G_, l_, u_, A_, b_)
             return zhats, lams, nus, s_e, s_i
 
         @staticmethod
         def backward(ctx, dl_dzhat, dl_dlams, dl_dnus, dl_ds_e, dl_ds_i):
-            zhats, s_e, Q, p, G, h, A, b = ctx.saved_tensors
-            nBatch = extract_nBatch(Q, p, G, h, A, b)
+            zhats, s_e, Q, p, G, l, u, A, b = ctx.saved_tensors
+            nBatch = extract_nBatch(Q, p, A, b, G, l, u)
 
             Q, Q_e = expandParam(Q, nBatch, 3)
             p, p_e = expandParam(p, nBatch, 2)
             G, G_e = expandParam(G, nBatch, 3)
-            h, h_e = expandParam(h, nBatch, 2)
+            _, u_e = expandParam(u, nBatch, 2)
+            _, l_e = expandParam(l, nBatch, 2)
             A, A_e = expandParam(A, nBatch, 3)
             b, b_e = expandParam(b, nBatch, 2)
+
+            h_e = l_e or u_e
+            G = torch.cat((-G, G), axis=1)
 
             neq, nineq = ctx.neq, ctx.nineq
             dx = torch.zeros((nBatch, Q.shape[1]))
