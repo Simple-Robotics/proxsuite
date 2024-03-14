@@ -614,23 +614,23 @@ public:
   auto dim() const noexcept -> isize { return perm.len(); }
 
   auto ld_col() const noexcept -> Eigen::Map< //
-    ColMat const,
-    Eigen::Unaligned,
-    Eigen::OuterStride<DYN>>
+                                 ColMat const,
+                                 Eigen::Unaligned,
+                                 Eigen::OuterStride<DYN>>
   {
     return { ld_storage.ptr(), dim(), dim(), stride };
   }
   auto ld_col_mut() noexcept -> Eigen::Map< //
-    ColMat,
-    Eigen::Unaligned,
-    Eigen::OuterStride<DYN>>
+                               ColMat,
+                               Eigen::Unaligned,
+                               Eigen::OuterStride<DYN>>
   {
     return { ld_storage.ptr_mut(), dim(), dim(), stride };
   }
   auto ld_row() const noexcept -> Eigen::Map< //
-    RowMat const,
-    Eigen::Unaligned,
-    Eigen::OuterStride<DYN>>
+                                 RowMat const,
+                                 Eigen::Unaligned,
+                                 Eigen::OuterStride<DYN>>
   {
     return {
       ld_storage.ptr(),
@@ -640,9 +640,9 @@ public:
     };
   }
   auto ld_row_mut() noexcept -> Eigen::Map< //
-    RowMat,
-    Eigen::Unaligned,
-    Eigen::OuterStride<DYN>>
+                               RowMat,
+                               Eigen::Unaligned,
+                               Eigen::OuterStride<DYN>>
   {
     return {
       ld_storage.ptr_mut(),

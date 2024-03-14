@@ -350,8 +350,8 @@ factorize_recursive(Mat&& mat,
 
 template<typename T>
 auto
-factorize_req(proxsuite::linalg::veg::Tag<T> tag, isize n) noexcept
-  -> proxsuite::linalg::veg::dynstack::StackReq
+factorize_req(proxsuite::linalg::veg::Tag<T> tag,
+              isize n) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return proxsuite::linalg::dense::factorize_blocked_req(tag, n, 128) |
          proxsuite::linalg::dense::factorize_recursive_req(tag, n);

@@ -1971,9 +1971,8 @@ HEDLEY_DIAGNOSTIC_POP
 #if HEDLEY_HAS_WARNING("-Wgcc-compat")
 #define HEDLEY_REQUIRE(expr)                                                   \
   HEDLEY_DIAGNOSTIC_PUSH                                                       \
-  _Pragma("clang diagnostic ignored \"-Wgcc-compat\"")                         \
-    __attribute__((diagnose_if(!(expr), #expr, "error")))                      \
-    HEDLEY_DIAGNOSTIC_POP
+  _Pragma("clang diagnostic ignored \"-Wgcc-compat\"") __attribute__((         \
+    diagnose_if(!(expr), #expr, "error"))) HEDLEY_DIAGNOSTIC_POP
 #define HEDLEY_REQUIRE_MSG(expr, msg)                                          \
   HEDLEY_DIAGNOSTIC_PUSH                                                       \
   _Pragma("clang diagnostic ignored \"-Wgcc-compat\"")                         \

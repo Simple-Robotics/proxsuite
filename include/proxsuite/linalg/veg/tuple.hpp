@@ -150,7 +150,7 @@ struct TupleLeafImpl<T, true> : T
   {
   }
   TupleLeafImpl() = default;
-  VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT->T&
+  VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT -> T&
   {
     return const_cast<T&>(static_cast<T const&>(*this));
   }
@@ -168,7 +168,7 @@ struct TupleLeafImpl<T, false>
   }
   TupleLeafImpl() = default;
 
-  VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT->T&
+  VEG_INLINE constexpr auto leaf_get() const VEG_NOEXCEPT -> T&
   {
     return const_cast<T&>(leaf);
   }
@@ -334,18 +334,18 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
   IndexedTuple() = default;
 
   VEG_INLINE constexpr IndexedTuple(Tuplify /*tag*/, Ts... args) VEG_NOEXCEPT
-    : inner
-  {
+    : inner{
 #if !defined(VEG_WITH_CXX17_SUPPORT)
-    inplace, _detail::MoveFn<Ts>{ VEG_FWD(args) }...,
+      inplace,
+      _detail::MoveFn<Ts>{ VEG_FWD(args) }...,
 #else
 #if VEG_HAS_NO_UNIQUE_ADDRESS
-    TupleLeaf<Is, Ts>{ Ts(VEG_FWD(args)) }...
+      TupleLeaf<Is, Ts>{ Ts(VEG_FWD(args)) }...
 #else
-    TupleLeaf<Is, Ts>{ inplace, _detail::MoveFn<Ts>{ VEG_FWD(args) } }...
+      TupleLeaf<Is, Ts>{ inplace, _detail::MoveFn<Ts>{ VEG_FWD(args) } }...
 #endif
 #endif
-  }
+    }
   {
   }
 
@@ -357,18 +357,18 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
                (... fns, Fns))
 
   VEG_NOEXCEPT_IF(VEG_ALL_OF(VEG_CONCEPT(nothrow_fn_once<Fns, Ts>)))
-    : inner
-  {
+    : inner{
 #if !defined(VEG_WITH_CXX17_SUPPORT)
-    inplace, VEG_FWD(fns)...
+      inplace,
+      VEG_FWD(fns)...
 #else
 #if VEG_HAS_NO_UNIQUE_ADDRESS
-    TupleLeaf<Is, Ts>{ VEG_FWD(fns)() }...
+      TupleLeaf<Is, Ts>{ VEG_FWD(fns)() }...
 #else
-    TupleLeaf<Is, Ts>{ inplace, VEG_FWD(fns) }...
+      TupleLeaf<Is, Ts>{ inplace, VEG_FWD(fns) }...
 #endif
 #endif
-  }
+    }
   {
   }
 
@@ -401,7 +401,7 @@ struct IndexedTuple<meta::index_sequence<Is...>, Ts...>
                (/*arg*/, Fix<I>)) &&
     VEG_NOEXCEPT_IF(
       VEG_CONCEPT(nothrow_movable<ith<static_cast<usize>(I), Ts...>>))
-      -> ith<static_cast<usize>(I), Ts...>
+    -> ith<static_cast<usize>(I), Ts...>
   {
     return __VEG_IMPL_LEAF_ONCE(
       *this, static_cast<usize>(I), ith<static_cast<usize>(I), Ts...>);
@@ -521,21 +521,22 @@ namespace tuple {
 template<usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>,
-                        Ts...> const& tup) VEG_NOEXCEPT->ith<I, Ts...> const&
+                        Ts...> const& tup) VEG_NOEXCEPT -> ith<I, Ts...> const&
 {
   return __VEG_IMPL_LEAF(tup, I, ith<I, Ts...>);
 }
 template<usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>,
-                        Ts...>& tup) VEG_NOEXCEPT->ith<I, Ts...>&
+                        Ts...>& tup) VEG_NOEXCEPT -> ith<I, Ts...>&
 {
   return __VEG_IMPL_LEAF_MUT(tup, I, ith<I, Ts...>);
 }
 template<usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>,
-                        Ts...> const&& tup) VEG_NOEXCEPT->ith<I, Ts...> const&&
+                        Ts...> const&& tup)
+  VEG_NOEXCEPT -> ith<I, Ts...> const&&
 {
   return static_cast<ith<I, Ts...> const&&>(
     __VEG_IMPL_LEAF(tup, I, ith<I, Ts...>));
@@ -543,7 +544,7 @@ get(tuple::IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>,
 template<usize I, usize... Is, typename... Ts>
 VEG_NODISCARD VEG_INLINE constexpr auto
 get(tuple::IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>,
-                        Ts...>&& tup) VEG_NOEXCEPT->ith<I, Ts...>&&
+                        Ts...>&& tup) VEG_NOEXCEPT -> ith<I, Ts...>&&
 {
   return __VEG_IMPL_LEAF_ONCE(tup, I, ith<I, Ts...>);
 }
@@ -555,7 +556,7 @@ namespace _tuple {
 template<usize... Is, typename... Ts>
 VEG_INLINE static constexpr auto
 tuple_fwd(tuple::IndexedTuple<meta::index_sequence<Is...>, Ts...>&& tup)
-  VEG_NOEXCEPT->Tuple<Ts&&...>
+  VEG_NOEXCEPT -> Tuple<Ts&&...>
 {
   return {
     ((void)(tup), tuplify),
@@ -617,14 +618,14 @@ private:
   template<typename... Tuples>
   VEG_INLINE static constexpr auto pre_apply(
     proxsuite::linalg::veg::meta::true_type /*unused*/,
-    Tuples&&... tups) VEG_NOEXCEPT->Zip<Tuples...>
+    Tuples&&... tups) VEG_NOEXCEPT -> Zip<Tuples...>
   {
     return zip::apply(VEG_FWD(tups)...);
   }
   template<typename... Tuples>
   VEG_INLINE static constexpr auto pre_apply(
     proxsuite::linalg::veg::meta::false_type /*unused*/,
-    Tuples&&... tups) VEG_NOEXCEPT->Zip<Tuples...>
+    Tuples&&... tups) VEG_NOEXCEPT -> Zip<Tuples...>
   {
     return zip::from_ref_to_result(
       Tag<proxsuite::linalg::veg::meta::type_sequence_zip<
@@ -633,7 +634,7 @@ private:
       zip::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
   }
 
-  VEG_INLINE static auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
+  VEG_INLINE static auto apply() VEG_NOEXCEPT -> Tuple<> { return {}; }
 
   template<usize I, typename T>
   struct Helper
@@ -642,8 +643,8 @@ private:
     using Type = Tuple<T, meta::tuple_element<I, Ts>...>;
 
     template<typename... Ts>
-    VEG_INLINE constexpr auto apply(Ts&&... tups) const
-      VEG_NOEXCEPT->Type<Ts...>
+    VEG_INLINE constexpr auto apply(Ts&&... tups) const VEG_NOEXCEPT
+      -> Type<Ts...>
     {
       return {
         tuplify{},
@@ -658,9 +659,9 @@ private:
   VEG_INLINE static constexpr auto apply(
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>, Ts...>
       first,
-    Tuples... rest) VEG_NOEXCEPT->Tuple< //
-    typename Helper<Is, Ts>::            //
-    template Type<Tuples...>...>
+    Tuples... rest) VEG_NOEXCEPT -> Tuple<                   //
+                                   typename Helper<Is, Ts>:: //
+                                   template Type<Tuples...>...>
   {
     return {
       ((void)first, tuplify{}),
@@ -706,7 +707,7 @@ private:
   VEG_INLINE static constexpr auto from_ref_to_result(
     Tag<Tuple<OuterTargets...>> /*tag*/,
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>, Tups...>
-      zipped_refs) VEG_NOEXCEPT->Tuple<OuterTargets...>
+      zipped_refs) VEG_NOEXCEPT -> Tuple<OuterTargets...>
   {
     return {
       ((void)zipped_refs, inplace[tuplify{}]),
@@ -743,7 +744,7 @@ private:
   template<typename... Tuples>
   VEG_INLINE static constexpr auto pre_apply(
     proxsuite::linalg::veg::meta::true_type /*unused*/,
-    Tuples&&... tups) VEG_NOEXCEPT->Concat<Tuples...>
+    Tuples&&... tups) VEG_NOEXCEPT -> Concat<Tuples...>
   {
     return cat::apply(VEG_FWD(tups)...);
   }
@@ -751,7 +752,7 @@ private:
   template<typename... Tuples>
   VEG_INLINE static constexpr auto pre_apply(
     proxsuite::linalg::veg::meta::false_type /*unused*/,
-    Tuples&&... tups) VEG_NOEXCEPT->Concat<Tuples...>
+    Tuples&&... tups) VEG_NOEXCEPT -> Concat<Tuples...>
   {
     return cat::template from_ref_to_result(
       Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
@@ -762,7 +763,7 @@ private:
   VEG_INLINE static constexpr auto from_ref_to_result(
     Tag<Tuple<Targets...>> /*tag*/,
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>, Refs...>
-      refs) VEG_NOEXCEPT->proxsuite::linalg::veg::Tuple<Targets...>
+      refs) VEG_NOEXCEPT -> proxsuite::linalg::veg::Tuple<Targets...>
   {
     return {
       inplace[tuplify{}],
@@ -770,17 +771,17 @@ private:
     };
   }
 
-  VEG_INLINE static auto apply() VEG_NOEXCEPT->Tuple<> { return {}; }
+  VEG_INLINE static auto apply() VEG_NOEXCEPT -> Tuple<> { return {}; }
 
   template<usize... Is, typename... Ts, typename... Tuples>
   VEG_INLINE static constexpr auto apply(
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>, Ts...>&&
       first,
     Tuples&&... rest)
-    VEG_NOEXCEPT->proxsuite::linalg::veg::meta::type_sequence_cat<
-      Tuple,
-      Tuple<Ts...>,
-      typename _detail::meta_::IndexedToTuple<Tuples>::Type...>
+    VEG_NOEXCEPT -> proxsuite::linalg::veg::meta::type_sequence_cat<
+                   Tuple,
+                   Tuple<Ts...>,
+                   typename _detail::meta_::IndexedToTuple<Tuples>::Type...>
   {
     return cat::apply2(VEG_FWD(first), cat::apply(VEG_FWD(rest)...));
   }
@@ -790,7 +791,7 @@ private:
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Is...>, Ts...>&&
       first,
     IndexedTuple<proxsuite::linalg::veg::meta::index_sequence<Js...>, Us...>&&
-      second) VEG_NOEXCEPT->Tuple<Ts..., Us...>
+      second) VEG_NOEXCEPT -> Tuple<Ts..., Us...>
   {
     return {
       tuplify{},

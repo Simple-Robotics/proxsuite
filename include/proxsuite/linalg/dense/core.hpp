@@ -117,8 +117,8 @@ static_assert(sizeof(f64) == 8, "f64 should be 64 bits");
   LDLT_FN_IMPL3(fnmadd, Prefix, Suffix); /* (-a * b + c) */
 
 #define LDLT_LOAD_STORE(Prefix, Suffix)                                        \
-  VEG_INLINE static auto load_unaligned(ScalarType const* ptr) noexcept        \
-    -> Pack                                                                    \
+  VEG_INLINE static auto load_unaligned(                                       \
+    ScalarType const* ptr) noexcept -> Pack                                    \
   {                                                                            \
     return Pack{ simde_mm##Prefix##_loadu_##Suffix(ptr) };                     \
   }                                                                            \
@@ -560,8 +560,9 @@ elem_addr(T* ptr,
 
 template<typename Mat>
 auto
-matrix_elem_addr(Mat&& mat, isize row, isize col) noexcept
-  -> decltype(mat.data())
+matrix_elem_addr(Mat&& mat,
+                 isize row,
+                 isize col) noexcept -> decltype(mat.data())
 {
   return util::elem_addr<!bool(
     proxsuite::linalg::veg::uncvref_t<Mat>::IsRowMajor)>( //
@@ -574,16 +575,18 @@ matrix_elem_addr(Mat&& mat, isize row, isize col) noexcept
 
 template<typename T>
 auto
-col(T&& mat, isize col_idx) noexcept -> typename _detail::RowColAccessImpl<
-  !bool(proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::template Col<T>
+col(T&& mat, isize col_idx) noexcept ->
+  typename _detail::RowColAccessImpl<
+    !bool(proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::template Col<T>
 {
   return _detail::RowColAccessImpl<!bool(
     proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::col(mat, col_idx);
 }
 template<typename T>
 auto
-row(T&& mat, isize row_idx) noexcept -> typename _detail::RowColAccessImpl<
-  !bool(proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::template Row<T>
+row(T&& mat, isize row_idx) noexcept ->
+  typename _detail::RowColAccessImpl<
+    !bool(proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::template Row<T>
 {
   return _detail::RowColAccessImpl<!bool(
     proxsuite::linalg::veg::uncvref_t<T>::IsRowMajor)>::row(mat, row_idx);
@@ -591,17 +594,19 @@ row(T&& mat, isize row_idx) noexcept -> typename _detail::RowColAccessImpl<
 
 template<typename Mat>
 auto
-trans(Mat&& mat) noexcept -> Eigen::Map< //
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    Eigen::Matrix< //
-                      typename proxsuite::linalg::veg::uncvref_t<Mat>::Scalar,
-                      proxsuite::linalg::veg::uncvref_t<Mat>::ColsAtCompileTime,
-                      proxsuite::linalg::veg::uncvref_t<Mat>::RowsAtCompileTime,
-                      bool(proxsuite::linalg::veg::uncvref_t<Mat>::IsRowMajor)
-                        ? Eigen::ColMajor
-                        : Eigen::RowMajor>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+trans(Mat&& mat) noexcept
+  -> Eigen::Map< //
+    _detail::const_if<
+      _detail::ptr_is_const<decltype(mat.data())>::value,
+      Eigen::Matrix< //
+        typename proxsuite::linalg::veg::uncvref_t<Mat>::Scalar,
+        proxsuite::linalg::veg::uncvref_t<Mat>::ColsAtCompileTime,
+        proxsuite::linalg::veg::uncvref_t<Mat>::RowsAtCompileTime,
+        bool(proxsuite::linalg::veg::uncvref_t<Mat>::IsRowMajor)
+          ? Eigen::ColMajor
+          : Eigen::RowMajor>>,
+    Eigen::Unaligned,
+    _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     mat.data(),
@@ -616,15 +621,16 @@ trans(Mat&& mat) noexcept -> Eigen::Map< //
 
 template<typename Mat>
 auto
-diagonal(Mat&& mat) noexcept -> Eigen::Map< //
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    Eigen::Matrix< //
-                      typename proxsuite::linalg::veg::uncvref_t<Mat>::Scalar,
-                      Eigen::Dynamic,
-                      1,
-                      Eigen::ColMajor>>,
-  Eigen::Unaligned,
-  Eigen::InnerStride<Eigen::Dynamic>>
+diagonal(Mat&& mat) noexcept
+  -> Eigen::Map< //
+    _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
+                      Eigen::Matrix< //
+                        typename proxsuite::linalg::veg::uncvref_t<Mat>::Scalar,
+                        Eigen::Dynamic,
+                        1,
+                        Eigen::ColMajor>>,
+    Eigen::Unaligned,
+    Eigen::InnerStride<Eigen::Dynamic>>
 {
   VEG_DEBUG_ASSERT( //
     mat.rows() == mat.cols());
@@ -661,11 +667,12 @@ submatrix(Mat&& mat,
 
 template<typename Mat>
 auto
-to_view(Mat&& mat) noexcept -> Eigen::Map<
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    _detail::OwnedAll<proxsuite::linalg::veg::uncvref_t<Mat>>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+to_view(Mat&& mat) noexcept
+  -> Eigen::Map<_detail::const_if<
+                  _detail::ptr_is_const<decltype(mat.data())>::value,
+                  _detail::OwnedAll<proxsuite::linalg::veg::uncvref_t<Mat>>>,
+                Eigen::Unaligned,
+                _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     mat.data(),
@@ -680,11 +687,12 @@ to_view(Mat&& mat) noexcept -> Eigen::Map<
 
 template<typename Mat>
 auto
-to_view_dyn_rows(Mat&& mat) noexcept -> Eigen::Map<
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    _detail::OwnedRows<proxsuite::linalg::veg::uncvref_t<Mat>>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+to_view_dyn_rows(Mat&& mat) noexcept
+  -> Eigen::Map<_detail::const_if<
+                  _detail::ptr_is_const<decltype(mat.data())>::value,
+                  _detail::OwnedRows<proxsuite::linalg::veg::uncvref_t<Mat>>>,
+                Eigen::Unaligned,
+                _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     mat.data(),
@@ -699,11 +707,12 @@ to_view_dyn_rows(Mat&& mat) noexcept -> Eigen::Map<
 
 template<typename Mat>
 auto
-to_view_dyn_cols(Mat&& mat) noexcept -> Eigen::Map<
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    _detail::OwnedCols<proxsuite::linalg::veg::uncvref_t<Mat>>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+to_view_dyn_cols(Mat&& mat) noexcept
+  -> Eigen::Map<_detail::const_if<
+                  _detail::ptr_is_const<decltype(mat.data())>::value,
+                  _detail::OwnedCols<proxsuite::linalg::veg::uncvref_t<Mat>>>,
+                Eigen::Unaligned,
+                _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     mat.data(),
@@ -738,11 +747,12 @@ to_view_dyn(Mat&& mat) noexcept
 
 template<typename Mat>
 auto
-subrows(Mat&& mat, isize row_start, isize nrows) noexcept -> Eigen::Map<
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    _detail::OwnedRows<proxsuite::linalg::veg::uncvref_t<Mat>>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+subrows(Mat&& mat, isize row_start, isize nrows) noexcept
+  -> Eigen::Map<_detail::const_if<
+                  _detail::ptr_is_const<decltype(mat.data())>::value,
+                  _detail::OwnedRows<proxsuite::linalg::veg::uncvref_t<Mat>>>,
+                Eigen::Unaligned,
+                _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     util::elem_addr<!bool(proxsuite::linalg::veg::uncvref_t<Mat>::IsRowMajor)>(
@@ -758,11 +768,12 @@ subrows(Mat&& mat, isize row_start, isize nrows) noexcept -> Eigen::Map<
 
 template<typename Mat>
 auto
-subcols(Mat&& mat, isize col_start, isize ncols) noexcept -> Eigen::Map<
-  _detail::const_if<_detail::ptr_is_const<decltype(mat.data())>::value,
-                    _detail::OwnedCols<proxsuite::linalg::veg::uncvref_t<Mat>>>,
-  Eigen::Unaligned,
-  _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
+subcols(Mat&& mat, isize col_start, isize ncols) noexcept
+  -> Eigen::Map<_detail::const_if<
+                  _detail::ptr_is_const<decltype(mat.data())>::value,
+                  _detail::OwnedCols<proxsuite::linalg::veg::uncvref_t<Mat>>>,
+                Eigen::Unaligned,
+                _detail::StrideOf<proxsuite::linalg::veg::uncvref_t<Mat>>>
 {
   return {
     util::elem_addr<!bool(proxsuite::linalg::veg::uncvref_t<Mat>::IsRowMajor)>(
@@ -848,8 +859,8 @@ temp_mat_req(proxsuite::linalg::veg::Tag<T> /*tag*/,
 
 template<typename T>
 auto
-temp_vec_req(proxsuite::linalg::veg::Tag<T> /*tag*/, isize rows) noexcept
-  -> proxsuite::linalg::veg::dynstack::StackReq
+temp_vec_req(proxsuite::linalg::veg::Tag<T> /*tag*/,
+             isize rows) noexcept -> proxsuite::linalg::veg::dynstack::StackReq
 {
   return {
     rows * isize{ sizeof(T) },

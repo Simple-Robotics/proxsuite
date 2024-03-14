@@ -613,28 +613,27 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
  */
 template<typename T, typename I, typename P>
 auto
-unscaled_primal_dual_residual(
-  Workspace<T, I>& work,
-  Results<T>& results,
-  const Settings<T>& settings,
-  VecMapMut<T> primal_residual_eq_scaled,
-  VecMapMut<T> primal_residual_in_scaled_lo,
-  VecMapMut<T> primal_residual_in_scaled_up,
-  VecMapMut<T> dual_residual_scaled,
-  T& primal_feasibility_eq_rhs_0,
-  T& primal_feasibility_in_rhs_0,
-  T& dual_feasibility_rhs_0,
-  T& dual_feasibility_rhs_1,
-  T& dual_feasibility_rhs_3,
-  T& rhs_duality_gap,
-  const P& precond,
-  Model<T, I> const& data,
-  const QpView<T, I> qp_scaled,
-  VecMapMut<T> x_e,
-  VecMapMut<T> y_e,
-  VecMapMut<T> z_e,
-  proxsuite::linalg::veg::dynstack::DynStackMut stack)
-  -> proxsuite::linalg::veg::Tuple<T, T>
+unscaled_primal_dual_residual(Workspace<T, I>& work,
+                              Results<T>& results,
+                              const Settings<T>& settings,
+                              VecMapMut<T> primal_residual_eq_scaled,
+                              VecMapMut<T> primal_residual_in_scaled_lo,
+                              VecMapMut<T> primal_residual_in_scaled_up,
+                              VecMapMut<T> dual_residual_scaled,
+                              T& primal_feasibility_eq_rhs_0,
+                              T& primal_feasibility_in_rhs_0,
+                              T& dual_feasibility_rhs_0,
+                              T& dual_feasibility_rhs_1,
+                              T& dual_feasibility_rhs_3,
+                              T& rhs_duality_gap,
+                              const P& precond,
+                              Model<T, I> const& data,
+                              const QpView<T, I> qp_scaled,
+                              VecMapMut<T> x_e,
+                              VecMapMut<T> y_e,
+                              VecMapMut<T> z_e,
+                              proxsuite::linalg::veg::dynstack::DynStackMut
+                                stack) -> proxsuite::linalg::veg::Tuple<T, T>
 {
   isize n = x_e.rows();
 

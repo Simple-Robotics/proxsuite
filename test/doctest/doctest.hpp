@@ -2129,7 +2129,7 @@ public:
       res = m_translateFunction(ex); //! OCLINT parameter reassignment
       return true;
     } catch (...) {
-    }                       //! OCLINT -  empty catch statement
+    } //! OCLINT -  empty catch statement
 #endif                      // DOCTEST_CONFIG_NO_EXCEPTIONS
     static_cast<void>(res); // to silence -Wunused-parameter
     return false;

@@ -197,22 +197,22 @@ struct Error
 
 using parser = auto (*)(char, Error) -> u64;
 constexpr auto
-parse_digit_2(char c, Error e) VEG_NOEXCEPT->u64
+parse_digit_2(char c, Error e) VEG_NOEXCEPT -> u64
 {
   return (c == '0') ? 0 : (c == '1' ? 1 : e());
 }
 constexpr auto
-parse_digit_8(char c, Error e) VEG_NOEXCEPT->u64
+parse_digit_8(char c, Error e) VEG_NOEXCEPT -> u64
 {
   return (c >= '0' && c <= '7') ? u64(c - '0') : e();
 }
 constexpr auto
-parse_digit_10(char c, Error e) VEG_NOEXCEPT->u64
+parse_digit_10(char c, Error e) VEG_NOEXCEPT -> u64
 {
   return (c >= '0' && c <= '9') ? u64(c - '0') : e();
 }
 constexpr auto
-parse_digit_16(char c, Error e) VEG_NOEXCEPT->u64
+parse_digit_16(char c, Error e) VEG_NOEXCEPT -> u64
 {
   return (c >= '0' && c <= '9') //
            ? u64(c - '0')
@@ -224,7 +224,7 @@ parse_digit_16(char c, Error e) VEG_NOEXCEPT->u64
 }
 
 constexpr auto
-parse_digit(u64 radix) VEG_NOEXCEPT->parser
+parse_digit(u64 radix) VEG_NOEXCEPT -> parser
 {
   return radix == 2
            ? parse_digit_2
@@ -235,7 +235,7 @@ parse_digit(u64 radix) VEG_NOEXCEPT->parser
 }
 
 constexpr auto
-parse_num(char const* str, u64 len, u64 radix, Error e) VEG_NOEXCEPT->u64
+parse_num(char const* str, u64 len, u64 radix, Error e) VEG_NOEXCEPT -> u64
 {
   return (len == 0) ? 0
                     : radix * parse_num(str, len - 1, radix, e) +
@@ -243,7 +243,7 @@ parse_num(char const* str, u64 len, u64 radix, Error e) VEG_NOEXCEPT->u64
 }
 
 constexpr auto
-parse_int(char const* str, u64 len, Error e) VEG_NOEXCEPT->u64
+parse_int(char const* str, u64 len, Error e) VEG_NOEXCEPT -> u64
 {
   return (len == 0) //
            ? e()
@@ -303,13 +303,13 @@ struct binary_traits<Fix<N>, Fix<M>>
 
   VEG_NODISCARD VEG_INLINE static constexpr auto div_fn(Fix<N> /*a*/,
                                                         Fix<M> /*b*/)
-    VEG_NOEXCEPT->Div
+    VEG_NOEXCEPT -> Div
   {
     return Div();
   }
   VEG_NODISCARD VEG_INLINE static constexpr auto mod_fn(Fix<N> /*a*/,
                                                         Fix<M> /*b*/)
-    VEG_NOEXCEPT->Mod
+    VEG_NOEXCEPT -> Mod
   {
     return Mod();
   }

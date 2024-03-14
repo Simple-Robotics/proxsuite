@@ -53,7 +53,7 @@ struct FnInfo<auto(Args...)->Ret_>
   template auto __VA_ARGS__(                                                   \
     LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                                 \
       typename ::proxsuite::proxqp::detail::FnInfo<                            \
-        decltype(__VA_ARGS__)>::template Arg<(NParams)-1>) ->                  \
+        decltype(__VA_ARGS__)>::template Arg<(NParams) - 1>) ->                \
     typename ::proxsuite::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
   extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
@@ -717,8 +717,8 @@ struct StridedVectorView
   {
     return *ptr(index);
   }
-  VEG_INLINE auto segment(isize i, isize size) const noexcept
-    -> StridedVectorView
+  VEG_INLINE auto segment(isize i,
+                          isize size) const noexcept -> StridedVectorView
   {
     return {
       from_ptr_size_stride,
@@ -784,8 +784,8 @@ struct StridedVectorViewMut
   {
     return *ptr(index);
   }
-  VEG_INLINE auto segment(isize i, isize size) const noexcept
-    -> StridedVectorViewMut
+  VEG_INLINE auto segment(isize i,
+                          isize size) const noexcept -> StridedVectorViewMut
   {
     return {
       from_ptr_size_stride,
@@ -884,13 +884,15 @@ private:
   }
 
 public:
-  VEG_INLINE auto col(isize c) const noexcept -> proxsuite::linalg::veg::meta::
-    if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>>
+  VEG_INLINE auto col(isize c) const noexcept
+    -> proxsuite::linalg::veg::meta::
+      if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>>
   {
     return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
   }
-  VEG_INLINE auto row(isize r) const noexcept -> proxsuite::linalg::veg::meta::
-    if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>>
+  VEG_INLINE auto row(isize r) const noexcept
+    -> proxsuite::linalg::veg::meta::
+      if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>>
   {
     return trans().col(r);
   }
@@ -990,13 +992,15 @@ private:
   }
 
 public:
-  VEG_INLINE auto col(isize c) const noexcept -> proxsuite::linalg::veg::meta::
-    if_t<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
+  VEG_INLINE auto col(isize c) const noexcept
+    -> proxsuite::linalg::veg::meta::
+      if_t<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
   {
     return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
   }
-  VEG_INLINE auto row(isize r) const noexcept -> proxsuite::linalg::veg::meta::
-    if_t<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
+  VEG_INLINE auto row(isize r) const noexcept
+    -> proxsuite::linalg::veg::meta::
+      if_t<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
   {
     return trans().col(r);
   }
@@ -1149,8 +1153,7 @@ noalias_mul_add(MatrixViewMut<T, colmajor> dst,
 
     MapMut(dst.data, dst.rows, dst.cols, Stride(dst.outer_stride))
       .noalias()
-      .
-      operator+=(
+      .operator+=(
         factor *
         LAZY_PRODUCT(
           Map(lhs.data, lhs.rows, lhs.cols, Stride(lhs.outer_stride)),
