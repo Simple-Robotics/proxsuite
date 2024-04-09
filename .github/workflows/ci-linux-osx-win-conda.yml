@@ -211,7 +211,7 @@ jobs:
       run: |
         cd test/packaging/cmake
         mkdir build && cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
         cmake --build . --config ${{ matrix.build_type }} --target all
         ./run-proxqp
 
