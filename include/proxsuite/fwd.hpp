@@ -29,6 +29,7 @@
 #endif
 
 #include <Eigen/Core>
+#include <cassert>
 
 #ifdef PROXSUITE_EIGEN_CHECK_MALLOC
 #ifdef EIGEN_RUNTIME_NO_MALLOC_WAS_NOT_DEFINED
