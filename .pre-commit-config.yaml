@@ -2,7 +2,7 @@ ci:
     autoupdate_branch: 'devel'
 repos:
 -   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.4
+    rev: v18.1.5
     hooks:
     -   id: clang-format
         args: ['--style={BasedOnStyle: Mozilla, SortIncludes: false}']
