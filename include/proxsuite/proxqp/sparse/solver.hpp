@@ -1630,29 +1630,33 @@ qp_solve(Results<T>& results,
     std::cout << "objective:    " << results.info.objValue << std::endl;
     switch (results.info.status) {
       case QPSolverOutput::PROXQP_SOLVED: {
-        std::cout << "status:       " << "Solved" << std::endl;
+        std::cout << "status:       "
+                  << "Solved" << std::endl;
         break;
       }
       case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
-        std::cout << "status:       " << "Maximum number of iterations reached"
-                  << std::endl;
+        std::cout << "status:       "
+                  << "Maximum number of iterations reached" << std::endl;
         break;
       }
       case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
-        std::cout << "status:       " << "Primal infeasible" << std::endl;
+        std::cout << "status:       "
+                  << "Primal infeasible" << std::endl;
         break;
       }
       case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
-        std::cout << "status:       " << "Dual infeasible" << std::endl;
+        std::cout << "status:       "
+                  << "Dual infeasible" << std::endl;
         break;
       }
       case QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
-        std::cout << "status:       " << "Solved closest primal feasible"
-                  << std::endl;
+        std::cout << "status:       "
+                  << "Solved closest primal feasible" << std::endl;
         break;
       }
       case QPSolverOutput::PROXQP_NOT_RUN: {
-        std::cout << "status:       " << "Solver not run" << std::endl;
+        std::cout << "status:       "
+                  << "Solver not run" << std::endl;
         break;
       }
     }
