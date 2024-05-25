@@ -22,11 +22,11 @@ jobs:
           # ROS2 Humble Hawksbill (May 2022 - May 2027)
           - {name: "Humble / Debug / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Humble / Release / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
+          # - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
           # ROS2 Rolling Ridley
           - {name: "Rolling / Debug / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Rolling / Release / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
+          # - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
           - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel github:stack-of-tasks/eiquadprog#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
     name: ${{ matrix.env.name }}
     env:
