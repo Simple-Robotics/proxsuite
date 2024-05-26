@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        os: [macos-latest, macos-14, windows-2019, windows-latest]
+        os: [macos-13, macos-14, windows-2019, windows-latest]
         include:
           - os: windows-2019
             toolset: ClangCl
@@ -35,7 +35,7 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'macos-13') || contains(matrix.os, 'windows')
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
