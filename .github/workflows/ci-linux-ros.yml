@@ -6,33 +6,36 @@ jobs:
     strategy:
       matrix:
         env:
+          # ROS1 Noetic. EOL: May 2025
           - {name: "Noetic / Debug", ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
           - {name: "Noetic / Release", ROS_DISTRO: noetic, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
+          # ROS2 Jazzy Jalisco (May 2024 - May 2029)
+          - {name: "Jazzy / Debug", ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
+          - {name: "Jazzy / Release", ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
+          - {name: "Jazzy / Debug / Vectorization", ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
+          - {name: "Jazzy / Release / Vectorization", ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          # ROS2 Iron Irwini (May 2023 - November 2024)
           - {name: "Iron / Debug", ROS_DISTRO: iron, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
           - {name: "Iron / Release", ROS_DISTRO: iron, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
           - {name: "Iron / Debug / Vectorization", ROS_DISTRO: iron, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Iron / Release / Vectorization", ROS_DISTRO: iron, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+          # ROS2 Humble Hawksbill (May 2022 - May 2027)
           - {name: "Humble / Debug / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Humble / Release / Vectorization", ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
+          # - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
+          # ROS2 Rolling Ridley
           - {name: "Rolling / Debug / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
           - {name: "Rolling / Release / Vectorization", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
+          # - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
           - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel github:stack-of-tasks/eiquadprog#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
     name: ${{ matrix.env.name }}
     env:
-      #CCACHE_DIR: /github/home/.ccache # Enable ccache
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      # This step will fetch/store the directory used by ccache before/after the ci run
-      #- uses: actions/cache@v3
-      #  with:
-      #    path: ${{ env.CCACHE_DIR }}
-      #    key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
       # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{ matrix.env }}
