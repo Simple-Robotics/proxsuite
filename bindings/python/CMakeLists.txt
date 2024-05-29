@@ -39,6 +39,13 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_DEBUG
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               # On Windows, shared library are treat as binary
+               RUNTIME_OUTPUT_DIRECTORY
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               RUNTIME_OUTPUT_DIRECTORY_RELEASE
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               RUNTIME_OUTPUT_DIRECTORY_DEBUG
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
   if(UNIX AND NOT APPLE)
     set_target_properties(instructionset PROPERTIES INSTALL_RPATH
@@ -96,6 +103,13 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_DEBUG
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               # On Windows, shared library are treat as binary
+               RUNTIME_OUTPUT_DIRECTORY
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               RUNTIME_OUTPUT_DIRECTORY_RELEASE
+               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               RUNTIME_OUTPUT_DIRECTORY_DEBUG
                "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
 
   if(UNIX AND NOT APPLE)
