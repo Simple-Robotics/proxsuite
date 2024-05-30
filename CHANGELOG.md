@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+* Fixes compilation issue with GCC 14 on Arch ([#322](https://github.com/Simple-Robotics/proxsuite/pull/322))
+
 ### What's Changed
 * Change from torch.Tensor to torch.empty or torch.tensor and specify type explicitly ([#308](https://github.com/Simple-Robotics/proxsuite/pull/308))
 * Fix handling of batch of inequality constraints in `QPFunctionFn_infeas`. The derivations in qplayer was done for single-sided constraints, that's the reason for the concatenation but the expansion of batchsize dimension was not working properly ([#308](https://github.com/Simple-Robotics/proxsuite/pull/308))
