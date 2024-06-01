@@ -1,0 +1,21 @@
+name: CI - ArchLinux
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-with-arch:
+    runs-on: "ubuntu-latest"
+    container:
+      image: archlinux/archlinux:base-devel
+    steps:
+    - run: pacman -Syu --noconfirm cmake eigen git libmatio python-scipy simde
+
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - run: cmake -B build -S . -DBUILD_PYTHON_INTERFACE=ON
+    - run: cmake --build build
+    - run: cmake --build build -t test

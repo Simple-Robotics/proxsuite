@@ -234,8 +234,15 @@ template<typename T, typename... Ts>
 using position_of = typename _detail::pack_idx_elem<T>::template Type<Ts...>;
 
 #if VEG_HAS_BUILTIN(__type_pack_element)
+namespace _detail {
 template<usize I, typename... Ts>
-using ith = __type_pack_element<I, Ts...>;
+struct type_pack_element
+{
+  using type = __type_pack_element<I, Ts...>;
+};
+}
+template<usize I, typename... Ts>
+using ith = typename _detail::type_pack_element<I, Ts...>::type;
 #else
 template<usize I, typename... Ts>
 using ith = typename _detail::pack_ith_elem<I>::template Type<Ts...>;
