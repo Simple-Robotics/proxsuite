@@ -1,20 +1,20 @@
 <map id="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;" name="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="924,110,1139,172"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="642,80,865,124"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="881,117,924,123,923,128,880,122"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html" title=" " alt="" coords="647,149,861,210"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="876,160,924,153,924,158,877,165"/>
-<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="302,40,471,84"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="474,87,655,145,654,150,473,92"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="924,121,1139,182"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="642,90,865,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="881,128,924,134,923,139,880,133"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html" title=" " alt="" coords="647,159,861,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="876,170,924,164,924,169,877,176"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="302,50,471,95"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="474,98,655,156,654,161,473,103"/>
 <area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,215,84"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="231,50,301,54,301,59,230,55"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="84,127,136,155"/>
-<area shape="poly" id="edge8_Node000003_Node000006" title=" " alt="" coords="152,140,646,170,646,176,151,146"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="151,134,211,125,277,109,341,82,343,87,278,114,212,130,151,139"/>
-<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="315,208,458,252"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="472,216,646,191,646,197,473,221"/>
-<area shape="rect" id="Node000008" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html" title=" " alt="" coords="39,199,181,261"/>
-<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="197,227,315,227,315,233,197,233"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="367,276,406,304"/>
-<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="421,290,511,289,565,283,617,269,671,242,717,208,720,213,674,246,619,274,566,288,512,295,421,295"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="231,54,301,61,301,67,230,59"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="84,134,136,161"/>
+<area shape="poly" id="edge8_Node000003_Node000006" title=" " alt="" coords="151,147,646,180,646,186,151,153"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="150,140,211,131,277,116,337,93,339,98,278,121,212,136,151,146"/>
+<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="315,218,458,263"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="472,226,646,202,646,207,473,231"/>
+<area shape="rect" id="Node000008" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html" title=" " alt="" coords="39,210,181,272"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="197,238,315,238,315,243,197,243"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="367,287,406,315"/>
+<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="421,301,511,300,565,293,617,280,671,252,717,219,720,223,674,257,619,285,566,299,512,305,421,306"/>
 </map>

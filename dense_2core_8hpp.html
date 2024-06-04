@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -120,7 +120,7 @@ $(function(){initNavTree('dense_2core_8hpp.html',''); initResizable(); });
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for core.hpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="dense_2core_8hpp__incl.svg" width="3702" height="1075"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="dense_2core_8hpp__incl.svg" width="3603" height="1075"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -692,8 +692,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <span class="keyword">static</span> <span class="keyword">auto</span> load_unaligned(ScalarType <span class="keyword">const</span>* ptr) <span class="keyword">noexcept</span>        \</div>
-<div class="line">    -&gt; Pack                                                                    \</div>
+<b>Value:</b><div class="fragment"><div class="line">  <a class="code hl_define" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <span class="keyword">static</span> <span class="keyword">auto</span> load_unaligned(                                       \</div>
+<div class="line">    ScalarType <span class="keyword">const</span>* ptr) <span class="keyword">noexcept</span> -&gt; Pack                                    \</div>
 <div class="line">  {                                                                            \</div>
 <div class="line">    <span class="keywordflow">return</span> Pack{ simde_mm##Prefix##_loadu_##Suffix(ptr) };                     \</div>
 <div class="line">  }                                                                            \</div>

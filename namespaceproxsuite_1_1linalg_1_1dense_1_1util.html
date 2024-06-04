@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -263,7 +263,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>col_idx</em></span>&#160;) -&gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl.html">_detail::RowColAccessImpl</a>&lt;
-  !<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;T&gt;::IsRowMajor)&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::template</a> Col&lt;T&gt;
+    !<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;T&gt;::IsRowMajor)&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::template</a> Col&lt;T&gt;
 </td>
         </tr>
       </table>
@@ -274,7 +274,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00577">577</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00578">578</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -298,7 +298,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>row_idx</em></span>&#160;) -&gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RowColAccessImpl.html">_detail::RowColAccessImpl</a>&lt;
-  !<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;T&gt;::IsRowMajor)&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::template</a> Row&lt;T&gt;
+    !<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;T&gt;::IsRowMajor)&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::template</a> Row&lt;T&gt;
 </td>
         </tr>
       </table>
@@ -309,7 +309,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00585">585</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00587">587</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -329,16 +329,17 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td>(</td>
           <td class="paramtype">Mat &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>mat</em></span></td><td>)</td>
           <td> -&gt; Eigen::Map&lt; 
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    Eigen::Matrix&lt; 
-                      <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::Scalar,
-                      proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::ColsAtCompileTime,
-                      proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::RowsAtCompileTime</a>,
-                      <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::IsRowMajor)
-                        ? Eigen::ColMajor
-                        : Eigen::RowMajor&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+      <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+      Eigen::Matrix&lt; 
+        <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::Scalar,
+        proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::ColsAtCompileTime,
+        proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::RowsAtCompileTime</a>,
+        <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a>(proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::IsRowMajor)
+          ? Eigen::ColMajor
+          : Eigen::RowMajor&gt;&gt;,
+    Eigen::Unaligned,
+    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -349,7 +350,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00594">594</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00597">597</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -369,14 +370,14 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td>(</td>
           <td class="paramtype">Mat &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>mat</em></span></td><td>)</td>
           <td> -&gt; Eigen::Map&lt; 
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    Eigen::Matrix&lt; 
-                      <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::Scalar,
-                      Eigen::Dynamic,
-                      1,
-                      Eigen::ColMajor&gt;&gt;,
-  Eigen::Unaligned,
-  Eigen::InnerStride&lt;Eigen::Dynamic&gt;&gt;
+    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                      Eigen::Matrix&lt; 
+                        <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;::Scalar,
+                        Eigen::Dynamic,
+                        1,
+                        Eigen::ColMajor&gt;&gt;,
+    Eigen::Unaligned,
+    Eigen::InnerStride&lt;Eigen::Dynamic&gt;&gt;
 </td>
         </tr>
       </table>
@@ -387,7 +388,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00619">619</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00624">624</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -440,7 +441,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00639">639</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00645">645</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -459,11 +460,11 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> proxsuite::linalg::dense::util::to_view </td>
           <td>(</td>
           <td class="paramtype">Mat &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>mat</em></span></td><td>)</td>
-          <td> -&gt; Eigen::Map&lt;
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac427a2feb8bfdc3dac01e44002443608">_detail::OwnedAll</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+          <td> -&gt; Eigen::Map&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac427a2feb8bfdc3dac01e44002443608">_detail::OwnedAll</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
+                Eigen::Unaligned,
+                <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -474,7 +475,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00664">664</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00670">670</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -493,11 +494,11 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> proxsuite::linalg::dense::util::to_view_dyn_rows </td>
           <td>(</td>
           <td class="paramtype">Mat &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>mat</em></span></td><td>)</td>
-          <td> -&gt; Eigen::Map&lt;
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a64f7ed126b437a3a89c8f407aabcf055">_detail::OwnedRows</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+          <td> -&gt; Eigen::Map&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a64f7ed126b437a3a89c8f407aabcf055">_detail::OwnedRows</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
+                Eigen::Unaligned,
+                <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -508,7 +509,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00683">683</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00690">690</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -527,11 +528,11 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
           <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> proxsuite::linalg::dense::util::to_view_dyn_cols </td>
           <td>(</td>
           <td class="paramtype">Mat &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>mat</em></span></td><td>)</td>
-          <td> -&gt; Eigen::Map&lt;
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a56b2deadefa35b391b3d4d4c7b6e8148">_detail::OwnedCols</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+          <td> -&gt; Eigen::Map&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a56b2deadefa35b391b3d4d4c7b6e8148">_detail::OwnedCols</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
+                Eigen::Unaligned,
+                <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -542,7 +543,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00702">702</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00710">710</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -576,7 +577,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00721">721</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00730">730</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -604,11 +605,11 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>nrows</em></span>&#160;) -&gt; Eigen::Map&lt;
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a64f7ed126b437a3a89c8f407aabcf055">_detail::OwnedRows</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>nrows</em></span>&#160;) -&gt; Eigen::Map&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a64f7ed126b437a3a89c8f407aabcf055">_detail::OwnedRows</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
+                Eigen::Unaligned,
+                <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -619,7 +620,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00741">741</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00750">750</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -647,11 +648,11 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>ncols</em></span>&#160;) -&gt; Eigen::Map&lt;
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
-                    <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a56b2deadefa35b391b3d4d4c7b6e8148">_detail::OwnedCols</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
-  Eigen::Unaligned,
-  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
+          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>ncols</em></span>&#160;) -&gt; Eigen::Map&lt;<a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a78bbfac7f9202f5ea6a6e772cc616086">_detail::const_if</a>&lt;
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#ac481288e4d1818c994226681ce81da42">_detail::ptr_is_const</a>&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">decltype</a>(mat.data())&gt;::value,
+                  <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a56b2deadefa35b391b3d4d4c7b6e8148">_detail::OwnedCols</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;,
+                Eigen::Unaligned,
+                <a class="el" href="namespaceproxsuite_1_1linalg_1_1dense_1_1__detail.html#a731b397357162b59528557405181ff74">_detail::StrideOf</a>&lt;proxsuite::linalg::veg::uncvref_t&lt;Mat&gt;&gt;&gt;
 </td>
         </tr>
       </table>
@@ -662,7 +663,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00761">761</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00771">771</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>
@@ -697,7 +698,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00828">828</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dense_2core_8hpp_source.html#l00839">839</a> of file <a class="el" href="dense_2core_8hpp_source.html">core.hpp</a>.</p>
 
 </div>
 </div>

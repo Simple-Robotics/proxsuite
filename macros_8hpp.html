@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -1281,11 +1281,11 @@ Functions</h2></td></tr>
 <div class="line">    Name,                                                                      \</div>
 <div class="line">    (__VA_ARGS__),                                                             \</div>
 <div class="line">    <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html">::proxsuite::linalg::veg::meta::bool_constant&lt;__VA_ARGS__&gt;</a>);               \</div>
-<div class="line">  VEG_TEMPLATE(Tpl,                                                            \</div>
-<div class="line">               <span class="keyword">requires</span>(__VA_ARGS__),                                          \</div>
-<div class="line">               <span class="keyword">constexpr</span> <span class="keyword">auto</span> check_##Name,                                    \</div>
-<div class="line">               (_ = 0, <span class="keywordtype">int</span>)) <span class="keyword">noexcept</span>                                          \</div>
-<div class="line">    -&gt; <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html">::proxsuite::linalg::veg::meta::true_type</a></div>
+<div class="line">  VEG_TEMPLATE(                                                                \</div>
+<div class="line">    Tpl,                                                                       \</div>
+<div class="line">    <span class="keyword">requires</span>(__VA_ARGS__),                                                     \</div>
+<div class="line">    <span class="keyword">constexpr</span> <span class="keyword">auto</span> check_##Name,                                               \</div>
+<div class="line">    (_ = 0, <span class="keywordtype">int</span>)) <span class="keyword">noexcept</span> -&gt; <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html">::proxsuite::linalg::veg::meta::true_type</a></div>
 <div class="ttc" id="amacros_8hpp_html_a63fead4784cc0f27f86329ee693ca36b"><div class="ttname"><a href="#a63fead4784cc0f27f86329ee693ca36b">__VEG_IMPL_DEF_CONCEPT</a></div><div class="ttdeci">#define __VEG_IMPL_DEF_CONCEPT(Tpl, Name, Value,...)</div><div class="ttdef"><b>Definition</b> <a href="macros_8hpp_source.html#l00257">macros.hpp:257</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l00321">321</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
@@ -2390,10 +2390,10 @@ Functions</h2></td></tr>
 <div class="line">      };                                                                       \</div>
 <div class="line">      <span class="keywordflow">return</span> <a class="code hl_define" href="preprocessor_8hpp.html#afb4dad67bc533ef6eb0b3c06214b1a52">__VEG_PP_CAT</a>(_veglib_type, __LINE__){};                           \</div>
 <div class="line">    }()))</div>
-<div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_a5fb5a6501d8a5adb0ea7dde66493463d"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">proxsuite::linalg::veg::_detail::extract_chars_expr</a></div><div class="ttdeci">auto extract_chars_expr(LiteralType) -&gt; typename ExtractCharsImplExpr&lt; LiteralType, _meta::make_index_sequence&lt; LiteralType::Size::value &gt; &gt;::Type</div><div class="ttdef"><b>Definition</b> <a href="macros_8hpp_source.html#l01207">macros.hpp:1207</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_a5fb5a6501d8a5adb0ea7dde66493463d"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">proxsuite::linalg::veg::_detail::extract_chars_expr</a></div><div class="ttdeci">auto extract_chars_expr(LiteralType) -&gt; typename ExtractCharsImplExpr&lt; LiteralType, _meta::make_index_sequence&lt; LiteralType::Size::value &gt; &gt;::Type</div><div class="ttdef"><b>Definition</b> <a href="macros_8hpp_source.html#l01208">macros.hpp:1208</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_html_afdbaa4312631789f428df101ce7e9687"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg.html#afdbaa4312631789f428df101ce7e9687">proxsuite::linalg::veg::usize</a></div><div class="ttdeci">decltype(sizeof(0)) usize</div><div class="ttdef"><b>Definition</b> <a href="macros_8hpp_source.html#l00702">macros.hpp:702</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01218">1218</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01220">1220</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2412,7 +2412,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01235">1235</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01237">1237</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2431,7 +2431,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01236">1236</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01238">1238</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2450,7 +2450,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01239">1239</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01241">1241</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2469,7 +2469,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01241">1241</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01243">1243</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2492,7 +2492,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01244">1244</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01246">1246</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2518,7 +2518,7 @@ Functions</h2></td></tr>
 <div class="line">  static_cast&lt;::proxsuite::linalg::veg::_detail::NativeChar8 const*&gt;(          \</div>
 <div class="line">    <a class="code hl_define" href="preprocessor_8hpp.html#afb4dad67bc533ef6eb0b3c06214b1a52">__VEG_PP_CAT</a>(u8, <a class="code hl_define" href="preprocessor_8hpp.html#a056ee5f19f733fdc7484fa85e1f63488">__VEG_PP_STRINGIZE</a>(MemberPtr))),</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01245">1245</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01247">1247</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2543,7 +2543,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">  <span class="comment">/* NOLINT */</span>              \</div>
 <div class="line">  (<span class="keyword">sizeof</span>(<a class="code hl_define" href="preprocessor_8hpp.html#afb4dad67bc533ef6eb0b3c06214b1a52">__VEG_PP_CAT</a>(u8, <a class="code hl_define" href="preprocessor_8hpp.html#a056ee5f19f733fdc7484fa85e1f63488">__VEG_PP_STRINGIZE</a>(MemberPtr))) - 1),</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01248">1248</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01250">1250</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2566,7 +2566,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01251">1251</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01253">1253</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>
@@ -2589,7 +2589,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01307">1307</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macros_8hpp_source.html#l01309">1309</a> of file <a class="el" href="macros_8hpp_source.html">macros.hpp</a>.</p>
 
 </div>
 </div>

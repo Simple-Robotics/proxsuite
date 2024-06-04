@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.4</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.5</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -458,11 +458,11 @@ $(function(){initNavTree('macros_8hpp_source.html',''); initResizable(); });
 <div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="preprocessor">    Name,                                                                      \</span></div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="preprocessor">    (__VA_ARGS__),                                                             \</span></div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="preprocessor">    ::proxsuite::linalg::veg::meta::bool_constant&lt;__VA_ARGS__&gt;);               \</span></div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="preprocessor">  VEG_TEMPLATE(Tpl,                                                            \</span></div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="preprocessor">               requires(__VA_ARGS__),                                          \</span></div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="preprocessor">               constexpr auto check_##Name,                                    \</span></div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span><span class="preprocessor">               (_ = 0, int)) noexcept                                          \</span></div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><span class="preprocessor">    -&gt; ::proxsuite::linalg::veg::meta::true_type</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="preprocessor">  VEG_TEMPLATE(                                                                \</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="preprocessor">    Tpl,                                                                       \</span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="preprocessor">    requires(__VA_ARGS__),                                                     \</span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span><span class="preprocessor">    constexpr auto check_##Name,                                               \</span></div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><span class="preprocessor">    (_ = 0, int)) noexcept -&gt; ::proxsuite::linalg::veg::meta::true_type</span></div>
 </div>
 <div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
 <div class="foldopen" id="foldopen00333" data-start="" data-end="">
@@ -1078,7 +1078,7 @@ $(function(){initNavTree('macros_8hpp_source.html',''); initResizable(); });
 <div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span> </div>
 <div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span><span class="keyword">constexpr</span> <span class="keyword">auto</span></div>
 <div class="foldopen" id="foldopen00847" data-start="{" data-end="}">
-<div class="line"><a id="l00847" name="l00847"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">  847</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">all_of_slice</a>(<span class="keywordtype">bool</span> <span class="keyword">const</span>* <a class="code hl_class" href="classtl_1_1optional.html">arr</a>, <a class="code hl_class" href="classtl_1_1optional.html">usize</a> size) <a class="code hl_define" href="prologue_8hpp.html#a5407ecebadca4469e63ed1c1d2b75cbc">VEG_NOEXCEPT</a>-&gt;bool</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">  847</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">all_of_slice</a>(<span class="keywordtype">bool</span> <span class="keyword">const</span>* <a class="code hl_class" href="classtl_1_1optional.html">arr</a>, <a class="code hl_class" href="classtl_1_1optional.html">usize</a> size) <a class="code hl_define" href="prologue_8hpp.html#a5407ecebadca4469e63ed1c1d2b75cbc">VEG_NOEXCEPT</a> -&gt; <span class="keywordtype">bool</span></div>
 <div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>{</div>
 <div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>  <span class="keywordflow">return</span> size == 0 ? <a class="code hl_typedef" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">true</a></div>
 <div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>                   : (<a class="code hl_class" href="classtl_1_1optional.html">arr</a>[0] &amp;&amp; <a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">_detail::all_of_slice</a>(<a class="code hl_class" href="classtl_1_1optional.html">arr</a> + 1, size - 1));</div>
@@ -1087,7 +1087,7 @@ $(function(){initNavTree('macros_8hpp_source.html',''); initResizable(); });
 <div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span><span class="keyword">template</span>&lt;usize N&gt;</div>
 <div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span></div>
 <div class="foldopen" id="foldopen00854" data-start="{" data-end="}">
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa2cc990a3b9dcd3f8f16766ee1f97d44">  854</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa2cc990a3b9dcd3f8f16766ee1f97d44">all_of</a>(<span class="keywordtype">bool</span> <span class="keyword">const</span> (&amp;<a class="code hl_class" href="classtl_1_1optional.html">lst</a>)[N]) <a class="code hl_define" href="prologue_8hpp.html#a5407ecebadca4469e63ed1c1d2b75cbc">VEG_NOEXCEPT</a>-&gt;bool</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa2cc990a3b9dcd3f8f16766ee1f97d44">  854</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa2cc990a3b9dcd3f8f16766ee1f97d44">all_of</a>(<span class="keywordtype">bool</span> <span class="keyword">const</span> (&amp;<a class="code hl_class" href="classtl_1_1optional.html">lst</a>)[N]) <a class="code hl_define" href="prologue_8hpp.html#a5407ecebadca4469e63ed1c1d2b75cbc">VEG_NOEXCEPT</a> -&gt; <span class="keywordtype">bool</span></div>
 <div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>{</div>
 <div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#adf61eeb93454b0cddeef41c89c0c1c92">_detail::all_of_slice</a>(<a class="code hl_class" href="classtl_1_1optional.html">lst</a>, N);</div>
 <div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>}</div>
@@ -1465,136 +1465,138 @@ $(function(){initNavTree('macros_8hpp_source.html',''); initResizable(); });
 <div class="line"><a id="l01196" name="l01196"></a><span class="lineno"> 1196</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> LiteralType&gt;</div>
 <div class="line"><a id="l01197" name="l01197"></a><span class="lineno"> 1197</span><span class="keyword">auto</span></div>
 <div class="foldopen" id="foldopen01198" data-start="{" data-end="}">
-<div class="line"><a id="l01198" name="l01198"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#acfe763a5f047a3ace4a241156b2d34d2"> 1198</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#acfe763a5f047a3ace4a241156b2d34d2">extract_chars</a>(<a class="code hl_class" href="classtl_1_1optional.html">LiteralType</a> <span class="comment">/*unused*/</span>) -&gt; <span class="keyword">typename</span> <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImpl.html">ExtractCharsImpl</a>&lt;</div>
-<div class="line"><a id="l01199" name="l01199"></a><span class="lineno"> 1199</span>  <a class="code hl_typedef" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">LiteralType</a>,</div>
-<div class="line"><a id="l01200" name="l01200"></a><span class="lineno"> 1200</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa40ca0b314d6a068f5127fb765820866">_meta::make_index_sequence&lt;LiteralType::Size::value&gt;</a>&gt;::Type</div>
-<div class="line"><a id="l01201" name="l01201"></a><span class="lineno"> 1201</span>{</div>
-<div class="line"><a id="l01202" name="l01202"></a><span class="lineno"> 1202</span>  <span class="keywordflow">return</span> {};</div>
-<div class="line"><a id="l01203" name="l01203"></a><span class="lineno"> 1203</span>}</div>
+<div class="line"><a id="l01198" name="l01198"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#acfe763a5f047a3ace4a241156b2d34d2"> 1198</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#acfe763a5f047a3ace4a241156b2d34d2">extract_chars</a>(<a class="code hl_class" href="classtl_1_1optional.html">LiteralType</a> <span class="comment">/*unused*/</span>) -&gt;</div>
+<div class="line"><a id="l01199" name="l01199"></a><span class="lineno"> 1199</span>  <span class="keyword">typename</span> <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImpl.html">ExtractCharsImpl</a>&lt;</div>
+<div class="line"><a id="l01200" name="l01200"></a><span class="lineno"> 1200</span>    <a class="code hl_typedef" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">LiteralType</a>,</div>
+<div class="line"><a id="l01201" name="l01201"></a><span class="lineno"> 1201</span>    <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa40ca0b314d6a068f5127fb765820866">_meta::make_index_sequence&lt;LiteralType::Size::value&gt;</a>&gt;::Type</div>
+<div class="line"><a id="l01202" name="l01202"></a><span class="lineno"> 1202</span>{</div>
+<div class="line"><a id="l01203" name="l01203"></a><span class="lineno"> 1203</span>  <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l01204" name="l01204"></a><span class="lineno"> 1204</span>}</div>
 </div>
-<div class="line"><a id="l01204" name="l01204"></a><span class="lineno"> 1204</span> </div>
-<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> LiteralType&gt;</div>
-<div class="line"><a id="l01206" name="l01206"></a><span class="lineno"> 1206</span><span class="keyword">auto</span></div>
-<div class="foldopen" id="foldopen01207" data-start="{" data-end="}">
-<div class="line"><a id="l01207" name="l01207"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d"> 1207</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">extract_chars_expr</a>(<a class="code hl_class" href="classtl_1_1optional.html">LiteralType</a> <span class="comment">/*unused*/</span>) -&gt; <span class="keyword">typename</span> <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImplExpr.html">ExtractCharsImplExpr</a>&lt;</div>
-<div class="line"><a id="l01208" name="l01208"></a><span class="lineno"> 1208</span>  <a class="code hl_typedef" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">LiteralType</a>,</div>
-<div class="line"><a id="l01209" name="l01209"></a><span class="lineno"> 1209</span>  <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa40ca0b314d6a068f5127fb765820866">_meta::make_index_sequence&lt;LiteralType::Size::value&gt;</a>&gt;::Type</div>
-<div class="line"><a id="l01210" name="l01210"></a><span class="lineno"> 1210</span>{</div>
-<div class="line"><a id="l01211" name="l01211"></a><span class="lineno"> 1211</span>  <span class="keywordflow">return</span> {};</div>
-<div class="line"><a id="l01212" name="l01212"></a><span class="lineno"> 1212</span>}</div>
+<div class="line"><a id="l01205" name="l01205"></a><span class="lineno"> 1205</span> </div>
+<div class="line"><a id="l01206" name="l01206"></a><span class="lineno"> 1206</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> LiteralType&gt;</div>
+<div class="line"><a id="l01207" name="l01207"></a><span class="lineno"> 1207</span><span class="keyword">auto</span></div>
+<div class="foldopen" id="foldopen01208" data-start="{" data-end="}">
+<div class="line"><a id="l01208" name="l01208"></a><span class="lineno"><a class="line" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d"> 1208</a></span><a class="code hl_function" href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">extract_chars_expr</a>(<a class="code hl_class" href="classtl_1_1optional.html">LiteralType</a> <span class="comment">/*unused*/</span>) -&gt;</div>
+<div class="line"><a id="l01209" name="l01209"></a><span class="lineno"> 1209</span>  <span class="keyword">typename</span> <a class="code hl_struct" href="structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImplExpr.html">ExtractCharsImplExpr</a>&lt;</div>
+<div class="line"><a id="l01210" name="l01210"></a><span class="lineno"> 1210</span>    <a class="code hl_typedef" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">LiteralType</a>,</div>
+<div class="line"><a id="l01211" name="l01211"></a><span class="lineno"> 1211</span>    <a class="code hl_typedef" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa40ca0b314d6a068f5127fb765820866">_meta::make_index_sequence&lt;LiteralType::Size::value&gt;</a>&gt;::Type</div>
+<div class="line"><a id="l01212" name="l01212"></a><span class="lineno"> 1212</span>{</div>
+<div class="line"><a id="l01213" name="l01213"></a><span class="lineno"> 1213</span>  <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l01214" name="l01214"></a><span class="lineno"> 1214</span>}</div>
 </div>
-<div class="line"><a id="l01213" name="l01213"></a><span class="lineno"> 1213</span>} <span class="comment">// namespace _detail</span></div>
-<div class="line"><a id="l01214" name="l01214"></a><span class="lineno"> 1214</span>} <span class="comment">// namespace veg</span></div>
-<div class="line"><a id="l01215" name="l01215"></a><span class="lineno"> 1215</span>} <span class="comment">// namespace linalg</span></div>
-<div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span>} <span class="comment">// namespace proxsuite</span></div>
-<div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span> </div>
-<div class="foldopen" id="foldopen01218" data-start="" data-end="">
-<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a9ca2c435cccdb05eb6ca9bdbfccd076e"> 1218</a></span><span class="preprocessor">#define __VEG_IMPL_UTF8_CONST(Literal)                                         \</span></div>
-<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span><span class="preprocessor">  (::proxsuite::linalg::veg::_detail::extract_chars_expr(                      \</span></div>
-<div class="line"><a id="l01220" name="l01220"></a><span class="lineno"> 1220</span><span class="preprocessor">    []() </span><span class="comment">/* NOLINT */</span><span class="preprocessor"> noexcept {                                               \</span></div>
-<div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span><span class="preprocessor">      struct __VEG_PP_CAT(_veglib_type, __LINE__)                              \</span></div>
-<div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span><span class="preprocessor">      {                                                                        \</span></div>
-<div class="line"><a id="l01223" name="l01223"></a><span class="lineno"> 1223</span><span class="preprocessor">        static constexpr auto value() noexcept -&gt; decltype(Literal)            \</span></div>
-<div class="line"><a id="l01224" name="l01224"></a><span class="lineno"> 1224</span><span class="preprocessor">        {                                                                      \</span></div>
-<div class="line"><a id="l01225" name="l01225"></a><span class="lineno"> 1225</span><span class="preprocessor">          return Literal;                                                      \</span></div>
-<div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span><span class="preprocessor">        }                                                                      \</span></div>
-<div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span><span class="preprocessor">        using Size = ::proxsuite::linalg::veg::meta::constant&lt;                 \</span></div>
-<div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span><span class="preprocessor">          ::proxsuite::linalg::veg::usize,                                     \</span></div>
-<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span><span class="preprocessor">          sizeof(value()) / sizeof(value()[0]) - 1&gt;;                           \</span></div>
-<div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span><span class="preprocessor">      };                                                                       \</span></div>
-<div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span><span class="preprocessor">      return __VEG_PP_CAT(_veglib_type, __LINE__){};                           \</span></div>
-<div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span><span class="preprocessor">    }()))</span></div>
+<div class="line"><a id="l01215" name="l01215"></a><span class="lineno"> 1215</span>} <span class="comment">// namespace _detail</span></div>
+<div class="line"><a id="l01216" name="l01216"></a><span class="lineno"> 1216</span>} <span class="comment">// namespace veg</span></div>
+<div class="line"><a id="l01217" name="l01217"></a><span class="lineno"> 1217</span>} <span class="comment">// namespace linalg</span></div>
+<div class="line"><a id="l01218" name="l01218"></a><span class="lineno"> 1218</span>} <span class="comment">// namespace proxsuite</span></div>
+<div class="line"><a id="l01219" name="l01219"></a><span class="lineno"> 1219</span> </div>
+<div class="foldopen" id="foldopen01220" data-start="" data-end="">
+<div class="line"><a id="l01220" name="l01220"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a9ca2c435cccdb05eb6ca9bdbfccd076e"> 1220</a></span><span class="preprocessor">#define __VEG_IMPL_UTF8_CONST(Literal)                                         \</span></div>
+<div class="line"><a id="l01221" name="l01221"></a><span class="lineno"> 1221</span><span class="preprocessor">  (::proxsuite::linalg::veg::_detail::extract_chars_expr(                      \</span></div>
+<div class="line"><a id="l01222" name="l01222"></a><span class="lineno"> 1222</span><span class="preprocessor">    []() </span><span class="comment">/* NOLINT */</span><span class="preprocessor"> noexcept {                                               \</span></div>
+<div class="line"><a id="l01223" name="l01223"></a><span class="lineno"> 1223</span><span class="preprocessor">      struct __VEG_PP_CAT(_veglib_type, __LINE__)                              \</span></div>
+<div class="line"><a id="l01224" name="l01224"></a><span class="lineno"> 1224</span><span class="preprocessor">      {                                                                        \</span></div>
+<div class="line"><a id="l01225" name="l01225"></a><span class="lineno"> 1225</span><span class="preprocessor">        static constexpr auto value() noexcept -&gt; decltype(Literal)            \</span></div>
+<div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span><span class="preprocessor">        {                                                                      \</span></div>
+<div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span><span class="preprocessor">          return Literal;                                                      \</span></div>
+<div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span><span class="preprocessor">        }                                                                      \</span></div>
+<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span><span class="preprocessor">        using Size = ::proxsuite::linalg::veg::meta::constant&lt;                 \</span></div>
+<div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span><span class="preprocessor">          ::proxsuite::linalg::veg::usize,                                     \</span></div>
+<div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span><span class="preprocessor">          sizeof(value()) / sizeof(value()[0]) - 1&gt;;                           \</span></div>
+<div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span><span class="preprocessor">      };                                                                       \</span></div>
+<div class="line"><a id="l01233" name="l01233"></a><span class="lineno"> 1233</span><span class="preprocessor">      return __VEG_PP_CAT(_veglib_type, __LINE__){};                           \</span></div>
+<div class="line"><a id="l01234" name="l01234"></a><span class="lineno"> 1234</span><span class="preprocessor">    }()))</span></div>
 </div>
-<div class="line"><a id="l01233" name="l01233"></a><span class="lineno"> 1233</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l01234" name="l01234"></a><span class="lineno"> 1234</span> </div>
-<div class="line"><a id="l01235" name="l01235"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a4d8e20bdc64f3b523acbe59e6c17e015"> 1235</a></span><span class="preprocessor">#define VEG_DECLTYPE_VOID(...) decltype(void(__VA_ARGS__))</span></div>
-<div class="foldopen" id="foldopen01236" data-start="" data-end="">
-<div class="line"><a id="l01236" name="l01236"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a6fce19d74e670f5a9f6e6faaa453e85c"> 1236</a></span><span class="preprocessor">#define VEG_BOOL_NOEXCEPT(...)                                                 \</span></div>
-<div class="line"><a id="l01237" name="l01237"></a><span class="lineno"> 1237</span><span class="preprocessor">  ::proxsuite::linalg::veg::meta::bool_constant&lt;noexcept(__VA_ARGS__)&gt;</span></div>
+<div class="line"><a id="l01235" name="l01235"></a><span class="lineno"> 1235</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l01236" name="l01236"></a><span class="lineno"> 1236</span> </div>
+<div class="line"><a id="l01237" name="l01237"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a4d8e20bdc64f3b523acbe59e6c17e015"> 1237</a></span><span class="preprocessor">#define VEG_DECLTYPE_VOID(...) decltype(void(__VA_ARGS__))</span></div>
+<div class="foldopen" id="foldopen01238" data-start="" data-end="">
+<div class="line"><a id="l01238" name="l01238"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a6fce19d74e670f5a9f6e6faaa453e85c"> 1238</a></span><span class="preprocessor">#define VEG_BOOL_NOEXCEPT(...)                                                 \</span></div>
+<div class="line"><a id="l01239" name="l01239"></a><span class="lineno"> 1239</span><span class="preprocessor">  ::proxsuite::linalg::veg::meta::bool_constant&lt;noexcept(__VA_ARGS__)&gt;</span></div>
 </div>
-<div class="line"><a id="l01238" name="l01238"></a><span class="lineno"> 1238</span> </div>
-<div class="foldopen" id="foldopen01239" data-start="" data-end="">
-<div class="line"><a id="l01239" name="l01239"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ae45fe051ba47de6c78e8ed5f4aadf6fa"> 1239</a></span><span class="preprocessor">#define VEG_CHECK_CONCEPT(...)                                                 \</span></div>
-<div class="line"><a id="l01240" name="l01240"></a><span class="lineno"> 1240</span><span class="preprocessor">  VEG_CHECK_CONCEPT_MACRO(::proxsuite::linalg::veg::concepts, __VA_ARGS__)</span></div>
-</div>
+<div class="line"><a id="l01240" name="l01240"></a><span class="lineno"> 1240</span> </div>
 <div class="foldopen" id="foldopen01241" data-start="" data-end="">
-<div class="line"><a id="l01241" name="l01241"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a6c79efb65e887fd88337eac51ccf5784"> 1241</a></span><span class="preprocessor">#define VEG_CONCEPT(...)                                                       \</span></div>
-<div class="line"><a id="l01242" name="l01242"></a><span class="lineno"> 1242</span><span class="preprocessor">  VEG_CONCEPT_MACRO(::proxsuite::linalg::veg::concepts, __VA_ARGS__)</span></div>
+<div class="line"><a id="l01241" name="l01241"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ae45fe051ba47de6c78e8ed5f4aadf6fa"> 1241</a></span><span class="preprocessor">#define VEG_CHECK_CONCEPT(...)                                                 \</span></div>
+<div class="line"><a id="l01242" name="l01242"></a><span class="lineno"> 1242</span><span class="preprocessor">  VEG_CHECK_CONCEPT_MACRO(::proxsuite::linalg::veg::concepts, __VA_ARGS__)</span></div>
 </div>
-<div class="line"><a id="l01243" name="l01243"></a><span class="lineno"> 1243</span> </div>
-<div class="line"><a id="l01244" name="l01244"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a29e3031d0c38efac73991a704bef9974"> 1244</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_PTR(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor"> , &amp;Type::MemberPtr</span></div>
-<div class="foldopen" id="foldopen01245" data-start="" data-end="">
-<div class="line"><a id="l01245" name="l01245"></a><span class="lineno"><a class="line" href="macros_8hpp.html#af83f679ae62a969da55c373379e202b7"> 1245</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_NAME_PTR(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">              \</span></div>
-<div class="line"><a id="l01246" name="l01246"></a><span class="lineno"> 1246</span><span class="preprocessor">  static_cast&lt;::proxsuite::linalg::veg::_detail::NativeChar8 const*&gt;(          \</span></div>
-<div class="line"><a id="l01247" name="l01247"></a><span class="lineno"> 1247</span><span class="preprocessor">    __VEG_PP_CAT(u8, __VEG_PP_STRINGIZE(MemberPtr))),</span></div>
+<div class="foldopen" id="foldopen01243" data-start="" data-end="">
+<div class="line"><a id="l01243" name="l01243"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a6c79efb65e887fd88337eac51ccf5784"> 1243</a></span><span class="preprocessor">#define VEG_CONCEPT(...)                                                       \</span></div>
+<div class="line"><a id="l01244" name="l01244"></a><span class="lineno"> 1244</span><span class="preprocessor">  VEG_CONCEPT_MACRO(::proxsuite::linalg::veg::concepts, __VA_ARGS__)</span></div>
 </div>
-<div class="foldopen" id="foldopen01248" data-start="" data-end="">
-<div class="line"><a id="l01248" name="l01248"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ac5949effcb24424831f5a61bf46fae7e"> 1248</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_NAME_LEN(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">              \</span></div>
-<div class="line"><a id="l01249" name="l01249"></a><span class="lineno"> 1249</span><span class="preprocessor">  (sizeof(__VEG_PP_CAT(u8, __VEG_PP_STRINGIZE(MemberPtr))) - 1),</span></div>
+<div class="line"><a id="l01245" name="l01245"></a><span class="lineno"> 1245</span> </div>
+<div class="line"><a id="l01246" name="l01246"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a29e3031d0c38efac73991a704bef9974"> 1246</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_PTR(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor"> , &amp;Type::MemberPtr</span></div>
+<div class="foldopen" id="foldopen01247" data-start="" data-end="">
+<div class="line"><a id="l01247" name="l01247"></a><span class="lineno"><a class="line" href="macros_8hpp.html#af83f679ae62a969da55c373379e202b7"> 1247</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_NAME_PTR(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">              \</span></div>
+<div class="line"><a id="l01248" name="l01248"></a><span class="lineno"> 1248</span><span class="preprocessor">  static_cast&lt;::proxsuite::linalg::veg::_detail::NativeChar8 const*&gt;(          \</span></div>
+<div class="line"><a id="l01249" name="l01249"></a><span class="lineno"> 1249</span><span class="preprocessor">    __VEG_PP_CAT(u8, __VEG_PP_STRINGIZE(MemberPtr))),</span></div>
 </div>
-<div class="line"><a id="l01250" name="l01250"></a><span class="lineno"> 1250</span> </div>
-<div class="foldopen" id="foldopen01251" data-start="" data-end="">
-<div class="line"><a id="l01251" name="l01251"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a54d166551d0ef356a04b7eb8eab57ca2"> 1251</a></span><span class="preprocessor">#define __VEG_IMPL_STRUCT_SETUP(PClass, ...) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">                      \</span></div>
-<div class="line"><a id="l01252" name="l01252"></a><span class="lineno"> 1252</span><span class="preprocessor">  void _veg_lib_name_test()&amp;&amp; noexcept                                         \</span></div>
-<div class="line"><a id="l01253" name="l01253"></a><span class="lineno"> 1253</span><span class="preprocessor">  {                                                                            \</span></div>
-<div class="line"><a id="l01254" name="l01254"></a><span class="lineno"> 1254</span><span class="preprocessor">    static_assert(                                                             \</span></div>
-<div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span><span class="preprocessor">      VEG_CONCEPT(same&lt;decltype(this), __VEG_PP_REMOVE_PAREN(PClass)*&gt;),       \</span></div>
-<div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span><span class="preprocessor">      &quot;struct mismatch in VEG_REFLECT&quot;);                                       \</span></div>
-<div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span><span class="preprocessor">  }                                                                            \</span></div>
-<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span><span class="preprocessor">  struct _veglib_impl_member_extract                                           \</span></div>
-<div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span><span class="preprocessor">  {                                                                            \</span></div>
-<div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span><span class="preprocessor">    using Type = __VEG_PP_REMOVE_PAREN(PClass);                                \</span></div>
-<div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span><span class="preprocessor">    using MemberTuple =                                                        \</span></div>
-<div class="line"><a id="l01262" name="l01262"></a><span class="lineno"> 1262</span><span class="preprocessor">      decltype(::proxsuite::linalg::veg::_detail::make_simple_tuple(           \</span></div>
-<div class="line"><a id="l01263" name="l01263"></a><span class="lineno"> 1263</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::Empty {                             \</span></div>
-<div class="line"><a id="l01264" name="l01264"></a><span class="lineno"> 1264</span><span class="preprocessor">        } __VEG_PP_TUPLE_FOR_EACH(__VEG_IMPL_GET_MEMBER_PTR,                   \</span></div>
-<div class="line"><a id="l01265" name="l01265"></a><span class="lineno"> 1265</span><span class="preprocessor">                                  _,                                           \</span></div>
-<div class="line"><a id="l01266" name="l01266"></a><span class="lineno"> 1266</span><span class="preprocessor">                                  (__VA_ARGS__))));                            \</span></div>
-<div class="line"><a id="l01267" name="l01267"></a><span class="lineno"> 1267</span><span class="preprocessor">    static constexpr auto member_pointers() noexcept -&gt; MemberTuple            \</span></div>
-<div class="line"><a id="l01268" name="l01268"></a><span class="lineno"> 1268</span><span class="preprocessor">    {                                                                          \</span></div>
-<div class="line"><a id="l01269" name="l01269"></a><span class="lineno"> 1269</span><span class="preprocessor">      return ::proxsuite::linalg::veg::_detail::make_simple_tuple(             \</span></div>
-<div class="line"><a id="l01270" name="l01270"></a><span class="lineno"> 1270</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::Empty {} __VEG_PP_TUPLE_FOR_EACH(   \</span></div>
-<div class="line"><a id="l01271" name="l01271"></a><span class="lineno"> 1271</span><span class="preprocessor">          __VEG_IMPL_GET_MEMBER_PTR, _, (__VA_ARGS__)));                       \</span></div>
-<div class="line"><a id="l01272" name="l01272"></a><span class="lineno"> 1272</span><span class="preprocessor">    }                                                                          \</span></div>
-<div class="line"><a id="l01273" name="l01273"></a><span class="lineno"> 1273</span><span class="preprocessor">    static constexpr auto class_name_ptr() noexcept                            \</span></div>
-<div class="line"><a id="l01274" name="l01274"></a><span class="lineno"> 1274</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::NativeChar8 const*                 \</span></div>
-<div class="line"><a id="l01275" name="l01275"></a><span class="lineno"> 1275</span><span class="preprocessor">    {                                                                          \</span></div>
-<div class="line"><a id="l01276" name="l01276"></a><span class="lineno"> 1276</span><span class="preprocessor">      return __VEG_PP_CAT(u8,                                                  \</span></div>
-<div class="line"><a id="l01277" name="l01277"></a><span class="lineno"> 1277</span><span class="preprocessor">                          __VEG_PP_STRINGIZE(__VEG_PP_REMOVE_PAREN(PClass)));  \</span></div>
-<div class="line"><a id="l01278" name="l01278"></a><span class="lineno"> 1278</span><span class="preprocessor">    }                                                                          \</span></div>
-<div class="line"><a id="l01279" name="l01279"></a><span class="lineno"> 1279</span><span class="preprocessor">    static constexpr auto class_name_len() noexcept                            \</span></div>
-<div class="line"><a id="l01280" name="l01280"></a><span class="lineno"> 1280</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::usize                                       \</span></div>
-<div class="line"><a id="l01281" name="l01281"></a><span class="lineno"> 1281</span><span class="preprocessor">    {                                                                          \</span></div>
-<div class="line"><a id="l01282" name="l01282"></a><span class="lineno"> 1282</span><span class="preprocessor">      return sizeof(__VEG_PP_CAT(                                              \</span></div>
-<div class="line"><a id="l01283" name="l01283"></a><span class="lineno"> 1283</span><span class="preprocessor">               u8, __VEG_PP_STRINGIZE(__VEG_PP_REMOVE_PAREN(PClass)))) -       \</span></div>
-<div class="line"><a id="l01284" name="l01284"></a><span class="lineno"> 1284</span><span class="preprocessor">             1;                                                                \</span></div>
-<div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span><span class="preprocessor">    }                                                                          \</span></div>
-<div class="line"><a id="l01286" name="l01286"></a><span class="lineno"> 1286</span><span class="preprocessor">    static constexpr auto member_name_ptrs() noexcept                          \</span></div>
-<div class="line"><a id="l01287" name="l01287"></a><span class="lineno"> 1287</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::Array_&lt;                            \</span></div>
-<div class="line"><a id="l01288" name="l01288"></a><span class="lineno"> 1288</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::NativeChar8 const*,                 \</span></div>
-<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span><span class="preprocessor">        __VEG_PP_TUPLE_SIZE((__VA_ARGS__))&gt;                                    \</span></div>
-<div class="line"><a id="l01290" name="l01290"></a><span class="lineno"> 1290</span><span class="preprocessor">    {                                                                          \</span></div>
-<div class="line"><a id="l01291" name="l01291"></a><span class="lineno"> 1291</span><span class="preprocessor">      return { { __VEG_PP_TUPLE_FOR_EACH(                                      \</span></div>
-<div class="line"><a id="l01292" name="l01292"></a><span class="lineno"> 1292</span><span class="preprocessor">        __VEG_IMPL_GET_MEMBER_NAME_PTR, _, (__VA_ARGS__)) } };                 \</span></div>
-<div class="line"><a id="l01293" name="l01293"></a><span class="lineno"> 1293</span><span class="preprocessor">    }                                                                          \</span></div>
-<div class="line"><a id="l01294" name="l01294"></a><span class="lineno"> 1294</span><span class="preprocessor">    static constexpr auto member_name_lens() noexcept                          \</span></div>
-<div class="line"><a id="l01295" name="l01295"></a><span class="lineno"> 1295</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::Array_&lt;                            \</span></div>
-<div class="line"><a id="l01296" name="l01296"></a><span class="lineno"> 1296</span><span class="preprocessor">        ::proxsuite::linalg::veg::usize,                                       \</span></div>
-<div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span><span class="preprocessor">        __VEG_PP_TUPLE_SIZE((__VA_ARGS__))&gt;                                    \</span></div>
-<div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span><span class="preprocessor">    {                                                                          \</span></div>
-<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span><span class="preprocessor">      return { { __VEG_PP_TUPLE_FOR_EACH(                                      \</span></div>
-<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span><span class="preprocessor">        __VEG_IMPL_GET_MEMBER_NAME_LEN, _, (__VA_ARGS__)) } };                 \</span></div>
-<div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span><span class="preprocessor">    }                                                                          \</span></div>
-<div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span><span class="preprocessor">  };                                                                           \</span></div>
-<div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span><span class="preprocessor">  friend struct ::proxsuite::linalg::veg::_detail::member_extract_access&lt;      \</span></div>
-<div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span><span class="preprocessor">    __VEG_PP_REMOVE_PAREN(PClass)&gt;;                                            \</span></div>
-<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span><span class="preprocessor">  VEG_NOM_SEMICOLON</span></div>
+<div class="foldopen" id="foldopen01250" data-start="" data-end="">
+<div class="line"><a id="l01250" name="l01250"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ac5949effcb24424831f5a61bf46fae7e"> 1250</a></span><span class="preprocessor">#define __VEG_IMPL_GET_MEMBER_NAME_LEN(_, MemberPtr) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">              \</span></div>
+<div class="line"><a id="l01251" name="l01251"></a><span class="lineno"> 1251</span><span class="preprocessor">  (sizeof(__VEG_PP_CAT(u8, __VEG_PP_STRINGIZE(MemberPtr))) - 1),</span></div>
 </div>
-<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span> </div>
-<div class="line"><a id="l01307" name="l01307"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ae0f165dd2ebcd8c76811041b2ac2dda9"> 1307</a></span><span class="preprocessor">#define VEG_REFLECT(PClass, ...) __VEG_IMPL_STRUCT_SETUP(PClass, __VA_ARGS__)</span></div>
+<div class="line"><a id="l01252" name="l01252"></a><span class="lineno"> 1252</span> </div>
+<div class="foldopen" id="foldopen01253" data-start="" data-end="">
+<div class="line"><a id="l01253" name="l01253"></a><span class="lineno"><a class="line" href="macros_8hpp.html#a54d166551d0ef356a04b7eb8eab57ca2"> 1253</a></span><span class="preprocessor">#define __VEG_IMPL_STRUCT_SETUP(PClass, ...) </span><span class="comment">/* NOLINT */</span><span class="preprocessor">                      \</span></div>
+<div class="line"><a id="l01254" name="l01254"></a><span class="lineno"> 1254</span><span class="preprocessor">  void _veg_lib_name_test()&amp;&amp; noexcept                                         \</span></div>
+<div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span><span class="preprocessor">  {                                                                            \</span></div>
+<div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span><span class="preprocessor">    static_assert(                                                             \</span></div>
+<div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span><span class="preprocessor">      VEG_CONCEPT(same&lt;decltype(this), __VEG_PP_REMOVE_PAREN(PClass)*&gt;),       \</span></div>
+<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span><span class="preprocessor">      &quot;struct mismatch in VEG_REFLECT&quot;);                                       \</span></div>
+<div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span><span class="preprocessor">  }                                                                            \</span></div>
+<div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span><span class="preprocessor">  struct _veglib_impl_member_extract                                           \</span></div>
+<div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span><span class="preprocessor">  {                                                                            \</span></div>
+<div class="line"><a id="l01262" name="l01262"></a><span class="lineno"> 1262</span><span class="preprocessor">    using Type = __VEG_PP_REMOVE_PAREN(PClass);                                \</span></div>
+<div class="line"><a id="l01263" name="l01263"></a><span class="lineno"> 1263</span><span class="preprocessor">    using MemberTuple =                                                        \</span></div>
+<div class="line"><a id="l01264" name="l01264"></a><span class="lineno"> 1264</span><span class="preprocessor">      decltype(::proxsuite::linalg::veg::_detail::make_simple_tuple(           \</span></div>
+<div class="line"><a id="l01265" name="l01265"></a><span class="lineno"> 1265</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::Empty {                             \</span></div>
+<div class="line"><a id="l01266" name="l01266"></a><span class="lineno"> 1266</span><span class="preprocessor">        } __VEG_PP_TUPLE_FOR_EACH(__VEG_IMPL_GET_MEMBER_PTR,                   \</span></div>
+<div class="line"><a id="l01267" name="l01267"></a><span class="lineno"> 1267</span><span class="preprocessor">                                  _,                                           \</span></div>
+<div class="line"><a id="l01268" name="l01268"></a><span class="lineno"> 1268</span><span class="preprocessor">                                  (__VA_ARGS__))));                            \</span></div>
+<div class="line"><a id="l01269" name="l01269"></a><span class="lineno"> 1269</span><span class="preprocessor">    static constexpr auto member_pointers() noexcept -&gt; MemberTuple            \</span></div>
+<div class="line"><a id="l01270" name="l01270"></a><span class="lineno"> 1270</span><span class="preprocessor">    {                                                                          \</span></div>
+<div class="line"><a id="l01271" name="l01271"></a><span class="lineno"> 1271</span><span class="preprocessor">      return ::proxsuite::linalg::veg::_detail::make_simple_tuple(             \</span></div>
+<div class="line"><a id="l01272" name="l01272"></a><span class="lineno"> 1272</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::Empty {} __VEG_PP_TUPLE_FOR_EACH(   \</span></div>
+<div class="line"><a id="l01273" name="l01273"></a><span class="lineno"> 1273</span><span class="preprocessor">          __VEG_IMPL_GET_MEMBER_PTR, _, (__VA_ARGS__)));                       \</span></div>
+<div class="line"><a id="l01274" name="l01274"></a><span class="lineno"> 1274</span><span class="preprocessor">    }                                                                          \</span></div>
+<div class="line"><a id="l01275" name="l01275"></a><span class="lineno"> 1275</span><span class="preprocessor">    static constexpr auto class_name_ptr() noexcept                            \</span></div>
+<div class="line"><a id="l01276" name="l01276"></a><span class="lineno"> 1276</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::NativeChar8 const*                 \</span></div>
+<div class="line"><a id="l01277" name="l01277"></a><span class="lineno"> 1277</span><span class="preprocessor">    {                                                                          \</span></div>
+<div class="line"><a id="l01278" name="l01278"></a><span class="lineno"> 1278</span><span class="preprocessor">      return __VEG_PP_CAT(u8,                                                  \</span></div>
+<div class="line"><a id="l01279" name="l01279"></a><span class="lineno"> 1279</span><span class="preprocessor">                          __VEG_PP_STRINGIZE(__VEG_PP_REMOVE_PAREN(PClass)));  \</span></div>
+<div class="line"><a id="l01280" name="l01280"></a><span class="lineno"> 1280</span><span class="preprocessor">    }                                                                          \</span></div>
+<div class="line"><a id="l01281" name="l01281"></a><span class="lineno"> 1281</span><span class="preprocessor">    static constexpr auto class_name_len() noexcept                            \</span></div>
+<div class="line"><a id="l01282" name="l01282"></a><span class="lineno"> 1282</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::usize                                       \</span></div>
+<div class="line"><a id="l01283" name="l01283"></a><span class="lineno"> 1283</span><span class="preprocessor">    {                                                                          \</span></div>
+<div class="line"><a id="l01284" name="l01284"></a><span class="lineno"> 1284</span><span class="preprocessor">      return sizeof(__VEG_PP_CAT(                                              \</span></div>
+<div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span><span class="preprocessor">               u8, __VEG_PP_STRINGIZE(__VEG_PP_REMOVE_PAREN(PClass)))) -       \</span></div>
+<div class="line"><a id="l01286" name="l01286"></a><span class="lineno"> 1286</span><span class="preprocessor">             1;                                                                \</span></div>
+<div class="line"><a id="l01287" name="l01287"></a><span class="lineno"> 1287</span><span class="preprocessor">    }                                                                          \</span></div>
+<div class="line"><a id="l01288" name="l01288"></a><span class="lineno"> 1288</span><span class="preprocessor">    static constexpr auto member_name_ptrs() noexcept                          \</span></div>
+<div class="line"><a id="l01289" name="l01289"></a><span class="lineno"> 1289</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::Array_&lt;                            \</span></div>
+<div class="line"><a id="l01290" name="l01290"></a><span class="lineno"> 1290</span><span class="preprocessor">        ::proxsuite::linalg::veg::_detail::NativeChar8 const*,                 \</span></div>
+<div class="line"><a id="l01291" name="l01291"></a><span class="lineno"> 1291</span><span class="preprocessor">        __VEG_PP_TUPLE_SIZE((__VA_ARGS__))&gt;                                    \</span></div>
+<div class="line"><a id="l01292" name="l01292"></a><span class="lineno"> 1292</span><span class="preprocessor">    {                                                                          \</span></div>
+<div class="line"><a id="l01293" name="l01293"></a><span class="lineno"> 1293</span><span class="preprocessor">      return { { __VEG_PP_TUPLE_FOR_EACH(                                      \</span></div>
+<div class="line"><a id="l01294" name="l01294"></a><span class="lineno"> 1294</span><span class="preprocessor">        __VEG_IMPL_GET_MEMBER_NAME_PTR, _, (__VA_ARGS__)) } };                 \</span></div>
+<div class="line"><a id="l01295" name="l01295"></a><span class="lineno"> 1295</span><span class="preprocessor">    }                                                                          \</span></div>
+<div class="line"><a id="l01296" name="l01296"></a><span class="lineno"> 1296</span><span class="preprocessor">    static constexpr auto member_name_lens() noexcept                          \</span></div>
+<div class="line"><a id="l01297" name="l01297"></a><span class="lineno"> 1297</span><span class="preprocessor">      -&gt; ::proxsuite::linalg::veg::_detail::Array_&lt;                            \</span></div>
+<div class="line"><a id="l01298" name="l01298"></a><span class="lineno"> 1298</span><span class="preprocessor">        ::proxsuite::linalg::veg::usize,                                       \</span></div>
+<div class="line"><a id="l01299" name="l01299"></a><span class="lineno"> 1299</span><span class="preprocessor">        __VEG_PP_TUPLE_SIZE((__VA_ARGS__))&gt;                                    \</span></div>
+<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span><span class="preprocessor">    {                                                                          \</span></div>
+<div class="line"><a id="l01301" name="l01301"></a><span class="lineno"> 1301</span><span class="preprocessor">      return { { __VEG_PP_TUPLE_FOR_EACH(                                      \</span></div>
+<div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span><span class="preprocessor">        __VEG_IMPL_GET_MEMBER_NAME_LEN, _, (__VA_ARGS__)) } };                 \</span></div>
+<div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span><span class="preprocessor">    }                                                                          \</span></div>
+<div class="line"><a id="l01304" name="l01304"></a><span class="lineno"> 1304</span><span class="preprocessor">  };                                                                           \</span></div>
+<div class="line"><a id="l01305" name="l01305"></a><span class="lineno"> 1305</span><span class="preprocessor">  friend struct ::proxsuite::linalg::veg::_detail::member_extract_access&lt;      \</span></div>
+<div class="line"><a id="l01306" name="l01306"></a><span class="lineno"> 1306</span><span class="preprocessor">    __VEG_PP_REMOVE_PAREN(PClass)&gt;;                                            \</span></div>
+<div class="line"><a id="l01307" name="l01307"></a><span class="lineno"> 1307</span><span class="preprocessor">  VEG_NOM_SEMICOLON</span></div>
+</div>
 <div class="line"><a id="l01308" name="l01308"></a><span class="lineno"> 1308</span> </div>
-<div class="line"><a id="l01309" name="l01309"></a><span class="lineno"> 1309</span><span class="preprocessor">#include &quot;<a class="code" href="epilogue_8hpp.html">proxsuite/linalg/veg/internal/epilogue.hpp</a>&quot;</span></div>
-<div class="line"><a id="l01310" name="l01310"></a><span class="lineno"> 1310</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard VEG_MACROS_HPP_HSTLSKZXS */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l01309" name="l01309"></a><span class="lineno"><a class="line" href="macros_8hpp.html#ae0f165dd2ebcd8c76811041b2ac2dda9"> 1309</a></span><span class="preprocessor">#define VEG_REFLECT(PClass, ...) __VEG_IMPL_STRUCT_SETUP(PClass, __VA_ARGS__)</span></div>
+<div class="line"><a id="l01310" name="l01310"></a><span class="lineno"> 1310</span> </div>
+<div class="line"><a id="l01311" name="l01311"></a><span class="lineno"> 1311</span><span class="preprocessor">#include &quot;<a class="code" href="epilogue_8hpp.html">proxsuite/linalg/veg/internal/epilogue.hpp</a>&quot;</span></div>
+<div class="line"><a id="l01312" name="l01312"></a><span class="lineno"> 1312</span><span class="preprocessor">#endif </span><span class="comment">/* end of include guard VEG_MACROS_HPP_HSTLSKZXS */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclasstl_1_1optional_html"><div class="ttname"><a href="classtl_1_1optional.html">tl::optional</a></div><div class="ttdef"><b>Definition</b> <a href="tl-optional_8hpp_source.html#l00811">tl-optional.hpp:815</a></div></div>
 <div class="ttc" id="aclasstl_1_1optional_html_a01ad4287b5186f3e2d4973bd92fe15f1"><div class="ttname"><a href="classtl_1_1optional.html#a01ad4287b5186f3e2d4973bd92fe15f1">tl::optional::optional</a></div><div class="ttdeci">constexpr optional() noexcept=default</div><div class="ttdoc">Constructs an optional that does not contain a value.</div></div>
 <div class="ttc" id="aclasstl_1_1optional_html_a2baaba780785b36fe1eec5eee9e5df9c"><div class="ttname"><a href="classtl_1_1optional.html#a2baaba780785b36fe1eec5eee9e5df9c">tl::optional::value</a></div><div class="ttdeci">TL_OPTIONAL_11_CONSTEXPR T &amp; value() &amp;</div><div class="ttdef"><b>Definition</b> <a href="tl-optional_8hpp_source.html#l01517">tl-optional.hpp:1517</a></div></div>
@@ -1610,7 +1612,7 @@ $(function(){initNavTree('macros_8hpp_source.html',''); initResizable(); });
 <div class="ttc" id="amacros_8hpp_html_aa188f9c212af5b45780dedb3e7ecb76f"><div class="ttname"><a href="macros_8hpp.html#aa188f9c212af5b45780dedb3e7ecb76f">VEG_FWD</a></div><div class="ttdeci">#define VEG_FWD(X)</div><div class="ttdef"><b>Definition</b> <a href="#l00569">macros.hpp:569</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_html_aaa31737ca600226590dafebeab6d5a61"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta.html#aaa31737ca600226590dafebeab6d5a61">proxsuite::linalg::veg::_detail::_meta::is_same</a></div><div class="ttdeci">decltype(wrapper&lt; T &gt;::test(static_cast&lt; wrapper&lt; U &gt; * &gt;(nullptr))) is_same</div><div class="ttdef"><b>Definition</b> <a href="#l00919">macros.hpp:919</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_a09d158a9faf401bce28aff502b1dabf2"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a09d158a9faf401bce28aff502b1dabf2">proxsuite::linalg::veg::_detail::NativeChar8</a></div><div class="ttdeci">meta::uncvref_t&lt; decltype(u8&quot;&quot;[0])&gt; NativeChar8</div><div class="ttdef"><b>Definition</b> <a href="#l01067">macros.hpp:1067</a></div></div>
-<div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_a5fb5a6501d8a5adb0ea7dde66493463d"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">proxsuite::linalg::veg::_detail::extract_chars_expr</a></div><div class="ttdeci">auto extract_chars_expr(LiteralType) -&gt; typename ExtractCharsImplExpr&lt; LiteralType, _meta::make_index_sequence&lt; LiteralType::Size::value &gt; &gt;::Type</div><div class="ttdef"><b>Definition</b> <a href="#l01207">macros.hpp:1207</a></div></div>
+<div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_a5fb5a6501d8a5adb0ea7dde66493463d"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a5fb5a6501d8a5adb0ea7dde66493463d">proxsuite::linalg::veg::_detail::extract_chars_expr</a></div><div class="ttdeci">auto extract_chars_expr(LiteralType) -&gt; typename ExtractCharsImplExpr&lt; LiteralType, _meta::make_index_sequence&lt; LiteralType::Size::value &gt; &gt;::Type</div><div class="ttdef"><b>Definition</b> <a href="#l01208">macros.hpp:1208</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_aa2cc990a3b9dcd3f8f16766ee1f97d44"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aa2cc990a3b9dcd3f8f16766ee1f97d44">proxsuite::linalg::veg::_detail::all_of</a></div><div class="ttdeci">constexpr auto all_of(bool const (&amp;lst)[N]) VEG_NOEXCEPT -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="#l00854">macros.hpp:854</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_aba8ec45fe084af581302323fdb4dcf9d"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#aba8ec45fe084af581302323fdb4dcf9d">proxsuite::linalg::veg::_detail::assert_complete</a></div><div class="ttdeci">constexpr auto assert_complete() noexcept -&gt; bool</div><div class="ttdef"><b>Definition</b> <a href="#l01076">macros.hpp:1076</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1linalg_1_1veg_1_1__detail_html_acfe763a5f047a3ace4a241156b2d34d2"><div class="ttname"><a href="namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#acfe763a5f047a3ace4a241156b2d34d2">proxsuite::linalg::veg::_detail::extract_chars</a></div><div class="ttdeci">auto extract_chars(LiteralType) -&gt; typename ExtractCharsImpl&lt; LiteralType, _meta::make_index_sequence&lt; LiteralType::Size::value &gt; &gt;::Type</div><div class="ttdef"><b>Definition</b> <a href="#l01198">macros.hpp:1198</a></div></div>
