@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.5] - 2024-05-31
+
 ### Added
 * Pip wheels for Python 3.12 and stop support Python 3.7 ([#324](https://github.com/Simple-Robotics/proxsuite/pull/324))
 
@@ -407,7 +409,8 @@ More to come ([#](a forthcoming release.))
 The first release of ProxSuite.
 
 
-[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.4...HEAD
+[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.5...HEAD
+[0.6.5]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.1...v0.6.2
