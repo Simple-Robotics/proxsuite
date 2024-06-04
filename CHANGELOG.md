@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+* Pip wheels for Python 3.12 and stop support Python 3.7 ([#324](https://github.com/Simple-Robotics/proxsuite/pull/324))
+
 ### Fixed
 * Fixes compilation issue with GCC 14 on Arch ([#322](https://github.com/Simple-Robotics/proxsuite/pull/322))
 
