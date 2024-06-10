@@ -197,6 +197,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
             qp_random.l,
             qp_random.u);
     qp.solve();
+    DOCTEST_CHECK(qp.results.info.status ==
+                  proxqp::QPSolverOutput::PROXQP_SOLVED);
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
