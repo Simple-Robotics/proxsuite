@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 * Fixes compilation issue with GCC 14 on Arch ([#322](https://github.com/Simple-Robotics/proxsuite/pull/322))
+* Fix infeasibility detection and add unittest ([#328](https://github.com/Simple-Robotics/proxsuite/pull/328))
 
 ### What's Changed
 * Change from torch.Tensor to torch.empty or torch.tensor and specify type explicitly ([#308](https://github.com/Simple-Robotics/proxsuite/pull/308))
