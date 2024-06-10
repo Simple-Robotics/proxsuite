@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 /**
  * @file utils.hpp
@@ -289,7 +289,7 @@ global_primal_residual_infeasibility(
   //
   // the variables in entry are changed in place
 
-  bool res = infty_norm(dy.to_eigen()) != 0 && infty_norm(dz.to_eigen()) != 0;
+  bool res = infty_norm(dy.to_eigen()) != 0 || infty_norm(dz.to_eigen()) != 0;
   if (!res) {
     return res;
   }
