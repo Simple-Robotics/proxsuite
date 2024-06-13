@@ -172,7 +172,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
     << "---testing sparse random strongly convex qp with degenerate "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
-  T sparsity_factor = 0.15;
+  T sparsity_factor = 0.45;
   T eps_abs = T(1e-9);
   T strong_convexity_factor(1e-2);
   proxqp::utils::rand::set_seed(1);

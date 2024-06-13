@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022 - 2024 INRIA
 //
 #include <iostream>
 #include <doctest.hpp>
@@ -212,4 +212,45 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
     std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
+}
+
+DOCTEST_TEST_CASE("infeasible qp")
+{
+  // (x1- 9)^2 + (x2-6)^2
+  // s.t.
+  // x1 <= 10
+  // x2 <= 10
+  // x1 >= 20
+  Eigen::Matrix<T, 2, 2> H;
+  H << 1.0, 0.0, 0.0, 1.0;
+  H = 2 * H;
+
+  Eigen::Matrix<T, 2, 1> g;
+  g << -18.0, -12.0;
+
+  Eigen::Matrix<T, 3, 2> C;
+  C << 1, 0, // x1 <= 10
+    0, 1,    // x2 <= 10
+    -1, 0;   // x1 >= 20
+
+  Eigen::Matrix<T, 3, 1> u;
+  u << 10, 10, -20;
+
+  int n = H.rows();
+  int n_in = C.rows();
+  int n_eq = 0;
+
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l =
+    Eigen::Matrix<T, Eigen::Dynamic, 1>::Constant(
+      n_in, -std::numeric_limits<double>::infinity());
+
+  proxsuite::proxqp::dense::QP<T> qp(n, n_eq, n_in);
+  qp.init(H, g, nullopt, nullopt, C, l, u);
+  qp.settings.eps_rel = 0.;
+  qp.settings.eps_abs = 1e-9;
+
+  qp.solve();
+
+  DOCTEST_CHECK(qp.results.info.status ==
+                proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 }
