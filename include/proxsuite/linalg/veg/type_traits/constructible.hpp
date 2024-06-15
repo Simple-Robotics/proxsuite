@@ -23,13 +23,9 @@ VEG_DEF_CONCEPT(typename T,
                 nothrow_destructible,
                 noexcept(static_cast<T*>(nullptr)->~T()));
 
-VEG_DEF_CONCEPT(
-  typename T,
-  trivially_destructible,
-  VEG_HAS_BUILTIN_OR(__has_trivial_destructor,
-                     ((_detail::assert_complete<_detail::Wrapper<T>>(),
-                       __has_trivial_destructor(T))),
-                     (std::is_trivially_destructible<T>::value)));
+VEG_DEF_CONCEPT(typename T,
+                trivially_destructible,
+                std::is_trivially_destructible<T>::value);
 
 VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD(typename T, trivially_copyable, T);
 
