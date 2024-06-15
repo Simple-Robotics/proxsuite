@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+* Fix infeasibility detection and add a unit test ([#328](https://github.com/Simple-Robotics/proxsuite/pull/328))
+
 ## [0.6.5] - 2024-05-31
 
 ### Added

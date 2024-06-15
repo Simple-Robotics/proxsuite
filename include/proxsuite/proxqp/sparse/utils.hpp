@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2023 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 /** \file */
 
@@ -488,7 +488,7 @@ global_primal_residual_infeasibility(VectorViewMut<T> ATdy,
   //
   // the variables in entry are changed in place
 
-  bool res = infty_norm(dy.to_eigen()) != 0 && infty_norm(dz.to_eigen()) != 0;
+  bool res = infty_norm(dy.to_eigen()) != 0 || infty_norm(dz.to_eigen()) != 0;
   if (!res) {
     return res;
   }
