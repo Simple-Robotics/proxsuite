@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.6] - 2024-06-15
+
 ### Fixed
 * Fix infeasibility detection and add a unit test ([#328](https://github.com/Simple-Robotics/proxsuite/pull/328))
 
@@ -412,7 +414,8 @@ More to come ([#](a forthcoming release.))
 The first release of ProxSuite.
 
 
-[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.5...HEAD
+[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.6...HEAD
+[0.6.6]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.4...v0.6.5
 [0.6.4]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.2...v0.6.3
