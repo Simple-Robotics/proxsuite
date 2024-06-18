@@ -62,9 +62,13 @@ add_test_cflags(
   test-cpp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
-target_include_directories(
-  test-cpp-serialization SYSTEM
-  PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+if(cereal_FOUND)
+  target_link_libraries(test-cpp-serialization PRIVATE cereal)
+else()
+  target_include_directories(
+    test-cpp-serialization SYSTEM
+    PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+endif()
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
   proxsuite_test(dense_maros_meszaros src/dense_maros_meszaros.cpp)

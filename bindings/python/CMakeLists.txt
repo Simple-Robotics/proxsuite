@@ -91,8 +91,13 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
     list_filter("${PYWRAP_HEADERS}" "expose-parallel" PYWRAP_HEADERS)
   endif(BUILD_WITH_OPENMP_SUPPORT)
 
-  target_include_directories(
-    ${target_name} SYSTEM PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+  if(cereal_FOUND)
+    target_link_libraries(${target_name} SYSTEM PRIVATE cereal)
+  else()
+    target_include_directories(
+      ${target_name} SYSTEM
+      PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
+  endif()
   set_target_properties(
     ${target_name}
     PROPERTIES OUTPUT_NAME ${target_name}
