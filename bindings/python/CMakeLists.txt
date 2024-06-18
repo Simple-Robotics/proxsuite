@@ -2,8 +2,8 @@ if(UNIX)
   set(PYTHON_COMPONENTS Development.Module)
 endif()
 
-include(../../cmake-module/python.cmake)
-include(../../cmake-module/python-helpers.cmake)
+include(${JRL_CMAKE_MODULES}/python.cmake)
+include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 
 findpython(REQUIRED Development.Module)
 

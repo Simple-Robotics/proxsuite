@@ -15,6 +15,37 @@ set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 
+# Check if the submodule cmake have been initialized
+set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake-module")
+if(EXISTS "${JRL_CMAKE_MODULES}/base.cmake")
+  message(STATUS "JRL cmakemodules found in 'cmake/' git submodule")
+else()
+  find_package(jrl-cmakemodules QUIET CONFIG)
+  if(jrl-cmakemodules_FOUND)
+    get_property(
+      JRL_CMAKE_MODULES
+      TARGET jrl-cmakemodules::jrl-cmakemodules
+      PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+    message(STATUS "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}")
+  elseif(${CMAKE_VERSION} VERSION_LESS "3.14.0")
+    message(
+      FATAL_ERROR
+        "\nCan't find jrl-cmakemodules. Please either:\n"
+        "  - use git submodule: 'git submodule update --init'\n"
+        "  - or install https://github.com/jrl-umi3218/jrl-cmakemodules\n"
+        "  - or upgrade your CMake version to >= 3.14 to allow automatic fetching\n"
+    )
+  else()
+    message(STATUS "JRL cmakemodules not found. Let's fetch it.")
+    include(FetchContent)
+    FetchContent_Declare(
+      "jrl-cmakemodules"
+      GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git")
+    FetchContent_MakeAvailable("jrl-cmakemodules")
+    FetchContent_GetProperties("jrl-cmakemodules" SOURCE_DIR JRL_CMAKE_MODULES)
+  endif()
+endif()
+
 # Disable -Werror on Unix for now.
 set(CXX_DISABLE_WERROR True)
 set(CMAKE_VERBOSE_MAKEFILE True)
@@ -23,14 +54,6 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 if(POLICY CMP0068)
   cmake_policy(SET CMP0068 NEW)
 endif(POLICY CMP0068)
-
-# Check if the submodule cmake have been initialized
-if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake")
-  message(
-    FATAL_ERROR
-      "\nPlease run the following command first:\ngit submodule update --init\n"
-  )
-endif()
 
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
@@ -42,19 +65,18 @@ option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_USE_TEMPLATE_CSS YES)
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/base.cmake)
+include(${JRL_CMAKE_MODULES}/base.cmake)
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/ide.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/apple.cmake)
+include(${JRL_CMAKE_MODULES}/ide.cmake)
+include(${JRL_CMAKE_MODULES}/apple.cmake)
 
 if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.26.0" OR WIN32)
-  set(CMAKE_MODULE_PATH
-      ${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/OpenMP
-      ${CMAKE_MODULE_PATH})
+  set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/OpenMP
+                        ${CMAKE_MODULE_PATH})
 endif()
-include(${CMAKE_CURRENT_LIST_DIR}/cmake-module/julia.cmake)
+include(${JRL_CMAKE_MODULES}/julia.cmake)
 include(CMakeDependentOption)
 
 # If needed, set CMake policy for APPLE systems
@@ -85,9 +107,8 @@ if(BUILD_WITH_OPENMP_SUPPORT)
   separate_arguments(OpenMP_CXX_FLAGS UNIX_COMMAND "${OpenMP_CXX_FLAGS}")
 endif(BUILD_WITH_OPENMP_SUPPORT)
 
-set(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake-module/find-external/Julia"
-    ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${JRL_CMAKE_MODULES}/find-external/Julia"
+                      ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
                       ${CMAKE_MODULE_PATH})
 
