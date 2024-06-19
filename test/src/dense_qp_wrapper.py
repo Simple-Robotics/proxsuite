@@ -3930,7 +3930,7 @@ class DenseqpWrapper(unittest.TestCase):
         b = None
         C = spa.csc_matrix(spa.eye(n)).toarray()
         l = 2.0 * np.ones((n,))
-        u = np.full(l.shape, +np.infty)
+        u = np.full(l.shape, +np.inf)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)
         qp.init(H, g, A, b, C, l, u)

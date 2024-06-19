@@ -315,7 +315,7 @@ class DenseQpWrapper(unittest.TestCase):
         b = None
         C = spa.csc_matrix(spa.eye(n)).toarray()
         l = 2.0 * np.ones((n,))
-        u = np.full(l.shape, +np.infty)
+        u = np.full(l.shape, +np.inf)
 
         results = proxsuite.proxqp.dense.solve(H, g, A, b, C, l, u)
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
