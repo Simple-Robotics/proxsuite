@@ -95,7 +95,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   endif(BUILD_WITH_OPENMP_SUPPORT)
 
   if(cereal_FOUND)
-    target_link_libraries(${target_name} SYSTEM PRIVATE cereal)
+    target_link_libraries(${target_name} PRIVATE cereal)
   else()
     target_include_directories(
       ${target_name} SYSTEM
