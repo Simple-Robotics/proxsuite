@@ -14,9 +14,12 @@ else()
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-add_subdirectory(external/pybind11
-                 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+find_package(pybind11 CONFIG)
+if(NOT pybind11_FOUND)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+  add_subdirectory(external/pybind11
+                   ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+endif()
 
 add_custom_target(${PROJECT_NAME}_python)
 
