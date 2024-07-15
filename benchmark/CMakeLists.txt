@@ -1,4 +1,4 @@
-add_custom_target(bench)
+add_custom_target(${PROJECT_NAME}_bench)
 
 macro(proxsuite_benchmark bench_name)
   if(BUILD_BENCHMARK)
@@ -12,7 +12,7 @@ macro(proxsuite_benchmark bench_name)
   else()
     target_link_libraries(${bench_name} PUBLIC proxsuite)
   endif()
-  add_dependencies(bench ${bench_name})
+  add_dependencies(${PROJECT_NAME}_bench ${bench_name})
 endmacro(proxsuite_benchmark)
 
 proxsuite_benchmark(timings-lp)

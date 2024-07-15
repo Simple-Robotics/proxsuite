@@ -1,5 +1,5 @@
-INPUT                   = @CMAKE_SOURCE_DIR@/doc \
-                          @CMAKE_SOURCE_DIR@/include \
+INPUT                   = @PROJECT_SOURCE_DIR@/doc \
+                          @PROJECT_SOURCE_DIR@/include \
 
 RECURSIVE               = YES
 
@@ -54,7 +54,7 @@ SOURCE_BROWSER          = YES
 
 ALPHABETICAL_INDEX      = YES
 
-USE_MDFILE_AS_MAINPAGE  = @CMAKE_SOURCE_DIR@/doc/1-Overview.md
+USE_MDFILE_AS_MAINPAGE  = @PROJECT_SOURCE_DIR@/doc/1-Overview.md
 
 BUILTIN_STL_SUPPORT     = YES
 HAVE_DOT                = YES

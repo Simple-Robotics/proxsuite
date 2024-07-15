@@ -18,7 +18,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 add_subdirectory(external/pybind11
                  ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
 
-add_custom_target(python)
+add_custom_target(${PROJECT_NAME}_python)
 
 # Collect files
 file(GLOB_RECURSE PYWRAP_HEADERS ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp)
@@ -27,7 +27,7 @@ file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 # Add simd feature detectors for current intel CPU
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
   python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
-  add_dependencies(python instructionset)
+  add_dependencies(${PROJECT_NAME}_python instructionset)
   target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
   set_target_properties(
     instructionset
@@ -35,18 +35,18 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
                PREFIX ""
                SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_DEBUG
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                # On Windows, shared library are treat as binary
                RUNTIME_OUTPUT_DIRECTORY
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                RUNTIME_OUTPUT_DIRECTORY_RELEASE
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                RUNTIME_OUTPUT_DIRECTORY_DEBUG
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
   if(UNIX AND NOT APPLE)
     set_target_properties(instructionset PROPERTIES INSTALL_RPATH
                                                     "\$ORIGIN/../../..")
@@ -70,7 +70,7 @@ endfunction(list_filter)
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
-  add_dependencies(python ${target_name})
+  add_dependencies(${PROJECT_NAME}_python ${target_name})
 
   target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
@@ -104,18 +104,18 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
                PREFIX ""
                SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_DEBUG
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                # On Windows, shared library are treat as binary
                RUNTIME_OUTPUT_DIRECTORY
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                RUNTIME_OUTPUT_DIRECTORY_RELEASE
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                RUNTIME_OUTPUT_DIRECTORY_DEBUG
-               "${CMAKE_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
+               "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}")
 
   if(UNIX AND NOT APPLE)
     set_target_properties(${target_name} PROPERTIES INSTALL_RPATH
@@ -195,7 +195,7 @@ else()
 endif()
 
 python_build_get_target(compile_pyc)
-add_dependencies(python ${compile_pyc})
+add_dependencies(${PROJECT_NAME}_python ${compile_pyc})
 
 set(PYTHON_FILES torch/__init__.py torch/qplayer.py torch/utils.py)
 
