@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 
-if(DEFINED PROJECT_NAME)
+if(DEFINED PROJECT_NAME AND NOT PROJECT_WORKSPACE)
   set(PROXSUITE_AS_SUBPROJECT ON)
 endif()
 
@@ -14,6 +14,10 @@ set(PROJECT_URL "http://github.com/Simple-Robotics/proxsuite")
 set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
+# To enable jrl-cmakemodules compatibility with workspace we must define the two
+# following lines
+set(PROJECT_AUTO_RUN_FINALIZE FALSE)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake-module")
@@ -241,3 +245,5 @@ if(BUILD_PYTHON_INTERFACE)
     FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv
     DESTINATION share/${PROJECT_NAME}/hook)
 endif(BUILD_PYTHON_INTERFACE)
+
+setup_project_finalize()

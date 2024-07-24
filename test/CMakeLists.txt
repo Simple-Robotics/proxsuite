@@ -1,8 +1,8 @@
 include(../cmake-external/doctest.cmake)
 find_package(Matio REQUIRED)
 
-add_library(doctest STATIC doctest/doctest.cpp)
-target_include_directories(doctest PUBLIC ./doctest)
+add_library(${PROJECT_NAME}-doctest STATIC doctest/doctest.cpp)
+target_include_directories(${PROJECT_NAME}-doctest PUBLIC ./doctest)
 add_library(cnpy OBJECT src/cnpy.cpp)
 target_link_libraries(cnpy Eigen3::Eigen)
 target_include_directories(cnpy PUBLIC ./include)
@@ -20,13 +20,14 @@ else()
 endif()
 
 macro(proxsuite_test name path)
-  add_executable(test-cpp-${name} ${path})
-  doctest_discover_tests(test-cpp-${name})
-  target_link_libraries(test-cpp-${name} PUBLIC proxsuite doctest
-                                                proxsuite-test-util)
-  target_compile_definitions(test-cpp-${name}
+  set(target_name ${PROJECT_NAME}-test-cpp-${name})
+  add_executable(${target_name} ${path})
+  # doctest_discover_tests(${target_name})
+  target_link_libraries(${target_name} PUBLIC proxsuite ${PROJECT_NAME}-doctest
+                                              proxsuite-test-util)
+  target_compile_definitions(${target_name}
                              PRIVATE PROBLEM_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
-  add_dependencies(build_tests test-cpp-${name})
+  add_dependencies(build_tests ${target_name})
 endmacro()
 
 proxsuite_test(dense_ruiz_equilibration src/dense_ruiz_equilibration.cpp)
@@ -45,7 +46,8 @@ proxsuite_test(cvxpy src/cvxpy.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_test(parallel src/parallel_qp_solve.cpp)
-  target_link_libraries(test-cpp-parallel PRIVATE OpenMP::OpenMP_CXX)
+  target_link_libraries(${PROJECT_NAME}-test-cpp-parallel
+                        PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 # Test serialization
@@ -54,19 +56,19 @@ macro(ADD_TEST_CFLAGS target flag)
     TARGET ${target}
     APPEND_STRING
     PROPERTY COMPILE_FLAGS " ${flag}")
-endmacro(ADD_TEST_CFLAGS)
+endmacro()
 
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
 proxsuite_test(serialization src/serialization.cpp)
 add_test_cflags(
-  test-cpp-serialization
+  ${PROJECT_NAME}-test-cpp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
 if(cereal_FOUND)
-  target_link_libraries(test-cpp-serialization PRIVATE cereal)
+  target_link_libraries(${PROJECT_NAME}-test-cpp-serialization PRIVATE cereal)
 else()
   target_include_directories(
-    test-cpp-serialization SYSTEM
+    ${PROJECT_NAME}-test-cpp-serialization SYSTEM
     PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include)
 endif()
 
@@ -87,7 +89,7 @@ if(BUILD_PYTHON_INTERFACE)
   foreach(TEST_FILE ${${PROJECT_NAME}_PYTHON_UNITTEST})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
     string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/" "" TEST_FILE ${TEST_FILE})
-    add_python_unit_test("test-py-${TEST_NAME}" "${TEST_FILE}"
+    add_python_unit_test("${PROJECT_NAME}-test-py-${TEST_NAME}" "${TEST_FILE}"
                          "bindings/python")
-  endforeach(TEST_FILE ${${PROJECT_NAME}_PYTHON_UNITTEST})
+  endforeach()
 endif(BUILD_PYTHON_INTERFACE)
