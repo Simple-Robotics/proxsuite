@@ -182,9 +182,9 @@ struct Settings
    * re-computed when calling the update method.
    * @param compute_preconditioner If set to true, the preconditioner will be
    * computed with the init method.
-   * @param compute_timings If set to true, timings will be computed by the
-   * solver (setup time, solving time, and run time = setup time + solving
-   * time).
+   * @param compute_timings If set to true, timings in microseconds will be
+   * computed by the solver (setup time, solving time, and run time = setup time
+   * + solving time).
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
    * @param eps_duality_gap_abs absolute duality-gap stopping criterion.
