@@ -147,6 +147,11 @@ struct QP
     }
   }
 
+  QP(const QP&) = delete;
+  QP& operator=(const QP&) = delete;
+  QP(QP&&) = default;
+  QP& operator=(QP&&) = default;
+
   /*!
    * Setups the QP model (with sparse matrix format) and equilibrates it.
    * @param H quadratic cost input defining the QP model.
@@ -814,6 +819,10 @@ struct BatchQP
     }
     m_size = 0;
   }
+  BatchQP(const BatchQP&) = delete;
+  BatchQP& operator=(const BatchQP&) = delete;
+  BatchQP(BatchQP&&) = default;
+  BatchQP& operator=(BatchQP&&) = default;
 
   /*!
    * Init a QP in place and return a reference to it
