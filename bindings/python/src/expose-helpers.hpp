@@ -2,9 +2,9 @@
 // Copyright (c) 2022 INRIA
 //
 
-#include <pybind11/pybind11.h>
-#include <pybind11/eigen.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/eigen/sparse.h>
 
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
@@ -18,7 +18,7 @@ namespace python {
 
 template<typename T>
 void
-exposeDenseHelpers(pybind11::module_ m)
+exposeDenseHelpers(nanobind::module_ m)
 {
   m.def(
     "estimate_minimal_eigen_value_of_symmetric_matrix",
@@ -38,17 +38,11 @@ exposeDenseHelpers(pybind11::module_ m)
     "SelfAdjointEigenSolver from Eigen, "
     "or a Power Iteration algorithm (with parameters : "
     "power_iteration_accuracy and nb_power_iteration).",
-    pybind11::arg("H"),
-    pybind11::arg_v("estimate_method_option",
-                    EigenValueEstimateMethodOption::ExactMethod,
-                    "Two options are available for "
-                    "estimating smallest eigenvalue: either a power "
-                    "iteration algorithm, or an exact method from Eigen."),
-    pybind11::arg_v(
-      "power_iteration_accuracy", T(1.E-3), "power iteration accuracy."),
-    pybind11::arg_v("nb_power_iteration",
-                    1000,
-                    "maximal number of power iteration executed."));
+    nanobind::arg("H"),
+    nanobind::arg("estimate_method_option") =
+      EigenValueEstimateMethodOption::ExactMethod,
+    nanobind::arg("power_iteration_accuracy") = T(1.E-3),
+    nanobind::arg("nb_power_iteration") = 1000);
 }
 } // namespace python
 } // namespace dense
@@ -59,7 +53,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-exposeSparseHelpers(pybind11::module_ m)
+exposeSparseHelpers(nanobind::module_ m)
 {
   m.def("estimate_minimal_eigen_value_of_symmetric_matrix",
         &sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>,
@@ -67,12 +61,9 @@ exposeSparseHelpers(pybind11::module_ m)
         "matrix, "
         " using aPower Iteration algorithm (with parameters : "
         "power_iteration_accuracy and nb_power_iteration).",
-        pybind11::arg("H"),
-        pybind11::arg_v(
-          "power_iteration_accuracy", T(1.E-3), "power iteration accuracy."),
-        pybind11::arg_v("nb_power_iteration",
-                        1000,
-                        "maximal number of power iteration executed."));
+        nanobind::arg("H"),
+        nanobind::arg("power_iteration_accuracy") = T(1.E-3),
+        nanobind::arg("nb_power_iteration") = 1000);
 }
 
 } // namespace python
