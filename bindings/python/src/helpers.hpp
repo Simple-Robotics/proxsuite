@@ -5,7 +5,7 @@
 #define proxsuite_python_helpers_hpp
 
 #define PROXSUITE_PYTHON_EIGEN_READWRITE(class, field_name, doc)               \
-  def_property(                                                                \
+  def_prop_rw(                                                                 \
     #field_name,                                                               \
     [](class& self) { return self.field_name; },                               \
     [](class& self, const decltype(class ::field_name)& value) {               \
