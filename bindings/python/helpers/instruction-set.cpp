@@ -3,6 +3,7 @@
 //
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <proxsuite/helpers/instruction-set.hpp>
 
