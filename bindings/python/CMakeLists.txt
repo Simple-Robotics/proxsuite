@@ -6,6 +6,7 @@ include(${JRL_CMAKE_MODULES}/python.cmake)
 include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 
 findpython(REQUIRED Development.Module)
+find_package(Python 3.8 COMPONENTS ${PYTHON_COMPONENTS})
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
   set(${PYWRAP}_INSTALL_DIR ${PYTHON_SITELIB}/${PROJECT_NAME})
@@ -14,12 +15,9 @@ else()
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-find_package(pybind11 CONFIG)
-if(NOT pybind11_FOUND)
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-  add_subdirectory(external/pybind11
-                   ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-endif()
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+add_subdirectory(external/nanobind
+                 ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
 
 add_custom_target(${PROJECT_NAME}_python)
 
@@ -29,14 +27,12 @@ file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 # Add simd feature detectors for current intel CPU
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
-  python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
+  nanobind_add_module(instructionset helpers/instruction-set.cpp)
   add_dependencies(${PROJECT_NAME}_python instructionset)
-  target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
+  target_link_libraries(instructionset PRIVATE proxsuite)
   set_target_properties(
     instructionset
     PROPERTIES OUTPUT_NAME instructionset
-               PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
                "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
@@ -72,12 +68,13 @@ function(list_filter list regular_expression dest_list)
 endfunction(list_filter)
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-  python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
+  nanobind_add_module(${target_name} ${PYWRAP_SOURCES}
+                      ${PYWRAP_HEADERS})
   add_dependencies(${PROJECT_NAME}_python ${target_name})
 
-  target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
+  target_link_libraries(${target_name} PUBLIC ${dependencies})
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
-  target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
+  target_link_libraries(${target_name} PRIVATE proxsuite)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
 
@@ -104,8 +101,6 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   set_target_properties(
     ${target_name}
     PROPERTIES OUTPUT_NAME ${target_name}
-               PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
                "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
