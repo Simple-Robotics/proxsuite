@@ -37,7 +37,9 @@ def generate_mixed_qp(n, seed=1, reg=0.01):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(order='C')
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(
+        order="C"
+    )
     v = np.random.randn(n)  # Fictitious solution
     delta = np.random.rand(m)  # To get inequality
     u = A @ v
@@ -67,7 +69,9 @@ def generate_mixed_qp_with_box(n, seed=1):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(order='C')
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(
+        order="C"
+    )
     v = np.random.randn(n)  # Fictitious solution
     u = A @ v
     l = -1.0e20 * np.ones(m)
@@ -3923,11 +3927,11 @@ class DenseqpWrapper(unittest.TestCase):
             M[i, i + 1] = -1
             M[i, i - 1] = 1
 
-        H = spa.csc_matrix(M.dot(M.transpose())).toarray(order='C')
+        H = spa.csc_matrix(M.dot(M.transpose())).toarray(order="C")
         g = -np.ones((n,))
         A = None
         b = None
-        C = spa.csc_matrix(spa.eye(n)).toarray(order='C')
+        C = spa.csc_matrix(spa.eye(n)).toarray(order="C")
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.inf)
 

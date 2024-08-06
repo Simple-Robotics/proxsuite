@@ -29,7 +29,9 @@ def generate_mixed_qp(n, seed=1):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(order='C')
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(
+        order="C"
+    )
     v = np.random.randn(n)  # Fictitious solution
     u = A @ v
     l = -1.0e20 * np.ones(m)
