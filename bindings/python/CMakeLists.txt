@@ -5,6 +5,8 @@ endif()
 include(${JRL_CMAKE_MODULES}/python.cmake)
 include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 
+option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
+
 findpython(REQUIRED Development.Module)
 find_package(Python 3.8 COMPONENTS ${PYTHON_COMPONENTS})
 
@@ -54,6 +56,20 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
     TARGETS instructionset
     EXPORT ${TARGETS_EXPORT_NAME}
     DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  if(GENERATE_PYTHON_STUBS)
+    nanobind_add_stub(
+      instructionset_stub
+      MODULE
+      instructionset
+      OUTPUT
+      instructionset.pyi
+      PYTHON_PATH
+      $<TARGET_FILE_DIR:instructionset>
+      DEPENDS
+      instructionset)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/instructionset.pyi
+            DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  endif()
 endif()
 
 function(list_filter list regular_expression dest_list)
@@ -68,8 +84,7 @@ function(list_filter list regular_expression dest_list)
 endfunction(list_filter)
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-  nanobind_add_module(${target_name} ${PYWRAP_SOURCES}
-                      ${PYWRAP_HEADERS})
+  nanobind_add_module(${target_name} ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(${PROJECT_NAME}_python ${target_name})
 
   target_link_libraries(${target_name} PUBLIC ${dependencies})
@@ -121,6 +136,20 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   endif()
 
   install(TARGETS ${target_name} DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  if(GENERATE_PYTHON_STUBS)
+    nanobind_add_stub(
+      ${target_name}_stub
+      MODULE
+      ${target_name}
+      OUTPUT
+      ${target_name}.pyi
+      PYTHON_PATH
+      $<TARGET_FILE_DIR:${target_name}>
+      DEPENDS
+      ${target_name})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target_name}.pyi
+            DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  endif()
 endfunction()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
