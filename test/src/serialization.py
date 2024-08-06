@@ -42,7 +42,7 @@ def generic_test(object, filename):
     try:
         with open(filename, "wb") as f:
             pickle.dump(object, f)
-    except:
+    except pickle.PickleError:
         dump_success = False
     else:
         dump_success = True
@@ -52,7 +52,7 @@ def generic_test(object, filename):
     try:
         with open(filename, "rb") as f:
             loaded_object = pickle.load(f)
-    except:
+    except pickle.PickleError:
         read_success = False
     else:
         read_success = True
