@@ -12,8 +12,6 @@
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/results.hpp>
 
-#include "helpers.hpp"
-
 namespace proxsuite {
 namespace proxqp {
 namespace python {
@@ -67,23 +65,40 @@ exposeResults(nanobind::module_ m)
          nanobind::arg("n_eq") = 0,
          nanobind::arg("n_in") = 0,
          "Constructor from QP model dimensions.") // constructor
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(Results<T>, x, "The primal solution.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(
-      Results<T>,
-      y,
-      "The dual solution associated to the equality constraints.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(
-      Results<T>,
-      z,
-      "The dual solution associated to the inequality constraints.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(
-      Results<T>,
-      se,
+    // .PROXSUITE_PYTHON_EIGEN_READWRITE(Results<T>, x, "The primal solution.")
+    // .PROXSUITE_PYTHON_EIGEN_READWRITE(
+    //   Results<T>,
+    //   y,
+    //   "The dual solution associated to the equality constraints.")
+    // .PROXSUITE_PYTHON_EIGEN_READWRITE(
+    //   Results<T>,
+    //   z,
+    //   "The dual solution associated to the inequality constraints.")
+    // .PROXSUITE_PYTHON_EIGEN_READWRITE(
+    //   Results<T>,
+    //   se,
+    //   "Optimal shift to the closest feasible problem wrt equality
+    //   constraints.")
+    // .PROXSUITE_PYTHON_EIGEN_READWRITE(Results<T>,
+    //                                   si,
+    //                                   "Optimal shift to the closest feasible
+    //                                   " "problem wrt inequality
+    //                                   constraints.")
+    .def_rw("x", &Results<T>::x, "The primal solution.")
+    .def_rw("y",
+            &Results<T>::y,
+            "The dual solution associated to the equality constraints.")
+    .def_rw("z",
+            &Results<T>::z,
+            "The dual solution associated to the inequality constraints.")
+    .def_rw(
+      "se",
+      &Results<T>::se,
       "Optimal shift to the closest feasible problem wrt equality constraints.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(Results<T>,
-                                      si,
-                                      "Pptimal shift to the closest feasible "
-                                      "problem wrt inequality constraints.")
+    .def_rw("si",
+            &Results<T>::si,
+            "Optimal shift to the closest feasible problem wrt inequality "
+            "constraints.")
     .def_rw("info", &Results<T>::info)
     .def(nanobind::self == nanobind::self)
     .def(nanobind::self != nanobind::self)

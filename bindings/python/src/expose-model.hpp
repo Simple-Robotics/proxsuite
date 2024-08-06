@@ -12,7 +12,7 @@
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/model.hpp>
-#include "helpers.hpp"
+
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
@@ -22,36 +22,23 @@ void
 exposeDenseModel(nanobind::module_ m)
 {
 
-  ::nanobind::class_<proxsuite::proxqp::dense::BackwardData<T>>(m,
-                                                                "BackwardData")
+  ::nanobind::class_<BackwardData<T>>(m, "BackwardData")
     .def(::nanobind::init(), "Default constructor.")
     .def(
       "initialize",
-      &proxsuite::proxqp::dense::BackwardData<T>::initialize,
+      &BackwardData<T>::initialize,
       nanobind::arg("n") = 0,
       nanobind::arg("n_eq") = 0,
       nanobind::arg("n_in") = 0,
       "Initialize the jacobians (allocate memory if not already done) and set"
       " by default their value to zero.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dH, "dL_dH.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dg, "dL_dg.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dA, "dL_dA.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_db, "dL_db.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dC, "dL_dC.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_du, "dL_du.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dl, "dL_dl.")
-    .PROXSUITE_PYTHON_EIGEN_READWRITE(BackwardData<T>, dL_dl, "dL_dl.");
-  // .def_ro("dL_dH", &proxsuite::proxqp::dense::BackwardData<T>::dL_dH)
-  // .def_ro("dL_dg", &proxsuite::proxqp::dense::BackwardData<T>::dL_dg)
-  // .def_ro("dL_dA", &proxsuite::proxqp::dense::BackwardData<T>::dL_dA)
-  // .def_ro("dL_db",
-  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_db)
-  // .def_ro("dL_dC",
-  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_dC)
-  // .def_ro("dL_du", &proxsuite::proxqp::dense::BackwardData<T>::dL_du)
-  // .def_ro("dL_dl",
-  //               &proxsuite::proxqp::dense::BackwardData<T>::dL_dl)
-  // .def_ro("dL_du", &proxsuite::proxqp::dense::BackwardData<T>::dL_du);
+    .def_ro("dL_dH", &BackwardData<T>::dL_dH)
+    .def_ro("dL_dg", &BackwardData<T>::dL_dg)
+    .def_ro("dL_dA", &BackwardData<T>::dL_dA)
+    .def_ro("dL_db", &BackwardData<T>::dL_db)
+    .def_ro("dL_dC", &BackwardData<T>::dL_dC)
+    .def_ro("dL_du", &BackwardData<T>::dL_du)
+    .def_ro("dL_dl", &BackwardData<T>::dL_dl);
   // .def_ro("dL_dse", &proxsuite::proxqp::dense::BackwardData<T>::dL_dse)
   // .def_ro("dL_dsi",
   // &proxsuite::proxqp::dense::BackwardData<T>::dL_dsi);
