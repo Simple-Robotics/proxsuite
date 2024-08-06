@@ -106,9 +106,9 @@ exposeResults(nanobind::module_ m)
          [](const Results<T>& results) {
            return proxsuite::serialization::saveToString(results);
          })
-    .def("__setstate__", [](Results<T>& results, nanobind::bytes& s) {
+    .def("__setstate__", [](Results<T>& results, const std::string& s) {
       new (&results) Results<T>{};
-      proxsuite::serialization::loadFromString(results, s.c_str());
+      proxsuite::serialization::loadFromString(results, s);
     });
   ;
 }

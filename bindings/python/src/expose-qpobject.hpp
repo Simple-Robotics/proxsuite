@@ -224,9 +224,9 @@ exposeQpObjectDense(nanobind::module_ m)
          [](const dense::QP<T>& qp) {
            return proxsuite::serialization::saveToString(qp);
          })
-    .def("__setstate__", [](dense::QP<T>& qp, nanobind::bytes& s) {
+    .def("__setstate__", [](dense::QP<T>& qp, const std::string& s) {
       new (&qp) dense::QP<T>(1, 1, 1);
-      proxsuite::serialization::loadFromString(qp, s.c_str());
+      proxsuite::serialization::loadFromString(qp, s);
     });
   ;
 }

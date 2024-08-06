@@ -70,10 +70,10 @@ exposeDenseModel(nanobind::module_ m)
          [](const proxsuite::proxqp::dense::Model<T>& model) {
            return proxsuite::serialization::saveToString(model);
          })
-    .def("__setstate__", [](dense::Model<T>& model, nanobind::bytes& s) {
+    .def("__setstate__", [](dense::Model<T>& model, const std::string& s) {
       // create qp model which will be updated by loaded data
       new (&model) dense::Model<T>(1, 1, 1);
-      proxsuite::serialization::loadFromString(model, s.c_str());
+      proxsuite::serialization::loadFromString(model, s);
     });
 }
 } // namespace python

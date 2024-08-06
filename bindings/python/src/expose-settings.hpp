@@ -96,9 +96,9 @@ exposeSettings(nanobind::module_ m)
          [](const Settings<T>& settings) {
            return proxsuite::serialization::saveToString(settings);
          })
-    .def("__setstate__", [](Settings<T>& settings, nanobind::bytes& s) {
+    .def("__setstate__", [](Settings<T>& settings, const std::string& s) {
       new (&settings) Settings<T>{};
-      proxsuite::serialization::loadFromString(settings, s.c_str());
+      proxsuite::serialization::loadFromString(settings, s);
     });
   ;
 }
