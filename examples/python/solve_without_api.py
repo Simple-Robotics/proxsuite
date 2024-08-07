@@ -16,7 +16,7 @@ results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
 # solve the problem using the dense backend
 
 results2 = proxsuite.proxqp.dense.solve(
-    H.toarray(), g, A.toarray(), b, C.toarray(), l, u
+    H.toarray(order="C"), g, A.toarray(order="C"), b, C.toarray(order="C"), l, u
 )
 # Note finally, that the matrices are in sparse format, when using the dense backend you
 # should convert them in dense format
