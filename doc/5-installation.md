@@ -27,6 +27,8 @@ make
 make install
 ```
 
+Note: if you are building Proxsuite within a conda environment, consider passing `-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX`.
+
 3. Build the Python interface
 
 You just need to ensure that Python3 is indeed present on your system and activate the cmake option `BUILD_PYTHON_INTERFACE=ON` by replacing:
