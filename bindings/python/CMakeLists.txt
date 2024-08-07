@@ -8,7 +8,7 @@ include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
 
 findpython(REQUIRED Development.Module)
-find_package(Python 3.8 COMPONENTS ${PYTHON_COMPONENTS})
+find_package(Python 3.7 COMPONENTS ${PYTHON_COMPONENTS})
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
   set(${PYWRAP}_INSTALL_DIR ${PYTHON_SITELIB}/${PROJECT_NAME})

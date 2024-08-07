@@ -3,7 +3,7 @@ name = "proxsuite"
 version = "0.6.7"
 description = "Quadratic Programming Solver for Robotics and beyond."
 readme = "README.md"
-requires-python = ">= 3.7"
+requires-python = ">= 3.8"
 license = "BSD-2-Clause"
 dependencies = ["numpy","scipy"]
 
