@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
-* Allow use of installed cereal and jrl-cmakemodules via cmake
+* Allow use of installed pybind11, cereal and jrl-cmakemodules via cmake
 * Add compatibility with jrl-cmakemodules workspace ([#339](https://github.com/Simple-Robotics/proxsuite/pull/339))
 * Specifically mention that timings are in microseconds ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
 * Fix cereal include directory in cmake ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))

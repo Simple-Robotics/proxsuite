@@ -14,9 +14,12 @@ else()
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-add_subdirectory(external/pybind11
-                 ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+find_package(pybind11 CONFIG)
+if(NOT pybind11_FOUND)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+  add_subdirectory(external/pybind11
+                   ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+endif()
 
 add_custom_target(${PROJECT_NAME}_python)
 
@@ -92,8 +95,7 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   endif(BUILD_WITH_OPENMP_SUPPORT)
 
   if(cereal_FOUND)
-    target_include_directories(${target_name} SYSTEM
-                               PRIVATE ${CEREAL_INCLUDE_DIRS})
+    target_link_libraries(${target_name} PRIVATE cereal::cereal)
   else()
     target_include_directories(
       ${target_name} SYSTEM
