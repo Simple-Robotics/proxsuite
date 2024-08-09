@@ -31,10 +31,6 @@ jobs:
             os: windows-latest
           - name: macos-latest
             os: macos-latest
-            build_type: Release
-            cxx_std: 14
-          - name: macos-latest
-            os: macos-latest
             build_type: Debug
             cxx_std: 17
             continue_on_error: true
