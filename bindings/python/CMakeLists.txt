@@ -1,5 +1,5 @@
 if(UNIX)
-  set(PYTHON_COMPONENTS Development.Module)
+  set(PYTHON_COMPONENTS Interpreter Development.Module)
 endif()
 
 include(${JRL_CMAKE_MODULES}/python.cmake)
@@ -7,8 +7,12 @@ include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 
 option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
 
-findpython(REQUIRED Development.Module)
-set(Python_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
+findpython(REQUIRED)
+set(Python_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
+# Nanobind expects these targets instead of Python3::*
+# https://github.com/jrl-umi3218/jrl-cmakemodules/issues/708
+add_library(Python::Module ALIAS Python3::Module)
+add_executable(Python::Interpreter ALIAS Python3::Interpreter)
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
   set(${PYWRAP}_INSTALL_DIR ${PYTHON_SITELIB}/${PROJECT_NAME})
