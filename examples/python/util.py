@@ -3,7 +3,7 @@ import scipy.sparse as spa
 
 
 def generate_mixed_qp(n, sparse=False, seed=1, reg=1e-2, dens1=0.075):
-    # A function for generating sparse random convex qps in dense format
+    # A function for generating sparse random convex qps
 
     np.random.seed(seed)
     n_eq = int(n / 4)
