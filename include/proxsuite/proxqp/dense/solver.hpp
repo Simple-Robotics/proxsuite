@@ -195,7 +195,7 @@ mu_update(const Model<T>& qpmodel,
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack);
         qpwork.dw_aug.head(qpmodel.dim).setOnes();
-        T delta_mu(mu_in_new - qpresults.info.mu_in_inv);
+        T delta_mu(1 / mu_in_new - qpresults.info.mu_in_inv);
         qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
         for (isize i = 0; i < n_constraints; ++i) {
           isize j = qpwork.current_bijection_map[i];
