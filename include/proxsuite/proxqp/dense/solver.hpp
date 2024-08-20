@@ -212,14 +212,14 @@ mu_update(const Model<T>& qpmodel,
           }
         }
         qpwork.ldl.rank_r_update(
-          new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+          new_cols, qpwork.dw_aug.head(qpwork.n_c), stack);
       }
       // mu update for A
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpmodel.n_eq, stack);
         new_cols = qpwork.A_scaled.transpose();
         qpwork.ldl.rank_r_update(
-          new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+          new_cols, qpwork.dw_aug.head(qpmodel.n_eq), stack);
       }
     } break;
     case DenseBackend::Automatic:
