@@ -28,4 +28,4 @@ def generate_mixed_qp(n, sparse=False, seed=1, reg=1e-2, dens1=0.075):
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
-    return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
+    return P, q, A[:n_eq, :], u[:n_eq], A[n_eq:, :], u[n_eq:], l[n_eq:]
