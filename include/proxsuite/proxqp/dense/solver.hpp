@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 /**
  * @file solver.hpp
@@ -217,6 +217,9 @@ mu_update(const Model<T>& qpmodel,
       // mu update for A
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpmodel.n_eq, stack);
+        qpwork.dw_aug.head(qpmodel.n_eq).setOnes();
+        T delta_mu(1 / mu_eq_new - qpresults.info.mu_eq_inv);
+        qpwork.dw_aug.head(qpmodel.n_eq).array() *= delta_mu;
         new_cols = qpwork.A_scaled.transpose();
         qpwork.ldl.rank_r_update(
           new_cols, qpwork.dw_aug.head(qpmodel.n_eq), stack);
