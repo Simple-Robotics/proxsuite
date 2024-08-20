@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 #include <iostream>
 #include <doctest.hpp>
@@ -7613,4 +7613,61 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
   dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
+}
+
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with"
+          "inequality constraints: test PrimalLDLT backend mu update")
+{
+
+  std::cout << "---testing sparse random strongly convex qp with"
+               "inequality constraints: test PrimalLDLT backend mu update---"
+            << std::endl;
+  double sparsity_factor = 1;
+  utils::rand::set_seed(1);
+  isize dim = 3;
+  isize n_eq(0);
+  isize n_in(9);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  dense::QP<T> qp{
+    dim,
+    n_eq,
+    n_in,
+    false,
+    proxsuite::proxqp::HessianType::Dense,
+    proxsuite::proxqp::DenseBackend::PrimalLDLT
+  }; // creating QP object
+  T eps_abs = T(1e-7);
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+  qp.settings.compute_timings = true;
+  qp.settings.verbose = true;
+  qp.init(qp_random.H,
+          qp_random.g,
+          nullopt,
+          nullopt,
+          qp_random.C,
+          nullopt,
+          qp_random.u);
+  qp.solve();
+
+  DOCTEST_CHECK(qp.results.info.mu_updates > 0);
+
+  T pri_res = (helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+                .lpNorm<Eigen::Infinity>();
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------using API solving qp with dim: " << dim
+            << " neq: " << n_eq << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
 }
