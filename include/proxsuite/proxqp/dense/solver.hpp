@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 /**
  * @file solver.hpp
@@ -195,7 +195,7 @@ mu_update(const Model<T>& qpmodel,
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack);
         qpwork.dw_aug.head(qpmodel.dim).setOnes();
-        T delta_mu(mu_in_new - qpresults.info.mu_in_inv);
+        T delta_mu(T(1) / mu_in_new - qpresults.info.mu_in_inv);
         qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
         for (isize i = 0; i < n_constraints; ++i) {
           isize j = qpwork.current_bijection_map[i];
@@ -212,14 +212,17 @@ mu_update(const Model<T>& qpmodel,
           }
         }
         qpwork.ldl.rank_r_update(
-          new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+          new_cols, qpwork.dw_aug.head(qpwork.n_c), stack);
       }
       // mu update for A
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpmodel.n_eq, stack);
+        qpwork.dw_aug.head(qpmodel.n_eq).setOnes();
+        T delta_mu(1 / mu_eq_new - qpresults.info.mu_eq_inv);
+        qpwork.dw_aug.head(qpmodel.n_eq).array() *= delta_mu;
         new_cols = qpwork.A_scaled.transpose();
         qpwork.ldl.rank_r_update(
-          new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+          new_cols, qpwork.dw_aug.head(qpmodel.n_eq), stack);
       }
     } break;
     case DenseBackend::Automatic:
