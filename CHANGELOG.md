@@ -7,7 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
-* Allow use of installed cereal and jrl-cmakemodules via cmake
+* Fix mu update function for PrimalLDLT backend ([#349](https://github.com/Simple-Robotics/proxsuite/pull/349))
+* Allow use of installed pybind11, cereal and jrl-cmakemodules via cmake
 * Add compatibility with jrl-cmakemodules workspace ([#339](https://github.com/Simple-Robotics/proxsuite/pull/339))
 * Specifically mention that timings are in microseconds ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
 * Fix cereal include directory in cmake ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
@@ -15,6 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 * Fix inequality constraints return in QPLayer ([#343](https://github.com/Simple-Robotics/proxsuite/pull/343))
+
+### Changed
+
+* Refactor Python examples with a new "util.py" file ([#347](https://github.com/Simple-Robotics/proxsuite/pull/347))
 
 ## [0.6.6] - 2024-06-15
 
