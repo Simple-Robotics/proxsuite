@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix cereal include directory in cmake ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
 * Extend doc with hint for conda installation from source ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
 
+### Fixed
+* Fix inequality constraints return in QPLayer ([#343](https://github.com/Simple-Robotics/proxsuite/pull/343))
+
 ### Changed
 
 * Refactor Python examples with a new "util.py" file ([#347](https://github.com/Simple-Robotics/proxsuite/pull/347))
