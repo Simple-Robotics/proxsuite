@@ -1,7 +1,7 @@
 <map id="proxsuite::linalg::veg::_detail::_collections::DestroyImpl&lt; false &gt;" name="proxsuite::linalg::veg::_detail::_collections::DestroyImpl&lt; false &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="15,225,198,286"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="37,98,176,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,158,109,224,104,224,104,158"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="15,226,198,288"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="37,99,176,144"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,160,109,225,104,225,104,160"/>
 <area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html" title=" " alt="" coords="5,5,208,50"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,66,109,98,104,98,104,66"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,66,109,99,104,99,104,66"/>
 </map>

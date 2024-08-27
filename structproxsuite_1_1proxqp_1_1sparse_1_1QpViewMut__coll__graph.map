@@ -1,11 +1,11 @@
 <map id="proxsuite::proxqp::sparse::QpViewMut&lt; T, I &gt;" name="proxsuite::proxqp::sparse::QpViewMut&lt; T, I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="799,64,997,108"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="559,64,731,108"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="747,83,799,83,799,89,747,89"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="263,5,472,84"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="488,60,559,71,558,76,487,65"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="801,65,998,110"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html" title=" " alt="" coords="560,65,733,110"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="748,85,800,85,800,90,748,90"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="264,5,473,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="489,58,537,65,560,69,559,74,536,70,489,63"/>
 <area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,14,215,76"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="230,42,262,42,262,47,230,47"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="342,112,393,140"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="408,127,468,128,535,122,590,106,592,111,535,128,468,134,408,132"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="230,42,263,42,263,47,230,47"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="343,108,394,136"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="410,121,470,121,536,116,574,108,575,113,537,121,470,127,410,127"/>
 </map>

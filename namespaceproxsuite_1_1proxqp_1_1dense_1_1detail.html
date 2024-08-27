@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -111,8 +111,8 @@ $(function(){initNavTree('namespaceproxsuite_1_1proxqp_1_1dense_1_1detail.html',
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33" id="r_a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </td></tr>
-<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8eefe9fdeaa7b60e693eaffc67b4ee33">ruiz_scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">delta_</a>, std::ostream *logger_ptr, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">qp</a>, T epsilon, isize max_iter, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">preconditioning_for_infeasible_problems</a>, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059">Symmetry</a> sym, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a> <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> box_constraints, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack) -&gt; T</td></tr>
+<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33" id="r_a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8eefe9fdeaa7b60e693eaffc67b4ee33">ruiz_scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; delta_, std::ostream *logger_ptr, <a class="el" href="structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html">QpViewBoxMut</a>&lt; T &gt; qp, T epsilon, isize max_iter, bool preconditioning_for_infeasible_problems, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059">Symmetry</a> sym, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a> <a class="el" href="namespaceproxsuite_1_1proxqp.html#a0b5db7c8d43571b6e8ddaeac316769af">HessianType</a>, const bool box_constraints, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack) -&gt; T</td></tr>
 <tr class="separator:a8eefe9fdeaa7b60e693eaffc67b4ee33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -122,10 +122,10 @@ Functions</h2></td></tr>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T &gt; </div>
+template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> proxsuite::proxqp::dense::detail::ruiz_scale_qp_in_place </td>
+          <td class="memname">auto proxsuite::proxqp::dense::detail::ruiz_scale_qp_in_place </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt;</td>          <td class="paramname"><span class="paramname"><em>delta_</em>, </span></td>
         </tr>
@@ -152,7 +152,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>preconditioning_for_infeasible_problems</em>, </span></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>preconditioning_for_infeasible_problems</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -167,7 +167,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>box_constraints</em>, </span></td>
+          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>box_constraints</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>

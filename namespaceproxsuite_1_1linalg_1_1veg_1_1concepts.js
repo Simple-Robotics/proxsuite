@@ -33,7 +33,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1concepts =
     [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#a5130db9d2fa0ab59679710d72eba46cf", null ],
     [ "VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#a6da228f9d464389284b608daa4ea81c6", null ],
     [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#aa7005855fc637f48cc83ce005772168c", null ],
-    [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#ab49023b03fde0d47c6d35890238c8252", null ],
+    [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#aeb6dbace9225774a8bda17ca829a30a2", null ],
     [ "VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#aedeb7f6f6a6f0b5c0ccaafa739194106", null ],
     [ "VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#aa77679bf9647045562fd4773369ddea2", null ],
     [ "VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#a1a64e72d43f55026f97de40369d90ffe", null ],

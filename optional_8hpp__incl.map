@@ -1,6 +1,6 @@
 <map id="include/proxsuite/helpers/optional.hpp" name="include/proxsuite/helpers/optional.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="149,5,334,50"/>
-<area shape="rect" id="Node000002" href="$fwd_8hpp.html" title=" " alt="" coords="86,107,224,134"/>
+<area shape="rect" id="Node000002" href="$fwd_8hpp.html" title=" " alt="" coords="86,106,224,134"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,52,180,97,176,93,219,48"/>
 <area shape="rect" id="Node000005" href="$tl-optional_8hpp.html" title=" " alt="" coords="309,98,457,143"/>
 <area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="277,48,338,87,335,92,274,53"/>
@@ -12,7 +12,7 @@
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="346,146,275,185,273,180,343,141"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="286,191,371,218"/>
 <area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="371,145,348,179,343,176,366,142"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="395,191,481,218"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="394,191,481,218"/>
 <area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="400,142,423,176,418,179,395,145"/>
 <area shape="rect" id="Node000009" title=" " alt="" coords="505,191,597,218"/>
 <area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="429,141,511,181,509,186,426,146"/>

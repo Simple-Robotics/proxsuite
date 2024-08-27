@@ -1,6 +1,6 @@
 <map id="include/proxsuite/linalg/veg/internal/narrow.hpp" name="include/proxsuite/linalg/veg/internal/narrow.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="1032,5,1211,50"/>
-<area shape="rect" id="Node000002" href="$fwd_8hpp.html" title=" " alt="" coords="399,107,537,134"/>
+<area shape="rect" id="Node000002" href="$fwd_8hpp.html" title=" " alt="" coords="399,106,537,134"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1032,44,553,110,552,105,1031,39"/>
 <area shape="rect" id="Node000005" href="$assert_8hpp.html" title=" " alt="" coords="1046,98,1197,143"/>
 <area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1124,50,1124,83,1119,83,1119,50"/>
@@ -8,7 +8,7 @@
 <area shape="poly" id="edge72_Node000001_Node000017" title=" " alt="" coords="1032,37,760,57,591,73,419,93,261,117,129,145,78,161,40,177,16,195,10,203,8,212,8,678,9,713,12,741,24,765,47,789,66,798,100,807,200,823,432,849,432,855,200,829,99,812,64,803,44,794,20,768,7,743,3,713,3,678,3,211,5,201,12,191,37,173,76,156,128,140,260,112,419,88,590,68,759,52,1031,32"/>
 <area shape="rect" id="Node000020" href="$epilogue_8hpp.html" title=" " alt="" coords="1513,839,1676,884"/>
 <area shape="poly" id="edge76_Node000001_Node000020" title=" " alt="" coords="1212,28,1411,39,1528,50,1645,67,1752,90,1799,105,1840,121,1874,140,1900,161,1917,185,1923,211,1923,678,1917,715,1900,748,1875,775,1843,797,1807,816,1769,830,1693,850,1691,845,1767,825,1805,811,1841,793,1871,771,1896,745,1912,714,1917,677,1917,212,1912,187,1896,165,1871,144,1838,126,1797,110,1750,95,1644,72,1527,55,1410,44,1211,33"/>
-<area shape="rect" id="Node000035" href="$common_8hpp.html" title=" " alt="" coords="1958,107,2181,134"/>
+<area shape="rect" id="Node000035" href="$common_8hpp.html" title=" " alt="" coords="1958,106,2181,134"/>
 <area shape="poly" id="edge73_Node000001_Node000035" title=" " alt="" coords="1212,32,1533,55,1736,73,1939,95,1979,101,1979,106,1938,101,1735,78,1533,60,1212,37"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="340,199,431,227"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="458,136,410,189,406,186,454,133"/>
@@ -77,9 +77,9 @@
 <area shape="poly" id="edge44_Node000024_Node000026" title=" " alt="" coords="899,309,751,311,570,320,481,328,400,341,333,357,284,378,253,401,232,424,221,452,217,490,217,585,215,625,209,665,193,732,188,731,204,664,210,624,212,585,212,490,216,451,228,421,249,397,281,374,331,352,399,335,480,323,569,314,750,305,899,303"/>
 <area shape="rect" id="Node000028" href="$ref_8hpp.html" title=" " alt="" coords="900,376,1050,421"/>
 <area shape="poly" id="edge49_Node000024_Node000028" title=" " alt="" coords="977,328,977,361,972,361,972,328"/>
-<area shape="rect" id="Node000033" title=" " alt="" coords="431,385,497,412"/>
+<area shape="rect" id="Node000033" title=" " alt="" coords="431,384,497,412"/>
 <area shape="poly" id="edge66_Node000024_Node000033" title=" " alt="" coords="900,314,818,321,719,333,613,352,509,379,503,381,501,376,507,373,612,347,719,328,817,316,899,309"/>
-<area shape="rect" id="Node000034" title=" " alt="" coords="521,385,581,412"/>
+<area shape="rect" id="Node000034" title=" " alt="" coords="521,384,581,412"/>
 <area shape="poly" id="edge67_Node000024_Node000034" title=" " alt="" coords="899,319,759,341,679,358,601,379,593,381,592,376,599,373,678,353,758,336,899,313"/>
 <area shape="poly" id="edge40_Node000025_Node000012" title=" " alt="" coords="1235,516,1159,556,1157,551,1233,512"/>
 <area shape="poly" id="edge41_Node000025_Node000017" title=" " alt="" coords="1179,513,1098,534,1016,564,938,603,868,656,830,693,804,727,776,760,734,794,682,820,628,840,626,835,679,815,731,789,772,756,799,724,826,690,865,652,935,599,1014,559,1096,529,1177,508"/>

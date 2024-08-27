@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -116,51 +116,51 @@ $(function(){initNavTree('structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_
 <div class="dynheader">
 Collaboration diagram for proxsuite::proxqp::sparse::preconditioner::RuizEquilibration&lt; T, I &gt;:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration__coll__graph.svg" width="364" height="427"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration__coll__graph.svg" width="364" height="431"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa3bbbc418fb37707537f9d602b83ef54" id="r_aa3bbbc418fb37707537f9d602b83ef54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3bbbc418fb37707537f9d602b83ef54">RuizEquilibration</a> (isize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">n_</a>, isize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">n_eq_in</a>, T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">epsilon_</a>=T(1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-3), i64 <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">max_iter_</a>=10, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48f">Symmetry</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">sym_</a>=<a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48fa9e43f5291e6fcb2ad99c8e3f91acd179">Symmetry::UPPER</a>, std::ostream *<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">logger</a>=<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">nullptr</a>)</td></tr>
+<tr class="memitem:aa3bbbc418fb37707537f9d602b83ef54" id="r_aa3bbbc418fb37707537f9d602b83ef54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3bbbc418fb37707537f9d602b83ef54">RuizEquilibration</a> (isize n_, isize n_eq_in, T epsilon_=T(1e-3), i64 max_iter_=10, <a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48f">Symmetry</a> sym_=<a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48fa9e43f5291e6fcb2ad99c8e3f91acd179">Symmetry::UPPER</a>, std::ostream *logger=nullptr)</td></tr>
 <tr class="separator:aa3bbbc418fb37707537f9d602b83ef54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af188e8e735b0c47cc3919d8b021fca30" id="r_af188e8e735b0c47cc3919d8b021fca30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af188e8e735b0c47cc3919d8b021fca30">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html">QpViewMut</a>&lt; T, I &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">qp</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">execute_preconditioner</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">preconditioning_for_infeasible_problems</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> isize <a class="el" href="#a98475b0820c6fa930647f1146c321e10">max_iter</a>, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> T <a class="el" href="#ab1fbac8d89e1fe08564b831084d348fc">epsilon</a>, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
+<tr class="memitem:af188e8e735b0c47cc3919d8b021fca30" id="r_af188e8e735b0c47cc3919d8b021fca30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af188e8e735b0c47cc3919d8b021fca30">scale_qp_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html">QpViewMut</a>&lt; T, I &gt; qp, bool execute_preconditioner, bool preconditioning_for_infeasible_problems, const isize <a class="el" href="#a98475b0820c6fa930647f1146c321e10">max_iter</a>, const T <a class="el" href="#ab1fbac8d89e1fe08564b831084d348fc">epsilon</a>, <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html">proxsuite::linalg::veg::dynstack::DynStackMut</a> stack)</td></tr>
 <tr class="separator:af188e8e735b0c47cc3919d8b021fca30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e674d6488016849618199f3f3bec7dd" id="r_a5e674d6488016849618199f3f3bec7dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e674d6488016849618199f3f3bec7dd">scale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a5e674d6488016849618199f3f3bec7dd" id="r_a5e674d6488016849618199f3f3bec7dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e674d6488016849618199f3f3bec7dd">scale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal) const</td></tr>
 <tr class="separator:a5e674d6488016849618199f3f3bec7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22078d16a69844aae4074bb43575be59" id="r_a22078d16a69844aae4074bb43575be59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22078d16a69844aae4074bb43575be59">scale_dual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>)</td></tr>
+<tr class="memitem:a22078d16a69844aae4074bb43575be59" id="r_a22078d16a69844aae4074bb43575be59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22078d16a69844aae4074bb43575be59">scale_dual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual)</td></tr>
 <tr class="separator:a22078d16a69844aae4074bb43575be59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a642c5986b1afe592d9d864a076998a1b" id="r_a642c5986b1afe592d9d864a076998a1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a642c5986b1afe592d9d864a076998a1b">scale_dual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a642c5986b1afe592d9d864a076998a1b" id="r_a642c5986b1afe592d9d864a076998a1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a642c5986b1afe592d9d864a076998a1b">scale_dual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:a642c5986b1afe592d9d864a076998a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04be726eef7db75e0f4a9a0fd1557015" id="r_a04be726eef7db75e0f4a9a0fd1557015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04be726eef7db75e0f4a9a0fd1557015">scale_dual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a04be726eef7db75e0f4a9a0fd1557015" id="r_a04be726eef7db75e0f4a9a0fd1557015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04be726eef7db75e0f4a9a0fd1557015">scale_dual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:a04be726eef7db75e0f4a9a0fd1557015"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e1eae02bf93fd924cc82578855fb241" id="r_a8e1eae02bf93fd924cc82578855fb241"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e1eae02bf93fd924cc82578855fb241">unscale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a8e1eae02bf93fd924cc82578855fb241" id="r_a8e1eae02bf93fd924cc82578855fb241"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e1eae02bf93fd924cc82578855fb241">unscale_primal_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal) const</td></tr>
 <tr class="separator:a8e1eae02bf93fd924cc82578855fb241"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa99bf97e6fb094d6c9241556e65677b9" id="r_aa99bf97e6fb094d6c9241556e65677b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa99bf97e6fb094d6c9241556e65677b9">unscale_dual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:aa99bf97e6fb094d6c9241556e65677b9" id="r_aa99bf97e6fb094d6c9241556e65677b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa99bf97e6fb094d6c9241556e65677b9">unscale_dual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:aa99bf97e6fb094d6c9241556e65677b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addd18383c4d147d96a6e67da6ad0bc7e" id="r_addd18383c4d147d96a6e67da6ad0bc7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addd18383c4d147d96a6e67da6ad0bc7e">unscale_dual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:addd18383c4d147d96a6e67da6ad0bc7e" id="r_addd18383c4d147d96a6e67da6ad0bc7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addd18383c4d147d96a6e67da6ad0bc7e">unscale_dual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:addd18383c4d147d96a6e67da6ad0bc7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3025cfaabdfea845b1a1dca366d4bbae" id="r_a3025cfaabdfea845b1a1dca366d4bbae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3025cfaabdfea845b1a1dca366d4bbae">unscale_dual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a3025cfaabdfea845b1a1dca366d4bbae" id="r_a3025cfaabdfea845b1a1dca366d4bbae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3025cfaabdfea845b1a1dca366d4bbae">unscale_dual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:a3025cfaabdfea845b1a1dca366d4bbae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af33a7680c6ac5bf040958b48b3492ad4" id="r_af33a7680c6ac5bf040958b48b3492ad4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af33a7680c6ac5bf040958b48b3492ad4">scale_primal_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:af33a7680c6ac5bf040958b48b3492ad4" id="r_af33a7680c6ac5bf040958b48b3492ad4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af33a7680c6ac5bf040958b48b3492ad4">scale_primal_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal) const</td></tr>
 <tr class="separator:af33a7680c6ac5bf040958b48b3492ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4667753185fc108de0a4c071084e39b9" id="r_a4667753185fc108de0a4c071084e39b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4667753185fc108de0a4c071084e39b9">scale_primal_residual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal_eq</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a4667753185fc108de0a4c071084e39b9" id="r_a4667753185fc108de0a4c071084e39b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4667753185fc108de0a4c071084e39b9">scale_primal_residual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal_eq) const</td></tr>
 <tr class="separator:a4667753185fc108de0a4c071084e39b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae84158cc146d95f09b59353f0758966d" id="r_ae84158cc146d95f09b59353f0758966d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae84158cc146d95f09b59353f0758966d">scale_primal_residual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal_in</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:ae84158cc146d95f09b59353f0758966d" id="r_ae84158cc146d95f09b59353f0758966d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae84158cc146d95f09b59353f0758966d">scale_primal_residual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal_in) const</td></tr>
 <tr class="separator:ae84158cc146d95f09b59353f0758966d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f60df9a67155603d795c69810c12005" id="r_a2f60df9a67155603d795c69810c12005"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f60df9a67155603d795c69810c12005">scale_dual_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a2f60df9a67155603d795c69810c12005" id="r_a2f60df9a67155603d795c69810c12005"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f60df9a67155603d795c69810c12005">scale_dual_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:a2f60df9a67155603d795c69810c12005"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c0de8d26cc7b374e768c106e42e950f" id="r_a3c0de8d26cc7b374e768c106e42e950f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c0de8d26cc7b374e768c106e42e950f">unscale_primal_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a3c0de8d26cc7b374e768c106e42e950f" id="r_a3c0de8d26cc7b374e768c106e42e950f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c0de8d26cc7b374e768c106e42e950f">unscale_primal_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal) const</td></tr>
 <tr class="separator:a3c0de8d26cc7b374e768c106e42e950f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbd4ae454910bada130c6a1c8243550d" id="r_adbd4ae454910bada130c6a1c8243550d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbd4ae454910bada130c6a1c8243550d">unscale_primal_residual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal_eq</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:adbd4ae454910bada130c6a1c8243550d" id="r_adbd4ae454910bada130c6a1c8243550d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbd4ae454910bada130c6a1c8243550d">unscale_primal_residual_in_place_eq</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal_eq) const</td></tr>
 <tr class="separator:adbd4ae454910bada130c6a1c8243550d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bac3d52dd69075364517f7190bacf23" id="r_a0bac3d52dd69075364517f7190bacf23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bac3d52dd69075364517f7190bacf23">unscale_primal_residual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">primal_in</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a0bac3d52dd69075364517f7190bacf23" id="r_a0bac3d52dd69075364517f7190bacf23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bac3d52dd69075364517f7190bacf23">unscale_primal_residual_in_place_in</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; primal_in) const</td></tr>
 <tr class="separator:a0bac3d52dd69075364517f7190bacf23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d8cc48628e988eaaf3406c19bc12a4c" id="r_a2d8cc48628e988eaaf3406c19bc12a4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d8cc48628e988eaaf3406c19bc12a4c">unscale_dual_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">dual</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:a2d8cc48628e988eaaf3406c19bc12a4c" id="r_a2d8cc48628e988eaaf3406c19bc12a4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d8cc48628e988eaaf3406c19bc12a4c">unscale_dual_residual_in_place</a> (<a class="el" href="structproxsuite_1_1proxqp_1_1VectorViewMut.html">VectorViewMut</a>&lt; T &gt; dual) const</td></tr>
 <tr class="separator:a2d8cc48628e988eaaf3406c19bc12a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ab4dbfc2856aa3eda8c45579105851582" id="r_ab4dbfc2856aa3eda8c45579105851582"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">static</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab4dbfc2856aa3eda8c45579105851582">scale_qp_in_place_req</a> (proxsuite::linalg::veg::Tag&lt; T &gt; tag, isize <a class="el" href="#ad074d6d6dc1a111011058705e58f0b28">n</a>, isize n_eq, isize n_in) -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
+<tr class="memitem:ab4dbfc2856aa3eda8c45579105851582" id="r_ab4dbfc2856aa3eda8c45579105851582"><td class="memItemLeft" align="right" valign="top">static auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab4dbfc2856aa3eda8c45579105851582">scale_qp_in_place_req</a> (<a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag</a>&lt; T &gt; tag, isize <a class="el" href="#ad074d6d6dc1a111011058705e58f0b28">n</a>, isize n_eq, isize n_in) -&gt; <a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1StackReq.html">proxsuite::linalg::veg::dynstack::StackReq</a></td></tr>
 <tr class="separator:ab4dbfc2856aa3eda8c45579105851582"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -177,11 +177,11 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a98475b0820c6fa930647f1146c321e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa455a986368e857349f88ab08c6e3dfc" id="r_aa455a986368e857349f88ab08c6e3dfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48f">Symmetry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa455a986368e857349f88ab08c6e3dfc">sym</a></td></tr>
 <tr class="separator:aa455a986368e857349f88ab08c6e3dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa552ee03b87511a06b2b7ff103e95583" id="r_aa552ee03b87511a06b2b7ff103e95583"><td class="memItemLeft" align="right" valign="top">std::ostream *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa552ee03b87511a06b2b7ff103e95583">logger_ptr</a> = <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">nullptr</a></td></tr>
+<tr class="memitem:aa552ee03b87511a06b2b7ff103e95583" id="r_aa552ee03b87511a06b2b7ff103e95583"><td class="memItemLeft" align="right" valign="top">std::ostream *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa552ee03b87511a06b2b7ff103e95583">logger_ptr</a> = nullptr</td></tr>
 <tr class="separator:aa552ee03b87511a06b2b7ff103e95583"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T, typename I&gt;<br />
 struct proxsuite::proxqp::sparse::preconditioner::RuizEquilibration&lt; T, I &gt;</div>
 <p class="definition">Definition at line <a class="el" href="proxqp_2sparse_2preconditioner_2ruiz_8hpp_source.html#l00335">335</a> of file <a class="el" href="proxqp_2sparse_2preconditioner_2ruiz_8hpp_source.html">ruiz.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -191,7 +191,7 @@ struct proxsuite::proxqp::sparse::preconditioner::RuizEquilibration&lt; T, I &gt
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -209,7 +209,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>epsilon_</em><span class="paramdefsep"> = </span><span class="paramdefval">T(1<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">e</a>-3)</span>, </span></td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>epsilon_</em><span class="paramdefsep"> = </span><span class="paramdefval">T(1e-3)</span>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -224,7 +224,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::ostream *</td>          <td class="paramname"><span class="paramname"><em>logger</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">nullptr</a></span></span>&#160;)</td>
+          <td class="paramtype">std::ostream *</td>          <td class="paramname"><span class="paramname"><em>logger</em><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -245,15 +245,15 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">static</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::scale_qp_in_place_req </td>
+          <td class="memname">static auto <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::scale_qp_in_place_req </td>
           <td>(</td>
-          <td class="paramtype">proxsuite::linalg::veg::Tag&lt; T &gt;</td>          <td class="paramname"><span class="paramname"><em>tag</em>, </span></td>
+          <td class="paramtype"><a class="el" href="structproxsuite_1_1linalg_1_1veg_1_1Ref.html">proxsuite::linalg::veg::Tag</a>&lt; T &gt;</td>          <td class="paramname"><span class="paramname"><em>tag</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -289,7 +289,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -302,22 +302,22 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>execute_preconditioner</em>, </span></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>execute_preconditioner</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">bool</a></td>          <td class="paramname"><span class="paramname"><em>preconditioning_for_infeasible_problems</em>, </span></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>preconditioning_for_infeasible_problems</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> isize</td>          <td class="paramname"><span class="paramname"><em>max_iter</em>, </span></td>
+          <td class="paramtype">const isize</td>          <td class="paramname"><span class="paramname"><em>max_iter</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> T</td>          <td class="paramname"><span class="paramname"><em>epsilon</em>, </span></td>
+          <td class="paramtype">const T</td>          <td class="paramname"><span class="paramname"><em>epsilon</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -342,7 +342,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -371,7 +371,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -400,7 +400,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -429,7 +429,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -458,7 +458,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -487,7 +487,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -516,7 +516,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -545,7 +545,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -574,7 +574,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -603,7 +603,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -632,7 +632,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -661,7 +661,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -690,7 +690,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -719,7 +719,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -748,7 +748,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -777,7 +777,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -807,7 +807,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#adb04a7a1439dcd5099cdbc3d9df027f1">Vec</a>&lt;T&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::delta</td>
@@ -825,7 +825,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::n</td>
@@ -843,7 +843,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::c</td>
@@ -861,7 +861,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::epsilon</td>
@@ -879,7 +879,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">i64 <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::max_iter</td>
@@ -897,7 +897,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespaceproxsuite_1_1proxqp_1_1sparse_1_1preconditioner.html#afb92a10096e57e15550a698ebb35e48f">Symmetry</a> <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::sym</td>
@@ -915,10 +915,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> I &gt; </div>
+template&lt;typename T , typename I &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::ostream* <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::logger_ptr = <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">nullptr</a></td>
+          <td class="memname">std::ostream* <a class="el" href="structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html">proxsuite::proxqp::sparse::preconditioner::RuizEquilibration</a>&lt; T, I &gt;::logger_ptr = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

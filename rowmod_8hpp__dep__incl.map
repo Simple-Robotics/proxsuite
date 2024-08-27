@@ -1,5 +1,5 @@
 <map id="include/proxsuite/linalg/sparse/rowmod.hpp" name="include/proxsuite/linalg/sparse/rowmod.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="177,5,350,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="176,5,350,50"/>
 <area shape="rect" id="Node000002" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="172,376,354,421"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="163,52,127,71,99,100,89,118,83,137,84,176,97,215,119,254,148,290,179,323,236,374,233,378,175,327,144,294,115,257,92,218,78,177,78,136,84,116,94,96,124,67,161,47"/>
 <area shape="rect" id="Node000010" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="364,191,546,235"/>
@@ -9,9 +9,9 @@
 <area shape="rect" id="Node000012" href="$sparse_2views_8hpp.html" title=" " alt="" coords="108,98,290,143"/>
 <area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="241,64,216,99,212,96,237,61"/>
 <area shape="rect" id="Node000003" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="172,469,354,513"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="266,436,266,468,261,468,261,436"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="266,436,266,468,260,468,260,436"/>
 <area shape="rect" id="Node000004" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="172,561,354,606"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="266,529,266,561,261,561,261,529"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="266,529,266,561,260,561,260,529"/>
 <area shape="rect" id="Node000006" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,747,188,791"/>
 <area shape="poly" id="edge8_Node000003_Node000006" title=" " alt="" coords="202,523,163,546,123,576,87,612,60,655,56,678,60,702,70,725,82,745,77,748,65,728,55,704,50,678,55,653,83,609,119,572,160,542,199,519"/>
 <area shape="rect" id="Node000009" href="$sparse_8hpp.html" title=" " alt="" coords="379,561,561,606"/>
@@ -20,7 +20,7 @@
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="229,618,187,656,183,652,226,614"/>
 <area shape="rect" id="Node000007" href="$dense_8hpp.html" title=" " alt="" coords="276,654,458,699"/>
 <area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="301,614,344,651,341,656,297,618"/>
-<area shape="rect" id="Node000008" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="483,654,700,699"/>
+<area shape="rect" id="Node000008" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="482,654,700,699"/>
 <area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="357,608,513,651,512,656,355,613"/>
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="139,713,114,748,109,745,134,710"/>
 <area shape="poly" id="edge11_Node000010_Node000002" title=" " alt="" coords="458,251,451,291,444,312,432,330,397,359,356,379,354,374,394,355,428,326,439,309,446,290,453,250"/>

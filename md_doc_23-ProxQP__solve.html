@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -132,51 +132,51 @@ A single solve function for dense and sparse backends</h1>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&quot;</span> <span class="comment">// used for generating a random convex qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
-<div class="line"><span class="keyword">using </span>T = <a class="code hl_class" href="classtl_1_1optional.html">double</a>;</div>
+<div class="line"><span class="keyword">using </span>T = double;</div>
 <div class="line"><span class="keyword">using </span>Mat = <a class="code hl_typedef" href="namespaceproxsuite_1_1proxqp_1_1dense.html#af13d7b939fcad4c391b28d2972e0d919">dense::Mat&lt;T&gt;</a>;</div>
 <div class="line"><span class="keyword">using </span>Vec = <a class="code hl_typedef" href="namespaceproxsuite_1_1proxqp_1_1dense.html#accf7cf9dc4fa03c0260aebf96f193875">dense::Vec&lt;T&gt;</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span></div>
-<div class="line"><a class="code hl_class" href="classtl_1_1optional.html">main</a>()</div>
+<div class="line">main()</div>
 <div class="line">{</div>
 <div class="line">  isize n = 10;</div>
 <div class="line">  isize n_eq(n / 4);</div>
 <div class="line">  isize n_in(n / 4);</div>
 <div class="line">  T p = 0.35;            <span class="comment">// level of sparsity</span></div>
-<div class="line">  T <a class="code hl_class" href="classtl_1_1optional.html">conditioning</a> = 10.0; <span class="comment">// conditioning level for H</span></div>
+<div class="line">  T conditioning = 10.0; <span class="comment">// conditioning level for H</span></div>
 <div class="line">  <span class="keyword">auto</span> H = utils::rand::sparse_positive_definite_rand(</div>
-<div class="line">    n, <a class="code hl_class" href="classtl_1_1optional.html">conditioning</a>, p); <span class="comment">// upper triangular matrix</span></div>
-<div class="line">  Mat <a class="code hl_class" href="classtl_1_1optional.html">H_dense</a> = Mat(H);</div>
-<div class="line">  <a class="code hl_class" href="classtl_1_1optional.html">H_dense</a>.template <a class="code hl_class" href="classtl_1_1optional.html">triangularView&lt;Eigen::Lower&gt;</a>() = <a class="code hl_class" href="classtl_1_1optional.html">H_dense</a>.transpose();</div>
+<div class="line">    n, conditioning, p); <span class="comment">// upper triangular matrix</span></div>
+<div class="line">  Mat H_dense = Mat(H);</div>
+<div class="line">  H_dense.template triangularView&lt;Eigen::Lower&gt;() = H_dense.transpose();</div>
 <div class="line">  Vec g = utils::rand::vector_rand&lt;T&gt;(n);</div>
 <div class="line">  <span class="keyword">auto</span> A = utils::rand::sparse_matrix_rand&lt;T&gt;(n_eq, n, p);</div>
-<div class="line">  Mat <a class="code hl_class" href="classtl_1_1optional.html">A_dense</a> = Mat(A);</div>
+<div class="line">  Mat A_dense = Mat(A);</div>
 <div class="line">  <span class="keyword">auto</span> C = utils::rand::sparse_matrix_rand&lt;T&gt;(n_in, n, p);</div>
-<div class="line">  Mat <a class="code hl_class" href="classtl_1_1optional.html">C_dense</a> = Mat(C);</div>
-<div class="line">  Vec <a class="code hl_class" href="classtl_1_1optional.html">x_sol</a> = utils::rand::vector_rand&lt;T&gt;(n);</div>
-<div class="line">  Vec b = A * <a class="code hl_class" href="classtl_1_1optional.html">x_sol</a>;</div>
-<div class="line">  Vec l = C * <a class="code hl_class" href="classtl_1_1optional.html">x_sol</a>;</div>
-<div class="line">  Vec u = (l.array() + 10).<a class="code hl_class" href="classtl_1_1optional.html">matrix</a>();</div>
+<div class="line">  Mat C_dense = Mat(C);</div>
+<div class="line">  Vec x_sol = utils::rand::vector_rand&lt;T&gt;(n);</div>
+<div class="line">  Vec b = A * x_sol;</div>
+<div class="line">  Vec l = C * x_sol;</div>
+<div class="line">  Vec u = (l.array() + 10).matrix();</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Solve the problem using the sparse backend</span></div>
-<div class="line">  <a class="code hl_class" href="classtl_1_1optional.html">Results&lt;T&gt;</a> <a class="code hl_class" href="classtl_1_1optional.html">results_sparse_solver</a> =</div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1Results.html">Results&lt;T&gt;</a> results_sparse_solver =</div>
 <div class="line">    sparse::solve&lt;T, isize&gt;(H, g, A, b, C, l, u);</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from sparse solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_sparse_solver</a>.x</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from sparse solver: &quot;</span> &lt;&lt; results_sparse_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">x</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from sparse solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_sparse_solver</a>.y</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from sparse solver: &quot;</span> &lt;&lt; results_sparse_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">y</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from sparse solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_sparse_solver</a>.z</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from sparse solver: &quot;</span> &lt;&lt; results_sparse_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">z</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
 <div class="line">  <span class="comment">// Solve the problem using the dense backend</span></div>
-<div class="line">  <a class="code hl_class" href="classtl_1_1optional.html">Results&lt;T&gt;</a> <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a> =</div>
-<div class="line">    dense::solve&lt;T&gt;(<a class="code hl_class" href="classtl_1_1optional.html">H_dense</a>, g, <a class="code hl_class" href="classtl_1_1optional.html">A_dense</a>, b, <a class="code hl_class" href="classtl_1_1optional.html">C_dense</a>, l, u);</div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1Results.html">Results&lt;T&gt;</a> results_dense_solver =</div>
+<div class="line">    dense::solve&lt;T&gt;(H_dense, g, A_dense, b, C_dense, l, u);</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.x</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">x</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.y</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">y</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.z</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">z</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// Solve the problem using the dense backend using its feature for handling</span></div>
@@ -192,11 +192,11 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">  <span class="comment">// make sure to specify at least next 9 variables of the solve function after</span></div>
 <div class="line">  <span class="comment">// u_box to make sure the overloading work and use the specific feature for</span></div>
 <div class="line">  <span class="comment">// handling more efficiently box constraints</span></div>
-<div class="line">  <a class="code hl_class" href="classtl_1_1optional.html">Results&lt;T&gt;</a> <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver_box</a> = dense::solve&lt;T&gt;(<a class="code hl_class" href="classtl_1_1optional.html">H_dense</a>,</div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1Results.html">Results&lt;T&gt;</a> results_dense_solver_box = dense::solve&lt;T&gt;(H_dense,</div>
 <div class="line">                                                        g,</div>
-<div class="line">                                                        <a class="code hl_class" href="classtl_1_1optional.html">A_dense</a>,</div>
+<div class="line">                                                        A_dense,</div>
 <div class="line">                                                        b,</div>
-<div class="line">                                                        <a class="code hl_class" href="classtl_1_1optional.html">C_dense</a>,</div>
+<div class="line">                                                        C_dense,</div>
 <div class="line">                                                        l,</div>
 <div class="line">                                                        u,</div>
 <div class="line">                                                        l_box,</div>
@@ -211,16 +211,15 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">                                                        <a class="code hl_variable" href="namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635">proxsuite::nullopt</a>,</div>
 <div class="line">                                                        <a class="code hl_variable" href="namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635">proxsuite::nullopt</a>);</div>
 <div class="line">  <span class="comment">// print an optimal solution x,y and z</span></div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.x</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal x from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">x</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.y</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal y from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">y</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
-<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from dense solver: &quot;</span> &lt;&lt; <a class="code hl_class" href="classtl_1_1optional.html">results_dense_solver</a>.z</div>
+<div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z from dense solver: &quot;</span> &lt;&lt; results_dense_solver.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">z</a></div>
 <div class="line">            &lt;&lt; std::endl;</div>
 <div class="line">  <span class="comment">// Note that the last n elements of z corresponds to the multipliers</span></div>
 <div class="line">  <span class="comment">// associated to the box constraints</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aclasstl_1_1optional_html"><div class="ttname"><a href="classtl_1_1optional.html">tl::optional</a></div><div class="ttdef"><b>Definition</b> <a href="tl-optional_8hpp_source.html#l00811">tl-optional.hpp:815</a></div></div>
 <div class="ttc" id="adense_8hpp_html"><div class="ttname"><a href="dense_8hpp.html">dense.hpp</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_accf7cf9dc4fa03c0260aebf96f193875"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#accf7cf9dc4fa03c0260aebf96f193875">proxsuite::proxqp::dense::Vec</a></div><div class="ttdeci">Eigen::Matrix&lt; T, DYN, 1 &gt; Vec</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2fwd_8hpp_source.html#l00024">fwd.hpp:24</a></div></div>
 <div class="ttc" id="anamespaceproxsuite_1_1proxqp_1_1dense_html_af13d7b939fcad4c391b28d2972e0d919"><div class="ttname"><a href="namespaceproxsuite_1_1proxqp_1_1dense.html#af13d7b939fcad4c391b28d2972e0d919">proxsuite::proxqp::dense::Mat</a></div><div class="ttdeci">Eigen::Matrix&lt; T, DYN, DYN, l &gt; Mat</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2fwd_8hpp_source.html#l00031">fwd.hpp:31</a></div></div>
@@ -228,42 +227,21 @@ A single solve function for dense and sparse backends</h1>
 <div class="ttc" id="anamespaceproxsuite_html_a2031f223e16b21ebc8f804797aa4a635"><div class="ttname"><a href="namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635">proxsuite::nullopt</a></div><div class="ttdeci">constexpr nullopt_t nullopt</div><div class="ttdef"><b>Definition</b> <a href="optional_8hpp_source.html#l00042">optional.hpp:42</a></div></div>
 <div class="ttc" id="arandom__qp__problems_8hpp_html"><div class="ttname"><a href="random__qp__problems_8hpp.html">random_qp_problems.hpp</a></div></div>
 <div class="ttc" id="asparse_8hpp_html"><div class="ttname"><a href="sparse_8hpp.html">sparse.hpp</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html">proxsuite::proxqp::Results</a></div><div class="ttdoc">This class stores all the results of PROXQP solvers with sparse and dense backends.</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00067">results.hpp:68</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a1be314db5179afe99216d9564ee35ffb"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">proxsuite::proxqp::Results::z</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; z</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00074">results.hpp:74</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ab412e8dbd9325586ca0d8b299a31b21f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">proxsuite::proxqp::Results::y</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; y</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00073">results.hpp:73</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ad05a360234a4dce744c868b6aad72f8f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">proxsuite::proxqp::Results::x</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; x</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00072">results.hpp:72</a></div></div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
-<div class="line"> </div>
-<div class="line"> </div>
-<div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
-<div class="line"> </div>
-<div class="line">    np.random.seed(seed)</div>
-<div class="line">    n_eq = int(n / 4)</div>
-<div class="line">    n_in = int(n / 4)</div>
-<div class="line">    m = n_eq + n_in</div>
-<div class="line"> </div>
-<div class="line">    P = spa.random(</div>
-<div class="line">        n, n, density=0.075, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span></div>
-<div class="line">    ).toarray()</div>
-<div class="line">    P = (P + P.T) / 2.0</div>
-<div class="line"> </div>
-<div class="line">    s = max(np.absolute(np.linalg.eigvals(P)))</div>
-<div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
-<div class="line">    P = spa.coo_matrix(P)</div>
-<div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>)</div>
-<div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
-<div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
-<div class="line">    u = A @ v</div>
-<div class="line">    l = -1.0e20 * np.ones(m)</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line"><span class="keyword">from</span> util <span class="keyword">import</span> generate_mixed_qp</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
 <div class="line">n = 10</div>
 <div class="line">n_eq = 2</div>
 <div class="line">n_in = 2</div>
-<div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n)</div>
+<div class="line">H, g, A, b, C, u, l = generate_mixed_qp(n, <span class="keyword">True</span>)</div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># solve the problem using the sparse backend</span></div>
 <div class="line">results = <a class="code hl_function" href="namespaceproxsuite_1_1proxqp_1_1sparse.html#a79803f770b3b7be596e5545fa8e5e63f">proxsuite.proxqp.sparse.solve</a>(H, g, A, b, C, l, u)</div>
@@ -333,7 +311,7 @@ A single solve function for dense and sparse backends</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">compute_preconditioner   </td><td class="markdownTableBodyNone">True   </td><td class="markdownTableBodyNone">If set to true, the preconditioner will be derived.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
+<td class="markdownTableBodyNone">compute_timings   </td><td class="markdownTableBodyNone">False   </td><td class="markdownTableBodyNone">If set to true, timings in microseconds will be computed by the solver (setup time, solving time, and run time = setup time + solving time).    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">max_iter   </td><td class="markdownTableBodyNone">10.000   </td><td class="markdownTableBodyNone">Maximal number of authorized outer iterations.    </td></tr>
 <tr class="markdownTableRowEven">
@@ -358,29 +336,29 @@ A single solve function for dense and sparse backends</h1>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite.html">proxsuite</a>;</div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
-<div class="line"><span class="keyword">using </span>T = <a class="code hl_class" href="classtl_1_1optional.html">double</a>;</div>
+<div class="line"><span class="keyword">using </span>T = double;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span></div>
-<div class="line"><a class="code hl_class" href="classtl_1_1optional.html">main</a>()</div>
+<div class="line">main()</div>
 <div class="line">{</div>
 <div class="line">  isize n = 10;</div>
 <div class="line">  isize n_eq(n / 4);</div>
 <div class="line">  isize n_in(n / 4);</div>
-<div class="line">  T <a class="code hl_class" href="classtl_1_1optional.html">sparsity_factor</a>(0.15);</div>
-<div class="line">  T <a class="code hl_class" href="classtl_1_1optional.html">strong_convexity_factor</a>(1.e-2);</div>
-<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">dense::Model&lt;T&gt;</a> <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a> = utils::dense_strongly_convex_qp(</div>
-<div class="line">    n, n_eq, n_in, <a class="code hl_class" href="classtl_1_1optional.html">sparsity_factor</a>, <a class="code hl_class" href="classtl_1_1optional.html">strong_convexity_factor</a>);</div>
+<div class="line">  T sparsity_factor(0.15);</div>
+<div class="line">  T strong_convexity_factor(1.e-2);</div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">dense::Model&lt;T&gt;</a> qp_random = utils::dense_strongly_convex_qp(</div>
+<div class="line">    n, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line">  <span class="comment">// Solve the problem using the dense backend</span></div>
 <div class="line">  <span class="comment">// and suppose you want to change the accuracy to 1.E-9 and rho initial value</span></div>
 <div class="line">  <span class="comment">// to 1.E-7</span></div>
 <div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1Results.html">proxsuite::proxqp::Results&lt;T&gt;</a> results =</div>
-<div class="line">    proxsuite::proxqp::dense::solve&lt;T&gt;(<a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.H,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.g,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.A,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.b,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.C,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.l,</div>
-<div class="line">                                       <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.u,</div>
+<div class="line">    proxsuite::proxqp::dense::solve&lt;T&gt;(qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39">H</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab44afb08fed7665a9a1b6b76123bc2e">g</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">                                       qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>,</div>
 <div class="line">                                       nullopt,</div>
 <div class="line">                                       nullopt,</div>
 <div class="line">                                       nullopt,</div>
@@ -395,40 +373,18 @@ A single solve function for dense and sparse backends</h1>
 <div class="line">  std::cout &lt;&lt; <span class="stringliteral">&quot;optimal z: &quot;</span> &lt;&lt; results.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">z</a> &lt;&lt; std::endl;</div>
 <div class="line">}</div>
 <div class="ttc" id="anamespaceproxsuite_html"><div class="ttname"><a href="namespaceproxsuite.html">proxsuite</a></div><div class="ttdef"><b>Definition</b> <a href="common_8hpp_source.html#l00014">common.hpp:14</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html">proxsuite::proxqp::Results</a></div><div class="ttdoc">This class stores all the results of PROXQP solvers with sparse and dense backends.</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00067">results.hpp:68</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_a1be314db5179afe99216d9564ee35ffb"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#a1be314db5179afe99216d9564ee35ffb">proxsuite::proxqp::Results::z</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; z</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00074">results.hpp:74</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ab412e8dbd9325586ca0d8b299a31b21f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ab412e8dbd9325586ca0d8b299a31b21f">proxsuite::proxqp::Results::y</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; y</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00073">results.hpp:73</a></div></div>
-<div class="ttc" id="astructproxsuite_1_1proxqp_1_1Results_html_ad05a360234a4dce744c868b6aad72f8f"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1Results.html#ad05a360234a4dce744c868b6aad72f8f">proxsuite::proxqp::Results::x</a></div><div class="ttdeci">sparse::Vec&lt; T &gt; x</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2results_8hpp_source.html#l00072">results.hpp:72</a></div></div>
 <div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">proxsuite::proxqp::dense::Model</a></div><div class="ttdoc">This class stores the model of the QP problem.</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00023">model.hpp:24</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_a1e83a4aff28b7e6f81ecb962afaa6166"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">proxsuite::proxqp::dense::Model::l</a></div><div class="ttdeci">Vec&lt; T &gt; l</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00033">model.hpp:33</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_a2faa69ae13a95d134f8f55e50935486b"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">proxsuite::proxqp::dense::Model::A</a></div><div class="ttdeci">Mat&lt; T &gt; A</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00029">model.hpp:29</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_a35143abc2bf2a3dc4d4d0030376f00d7"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">proxsuite::proxqp::dense::Model::b</a></div><div class="ttdeci">Vec&lt; T &gt; b</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00031">model.hpp:31</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_a420a3bc7af86f6eaf6584f3f6b163e39"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39">proxsuite::proxqp::dense::Model::H</a></div><div class="ttdeci">Mat&lt; T &gt; H</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00027">model.hpp:27</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_aab44afb08fed7665a9a1b6b76123bc2e"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab44afb08fed7665a9a1b6b76123bc2e">proxsuite::proxqp::dense::Model::g</a></div><div class="ttdeci">Vec&lt; T &gt; g</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00028">model.hpp:28</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_ab44246d2c5fd3b5bf19e1cfd6e556456"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">proxsuite::proxqp::dense::Model::u</a></div><div class="ttdeci">Vec&lt; T &gt; u</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00032">model.hpp:32</a></div></div>
+<div class="ttc" id="astructproxsuite_1_1proxqp_1_1dense_1_1Model_html_ab9585ea151d2a15be6a672b2204f67a9"><div class="ttname"><a href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">proxsuite::proxqp::dense::Model::C</a></div><div class="ttdeci">Mat&lt; T &gt; C</div><div class="ttdef"><b>Definition</b> <a href="proxqp_2dense_2model_8hpp_source.html#l00030">model.hpp:30</a></div></div>
 </div><!-- fragment -->  </td><td valign="top"><div class="fragment"><div class="line"><span class="keyword">import</span> proxsuite</div>
 <div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div>
 <div class="line"><span class="keyword">import</span> scipy.sparse <span class="keyword">as</span> spa</div>
-<div class="line"> </div>
-<div class="line"> </div>
-<div class="line"><span class="keyword">def </span>generate_mixed_qp(n, seed=1):</div>
-<div class="line">    <span class="comment"># A function for generating sparse random convex qps in dense format</span></div>
-<div class="line"> </div>
-<div class="line">    np.random.seed(seed)</div>
-<div class="line">    n_eq = int(n / 4)</div>
-<div class="line">    n_in = int(n / 4)</div>
-<div class="line">    m = n_eq + n_in</div>
-<div class="line"> </div>
-<div class="line">    P = spa.random(</div>
-<div class="line">        n, n, density=0.075, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span></div>
-<div class="line">    ).toarray()</div>
-<div class="line">    P = (P + P.T) / 2.0</div>
-<div class="line"> </div>
-<div class="line">    s = max(np.absolute(np.linalg.eigvals(P)))</div>
-<div class="line">    P += (abs(s) + 1e-02) * spa.eye(n)</div>
-<div class="line">    P = spa.coo_matrix(P)</div>
-<div class="line">    q = np.random.randn(n)</div>
-<div class="line">    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format=<span class="stringliteral">&quot;csc&quot;</span>).toarray()</div>
-<div class="line">    v = np.random.randn(n)  <span class="comment"># Fictitious solution</span></div>
-<div class="line">    delta = np.random.rand(m)  <span class="comment"># To get inequality</span></div>
-<div class="line">    u = A @ v</div>
-<div class="line">    l = -1.0e20 * np.ones(m)</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> P.toarray(), q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]</div>
+<div class="line"><span class="keyword">from</span> util <span class="keyword">import</span> generate_mixed_qp</div>
 <div class="line"> </div>
 <div class="line"> </div>
 <div class="line"><span class="comment"># load a qp object using qp problem dimensions</span></div>
@@ -458,29 +414,29 @@ A single solve function for dense and sparse backends</h1>
 <div class="line"><span class="preprocessor">#include &lt;<a class="code" href="random__qp__problems_8hpp.html">proxsuite/proxqp/utils/random_qp_problems.hpp</a>&gt;</span> <span class="comment">// used for generating a random convex qp</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespaceproxsuite_1_1proxqp.html">proxsuite::proxqp</a>;</div>
-<div class="line"><span class="keyword">using </span>T = <a class="code hl_class" href="classtl_1_1optional.html">double</a>;</div>
+<div class="line"><span class="keyword">using </span>T = double;</div>
 <div class="line"><span class="keywordtype">int</span></div>
-<div class="line"><a class="code hl_class" href="classtl_1_1optional.html">main</a>()</div>
+<div class="line">main()</div>
 <div class="line">{</div>
 <div class="line">  dense::isize dim = 10;</div>
 <div class="line">  dense::isize n_eq(0);</div>
 <div class="line">  dense::isize n_in(0);</div>
-<div class="line">  T <a class="code hl_class" href="classtl_1_1optional.html">strong_convexity_factor</a>(0.1);</div>
-<div class="line">  T <a class="code hl_class" href="classtl_1_1optional.html">sparsity_factor</a>(0.15);</div>
+<div class="line">  T strong_convexity_factor(0.1);</div>
+<div class="line">  T sparsity_factor(0.15);</div>
 <div class="line">  <span class="comment">// we generate a qp, so the function used from helpers.hpp is</span></div>
 <div class="line">  <span class="comment">// in proxqp namespace. The qp is in dense eigen format and</span></div>
 <div class="line">  <span class="comment">// you can control its sparsity ratio and strong convexity factor.</span></div>
-<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">dense::Model&lt;T&gt;</a> <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a> = utils::dense_strongly_convex_qp(</div>
-<div class="line">    dim, n_eq, n_in, <a class="code hl_class" href="classtl_1_1optional.html">sparsity_factor</a>, <a class="code hl_class" href="classtl_1_1optional.html">strong_convexity_factor</a>);</div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html">dense::Model&lt;T&gt;</a> qp_random = utils::dense_strongly_convex_qp(</div>
+<div class="line">    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);</div>
 <div class="line"> </div>
-<div class="line">  <a class="code hl_class" href="classtl_1_1optional.html">Results&lt;T&gt;</a> results =</div>
-<div class="line">    dense::solve&lt;T&gt;(<a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.H,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.g,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.A,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.b,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.C,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.l,</div>
-<div class="line">                    <a class="code hl_class" href="classtl_1_1optional.html">qp_random</a>.u); <span class="comment">// initialization with zero shape matrices</span></div>
+<div class="line">  <a class="code hl_struct" href="structproxsuite_1_1proxqp_1_1Results.html">Results&lt;T&gt;</a> results =</div>
+<div class="line">    dense::solve&lt;T&gt;(qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a420a3bc7af86f6eaf6584f3f6b163e39">H</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#aab44afb08fed7665a9a1b6b76123bc2e">g</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a2faa69ae13a95d134f8f55e50935486b">A</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a35143abc2bf2a3dc4d4d0030376f00d7">b</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab9585ea151d2a15be6a672b2204f67a9">C</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#a1e83a4aff28b7e6f81ecb962afaa6166">l</a>,</div>
+<div class="line">                    qp_random.<a class="code hl_variable" href="structproxsuite_1_1proxqp_1_1dense_1_1Model.html#ab44246d2c5fd3b5bf19e1cfd6e556456">u</a>); <span class="comment">// initialization with zero shape matrices</span></div>
 <div class="line">  <span class="comment">// it is equivalent to do dense::solve&lt;T&gt;(qp_random.H, qp_random.g,</span></div>
 <div class="line">  <span class="comment">// nullopt,nullopt,nullopt,nullopt,nullopt);</span></div>
 <div class="line">  <span class="comment">//  print an optimal solution x,y and z</span></div>

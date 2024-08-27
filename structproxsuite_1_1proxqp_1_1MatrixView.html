@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -120,28 +120,28 @@ Collaboration diagram for proxsuite::proxqp::MatrixView&lt; T, L &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7bf2891716cd9935c7484f0c2902465b" id="r_a7bf2891716cd9935c7484f0c2902465b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7bf2891716cd9935c7484f0c2902465b">MatrixView</a> (<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">FromPtrRowsColsStride</a>, T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> *<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">_data</a>, isize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">_rows</a>, isize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">_cols</a>, isize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">_outer_stride</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a></td></tr>
+<tr class="memitem:a7bf2891716cd9935c7484f0c2902465b" id="r_a7bf2891716cd9935c7484f0c2902465b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7bf2891716cd9935c7484f0c2902465b">MatrixView</a> (FromPtrRowsColsStride, T const *_data, isize _rows, isize _cols, isize _outer_stride) noexcept</td></tr>
 <tr class="separator:a7bf2891716cd9935c7484f0c2902465b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adea772d781169e10827316e0dfa11f5e" id="r_adea772d781169e10827316e0dfa11f5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adea772d781169e10827316e0dfa11f5e">VEG_TEMPLATE</a> (<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> Mat, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">requires</a>(<a class="el" href="dense_2views_8hpp.html#ad6e361144fbd0a35c22b45c24b963b30">LDLT_CONCEPT</a>(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">eigen_view</a>&lt; Mat, T &gt;) &amp;&amp;<a class="el" href="namespaceproxsuite_1_1proxqp_1_1eigen.html#a9b01ec3e1219c32fbe17463af02dca00">eigen::GetLayout</a>&lt; <a class="el" href="namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c">unref</a>&lt; Mat &gt; &gt;::value==<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>), <a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>,(, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">FromEigen</a>),(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">mat</a>, Mat <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> &amp;)) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a></td></tr>
+<tr class="memitem:adea772d781169e10827316e0dfa11f5e" id="r_adea772d781169e10827316e0dfa11f5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adea772d781169e10827316e0dfa11f5e">VEG_TEMPLATE</a> (typename Mat, requires(<a class="el" href="dense_2views_8hpp.html#ad6e361144fbd0a35c22b45c24b963b30">LDLT_CONCEPT</a>(eigen_view&lt; Mat, T &gt;) &amp;&amp;<a class="el" href="namespaceproxsuite_1_1proxqp_1_1eigen.html#a9b01ec3e1219c32fbe17463af02dca00">eigen::GetLayout</a>&lt; <a class="el" href="namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c">unref</a>&lt; Mat &gt; &gt;::value==L), <a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>,(, FromEigen),(mat, Mat const &amp;)) noexcept</td></tr>
 <tr class="separator:adea772d781169e10827316e0dfa11f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af83346e09a17a6a82c40e7fa57149d36" id="r_af83346e09a17a6a82c40e7fa57149d36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af83346e09a17a6a82c40e7fa57149d36">ptr</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> *</td></tr>
+<tr class="memitem:af83346e09a17a6a82c40e7fa57149d36" id="r_af83346e09a17a6a82c40e7fa57149d36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af83346e09a17a6a82c40e7fa57149d36">ptr</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>) const noexcept -&gt; T const *</td></tr>
 <tr class="separator:af83346e09a17a6a82c40e7fa57149d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03e47e31e71e072ad7709195a2aeb68f" id="r_a03e47e31e71e072ad7709195a2aeb68f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03e47e31e71e072ad7709195a2aeb68f">operator()</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> &amp;</td></tr>
+<tr class="memitem:a03e47e31e71e072ad7709195a2aeb68f" id="r_a03e47e31e71e072ad7709195a2aeb68f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03e47e31e71e072ad7709195a2aeb68f">operator()</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>) const noexcept -&gt; T const &amp;</td></tr>
 <tr class="separator:a03e47e31e71e072ad7709195a2aeb68f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a023830c74d924db8a7982cca2e7ba5e8" id="r_a023830c74d924db8a7982cca2e7ba5e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a023830c74d924db8a7982cca2e7ba5e8">block</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>, isize nrows, isize ncols) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a></td></tr>
+<tr class="memitem:a023830c74d924db8a7982cca2e7ba5e8" id="r_a023830c74d924db8a7982cca2e7ba5e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a023830c74d924db8a7982cca2e7ba5e8">block</a> (isize <a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a>, isize <a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a>, isize nrows, isize ncols) const noexcept -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a></td></tr>
 <tr class="separator:a023830c74d924db8a7982cca2e7ba5e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91f640a0d6ed512202e83eb013ea7711" id="r_a91f640a0d6ed512202e83eb013ea7711"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a> (isize c) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a98c09e2be212a4a7ae720d3153743e30">proxsuite::linalg::veg::meta::if_t</a>&lt;(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>==<a class="el" href="namespaceproxsuite_1_1proxqp.html#a8b936834b32353b06a817efbef5c0ef3">colmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt; T &gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt; T &gt; &gt;</td></tr>
+<tr class="memitem:a91f640a0d6ed512202e83eb013ea7711" id="r_a91f640a0d6ed512202e83eb013ea7711"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91f640a0d6ed512202e83eb013ea7711">col</a> (isize c) const noexcept -&gt; <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a98c09e2be212a4a7ae720d3153743e30">proxsuite::linalg::veg::meta::if_t</a>&lt;(L==<a class="el" href="namespaceproxsuite_1_1proxqp.html#a8b936834b32353b06a817efbef5c0ef3">colmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt; T &gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:a91f640a0d6ed512202e83eb013ea7711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a4e8b024e45a2e4e3afcd50ab469be7" id="r_a9a4e8b024e45a2e4e3afcd50ab469be7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a> (isize r) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a98c09e2be212a4a7ae720d3153743e30">proxsuite::linalg::veg::meta::if_t</a>&lt;(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>==<a class="el" href="namespaceproxsuite_1_1proxqp.html#afd5d3db08e968f994e9834d1b3ba9e24">rowmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt; T &gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt; T &gt; &gt;</td></tr>
+<tr class="memitem:a9a4e8b024e45a2e4e3afcd50ab469be7" id="r_a9a4e8b024e45a2e4e3afcd50ab469be7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a4e8b024e45a2e4e3afcd50ab469be7">row</a> (isize r) const noexcept -&gt; <a class="el" href="namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a98c09e2be212a4a7ae720d3153743e30">proxsuite::linalg::veg::meta::if_t</a>&lt;(L==<a class="el" href="namespaceproxsuite_1_1proxqp.html#afd5d3db08e968f994e9834d1b3ba9e24">rowmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt; T &gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:a9a4e8b024e45a2e4e3afcd50ab469be7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab184c9195483217c5570830f5cd5144a" id="r_ab184c9195483217c5570830f5cd5144a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab184c9195483217c5570830f5cd5144a">trans</a> () <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a156b469b81b7afc70c5298f45c42ae74">proxqp::flip_layout</a>(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>)&gt;</td></tr>
+<tr class="memitem:ab184c9195483217c5570830f5cd5144a" id="r_ab184c9195483217c5570830f5cd5144a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab184c9195483217c5570830f5cd5144a">trans</a> () const noexcept -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a156b469b81b7afc70c5298f45c42ae74">proxqp::flip_layout</a>(L)&gt;</td></tr>
 <tr class="separator:ab184c9195483217c5570830f5cd5144a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29ea9370817a01ce738bc2ede07638b2" id="r_a29ea9370817a01ce738bc2ede07638b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29ea9370817a01ce738bc2ede07638b2">to_eigen</a> () <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">noexcept</a> -&gt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1detail.html#a5144f570bb31aa465320d54e97e661ca">detail::EigenMatMap</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;</td></tr>
+<tr class="memitem:a29ea9370817a01ce738bc2ede07638b2" id="r_a29ea9370817a01ce738bc2ede07638b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29ea9370817a01ce738bc2ede07638b2">to_eigen</a> () const noexcept -&gt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1detail.html#a5144f570bb31aa465320d54e97e661ca">detail::EigenMatMap</a>&lt; T, L &gt;</td></tr>
 <tr class="separator:a29ea9370817a01ce738bc2ede07638b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ade9de96e1a77b7278aeb9c6d610ea56e" id="r_ade9de96e1a77b7278aeb9c6d610ea56e"><td class="memItemLeft" align="right" valign="top">T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade9de96e1a77b7278aeb9c6d610ea56e">data</a></td></tr>
+<tr class="memitem:ade9de96e1a77b7278aeb9c6d610ea56e" id="r_ade9de96e1a77b7278aeb9c6d610ea56e"><td class="memItemLeft" align="right" valign="top">T const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade9de96e1a77b7278aeb9c6d610ea56e">data</a></td></tr>
 <tr class="separator:ade9de96e1a77b7278aeb9c6d610ea56e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab83e5c6f447b57fbfa9ed4be76475486" id="r_ab83e5c6f447b57fbfa9ed4be76475486"><td class="memItemLeft" align="right" valign="top">isize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab83e5c6f447b57fbfa9ed4be76475486">rows</a></td></tr>
 <tr class="separator:ab83e5c6f447b57fbfa9ed4be76475486"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,7 +151,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a900ec68232bbadd8def8dfb1389ad2e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt;<br />
 struct proxsuite::proxqp::MatrixView&lt; T, L &gt;</div>
 <p class="definition">Definition at line <a class="el" href="dense_2views_8hpp_source.html#l00809">809</a> of file <a class="el" href="dense_2views_8hpp_source.html">views.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -161,20 +161,20 @@ struct proxsuite::proxqp::MatrixView&lt; T, L &gt;</div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::MatrixView </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::MatrixView </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">FromPtrRowsColsStride</a></td>          <td class="paramname"><span class="paramname">, </span></td>
+          <td class="paramtype">FromPtrRowsColsStride</td>          <td class="paramname"><span class="paramname">, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a> *</td>          <td class="paramname"><span class="paramname"><em>_data</em>, </span></td>
+          <td class="paramtype">T const *</td>          <td class="paramname"><span class="paramname"><em>_data</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -210,20 +210,20 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::VEG_TEMPLATE </td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::VEG_TEMPLATE </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> Mat</td>          <td class="paramname"><span class="paramname">, </span></td>
+          <td class="paramtype">typename Mat</td>          <td class="paramname"><span class="paramname">, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">requires</a>(<a class="el" href="dense_2views_8hpp.html#ad6e361144fbd0a35c22b45c24b963b30">LDLT_CONCEPT</a>(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">eigen_view</a>&lt; Mat, T &gt;) &amp;&amp; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1eigen.html#a9b01ec3e1219c32fbe17463af02dca00">eigen::GetLayout</a>&lt; <a class="el" href="namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c">unref</a>&lt; Mat &gt; &gt;::value==<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>)</td>          <td class="paramname"><span class="paramname">, </span></td>
+          <td class="paramtype">requires(<a class="el" href="dense_2views_8hpp.html#ad6e361144fbd0a35c22b45c24b963b30">LDLT_CONCEPT</a>(eigen_view&lt; Mat, T &gt;) &amp;&amp; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1eigen.html#a9b01ec3e1219c32fbe17463af02dca00">eigen::GetLayout</a>&lt; <a class="el" href="namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c">unref</a>&lt; Mat &gt; &gt;::value==L)</td>          <td class="paramname"><span class="paramname">, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -233,12 +233,12 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">(, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">FromEigen</a>)</td>          <td class="paramname"><span class="paramname">, </span></td>
+          <td class="paramtype">(, FromEigen)</td>          <td class="paramname"><span class="paramname">, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">mat</a>, Mat <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>  &amp;)</td>          <td class="paramname"><span class="paramname"></span>&#160;)</td>
+          <td class="paramtype">(mat, Mat const  &amp;)</td>          <td class="paramname"><span class="paramname"></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -258,20 +258,20 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::ptr </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::ptr </td>
           <td>(</td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>row</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>col</em></span>&#160;) const -&gt; T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>*
+          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>col</em></span>&#160;) const -&gt; T const*
   </td>
         </tr>
       </table>
@@ -292,20 +292,20 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::operator</a>() </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::operator() </td>
           <td>(</td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>row</em>, </span></td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>col</em></span>&#160;) const -&gt; T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>&amp;
+          <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>col</em></span>&#160;) const -&gt; T const&amp;
   </td>
         </tr>
       </table>
@@ -326,13 +326,13 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::block </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::block </td>
           <td>(</td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>row</em>, </span></td>
         </tr>
@@ -370,17 +370,17 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::col </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::col </td>
           <td>(</td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>c</em></span></td><td>)</td>
           <td> const -&gt; proxsuite::linalg::veg::meta::
-      if_t&lt;(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> == <a class="el" href="namespaceproxsuite_1_1proxqp.html#a8b936834b32353b06a817efbef5c0ef3">colmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt;T&gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt;T&gt;&gt;
+      if_t&lt;(L == <a class="el" href="namespaceproxsuite_1_1proxqp.html#a8b936834b32353b06a817efbef5c0ef3">colmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt;T&gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt;T&gt;&gt;
   </td>
         </tr>
       </table>
@@ -401,17 +401,17 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::row </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::row </td>
           <td>(</td>
           <td class="paramtype">isize</td>          <td class="paramname"><span class="paramname"><em>r</em></span></td><td>)</td>
           <td> const -&gt; proxsuite::linalg::veg::meta::
-      if_t&lt;(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> == <a class="el" href="namespaceproxsuite_1_1proxqp.html#afd5d3db08e968f994e9834d1b3ba9e24">rowmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt;T&gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt;T&gt;&gt;
+      if_t&lt;(L == <a class="el" href="namespaceproxsuite_1_1proxqp.html#afd5d3db08e968f994e9834d1b3ba9e24">rowmajor</a>), <a class="el" href="structproxsuite_1_1proxqp_1_1VectorView.html">VectorView</a>&lt;T&gt;, <a class="el" href="structproxsuite_1_1proxqp_1_1StridedVectorView.html">StridedVectorView</a>&lt;T&gt;&gt;
   </td>
         </tr>
       </table>
@@ -432,16 +432,16 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::trans </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::trans </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
-          <td> const -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>&lt;T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a156b469b81b7afc70c5298f45c42ae74">proxqp::flip_layout</a>(<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>)&gt;
+          <td> const -&gt; <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">MatrixView</a>&lt;T, <a class="el" href="namespaceproxsuite_1_1proxqp.html#a156b469b81b7afc70c5298f45c42ae74">proxqp::flip_layout</a>(L)&gt;
   </td>
         </tr>
       </table>
@@ -462,16 +462,16 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">auto</a> <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::to_eigen </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> auto <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::to_eigen </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"></span></td><td>)</td>
-          <td> const -&gt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1detail.html#a5144f570bb31aa465320d54e97e661ca">detail::EigenMatMap</a>&lt;T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a>&gt;
+          <td> const -&gt; <a class="el" href="namespaceproxsuite_1_1proxqp_1_1detail.html#a5144f570bb31aa465320d54e97e661ca">detail::EigenMatMap</a>&lt;T, L&gt;
   </td>
         </tr>
       </table>
@@ -493,10 +493,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">T <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>* <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::data</td>
+          <td class="memname">T const* <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::data</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -511,10 +511,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::rows</td>
+          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::rows</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -529,10 +529,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::cols</td>
+          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::cols</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -547,10 +547,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
+template&lt;typename T , <a class="el" href="namespaceproxsuite_1_1proxqp.html#a95f1475e7d77f87895bccc2b3a790a90">Layout</a> L&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">L</a> &gt;::outer_stride</td>
+          <td class="memname">isize <a class="el" href="structproxsuite_1_1proxqp_1_1MatrixView.html">proxsuite::proxqp::MatrixView</a>&lt; T, L &gt;::outer_stride</td>
         </tr>
       </table>
 </div><div class="memdoc">

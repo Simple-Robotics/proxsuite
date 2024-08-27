@@ -1,5 +1,5 @@
 <map id="include/proxsuite/linalg/veg/memory/dynamic_stack.hpp" name="include/proxsuite/linalg/veg/memory/dynamic_stack.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="251,5,489,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="250,5,489,50"/>
 <area shape="rect" id="Node000002" href="$dense_2core_8hpp.html" title=" " alt="" coords="680,191,854,235"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="431,54,722,188,719,193,429,59"/>
 <area shape="rect" id="Node000003" href="$dense_2factorize_8hpp.html" title=" " alt="" coords="283,283,456,328"/>
@@ -31,7 +31,7 @@
 <area shape="poly" id="edge16_Node000003_Node000015" title=" " alt="" coords="392,340,411,375,406,377,387,343"/>
 <area shape="rect" id="Node000005" href="$dense_2solver_8hpp.html" title=" " alt="" coords="557,747,740,791"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="352,522,284,556,251,577,222,599,200,623,188,647,187,672,201,697,224,714,258,729,302,740,351,749,458,760,557,764,557,770,457,765,350,754,300,745,257,734,221,719,197,700,182,673,183,646,196,620,218,595,248,572,281,552,349,518"/>
-<area shape="rect" id="Node000011" href="$proxqp_2dense_2workspace_8hpp.html" title=" " alt="" coords="331,561,513,606"/>
+<area shape="rect" id="Node000011" href="$proxqp_2dense_2workspace_8hpp.html" title=" " alt="" coords="330,561,513,606"/>
 <area shape="poly" id="edge10_Node000004_Node000011" title=" " alt="" coords="424,529,424,561,419,561,418,529"/>
 <area shape="rect" id="Node000006" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="1160,839,1342,884"/>
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="755,784,1160,844,1159,849,755,789"/>

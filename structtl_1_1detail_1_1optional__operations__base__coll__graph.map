@@ -1,7 +1,7 @@
 <map id="tl::detail::optional_operations_base&lt; T &gt;" name="tl::detail::optional_operations_base&lt; T &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="71,225,245,269"/>
-<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,253,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="161,192,161,224,155,224,155,192"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="71,226,244,271"/>
+<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,252,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,192,160,226,155,226,155,192"/>
 <area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1optional__storage__base_1_1dummy.html" title=" " alt="" coords="5,5,180,67"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,80,122,107,139,130,135,133,118,109,104,82"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="204,22,242,50"/>

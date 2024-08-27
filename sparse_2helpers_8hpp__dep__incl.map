@@ -1,7 +1,7 @@
 <map id="include/proxsuite/proxqp/sparse/helpers.hpp" name="include/proxsuite/proxqp/sparse/helpers.hpp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="583,5,765,50"/>
 <area shape="rect" id="Node000002" href="$proxqp_2sparse_2wrapper_8hpp.html" title=" " alt="" coords="583,98,765,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="677,66,677,98,671,98,671,66"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="676,66,676,98,671,98,671,66"/>
 <area shape="rect" id="Node000003" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="324,191,506,235"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="598,151,478,193,476,188,597,146"/>
 <area shape="rect" id="Node000005" href="$qp__solve_8hpp.html" title=" " alt="" coords="293,376,476,421"/>
@@ -12,7 +12,7 @@
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="325,243,173,285,172,280,324,237"/>
 <area shape="rect" id="Node000006" href="$dense_8hpp.html" title=" " alt="" coords="212,283,394,328"/>
 <area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="378,247,332,285,328,281,375,243"/>
-<area shape="rect" id="Node000007" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,283,636,328"/>
+<area shape="rect" id="Node000007" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="418,283,636,328"/>
 <area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="455,243,502,281,499,285,452,247"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="181,330,316,373,315,378,179,336"/>
 </map>

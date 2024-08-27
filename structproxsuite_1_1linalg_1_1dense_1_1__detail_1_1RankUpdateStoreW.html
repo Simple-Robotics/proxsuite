@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -120,12 +120,12 @@ Collaboration diagram for proxsuite::linalg::dense::_detail::RankUpdateStoreW&lt
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af4cc6df9e4e3bcfc07d06df46e520e8d" id="r_af4cc6df9e4e3bcfc07d06df46e520e8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4cc6df9e4e3bcfc07d06df46e520e8d">operator()</a> (usize <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">i</a>) <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a></td></tr>
+<tr class="memitem:af4cc6df9e4e3bcfc07d06df46e520e8d" id="r_af4cc6df9e4e3bcfc07d06df46e520e8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4cc6df9e4e3bcfc07d06df46e520e8d">operator()</a> (usize i) const</td></tr>
 <tr class="separator:af4cc6df9e4e3bcfc07d06df46e520e8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a7da5dc6a22d933c934a7ae5823c3ea79" id="r_a7da5dc6a22d933c934a7ae5823c3ea79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1__simd_1_1Pack.html">_simd::Pack</a>&lt; T, N &gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7da5dc6a22d933c934a7ae5823c3ea79">p_wr</a></td></tr>
+<tr class="memitem:a7da5dc6a22d933c934a7ae5823c3ea79" id="r_a7da5dc6a22d933c934a7ae5823c3ea79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1__simd_1_1Pack.html">_simd::Pack</a>&lt; T, N &gt; const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7da5dc6a22d933c934a7ae5823c3ea79">p_wr</a></td></tr>
 <tr class="separator:a7da5dc6a22d933c934a7ae5823c3ea79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a699cbdf866d01996451aac3ba6cb0d76" id="r_a699cbdf866d01996451aac3ba6cb0d76"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a699cbdf866d01996451aac3ba6cb0d76">pw</a></td></tr>
 <tr class="separator:a699cbdf866d01996451aac3ba6cb0d76"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,7 +133,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a16e56efa84b6dd1cf1b563fa9e37f9f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T, usize N&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T, usize N&gt;<br />
 struct proxsuite::linalg::dense::_detail::RankUpdateStoreW&lt; T, N &gt;</div>
 <p class="definition">Definition at line <a class="el" href="dense_2update_8hpp_source.html#l00080">80</a> of file <a class="el" href="dense_2update_8hpp_source.html">update.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
@@ -143,13 +143,13 @@ struct proxsuite::linalg::dense::_detail::RankUpdateStoreW&lt; T, N &gt;</div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , usize N&gt; </div>
+template&lt;typename T , usize N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> void <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">::operator</a>() </td>
+          <td class="memname"><a class="el" href="macros_8hpp.html#a92d27b065d6a699b0e19e9fc2dc7cb6b">VEG_INLINE</a> void <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;::operator() </td>
           <td>(</td>
           <td class="paramtype">usize</td>          <td class="paramname"><span class="paramname"><em>i</em></span></td><td>)</td>
           <td> const</td>
@@ -173,10 +173,10 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , usize N&gt; </div>
+template&lt;typename T , usize N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1__simd_1_1Pack.html">_simd::Pack</a>&lt;T, N&gt; <a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">const</a>* <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;::p_wr</td>
+          <td class="memname"><a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1__simd_1_1Pack.html">_simd::Pack</a>&lt;T, N&gt; const* <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;::p_wr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -191,7 +191,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , usize N&gt; </div>
+template&lt;typename T , usize N&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T* <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;::pw</td>
@@ -209,7 +209,7 @@ template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d0
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;<a class="el" href="namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30">typename</a> T , usize N&gt; </div>
+template&lt;typename T , usize N&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">isize <a class="el" href="structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1RankUpdateStoreW.html">proxsuite::linalg::dense::_detail::RankUpdateStoreW</a>&lt; T, N &gt;::w_stride</td>

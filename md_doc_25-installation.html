@@ -38,7 +38,7 @@ MathJax.Hub.Config({
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.6</span>
+   <div id="projectname">proxsuite<span id="projectnumber">&#160;0.6.7</span>
    </div>
    <div id="projectbrief">The Advanced Proximal Optimization Toolbox</div>
   </td>
@@ -130,7 +130,8 @@ Installation instructions</h3>
 <div class="line">cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF</div>
 <div class="line">make</div>
 <div class="line">make install</div>
-</div><!-- fragment --><ol type="1">
+</div><!-- fragment --><p>Note: if you are building Proxsuite within a conda environment, consider passing <code>-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX</code>.</p>
+<ol type="1">
 <li>Build the Python interface</li>
 </ol>
 <p>You just need to ensure that Python3 is indeed present on your system and activate the cmake option <code>BUILD_PYTHON_INTERFACE=ON</code> by replacing:</p>

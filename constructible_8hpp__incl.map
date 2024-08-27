@@ -1,18 +1,18 @@
 <map id="include/proxsuite/linalg/veg/type_traits/constructible.hpp" name="include/proxsuite/linalg/veg/type_traits/constructible.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="1005,5,1245,50"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1005,5,1244,50"/>
 <area shape="rect" id="Node000002" href="$veg_2type__traits_2core_8hpp.html" title=" " alt="" coords="882,98,1037,143"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1087,53,1013,93,1011,88,1084,48"/>
 <area shape="rect" id="Node000010" href="$prologue_8hpp.html" title=" " alt="" coords="881,376,1046,421"/>
 <area shape="poly" id="edge19_Node000001_Node000010" title=" " alt="" coords="1118,51,981,363,976,361,1113,49"/>
 <area shape="rect" id="Node000013" href="$epilogue_8hpp.html" title=" " alt="" coords="1070,376,1233,421"/>
 <area shape="poly" id="edge22_Node000001_Node000013" title=" " alt="" coords="1129,50,1152,360,1146,361,1124,51"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="1162,107,1210,134"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1162,106,1210,134"/>
 <area shape="poly" id="edge20_Node000001_Node000014" title=" " alt="" coords="1142,49,1171,92,1167,95,1137,52"/>
-<area shape="rect" id="Node000015" title=" " alt="" coords="1234,107,1325,134"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1234,106,1325,134"/>
 <area shape="poly" id="edge21_Node000001_Node000015" title=" " alt="" coords="1163,48,1245,96,1243,101,1161,53"/>
 <area shape="rect" id="Node000003" href="$typedefs_8hpp.html" title=" " alt="" coords="5,376,170,421"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="882,142,650,201,509,241,368,286,252,329,150,372,148,367,250,324,367,281,508,236,649,196,881,137"/>
-<area shape="rect" id="Node000006" href="$integer__seq_8hpp.html" title=" " alt="" coords="743,191,926,235"/>
+<area shape="rect" id="Node000006" href="$integer__seq_8hpp.html" title=" " alt="" coords="742,191,926,235"/>
 <area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="931,145,878,184,875,179,928,141"/>
 <area shape="poly" id="edge17_Node000002_Node000010" title=" " alt="" coords="962,143,966,360,960,360,957,143"/>
 <area shape="poly" id="edge18_Node000002_Node000013" title=" " alt="" coords="977,142,1130,362,1126,365,972,145"/>
@@ -31,9 +31,9 @@
 <area shape="rect" id="Node000009" href="$preprocessor_8hpp.html" title=" " alt="" coords="451,376,641,421"/>
 <area shape="poly" id="edge10_Node000007_Node000009" title=" " alt="" coords="682,331,603,371,600,366,680,326"/>
 <area shape="poly" id="edge11_Node000007_Node000010" title=" " alt="" coords="782,326,893,368,891,373,780,331"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="665,385,774,412"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="665,384,774,412"/>
 <area shape="poly" id="edge12_Node000007_Node000011" title=" " alt="" coords="725,328,723,369,718,369,720,328"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="798,385,857,412"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="798,384,857,412"/>
 <area shape="poly" id="edge13_Node000007_Node000012" title=" " alt="" coords="750,326,803,372,799,376,746,330"/>
 <area shape="poly" id="edge14_Node000007_Node000013" title=" " alt="" coords="802,320,1056,373,1055,378,801,325"/>
 </map>

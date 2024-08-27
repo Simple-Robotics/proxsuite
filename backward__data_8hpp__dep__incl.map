@@ -13,12 +13,12 @@
 <area shape="rect" id="Node000004" href="$dense_2solver_8hpp.html" title=" " alt="" coords="212,283,394,328"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="238,244,280,281,277,285,234,248"/>
 <area shape="rect" id="Node000005" href="$proxqp_2dense_2wrapper_8hpp.html" title=" " alt="" coords="212,376,394,421"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="306,344,306,376,301,376,301,344"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="306,344,306,376,300,376,300,344"/>
 <area shape="rect" id="Node000006" href="$compute__ECJ_8hpp.html" title=" " alt="" coords="5,469,188,513"/>
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="241,430,147,471,145,466,239,425"/>
 <area shape="rect" id="Node000008" href="$dense_8hpp.html" title=" " alt="" coords="212,469,394,513"/>
-<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="306,436,306,468,301,468,301,436"/>
-<area shape="rect" id="Node000009" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="419,469,636,513"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="306,436,306,468,300,468,300,436"/>
+<area shape="rect" id="Node000009" href="$serialization_2wrapper_8hpp.html" title=" " alt="" coords="418,469,636,513"/>
 <area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="372,424,475,466,473,471,370,429"/>
 <area shape="rect" id="Node000007" href="$qp__solve_8hpp.html" title=" " alt="" coords="5,561,188,606"/>
 <area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="99,529,99,561,94,561,94,529"/>
