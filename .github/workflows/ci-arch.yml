@@ -3,6 +3,8 @@ name: CI - ArchLinux
 on:
   push:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
 
 jobs:
   build-with-arch:

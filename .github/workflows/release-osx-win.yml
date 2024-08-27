@@ -2,6 +2,8 @@ name: Release on PyPI [Windows, Mac]
 
 on:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
   release:
     types:
       - published

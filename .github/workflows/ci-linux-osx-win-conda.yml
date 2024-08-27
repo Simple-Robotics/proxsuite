@@ -3,6 +3,8 @@ name: CI - Linux/OSX/Windows - Conda
 on:
   push:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
 
 jobs:
   build-with-conda:
