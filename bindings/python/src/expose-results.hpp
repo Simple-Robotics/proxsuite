@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2023 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 #include <proxsuite/proxqp/results.hpp>
 #include <nanobind/nanobind.h>
