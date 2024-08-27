@@ -6,7 +6,7 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 #include <nanobind/operators.h>
-#include <nanobind/stl/optional.h>
+#include "optional-eigen-fix.hpp"
 
 #include <proxsuite/helpers/optional.hpp>
 #include <proxsuite/serialization/archive.hpp>

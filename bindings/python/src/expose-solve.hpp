@@ -6,7 +6,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
-#include <nanobind/stl/optional.h>
+#include "optional-eigen-fix.hpp"
 
 namespace proxsuite {
 namespace proxqp {
