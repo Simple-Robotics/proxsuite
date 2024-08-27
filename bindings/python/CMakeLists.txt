@@ -21,9 +21,22 @@ else()
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
-add_subdirectory(external/nanobind
-                 ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+cmake_policy(PUSH)
+cmake_policy(SET CMP0074 NEW)
+# Detect the installed nanobind package and import it into CMake
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE nanobind_ROOT)
+find_package(nanobind CONFIG)
+cmake_policy(POP)
+if(NOT nanobind_FOUND)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+  add_subdirectory(external/nanobind
+                   ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+else()
+  message(STATUS "Found installed nanobind.")
+endif()
 
 add_custom_target(${PROJECT_NAME}_python)
 
