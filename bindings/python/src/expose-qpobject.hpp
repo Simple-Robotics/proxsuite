@@ -58,9 +58,9 @@ exposeQpObjectDense(nanobind::module_ m)
   //   .def_rw("run_time", &RuizEquilibration<T>::sym);
 
   ::nanobind::class_<dense::QP<T>>(m, "QP")
-    .def(::nanobind::init<i64,
-                          i64,
-                          i64,
+    .def(::nanobind::init<isize,
+                          isize,
+                          isize,
                           bool,
                           proxsuite::proxqp::HessianType,
                           proxsuite::proxqp::DenseBackend>(),
@@ -243,7 +243,7 @@ exposeQpObjectSparse(nanobind::module_ m)
 {
 
   ::nanobind::class_<sparse::QP<T, I>>(m, "QP")
-    .def(::nanobind::init<i64, i64, i64>(),
+    .def(::nanobind::init<isize, isize, isize>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
          nanobind::arg("n_in") = 0,

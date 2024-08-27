@@ -60,7 +60,7 @@ exposeResults(nanobind::module_ m)
             "find_H_minimal_eigenvalue.");
 
   ::nanobind::class_<Results<T>>(m, "Results")
-    .def(::nanobind::init<i64, i64, i64>(),
+    .def(::nanobind::init<isize, isize, isize>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
          nanobind::arg("n_in") = 0,

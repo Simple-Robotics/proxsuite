@@ -21,7 +21,7 @@ exposeQPVectorDense(nanobind::module_ m)
 
   ::nanobind::class_<dense::BatchQP<T>>(m, "BatchQP")
     .def(
-      ::nanobind::init<u64>(),
+      ::nanobind::init<size_t>(),
       nanobind::arg("batch_size") = 0,
       "Default constructor using the BatchSize of qp models to store.") // constructor
     .def("init_qp_in_place",
@@ -51,7 +51,7 @@ exposeQPVectorSparse(nanobind::module_ m)
 
   ::nanobind::class_<sparse::BatchQP<T, I>>(m, "BatchQP")
     .def(
-      ::nanobind::init<u64>(),
+      ::nanobind::init<long unsigned int>(),
       nanobind::arg("batch_size") = 0,
       "Default constructor using the BatchSize of qp models to store.") // constructor
     .def("init_qp_in_place",
