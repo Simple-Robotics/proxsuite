@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+* CMake: Fix link to system cereal in tests ([#353](https://github.com/Simple-Robotics/proxsuite/pull/352))
+
 ## [0.6.7] - 2024-08-27
 
 ### Added
