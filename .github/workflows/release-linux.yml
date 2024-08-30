@@ -2,6 +2,8 @@ name: Release on PyPI [Linux]
 
 on:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
   release:
     types:
       - published
@@ -33,9 +35,9 @@ jobs:
             build: "cp312-manylinux*"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          submodules: 'true'
+          submodules: recursive
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"

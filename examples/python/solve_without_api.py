@@ -16,7 +16,7 @@ results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
 # solve the problem using the dense backend
 
 results2 = proxsuite.proxqp.dense.solve(
-    H.toarray(), g, A.toarray(), b, C.toarray(), l, u
+    H.toarray(order="C"), g, A.toarray(order="C"), b, C.toarray(order="C"), l, u
 )
 # Note finally, that the matrices are in sparse format, when using the dense backend you
 # should convert them in dense format
@@ -34,7 +34,15 @@ u_box = np.ones(n) * 1.0e10
 # make sure to specify l_box=l_box, u_box=u_box in order to make work the
 # overloading
 results_dense_solver_box = proxsuite.proxqp.dense.solve(
-    H.toarray(), g, A.toarray(), b, C.toarray(), l, u, l_box=l_box, u_box=u_box
+    H.toarray(order="C"),
+    g,
+    A.toarray(order="C"),
+    b,
+    C.toarray(order="C"),
+    l,
+    u,
+    l_box=l_box,
+    u_box=u_box,
 )
 # print an optimal solution
 print("optimal x: {}".format(results_dense_solver_box.x))

@@ -1,11 +1,18 @@
 if(UNIX)
-  set(PYTHON_COMPONENTS Development.Module)
+  set(PYTHON_COMPONENTS Interpreter Development.Module)
 endif()
 
 include(${JRL_CMAKE_MODULES}/python.cmake)
 include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 
-findpython(REQUIRED Development.Module)
+option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
+
+findpython(REQUIRED)
+set(Python_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
+# Nanobind expects these targets instead of Python3::*
+# https://github.com/jrl-umi3218/jrl-cmakemodules/issues/708
+add_library(Python::Module ALIAS Python3::Module)
+add_executable(Python::Interpreter ALIAS Python3::Interpreter)
 
 if(IS_ABSOLUTE ${PYTHON_SITELIB})
   set(${PYWRAP}_INSTALL_DIR ${PYTHON_SITELIB}/${PROJECT_NAME})
@@ -14,11 +21,21 @@ else()
       ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB}/${PROJECT_NAME})
 endif()
 
-find_package(pybind11 CONFIG)
-if(NOT pybind11_FOUND)
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
-  add_subdirectory(external/pybind11
-                   ${CMAKE_CURRENT_BINARY_DIR}/external/pybind11)
+cmake_policy(PUSH)
+cmake_policy(SET CMP0074 NEW)
+# Detect the installed nanobind package and import it into CMake
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE nanobind_ROOT)
+find_package(nanobind CONFIG)
+cmake_policy(POP)
+if(NOT nanobind_FOUND)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+  add_subdirectory(external/nanobind
+                   ${CMAKE_CURRENT_BINARY_DIR}/external/nanobind)
+else()
+  message(STATUS "Found installed nanobind.")
 endif()
 
 add_custom_target(${PROJECT_NAME}_python)
@@ -29,14 +46,12 @@ file(GLOB_RECURSE PYWRAP_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
 
 # Add simd feature detectors for current intel CPU
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
-  python3_add_library(instructionset MODULE helpers/instruction-set.cpp)
+  nanobind_add_module(instructionset helpers/instruction-set.cpp)
   add_dependencies(${PROJECT_NAME}_python instructionset)
-  target_link_libraries(instructionset PRIVATE proxsuite pybind11::module)
+  target_link_libraries(instructionset PRIVATE proxsuite)
   set_target_properties(
     instructionset
     PROPERTIES OUTPUT_NAME instructionset
-               PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
                "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
@@ -58,6 +73,20 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
     TARGETS instructionset
     EXPORT ${TARGETS_EXPORT_NAME}
     DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  if(GENERATE_PYTHON_STUBS)
+    nanobind_add_stub(
+      instructionset_stub
+      MODULE
+      instructionset
+      OUTPUT
+      instructionset.pyi
+      PYTHON_PATH
+      $<TARGET_FILE_DIR:instructionset>
+      DEPENDS
+      instructionset)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/instructionset.pyi
+            DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  endif()
 endif()
 
 function(list_filter list regular_expression dest_list)
@@ -72,12 +101,12 @@ function(list_filter list regular_expression dest_list)
 endfunction(list_filter)
 
 function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
-  python3_add_library(${target_name} MODULE ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
+  nanobind_add_module(${target_name} ${PYWRAP_SOURCES} ${PYWRAP_HEADERS})
   add_dependencies(${PROJECT_NAME}_python ${target_name})
 
-  target_link_libraries(${target_name} PUBLIC ${dependencies} pybind11::module)
+  target_link_libraries(${target_name} PUBLIC ${dependencies})
   target_compile_options(${target_name} PRIVATE ${COMPILE_OPTIONS})
-  target_link_libraries(${target_name} PRIVATE proxsuite pybind11::module)
+  target_link_libraries(${target_name} PRIVATE proxsuite)
   target_compile_definitions(${target_name}
                              PRIVATE PYTHON_MODULE_NAME=${target_name})
 
@@ -104,8 +133,6 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   set_target_properties(
     ${target_name}
     PROPERTIES OUTPUT_NAME ${target_name}
-               PREFIX ""
-               SUFFIX ${PYTHON_EXT_SUFFIX}
                LIBRARY_OUTPUT_DIRECTORY
                "${PROJECT_BINARY_DIR}/bindings/python/${PROJECT_NAME}"
                LIBRARY_OUTPUT_DIRECTORY_RELEASE
@@ -126,6 +153,20 @@ function(CREATE_PYTHON_TARGET target_name COMPILE_OPTIONS dependencies)
   endif()
 
   install(TARGETS ${target_name} DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  if(GENERATE_PYTHON_STUBS)
+    nanobind_add_stub(
+      ${target_name}_stub
+      MODULE
+      ${target_name}
+      OUTPUT
+      ${target_name}.pyi
+      PYTHON_PATH
+      $<TARGET_FILE_DIR:${target_name}>
+      DEPENDS
+      ${target_name})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target_name}.pyi
+            DESTINATION ${${PYWRAP}_INSTALL_DIR})
+  endif()
 endfunction()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)

@@ -29,9 +29,10 @@ def generate_mixed_qp(n, seed=1):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(
+        order="C"
+    )
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
@@ -42,7 +43,7 @@ def generic_test(object, filename):
     try:
         with open(filename, "wb") as f:
             pickle.dump(object, f)
-    except:
+    except pickle.PickleError:
         dump_success = False
     else:
         dump_success = True
@@ -52,7 +53,7 @@ def generic_test(object, filename):
     try:
         with open(filename, "rb") as f:
             loaded_object = pickle.load(f)
-    except:
+    except pickle.PickleError:
         read_success = False
     else:
         read_success = True
@@ -63,8 +64,6 @@ def generic_test(object, filename):
 
 class DenseqpWrapperSerialization(unittest.TestCase):
     def test_pickle(self):
-        import pickle
-
         print("------------------------test pickle")
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)

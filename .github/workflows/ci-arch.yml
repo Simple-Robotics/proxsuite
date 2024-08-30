@@ -3,6 +3,8 @@ name: CI - ArchLinux
 on:
   push:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
 
 jobs:
   build-with-arch:
@@ -14,7 +16,7 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-        submodules: true
+        submodules: recursive
 
     - run: cmake -B build -S . -DBUILD_PYTHON_INTERFACE=ON
     - run: cmake --build build

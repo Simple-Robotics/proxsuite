@@ -3,6 +3,8 @@ name: CI - Linux/OSX/Windows - Conda
 on:
   push:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
 
 jobs:
   build-with-conda:
@@ -31,10 +33,6 @@ jobs:
             os: windows-latest
           - name: macos-latest
             os: macos-latest
-            build_type: Release
-            cxx_std: 14
-          - name: macos-latest
-            os: macos-latest
             build_type: Debug
             cxx_std: 17
             continue_on_error: true
@@ -55,7 +53,9 @@ jobs:
             continue_on_error: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - uses: conda-incubator/setup-miniconda@v2
       if: matrix.os != 'macos-14'
@@ -80,7 +80,7 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen ninja graphviz
+        mamba install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions
         # Main dependencies
         mamba install eigen simde
         # Test dependencies

@@ -56,8 +56,8 @@ class CvxpyTest(unittest.TestCase):
     def test_one_dim_with_exact_solution_known(self):
         print("------------------------ test_one_dim_with_exact_solution_known")
         n = 1
-        H = np.array([[20]])
-        g = np.array([-10])
+        H = np.array([[20.0]])
+        g = np.array([-10.0])
         A = None
         b = None
         C = np.array([[1.0]])
