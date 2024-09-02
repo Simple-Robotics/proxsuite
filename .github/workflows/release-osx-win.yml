@@ -2,6 +2,8 @@ name: Release on PyPI [Windows, Mac]
 
 on:
   pull_request:
+    paths-ignore:
+      - CHANGELOG.md
   release:
     types:
       - published
@@ -21,7 +23,7 @@ jobs:
             toolset: v143
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -57,7 +59,7 @@ jobs:
         run: |
           # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
           conda config --remove channels defaults
-          mamba install doxygen graphviz eigen simde cmake compilers
+          mamba install doxygen graphviz eigen simde cmake compilers typing_extensions
 
       - name: Print environment [Conda]
         if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')

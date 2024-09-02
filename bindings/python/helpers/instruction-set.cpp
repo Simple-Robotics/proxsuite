@@ -1,8 +1,9 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include <proxsuite/helpers/instruction-set.hpp>
 
@@ -10,7 +11,7 @@ namespace proxsuite {
 namespace helpers {
 namespace python {
 
-PYBIND11_MODULE(instructionset, m)
+NB_MODULE(instructionset, m)
 {
   m.doc() = R"pbdoc(
         CPU info library

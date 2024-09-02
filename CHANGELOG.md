@@ -9,15 +9,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 * CMake: Fix link to system cereal in tests ([#353](https://github.com/Simple-Robotics/proxsuite/pull/352))
 
+### Added
+* Stub files for Python bindings, using [nanobind's native support](https://nanobind.readthedocs.io/en/latest/typing.html#stub-generation) ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+
+### Changed
+* Change Python bindings to use nanobind instead of pybind11 ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+
+
 ## [0.6.7] - 2024-08-27
 
 ### Added
 * Fix mu update function for PrimalLDLT backend ([#349](https://github.com/Simple-Robotics/proxsuite/pull/349))
 * Allow use of installed pybind11, cereal and jrl-cmakemodules via cmake
 * Add compatibility with jrl-cmakemodules workspace ([#339](https://github.com/Simple-Robotics/proxsuite/pull/339))
-* Specifically mention that timings are in microseconds ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
-* Fix cereal include directory in cmake ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
-* Extend doc with hint for conda installation from source ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+* Specifically mention that timings are in microseconds ([#342](https://github.com/Simple-Robotics/proxsuite/pull/342))
+* Fix cereal include directory in cmake ([#342](https://github.com/Simple-Robotics/proxsuite/pull/342))
+* Extend doc with hint for conda installation from source ([#342](https://github.com/Simple-Robotics/proxsuite/pull/342))
 
 ### Fixed
 * Fix inequality constraints return in QPLayer ([#343](https://github.com/Simple-Robotics/proxsuite/pull/343))

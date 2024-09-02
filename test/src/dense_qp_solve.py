@@ -37,9 +37,10 @@ def generate_mixed_qp(n, seed=1):
     P = spa.coo_matrix(P)
     # print("sparsity of P : {}".format((P.nnz) / (n**2)))
     q = np.random.randn(n)
-    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
+    A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray(
+        order="C"
+    )  # row-major
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
@@ -310,10 +311,12 @@ class DenseQpWrapper(unittest.TestCase):
             M[i, i - 1] = 1
 
         H = spa.csc_matrix(M.dot(M.transpose())).toarray()
+        H = np.ascontiguousarray(H)
         g = -np.ones((n,))
         A = None
         b = None
         C = spa.csc_matrix(spa.eye(n)).toarray()
+        C = np.ascontiguousarray(C)
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.inf)
 
@@ -379,11 +382,11 @@ class DenseQpWrapper(unittest.TestCase):
             os.path.join(data_path, "simple_qp_with_inifinity_lower_bound.mat"),
             squeeze_me=True,
         )
-        P = m["P"].astype(float)
+        P = np.ascontiguousarray(m["P"].astype(float))
         q = m["q"].astype(float)
-        A = m["A"].astype(float).reshape((1, 3))
+        A = np.ascontiguousarray(m["A"].astype(float).reshape((1, 3)))
         b = np.array([m["b"]]).reshape((1,))
-        C = m["C"].astype(float)
+        C = np.ascontiguousarray(m["C"].astype(float))
         l = m["l"].astype(float)
         u = m["u"].astype(float)
 

@@ -1,11 +1,12 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2024 INRIA
 //
 #include <proxsuite/proxqp/dense/wrapper.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <pybind11/pybind11.h>
-#include <pybind11/eigen.h>
-#include <pybind11/stl.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/eigen/dense.h>
+#include <nanobind/eigen/sparse.h>
+#include "optional-eigen-fix.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -16,11 +17,11 @@ namespace python {
 
 template<typename T>
 void
-solveDenseQp(pybind11::module_ m)
+solveDenseQp(nanobind::module_ m)
 {
   m.def(
     "solve",
-    pybind11::overload_cast<optional<dense::MatRef<T>>,
+    nanobind::overload_cast<optional<dense::MatRef<T>>,
                             optional<dense::VecRef<T>>,
                             optional<dense::MatRef<T>>,
                             optional<dense::VecRef<T>>,
@@ -50,69 +51,36 @@ solveDenseQp(pybind11::module_ m)
     "parameters (warm start, initial guess option, proximal step sizes, "
     "absolute and relative accuracies, maximum number of iterations, "
     "preconditioner execution).",
-    pybind11::arg_v("H", nullopt, "quadratic cost with dense format."),
-    pybind11::arg_v("g", nullopt, "linear cost"),
-    pybind11::arg_v(
-      "A", nullopt, "equality constraint matrix with dense format."),
-    pybind11::arg_v("b", nullopt, "equality constraint vector"),
-    pybind11::arg_v(
-      "C", nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("l", nullopt, "lower inequality constraint vector"),
-    pybind11::arg_v("u", nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("x", nullopt, "primal warm start"),
-    pybind11::arg_v("y", nullopt, "dual equality warm start"),
-    pybind11::arg_v("z", nullopt, "dual inequality warm start"),
-    pybind11::arg_v(
-      "eps_abs",
-      nullopt,
-      "absolute accuracy level used for the solver stopping criterion."),
-    pybind11::arg_v("eps_rel",
-                    nullopt,
-                    "relative accuracy level used for the solver stopping "
-                    "criterion. Deactivated in standard settings."),
-    pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
-    pybind11::arg_v(
-      "mu_eq", nullopt, "dual equality constraint proximal parameter"),
-    pybind11::arg_v(
-      "mu_in", nullopt, "dual inequality constraint proximal parameter"),
-    pybind11::arg_v("verbose",
-                    nullopt,
-                    "verbose option to print information at each iteration."),
-    pybind11::arg_v("compute_preconditioner",
-                    true,
-                    "executes the default preconditioner for reducing ill "
-                    "conditioning and speeding up the solver."),
-    pybind11::arg_v(
-      "compute_timings", false, "compute solver's timings in μs."),
-    pybind11::arg_v("max_iter", nullopt, "maximum number of iteration."),
-    pybind11::arg_v(
-      "initial_guess",
-      proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-      "maximum number of iteration."),
-    pybind11::arg_v(
-      "check_duality_gap",
-      false,
-      "if set to true, include the duality gap in absolute and relative "
-      "stopping criteria."),
-    pybind11::arg_v("eps_duality_gap_abs",
-                    nullopt,
-                    "absolute accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("eps_duality_gap_rel",
-                    nullopt,
-                    "relative accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("primal_infeasibility_solving",
-                    false,
-                    "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."),
-    pybind11::arg_v("default_H_eigenvalue_estimate",
-                    0.,
-                    "Default estimate of the minimal eigen value of H."));
+    nanobind::arg("H"),
+    nanobind::arg("g"),
+    nanobind::arg("A").none(),
+    nanobind::arg("b").none(),
+    nanobind::arg("C").none(),
+    nanobind::arg("l").none(),
+    nanobind::arg("u").none(),
+    nanobind::arg("x") = nanobind::none(),
+    nanobind::arg("y") = nanobind::none(),
+    nanobind::arg("z") = nanobind::none(),
+    nanobind::arg("eps_abs") = nanobind::none(),
+    nanobind::arg("eps_rel") = nanobind::none(),
+    nanobind::arg("rho") = nanobind::none(),
+    nanobind::arg("mu_eq") = nanobind::none(),
+    nanobind::arg("mu_in") = nanobind::none(),
+    nanobind::arg("verbose") = nanobind::none(),
+    nanobind::arg("compute_preconditioner") = true,
+    nanobind::arg("compute_timings") = false,
+    nanobind::arg("max_iter") = nanobind::none(),
+    nanobind::arg("initial_guess") =
+      InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+    nanobind::arg("check_duality_gap") = false,
+    nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
+    nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
+    nanobind::arg("primal_infeasibility_solving") = false,
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
 
   m.def(
     "solve",
-    pybind11::overload_cast<optional<dense::MatRef<T>>,
+    nanobind::overload_cast<optional<dense::MatRef<T>>,
                             optional<dense::VecRef<T>>,
                             optional<dense::MatRef<T>>,
                             optional<dense::VecRef<T>>,
@@ -144,67 +112,34 @@ solveDenseQp(pybind11::module_ m)
     "parameters (warm start, initial guess option, proximal step sizes, "
     "absolute and relative accuracies, maximum number of iterations, "
     "preconditioner execution).",
-    pybind11::arg_v("H", nullopt, "quadratic cost with dense format."),
-    pybind11::arg_v("g", nullopt, "linear cost"),
-    pybind11::arg_v(
-      "A", nullopt, "equality constraint matrix with dense format."),
-    pybind11::arg_v("b", nullopt, "equality constraint vector"),
-    pybind11::arg_v(
-      "C", nullopt, "inequality constraint matrix with dense format."),
-    pybind11::arg_v("l", nullopt, "lower inequality constraint vector"),
-    pybind11::arg_v("u", nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("l_box", nullopt, "lower box inequality constraint vector"),
-    pybind11::arg_v("u_box", nullopt, "upper box inequality constraint vector"),
-    pybind11::arg_v("x", nullopt, "primal warm start"),
-    pybind11::arg_v("y", nullopt, "dual equality warm start"),
-    pybind11::arg_v("z", nullopt, "dual inequality warm start"),
-    pybind11::arg_v(
-      "eps_abs",
-      nullopt,
-      "absolute accuracy level used for the solver stopping criterion."),
-    pybind11::arg_v("eps_rel",
-                    nullopt,
-                    "relative accuracy level used for the solver stopping "
-                    "criterion. Deactivated in standard settings."),
-    pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
-    pybind11::arg_v(
-      "mu_eq", nullopt, "dual equality constraint proximal parameter"),
-    pybind11::arg_v(
-      "mu_in", nullopt, "dual inequality constraint proximal parameter"),
-    pybind11::arg_v("verbose",
-                    nullopt,
-                    "verbose option to print information at each iteration."),
-    pybind11::arg_v("compute_preconditioner",
-                    true,
-                    "executes the default preconditioner for reducing ill "
-                    "conditioning and speeding up the solver."),
-    pybind11::arg_v(
-      "compute_timings", false, "compute solver's timings in μs."),
-    pybind11::arg_v("max_iter", nullopt, "maximum number of iteration."),
-    pybind11::arg_v(
-      "initial_guess",
+    nanobind::arg("H"),
+    nanobind::arg("g"),
+    nanobind::arg("A") = nanobind::none(),
+    nanobind::arg("b") = nanobind::none(),
+    nanobind::arg("C") = nanobind::none(),
+    nanobind::arg("l") = nanobind::none(),
+    nanobind::arg("u") = nanobind::none(),
+    nanobind::arg("l_box") = nanobind::none(),
+    nanobind::arg("u_box") = nanobind::none(),
+    nanobind::arg("x") = nanobind::none(),
+    nanobind::arg("y") = nanobind::none(),
+    nanobind::arg("z") = nanobind::none(),
+    nanobind::arg("eps_abs") = nanobind::none(),
+    nanobind::arg("eps_rel") = nanobind::none(),
+    nanobind::arg("rho") = nanobind::none(),
+    nanobind::arg("mu_eq") = nanobind::none(),
+    nanobind::arg("mu_in") = nanobind::none(),
+    nanobind::arg("verbose") = nanobind::none(),
+    nanobind::arg("compute_preconditioner") = true,
+    nanobind::arg("compute_timings") = false,
+    nanobind::arg("max_iter") = nanobind::none(),
+    nanobind::arg("initial_guess") =
       proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-      "maximum number of iteration."),
-    pybind11::arg_v(
-      "check_duality_gap",
-      false,
-      "if set to true, include the duality gap in absolute and relative "
-      "stopping criteria."),
-    pybind11::arg_v("eps_duality_gap_abs",
-                    nullopt,
-                    "absolute accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("eps_duality_gap_rel",
-                    nullopt,
-                    "relative accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("primal_infeasibility_solving",
-                    false,
-                    "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."),
-    pybind11::arg_v("default_H_eigenvalue_estimate",
-                    0.,
-                    "Default estimate of the minimal eigen value of H."));
+    nanobind::arg("check_duality_gap") = false,
+    nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
+    nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
+    nanobind::arg("primal_infeasibility_solving") = false,
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
 }
 
 } // namespace python
@@ -215,7 +150,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-solveSparseQp(pybind11::module_ m)
+solveSparseQp(nanobind::module_ m)
 {
   m.def(
     "solve",
@@ -225,65 +160,33 @@ solveSparseQp(pybind11::module_ m)
     "parameters (warm start, initial guess option, proximal step sizes, "
     "absolute and relative accuracies, maximum number of iterations, "
     "preconditioner execution).",
-    pybind11::arg_v("H", nullopt, "quadratic cost with sparse format."),
-    pybind11::arg_v("g", nullopt, "linear cost"),
-    pybind11::arg_v(
-      "A", nullopt, "equality constraint matrix with sparse format."),
-    pybind11::arg_v("b", nullopt, "equality constraint vector"),
-    pybind11::arg_v(
-      "C", nullopt, "inequality constraint matrix with sparse format."),
-    pybind11::arg_v("l", nullopt, "lower inequality constraint vector"),
-    pybind11::arg_v("u", nullopt, "upper inequality constraint vector"),
-    pybind11::arg_v("x", nullopt, "primal warm start"),
-    pybind11::arg_v("y", nullopt, "dual equality warm start"),
-    pybind11::arg_v("z", nullopt, "dual inequality warm start"),
-    pybind11::arg_v(
-      "eps_abs",
-      nullopt,
-      "absolute accuracy level used for the solver stopping criterion."),
-    pybind11::arg_v("eps_rel",
-                    nullopt,
-                    "relative accuracy level used for the solver stopping "
-                    "criterion. Deactivated in standard settings."),
-    pybind11::arg_v("rho", nullopt, "primal proximal parameter"),
-    pybind11::arg_v(
-      "mu_eq", nullopt, "dual equality constraint proximal parameter"),
-    pybind11::arg_v(
-      "mu_in", nullopt, "dual inequality constraint proximal parameter"),
-    pybind11::arg_v("verbose",
-                    nullopt,
-                    "verbose option to print information at each iteration."),
-    pybind11::arg_v("compute_preconditioner",
-                    true,
-                    "executes the default preconditioner for reducing ill "
-                    "conditioning and speeding up the solver."),
-    pybind11::arg_v(
-      "compute_timings", false, "compute solver's timings in μs."),
-    pybind11::arg_v("max_iter", nullopt, "maximum number of iteration."),
-    pybind11::arg_v("initial_guess",
-                    proxsuite::proxqp::InitialGuessStatus::
-                      EQUALITY_CONSTRAINED_INITIAL_GUESS),
-    pybind11::arg_v("sparse_backend",
-                    proxsuite::proxqp::SparseBackend::Automatic),
-    pybind11::arg_v("check_duality_gap",
-                    false,
-                    "if set to true, include the duality gap in absolute and "
-                    "relative stopping criteria."),
-    pybind11::arg_v("eps_duality_gap_abs",
-                    nullopt,
-                    "absolute accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("eps_duality_gap_rel",
-                    nullopt,
-                    "relative accuracy threshold used for the duality-gap "
-                    "stopping criterion."),
-    pybind11::arg_v("primal_infeasibility_solving",
-                    false,
-                    "solves the closest feasible problem in L2 sense "
-                    "if the QP problem appears to be infeasible."),
-    pybind11::arg_v("default_H_eigenvalue_estimate",
-                    0.,
-                    "Default estimate of the minimal eigen value of H."));
+    nanobind::arg("H") = nanobind::none(),
+    nanobind::arg("g") = nanobind::none(),
+    nanobind::arg("A") = nanobind::none(),
+    nanobind::arg("b") = nanobind::none(),
+    nanobind::arg("C") = nanobind::none(),
+    nanobind::arg("l") = nanobind::none(),
+    nanobind::arg("u") = nanobind::none(),
+    nanobind::arg("x") = nanobind::none(),
+    nanobind::arg("y") = nanobind::none(),
+    nanobind::arg("z") = nanobind::none(),
+    nanobind::arg("eps_abs") = nanobind::none(),
+    nanobind::arg("eps_rel") = nanobind::none(),
+    nanobind::arg("rho") = nanobind::none(),
+    nanobind::arg("mu_eq") = nanobind::none(),
+    nanobind::arg("mu_in") = nanobind::none(),
+    nanobind::arg("verbose") = nanobind::none(),
+    nanobind::arg("compute_preconditioner") = true,
+    nanobind::arg("compute_timings") = false,
+    nanobind::arg("max_iter") = nanobind::none(),
+    nanobind::arg("initial_guess") =
+      InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+    nanobind::arg("sparse_backend") = SparseBackend::Automatic,
+    nanobind::arg("check_duality_gap") = false,
+    nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
+    nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
+    nanobind::arg("primal_infeasibility_solving") = false,
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
 }
 
 } // namespace python

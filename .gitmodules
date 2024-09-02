@@ -1,6 +1,6 @@
-[submodule "external/pybind11"]
-	path = bindings/python/external/pybind11
-	url = https://github.com/pybind/pybind11
+[submodule "bindings/python/external/nanobind"]
+	path = bindings/python/external/nanobind
+	url = https://github.com/wjakob/nanobind
 [submodule "cmake-module"]
 	path = cmake-module
 	url = https://github.com/jrl-umi3218/jrl-cmakemodules.git
