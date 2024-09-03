@@ -6,13 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Added
+### Fixed
+* CMake: Fix link to system cereal in tests ([#353](https://github.com/Simple-Robotics/proxsuite/pull/352))
 
+### Added
 * Stub files for Python bindings, using [nanobind's native support](https://nanobind.readthedocs.io/en/latest/typing.html#stub-generation) ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
 
 ### Changed
-
 * Change Python bindings to use nanobind instead of pybind11 ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+
 
 ## [0.6.7] - 2024-08-27
 
