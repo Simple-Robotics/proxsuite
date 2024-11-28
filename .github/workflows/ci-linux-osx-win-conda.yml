@@ -80,7 +80,7 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions
+        mamba install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions llvm-openmp
         # Main dependencies
         mamba install eigen simde
         # Test dependencies
