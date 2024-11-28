@@ -754,9 +754,15 @@ private:
     proxsuite::linalg::veg::meta::false_type /*unused*/,
     Tuples&&... tups) VEG_NOEXCEPT -> Concat<Tuples...>
   {
-    return cat::template from_ref_to_result(
-      Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
-      cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
+#ifdef _MSC_VER
+return cat::from_ref_to_result(
+    Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
+    cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
+#else
+return cat::template from_ref_to_result(
+    Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
+    cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
+#endif
   }
 
   template<typename... Targets, usize... Is, typename... Refs>
