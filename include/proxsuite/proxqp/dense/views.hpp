@@ -395,8 +395,7 @@ using DataExpr = decltype(static_cast<T*>(VEG_DECLVAL(Mat&).data()));
 
 template<typename Dummy,
          typename Fallback,
-         template<typename...>
-         class F,
+         template<typename...> class F,
          typename... Ts>
 struct DetectedImpl : proxsuite::linalg::veg::meta::false_type
 {
@@ -717,8 +716,8 @@ struct StridedVectorView
   {
     return *ptr(index);
   }
-  VEG_INLINE auto segment(isize i,
-                          isize size) const noexcept -> StridedVectorView
+  VEG_INLINE auto segment(isize i, isize size) const noexcept
+    -> StridedVectorView
   {
     return {
       from_ptr_size_stride,
@@ -784,8 +783,8 @@ struct StridedVectorViewMut
   {
     return *ptr(index);
   }
-  VEG_INLINE auto segment(isize i,
-                          isize size) const noexcept -> StridedVectorViewMut
+  VEG_INLINE auto segment(isize i, isize size) const noexcept
+    -> StridedVectorViewMut
   {
     return {
       from_ptr_size_stride,
@@ -884,15 +883,13 @@ private:
   }
 
 public:
-  VEG_INLINE auto col(isize c) const noexcept
-    -> proxsuite::linalg::veg::meta::
-      if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>>
+  VEG_INLINE auto col(isize c) const noexcept -> proxsuite::linalg::veg::meta::
+    if_t<(L == colmajor), VectorView<T>, StridedVectorView<T>>
   {
     return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
   }
-  VEG_INLINE auto row(isize r) const noexcept
-    -> proxsuite::linalg::veg::meta::
-      if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>>
+  VEG_INLINE auto row(isize r) const noexcept -> proxsuite::linalg::veg::meta::
+    if_t<(L == rowmajor), VectorView<T>, StridedVectorView<T>>
   {
     return trans().col(r);
   }
@@ -992,15 +989,13 @@ private:
   }
 
 public:
-  VEG_INLINE auto col(isize c) const noexcept
-    -> proxsuite::linalg::veg::meta::
-      if_t<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
+  VEG_INLINE auto col(isize c) const noexcept -> proxsuite::linalg::veg::meta::
+    if_t<(L == colmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
   {
     return col_impl(proxsuite::linalg::veg::meta::constant<Layout, L>{}, c);
   }
-  VEG_INLINE auto row(isize r) const noexcept
-    -> proxsuite::linalg::veg::meta::
-      if_t<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
+  VEG_INLINE auto row(isize r) const noexcept -> proxsuite::linalg::veg::meta::
+    if_t<(L == rowmajor), VectorViewMut<T>, StridedVectorViewMut<T>>
   {
     return trans().col(r);
   }

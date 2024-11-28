@@ -60,8 +60,8 @@ public:
   }
   VEG_NODISCARD
   VEG_INLINE
-  constexpr auto get_unchecked(Unsafe /*tag*/,
-                               isize idx) const VEG_NOEXCEPT -> Ref<T>
+  constexpr auto get_unchecked(Unsafe /*tag*/, isize idx) const VEG_NOEXCEPT
+    -> Ref<T>
   {
     return ref(*(data + idx));
   }
@@ -149,8 +149,8 @@ struct SliceMut : private Slice<T>
   {
     return mut(const_cast<T&>(*(this->data + idx)));
   }
-  VEG_NODISCARD VEG_INLINE auto as_mut_bytes()
-    VEG_NOEXCEPT -> SliceMut<unsigned char>
+  VEG_NODISCARD VEG_INLINE auto as_mut_bytes() VEG_NOEXCEPT
+    -> SliceMut<unsigned char>
   {
     return {
       unsafe,

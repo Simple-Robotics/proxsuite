@@ -65,7 +65,8 @@ add_test_cflags(
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
 if(cereal_FOUND)
-  target_link_libraries(${PROJECT_NAME}-test-cpp-serialization PRIVATE cereal::cereal)
+  target_link_libraries(${PROJECT_NAME}-test-cpp-serialization
+                        PRIVATE cereal::cereal)
 else()
   target_include_directories(
     ${PROJECT_NAME}-test-cpp-serialization SYSTEM
