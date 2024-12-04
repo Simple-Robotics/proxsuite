@@ -279,8 +279,8 @@ public:
   template<typename T>
   VEG_NODISCARD auto make_alloc(Tag<T> /*unused*/,
                                 isize len,
-                                isize align = alignof(T))
-    VEG_NOEXCEPT -> DynStackAlloc<T>
+                                isize align = alignof(T)) VEG_NOEXCEPT
+    -> DynStackAlloc<T>
   {
     assert_valid_len(len);
     DynStackAlloc<T> get{

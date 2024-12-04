@@ -36,8 +36,8 @@ struct array_get
   using result_type = decltype(VEG_DECLVAL(T&&)[I::value]);
 
   template<usize I, typename T>
-  VEG_INLINE static constexpr auto apply(T&& arr)
-    VEG_NOEXCEPT -> decltype(VEG_FWD(arr)[I])
+  VEG_INLINE static constexpr auto apply(T&& arr) VEG_NOEXCEPT
+    -> decltype(VEG_FWD(arr)[I])
   {
     return VEG_FWD(arr)[I];
   }

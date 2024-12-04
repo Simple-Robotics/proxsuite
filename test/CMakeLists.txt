@@ -22,7 +22,7 @@ endif()
 macro(proxsuite_test name path)
   set(target_name ${PROJECT_NAME}-test-cpp-${name})
   add_executable(${target_name} ${path})
-  # doctest_discover_tests(${target_name})
+  doctest_discover_tests(${target_name})
   target_link_libraries(${target_name} PUBLIC proxsuite ${PROJECT_NAME}-doctest
                                               proxsuite-test-util)
   target_compile_definitions(${target_name}
@@ -65,7 +65,8 @@ add_test_cflags(
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
 if(cereal_FOUND)
-  target_link_libraries(${PROJECT_NAME}-test-cpp-serialization PRIVATE cereal::cereal)
+  target_link_libraries(${PROJECT_NAME}-test-cpp-serialization
+                        PRIVATE cereal::cereal)
 else()
   target_include_directories(
     ${PROJECT_NAME}-test-cpp-serialization SYSTEM

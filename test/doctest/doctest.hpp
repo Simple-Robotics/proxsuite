@@ -1563,8 +1563,7 @@ namespace detail {
 #endif // DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
 // clang-format on
 
-struct DOCTEST_INTERFACE TestFailureException
-{};
+struct DOCTEST_INTERFACE TestFailureException{};
 
 DOCTEST_INTERFACE bool
 checkIfShouldThrow(assertType::Enum at);

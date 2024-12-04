@@ -324,11 +324,11 @@
     Name,                                                                      \
     (__VA_ARGS__),                                                             \
     ::proxsuite::linalg::veg::meta::bool_constant<__VA_ARGS__>);               \
-  VEG_TEMPLATE(                                                                \
-    Tpl,                                                                       \
-    requires(__VA_ARGS__),                                                     \
-    constexpr auto check_##Name,                                               \
-    (_ = 0, int)) noexcept -> ::proxsuite::linalg::veg::meta::true_type
+  VEG_TEMPLATE(Tpl,                                                            \
+               requires(__VA_ARGS__),                                          \
+               constexpr auto check_##Name,                                    \
+               (_ = 0, int)) noexcept                                          \
+    -> ::proxsuite::linalg::veg::meta::true_type
 
 #define __VEG_IMPL_SFINAE(_, Param)                                            \
   , ::proxsuite::linalg::veg::meta::                                           \
@@ -1195,20 +1195,18 @@ struct ExtractCharsImplExpr<LiteralType, _meta::integer_sequence<usize, Is...>>
 
 template<typename LiteralType>
 auto
-extract_chars(LiteralType /*unused*/) ->
-  typename ExtractCharsImpl<
-    LiteralType,
-    _meta::make_index_sequence<LiteralType::Size::value>>::Type
+extract_chars(LiteralType /*unused*/) -> typename ExtractCharsImpl<
+  LiteralType,
+  _meta::make_index_sequence<LiteralType::Size::value>>::Type
 {
   return {};
 }
 
 template<typename LiteralType>
 auto
-extract_chars_expr(LiteralType /*unused*/) ->
-  typename ExtractCharsImplExpr<
-    LiteralType,
-    _meta::make_index_sequence<LiteralType::Size::value>>::Type
+extract_chars_expr(LiteralType /*unused*/) -> typename ExtractCharsImplExpr<
+  LiteralType,
+  _meta::make_index_sequence<LiteralType::Size::value>>::Type
 {
   return {};
 }

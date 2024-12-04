@@ -223,8 +223,8 @@ struct binary_traits<Fix<0>, Dyn> : binary_traits<Dyn, Dyn>
 {
   using Mul = Fix<0>;
   VEG_NODISCARD
-  constexpr VEG_INLINE static auto mul_fn(Fix<0> /*a*/,
-                                          Dyn /*b*/) VEG_NOEXCEPT -> Mul
+  constexpr VEG_INLINE static auto mul_fn(Fix<0> /*a*/, Dyn /*b*/) VEG_NOEXCEPT
+    -> Mul
   {
     return {};
   }
@@ -234,8 +234,8 @@ template<isize N>
 struct binary_traits<Dyn, Fix<N>> : binary_traits<Dyn, Dyn>
 {
   using Mul = typename binary_traits<Fix<N>, Dyn>::Mul;
-  VEG_INLINE static constexpr auto mul_fn(Dyn a,
-                                          Fix<N> /*b*/) VEG_NOEXCEPT -> Mul
+  VEG_INLINE static constexpr auto mul_fn(Dyn a, Fix<N> /*b*/) VEG_NOEXCEPT
+    -> Mul
   {
     return binary_traits<Fix<N>, Dyn>::mul_fn({}, a);
   }

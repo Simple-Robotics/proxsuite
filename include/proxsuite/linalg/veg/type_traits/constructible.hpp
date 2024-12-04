@@ -189,7 +189,7 @@ struct WithArg
   Fn&& fn;
   T&& arg;
   VEG_INLINE constexpr auto operator()() const&& -> decltype(VEG_FWD(fn)(
-                                                   VEG_FWD(arg)))
+    VEG_FWD(arg)))
   {
     return VEG_FWD(fn)(VEG_FWD(arg));
   }

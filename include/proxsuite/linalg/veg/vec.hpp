@@ -277,9 +277,9 @@ realloc_and_append( //
   mem::AllocBlock out,
   usize out_len,
   T const* in,
-  usize in_len)
-  VEG_NOEXCEPT_IF(VEG_CONCEPT(alloc::nothrow_grow<A>) &&
-                  VEG_CONCEPT(alloc::nothrow_clone<C, T, A>)) -> mem::AllocBlock
+  usize in_len) VEG_NOEXCEPT_IF(VEG_CONCEPT(alloc::nothrow_grow<A>) &&
+                                VEG_CONCEPT(alloc::nothrow_clone<C, T, A>))
+  -> mem::AllocBlock
 {
 
   if (in_len == 0) {
