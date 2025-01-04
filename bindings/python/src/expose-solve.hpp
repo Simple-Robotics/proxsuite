@@ -76,7 +76,8 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
-    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.,
+    nanobind::call_guard<nanobind::gil_scoped_release>());
 
   m.def(
     "solve",
@@ -139,7 +140,8 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
-    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.,
+    nanobind::call_guard<nanobind::gil_scoped_release>());
 }
 
 } // namespace python
@@ -186,7 +188,8 @@ solveSparseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
-    nanobind::arg("default_H_eigenvalue_estimate") = 0.);
+    nanobind::arg("default_H_eigenvalue_estimate") = 0.,
+    nanobind::call_guard<nanobind::gil_scoped_release>());
 }
 
 } // namespace python
