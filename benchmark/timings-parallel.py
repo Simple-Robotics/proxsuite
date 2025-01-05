@@ -38,7 +38,9 @@ num_qps = 128
 
 print(f"Problem specs: {n=} {n_eq=} {n_in=}. Generating {num_qps} such problems.")
 problems = [generate_mixed_qp(n, n_eq, n_in, seed=j) for j in range(num_qps)]
-print(f"Generated problems. Solving {num_qps} problems with proxsuite.proxqp.omp_get_max_threads()={num_threads} threads.")
+print(
+    f"Generated problems. Solving {num_qps} problems with proxsuite.proxqp.omp_get_max_threads()={num_threads} threads."
+)
 
 # qps = []
 timings = {}
@@ -72,20 +74,36 @@ for j in range(1, num_threads):
     proxsuite.proxqp.dense.solve_in_parallel(qps=qps, num_threads=j)
     timings[f"solve_parallel_{j}_threads"] = (perf_counter_ns() - tic) * 1e-6
 
+
+def solve_problem_with_dense_backend(
+    problem,
+):  # just a little helper function to keep things clean
+    H, g, A, b, C, l, u = problem
+    return proxsuite.proxqp.dense.solve(
+        H,
+        g,
+        A,
+        b,
+        C,
+        l,
+        u,
+        initial_guess=proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS,
+        eps_abs=1e-9,
+    )
+
+
 print("Solving each problem serially with dense backend.")
 tic = perf_counter_ns()
-for H, g, A, b, C, l, u in problems:
-    proxsuite.proxqp.dense.solve(H, g, A, b, C, l, u, initial_guess=proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS, eps_abs=1e-9)
+for problem in problems:
+    solve_problem_with_dense_backend(problem)
 timings["solve_serial_dense"] = (perf_counter_ns() - tic) * 1e-6
 
-print("Solving each problem in parallel (with a ThreadPoolExecutor) with dense backend.")
-def solve_problem(problem):  # just a little helper function to keep things clean
-    H, g, A, b, C, l, u = problem
-    return proxsuite.proxqp.dense.solve(H, g, A, b, C, l, u, initial_guess=proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS, eps_abs=1e-9)
-
+print(
+    "Solving each problem in parallel (with a ThreadPoolExecutor) with dense backend."
+)
 tic = perf_counter_ns()
 with ThreadPoolExecutor(max_workers=num_threads) as executor:
-    results = list(executor.map(solve_problem, problems))
+    results = list(executor.map(solve_problem_with_dense_backend, problems))
 timings["solve_parallel_dense"] = (perf_counter_ns() - tic) * 1e-6
 
 for k, v in timings.items():
