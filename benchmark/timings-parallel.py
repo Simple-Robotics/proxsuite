@@ -102,9 +102,9 @@ for n, n_eq, n_in in problem_specs:
 
     def solve_problem_with_dense_backend(
         problem,
-    ):  # just a little helper function to keep things clean
+    ):
         H, g, A, b, C, l, u = problem
-        return proxsuite.proxqp.dense.solve(
+        return proxsuite.proxqp.dense.solve_no_gil(
             H,
             g,
             A,
