@@ -12,9 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 * Stub files for Python bindings, using [nanobind's native support](https://nanobind.readthedocs.io/en/latest/typing.html#stub-generation) ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+* Add `solve_no_gil` for dense backend (multithreading via python) ([#363](https://github.com/Simple-Robotics/proxsuite/pull/363))
+* Add benchmarks for `solve_no_gil` vs `solve_in_parallel` (openmp) ([#363](https://github.com/Simple-Robotics/proxsuite/pull/363))
 
 ### Changed
 * Change Python bindings to use nanobind instead of pybind11 ([#340](https://github.com/Simple-Robotics/proxsuite/pull/340))
+* Update setup-minicondav2 to v3 ([#363](https://github.com/Simple-Robotics/proxsuite/pull/363))
 
 
 ## [0.6.7] - 2024-08-27
