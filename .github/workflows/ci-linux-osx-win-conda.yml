@@ -57,22 +57,11 @@ jobs:
       with:
         submodules: recursive
 
-    - uses: conda-incubator/setup-miniconda@v2
-      if: matrix.os != 'macos-14'
+    - uses: conda-incubator/setup-miniconda@v3
       with:
-        miniforge-variant: Mambaforge
         miniforge-version: latest
-        channels: conda-forge
-        python-version: "3.10"
         activate-environment: proxsuite
 
-    - uses: conda-incubator/setup-miniconda@v3
-      if: matrix.os == 'macos-14'
-      with:
-        channels: conda-forge
-        python-version: "3.10"
-        activate-environment: proxsuite
-        installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
 
     - name: Install dependencies [Conda]
       shell: bash -l {0}
@@ -80,17 +69,17 @@ jobs:
         # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
         conda config --remove channels defaults
         # Compilation related dependencies
-        mamba install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions llvm-openmp clang
+        conda install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions llvm-openmp clang
         # Main dependencies
-        mamba install eigen simde
+        conda install eigen simde
         # Test dependencies
-        mamba install libmatio numpy scipy
+        conda install libmatio numpy scipy
 
-    - name: Install julia [macOS/Linux]
-      if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'ubuntu')
+    - name: Install julia [Linux]
+      if: contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        mamba install julia
+        conda install julia
 
     - name: Activate ccache [Conda]
       uses: hendrikmuhs/ccache-action@v1.2
@@ -102,7 +91,7 @@ jobs:
       shell: bash -l {0}
       run: |
         conda info
-        mamba list
+        conda list
         env
 
     - name: Configure [Conda/Linux&macOS]
@@ -142,7 +131,6 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(where ccache)
-        ls C:\\Miniconda3\\envs\\proxsuite\\Library\\lib
         git submodule update --init
         mkdir build
         cd build
@@ -155,7 +143,6 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(where ccache)
-        ls C:\\Miniconda3\\envs\\proxsuite\\Library\\lib
         git submodule update --init
         mkdir build
         cd build
@@ -168,7 +155,6 @@ jobs:
       shell: bash -l {0}
       run: |
         echo $(where ccache)
-        ls C:\\Miniconda3\\envs\\proxsuite\\Library\\lib
         git submodule update --init
         mkdir build
         cd build

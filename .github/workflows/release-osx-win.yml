@@ -35,23 +35,11 @@ jobs:
           git submodule update
 
       - name: Setup conda
-        if: contains(matrix.os, 'macos-13') || contains(matrix.os, 'windows')
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniforge-variant: Mambaforge
-          miniforge-version: latest
-          channels: conda-forge
-          python-version: ${{ matrix.python-version }}
-          activate-environment: proxsuite
-
-      - name: Setup conda
-        if: matrix.os == 'macos-14'
         uses: conda-incubator/setup-miniconda@v3
         with:
-          channels: conda-forge
+          miniforge-version: latest
           python-version: ${{ matrix.python-version }}
           activate-environment: proxsuite
-          installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
 
       - name: Install dependencies [Conda]
         if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
@@ -59,14 +47,13 @@ jobs:
         run: |
           # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
           conda config --remove channels defaults
-          mamba install doxygen graphviz eigen simde cmake compilers typing_extensions
+          conda install doxygen graphviz eigen simde cmake compilers typing_extensions
 
       - name: Print environment [Conda]
-        if: contains(matrix.os, 'macos') || contains(matrix.os, 'windows')
         shell: bash -l {0}
         run: |
           conda info
-          mamba list
+          conda list
           env
 
       - name: Build wheel
