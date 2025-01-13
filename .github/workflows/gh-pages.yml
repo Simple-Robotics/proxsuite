@@ -12,11 +12,9 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniforge-variant: Mambaforge
           miniforge-version: latest
-          channels: conda-forge
           python-version: "3.10"
           activate-environment: doc
 
@@ -27,16 +25,16 @@ jobs:
           conda config --remove channels defaults
 
           # Compilation related dependencies
-          mamba install cmake make pkg-config doxygen graphviz
+          conda install cmake make pkg-config doxygen graphviz
 
           # Main dependencies
-          mamba install eigen
+          conda install eigen
 
       - name: Print environment
         shell: bash -l {0}
         run: |
           conda info
-          mamba list
+          conda list
           env
 
       - name: Configure
