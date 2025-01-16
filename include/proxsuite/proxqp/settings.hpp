@@ -235,9 +235,15 @@ struct Settings
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
     T eps_refact = 1.e-6, // before eps_refact_=1.e-6
-    bool verbose = false,
+    // bool verbose = false,
+    bool verbose = true,
+    // InitialGuessStatus initial_guess = InitialGuessStatus::
+    //   EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
+    //                                       // EQUALITY_CONSTRAINED_INITIAL_GUESS,
+    //                                       // as most often we run only
+    //                                       // once a problem
     InitialGuessStatus initial_guess = InitialGuessStatus::
-      EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
+      NO_INITIAL_GUESS, // default to
                                           // EQUALITY_CONSTRAINED_INITIAL_GUESS,
                                           // as most often we run only
                                           // once a problem

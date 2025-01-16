@@ -12,6 +12,7 @@
 #include <proxsuite/proxqp/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/proxqp/dense/fwd.hpp>
 namespace proxsuite {
 namespace proxqp {
 namespace dense {

@@ -13,7 +13,7 @@ function(ADD_PROXSUITE_CPP_EXAMPLE EXAMPLE)
   add_dependencies(example-cpp ${EXAMPLE_TARGET})
 endfunction()
 
-file(GLOB_RECURSE ${PROJECT_NAME}_CPP_EXAMPLES *.cpp)
+file(GLOB_RECURSE ${PROJECT_NAME}_CPP_EXAMPLES CONFIGURE_DEPENDS *.cpp)
 
 foreach(EXAMPLE ${${PROJECT_NAME}_CPP_EXAMPLES})
   add_proxsuite_cpp_example(${EXAMPLE})

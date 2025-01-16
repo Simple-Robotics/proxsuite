@@ -11,7 +11,7 @@
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
-#include <chrono>
+// #include <chrono>
 
 namespace proxsuite {
 namespace proxqp {
@@ -127,6 +127,13 @@ public:
   Model<T> model;
   Workspace<T> work;
   preconditioner::RuizEquilibration<T> ruiz;
+
+  /*!
+  Getters
+  */
+  DenseBackend get_dense_backend() const { return dense_backend; }
+  bool get_box_constraints() const { return box_constraints; }
+  HessianType get_hessian_type() const { return hessian_type; }
 
   /*!
    * Default constructor using QP model dimensions.
