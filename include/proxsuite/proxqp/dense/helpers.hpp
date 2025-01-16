@@ -13,6 +13,8 @@
 #include <proxsuite/proxqp/status.hpp>
 #include <proxsuite/proxqp/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/proxqp/dense/workspace.hpp> //
+#include <proxsuite/proxqp/dense/model.hpp> //
 #include <chrono>
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Eigenvalues>
