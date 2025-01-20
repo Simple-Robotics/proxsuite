@@ -1027,6 +1027,13 @@ primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
                 << "| inner residual=" << err_in << " | alpha=" << alpha
                 << std::endl;
     }
+    // std::cout << "type of dy: " << typeid(dy).name() << std::endl;
+    // Returns: N5Eigen11VectorBlockINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEELin1EEE
+    // std::cout << "type of ATdy in argument: " << typeid(VectorViewMut<T>{ from_eigen, ATdy }).name() << std::endl; 
+    // // They all return N9proxsuite6proxqp13VectorViewMutIdEE
+    // std::cout << "type of CTdz in argument: " << typeid(VectorViewMut<T>{ from_eigen, CTdz }).name() << std::endl;
+    // std::cout << "type of dy in argument: " << typeid(VectorViewMut<T>{ from_eigen, dy }).name() << std::endl;
+    // std::cout << "type of dz in argument: " << typeid(VectorViewMut<T>{ from_eigen, dz }).name() << std::endl;
     if (iter % qpsettings.frequence_infeasibility_check == 0 ||
         qpsettings.primal_infeasibility_solving) {
       // compute primal and dual infeasibility criteria
@@ -1118,7 +1125,7 @@ qp_solve( //
                                            ruiz,
                                            proxsuite::solvers::utils::SolverType::PROXQP);
 
-  isize n_constraints(qpmodel.n_in); // TODO: n_constraints defined locally too in setup_solver -> dirty ? 
+  isize n_constraints(qpmodel.n_in);
 
   T bcl_eta_ext_init = pow(T(0.1), qpsettings.alpha_bcl);
   T bcl_eta_ext = bcl_eta_ext_init;
