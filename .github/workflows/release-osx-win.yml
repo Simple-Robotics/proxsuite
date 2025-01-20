@@ -100,9 +100,6 @@ jobs:
         if: |
           github.repository == 'Simple-Robotics/proxsuite' &&
           (github.event_name == 'release' && github.event.action == 'published')
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
 
   check:
     if: always()
