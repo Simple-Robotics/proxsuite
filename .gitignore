@@ -2,4 +2,3 @@ build*
 Xcode*
 *.pyc
 .vscode*
-.cache
