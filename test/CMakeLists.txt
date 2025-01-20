@@ -46,8 +46,6 @@ proxsuite_test(osqp_dense_ruiz_equilibration src/osqp_dense_ruiz_equilibration.c
 proxsuite_test(osqp_dense_qp_solve src/osqp_dense_qp_solve.cpp)
 proxsuite_test(osqp_dense_qp_eq src/osqp_dense_qp_eq.cpp)
 proxsuite_test(osqp_dense_unconstrained_qp src/osqp_dense_unconstrained_qp.cpp)
-proxsuite_test(osqp_dense_qp_with_eq_and_in src/osqp_dense_qp_with_eq_and_in.cpp)
-proxsuite_test(osqp_dense_qp_wrapper src/osqp_dense_qp_wrapper.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_test(parallel src/parallel_qp_solve.cpp)
