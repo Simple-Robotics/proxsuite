@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2025-01-21
+
 ### Fixed
 * CMake: Fix link to system cereal in tests ([#353](https://github.com/Simple-Robotics/proxsuite/pull/352))
 * Fix windows build error related to template usage in veg ([#357](https://github.com/Simple-Robotics/proxsuite/pull/357))
@@ -446,7 +448,8 @@ More to come ([#](a forthcoming release.))
 The first release of ProxSuite.
 
 
-[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.7...HEAD
+[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.7...v0.7.0
 [0.6.7]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.6...v0.6.7
 [0.6.6]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.5...v0.6.6
 [0.6.5]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.4...v0.6.5
