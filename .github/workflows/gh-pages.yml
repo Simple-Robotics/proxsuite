@@ -15,15 +15,13 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          python-version: "3.10"
           activate-environment: doc
+          channels: conda-forge
+          conda-remove-defaults: "true"
 
       - name: Dependencies
         shell: bash -l {0}
         run: |
-          # Workaround for https://github.com/conda-incubator/setup-miniconda/issues/186
-          conda config --remove channels defaults
-
           # Compilation related dependencies
           conda install cmake make pkg-config doxygen graphviz
 
