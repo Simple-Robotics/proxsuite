@@ -14,7 +14,7 @@ authors:
   - family-names: Carpentier
     given-names: Justin
     orcid: "https://orcid.org/0000-0001-6585-2894"
-version: 0.6.7
-date-released: "2024-08-27"
+version: 0.7.0
+date-released: "2025-01-21"
 license: BSD-2-Clause
 repository-code: "https://github.com/Simple-Robotics/proxsuite"
