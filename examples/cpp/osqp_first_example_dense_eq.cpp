@@ -54,8 +54,6 @@ main()
 
   std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
   std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
-            << std::endl;
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
   return 0;

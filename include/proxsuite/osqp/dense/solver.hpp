@@ -26,6 +26,156 @@ namespace proxsuite {
 namespace osqp {
 namespace dense {
 
+
+
+/*!
+ * Iteration of OSQP (ADMM step).
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ */
+template<typename T>
+bool
+admm(const proxqp::Settings<T>& qpsettings,
+                            const proxqp::dense::Model<T>& qpmodel,
+                            proxqp::Results<T>& qpresults,
+                            proxqp::dense::Workspace<T>& qpwork,
+                            const bool box_constraints,
+                            const proxqp::isize n_constraints,
+                            proxqp::dense::preconditioner::RuizEquilibration<T>& ruiz,
+                            const proxqp::DenseBackend dense_backend,
+                            const proxqp::HessianType hessian_type)
+{
+
+  using namespace proxsuite::proxqp;
+
+  // Solve the linear system
+  // ( (H + rho * I, A^T)  (A, -\mu_eq * I) ) ( x, y ) = ( rho * x_prev - g, b - \mu_eq * y_prev ) 
+  // Formulation in proxqp paper, equality case
+
+  qpwork.rhs.setZero();
+  qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
+  qpwork.rhs.tail(qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
+
+  isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq;
+
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  };
+
+  proxqp::dense::solve_linear_system(qpwork.rhs,
+                                     qpmodel,
+                                     qpresults,
+                                     qpwork,
+                                     n_constraints,
+                                     dense_backend,
+                                     inner_pb_dim,
+                                     stack);
+
+  /// New (x, y)
+  qpresults.x = qpwork.rhs.head(qpmodel.dim);
+  qpresults.y = qpwork.rhs.tail(qpmodel.n_eq);
+
+  // Delta x and y (and z equal to 0)
+  proxqp::dense::Vec<T> dx = qpresults.x - qpwork.x_prev; // TODO: Dirty way to define it ? (Compared to proxq code, line "auto dx = qpwork.dw_aug.head(qpmodel.dim);")
+  proxqp::dense::Vec<T> dy = qpresults.y - qpwork.y_prev;
+  proxqp::dense::Vec<T> dz = proxqp::dense::Vec<T>::Zero(qpmodel.n_in);
+
+  // New right hand side 
+  qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
+  qpwork.rhs.tail(qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
+
+
+  // // Computing the resuduals: 
+  // // Note: The linear system in proxqp solves finds dx, dy and so on => I change the definitions
+  // // of Adx, etc (comapred to proxqp solver)
+
+  auto& Hdx = qpwork.Hdx;
+  auto& Adx = qpwork.Adx;
+  auto& ATdy = qpwork.CTz;
+
+  switch (hessian_type) {
+    case HessianType::Zero:
+      break;
+    case HessianType::Dense:
+      Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
+      break;
+    case HessianType::Diagonal:
+  #ifndef NDEBUG
+      PROXSUITE_THROW_PRETTY(!qpwork.H_scaled.isDiagonal(),
+                              std::invalid_argument,
+                              "H is not diagonal.");
+  #endif
+      Hdx.array() = qpwork.H_scaled.diagonal().array() * dx.array();
+      break;
+  }
+  ATdy.noalias() = qpwork.A_scaled.transpose() * dy;
+  Adx.noalias() = qpwork.A_scaled * dx;
+
+  // proxsuite::linalg::veg::dynstack::DynStackMut stack{
+  //   proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  // }; // TODO: See how to deal with the stack, how it works
+  auto& Cdx = qpwork.Cdx;
+  LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
+  if (qpmodel.n_in > 0) {
+    Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
+    CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
+  }
+
+  // Check the feasibility (code inspired from the proxqp newton function)
+  // TODO: In proxqp solver, there is a condition to test this which is "qpsettings.primal_infeasibility_solving == true"
+  // Understand why it is used, since it would make me fail tests here (if set to false)
+
+  bool is_primal_infeasible = proxsuite::proxqp::dense::global_primal_residual_infeasibility(
+    VectorViewMut<T>{ from_eigen, ATdy },
+    VectorViewMut<T>{ from_eigen, CTdz  },
+    VectorViewMut<T>{ from_eigen, dy },   
+    VectorViewMut<T>{ from_eigen, dz },
+    qpwork,
+    qpmodel,
+    qpsettings,
+    box_constraints,
+    ruiz);
+  std::cout << "is_primal_infeasible: " << is_primal_infeasible << std::endl;
+
+  bool is_dual_infeasible = proxsuite::proxqp::dense::global_dual_residual_infeasibility(
+    VectorViewMut<T>{ from_eigen, Adx },
+    VectorViewMut<T>{ from_eigen, Cdx }, 
+    VectorViewMut<T>{ from_eigen, Hdx },
+    VectorViewMut<T>{ from_eigen, dx },
+    qpwork,
+    qpsettings,
+    qpmodel,
+    box_constraints,
+    ruiz);
+
+  if (is_primal_infeasible) {
+    qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+  } else if (is_dual_infeasible) {
+    qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+  }
+
+  if ((qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
+        !qpsettings.primal_infeasibility_solving) ||
+      qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
+    // certificate of infeasibility
+    return true; // Instead of doing break; in one single big qp_solve function
+  } else {
+    return false;
+  }
+
+  // TODO: Once the inequality case is coded, 
+  // Handle (here) the closest feasible primal solution in case of primal infeasibility
+
+
+
+}
+
+
 /*!
  * Solves the KKT system in the case of equality constraints only.
  *
@@ -125,35 +275,36 @@ solve_eq_constraints_system(const proxqp::Settings<T>& qpsettings,
   }
 
   // Check the feasibility (code inspired from the proxqp newton function)
+  // TODO: In proxqp solver, there is a condition to test this which is "qpsettings.primal_infeasibility_solving == true"
+  // Understand why it is used, since it would make me fail tests here (if set to false)
 
-  if (qpsettings.primal_infeasibility_solving) {
-    bool is_primal_infeasible = proxsuite::proxqp::dense::global_primal_residual_infeasibility(
-      VectorViewMut<T>{ from_eigen, ATdy },
-      VectorViewMut<T>{ from_eigen, CTdz  },
-      VectorViewMut<T>{ from_eigen, dy },   
-      VectorViewMut<T>{ from_eigen, dz },
-      qpwork,
-      qpmodel,
-      qpsettings,
-      box_constraints,
-      ruiz);
+  bool is_primal_infeasible = proxsuite::proxqp::dense::global_primal_residual_infeasibility(
+    VectorViewMut<T>{ from_eigen, ATdy },
+    VectorViewMut<T>{ from_eigen, CTdz  },
+    VectorViewMut<T>{ from_eigen, dy },   
+    VectorViewMut<T>{ from_eigen, dz },
+    qpwork,
+    qpmodel,
+    qpsettings,
+    box_constraints,
+    ruiz);
+  std::cout << "is_primal_infeasible: " << is_primal_infeasible << std::endl;
 
-    bool is_dual_infeasible = proxsuite::proxqp::dense::global_dual_residual_infeasibility(
-      VectorViewMut<T>{ from_eigen, Adx },
-      VectorViewMut<T>{ from_eigen, Cdx }, 
-      VectorViewMut<T>{ from_eigen, Hdx },
-      VectorViewMut<T>{ from_eigen, dx },
-      qpwork,
-      qpsettings,
-      qpmodel,
-      box_constraints,
-      ruiz);
+  bool is_dual_infeasible = proxsuite::proxqp::dense::global_dual_residual_infeasibility(
+    VectorViewMut<T>{ from_eigen, Adx },
+    VectorViewMut<T>{ from_eigen, Cdx }, 
+    VectorViewMut<T>{ from_eigen, Hdx },
+    VectorViewMut<T>{ from_eigen, dx },
+    qpwork,
+    qpsettings,
+    qpmodel,
+    box_constraints,
+    ruiz);
 
-    if (is_primal_infeasible) {
-      qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
-    } else if (is_dual_infeasible) {
-      qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
-    }
+  if (is_primal_infeasible) {
+    qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+  } else if (is_dual_infeasible) {
+    qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
   }
 
   if ((qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
@@ -165,8 +316,10 @@ solve_eq_constraints_system(const proxqp::Settings<T>& qpsettings,
     return false;
   }
 
-  // TODO: See more in detail on OSQP algorithm how I implement the 
-  // solve closest problem solution (if infeasible)
+  // TODO: Once the inequality case is coded, 
+  // Handle (here) the closest feasible primal solution in case of primal infeasibility
+
+
 
 }
 
