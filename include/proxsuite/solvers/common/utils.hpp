@@ -565,7 +565,7 @@ print_solver_statistics(
         std::cout << "objective:    " << qpresults.info.objValue << std::endl;
         break;
       case SolverType::OSQP: {
-        std::cout << "outer iter:   " << qpresults.info.iter_ext << std::endl;
+        std::cout << "iter:   " << qpresults.info.iter_ext << std::endl;
         std::cout << "objective:    " << qpresults.info.objValue << std::endl;
         break;
       }
