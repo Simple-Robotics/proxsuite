@@ -62,21 +62,17 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v3
       with:
-        miniforge-version: latest
         activate-environment: proxsuite
-        channels: conda-forge
-        conda-remove-defaults: "true"
+        environment-file: .github/workflows/conda/environment.yml
+        auto-activate-base: false
+        auto-update-conda: true
 
-
-    - name: Install dependencies [Conda]
+    - name: Install dependencies [Conda/Windows-latest]
+      if: contains(matrix.os, 'windows-latest')
       shell: bash -l {0}
       run: |
-        # Compilation related dependencies
-        conda install cmake compilers make pkg-config doxygen ninja graphviz typing_extensions llvm-openmp clang
-        # Main dependencies
-        conda install eigen simde
-        # Test dependencies
-        conda install libmatio numpy scipy
+        # Use VS2022 on Windows-latest
+        conda install vs2022_win-64
 
     - name: Install julia [Linux]
       if: contains(matrix.os, 'ubuntu')
@@ -119,7 +115,7 @@ jobs:
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows-')
-      # It's better to use CMD to have all MSVC variables setup
+      # It's better to use CMD to have all VS variables setup
       shell: cmd /C CALL {0}
       run: |
         git submodule update --init
@@ -138,7 +134,7 @@ jobs:
 
     - name: Build [Conda/Windows]
       if: contains(matrix.os, 'windows-')
-      # It's better to use CMD to have all MSVC variables setup
+      # It's better to use CMD to have all VS variables setup
       shell: cmd /C CALL {0}
       run: |
         cd build

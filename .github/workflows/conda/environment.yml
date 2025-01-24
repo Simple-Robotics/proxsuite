@@ -1,0 +1,20 @@
+name: proxsuite
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - cmake
+  - compilers
+  - make
+  - pkg-config
+  - doxygen
+  - ninja
+  - graphviz
+  - typing_extensions
+  - llvm-openmp
+  - clang
+  - eigen
+  - simde
+  - libmatio
+  - numpy
+  - scipy
