@@ -26,11 +26,14 @@ jobs:
             os: macos-latest
           - name: macos-14
             os: macos-14
+          # proxsuite doesn't build with vs2019, so we use clang-cl instead
           - name: windows-2019-clang-cl
             os: windows-2019
             compiler: clang-cl
+          # proxsuite should work with vs2022
           - name: windows-latest
             os: windows-latest
+            compiler: cl
           - name: macos-latest
             os: macos-latest
             build_type: Debug
@@ -95,7 +98,7 @@ jobs:
         env
 
     - name: Configure [Conda/Linux&macOS]
-      if: contains(matrix.os, 'macos-latest') || contains(matrix.os, 'ubuntu')
+      if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
         echo $(whereis ccache)
@@ -104,18 +107,6 @@ jobs:
         mkdir build
         cd build
         cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DOpenMP_ROOT=$CONDA_PREFIX
-
-    - name: Configure [Conda/macOS14]
-      if: contains(matrix.os, 'macos-14')
-      shell: bash -l {0}
-      run: |
-        echo $(whereis ccache)
-        echo $(which ccache)
-        git submodule update --init
-        mkdir build
-        cd build
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DOpenMP_ROOT=$CONDA_PREFIX
-
 
     - name: Configure [Conda/macOS-debug/CheckMalloc]
       if: contains(matrix.os, 'macos-latest') && contains(matrix.build_type, 'Debug')
@@ -126,41 +117,17 @@ jobs:
         cd build
         cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCHECK_RUNTIME_MALLOC:BOOL=ON -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DOpenMP_ROOT=$CONDA_PREFIX
 
-    - name: Configure [Conda/Windows-2019]
-      if: contains(matrix.os, 'windows-2019')
+    - name: Configure [Conda/Windows]
+      if: contains(matrix.os, 'windows-')
       shell: bash -l {0}
       run: |
         echo $(where ccache)
         git submodule update --init
         mkdir build
         cd build
-        export CXX=clang-cl
-        export CC=clang-cl
-        cmake .. -G"Ninja" -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=${CONDA_PREFIX}/Lib/site-packages -DPYTHON_EXECUTABLE=${CONDA_PREFIX}/python.exe -DOpenMP_ROOT=$CONDA_PREFIX -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
-
-    - name: Configure [Conda/Windows-latest]
-      if: contains(matrix.os, 'windows-latest') && contains(matrix.cxx_std, '20')
-      shell: bash -l {0}
-      run: |
-        echo $(where ccache)
-        git submodule update --init
-        mkdir build
-        cd build
-        export CXX=clang-cl
-        export CC=clang-cl
-        cmake .. -G"Ninja" -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=${CONDA_PREFIX}/Lib/site-packages -DPYTHON_EXECUTABLE=${CONDA_PREFIX}/python.exe -DOpenMP_ROOT=$CONDA_PREFIX -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
-
-    - name: Configure [Conda/Windows-latest]
-      if: contains(matrix.os, 'windows-latest') && contains(matrix.cxx_std, '17')
-      shell: bash -l {0}
-      run: |
-        echo $(where ccache)
-        git submodule update --init
-        mkdir build
-        cd build
-        export CXX=clang-cl
-        export CC=clang-cl
-        cmake .. -G"Ninja" -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=${CONDA_PREFIX}/Lib/site-packages -DPYTHON_EXECUTABLE=${CONDA_PREFIX}/python.exe -DOpenMP_ROOT=$CONDA_PREFIX -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
+        export CC=${{ matrix.compiler }}
+        export CXX=${{ matrix.compiler }}
+        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=${CONDA_PREFIX}/Lib/site-packages -DPYTHON_EXECUTABLE=${CONDA_PREFIX}/python.exe -DOpenMP_ROOT=$CONDA_PREFIX -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
 
     - name: Build [Conda]
       shell: bash -l {0}
