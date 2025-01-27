@@ -2,6 +2,7 @@
   <img src="https://github.com/Simple-Robotics/proxsuite/raw/main/doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
 </p>
 
+
 <p align="center">
   <a href="https://opensource.org/licenses/BSD-2-Clause"><img src="https://img.shields.io/badge/License-BSD%202--Clause-green.svg" alt="License"/></a>
   <a href="https://simple-robotics.github.io/proxsuite/"><img src="https://img.shields.io/badge/docs-online-brightgreen" alt="Documentation"/></a>
