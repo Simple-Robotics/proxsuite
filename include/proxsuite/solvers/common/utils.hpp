@@ -626,9 +626,13 @@ prepare_next_solve(
   qpwork.dirty = true;
   qpwork.is_initialized = true; // necessary because we call workspace cleanup
 
+  #ifndef NDEBUG // In debug mode
   assert(!std::isnan(qpresults.info.pri_res));
   assert(!std::isnan(qpresults.info.dua_res));
   assert(!std::isnan(qpresults.info.duality_gap));
+  #else
+    (void)qpresults; // In release mode
+  #endif
 }
 /*!
  * Computes residuals and infeasibility. 
@@ -748,6 +752,7 @@ compute_residuals_and_infeasibility_1( //
                 << " | dual residual=" << qpresults.info.dua_res
                 << " | duality gap=" << qpresults.info.duality_gap
                 << " | rho=" << qpresults.info.rho
+                << " | mu_in=" << qpresults.info.mu_in
                 << " | mu_eq=" << qpresults.info.mu_eq << std::endl;
           break;
         }

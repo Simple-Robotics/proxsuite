@@ -257,52 +257,21 @@ using namespace proxsuite::osqp;
 //                 proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 // }
 
-// DOCTEST_TEST_CASE("infeasible qp equality constraints")
-// {
-//   Eigen::Matrix<T, 2, 2> H;
-//   H << 1.0, 0.0, 0.0, 1.0;
-//   H = 2 * H;
-
-//   Eigen::Matrix<T, 2, 1> g;
-//   g << -18.0, -12.0;
-
-//   Eigen::Matrix<T, 2, 2> A;
-//   A << 1, 1, 
-//        1, 1;   
-
-//   Eigen::Matrix<T, 2, 1> b;
-//   b << 1, 5;
-
-//   int n = H.rows();
-//   int n_in = 0;
-//   int n_eq = A.rows();
-
-//   proxsuite::osqp::dense::QP<T> qp(n, n_eq, n_in);
-//   qp.init(H, g, A, b, nullopt, nullopt, nullopt);
-//   qp.settings.eps_rel = 0.;
-//   qp.settings.eps_abs = 1e-9;
-
-//   qp.solve();
-
-//   DOCTEST_CHECK(qp.results.info.status ==
-//                 proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
-// }
-
-DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
+DOCTEST_TEST_CASE("infeasible qp equality constraints")
 {
   Eigen::Matrix<T, 2, 2> H;
-  H << 0.0, 0.0, 0.0, 0.0;
+  H << 1.0, 0.0, 0.0, 1.0;
   H = 2 * H;
 
   Eigen::Matrix<T, 2, 1> g;
-  g << 1.0, -1.0;
+  g << -18.0, -12.0;
 
   Eigen::Matrix<T, 2, 2> A;
   A << 1, 1, 
        1, 1;   
 
   Eigen::Matrix<T, 2, 1> b;
-  b << 1, 1;
+  b << 1, 5;
 
   int n = H.rows();
   int n_in = 0;
@@ -316,5 +285,36 @@ DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
   qp.solve();
 
   DOCTEST_CHECK(qp.results.info.status ==
-                proxsuite::proxqp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE);
+                proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 }
+
+// DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
+// {
+//   Eigen::Matrix<T, 2, 2> H;
+//   H << 0.0, 0.0, 0.0, 0.0;
+//   H = 2 * H;
+
+//   Eigen::Matrix<T, 2, 1> g;
+//   g << 1.0, -1.0;
+
+//   Eigen::Matrix<T, 2, 2> A;
+//   A << 1, 1, 
+//        1, 1;   
+
+//   Eigen::Matrix<T, 2, 1> b;
+//   b << 1, 1;
+
+//   int n = H.rows();
+//   int n_in = 0;
+//   int n_eq = A.rows();
+
+//   proxsuite::osqp::dense::QP<T> qp(n, n_eq, n_in);
+//   qp.init(H, g, A, b, nullopt, nullopt, nullopt);
+//   qp.settings.eps_rel = 0.;
+//   qp.settings.eps_abs = 1e-9;
+
+//   qp.solve();
+
+//   DOCTEST_CHECK(qp.results.info.status ==
+//                 proxsuite::proxqp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE);
+// }

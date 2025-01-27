@@ -754,7 +754,9 @@ private:
     proxsuite::linalg::veg::meta::false_type /*unused*/,
     Tuples&&... tups) VEG_NOEXCEPT -> Concat<Tuples...>
   {
-    return cat::template from_ref_to_result(
+    return cat::template from_ref_to_result<
+    proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>( // Added this type to avoid error
+      // "A template argument list is expected after a name prefixed by the template keyword"
       Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
       cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
   }

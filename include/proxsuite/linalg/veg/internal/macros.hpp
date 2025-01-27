@@ -1093,7 +1093,7 @@ HEDLEY_DIAGNOSTIC_PUSH
 template<typename Char,
          Char... Cs>
 constexpr auto
-operator""__veglib_const_literal_gnuc() noexcept // NOLINT
+operator""_veglib_const_literal_gnuc() noexcept // NOLINT
   -> proxsuite::linalg::veg::StrLiteralConstant<
     proxsuite::linalg::veg::CharUnit(Cs)...>
 {
@@ -1103,7 +1103,7 @@ operator""__veglib_const_literal_gnuc() noexcept // NOLINT
 HEDLEY_DIAGNOSTIC_POP
 
 #define __VEG_IMPL_UTF8_CONST(Literal) /* NOLINT */                            \
-  (u8##Literal##__veglib_const_literal_gnuc)
+  (u8##Literal##_veglib_const_literal_gnuc)
 
 #elif (defined(__clang__) && defined(VEG_WITH_CXX20_SUPPORT)) ||               \
   (defined(__cpp_nontype_template_args) &&                                     \

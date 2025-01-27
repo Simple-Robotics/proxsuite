@@ -1143,8 +1143,6 @@ qp_solve( //
   T rhs_duality_gap(0);
   T scaled_eps(qpsettings.eps_abs);
 
-  std::cout << "call of commmon function " << std::endl;
-
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
     T new_bcl_mu_in(qpresults.info.mu_in);
@@ -1265,6 +1263,11 @@ qp_solve( //
       scaled_eps =
         infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
     }
+
+    // Prints x, y, z
+    std::cout << "x: " << qpresults.x << std::endl;
+    std::cout << "y: " << qpresults.y << std::endl;
+    std::cout << "z: " << qpresults.z << std::endl;
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // General
