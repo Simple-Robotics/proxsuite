@@ -477,7 +477,7 @@
 #define __VEG_IMPL_PREFIX_explicit
 
 #define __VEG_IMPL_PARAM_EXPAND(I, _, Param)                                   \
-  __VEG_PP_TAIL Param __VEG_PP_HEAD Param
+  __VEG_PP_ID(__VEG_PP_TAIL Param) __VEG_PP_ID(__VEG_PP_HEAD Param)
 #if VEG_HAS_CONCEPTS
 #define __VEG_IMPL_TEMPLATE(Attr_Name, TParams, Constraint, ...)               \
   template<__VEG_PP_REMOVE_PAREN(TParams)>                                     \
