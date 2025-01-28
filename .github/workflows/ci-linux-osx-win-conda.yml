@@ -6,6 +6,10 @@ on:
     paths-ignore:
       - CHANGELOG.md
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-with-conda:
     name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'

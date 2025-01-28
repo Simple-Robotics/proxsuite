@@ -8,11 +8,17 @@ on:
     types:
       - published
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Only cancel workflow on new push if we are not releasing
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build-wheel:
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.os }} ${{ matrix.python-version }}
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [macos-13, macos-14, windows-2019, windows-latest]

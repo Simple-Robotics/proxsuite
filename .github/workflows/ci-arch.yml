@@ -6,6 +6,10 @@ on:
     paths-ignore:
       - CHANGELOG.md
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-with-arch:
     runs-on: "ubuntu-latest"
