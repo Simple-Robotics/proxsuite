@@ -1272,6 +1272,12 @@ qp_solve( //
     std::cout << "y: " << qpresults.y << std::endl;
     std::cout << "z: " << qpresults.z << std::endl;
 
+    // Print KKT
+    if (iter == 0 || iter == 1 || iter == 2) {
+      std::cout << "KKT matrix: " << qpwork.kkt << std::endl;
+    }
+    // They store in kkt the equality structure only, then add the inequality rows at each iteration, then solve the system
+
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // General
 
