@@ -8,15 +8,28 @@ on:
     types:
       - published
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Only cancel workflow on new push if we are not releasing
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build-wheel:
     name: "Build ${{ matrix.build }} wheels on ${{ matrix.arch }}"
-    runs-on: "ubuntu-latest"
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         arch: ["x86_64", "aarch64"]
         build: ["cp38-*", "cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*", "pp38-*", "pp39-*", "pp310-*"]
+        include:
+          - arch: "x86_64"
+            os: ubuntu-latest
+          - arch: "aarch64"
+            os: ubuntu-24.04-arm
         exclude:
+          - arch: "aarch64"
+            build: "cp38-*"
           - arch: "aarch64"
             build: "pp38-*"
           - arch: "aarch64"
@@ -31,11 +44,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Set up QEMU
-        if: matrix.arch == 'aarch64'
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
       - run: python -m pip install -U pip
       - run: python -m pip install cibuildwheel
       - run: touch setup.py
@@ -57,8 +65,59 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}
           path: dist
 
-  release:
+  test:
+    name: "Test ${{ matrix.python-version }} wheels on ${{ matrix.os }}"
     needs: "build-wheel"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        exclude:
+          - os: "ubuntu-24.04-arm"
+            python-version: "3.8"
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: /tmp/dist
+      - name: setup and install wheel
+        run: |
+          python -m pip install -U pip
+          python -m pip install wheel simpleindex
+          # Since it's dangerous to use --extra-index-url we use simpleindex
+          # to mirror PyPI but use the local proxsuite packages
+          cat <<EOF > configuration.toml
+          # Serve local files for packages with prefix "proxsuite".
+          [routes."proxsuite"]
+          source = "path"
+          to = "/tmp/dist"
+
+          # Otherwise use PyPI.
+          [routes."{project}"]
+          source = "http"
+          to = "https://pypi.org/simple/{project}/"
+
+          [server]
+          host = "127.0.0.1"
+          port = 8000
+          EOF
+          python -m simpleindex ./configuration.toml &
+          # Wait for simpleindex server
+          curl --head -X GET --retry 5 --retry-connrefused --retry-delay 1 http://127.0.0.1:8000
+          python -m pip install -i http://127.0.0.1:8000 proxsuite
+      - name: test module
+        run: python -c "import proxsuite"
+        env:
+          PYTHONWARNINGS: error
+
+  release:
+    needs: "test"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -85,8 +144,10 @@ jobs:
 
     needs:
     - build-wheel
+    - test
+    - release
 
-    runs-on: Ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Decide whether the needed jobs succeeded or failed
       uses: re-actors/alls-green@release/v1
