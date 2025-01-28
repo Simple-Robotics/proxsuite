@@ -10,7 +10,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Only cancel workflow on new push if we are not releasing
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-wheel:
