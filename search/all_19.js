@@ -82,6 +82,6 @@ var searchData=
   ['user_79',['user',['../structproxsuite_1_1proxqp_1_1CPUTimes.html#a2d600ef87581ea8246bd795981785d42',1,'proxsuite::proxqp::CPUTimes']]],
   ['user_5fprovided_80',['user_provided',['../namespaceproxsuite_1_1linalg_1_1sparse.html#a9f5e6365e7297cc9234dcad50b0cfdebacd913c0c9146210c22b89867f6d0888e',1,'proxsuite::linalg::sparse']]],
   ['uses_5fstd_81',['uses_std',['../namespacetl_1_1detail_1_1swap__adl__tests.html#a0fa5e6edd0bffbdd56c74eef0c1da04e',1,'tl::detail::swap_adl_tests::uses_std(...)'],['../namespacetl_1_1detail_1_1swap__adl__tests.html#a457775061f55225062fd706ca606631a',1,'tl::detail::swap_adl_tests::uses_std(int)']]],
-  ['usize_82',['usize',['../namespaceproxsuite_1_1linalg_1_1veg.html#afdbaa4312631789f428df101ce7e9687',1,'proxsuite::linalg::veg::usize'],['../namespaceproxsuite_1_1proxqp.html#a53463d21e0d053ef58f614a8ad0976d5',1,'proxsuite::proxqp::usize']]],
+  ['usize_82',['usize',['../namespaceproxsuite_1_1linalg_1_1veg.html#afdbaa4312631789f428df101ce7e9687',1,'proxsuite::linalg::veg']]],
   ['utils_2ehpp_83',['utils.hpp',['../dense_2utils_8hpp.html',1,'(Global Namespace)'],['../sparse_2utils_8hpp.html',1,'(Global Namespace)']]]
 ];

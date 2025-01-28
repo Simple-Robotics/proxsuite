@@ -1,20 +1,17 @@
 <map id="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;" name="proxsuite::proxqp::sparse::detail::AugmentedKkt&lt; T, I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="924,110,1139,172"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="642,80,865,124"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="881,117,924,123,923,128,880,122"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html" title=" " alt="" coords="646,148,861,210"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="876,160,924,153,924,158,877,165"/>
-<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="302,40,471,84"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="474,87,655,145,654,150,473,92"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="887,55,1101,117"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="604,25,828,70"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="843,62,886,68,886,74,843,68"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1proxqp_1_1sparse_1_1detail_1_1AugmentedKkt_1_1Raw.html" title=" " alt="" coords="609,94,823,156"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="838,105,886,98,887,104,839,110"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html" title=" " alt="" coords="264,32,433,76"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="449,70,609,101,608,107,448,76"/>
 <area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,215,84"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="231,50,301,54,301,59,230,55"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="84,127,136,154"/>
-<area shape="poly" id="edge8_Node000003_Node000006" title=" " alt="" coords="152,140,646,170,646,176,151,146"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="151,134,211,125,277,109,341,82,343,87,278,114,212,130,151,139"/>
-<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="315,208,458,252"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="472,216,646,191,646,197,473,221"/>
-<area shape="rect" id="Node000008" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html" title=" " alt="" coords="39,199,181,261"/>
-<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="197,227,315,227,315,233,197,233"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="367,276,406,304"/>
-<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="421,290,511,289,565,283,617,269,671,242,717,208,720,213,674,246,619,274,566,288,512,295,421,295"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="231,47,264,48,264,53,230,52"/>
+<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1Slice.html" title=" " alt="" coords="278,113,420,158"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="435,130,608,125,608,130,435,136"/>
+<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__slice_1_1adl_1_1AdlBase.html" title=" " alt="" coords="39,108,181,170"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="197,135,277,134,277,139,197,141"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="329,192,368,220"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="383,205,473,203,527,197,580,186,621,172,660,154,662,159,623,177,581,192,527,202,473,208,383,210"/>
 </map>

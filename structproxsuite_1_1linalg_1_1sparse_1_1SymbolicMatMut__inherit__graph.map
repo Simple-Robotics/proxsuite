@@ -1,7 +1,7 @@
 <map id="proxsuite::linalg::sparse::SymbolicMatMut&lt; I &gt;" name="proxsuite::linalg::sparse::SymbolicMatMut&lt; I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,225,222,269"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="9,115,218,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,192,116,224,111,224,111,192"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="9,5,218,67"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="116,83,116,114,111,114,111,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="557,22,773,67"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatMutInterface.html" title=" " alt="" coords="280,5,509,84"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="525,42,557,42,557,47,525,47"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,232,84"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="247,42,279,42,279,47,247,47"/>
 </map>

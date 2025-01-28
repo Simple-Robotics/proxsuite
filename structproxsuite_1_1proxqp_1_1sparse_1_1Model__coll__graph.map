@@ -1,13 +1,11 @@
 <map id="proxsuite::proxqp::sparse::Model&lt; T, I &gt;" name="proxsuite::proxqp::sparse::Model&lt; T, I &gt;">
-<area shape="rect" id="Node000001" title="This class stores the model of the QP problem." alt="" coords="683,125,846,170"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="372,84,424,112"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="440,99,540,109,660,125,683,129,682,134,659,130,539,114,439,104"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="331,174,465,219"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="481,206,568,209,614,206,659,198,695,185,728,168,730,173,697,190,660,203,614,211,568,214,481,211"/>
-<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="67,80,220,142"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="236,136,283,151,338,171,336,176,281,157,234,141"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="5,166,282,228"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="298,194,331,194,331,199,298,199"/>
-<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="37,251,250,313"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="261,243,281,237,336,217,338,222,283,242,263,248"/>
+<area shape="rect" id="Node000001" title="This class stores the model of the QP problem." alt="" coords="680,99,843,144"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1Vec.html" title=" " alt="" coords="328,99,462,144"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="478,119,680,119,680,124,478,124"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1adl_1_1AdlBase.html" title=" " alt="" coords="65,5,219,67"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="234,61,280,76,335,96,333,101,278,81,233,66"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,91,279,152"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="294,119,328,119,328,124,294,124"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html" title=" " alt="" coords="35,176,249,238"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="259,168,278,162,333,142,335,147,280,167,260,173"/>
 </map>

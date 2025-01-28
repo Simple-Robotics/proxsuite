@@ -1,6 +1,10 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP =
 [
     [ "BatchQP", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#ae23a7ed1a773ab563817d7f2a587523a", null ],
+    [ "BatchQP", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#afd936a238f1f64827b9fa8b098735fef", null ],
+    [ "BatchQP", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a47cc81434af030170fed46badc07f34f", null ],
+    [ "operator=", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a594d133c72e296503e595b0bdda05828", null ],
+    [ "operator=", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#aab5724e53d062d2cebdda95ae2fc4174", null ],
     [ "init_qp_in_place", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a66cd264b092470540bdf7e7daacf5fa0", null ],
     [ "insert", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a35cf2d05f8f53ea6d89e112f552a8a7f", null ],
     [ "get", "structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a6da53907494568a3984777990dde9715", null ],

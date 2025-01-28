@@ -25,14 +25,14 @@
 <polygon fill="white" stroke="#666666" points="258.25,-135.5 0,-135.5 0,0 258.25,0 258.25,-135.5"/>
 <text text-anchor="start" x="8" y="-122" font-family="Helvetica,sans-Serif" font-size="10.00">std::integral_constant</text>
 <text text-anchor="start" x="8" y="-109.25" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; bool, is_swappable&lt;</text>
-<text text-anchor="start" x="8" y="-96.5" font-family="Helvetica,sans-Serif" font-size="10.00"> T, T &#160;&gt;::value &amp;&amp;((decltype</text>
+<text text-anchor="start" x="8" y="-96.5" font-family="Helvetica,sans-Serif" font-size="10.00"> T, T &gt;::value &amp;&amp;((decltype</text>
 <text text-anchor="start" x="8" y="-83.75" font-family="Helvetica,sans-Serif" font-size="10.00">(detail::swap_adl_tests::uses</text>
-<text text-anchor="start" x="8" y="-71" font-family="Helvetica,sans-Serif" font-size="10.00">_std&lt; T, T &#160;&gt;(0))::value &amp;&amp;detail</text>
+<text text-anchor="start" x="8" y="-71" font-family="Helvetica,sans-Serif" font-size="10.00">_std&lt; T, T &gt;(0))::value &amp;&amp;detail</text>
 <text text-anchor="start" x="8" y="-58.25" font-family="Helvetica,sans-Serif" font-size="10.00">::swap_adl_tests::is_std_swap_noexcept</text>
 <text text-anchor="start" x="8" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; T &gt;::value)||(!decltype(detail::swap</text>
-<text text-anchor="start" x="8" y="-32.75" font-family="Helvetica,sans-Serif" font-size="10.00">_adl_tests::uses_std&lt; T, T &#160;&gt;(0))::value</text>
+<text text-anchor="start" x="8" y="-32.75" font-family="Helvetica,sans-Serif" font-size="10.00">_adl_tests::uses_std&lt; T, T &gt;(0))::value</text>
 <text text-anchor="start" x="8" y="-20" font-family="Helvetica,sans-Serif" font-size="10.00"> &amp;&amp;detail::swap_adl_tests::is_adl_swap_noexcept</text>
-<text text-anchor="middle" x="129.12" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; T, T &#160;&gt;::value))&gt;</text>
+<text text-anchor="middle" x="129.12" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">&lt; T, T &gt;::value))&gt;</text>
 </a>
 </g>
 </g>

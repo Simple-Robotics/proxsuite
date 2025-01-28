@@ -1,6 +1,8 @@
 <map id="tl::detail::optional_storage_base&lt; T, true &gt;" name="tl::detail::optional_storage_base&lt; T, true &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,98,193,143"/>
-<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="210,112,219,120,211,129,194,132,193,127,209,124,214,120,206,116"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="80,5,118,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,48,102,97,96,97,96,48"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="62,132,249,177"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="266,146,276,154,268,163,250,166,249,161,265,158,271,154,263,150"/>
+<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__storage__base_3_01T_00_01true_01_4_1_1dummy.html" title=" " alt="" coords="5,5,178,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,80,120,107,137,130,133,133,115,109,103,82"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="202,22,240,50"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="214,66,194,109,177,133,173,130,189,107,209,64"/>
 </map>

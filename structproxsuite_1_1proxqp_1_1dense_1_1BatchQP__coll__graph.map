@@ -1,9 +1,7 @@
 <map id="proxsuite::proxqp::dense::BatchQP&lt; T &gt;" name="proxsuite::proxqp::dense::BatchQP&lt; T &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="125,208,286,252"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="25,208,186,252"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,98,206,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,153,155,182,180,205,177,209,152,186,127,157"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,158,108,207,103,207,103,158"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="86,5,125,33"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="108,48,108,97,103,97,103,48"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="229,106,280,134"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="245,150,218,208,213,206,240,147"/>
 </map>

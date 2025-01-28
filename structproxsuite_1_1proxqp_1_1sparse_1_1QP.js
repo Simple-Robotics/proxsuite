@@ -2,6 +2,10 @@ var structproxsuite_1_1proxqp_1_1sparse_1_1QP =
 [
     [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#aef6a6cddf8898923f90f72f99cdf499e", null ],
     [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a59326d34e2d7d63a31a819088ed121ce", null ],
+    [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#ab3e96a1332ee67de9ba85f4f8991c496", null ],
+    [ "QP", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a2d2663ebcbe0615e720f884f8f2a4631", null ],
+    [ "operator=", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a2e30ca352e2608b70e1642f4a9e25471", null ],
+    [ "operator=", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a905be1fffd5ae687f649746ba3a41a76", null ],
     [ "init", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a9aa090f5c363ece74e26f5f50458b5f0", null ],
     [ "update", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a940b96e746a13656fa7b1867b180866d", null ],
     [ "solve", "structproxsuite_1_1proxqp_1_1sparse_1_1QP.html#a6af68e8508f3d3e5794479528737dac2", null ],

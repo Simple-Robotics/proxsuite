@@ -75,7 +75,7 @@ var searchData=
   ['merit_5ffunction_5ftype_72',['merit_function_type',['../structproxsuite_1_1proxqp_1_1Settings.html#a07c273af5cc236360ec40cf27950474f',1,'proxsuite::proxqp::Settings']]],
   ['meritfunctiontype_73',['MeritFunctionType',['../namespaceproxsuite_1_1proxqp.html#a4367b6d2473745a8f466ec8b57f6363d',1,'proxsuite::proxqp']]],
   ['meta_5fapply_74',['meta_apply',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1meta__apply.html',1,'proxsuite::linalg::veg::meta']]],
-  ['method_75',['Method',['../md_doc_22-ProxQP__api.html#explanationInitMethod',1,'The init method'],['../md_doc_22-ProxQP__api.html#explanationSolveMethod',1,'The solve method'],['../md_doc_22-ProxQP__api.html#explanationUpdateMethod',1,'The update method']]],
+  ['method_75',['method',['../md_doc_22-ProxQP__api.html#explanationInitMethod',1,'The init method'],['../md_doc_22-ProxQP__api.html#explanationSolveMethod',1,'The solve method'],['../md_doc_22-ProxQP__api.html#explanationUpdateMethod',1,'The update method']]],
   ['middle_5fcols_76',['middle_cols',['../namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a2d371512f87a4f1ede6ee2f10e8ddf95',1,'proxsuite::proxqp::sparse::detail']]],
   ['middle_5fcols_5fmut_77',['middle_cols_mut',['../namespaceproxsuite_1_1proxqp_1_1sparse_1_1detail.html#a7ef606dd610b9be01937f0542f67f6fe',1,'proxsuite::proxqp::sparse::detail']]],
   ['min2_78',['min2',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1nb_1_1min2.html',1,'proxsuite::linalg::dense::_detail::nb::min2'],['../structproxsuite_1_1proxqp_1_1detail_1_1nb_1_1min2.html',1,'proxsuite::proxqp::detail::nb::min2'],['../namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#af940fcc2bb012995cda687d9143679df',1,'proxsuite::linalg::veg::_detail::min2()']]],

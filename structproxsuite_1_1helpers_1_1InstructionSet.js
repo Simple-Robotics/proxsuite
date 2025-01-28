@@ -1,6 +1,6 @@
 var structproxsuite_1_1helpers_1_1InstructionSet =
 [
-    [ "Base", "structproxsuite_1_1helpers_1_1InstructionSet.html#aa8d3ba27163badf0a82e633b54acf2ab", null ],
+    [ "Base", "structproxsuite_1_1helpers_1_1InstructionSet.html#a2c1a758d00b59e766801bb836cd57f85", null ],
     [ "vendor", "structproxsuite_1_1helpers_1_1InstructionSet.html#a8624802bfd7d8f414370904f14b5b14b", null ],
     [ "brand", "structproxsuite_1_1helpers_1_1InstructionSet.html#a97545da6aafb3f32fbfa2c679577717b", null ],
     [ "has_SSE3", "structproxsuite_1_1helpers_1_1InstructionSet.html#a1684d13d74ccbcf40cbe989d8f03e8aa", null ],

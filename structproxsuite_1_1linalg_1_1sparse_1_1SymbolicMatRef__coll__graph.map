@@ -1,7 +1,5 @@
 <map id="proxsuite::linalg::sparse::SymbolicMatRef&lt; I &gt;" name="proxsuite::linalg::sparse::SymbolicMatRef&lt; I &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="81,217,294,262"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,215,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,80,182,215,177,217,124,82"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="239,22,290,50"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="257,66,198,218,193,216,252,64"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="277,22,490,67"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1sparse_1_1__detail_1_1SymbolicMatRefInterface.html" title=" " alt="" coords="5,5,229,84"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="244,42,276,42,276,47,244,47"/>
 </map>

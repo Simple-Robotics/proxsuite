@@ -30,9 +30,6 @@ var namespaceproxsuite_1_1proxqp =
     [ "Timer", "structproxsuite_1_1proxqp_1_1Timer.html", "structproxsuite_1_1proxqp_1_1Timer" ],
     [ "VectorView", "structproxsuite_1_1proxqp_1_1VectorView.html", "structproxsuite_1_1proxqp_1_1VectorView" ],
     [ "VectorViewMut", "structproxsuite_1_1proxqp_1_1VectorViewMut.html", "structproxsuite_1_1proxqp_1_1VectorViewMut" ],
-    [ "usize", "namespaceproxsuite_1_1proxqp.html#a53463d21e0d053ef58f614a8ad0976d5", null ],
-    [ "f32", "namespaceproxsuite_1_1proxqp.html#a8f892aa236c53245bf03af7397d2a44e", null ],
-    [ "f64", "namespaceproxsuite_1_1proxqp.html#a8cd42e7e606b9cff85735e1d54933456", null ],
     [ "unref", "namespaceproxsuite_1_1proxqp.html#acebfec2b385313136bffea79600baf6c", null ],
     [ "Symmetry", "namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059", [
       [ "general", "namespaceproxsuite_1_1proxqp.html#a5fdd4d1d2e9a3b1632a028c7c23fb059a958153f1b8b96ec4c4eb2147429105d9", null ],

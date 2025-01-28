@@ -1,9 +1,5 @@
 <map id="proxsuite::linalg::veg::tuple::TupleLeafImpl&lt; T, bool &gt;" name="proxsuite::linalg::veg::tuple::TupleLeafImpl&lt; T, bool &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,56,191,118"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html" title=" " alt="" coords="239,14,395,76"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,64,237,57,239,63,206,69"/>
-<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html" title=" " alt="" coords="239,99,395,161"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="206,106,239,112,237,117,205,111"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8cbd6a50d8df9d5526ea9acd312613c29.html" title=" " alt="" coords="443,5,626,84"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="411,42,442,42,442,47,411,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,191,67"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html" title=" " alt="" coords="20,115,176,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,83,101,114,95,114,95,83"/>
 </map>
