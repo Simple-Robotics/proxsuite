@@ -11,7 +11,7 @@ main()
 {
   // generate a QP problem
   T sparsity_factor = 0.15;
-  proxsuite::proxqp::dense::isize dim = 10;
+  proxsuite::proxqp::dense::isize dim = 100;
   proxsuite::proxqp::dense::isize n_eq(dim / 4);
   proxsuite::proxqp::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
@@ -32,7 +32,7 @@ main()
           qp_random.u);
   qp.solve();
   // print an optimal solution x,y and z
-  std::cout << "optimal x: " << qp.results.x << std::endl;
-  std::cout << "optimal y: " << qp.results.y << std::endl;
-  std::cout << "optimal z: " << qp.results.z << std::endl;
+  // std::cout << "optimal x: " << qp.results.x << std::endl;
+  // std::cout << "optimal y: " << qp.results.y << std::endl;
+  // std::cout << "optimal z: " << qp.results.z << std::endl;
 }

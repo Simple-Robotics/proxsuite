@@ -31,6 +31,12 @@ struct Workspace
   proxsuite::linalg::veg::Vec<unsigned char> ldl_stack;
   Timer<T> timer;
 
+  ///// Timings for mu updates in OSQP
+  Timer<T> timer_full_fact;
+  T factorization_time_full_kkt;
+  Timer<T> timer_mu_update;
+  T time_since_last_mu_update;
+
   ///// QP STORAGE
   Mat<T> H_scaled;
   Vec<T> g_scaled;

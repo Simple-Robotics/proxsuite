@@ -127,6 +127,11 @@ struct Settings
   bool compute_preconditioner;
   bool compute_timings;
 
+  bool update_mu_osqp;
+  T ratio_time_mu_update;
+  T ratio_value_mu_update;
+  T ratio_value_mu_update_inv;
+
   bool check_duality_gap;
   T eps_duality_gap_abs;
   T eps_duality_gap_rel;
@@ -188,6 +193,10 @@ struct Settings
    * @param compute_timings If set to true, timings will be computed by the
    * solver (setup time, solving time, and run time = setup time + solving
    * time).
+   * @param update_mu_osqp If set to true, mu_eq and mu_in will be updated
+   * @param ratio_time_mu_update ratio of the factorization time for the update condition
+   * @param ratio_value_mu_update ratio of the between the old and new mu_value for the update condition
+   * @param ratio_value_mu_update_inv inverse of ratio_value_mu_update
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
    * @param eps_duality_gap_abs absolute duality-gap stopping criterion.
@@ -260,6 +269,10 @@ struct Settings
     bool compute_preconditioner = true,
     // bool compute_timings = false,
     bool compute_timings = true,
+    bool update_mu_osqp = true,
+    T ratio_time_mu_update = 0.4,
+    T ratio_value_mu_update = 5,
+    T ratio_value_mu_update_inv = 0.2,
     bool check_duality_gap = false,
     // T eps_duality_gap_abs = 1.e-4, // proxqp
     // T eps_duality_gap_rel = 0, // proxqp
@@ -305,6 +318,10 @@ struct Settings
     , update_preconditioner(update_preconditioner)
     , compute_preconditioner(compute_preconditioner)
     , compute_timings(compute_timings)
+    , update_mu_osqp(update_mu_osqp)
+    , ratio_time_mu_update(ratio_time_mu_update)
+    , ratio_value_mu_update(ratio_value_mu_update)
+    , ratio_value_mu_update_inv(ratio_value_mu_update_inv)
     , check_duality_gap(check_duality_gap)
     , eps_duality_gap_abs(eps_duality_gap_abs)
     , eps_duality_gap_rel(eps_duality_gap_rel)
@@ -371,6 +388,10 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.update_preconditioner == settings2.update_preconditioner &&
     settings1.compute_preconditioner == settings2.compute_preconditioner &&
     settings1.compute_timings == settings2.compute_timings &&
+    settings1.update_mu_osqp == settings2.update_mu_osqp &&
+    settings1.ratio_time_mu_update == settings2.ratio_time_mu_update &&
+    settings1.ratio_value_mu_update == settings2.ratio_value_mu_update &&
+    settings1.ratio_value_mu_update_inv == settings2.ratio_value_mu_update_inv &&
     settings1.check_duality_gap == settings2.check_duality_gap &&
     settings1.eps_duality_gap_abs == settings2.eps_duality_gap_abs &&
     settings1.eps_duality_gap_rel == settings2.eps_duality_gap_rel &&
