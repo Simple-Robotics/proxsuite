@@ -12,6 +12,7 @@
 #include "proxsuite/proxqp/dense/linesearch.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
+#include <iostream>
 #include <proxsuite/proxqp/utils/prints.hpp>
 #include <proxsuite/osqp/utils/prints.hpp>
 #include <cmath>
@@ -534,6 +535,7 @@ compute_timings(
     qpresults.info.run_time =
       qpresults.info.solve_time + qpresults.info.setup_time;
   }
+  qpwork.timer_mu_update.stop(); 
 }
 /*!
  * Prints solver statistics after the solve.
