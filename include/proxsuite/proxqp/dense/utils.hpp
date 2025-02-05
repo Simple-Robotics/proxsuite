@@ -547,6 +547,11 @@ global_dual_residual(Results<T>& qpresults,
                     qpresults.z.head(qpmodel.n_in),
                     0)
       .dot(helpers::at_most(qpmodel.u, helpers::infinite_bound<T>::value()));
+  // T zu = qpmodel.u.dot(qpresults.z.head(qpmodel.n_in).cwiseMax(0)); 
+  // T zu = helpers::at_most(qpmodel.u, helpers::infinite_bound<T>::value())
+  //        .dot(qpresults.z.head(qpmodel.n_in).cwiseMax(0)); 
+  // TODO: This is a simpler definition that also works for OSQP which does not require the active set
+  // -> Adapt the definition again if needed
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
   duality_gap += zu;
 
@@ -555,6 +560,9 @@ global_dual_residual(Results<T>& qpresults,
                     qpresults.z.head(qpmodel.n_in),
                     0)
       .dot(helpers::at_least(qpmodel.l, -helpers::infinite_bound<T>::value()));
+  // T zl = qpmodel.l.dot(qpresults.z.head(qpmodel.n_in).cwiseMin(0));
+  // T zl = helpers::at_least(qpmodel.l, -helpers::infinite_bound<T>::value())
+  //        .dot(qpresults.z.head(qpmodel.n_in).cwiseMin(0));
   rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
   duality_gap += zl;
 
@@ -570,6 +578,9 @@ global_dual_residual(Results<T>& qpresults,
                          0)
            .dot(helpers::at_most(qpmodel.u_box,
                                  helpers::infinite_bound<T>::value()));
+    // zu = qpmodel.u_box.dot(qpresults.z.tail(qpmodel.dim).cwiseMax(0));
+    // zu = helpers::at_most(qpmodel.u_box,helpers::infinite_bound<T>::value())
+    //      .dot(qpresults.z.tail(qpmodel.dim).cwiseMax(0));
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
     duality_gap += zu;
 
@@ -578,6 +589,9 @@ global_dual_residual(Results<T>& qpresults,
                          0)
            .dot(helpers::at_least(qpmodel.l_box,
                                   -helpers::infinite_bound<T>::value()));
+    // zl = qpmodel.l_box.dot(qpresults.z.tail(qpmodel.dim).cwiseMin(0));
+    // zl = helpers::at_least(qpmodel.l_box,-helpers::infinite_bound<T>::value())
+    //      .dot(qpresults.z.tail(qpmodel.dim).cwiseMin(0));
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zl));
     duality_gap += zl;
 

@@ -3,7 +3,6 @@
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
 using namespace proxsuite::osqp;
-// using namespace proxsuite::proxqp;
 using T = double;
 
 int
@@ -11,7 +10,7 @@ main()
 {
   // generate a QP problem
   T sparsity_factor = 0.15;
-  proxsuite::proxqp::dense::isize dim = 100;
+  proxsuite::proxqp::dense::isize dim = 50;
   proxsuite::proxqp::dense::isize n_eq(dim / 4);
   proxsuite::proxqp::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
@@ -23,6 +22,8 @@ main()
 
   // load PROXQP solver with dense backend and solve the problem
   dense::QP<T> qp(dim, n_eq, n_in);
+  std::cout << "l: " << qp_random.l << std::endl;
+  std::cout << "u: " << qp_random.u << std::endl;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -35,4 +36,8 @@ main()
   // std::cout << "optimal x: " << qp.results.x << std::endl;
   // std::cout << "optimal y: " << qp.results.y << std::endl;
   // std::cout << "optimal z: " << qp.results.z << std::endl;
+  std::cout << "Primal residual: " << qp.results.info.pri_res << std::endl;
+  std::cout << "Dual residual: " << qp.results.info.dua_res << std::endl;
+  std::cout << "Duality gap: " << qp.results.info.duality_gap << std::endl;
+  std::cout << "Setup time: " << qp.results.info.setup_time << " Solve time: " << qp.results.info.solve_time << std::endl;
 }

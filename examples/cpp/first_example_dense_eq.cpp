@@ -13,7 +13,7 @@ int
 main()
 {
   std::cout
-    << "Solve a simple example with inequality constraints using dense ProxQP"
+    << "Solve a simple example with equality constraints using dense ProxQP"
     << std::endl;
 
   // define the problem

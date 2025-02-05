@@ -64,9 +64,12 @@ main()
 
   qp.solve();
 
+  std::cout << "unscaled x: " << qp.results.x << std::endl;
   std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
   std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
+  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl; 
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
+
   return 0;
 }

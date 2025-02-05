@@ -59,13 +59,23 @@ struct Workspace
   ///// KKT system storage
   Mat<T> kkt;
 
+  ///// Matrices K and K + Delta_K in polishing step of OSQP
+  Mat<T> k_polish;
+  Mat<T> k_plus_delta_k_polish;
+
   //// Active set & permutation vector
   VecISize current_bijection_map;
   VecISize new_bijection_map;
 
   VecBool active_set_up;
+  VecBool active_set_up_eq;
+  VecBool active_set_up_ineq;
   VecBool active_set_low;
+  VecBool active_set_low_eq;
+  VecBool active_set_low_ineq;
   VecBool active_inequalities;
+  VecBool active_constraints_eq;
+  VecBool active_constraints_ineq;
 
   //// OSQP variables
   Vec<T> zeta_eq;
@@ -221,8 +231,14 @@ struct Workspace
         new_bijection_map(i) = i;
       }
       active_set_up.resize(n_in + dim);
+      active_set_up_eq.resize(n_eq + dim);
+      active_set_up_ineq.resize(n_in + dim);
       active_set_low.resize(n_in + dim);
+      active_set_low_eq.resize(n_eq + dim);
+      active_set_low_ineq.resize(n_in + dim);
       active_inequalities.resize(n_in + dim);
+      active_constraints_eq.resize(n_eq + dim);
+      active_constraints_ineq.resize(n_in + dim);
       active_part_z.resize(n_in + dim);
       dw_aug.resize(dim + n_eq + n_in + dim);
       rhs.resize(dim + n_eq + n_in + dim);
@@ -296,8 +312,14 @@ struct Workspace
         new_bijection_map(i) = i;
       }
       active_set_up.resize(n_in);
+      active_set_up_eq.resize(n_eq);
+      active_set_up_ineq.resize(n_in);
       active_set_low.resize(n_in);
+      active_set_low_eq.resize(n_eq);
+      active_set_low_ineq.resize(n_in);
       active_inequalities.resize(n_in);
+      active_constraints_eq.resize(n_eq);
+      active_constraints_ineq.resize(n_in);
       active_part_z.resize(n_in);
       dw_aug.resize(dim + n_eq + n_in);
       rhs.resize(dim + n_eq + n_in);
@@ -391,7 +413,10 @@ struct Workspace
       current_bijection_map(i) = i;
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
+      active_constraints_eq(i) = false;
+      active_constraints_ineq(i) = false;
     }
+
 
     constraints_changed = false;
     dirty = false;
