@@ -1265,14 +1265,14 @@ qp_solve( //
     }
 
     // Prints x, y, z
-    std::cout << "x: " << qpresults.x << std::endl;
-    std::cout << "y: " << qpresults.y << std::endl;
-    std::cout << "z: " << qpresults.z << std::endl;
+    // std::cout << "x: " << qpresults.x << std::endl;
+    // std::cout << "y: " << qpresults.y << std::endl;
+    // std::cout << "z: " << qpresults.z << std::endl;
 
-    // Print KKT
-    if (iter == 0 || iter == 1 || iter == 2) {
-      std::cout << "KKT matrix: " << qpwork.kkt << std::endl;
-    }
+    // // Print KKT
+    // if (iter == 0 || iter == 1 || iter == 2) {
+    //   std::cout << "KKT matrix: " << qpwork.kkt << std::endl;
+    // }
     // They store in kkt the equality structure only, then add the inequality rows at each iteration, then solve the system
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1409,11 +1409,12 @@ qp_solve( //
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
-// TODO: Lighten the namespaces and make the code cleaner
-
 } // namespace dense
 
 } // namespace proxqp
 } // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_PROXQP_DENSE_SOLVER_HPP */
+
+// TODO: Lighten the namespaces (due to common files)
+// TODO: Eventually clean the code (like common functions names, or boolean as the result of a big function)

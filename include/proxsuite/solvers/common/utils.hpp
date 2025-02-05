@@ -567,7 +567,8 @@ print_solver_statistics(
         std::cout << "objective:    " << qpresults.info.objValue << std::endl;
         break;
       case SolverType::OSQP: {
-        std::cout << "iter:   " << qpresults.info.iter_ext << std::endl;
+        std::cout << "admm iter:    " << qpresults.info.iter_ext << std::endl;
+        std::cout << "mu updates:   " << qpresults.info.mu_updates << std::endl;
         std::cout << "objective:    " << qpresults.info.objValue << std::endl;
         break;
       }
@@ -704,7 +705,7 @@ compute_residuals_and_infeasibility_1( //
     qpresults.info.dua_res = dual_feasibility_lhs;
     qpresults.info.duality_gap = duality_gap;
 
-    T rhs_pri(scaled_eps);
+    T rhs_pri(scaled_eps); 
     if (qpsettings.eps_rel != 0) {
       rhs_pri += qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
                                                primal_feasibility_in_rhs_0);

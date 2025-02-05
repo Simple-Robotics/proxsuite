@@ -34,7 +34,7 @@ print_preambule()
     << "OSQP - Operator Splitting solver for QP problems\n"
     << "A C++ implementation \n"
     << "(c) Bartolomeo Stellato, Goran Banjac, Paul Goulart, Alberto Bemporad, Stephen Boyd\n"
-    << "Inria Paris 2022\n"
+    << "Inria Paris 2025\n"
     << std::endl;
   print_line();
 }
