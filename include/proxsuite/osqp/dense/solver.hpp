@@ -274,6 +274,7 @@ compute_update_mu_criteria(proxqp::dense::Workspace<T>& qpwork,
 /*!
  * Setups and performs the factorization of the full regularized KKT matrix of
  * the problem (containing equality and inequality constraints).
+ * It adds n_constraints (n_in + dim if box_constraints) rows/columns to the equality case KKT matrix.
  *
  * @param qpwork workspace of the solver.
  * @param qpmodel QP problem model as defined by the user (without any scaling
@@ -291,51 +292,35 @@ setup_factorization_full_kkt(proxqp::dense::Workspace<T>& qpwork,
 
   using namespace proxsuite::proxqp;
 
-  isize n_c_f = qpwork.n_c; // 0 at initialization
-  
-  // Start from the equality KKT, then add the inequality and box constraints
-
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
-
   {
     auto _planned_to_add = stack.make_new_for_overwrite(
       proxsuite::linalg::veg::Tag<isize>{}, n_constraints);
-    auto planned_to_add = _planned_to_add.ptr_mut();
 
-    isize planned_to_add_count = 0;
     T mu_in_neg(-qpresults.info.mu_in);
 
-    isize n_c = n_c_f;
-    for (isize i = 0; i < n_constraints; i++) {
-      planned_to_add[planned_to_add_count] = i;
-      ++planned_to_add_count;
-      n_c_f += 1;
-    }
     {
       switch (dense_backend) {
         case DenseBackend::PrimalDualLDLT: {
           isize n = qpmodel.dim;
           isize n_eq = qpmodel.n_eq;
           LDLT_TEMP_MAT_UNINIT(
-            T, new_cols, n + n_eq + n_c_f, planned_to_add_count, stack);
-          for (isize k = 0; k < planned_to_add_count; ++k) {
-            isize index = planned_to_add[k];
-            auto col = new_cols.col(k);
-            col.head(n) = (qpwork.C_scaled.row(index));
-            // Add the box constraints too 
-            // if (index >= qpmodel.n_in) {
-            //   col.head(n).setZero();
-            //   col[index - qpmodel.n_in] = qpwork.i_scaled[index - qpmodel.n_in];
-            // } else {
-            //   col.head(n) = (qpwork.C_scaled.row(index));
-            // }
-            col.tail(n_eq + n_c_f).setZero();
-            col[n + n_eq + n_c + k] = mu_in_neg;
-          }
+            T, new_cols, n + n_eq + n_constraints, n_constraints, stack); // n + n_eq + n_constraints lines and n_constraints columns
+          for (isize k = 0; k < n_constraints; ++k) {
+            auto col = new_cols.col(k); // Represents the k-th inequality column, with n + n_eq + n_constraints lines
+            if (k >= qpmodel.n_in) { // If box_constraint (must be placed at the end of the matrix)    
+              col.head(n).setZero();
+              col[k - qpmodel.n_in] = qpwork.i_scaled[k - qpmodel.n_in]; // Scaled identity bloc in the KKT
+            } else {
+              col.head(n) = (qpwork.C_scaled.row(k)); // Matrix C of inequality (not box) constraints
+            }
+            col.tail(n_eq + n_constraints).setZero();
+            col[n + n_eq + k] = mu_in_neg; // OK
+          } // When I read this code, it appears that we build the right KKT (with H + rho I, then A, then C, then box constraints)
           qpwork.timer_full_fact.start();
-          qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
+          qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
           qpwork.timer_full_fact.stop();
           qpwork.factorization_time_full_kkt = qpwork.timer_full_fact.elapsed().user;
         } break;
@@ -347,7 +332,7 @@ setup_factorization_full_kkt(proxqp::dense::Workspace<T>& qpwork,
     }
   }
 
-  qpwork.n_c = n_c_f;
+  qpwork.n_c = n_constraints;
 
 }
 /*!
@@ -367,11 +352,11 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
                     proxqp::Results<T>& qpresults,
                     proxqp::dense::Workspace<T>& qpwork,
                     const bool box_constraints,
-                    const proxqp::isize n_constraints,
                     proxqp::dense::preconditioner::RuizEquilibration<T>& ruiz,
-                    const proxqp::HessianType hessian_type,
-                    const proxsuite::linalg::veg::dynstack::DynStackMut stack)
+                    const proxqp::HessianType hessian_type)
 {
+
+  // TODO: This ciode is very close from the second part of the newton function in proxp -> see if I can put in common
 
   using namespace proxsuite::proxqp;
 
@@ -385,6 +370,10 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
   auto& Hdx = qpwork.Hdx;
   auto& Adx = qpwork.Adx;
   auto& ATdy = qpwork.CTz;
+
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  };
 
   switch (hessian_type) {
     case HessianType::Zero:
@@ -409,6 +398,16 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
   if (qpmodel.n_in > 0) {
     Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
     CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
+  }
+  // Add box constraints
+  if (box_constraints) {
+
+    qpwork.active_part_z.tail(qpmodel.dim) = dz.tail(qpmodel.dim);
+    qpwork.active_part_z.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+    CTdz.noalias() += qpwork.active_part_z.tail(qpmodel.dim);
+
+    Cdx.tail(qpmodel.dim) = dx;
+    Cdx.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
   }
 
   bool is_primal_infeasible = proxsuite::proxqp::dense::global_primal_residual_infeasibility(
@@ -495,9 +494,9 @@ admm(const proxqp::Settings<T>& qpsettings,
   qpwork.rhs.setZero();
   qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
-  qpwork.rhs.tail(qpmodel.n_in) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z;
-
-  isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + qpmodel.n_in;
+  qpwork.rhs.tail(n_constraints) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z; // Contains box constraints if any
+  
+  isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + n_constraints; // Contains box constraints if any
   
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
@@ -517,26 +516,35 @@ admm(const proxqp::Settings<T>& qpsettings,
   // Solution of the linear system
   proxqp::dense::Vec<T> x_tilde = qpwork.rhs.head(qpmodel.dim);
   proxqp::dense::Vec<T> nu_eq = qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq);
-  proxqp::dense::Vec<T> nu_in = qpwork.rhs.tail(qpmodel.n_in);
+  proxqp::dense::Vec<T> nu_in = qpwork.rhs.tail(n_constraints); // Contains box constraints if any
 
   // Update of x
   qpresults.x = qpsettings.alpha_osqp * x_tilde + (1 - qpsettings.alpha_osqp) * qpresults.x;
 
   // Update of the zeta_tilde's
   proxqp::dense::Vec<T> zeta_tilde_eq = qpwork.zeta_eq + qpresults.info.mu_eq * (nu_eq - qpresults.y);
-  proxqp::dense::Vec<T> zeta_tilde_in = qpwork.zeta_in + qpresults.info.mu_in * (nu_in - qpresults.z);
+  proxqp::dense::Vec<T> zeta_tilde_in = qpwork.zeta_in + qpresults.info.mu_in * (nu_in - qpresults.z); // Add box constraints ? No
 
   // Update of the zeta's (orthogonal projection on the constraints)
   proxqp::dense::Vec<T> new_zeta_eq = qpwork.b_scaled;
   proxqp::dense::Vec<T> sum_zeta_in_z = qpsettings.alpha_osqp * zeta_tilde_in 
                                       + (1 - qpsettings.alpha_osqp) * qpwork.zeta_in 
-                                      + qpresults.info.mu_in * qpresults.z;
-  proxqp::dense::Vec<T> new_zeta_in = qpwork.l_scaled.cwiseMax(sum_zeta_in_z.cwiseMin(qpwork.u_scaled));
+                                      + qpresults.info.mu_in * qpresults.z; // Add box constraints ? No
+  proxqp::dense::Vec<T> new_zeta_in;
+  new_zeta_in.resize(n_constraints);
+  if (box_constraints) {
+    new_zeta_in.head(qpmodel.n_in) = qpwork.l_scaled.cwiseMax(sum_zeta_in_z.head(qpmodel.n_in).cwiseMin(qpwork.u_scaled));
+    new_zeta_in.tail(qpmodel.dim) = qpwork.l_box_scaled.cwiseMax(sum_zeta_in_z.tail(qpmodel.dim).cwiseMin(qpwork.u_box_scaled));
+  } else {
+    new_zeta_in = qpwork.l_scaled.cwiseMax(sum_zeta_in_z.cwiseMin(qpwork.u_scaled));
+  } // Contains box constraints if any
     
 
   // Update of y and z
-  qpresults.y = qpresults.y + qpresults.info.mu_eq_inv * (qpsettings.alpha_osqp * zeta_tilde_eq + (1 - qpsettings.alpha_osqp) * qpwork.zeta_eq - new_zeta_eq);
-  qpresults.z = qpresults.z + qpresults.info.mu_in_inv * (qpsettings.alpha_osqp * zeta_tilde_in + (1 - qpsettings.alpha_osqp) * qpwork.zeta_in - new_zeta_in);
+  qpresults.y = qpresults.y + qpresults.info.mu_eq_inv * (qpsettings.alpha_osqp * zeta_tilde_eq 
+                + (1 - qpsettings.alpha_osqp) * qpwork.zeta_eq - new_zeta_eq);
+  qpresults.z = qpresults.z + qpresults.info.mu_in_inv * (qpsettings.alpha_osqp * zeta_tilde_in 
+                + (1 - qpsettings.alpha_osqp) * qpwork.zeta_in - new_zeta_in); // Add box constraints ? No
 
   // Update of the zeta's
   qpwork.zeta_eq = new_zeta_eq;
@@ -545,7 +553,7 @@ admm(const proxqp::Settings<T>& qpsettings,
   // New right hand side
   qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.zeta_eq - qpresults.info.mu_eq * qpresults.y;
-  qpwork.rhs.tail(qpmodel.n_in) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z;
+  qpwork.rhs.tail(n_constraints) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z; // Contains box constraints if any
 
   // Prints x, y, z
   // std::cout << "x: " << qpresults.x << std::endl;
@@ -557,10 +565,8 @@ admm(const proxqp::Settings<T>& qpsettings,
                                           qpresults, 
                                           qpwork, 
                                           box_constraints, 
-                                          n_constraints, 
                                           ruiz,
-                                          hessian_type, 
-                                          stack);
+                                          hessian_type);
 
   return infeas_check;
 
@@ -581,7 +587,6 @@ polish(const proxqp::Settings<T>& qpsettings,
      const proxqp::dense::Model<T>& qpmodel,
      proxqp::Results<T>& qpresults,
      proxqp::dense::Workspace<T>& qpwork,
-     const bool box_constraints,
      const proxqp::isize n_constraints,
      const proxqp::DenseBackend dense_backend,
      const proxqp::HessianType hessian_type)
@@ -590,13 +595,12 @@ polish(const proxqp::Settings<T>& qpsettings,
   using namespace proxsuite::proxqp;
 
   // TODO: Code for PrimalLDLT backend
-  (void)box_constraints; // TODO: Code the box constraints
 
   // Prints
   // std::cout << "Variables before polishing: " << std::endl;
   // std::cout << "x: " << qpresults.x << std::endl;
   // std::cout << "y: " << qpresults.y << std::endl;
-  // std::cout << "z: " << qpresults.z << std::endl;
+  // std::cout << "z: " << qpresults.z << std::endl; 
 
   // Find the upper and lower active constraints
   qpwork.active_set_up_eq.array() = (qpresults.y.array() > 0); 
@@ -604,16 +608,14 @@ polish(const proxqp::Settings<T>& qpsettings,
   qpwork.active_constraints_eq = qpwork.active_set_up_eq || qpwork.active_set_low_eq; 
   isize numactive_constraints_eq = qpwork.active_constraints_eq.count();
   isize numactive_constraints_eq_up = qpwork.active_set_up_eq.count();
-  isize numactive_constraints_eq_low = qpwork.active_set_low_eq.count();
+  isize numactive_constraints_eq_low = qpwork.active_set_low_eq.count(); 
 
-  // qpwork.active_set_up_ineq.array() = (qpresults.z.array() > 0); // To be changed
-  // qpwork.active_set_low_ineq.array() = (qpresults.z.array() < 0); // To be changed
-  qpwork.active_set_up_ineq.array() = (qpresults.z.array() > (qpwork.u_scaled - qpwork.zeta_in).array()); 
-  qpwork.active_set_low_ineq.array() = (qpresults.z.array() < -(qpwork.zeta_in - qpwork.l_scaled).array()); 
+  qpwork.active_set_up_ineq = qpwork.active_set_up;
+  qpwork.active_set_low_ineq = qpwork.active_set_low;
   qpwork.active_constraints_ineq = qpwork.active_set_up_ineq || qpwork.active_set_low_ineq; 
   isize numactive_constraints_ineq = qpwork.active_constraints_ineq.count();
   isize numactive_constraints_ineq_up = qpwork.active_set_up_ineq.count();
-  isize numactive_constraints_ineq_low = qpwork.active_set_low_ineq.count();
+  isize numactive_constraints_ineq_low = qpwork.active_set_low_ineq.count(); 
 
   isize numactive_constraints = numactive_constraints_eq + numactive_constraints_ineq;
 
@@ -631,18 +633,34 @@ polish(const proxqp::Settings<T>& qpsettings,
       break;
   }
   
-  proxqp::dense::Mat<T> C_low(numactive_constraints_ineq_low, qpmodel.dim);
-  proxqp::dense::Mat<T> C_up(numactive_constraints_ineq_up, qpmodel.dim);
+  proxqp::dense::Mat<T> C_low(numactive_constraints_ineq_low, qpmodel.dim); 
+  proxqp::dense::Mat<T> C_up(numactive_constraints_ineq_up, qpmodel.dim); 
 
   isize low_index = 0;
   isize up_index = 0;
-  for (isize i = 0; i < qpmodel.n_in; ++i) {
+  proxqp::dense::Vec<T> tmp_low;
+  proxqp::dense::Vec<T> tmp_up;
+  tmp_low.setZero(qpmodel.dim);
+  tmp_up.setZero(qpmodel.dim);
+  for (isize i = 0; i < n_constraints; ++i) {
     if (qpwork.active_set_low_ineq(i)) {
-      C_low.row(low_index) = qpwork.C_scaled.row(i);
+      if (i < qpmodel.n_in) {
+        C_low.row(low_index) = qpwork.C_scaled.row(i);
+      } else { 
+        tmp_low(i - qpmodel.n_in) = qpwork.i_scaled(i - qpmodel.n_in);
+        C_low.row(low_index) = tmp_low;
+        tmp_low(i - qpmodel.n_in) = 0;
+      }
       ++low_index;
     }
     if (qpwork.active_set_up_ineq(i)) {
-      C_up.row(up_index) = qpwork.C_scaled.row(i);
+      if (i < qpmodel.n_in) {
+        C_up.row(up_index) = qpwork.C_scaled.row(i);
+      } else {
+        tmp_up(i - qpmodel.n_in) = qpwork.i_scaled(i - qpmodel.n_in);
+        C_up.row(up_index) = tmp_up;
+        tmp_up(i - qpmodel.n_in) = 0;
+      }
       ++up_index;
     }
   }
@@ -663,7 +681,7 @@ polish(const proxqp::Settings<T>& qpsettings,
     }
   }
 
-  // Here, define the matrix properly with A_L, A_U, C_L, C_U
+  // Construction of K
   isize row = qpmodel.dim;
   isize column = qpmodel.dim;
   qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_eq_low) = A_low.transpose();
@@ -690,20 +708,28 @@ polish(const proxqp::Settings<T>& qpsettings,
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
-  qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack);
+  qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack); 
 
   // Solve the first linear system K + Delta_K * hat_t = rhs, where rhs = [-g, b_low, l_low, b_up, u_up] and hat_t = [t, y_low, z_low, y_up, z_up]
   isize l_low_index = 0;
   isize u_up_index = 0;
   proxqp::dense::Vec<T> l_low(numactive_constraints_ineq_low);
   proxqp::dense::Vec<T> u_up(numactive_constraints_ineq_up);
-  for (proxqp::isize i = 0; i < qpmodel.n_in; ++i) {
+  for (proxqp::isize i = 0; i < n_constraints; ++i) {
     if (qpwork.active_set_low_ineq(i)) {
-      l_low(l_low_index) = qpwork.l_scaled(i);
+      if (i < qpmodel.n_in) {
+        l_low(l_low_index) = qpwork.l_scaled(i);
+      } else {
+        l_low(l_low_index) = qpwork.l_box_scaled(i - qpmodel.n_in);
+      }
       ++l_low_index;
     } 
     if (qpwork.active_set_up_ineq(i)) {
-      u_up(u_up_index) = qpwork.u_scaled(i);
+      if (i < qpmodel.n_in) {
+        u_up(u_up_index) = qpwork.u_scaled(i);
+      } else {
+        u_up(u_up_index) = qpwork.u_box_scaled(i - qpmodel.n_in);
+      }
       ++u_up_index;
     }
   }
@@ -726,29 +752,15 @@ polish(const proxqp::Settings<T>& qpsettings,
   proxqp::dense::Vec<T> g_polish_rhs(qpmodel.dim + numactive_constraints);
   isize line = qpmodel.dim;
   g_polish_rhs.head(line) = - qpwork.g_scaled;
-  // std::cout << "-g: " << - qpwork.g_scaled << std::endl;
   g_polish_rhs.segment(line, numactive_constraints_eq_low) = b_low;
-  // std::cout << "b_low: " << b_low << std::endl;
   line+= numactive_constraints_eq_low;
-  // l_low.setZero(); // Juste pour le test
   g_polish_rhs.segment(line, numactive_constraints_ineq_low) = l_low;
-  // std::cout << "l_low: " << l_low << std::endl;
   line+= numactive_constraints_ineq_low;
   g_polish_rhs.segment(line, numactive_constraints_eq_up) = b_up;
-  // std::cout << "b_up: " << b_up << std::endl;
   g_polish_rhs.tail(numactive_constraints_ineq_up) = u_up;
-  // std::cout << "u_up: " << u_up << std::endl;
 
   isize inner_pb_dim = qpmodel.dim + numactive_constraints;
   proxqp::dense::Vec<T> hat_t = g_polish_rhs;
-
-  // std::cout << "K + Delta_K: " << qpwork.k_plus_delta_k_polish << std::endl;
-  // std::cout << "Max value in K + Delta_K: " << qpwork.k_plus_delta_k_polish.maxCoeff() << std::endl;
-  // std::cout << "Min value in K + Delta_K: " << qpwork.k_plus_delta_k_polish.minCoeff() << std::endl;
-
-  // std::cout << "g_polish_rhs: " << g_polish_rhs << std::endl;
-  // std::cout << "Max value in g_polish_rhs: " << g_polish_rhs.maxCoeff() << std::endl;
-  // std::cout << "Min value in g_polish_rhs: " << g_polish_rhs.minCoeff() << std::endl;
 
   proxqp::dense::solve_linear_system(hat_t,
                                      qpmodel,
@@ -757,11 +769,9 @@ polish(const proxqp::Settings<T>& qpsettings,
                                      n_constraints,
                                      dense_backend,
                                      inner_pb_dim,
-                                     stack);
-  // std::cout << "hat_t: " << hat_t << std::endl;
+                                     stack); 
 
   // Iterative refinement
-  
   for (proxqp::i64 iter = 0; iter < qpsettings.nb_polish_iter; ++iter) {
     proxqp::dense::Vec<T> rhs_polish = g_polish_rhs - qpwork.k_polish * hat_t;
     proxqp::dense::Vec<T> delta_hat_t = rhs_polish;
@@ -774,11 +784,9 @@ polish(const proxqp::Settings<T>& qpsettings,
                                        inner_pb_dim,
                                        stack);
     hat_t = hat_t + delta_hat_t;
-  }
-  // std::cout << "hat_t: " << hat_t << std::endl;
+  } 
 
   // Update of the primal and dual variables
-
   qpresults.x = hat_t.head(qpmodel.dim);
 
   isize y_low_index = 0;
@@ -796,7 +804,7 @@ polish(const proxqp::Settings<T>& qpsettings,
     }
   }
 
-  for (proxqp::isize i = 0; i < qpmodel.n_in; ++i) {
+  for (proxqp::isize i = 0; i < n_constraints; ++i) {
     if (qpwork.active_set_low_ineq(i)) {
       qpresults.z(i) = hat_t(qpmodel.dim + numactive_constraints_eq_low + z_low_index); 
       ++z_low_index;
@@ -977,6 +985,9 @@ qp_solve( //
   // Solve
 
   proxqp::isize n_constraints(qpmodel.n_in);
+  if (box_constraints) {
+    n_constraints += qpmodel.dim;
+  }
 
   T primal_feasibility_eq_rhs_0(0); // norm(unscaled(Ax))
   T primal_feasibility_in_rhs_0(0); // norm(unscaled(Cx))
@@ -1048,6 +1059,41 @@ qp_solve( //
     qpwork.x_prev = qpresults.x;
     qpwork.y_prev = qpresults.y;
     qpwork.z_prev = qpresults.z;
+
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // General: Construction of the active sets of constraints (for dual gap in the loop)
+
+    // TODO: This is more or less copy-pasted from the proxqp solve -> Put in a common function
+
+    ruiz.scale_primal_residual_in_place_in(
+      proxsuite::proxqp::VectorViewMut<T>{ proxsuite::proxqp::from_eigen,
+                        qpwork.primal_residual_in_scaled_up.head(
+                          qpmodel.n_in) }); // contains now scaled(Cx)
+    if (box_constraints) {
+      ruiz.scale_box_primal_residual_in_place_in(
+        proxsuite::proxqp::VectorViewMut<T>{ proxsuite::proxqp::from_eigen,
+                          qpwork.primal_residual_in_scaled_up.tail(
+                            qpmodel.dim) }); // contains now scaled(x)
+    }
+    qpwork.primal_residual_in_scaled_up +=
+      qpwork.z_prev *
+      qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+
+    qpresults.si = qpwork.primal_residual_in_scaled_up;
+    qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+      qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.head(qpmodel.n_in) -=
+      qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    if (box_constraints) {
+      qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+        qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+      qpresults.si.tail(qpmodel.dim) -=
+        qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    }
+
+    qpwork.active_set_up.array() = 
+      (qpwork.primal_residual_in_scaled_up.array() >= 0);
+    qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Specific: Corpus of the solver
@@ -1176,7 +1222,6 @@ qp_solve( //
          qpmodel, 
          qpresults, 
          qpwork, 
-         box_constraints, 
          n_constraints,
          dense_backend, 
          hessian_type);

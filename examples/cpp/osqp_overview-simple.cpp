@@ -10,7 +10,7 @@ main()
 {
   // generate a QP problem
   T sparsity_factor = 0.15;
-  proxsuite::proxqp::dense::isize dim = 50;
+  proxsuite::proxqp::dense::isize dim = 20;
   proxsuite::proxqp::dense::isize n_eq(dim / 4);
   proxsuite::proxqp::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);

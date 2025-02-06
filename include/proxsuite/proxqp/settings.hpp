@@ -277,7 +277,7 @@ struct Settings
     bool compute_preconditioner = true,
     // bool compute_timings = false,
     bool compute_timings = true,
-    bool polish = false,
+    bool polish = true,
     bool update_mu_osqp = false,
     T ratio_time_mu_update = 0.4,
     T ratio_value_mu_update = 5,
