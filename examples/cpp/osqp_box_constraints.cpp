@@ -1,0 +1,84 @@
+//
+// Copyright (c) 2022 INRIA
+//
+#include <iostream>
+#include <Eigen/Core>
+#include <proxsuite/helpers/optional.hpp> 
+#include <proxsuite/osqp/dense/dense.hpp>
+
+using namespace proxsuite::osqp;
+
+int
+main()
+{
+  std::cout
+    << "Solve a simple example with equality, inequality and box constraints using dense OSQP"
+    << std::endl;
+
+  double eps_abs = 1e-9;
+  dense::isize dim = 3, n_eq = 3, n_in = 3;
+
+  // Cost function
+  Eigen::MatrixXd H = Eigen::MatrixXd(dim, dim);
+  H << 13.0, 12.0, -2.0, 12.0, 17.0, 6.0, -2.0, 6.0, 12.0;
+
+  Eigen::VectorXd g = Eigen::VectorXd(dim);
+  g << -22.0, -14.5, 13.0;
+
+  // Equality constraints A
+  Eigen::MatrixXd A = Eigen::MatrixXd(n_eq, dim);
+  A << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0;
+
+  Eigen::VectorXd b = Eigen::VectorXd(n_eq);
+  b << -1.0, -1.0, -1.0;
+
+  // Inequality constraints C
+  Eigen::MatrixXd C = Eigen::MatrixXd(n_in, dim);
+  C << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0;
+
+  Eigen::VectorXd l = Eigen::VectorXd(n_in);
+  l << -1.0, -1.0, -1.0;
+
+  Eigen::VectorXd u = Eigen::VectorXd(n_in);
+  u << 1.0, 1.0, 1.0;
+
+  // Box constraints
+  Eigen::VectorXd l_box = Eigen::VectorXd(dim);
+  l_box << -1.0, -1.0, -1.0;
+
+  Eigen::VectorXd u_box = Eigen::VectorXd(dim);
+  u_box << 1.0, 1.0, 1.0;
+
+  std::cout << "H:\n" << H << std::endl;
+  std::cout << "g.T:" << g.transpose() << std::endl;
+  std::cout << "A:\n" << A << std::endl;
+  std::cout << "b.T:" << b.transpose() << std::endl;
+  std::cout << "C:\n" << C << std::endl;
+  std::cout << "l.T:" << l.transpose() << std::endl;
+  std::cout << "u.T:" << u.transpose() << std::endl;
+  std::cout << "l_box.T:" << l_box.transpose() << std::endl;
+  std::cout << "u_box.T:" << u_box.transpose() << std::endl;
+
+  // create qp object and pass some settings
+  bool box_constraints = true;
+  dense::QP<double> qp(dim, n_eq, n_in, box_constraints); // true stands for box constraints
+
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.verbose = true;
+
+  // initialize qp with matrices describing the problem
+  // note: it is also possible to use update here
+  qp.init(H, g, A, b, C, l, u, l_box, u_box);
+
+  qp.solve();
+
+  std::cout << "unscaled x: " << qp.results.x << std::endl;
+  std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
+  std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
+  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl; 
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  return 0;
+}

@@ -140,9 +140,7 @@ struct Workspace
     , x_prev(dim)
     , y_prev(n_eq)
     , zeta_eq(n_eq)
-    , zeta_in(n_in)
     , nu_eq(n_eq)
-    , nu_in(n_in)
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
@@ -239,6 +237,8 @@ struct Workspace
       active_inequalities.resize(n_in + dim);
       active_constraints_eq.resize(n_eq + dim);
       active_constraints_ineq.resize(n_in + dim);
+      zeta_in.resize(n_in + dim);
+      nu_in.resize(n_in + dim);
       active_part_z.resize(n_in + dim);
       dw_aug.resize(dim + n_eq + n_in + dim);
       rhs.resize(dim + n_eq + n_in + dim);
@@ -320,6 +320,8 @@ struct Workspace
       active_inequalities.resize(n_in);
       active_constraints_eq.resize(n_eq);
       active_constraints_ineq.resize(n_in);
+      zeta_in.resize(n_in);
+      nu_in.resize(n_in);
       active_part_z.resize(n_in);
       dw_aug.resize(dim + n_eq + n_in);
       rhs.resize(dim + n_eq + n_in);
