@@ -213,8 +213,15 @@ DOCTEST_TEST_CASE(
                                        eps_abs,
                                        0,
                                        nullopt,
-                                       T(1.E-2),
-                                       T(1.E-2));
+                                      //  T(1.E-2),
+                                      //  T(1.E-2));
+                                      T(1.E-1),
+                                      T(1.E0));
+  // TODO: Keep in mind: The alternative values of mu are different between the test for proxqp and osqp
+  // because the default values are also different -> Here the test is succesfull
+  // TODO: Review all that was tested for proxp and:
+  // 1. Wonder if we can add additional tests (like additional backends)
+  // 2. Figure out the needs of each alsorithm (eg test the polishing for OSQP)
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))
@@ -229,7 +236,7 @@ DOCTEST_TEST_CASE(
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of (ADMM) iteration: " << results.info.iter_ext << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }

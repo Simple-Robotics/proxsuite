@@ -134,7 +134,8 @@ mu_update(const Model<T>& qpmodel,
           Workspace<T>& qpwork,
           isize n_constraints,
           const DenseBackend& dense_backend,
-          T mu_eq_new,
+          const proxsuite::solvers::utils::SolverType solver_type,
+          T mu_eq_new, // TODO: Uunderstand why it is not used in the PrimalLDLT backend
           T mu_in_new)
 {
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
@@ -170,53 +171,54 @@ mu_update(const Model<T>& qpmodel,
           indices, n_eq + n_c, rank_update_alpha, stack);
       }
     } break;
-    case DenseBackend::PrimalLDLT: {
-      // we refactorize there for the moment
+    case DenseBackend::PrimalLDLT: { // PrimalLDLT here
       proxsuite::linalg::veg::dynstack::DynStackMut stack{
         proxsuite::linalg::veg::from_slice_mut,
         qpwork.ldl_stack.as_mut(),
       };
-      // qpwork.kkt.noalias() = qpwork.H_scaled + (qpwork.A_scaled.transpose() *
-      // qpwork.A_scaled) / mu_eq_new; qpwork.kkt.diagonal().array() +=
-      // qpresults.info.rho; for (isize i = 0; i < n_constraints; i++){
-      //   if (qpwork.active_inequalities(i)){
-      //     if (i >=qpmodel.n_in){
-      //       // box constraints
-      //       qpwork.kkt(i-qpmodel.n_in,i-qpmodel.n_in) +=
-      //       std::pow(qpwork.i_scaled(i-qpmodel.n_in),2) / mu_in_new ;
-      //     } else{
-      //       // generic ineq constraint
-      //       qpwork.kkt.noalias() += qpwork.C_scaled.row(i).transpose() *
-      //       qpwork.C_scaled.row(i) / mu_in_new ;
-      //     }
-      //   }
-      // }
-      // qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
-
-      // mu update for C_J
-      {
-        LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack);
-        qpwork.dw_aug.head(qpmodel.dim).setOnes();
-        T delta_mu(mu_in_new - qpresults.info.mu_in_inv);
-        qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
-        for (isize i = 0; i < n_constraints; ++i) {
-          isize j = qpwork.current_bijection_map[i];
-          if (j < n_c) {
-            auto col = new_cols.col(j);
-            if (i >= qpmodel.n_in) {
-              // box constraint
-              col.setZero();
-              col[i - qpmodel.n_in] = qpwork.i_scaled[i - qpmodel.n_in];
-            } else {
-              // generic ineq constraints
-              col = qpwork.C_scaled.row(i);
+      switch (solver_type) {
+        case proxsuite::solvers::utils::SolverType::PROXQP: {
+          {
+            LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack);
+            qpwork.dw_aug.head(qpmodel.dim).setOnes();
+            T delta_mu(mu_in_new - qpresults.info.mu_in_inv); // TODO: Check if correct
+            qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
+            for (isize i = 0; i < n_constraints; ++i) {
+              isize j = qpwork.current_bijection_map[i];
+              if (j < n_c) {
+                auto col = new_cols.col(j);
+                if (i >= qpmodel.n_in) {
+                  col.setZero();
+                  col[i - qpmodel.n_in] = qpwork.i_scaled[i - qpmodel.n_in];
+                } else {
+                  col = qpwork.C_scaled.row(i);
+                }
+              }
             }
+            qpwork.ldl.rank_r_update(
+              new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
           }
-        }
-        qpwork.ldl.rank_r_update(
-          new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+        } break;
+        case proxsuite::solvers::utils::SolverType::OSQP: {
+          {
+            LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack); // n_c = n_constraints (ADMM steps => full kkt matrix)
+            qpwork.dw_aug.head(qpmodel.dim).setOnes();
+            T delta_mu(mu_in_new - qpresults.info.mu_in_inv); // TODO: Check if correct
+            qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
+            for (isize i = 0; i < n_constraints; ++i) {
+              auto col = new_cols.col(i);
+              if (i >= qpmodel.n_in) {
+                col.setZero();
+                col[i - qpmodel.n_in] = qpwork.i_scaled[i - qpmodel.n_in];
+              } else {
+                col = qpwork.C_scaled.row(i);
+              }
+            }
+            qpwork.ldl.rank_r_update(
+              new_cols, qpwork.dw_aug.head(qpmodel.dim), stack);
+          }
+        } break;
       }
-      // mu update for A
       {
         LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpmodel.n_eq, stack);
         new_cols = qpwork.A_scaled.transpose();
@@ -324,6 +326,7 @@ solve_linear_system(proxsuite::proxqp::dense::Vec<T>& dw,
                     Workspace<T>& qpwork,
                     const isize n_constraints,
                     const DenseBackend& dense_backend,
+                    const proxsuite::solvers::utils::SolverType solver_type,
                     isize inner_pb_dim,
                     proxsuite::linalg::veg::dynstack::DynStackMut& stack)
 {
@@ -332,57 +335,103 @@ solve_linear_system(proxsuite::proxqp::dense::Vec<T>& dw,
     case DenseBackend::PrimalDualLDLT:
       qpwork.ldl.solve_in_place(dw.head(inner_pb_dim), stack);
       break;
-    case DenseBackend::PrimalLDLT:
-      // find dx
-      dw.head(qpmodel.dim).noalias() += qpresults.info.mu_eq_inv *
-                                        qpwork.A_scaled.transpose() *
-                                        dw.segment(qpmodel.dim, qpmodel.n_eq);
-      for (isize i = 0; i < n_constraints; i++) {
-        isize j = qpwork.current_bijection_map(i);
-        if (j < qpwork.n_c) {
-          if (i >= qpmodel.n_in) {
-            // box constraints
-            dw(i - qpmodel.n_in) += dw(j + qpmodel.dim + qpmodel.n_eq) *
-                                    qpwork.i_scaled(i - qpmodel.n_in);
-          } else {
-            // ineq constraints
-            dw.head(qpmodel.dim) +=
-              dw(j + qpmodel.dim + qpmodel.n_eq) * qpwork.C_scaled.row(i);
+    case DenseBackend::PrimalLDLT: // PrimalLDLT here
+      switch (solver_type) {
+        case proxsuite::solvers::utils::SolverType::PROXQP: {
+          // find dx
+          dw.head(qpmodel.dim).noalias() += qpresults.info.mu_eq_inv *
+                                            qpwork.A_scaled.transpose() *
+                                            dw.segment(qpmodel.dim, qpmodel.n_eq);
+          for (isize i = 0; i < n_constraints; i++) {
+            isize j = qpwork.current_bijection_map(i);
+            if (j < qpwork.n_c) {
+              if (i >= qpmodel.n_in) {
+                // box constraints
+                dw(i - qpmodel.n_in) += dw(j + qpmodel.dim + qpmodel.n_eq) *
+                                        qpwork.i_scaled(i - qpmodel.n_in);
+              } else {
+                // ineq constraints
+                dw.head(qpmodel.dim) +=
+                  dw(j + qpmodel.dim + qpmodel.n_eq) * qpwork.C_scaled.row(i);
+              }
+            }
           }
-        }
-      }
-      qpwork.ldl.solve_in_place(dw.head(qpmodel.dim), stack);
-      // find dy
-      dw.segment(qpmodel.dim, qpmodel.n_eq) -=
-        qpresults.info.mu_eq_inv * dw.segment(qpmodel.dim, qpmodel.n_eq);
-      dw.segment(qpmodel.dim, qpmodel.n_eq).noalias() +=
-        qpresults.info.mu_eq_inv *
-        (qpwork.A_scaled *
-         dw.head(
-           qpmodel.dim)); //- qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq));
-      // find dz_J
-      for (isize i = 0; i < n_constraints; i++) {
-        isize j = qpwork.current_bijection_map(i);
-        if (j < qpwork.n_c) {
-          if (i >= qpmodel.n_in) {
-            // box constraints
-            dw(j + qpmodel.dim + qpmodel.n_eq) -=
-              qpresults.info.mu_in_inv * (dw(j + qpmodel.dim + qpmodel.n_eq));
-            dw(j + qpmodel.dim + qpmodel.n_eq) +=
-              qpresults.info.mu_in_inv *
-              (dw(
-                i -
-                qpmodel.n_in)); //- qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq));
-          } else {
-            // ineq constraints
-            dw(j + qpmodel.dim + qpmodel.n_eq) -=
-              qpresults.info.mu_in_inv * (dw(j + qpmodel.dim + qpmodel.n_eq));
-            dw(j + qpmodel.dim + qpmodel.n_eq) +=
-              qpresults.info.mu_in_inv *
-              (qpwork.C_scaled.row(i).dot(dw.head(
-                qpmodel.dim))); //- qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq));
+          qpwork.ldl.solve_in_place(dw.head(qpmodel.dim), stack);
+          // find dy
+          dw.segment(qpmodel.dim, qpmodel.n_eq) -=
+            qpresults.info.mu_eq_inv * dw.segment(qpmodel.dim, qpmodel.n_eq);
+          dw.segment(qpmodel.dim, qpmodel.n_eq).noalias() +=
+            qpresults.info.mu_eq_inv *
+            (qpwork.A_scaled *
+            dw.head(
+              qpmodel.dim)); //- qpwork.rhs.segment(qpmodel.dim,qpmodel.n_eq));
+          // find dz_J
+          for (isize i = 0; i < n_constraints; i++) {
+            isize j = qpwork.current_bijection_map(i);
+            if (j < qpwork.n_c) {
+              if (i >= qpmodel.n_in) {
+                // box constraints
+                dw(j + qpmodel.dim + qpmodel.n_eq) -=
+                  qpresults.info.mu_in_inv * (dw(j + qpmodel.dim + qpmodel.n_eq));
+                dw(j + qpmodel.dim + qpmodel.n_eq) +=
+                  qpresults.info.mu_in_inv *
+                  (dw(
+                    i -
+                    qpmodel.n_in)); //- qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq));
+              } else {
+                // ineq constraints
+                dw(j + qpmodel.dim + qpmodel.n_eq) -=
+                  qpresults.info.mu_in_inv * (dw(j + qpmodel.dim + qpmodel.n_eq));
+                dw(j + qpmodel.dim + qpmodel.n_eq) +=
+                  qpresults.info.mu_in_inv *
+                  (qpwork.C_scaled.row(i).dot(dw.head(
+                    qpmodel.dim))); //- qpwork.rhs(j + qpmodel.dim + qpmodel.n_eq));
+              }
+            }
           }
-        }
+        } break;
+        case proxsuite::solvers::utils::SolverType::OSQP: {
+          dw.head(qpmodel.dim).noalias() += qpresults.info.mu_eq_inv *
+                                            qpwork.A_scaled.transpose() *
+                                            dw.segment(qpmodel.dim, qpmodel.n_eq);
+          for (isize i = 0; i < n_constraints; i++) {
+            if (i >= qpmodel.n_in) {
+              dw(i - qpmodel.n_in) += dw(i + qpmodel.dim + qpmodel.n_eq) *
+                                      qpwork.i_scaled(i - qpmodel.n_in);
+            } else {
+              dw.head(qpmodel.dim) +=
+                dw(i + qpmodel.dim + qpmodel.n_eq) * qpwork.C_scaled.row(i);
+            }
+          }
+          qpwork.ldl.solve_in_place(dw.head(qpmodel.dim), stack);
+          
+          dw.segment(qpmodel.dim, qpmodel.n_eq) -=
+            qpresults.info.mu_eq_inv * dw.segment(qpmodel.dim, qpmodel.n_eq);
+          dw.segment(qpmodel.dim, qpmodel.n_eq).noalias() +=
+            qpresults.info.mu_eq_inv *
+            (qpwork.A_scaled *
+            dw.head(
+              qpmodel.dim)); 
+          
+          for (isize i = 0; i < n_constraints; i++) {
+            if (i >= qpmodel.n_in) {
+              dw(i + qpmodel.dim + qpmodel.n_eq) -=
+                qpresults.info.mu_in_inv * (dw(i + qpmodel.dim + qpmodel.n_eq));
+              dw(i + qpmodel.dim + qpmodel.n_eq) +=
+                qpresults.info.mu_in_inv *
+                (dw(
+                  i -
+                  qpmodel.n_in));
+            } else {
+              dw(i + qpmodel.dim + qpmodel.n_eq) -=
+                qpresults.info.mu_in_inv * (dw(i + qpmodel.dim + qpmodel.n_eq));
+              dw(i + qpmodel.dim + qpmodel.n_eq) +=
+                qpresults.info.mu_in_inv *
+                (qpwork.C_scaled.row(i).dot(dw.head(
+                  qpmodel.dim))); 
+            }
+          }
+        } break;
       }
       break;
     case DenseBackend::Automatic:
@@ -430,6 +479,7 @@ iterative_solve_with_permut_fact( //
                       qpwork,
                       n_constraints,
                       dense_backend,
+                      proxsuite::solvers::utils::SolverType::PROXQP,
                       inner_pb_dim,
                       stack);
   iterative_residual<T>(
@@ -449,6 +499,7 @@ iterative_solve_with_permut_fact( //
                         qpwork,
                         n_constraints,
                         dense_backend,
+                        proxsuite::solvers::utils::SolverType::PROXQP,
                         inner_pb_dim,
                         stack);
     // qpwork.ldl.solve_in_place(qpwork.err.head(inner_pb_dim), stack);
@@ -488,6 +539,7 @@ iterative_solve_with_permut_fact( //
                         qpwork,
                         n_constraints,
                         dense_backend,
+                        proxsuite::solvers::utils::SolverType::PROXQP,
                         inner_pb_dim,
                         stack);
     // qpwork.ldl.solve_in_place(qpwork.dw_aug.head(inner_pb_dim), stack);
@@ -509,6 +561,7 @@ iterative_solve_with_permut_fact( //
                           qpwork,
                           n_constraints,
                           dense_backend,
+                          proxsuite::solvers::utils::SolverType::PROXQP,
                           inner_pb_dim,
                           stack);
       // qpwork.ldl.solve_in_place(qpwork.err.head(inner_pb_dim), stack);
@@ -1372,6 +1425,7 @@ qp_solve( //
                 qpwork,
                 n_constraints,
                 dense_backend,
+                proxsuite::solvers::utils::SolverType::PROXQP,
                 new_bcl_mu_eq,
                 new_bcl_mu_in);
     }

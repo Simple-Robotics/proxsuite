@@ -375,6 +375,7 @@ struct Workspace
   void cleanup(const bool box_constraints)
   {
     isize n_in = C_scaled.rows();
+    isize n_eq = A_scaled.rows();
     isize dim = H_scaled.rows();
     H_scaled.setZero();
     g_scaled.setZero();
@@ -415,8 +416,10 @@ struct Workspace
       current_bijection_map(i) = i;
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
-      active_constraints_eq(i) = false;
       active_constraints_ineq(i) = false;
+    }
+    for (isize i = 0; i < n_eq; i++) {
+      active_constraints_eq(i) = false;
     }
 
 

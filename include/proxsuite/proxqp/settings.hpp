@@ -255,7 +255,7 @@ struct Settings
     T eps_abs = 1.e-4, // osqp
     T eps_rel = 1.e-4, // osqp
     // isize max_iter = 10000,
-    isize max_iter = 10000,
+    isize max_iter = 10,
     isize max_iter_in = 1500,
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
@@ -277,7 +277,7 @@ struct Settings
     bool compute_preconditioner = true,
     // bool compute_timings = false,
     bool compute_timings = true,
-    bool polish = true,
+    bool polish = false,
     bool update_mu_osqp = false,
     T ratio_time_mu_update = 0.4,
     T ratio_value_mu_update = 5,
