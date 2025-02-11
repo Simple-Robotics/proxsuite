@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+* Fix an arcane compilation issue on Clang-19 ([#379](https://github.com/Simple-Robotics/proxsuite/pull/379))
+
 ## [0.7.1] - 2025-01-28
 
 ### Fixed
