@@ -24,7 +24,7 @@ def generate_mixed_qp(n, sparse=False, seed=1, reg=1e-2, dens1=0.075):
         A = A.toarray()
         P = P.toarray()
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
+    _delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
