@@ -1,6 +1,4 @@
 import proxsuite
-import numpy as np
-import scipy.sparse as spa
 from util import generate_mixed_qp
 
 

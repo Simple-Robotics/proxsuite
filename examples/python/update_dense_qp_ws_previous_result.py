@@ -1,5 +1,4 @@
 import proxsuite
-import numpy as np
 from util import generate_mixed_qp
 
 
