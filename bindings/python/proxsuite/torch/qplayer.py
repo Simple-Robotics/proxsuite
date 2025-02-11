@@ -194,9 +194,9 @@ def QPFunction(
                 for i in range(nBatch):
                     rhs = np.zeros(n_tot)
                     rhs[:dim] = dl_dzhat[i]
-                    if dl_dlams != None:
+                    if dl_dlams is not None:
                         rhs[dim : dim + neq] = dl_dlams[i]
-                    if dl_dnus != None:
+                    if dl_dnus is not None:
                         rhs[dim + neq :] = dl_dnus[i]
                     vector_of_loss_derivatives.append(rhs)
 
@@ -212,9 +212,9 @@ def QPFunction(
                 for i in range(nBatch):
                     rhs = np.zeros(n_tot)
                     rhs[:dim] = dl_dzhat[i].cpu()
-                    if dl_dlams != None:
+                    if dl_dlams is not None:
                         rhs[dim : dim + neq] = dl_dlams[i].cpu()
-                    if dl_dnus != None:
+                    if dl_dnus is not None:
                         rhs[dim + neq :] = dl_dnus[i].cpu()
                     qpi = ctx.vector_of_qps.get(i)
                     proxsuite.proxqp.dense.compute_backward(
@@ -472,13 +472,13 @@ def QPFunction(
 
                 rhs = np.zeros(kkt.shape[0])
                 rhs[:dim] = -dl_dzhat[i]
-                if dl_dlams != None:
+                if dl_dlams is not None:
                     if n_eq != 0:
                         rhs[dim : dim + n_eq] = -dl_dlams[i]
                 active_set = None
                 if n_in != 0:
                     active_set = -z_i[:n_in_sol] + z_i[n_in_sol:] >= 0
-                if dl_dnus != None:
+                if dl_dnus is not None:
                     if n_in != 0:
                         # we must convert dl_dnus to a uni sided version
                         # to do so we reconstitute the active set
@@ -488,10 +488,10 @@ def QPFunction(
                         rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][active_set] = (
                             -dl_dnus[i][active_set]
                         )
-                if dl_ds_e != None:
+                if dl_ds_e is not None:
                     if dl_ds_e.shape[0] != 0:
                         rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]
-                if dl_ds_i != None:
+                if dl_ds_i is not None:
                     if dl_ds_i.shape[0] != 0:
                         # we must convert dl_dnus to a uni sided version
                         # to do so we reconstitute the active set
