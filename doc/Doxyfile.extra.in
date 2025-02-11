@@ -1,5 +1,6 @@
 INPUT                   = @PROJECT_SOURCE_DIR@/doc \
                           @PROJECT_SOURCE_DIR@/include \
+                          @PROJECT_SOURCE_DIR@/bindings/python/proxsuite \
 
 RECURSIVE               = YES
 

@@ -18,73 +18,72 @@ def QPFunction(
     omp_parallel=False,
     structural_feasibility=True,
 ):
-    """
+    """!
     Solve a batch of Quadratic Programming (QP) problems.
 
     This function solves QP problems of the form:
-        min 0.5*z'*Q*z + p'*z
-        s.t. l <= G*z <= h
-             A*z = b
+
+    $$
+    \begin{align}
+    \min_{z} &  ~\frac{1}{2}z^{T} Q (\theta) z +p(\theta)^{T}z \\\
+    \text{s.t.} & ~A(\theta) z = b(\theta) \\\
+    & ~l(\theta) \leq G(\theta) z \leq u(\theta)
+    \end{align}
+    $$
 
     The QP can be infeasible - in this case the solver will return a solution to
     the closest feasible QP.
 
-    Args:
-        eps (float, optional): Tolerance for the primal infeasibility. Defaults to 1e-9.
-        maxIter (int, optional): Maximum number of iterations. Defaults to 1000.
-        eps_backward (float, optional): Tolerance for the backward pass. Defaults to 1e-4.
-        rho_backward (float, optional): The new value for the primal proximal parameter. Defaults to 1e-6.
-        mu_backward (float, optional): The new dual proximal parameter used for both equality and inequality. Defaults to 1e-6.
-        omp_parallel (bool, optional): Whether to solve the QP in parallel. Requires that proxsuite is compiled with openmp support. Defaults to False.
-        structural_feasibility (bool, optional): Whether to solve the QP with structural feasibility. Defaults to True.
+    \param[in] eps Tolerance for the primal infeasibility. Defaults to 1e-9.
+    \param[in] maxIter Maximum number of iterations. Defaults to 1000.
+    \param[in] eps_backward Tolerance for the backward pass. Defaults to 1e-4.
+    \param[in] rho_backward The new value for the primal proximal parameter. Defaults to 1e-6.
+    \param[in] mu_backward The new dual proximal parameter used for both equality and inequality. Defaults to 1e-6.
+    \param[in] omp_parallel Whether to solve the QP in parallel. Requires that proxsuite is compiled with openmp support. Defaults to False.
+    \param[in] structural_feasibility Whether to solve the QP with structural feasibility. Defaults to True.
 
-    Returns:
-        QPFunctionFn or QPFunctionFn_infeas: A callable object that represents the QP problem solver.
+    \returns QPFunctionFn or QPFunctionFn_infeas: A callable object that represents the QP problem solver.
         We disinguish two cases:
             1. The QP is feasible. In this case, we solve the QP problem.
             2. The QP is infeasible. In this case, we solve the closest feasible QP problem.
 
     The callable object has two main methods:
 
-    Forward:
-        Solve the QP problem.
+    \section qpfunction-forward Forward method
 
-        Args:
-            Q (torch.Tensor): Batch of quadratic cost matrices of size (nBatch, n, n) or (n, n).
-            p (torch.Tensor): Batch of linear cost vectors of size (nBatch, n) or (n).
-            A (torch.Tensor, optional): Batch of eq. constraint matrices of size (nBatch, p, n) or (p, n).
-            b (torch.Tensor, optional): Batch of eq. constraint vectors of size (nBatch, p) or (p).
-            G (torch.Tensor): Batch of ineq. constraint matrices of size (nBatch, m, n) or (m, n).
-            l (torch.Tensor): Batch of ineq. lower bound vectors of size (nBatch, m) or (m).
-            u (torch.Tensor): Batch of ineq. upper bound vectors of size (nBatch, m) or (m).
+    Solve the QP problem.
 
-        Returns:
-            zhats (torch.Tensor): Batch of optimal primal solutions of size (nBatch, n).
-            lams (torch.Tensor): Batch of dual variables for eq. constraint of size (nBatch, m).
-            nus (torch.Tensor): Batch of dual variables  for ineq. constraints of size (nBatch, p).
-            Only for infeasible case:
-                s_e (torch.Tensor): Batch of slack variables for eq. constraints of size (nBatch, m).
-                s_i (torch.Tensor): Batch of slack variables for ineq. constraints of size (nBatch, p).
+    \param[in] Q Batch of quadratic cost matrices of size (nBatch, n, n) or (n, n).
+    \param[in] p Batch of linear cost vectors of size (nBatch, n) or (n).
+    \param[in] A Optional batch of eq. constraint matrices of size (nBatch, p, n) or (p, n).
+    \param[in] b Optional batch of eq. constraint vectors of size (nBatch, p) or (p).
+    \param[in] G Batch of ineq. constraint matrices of size (nBatch, m, n) or (m, n).
+    \param[in] l Batch of ineq. lower bound vectors of size (nBatch, m) or (m).
+    \param[in] u Batch of ineq. upper bound vectors of size (nBatch, m) or (m).
 
-    Backward:
-        Compute the gradients of the QP problem wrt its parameters.
+    \returns \p zhats Batch of optimal primal solutions of size (nBatch, n).
+    \returns \p lams Batch of dual variables for eq. constraint of size (nBatch, m).
+    \returns \p nus Batch of dual variables  for ineq. constraints of size (nBatch, p).
+    \returns \p s_e Only returned in the infeasible case: batch of slack variables for eq. constraints of size (nBatch, m).
+    \returns \p s_i Only returned in the infeasible case: batch of slack variables for ineq. constraints of size (nBatch, p).
 
-        Args:
-            dl_dzhat (torch.Tensor): Batch of gradients of size (nBatch, n).
-            dl_dlams (torch.Tensor, optional): Batch of gradients of size (nBatch, p).
-            dl_dnus (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
-            Only for infeasible case:
-                dl_ds_e (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
-                dl_ds_i (torch.Tensor, optional): Batch of gradients of size (nBatch, m).
+    \section qpfunction-backward Backward method
 
-        Returns:
-            dQs (torch.Tensor): Batch of gradients of size (nBatch, n, n).
-            dps (torch.Tensor): Batch of gradients of size (nBatch, n).
-            dAs (torch.Tensor): Batch of gradients of size (nBatch, p, n).
-            dbs (torch.Tensor): Batch of gradients of size (nBatch, p).
-            dGs (torch.Tensor): Batch of gradients of size (nBatch, m, n).
-            dls (torch.Tensor): Batch of gradients of size (nBatch, m).
-            dus (torch.Tensor): Batch of gradients of size (nBatch, m).
+    Compute the gradients of the QP problem with respect to its parameters.
+
+    \param[in] dl_dzhat Batch of gradients of size (nBatch, n).
+    \param[in] dl_dlams Optional batch of gradients of size (nBatch, p).
+    \param[in] dl_dnus Optional batch of gradients of size (nBatch, m).
+    \param[in] dl_ds_e Only applicable in the infeasible case: optional batch of gradients of size (nBatch, m).
+    \param[in] dl_ds_i Only applicable in the infeasible case: optional batch of gradients of size (nBatch, m).
+
+    \returns \p dQs Batch of gradients of size (nBatch, n, n).
+    \returns \p dps Batch of gradients of size (nBatch, n).
+    \returns \p dAs Batch of gradients of size (nBatch, p, n).
+    \returns \p dbs Batch of gradients of size (nBatch, p).
+    \returns \p dGs Batch of gradients of size (nBatch, m, n).
+    \returns \p dls Batch of gradients of size (nBatch, m).
+    \returns \p dus Batch of gradients of size (nBatch, m).
     """
     global proxqp_parallel
     proxqp_parallel = omp_parallel
