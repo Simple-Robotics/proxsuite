@@ -3,6 +3,14 @@ ci:
   autoupdate_branch: devel
   autoupdate_schedule: quarterly
 repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.8.6
+  hooks:
+  - id: ruff
+    args:
+    - --fix
+    - --exit-non-zero-on-fix
+  - id: ruff-format
 - repo: https://github.com/cheshirekow/cmake-format-precommit
   rev: v0.6.13
   hooks:
@@ -17,7 +25,3 @@ repos:
   rev: v5.0.0
   hooks:
   - id: trailing-whitespace
-- repo: https://github.com/psf/black
-  rev: 24.10.0
-  hooks:
-  - id: black

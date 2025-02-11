@@ -20,3 +20,7 @@ requires = [
     ]
 build-backend = "cmeel.build"
 configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF","-DBUILD_WITH_OPENMP_SUPPORT=OFF"]
+
+[tool.ruff.lint]
+ignore = [ "E741" ]
+exclude = [ "cmake-module/*", "bindings/python/external/nanobind/*" ]
