@@ -25,9 +25,9 @@ def QPFunction(
 
     $$
     \begin{align}
-    \min_{x} &  ~\frac{1}{2}z^{T} Q (\theta) z +p(\theta)^{T}z \\\
+    \min_{z} &  ~\frac{1}{2}z^{T} Q (\theta) z +p(\theta)^{T}z \\\
     \text{s.t.} & ~A(\theta) z = b(\theta) \\\
-    & ~l(\theta) \leq G(\theta) x \leq u(\theta)
+    & ~l(\theta) \leq G(\theta) z \leq u(\theta)
     \end{align}
     $$
 
