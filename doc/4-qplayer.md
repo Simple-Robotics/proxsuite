@@ -4,8 +4,8 @@
 
 $$
 \begin{align}
-\min_{x} &  ~\frac{1}{2}x^{T}H(\theta)x+g(\theta)^{T}x \\
-\text{s.t.} & ~A(\theta) x = b(\theta) \\
+\min_{x} &  ~\frac{1}{2}x^{T}H(\theta)x+g(\theta)^{T}x \\\
+\text{s.t.} & ~A(\theta) x = b(\theta) \\\
 & ~l(\theta) \leq C(\theta) x \leq u(\theta)
 \end{align}
 $$
