@@ -37,7 +37,7 @@ def generate_mixed_qp(n, seed=1):
         order="C"
     )
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
+    _delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
@@ -162,8 +162,8 @@ class ParallelWrapper(unittest.TestCase):
 
         for i in range(batch_size):
             H, g, A, b, C, u, l = generate_mixed_qp(n, seed=i)
-            n_eq = A.shape[0]
-            n_in = C.shape[0]
+            _n_eq = A.shape[0]
+            _n_in = C.shape[0]
 
             H_ = H != 0.0
             A_ = A != 0.0
