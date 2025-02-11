@@ -5,9 +5,11 @@
 #include <Eigen/Core>
 #include <proxsuite/helpers/optional.hpp> // for c++14
 #include <proxsuite/osqp/dense/dense.hpp>
+// #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 
 using namespace proxsuite::osqp;
+// using namespace proxsuite::proxqp;
 
 int
 main()
@@ -44,6 +46,12 @@ main()
   Eigen::VectorXd u = Eigen::VectorXd(n_in);
   u << 1.0, 1.0, 1.0;
 
+  // Eigen::VectorXd l_box = Eigen::VectorXd(dim);
+  // l_box << -1.0, -1.0, -1.0;
+
+  // Eigen::VectorXd u_box = Eigen::VectorXd(dim);
+  // u_box << 1.0, 1.0, 1.0;
+
   std::cout << "H:\n" << H << std::endl;
   std::cout << "g.T:" << g.transpose() << std::endl;
   std::cout << "A:\n" << A << std::endl;
@@ -51,10 +59,13 @@ main()
   std::cout << "C:\n" << C << std::endl;
   std::cout << "l.T:" << l.transpose() << std::endl;
   std::cout << "u.T:" << u.transpose() << std::endl;
+  // std::cout << "l_box.T:" << l_box.transpose() << std::endl;
+  // std::cout << "u_box.T:" << u_box.transpose() << std::endl;
 
   // create qp object and pass some settings
+  // bool box_constraints = true;
   bool box_constraints = false;
-  dense::QP<double> qp(dim, n_eq, n_in, box_constraints, proxsuite::proxqp::DenseBackend::PrimalLDLT);
+  dense::QP<double> qp(dim, n_eq, n_in, box_constraints, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
@@ -62,6 +73,7 @@ main()
 
   // initialize qp with matrices describing the problem
   // note: it is also possible to use update here
+  // qp.init(H, g, A, b, C, l, u, l_box, u_box);
   qp.init(H, g, A, b, C, l, u);
 
   qp.solve();

@@ -97,6 +97,7 @@ struct Settings
 
   T alpha_osqp;
   T delta_osqp;
+  T delta_osqp_inv;
 
   T refactor_dual_feasibility_threshold;
   T refactor_rho_threshold;
@@ -160,6 +161,7 @@ struct Settings
    * @param beta_bcl beta parameter of the BCL algorithm.
    * @param alpha_osqp alpha parameter of the OSQP algorithm.
    * @param delta_osqp delta parameter of the OSQP algorithm.
+   * @param delta_osqp_inv inverse of delta parameter of the OSQP algorithm.
    * @param refactor_dual_feasibility_threshold threshold above which
    * refactorization is performed to change rho parameter.
    * @param refactor_rho_threshold new rho parameter used if the
@@ -238,6 +240,7 @@ struct Settings
     T beta_bcl = 0.9,
     T alpha_osqp = 1.6,
     T delta_osqp = 1e-6,
+    T delta_osqp_inv = 1e6,
     T refactor_dual_feasibility_threshold = 1e-2,
     T refactor_rho_threshold = 1e-7,
     T mu_min_eq = 1e-9,
@@ -255,7 +258,7 @@ struct Settings
     T eps_abs = 1.e-4, // osqp
     T eps_rel = 1.e-4, // osqp
     // isize max_iter = 10000,
-    isize max_iter = 10,
+    isize max_iter = 10000,
     isize max_iter_in = 1500,
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
@@ -277,7 +280,7 @@ struct Settings
     bool compute_preconditioner = true,
     // bool compute_timings = false,
     bool compute_timings = true,
-    bool polish = false,
+    bool polish = true,
     bool update_mu_osqp = false,
     T ratio_time_mu_update = 0.4,
     T ratio_value_mu_update = 5,
@@ -304,6 +307,7 @@ struct Settings
     , beta_bcl(beta_bcl)
     , alpha_osqp(alpha_osqp)
     , delta_osqp(delta_osqp)
+    , delta_osqp_inv(delta_osqp_inv)
     , refactor_dual_feasibility_threshold(refactor_dual_feasibility_threshold)
     , refactor_rho_threshold(refactor_rho_threshold)
     , mu_min_eq(mu_min_eq)
@@ -377,6 +381,8 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.alpha_osqp == settings2.alpha_osqp &&
     settings1.delta_osqp == settings2.delta_osqp &&
     settings1.delta_osqp == settings2.delta_osqp &&
+    settings1.delta_osqp_inv == settings2.delta_osqp_inv &&
+    settings1.delta_osqp_inv == settings2.delta_osqp_inv &&
     settings1.refactor_dual_feasibility_threshold ==
       settings2.refactor_dual_feasibility_threshold &&
     settings1.refactor_rho_threshold == settings2.refactor_rho_threshold &&
