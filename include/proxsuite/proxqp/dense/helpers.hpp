@@ -276,7 +276,7 @@ setup_factorization(Workspace<T>& qpwork,
         .setConstant(-qpresults.info.mu_eq);
       qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
       break;
-    case DenseBackend::PrimalLDLT:
+    case DenseBackend::PrimalLDLT: // PrimalLDLT here
       qpwork.kkt.noalias() += qpresults.info.mu_eq_inv *
                               (qpwork.A_scaled.transpose() * qpwork.A_scaled);
       qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);

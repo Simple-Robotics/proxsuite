@@ -457,7 +457,7 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
   if ((qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
         !qpsettings.primal_infeasibility_solving) ||
       qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
-    return true; // Instead of doing break; in one single big qp_solve function
+    return true; 
   } else {
     return false;
   }
@@ -501,46 +501,88 @@ admm(const proxqp::Settings<T>& qpsettings,
 
   // Corpus of the ADMM iteration >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  // Solves the linear system ((24) in https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf with the proxqp wrapper / framework)
+  proxqp::dense::Vec<T> x_tilde;
+  proxqp::dense::Vec<T> nu_eq;
+  proxqp::dense::Vec<T> nu_in;
+  proxqp::dense::Vec<T> zeta_tilde_eq;
+  proxqp::dense::Vec<T> zeta_tilde_in;
 
-  // Print mu_eq and mu_in
-  // std::cout << "mu_eq: " << qpresults.info.mu_eq << std::endl;
-  // std::cout << "mu_in: " << qpresults.info.mu_in << std::endl;
+  switch (dense_backend) {
+    case DenseBackend::PrimalDualLDLT: {
+      // Construction of the rhs
+      qpwork.rhs.setZero();
+      qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
+      qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
+      qpwork.rhs.tail(n_constraints) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z; 
 
-  qpwork.rhs.setZero();
-  qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
-  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
-  qpwork.rhs.tail(n_constraints) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z; // Contains box constraints if any
-  
-  isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + n_constraints; // Contains box constraints if any
-  
-  proxsuite::linalg::veg::dynstack::DynStackMut stack{
-    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
-  };
+      // Solve the linear system
+      isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + n_constraints; 
+      proxsuite::linalg::veg::dynstack::DynStackMut stack{
+        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+      };
+      proxqp::dense::solve_linear_system(qpwork.rhs,
+                                        qpmodel,
+                                        qpresults,
+                                        qpwork,
+                                        n_constraints,
+                                        dense_backend,
+                                        proxsuite::solvers::utils::SolverType::OSQP,
+                                        inner_pb_dim,
+                                        stack);
 
-  proxqp::dense::solve_linear_system(qpwork.rhs,
-                                     qpmodel,
-                                     qpresults,
-                                     qpwork,
-                                     n_constraints,
-                                     dense_backend,
-                                     proxsuite::solvers::utils::SolverType::OSQP,
-                                     inner_pb_dim,
-                                     stack);
+      // Updates of the intermediate variables for x, y and z
+      x_tilde = qpwork.rhs.head(qpmodel.dim);
 
-  // Updates of x, y, z (according to OSQP)
+      nu_eq = qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq);
+      nu_in = qpwork.rhs.tail(n_constraints); 
+      zeta_tilde_eq = qpwork.zeta_eq + qpresults.info.mu_eq * (nu_eq - qpresults.y);
+      zeta_tilde_in = qpwork.zeta_in + qpresults.info.mu_in * (nu_in - qpresults.z); 
 
-  // Solution of the linear system
-  proxqp::dense::Vec<T> x_tilde = qpwork.rhs.head(qpmodel.dim);
-  proxqp::dense::Vec<T> nu_eq = qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq);
-  proxqp::dense::Vec<T> nu_in = qpwork.rhs.tail(n_constraints); 
+    } break;
+    case DenseBackend::PrimalLDLT: {
+      // Construction of the rhs
+      qpwork.rhs.setZero();
+      qpwork.rhs.resize(qpmodel.dim);
+      qpwork.rhs = qpresults.info.rho * qpresults.x - qpwork.g_scaled;                                                
+      qpwork.rhs += qpwork.A_scaled.transpose() * 
+                   (qpresults.info.mu_eq_inv * qpwork.b_scaled - qpresults.y);                                        
+      qpwork.rhs += qpwork.C_scaled.transpose() * 
+                   (qpresults.info.mu_in_inv * qpwork.zeta_in.head(qpmodel.n_in) - qpresults.z.head(qpmodel.n_in));   
+      if (box_constraints) {
+        qpwork.rhs += qpwork.i_scaled.cwiseProduct(
+                      qpresults.info.mu_in_inv * (qpwork.zeta_in.tail(qpmodel.dim) - qpresults.z.tail(qpmodel.dim))); 
+      }
+
+      // Solve the linear system
+      isize inner_pb_dim = qpmodel.dim;
+      proxsuite::linalg::veg::dynstack::DynStackMut stack{
+        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+      };
+      proxqp::dense::solve_linear_system(qpwork.rhs,
+                                        qpmodel,
+                                        qpresults,
+                                        qpwork,
+                                        n_constraints,
+                                        dense_backend,
+                                        proxsuite::solvers::utils::SolverType::OSQP,
+                                        inner_pb_dim,
+                                        stack);
+
+      // Updates of the intermediate variables for x, y and z
+      x_tilde = qpwork.rhs;
+
+      zeta_tilde_eq = qpwork.A_scaled * x_tilde;
+      zeta_tilde_in.resize(n_constraints);
+      zeta_tilde_in.head(qpmodel.n_in) = qpwork.C_scaled * x_tilde;
+      if (box_constraints) {
+        zeta_tilde_in.tail(qpmodel.dim) = qpwork.i_scaled.cwiseProduct(x_tilde);
+      }
+
+    } break;
+  }
 
   // Update of x
   qpresults.x = qpsettings.alpha_osqp * x_tilde + (1 - qpsettings.alpha_osqp) * qpresults.x;
-
-  // Update of the zeta_tilde's
-  proxqp::dense::Vec<T> zeta_tilde_eq = qpwork.zeta_eq + qpresults.info.mu_eq * (nu_eq - qpresults.y);
-  proxqp::dense::Vec<T> zeta_tilde_in = qpwork.zeta_in + qpresults.info.mu_in * (nu_in - qpresults.z); 
 
   // Update of the zeta's (orthogonal projection on the constraints)
   proxqp::dense::Vec<T> new_zeta_eq = qpwork.b_scaled;
@@ -554,9 +596,8 @@ admm(const proxqp::Settings<T>& qpsettings,
     new_zeta_in.tail(qpmodel.dim) = qpwork.l_box_scaled.cwiseMax(sum_zeta_in_z.tail(qpmodel.dim).cwiseMin(qpwork.u_box_scaled));
   } else {
     new_zeta_in = qpwork.l_scaled.cwiseMax(sum_zeta_in_z.cwiseMin(qpwork.u_scaled));
-  } // Contains box constraints if any
+  }
     
-
   // Update of y and z
   qpresults.y = qpresults.y + qpresults.info.mu_eq_inv * (qpsettings.alpha_osqp * zeta_tilde_eq 
                 + (1 - qpsettings.alpha_osqp) * qpwork.zeta_eq - new_zeta_eq);
@@ -567,15 +608,10 @@ admm(const proxqp::Settings<T>& qpsettings,
   qpwork.zeta_eq = new_zeta_eq;
   qpwork.zeta_in = new_zeta_in;
 
-  // New right hand side
-  qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
-  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.zeta_eq - qpresults.info.mu_eq * qpresults.y;
-  qpwork.rhs.tail(n_constraints) = qpwork.zeta_in - qpresults.info.mu_in * qpresults.z; 
-
   // Prints x, y, z
-  std::cout << "x: " << qpresults.x << std::endl;
-  std::cout << "y: " << qpresults.y << std::endl;
-  std::cout << "z: " << qpresults.z << std::endl;
+  // std::cout << "x: " << qpresults.x << std::endl;
+  // std::cout << "y: " << qpresults.y << std::endl;
+  // std::cout << "z: " << qpresults.z << std::endl;
 
   bool infeas_check = check_infeasibility(qpsettings, 
                                           qpmodel,
@@ -611,8 +647,6 @@ polish(const proxqp::Settings<T>& qpsettings,
 
   using namespace proxsuite::proxqp;
 
-  // TODO: Code for PrimalLDLT backend
-
   // Prints
   // std::cout << "Variables before polishing: " << std::endl;
   // std::cout << "x: " << qpresults.x << std::endl;
@@ -635,21 +669,8 @@ polish(const proxqp::Settings<T>& qpsettings,
   isize numactive_constraints_ineq_low = qpwork.active_set_low_ineq.count(); 
 
   isize numactive_constraints = numactive_constraints_eq + numactive_constraints_ineq;
-
-  // Construction of K
-  qpwork.k_polish.resize(qpmodel.dim + numactive_constraints, qpmodel.dim + numactive_constraints);
-  switch (hessian_type) {
-    case HessianType::Dense:
-      qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-      break;
-    case HessianType::Zero:
-      qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim).setZero();
-      break;
-    case HessianType::Diagonal:
-      qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
-      break;
-  }
   
+  // Construction of the matrices A and C of lower and upper active constraints
   proxqp::dense::Mat<T> C_low(numactive_constraints_ineq_low, qpmodel.dim); 
   proxqp::dense::Mat<T> C_up(numactive_constraints_ineq_up, qpmodel.dim); 
 
@@ -698,39 +719,87 @@ polish(const proxqp::Settings<T>& qpsettings,
     }
   }
 
-  // Construction of K // PrimalLDLT about: Here I construct K in both cases, because it has to be in the rhs anyway
-  isize row = qpmodel.dim;
-  isize column = qpmodel.dim;
-  qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_eq_low) = A_low.transpose();
-  column += numactive_constraints_eq_low;
-  qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_ineq_low) = C_low.transpose();
-  column += numactive_constraints_ineq_low;
-  qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_eq_up) = A_up.transpose();
-  column += numactive_constraints_eq_up;
-  qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_ineq_up) = C_up.transpose();
-  qpwork.k_polish.block(row, 0, numactive_constraints_eq_low, qpmodel.dim) = A_low;
-  row+= numactive_constraints_eq_low;
-  qpwork.k_polish.block(row, 0, numactive_constraints_ineq_low, qpmodel.dim) = C_low;
-  row+= numactive_constraints_ineq_low;
-  qpwork.k_polish.block(row, 0, numactive_constraints_eq_up, qpmodel.dim) = A_up;
-  row+= numactive_constraints_eq_up;
-  qpwork.k_polish.block(row, 0, numactive_constraints_ineq_up, qpmodel.dim) = C_up;
-  qpwork.k_polish.bottomRightCorner(numactive_constraints, numactive_constraints).setZero();
-
   // Construction and factorization of K + Delta_K
-  // PrimalLDLT about:
-  // TODO: Here is a version of the PrimalDualLDLT backend (construct full matrix, then factorize directly)
-  // For the PrimalLDLT version: 
-  qpwork.k_plus_delta_k_polish = qpwork.k_polish;
-  qpwork.k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() += qpsettings.delta_osqp; 
-  qpwork.k_plus_delta_k_polish.bottomRightCorner(numactive_constraints, numactive_constraints).diagonal().array() -= qpsettings.delta_osqp;
+  isize row;
+  isize column;
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
-  qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack); 
 
-  // Solve the first linear system K + Delta_K * hat_t = rhs, where rhs = [-g, b_low, l_low, b_up, u_up] and hat_t = [t, y_low, z_low, y_up, z_up]
+  switch (dense_backend) {
+    case DenseBackend::PrimalDualLDLT:
+
+      // Top left corner of K for H
+      qpwork.k_polish.resize(qpmodel.dim + numactive_constraints, qpmodel.dim + numactive_constraints);
+      switch (hessian_type) {
+        case HessianType::Dense:
+          qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+          break;
+        case HessianType::Zero:
+          qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim).setZero();
+          break;
+        case HessianType::Diagonal:
+          qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
+          break;
+      }
+
+      // Add the rows/columns for the constraints
+      row = qpmodel.dim;
+      column = qpmodel.dim;
+      qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_eq_low) = A_low.transpose();
+      column += numactive_constraints_eq_low;
+      qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_ineq_low) = C_low.transpose();
+      column += numactive_constraints_ineq_low;
+      qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_eq_up) = A_up.transpose();
+      column += numactive_constraints_eq_up;
+      qpwork.k_polish.block(0, column, qpmodel.dim, numactive_constraints_ineq_up) = C_up.transpose();
+      qpwork.k_polish.block(row, 0, numactive_constraints_eq_low, qpmodel.dim) = A_low;
+      row+= numactive_constraints_eq_low;
+      qpwork.k_polish.block(row, 0, numactive_constraints_ineq_low, qpmodel.dim) = C_low;
+      row+= numactive_constraints_ineq_low;
+      qpwork.k_polish.block(row, 0, numactive_constraints_eq_up, qpmodel.dim) = A_up;
+      row+= numactive_constraints_eq_up;
+      qpwork.k_polish.block(row, 0, numactive_constraints_ineq_up, qpmodel.dim) = C_up;
+      qpwork.k_polish.bottomRightCorner(numactive_constraints, numactive_constraints).setZero();
+
+      // Construction and factorization of K + Delta_K
+      qpwork.k_plus_delta_k_polish = qpwork.k_polish;
+      qpwork.k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim).diagonal().array() += qpsettings.delta_osqp; 
+      qpwork.k_plus_delta_k_polish.bottomRightCorner(numactive_constraints, numactive_constraints).diagonal().array() -= qpsettings.delta_osqp;
+
+      qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack); 
+
+      break;
+    case DenseBackend::PrimalLDLT:
+
+      // Top left corner of K for H -> Initialize to H
+      qpwork.k_plus_delta_k_polish.resize(qpmodel.dim, qpmodel.dim);
+      switch (hessian_type) {
+        case HessianType::Dense:
+          qpwork.k_plus_delta_k_polish = qpwork.H_scaled;
+          break;
+        case HessianType::Zero:
+          qpwork.k_plus_delta_k_polish.setZero();
+          break;
+        case HessianType::Diagonal:
+          qpwork.k_plus_delta_k_polish = qpwork.H_scaled;
+          break;
+      }
+      
+      // Construction and factorization of K + Delta_K -> Add the delta terms
+      qpwork.k_plus_delta_k_polish.diagonal().array() += qpsettings.delta_osqp;
+      qpwork.k_plus_delta_k_polish += qpsettings.delta_osqp_inv * A_low.transpose() * A_low +
+                                      qpsettings.delta_osqp_inv * C_low.transpose() * C_low +
+                                      qpsettings.delta_osqp_inv * A_up.transpose() * A_up +
+                                      qpsettings.delta_osqp_inv * C_up.transpose() * C_up;
+
+      qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack);
+
+      break;
+  }
+
+  // Construction of the l_low, u_up, etc to build the rhs for the linear systems (iterative refinement)
   isize l_low_index = 0;
   isize u_up_index = 0;
   proxqp::dense::Vec<T> l_low(numactive_constraints_ineq_low);
@@ -769,59 +838,165 @@ polish(const proxqp::Settings<T>& qpsettings,
     }
   }
 
-  proxqp::dense::Vec<T> g_polish_rhs(qpmodel.dim + numactive_constraints);
-  isize line = qpmodel.dim;
-  g_polish_rhs.head(line) = - qpwork.g_scaled;
-  g_polish_rhs.segment(line, numactive_constraints_eq_low) = b_low;
-  line+= numactive_constraints_eq_low;
-  g_polish_rhs.segment(line, numactive_constraints_ineq_low) = l_low;
-  line+= numactive_constraints_ineq_low;
-  g_polish_rhs.segment(line, numactive_constraints_eq_up) = b_up;
-  g_polish_rhs.tail(numactive_constraints_ineq_up) = u_up;
-
-  isize inner_pb_dim = qpmodel.dim + numactive_constraints;
-  proxqp::dense::Vec<T> hat_t = g_polish_rhs;
-
-  proxqp::dense::solve_linear_system(hat_t,
-                                     qpmodel,
-                                     qpresults,
-                                     qpwork,
-                                     n_constraints,
-                                     dense_backend,
-                                     proxsuite::solvers::utils::SolverType::OSQP,
-                                     inner_pb_dim,
-                                     stack); 
-
   // Iterative refinement
-  for (proxqp::i64 iter = 0; iter < qpsettings.nb_polish_iter; ++iter) {
-    proxqp::dense::Vec<T> rhs_polish = g_polish_rhs - qpwork.k_polish * hat_t;
-    proxqp::dense::Vec<T> delta_hat_t = rhs_polish;
-    proxqp::dense::solve_linear_system(delta_hat_t,
-                                       qpmodel,
-                                       qpresults,
-                                       qpwork,
-                                       n_constraints,
-                                       dense_backend,
-                                       proxsuite::solvers::utils::SolverType::OSQP,
-                                       inner_pb_dim,
-                                       stack);
-    hat_t = hat_t + delta_hat_t;
-  } 
+  proxqp::dense::Vec<T> g_polish_rhs;
+  isize line;
+  isize inner_pb_dim = qpmodel.dim + numactive_constraints;
+  proxqp::dense::Vec<T> hat_t;
+  proxqp::dense::Vec<T> hat_x;
+  proxqp::dense::Vec<T> delta_hat_x;
+  proxqp::dense::Vec<T> rhs_polish;
+  proxqp::dense::Vec<T> rhs_polish_1;
+  proxqp::dense::Vec<T> rhs_polish_2;
+  proxqp::dense::Vec<T> delta_hat_t;
+  isize y_low_index;
+  isize z_low_index;
+  isize y_up_index;
+  isize z_up_index;
+  proxqp::dense::Vec<T> hat_y_low;
+  proxqp::dense::Vec<T> hat_z_low;
+  proxqp::dense::Vec<T> hat_y_up;
+  proxqp::dense::Vec<T> hat_z_up;
+
+  switch (dense_backend) {
+    case DenseBackend::PrimalDualLDLT: 
+
+      // First linear system before the iterative refinement to get the first hat_t
+      g_polish_rhs.resize(qpmodel.dim + numactive_constraints);
+      line = qpmodel.dim;
+      g_polish_rhs.head(line) = - qpwork.g_scaled;
+      g_polish_rhs.segment(line, numactive_constraints_eq_low) = b_low;
+      line+= numactive_constraints_eq_low;
+      g_polish_rhs.segment(line, numactive_constraints_ineq_low) = l_low;
+      line+= numactive_constraints_ineq_low;
+      g_polish_rhs.segment(line, numactive_constraints_eq_up) = b_up;
+      g_polish_rhs.tail(numactive_constraints_ineq_up) = u_up;
+
+      inner_pb_dim = qpmodel.dim + numactive_constraints;
+      hat_t = g_polish_rhs;
+
+      proxqp::dense::solve_linear_system(hat_t,
+                                        qpmodel,
+                                        qpresults,
+                                        qpwork,
+                                        n_constraints,
+                                        dense_backend,
+                                        proxsuite::solvers::utils::SolverType::OSQP,
+                                        inner_pb_dim,
+                                        stack); 
+
+      // Iterative refinement
+      for (proxqp::i64 iter = 0; iter < qpsettings.nb_polish_iter; ++iter) {
+        rhs_polish = g_polish_rhs - qpwork.k_polish * hat_t;
+        delta_hat_t = rhs_polish;
+        proxqp::dense::solve_linear_system(delta_hat_t,
+                                          qpmodel,
+                                          qpresults,
+                                          qpwork,
+                                          n_constraints,
+                                          dense_backend,
+                                          proxsuite::solvers::utils::SolverType::OSQP,
+                                          inner_pb_dim,
+                                          stack);
+        hat_t = hat_t + delta_hat_t;
+      } 
+
+      break;
+    case DenseBackend::PrimalLDLT: 
+
+      // First solve before the iterative refinement (to initialize the rhs of the latter)
+      g_polish_rhs.resize(qpmodel.dim);
+      g_polish_rhs = - qpwork.g_scaled;
+      g_polish_rhs += qpsettings.delta_osqp_inv * A_low.transpose() * b_low +
+                      qpsettings.delta_osqp_inv * C_low.transpose() * l_low +
+                      qpsettings.delta_osqp_inv * A_up.transpose() * b_up +
+                      qpsettings.delta_osqp_inv * C_up.transpose() * u_up;
+
+      inner_pb_dim = qpmodel.dim;
+      hat_x = g_polish_rhs;
+
+      proxqp::dense::solve_linear_system(hat_x,
+                                        qpmodel,
+                                        qpresults,
+                                        qpwork,
+                                        n_constraints,
+                                        dense_backend,
+                                        proxsuite::solvers::utils::SolverType::OSQP,
+                                        inner_pb_dim,
+                                        stack); 
+
+      hat_y_low.resize(numactive_constraints_eq_low); // TODO: See if it is mandatory to put this resize, or if it is done implicitly
+      hat_y_low = qpsettings.delta_osqp_inv * (A_low * hat_x - b_low);
+      hat_z_low.resize(numactive_constraints_ineq_low);
+      hat_z_low = qpsettings.delta_osqp_inv * (C_low * hat_x - l_low);
+      hat_y_up.resize(numactive_constraints_eq_up);
+      hat_y_up = qpsettings.delta_osqp_inv * (A_up * hat_x - b_up);
+      hat_z_up.resize(numactive_constraints_ineq_up);
+      hat_z_up = qpsettings.delta_osqp_inv * (C_up * hat_x - u_up);
+
+      // Iterative refinement
+      for (proxqp::i64 iter = 0; iter < qpsettings.nb_polish_iter; ++iter) {
+        rhs_polish = g_polish_rhs;
+        rhs_polish_1 = (qpwork.H_scaled * hat_x + A_low.transpose() * hat_y_low +
+                                                  C_low.transpose() * hat_z_low +
+                                                  A_up.transpose() * hat_y_up +
+                                                  C_up.transpose() * hat_z_up);
+        rhs_polish_2 = qpsettings.delta_osqp_inv * (A_low.transpose() * A_low + 
+                                                    C_low.transpose() * C_low + 
+                                                    A_up.transpose() * A_up + 
+                                                    C_up.transpose() * C_up) * hat_x;
+        rhs_polish -= rhs_polish_1;
+        rhs_polish -= rhs_polish_2;
+        delta_hat_x = rhs_polish;
+
+        proxqp::dense::solve_linear_system(delta_hat_x,
+                                           qpmodel,
+                                           qpresults,
+                                           qpwork,
+                                           n_constraints,
+                                           dense_backend,
+                                           proxsuite::solvers::utils::SolverType::OSQP,
+                                           inner_pb_dim,
+                                           stack);
+
+        hat_x += delta_hat_x;
+
+        hat_y_low += qpsettings.delta_osqp_inv * (A_low * hat_x - b_low);
+        hat_z_low += qpsettings.delta_osqp_inv * (C_low * hat_x - l_low);
+        hat_y_up += qpsettings.delta_osqp_inv * (A_up * hat_x - b_up);
+        hat_z_up += qpsettings.delta_osqp_inv * (C_up * hat_x - u_up);
+                                                    
+      } 
+
+      // Construct the hat_t vector to update the primal and dual variables
+      hat_t.resize(qpmodel.dim + numactive_constraints);
+      line = qpmodel.dim;
+      hat_t.head(line) = hat_x;
+      hat_t.segment(line, numactive_constraints_eq_low) = hat_y_low;
+      line+= numactive_constraints_eq_low;
+      hat_t.segment(line, numactive_constraints_ineq_low) = hat_z_low;
+      line+= numactive_constraints_ineq_low;
+      hat_t.segment(line, numactive_constraints_eq_up) = hat_y_up;
+      hat_t.tail(numactive_constraints_ineq_up) = hat_z_up;
+
+      break;
+  }
 
   // Update of the primal and dual variables
   qpresults.x = hat_t.head(qpmodel.dim);
 
-  isize y_low_index = 0;
-  isize z_low_index = 0;
-  isize y_up_index = 0;
-  isize z_up_index = 0;
+  y_low_index = 0;
+  z_low_index = 0;
+  y_up_index = 0;
+  z_up_index = 0;
   for (proxqp::isize i = 0; i < qpmodel.n_eq; ++i) {
     if (qpwork.active_set_low_eq(i)) {
       qpresults.y(i) = hat_t(qpmodel.dim + y_low_index); 
       ++y_low_index;
     }
     if (qpwork.active_set_up_eq(i)) {
-      qpresults.y(i) = hat_t(qpmodel.dim + numactive_constraints_eq_low + numactive_constraints_ineq_low + y_up_index); 
+      qpresults.y(i) = hat_t(qpmodel.dim + numactive_constraints_eq_low + 
+                            numactive_constraints_ineq_low + y_up_index); 
       ++y_up_index;
     }
   }
@@ -832,7 +1007,8 @@ polish(const proxqp::Settings<T>& qpsettings,
       ++z_low_index;
     }
     if (qpwork.active_set_up_ineq(i)) {
-      qpresults.z(i) = hat_t(qpmodel.dim + numactive_constraints_eq_low + numactive_constraints_ineq_low + numactive_constraints_eq_up + z_up_index); 
+      qpresults.z(i) = hat_t(qpmodel.dim + numactive_constraints_eq_low + 
+                            numactive_constraints_ineq_low + numactive_constraints_eq_up + z_up_index); 
       ++z_up_index;
     }
   }
