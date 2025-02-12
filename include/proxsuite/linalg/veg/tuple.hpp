@@ -754,7 +754,7 @@ private:
     proxsuite::linalg::veg::meta::false_type /*unused*/,
     Tuples&&... tups) VEG_NOEXCEPT -> Concat<Tuples...>
   {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || (defined(__clang__) && __clang_major__ >= 19)
     return cat::from_ref_to_result(
       Tag<proxsuite::linalg::veg::meta::type_sequence_cat<Tuple, Tuples...>>{},
       cat::apply(_detail::_tuple::tuple_fwd(VEG_FWD(tups))...));
