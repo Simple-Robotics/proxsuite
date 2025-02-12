@@ -3,13 +3,11 @@ import os
 import time
 import argparse
 import numpy as np
-import scipy.sparse as spa
 
 try:
     import torch
     import torch.nn as nn
     import torch.optim as optim
-    from torch.autograd import Variable
     from torch.nn.parameter import Parameter
 
     import cvxpy as cp

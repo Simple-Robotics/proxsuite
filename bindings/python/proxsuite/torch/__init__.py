@@ -1,5 +1,5 @@
 try:
-    import torch
+    import torch  # noqa F401
 except ImportError:
     import warnings
 
