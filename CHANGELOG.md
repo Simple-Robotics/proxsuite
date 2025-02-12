@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 * Upgrade nanobind submodule to v2.5.0 ([#378](https://github.com/Simple-Robotics/proxsuite/pull/378))
+* Switch to gersemi for formatting ([#380](https://github.com/Simple-Robotics/proxsuite/pull/380))
 
 ## [0.7.1] - 2025-01-28
 
