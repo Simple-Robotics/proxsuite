@@ -1,11 +1,16 @@
-option(ENABLE_IPO
-       "Enable Iterprocedural Optimization, aka Link Time Optimization (LTO)"
-       OFF)
+option(
+  ENABLE_IPO
+  "Enable Iterprocedural Optimization, aka Link Time Optimization (LTO)"
+  OFF
+)
 option(ARCH_NATIVE "Build with -march=native" OFF)
 option(USE_LIBCXX "Use the libc++ STL" OFF)
 
-option(ENABLE_BUILD_WITH_TIME_TRACE
-       "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
+option(
+  ENABLE_BUILD_WITH_TIME_TRACE
+  "Enable -ftime-trace to generate time tracing .json files on clang"
+  OFF
+)
 if(ENABLE_BUILD_WITH_TIME_TRACE AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
   add_compile_options("-ftime-trace")
 endif()
@@ -27,11 +32,11 @@ endif()
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Debug' as none was specified.")
-  set(CMAKE_BUILD_TYPE
-      Debug
-      CACHE STRING "Choose the type of build." FORCE)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
-                                               "MinSizeRel" "RelWithDebInfo")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+  set_property(
+    CACHE CMAKE_BUILD_TYPE
+    PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo"
+  )
 endif()
 
 if(ENABLE_IPO)
