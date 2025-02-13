@@ -395,6 +395,9 @@ solve_linear_system(proxsuite::proxqp::dense::Vec<T>& dw,
         } break;
         case proxsuite::solvers::utils::SolverType::OSQP: {
           qpwork.ldl.solve_in_place(dw, stack);
+          // TODO: This implementation of OSQP in PrimalLDLT handles the rhs in the admm function directly, 
+          // so no need to update the rhs here
+          // In the context of putting the functions in common -> see if it is better to do it as in PROXQP
         } break;
       }
       break;

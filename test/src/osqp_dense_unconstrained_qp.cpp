@@ -30,6 +30,8 @@ DOCTEST_TEST_CASE(
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
       dim, sparsity_factor, strong_convexity_factor);
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    // bool box_constraints = false;
+    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.init(qp_random.H,
             qp_random.g,
@@ -83,6 +85,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
       x_sol; // to be dually feasible g must be in the image space of H
 
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    // bool box_constraints = false;
+    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.init(qp_random.H,
             qp_random.g,
@@ -131,6 +135,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
   qp_random.H.diagonal().array() += 1;
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  // bool box_constraints = false;
+  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.init(qp_random.H,
           qp_random.g,
@@ -179,6 +185,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   qp_random.g.setZero();
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  // bool box_constraints = false;
+  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.init(qp_random.H,
           qp_random.g,

@@ -480,7 +480,7 @@ unscale_solver(
       VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
   }
   if (qpsettings.primal_infeasibility_solving &&
-      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) { 
     ruiz.unscale_primal_residual_in_place_eq(
       VectorViewMut<T>{ from_eigen, qpresults.se });
     ruiz.unscale_primal_residual_in_place_in(
@@ -489,7 +489,7 @@ unscale_solver(
       ruiz.unscale_box_primal_residual_in_place_in(
         VectorViewMut<T>{ from_eigen, qpresults.si.tail(qpmodel.dim) });
     }
-  }
+  } // TODO_PROXQP_PRIMAL_INFEASIBLE: See how it is relevant after I coded the closest problem solve
 }
 /*!
  * Computes the objective function.
@@ -778,9 +778,9 @@ compute_residuals_and_infeasibility_1( //
               qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
           if (qpsettings.primal_infeasibility_solving &&
               qpresults.info.status ==
-                QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+                QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) { 
             qpresults.info.status =
-              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE; 
           } else {
             qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           }
@@ -881,7 +881,7 @@ compute_residuals_and_infeasibility_2( //
                 qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
             if (qpsettings.primal_infeasibility_solving &&
                 qpresults.info.status ==
-                  proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+                  proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) { 
               qpresults.info.status =
                 proxqp::QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
             } else {
