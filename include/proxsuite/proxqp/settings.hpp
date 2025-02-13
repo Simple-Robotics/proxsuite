@@ -232,10 +232,10 @@ struct Settings
 
   Settings(
     DenseBackend dense_backend = DenseBackend::PrimalDualLDLT,
-    // T default_mu_eq = 1.E-3, // proxqp
-    // T default_mu_in = 1.E-1, // proxqp
-    T default_mu_eq = 1.E-2, // osqp
-    T default_mu_in = 1.E1,  // osqp
+    T default_mu_eq = 1.E-3, // proxqp
+    T default_mu_in = 1.E-1, // proxqp
+    // T default_mu_eq = 1.E-2, // osqp
+    // T default_mu_in = 1.E1,  // osqp
     T alpha_bcl = 0.1,
     T beta_bcl = 0.9,
     T alpha_osqp = 1.6,
@@ -253,10 +253,10 @@ struct Settings
     T cold_reset_mu_in = 1. / 1.1,
     T cold_reset_mu_eq_inv = 1.1,
     T cold_reset_mu_in_inv = 1.1,
-    // T eps_abs = 1.e-5, // proxqp
-    // T eps_rel = 0, // proxqp
-    T eps_abs = 1.e-4, // osqp
-    T eps_rel = 1.e-4, // osqp
+    T eps_abs = 1.e-5, // proxqp
+    T eps_rel = 0, // proxqp
+    // T eps_abs = 1.e-4, // osqp
+    // T eps_rel = 1.e-4, // osqp
     // isize max_iter = 10000,
     isize max_iter = 10000,
     isize max_iter_in = 1500,
@@ -281,15 +281,15 @@ struct Settings
     // bool compute_timings = false,
     bool compute_timings = true,
     bool polish = true,
-    bool update_mu_osqp = false,
+    bool update_mu_osqp = true,
     T ratio_time_mu_update = 0.4,
     T ratio_value_mu_update = 5,
     T ratio_value_mu_update_inv = 0.2,
     bool check_duality_gap = false,
-    // T eps_duality_gap_abs = 1.e-4, // proxqp
-    // T eps_duality_gap_rel = 0, // proxqp
-    T eps_duality_gap_abs = 1.e-3, // osqp
-    T eps_duality_gap_rel = 1.e-3, // osqp
+    T eps_duality_gap_abs = 1.e-4, // proxqp
+    T eps_duality_gap_rel = 0, // proxqp
+    // T eps_duality_gap_abs = 1.e-3, // osqp
+    // T eps_duality_gap_rel = 1.e-3, // osqp
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -298,6 +298,7 @@ struct Settings
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
     T alpha_gpdal = 0.95,
     SparseBackend sparse_backend = SparseBackend::Automatic,
+    // bool primal_infeasibility_solving = false,
     bool primal_infeasibility_solving = false,
     isize frequence_infeasibility_check = 1,
     T default_H_eigenvalue_estimate = 0.)

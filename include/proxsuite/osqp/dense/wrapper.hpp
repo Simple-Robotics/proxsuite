@@ -28,7 +28,7 @@ public:
     */
     void solve()
     {
-        proxsuite::osqp::dense::qp_solve( // To avoid overload
+        proxsuite::osqp::dense::qp_solve( 
         this->settings,
         this->model,
         this->results,
@@ -49,7 +49,7 @@ public:
                 optional<proxsuite::proxqp::dense::VecRef<T>> z)
     {
         proxsuite::proxqp::dense::warm_start(x, y, z, this->results, this->settings, this->model);
-        proxsuite::osqp::dense::qp_solve( // To avoid overload
+        proxsuite::osqp::dense::qp_solve( 
         this->settings,
         this->model,
         this->results,
@@ -147,7 +147,8 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, false, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+  // QP<T> Qp(n, n_eq, n_in, false, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+  QP<T> Qp(n, n_eq, n_in, false, proxsuite::proxqp::DenseBackend::PrimalLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 
@@ -279,7 +280,8 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, true, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+  // QP<T> Qp(n, n_eq, n_in, true, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+  QP<T> Qp(n, n_eq, n_in, true, proxsuite::proxqp::DenseBackend::PrimalLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 

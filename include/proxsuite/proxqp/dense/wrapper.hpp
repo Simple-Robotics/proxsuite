@@ -1047,7 +1047,8 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
+  // QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
+  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 
@@ -1179,7 +1180,8 @@ solve(
     n_in = C.value().rows();
   }
 
-  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
+  // QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
+  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalLDLT);
   Qp.settings.initial_guess = initial_guess;
   Qp.settings.check_duality_gap = check_duality_gap;
 

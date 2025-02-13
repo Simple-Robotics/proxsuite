@@ -372,7 +372,7 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
                     const proxqp::HessianType hessian_type)
 {
 
-  // TODO: This ciode is very close from the second part of the newton function in proxp -> see if I can put in common
+  // TODO: This code is very close from the second part of the newton function in proxp -> see if I can put in common
 
   using namespace proxsuite::proxqp;
 
@@ -461,10 +461,6 @@ check_infeasibility(const proxqp::Settings<T>& qpsettings,
   } else {
     return false;
   }
-
-  // TODO: Code for the closest feasible primal solution in case of primal infeasibility
-
-
 }
 /*!
  * Iteration of ADMM step.
@@ -1020,131 +1016,6 @@ polish(const proxqp::Settings<T>& qpsettings,
   // std::cout << "z: " << qpresults.z << std::endl;
 
 }
-// /*!
-//  * Solves the KKT system in the case of equality constraints only.
-//  *
-//  * @param qpwork solver workspace.
-//  * @param qpmodel QP problem model as defined by the user (without any scaling
-//  * performed).
-//  * @param qpsettings solver settings.
-//  * @param qpresults solver results.
-//  * @param ruiz ruiz preconditioner.
-//  */
-// template<typename T>
-// bool
-// solve_eq_constraints_system(const proxqp::Settings<T>& qpsettings,
-//                             const proxqp::dense::Model<T>& qpmodel,
-//                             proxqp::Results<T>& qpresults,
-//                             proxqp::dense::Workspace<T>& qpwork,
-//                             const bool box_constraints,
-//                             const proxqp::isize n_constraints,
-//                             proxqp::dense::preconditioner::RuizEquilibration<T>& ruiz,
-//                             const proxqp::DenseBackend dense_backend,
-//                             const proxqp::HessianType hessian_type)
-// {
-//   using namespace proxsuite::proxqp;
-//   // Solves the linear system
-//   // ( (H + rho * I, A^T)  (A, -\mu_eq * I) ) ( x, y ) = ( rho * x_prev - g, b - \mu_eq * y_prev ) 
-//   // Formulation in proxqp paper, equality case
-//   qpwork.rhs.setZero();
-//   qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
-//   qpwork.rhs.tail(qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
-//   isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq;
-//   proxsuite::linalg::veg::dynstack::DynStackMut stack{
-//     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
-//   };
-//   proxqp::dense::solve_linear_system(qpwork.rhs,
-//                                      qpmodel,
-//                                      qpresults,
-//                                      qpwork,
-//                                      n_constraints,
-//                                      dense_backend,
-//                                      proxsuite::solvers::utils::SolverType::OSQP,
-//                                      inner_pb_dim,
-//                                      stack);
-//   /// New (x, y)
-//   qpresults.x = qpwork.rhs.head(qpmodel.dim);
-//   qpresults.y = qpwork.rhs.tail(qpmodel.n_eq);
-//   std::cout << "x: " << qpresults.x << std::endl;
-//   std::cout << "y: " << qpresults.y << std::endl;
-//   // Delta x and y (and z equal to 0)
-//   proxqp::dense::Vec<T> dx = qpresults.x - qpwork.x_prev; // TODO: Dirty way to define it ? (Compared to proxq code, line "auto dx = qpwork.dw_aug.head(qpmodel.dim);")
-//   proxqp::dense::Vec<T> dy = qpresults.y - qpwork.y_prev;
-//   proxqp::dense::Vec<T> dz = proxqp::dense::Vec<T>::Zero(qpmodel.n_in);
-//   // New right hand side 
-//   qpwork.rhs.head(qpmodel.dim) = qpresults.info.rho * qpresults.x - qpwork.g_scaled;
-//   qpwork.rhs.tail(qpmodel.n_eq) = qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y;
-//   // Prints x, y
-//   std::cout << "x: " << qpresults.x << std::endl;
-//   std::cout << "y: " << qpresults.y << std::endl;
-//   // std::cout << "z: " << qpresults.z << std::endl;
-//   // // Computing the resuduals: 
-//   // // Note: The linear system in proxqp solves finds dx, dy and so on => I change the definitions
-//   // // of Adx, etc (compared to proxqp solver)
-//   auto& Hdx = qpwork.Hdx;
-//   auto& Adx = qpwork.Adx;
-//   auto& ATdy = qpwork.CTz;
-//   switch (hessian_type) {
-//     case HessianType::Zero:
-//       break;
-//     case HessianType::Dense:
-//       Hdx.noalias() = qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
-//       break;
-//     case HessianType::Diagonal:
-//   #ifndef NDEBUG
-//       PROXSUITE_THROW_PRETTY(!qpwork.H_scaled.isDiagonal(),
-//                               std::invalid_argument,
-//                               "H is not diagonal.");
-//   #endif
-//       Hdx.array() = qpwork.H_scaled.diagonal().array() * dx.array();
-//       break;
-//   }
-//   ATdy.noalias() = qpwork.A_scaled.transpose() * dy;
-//   Adx.noalias() = qpwork.A_scaled * dx;
-//   auto& Cdx = qpwork.Cdx;
-//   LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
-//   if (qpmodel.n_in > 0) {
-//     Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
-//     CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
-//   }
-//   // Check the feasibility (code inspired from the proxqp newton function)
-//   bool is_primal_infeasible = proxsuite::proxqp::dense::global_primal_residual_infeasibility(
-//     VectorViewMut<T>{ from_eigen, ATdy },
-//     VectorViewMut<T>{ from_eigen, CTdz  },
-//     VectorViewMut<T>{ from_eigen, dy },   
-//     VectorViewMut<T>{ from_eigen, dz },
-//     qpwork,
-//     qpmodel,
-//     qpsettings,
-//     box_constraints,
-//     ruiz);
-//   std::cout << "is_primal_infeasible: " << is_primal_infeasible << std::endl;
-//   bool is_dual_infeasible = proxsuite::proxqp::dense::global_dual_residual_infeasibility(
-//     VectorViewMut<T>{ from_eigen, Adx },
-//     VectorViewMut<T>{ from_eigen, Cdx }, 
-//     VectorViewMut<T>{ from_eigen, Hdx },
-//     VectorViewMut<T>{ from_eigen, dx },
-//     qpwork,
-//     qpsettings,
-//     qpmodel,
-//     box_constraints,
-//     ruiz);
-//   if (is_primal_infeasible) {
-//     qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
-//   } else if (is_dual_infeasible) {
-//     qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
-//   }
-//   if ((qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
-//         !qpsettings.primal_infeasibility_solving) ||
-//       qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
-//     // certificate of infeasibility
-//     return true; // Instead of doing break; in one single big qp_solve function
-//   } else {
-//     return false;
-//   }
-//   // TODO: Keep this function while the inequality case is in progress
-// }
-
 /*!
  * Executes the OSQP algorithm.
  *
@@ -1311,6 +1182,23 @@ qp_solve( //
       break;
     }
 
+    if (scaled_eps == qpsettings.eps_abs &&
+        qpsettings.primal_infeasibility_solving &&
+        qpresults.info.status == proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+      qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq + qpmodel.n_in)
+        .setConstant(T(1));
+      qpwork.rhs.head(qpmodel.dim).noalias() =
+        qpmodel.A.transpose() * qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) +
+        qpmodel.C.transpose() *
+          qpwork.rhs.segment(qpmodel.dim + qpmodel.n_eq, qpmodel.n_in);
+      if (box_constraints) {
+        qpwork.rhs.head(qpmodel.dim).array() += qpwork.i_scaled.array();
+      }
+      scaled_eps =
+        proxqp::dense::infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
+    } // TODO: This was copy pasted from the proxqp solver -> clean code
+      // TODO: Check if it works once the primal infeasibility issue is fixed
+
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // General
 
@@ -1408,8 +1296,6 @@ qp_solve( //
     // std::cout << "mu_eq: " << qpresults.info.mu_eq << std::endl;
     // std::cout << "mu_in: " << qpresults.info.mu_in << std::endl;
 
-    // TODO: For the moment, I do not code cold restart strategy for mu_eq and mu_in, 
-    // as it is not in the OSQP paper, see later if needed
     }
 
   }
@@ -1492,8 +1378,14 @@ qp_solve( //
 
 #endif /* end of include guard PROXSUITE_OSQP_DENSE_SOLVER_HPP */
 
-// TODO: Lighten the namespaces (due to common files)
-// TODO: Eventually clean the code (like common functions names, or boolean as the result of a big function)
+// TODO: Finish entirely the dense backend (fix all the TODOs)
 
-// TODO: In some cases (different qpmodel.dim values in osqp_overview-simple), the duality_gap does not converge to 0
-// -> Adapt the definition for it (probably comes from the infinite bound values)
+// TODO: Lists of tasks to clean the code:
+// - settings.hpp: Code properly the // osqp and // proxqp cases (default values of eps and others)
+// - copy-pasted code: Put in common or use code from one function only
+// - remove the unused // for debuging
+// - names and outputs of the funcions (eg stop = check_1: this is dirty) -> better architecture and names
+// - consecutive functions functions at the end -> make it more understandable
+// - big namespaces (osqp files): lighten it, do using namespace blabla, or something else
+// - later: put the functions in proxqp used in osqp too (like solve_linear_system) in common files
+
