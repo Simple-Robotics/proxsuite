@@ -1275,12 +1275,13 @@ qp_solve( //
       }
       scaled_eps =
         infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
+      std::cout << "changed scaled eps" << std::endl;
     }
 
     // Prints x, y, z
-    std::cout << "x: " << qpresults.x << std::endl;
-    std::cout << "y: " << qpresults.y << std::endl;
-    std::cout << "z: " << qpresults.z << std::endl;
+    // std::cout << "x: " << qpresults.x << std::endl;
+    // std::cout << "y: " << qpresults.y << std::endl;
+    // std::cout << "z: " << qpresults.z << std::endl;
 
     // // Print KKT
     // if (iter == 0 || iter == 1 || iter == 2) {
@@ -1312,6 +1313,14 @@ qp_solve( //
                                                                     rhs_duality_gap, 
                                                                     duality_gap, 
                                                                     scaled_eps);
+
+    if (qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+      std::cout << "Primal infeasible" << std::endl;
+    } else if (qpresults.info.status == QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE) {
+      std::cout << "Solved closest primal feasible" << std::endl;
+    } else if (qpresults.info.status == QPSolverOutput::PROXQP_SOLVED) {
+      std::cout << "Solved" << std::endl;
+    } 
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Specific to ProxQP

@@ -24,6 +24,17 @@ main()
   dense::QP<T> qp(dim, n_eq, n_in);
   std::cout << "l: " << qp_random.l << std::endl;
   std::cout << "u: " << qp_random.u << std::endl;
+
+  // Specific values for OSQP
+  qp.settings.default_mu_eq = 1.e-2;
+  qp.settings.default_mu_in = 1.e1;
+  qp.settings.eps_abs = 1.e-4;
+  qp.settings.eps_rel = 1.e-4;
+  qp.settings.check_duality_gap = false;
+  qp.settings.eps_duality_gap_abs = 1.e-3;
+  qp.settings.eps_duality_gap_rel = 1.e-3;
+
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
