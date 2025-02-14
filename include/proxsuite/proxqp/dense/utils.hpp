@@ -242,13 +242,16 @@ global_primal_residual(const Model<T>& qpmodel,
       qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) { 
     qpwork.rhs.head(qpmodel.dim).noalias() =
       qpmodel.A.transpose() * qpresults.se;
+    // qpwork.rhs.head(qpmodel.dim).noalias() +=
+    //   qpmodel.C.transpose() * qpresults.si;
     qpwork.rhs.head(qpmodel.dim).noalias() +=
-      qpmodel.C.transpose() * qpresults.si;
-      std::cout << "blabla" << std::endl;
+      qpmodel.C.transpose() * qpresults.si.head(qpmodel.n_in);
+    if (box_constraints) {
+      qpwork.rhs.head(qpmodel.dim).noalias() +=
+        qpresults.si.tail(qpmodel.dim);
+    }
     primal_feasibility_lhs = infty_norm(qpwork.rhs.head(qpmodel.dim));
-  } // TODO_PROXQP_PRIMAL_INFEASIBLE: See if appropriate for OSQP
-    // TODO: It looks like the box constraints are not handled properly (should include i_scale for si.tail(dim))
-    // Test the case of primal infeasibility wifh box constraints and primal_infeasibility_solving, and see if error
+  } 
   ruiz.scale_primal_residual_in_place_eq(
     VectorViewMut<T>{ from_eigen, qpresults.se });
   // VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });

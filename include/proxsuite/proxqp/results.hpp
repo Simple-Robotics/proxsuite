@@ -121,14 +121,10 @@ struct Results
         info.rho = 1.E-6;
         break;
     }
-    // info.mu_eq_inv = 1e3; // proxqp
-    // info.mu_eq = 1e-3; // proxqp
-    info.mu_eq_inv = 1e2; // osqp
-    info.mu_eq = 1e-2; // osqp
-    // info.mu_in_inv = 1e1; // proxqp
-    // info.mu_in = 1e-1; // proxqp
-    info.mu_in_inv = 1e-1; // osqp
-    info.mu_in = 1e1; // osqp
+    info.mu_eq_inv = 1e3;
+    info.mu_eq = 1e-3; 
+    info.mu_in_inv = 1e1; // proxqp
+    info.mu_in = 1e-1; // proxqp
     info.nu = 1.;
     info.iter = 0;
     info.iter_ext = 0;
@@ -179,14 +175,10 @@ struct Results
   void cold_start(optional<Settings<T>> settings = nullopt)
   {
     info.rho = 1e-6;
-    // info.mu_eq_inv = 1e3; // proxqp
-    // info.mu_eq = 1e-3; // proxqp
-    info.mu_eq_inv = 1e2; // osqp
-    info.mu_eq = 1e-2; // osqp
-    // info.mu_in_inv = 1e1; // proxqp
-    // info.mu_in = 1e-1; // proxqp 
-    info.mu_in_inv = 1e-1; // osqp
-    info.mu_in = 1e1; // osqp
+    info.mu_eq_inv = 1e3;
+    info.mu_eq = 1e-3;
+    info.mu_in_inv = 1e1;
+    info.mu_in = 1e-1;
     info.nu = 1.;
     info.minimal_H_eigenvalue_estimate = 0.;
     if (settings != nullopt) {

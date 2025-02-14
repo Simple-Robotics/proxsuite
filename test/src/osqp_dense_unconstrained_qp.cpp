@@ -33,6 +33,14 @@ DOCTEST_TEST_CASE(
     // bool box_constraints = false;
     // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
+    // Specific values for OSQP
+    qp.settings.default_mu_eq = 1.e-2;
+    qp.settings.default_mu_in = 1.e1;
+    qp.settings.eps_rel = 1.e-4;
+    qp.settings.check_duality_gap = false;
+    qp.settings.eps_duality_gap_abs = 1.e-3;
+    qp.settings.eps_duality_gap_rel = 1.e-3;
+
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -88,6 +96,14 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
     // bool box_constraints = false;
     // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
+    // Specific values for OSQP
+    qp.settings.default_mu_eq = 1.e-2;
+    qp.settings.default_mu_in = 1.e1;
+    qp.settings.eps_rel = 1.e-4;
+    qp.settings.check_duality_gap = false;
+    qp.settings.eps_duality_gap_abs = 1.e-3;
+    qp.settings.eps_duality_gap_rel = 1.e-3; 
+
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -138,6 +154,14 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
   // bool box_constraints = false;
   // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
+  // Specific values for OSQP
+  qp.settings.default_mu_eq = 1.e-2;
+  qp.settings.default_mu_in = 1.e1;
+  qp.settings.eps_rel = 1.e-4;
+  qp.settings.check_duality_gap = false;
+  qp.settings.eps_duality_gap_abs = 1.e-3;
+  qp.settings.eps_duality_gap_rel = 1.e-3;
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -188,6 +212,14 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   // bool box_constraints = false;
   // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
+  // Specific values for OSQP
+  qp.settings.default_mu_eq = 1.e-2;
+  qp.settings.default_mu_in = 1.e1;
+  qp.settings.eps_rel = 1.e-4;
+  qp.settings.check_duality_gap = false;
+  qp.settings.eps_duality_gap_abs = 1.e-3;
+  qp.settings.eps_duality_gap_rel = 1.e-3;
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

@@ -250,7 +250,7 @@ compute_update_mu_criteria(proxqp::dense::Workspace<T>& qpwork,
                               scaled_dual_feasibility_rhs_3, 
                               hessian_type);
 
-  T epsilon = 1e-9; // TODO: Better way to code this (to avoid deviding by zero) ?
+  T epsilon = 1e-9; // TODO: Better way to code this (to avoid dividing by zero) ?
 
   T primal_term = (scaled_primal_feasibility_lhs + epsilon) / (std::max(scaled_primal_feasibility_eq_rhs_0,
                                                                std::max(proxqp::dense::infty_norm(qpwork.zeta_eq), 
@@ -264,9 +264,7 @@ compute_update_mu_criteria(proxqp::dense::Workspace<T>& qpwork,
                                                            scaled_dual_feasibility_rhs_3))) 
                                                            + epsilon);
 
-  T update_mu_criteria = std::sqrt((primal_term + epsilon) / (dual_term + epsilon));
-
-  // TODO: See how to manage the case where the dual term is very little (add some epsilon somewhere ?)
+  T update_mu_criteria = std::sqrt(primal_term / dual_term);
 
   return update_mu_criteria;
 
@@ -1380,6 +1378,17 @@ qp_solve( //
 
 // TODO: Finish entirely the dense backend (fix all the TODOs)
 
+// TODO: About specific cases
+// - proxqp with primal_infeasibility_solving = true -> returns Solved instead of Solved the closest ...
+// - osqp with same settings: Goes to the maximum number of iterations (idea: osqp with just admm is less
+//   accurate that proxqp by construction, and the polishing allows to improve the accuracy. One idea is 
+//   to do the polish step once we get a primal infeasible, then check if passed according to the new
+//   primal_feasibility_lhs and scaled_eps)
+// - mu_update: test in osqp_dense_qp_eq shows that using the update option is better than not using it 
+//   in 45 cases over 50, and the remaining cases are really close in terms of performance -> see if it is 
+//   expected that the performances are better in 100% of the cases
+// - one test fails with the mu_update option, and passes without (in osqp_dense_qp_solve, test on warm starts)
+
 // TODO: Lists of tasks to clean the code:
 // - settings.hpp: Code properly the // osqp and // proxqp cases (default values of eps and others)
 // - copy-pasted code: Put in common or use code from one function only
@@ -1387,5 +1396,6 @@ qp_solve( //
 // - names and outputs of the funcions (eg stop = check_1: this is dirty) -> better architecture and names
 // - consecutive functions functions at the end -> make it more understandable
 // - big namespaces (osqp files): lighten it, do using namespace blabla, or something else
+// - compile the examples without removing the warnings, so that I see if I miss something important
 // - later: put the functions in proxqp used in osqp too (like solve_linear_system) in common files
 
