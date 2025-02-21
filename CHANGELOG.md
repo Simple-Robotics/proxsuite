@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 * Fix an arcane compilation issue on Clang-19 ([#379](https://github.com/Simple-Robotics/proxsuite/pull/379))
+* Replace `!= None` with `is not None` in Python bindings ([#375](https://github.com/Simple-Robotics/proxsuite/pull/375))
 
 ### Changed
 * Upgrade nanobind submodule to v2.5.0 ([#378](https://github.com/Simple-Robotics/proxsuite/pull/378))
