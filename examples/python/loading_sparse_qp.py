@@ -8,7 +8,6 @@ n_in = 2
 qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 
 
-
 # load a qp2 object using matrix masks
 H, g, A, b, C, u, l = generate_mixed_qp(n, True)
 
