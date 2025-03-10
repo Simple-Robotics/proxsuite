@@ -1,5 +1,5 @@
 import platform
-import numpy  # for OpenMP proper linkage
+import numpy  # noqa F401 for OpenMP proper linkage
 
 machine = platform.machine()
 has_vectorization_instructions = not machine.startswith(
@@ -21,7 +21,7 @@ def load_main_module(globals):
         except ModuleNotFoundError:
             return False
 
-    if has_vectorization_instructions:
+    if has_vectorization_instructions:  # noqa
         all_modules = [
             ("proxsuite_pywrap_avx512", instructionset.has_AVX512F),
             ("proxsuite_pywrap_avx2", instructionset.has_AVX2),
@@ -31,7 +31,7 @@ def load_main_module(globals):
             if checker() and load_module(module_name):
                 return
 
-    assert load_module("proxsuite_pywrap") == True
+    assert load_module("proxsuite_pywrap")
 
 
 load_main_module(globals=globals())

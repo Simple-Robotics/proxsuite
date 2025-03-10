@@ -436,9 +436,9 @@ def QPFunction(
                 if neq > 0:
                     kkt[:dim, dim : dim + n_eq] = A_i.transpose()
                     kkt[dim : dim + n_eq, :dim] = A_i
-                    kkt[dim + n_eq + n_in : dim + 2 * n_eq + n_in, dim : dim + n_eq] = (
-                        -np.eye(n_eq)
-                    )
+                    kkt[
+                        dim + n_eq + n_in : dim + 2 * n_eq + n_in, dim : dim + n_eq
+                    ] = -np.eye(n_eq)
                     kkt[
                         dim + n_eq + n_in : dim + 2 * n_eq + n_in,
                         dim + n_eq + 2 * n_in : 2 * dim + n_eq + 2 * n_in,
@@ -485,9 +485,9 @@ def QPFunction(
                         rhs[dim + n_eq : dim + n_eq + n_in_sol][~active_set] = dl_dnus[
                             i
                         ][~active_set]
-                        rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][active_set] = (
-                            -dl_dnus[i][active_set]
-                        )
+                        rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][
+                            active_set
+                        ] = -dl_dnus[i][active_set]
                 if dl_ds_e is not None:
                     if dl_ds_e.shape[0] != 0:
                         rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]

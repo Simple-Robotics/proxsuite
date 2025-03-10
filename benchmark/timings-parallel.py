@@ -30,7 +30,7 @@ def generate_mixed_qp(n, n_eq, n_in, seed=1):
     q = np.random.randn(n)
     A = spa.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc").toarray()
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
+    _delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
@@ -49,7 +49,6 @@ problem_specs = [
 num_qps = 128
 
 for n, n_eq, n_in in problem_specs:
-
     print(f"\nProblem specs: {n=} {n_eq=} {n_in=}. Generating {num_qps} such problems.")
     problems = [generate_mixed_qp(n, n_eq, n_in, seed=j) for j in range(num_qps)]
     print(
@@ -86,7 +85,7 @@ for n, n_eq, n_in in problem_specs:
     print("Solving batch of qps using solve_in_parallel with default thread config")
     tic = perf_counter_ns()
     proxsuite.proxqp.dense.solve_in_parallel(qps=qps_batch)
-    timings[f"solve_in_parallel_heuristics_threads"] = (perf_counter_ns() - tic) * 1e-6
+    timings["solve_in_parallel_heuristics_threads"] = (perf_counter_ns() - tic) * 1e-6
 
     print("Solving vector of qps serially")
     tic = perf_counter_ns()

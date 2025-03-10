@@ -1,14 +1,11 @@
 import proxsuite
+from util import generate_mixed_qp
 
 # load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
 n_in = 2
 qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
-
-import numpy as np
-import scipy.sparse as spa
-from util import generate_mixed_qp
 
 
 # load a qp2 object using matrix masks

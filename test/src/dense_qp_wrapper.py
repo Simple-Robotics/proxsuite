@@ -41,7 +41,7 @@ def generate_mixed_qp(n, seed=1, reg=0.01):
         order="C"
     )
     v = np.random.randn(n)  # Fictitious solution
-    delta = np.random.rand(m)  # To get inequality
+    _delta = np.random.rand(m)  # To get inequality
     u = A @ v
     l = -1.0e20 * np.ones(m)
 
