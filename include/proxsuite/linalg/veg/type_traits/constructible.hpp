@@ -166,6 +166,12 @@ template<typename T>
 struct MoveFn
 {
   T&& value;
+  // We should define a constructor to avoid an Internal compiler error with
+  // Visual Studio 17.13
+  MoveFn(T&& v)
+    : value(VEG_FWD(v))
+  {
+  }
   VEG_INLINE constexpr auto operator()() const&& VEG_NOEXCEPT_IF(
     VEG_CONCEPT(nothrow_movable<T>)) -> T
   {
