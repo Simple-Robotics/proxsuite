@@ -18,7 +18,7 @@ namespace python {
 
 template<typename T>
 void
-exposeDenseHelpers(nanobind::module_ m)
+exposeDenseHelpers(nanobind::module_& m)
 {
   m.def(
     "estimate_minimal_eigen_value_of_symmetric_matrix",
@@ -53,7 +53,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-exposeSparseHelpers(nanobind::module_ m)
+exposeSparseHelpers(nanobind::module_& m)
 {
   m.def("estimate_minimal_eigen_value_of_symmetric_matrix",
         &sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>,

@@ -14,9 +14,9 @@ using namespace proxsuite::osqp;
 int
 main()
 {
-  std::cout
-    << "Solve a simple example with equality and inequality constraints using OSQP with dense PrimalLDLT backend"
-    << std::endl;
+  std::cout << "Solve a simple example with equality and inequality "
+               "constraints using OSQP with dense PrimalLDLT backend"
+            << std::endl;
 
   // define the problem
   double eps_abs = 1e-9;
@@ -65,10 +65,15 @@ main()
   // create qp object and pass some settings
   // bool box_constraints = true;
   bool box_constraints = false;
-  dense::QP<double> qp(dim, n_eq, n_in, box_constraints, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+  dense::QP<double> qp(dim,
+                       n_eq,
+                       n_in,
+                       box_constraints,
+                       proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // Specific values for OSQP
@@ -89,7 +94,7 @@ main()
   std::cout << "unscaled x: " << qp.results.x << std::endl;
   std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
   std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
-  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl; 
+  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl;
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
 

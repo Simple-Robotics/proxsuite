@@ -16,9 +16,9 @@ namespace proxqp {
 // SOLVER STATUS
 enum struct QPSolverOutput
 {
-  PROXQP_SOLVED,                         // the problem is solved.
-  PROXQP_MAX_ITER_REACHED,               // the maximum number of iterations has been reached.
-  PROXQP_PRIMAL_INFEASIBLE,              // the problem is primal infeasible. 
+  PROXQP_SOLVED,           // the problem is solved.
+  PROXQP_MAX_ITER_REACHED, // the maximum number of iterations has been reached.
+  PROXQP_PRIMAL_INFEASIBLE,              // the problem is primal infeasible.
   PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE, // the closest (in L2 sense) feasible.
                                          // problem is solved.
   PROXQP_DUAL_INFEASIBLE,                // the problem is dual infeasible.
@@ -27,11 +27,12 @@ enum struct QPSolverOutput
 // INITIAL GUESS STATUS
 enum struct InitialGuessStatus
 {
-  NO_INITIAL_GUESS,                       // variables are initialized to zero.
-  EQUALITY_CONSTRAINED_INITIAL_GUESS,     // solve the equality constrained problem.
+  NO_INITIAL_GUESS,                   // variables are initialized to zero.
+  EQUALITY_CONSTRAINED_INITIAL_GUESS, // solve the equality constrained problem.
   WARM_START_WITH_PREVIOUS_RESULT,
-  WARM_START,COLD_START_WITH_PREVIOUS_RESULT
-  
+  WARM_START,
+  COLD_START_WITH_PREVIOUS_RESULT
+
 };
 // PRECONDITIONER STATUS
 enum struct PreconditionerStatus

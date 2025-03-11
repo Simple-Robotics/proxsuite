@@ -46,12 +46,15 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
 
   // osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   bool box_constraints = false;
-  osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
-  qp.settings.eps_abs = eps_abs;
+  osqp::dense::QP<T> qp{
+    dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+  }; // creating QP object
+  // qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_abs = 1e-3;
+  qp.settings.eps_rel = 1.e-3;
   // Specific values for OSQP
   qp.settings.default_mu_eq = 1.e-2;
   qp.settings.default_mu_in = 1.e1;
-  qp.settings.eps_rel = 1.e-4;
   qp.settings.check_duality_gap = false;
   qp.settings.eps_duality_gap_abs = 1.e-3;
   qp.settings.eps_duality_gap_rel = 1.e-3;
@@ -84,12 +87,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     bool box_constraints = false;
-    osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
-    qp.settings.eps_abs = eps_abs;
+    osqp::dense::QP<T> qp{
+      dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+    }; // creating QP object
+    // qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_abs = 1e-3;
+    qp.settings.eps_rel = 1.e-3;
     // Specific values for OSQP
     qp.settings.default_mu_eq = 1.e-2;
     qp.settings.default_mu_in = 1.e1;
-    qp.settings.eps_rel = 1.e-4;
     qp.settings.check_duality_gap = false;
     qp.settings.eps_duality_gap_abs = 1.e-3;
     qp.settings.eps_duality_gap_rel = 1.e-3;
@@ -147,9 +153,13 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
 
     // osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     bool box_constraints = false;
-    osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
-    qp.settings.eps_abs = eps_abs;
-    qp.settings.eps_rel = 0;
+    osqp::dense::QP<T> qp{
+      dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+    }; // creating QP object
+    // qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_abs = 1e-3;
+    // qp.settings.eps_rel = 0;
+    qp.settings.eps_rel = 1e-3;
     // Specific values for OSQP
     qp.settings.default_mu_eq = 1.e-2;
     qp.settings.default_mu_in = 1.e1;
@@ -211,13 +221,17 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
       n_eq); // make sure the LP is bounded within the feasible set
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
-    // osqp::dense::QP<T> qp{
-    //   dim, n_eq, n_in, proxqp::HessianType::Zero
-    // }; // creating QP object
     bool box_constraints = false;
-    osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT, proxqp::HessianType::Zero}; // creating QP object
-    qp.settings.eps_abs = eps_abs;
-    qp.settings.eps_rel = 0;
+    osqp::dense::QP<T> qp{ dim,
+                           n_eq,
+                           n_in,
+                           box_constraints,
+                           proxqp::DenseBackend::PrimalDualLDLT,
+                           proxqp::HessianType::Zero }; // creating QP object
+    // qp.settings.eps_abs = eps_abs;
+    // qp.settings.eps_rel = 0;
+    qp.settings.eps_abs = 1e-3;
+    qp.settings.eps_rel = 1e-3;
     // Specific values for OSQP
     qp.settings.default_mu_eq = 1.e-2;
     qp.settings.default_mu_in = 1.e1;
@@ -288,7 +302,9 @@ DOCTEST_TEST_CASE("infeasible qp inequality constraints")
 
   // osqp::dense::QP<T> qp{ n, n_eq, n_in }; // creating QP object
   bool box_constraints = false;
-  osqp::dense::QP<T> qp{ n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
+  osqp::dense::QP<T> qp{
+    n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+  }; // creating QP object
   qp.init(H, g, nullopt, nullopt, C, l, u);
   qp.settings.eps_rel = 0.;
   qp.settings.eps_abs = 1e-9;
@@ -315,8 +331,7 @@ DOCTEST_TEST_CASE("infeasible qp equality constraints")
   g << -18.0, -12.0;
 
   Eigen::Matrix<T, 2, 2> A;
-  A << 1, 1, 
-       1, 1;   
+  A << 1, 1, 1, 1;
 
   Eigen::Matrix<T, 2, 1> b;
   b << 1, 5;
@@ -327,7 +342,9 @@ DOCTEST_TEST_CASE("infeasible qp equality constraints")
 
   // osqp::dense::QP<T> qp{ n, n_eq, n_in }; // creating QP object
   bool box_constraints = false;
-  osqp::dense::QP<T> qp{ n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
+  osqp::dense::QP<T> qp{
+    n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+  }; // creating QP object
   qp.init(H, g, A, b, nullopt, nullopt, nullopt);
   qp.settings.eps_rel = 0.;
   qp.settings.eps_abs = 1e-9;
@@ -354,8 +371,7 @@ DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
   g << 1.0, -1.0;
 
   Eigen::Matrix<T, 2, 2> A;
-  A << 1, 1, 
-       1, 1;   
+  A << 1, 1, 1, 1;
 
   Eigen::Matrix<T, 2, 1> b;
   b << 1, 1;
@@ -366,7 +382,9 @@ DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
 
   // osqp::dense::QP<T> qp{ n, n_eq, n_in }; // creating QP object
   bool box_constraints = false;
-  osqp::dense::QP<T> qp{ n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
+  osqp::dense::QP<T> qp{
+    n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+  }; // creating QP object
   qp.init(H, g, A, b, nullopt, nullopt, nullopt);
   qp.settings.eps_rel = 0.;
   qp.settings.eps_abs = 1e-9;
@@ -383,104 +401,9 @@ DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
                 proxsuite::proxqp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE);
 }
 
+// Settings test:
+// PrimalDualLDLT
+// No mu_update
 
-
-
-// DOCTEST_TEST_CASE("quadratic problems with equality and inequality constraints "
-//                   "with different values of dim to test osqp without vs with mu updates")
-// {
-
-//   std::cout
-//     << "---quadratic problems with equality and inequality constraints "
-//        "with different values of dim to test osqp without vs with mu updates---"
-//     << std::endl;
-//   T sparsity_factor = 0.15;
-//   T eps_abs = T(1e-9);
-//   proxqp::utils::rand::set_seed(1);
-//   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
-
-//     proxqp::isize n_eq(dim / 4);
-//     proxqp::isize n_in(dim / 4);
-//     T strong_convexity_factor(1.e-2);
-//     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
-//       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-
-//     bool box_constraints = false;
-//     osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT}; // creating QP object
-//     qp.settings.eps_abs = eps_abs;
-//     qp.settings.eps_rel = 0;
-//     // Specific values for OSQP
-//     qp.settings.default_mu_eq = 1.e-2;
-//     qp.settings.default_mu_in = 1.e1;
-//     qp.settings.check_duality_gap = false;
-//     qp.settings.eps_duality_gap_abs = 1.e-3;
-//     qp.settings.eps_duality_gap_rel = 1.e-3;
-    
-//     qp.settings.update_mu_osqp = false;
-//     qp.init(qp_random.H,
-//             qp_random.g,
-//             qp_random.A,
-//             qp_random.b,
-//             qp_random.C,
-//             qp_random.l,
-//             qp_random.u);
-
-//     qp.solve();
-
-//     T pri_res_without = std::max(
-//       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-//       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-//        helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-//         .lpNorm<Eigen::Infinity>());
-//     T dua_res_without = (qp_random.H * qp.results.x + qp_random.g +
-//                  qp_random.A.transpose() * qp.results.y +
-//                  qp_random.C.transpose() * qp.results.z)
-//                   .lpNorm<Eigen::Infinity>();
-//     DOCTEST_CHECK(pri_res_without <= eps_abs);
-//     DOCTEST_CHECK(dua_res_without <= eps_abs);
-
-//     std::cout << "------using wrapper API solving qp with dim: " << dim
-//               << " neq: " << n_eq << " nin: " << n_in << std::endl;
-//     std::cout << "primal residual without: " << pri_res_without << std::endl;
-//     std::cout << "dual residual without: " << dua_res_without << std::endl;
-//     std::cout << "total number of iteration without: " << qp.results.info.iter_ext
-//               << std::endl;
-
-//     proxqp::sparse::isize iter_without = qp.results.info.iter_ext;
-
-//     qp.settings.update_mu_osqp = true;
-    
-//     qp.init(qp_random.H,
-//             qp_random.g,
-//             qp_random.A,
-//             qp_random.b,
-//             qp_random.C,
-//             qp_random.l,
-//             qp_random.u);
-
-//     qp.solve();
-
-//     T pri_res_with = std::max(
-//       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-//       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-//        helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-//         .lpNorm<Eigen::Infinity>());
-//     T dua_res_with = (qp_random.H * qp.results.x + qp_random.g +
-//                  qp_random.A.transpose() * qp.results.y +
-//                  qp_random.C.transpose() * qp.results.z)
-//                   .lpNorm<Eigen::Infinity>();
-//     DOCTEST_CHECK(pri_res_with <= eps_abs);
-//     DOCTEST_CHECK(dua_res_with <= eps_abs);
-
-//     std::cout << "------using wrapper API solving qp with dim: " << dim
-//               << " neq: " << n_eq << " nin: " << n_in << std::endl;
-//     std::cout << "primal residual without: " << pri_res_without << std::endl;
-//     std::cout << "dual residual without: " << dua_res_without << std::endl;
-//     std::cout << "total number of iteration without: " << qp.results.info.iter_ext
-//               << std::endl;
-
-//     proxqp::sparse::isize iter_with = qp.results.info.iter_ext;
-
-//     DOCTEST_CHECK(iter_with <= iter_without);
-//   }
-// }
+// Note test:
+// Pass

@@ -53,13 +53,15 @@ namespace dense {
 //   std::cout << "          eps_abs = " << settings.eps_abs
 //             << " eps_rel = " << settings.eps_rel << std::endl;
 //   std::cout << "          eps_prim_inf = " << settings.eps_primal_inf
-//             << ", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
+//             << ", eps_dual_inf = " << settings.eps_dual_inf << "," <<
+//             std::endl;
 
 //   std::cout << "          rho = " << results.info.rho
 //             << ", mu_eq = " << results.info.mu_eq
 //             << ", mu_in = " << results.info.mu_in << "," << std::endl;
 //   std::cout << "          max_iter = " << settings.max_iter
-//             << ", max_iter_in = " << settings.max_iter_in << "," << std::endl;
+//             << ", max_iter_in = " << settings.max_iter_in << "," <<
+//             std::endl;
 //   if (box_constraints) {
 //     std::cout << "          box constraints: on, " << std::endl;
 //   } else {
@@ -77,14 +79,15 @@ namespace dense {
 //   }
 //   switch (hessian_type) {
 //     case HessianType::Dense:
-//       std::cout << "          problem type: Quadratic Program, " << std::endl;
-//       break;
+//       std::cout << "          problem type: Quadratic Program, " <<
+//       std::endl; break;
 //     case HessianType::Zero:
 //       std::cout << "          problem type: Linear Program, " << std::endl;
 //       break;
 //     case HessianType::Diagonal:
 //       std::cout
-//         << "          problem type: Quadratic Program with diagonal Hessian, "
+//         << "          problem type: Quadratic Program with diagonal Hessian,
+//         "
 //         << std::endl;
 //       break;
 //   }
@@ -103,8 +106,8 @@ namespace dense {
 //       std::cout << "          initial guess: warm start. \n" << std::endl;
 //       break;
 //     case InitialGuessStatus::NO_INITIAL_GUESS:
-//       std::cout << "          initial guess: no initial guess. \n" << std::endl;
-//       break;
+//       std::cout << "          initial guess: no initial guess. \n" <<
+//       std::endl; break;
 //     case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:
 //       std::cout
 //         << "          initial guess: warm start with previous result. \n"
@@ -239,7 +242,7 @@ global_primal_residual(const Model<T>& qpmodel,
   primal_feasibility_lhs =
     std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
   if (qpsettings.primal_infeasibility_solving &&
-      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) { 
+      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
     qpwork.rhs.head(qpmodel.dim).noalias() =
       qpmodel.A.transpose() * qpresults.se;
     // qpwork.rhs.head(qpmodel.dim).noalias() +=
@@ -247,11 +250,10 @@ global_primal_residual(const Model<T>& qpmodel,
     qpwork.rhs.head(qpmodel.dim).noalias() +=
       qpmodel.C.transpose() * qpresults.si.head(qpmodel.n_in);
     if (box_constraints) {
-      qpwork.rhs.head(qpmodel.dim).noalias() +=
-        qpresults.si.tail(qpmodel.dim);
+      qpwork.rhs.head(qpmodel.dim).noalias() += qpresults.si.tail(qpmodel.dim);
     }
     primal_feasibility_lhs = infty_norm(qpwork.rhs.head(qpmodel.dim));
-  } 
+  }
   ruiz.scale_primal_residual_in_place_eq(
     VectorViewMut<T>{ from_eigen, qpresults.se });
   // VectorViewMut<T>{ from_eigen, qpwork.primal_residual_eq_scaled });

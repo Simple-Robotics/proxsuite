@@ -23,9 +23,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
 
   Scalar sparsity_factor(0.75);
   Scalar strong_convexity_factor(0.01);
-  dense::Model<Scalar> qp_random =
-    utils::dense_strongly_convex_qp(
-      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  dense::Model<Scalar> qp_random = utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   switch (sym) {
     case Symmetry::upper: {
@@ -39,7 +38,9 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
     default: {
     }
   }
-  proxsuite::osqp::dense::QP<Scalar> qp{ dim, n_eq, n_in }; // creating QP object
+  proxsuite::osqp::dense::QP<Scalar> qp{ dim,
+                                         n_eq,
+                                         n_in }; // creating QP object
 
   // Specific values for OSQP
   qp.settings.default_mu_eq = 1.e-2;
@@ -79,3 +80,9 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   DOCTEST_CHECK((A_new - qp.work.A_scaled).norm() <= Scalar(1e-10));
   DOCTEST_CHECK((b_new - qp.work.b_scaled).norm() <= Scalar(1e-10));
 }
+
+// Settings test:
+// RAS
+
+// Note test:
+// Passes

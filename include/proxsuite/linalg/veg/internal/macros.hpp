@@ -278,9 +278,9 @@
     using NothrowTestExpr = ::proxsuite::linalg::veg::meta::false_type;        \
   };                                                                           \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
-  struct test_sfinae_##Name<                                                   \
-    ::proxsuite::linalg::veg::meta::void_t<decltype((Expr))>,                  \
-    __VEG_PP_REMOVE_PAREN1(TplNames)>                                          \
+  struct test_sfinae_##                                                        \
+    Name<::proxsuite::linalg::veg::meta::void_t<decltype((Expr))>,             \
+         __VEG_PP_REMOVE_PAREN1(TplNames)>                                     \
   {                                                                            \
     using ExprType = decltype((Expr));                                         \
     using TestExpr =                                                           \
@@ -1249,7 +1249,7 @@ extract_chars_expr(LiteralType /*unused*/) -> typename ExtractCharsImplExpr<
   (sizeof(__VEG_PP_CAT(u8, __VEG_PP_STRINGIZE(MemberPtr))) - 1),
 
 #define __VEG_IMPL_STRUCT_SETUP(PClass, ...) /* NOLINT */                      \
-  void _veg_lib_name_test()&& noexcept                                         \
+  void _veg_lib_name_test() && noexcept                                        \
   {                                                                            \
     static_assert(                                                             \
       VEG_CONCEPT(same<decltype(this), __VEG_PP_REMOVE_PAREN(PClass)*>),       \

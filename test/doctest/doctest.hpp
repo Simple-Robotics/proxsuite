@@ -1563,7 +1563,8 @@ namespace detail {
 #endif // DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
 // clang-format on
 
-struct DOCTEST_INTERFACE TestFailureException{};
+struct DOCTEST_INTERFACE TestFailureException
+{};
 
 DOCTEST_INTERFACE bool
 checkIfShouldThrow(assertType::Enum at);
@@ -2669,9 +2670,8 @@ registerReporter(const char* name, int priority, bool isReporter)
 
 // for subcases
 #define DOCTEST_SUBCASE(name)                                                  \
-  if (const doctest::detail::Subcase &                                         \
-        DOCTEST_ANONYMOUS(DOCTEST_ANON_SUBCASE_)                               \
-          DOCTEST_UNUSED = doctest::detail::Subcase(name, __FILE__, __LINE__))
+  if (const doctest::detail::Subcase& DOCTEST_ANONYMOUS(DOCTEST_ANON_SUBCASE_) \
+        DOCTEST_UNUSED = doctest::detail::Subcase(name, __FILE__, __LINE__))
 
 // for grouping tests in test suites by using code blocks
 #define DOCTEST_TEST_SUITE_IMPL(decorators, ns_name)                           \
@@ -5446,7 +5446,8 @@ DOCTEST_CLANG_SUPPRESS_WARNING_POP
 DOCTEST_GCC_SUPPRESS_WARNING_POP
 DOCTEST_MSVC_SUPPRESS_WARNING_POP
 
-Subcase::operator bool() const
+Subcase::
+operator bool() const
 {
   return m_entered;
 }

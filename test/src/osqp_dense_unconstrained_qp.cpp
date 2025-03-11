@@ -31,7 +31,8 @@ DOCTEST_TEST_CASE(
       dim, sparsity_factor, strong_convexity_factor);
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     // bool box_constraints = false;
-    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
+    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints,
+    // proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
     // Specific values for OSQP
     qp.settings.default_mu_eq = 1.e-2;
@@ -94,7 +95,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     // bool box_constraints = false;
-    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
+    // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints,
+    // proxqp::DenseBackend::PrimalLDLT}; // creating QP object
     qp.settings.eps_abs = eps_abs;
     // Specific values for OSQP
     qp.settings.default_mu_eq = 1.e-2;
@@ -102,7 +104,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
     qp.settings.eps_rel = 1.e-4;
     qp.settings.check_duality_gap = false;
     qp.settings.eps_duality_gap_abs = 1.e-3;
-    qp.settings.eps_duality_gap_rel = 1.e-3; 
+    qp.settings.eps_duality_gap_rel = 1.e-3;
 
     qp.init(qp_random.H,
             qp_random.g,
@@ -152,7 +154,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   // bool box_constraints = false;
-  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
+  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints,
+  // proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
   // Specific values for OSQP
   qp.settings.default_mu_eq = 1.e-2;
@@ -210,7 +213,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   // bool box_constraints = false;
-  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
+  // osqp::dense::QP<T> qp{ dim, n_eq, n_in, box_constraints,
+  // proxqp::DenseBackend::PrimalLDLT}; // creating QP object
   qp.settings.eps_abs = eps_abs;
   // Specific values for OSQP
   qp.settings.default_mu_eq = 1.e-2;
@@ -248,3 +252,10 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   std::cout << "total number of iteration: " << qp.results.info.iter
             << std::endl;
 }
+
+// Settings test:
+// PrimalDualLDLT
+// No mu update
+
+// Note test:
+// Passes

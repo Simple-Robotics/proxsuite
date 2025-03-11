@@ -21,7 +21,8 @@ using proxsuite::nullopt;
 // main()
 // {
 //   std::cout
-//     << "Case of primal infeasible problem with box constraints and primal infeasibility solving activated"
+//     << "Case of primal infeasible problem with box constraints and primal
+//     infeasibility solving activated"
 //     << std::endl;
 
 //   // define the problem
@@ -46,13 +47,13 @@ using proxsuite::nullopt;
 //   C << 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0;
 
 //   Eigen::VectorXd l = Eigen::VectorXd(n_in);
-//   l << -1.0, -1.0, -1.0; 
+//   l << -1.0, -1.0, -1.0;
 
 //   Eigen::VectorXd u = Eigen::VectorXd(n_in);
 //   u << 1.0, 1.0, 1.0;
 
 //   // Eigen::VectorXd l_box = Eigen::VectorXd(dim);
-//   // l_box << -10.0, -10.0, -10.0; 
+//   // l_box << -10.0, -10.0, -10.0;
 
 //   // Eigen::VectorXd u_box = Eigen::VectorXd(dim);
 //   // u_box << 10.0, 10.0, 10.0;
@@ -70,10 +71,12 @@ using proxsuite::nullopt;
 //   // create qp object and pass some settings
 //   // bool box_constraints = true;
 //   bool box_constraints = false;
-//   dense::QP<double> qp(dim, n_eq, n_in, box_constraints, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+//   dense::QP<double> qp(dim, n_eq, n_in, box_constraints,
+//   proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
 
 //   qp.settings.eps_abs = eps_abs;
-//   qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+//   qp.settings.initial_guess =
+//   proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
 //   qp.settings.verbose = true;
 
 //   // initialize qp with matrices describing the problem
@@ -88,7 +91,8 @@ using proxsuite::nullopt;
 //   std::cout << "unscaled x: " << qp.results.x << std::endl;
 //   std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
 //   std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
-//   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+//   std::cout << "setup timing " << qp.results.info.setup_time << " solve time
+//   "
 //             << qp.results.info.solve_time << std::endl;
 //   return 0;
 // }
@@ -96,7 +100,7 @@ using proxsuite::nullopt;
 int
 main()
 {
-    std::cout << "---testing linear problem with equality constraints and "
+  std::cout << "---testing linear problem with equality constraints and "
                "increasing dimension using wrapper API---"
             << std::endl;
   double sparsity_factor = 0.15;
@@ -107,8 +111,9 @@ main()
     proxqp::isize n_eq(dim / 2);
     proxqp::isize n_in(0);
     double strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<double> qp_random = proxqp::utils::dense_strongly_convex_qp(
-      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    proxqp::dense::Model<double> qp_random =
+      proxqp::utils::dense_strongly_convex_qp(
+        dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
     auto y_sol = proxqp::utils::rand::vector_rand<double>(
       n_eq); // make sure the LP is bounded within the feasible set
@@ -116,7 +121,9 @@ main()
 
     // osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     bool box_constraints = false;
-    osqp::dense::QP<double> qp{ dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT}; // creating QP object
+    osqp::dense::QP<double> qp{
+      dim, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalLDLT
+    }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
     qp.init(qp_random.H,
@@ -134,9 +141,9 @@ main()
        helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
         .lpNorm<Eigen::Infinity>());
     double dua_res = (qp_random.H * qp.results.x + qp_random.g +
-                 qp_random.A.transpose() * qp.results.y +
-                 qp_random.C.transpose() * qp.results.z)
-                  .lpNorm<Eigen::Infinity>();
+                      qp_random.A.transpose() * qp.results.y +
+                      qp_random.C.transpose() * qp.results.z)
+                       .lpNorm<Eigen::Infinity>();
 
     std::cout << "------using wrapper API solving qp with dim: " << dim
               << " neq: " << n_eq << " nin: " << n_in << std::endl;

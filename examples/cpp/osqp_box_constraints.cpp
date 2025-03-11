@@ -1,9 +1,10 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include "proxsuite/proxqp/settings.hpp"
 #include <iostream>
 #include <Eigen/Core>
-#include <proxsuite/helpers/optional.hpp> 
+#include <proxsuite/helpers/optional.hpp>
 #include <proxsuite/osqp/dense/dense.hpp>
 
 using namespace proxsuite::osqp;
@@ -11,9 +12,9 @@ using namespace proxsuite::osqp;
 int
 main()
 {
-  std::cout
-    << "Solve a simple example with equality, inequality and box constraints using dense OSQP"
-    << std::endl;
+  std::cout << "Solve a simple example with equality, inequality and box "
+               "constraints using dense OSQP"
+            << std::endl;
 
   double eps_abs = 1e-9;
   dense::isize dim = 3, n_eq = 3, n_in = 3;
@@ -44,7 +45,7 @@ main()
 
   // Box constraints
   Eigen::VectorXd l_box = Eigen::VectorXd(dim);
-  l_box << -1.0, -1.0, -1.0;
+  l_box << -10.0, -10.0, -10.0;
 
   Eigen::VectorXd u_box = Eigen::VectorXd(dim);
   u_box << 1.0, 1.0, 1.0;
@@ -61,10 +62,17 @@ main()
 
   // create qp object and pass some settings
   bool box_constraints = true;
-  dense::QP<double> qp(dim, n_eq, n_in, box_constraints); // true stands for box constraints
+  proxsuite::proxqp::DenseBackend dense_backend =
+    proxsuite::proxqp::DenseBackend::PrimalLDLT;
+  dense::QP<double> qp(dim,
+                       n_eq,
+                       n_in,
+                       box_constraints,
+                       dense_backend); // true stands for box constraints
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // Specific values for OSQP
@@ -84,7 +92,7 @@ main()
   std::cout << "unscaled x: " << qp.results.x << std::endl;
   std::cout << "primal residual: " << qp.results.info.pri_res << std::endl;
   std::cout << "dual residual: " << qp.results.info.dua_res << std::endl;
-  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl; 
+  std::cout << "duality gap: " << qp.results.info.duality_gap << std::endl;
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
 

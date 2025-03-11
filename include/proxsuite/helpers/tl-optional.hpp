@@ -169,7 +169,7 @@ template<class T, class Ret, class... Args>
 struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...)> : std::true_type
 {};
 template<class T, class Ret, class... Args>
-struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...)&>
+struct is_pointer_to_non_const_member_func<Ret (T::*)(Args...) &>
   : std::true_type
 {};
 template<class T, class Ret, class... Args>

@@ -250,9 +250,11 @@ public:
     }
 
     ld_storage.reserve_exact(cap * new_stride);
-    // std::cout << "perm lenght in reserve_uninit before: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in reserve_uninit before: " << perm.len() <<
+    // std::endl;
     perm.reserve_exact(cap);
-    // std::cout << "perm lenght in reserve_uninit after: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in reserve_uninit after: " << perm.len() <<
+    // std::endl;
     perm_inv.reserve_exact(cap);
     maybe_sorted_diag.reserve_exact(cap);
 
@@ -459,13 +461,15 @@ public:
         pinv_j += r;
       }
     }
-    // std::cout << "perm lenght in insert_block_at before: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in insert_block_at before: " << perm.len() <<
+    // std::endl;
     for (isize k = 0; k < r; ++k) {
       perm.push_mid(i + k, i_actual + k);
       perm_inv.push_mid(i_actual + k, i + k);
       maybe_sorted_diag.push_mid(a(i + k, k), i_actual + k);
     }
-    // std::cout << "perm lenght in insert_block_at after: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in insert_block_at after: " << perm.len() <<
+    // std::endl;
 
     LDLT_TEMP_MAT_UNINIT(T, permuted_a, n + r, r, stack);
 
@@ -726,9 +730,11 @@ public:
     VEG_ASSERT(mat.rows() == mat.cols());
     isize n = mat.rows();
     reserve_uninit(n);
-    // std::cout << "perm lenght in factorize before: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in factorize before: " << perm.len() <<
+    // std::endl;
     perm.resize_for_overwrite(n);
-    // std::cout << "perm lenght in factorize after: " << perm.len() << std::endl;
+    // std::cout << "perm lenght in factorize after: " << perm.len() <<
+    // std::endl;
     perm_inv.resize_for_overwrite(n);
     maybe_sorted_diag.resize_for_overwrite(n);
 
@@ -763,7 +769,6 @@ public:
       _detail::align<T>(),
     };
   }
-
 
   /*!
    * Solves the system `A×x = rhs`, and stores the result in `rhs`.

@@ -22,20 +22,19 @@ print_line()
 inline void
 print_header()
 {
-  std::cout << "iter    objective    pri res    dua res  \n"
-            << std::endl;
+  std::cout << "iter    objective    pri res    dua res  \n" << std::endl;
 }
 
 inline void
 print_preambule()
 {
   print_line();
-  std::cout
-    << "OSQP - Operator Splitting solver for QP problems\n"
-    << "A C++ implementation \n"
-    << "(c) Bartolomeo Stellato, Goran Banjac, Paul Goulart, Alberto Bemporad, Stephen Boyd\n"
-    << "Inria Paris 2025\n"
-    << std::endl;
+  std::cout << "OSQP - Operator Splitting solver for QP problems\n"
+            << "A C++ implementation \n"
+            << "(c) Bartolomeo Stellato, Goran Banjac, Paul Goulart, Alberto "
+               "Bemporad, Stephen Boyd\n"
+            << "Inria Paris 2025\n"
+            << std::endl;
   print_line();
 }
 

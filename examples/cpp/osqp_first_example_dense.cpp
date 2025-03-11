@@ -44,10 +44,17 @@ main()
   std::cout << "u.T:" << u.transpose() << std::endl;
 
   // create qp object and pass some settings
-  dense::QP<double> qp(dim, n_eq, n_in);
+  // dense::QP<double> qp(dim, n_eq, n_in);
+  dense::QP<double> qp(dim,
+                       n_eq,
+                       n_in,
+                       false,
+                       proxsuite::proxqp::HessianType::Dense,
+                       proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // Specific values for OSQP

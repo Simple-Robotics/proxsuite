@@ -17,7 +17,7 @@ namespace dense {
 namespace python {
 template<typename T>
 void
-exposeWorkspaceDense(nanobind::module_ m)
+exposeWorkspaceDense(nanobind::module_& m)
 {
   ::nanobind::class_<proxsuite::proxqp::dense::Workspace<T>>(m, "workspace")
     .def(::nanobind::init<i64, i64, i64>(),

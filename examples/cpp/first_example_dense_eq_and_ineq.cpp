@@ -11,9 +11,9 @@ using namespace proxsuite::proxqp;
 int
 main()
 {
-  std::cout
-    << "Solve a simple example with equality and inequality constraints using dense PROXQP"
-    << std::endl;
+  std::cout << "Solve a simple example with equality and inequality "
+               "constraints using dense PROXQP"
+            << std::endl;
 
   // define the problem
   double eps_abs = 1e-9;
@@ -55,7 +55,8 @@ main()
   dense::QP<double> qp(dim, n_eq, n_in);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // initialize qp with matrices describing the problem

@@ -43,7 +43,8 @@ main()
   dense::QP<double> qp(dim, n_eq, n_in);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess =
+    proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // Specific values for OSQP
@@ -52,7 +53,7 @@ main()
   qp.settings.eps_rel = 1.e-4;
   qp.settings.check_duality_gap = false;
   qp.settings.eps_duality_gap_abs = 1.e-3;
-  qp.settings.eps_duality_gap_rel = 1.e-3; 
+  qp.settings.eps_duality_gap_rel = 1.e-3;
 
   // initialize qp with matrices describing the problem
   // note: it is also possible to use update here

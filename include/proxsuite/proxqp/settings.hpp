@@ -202,8 +202,10 @@ struct Settings
    * time).
    * @param polish If set to true, the OSQP solver will polish the solution.
    * @param update_mu_osqp If set to true, mu_eq and mu_in will be updated
-   * @param ratio_time_mu_update ratio of the factorization time for the update condition
-   * @param ratio_value_mu_update ratio of the between the old and new mu_value for the update condition
+   * @param ratio_time_mu_update ratio of the factorization time for the update
+   * condition
+   * @param ratio_value_mu_update ratio of the between the old and new mu_value
+   * for the update condition
    * @param ratio_value_mu_update_inv inverse of ratio_value_mu_update
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
@@ -232,8 +234,8 @@ struct Settings
 
   Settings(
     DenseBackend dense_backend = DenseBackend::PrimalDualLDLT,
-    T default_mu_eq = 1.E-3, 
-    T default_mu_in = 1.E-1, 
+    T default_mu_eq = 1.E-3,
+    T default_mu_in = 1.E-1,
     T alpha_bcl = 0.1,
     T beta_bcl = 0.9,
     T alpha_osqp = 1.6,
@@ -251,15 +253,15 @@ struct Settings
     T cold_reset_mu_in = 1. / 1.1,
     T cold_reset_mu_eq_inv = 1.1,
     T cold_reset_mu_in_inv = 1.1,
-    T eps_abs = 1.e-5, 
-    T eps_rel = 0, 
+    T eps_abs = 1.e-5,
+    T eps_rel = 0,
     isize max_iter = 10000,
     isize max_iter_in = 1500,
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
-    T eps_refact = 1.e-6, 
+    T eps_refact = 1.e-6,
     isize nb_polish_iter = 10,
-    bool verbose = false,
+    bool verbose = true,
     InitialGuessStatus initial_guess = InitialGuessStatus::
       EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
                                           // EQUALITY_CONSTRAINED_INITIAL_GUESS,
@@ -267,9 +269,9 @@ struct Settings
                                           // once a problem
     bool update_preconditioner = false,
     bool compute_preconditioner = true,
-    bool compute_timings = false,
+    bool compute_timings = true,
     bool polish = true,
-    bool update_mu_osqp = true,
+    bool update_mu_osqp = false,
     T ratio_time_mu_update = 0.4,
     T ratio_value_mu_update = 5,
     T ratio_value_mu_update_inv = 0.2,
@@ -399,7 +401,8 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.update_mu_osqp == settings2.update_mu_osqp &&
     settings1.ratio_time_mu_update == settings2.ratio_time_mu_update &&
     settings1.ratio_value_mu_update == settings2.ratio_value_mu_update &&
-    settings1.ratio_value_mu_update_inv == settings2.ratio_value_mu_update_inv &&
+    settings1.ratio_value_mu_update_inv ==
+      settings2.ratio_value_mu_update_inv &&
     settings1.check_duality_gap == settings2.check_duality_gap &&
     settings1.eps_duality_gap_abs == settings2.eps_duality_gap_abs &&
     settings1.eps_duality_gap_rel == settings2.eps_duality_gap_rel &&
@@ -431,5 +434,3 @@ operator!=(const Settings<T>& settings1, const Settings<T>& settings2)
 } // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_PROXQP_SETTINGS_HPP */
-
-// TODO: Better manage the initialization of the parameters from one solver call to another (see the // osqp and // proxqp)

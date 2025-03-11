@@ -122,9 +122,9 @@ struct Results
         break;
     }
     info.mu_eq_inv = 1e3;
-    info.mu_eq = 1e-3; 
+    info.mu_eq = 1e-3;
     info.mu_in_inv = 1e1; // proxqp
-    info.mu_in = 1e-1; // proxqp
+    info.mu_in = 1e-1;    // proxqp
     info.nu = 1.;
     info.iter = 0;
     info.iter_ext = 0;

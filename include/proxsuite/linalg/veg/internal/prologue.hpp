@@ -55,15 +55,15 @@
   ~Class() = default;                                                          \
   Class(Class&&) = default;                                                    \
   explicit Class(Class const&) = default;                                      \
-  auto operator=(Class&&)&->Class& = default;                                  \
-  auto operator=(Class const&)&->Class& = default
+  auto operator=(Class&&) &->Class& = default;                                 \
+  auto operator=(Class const&) &->Class& = default
 
 #define VEG_NO_COPY(Class)                                                     \
   ~Class() = default;                                                          \
   Class(Class&&) = default;                                                    \
   Class(Class const&) = delete;                                                \
-  auto operator=(Class&&)&->Class& = default;                                  \
-  auto operator=(Class const&)&->Class& = delete
+  auto operator=(Class&&) &->Class& = default;                                 \
+  auto operator=(Class const&) &->Class& = delete
 
 #ifdef VEG_WITH_CXX14_SUPPORT
 #define VEG_CPP14(...) __VA_ARGS__

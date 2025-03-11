@@ -59,7 +59,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -99,7 +99,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -141,7 +141,7 @@ class DenseQpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -185,7 +185,7 @@ class DenseQpWrapper(unittest.TestCase):
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
         z_wm = np.random.randn(n_in)
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -227,7 +227,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -267,7 +267,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -277,7 +277,7 @@ class DenseQpWrapper(unittest.TestCase):
             u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             eps_rel=0,
-            initial_guess=proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS,
+            initial_guess=proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS,
         )
         dua_res = normInf(
             H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z
@@ -320,7 +320,7 @@ class DenseQpWrapper(unittest.TestCase):
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.inf)
 
-        results = proxsuite.proxqp.dense.solve(H, g, A, b, C, l, u)
+        results = proxsuite.osqp.dense.solve(H, g, A, b, C, l, u)
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
         dua_res = normInf(H @ results.x + g + C.transpose() @ results.z)
@@ -348,10 +348,10 @@ class DenseQpWrapper(unittest.TestCase):
         A = None
         b = None
         C = None
-        _u = None
-        _l = None
+        u = None
+        l = None
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H,
             g,
             A,
@@ -390,7 +390,7 @@ class DenseQpWrapper(unittest.TestCase):
         l = m["l"].astype(float)
         u = m["u"].astype(float)
 
-        results = proxsuite.proxqp.dense.solve(P, q, A, b, C, l, u, verbose=False)
+        results = proxsuite.osqp.dense.solve(P, q, A, b, C, l, u, verbose=False)
         print("optimal x: {}".format(results.x))
 
         dua_res = normInf(
@@ -417,3 +417,10 @@ class DenseQpWrapper(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+# Settings test:
+# PrimalDualLDLT
+# No mu_update
+
+# Note test:
+# Passes

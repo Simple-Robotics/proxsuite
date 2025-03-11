@@ -29,12 +29,10 @@ using namespace proxsuite;
 //   auto A =
 //     ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
 //       n_eq, dim, sparsity_factor);
-//   auto solution = ::proxsuite::proxqp::utils::rand::vector_rand<T>(dim + n_eq);
-//   auto primal_solution = solution.topRows(dim);
-//   auto dual_solution = solution.bottomRows(n_eq);
-//   auto b = A * primal_solution;
-//   auto g = -H * primal_solution - A.transpose() * dual_solution;
-//   auto C =
+//   auto solution = ::proxsuite::proxqp::utils::rand::vector_rand<T>(dim +
+//   n_eq); auto primal_solution = solution.topRows(dim); auto dual_solution =
+//   solution.bottomRows(n_eq); auto b = A * primal_solution; auto g = -H *
+//   primal_solution - A.transpose() * dual_solution; auto C =
 //     ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
 //       0, dim, sparsity_factor);
 //   Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init_in(n_in);
@@ -45,15 +43,16 @@ using namespace proxsuite;
 
 //   proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
 //   qp.settings.eps_abs = eps_abs;
-//   qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
-//   qp.init(H, g, A, b, C, l, u);
-//   qp.solve(primal_solution, dual_solution, dual_init_in);
+//   qp.settings.initial_guess =
+//   proxsuite::proxqp::InitialGuessStatus::WARM_START; qp.init(H, g, A, b, C,
+//   l, u); qp.solve(primal_solution, dual_solution, dual_init_in);
 
 //   DOCTEST_CHECK((A * qp.results.x - b).lpNorm<Eigen::Infinity>() <= eps_abs);
 //   DOCTEST_CHECK((H * qp.results.x + g + A.transpose() * qp.results.y)
 //                   .lpNorm<Eigen::Infinity>() <= eps_abs);
 // }
-// DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
+// DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints
+// "
 //                   "and increasing dimension with the wrapper API")
 // {
 
@@ -68,7 +67,8 @@ using namespace proxsuite;
 //     proxqp::isize n_eq(dim / 2);
 //     proxqp::isize n_in(0);
 //     T strong_convexity_factor(1.e-2);
-//     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 //     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
 //     qp.settings.eps_abs = eps_abs;
@@ -100,7 +100,8 @@ using namespace proxsuite;
 //               << std::endl;
 //   }
 // }
-// DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
+// DOCTEST_TEST_CASE("linear problem with equality  with equality constraints
+// and "
 //                   "linar cost and increasing dimension using wrapper API")
 // {
 
@@ -115,7 +116,8 @@ using namespace proxsuite;
 //     proxqp::isize n_eq(dim / 2);
 //     proxqp::isize n_in(0);
 //     T strong_convexity_factor(1.e-2);
-//     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 //     qp_random.H.setZero();
 //     auto y_sol = proxqp::utils::rand::vector_rand<T>(
@@ -155,9 +157,10 @@ using namespace proxsuite;
 //   }
 // }
 
-// DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
-//                   "linear cost and increasing dimension using wrapper API and  "
-//                   "the dedicated LP interface")
+// DOCTEST_TEST_CASE("linear problem with equality with equality constraints and
+// "
+//                   "linear cost and increasing dimension using wrapper API and
+//                   " "the dedicated LP interface")
 // {
 
 //   std::cout
@@ -172,7 +175,8 @@ using namespace proxsuite;
 //     proxqp::isize n_eq(dim / 2);
 //     proxqp::isize n_in(0);
 //     T strong_convexity_factor(1.e-2);
-//     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 //     qp_random.H.setZero();
 //     auto y_sol = proxqp::utils::rand::vector_rand<T>(
@@ -265,8 +269,7 @@ DOCTEST_TEST_CASE("infeasible qp equality constraints")
   g << -18.0, -12.0;
 
   Eigen::Matrix<T, 2, 2> A;
-  A << 1.0, 1.0, 
-       1.0, 1.0;   
+  A << 1.0, 1.0, 1.0, 1.0;
 
   Eigen::Matrix<T, 2, 1> b;
   b << 1.0, 5.0;

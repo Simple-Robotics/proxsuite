@@ -422,7 +422,6 @@ struct Workspace
       active_constraints_eq(i) = false;
     }
 
-
     constraints_changed = false;
     dirty = false;
     refactorize = false;
