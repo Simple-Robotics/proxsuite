@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.7.2] - 2025-03-12
+
 ### Fixed
 * Fix an arcane compilation issue on Clang-19 ([#379](https://github.com/Simple-Robotics/proxsuite/pull/379))
 * Replace `!= None` with `is not None` in Python bindings ([#375](https://github.com/Simple-Robotics/proxsuite/pull/375))
@@ -463,7 +465,8 @@ More to come ([#](a forthcoming release.))
 The first release of ProxSuite.
 
 
-[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/Simple-Robotics/proxsuite/compare/v0.7.2...HEAD
+[0.7.2]: https://github.com/Simple-Robotics/proxsuite/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/Simple-Robotics/proxsuite/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.7...v0.7.0
 [0.6.7]: https://github.com/Simple-Robotics/proxsuite/compare/v0.6.6...v0.6.7
