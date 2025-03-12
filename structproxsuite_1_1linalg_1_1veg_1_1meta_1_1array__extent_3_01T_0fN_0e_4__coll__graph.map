@@ -1,5 +1,7 @@
 <map id="proxsuite::linalg::veg::meta::array_extent&lt; T[N]&gt;" name="proxsuite::linalg::veg::meta::array_extent&lt; T[N]&gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,115,184,177"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="19,5,170,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,83,97,114,92,114,92,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="205,48,383,110"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="5,5,157,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,52,205,58,204,63,171,57"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="5,91,157,152"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="171,101,204,94,205,99,172,106"/>
 </map>

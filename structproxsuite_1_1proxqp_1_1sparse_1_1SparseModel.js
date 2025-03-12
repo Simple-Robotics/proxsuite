@@ -1,6 +1,6 @@
 var structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel =
 [
-    [ "Scalar", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a05a96e392ca1811173b9e51a0d083631", null ],
+    [ "Scalar", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#aa6de84e3851ff6adf5558f264ac45ab2", null ],
     [ "VectorType", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#adf0d0a4f8e8d5474910ff47b0e5dc4df", null ],
     [ "SparseModel", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a37146513178bfaa843c99e65bc912951", null ],
     [ "as_view", "structproxsuite_1_1proxqp_1_1sparse_1_1SparseModel.html#a1c54a2f64236634233128c67f5232686", null ],

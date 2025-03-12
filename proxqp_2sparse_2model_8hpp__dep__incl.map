@@ -5,7 +5,7 @@
 <area shape="rect" id="Node000011" href="$random__qp__problems_8hpp.html" title=" " alt="" coords="659,191,886,235"/>
 <area shape="poly" id="edge28_Node000001_Node000011" title=" " alt="" coords="986,61,804,192,801,188,982,57"/>
 <area shape="rect" id="Node000013" href="$sparse_2solver_8hpp.html" title=" " alt="" coords="1024,376,1206,421"/>
-<area shape="poly" id="edge13_Node000001_Node000013" title=" " alt="" coords="1133,42,1224,64,1261,79,1284,96,1308,134,1315,156,1317,180,1312,209,1299,243,1277,282,1244,330,1214,358,1180,378,1177,373,1211,354,1240,326,1272,280,1294,240,1307,208,1311,180,1310,157,1303,137,1280,100,1258,83,1222,69,1132,47"/>
+<area shape="poly" id="edge13_Node000001_Node000013" title=" " alt="" coords="1133,42,1224,64,1261,79,1284,96,1308,134,1315,156,1317,180,1313,209,1300,242,1278,282,1245,330,1216,358,1181,378,1178,373,1213,354,1241,326,1273,279,1295,240,1307,207,1312,180,1310,157,1303,136,1280,100,1258,83,1222,69,1132,47"/>
 <area shape="rect" id="Node000016" href="$sparse_2utils_8hpp.html" title=" " alt="" coords="909,191,1092,235"/>
 <area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="1023,66,1006,191,1001,190,1018,65"/>
 <area shape="rect" id="Node000017" href="$proxqp_2sparse_2workspace_8hpp.html" title=" " alt="" coords="1024,283,1206,328"/>

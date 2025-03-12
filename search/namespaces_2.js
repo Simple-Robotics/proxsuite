@@ -76,5 +76,8 @@ var searchData=
   ['proxsuite_3a_3aproxqp_3a_3autils_3a_3aosqp_73',['osqp',['../namespaceproxsuite_1_1proxqp_1_1utils_1_1osqp.html',1,'proxsuite::proxqp::utils']]],
   ['proxsuite_3a_3aproxqp_3a_3autils_3a_3arand_74',['rand',['../namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html',1,'proxsuite::proxqp::utils']]],
   ['proxsuite_3a_3aproxqp_3a_3autils_3a_3arand_3a_3adetail_75',['detail',['../namespaceproxsuite_1_1proxqp_1_1utils_1_1rand_1_1detail.html',1,'proxsuite::proxqp::utils::rand']]],
-  ['proxsuite_3a_3aserialization_76',['serialization',['../namespaceproxsuite_1_1serialization.html',1,'proxsuite']]]
+  ['proxsuite_3a_3aserialization_76',['serialization',['../namespaceproxsuite_1_1serialization.html',1,'proxsuite']]],
+  ['proxsuite_3a_3atorch_77',['torch',['../namespaceproxsuite_1_1torch.html',1,'proxsuite']]],
+  ['proxsuite_3a_3atorch_3a_3aqplayer_78',['qplayer',['../namespaceproxsuite_1_1torch_1_1qplayer.html',1,'proxsuite::torch']]],
+  ['proxsuite_3a_3atorch_3a_3autils_79',['utils',['../namespaceproxsuite_1_1torch_1_1utils.html',1,'proxsuite::torch']]]
 ];

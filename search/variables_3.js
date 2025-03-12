@@ -17,13 +17,14 @@ var searchData=
   ['cols_14',['cols',['../structproxsuite_1_1proxqp_1_1MatrixView.html#a450d5afb4dfb88cfdc7e2f003ed77fde',1,'proxsuite::proxqp::MatrixView::cols'],['../structproxsuite_1_1proxqp_1_1MatrixViewMut.html#addb10aafa159d334ac6555847b965cfe',1,'proxsuite::proxqp::MatrixViewMut::cols']]],
   ['compute_5fpreconditioner_15',['compute_preconditioner',['../structproxsuite_1_1proxqp_1_1Settings.html#ae123f020e871c433542531dc08eb7744',1,'proxsuite::proxqp::Settings']]],
   ['compute_5ftimings_16',['compute_timings',['../structproxsuite_1_1proxqp_1_1Settings.html#a3b25078879ec2229c575df3043b295bd',1,'proxsuite::proxqp::Settings']]],
-  ['constraints_5fchanged_17',['constraints_changed',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a6c6f8ecca99fecb4b7b5befb833ed6dd',1,'proxsuite::proxqp::dense::Workspace']]],
-  ['correction_5fguess_5frhs_5fb_18',['correction_guess_rhs_b',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a654e18f6004426edd8d3c6870d51264c',1,'proxsuite::proxqp::dense::Workspace']]],
-  ['correction_5fguess_5frhs_5fg_19',['correction_guess_rhs_g',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a985ad08c37032cdc5568a78891f287cd',1,'proxsuite::proxqp::dense::Workspace']]],
-  ['ct_20',['CT',['../structproxsuite_1_1proxqp_1_1sparse_1_1QpView.html#a5dabd89dc07cd0bd4480534407110d1b',1,'proxsuite::proxqp::sparse::QpView::CT'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html#a7cc3334bcb9a03392161b0d5a009d21c',1,'proxsuite::proxqp::sparse::QpViewMut::CT']]],
-  ['ctz_21',['CTz',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a7fcc4866db9dd4c138bbe652cc44c563',1,'proxsuite::proxqp::dense::Workspace']]],
-  ['current_5fbijection_5fmap_22',['current_bijection_map',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#af57a1110a045b5af8a01777629bf23fc',1,'proxsuite::proxqp::dense::Workspace']]],
-  ['current_5fcol_23',['current_col',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a5cbbeee82141e402283cde1eee0533ac',1,'proxsuite::linalg::dense::_detail::IndicesR']]],
-  ['current_5fptr_24',['current_ptr',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html#af95af5501a660f0914339f134175e159',1,'proxsuite::linalg::veg::_detail::_mem::BumpAllocLayout']]],
-  ['current_5fr_25',['current_r',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a37c55623bd6e514db75e4eeec13c33b2',1,'proxsuite::linalg::dense::_detail::IndicesR']]]
+  ['constant_3c_20t_2c_20value_20_3e_3a_3avalue_17',['value',['../namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa6f17a928b0156efa620539cde76436a',1,'proxsuite::linalg::veg::meta']]],
+  ['constraints_5fchanged_18',['constraints_changed',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a6c6f8ecca99fecb4b7b5befb833ed6dd',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['correction_5fguess_5frhs_5fb_19',['correction_guess_rhs_b',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a654e18f6004426edd8d3c6870d51264c',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['correction_5fguess_5frhs_5fg_20',['correction_guess_rhs_g',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a985ad08c37032cdc5568a78891f287cd',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['ct_21',['CT',['../structproxsuite_1_1proxqp_1_1sparse_1_1QpView.html#a5dabd89dc07cd0bd4480534407110d1b',1,'proxsuite::proxqp::sparse::QpView::CT'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html#a7cc3334bcb9a03392161b0d5a009d21c',1,'proxsuite::proxqp::sparse::QpViewMut::CT']]],
+  ['ctz_22',['CTz',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#a7fcc4866db9dd4c138bbe652cc44c563',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['current_5fbijection_5fmap_23',['current_bijection_map',['../structproxsuite_1_1proxqp_1_1dense_1_1Workspace.html#af57a1110a045b5af8a01777629bf23fc',1,'proxsuite::proxqp::dense::Workspace']]],
+  ['current_5fcol_24',['current_col',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a5cbbeee82141e402283cde1eee0533ac',1,'proxsuite::linalg::dense::_detail::IndicesR']]],
+  ['current_5fptr_25',['current_ptr',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html#af95af5501a660f0914339f134175e159',1,'proxsuite::linalg::veg::_detail::_mem::BumpAllocLayout']]],
+  ['current_5fr_26',['current_r',['../structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1IndicesR.html#a37c55623bd6e514db75e4eeec13c33b2',1,'proxsuite::linalg::dense::_detail::IndicesR']]]
 ];

@@ -1,5 +1,7 @@
 <map id="proxsuite::linalg::veg::cpo::is_trivially_relocatable&lt; tuple::IndexedTuple&lt; meta::index_sequence&lt; Is... &gt;, Ts... &gt; &gt;" name="proxsuite::linalg::veg::cpo::is_trivially_relocatable&lt; tuple::IndexedTuple&lt; meta::index_sequence&lt; Is... &gt;, Ts... &gt; &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,115,223,211"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="9,5,219,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,83,117,114,111,114,111,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="382,134,599,229"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,334,203"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="349,145,382,153,381,158,348,150"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html" title=" " alt="" coords="65,227,274,288"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="289,227,380,205,382,210,290,232"/>
 </map>

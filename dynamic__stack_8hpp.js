@@ -11,7 +11,7 @@ var dynamic__stack_8hpp =
     [ "proxsuite::linalg::veg::_detail::_dynstack::DynAllocBase", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynAllocBase" ],
     [ "proxsuite::linalg::veg::dynstack::DynStackAlloc< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc.html", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackAlloc" ],
     [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray" ],
-    [ "max2", "dynamic__stack_8hpp.html#a6a12239db198b7340e1e7b9a08d5affa", null ],
-    [ "round_up_pow2", "dynamic__stack_8hpp.html#a50d87b85a866fe8f29db60c7da0e52d6", null ],
-    [ "align_next", "dynamic__stack_8hpp.html#afa031d184557e13c9bd99ac32a6fbb0f", null ]
+    [ "proxsuite::linalg::veg::_detail::_dynstack::max2", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack.html#a6a12239db198b7340e1e7b9a08d5affa", null ],
+    [ "proxsuite::linalg::veg::_detail::_dynstack::round_up_pow2", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack.html#a50d87b85a866fe8f29db60c7da0e52d6", null ],
+    [ "proxsuite::linalg::veg::_detail::align_next", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#afa031d184557e13c9bd99ac32a6fbb0f", null ]
 ];

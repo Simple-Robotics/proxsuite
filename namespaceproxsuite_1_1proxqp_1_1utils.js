@@ -23,6 +23,7 @@ var namespaceproxsuite_1_1proxqp_1_1utils =
     [ "Mat", "namespaceproxsuite_1_1proxqp_1_1utils.html#aec7b211974940610d6426987e8b87b94", null ],
     [ "Vec", "namespaceproxsuite_1_1proxqp_1_1utils.html#a04cb2a84a4f4ef35f833117b9edfff42", null ],
     [ "SparseMat", "namespaceproxsuite_1_1proxqp_1_1utils.html#a1b62912e88b55f32ca89a5cd90f43ed2", null ],
+    [ "usize", "namespaceproxsuite_1_1proxqp_1_1utils.html#a1d967c038db74b6696a5a46e4576a085", null ],
     [ "matmul_impl", "namespaceproxsuite_1_1proxqp_1_1utils.html#a4d7307efc1968f1d5661ff4fde0d6a88", null ],
     [ "mat_cast", "namespaceproxsuite_1_1proxqp_1_1utils.html#a35d0576fde9da8418aabef198e05df8b", null ],
     [ "LDLT_EXPLICIT_TPL_DECL", "namespaceproxsuite_1_1proxqp_1_1utils.html#a1ec759ae8d50b987b54d50d6bb40c5af", null ],

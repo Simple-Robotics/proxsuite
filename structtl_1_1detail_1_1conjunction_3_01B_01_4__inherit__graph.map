@@ -1,5 +1,7 @@
 <map id="tl::detail::conjunction&lt; B &gt;" name="tl::detail::conjunction&lt; B &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,81,203,109"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="85,5,123,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,49,107,81,101,81,101,49"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="12,81,209,109"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,117,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,45,104,79,99,82,76,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="140,5,179,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="145,48,121,82,117,79,140,45"/>
 </map>

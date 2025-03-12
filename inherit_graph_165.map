@@ -1,3 +1,17 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1SimpleITuple.html" title=" " alt="" coords="5,5,194,67"/>
+<area shape="rect" id="Node000000" href="$structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html" title=" " alt="" coords="5,288,208,332"/>
+<area shape="rect" id="Node000001" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="260,5,467,84"/>
+<area shape="poly" id="edge97_Node000000_Node000001" title=" " alt="" coords="123,273,175,186,212,138,254,95,270,82,273,87,257,99,216,141,179,189,128,275"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="271,108,456,170"/>
+<area shape="poly" id="edge98_Node000000_Node000002" title=" " alt="" coords="138,275,190,227,254,180,275,168,278,173,257,184,194,231,142,278"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="272,194,455,256"/>
+<area shape="poly" id="edge99_Node000000_Node000003" title=" " alt="" coords="190,280,271,253,272,258,192,285"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="256,279,471,341"/>
+<area shape="poly" id="edge100_Node000000_Node000004" title=" " alt="" coords="224,307,255,307,255,313,224,313"/>
+<area shape="rect" id="Node000005" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="294,365,433,410"/>
+<area shape="poly" id="edge101_Node000000_Node000005" title=" " alt="" coords="199,335,294,364,292,369,197,340"/>
+<area shape="rect" id="Node000006" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="294,434,433,479"/>
+<area shape="poly" id="edge102_Node000000_Node000006" title=" " alt="" coords="145,340,196,381,257,420,294,435,292,440,254,424,193,386,142,345"/>
+<area shape="rect" id="Node000007" href="$structproxsuite_1_1linalg_1_1veg_1_1RefMut.html" title=" " alt="" coords="294,504,432,548"/>
+<area shape="poly" id="edge103_Node000000_Node000007" title=" " alt="" coords="130,344,182,417,217,456,257,489,295,508,293,513,254,494,213,460,178,421,126,347"/>
 </map>

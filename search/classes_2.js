@@ -15,5 +15,6 @@ var searchData=
   ['boolean_3c_20maybe_20_3e_12',['Boolean&lt; maybe &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1Boolean_3_01maybe_01_4.html',1,'proxsuite::linalg::veg']]],
   ['builtin_5faddr_13',['builtin_addr',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1builtin__addr.html',1,'proxsuite::linalg::veg::_detail::_mem']]],
   ['bumpalloc_14',['BumpAlloc',['../structproxsuite_1_1linalg_1_1veg_1_1mem_1_1BumpAlloc.html',1,'proxsuite::linalg::veg::mem']]],
-  ['bumpalloclayout_15',['BumpAllocLayout',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html',1,'proxsuite::linalg::veg::_detail::_mem']]]
+  ['bumpalloclayout_15',['BumpAllocLayout',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html',1,'proxsuite::linalg::veg::_detail::_mem']]],
+  ['bumpalloclayout_3c_20maxalign_20_3e_20_26_16',['BumpAllocLayout&lt; MaxAlign &gt; &amp;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1BumpAllocLayout.html',1,'proxsuite::linalg::veg::_detail::_mem']]]
 ];

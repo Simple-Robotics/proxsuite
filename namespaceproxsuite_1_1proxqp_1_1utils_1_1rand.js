@@ -5,6 +5,8 @@ var namespaceproxsuite_1_1proxqp_1_1utils_1_1rand =
       [ "orthonormal_rand_impl", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand_1_1detail.html#ab92dd6e718670bc3141c5eaf4efb6611", null ]
     ] ],
     [ "u128", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a49008d9b1e872781e5c25a56a8bb2fd2", null ],
+    [ "u32", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#aee32ae81452cbe40dc6aeb76103314fe", null ],
+    [ "u64", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#aeb8f03d5ae98ce38dff0169b7a8da956", null ],
     [ "lehmer64_constant", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a6af03047c09baf6e73f3c282df5ee822", null ],
     [ "lehmer_global", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#ae249cd53371961d94483e54f08ad46c0", null ],
     [ "lehmer64", "namespaceproxsuite_1_1proxqp_1_1utils_1_1rand.html#a02f3345843aaefe3dc43203e2dd58d4f", null ],

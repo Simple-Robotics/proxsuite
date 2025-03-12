@@ -24,7 +24,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta =
     [ "decay_helper< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper_3_01T_0fN_0e_4.html", null ],
     [ "detector", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1detector.html", null ],
     [ "enable_if", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if" ],
-    [ "enable_if< false, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4.html", null ],
+    [ "enable_if< false, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4" ],
     [ "has_adl_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__adl__get.html", null ],
     [ "has_array_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__array__get.html", null ],
     [ "has_member_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__member__get.html", null ],

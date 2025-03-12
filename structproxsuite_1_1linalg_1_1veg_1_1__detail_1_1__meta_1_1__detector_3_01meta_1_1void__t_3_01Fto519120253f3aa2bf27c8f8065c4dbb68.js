@@ -1,4 +1,5 @@
 var structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector_3_01meta_1_1void__t_3_01Fto519120253f3aa2bf27c8f8065c4dbb68 =
 [
-    [ "value_type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector_3_01meta_1_1void__t_3_01Fto519120253f3aa2bf27c8f8065c4dbb68.html#a78f771cae9f7988b34939602c70236a2", null ]
+    [ "value_type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector_3_01meta_1_1void__t_3_01Fto519120253f3aa2bf27c8f8065c4dbb68.html#a78f771cae9f7988b34939602c70236a2", null ],
+    [ "value_type", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1__detector.html#ace630ee40f46c2d75c8fc8ea34c54b1a", null ]
 ];

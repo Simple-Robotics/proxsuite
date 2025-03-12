@@ -47,5 +47,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1meta =
     [ "invoke_result_t", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a5bad0b10fdd2a61141f7fe94c133f9e2", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#ae1ae57dbadac72cdf31d215512068a3b", null ],
     [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a08180b70521e45e9de0f69c5f82fc10c", null ],
-    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a1f4dfb77595cf9952eb4286e3b5da205", null ]
+    [ "VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#a1f4dfb77595cf9952eb4286e3b5da205", null ],
+    [ "static_const< T >::value", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#af06fc239dc11fc47fe5614e1db9965cf", null ],
+    [ "constant< T, Value >::value", "namespaceproxsuite_1_1linalg_1_1veg_1_1meta.html#aa6f17a928b0156efa620539cde76436a", null ]
 ];

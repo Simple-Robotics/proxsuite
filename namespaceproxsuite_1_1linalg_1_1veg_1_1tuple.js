@@ -9,6 +9,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1tuple =
     [ "nb", "namespaceproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb" ],
     [ "IndexedTuple", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", null ],
     [ "IndexedTuple< meta::index_sequence< Is... >, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4" ],
+    [ "Tuple", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1Tuple.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1Tuple" ],
     [ "TupleLeaf", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", null ],
     [ "TupleLeafImpl", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", null ],
     [ "TupleLeafImpl< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4" ],

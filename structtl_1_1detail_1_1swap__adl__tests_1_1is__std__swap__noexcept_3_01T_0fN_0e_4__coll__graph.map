@@ -1,7 +1,8 @@
 <map id="tl::detail::swap_adl_tests::is_std_swap_noexcept&lt; T[N]&gt;" name="tl::detail::swap_adl_tests::is_std_swap_noexcept&lt; T[N]&gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="593,22,807,84"/>
-<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept.html" title=" " alt="" coords="293,31,545,76"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="561,50,592,50,592,56,561,56"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,245,101"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="260,50,292,50,292,56,260,56"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,245,101"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="260,46,293,45,545,45,593,46,592,52,545,50,293,50,260,51"/>
+<area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept.html" title=" " alt="" coords="293,60,545,105"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="261,64,293,67,292,73,260,69"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="560,65,592,62,593,67,561,70"/>
 </map>

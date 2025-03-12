@@ -1,7 +1,8 @@
 <map id="tl::detail::optional_move_base&lt; T, false &gt;" name="tl::detail::optional_move_base&lt; T, false &gt;">
 <area shape="rect" id="Node000001" title=" " alt="" coords="67,414,248,459"/>
 <area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1optional__copy__base.html" title=" " alt="" coords="72,320,244,365"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,380,160,414,155,414,155,380"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,380,153,413,147,414,146,380"/>
+<area shape="poly" id="edge6_Node000001_Node000002" title=" " alt="" coords="169,380,168,414,163,413,164,380"/>
 <area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1optional__operations__base.html" title=" " alt="" coords="71,226,244,271"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="160,286,160,320,155,320,155,286"/>
 <area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1optional__storage__base.html" title=" " alt="" coords="63,132,252,177"/>

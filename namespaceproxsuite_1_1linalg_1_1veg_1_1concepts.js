@@ -19,6 +19,8 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1concepts =
     [ "tuple", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts_1_1tuple.html", [
       [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts_1_1tuple.html#a5efe0dca92fc489ea6c21f29910c536f", null ]
     ] ],
+    [ "conjunction", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1conjunction.html", null ],
+    [ "disjunction", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1disjunction.html", null ],
     [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#aa8ae42727a6eae6f8f04a5aa6a77308a", null ],
     [ "VEG_DEF_CONCEPT", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#a0cc85ba664b238baea66d1d5e25c6aa3", null ],
     [ "VEG_DEF_CONCEPT_BUILTIN_OR_INTERNAL", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html#afc66a8972f0f7deb8ab315469ef9aa9a", null ],

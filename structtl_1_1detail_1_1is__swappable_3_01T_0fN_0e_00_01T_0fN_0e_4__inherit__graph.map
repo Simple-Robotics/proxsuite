@@ -1,5 +1,7 @@
 <map id="tl::detail::is_swappable&lt; T[N], T[N]&gt;" name="tl::detail::is_swappable&lt; T[N], T[N]&gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="269,56,440,101"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,221,152"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,76,268,76,268,81,236,81"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="333,142,504,186"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,285,152"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="300,124,345,139,343,144,299,130"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="37,176,253,323"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="267,209,343,184,345,190,269,214"/>
 </map>

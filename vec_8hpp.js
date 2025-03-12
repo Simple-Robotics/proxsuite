@@ -19,13 +19,13 @@ var vec_8hpp =
     [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ],
     [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ],
     [ "__VEG_ASAN_ANNOTATE", "vec_8hpp.html#a9cc1486e36f2f14e5bcbe1042b68eeb6", null ],
-    [ "min2", "vec_8hpp.html#af940fcc2bb012995cda687d9143679df", null ],
-    [ "max2", "vec_8hpp.html#a84ce8e66fe4afc85c765c7e7c688ae1b", null ],
-    [ "vector_grow_compute", "vec_8hpp.html#afa32fec60dca2551b8d0a2ecdacb6f42", null ],
-    [ "vector_grow_choose", "vec_8hpp.html#a405021aa496356872ea476cd3d242802", null ],
-    [ "relocate", "vec_8hpp.html#ad974291cc7f4acccae3ccbbdcbe15af1", null ],
-    [ "slice_clone", "vec_8hpp.html#a0e7b07967551c1607dc8f3fb0a643d15", null ],
-    [ "slice_clone_from", "vec_8hpp.html#a770883d3696a2fbbeca6fc5b67afbec1", null ],
-    [ "relocate_backward", "vec_8hpp.html#a4d8dfc85874d77e3ef32079c432d7d64", null ],
-    [ "clone_from", "vec_8hpp.html#a7bffc5331e08d4b14fe10f06bd1fdbbe", null ]
+    [ "proxsuite::linalg::veg::_detail::min2", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#af940fcc2bb012995cda687d9143679df", null ],
+    [ "proxsuite::linalg::veg::_detail::max2", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail.html#a84ce8e66fe4afc85c765c7e7c688ae1b", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::vector_grow_compute", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#afa32fec60dca2551b8d0a2ecdacb6f42", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::vector_grow_choose", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a405021aa496356872ea476cd3d242802", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::relocate", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#ad974291cc7f4acccae3ccbbdcbe15af1", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::slice_clone", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a0e7b07967551c1607dc8f3fb0a643d15", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::slice_clone_from", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a770883d3696a2fbbeca6fc5b67afbec1", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::relocate_backward", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a4d8dfc85874d77e3ef32079c432d7d64", null ],
+    [ "proxsuite::linalg::veg::_detail::_collections::clone_from", "namespaceproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections.html#a7bffc5331e08d4b14fe10f06bd1fdbbe", null ]
 ];

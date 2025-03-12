@@ -6,6 +6,7 @@ var slice_8hpp =
     [ "proxsuite::linalg::veg::array::Array< T, N >", "structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array.html", "structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array" ],
     [ "proxsuite::linalg::veg::nb::init_list", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1init__list.html", "structproxsuite_1_1linalg_1_1veg_1_1nb_1_1init__list" ],
     [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Slice< T > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Slice_3_01T_01_4_01_4.html", null ],
-    [ "CArray", "slice_8hpp.html#a7d1c909dfaaa8fcc076ee2cd6fb2c663", null ],
-    [ "VEG_NIEBLOID", "slice_8hpp.html#a42b94f558700079cdcbceca88ad52cda", null ]
+    [ "proxsuite::linalg::veg::Array< T, N >", "structproxsuite_1_1linalg_1_1veg_1_1Array.html", "structproxsuite_1_1linalg_1_1veg_1_1Array" ],
+    [ "proxsuite::linalg::veg::CArray", "namespaceproxsuite_1_1linalg_1_1veg.html#a7d1c909dfaaa8fcc076ee2cd6fb2c663", null ],
+    [ "proxsuite::linalg::veg::VEG_NIEBLOID", "namespaceproxsuite_1_1linalg_1_1veg.html#a42b94f558700079cdcbceca88ad52cda", null ]
 ];

@@ -24,7 +24,7 @@ var searchData=
   ['apply_5ftype_5fseq_21',['apply_type_seq',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1apply__type__seq.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['apply_5ftype_5fseq_3c_20f_2c_20meta_3a_3atype_5fsequence_3c_20ts_2e_2e_2e_20_3e_20_3e_22',['apply_type_seq&lt; F, meta::type_sequence&lt; Ts... &gt; &gt;',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1apply__type__seq_3_01F_00_01meta_1_1ty143ee14d89d29cdf00b21687b2e0458b.html',1,'proxsuite::linalg::veg::_detail::_meta']]],
   ['apply_5fwrapper_23',['apply_wrapper',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1apply__wrapper.html',1,'proxsuite::linalg::veg::meta']]],
-  ['array_24',['Array',['../structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array.html',1,'proxsuite::linalg::veg::array']]],
+  ['array_24',['Array',['../structproxsuite_1_1linalg_1_1veg_1_1Array.html',1,'proxsuite::linalg::veg::Array&lt; T, N &gt;'],['../structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array.html',1,'proxsuite::linalg::veg::array::Array&lt; T, N &gt;']]],
   ['array_5f_25',['Array_',['../structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Array__.html',1,'proxsuite::linalg::veg::_detail']]],
   ['array_5fextent_26',['array_extent',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent.html',1,'proxsuite::linalg::veg::meta']]],
   ['array_5fextent_3c_20t_5bn_5d_3e_27',['array_extent&lt; T[N]&gt;',['../structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent_3_01T_0fN_0e_4.html',1,'proxsuite::linalg::veg::meta']]],

@@ -1,7 +1,9 @@
 <map id="proxsuite::linalg::veg::cpo::is_trivially_relocatable&lt; Vec&lt; T, A &gt; &gt;" name="proxsuite::linalg::veg::cpo::is_trivially_relocatable&lt; Vec&lt; T, A &gt; &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="519,39,728,101"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html" title=" " alt="" coords="319,39,471,101"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="487,68,518,68,518,73,487,73"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,271,135"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="286,68,318,68,318,73,286,73"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="631,99,840,161"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="319,5,583,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="599,99,631,105,630,111,598,104"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html" title=" " alt="" coords="375,159,527,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="542,168,630,150,631,155,543,174"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,125,271,255"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="287,188,374,188,374,193,287,193"/>
 </map>

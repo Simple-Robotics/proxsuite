@@ -18,6 +18,7 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "tags", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags" ],
     [ "tuple", "namespaceproxsuite_1_1linalg_1_1veg_1_1tuple.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1tuple" ],
     [ "vector", "namespaceproxsuite_1_1linalg_1_1veg_1_1vector.html", "namespaceproxsuite_1_1linalg_1_1veg_1_1vector" ],
+    [ "Array", "structproxsuite_1_1linalg_1_1veg_1_1Array.html", "structproxsuite_1_1linalg_1_1veg_1_1Array" ],
     [ "Boolean", "structproxsuite_1_1linalg_1_1veg_1_1Boolean.html", "structproxsuite_1_1linalg_1_1veg_1_1Boolean" ],
     [ "Boolean< maybe >", "structproxsuite_1_1linalg_1_1veg_1_1Boolean_3_01maybe_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1Boolean_3_01maybe_01_4" ],
     [ "Defer", "structproxsuite_1_1linalg_1_1veg_1_1Defer.html", "structproxsuite_1_1linalg_1_1veg_1_1Defer" ],
@@ -39,7 +40,7 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "yes_c", "namespaceproxsuite_1_1linalg_1_1veg.html#a843d271bba7b1ff1eb9014b1a1c1aa22", null ],
     [ "position_of", "namespaceproxsuite_1_1linalg_1_1veg.html#a2ea7227181ea0626843ae6c2c369f24f", null ],
     [ "ith", "namespaceproxsuite_1_1linalg_1_1veg.html#a68a2a804132a3a99c98bd51cb24c77b9", null ],
-    [ "usize", "namespaceproxsuite_1_1linalg_1_1veg.html#afdbaa4312631789f428df101ce7e9687", null ],
+    [ "usize", "namespaceproxsuite_1_1linalg_1_1veg.html#a1d967c038db74b6696a5a46e4576a085", null ],
     [ "isize", "namespaceproxsuite_1_1linalg_1_1veg.html#af13f536f55f7e3a7af1d0e6cf9ac3c50", null ],
     [ "i64", "namespaceproxsuite_1_1linalg_1_1veg.html#a37918b296afbf07fd39cfb6381e2de4e", null ],
     [ "u64", "namespaceproxsuite_1_1linalg_1_1veg.html#aeb8f03d5ae98ce38dff0169b7a8da956", null ],
@@ -53,6 +54,7 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "inner_ith", "namespaceproxsuite_1_1linalg_1_1veg.html#adfa1ae229312957015831f067a514c04", null ],
     [ "Tuplify", "namespaceproxsuite_1_1linalg_1_1veg_1_1tags.html#ac4998e081190bfae03fab3cb26b6cd14", null ],
     [ "DoNotDeduce", "namespaceproxsuite_1_1linalg_1_1veg.html#a22035cef1b81986fadc6b272831ee525", null ],
+    [ "uncvref_t", "namespaceproxsuite_1_1linalg_1_1veg.html#a1b2f60ba178c1d447b46635667d026e0", null ],
     [ "Ternary", "namespaceproxsuite_1_1linalg_1_1veg.html#af5f706d5243de4b05849c24aaa6a5a66", [
       [ "no", "namespaceproxsuite_1_1linalg_1_1veg.html#af5f706d5243de4b05849c24aaa6a5a66a7fa3b767c460b54a2be4d49030b349c7", null ],
       [ "maybe", "namespaceproxsuite_1_1linalg_1_1veg.html#af5f706d5243de4b05849c24aaa6a5a66a7e7aac930123145f5f0af775ca3e1c58", null ],
@@ -185,5 +187,6 @@ var namespaceproxsuite_1_1linalg_1_1veg =
     [ "VEG_NIEBLOID_TEMPLATE", "namespaceproxsuite_1_1linalg_1_1veg.html#af00b11840815bdc9f5aeb348a90cfd0d", null ],
     [ "no", "namespaceproxsuite_1_1linalg_1_1veg.html#a88d921b6dcd3a431f3d87116fd10987b", null ],
     [ "maybe", "namespaceproxsuite_1_1linalg_1_1veg.html#a5990d7b9760dd78ff15b42fae0f33317", null ],
-    [ "yes", "namespaceproxsuite_1_1linalg_1_1veg.html#a8caf3e65dcf8d6c5b37b66119e7b5a30", null ]
+    [ "yes", "namespaceproxsuite_1_1linalg_1_1veg.html#a8caf3e65dcf8d6c5b37b66119e7b5a30", null ],
+    [ "StrLiteralConstant< Cs... >::literal", "namespaceproxsuite_1_1linalg_1_1veg.html#a1287384e3260a0348745ff1d6df0406e", null ]
 ];

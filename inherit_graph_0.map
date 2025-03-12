@@ -1,5 +1,21 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,44,33"/>
-<area shape="rect" id="Node000001" href="$structtl_1_1detail_1_1conjunction_3_01B_01_4.html" title=" " alt="" coords="92,5,289,33"/>
-<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="59,16,91,16,91,22,59,22"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="65,5,104,33"/>
+<area shape="rect" id="Node000001" href="$structtl_1_1detail_1_1conjunction_3_01B_01_4.html" title=" " alt="" coords="212,5,409,33"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="119,16,211,16,211,22,119,22"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="26,273,143,301"/>
+<area shape="rect" id="Node000008" href="$structtl_1_1detail_1_1is__optional__impl.html" title=" " alt="" coords="222,265,398,310"/>
+<area shape="poly" id="edge2_Node000007_Node000008" title=" " alt="" coords="158,284,222,284,222,290,158,290"/>
+<area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1is__optional__impl_3_01optional_3_01T_01_4_01_4.html" title=" " alt="" coords="221,196,400,240"/>
+<area shape="poly" id="edge3_Node000007_Node000006" title=" " alt="" coords="146,266,234,238,236,243,147,271"/>
+<area shape="rect" id="Node000009" href="$structtl_1_1detail_1_1is__optional__impl.html" title=" " alt="" coords="233,334,388,379"/>
+<area shape="poly" id="edge4_Node000007_Node000009" title=" " alt="" coords="147,304,236,331,234,336,146,309"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="29,73,140,101"/>
+<area shape="poly" id="edge5_Node000002_Node000001" title=" " alt="" coords="139,65,211,42,250,31,251,36,212,47,141,70"/>
+<area shape="poly" id="edge8_Node000002_Node000006" title=" " alt="" coords="141,106,165,121,181,137,190,152,198,167,213,181,233,193,231,197,210,185,194,170,185,155,176,140,162,125,138,110"/>
+<area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1conjunction_3_01B_00_01Bs_8_8_8_01_4.html" title=" " alt="" coords="231,126,390,171"/>
+<area shape="poly" id="edge6_Node000002_Node000003" title=" " alt="" coords="154,103,231,124,230,130,152,108"/>
+<area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1conjunction.html" title=" " alt="" coords="231,57,390,102"/>
+<area shape="poly" id="edge7_Node000002_Node000005" title=" " alt="" coords="155,82,230,79,231,85,156,87"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,135,164,162"/>
+<area shape="poly" id="edge9_Node000004_Node000003" title=" " alt="" coords="179,146,231,146,231,151,179,151"/>
 </map>

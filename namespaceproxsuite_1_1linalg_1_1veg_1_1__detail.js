@@ -17,7 +17,7 @@ var namespaceproxsuite_1_1linalg_1_1veg_1_1__detail =
     [ "binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4" ],
     [ "binary_traits< Dyn, Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4" ],
     [ "binary_traits< Fix< 0 >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4" ],
-    [ "binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", null ],
+    [ "binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4" ],
     [ "binary_traits< Fix< N >, Fix< M > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4" ],
     [ "char_seq", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq" ],
     [ "CopyFn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn" ],

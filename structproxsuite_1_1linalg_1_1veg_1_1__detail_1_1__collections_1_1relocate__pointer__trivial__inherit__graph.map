@@ -1,7 +1,9 @@
 <map id="proxsuite::linalg::veg::_detail::_collections::relocate_pointer_trivial" name="proxsuite::linalg::veg::_detail::_collections::relocate_pointer_trivial">
-<area shape="rect" id="Node000001" title=" " alt="" coords="19,5,201,67"/>
-<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer.html" title=" " alt="" coords="5,115,215,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,83,113,114,107,114,107,83"/>
-<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1collections_1_1relocate__pointer.html" title=" " alt="" coords="18,225,202,286"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,192,113,224,107,224,107,192"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,48,188,110"/>
+<area shape="rect" id="Node000002" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer_3_01T_00_01false_01_4.html" title=" " alt="" coords="236,5,449,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="203,58,235,52,236,57,203,63"/>
+<area shape="rect" id="Node000003" href="$structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer.html" title=" " alt="" coords="238,91,447,152"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="203,95,238,101,237,106,202,100"/>
+<area shape="rect" id="Node000004" href="$structproxsuite_1_1linalg_1_1veg_1_1collections_1_1relocate__pointer.html" title=" " alt="" coords="497,91,681,152"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="463,119,496,119,496,124,463,124"/>
 </map>

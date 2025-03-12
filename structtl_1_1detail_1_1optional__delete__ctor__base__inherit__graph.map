@@ -1,5 +1,9 @@
 <map id="tl::detail::optional_delete_ctor_base&lt; T, EnableCopy, EnableMove &gt;" name="tl::detail::optional_delete_ctor_base&lt; T, EnableCopy, EnableMove &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,211,67"/>
-<area shape="rect" id="Node000002" href="$classtl_1_1optional.html" title=" " alt="" coords="43,115,173,143"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,83,111,114,105,114,105,83"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,75,211,136"/>
+<area shape="rect" id="Node000002" href="$classtl_1_1optional.html" title=" " alt="" coords="259,5,417,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="225,68,257,58,259,63,226,73"/>
+<area shape="rect" id="Node000003" href="$classtl_1_1optional_3_01T_01_6_01_4.html" title=" " alt="" coords="266,92,410,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="226,103,266,103,266,108,226,108"/>
+<area shape="rect" id="Node000004" href="$classtl_1_1optional.html" title=" " alt="" coords="273,144,402,171"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="226,129,274,140,273,146,225,135"/>
 </map>

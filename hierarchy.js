@@ -45,6 +45,7 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::_meta::apply_type_seq< F, Seq >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1apply__type__seq.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::apply_type_seq< F, meta::type_sequence< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1apply__type__seq_3_01F_00_01meta_1_1ty143ee14d89d29cdf00b21687b2e0458b.html", null ],
     [ "proxsuite::linalg::veg::meta::apply_wrapper< F >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1apply__wrapper.html", null ],
+    [ "proxsuite::linalg::veg::Array< T, N >", "structproxsuite_1_1linalg_1_1veg_1_1Array.html", null ],
     [ "proxsuite::linalg::veg::array::Array< T, N >", "structproxsuite_1_1linalg_1_1veg_1_1array_1_1Array.html", null ],
     [ "proxsuite::linalg::veg::_detail::Array_< T, N >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1Array__.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::array_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1array__get.html", [
@@ -94,51 +95,71 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::_meta::conditional_< B >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1conditional__.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::conditional_< false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1conditional___3_01false_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::conditional_< true >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1conditional___3_01true_01_4.html", null ],
+    [ "proxsuite::linalg::veg::concepts::conjunction< Preds >", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1conjunction.html", null ],
     [ "proxsuite::linalg::veg::meta::conjunction< Preds >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1conjunction.html", null ],
-    [ "proxsuite::linalg::veg::meta::constant< T, Value >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
-      [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait_impl< _detail::member_extract_access< T >::value, Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait__impl.html", [
-        [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait< Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait_impl< bool, Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait__impl.html", null ],
+    [ "proxsuite::linalg::veg::meta::constant< T, Value >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", null ],
+    [ "proxsuite::linalg::veg::meta::constant< bool, B >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
       [ "proxsuite::linalg::veg::_detail::_cpo::member_trait_and< Trait, SimpleITuple< _meta::integer_sequence< usize, Is... >, Ts Bases::*... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1member__trait__and_3_01Trait_00_01Simplc5b492ef828350d9630bf5ebc812c047.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_mem::builtin_addr", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1builtin__addr.html", null ],
       [ "proxsuite::linalg::veg::_detail::_mem::has_adl_addr< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1has__adl__addr.html", null ],
       [ "proxsuite::linalg::veg::_detail::_mem::has_member_addr< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1has__member__addr.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence< Is... >, discard_1st< decltype(Is), T >... >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__seqe8ee372b19444e73cc28a877ceb2ba54.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence<> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__sequence_3_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::has_adl_get< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__adl__get.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::has_array_get< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__array__get.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::has_member_get< I, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__member__get.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_complete< T, typename >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__complete.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_complete< T, bool_constant< sizeof(T)==sizeof(T)> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__complete_3_01T_00_01bool__constant1b5735d04e74f2f41e112a59109e1896.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_const< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__const.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_const< T const >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__const_3_01T_01const_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_fix< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__fix.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_fix< Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__fix_3_01Fix_3_01N_01_4_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_lvalue_reference< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__lvalue__reference.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_lvalue_reference< T & >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__lvalue__reference_3_01T_01_6_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T * >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer_3_01T_01_5_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_rvalue_reference< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__rvalue__reference.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::is_rvalue_reference< T && >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__rvalue__reference_3_01T_01_6_6_01_4.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::none_found", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none__found.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::specializes< F, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specializes.html", null ],
-      [ "proxsuite::linalg::veg::_detail::_meta::specializes< F, F< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specializes_3_01F_00_01F_3_01Ts_8_8_8_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Slice< T > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Slice_3_01T_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01tuple_1_1IndexedTupl14a1f264569e7350f37ed76ce13be4f5.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< tuple::Tuple< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01tuple_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01tuple_1_1IndexedTuple_1a5f170446885fa944e8403df425058d.html", null ],
-      [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< tuple::Tuple< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01tuple_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ],
-      [ "proxsuite::linalg::veg::meta::and_test< Seq, Bs >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1and__test.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< tuple::Tuple< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01tuple_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ]
+    ] ],
+    [ "proxsuite::linalg::veg::meta::constant< bool, B >< false >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
+      [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait_impl< _detail::member_extract_access< T >::value, Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait__impl.html", [
+        [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait< Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait.html", null ]
+      ] ],
+      [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait_impl< true, Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait__impl_3_01true_00_01Trait_00_01T_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence< Is... >, discard_1st< decltype(Is), T >... >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__seqe8ee372b19444e73cc28a877ceb2ba54.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence<> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__sequence_3_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_complete< T, bool_constant< sizeof(T)==sizeof(T)> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__complete_3_01T_00_01bool__constant1b5735d04e74f2f41e112a59109e1896.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_const< T const >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__const_3_01T_01const_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_fix< Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__fix_3_01Fix_3_01N_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_lvalue_reference< T & >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__lvalue__reference_3_01T_01_6_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T * >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer_3_01T_01_5_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_rvalue_reference< T && >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__rvalue__reference_3_01T_01_6_6_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::specializes< F, F< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specializes_3_01F_00_01F_3_01Ts_8_8_8_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::meta::and_test< index_sequence< Is... >, indexed< Is, true_type >... >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1and__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_05674b4e05c7d2e8e7c1226fd5197b6d2.html", null ],
-      [ "proxsuite::linalg::veg::meta::conjunction<>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1conjunction_3_4.html", null ],
+      [ "proxsuite::linalg::veg::meta::is_bounded_array< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array_3_01T_0fN_0e_4.html", null ],
+      [ "proxsuite::proxqp::detail::DetectedImpl< Void< F< Ts... > >, Fallback, F, Ts... >", "structproxsuite_1_1proxqp_1_1detail_1_1DetectedImpl_3_01Void_3_01F_3_01Ts_8_8_8_01_4_01_4_00_01F2ffd9abc2f7171836425854b294c9e6f.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_cpo::extract_members_deduce_trait_impl< bool, Trait, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__cpo_1_1extract__members__deduce__trait__impl.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_complete< T, typename >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__complete.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_const< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__const.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_fix< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__fix.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_lvalue_reference< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__lvalue__reference.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_rvalue_reference< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__rvalue__reference.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::specializes< F, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specializes.html", null ],
+      [ "proxsuite::linalg::veg::meta::and_test< Seq, Bs >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1and__test.html", null ],
       [ "proxsuite::linalg::veg::meta::disjunction<>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction_3_4.html", null ],
       [ "proxsuite::linalg::veg::meta::is_bounded_array< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array.html", null ],
+      [ "proxsuite::linalg::veg::meta::or_test< index_sequence< Is... >, indexed< Is, false_type >... >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_0172997cf84633db2288bb9ba9827aedd6.html", null ],
+      [ "proxsuite::proxqp::detail::DetectedImpl< Dummy, Fallback, F, Ts >", "structproxsuite_1_1proxqp_1_1detail_1_1DetectedImpl.html", null ]
+    ] ],
+    [ "proxsuite::linalg::veg::meta::constant< bool, B >< true >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
+      [ "proxsuite::linalg::veg::meta::or_test< index_sequence< Is... >, indexed< Is, false_type >... >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_0172997cf84633db2288bb9ba9827aedd6.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_mem::builtin_addr", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1builtin__addr.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence< Is... >, discard_1st< decltype(Is), T >... >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__seqe8ee372b19444e73cc28a877ceb2ba54.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::all_same_impl< meta::index_sequence<> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1all__same__impl_3_01meta_1_1index__sequence_3_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_complete< T, bool_constant< sizeof(T)==sizeof(T)> >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__complete_3_01T_00_01bool__constant1b5735d04e74f2f41e112a59109e1896.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_const< T const >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__const_3_01T_01const_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_fix< Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__fix_3_01Fix_3_01N_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_lvalue_reference< T & >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__lvalue__reference_3_01T_01_6_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T * >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer_3_01T_01_5_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_rvalue_reference< T && >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__rvalue__reference_3_01T_01_6_6_01_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::none_found", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1none__found.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::specializes< F, F< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specializes_3_01F_00_01F_3_01Ts_8_8_8_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::meta::and_test< index_sequence< Is... >, indexed< Is, true_type >... >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1and__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_05674b4e05c7d2e8e7c1226fd5197b6d2.html", null ],
+      [ "proxsuite::linalg::veg::meta::conjunction<>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1conjunction_3_4.html", null ],
       [ "proxsuite::linalg::veg::meta::is_bounded_array< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1is__bounded__array_3_01T_0fN_0e_4.html", null ],
       [ "proxsuite::linalg::veg::meta::or_test< Seq, Bs >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test.html", null ],
-      [ "proxsuite::linalg::veg::meta::or_test< index_sequence< Is... >, indexed< Is, false_type >... >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1or__test_3_01index__sequence_3_01Is_8_8_8_01_4_00_0172997cf84633db2288bb9ba9827aedd6.html", null ],
-      [ "proxsuite::proxqp::detail::DetectedImpl< Dummy, Fallback, F, Ts >", "structproxsuite_1_1proxqp_1_1detail_1_1DetectedImpl.html", null ],
       [ "proxsuite::proxqp::detail::DetectedImpl< Void< F< Ts... > >, Fallback, F, Ts... >", "structproxsuite_1_1proxqp_1_1detail_1_1DetectedImpl_3_01Void_3_01F_3_01Ts_8_8_8_01_4_01_4_00_01F2ffd9abc2f7171836425854b294c9e6f.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::meta::constant< mem::CopyAvailable,(VEG_CONCEPT(nothrow_copyable< T >) &&VEG_CONCEPT(nothrow_copy_assignable< T >)) ? CopyAvailable::yes_nothrow :(VEG_CONCEPT(copyable< T >) &&VEG_CONCEPT(copy_assignable< T >)) ? CopyAvailable::yes_maythrow :CopyAvailable::no >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
@@ -151,6 +172,8 @@ var hierarchy =
       [ "std::tuple_size< proxsuite::linalg::veg::Tuple< Ts... > >", "structstd_1_1tuple__size_3_01proxsuite_1_1linalg_1_1veg_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::meta::constant< usize, 0 >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1constant.html", [
+      [ "proxsuite::linalg::veg::_detail::_meta::specialize_len< F, F< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specialize__len_3_01F_00_01F_3_01Ts_8_8_8_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::meta::array_extent< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent_3_01T_0fN_0e_4.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::specialize_len< F, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1specialize__len.html", null ],
       [ "proxsuite::linalg::veg::meta::array_extent< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1array__extent.html", null ]
     ] ],
@@ -185,6 +208,7 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::_collections::DestroyImpl< true >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1DestroyImpl_3_01true_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::member_extract_access< T >::DetectImpl< U, typename >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1member__extract__access_1_1DetectImpl.html", null ],
     [ "proxsuite::linalg::veg::_detail::member_extract_access< T >::DetectImpl< U, typename U::_veglib_impl_member_extract::Type >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1member__extract__access_1_1DetectImpl_3_01U_00_00af7d3949cdaf6a09d1e61669085cd63.html", null ],
+    [ "proxsuite::linalg::veg::concepts::disjunction< Preds >", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1disjunction.html", null ],
     [ "proxsuite::linalg::veg::meta::disjunction< Preds >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction.html", null ],
     [ "proxsuite::linalg::veg::meta::disjunction< has_member_addr< T >, has_adl_addr< T >, builtin_addr >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1disjunction.html", [
       [ "proxsuite::linalg::veg::_detail::_mem::addr_impl< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1addr__impl.html", null ]
@@ -202,6 +226,7 @@ var hierarchy =
       [ "proxsuite::linalg::veg::dynstack::DynStackArray< T >", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackArray.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::_detail::_dynstack::DynStackArrayDtor< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__dynstack_1_1DynStackArrayDtor_3_01T_00_01false_01_4.html", null ],
+    [ "proxsuite::linalg::sparse::DynStackMut", "structproxsuite_1_1linalg_1_1sparse_1_1DynStackMut.html", null ],
     [ "proxsuite::linalg::veg::dynstack::DynStackMut", "structproxsuite_1_1linalg_1_1veg_1_1dynstack_1_1DynStackMut.html", null ],
     [ "proxsuite::proxqp::dense::EigenAllowAlloc", "structproxsuite_1_1proxqp_1_1dense_1_1EigenAllowAlloc.html", null ],
     [ "Eigen::EigenBase", null, [
@@ -227,6 +252,8 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::ExtractCharsImplExpr< LiteralType, _meta::integer_sequence< usize, Is... > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1ExtractCharsImplExpr_3_01LiteralType_00_01__meta88b7e11331c99a9eada1b5b649dfc6f2.html", null ],
     [ "proxsuite::proxqp::dense::nb::fabs", "structproxsuite_1_1proxqp_1_1dense_1_1nb_1_1fabs.html", null ],
     [ "std::false_type", null, [
+      [ "tl::detail::is_optional_impl< decay_t< T > >", "structtl_1_1detail_1_1is__optional__impl.html", null ],
+      [ "tl::detail::is_optional_impl< optional< T > >", "structtl_1_1detail_1_1is__optional__impl_3_01optional_3_01T_01_4_01_4.html", null ],
       [ "tl::detail::is_optional_impl< T >", "structtl_1_1detail_1_1is__optional__impl.html", null ]
     ] ],
     [ "proxsuite::proxqp::detail::FnInfo< Fn >", "structproxsuite_1_1proxqp_1_1detail_1_1FnInfo.html", null ],
@@ -244,6 +271,7 @@ var hierarchy =
     [ "proxsuite::proxqp::dense::preconditioner::IdentityPrecond", "structproxsuite_1_1proxqp_1_1dense_1_1preconditioner_1_1IdentityPrecond.html", null ],
     [ "proxsuite::linalg::veg::_detail::idx::adl::IdxBase< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1idx_1_1adl_1_1IdxBase.html", null ],
     [ "proxsuite::linalg::veg::_detail::idx::adl::IdxBase< Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1idx_1_1adl_1_1IdxBase.html", [
+      [ "proxsuite::linalg::veg::Fix< 0 >", "structproxsuite_1_1linalg_1_1veg_1_1Fix.html", null ],
       [ "proxsuite::linalg::veg::Fix< N >", "structproxsuite_1_1linalg_1_1veg_1_1Fix.html", null ]
     ] ],
     [ "if_t", null, [
@@ -260,9 +288,16 @@ var hierarchy =
       [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< A >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible.html", [
         [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ]
       ] ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Slice< T > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Slice_3_01T_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01tuple_1_1IndexedTupl14a1f264569e7350f37ed76ce13be4f5.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< tuple::Tuple< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible_3_01tuple_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< A >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html", [
         [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ]
       ] ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< Vec< T, A > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01Vec_3_01T_00_01A_01_4_01_4.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01tuple_1_1IndexedTuple_1a5f170446885fa944e8403df425058d.html", null ],
+      [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< tuple::Tuple< Ts... > >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable_3_01tuple_1_1Tuple_3_01Ts_8_8_8_01_4_01_4.html", null ],
       [ "proxsuite::linalg::veg::Vec< T, A, Dtor, Copy >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_constructible< T >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible.html", null ],
       [ "proxsuite::linalg::veg::cpo::is_trivially_relocatable< T >", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__relocatable.html", null ]
@@ -274,14 +309,13 @@ var hierarchy =
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< ISeq, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", null ],
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html", null ],
     [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::make_index_sequence< sizeof...(Ts)>, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", [
+      [ "proxsuite::linalg::veg::Tuple< Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
+      [ "proxsuite::linalg::veg::Tuple< T, meta::tuple_element< I, Ts >... >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", null ],
       [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
         [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
       ] ],
       [ "proxsuite::linalg::veg::Tuple< A, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
         [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, A >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
-      ] ],
-      [ "proxsuite::linalg::veg::Tuple< proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, RawVectorMoveRaii< T > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
-        [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
       ] ],
       [ "proxsuite::linalg::veg::Tuple< mem::SystemAlloc, RawVectorMoveRaii< isize > >", "structproxsuite_1_1linalg_1_1veg_1_1Tuple.html", [
         [ "proxsuite::linalg::veg::_detail::_vector::VecAlloc< isize, mem::SystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__vector_1_1VecAlloc.html", null ]
@@ -314,6 +348,8 @@ var hierarchy =
     ] ],
     [ "proxsuite::linalg::veg::_detail::_meta::integer_sequence< T, Nums >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1integer__sequence.html", null ],
     [ "std::integral_constant", null, [
+      [ "tl::detail::is_swappable< T[N], T[N]>", "structtl_1_1detail_1_1is__swappable_3_01T_0fN_0e_00_01T_0fN_0e_4.html", null ],
+      [ "tl::detail::swap_adl_tests::is_std_swap_noexcept< T[N]>", "structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept_3_01T_0fN_0e_4.html", null ],
       [ "tl::detail::is_nothrow_swappable< T, U >", "structtl_1_1detail_1_1is__nothrow__swappable.html", null ],
       [ "tl::detail::is_swappable< T, U >", "structtl_1_1detail_1_1is__swappable.html", null ],
       [ "tl::detail::is_swappable< T[N], T[N]>", "structtl_1_1detail_1_1is__swappable_3_01T_0fN_0e_00_01T_0fN_0e_4.html", null ],
@@ -347,18 +383,11 @@ var hierarchy =
     [ "proxsuite::linalg::veg::_detail::_meta::make_signed< unsigned long >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed_3_01unsigned_01long_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::make_signed< unsigned long long >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed_3_01unsigned_01long_01long_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::_meta::make_signed< unsigned short >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed_3_01unsigned_01short_01_4.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_meta::make_signed< usize >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1make__signed.html", null ],
     [ "proxsuite::linalg::veg::_detail::_mem::ManagedAlloc< A >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__mem_1_1ManagedAlloc.html", null ],
     [ "proxsuite::linalg::veg::tuple::nb::map", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1map.html", null ],
     [ "proxsuite::linalg::veg::tuple::nb::map_i", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1map__i.html", null ],
     [ "proxsuite::proxqp::MatrixView< T, L >", "structproxsuite_1_1proxqp_1_1MatrixView.html", null ],
-    [ "proxsuite::proxqp::MatrixView< Scalar, layout >", "structproxsuite_1_1proxqp_1_1MatrixView.html", null ],
-    [ "proxsuite::proxqp::MatrixView< T, colmajor >", "structproxsuite_1_1proxqp_1_1MatrixView.html", null ],
-    [ "proxsuite::proxqp::MatrixView< T, layout >", "structproxsuite_1_1proxqp_1_1MatrixView.html", null ],
     [ "proxsuite::proxqp::MatrixViewMut< T, L >", "structproxsuite_1_1proxqp_1_1MatrixViewMut.html", null ],
-    [ "proxsuite::proxqp::MatrixViewMut< Scalar, layout >", "structproxsuite_1_1proxqp_1_1MatrixViewMut.html", null ],
-    [ "proxsuite::proxqp::MatrixViewMut< T, colmajor >", "structproxsuite_1_1proxqp_1_1MatrixViewMut.html", null ],
-    [ "proxsuite::proxqp::MatrixViewMut< T, layout >", "structproxsuite_1_1proxqp_1_1MatrixViewMut.html", null ],
     [ "proxsuite::linalg::dense::_detail::nb::max2", "structproxsuite_1_1linalg_1_1dense_1_1__detail_1_1nb_1_1max2.html", null ],
     [ "proxsuite::proxqp::detail::nb::max2", "structproxsuite_1_1proxqp_1_1detail_1_1nb_1_1max2.html", null ],
     [ "proxsuite::proxqp::detail::nb::max_list", "structproxsuite_1_1proxqp_1_1detail_1_1nb_1_1max__list.html", null ],
@@ -403,14 +432,17 @@ var hierarchy =
     [ "proxsuite::detail::nullopt_instance< T >", "structproxsuite_1_1detail_1_1nullopt__instance.html", null ],
     [ "tl::nullopt_t", "structtl_1_1nullopt__t.html", null ],
     [ "proxsuite::linalg::veg::alignment::detail::offset_value< T >", "structproxsuite_1_1linalg_1_1veg_1_1alignment_1_1detail_1_1offset__value.html", null ],
-    [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", null ],
     [ "tl::detail::optional_delete_assign_base< T, EnableCopy, EnableMove >", "structtl_1_1detail_1_1optional__delete__assign__base.html", [
+      [ "tl::optional< fixup_void< invoke_result_t< F, U > > >", "classtl_1_1optional.html", null ],
+      [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", null ],
       [ "tl::optional< T >", "classtl_1_1optional.html", null ]
     ] ],
     [ "tl::detail::optional_delete_assign_base< T, false, false >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01false_01_4.html", null ],
     [ "tl::detail::optional_delete_assign_base< T, false, true >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01false_00_01true_01_4.html", null ],
     [ "tl::detail::optional_delete_assign_base< T, true, false >", "structtl_1_1detail_1_1optional__delete__assign__base_3_01T_00_01true_00_01false_01_4.html", null ],
     [ "tl::detail::optional_delete_ctor_base< T, EnableCopy, EnableMove >", "structtl_1_1detail_1_1optional__delete__ctor__base.html", [
+      [ "tl::optional< fixup_void< invoke_result_t< F, U > > >", "classtl_1_1optional.html", null ],
+      [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", null ],
       [ "tl::optional< T >", "classtl_1_1optional.html", null ]
     ] ],
     [ "tl::detail::optional_delete_ctor_base< T, false, false >", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01false_00_01false_01_4.html", null ],
@@ -418,10 +450,16 @@ var hierarchy =
     [ "tl::detail::optional_delete_ctor_base< T, true, false >", "structtl_1_1detail_1_1optional__delete__ctor__base_3_01T_00_01true_00_01false_01_4.html", null ],
     [ "tl::detail::optional_storage_base< T, bool >", "structtl_1_1detail_1_1optional__storage__base.html", [
       [ "tl::detail::optional_operations_base< T >", "structtl_1_1detail_1_1optional__operations__base.html", [
+        [ "tl::detail::optional_copy_base< T, false >", "structtl_1_1detail_1_1optional__copy__base_3_01T_00_01false_01_4.html", null ],
         [ "tl::detail::optional_copy_base< T, bool >", "structtl_1_1detail_1_1optional__copy__base.html", [
+          [ "tl::detail::optional_move_base< T, false >", "structtl_1_1detail_1_1optional__move__base_3_01T_00_01false_01_4.html", null ],
           [ "tl::detail::optional_move_base< T, bool >", "structtl_1_1detail_1_1optional__move__base.html", [
+            [ "tl::detail::optional_copy_assign_base< T, false >", "structtl_1_1detail_1_1optional__copy__assign__base_3_01T_00_01false_01_4.html", null ],
             [ "tl::detail::optional_copy_assign_base< T, bool >", "structtl_1_1detail_1_1optional__copy__assign__base.html", [
+              [ "tl::detail::optional_move_assign_base< T, false >", "structtl_1_1detail_1_1optional__move__assign__base_3_01T_00_01false_01_4.html", null ],
               [ "tl::detail::optional_move_assign_base< T, bool >", "structtl_1_1detail_1_1optional__move__assign__base.html", [
+                [ "tl::optional< fixup_void< invoke_result_t< F, U > > >", "classtl_1_1optional.html", null ],
+                [ "tl::optional< T & >", "classtl_1_1optional_3_01T_01_6_01_4.html", null ],
                 [ "tl::optional< T >", "classtl_1_1optional.html", null ]
               ] ],
               [ "tl::detail::optional_move_assign_base< T, false >", "structtl_1_1detail_1_1optional__move__assign__base_3_01T_00_01false_01_4.html", null ]
@@ -465,12 +503,16 @@ var hierarchy =
       [ "proxsuite::linalg::veg::Ref< T >", "structproxsuite_1_1linalg_1_1veg_1_1Ref.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::cmp::mut::RefMutBase", "structproxsuite_1_1linalg_1_1veg_1_1cmp_1_1mut_1_1RefMutBase.html", [
+      [ "proxsuite::linalg::veg::RefMut< proxsuite::linalg::dense::_detail::SimdAlignedSystemAlloc >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
+      [ "proxsuite::linalg::veg::RefMut< BumpAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
+      [ "proxsuite::linalg::veg::RefMut< StackAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
+      [ "proxsuite::linalg::veg::RefMut< MonotonicAlloc< MaxAlign > >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
       [ "proxsuite::linalg::veg::RefMut< A >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
       [ "proxsuite::linalg::veg::RefMut< C >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ],
       [ "proxsuite::linalg::veg::RefMut< T >", "structproxsuite_1_1linalg_1_1veg_1_1RefMut.html", null ]
     ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::relocate_pointer< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer_3_01T_00_01false_01_4.html", null ],
     [ "proxsuite::linalg::veg::_detail::_collections::relocate_pointer_trivial", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer__trivial.html", [
+      [ "proxsuite::linalg::veg::_detail::_collections::relocate_pointer< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer_3_01T_00_01false_01_4.html", null ],
       [ "proxsuite::linalg::veg::_detail::_collections::relocate_pointer< T, bool >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1relocate__pointer.html", [
         [ "proxsuite::linalg::veg::collections::relocate_pointer< T >", "structproxsuite_1_1linalg_1_1veg_1_1collections_1_1relocate__pointer.html", null ]
       ] ]
@@ -536,6 +578,8 @@ var hierarchy =
     [ "tl::detail::swap_adl_tests::tag", "structtl_1_1detail_1_1swap__adl__tests_1_1tag.html", null ],
     [ "proxsuite::proxqp::Timer< T >", "structproxsuite_1_1proxqp_1_1Timer.html", null ],
     [ "std::true_type", null, [
+      [ "tl::detail::conjunction< B >", "structtl_1_1detail_1_1conjunction_3_01B_01_4.html", null ],
+      [ "tl::detail::conjunction< B, Bs... >", "structtl_1_1detail_1_1conjunction_3_01B_00_01Bs_8_8_8_01_4.html", null ],
       [ "tl::detail::conjunction<... >", "structtl_1_1detail_1_1conjunction.html", null ],
       [ "tl::detail::is_optional_impl< optional< T > >", "structtl_1_1detail_1_1is__optional__impl_3_01optional_3_01T_01_4_01_4.html", null ]
     ] ],
@@ -546,15 +590,16 @@ var hierarchy =
     ] ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4.html", null ],
     [ "proxsuite::linalg::veg::tuple::TupleLeafImpl< Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", [
-      [ "proxsuite::linalg::veg::tuple::TupleLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", [
-        [ "proxsuite::linalg::veg::tuple::IndexedTuple< meta::index_sequence< Is... >, Ts... >::_", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8cbd6a50d8df9d5526ea9acd312613c29.html", null ]
-      ] ]
+      [ "proxsuite::linalg::veg::tuple::TupleLeaf< Is, Ts >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::tuple::nb::tuplify", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1tuplify.html", null ],
     [ "std::conditional::type", null, [
       [ "tl::detail::conjunction< B, Bs... >", "structtl_1_1detail_1_1conjunction_3_01B_00_01Bs_8_8_8_01_4.html", null ]
     ] ],
     [ "proxsuite::linalg::veg::meta::type_identity< T >", "structproxsuite_1_1linalg_1_1veg_1_1meta_1_1type__identity.html", [
+      [ "proxsuite::linalg::veg::_detail::_meta::decay_helper< Ret(Args...)>", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper_3_01Ret_07Args_8_8_8_08_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::decay_helper< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper_3_01T_0fN_0e_4.html", null ],
+      [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T * >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer_3_01T_01_5_01_4.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::decay_helper< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer.html", null ],
       [ "proxsuite::linalg::veg::_detail::_meta::is_pointer< T * >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1is__pointer_3_01T_01_5_01_4.html", null ]
@@ -588,18 +633,9 @@ var hierarchy =
       [ "proxsuite::linalg::veg::Vec< proxsuite::linalg::veg::mem::byte >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ],
       [ "proxsuite::linalg::veg::Vec< T, A, Dtor, Copy >", "structproxsuite_1_1linalg_1_1veg_1_1Vec.html", null ]
     ] ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< bool, mem::SystemAlloc, mem::DtorAvailableFor< bool >::value, mem::CopyAvailableFor< bool >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< I, mem::SystemAlloc, mem::DtorAvailableFor< I >::value, mem::CopyAvailableFor< I >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< isize, mem::SystemAlloc, mem::DtorAvailableFor< isize >::value, mem::CopyAvailableFor< isize >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< proxsuite::linalg::veg::mem::byte, mem::SystemAlloc, mem::DtorAvailableFor< proxsuite::linalg::veg::mem::byte >::value, mem::CopyAvailableFor< proxsuite::linalg::veg::mem::byte >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, mem::SystemAlloc, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< T, proxsuite::linalg::veg::meta::if_t< _detail::should_vectorize< T >::value, _detail::SimdAlignedSystemAlloc, proxsuite::linalg::veg::mem::SystemAlloc >, mem::DtorAvailableFor< T >::value, mem::CopyAvailableFor< T >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
-    [ "proxsuite::linalg::veg::_detail::_collections::VecImpl< unsigned char, mem::SystemAlloc, mem::DtorAvailableFor< unsigned char >::value, mem::CopyAvailableFor< unsigned char >::value >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__collections_1_1VecImpl.html", null ],
     [ "proxsuite::linalg::sparse::VecRef< T, I >", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef.html", null ],
     [ "proxsuite::proxqp::VectorView< T >", "structproxsuite_1_1proxqp_1_1VectorView.html", null ],
-    [ "proxsuite::proxqp::VectorView< Scalar >", "structproxsuite_1_1proxqp_1_1VectorView.html", null ],
     [ "proxsuite::proxqp::VectorViewMut< T >", "structproxsuite_1_1proxqp_1_1VectorViewMut.html", null ],
-    [ "proxsuite::proxqp::VectorViewMut< Scalar >", "structproxsuite_1_1proxqp_1_1VectorViewMut.html", null ],
     [ "tl::detail::voider<... >", "structtl_1_1detail_1_1voider.html", null ],
     [ "proxsuite::linalg::veg::tuple::nb::with", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1nb_1_1with.html", null ],
     [ "proxsuite::linalg::veg::_detail::WithArg< Fn, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1WithArg.html", null ],

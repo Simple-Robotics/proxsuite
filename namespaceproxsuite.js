@@ -16,8 +16,13 @@ var namespaceproxsuite =
       [ "loadFromXML", "namespaceproxsuite_1_1serialization.html#a872fb14c8b9e412e1d5941ce24e32643", null ],
       [ "saveToXML", "namespaceproxsuite_1_1serialization.html#a56b2ff7878f97a17d218bfbe6ee908a2", null ]
     ] ],
+    [ "torch", "namespaceproxsuite_1_1torch.html", "namespaceproxsuite_1_1torch" ],
     [ "optional", "namespaceproxsuite.html#a9a2f1998e71d4453a2221d00787cec30", null ],
     [ "nullopt_t", "namespaceproxsuite.html#a97ad5c36883b6a90f90d56e79b1d3bee", null ],
     [ "set_default_omp_options", "namespaceproxsuite.html#a6675e7ed2e2d28549b6113fc240d026d", null ],
-    [ "nullopt", "namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635", null ]
+    [ "load_main_module", "namespaceproxsuite.html#ad7a183460f3d87281ed7ba7946473f36", null ],
+    [ "nullopt", "namespaceproxsuite.html#a2031f223e16b21ebc8f804797aa4a635", null ],
+    [ "machine", "namespaceproxsuite.html#a9c5e0d1b94d86c10b98e6a880aa504b2", null ],
+    [ "has_vectorization_instructions", "namespaceproxsuite.html#ab18b857df1b6aba1ccd087bcdc7eec21", null ],
+    [ "globals", "namespaceproxsuite.html#a1e9c9fba6ea38b663ce843493952a5fd", null ]
 ];

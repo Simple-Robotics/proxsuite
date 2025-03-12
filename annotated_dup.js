@@ -57,8 +57,13 @@ var annotated_dup =
           ] ],
           [ "DenseVecMut", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecMut" ],
           [ "DenseVecRef", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1DenseVecRef" ],
+          [ "DynStackMut", "structproxsuite_1_1linalg_1_1sparse_1_1DynStackMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1DynStackMut" ],
           [ "MatMut", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1MatMut" ],
           [ "MatRef", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1MatRef" ],
+          [ "Ref", "structproxsuite_1_1linalg_1_1sparse_1_1Ref.html", "structproxsuite_1_1linalg_1_1sparse_1_1Ref" ],
+          [ "RefMut", "structproxsuite_1_1linalg_1_1sparse_1_1RefMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1RefMut" ],
+          [ "Slice", "structproxsuite_1_1linalg_1_1sparse_1_1Slice.html", "structproxsuite_1_1linalg_1_1sparse_1_1Slice" ],
+          [ "SliceMut", "structproxsuite_1_1linalg_1_1sparse_1_1SliceMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1SliceMut" ],
           [ "SymbolicMatMut", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut.html", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatMut" ],
           [ "SymbolicMatRef", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1SymbolicMatRef" ],
           [ "VecRef", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef.html", "structproxsuite_1_1linalg_1_1sparse_1_1VecRef" ]
@@ -143,7 +148,7 @@ var annotated_dup =
               [ "decay_helper< T[N]>", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1decay__helper_3_01T_0fN_0e_4.html", null ],
               [ "detector", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1detector.html", null ],
               [ "enable_if", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if" ],
-              [ "enable_if< false, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4.html", null ],
+              [ "enable_if< false, T >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1enable__if_3_01false_00_01T_01_4" ],
               [ "has_adl_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__adl__get.html", null ],
               [ "has_array_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__array__get.html", null ],
               [ "has_member_get", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1__meta_1_1has__member__get.html", null ],
@@ -219,7 +224,7 @@ var annotated_dup =
             [ "binary_traits< Dyn, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Dyn_01_4" ],
             [ "binary_traits< Dyn, Fix< N > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Dyn_00_01Fix_3_01N_01_4_01_4" ],
             [ "binary_traits< Fix< 0 >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_010_01_4_00_01Dyn_01_4" ],
-            [ "binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", null ],
+            [ "binary_traits< Fix< N >, Dyn >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Dyn_01_4" ],
             [ "binary_traits< Fix< N >, Fix< M > >", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1binary__traits_3_01Fix_3_01N_01_4_00_01Fix_3_01M_01_4_01_4" ],
             [ "char_seq", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1char__seq" ],
             [ "CopyFn", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn.html", "structproxsuite_1_1linalg_1_1veg_1_1__detail_1_1CopyFn" ],
@@ -272,6 +277,10 @@ var annotated_dup =
           ] ],
           [ "collections", "namespaceproxsuite_1_1linalg_1_1veg_1_1collections.html", [
             [ "relocate_pointer", "structproxsuite_1_1linalg_1_1veg_1_1collections_1_1relocate__pointer.html", null ]
+          ] ],
+          [ "concepts", "namespaceproxsuite_1_1linalg_1_1veg_1_1concepts.html", [
+            [ "conjunction", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1conjunction.html", null ],
+            [ "disjunction", "structproxsuite_1_1linalg_1_1veg_1_1concepts_1_1disjunction.html", null ]
           ] ],
           [ "cpo", "namespaceproxsuite_1_1linalg_1_1veg_1_1cpo.html", [
             [ "is_trivially_constructible", "structproxsuite_1_1linalg_1_1veg_1_1cpo_1_1is__trivially__constructible.html", null ],
@@ -381,6 +390,7 @@ var annotated_dup =
             ] ],
             [ "IndexedTuple", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple.html", null ],
             [ "IndexedTuple< meta::index_sequence< Is... >, Ts... >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1IndexedTuple_3_01meta_1_1index__sequence_3_01Is_8_8_8_01_4_00_01Ts_8_8_8_01_4" ],
+            [ "Tuple", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1Tuple.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1Tuple" ],
             [ "TupleLeaf", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeaf.html", null ],
             [ "TupleLeafImpl", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl.html", null ],
             [ "TupleLeafImpl< T, false >", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1tuple_1_1TupleLeafImpl_3_01T_00_01false_01_4" ],
@@ -389,6 +399,7 @@ var annotated_dup =
           [ "vector", "namespaceproxsuite_1_1linalg_1_1veg_1_1vector.html", [
             [ "RawVector", "structproxsuite_1_1linalg_1_1veg_1_1vector_1_1RawVector.html", "structproxsuite_1_1linalg_1_1veg_1_1vector_1_1RawVector" ]
           ] ],
+          [ "Array", "structproxsuite_1_1linalg_1_1veg_1_1Array.html", "structproxsuite_1_1linalg_1_1veg_1_1Array" ],
           [ "Boolean", "structproxsuite_1_1linalg_1_1veg_1_1Boolean.html", "structproxsuite_1_1linalg_1_1veg_1_1Boolean" ],
           [ "Boolean< maybe >", "structproxsuite_1_1linalg_1_1veg_1_1Boolean_3_01maybe_01_4.html", "structproxsuite_1_1linalg_1_1veg_1_1Boolean_3_01maybe_01_4" ],
           [ "Defer", "structproxsuite_1_1linalg_1_1veg_1_1Defer.html", "structproxsuite_1_1linalg_1_1veg_1_1Defer" ],

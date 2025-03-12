@@ -1,3 +1,16 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="Node000000" href="$structproxsuite_1_1proxqp_1_1sparse_1_1preconditioner_1_1RuizEquilibration.html" title=" " alt="" coords="5,5,195,67"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,168,168,196"/>
+<area shape="rect" id="Node000001" href="$structtl_1_1detail_1_1is__swappable_3_01T_0fN_0e_00_01T_0fN_0e_4.html" title=" " alt="" coords="256,5,428,50"/>
+<area shape="poly" id="edge189_Node000000_Node000001" title=" " alt="" coords="108,155,155,110,214,67,255,48,257,53,217,71,158,115,112,159"/>
+<area shape="rect" id="Node000002" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept_3_01T_0fN_0e_4.html" title=" " alt="" coords="516,200,730,261"/>
+<area shape="poly" id="edge190_Node000000_Node000002" title=" " alt="" coords="118,157,162,131,215,110,286,94,343,87,400,91,469,110,506,127,540,149,595,197,591,201,537,154,503,132,467,116,399,97,343,92,286,99,216,116,165,136,121,162"/>
+<area shape="rect" id="Node000004" href="$structtl_1_1detail_1_1is__nothrow__swappable.html" title=" " alt="" coords="265,125,419,170"/>
+<area shape="poly" id="edge191_Node000000_Node000004" title=" " alt="" coords="183,167,264,155,265,161,184,172"/>
+<area shape="rect" id="Node000005" href="$structtl_1_1detail_1_1is__swappable.html" title=" " alt="" coords="256,195,428,239"/>
+<area shape="poly" id="edge192_Node000000_Node000005" title=" " alt="" coords="183,193,256,203,255,208,183,198"/>
+<area shape="rect" id="Node000006" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__adl__swap__noexcept.html" title=" " alt="" coords="235,264,449,325"/>
+<area shape="poly" id="edge193_Node000000_Node000006" title=" " alt="" coords="125,202,217,249,244,260,242,265,215,254,123,207"/>
+<area shape="rect" id="Node000003" href="$structtl_1_1detail_1_1swap__adl__tests_1_1is__std__swap__noexcept.html" title=" " alt="" coords="216,349,468,394"/>
+<area shape="poly" id="edge194_Node000000_Node000003" title=" " alt="" coords="105,208,150,272,181,306,217,335,239,347,237,351,214,339,178,310,146,276,101,211"/>
+<area shape="poly" id="edge195_Node000003_Node000002" title=" " alt="" coords="452,341,467,335,529,299,583,260,586,264,532,303,469,339,454,346"/>
 </map>

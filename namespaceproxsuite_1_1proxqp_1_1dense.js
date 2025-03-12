@@ -30,6 +30,7 @@ var namespaceproxsuite_1_1proxqp_1_1dense =
     [ "VecISize", "namespaceproxsuite_1_1proxqp_1_1dense.html#a4d73b9d414c8a1b006c70d9a2300a3e7", null ],
     [ "VecMapBool", "namespaceproxsuite_1_1proxqp_1_1dense.html#a271c52c2935810e15bbb3374e7071416", null ],
     [ "VecBool", "namespaceproxsuite_1_1proxqp_1_1dense.html#acb264a0c71cc2ae30c0d6d62087aa4e6", null ],
+    [ "isize", "namespaceproxsuite_1_1proxqp_1_1dense.html#af13f536f55f7e3a7af1d0e6cf9ac3c50", null ],
     [ "compute_backward", "namespaceproxsuite_1_1proxqp_1_1dense.html#aa3d257d71f76cede22fe3d1914381d6f", null ],
     [ "compute_backward_loss_ESG", "namespaceproxsuite_1_1proxqp_1_1dense.html#a894042e3a4def0b9aae08ef624a3b3b6", null ],
     [ "power_iteration", "namespaceproxsuite_1_1proxqp_1_1dense.html#ad5c28ec9d976b39fd3d6d7fcf9909bf6", null ],

@@ -7,11 +7,13 @@ var searchData=
   ['qp_5fsolve_5fbackward_5fin_5fparallel_4',['qp_solve_backward_in_parallel',['../namespaceproxsuite_1_1proxqp_1_1dense.html#a4276db4c928ab371a4a45918f6fca4ac',1,'proxsuite::proxqp::dense::qp_solve_backward_in_parallel(optional&lt; const size_t &gt; num_threads, std::vector&lt; proxqp::dense::QP&lt; T &gt; &gt; &amp;qps, std::vector&lt; proxqp::dense::Vec&lt; T &gt; &gt; &amp;loss_derivatives, T eps=1.E-4, T rho_new=1.E-6, T mu_new=1.E-6)'],['../namespaceproxsuite_1_1proxqp_1_1dense.html#a0ae27449545fc7a976ebcdb8c0721031',1,'proxsuite::proxqp::dense::qp_solve_backward_in_parallel(optional&lt; const size_t &gt; num_threads, proxqp::dense::BatchQP&lt; T &gt; &amp;qps, std::vector&lt; proxqp::dense::Vec&lt; T &gt; &gt; &amp;loss_derivatives, T eps=1.E-4, T rho_new=1.E-6, T mu_new=1.E-6)']]],
   ['qp_5fsolve_5fin_5fparallel_5',['qp_solve_in_parallel',['../namespaceproxsuite_1_1proxqp_1_1dense.html#a0387cfbe34cbdb09a2dbcb40ca50ed44',1,'proxsuite::proxqp::dense']]],
   ['qp_5fvector_6',['qp_vector',['../structproxsuite_1_1proxqp_1_1dense_1_1BatchQP.html#a2cb832390924aa1c1b2fec64327026fe',1,'proxsuite::proxqp::dense::BatchQP::qp_vector'],['../structproxsuite_1_1proxqp_1_1sparse_1_1BatchQP.html#a0d6e786d99a62295fe9d80fa1a6572e0',1,'proxsuite::proxqp::sparse::BatchQP::qp_vector']]],
-  ['qplayer_7',['QPLayer',['../md_doc_24-qplayer.html#QPLayerCite',1,'How to cite QPLayer ?'],['../md_doc_24-qplayer.html',1,'QPLayer']]],
-  ['qpsolveroutput_8',['QPSolverOutput',['../namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd',1,'proxsuite::proxqp']]],
-  ['qpview_9',['QpView',['../structproxsuite_1_1proxqp_1_1dense_1_1QpView.html',1,'proxsuite::proxqp::dense::QpView&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpView.html',1,'proxsuite::proxqp::sparse::QpView&lt; T, I &gt;']]],
-  ['qpviewbox_10',['QpViewBox',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBox.html',1,'proxsuite::proxqp::dense']]],
-  ['qpviewboxmut_11',['QpViewBoxMut',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html',1,'proxsuite::proxqp::dense']]],
-  ['qpviewmut_12',['QpViewMut',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html',1,'proxsuite::proxqp::dense::QpViewMut&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html',1,'proxsuite::proxqp::sparse::QpViewMut&lt; T, I &gt;']]],
-  ['question_5fmark_13',['QUESTION_MARK',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a705ec5e7f39c0733aeed9e24e90d2ede',1,'proxsuite::linalg::veg']]]
+  ['qpfunction_7',['QPFunction',['../namespaceproxsuite_1_1torch_1_1qplayer.html#afc9cde845f72e99251297afc206ff135',1,'proxsuite::torch::qplayer']]],
+  ['qplayer_8',['QPLayer',['../md_doc_24-qplayer.html#QPLayerCite',1,'How to cite QPLayer ?'],['../md_doc_24-qplayer.html',1,'QPLayer']]],
+  ['qplayer_2epy_9',['qplayer.py',['../qplayer_8py.html',1,'']]],
+  ['qpsolveroutput_10',['QPSolverOutput',['../namespaceproxsuite_1_1proxqp.html#ae3b64c0293312c54fdfa991580ed70fd',1,'proxsuite::proxqp']]],
+  ['qpview_11',['QpView',['../structproxsuite_1_1proxqp_1_1dense_1_1QpView.html',1,'proxsuite::proxqp::dense::QpView&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpView.html',1,'proxsuite::proxqp::sparse::QpView&lt; T, I &gt;']]],
+  ['qpviewbox_12',['QpViewBox',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBox.html',1,'proxsuite::proxqp::dense']]],
+  ['qpviewboxmut_13',['QpViewBoxMut',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewBoxMut.html',1,'proxsuite::proxqp::dense']]],
+  ['qpviewmut_14',['QpViewMut',['../structproxsuite_1_1proxqp_1_1dense_1_1QpViewMut.html',1,'proxsuite::proxqp::dense::QpViewMut&lt; T &gt;'],['../structproxsuite_1_1proxqp_1_1sparse_1_1QpViewMut.html',1,'proxsuite::proxqp::sparse::QpViewMut&lt; T, I &gt;']]],
+  ['question_5fmark_15',['QUESTION_MARK',['../namespaceproxsuite_1_1linalg_1_1veg.html#aae522d4ba2f2382dbadd8b7b7cadcc43a705ec5e7f39c0733aeed9e24e90d2ede',1,'proxsuite::linalg::veg']]]
 ];

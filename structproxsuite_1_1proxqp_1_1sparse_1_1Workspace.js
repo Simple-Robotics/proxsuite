@@ -21,7 +21,7 @@ var structproxsuite_1_1proxqp_1_1sparse_1_1Workspace =
     [ "dirty", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a9619a0157d1fbc48529e5d725f3048d9", null ],
     [ "proximal_parameter_update", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a0b20013e4cdb913d792cb6263ddf2b8a", null ],
     [ "is_initialized", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a82cd559a2dfbc28b7aedcca0982038a1", null ],
-    [ "internal", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a5606305347d9a2e4919345fcff20758a", null ],
+    [ "internal", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#ac8ac2654472a61b575a161ed1be9be49", null ],
     [ "active_set_up", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a8159321ebeb1ee61aa1da4cf5e11f213", null ],
     [ "active_set_low", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a86f790ec38245b76c8799586904fe0a3", null ],
     [ "active_inequalities", "structproxsuite_1_1proxqp_1_1sparse_1_1Workspace.html#a1afdbd0142e3ad5d76b083aea80d9dd4", null ],
