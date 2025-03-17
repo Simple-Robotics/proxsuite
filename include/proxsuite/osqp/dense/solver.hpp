@@ -629,6 +629,8 @@ polish(const Settings<T>& qpsettings,
        const HessianType hessian_type)
 {
 
+  std::cout << "check 01" << std::endl;
+
   // Find the upper and lower active constraints
   qpwork.active_set_up_eq.array() = (qpresults.y.array() > 0);
   qpwork.active_set_low_eq.array() = (qpresults.y.array() < 0);
@@ -638,6 +640,8 @@ polish(const Settings<T>& qpsettings,
   isize numactive_constraints_eq_up = qpwork.active_set_up_eq.count();
   isize numactive_constraints_eq_low = qpwork.active_set_low_eq.count();
 
+  std::cout << "check 02" << std::endl;
+
   qpwork.active_set_up_ineq = qpwork.active_set_up;
   qpwork.active_set_low_ineq = qpwork.active_set_low;
   qpwork.active_constraints_ineq =
@@ -645,6 +649,8 @@ polish(const Settings<T>& qpsettings,
   isize numactive_constraints_ineq = qpwork.active_constraints_ineq.count();
   isize numactive_constraints_ineq_up = qpwork.active_set_up_ineq.count();
   isize numactive_constraints_ineq_low = qpwork.active_set_low_ineq.count();
+
+  std::cout << "check 03" << std::endl;
 
   isize numactive_constraints =
     numactive_constraints_eq + numactive_constraints_ineq;
@@ -682,6 +688,8 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
+  std::cout << "check 04" << std::endl;
+
   Mat<T> A_low(numactive_constraints_eq_low, qpmodel.dim);
   Mat<T> A_up(numactive_constraints_eq_up, qpmodel.dim);
 
@@ -698,6 +706,8 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
+  std::cout << "check 05" << std::endl;
+
   // Construction and factorization of K + Delta_K
   isize row;
   isize column;
@@ -706,12 +716,17 @@ polish(const Settings<T>& qpsettings,
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
 
+  std::cout << "check 06" << std::endl;
+
   switch (dense_backend) {
     case DenseBackend::PrimalDualLDLT:
 
       // Top left corner of K for H
       qpwork.k_polish.resize(qpmodel.dim + numactive_constraints,
                              qpmodel.dim + numactive_constraints);
+
+      std::cout << "check 07" << std::endl;
+
       switch (hessian_type) {
         case HessianType::Dense:
           qpwork.k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) =
@@ -726,54 +741,71 @@ polish(const Settings<T>& qpsettings,
           break;
       }
 
+      std::cout << "check 08" << std::endl;
+
       // Add the rows/columns for the constraints
       row = qpmodel.dim;
+      std::cout << "check 081" << std::endl;
       column = qpmodel.dim;
+      std::cout << "check 082" << std::endl;
       qpwork.k_polish.block(
         0, column, qpmodel.dim, numactive_constraints_eq_low) =
         A_low.transpose();
+      std::cout << "check 083" << std::endl;
       column += numactive_constraints_eq_low;
       qpwork.k_polish.block(
         0, column, qpmodel.dim, numactive_constraints_ineq_low) =
         C_low.transpose();
+      std::cout << "check 084" << std::endl;
       column += numactive_constraints_ineq_low;
       qpwork.k_polish.block(
         0, column, qpmodel.dim, numactive_constraints_eq_up) = A_up.transpose();
       column += numactive_constraints_eq_up;
+      std::cout << "check 085" << std::endl;
       qpwork.k_polish.block(
         0, column, qpmodel.dim, numactive_constraints_ineq_up) =
         C_up.transpose();
       qpwork.k_polish.block(row, 0, numactive_constraints_eq_low, qpmodel.dim) =
         A_low;
+      std::cout << "check 086" << std::endl;
       row += numactive_constraints_eq_low;
       qpwork.k_polish.block(
         row, 0, numactive_constraints_ineq_low, qpmodel.dim) = C_low;
       row += numactive_constraints_ineq_low;
+      std::cout << "check 087" << std::endl;
       qpwork.k_polish.block(row, 0, numactive_constraints_eq_up, qpmodel.dim) =
         A_up;
       row += numactive_constraints_eq_up;
+      // std::cout << "check 088" << std::endl;
       qpwork.k_polish.block(
         row, 0, numactive_constraints_ineq_up, qpmodel.dim) = C_up;
+      // std::cout << "check 089" << std::endl;
       qpwork.k_polish
         .bottomRightCorner(numactive_constraints, numactive_constraints)
         .setZero();
 
-      std::cout << "check 1" << std::endl;
-      std::cout << "checkout 1" << std::endl;
+      std::cout << "check 09" << std::endl;
+
+      // std::cout << "check 1" << std::endl;
+      // std::cout << "checkout 1" << std::endl;
       // Construction and factorization of K + Delta_K
       qpwork.k_plus_delta_k_polish =
         qpwork.k_polish; // error: malloc(): invalid size (unsorted), malloc():
                          // unaligned tcache chunk detected
       // errors here in test cvxpy, but also maros meszaros for some problems
-      std::cout << "check 2" << std::endl;
-      std::cout << "checkout 2" << std::endl;
+      // std::cout << "check 2" << std::endl;
+      // std::cout << "checkout 2" << std::endl;
+      std::cout << "check 091" << std::endl;
       qpwork.k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim)
         .diagonal()
         .array() += qpsettings.delta_osqp;
+      std::cout << "check 092" << std::endl;
       qpwork.k_plus_delta_k_polish
         .bottomRightCorner(numactive_constraints, numactive_constraints)
         .diagonal()
         .array() -= qpsettings.delta_osqp;
+
+      std::cout << "check 010" << std::endl;
 
       qpwork.ldl.factorize(qpwork.k_plus_delta_k_polish.transpose(), stack);
 
@@ -807,6 +839,8 @@ polish(const Settings<T>& qpsettings,
       break;
   }
 
+  std::cout << "check 011" << std::endl;
+
   // Construction of the l_low, u_up, etc to build the rhs for the linear
   // systems (iterative refinement)
   isize l_low_index = 0;
@@ -832,6 +866,8 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
+  std::cout << "check 012" << std::endl;
+
   isize b_low_index = 0;
   isize b_up_index = 0;
   Vec<T> b_low(numactive_constraints_eq_low);
@@ -846,6 +882,8 @@ polish(const Settings<T>& qpsettings,
       ++b_up_index;
     }
   }
+
+  std::cout << "check 013" << std::endl;
 
   // Iterative refinement
   Vec<T> g_polish_rhs;
@@ -867,6 +905,8 @@ polish(const Settings<T>& qpsettings,
   Vec<T> hat_y_up;
   Vec<T> hat_z_up;
 
+  std::cout << "check 014" << std::endl;
+
   switch (dense_backend) {
     case DenseBackend::PrimalDualLDLT:
 
@@ -884,11 +924,13 @@ polish(const Settings<T>& qpsettings,
 
       inner_pb_dim = qpmodel.dim + numactive_constraints;
 
-      std::cout << "check 3" << std::endl;
+      // std::cout << "check 3" << std::endl;
+      std::cout << "check 015" << std::endl;
       hat_t = g_polish_rhs; // 2 times Fatal glibc error: malloc.c:4376
                             // (_int_malloc): assertion failed: (unsigned long)
                             // (size) >= (unsigned long) (nb)
-      std::cout << "check 4" << std::endl;
+      // std::cout << "check 4" << std::endl;
+      std::cout << "check 016" << std::endl;
 
       solve_linear_system(hat_t,
                           qpmodel,
@@ -899,6 +941,8 @@ polish(const Settings<T>& qpsettings,
                           SolverType::OSQP,
                           inner_pb_dim,
                           stack);
+
+      std::cout << "check 017" << std::endl;
 
       // Iterative refinement
       for (i64 iter = 0; iter < qpsettings.nb_polish_iter; ++iter) {
@@ -915,6 +959,8 @@ polish(const Settings<T>& qpsettings,
                             stack);
         hat_t = hat_t + delta_hat_t;
       }
+
+      std::cout << "check 018" << std::endl;
 
       break;
     case DenseBackend::PrimalLDLT:
@@ -1002,6 +1048,7 @@ polish(const Settings<T>& qpsettings,
 
   // Update of the primal and dual variables
   qpresults.x = hat_t.head(qpmodel.dim);
+  std::cout << "check 019" << std::endl;
 
   y_low_index = 0;
   z_low_index = 0;
@@ -1019,6 +1066,8 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
+  std::cout << "check 020" << std::endl;
+
   for (isize i = 0; i < n_constraints; ++i) {
     if (qpwork.active_set_low_ineq(i)) {
       qpresults.z(i) =
@@ -1032,6 +1081,8 @@ polish(const Settings<T>& qpsettings,
       ++z_up_index;
     }
   }
+
+  std::cout << "check 021" << std::endl;
 }
 /*!
  * Executes the OSQP algorithm.

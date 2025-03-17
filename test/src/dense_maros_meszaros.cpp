@@ -20,19 +20,21 @@ char const* files[] = {
   // MAROS_MESZAROS_DIR "CONT-101.mat", MAROS_MESZAROS_DIR "CONT-200.mat",
   // MAROS_MESZAROS_DIR "CONT-201.mat", MAROS_MESZAROS_DIR "CONT-300.mat",
   // MAROS_MESZAROS_DIR "CVXQP1_L.mat", MAROS_MESZAROS_DIR "CVXQP1_M.mat",
-  MAROS_MESZAROS_DIR "CVXQP1_S.mat",
-  MAROS_MESZAROS_DIR "CVXQP2_L.mat",
-  // MAROS_MESZAROS_DIR "CVXQP2_M.mat", MAROS_MESZAROS_DIR "CVXQP2_S.mat",
+  // MAROS_MESZAROS_DIR "CVXQP1_S.mat",
+  // MAROS_MESZAROS_DIR "CVXQP2_L.mat",
+  // MAROS_MESZAROS_DIR "CVXQP2_M.mat",
+  // MAROS_MESZAROS_DIR "CVXQP2_S.mat",
   // MAROS_MESZAROS_DIR "CVXQP3_L.mat", MAROS_MESZAROS_DIR "CVXQP3_M.mat",
   // MAROS_MESZAROS_DIR "CVXQP3_S.mat", MAROS_MESZAROS_DIR "DPKLO1.mat",
   // MAROS_MESZAROS_DIR "DTOC3.mat",    MAROS_MESZAROS_DIR "DUAL1.mat",
   // MAROS_MESZAROS_DIR "DUAL2.mat",    MAROS_MESZAROS_DIR "DUAL3.mat",
-  // MAROS_MESZAROS_DIR "DUAL4.mat",    MAROS_MESZAROS_DIR "DUALC1.mat",
+  // MAROS_MESZAROS_DIR "DUAL4.mat",
+  // MAROS_MESZAROS_DIR "DUALC1.mat",
   // MAROS_MESZAROS_DIR "DUALC2.mat",   MAROS_MESZAROS_DIR "DUALC5.mat",
   // MAROS_MESZAROS_DIR "DUALC8.mat",   MAROS_MESZAROS_DIR "EXDATA.mat",
   // MAROS_MESZAROS_DIR "GENHS28.mat",  MAROS_MESZAROS_DIR "GOULDQP2.mat",
   // MAROS_MESZAROS_DIR "GOULDQP3.mat", MAROS_MESZAROS_DIR "HS118.mat",
-  // MAROS_MESZAROS_DIR "HS21.mat",     MAROS_MESZAROS_DIR "HS268.mat",
+  MAROS_MESZAROS_DIR "HS21.mat", // MAROS_MESZAROS_DIR "HS268.mat",
   // MAROS_MESZAROS_DIR "HS35.mat",     MAROS_MESZAROS_DIR "HS35MOD.mat",
   // MAROS_MESZAROS_DIR "HS51.mat",     MAROS_MESZAROS_DIR "HS52.mat",
   // MAROS_MESZAROS_DIR "HS53.mat",     MAROS_MESZAROS_DIR "HS76.mat",
@@ -131,7 +133,8 @@ TEST_CASE("dense maros meszaros using the api")
       qp.settings.eps_dual_inf = 1e-12;
       auto& eps = qp.settings.eps_abs;
 
-      for (size_t it = 0; it < 2; ++it) {
+      // for (size_t it = 0; it < 2; ++it) {
+      for (size_t it = 0; it < 1; ++it) {
         if (it > 0)
           qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
             WARM_START_WITH_PREVIOUS_RESULT;
@@ -165,6 +168,9 @@ TEST_CASE("dense maros meszaros using the api")
       timer.stop();
       elapsed_time += timer.elapsed().user;
     }
+    std::cout << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+    // std::cout << "now we do the warm start with previous result" <<
+    // std::endl;
   }
   std::cout << "timings total : \t" << elapsed_time * 1e-3 << "ms" << std::endl;
 }

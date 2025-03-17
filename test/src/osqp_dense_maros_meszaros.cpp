@@ -30,48 +30,37 @@ char const* files[] = {
   // MAROS_MESZAROS_DIR "CONT-300.mat", // skipped
   // MAROS_MESZAROS_DIR "CVXQP1_L.mat", // skipped
   // MAROS_MESZAROS_DIR "CVXQP1_M.mat", // skipped
-  MAROS_MESZAROS_DIR
-  "CVXQP1_S.mat", // failed - 1st r_prim slightly conv then plateau, r_dual and
-                  // r_g plateau, then polish makes worst - 2nd all diverges
+  // MAROS_MESZAROS_DIR "CVXQP1_S.mat", // category 1
   // MAROS_MESZAROS_DIR "CVXQP2_L.mat", // skipped
   // MAROS_MESZAROS_DIR "CVXQP2_M.mat", // skipped
-  // MAROS_MESZAROS_DIR "CVXQP2_S.mat", // failed - 1st r_prim and r_dual conv,
-  // r_g plateau, then polish make r_prim/dual explode - 2nd all diverges
+  // MAROS_MESZAROS_DIR "CVXQP2_S.mat", // category 1
   // MAROS_MESZAROS_DIR "CVXQP3_L.mat", // skipped
   // MAROS_MESZAROS_DIR "CVXQP3_M.mat", // skipped
-  // MAROS_MESZAROS_DIR "CVXQP3_S.mat", // failed - 1st r_prim and r_dual conv,
-  // r_g plateau, then polish make r_prim/dual explode - 2nd all diverges
+  // MAROS_MESZAROS_DIR "CVXQP3_S.mat", // category 1
   // MAROS_MESZAROS_DIR "DPKLO1.mat",   // passed
   // MAROS_MESZAROS_DIR "DTOC3.mat",    // skipped
   // MAROS_MESZAROS_DIR "DUAL1.mat",    // passed
   // MAROS_MESZAROS_DIR "DUAL2.mat",    // passed
   // MAROS_MESZAROS_DIR "DUAL3.mat",    // passed
   // MAROS_MESZAROS_DIR "DUAL4.mat",    // passed
-  // MAROS_MESZAROS_DIR "DUALC1.mat",   // failed, seemed to converge well,
-  // polish made it worst
-  // MAROS_MESZAROS_DIR "DUALC2.mat",   // failed, seemed to converge well,
-  // polish made it worst
-  // MAROS_MESZAROS_DIR "DUALC5.mat",   // failed, seemed to converge well,
-  // polish made it worst
-  // MAROS_MESZAROS_DIR "DUALC8.mat",   // failed, seemed to converge well,
-  // polish made it worst
+  // MAROS_MESZAROS_DIR "DUALC1.mat",   // category 2
+  // MAROS_MESZAROS_DIR "DUALC2.mat",   // category 2
+  // MAROS_MESZAROS_DIR "DUALC5.mat",   // category 2
+  // MAROS_MESZAROS_DIR "DUALC8.mat",   // category 2
   // MAROS_MESZAROS_DIR "EXDATA.mat",   // skipped
-  // MAROS_MESZAROS_DIR "GENHS28.mat",  // compile error at "checkout" in polish
+  // MAROS_MESZAROS_DIR "GENHS28.mat",  // compile error in polish - sometimes
+  // btw 89-9, sometimes 9-91
   // MAROS_MESZAROS_DIR "GOULDQP2.mat", // skipped
   // MAROS_MESZAROS_DIR "GOULDQP3.mat", // skipped
   // MAROS_MESZAROS_DIR "HS118.mat",    // passed
-  // MAROS_MESZAROS_DIR "HS21.mat",     // failed, seemed to converge well,
-  // polish made it worst
-  // MAROS_MESZAROS_DIR "HS268.mat",    // failed, r_prim conv well, but r_dual
-  // and r_g plateau and max iter reached
-  // MAROS_MESZAROS_DIR "HS35.mat",     // failed, converges slowly, polish made
-  // it worst
-  // MAROS_MESZAROS_DIR "HS35MOD.mat",  // compile error at "checkout" in polish
-  // MAROS_MESZAROS_DIR "HS51.mat",     // compile error at "checkout" in polish
+  // MAROS_MESZAROS_DIR "HS21.mat",     // category 2
+  // MAROS_MESZAROS_DIR "HS268.mat",    // category 3
+  // MAROS_MESZAROS_DIR "HS35.mat",     // category 2
+  MAROS_MESZAROS_DIR "HS35MOD.mat", // compile error in polish
+  // MAROS_MESZAROS_DIR "HS51.mat",     // compile error in polish
   // MAROS_MESZAROS_DIR "HS52.mat",     // passed
   // MAROS_MESZAROS_DIR "HS53.mat",     // passed
-  // MAROS_MESZAROS_DIR "HS76.mat",     // failed, seemed to converge well,
-  // polish made it worst
+  // MAROS_MESZAROS_DIR "HS76.mat",     // category 4
   // MAROS_MESZAROS_DIR "HUES-MOD.mat", // skipped
   // MAROS_MESZAROS_DIR "HUESTIS.mat",  // skipped
   // MAROS_MESZAROS_DIR "KSIP.mat",     // skipped
@@ -92,8 +81,7 @@ char const* files[] = {
   // MAROS_MESZAROS_DIR "MOSARQP1.mat", // skipped
   // MAROS_MESZAROS_DIR "MOSARQP2.mat", // skipped
   // MAROS_MESZAROS_DIR "POWELL20.mat", // skipped
-  // MAROS_MESZAROS_DIR "PRIMAL1.mat",  // failed, seemed to converge well,
-  // polish made it worst
+  // MAROS_MESZAROS_DIR "PRIMAL1.mat",  // category 5
   // MAROS_MESZAROS_DIR "PRIMAL2.mat",
   // MAROS_MESZAROS_DIR "PRIMAL3.mat",
   // MAROS_MESZAROS_DIR "PRIMAL4.mat",
@@ -158,13 +146,38 @@ char const* files[] = {
   // MAROS_MESZAROS_DIR "STADAT3.mat",
   // MAROS_MESZAROS_DIR "STCQP1.mat",
   // MAROS_MESZAROS_DIR "STCQP2.mat",
-  // MAROS_MESZAROS_DIR "TAME.mat",     // compile error here at "checkout" in
-  // polish
+  // MAROS_MESZAROS_DIR "TAME.mat",     // compile error here in polish
   // MAROS_MESZAROS_DIR "UBH1.mat",
   // MAROS_MESZAROS_DIR "VALUES.mat",
   // MAROS_MESZAROS_DIR "YAO.mat",
   // MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
+
+// category 1:
+// failed
+// 1st solve: r_prim and r_dual cv quite well - r_g plateau with high value
+// then polishing make r_prim and r_dual explode (about 10e2)
+
+// category 2:
+// failed
+// 1st solve: r_prim and r_dual cv quite well (a bit long for dual) - r_g conv
+// as dual (a bit long) then polishing make r_prim worst (from 10e-12 to 10e0) -
+// r_dual almost unchanged
+
+// category 3:
+// failed
+// 1st solve: r_prim cv well - but r_dual and r_g plateau
+// then polishing does almost nothing
+
+// category 4:
+// failed
+// 1st solve: r_prim and r_dual cv quite well (a bit long for dual) - r_g
+// plateau then polishing makes it worst
+
+// category 5:
+// failed
+// 1st solve: r_prim and r_dual cv quite well - r_g conv as well
+// then polishing makes it worst
 
 TEST_CASE("dense maros meszaros using the api")
 {
@@ -198,6 +211,12 @@ TEST_CASE("dense maros meszaros using the api")
       auto& u = preprocessed.u;
       auto& l = preprocessed.l;
 
+      std::cout << "H" << H << std::endl;
+      std::cout << "A" << A << std::endl;
+      std::cout << "C" << C << std::endl;
+      std::cout << "l" << l << std::endl;
+      std::cout << "u" << u << std::endl;
+
       isize dim = H.rows();
       isize n_eq = A.rows();
       isize n_in = C.rows();
@@ -208,20 +227,17 @@ TEST_CASE("dense maros meszaros using the api")
       }; // creating QP object
       qp.init(H, g, A, b, C, l, u);
 
-      // qp.settings.eps_abs = 2e-8;
-      // auto& eps = qp.settings.eps_abs;
-      // qp.settings.eps_abs = 1e-3;
-      // qp.settings.eps_rel = 0;
-      qp.settings.eps_abs = 2e-12;
+      qp.settings.eps_abs = 2e-8;
       auto& eps = qp.settings.eps_abs;
-      qp.settings.eps_abs = 2e-12;
+      qp.settings.eps_abs = 1e-3;
       qp.settings.eps_rel = 0;
-      // qp.settings.eps_primal_inf = 1e-12;
-      // qp.settings.eps_dual_inf = 1e-12;
-      qp.settings.default_mu_eq = 1.e-2;
-      qp.settings.default_mu_in = 1.e1;
-      // qp.settings.max_iter = 10000;
-      qp.settings.max_iter = 50000;
+      qp.settings.eps_primal_inf = 1e-12;
+      qp.settings.eps_dual_inf = 1e-12;
+      // qp.settings.default_mu_eq = 1.e-2; // autres valeurs à tester
+      // qp.settings.default_mu_in = 1.e1;  // autres valeurs à tester
+      // qp.settings.default_mu_eq = 1.e-3; // valeurs de proxqp
+      // qp.settings.default_mu_in = 1.e-1; // valeurs de proxqp
+      qp.settings.max_iter = 10000;
       qp.settings.verbose = true;
 
       // for (size_t it = 0; it < 2; ++it) {
@@ -234,9 +250,6 @@ TEST_CASE("dense maros meszaros using the api")
         const auto& x = qp.results.x;
         const auto& y = qp.results.y;
         const auto& z = qp.results.z;
-        // std::cout << x << std::endl;
-        // std::cout << y << std::endl;
-        // std::cout << z << std::endl;
 
         T prim_eq = proxqp::dense::infty_norm(A * x - b);
         T prim_in =
@@ -255,12 +268,25 @@ TEST_CASE("dense maros meszaros using the api")
         CHECK((C * x - l).minCoeff() > -eps);
         CHECK((C * x - u).maxCoeff() < eps);
 
+        if (it > 0) {
+          CHECK(qp.results.info.iter_ext == 0);
+        }
+
         qp.settings.verbose = false;
       }
 
       timer.stop();
       elapsed_time += timer.elapsed().user;
+
+      // std::cout << "H" << H << std::endl;
+      // std::cout << "A" << A << std::endl;
+      // std::cout << "C" << C << std::endl;
+      // std::cout << "l" << l << std::endl;
+      // std::cout << "u" << u << std::endl;
     }
+    std::cout << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+    // std::cout << "now we do the warm start with previous result" <<
+    // std::endl;
   }
   std::cout << "timings total : \t" << elapsed_time * 1e-3 << "ms" << std::endl;
 }

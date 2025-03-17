@@ -234,8 +234,10 @@ struct Settings
 
   Settings(
     DenseBackend dense_backend = DenseBackend::PrimalDualLDLT,
-    T default_mu_eq = 1.E-3,
-    T default_mu_in = 1.E-1,
+    // T default_mu_eq = 1.E-3, // proxqp
+    // T default_mu_in = 1.E-1, // proxqp
+    T default_mu_eq = 1.E-3, // osqp
+    T default_mu_in = 1.E-1, // osqp
     T alpha_bcl = 0.1,
     T beta_bcl = 0.9,
     T alpha_osqp = 1.6,
