@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [macos-13, macos-14, windows-2019, windows-latest]
+        os: [macos-13, macos-14, windows-latest]
         include:
           - os: windows-2019
             toolset: ClangCl
@@ -106,6 +106,12 @@ jobs:
           pattern: dist-*
           merge-multiple: true
           path: dist
+
+      - name: Check package with twine
+        run: |
+          pip install twine
+          # checks if files can be unzipped and if metadata is correct
+          twine check --strict dist/*
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
