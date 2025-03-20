@@ -348,8 +348,8 @@ class DenseQpWrapper(unittest.TestCase):
         A = None
         b = None
         C = None
-        u = None
-        l = None
+        _u = None
+        _l = None
 
         results = proxsuite.osqp.dense.solve(
             H,
