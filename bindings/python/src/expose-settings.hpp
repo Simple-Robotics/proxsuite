@@ -16,7 +16,7 @@ namespace proxqp {
 namespace python {
 template<typename T>
 void
-exposeSettings(nanobind::module_ m)
+exposeSettings(nanobind::module_& m)
 {
 
   ::nanobind::enum_<InitialGuessStatus>(m, "InitialGuess")

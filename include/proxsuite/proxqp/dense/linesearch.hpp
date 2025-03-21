@@ -734,7 +734,7 @@ active_set_change(const Model<T>& qpmodel,
           }
           qpwork.ldl.insert_block_at(n + n_eq + n_c, new_cols, stack);
         } break;
-        case DenseBackend::PrimalLDLT: {
+        case DenseBackend::PrimalLDLT: { // PrimalLDLT here
           // too slow
           // for (isize i=0; i < planned_to_add_count; ++i){
           //   isize index = planned_to_add[i];

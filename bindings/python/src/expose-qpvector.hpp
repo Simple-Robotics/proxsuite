@@ -16,7 +16,7 @@ namespace python {
 
 template<typename T>
 void
-exposeQPVectorDense(nanobind::module_ m)
+exposeQPVectorDense(nanobind::module_& m)
 {
 
   ::nanobind::class_<dense::BatchQP<T>>(m, "BatchQP")
@@ -46,7 +46,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-exposeQPVectorSparse(nanobind::module_ m)
+exposeQPVectorSparse(nanobind::module_& m)
 {
 
   ::nanobind::class_<sparse::BatchQP<T, I>>(m, "BatchQP")

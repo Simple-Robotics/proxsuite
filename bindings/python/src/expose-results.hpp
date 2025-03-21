@@ -18,7 +18,7 @@ namespace python {
 
 template<typename T>
 void
-exposeResults(nanobind::module_ m)
+exposeResults(nanobind::module_& m)
 {
   ::nanobind::enum_<QPSolverOutput>(m, "QPSolverOutput")
     .value("PROXQP_SOLVED", QPSolverOutput::PROXQP_SOLVED)

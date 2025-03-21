@@ -130,7 +130,8 @@ TEST_CASE("dense maros meszaros using the api")
       qp.settings.eps_dual_inf = 1e-12;
       auto& eps = qp.settings.eps_abs;
 
-      for (size_t it = 0; it < 2; ++it) {
+      // for (size_t it = 0; it < 2; ++it) {
+      for (size_t it = 0; it < 1; ++it) {
         if (it > 0)
           qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
             WARM_START_WITH_PREVIOUS_RESULT;
@@ -164,6 +165,9 @@ TEST_CASE("dense maros meszaros using the api")
       timer.stop();
       elapsed_time += timer.elapsed().user;
     }
+    std::cout << " n: " << n << " n_eq+n_in: " << n_eq_in << std::endl;
+    // std::cout << "now we do the warm start with previous result" <<
+    // std::endl;
   }
   std::cout << "timings total : \t" << elapsed_time * 1e-3 << "ms" << std::endl;
 }

@@ -12,6 +12,7 @@
 #include <proxsuite/proxqp/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/proxqp/dense/fwd.hpp>
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
@@ -29,6 +30,12 @@ struct Workspace
   proxsuite::linalg::dense::Ldlt<T> ldl{};
   proxsuite::linalg::veg::Vec<unsigned char> ldl_stack;
   Timer<T> timer;
+
+  ///// Timings for mu updates in OSQP
+  Timer<T> timer_full_fact;
+  T factorization_time_full_kkt;
+  Timer<T> timer_mu_update;
+  T time_since_last_mu_update;
 
   ///// QP STORAGE
   Mat<T> H_scaled;
@@ -52,13 +59,29 @@ struct Workspace
   ///// KKT system storage
   Mat<T> kkt;
 
+  ///// Matrices K and K + Delta_K in polishing step of OSQP
+  Mat<T> k_polish;
+  Mat<T> k_plus_delta_k_polish;
+
   //// Active set & permutation vector
   VecISize current_bijection_map;
   VecISize new_bijection_map;
 
   VecBool active_set_up;
+  VecBool active_set_up_eq;
+  VecBool active_set_up_ineq;
   VecBool active_set_low;
+  VecBool active_set_low_eq;
+  VecBool active_set_low_ineq;
   VecBool active_inequalities;
+  VecBool active_constraints_eq;
+  VecBool active_constraints_ineq;
+
+  //// OSQP variables
+  Vec<T> zeta_eq;
+  Vec<T> zeta_in;
+  Vec<T> nu_eq;
+  Vec<T> nu_in;
 
   //// First order residuals for line search
 
@@ -116,6 +139,8 @@ struct Workspace
     , l_scaled(n_in)
     , x_prev(dim)
     , y_prev(n_eq)
+    , zeta_eq(n_eq)
+    , nu_eq(n_eq)
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
@@ -204,8 +229,16 @@ struct Workspace
         new_bijection_map(i) = i;
       }
       active_set_up.resize(n_in + dim);
+      active_set_up_eq.resize(n_eq + dim);
+      active_set_up_ineq.resize(n_in + dim);
       active_set_low.resize(n_in + dim);
+      active_set_low_eq.resize(n_eq + dim);
+      active_set_low_ineq.resize(n_in + dim);
       active_inequalities.resize(n_in + dim);
+      active_constraints_eq.resize(n_eq + dim);
+      active_constraints_ineq.resize(n_in + dim);
+      zeta_in.resize(n_in + dim);
+      nu_in.resize(n_in + dim);
       active_part_z.resize(n_in + dim);
       dw_aug.resize(dim + n_eq + n_in + dim);
       rhs.resize(dim + n_eq + n_in + dim);
@@ -279,8 +312,16 @@ struct Workspace
         new_bijection_map(i) = i;
       }
       active_set_up.resize(n_in);
+      active_set_up_eq.resize(n_eq);
+      active_set_up_ineq.resize(n_in);
       active_set_low.resize(n_in);
+      active_set_low_eq.resize(n_eq);
+      active_set_low_ineq.resize(n_in);
       active_inequalities.resize(n_in);
+      active_constraints_eq.resize(n_eq);
+      active_constraints_ineq.resize(n_in);
+      zeta_in.resize(n_in);
+      nu_in.resize(n_in);
       active_part_z.resize(n_in);
       dw_aug.resize(dim + n_eq + n_in);
       rhs.resize(dim + n_eq + n_in);
@@ -302,6 +343,10 @@ struct Workspace
     x_prev.setZero();
     y_prev.setZero();
     z_prev.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
     kkt.setZero();
     Hdx.setZero();
     Cdx.setZero();
@@ -330,6 +375,7 @@ struct Workspace
   void cleanup(const bool box_constraints)
   {
     isize n_in = C_scaled.rows();
+    isize n_eq = A_scaled.rows();
     isize dim = H_scaled.rows();
     H_scaled.setZero();
     g_scaled.setZero();
@@ -338,6 +384,10 @@ struct Workspace
     b_scaled.setZero();
     u_scaled.setZero();
     l_scaled.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
     Hdx.setZero();
     Cdx.setZero();
     Adx.setZero();
@@ -366,6 +416,10 @@ struct Workspace
       current_bijection_map(i) = i;
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
+      active_constraints_ineq(i) = false;
+    }
+    for (isize i = 0; i < n_eq; i++) {
+      active_constraints_eq(i) = false;
     }
 
     constraints_changed = false;

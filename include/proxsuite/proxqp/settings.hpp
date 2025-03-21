@@ -95,6 +95,10 @@ struct Settings
   T alpha_bcl;
   T beta_bcl;
 
+  T alpha_osqp;
+  T delta_osqp;
+  T delta_osqp_inv;
+
   T refactor_dual_feasibility_threshold;
   T refactor_rho_threshold;
 
@@ -118,12 +122,19 @@ struct Settings
   isize safe_guard;
   isize nb_iterative_refinement;
   T eps_refact;
+  isize nb_polish_iter;
 
   bool verbose;
   InitialGuessStatus initial_guess;
   bool update_preconditioner;
   bool compute_preconditioner;
   bool compute_timings;
+  bool polish;
+
+  bool update_mu_osqp;
+  T ratio_time_mu_update;
+  T ratio_value_mu_update;
+  T ratio_value_mu_update_inv;
 
   bool check_duality_gap;
   T eps_duality_gap_abs;
@@ -148,6 +159,9 @@ struct Settings
    * @param default_mu_in default mu_in parameter of result class
    * @param alpha_bcl alpha parameter of the BCL algorithm.
    * @param beta_bcl beta parameter of the BCL algorithm.
+   * @param alpha_osqp alpha parameter of the OSQP algorithm.
+   * @param delta_osqp delta parameter of the OSQP algorithm.
+   * @param delta_osqp_inv inverse of delta parameter of the OSQP algorithm.
    * @param refactor_dual_feasibility_threshold threshold above which
    * refactorization is performed to change rho parameter.
    * @param refactor_rho_threshold new rho parameter used if the
@@ -173,6 +187,7 @@ struct Settings
    * @param nb_iterative_refinement number of iterative refinements.
    * @param eps_refact threshold value for refactorizing the ldlt factorization
    * in the iterative refinement loop.
+   * @param nb_polish_iter number of iterations for the polishing step.
    * @param safe_guard safeguard parameter ensuring global convergence of ProxQP
    * scheme.
    * @param VERBOSE if set to true, the solver prints information at each loop.
@@ -182,9 +197,16 @@ struct Settings
    * re-computed when calling the update method.
    * @param compute_preconditioner If set to true, the preconditioner will be
    * computed with the init method.
-   * @param compute_timings If set to true, timings in microseconds will be
-   * computed by the solver (setup time, solving time, and run time = setup time
-   * + solving time).
+   * @param compute_timings If set to true, timings will be computed by the
+   * solver (setup time, solving time, and run time = setup time + solving
+   * time).
+   * @param polish If set to true, the OSQP solver will polish the solution.
+   * @param update_mu_osqp If set to true, mu_eq and mu_in will be updated
+   * @param ratio_time_mu_update ratio of the factorization time for the update
+   * condition
+   * @param ratio_value_mu_update ratio of the between the old and new mu_value
+   * for the update condition
+   * @param ratio_value_mu_update_inv inverse of ratio_value_mu_update
    * @param check_duality_gap If set to true, duality gap will be calculated and
    * included in the stopping criterion.
    * @param eps_duality_gap_abs absolute duality-gap stopping criterion.
@@ -212,10 +234,15 @@ struct Settings
 
   Settings(
     DenseBackend dense_backend = DenseBackend::PrimalDualLDLT,
-    T default_mu_eq = 1.E-3,
-    T default_mu_in = 1.E-1,
+    // T default_mu_eq = 1.E-3, // proxqp
+    // T default_mu_in = 1.E-1, // proxqp
+    T default_mu_eq = 1.E-3, // osqp
+    T default_mu_in = 1.E-1, // osqp
     T alpha_bcl = 0.1,
     T beta_bcl = 0.9,
+    T alpha_osqp = 1.6,
+    T delta_osqp = 1e-6,
+    T delta_osqp_inv = 1e6,
     T refactor_dual_feasibility_threshold = 1e-2,
     T refactor_rho_threshold = 1e-7,
     T mu_min_eq = 1e-9,
@@ -234,8 +261,9 @@ struct Settings
     isize max_iter_in = 1500,
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
-    T eps_refact = 1.e-6, // before eps_refact_=1.e-6
-    bool verbose = false,
+    T eps_refact = 1.e-6,
+    isize nb_polish_iter = 10,
+    bool verbose = true,
     InitialGuessStatus initial_guess = InitialGuessStatus::
       EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
                                           // EQUALITY_CONSTRAINED_INITIAL_GUESS,
@@ -243,7 +271,12 @@ struct Settings
                                           // once a problem
     bool update_preconditioner = false,
     bool compute_preconditioner = true,
-    bool compute_timings = false,
+    bool compute_timings = true,
+    bool polish = true,
+    bool update_mu_osqp = false,
+    T ratio_time_mu_update = 0.4,
+    T ratio_value_mu_update = 5,
+    T ratio_value_mu_update_inv = 0.2,
     bool check_duality_gap = false,
     T eps_duality_gap_abs = 1.e-4,
     T eps_duality_gap_rel = 0,
@@ -262,6 +295,9 @@ struct Settings
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
     , beta_bcl(beta_bcl)
+    , alpha_osqp(alpha_osqp)
+    , delta_osqp(delta_osqp)
+    , delta_osqp_inv(delta_osqp_inv)
     , refactor_dual_feasibility_threshold(refactor_dual_feasibility_threshold)
     , refactor_rho_threshold(refactor_rho_threshold)
     , mu_min_eq(mu_min_eq)
@@ -281,11 +317,17 @@ struct Settings
     , safe_guard(safe_guard)
     , nb_iterative_refinement(nb_iterative_refinement)
     , eps_refact(eps_refact)
+    , nb_polish_iter(nb_polish_iter)
     , verbose(verbose)
     , initial_guess(initial_guess)
     , update_preconditioner(update_preconditioner)
     , compute_preconditioner(compute_preconditioner)
     , compute_timings(compute_timings)
+    , polish(polish)
+    , update_mu_osqp(update_mu_osqp)
+    , ratio_time_mu_update(ratio_time_mu_update)
+    , ratio_value_mu_update(ratio_value_mu_update)
+    , ratio_value_mu_update_inv(ratio_value_mu_update_inv)
     , check_duality_gap(check_duality_gap)
     , eps_duality_gap_abs(eps_duality_gap_abs)
     , eps_duality_gap_rel(eps_duality_gap_rel)
@@ -325,6 +367,12 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.default_mu_in == settings2.default_mu_in &&
     settings1.alpha_bcl == settings2.alpha_bcl &&
     settings1.alpha_bcl == settings2.alpha_bcl &&
+    settings1.alpha_osqp == settings2.alpha_osqp &&
+    settings1.alpha_osqp == settings2.alpha_osqp &&
+    settings1.delta_osqp == settings2.delta_osqp &&
+    settings1.delta_osqp == settings2.delta_osqp &&
+    settings1.delta_osqp_inv == settings2.delta_osqp_inv &&
+    settings1.delta_osqp_inv == settings2.delta_osqp_inv &&
     settings1.refactor_dual_feasibility_threshold ==
       settings2.refactor_dual_feasibility_threshold &&
     settings1.refactor_rho_threshold == settings2.refactor_rho_threshold &&
@@ -345,11 +393,18 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.safe_guard == settings2.safe_guard &&
     settings1.nb_iterative_refinement == settings2.nb_iterative_refinement &&
     settings1.eps_refact == settings2.eps_refact &&
+    settings1.nb_polish_iter == settings2.nb_polish_iter &&
     settings1.verbose == settings2.verbose &&
     settings1.initial_guess == settings2.initial_guess &&
     settings1.update_preconditioner == settings2.update_preconditioner &&
     settings1.compute_preconditioner == settings2.compute_preconditioner &&
     settings1.compute_timings == settings2.compute_timings &&
+    settings1.polish == settings2.polish &&
+    settings1.update_mu_osqp == settings2.update_mu_osqp &&
+    settings1.ratio_time_mu_update == settings2.ratio_time_mu_update &&
+    settings1.ratio_value_mu_update == settings2.ratio_value_mu_update &&
+    settings1.ratio_value_mu_update_inv ==
+      settings2.ratio_value_mu_update_inv &&
     settings1.check_duality_gap == settings2.check_duality_gap &&
     settings1.eps_duality_gap_abs == settings2.eps_duality_gap_abs &&
     settings1.eps_duality_gap_rel == settings2.eps_duality_gap_rel &&

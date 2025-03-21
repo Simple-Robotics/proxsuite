@@ -277,7 +277,7 @@ class DenseQpWrapper(unittest.TestCase):
             u=np.asfortranarray(u),
             eps_abs=1.0e-9,
             eps_rel=0,
-            initial_guess=proxsuite.proxqp.NO_INITIAL_GUESS,
+            initial_guess=proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS,
         )
         dua_res = normInf(
             H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z

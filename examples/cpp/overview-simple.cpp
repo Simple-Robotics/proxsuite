@@ -10,7 +10,7 @@ main()
 {
   // generate a QP problem
   T sparsity_factor = 0.15;
-  dense::isize dim = 10;
+  dense::isize dim = 2000;
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
@@ -22,6 +22,10 @@ main()
 
   // load PROXQP solver with dense backend and solve the problem
   dense::QP<T> qp(dim, n_eq, n_in);
+
+  qp.settings.eps_abs = 1.e-6;
+  qp.settings.eps_rel = 0;
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -31,7 +35,12 @@ main()
           qp_random.u);
   qp.solve();
   // print an optimal solution x,y and z
-  std::cout << "optimal x: " << qp.results.x << std::endl;
-  std::cout << "optimal y: " << qp.results.y << std::endl;
-  std::cout << "optimal z: " << qp.results.z << std::endl;
+  // std::cout << "optimal x: " << qp.results.x << std::endl;
+  // std::cout << "optimal y: " << qp.results.y << std::endl;
+  // std::cout << "optimal z: " << qp.results.z << std::endl;
+  std::cout << "Primal residual: " << qp.results.info.pri_res << std::endl;
+  std::cout << "Dual residual: " << qp.results.info.dua_res << std::endl;
+  std::cout << "Duality gap: " << qp.results.info.duality_gap << std::endl;
+  std::cout << "Setup time: " << qp.results.info.setup_time
+            << " Solve time: " << qp.results.info.solve_time << std::endl;
 }

@@ -17,7 +17,7 @@ namespace python {
 
 template<typename T>
 void
-solveDenseQp(nanobind::module_ m)
+solveDenseQp(nanobind::module_& m)
 {
   m.def(
     "solve",
@@ -277,7 +277,7 @@ namespace python {
 
 template<typename T, typename I>
 void
-solveSparseQp(nanobind::module_ m)
+solveSparseQp(nanobind::module_& m)
 {
   m.def(
     "solve",

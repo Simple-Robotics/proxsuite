@@ -19,7 +19,7 @@ namespace dense {
 namespace python {
 template<typename T>
 void
-exposeDenseModel(nanobind::module_ m)
+exposeDenseModel(nanobind::module_& m)
 {
 
   ::nanobind::class_<BackwardData<T>>(m, "BackwardData")
@@ -83,7 +83,7 @@ namespace sparse {
 namespace python {
 template<typename T, typename I>
 void
-exposeSparseModel(nanobind::module_ m)
+exposeSparseModel(nanobind::module_& m)
 {
   ::nanobind::class_<proxsuite::proxqp::sparse::Model<T, I>>(m, "model")
     .def(::nanobind::init<i64, i64, i64>(),

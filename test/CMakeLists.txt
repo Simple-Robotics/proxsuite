@@ -52,6 +52,12 @@ proxsuite_test(sparse_qp_wrapper src/sparse_qp_wrapper.cpp)
 proxsuite_test(sparse_qp_solve src/sparse_qp_solve.cpp)
 proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
 proxsuite_test(cvxpy src/cvxpy.cpp)
+proxsuite_test(osqp_cvxpy src/osqp_cvxpy.cpp)
+proxsuite_test(osqp_dense_ruiz_equilibration src/osqp_dense_ruiz_equilibration.cpp)
+proxsuite_test(osqp_dense_qp_solve src/osqp_dense_qp_solve.cpp)
+proxsuite_test(osqp_dense_qp_eq src/osqp_dense_qp_eq.cpp)
+proxsuite_test(osqp_dense_unconstrained_qp src/osqp_dense_unconstrained_qp.cpp)
+proxsuite_test(osqp_dense_qp_with_eq_and_in src/osqp_dense_qp_with_eq_and_in.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_test(parallel src/parallel_qp_solve.cpp)
@@ -68,6 +74,7 @@ endmacro()
 
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
 proxsuite_test(serialization src/serialization.cpp)
+# proxsuite_test(osqp_serialization src/osqp_serialization.cpp)
 add_test_cflags(
   ${PROJECT_NAME}-test-cpp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
@@ -87,6 +94,7 @@ endif()
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
   proxsuite_test(dense_maros_meszaros src/dense_maros_meszaros.cpp)
+  proxsuite_test(osqp_dense_maros_meszaros src/osqp_dense_maros_meszaros.cpp)
   proxsuite_test(sparse_maros_meszaros src/sparse_maros_meszaros.cpp)
 endif()
 
