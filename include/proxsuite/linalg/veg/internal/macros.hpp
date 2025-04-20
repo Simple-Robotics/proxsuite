@@ -15,6 +15,7 @@
 #define PROXSUITE_PRETTY_FUNCTION __PRETTY_FUNCTION__
 #endif
 
+#ifndef PROXSUITE_THROW_PRETTY
 #define PROXSUITE_THROW_PRETTY(condition, exception, message)                  \
   if (condition) {                                                             \
     std::ostringstream ss;                                                     \
@@ -24,7 +25,9 @@
     ss << message << "\n";                                                     \
     throw exception(ss.str());                                                 \
   }
+#endif
 
+#ifndef PROXSUITE_CHECK_ARGUMENT_SIZE
 #define PROXSUITE_CHECK_ARGUMENT_SIZE(size, expected_size, message)            \
   if (size != expected_size) {                                                 \
     std::ostringstream oss;                                                    \
@@ -33,6 +36,7 @@
     oss << "hint: " << message << std::endl;                                   \
     PROXSUITE_THROW_PRETTY(true, std::invalid_argument, oss.str());            \
   }
+#endif
 
 #if HEDLEY_MSVC_VERSION_CHECK(14, 0, 0) ||                                     \
   HEDLEY_INTEL_CL_VERSION_CHECK(2021, 1, 0)
