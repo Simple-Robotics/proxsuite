@@ -19,6 +19,7 @@
 #include "proxsuite/proxqp/dense/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/settings.hpp"
 #include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/solvers/common/utils.hpp"
 #include <iostream>
 
 namespace proxsuite {
@@ -51,6 +52,65 @@ qp_solve( //
   preconditioner::RuizEquilibration<T>& ruiz)
 {
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
+
+  proxsuite::common::setup_solver(qpsettings,
+                                  qpmodel,
+                                  qpresults,
+                                  qpwork,
+                                  box_constraints,
+                                  dense_backend,
+                                  hessian_type,
+                                  ruiz,
+                                  common::QPSolver::OSQP);
+
+  isize n_constraints(qpmodel.n_in);
+  if (box_constraints) {
+    n_constraints += qpmodel.dim;
+  }
+
+  T primal_feasibility_eq_rhs_0(0);
+  T primal_feasibility_in_rhs_0(0);
+  T dual_feasibility_rhs_0(0);
+  T dual_feasibility_rhs_1(0);
+  T dual_feasibility_rhs_3(0);
+  T primal_feasibility_lhs(0);
+  T primal_feasibility_eq_lhs(0);
+  T primal_feasibility_in_lhs(0);
+  T dual_feasibility_lhs(0);
+
+  T duality_gap(0);
+  T rhs_duality_gap(0);
+  T scaled_eps(qpsettings.eps_abs);
+
+  for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
+
+    bool stop_loop = false;
+    proxsuite::common::compute_feasibility(qpsettings,
+                                           qpmodel,
+                                           qpresults,
+                                           qpwork,
+                                           box_constraints,
+                                           hessian_type,
+                                           ruiz,
+                                           common::QPSolver::OSQP,
+                                           primal_feasibility_eq_rhs_0,
+                                           primal_feasibility_in_rhs_0,
+                                           primal_feasibility_eq_lhs,
+                                           primal_feasibility_in_lhs,
+                                           primal_feasibility_lhs,
+                                           dual_feasibility_lhs,
+                                           dual_feasibility_rhs_0,
+                                           dual_feasibility_rhs_1,
+                                           dual_feasibility_rhs_3,
+                                           rhs_duality_gap,
+                                           duality_gap,
+                                           scaled_eps,
+                                           iter,
+                                           stop_loop);
+    if (stop_loop) {
+      break;
+    }
+  }
 
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }

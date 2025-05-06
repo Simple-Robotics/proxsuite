@@ -15,9 +15,11 @@
 #include "proxsuite/proxqp/dense/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
+#include "proxsuite/proxqp/dense/utils.hpp"
 #include <proxsuite/proxqp/utils/prints.hpp>
 #include <proxsuite/osqp/utils/prints.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
+#include <iomanip>
 
 namespace proxsuite {
 namespace common {
@@ -157,6 +159,10 @@ print_setup_header(const pp::Settings<T>& settings,
 }
 /*!
  * Setups the solver.
+ * In particular, it scales (Ruiz equilibration) the data, then
+ * builds the KKT matrix according to the algorihm, eg:
+ * proxqp: Builds the KKT with equality and activate inequality constraints
+ * osqp: Builds the KKT with all of the constraints.
  *
  * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling
@@ -484,6 +490,184 @@ setup_solver(const pp::Settings<T>& qpsettings,
           break;
         }
       }
+    }
+  }
+}
+/*!
+ * Computes the objective function.
+ *
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+compute_objective(const ppd::Model<T>& qpmodel, pp::Results<T>& qpresults)
+{
+  qpresults.info.objValue = 0;
+  for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
+    qpresults.info.objValue +=
+      0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
+    qpresults.info.objValue +=
+      qpresults.x(j) * T(qpmodel.H.col(j)
+                           .tail(qpmodel.dim - j - 1)
+                           .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
+  }
+  qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
+}
+/*!
+ * Computes the residuals and the feasibility of the problem, then update it
+ * and stops the algorithm if needed.
+ *
+ * @param qpsettings solver settings.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ * @param qpwork solver workspace.
+ * @param ruiz ruiz preconditioner.
+ * @param qp_solver PROXQP or OSQP.
+ */
+template<typename T>
+void
+compute_feasibility( //
+  const pp::Settings<T>& qpsettings,
+  const ppd::Model<T>& qpmodel,
+  pp::Results<T>& qpresults,
+  ppd::Workspace<T>& qpwork,
+  const bool box_constraints,
+  const pp::HessianType& hessian_type,
+  ppd::preconditioner::RuizEquilibration<T>& ruiz,
+  QPSolver qp_solver,
+  T& primal_feasibility_eq_rhs_0,
+  T& primal_feasibility_in_rhs_0,
+  T& primal_feasibility_eq_lhs,
+  T& primal_feasibility_in_lhs,
+  T& primal_feasibility_lhs,
+  T& dual_feasibility_lhs,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T& duality_gap,
+  T& scaled_eps,
+  plv::i64 iter,
+  bool& stop_loop)
+{
+
+  ppd::global_primal_residual(qpmodel,
+                              qpresults,
+                              qpsettings,
+                              qpwork,
+                              ruiz,
+                              box_constraints,
+                              primal_feasibility_lhs,
+                              primal_feasibility_eq_rhs_0,
+                              primal_feasibility_in_rhs_0,
+                              primal_feasibility_eq_lhs,
+                              primal_feasibility_in_lhs);
+
+  ppd::global_dual_residual(qpresults,
+                            qpwork,
+                            qpmodel,
+                            box_constraints,
+                            ruiz,
+                            dual_feasibility_lhs,
+                            dual_feasibility_rhs_0,
+                            dual_feasibility_rhs_1,
+                            dual_feasibility_rhs_3,
+                            rhs_duality_gap,
+                            duality_gap,
+                            hessian_type);
+
+  qpresults.info.pri_res = primal_feasibility_lhs;
+  qpresults.info.dua_res = dual_feasibility_lhs;
+  qpresults.info.duality_gap = duality_gap;
+
+  T rhs_pri(scaled_eps);
+  if (qpsettings.eps_rel != 0) {
+    rhs_pri += qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                             primal_feasibility_in_rhs_0);
+  }
+  bool is_primal_feasible = primal_feasibility_lhs <= rhs_pri;
+
+  T rhs_dua(qpsettings.eps_abs);
+  if (qpsettings.eps_rel != 0) {
+    rhs_dua +=
+      qpsettings.eps_rel *
+      std::max(std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+               std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2));
+  }
+  bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
+
+  if (qpsettings.verbose) {
+    ruiz.unscale_primal_in_place(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.x });
+    ruiz.unscale_dual_in_place_eq(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.y });
+    ruiz.unscale_dual_in_place_in(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+    if (box_constraints) {
+      ruiz.unscale_box_dual_in_place_in(
+        pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+    }
+
+    compute_objective(qpmodel, qpresults);
+
+    std::cout << "\033[1;32m[outer iteration " << iter + 1 << "]\033[0m"
+              << std::endl;
+
+    switch (qp_solver) {
+      case common::QPSolver::PROXQP: {
+        std::cout << std::scientific << std::setw(2) << std::setprecision(2)
+                  << " | primal residual=" << qpresults.info.pri_res
+                  << " | dual residual=" << qpresults.info.dua_res
+                  << " | duality gap=" << qpresults.info.duality_gap
+                  << " | mu_in=" << qpresults.info.mu_in
+                  << " | rho=" << qpresults.info.rho << std::endl;
+        break;
+        case common::QPSolver::OSQP: {
+          std::cout << std::scientific << std::setw(2) << std::setprecision(2)
+                    << " | primal residual=" << qpresults.info.pri_res
+                    << " | dual residual=" << qpresults.info.dua_res
+                    << " | duality gap=" << qpresults.info.duality_gap
+                    << " | rho=" << qpresults.info.rho
+                    << " | mu_in=" << qpresults.info.mu_in
+                    << " | mu_eq=" << qpresults.info.mu_eq << std::endl;
+          break;
+        }
+      }
+    }
+
+    ruiz.scale_primal_in_place(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.x });
+    ruiz.scale_dual_in_place_eq(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.y });
+    ruiz.scale_dual_in_place_in(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+    if (box_constraints) {
+      ruiz.scale_box_dual_in_place_in(
+        pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+    }
+  }
+
+  if (is_primal_feasible && is_dual_feasible) {
+    if (qpsettings.check_duality_gap) {
+      if (std::fabs(qpresults.info.duality_gap) <=
+          qpsettings.eps_duality_gap_abs +
+            qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
+        if (qpsettings.primal_infeasibility_solving &&
+            qpresults.info.status ==
+              pp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+          qpresults.info.status =
+            pp::QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+        } else {
+          qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
+        }
+        stop_loop = true;
+      }
+    } else {
+      qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
+      stop_loop = true;
     }
   }
 }
