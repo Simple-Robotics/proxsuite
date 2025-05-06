@@ -536,7 +536,7 @@ compute_feasibility( //
   ppd::Workspace<T>& qpwork,
   const bool box_constraints,
   const pp::HessianType& hessian_type,
-  ppd::preconditioner::RuizEquilibration<T>& ruiz,
+  ppdp::RuizEquilibration<T>& ruiz,
   QPSolver qp_solver,
   T& primal_feasibility_eq_rhs_0,
   T& primal_feasibility_in_rhs_0,
@@ -668,6 +668,109 @@ compute_feasibility( //
     } else {
       qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
       stop_loop = true;
+    }
+  }
+}
+/*!
+ * Computes residuals, the infeasibility and updates the solver's status.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ */
+template<typename T>
+void
+update_solver_status( //
+  const pp::Settings<T>& qpsettings,
+  const ppd::Model<T>& qpmodel,
+  pp::Results<T>& qpresults,
+  ppd::Workspace<T>& qpwork,
+  const bool box_constraints,
+  const pp::HessianType& hessian_type,
+  ppdp::RuizEquilibration<T>& ruiz,
+  T& primal_feasibility_eq_rhs_0,
+  T& primal_feasibility_in_rhs_0,
+  T& primal_feasibility_eq_lhs,
+  T& primal_feasibility_in_lhs,
+  T& primal_feasibility_lhs_new,
+  T& dual_feasibility_lhs,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T& duality_gap,
+  T& scaled_eps)
+{
+  ppd::global_primal_residual(qpmodel,
+                              qpresults,
+                              qpsettings,
+                              qpwork,
+                              ruiz,
+                              box_constraints,
+                              primal_feasibility_lhs_new,
+                              primal_feasibility_eq_rhs_0,
+                              primal_feasibility_in_rhs_0,
+                              primal_feasibility_eq_lhs,
+                              primal_feasibility_in_lhs);
+
+  bool is_primal_feasible =
+    primal_feasibility_lhs_new <=
+    (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                                primal_feasibility_in_rhs_0));
+  qpresults.info.pri_res = primal_feasibility_lhs_new;
+  if (is_primal_feasible) {
+    T dual_feasibility_lhs_new(dual_feasibility_lhs);
+
+    ppd::global_dual_residual(qpresults,
+                              qpwork,
+                              qpmodel,
+                              box_constraints,
+                              ruiz,
+                              dual_feasibility_lhs_new,
+                              dual_feasibility_rhs_0,
+                              dual_feasibility_rhs_1,
+                              dual_feasibility_rhs_3,
+                              rhs_duality_gap,
+                              duality_gap,
+                              hessian_type);
+    qpresults.info.dua_res = dual_feasibility_lhs_new;
+    qpresults.info.duality_gap = duality_gap;
+
+    bool is_dual_feasible =
+      dual_feasibility_lhs_new <=
+      (qpsettings.eps_abs +
+       qpsettings.eps_rel *
+         std::max(
+           std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+           std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
+
+    if (is_dual_feasible) {
+      if (qpsettings.check_duality_gap) {
+        if (std::fabs(qpresults.info.duality_gap) <=
+            qpsettings.eps_duality_gap_abs +
+              qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
+          if (qpsettings.primal_infeasibility_solving &&
+              qpresults.info.status ==
+                pp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+            qpresults.info.status =
+              pp::QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+          } else {
+            qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
+          }
+        }
+      } else {
+        if (qpsettings.primal_infeasibility_solving &&
+            qpresults.info.status ==
+              pp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+          qpresults.info.status =
+            pp::QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+        } else {
+          qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
+        }
+      }
     }
   }
 }

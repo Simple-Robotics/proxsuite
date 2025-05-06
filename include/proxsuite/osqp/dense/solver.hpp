@@ -112,6 +112,12 @@ qp_solve( //
     }
   }
 
+  qpresults.info.iter_ext += 1;
+
+  qpwork.x_prev = qpresults.x;
+  qpwork.y_prev = qpresults.y;
+  qpwork.z_prev = qpresults.z;
+
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
