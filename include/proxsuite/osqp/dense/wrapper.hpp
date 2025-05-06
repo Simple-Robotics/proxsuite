@@ -10,7 +10,7 @@
 
 #include <proxsuite/proxqp/dense/wrapper.hpp>
 #include <proxsuite/osqp/dense/solver.hpp>
-#include <proxsuite/solvers/common/utils.hpp>
+#include <proxsuite/solvers/common/wrapper.hpp>
 
 namespace proxsuite {
 namespace osqp {

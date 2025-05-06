@@ -8,264 +8,484 @@
 #ifndef PROXSUITE_SOLVERS_COMMON_UTILS_HPP
 #define PROXSUITE_SOLVERS_COMMON_UTILS_HPP
 
+#include "proxsuite/proxqp/settings.hpp"
 #include "proxsuite/proxqp/results.hpp"
-#include "proxsuite/proxqp/dense/fwd.hpp"
-#include "proxsuite/linalg/veg/internal/typedefs.hpp"
+#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/proxqp/dense/workspace.hpp"
+#include "proxsuite/proxqp/dense/preconditioner/ruiz.hpp"
+#include "proxsuite/proxqp/dense/helpers.hpp"
+#include "proxsuite/proxqp/dense/linesearch.hpp"
+#include <proxsuite/proxqp/utils/prints.hpp>
+#include <proxsuite/osqp/utils/prints.hpp>
+#include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 namespace proxsuite {
 namespace common {
 
+namespace pp = proxsuite::proxqp;
 namespace ppd = proxsuite::proxqp::dense;
+namespace ppdp = proxsuite::proxqp::dense::preconditioner;
 namespace plv = proxsuite::linalg::veg;
 
-/*!
- * Generic function to solve the QP. Used in the functions solve() to solve the
- * the problem without defining the API. There are no box constraints in the
- * model.
- * @param Qp QP object on which the problem is solved.
- * @param H quadratic cost input defining the QP model.
- * @param g linear cost input defining the QP model.
- * @param A equality constraint matrix input defining the QP model.
- * @param b equality constraint vector input defining the QP model.
- * @param C inequality constraint matrix input defining the QP model.
- * @param l lower inequality constraint vector input defining the QP model.
- * @param u upper inequality constraint vector input defining the QP model.
- * @param x primal warm start.
- * @param y dual equality constraint warm start.
- * @param z dual inequality constraint warm start.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
- * @param compute_preconditioner bool parameter for executing or not the
- * preconditioner.
- * @param compute_timings boolean parameter for computing the solver timings.
- * @param rho proximal step size wrt primal variable.
- * @param mu_eq proximal step size wrt equality constrained multiplier.
- * @param mu_in proximal step size wrt inequality constrained multiplier.
- * @param eps_abs absolute accuracy threshold.
- * @param eps_rel relative accuracy threshold.
- * @param max_iter maximum number of iteration.
- * @param initial_guess initial guess option for warm starting or not the
- * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
- * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
- * criterion.
- * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
- * criterion.
- */
-template<typename T, typename QPStruct>
-proxqp::Results<T>
-solve_without_api(QPStruct& Qp,
-                  optional<ppd::MatRef<T>> H,
-                  optional<ppd::VecRef<T>> g,
-                  optional<ppd::MatRef<T>> A,
-                  optional<ppd::VecRef<T>> b,
-                  optional<ppd::MatRef<T>> C,
-                  optional<ppd::VecRef<T>> l,
-                  optional<ppd::VecRef<T>> u,
-                  optional<ppd::VecRef<T>> x,
-                  optional<ppd::VecRef<T>> y,
-                  optional<ppd::VecRef<T>> z,
-                  optional<T> eps_abs,
-                  optional<T> eps_rel,
-                  optional<T> rho,
-                  optional<T> mu_eq,
-                  optional<T> mu_in,
-                  optional<bool> verbose,
-                  bool compute_preconditioner,
-                  bool compute_timings,
-                  optional<plv::isize> max_iter,
-                  proxsuite::proxqp::InitialGuessStatus initial_guess,
-                  bool check_duality_gap,
-                  optional<T> eps_duality_gap_abs,
-                  optional<T> eps_duality_gap_rel,
-                  bool primal_infeasibility_solving,
-                  optional<T> manual_minimal_H_eigenvalue)
+///
+/// @brief This enum defines the different solvers implemented in ProxSuite.
+///
+enum class QPSolver
 {
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
+  PROXQP,
+  OSQP
+};
+/*!
+ * Prints the setup header.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ * @param qp_solver PROXQP or OSQP.
+ */
+template<typename T>
+void
+print_setup_header(const pp::Settings<T>& settings,
+                   const pp::Results<T>& results,
+                   const ppd::Model<T>& model,
+                   const bool box_constraints,
+                   const pp::DenseBackend& dense_backend,
+                   const pp::HessianType& hessian_type,
+                   const common::QPSolver qp_solver)
+{
 
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
+  switch (qp_solver) {
+    case common::QPSolver::PROXQP:
+      proxsuite::proxqp::print_preambule();
+      break;
+    case common::QPSolver::OSQP:
+      proxsuite::osqp::print_preambule();
+      break;
   }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
+
+  // Print variables and constraints
+  std::cout << "problem:  " << std::noshowpos << std::endl;
+  std::cout << "          variables n = " << model.dim
+            << ", equality constraints n_eq = " << model.n_eq << ",\n"
+            << "          inequality constraints n_in = " << model.n_in
+            << std::endl;
+
+  // Print Settings
+  std::cout << "settings: " << std::endl;
+  std::cout << "          backend = dense," << std::endl;
+  std::cout << "          eps_abs = " << settings.eps_abs
+            << " eps_rel = " << settings.eps_rel << std::endl;
+  std::cout << "          eps_prim_inf = " << settings.eps_primal_inf
+            << ", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
+
+  std::cout << "          rho = " << results.info.rho
+            << ", mu_eq = " << results.info.mu_eq
+            << ", mu_in = " << results.info.mu_in << "," << std::endl;
+  switch (qp_solver) {
+    case common::QPSolver::PROXQP:
+      std::cout << "          max_iter = " << settings.max_iter
+                << ", max_iter_in = " << settings.max_iter_in << ","
+                << std::endl;
+      break;
+    case common::QPSolver::OSQP:
+      std::cout << "          max_iter = " << settings.max_iter << std::endl;
+      break;
   }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
+  if (box_constraints) {
+    std::cout << "          box constraints: on, " << std::endl;
   } else {
-    Qp.init(
-      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
+    std::cout << "          box constraints: off, " << std::endl;
   }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  switch (dense_backend) {
+    case pp::DenseBackend::PrimalDualLDLT:
+      std::cout << "          dense backend: PrimalDualLDLT, " << std::endl;
+      break;
+    case pp::DenseBackend::PrimalLDLT:
+      std::cout << "          dense backend: PrimalLDLT, " << std::endl;
+      break;
+    case pp::DenseBackend::Automatic:
+      break;
+  }
+  switch (hessian_type) {
+    case pp::HessianType::Dense:
+      std::cout << "          problem type: Quadratic Program, " << std::endl;
+      break;
+    case pp::HessianType::Zero:
+      std::cout << "          problem type: Linear Program, " << std::endl;
+      break;
+    case pp::HessianType::Diagonal:
+      std::cout
+        << "          problem type: Quadratic Program with diagonal Hessian, "
+        << std::endl;
+      break;
+  }
+  if (settings.compute_preconditioner) {
+    std::cout << "          scaling: on, " << std::endl;
+  } else {
+    std::cout << "          scaling: off, " << std::endl;
+  }
+  if (settings.compute_timings) {
+    std::cout << "          timings: on, " << std::endl;
+  } else {
+    std::cout << "          timings: off, " << std::endl;
+  }
+  switch (settings.initial_guess) {
+    case pp::InitialGuessStatus::WARM_START:
+      std::cout << "          initial guess: warm start. \n" << std::endl;
+      break;
+    case pp::InitialGuessStatus::NO_INITIAL_GUESS:
+      std::cout << "          initial guess: no initial guess. \n" << std::endl;
+      break;
+    case pp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT:
+      std::cout
+        << "          initial guess: warm start with previous result. \n"
+        << std::endl;
+      break;
+    case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT:
+      std::cout
+        << "          initial guess: cold start with previous result. \n"
+        << std::endl;
+      break;
+    case pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS:
+      std::cout
+        << "          initial guess: equality constrained initial guess. \n"
+        << std::endl;
+  }
 }
 /*!
- * Generic function to solve the QP. Used in the functions solve() to solve the
- * the problem without defining the API. There are box constraints in the model.
- * @param Qp QP object on which the problem is solved.
- * @param H quadratic cost input defining the QP model.
- * @param g linear cost input defining the QP model.
- * @param A equality constraint matrix input defining the QP model.
- * @param b equality constraint vector input defining the QP model.
- * @param C inequality constraint matrix input defining the QP model.
- * @param l lower inequality constraint vector input defining the QP model.
- * @param u upper inequality constraint vector input defining the QP model.
- * @param l_box lower box inequality constraint vector input defining the QP
- * model.
- * @param u_box upper box inequality constraint vector input defining the QP
- * model.
- * @param x primal warm start.
- * @param y dual equality constraint warm start.
- * @param z dual inequality constraint warm start.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
- * @param compute_preconditioner bool parameter for executing or not the
- * preconditioner.
- * @param compute_timings boolean parameter for computing the solver timings.
- * @param rho proximal step size wrt primal variable.
- * @param mu_eq proximal step size wrt equality constrained multiplier.
- * @param mu_in proximal step size wrt inequality constrained multiplier.
- * @param eps_abs absolute accuracy threshold.
- * @param eps_rel relative accuracy threshold.
- * @param max_iter maximum number of iteration.
- * @param initial_guess initial guess option for warm starting or not the
- * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
- * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
- * criterion.
- * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
- * criterion.
+ * Setups the solver.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ * @param qp_solver PROXQP or OSQP.
  */
-template<typename T, typename QPStruct>
-proxqp::Results<T>
-solve_without_api(QPStruct& Qp,
-                  optional<ppd::MatRef<T>> H,
-                  optional<ppd::VecRef<T>> g,
-                  optional<ppd::MatRef<T>> A,
-                  optional<ppd::VecRef<T>> b,
-                  optional<ppd::MatRef<T>> C,
-                  optional<ppd::VecRef<T>> l,
-                  optional<ppd::VecRef<T>> u,
-                  optional<ppd::VecRef<T>> l_box,
-                  optional<ppd::VecRef<T>> u_box,
-                  optional<ppd::VecRef<T>> x,
-                  optional<ppd::VecRef<T>> y,
-                  optional<ppd::VecRef<T>> z,
-                  optional<T> eps_abs,
-                  optional<T> eps_rel,
-                  optional<T> rho,
-                  optional<T> mu_eq,
-                  optional<T> mu_in,
-                  optional<bool> verbose,
-                  bool compute_preconditioner,
-                  bool compute_timings,
-                  optional<plv::isize> max_iter,
-                  proxsuite::proxqp::InitialGuessStatus initial_guess,
-                  bool check_duality_gap,
-                  optional<T> eps_duality_gap_abs,
-                  optional<T> eps_duality_gap_rel,
-                  bool primal_infeasibility_solving,
-                  optional<T> manual_minimal_H_eigenvalue)
+template<typename T>
+void
+setup_solver(const pp::Settings<T>& qpsettings,
+             const ppd::Model<T>& qpmodel,
+             pp::Results<T>& qpresults,
+             ppd::Workspace<T>& qpwork,
+             const bool box_constraints,
+             const pp::DenseBackend& dense_backend,
+             const pp::HessianType& hessian_type,
+             ppdp::RuizEquilibration<T>& ruiz,
+             QPSolver qp_solver)
 {
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
-
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
+  plv::isize n_constraints(qpmodel.n_in);
+  if (box_constraints) {
+    n_constraints += qpmodel.dim;
   }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
+  if (qpsettings.compute_timings) {
+    qpwork.timer.stop();
+    qpwork.timer.start();
   }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
+  if (qpsettings.verbose) {
+    print_setup_header(qpsettings,
+                       qpresults,
+                       qpmodel,
+                       box_constraints,
+                       dense_backend,
+                       hessian_type,
+                       qp_solver);
   }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
+  if (qpwork.dirty) { // the following is used when a solve has already been
+                      // executed (and without any intermediary model update)
+    switch (qpsettings.initial_guess) {
+      case pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+        qpwork.cleanup(box_constraints);
+        qpresults.cleanup(qpsettings);
+        break;
+      }
+      case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+        // keep solutions but restart workspace and results
+        qpwork.cleanup(box_constraints);
+        qpresults.cold_start(qpsettings);
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen, qpresults.x });
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
+        qpwork.cleanup(box_constraints);
+        qpresults.cleanup(qpsettings);
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START: {
+        qpwork.cleanup(box_constraints);
+        qpresults.cold_start(
+          qpsettings); // because there was already a solve,
+                       // precond was already computed if set so
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen,
+            qpresults
+              .x }); // it contains the value given in entry for warm start
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+        // keep workspace and results solutions except statistics
+        // std::cout << "i keep previous solution" << std::endl;
+        qpresults.cleanup_statistics();
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen, qpresults.x });
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        break;
+      }
+    }
+    if (qpsettings.initial_guess !=
+        pp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
+      switch (hessian_type) {
+        case pp::HessianType::Zero:
+          break;
+        case pp::HessianType::Dense:
+          qpwork.H_scaled = qpmodel.H;
+          break;
+        case pp::HessianType::Diagonal:
+          qpwork.H_scaled = qpmodel.H;
+          break;
+      }
+      qpwork.g_scaled = qpmodel.g;
+      qpwork.A_scaled = qpmodel.A;
+      qpwork.b_scaled = qpmodel.b;
+      qpwork.C_scaled = qpmodel.C;
+      qpwork.u_scaled = qpmodel.u;
+      qpwork.l_scaled = qpmodel.l;
+      proxsuite::proxqp::dense::setup_equilibration(
+        qpwork,
+        qpsettings,
+        box_constraints,
+        hessian_type,
+        ruiz,
+        false); // reuse previous equilibration
+      proxsuite::proxqp::dense::setup_factorization(
+        qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+    }
+    switch (qpsettings.initial_guess) {
+      case pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+        compute_equality_constrained_initial_guess(qpwork,
+                                                   qpsettings,
+                                                   qpmodel,
+                                                   n_constraints,
+                                                   dense_backend,
+                                                   hessian_type,
+                                                   qpresults);
+        break;
+      }
+      case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+        switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            //!\ TODO in a quicker way
+            qpwork.n_c = 0;
+            for (plv::isize i = 0; i < n_constraints; i++) {
+              if (qpresults.z[i] != 0) {
+                qpwork.active_inequalities[i] = true;
+              } else {
+                qpwork.active_inequalities[i] = false;
+              }
+            }
+            ppd::linesearch::active_set_change(
+              qpmodel, qpresults, dense_backend, n_constraints, qpwork);
+          } break;
+          case common::QPSolver::OSQP: {
+            // TODO: Call for function to build the full KKT
+          } break;
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START: {
+        switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            //!\ TODO in a quicker way
+            qpwork.n_c = 0;
+            for (plv::isize i = 0; i < n_constraints; i++) {
+              if (qpresults.z[i] != 0) {
+                qpwork.active_inequalities[i] = true;
+              } else {
+                qpwork.active_inequalities[i] = false;
+              }
+            }
+            ppd::linesearch::active_set_change(
+              qpmodel, qpresults, dense_backend, n_constraints, qpwork);
+          } break;
+          case common::QPSolver::OSQP: {
+            // TODO: Call for function to build the full KKT
+          } break;
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+        // keep workspace and results solutions except statistics
+        // std::cout << "i use previous solution" << std::endl;
+        // meaningful for when one wants to warm start with previous result with
+        // the same QP model
+        break;
+      }
+    }
+  } else { // the following is used for a first solve after initializing or
+           // updating the Qp object
+    switch (qpsettings.initial_guess) {
+      case pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
+        proxsuite::proxqp::dense::setup_factorization(
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+        compute_equality_constrained_initial_guess(qpwork,
+                                                   qpsettings,
+                                                   qpmodel,
+                                                   n_constraints,
+                                                   dense_backend,
+                                                   hessian_type,
+                                                   qpresults);
+        break;
+      }
+      case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
+        //!\ TODO in a quicker way
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen,
+            qpresults
+              .x }); // meaningful for when there is an upate of the model and
+                     // one wants to warm start with previous result
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        setup_factorization(
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+        switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            //!\ TODO in a quicker way
+            qpwork.n_c = 0;
+            for (plv::isize i = 0; i < n_constraints; i++) {
+              if (qpresults.z[i] != 0) {
+                qpwork.active_inequalities[i] = true;
+              } else {
+                qpwork.active_inequalities[i] = false;
+              }
+            }
+            ppd::linesearch::active_set_change(
+              qpmodel, qpresults, dense_backend, n_constraints, qpwork);
+          } break;
+          case common::QPSolver::OSQP: {
+            // TODO: Call for function to build the full KKT
+          } break;
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
+        setup_factorization(
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START: {
+        //!\ TODO in a quicker way
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen, qpresults.x });
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        setup_factorization(
+          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+        switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            //!\ TODO in a quicker way
+            qpwork.n_c = 0;
+            for (plv::isize i = 0; i < n_constraints; i++) {
+              if (qpresults.z[i] != 0) {
+                qpwork.active_inequalities[i] = true;
+              } else {
+                qpwork.active_inequalities[i] = false;
+              }
+            }
+            ppd::linesearch::active_set_change(
+              qpmodel, qpresults, dense_backend, n_constraints, qpwork);
+          } break;
+          case common::QPSolver::OSQP: {
+            // TODO: Call for function to build the full KKT
+          } break;
+        }
+        break;
+      }
+      case pp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
+        // std::cout << "i refactorize from previous solution" << std::endl;
+        ruiz.scale_primal_in_place(
+          { proxsuite::proxqp::from_eigen,
+            qpresults
+              .x }); // meaningful for when there is an upate of the model and
+                     // one wants to warm start with previous result
+        ruiz.scale_dual_in_place_eq(
+          { proxsuite::proxqp::from_eigen, qpresults.y });
+        ruiz.scale_dual_in_place_in(
+          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+        if (box_constraints) {
+          ruiz.scale_box_dual_in_place_in(
+            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+        }
+        if (qpwork.refactorize) { // refactorization only when one of the
+                                  // matrices has changed or one proximal
+                                  // parameter has changed
+          setup_factorization(
+            qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+          switch (qp_solver) {
+            case common::QPSolver::PROXQP: {
+              //!\ TODO in a quicker way
+              qpwork.n_c = 0;
+              for (plv::isize i = 0; i < n_constraints; i++) {
+                if (qpresults.z[i] != 0) {
+                  qpwork.active_inequalities[i] = true;
+                } else {
+                  qpwork.active_inequalities[i] = false;
+                }
+              }
+              ppd::linesearch::active_set_change(
+                qpmodel, qpresults, dense_backend, n_constraints, qpwork);
+            } break;
+            case common::QPSolver::OSQP: {
+              // TODO: Call for function to build the full KKT
+            } break;
+          }
+          break;
+        }
+      }
+    }
   }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
-}
-/*!
- * Generic function to test wether two QP objects are equal.
- * @param qp1 First QP object.
- * @param qp2 Second QP object.
- */
-template<typename QPStruct>
-bool
-is_equal(const QPStruct& qp1, const QPStruct& qp2)
-{
-  bool value = qp1.model == qp2.model && qp1.settings == qp2.settings &&
-               qp1.results == qp2.results &&
-               qp1.is_box_constrained() == qp2.is_box_constrained();
-  return value;
 }
 
 } // namespace common

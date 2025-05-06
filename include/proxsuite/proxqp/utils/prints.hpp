@@ -20,13 +20,6 @@ print_line()
 }
 
 inline void
-print_header()
-{
-  std::cout << "iter    objective    pri res    dua res    mu_in  \n"
-            << std::endl;
-}
-
-inline void
 print_preambule()
 {
   print_line();

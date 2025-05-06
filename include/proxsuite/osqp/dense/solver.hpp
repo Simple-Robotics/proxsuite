@@ -50,6 +50,9 @@ qp_solve( //
   const HessianType& hessian_type,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
+  PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
+
+  PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
 } // namespace dense

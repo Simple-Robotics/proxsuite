@@ -11,7 +11,7 @@
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
-#include <proxsuite/solvers/common/utils.hpp>
+#include <proxsuite/solvers/common/wrapper.hpp>
 #include <chrono>
 
 namespace proxsuite {
