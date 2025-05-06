@@ -53,9 +53,9 @@ namespace plv = proxsuite::linalg::veg;
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
  * criterion.
  */
-template<typename T, typename QPSolver>
+template<typename T, typename QPStruct>
 proxqp::Results<T>
-solve_without_api(QPSolver& Qp,
+solve_without_api(QPStruct& Qp,
                   optional<ppd::MatRef<T>> H,
                   optional<ppd::VecRef<T>> g,
                   optional<ppd::MatRef<T>> A,
@@ -164,9 +164,9 @@ solve_without_api(QPSolver& Qp,
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
  * criterion.
  */
-template<typename T, typename QPSolver>
+template<typename T, typename QPStruct>
 proxqp::Results<T>
-solve_without_api(QPSolver& Qp,
+solve_without_api(QPStruct& Qp,
                   optional<ppd::MatRef<T>> H,
                   optional<ppd::VecRef<T>> g,
                   optional<ppd::MatRef<T>> A,
@@ -258,9 +258,9 @@ solve_without_api(QPSolver& Qp,
  * @param qp1 First QP object.
  * @param qp2 Second QP object.
  */
-template<typename QPSolver>
+template<typename QPStruct>
 bool
-is_equal(const QPSolver& qp1, const QPSolver& qp2)
+is_equal(const QPStruct& qp1, const QPStruct& qp2)
 {
   bool value = qp1.model == qp2.model && qp1.settings == qp2.settings &&
                qp1.results == qp2.results &&
