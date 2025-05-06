@@ -11,6 +11,7 @@
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/solvers/common/utils.hpp>
 #include <chrono>
 
 namespace proxsuite {
@@ -127,6 +128,13 @@ public:
   Model<T> model;
   Workspace<T> work;
   preconditioner::RuizEquilibration<T> ruiz;
+
+  /*!
+  Getters
+  */
+  DenseBackend get_dense_backend() const { return dense_backend; }
+  bool get_box_constraints() const { return box_constraints; }
+  HessianType get_hessian_type() const { return hessian_type; }
 
   /*!
    * Default constructor using QP model dimensions.
@@ -1041,49 +1049,33 @@ solve(
   }
 
   QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
 
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(
-      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return proxsuite::common::solve_without_api(Qp,
+                                              H,
+                                              g,
+                                              A,
+                                              b,
+                                              C,
+                                              l,
+                                              u,
+                                              x,
+                                              y,
+                                              z,
+                                              eps_abs,
+                                              eps_rel,
+                                              rho,
+                                              mu_eq,
+                                              mu_in,
+                                              verbose,
+                                              compute_preconditioner,
+                                              compute_timings,
+                                              max_iter,
+                                              initial_guess,
+                                              check_duality_gap,
+                                              eps_duality_gap_abs,
+                                              eps_duality_gap_rel,
+                                              primal_infeasibility_solving,
+                                              manual_minimal_H_eigenvalue);
 }
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
@@ -1173,80 +1165,49 @@ solve(
   }
 
   QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
 
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return proxsuite::common::solve_without_api(Qp,
+                                              H,
+                                              g,
+                                              A,
+                                              b,
+                                              C,
+                                              l,
+                                              u,
+                                              l_box,
+                                              u_box,
+                                              x,
+                                              y,
+                                              z,
+                                              eps_abs,
+                                              eps_rel,
+                                              rho,
+                                              mu_eq,
+                                              mu_in,
+                                              verbose,
+                                              compute_preconditioner,
+                                              compute_timings,
+                                              max_iter,
+                                              initial_guess,
+                                              check_duality_gap,
+                                              eps_duality_gap_abs,
+                                              eps_duality_gap_rel,
+                                              primal_infeasibility_solving,
+                                              manual_minimal_H_eigenvalue);
 }
 
 template<typename T>
 bool
 operator==(const QP<T>& qp1, const QP<T>& qp2)
 {
-  bool value = qp1.model == qp2.model && qp1.settings == qp2.settings &&
-               qp1.results == qp2.results &&
-               qp1.is_box_constrained() == qp2.is_box_constrained();
-  return value;
+  return proxsuite::common::is_equal(qp1, qp2);
 }
 
 template<typename T>
 bool
 operator!=(const QP<T>& qp1, const QP<T>& qp2)
 {
-  return !(qp1 == qp2);
+  return !proxsuite::common::is_equal(qp1, qp2);
 }
 
 ///// BatchQP object
