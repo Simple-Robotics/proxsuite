@@ -231,6 +231,24 @@ print_solver_statistics(const pp::Settings<T>& qpsettings,
             << std::endl;
 }
 /*!
+ * Prepares the next solve. Sets workspace to initialized and
+ * cleanups the information results.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+prepare_next_solve(pp::Results<T>& qpresults, ppd::Workspace<T>& qpwork)
+{
+  qpwork.dirty = true;
+  qpwork.is_initialized = true; // necessary because we call workspace cleanup
+
+  assert(!std::isnan(qpresults.info.pri_res));
+  assert(!std::isnan(qpresults.info.dua_res));
+  assert(!std::isnan(qpresults.info.duality_gap));
+}
+/*!
  * Setups the solver.
  * In particular, it scales (Ruiz equilibration) the data, then
  * builds the KKT matrix according to the algorihm, eg:

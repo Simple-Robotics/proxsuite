@@ -1425,12 +1425,10 @@ qp_solve( //
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// 7
 
-  qpwork.dirty = true;
-  qpwork.is_initialized = true; // necessary because we call workspace cleanup
+  proxsuite::common::prepare_next_solve(qpresults, qpwork);
 
-  assert(!std::isnan(qpresults.info.pri_res));
-  assert(!std::isnan(qpresults.info.dua_res));
-  assert(!std::isnan(qpresults.info.duality_gap));
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// 8
 
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
