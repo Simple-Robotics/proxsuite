@@ -1182,6 +1182,7 @@ qp_solve( //
     qpwork.z_prev = qpresults.z;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// 1
 
     // primal dual version from gill and robinson
 
@@ -1224,6 +1225,7 @@ qp_solve( //
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// 2
 
     primal_dual_newton_semi_smooth(qpsettings,
                                    qpmodel,
@@ -1261,6 +1263,7 @@ qp_solve( //
         infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// 3
 
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
     proxsuite::common::update_solver_status(qpsettings,
@@ -1284,6 +1287,7 @@ qp_solve( //
                                             scaled_eps);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// 4
 
     if (qpsettings.bcl_update) {
       bcl_update(qpsettings,
@@ -1367,6 +1371,9 @@ qp_solve( //
     qpresults.info.mu_in_inv = new_bcl_mu_in_inv;
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// 5
+
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
   ruiz.unscale_dual_in_place_in(
@@ -1407,52 +1414,17 @@ qp_solve( //
       qpresults.info.solve_time + qpresults.info.setup_time;
   }
 
-  if (qpsettings.verbose) {
-    std::cout << "-------------------SOLVER STATISTICS-------------------"
-              << std::endl;
-    std::cout << "outer iter:     " << qpresults.info.iter_ext << std::endl;
-    std::cout << "total iter:     " << qpresults.info.iter << std::endl;
-    std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
-    std::cout << "rho updates:    " << qpresults.info.rho_updates << std::endl;
-    std::cout << "objective:      " << qpresults.info.objValue << std::endl;
-    switch (qpresults.info.status) {
-      case QPSolverOutput::PROXQP_SOLVED: {
-        std::cout << "status:         "
-                  << "Solved" << std::endl;
-        break;
-      }
-      case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
-        std::cout << "status:         "
-                  << "Maximum number of iterations reached" << std::endl;
-        break;
-      }
-      case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
-        std::cout << "status:         "
-                  << "Primal infeasible" << std::endl;
-        break;
-      }
-      case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
-        std::cout << "status:         "
-                  << "Dual infeasible" << std::endl;
-        break;
-      }
-      case QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
-        std::cout << "status:         "
-                  << "Solved closest primal feasible" << std::endl;
-        break;
-      }
-      case QPSolverOutput::PROXQP_NOT_RUN: {
-        std::cout << "status:         "
-                  << "Solver not run" << std::endl;
-        break;
-      }
-    }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// 6
 
-    if (qpsettings.compute_timings)
-      std::cout << "run time [μs]:  " << qpresults.info.solve_time << std::endl;
-    std::cout << "--------------------------------------------------------"
-              << std::endl;
+  if (qpsettings.verbose) {
+    proxsuite::common::print_solver_statistics(
+      qpsettings, qpresults, common::QPSolver::PROXQP);
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// 7
+
   qpwork.dirty = true;
   qpwork.is_initialized = true; // necessary because we call workspace cleanup
 

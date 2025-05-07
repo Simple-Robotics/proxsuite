@@ -40,7 +40,6 @@ enum class QPSolver
 /*!
  * Prints the setup header.
  *
- * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling
  * performed).
  * @param qpsettings solver settings.
@@ -50,9 +49,9 @@ enum class QPSolver
  */
 template<typename T>
 void
-print_setup_header(const pp::Settings<T>& settings,
-                   const pp::Results<T>& results,
-                   const ppd::Model<T>& model,
+print_setup_header(const pp::Settings<T>& qpsettings,
+                   const pp::Results<T>& qpresults,
+                   const ppd::Model<T>& qpmodel,
                    const bool box_constraints,
                    const pp::DenseBackend& dense_backend,
                    const pp::HessianType& hessian_type,
@@ -70,30 +69,31 @@ print_setup_header(const pp::Settings<T>& settings,
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
-  std::cout << "          variables n = " << model.dim
-            << ", equality constraints n_eq = " << model.n_eq << ",\n"
-            << "          inequality constraints n_in = " << model.n_in
+  std::cout << "          variables n = " << qpmodel.dim
+            << ", equality constraints n_eq = " << qpmodel.n_eq << ",\n"
+            << "          inequality constraints n_in = " << qpmodel.n_in
             << std::endl;
 
   // Print Settings
   std::cout << "settings: " << std::endl;
   std::cout << "          backend = dense," << std::endl;
-  std::cout << "          eps_abs = " << settings.eps_abs
-            << " eps_rel = " << settings.eps_rel << std::endl;
-  std::cout << "          eps_prim_inf = " << settings.eps_primal_inf
-            << ", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
+  std::cout << "          eps_abs = " << qpsettings.eps_abs
+            << " eps_rel = " << qpsettings.eps_rel << std::endl;
+  std::cout << "          eps_prim_inf = " << qpsettings.eps_primal_inf
+            << ", eps_dual_inf = " << qpsettings.eps_dual_inf << ","
+            << std::endl;
 
-  std::cout << "          rho = " << results.info.rho
-            << ", mu_eq = " << results.info.mu_eq
-            << ", mu_in = " << results.info.mu_in << "," << std::endl;
+  std::cout << "          rho = " << qpresults.info.rho
+            << ", mu_eq = " << qpresults.info.mu_eq
+            << ", mu_in = " << qpresults.info.mu_in << "," << std::endl;
   switch (qp_solver) {
     case common::QPSolver::PROXQP:
-      std::cout << "          max_iter = " << settings.max_iter
-                << ", max_iter_in = " << settings.max_iter_in << ","
+      std::cout << "          max_iter = " << qpsettings.max_iter
+                << ", max_iter_in = " << qpsettings.max_iter_in << ","
                 << std::endl;
       break;
     case common::QPSolver::OSQP:
-      std::cout << "          max_iter = " << settings.max_iter << std::endl;
+      std::cout << "          max_iter = " << qpsettings.max_iter << std::endl;
       break;
   }
   if (box_constraints) {
@@ -124,17 +124,17 @@ print_setup_header(const pp::Settings<T>& settings,
         << std::endl;
       break;
   }
-  if (settings.compute_preconditioner) {
+  if (qpsettings.compute_preconditioner) {
     std::cout << "          scaling: on, " << std::endl;
   } else {
     std::cout << "          scaling: off, " << std::endl;
   }
-  if (settings.compute_timings) {
+  if (qpsettings.compute_timings) {
     std::cout << "          timings: on, " << std::endl;
   } else {
     std::cout << "          timings: off, " << std::endl;
   }
-  switch (settings.initial_guess) {
+  switch (qpsettings.initial_guess) {
     case pp::InitialGuessStatus::WARM_START:
       std::cout << "          initial guess: warm start. \n" << std::endl;
       break;
@@ -156,6 +156,79 @@ print_setup_header(const pp::Settings<T>& settings,
         << "          initial guess: equality constrained initial guess. \n"
         << std::endl;
   }
+}
+/*!
+ * Prints the solver's statistics.
+ *
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param qp_solver PROXQP or OSQP.
+ */
+template<typename T>
+void
+print_solver_statistics(const pp::Settings<T>& qpsettings,
+                        const pp::Results<T>& qpresults,
+                        const common::QPSolver qp_solver)
+{
+  std::cout << "-------------------SOLVER STATISTICS-------------------"
+            << std::endl;
+
+  switch (qp_solver) {
+    case common::QPSolver::PROXQP: {
+      std::cout << "outer iter:     " << qpresults.info.iter_ext << std::endl;
+      std::cout << "total iter:     " << qpresults.info.iter << std::endl;
+      std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
+      std::cout << "rho updates:    " << qpresults.info.rho_updates
+                << std::endl;
+      std::cout << "objective:      " << qpresults.info.objValue << std::endl;
+      break;
+    }
+    case common::QPSolver::OSQP: {
+      std::cout << "outer iter:     " << qpresults.info.iter_ext << std::endl;
+      std::cout << "total iter:     " << qpresults.info.iter_ext << std::endl;
+      std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
+      std::cout << "objective:      " << qpresults.info.objValue << std::endl;
+      break;
+    }
+  }
+
+  switch (qpresults.info.status) {
+    case pp::QPSolverOutput::PROXQP_SOLVED: {
+      std::cout << "status:         "
+                << "Solved" << std::endl;
+      break;
+    }
+    case pp::QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
+      std::cout << "status:         "
+                << "Maximum number of iterations reached" << std::endl;
+      break;
+    }
+    case pp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
+      std::cout << "status:         "
+                << "Primal infeasible" << std::endl;
+      break;
+    }
+    case pp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
+      std::cout << "status:         "
+                << "Dual infeasible" << std::endl;
+      break;
+    }
+    case pp::QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
+      std::cout << "status:         "
+                << "Solved closest primal feasible" << std::endl;
+      break;
+    }
+    case pp::QPSolverOutput::PROXQP_NOT_RUN: {
+      std::cout << "status:         "
+                << "Solver not run" << std::endl;
+      break;
+    }
+  }
+
+  if (qpsettings.compute_timings)
+    std::cout << "run time [μs]:  " << qpresults.info.solve_time << std::endl;
+  std::cout << "--------------------------------------------------------"
+            << std::endl;
 }
 /*!
  * Setups the solver.
