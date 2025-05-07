@@ -1394,19 +1394,7 @@ qp_solve( //
     }
   }
 
-  {
-    // EigenAllowAlloc _{};
-    qpresults.info.objValue = 0;
-    for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
-      qpresults.info.objValue +=
-        0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
-      qpresults.info.objValue +=
-        qpresults.x(j) * T(qpmodel.H.col(j)
-                             .tail(qpmodel.dim - j - 1)
-                             .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
-    }
-    qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
-  }
+  proxsuite::common::compute_objective(qpmodel, qpresults);
 
   if (qpsettings.compute_timings) {
     qpresults.info.solve_time = qpwork.timer.elapsed().user; // in microseconds
