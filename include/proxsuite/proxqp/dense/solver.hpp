@@ -1397,9 +1397,7 @@ qp_solve( //
   proxsuite::common::compute_objective(qpmodel, qpresults);
 
   if (qpsettings.compute_timings) {
-    qpresults.info.solve_time = qpwork.timer.elapsed().user; // in microseconds
-    qpresults.info.run_time =
-      qpresults.info.solve_time + qpresults.info.setup_time;
+    proxsuite::common::compute_timings(qpsettings, qpresults, qpwork);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

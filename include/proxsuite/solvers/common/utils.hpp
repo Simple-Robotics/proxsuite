@@ -607,6 +607,23 @@ compute_objective(const ppd::Model<T>& qpmodel, pp::Results<T>& qpresults)
   qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
 }
 /*!
+ * Computes the objective function.
+ *
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param qpwork solver workspace.
+ */
+template<typename T>
+void
+compute_timings(const pp::Settings<T>& qpsettings,
+                pp::Results<T>& qpresults,
+                ppd::Workspace<T>& qpwork)
+{
+  qpresults.info.solve_time = qpwork.timer.elapsed().user; // in microseconds
+  qpresults.info.run_time =
+    qpresults.info.solve_time + qpresults.info.setup_time;
+}
+/*!
  * Computes the residuals and the feasibility of the problem, then update it
  * and stops the algorithm if needed.
  *
