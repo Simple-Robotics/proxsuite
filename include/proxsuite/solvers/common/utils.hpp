@@ -624,6 +624,44 @@ compute_timings(const pp::Settings<T>& qpsettings,
     qpresults.info.solve_time + qpresults.info.setup_time;
 }
 /*!
+ * Unscales the solver once the algorithm is finished.
+ *
+ * @param qpsettings solver settings.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+unscale_solver(const pp::Settings<T>& qpsettings,
+               const ppd::Model<T>& qpmodel,
+               pp::Results<T>& qpresults,
+               const bool box_constraints,
+               ppdp::RuizEquilibration<T>& ruiz)
+{
+  ruiz.unscale_primal_in_place(
+    pp::VectorViewMut<T>{ pp::from_eigen, qpresults.x });
+  ruiz.unscale_dual_in_place_eq(
+    pp::VectorViewMut<T>{ pp::from_eigen, qpresults.y });
+  ruiz.unscale_dual_in_place_in(
+    pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+  if (box_constraints) {
+    ruiz.unscale_box_dual_in_place_in(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+  }
+  if (qpsettings.primal_infeasibility_solving &&
+      qpresults.info.status == pp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+    ruiz.unscale_primal_residual_in_place_eq(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.se });
+    ruiz.unscale_primal_residual_in_place_in(
+      pp::VectorViewMut<T>{ pp::from_eigen, qpresults.si.head(qpmodel.n_in) });
+    if (box_constraints) {
+      ruiz.unscale_box_primal_residual_in_place_in(
+        pp::VectorViewMut<T>{ pp::from_eigen, qpresults.si.tail(qpmodel.dim) });
+    }
+  }
+}
+/*!
  * Computes the residuals and the feasibility of the problem, then update it
  * and stops the algorithm if needed.
  *

@@ -1374,28 +1374,9 @@ qp_solve( //
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// 5
 
-  ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
-  ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-  ruiz.unscale_dual_in_place_in(
-    VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
-  if (box_constraints) {
-    ruiz.unscale_box_dual_in_place_in(
-      VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
-  }
-  if (qpsettings.primal_infeasibility_solving &&
-      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
-    ruiz.unscale_primal_residual_in_place_eq(
-      VectorViewMut<T>{ from_eigen, qpresults.se });
-    ruiz.unscale_primal_residual_in_place_in(
-      VectorViewMut<T>{ from_eigen, qpresults.si.head(qpmodel.n_in) });
-    if (box_constraints) {
-      ruiz.unscale_box_primal_residual_in_place_in(
-        VectorViewMut<T>{ from_eigen, qpresults.si.tail(qpmodel.dim) });
-    }
-  }
-
+  proxsuite::common::unscale_solver(
+    qpsettings, qpmodel, qpresults, box_constraints, ruiz);
   proxsuite::common::compute_objective(qpmodel, qpresults);
-
   if (qpsettings.compute_timings) {
     proxsuite::common::compute_timings(qpsettings, qpresults, qpwork);
   }
