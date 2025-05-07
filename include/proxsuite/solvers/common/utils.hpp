@@ -412,7 +412,7 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Call for function to build the full KKT
+            // TODO: Build full KKT with inequality constraints
           } break;
         }
         break;
@@ -436,7 +436,7 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Call for function to build the full KKT
+            // TODO: Build full KKT with inequality constraints
           } break;
         }
         break;
@@ -496,7 +496,7 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Call for function to build the full KKT
+            // TODO: Build full KKT with inequality constraints
           } break;
         }
         break;
@@ -535,7 +535,7 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Call for function to build the full KKT
+            // TODO: Build full KKT with inequality constraints
           } break;
         }
         break;
@@ -575,7 +575,7 @@ setup_solver(const pp::Settings<T>& qpsettings,
                 qpmodel, qpresults, dense_backend, n_constraints, qpwork);
             } break;
             case common::QPSolver::OSQP: {
-              // TODO: Call for function to build the full KKT
+              // TODO: Build full KKT with enaqulity constraints
             } break;
           }
           break;

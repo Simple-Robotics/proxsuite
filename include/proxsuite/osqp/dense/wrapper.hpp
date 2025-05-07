@@ -62,9 +62,9 @@ public:
       this->model,
       this->results,
       this->work,
-      this->box_constraints,
-      this->dense_backend,
-      this->hessian_type,
+      this->get_box_constraints(),
+      this->get_dense_backend(),
+      this->get_hessian_type(),
       this->ruiz);
   };
 };

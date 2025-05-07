@@ -95,6 +95,8 @@ struct Settings
   T alpha_bcl;
   T beta_bcl;
 
+  T alpha_osqp;
+
   T refactor_dual_feasibility_threshold;
   T refactor_rho_threshold;
 
@@ -148,6 +150,7 @@ struct Settings
    * @param default_mu_in default mu_in parameter of result class
    * @param alpha_bcl alpha parameter of the BCL algorithm.
    * @param beta_bcl beta parameter of the BCL algorithm.
+   * @param alpha_osqp alpha parameter in the ADMM step in OSQP.
    * @param refactor_dual_feasibility_threshold threshold above which
    * refactorization is performed to change rho parameter.
    * @param refactor_rho_threshold new rho parameter used if the
@@ -216,6 +219,7 @@ struct Settings
     T default_mu_in = 1.E-1,
     T alpha_bcl = 0.1,
     T beta_bcl = 0.9,
+    T alpha_osqp = 1.6,
     T refactor_dual_feasibility_threshold = 1e-2,
     T refactor_rho_threshold = 1e-7,
     T mu_min_eq = 1e-9,
@@ -262,6 +266,7 @@ struct Settings
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
     , beta_bcl(beta_bcl)
+    , alpha_osqp(alpha_osqp)
     , refactor_dual_feasibility_threshold(refactor_dual_feasibility_threshold)
     , refactor_rho_threshold(refactor_rho_threshold)
     , mu_min_eq(mu_min_eq)
@@ -325,6 +330,10 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.default_mu_in == settings2.default_mu_in &&
     settings1.alpha_bcl == settings2.alpha_bcl &&
     settings1.alpha_bcl == settings2.alpha_bcl &&
+    settings1.beta_bcl == settings2.beta_bcl &&
+    settings1.beta_bcl == settings2.beta_bcl &&
+    settings1.alpha_osqp == settings2.alpha_osqp &&
+    settings1.alpha_osqp == settings2.alpha_osqp &&
     settings1.refactor_dual_feasibility_threshold ==
       settings2.refactor_dual_feasibility_threshold &&
     settings1.refactor_rho_threshold == settings2.refactor_rho_threshold &&
