@@ -16,19 +16,27 @@ namespace proxsuite {
 namespace osqp {
 namespace dense {
 
+namespace pp = proxsuite::proxqp;
+namespace ppd = proxsuite::proxqp::dense;
+namespace pod = proxsuite::osqp::dense;
+
 ///
 /// @brief This class defines the API of OSQP solver with dense backend.
 ///
 template<typename T>
-struct QP : public proxsuite::proxqp::dense::QP<T>
+struct QP : public ppd::QP<T>
 {
 public:
+  /*!
+   * Class constructors.
+   */
+  using ppd::QP<T>::QP;
   /*!
    * Solves the QP problem using OSQP algorithm.
    */
   void solve()
   {
-    qp_solve( //
+    pod::qp_solve( //
       this->settings,
       this->model,
       this->results,
@@ -48,8 +56,8 @@ public:
              optional<VecRef<T>> y,
              optional<VecRef<T>> z)
   {
-    warm_start(x, y, z, this->results, this->settings, this->model);
-    qp_solve( //
+    ppd::warm_start(x, y, z, this->results, this->settings, this->model);
+    pod::qp_solve( //
       this->settings,
       this->model,
       this->results,
@@ -98,33 +106,32 @@ public:
  */
 template<typename T>
 proxqp::Results<T>
-solve(
-  optional<MatRef<T>> H,
-  optional<VecRef<T>> g,
-  optional<MatRef<T>> A,
-  optional<VecRef<T>> b,
-  optional<MatRef<T>> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
-  optional<VecRef<T>> x = nullopt,
-  optional<VecRef<T>> y = nullopt,
-  optional<VecRef<T>> z = nullopt,
-  optional<T> eps_abs = nullopt,
-  optional<T> eps_rel = nullopt,
-  optional<T> rho = nullopt,
-  optional<T> mu_eq = nullopt,
-  optional<T> mu_in = nullopt,
-  optional<bool> verbose = nullopt,
-  bool compute_preconditioner = true,
-  bool compute_timings = false,
-  optional<isize> max_iter = nullopt,
-  proxsuite::proxqp::InitialGuessStatus initial_guess =
-    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  bool check_duality_gap = false,
-  optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false,
-  optional<T> manual_minimal_H_eigenvalue = nullopt)
+solve(optional<MatRef<T>> H,
+      optional<VecRef<T>> g,
+      optional<MatRef<T>> A,
+      optional<VecRef<T>> b,
+      optional<MatRef<T>> C,
+      optional<VecRef<T>> l,
+      optional<VecRef<T>> u,
+      optional<VecRef<T>> x = nullopt,
+      optional<VecRef<T>> y = nullopt,
+      optional<VecRef<T>> z = nullopt,
+      optional<T> eps_abs = nullopt,
+      optional<T> eps_rel = nullopt,
+      optional<T> rho = nullopt,
+      optional<T> mu_eq = nullopt,
+      optional<T> mu_in = nullopt,
+      optional<bool> verbose = nullopt,
+      bool compute_preconditioner = true,
+      bool compute_timings = false,
+      optional<isize> max_iter = nullopt,
+      pp::InitialGuessStatus initial_guess =
+        pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      bool check_duality_gap = false,
+      optional<T> eps_duality_gap_abs = nullopt,
+      optional<T> eps_duality_gap_rel = nullopt,
+      bool primal_infeasibility_solving = false,
+      optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -212,35 +219,34 @@ solve(
  */
 template<typename T>
 proxqp::Results<T>
-solve(
-  optional<MatRef<T>> H,
-  optional<VecRef<T>> g,
-  optional<MatRef<T>> A,
-  optional<VecRef<T>> b,
-  optional<MatRef<T>> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
-  optional<VecRef<T>> l_box,
-  optional<VecRef<T>> u_box,
-  optional<VecRef<T>> x = nullopt,
-  optional<VecRef<T>> y = nullopt,
-  optional<VecRef<T>> z = nullopt,
-  optional<T> eps_abs = nullopt,
-  optional<T> eps_rel = nullopt,
-  optional<T> rho = nullopt,
-  optional<T> mu_eq = nullopt,
-  optional<T> mu_in = nullopt,
-  optional<bool> verbose = nullopt,
-  bool compute_preconditioner = true,
-  bool compute_timings = false,
-  optional<isize> max_iter = nullopt,
-  proxsuite::proxqp::InitialGuessStatus initial_guess =
-    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  bool check_duality_gap = false,
-  optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false,
-  optional<T> manual_minimal_H_eigenvalue = nullopt)
+solve(optional<MatRef<T>> H,
+      optional<VecRef<T>> g,
+      optional<MatRef<T>> A,
+      optional<VecRef<T>> b,
+      optional<MatRef<T>> C,
+      optional<VecRef<T>> l,
+      optional<VecRef<T>> u,
+      optional<VecRef<T>> l_box,
+      optional<VecRef<T>> u_box,
+      optional<VecRef<T>> x = nullopt,
+      optional<VecRef<T>> y = nullopt,
+      optional<VecRef<T>> z = nullopt,
+      optional<T> eps_abs = nullopt,
+      optional<T> eps_rel = nullopt,
+      optional<T> rho = nullopt,
+      optional<T> mu_eq = nullopt,
+      optional<T> mu_in = nullopt,
+      optional<bool> verbose = nullopt,
+      bool compute_preconditioner = true,
+      bool compute_timings = false,
+      optional<isize> max_iter = nullopt,
+      pp::InitialGuessStatus initial_guess =
+        pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      bool check_duality_gap = false,
+      optional<T> eps_duality_gap_abs = nullopt,
+      optional<T> eps_duality_gap_rel = nullopt,
+      bool primal_infeasibility_solving = false,
+      optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);

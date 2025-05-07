@@ -127,20 +127,48 @@ qp_solve( //
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// 3
 
+  T primal_feasibility_lhs_new(primal_feasibility_lhs);
+  proxsuite::common::update_solver_status(qpsettings,
+                                          qpmodel,
+                                          qpresults,
+                                          qpwork,
+                                          box_constraints,
+                                          hessian_type,
+                                          ruiz,
+                                          primal_feasibility_eq_rhs_0,
+                                          primal_feasibility_in_rhs_0,
+                                          primal_feasibility_eq_lhs,
+                                          primal_feasibility_in_lhs,
+                                          primal_feasibility_lhs_new,
+                                          dual_feasibility_lhs,
+                                          dual_feasibility_rhs_0,
+                                          dual_feasibility_rhs_1,
+                                          dual_feasibility_rhs_3,
+                                          rhs_duality_gap,
+                                          duality_gap,
+                                          scaled_eps);
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// 4
+
+  // Update of mu
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// 5
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// 6
+  proxsuite::common::unscale_solver(
+    qpsettings, qpmodel, qpresults, box_constraints, ruiz);
+  proxsuite::common::compute_objective(qpmodel, qpresults);
+  if (qpsettings.compute_timings) {
+    proxsuite::common::compute_timings(qpsettings, qpresults, qpwork);
+  }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// 7
+  if (qpsettings.verbose) {
+    proxsuite::common::print_solver_statistics(
+      qpsettings, qpresults, common::QPSolver::PROXQP);
+  }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// 8
+  proxsuite::common::prepare_next_solve(qpresults, qpwork);
 
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
