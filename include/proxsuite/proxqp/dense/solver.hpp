@@ -1179,49 +1179,6 @@ qp_solve( //
     qpwork.y_prev = qpresults.y;
     qpwork.z_prev = qpresults.z;
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// 1
-
-    // // primal dual version from gill and robinson
-
-    // ruiz.scale_primal_residual_in_place_in(
-    //   VectorViewMut<T>{ from_eigen,
-    //                     qpwork.primal_residual_in_scaled_up.head(
-    //                       qpmodel.n_in) }); // contains now scaled(Cx)
-    // if (box_constraints) {
-    //   ruiz.scale_box_primal_residual_in_place_in(
-    //     VectorViewMut<T>{ from_eigen,
-    //                       qpwork.primal_residual_in_scaled_up.tail(
-    //                         qpmodel.dim) }); // contains now scaled(x)
-    // }
-    // qpwork.primal_residual_in_scaled_up +=
-    //   qpwork.z_prev *
-    //   qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
-    // switch (qpsettings.merit_function_type) {
-    //   case MeritFunctionType::GPDAL:
-    //     qpwork.primal_residual_in_scaled_up +=
-    //       (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
-    //     break;
-    //   case MeritFunctionType::PDAL:
-    //     break;
-    // }
-    // qpresults.si = qpwork.primal_residual_in_scaled_up;
-    // qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
-    //   qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
-    // qpresults.si.head(qpmodel.n_in) -=
-    //   qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
-    // if (box_constraints) {
-    //   // qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
-    //   //   qpmodel.u_box; // contains now scaled(Cx-u+z_prev*mu_in)
-    //   // qpwork.primal_residual_in_scaled_low.tail(qpmodel.dim) -=
-    //   //   qpmodel.l_box; // contains now scaled(Cx-l+z_prev*mu_in)
-
-    //   qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
-    //     qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
-    //   qpresults.si.tail(qpmodel.dim) -=
-    //     qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
-    // }
-
     proxsuite::common::compute_scaled_primal_residual_ineq(
       qpsettings,
       qpmodel,
@@ -1230,9 +1187,6 @@ qp_solve( //
       box_constraints,
       ruiz,
       common::QPSolver::PROXQP);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// 2
 
     primal_dual_newton_semi_smooth(qpsettings,
                                    qpmodel,
@@ -1269,8 +1223,6 @@ qp_solve( //
       scaled_eps =
         infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// 3
 
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
     proxsuite::common::update_solver_status(qpsettings,
@@ -1293,8 +1245,8 @@ qp_solve( //
                                             duality_gap,
                                             scaled_eps);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// 4
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// mu update
 
     if (qpsettings.bcl_update) {
       bcl_update(qpsettings,
@@ -1376,10 +1328,10 @@ qp_solve( //
     qpresults.info.mu_in = new_bcl_mu_in;
     qpresults.info.mu_eq_inv = new_bcl_mu_eq_inv;
     qpresults.info.mu_in_inv = new_bcl_mu_in_inv;
-  }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// 5
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /// end of mu update
+  }
 
   proxsuite::common::unscale_solver(
     qpsettings, qpmodel, qpresults, box_constraints, ruiz);
