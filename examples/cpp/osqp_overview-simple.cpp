@@ -22,6 +22,10 @@ main()
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   pod::QP<T> qp(dim, n_eq, n_in);
+
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

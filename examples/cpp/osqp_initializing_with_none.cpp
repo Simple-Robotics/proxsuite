@@ -21,6 +21,9 @@ main()
   dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
+
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

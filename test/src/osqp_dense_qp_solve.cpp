@@ -37,8 +37,21 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
   Eigen::Matrix<T, 2, 1> u = qp.u;
 
   {
-    pp::Results<T> results =
-      pod::solve<T>(H, g, A, b, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
+    pp::Results<T> results = pod::solve<T>(H,
+                                           g,
+                                           A,
+                                           b,
+                                           C,
+                                           l,
+                                           u,
+                                           nullopt,
+                                           nullopt,
+                                           nullopt,
+                                           eps_abs,
+                                           0,
+                                           nullopt,
+                                           T(1E-2),
+                                           T(1E1));
 
     T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                          (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -54,7 +67,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << results.info.iter
+    std::cout << "total number of iteration: " << results.info.iter_ext
               << std::endl;
     std::cout << "setup timing " << results.info.setup_time << " solve time "
               << results.info.solve_time << std::endl;
@@ -62,6 +75,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
 
   {
     pod::QP<T> qp_problem(dim, n_eq, 0);
+    qp_problem.settings.default_mu_eq = T(1.E-2);
+    qp_problem.settings.default_mu_in = T(1.E1);
     qp_problem.init(H, g, A, b, nullopt, nullopt, nullopt);
     qp_problem.settings.eps_abs = eps_abs;
     qp_problem.solve();
@@ -78,7 +93,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << results.info.iter
+    std::cout << "total number of iteration: " << results.info.iter_ext
               << std::endl;
     std::cout << "setup timing " << results.info.setup_time << " solve time "
               << results.info.solve_time << std::endl;
@@ -113,7 +128,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                          nullopt,
                                          nullopt,
                                          eps_abs,
-                                         0);
+                                         0,
+                                         nullopt,
+                                         T(1E-2),
+                                         T(1E1));
 
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -129,7 +147,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -163,7 +182,9 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                          nullopt,
                                          eps_abs,
                                          0,
-                                         T(1.E-7));
+                                         T(1.E-7),
+                                         T(1E-2),
+                                         T(1E1));
   DOCTEST_CHECK(results.info.rho == T(1.E-7));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -179,7 +200,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -216,8 +238,12 @@ DOCTEST_TEST_CASE(
                                          eps_abs,
                                          0,
                                          nullopt,
-                                         T(1.E-2),
-                                         T(1.E-2));
+                                         T(1.E-1),
+                                         T(1.E0));
+  // Note:
+  // Different alternative values than for proxqp, due to different
+  // suggestions for default_mu_eq and default_mu_in between proxqp paper
+  // and osqp paper - but same update (*10 for mu_eq and /10 for mu_in)
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))
@@ -232,7 +258,8 @@ DOCTEST_TEST_CASE(
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -257,8 +284,21 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   auto x_wm = pp::utils::rand::vector_rand<T>(dim);
   auto y_wm = pp::utils::rand::vector_rand<T>(n_eq);
   auto z_wm = pp::utils::rand::vector_rand<T>(n_in);
-  pp::Results<T> results = pod::solve<T>(
-    qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs, 0);
+  pp::Results<T> results = pod::solve<T>(qp.H,
+                                         qp.g,
+                                         qp.A,
+                                         qp.b,
+                                         qp.C,
+                                         qp.l,
+                                         qp.u,
+                                         x_wm,
+                                         y_wm,
+                                         z_wm,
+                                         eps_abs,
+                                         0,
+                                         nullopt,
+                                         T(1E-2),
+                                         T(1E1));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))
@@ -273,7 +313,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -309,8 +350,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                          eps_abs,
                                          0,
                                          nullopt,
-                                         nullopt,
-                                         nullopt,
+                                         T(1E-2),
+                                         T(1E1),
                                          verbose);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -326,7 +367,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -363,8 +405,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                          eps_abs,
                                          0,
                                          nullopt,
-                                         nullopt,
-                                         nullopt,
+                                         T(1E-2),
+                                         T(1E1),
                                          nullopt,
                                          true,
                                          true,
@@ -384,7 +426,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }

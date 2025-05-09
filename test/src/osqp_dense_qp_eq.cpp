@@ -48,6 +48,8 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
   qp.init(H, g, A, b, C, l, u);
   qp.solve(primal_solution, dual_solution, dual_init_in);
 
@@ -74,6 +76,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
+    qp.settings.default_mu_eq = T(1.E-2);
+    qp.settings.default_mu_in = T(1.E1);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -127,6 +131,8 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
     pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
+    qp.settings.default_mu_eq = T(1.E-2);
+    qp.settings.default_mu_in = T(1.E1);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -186,6 +192,8 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
     }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
+    qp.settings.default_mu_eq = T(1.E-2);
+    qp.settings.default_mu_in = T(1.E1);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -247,6 +255,8 @@ DOCTEST_TEST_CASE("infeasible qp")
       n_in, -std::numeric_limits<double>::infinity());
 
   pod::QP<T> qp(n, n_eq, n_in);
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
   qp.init(H, g, nullopt, nullopt, C, l, u);
   qp.settings.eps_rel = 0.;
   qp.settings.eps_abs = 1e-9;
@@ -281,6 +291,8 @@ DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
   pod::QP<T> qp{
     n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
   }; // creating QP object
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
   qp.init(H, g, A, b, nullopt, nullopt, nullopt);
   qp.settings.eps_rel = 0.;
   qp.settings.eps_abs = 1e-9;

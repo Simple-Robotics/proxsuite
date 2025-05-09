@@ -31,6 +31,8 @@ DOCTEST_TEST_CASE(
       dim, sparsity_factor, strong_convexity_factor);
     pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
+    qp.settings.default_mu_eq = T(1.E-2);
+    qp.settings.default_mu_in = T(1.E1);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -84,6 +86,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
 
     pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
+    qp.settings.default_mu_eq = T(1.E-2);
+    qp.settings.default_mu_in = T(1.E1);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -132,6 +136,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
 
   pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -180,6 +186,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
 
   pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

@@ -42,6 +42,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
     }
   }
   pod::QP<Scalar> qp{ dim, n_eq, n_in }; // creating QP object
+  qp.settings.default_mu_eq = Scalar(1.E-2);
+  qp.settings.default_mu_in = Scalar(1.E1);
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
