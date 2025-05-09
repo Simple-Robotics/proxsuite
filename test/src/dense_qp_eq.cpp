@@ -254,3 +254,36 @@ DOCTEST_TEST_CASE("infeasible qp")
   DOCTEST_CHECK(qp.results.info.status ==
                 proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 }
+
+DOCTEST_TEST_CASE("dual infeasible qp equality constraints")
+{
+  Eigen::Matrix<T, 2, 2> H;
+  H << 0.0, 0.0, 0.0, 0.0;
+  H = 2 * H;
+
+  Eigen::Matrix<T, 2, 1> g;
+  g << 1.0, -1.0;
+
+  Eigen::Matrix<T, 2, 2> A;
+  A << 1, 1, 1, 1;
+
+  Eigen::Matrix<T, 2, 1> b;
+  b << 1, 1;
+
+  int n = H.rows();
+  int n_in = 0;
+  int n_eq = A.rows();
+
+  bool box_constraints = false;
+  proxqp::dense::QP<T> qp{
+    n, n_eq, n_in, box_constraints, proxqp::DenseBackend::PrimalDualLDLT
+  }; // creating QP object
+  qp.init(H, g, A, b, nullopt, nullopt, nullopt);
+  qp.settings.eps_rel = 0.;
+  qp.settings.eps_abs = 1e-9;
+
+  qp.solve();
+
+  DOCTEST_CHECK(qp.results.info.status ==
+                proxsuite::proxqp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE);
+}

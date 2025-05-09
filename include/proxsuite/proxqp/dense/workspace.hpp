@@ -60,6 +60,12 @@ struct Workspace
   VecBool active_set_low;
   VecBool active_inequalities;
 
+  //// OSQP variables
+  Vec<T> zeta_eq;
+  Vec<T> zeta_in;
+  Vec<T> nu_eq;
+  Vec<T> nu_in;
+
   //// First order residuals for line search
 
   Vec<T> Hdx;
@@ -116,6 +122,8 @@ struct Workspace
     , l_scaled(n_in)
     , x_prev(dim)
     , y_prev(n_eq)
+    , zeta_eq(n_eq)
+    , nu_eq(n_eq)
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
@@ -207,6 +215,8 @@ struct Workspace
       active_set_low.resize(n_in + dim);
       active_inequalities.resize(n_in + dim);
       active_part_z.resize(n_in + dim);
+      zeta_in.resize(n_in + dim);
+      nu_in.resize(n_in + dim);
       dw_aug.resize(dim + n_eq + n_in + dim);
       rhs.resize(dim + n_eq + n_in + dim);
       err.resize(dim + n_eq + n_in + dim);
@@ -282,6 +292,8 @@ struct Workspace
       active_set_low.resize(n_in);
       active_inequalities.resize(n_in);
       active_part_z.resize(n_in);
+      zeta_in.resize(n_in);
+      nu_in.resize(n_in);
       dw_aug.resize(dim + n_eq + n_in);
       rhs.resize(dim + n_eq + n_in);
       err.resize(dim + n_eq + n_in);
@@ -302,6 +314,10 @@ struct Workspace
     x_prev.setZero();
     y_prev.setZero();
     z_prev.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
     kkt.setZero();
     Hdx.setZero();
     Cdx.setZero();
@@ -338,6 +354,10 @@ struct Workspace
     b_scaled.setZero();
     u_scaled.setZero();
     l_scaled.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
     Hdx.setZero();
     Cdx.setZero();
     Adx.setZero();

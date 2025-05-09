@@ -20,6 +20,7 @@
 #include <proxsuite/osqp/utils/prints.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 #include <iomanip>
+#include <iostream>
 
 namespace proxsuite {
 namespace common {
@@ -249,6 +250,50 @@ prepare_next_solve(pp::Results<T>& qpresults, ppd::Workspace<T>& qpwork)
   assert(!std::isnan(qpresults.info.duality_gap));
 }
 /*!
+ * Setups and performs the factorization of the complete regularized KKT matrix
+ * of the problem (containing all of the equality and inequality constraints).
+ * It adds n_constraints (n_in + dim if box_constraints) rows/columns to the
+ * equality case KKT matrix.
+ *
+ * @param qpwork workspace of the solver.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solution results.
+ */
+template<typename T>
+void
+setup_factorization_complete_kkt(ppd::Workspace<T>& qpwork,
+                                 const ppd::Model<T>& qpmodel,
+                                 pp::Results<T>& qpresults,
+                                 const pp::DenseBackend dense_backend,
+                                 const plv::isize n_constraints)
+{
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  };
+
+  T mu_in_neg(-qpresults.info.mu_in);
+  plv::isize n = qpmodel.dim;
+  plv::isize n_eq = qpmodel.n_eq;
+  LDLT_TEMP_MAT_UNINIT(
+    T, new_cols, n + n_eq + n_constraints, n_constraints, stack);
+
+  for (plv::isize k = 0; k < n_constraints; ++k) {
+    auto col = new_cols.col(k);
+    if (k >= qpmodel.n_in) {
+      col.head(n).setZero();
+      col[k - qpmodel.n_in] = qpwork.i_scaled[k - qpmodel.n_in];
+    } else {
+      col.head(n) = (qpwork.C_scaled.row(k));
+    }
+    col.tail(n_eq + n_constraints).setZero();
+    col[n + n_eq + k] = mu_in_neg;
+  }
+  qpwork.ldl.insert_block_at(n + n_eq, new_cols, stack);
+
+  qpwork.n_c = n_constraints;
+}
+/*!
  * Setups the solver.
  * In particular, it scales (Ruiz equilibration) the data, then
  * builds the KKT matrix according to the algorihm, eg:
@@ -394,6 +439,12 @@ setup_solver(const pp::Settings<T>& qpsettings,
                                                    dense_backend,
                                                    hessian_type,
                                                    qpresults);
+        switch (qp_solver) {
+          case common::QPSolver::OSQP: {
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+          } break;
+        }
         break;
       }
       case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
@@ -412,12 +463,19 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Build full KKT with inequality constraints
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
           } break;
         }
         break;
       }
       case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
+        switch (qp_solver) {
+          case common::QPSolver::OSQP: {
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+          } break;
+        }
         break;
       }
       case pp::InitialGuessStatus::WARM_START: {
@@ -436,7 +494,8 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Build full KKT with inequality constraints
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
           } break;
         }
         break;
@@ -446,6 +505,12 @@ setup_solver(const pp::Settings<T>& qpsettings,
         // std::cout << "i use previous solution" << std::endl;
         // meaningful for when one wants to warm start with previous result with
         // the same QP model
+        switch (qp_solver) {
+          case common::QPSolver::OSQP: {
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+          } break;
+        }
         break;
       }
     }
@@ -462,6 +527,12 @@ setup_solver(const pp::Settings<T>& qpsettings,
                                                    dense_backend,
                                                    hessian_type,
                                                    qpresults);
+        switch (qp_solver) {
+          case common::QPSolver::OSQP: {
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+          } break;
+        }
         break;
       }
       case pp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
@@ -496,7 +567,8 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Build full KKT with inequality constraints
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
           } break;
         }
         break;
@@ -504,6 +576,12 @@ setup_solver(const pp::Settings<T>& qpsettings,
       case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+        switch (qp_solver) {
+          case common::QPSolver::OSQP: {
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+          } break;
+        }
         break;
       }
       case pp::InitialGuessStatus::WARM_START: {
@@ -535,7 +613,8 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            // TODO: Build full KKT with inequality constraints
+            setup_factorization_complete_kkt(
+              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
           } break;
         }
         break;
@@ -575,13 +654,68 @@ setup_solver(const pp::Settings<T>& qpsettings,
                 qpmodel, qpresults, dense_backend, n_constraints, qpwork);
             } break;
             case common::QPSolver::OSQP: {
-              // TODO: Build full KKT with enaqulity constraints
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
             } break;
           }
           break;
         }
       }
     }
+  }
+}
+/*!
+ * Computes the scaled primal residual for inequality.
+ * Used to define the sets of upper and lower inequality active constraints.
+ *
+ * @param qpsettings solver settings.
+ * @param qpmodel QP problem model.
+ * @param qpresults solver results.
+ * @param qpwork solver workspace.
+ */
+template<typename T>
+void
+compute_scaled_primal_residual_ineq(const pp::Settings<T>& qpsettings,
+                                    const ppd::Model<T>& qpmodel,
+                                    pp::Results<T>& qpresults,
+                                    ppd::Workspace<T>& qpwork,
+                                    const bool box_constraints,
+                                    ppdp::RuizEquilibration<T>& ruiz,
+                                    QPSolver qp_solver)
+{
+  ruiz.scale_primal_residual_in_place_in(
+    pp::VectorViewMut<T>{ pp::from_eigen,
+                          qpwork.primal_residual_in_scaled_up.head(
+                            qpmodel.n_in) }); // contains now scaled(Cx)
+  if (box_constraints) {
+    ruiz.scale_box_primal_residual_in_place_in(
+      pp::VectorViewMut<T>{ pp::from_eigen,
+                            qpwork.primal_residual_in_scaled_up.tail(
+                              qpmodel.dim) }); // contains now scaled(x)
+  }
+  qpwork.primal_residual_in_scaled_up +=
+    qpwork.z_prev *
+    qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+  if (qp_solver == QPSolver::PROXQP) {
+    switch (qpsettings.merit_function_type) {
+      case pp::MeritFunctionType::GPDAL:
+        qpwork.primal_residual_in_scaled_up +=
+          (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
+        break;
+      case pp::MeritFunctionType::PDAL:
+        break;
+    }
+  }
+  qpresults.si = qpwork.primal_residual_in_scaled_up;
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+    qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+  qpresults.si.head(qpmodel.n_in) -=
+    qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+      qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.tail(qpmodel.dim) -=
+      qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
   }
 }
 /*!
@@ -674,8 +808,8 @@ unscale_solver(const pp::Settings<T>& qpsettings,
  * @param qp_solver PROXQP or OSQP.
  */
 template<typename T>
-void
-compute_feasibility( //
+bool
+is_solved( //
   const pp::Settings<T>& qpsettings,
   const ppd::Model<T>& qpmodel,
   pp::Results<T>& qpresults,
@@ -696,8 +830,7 @@ compute_feasibility( //
   T& rhs_duality_gap,
   T& duality_gap,
   T& scaled_eps,
-  plv::i64 iter,
-  bool& stop_loop)
+  plv::i64 iter)
 {
 
   ppd::global_primal_residual(qpmodel,
@@ -809,13 +942,14 @@ compute_feasibility( //
         } else {
           qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
         }
-        stop_loop = true;
+        return true;
       }
     } else {
       qpresults.info.status = pp::QPSolverOutput::PROXQP_SOLVED;
-      stop_loop = true;
+      return true;
     }
   }
+  return false;
 }
 /*!
  * Computes residuals, the infeasibility and updates the solver's status.
