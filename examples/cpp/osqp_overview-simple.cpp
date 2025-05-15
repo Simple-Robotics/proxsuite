@@ -16,7 +16,7 @@ int
 main()
 {
   T sparsity_factor = 0.15;
-  ppd::isize dim = 110;
+  ppd::isize dim = 200;
   ppd::isize n_eq(dim / 4);
   ppd::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
@@ -36,20 +36,27 @@ main()
   //         qp_random.u);
   // qp_proxqp.solve();
 
-  // // Osqp without update
-  // pod::QP<T> qp_osqp(dim, n_eq, n_in);
+  // Osqp without update
+  pod::QP<T> qp_osqp(dim, n_eq, n_in);
 
-  // qp_osqp.settings.default_mu_eq = T(1.E-2);
-  // qp_osqp.settings.default_mu_in = T(1.E1);
+  qp_osqp.settings.default_mu_eq = T(1.E-2);
+  qp_osqp.settings.default_mu_in = T(1.E1);
 
-  // qp_osqp.init(qp_random.H,
-  //         qp_random.g,
-  //         qp_random.A,
-  //         qp_random.b,
-  //         qp_random.C,
-  //         qp_random.l,
-  //         qp_random.u);
-  // qp_osqp.solve();
+  qp_osqp.settings.polish = true;
+  qp_osqp.settings.eps_abs = T(1.E-3);
+
+  qp_osqp.init(qp_random.H,
+               qp_random.g,
+               qp_random.A,
+               qp_random.b,
+               qp_random.C,
+               qp_random.l,
+               qp_random.u);
+  qp_osqp.solve();
+
+  // std::cout << "optimal x: " << qp_osqp.results.x << std::endl;
+  // std::cout << "optimal y: " << qp_osqp.results.y << std::endl;
+  // std::cout << "optimal z: " << qp_osqp.results.z << std::endl;
 
   // qp_osqp_1 with mu_update
   // pod::QP<T> qp_osqp_1(dim, n_eq, n_in);

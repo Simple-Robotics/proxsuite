@@ -42,6 +42,9 @@ struct Info
   sparse::isize rho_updates;
   QPSolverOutput status;
 
+  ///// polishing osqp
+  PolishStatus polish_status;
+
   //// timings
   T setup_time;
   T solve_time;
@@ -139,6 +142,7 @@ struct Results
     info.duality_gap = 0.;
     info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
+    info.polish_status = PolishStatus::POLISH_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
   }
@@ -169,7 +173,9 @@ struct Results
     info.dua_res = 0.;
     info.duality_gap = 0.;
     info.iterative_residual = 0.;
-    info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+    info.status =
+      QPSolverOutput::PROXQP_MAX_ITER_REACHED; // TODO: PROXQP_NOT_RUN instead ?
+    info.polish_status = PolishStatus::POLISH_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
@@ -214,6 +220,7 @@ operator==(const Info<T>& info1, const Info<T>& info2)
     info1.iter == info2.iter && info1.iter_ext == info2.iter_ext &&
     info1.mu_updates == info2.mu_updates &&
     info1.rho_updates == info2.rho_updates && info1.status == info2.status &&
+    info1.polish_status == info2.polish_status &&
     info1.setup_time == info2.setup_time &&
     info1.solve_time == info2.solve_time && info1.run_time == info2.run_time &&
     info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&

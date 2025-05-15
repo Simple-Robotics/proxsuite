@@ -158,6 +158,10 @@ struct Settings
   UpdateMuIterationCriteria update_mu_iteration_criteria;
   isize interval_update_mu;
 
+  bool polish;
+  isize polish_refine_iter;
+  T delta;
+
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
   T eps_primal_inf;
@@ -248,6 +252,10 @@ struct Settings
    * time.
    * @param interval_update_mu minimum number of ADMM iterations between two mu
    * updates in OSQP if iteration based criteria
+   * @param polish if set to true, performs solution polishing in OSQP
+   * @param polish_refine_iter number of iterative refinements in polishing in
+   * OSQP
+   * @param delta regularization parameter in solution polishing in OSQP
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -324,6 +332,9 @@ struct Settings
     UpdateMuIterationCriteria update_mu_iteration_criteria =
       UpdateMuIterationCriteria::FixedNumberIterations,
     isize interval_update_mu = 10,
+    bool polish = false,
+    isize polish_refine_iter = 3,
+    T delta = 1.e-6,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -384,6 +395,9 @@ struct Settings
         percentage_factorization_time_update_mu)
     , update_mu_iteration_criteria(update_mu_iteration_criteria)
     , interval_update_mu(interval_update_mu)
+    , polish(polish)
+    , polish_refine_iter(polish_refine_iter)
+    , delta(delta)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -474,6 +488,9 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.update_mu_iteration_criteria ==
       settings2.update_mu_iteration_criteria &&
     settings1.interval_update_mu == settings2.interval_update_mu &&
+    settings1.polish == settings2.polish &&
+    settings1.polish_refine_iter == settings2.polish_refine_iter &&
+    settings1.delta == settings2.delta &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

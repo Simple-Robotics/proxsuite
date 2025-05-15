@@ -66,6 +66,9 @@ struct Workspace
   Vec<T> nu_eq;
   Vec<T> nu_in;
 
+  VecBool active_set_low_eq;
+  VecBool active_set_up_eq;
+
   //// First order residuals for line search
 
   Vec<T> Hdx;
@@ -111,6 +114,10 @@ struct Workspace
   ///// Fixed number iterations approach in mu update in OSQP
   isize last_iteration_update_mu;
 
+  ///// Timing polishing in OSQP
+  Timer<T> timer_polish;
+  T time_polishing;
+
   sparse::isize n_c; // final number of active inequalities
   /*!
    * Default constructor.
@@ -135,6 +142,8 @@ struct Workspace
     , y_prev(n_eq)
     , zeta_eq(n_eq)
     , nu_eq(n_eq)
+    , active_set_low_eq(n_eq)
+    , active_set_up_eq(n_eq)
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
@@ -357,8 +366,9 @@ struct Workspace
 
     factorization_time_complete_kkt = 0.;
     time_since_last_update_mu = 0.;
-
     last_iteration_update_mu = 0;
+
+    time_polishing = 0.;
   }
   /*!
    * Clean-ups solver's workspace.
@@ -418,6 +428,8 @@ struct Workspace
 
     time_since_last_update_mu = 0.;
     last_iteration_update_mu = 0;
+
+    time_polishing = 0.;
   }
 };
 } // namespace dense

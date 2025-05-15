@@ -41,6 +41,14 @@ enum struct PreconditionerStatus
   IDENTITY // do not execute, hence use identity preconditioner (for init
            // method)
 };
+// POLISH OSQP STATUS
+enum struct PolishStatus
+{
+  POLISH_SUCCEED,             // better solution than without polishing.
+  POLISH_FAILED,              // worst solution than without polishing.
+  POLISH_NO_ACTIVE_SET_FOUND, // no active set found to perform polishing.
+  POLISH_NOT_RUN              // polishing has not been run yet.
+};
 
 } // namespace proxqp
 } // namespace proxsuite

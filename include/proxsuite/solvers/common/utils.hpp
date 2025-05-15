@@ -226,6 +226,31 @@ print_solver_statistics(const pp::Settings<T>& qpsettings,
     }
   }
 
+  if (qp_solver == QPSolver::OSQP) {
+    switch (qpresults.info.polish_status) {
+      case pp::PolishStatus::POLISH_SUCCEED: {
+        std::cout << "polishing:      "
+                  << "Succeed" << std::endl;
+        break;
+      }
+      case pp::PolishStatus::POLISH_FAILED: {
+        std::cout << "polishing:      "
+                  << "Failed" << std::endl;
+        break;
+      }
+      case pp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+        std::cout << "polishing:      "
+                  << "Not run because no active set found" << std::endl;
+        break;
+      }
+      case pp::PolishStatus::POLISH_NOT_RUN: {
+        std::cout << "polishing:      "
+                  << "Not run" << std::endl;
+        break;
+      }
+    }
+  }
+
   if (qpsettings.compute_timings)
     std::cout << "run time [μs]:  " << qpresults.info.solve_time << std::endl;
   std::cout << "--------------------------------------------------------"
@@ -756,39 +781,57 @@ compute_scaled_primal_residual_ineq(const pp::Settings<T>& qpsettings,
                                     ppdp::RuizEquilibration<T>& ruiz,
                                     QPSolver qp_solver)
 {
-  ruiz.scale_primal_residual_in_place_in(
-    pp::VectorViewMut<T>{ pp::from_eigen,
-                          qpwork.primal_residual_in_scaled_up.head(
-                            qpmodel.n_in) }); // contains now scaled(Cx)
-  if (box_constraints) {
-    ruiz.scale_box_primal_residual_in_place_in(
-      pp::VectorViewMut<T>{ pp::from_eigen,
-                            qpwork.primal_residual_in_scaled_up.tail(
-                              qpmodel.dim) }); // contains now scaled(x)
-  }
-  qpwork.primal_residual_in_scaled_up +=
-    qpwork.z_prev *
-    qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
-  if (qp_solver == QPSolver::PROXQP) {
-    switch (qpsettings.merit_function_type) {
-      case pp::MeritFunctionType::GPDAL:
-        qpwork.primal_residual_in_scaled_up +=
-          (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
-        break;
-      case pp::MeritFunctionType::PDAL:
-        break;
+  switch (qp_solver) {
+    case QPSolver::PROXQP: {
+      ruiz.scale_primal_residual_in_place_in(
+        pp::VectorViewMut<T>{ pp::from_eigen,
+                              qpwork.primal_residual_in_scaled_up.head(
+                                qpmodel.n_in) }); // contains now scaled(Cx)
+      if (box_constraints) {
+        ruiz.scale_box_primal_residual_in_place_in(
+          pp::VectorViewMut<T>{ pp::from_eigen,
+                                qpwork.primal_residual_in_scaled_up.tail(
+                                  qpmodel.dim) }); // contains now scaled(x)
+      }
+      qpwork.primal_residual_in_scaled_up +=
+        qpwork.z_prev *
+        qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+      switch (qpsettings.merit_function_type) {
+        case pp::MeritFunctionType::GPDAL:
+          qpwork.primal_residual_in_scaled_up +=
+            (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
+          break;
+        case pp::MeritFunctionType::PDAL:
+          break;
+      }
+      qpresults.si = qpwork.primal_residual_in_scaled_up;
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+        qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+      qpresults.si.head(qpmodel.n_in) -=
+        qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+      if (box_constraints) {
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+          qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+        qpresults.si.tail(qpmodel.dim) -=
+          qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+      }
+      break;
     }
-  }
-  qpresults.si = qpwork.primal_residual_in_scaled_up;
-  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
-    qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
-  qpresults.si.head(qpmodel.n_in) -=
-    qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
-  if (box_constraints) {
-    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
-      qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
-    qpresults.si.tail(qpmodel.dim) -=
-      qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    case QPSolver::OSQP: {
+      qpwork.primal_residual_in_scaled_up = qpwork.zeta_in + qpwork.z_prev;
+      qpresults.si = qpwork.primal_residual_in_scaled_up;
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+        qpwork.u_scaled; // contains now scaled(zeta_in-u+z_prev)
+      qpresults.si.head(qpmodel.n_in) -=
+        qpwork.l_scaled; // contains now scaled(zeta_in-l+z_prev)
+      if (box_constraints) {
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+          qpwork.u_box_scaled; // contains now scaled(zeta-u+z_prev)
+        qpresults.si.tail(qpmodel.dim) -=
+          qpwork.l_box_scaled; // contains now scaled(zeta-l+z_prev)
+      }
+      break;
+    }
   }
 }
 /*!
