@@ -51,6 +51,12 @@ enum struct EigenValueEstimateMethodOption
                   // watch out, the last option is only available for dense
                   // matrices!
 };
+// Choice of approach for the iteraion condition to update mu in OSQP.
+enum struct UpdateMuIterationCriteria
+{
+  FactorizationTime,    // Time spent since last update wrt factorization time.
+  FixedNumberIterations // Fixed number of iteration to outpass.
+};
 inline std::ostream&
 operator<<(std::ostream& os, const SparseBackend& sparse_backend)
 {
@@ -101,9 +107,17 @@ struct Settings
   T refactor_rho_threshold;
 
   T mu_min_eq;
-  T mu_min_in;
+  T mu_max_eq; // for osqp
+  T mu_min_in; // osqp 1e-6
+  T mu_max_in; // for osqp
+
   T mu_max_eq_inv;
-  T mu_max_in_inv;
+  T mu_min_eq_inv; // for osqp
+  T mu_max_in_inv; // osqp 1e6
+  T mu_min_in_inv; // for osqp
+
+  T mu_min_in_osqp;
+  T mu_max_in_inv_osqp;
 
   T mu_update_factor;
   T mu_update_inv_factor;
@@ -112,6 +126,12 @@ struct Settings
   T cold_reset_mu_in;
   T cold_reset_mu_eq_inv;
   T cold_reset_mu_in_inv;
+
+  T cold_reset_mu_eq_osqp;
+  T cold_reset_mu_in_osqp;
+  T cold_reset_mu_eq_inv_osqp;
+  T cold_reset_mu_in_inv_osqp;
+
   T eps_abs;
   T eps_rel;
 
@@ -130,6 +150,13 @@ struct Settings
   bool check_duality_gap;
   T eps_duality_gap_abs;
   T eps_duality_gap_rel;
+
+  bool update_mu;
+  T threshold_ratio_update_mu;
+  T threshold_ratio_update_mu_inv;
+  T percentage_factorization_time_update_mu;
+  UpdateMuIterationCriteria update_mu_iteration_criteria;
+  isize interval_update_mu;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -156,11 +183,20 @@ struct Settings
    * @param refactor_rho_threshold new rho parameter used if the
    * refactor_dual_feasibility_threshold_ condition has been satisfied.
    * @param mu_min_eq minimal authorized value for mu_eq.
+   * @param mu_max_eq maximal authorized value for mu_eq.
    * @param mu_min_in minimal authorized value for mu_in.
+   * @param mu_max_in maximal authorized value for mu_in.
    * @param mu_max_eq_inv maximal authorized value for the inverse of
+   * mu_eq_inv.
+   * @param mu_min_eq_inv minimal authorized value for the inverse of
    * mu_eq_inv.
    * @param mu_max_in_inv maximal authorized value for the inverse of
    * mu_in_inv.
+   * @param mu_min_in_inv minimal authorized value for the inverse of
+   * mu_in_inv.
+   * @param mu_min_in_osqp minimal authorized value for mu_in in osqp.
+   * @param mu_max_in_inv_osqp maximal authorized value for the inverse of mu_in
+   * in osqp.
    * @param mu_update_factor update factor used for updating mu_eq and mu_in.
    * @param mu_update_inv_factor update factor used for updating mu_eq_inv and
    * mu_in_inv.
@@ -168,6 +204,12 @@ struct Settings
    * @param cold_reset_mu_in value used for cold restarting mu_in.
    * @param cold_reset_mu_eq_inv value used for cold restarting mu_eq_inv.
    * @param cold_reset_mu_in_inv value used for cold restarting mu_in_inv.
+   * @param cold_reset_mu_eq_osqp value used for cold restarting mu_eq in osqp.
+   * @param cold_reset_mu_in_osqp value used for cold restarting mu_in in osqp.
+   * @param cold_reset_mu_eq_inv_osqp value used for cold restarting mu_eq_inv
+   * in osqp.
+   * @param cold_reset_mu_in_inv_osqp value used for cold restarting mu_in_inv
+   * in osqp.
    * @param eps_abs asbolute stopping criterion of the solver.
    * @param eps_rel relative stopping criterion of the solver.
    * @param max_iter maximal number of authorized iteration.
@@ -192,6 +234,20 @@ struct Settings
    * included in the stopping criterion.
    * @param eps_duality_gap_abs absolute duality-gap stopping criterion.
    * @param eps_duality_gap_rel relative duality-gap stopping criterion.
+   * @param update_mu If set to true, the proximal parameters in OSQP are
+   * updated during the solve.
+   * @param threshold_ratio_update_mu update mu if below the scaled ratio
+   * between primal and dual residuals.
+   * @param threshold_ratio_update_mu_inv update mu if above the scaled ratio
+   * between primal and dual residuals.
+   * @param percentage_factorization_time_update_mu percentage of the
+   * factorization time of the complete KKT matrix in OSQP involved in the
+   * update of mu.
+   * @param update_mu_iteration_criteria choose wether we potnetially update mu
+   * after a fixed amount of iterations or some percentage of factorization
+   * time.
+   * @param interval_update_mu minimum number of ADMM iterations between two mu
+   * updates in OSQP if iteration based criteria
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -223,15 +279,25 @@ struct Settings
     T refactor_dual_feasibility_threshold = 1e-2,
     T refactor_rho_threshold = 1e-7,
     T mu_min_eq = 1e-9,
+    T mu_max_eq = 1e3, // for osqp
     T mu_min_in = 1e-8,
+    T mu_max_in = 1e6, // for osqp
     T mu_max_eq_inv = 1e9,
+    T mu_min_eq_inv = 1e-3, // for osqp
     T mu_max_in_inv = 1e8,
+    T mu_min_in_inv = 1e-6, // for osqp
+    T mu_min_in_osqp = 1e-6,
+    T mu_max_in_inv_osqp = 1e6,
     T mu_update_factor = 0.1,
     T mu_update_inv_factor = 10,
     T cold_reset_mu_eq = 1. / 1.1,
     T cold_reset_mu_in = 1. / 1.1,
     T cold_reset_mu_eq_inv = 1.1,
     T cold_reset_mu_in_inv = 1.1,
+    T cold_reset_mu_eq_osqp = 1. / 1.1,
+    T cold_reset_mu_in_osqp = 1. / 1.1,
+    T cold_reset_mu_eq_inv_osqp = 1.1,
+    T cold_reset_mu_in_inv_osqp = 1.1,
     T eps_abs = 1.e-5,
     T eps_rel = 0,
     isize max_iter = 10000,
@@ -251,6 +317,13 @@ struct Settings
     bool check_duality_gap = false,
     T eps_duality_gap_abs = 1.e-4,
     T eps_duality_gap_rel = 0,
+    bool update_mu = false,
+    T threshold_ratio_update_mu = 5.0,
+    T threshold_ratio_update_mu_inv = 0.2,
+    T percentage_factorization_time_update_mu = 0.4,
+    UpdateMuIterationCriteria update_mu_iteration_criteria =
+      UpdateMuIterationCriteria::FixedNumberIterations,
+    isize interval_update_mu = 10,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -270,15 +343,25 @@ struct Settings
     , refactor_dual_feasibility_threshold(refactor_dual_feasibility_threshold)
     , refactor_rho_threshold(refactor_rho_threshold)
     , mu_min_eq(mu_min_eq)
+    , mu_max_eq(mu_max_eq)
     , mu_min_in(mu_min_in)
+    , mu_max_in(mu_max_in)
     , mu_max_eq_inv(mu_max_eq_inv)
+    , mu_min_eq_inv(mu_min_eq_inv)
     , mu_max_in_inv(mu_max_in_inv)
+    , mu_min_in_inv(mu_min_in_inv)
+    , mu_min_in_osqp(mu_min_in_osqp)
+    , mu_max_in_inv_osqp(mu_max_in_inv_osqp)
     , mu_update_factor(mu_update_factor)
     , mu_update_inv_factor(mu_update_inv_factor)
     , cold_reset_mu_eq(cold_reset_mu_eq)
     , cold_reset_mu_in(cold_reset_mu_in)
     , cold_reset_mu_eq_inv(cold_reset_mu_eq_inv)
     , cold_reset_mu_in_inv(cold_reset_mu_in_inv)
+    , cold_reset_mu_eq_osqp(cold_reset_mu_eq_osqp)
+    , cold_reset_mu_in_osqp(cold_reset_mu_in_osqp)
+    , cold_reset_mu_eq_inv_osqp(cold_reset_mu_eq_inv_osqp)
+    , cold_reset_mu_in_inv_osqp(cold_reset_mu_in_inv_osqp)
     , eps_abs(eps_abs)
     , eps_rel(eps_rel)
     , max_iter(max_iter)
@@ -294,6 +377,13 @@ struct Settings
     , check_duality_gap(check_duality_gap)
     , eps_duality_gap_abs(eps_duality_gap_abs)
     , eps_duality_gap_rel(eps_duality_gap_rel)
+    , update_mu(update_mu)
+    , threshold_ratio_update_mu(threshold_ratio_update_mu)
+    , threshold_ratio_update_mu_inv(threshold_ratio_update_mu_inv)
+    , percentage_factorization_time_update_mu(
+        percentage_factorization_time_update_mu)
+    , update_mu_iteration_criteria(update_mu_iteration_criteria)
+    , interval_update_mu(interval_update_mu)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -338,15 +428,27 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
       settings2.refactor_dual_feasibility_threshold &&
     settings1.refactor_rho_threshold == settings2.refactor_rho_threshold &&
     settings1.mu_min_eq == settings2.mu_min_eq &&
+    settings1.mu_max_eq == settings2.mu_max_eq &&
     settings1.mu_min_in == settings2.mu_min_in &&
+    settings1.mu_max_in == settings2.mu_max_in &&
     settings1.mu_max_eq_inv == settings2.mu_max_eq_inv &&
+    settings1.mu_min_eq_inv == settings2.mu_min_eq_inv &&
     settings1.mu_max_in_inv == settings2.mu_max_in_inv &&
+    settings1.mu_min_in_inv == settings2.mu_min_in_inv &&
+    settings1.mu_min_in_osqp == settings2.mu_min_in_osqp &&
+    settings1.mu_max_in_inv_osqp == settings2.mu_max_in_inv_osqp &&
     settings1.mu_update_factor == settings2.mu_update_factor &&
     settings1.mu_update_factor == settings2.mu_update_factor &&
     settings1.cold_reset_mu_eq == settings2.cold_reset_mu_eq &&
     settings1.cold_reset_mu_in == settings2.cold_reset_mu_in &&
     settings1.cold_reset_mu_eq_inv == settings2.cold_reset_mu_eq_inv &&
     settings1.cold_reset_mu_in_inv == settings2.cold_reset_mu_in_inv &&
+    settings1.cold_reset_mu_eq_osqp == settings2.cold_reset_mu_eq_osqp &&
+    settings1.cold_reset_mu_in_osqp == settings2.cold_reset_mu_in_osqp &&
+    settings1.cold_reset_mu_eq_inv_osqp ==
+      settings2.cold_reset_mu_eq_inv_osqp &&
+    settings1.cold_reset_mu_in_inv_osqp ==
+      settings2.cold_reset_mu_in_inv_osqp &&
     settings1.eps_abs == settings2.eps_abs &&
     settings1.eps_rel == settings2.eps_rel &&
     settings1.max_iter == settings2.max_iter &&
@@ -362,6 +464,16 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.check_duality_gap == settings2.check_duality_gap &&
     settings1.eps_duality_gap_abs == settings2.eps_duality_gap_abs &&
     settings1.eps_duality_gap_rel == settings2.eps_duality_gap_rel &&
+    settings1.update_mu == settings2.update_mu &&
+    settings1.threshold_ratio_update_mu ==
+      settings2.threshold_ratio_update_mu &&
+    settings1.threshold_ratio_update_mu_inv ==
+      settings2.threshold_ratio_update_mu_inv &&
+    settings1.percentage_factorization_time_update_mu ==
+      settings2.percentage_factorization_time_update_mu &&
+    settings1.update_mu_iteration_criteria ==
+      settings2.update_mu_iteration_criteria &&
+    settings1.interval_update_mu == settings2.interval_update_mu &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

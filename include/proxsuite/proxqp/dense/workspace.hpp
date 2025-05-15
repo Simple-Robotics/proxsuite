@@ -88,6 +88,7 @@ struct Workspace
   T alpha;
 
   Vec<T> dual_residual_scaled;
+  Vec<T> primal_residual_scaled;
   Vec<T> primal_residual_in_scaled_up;
 
   Vec<T> primal_residual_in_scaled_up_plus_alphaCdx;
@@ -99,6 +100,16 @@ struct Workspace
   bool refactorize;
   bool proximal_parameter_update;
   bool is_initialized;
+  bool is_first_solve;
+
+  ///// Timers for update_mu in OSQP
+  Timer<T> timer_factorization_complete_kkt;
+  Timer<T> timer_between_updates;
+  T factorization_time_complete_kkt;
+  T time_since_last_update_mu;
+
+  ///// Fixed number iterations approach in mu update in OSQP
+  isize last_iteration_update_mu;
 
   sparse::isize n_c; // final number of active inequalities
   /*!
@@ -133,6 +144,7 @@ struct Workspace
     , refactorize(false)
     , proximal_parameter_update(false)
     , is_initialized(false)
+    , is_first_solve(true)
   {
 
     if (box_constraints) {
@@ -220,6 +232,7 @@ struct Workspace
       dw_aug.resize(dim + n_eq + n_in + dim);
       rhs.resize(dim + n_eq + n_in + dim);
       err.resize(dim + n_eq + n_in + dim);
+      primal_residual_scaled.resize(n_eq + n_in + dim);
       primal_residual_in_scaled_up.resize(dim + n_in);
       primal_residual_in_scaled_up_plus_alphaCdx.resize(dim + n_in);
       primal_residual_in_scaled_low_plus_alphaCdx.resize(dim + n_in);
@@ -297,6 +310,7 @@ struct Workspace
       dw_aug.resize(dim + n_eq + n_in);
       rhs.resize(dim + n_eq + n_in);
       err.resize(dim + n_eq + n_in);
+      primal_residual_scaled.resize(n_eq + n_in);
       primal_residual_in_scaled_up.resize(n_in);
       primal_residual_in_scaled_up_plus_alphaCdx.resize(n_in);
       primal_residual_in_scaled_low_plus_alphaCdx.resize(n_in);
@@ -333,12 +347,18 @@ struct Workspace
     alpha = 1.;
 
     dual_residual_scaled.setZero();
+    primal_residual_scaled.setZero();
     primal_residual_in_scaled_up.setZero();
 
     primal_residual_in_scaled_up_plus_alphaCdx.setZero();
     primal_residual_in_scaled_low_plus_alphaCdx.setZero();
     CTz.setZero();
     n_c = 0;
+
+    factorization_time_complete_kkt = 0.;
+    time_since_last_update_mu = 0.;
+
+    last_iteration_update_mu = 0;
   }
   /*!
    * Clean-ups solver's workspace.
@@ -369,6 +389,7 @@ struct Workspace
     alpha = 1.;
 
     dual_residual_scaled.setZero();
+    primal_residual_scaled.setZero();
     primal_residual_in_scaled_up.setZero();
 
     primal_residual_in_scaled_up_plus_alphaCdx.setZero();
@@ -394,6 +415,9 @@ struct Workspace
     proximal_parameter_update = false;
     is_initialized = false;
     n_c = 0;
+
+    time_since_last_update_mu = 0.;
+    last_iteration_update_mu = 0;
   }
 };
 } // namespace dense

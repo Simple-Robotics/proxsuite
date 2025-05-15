@@ -11,6 +11,9 @@
 #include "proxsuite/linalg/dense/solve.hpp"
 #include <proxsuite/linalg/veg/vec.hpp>
 
+#include "proxsuite/proxqp/timings.hpp"
+#include <iostream>
+
 namespace proxsuite {
 namespace linalg {
 namespace dense {
@@ -718,29 +721,54 @@ public:
   void factorize(Eigen::Ref<ColMat const> mat /* NOLINT */,
                  proxsuite::linalg::veg::dynstack::DynStackMut stack)
   {
+    // proxsuite::proxqp::Timer<double> timer;
+
     VEG_ASSERT(mat.rows() == mat.cols());
     isize n = mat.rows();
+    // timer.stop();
+    // timer.start();
     reserve_uninit(n);
+    // timer.stop();
+    // std::cout << "Time of reserve_unit: " << timer.elapsed().user <<
+    // std::endl; // Diff
 
+    // timer.start();
     perm.resize_for_overwrite(n);
     perm_inv.resize_for_overwrite(n);
     maybe_sorted_diag.resize_for_overwrite(n);
+    // timer.stop();
+    // std::cout << "Time of resize_for_overwrite: " << timer.elapsed().user <<
+    // std::endl; // Diff
 
+    // timer.start();
     proxsuite::linalg::dense::_detail::compute_permutation( //
       perm.ptr_mut(),
       perm_inv.ptr_mut(),
       util::diagonal(mat));
+    // timer.stop();
+    // std::cout << "Time of compute_permutation: " << timer.elapsed().user <<
+    // std::endl; // Diff
 
+    // timer.start();
     {
       LDLT_TEMP_MAT_UNINIT(T, work, n, n, stack);
       ld_col_mut() = mat;
       proxsuite::linalg::dense::_detail::apply_permutation_tri_lower(
         ld_col_mut(), work, perm.ptr());
     }
+    // timer.stop();
+    // std::cout << "Time of apply_permutation_tri_lower: " <<
+    // timer.elapsed().user << std::endl; // Same timer.start();
     for (isize i = 0; i < n; ++i) {
       maybe_sorted_diag[i] = ld_col()(i, i);
     }
+    // timer.stop();
+    // std::cout << "Time of ld_col: " << timer.elapsed().user << std::endl;
+    // timer.start();
     proxsuite::linalg::dense::factorize(ld_col_mut(), stack);
+    // timer.stop();
+    // std::cout << "Time of proxsuite::lialg::dense::factorize: " <<
+    // timer.elapsed().user << std::endl; // Diff
   }
 
   /*!

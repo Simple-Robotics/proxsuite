@@ -252,8 +252,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
 //     qp_random.g = -qp_random.C.transpose() *
 //                   z_sol; // make sure the LP is bounded within the feasible
 //                   set
-//     // std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l
-//     "
+//     // std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l"
 //     // << qp.l << std::endl;
 //     pod::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
 //     qp.settings.eps_abs = eps_abs;

@@ -30,6 +30,207 @@ using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
 
 /*!
+ * Computes the scaled primal - dual residual ratio to update mu in OSQP.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+T
+compute_update_ratio_primal_dual(const Settings<T>& qpsettings,
+                                 const Model<T>& qpmodel,
+                                 Results<T>& qpresults,
+                                 Workspace<T>& qpwork,
+                                 const bool box_constraints,
+                                 const isize n_constraints,
+                                 const DenseBackend dense_backend,
+                                 const HessianType hessian_type)
+{
+  proxsuite::common::global_primal_residual_scaled(
+    qpmodel, qpresults, qpwork, box_constraints);
+  T norm_primal_residual_scaled = infty_norm(qpwork.primal_residual_scaled);
+
+  proxsuite::common::global_dual_residual_scaled(
+    qpresults, qpwork, qpmodel, box_constraints, hessian_type);
+  T norm_dual_residual_scaled = infty_norm(qpwork.dual_residual_scaled);
+
+  T epsilon = 1e-10;
+
+  T norm_Ax = infty_norm(qpwork.A_scaled * qpresults.x);
+  T norm_Cx = infty_norm(qpwork.C_scaled * qpresults.x);
+  if (box_constraints) {
+    norm_Cx = std::max(
+      norm_Cx,
+      infty_norm((qpwork.i_scaled.array() * qpresults.x.array()).matrix()));
+  }
+  T norm_zeta =
+    std::max(infty_norm(qpwork.zeta_eq), infty_norm(qpwork.zeta_in));
+  T max_Ax_Cx = std::max(norm_Ax, norm_Cx);
+  T max_scale_primal = std::max(max_Ax_Cx, norm_zeta);
+  T primal_term = norm_primal_residual_scaled / (max_scale_primal + epsilon);
+
+  T norm_Hx;
+  switch (hessian_type) {
+    case HessianType::Zero:
+      norm_Hx = 0;
+      break;
+    case HessianType::Dense:
+      norm_Hx = infty_norm(
+        qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x);
+      break;
+    case HessianType::Diagonal:
+      norm_Hx = infty_norm(
+        (qpwork.H_scaled.diagonal().array() * qpresults.x.array()).matrix());
+      break;
+  }
+  T norm_ATy = infty_norm(qpwork.A_scaled.transpose() * qpresults.y);
+  T norm_CTz =
+    infty_norm(qpwork.C_scaled.transpose() * qpresults.z.head(qpmodel.n_in));
+  if (box_constraints) {
+    norm_CTz = std::max(norm_Cx,
+                        infty_norm((qpwork.i_scaled.array() *
+                                    qpresults.z.tail(qpmodel.dim).array())
+                                     .matrix()));
+  }
+  T norm_g = infty_norm(qpwork.g_scaled);
+  T max_Hx_g = std::max(norm_Hx, norm_g);
+  T max_ATy_CTz = std::max(norm_ATy, norm_CTz);
+  T max_scale_dual = std::max(max_Hx_g, max_ATy_CTz);
+  T dual_term = norm_dual_residual_scaled / (max_scale_dual + epsilon);
+
+  T update_ratio_primal_dual = std::sqrt(primal_term / (dual_term + epsilon));
+  return update_ratio_primal_dual;
+}
+/*!
+ * Updates the proximal parameters mu_eq and mu_in in the OSQP algorithm.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+update_mu(const Settings<T>& qpsettings,
+          const Model<T>& qpmodel,
+          Results<T>& qpresults,
+          Workspace<T>& qpwork,
+          const bool box_constraints,
+          const isize n_constraints,
+          const DenseBackend dense_backend,
+          const HessianType hessian_type,
+          T& primal_feasibility_lhs,
+          T& primal_feasibility_lhs_new,
+          T& dual_feasibility_lhs,
+          T& dual_feasibility_lhs_new,
+          T& new_mu_eq,
+          T& new_mu_in,
+          T& new_mu_eq_inv,
+          T& new_mu_in_inv,
+          i64 iter)
+{
+  bool iteration_condition;
+  switch (qpsettings.update_mu_iteration_criteria) {
+    case UpdateMuIterationCriteria::FactorizationTime: {
+      if (iter == 0) {
+        qpwork.timer_between_updates.stop();
+        qpwork.timer_between_updates.start();
+        qpwork.time_since_last_update_mu =
+          qpwork.timer_between_updates.elapsed().user;
+      } else {
+        qpwork.time_since_last_update_mu =
+          qpwork.timer_between_updates.elapsed().user;
+      }
+      iteration_condition = qpwork.time_since_last_update_mu >
+                            qpsettings.percentage_factorization_time_update_mu *
+                              qpwork.factorization_time_complete_kkt;
+      break;
+    }
+    case UpdateMuIterationCriteria::FixedNumberIterations: {
+      iteration_condition =
+        iter - qpwork.last_iteration_update_mu > qpsettings.interval_update_mu;
+    }
+  }
+
+  if (iteration_condition) {
+    T update_ratio_primal_dual =
+      compute_update_ratio_primal_dual(qpsettings,
+                                       qpmodel,
+                                       qpresults,
+                                       qpwork,
+                                       box_constraints,
+                                       n_constraints,
+                                       dense_backend,
+                                       hessian_type);
+    // std::cout << "update_ratio_update_mu :" << update_ratio_primal_dual <<
+    // std::endl;
+
+    bool value_condition =
+      update_ratio_primal_dual > qpsettings.threshold_ratio_update_mu ||
+      update_ratio_primal_dual < qpsettings.threshold_ratio_update_mu_inv;
+
+    if (value_condition) {
+      new_mu_eq = qpresults.info.mu_eq / update_ratio_primal_dual;
+      new_mu_in = qpresults.info.mu_in / update_ratio_primal_dual;
+      new_mu_eq_inv = qpresults.info.mu_eq_inv * update_ratio_primal_dual;
+      new_mu_in_inv = qpresults.info.mu_in_inv * update_ratio_primal_dual;
+
+      new_mu_eq = std::min(std::max(new_mu_eq, qpsettings.mu_min_eq),
+                           qpsettings.mu_max_eq);
+      new_mu_in = std::min(std::max(new_mu_in, qpsettings.mu_min_in_osqp),
+                           qpsettings.mu_max_in);
+      new_mu_eq_inv =
+        std::min(std::max(new_mu_eq_inv, qpsettings.mu_min_eq_inv),
+                 qpsettings.mu_max_eq_inv);
+      new_mu_in_inv =
+        std::min(std::max(new_mu_in_inv, qpsettings.mu_min_in_inv),
+                 qpsettings.mu_max_in_inv_osqp);
+    }
+
+    if (primal_feasibility_lhs_new >= primal_feasibility_lhs - 1e-6 &&
+        dual_feasibility_lhs_new >= dual_feasibility_lhs - 1e-6 &&
+        qpresults.info.mu_in <= T(1e-3)) {
+      new_mu_in = qpsettings.cold_reset_mu_in_osqp;
+      new_mu_eq = qpsettings.cold_reset_mu_eq_osqp;
+      new_mu_in_inv = qpsettings.cold_reset_mu_in_inv_osqp;
+      new_mu_eq_inv = qpsettings.cold_reset_mu_eq_inv_osqp;
+    }
+
+    if (qpresults.info.mu_in != new_mu_in ||
+        qpresults.info.mu_eq != new_mu_eq) {
+      {
+        ++qpresults.info.mu_updates;
+      }
+      mu_update(qpmodel,
+                qpresults,
+                qpwork,
+                n_constraints,
+                dense_backend,
+                new_mu_eq,
+                new_mu_in);
+      switch (qpsettings.update_mu_iteration_criteria) {
+        case UpdateMuIterationCriteria::FactorizationTime: {
+          qpwork.timer_between_updates.stop();
+          qpwork.timer_between_updates.start();
+          break;
+        }
+        case UpdateMuIterationCriteria::FixedNumberIterations: {
+          qpwork.last_iteration_update_mu = iter;
+          break;
+        }
+      }
+      qpresults.info.mu_eq = new_mu_eq;
+      qpresults.info.mu_in = new_mu_in;
+      qpresults.info.mu_eq_inv = new_mu_eq_inv;
+      qpresults.info.mu_in_inv = new_mu_in_inv;
+    }
+  }
+}
+/*!
  * Checks the feasibility of the problem at the current step of the ADMM (OSQP)
  * solver.
  *
@@ -284,6 +485,16 @@ qp_solve( //
 
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
+    T new_mu_in(qpresults.info.mu_in);
+    T new_mu_eq(qpresults.info.mu_eq);
+    T new_mu_in_inv(qpresults.info.mu_in_inv);
+    T new_mu_eq_inv(qpresults.info.mu_eq_inv);
+
+    // proxsuite::proxqp::Timer<T> timer_admm_iter;
+    // timer_admm_iter.stop();
+    // std::cout << "Time iter: " << timer_admm_iter.elapsed().user <<
+    // std::endl; timer_admm_iter.start();
+
     bool is_solved_qp =
       proxsuite::common::is_solved(qpsettings,
                                    qpmodel,
@@ -346,7 +557,12 @@ qp_solve( //
       break;
     }
 
+    qpwork.active_set_up.array() =
+      (qpwork.primal_residual_in_scaled_up.array() >= 0);
+    qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
+
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
+    T dual_feasibility_lhs_new(dual_feasibility_lhs);
     proxsuite::common::update_solver_status(qpsettings,
                                             qpmodel,
                                             qpresults,
@@ -359,7 +575,7 @@ qp_solve( //
                                             primal_feasibility_eq_lhs,
                                             primal_feasibility_in_lhs,
                                             primal_feasibility_lhs_new,
-                                            dual_feasibility_lhs,
+                                            dual_feasibility_lhs_new,
                                             dual_feasibility_rhs_0,
                                             dual_feasibility_rhs_1,
                                             dual_feasibility_rhs_3,
@@ -367,23 +583,38 @@ qp_solve( //
                                             duality_gap,
                                             scaled_eps);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    /// mu update
+    if (qpsettings.update_mu) {
+      update_mu(qpsettings,
+                qpmodel,
+                qpresults,
+                qpwork,
+                box_constraints,
+                n_constraints,
+                dense_backend,
+                hessian_type,
+                primal_feasibility_lhs,
+                primal_feasibility_lhs_new,
+                dual_feasibility_lhs,
+                dual_feasibility_lhs_new,
+                new_mu_eq,
+                new_mu_in,
+                new_mu_eq_inv,
+                new_mu_in_inv,
+                iter);
+    }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    /// end of mu update
-  }
+  } // outer iterations loop
 
   proxsuite::common::unscale_solver(
     qpsettings, qpmodel, qpresults, box_constraints, ruiz);
   proxsuite::common::compute_objective(qpmodel, qpresults);
   if (qpsettings.compute_timings) {
-    proxsuite::common::compute_timings(qpsettings, qpresults, qpwork);
+    proxsuite::common::compute_timings(qpresults, qpwork);
   }
 
   if (qpsettings.verbose) {
     proxsuite::common::print_solver_statistics(
-      qpsettings, qpresults, common::QPSolver::PROXQP);
+      qpsettings, qpresults, common::QPSolver::OSQP);
   }
 
   proxsuite::common::prepare_next_solve(qpresults, qpwork);

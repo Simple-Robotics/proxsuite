@@ -244,6 +244,7 @@ prepare_next_solve(pp::Results<T>& qpresults, ppd::Workspace<T>& qpwork)
 {
   qpwork.dirty = true;
   qpwork.is_initialized = true; // necessary because we call workspace cleanup
+  qpwork.is_first_solve = false;
 
   assert(!std::isnan(qpresults.info.pri_res));
   assert(!std::isnan(qpresults.info.dua_res));
@@ -518,19 +519,61 @@ setup_solver(const pp::Settings<T>& qpsettings,
            // updating the Qp object
     switch (qpsettings.initial_guess) {
       case pp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-        proxsuite::proxqp::dense::setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        compute_equality_constrained_initial_guess(qpwork,
-                                                   qpsettings,
-                                                   qpmodel,
-                                                   n_constraints,
-                                                   dense_backend,
-                                                   hessian_type,
-                                                   qpresults);
         switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            proxsuite::proxqp::dense::setup_factorization(
+              qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+            compute_equality_constrained_initial_guess(qpwork,
+                                                       qpsettings,
+                                                       qpmodel,
+                                                       n_constraints,
+                                                       dense_backend,
+                                                       hessian_type,
+                                                       qpresults);
+          } break;
           case common::QPSolver::OSQP: {
-            setup_factorization_complete_kkt(
-              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            if (qpwork.is_first_solve) {
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.timer_factorization_complete_kkt.start();
+              proxsuite::proxqp::dense::setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.factorization_time_complete_kkt =
+                qpwork.timer_factorization_complete_kkt.elapsed().user;
+              // std::cout << "Time setup_factorization: "
+              //           <<
+              //           qpwork.timer_factorization_complete_kkt.elapsed().user
+              //           << std::endl;
+              compute_equality_constrained_initial_guess(qpwork,
+                                                         qpsettings,
+                                                         qpmodel,
+                                                         n_constraints,
+                                                         dense_backend,
+                                                         hessian_type,
+                                                         qpresults);
+              qpwork.timer_factorization_complete_kkt.start();
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.factorization_time_complete_kkt +=
+                qpwork.timer_factorization_complete_kkt.elapsed().user;
+              // std::cout << "Time setup_factorization_compute_kkt: "
+              //           <<
+              //           qpwork.timer_factorization_complete_kkt.elapsed().user
+              //           << std::endl;
+            } else { // Keep the same first factorization time for mu update
+              proxsuite::proxqp::dense::setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              compute_equality_constrained_initial_guess(qpwork,
+                                                         qpsettings,
+                                                         qpmodel,
+                                                         n_constraints,
+                                                         dense_backend,
+                                                         hessian_type,
+                                                         qpresults);
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            }
           } break;
         }
         break;
@@ -574,12 +617,28 @@ setup_solver(const pp::Settings<T>& qpsettings,
         break;
       }
       case pp::InitialGuessStatus::NO_INITIAL_GUESS: {
-        setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         switch (qp_solver) {
+          case common::QPSolver::PROXQP: {
+            setup_factorization(
+              qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+          } break;
           case common::QPSolver::OSQP: {
-            setup_factorization_complete_kkt(
-              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            if (qpwork.is_first_solve) {
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.timer_factorization_complete_kkt.start();
+              setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.factorization_time_complete_kkt =
+                qpwork.timer_factorization_complete_kkt.elapsed().user;
+            } else { // Keep the same first factorization time for mu update
+              setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            }
           } break;
         }
         break;
@@ -596,10 +655,10 @@ setup_solver(const pp::Settings<T>& qpsettings,
           ruiz.scale_box_dual_in_place_in(
             { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
-        setup_factorization(
-          qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         switch (qp_solver) {
           case common::QPSolver::PROXQP: {
+            setup_factorization(
+              qpwork, qpmodel, qpresults, dense_backend, hessian_type);
             //!\ TODO in a quicker way
             qpwork.n_c = 0;
             for (plv::isize i = 0; i < n_constraints; i++) {
@@ -613,8 +672,22 @@ setup_solver(const pp::Settings<T>& qpsettings,
               qpmodel, qpresults, dense_backend, n_constraints, qpwork);
           } break;
           case common::QPSolver::OSQP: {
-            setup_factorization_complete_kkt(
-              qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            if (qpwork.is_first_solve) {
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.timer_factorization_complete_kkt.start();
+              setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+              qpwork.timer_factorization_complete_kkt.stop();
+              qpwork.factorization_time_complete_kkt =
+                qpwork.timer_factorization_complete_kkt.elapsed().user;
+            } else { // Keep the same first factorization time for mu update
+              setup_factorization(
+                qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+              setup_factorization_complete_kkt(
+                qpwork, qpmodel, qpresults, dense_backend, n_constraints);
+            }
           } break;
         }
         break;
@@ -719,6 +792,98 @@ compute_scaled_primal_residual_ineq(const pp::Settings<T>& qpsettings,
   }
 }
 /*!
+ * Computes the scaled primal residual.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+global_primal_residual_scaled(const ppd::Model<T>& qpmodel,
+                              pp::Results<T>& qpresults,
+                              ppd::Workspace<T>& qpwork,
+                              const bool box_constraints)
+{
+  qpresults.se.noalias() = qpwork.A_scaled * qpresults.x - qpwork.b_scaled;
+
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
+    qpwork.C_scaled * qpresults.x;
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) =
+      qpwork.i_scaled.array() * qpresults.x.array();
+  }
+
+  qpresults.si.head(qpmodel.n_in) =
+    helpers::positive_part(
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.u) +
+    helpers::negative_part(
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.l);
+  if (box_constraints) {
+    qpresults.si.tail(qpmodel.dim) =
+      helpers::positive_part(
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.u_box) +
+      helpers::negative_part(
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.l_box);
+  }
+
+  qpwork.primal_residual_scaled.head(qpmodel.n_eq) = qpresults.se;
+  qpwork.primal_residual_scaled.segment(qpmodel.n_eq, qpmodel.n_in) =
+    qpresults.si.head(qpmodel.n_in);
+  if (box_constraints) {
+    qpwork.primal_residual_scaled.tail(qpmodel.dim) =
+      qpresults.si.tail(qpmodel.dim);
+  }
+}
+/*!
+ * Computes the scaled dual residual.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+global_dual_residual_scaled(pp::Results<T>& qpresults,
+                            ppd::Workspace<T>& qpwork,
+                            const ppd::Model<T>& qpmodel,
+                            const bool box_constraints,
+                            const pp::HessianType& hessian_type)
+{
+  qpwork.dual_residual_scaled = qpwork.g_scaled;
+
+  switch (hessian_type) {
+    case pp::HessianType::Zero:
+      break;
+    case pp::HessianType::Dense:
+      qpwork.CTz.noalias() =
+        qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      break;
+    case pp::HessianType::Diagonal:
+      qpwork.CTz.array() =
+        qpwork.H_scaled.diagonal().array() * qpresults.x.array();
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      break;
+  }
+
+  qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
+  qpwork.dual_residual_scaled += qpwork.CTz;
+
+  qpwork.CTz.noalias() =
+    qpwork.C_scaled.transpose() * qpresults.z.head(qpmodel.n_in);
+  qpwork.dual_residual_scaled += qpwork.CTz;
+  if (box_constraints) {
+    qpwork.CTz.noalias() = qpresults.z.tail(qpmodel.dim);
+    qpwork.CTz.array() *= qpwork.i_scaled.array();
+    qpwork.dual_residual_scaled += qpwork.CTz;
+  }
+}
+/*!
  * Computes the objective function.
  *
  * @param qpmodel QP problem model as defined by the user (without any scaling
@@ -743,15 +908,12 @@ compute_objective(const ppd::Model<T>& qpmodel, pp::Results<T>& qpresults)
 /*!
  * Computes the objective function.
  *
- * @param qpsettings solver settings.
  * @param qpresults solver results.
  * @param qpwork solver workspace.
  */
 template<typename T>
 void
-compute_timings(const pp::Settings<T>& qpsettings,
-                pp::Results<T>& qpresults,
-                ppd::Workspace<T>& qpwork)
+compute_timings(pp::Results<T>& qpresults, ppd::Workspace<T>& qpwork)
 {
   qpresults.info.solve_time = qpwork.timer.elapsed().user; // in microseconds
   qpresults.info.run_time =
@@ -976,7 +1138,7 @@ update_solver_status( //
   T& primal_feasibility_eq_lhs,
   T& primal_feasibility_in_lhs,
   T& primal_feasibility_lhs_new,
-  T& dual_feasibility_lhs,
+  T& dual_feasibility_lhs_new,
   T& dual_feasibility_rhs_0,
   T& dual_feasibility_rhs_1,
   T& dual_feasibility_rhs_3,
@@ -1001,9 +1163,8 @@ update_solver_status( //
     (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
                                                 primal_feasibility_in_rhs_0));
   qpresults.info.pri_res = primal_feasibility_lhs_new;
-  if (is_primal_feasible) {
-    T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
+  if (is_primal_feasible) {
     ppd::global_dual_residual(qpresults,
                               qpwork,
                               qpmodel,

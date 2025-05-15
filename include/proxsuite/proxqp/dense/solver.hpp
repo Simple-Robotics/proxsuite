@@ -1225,6 +1225,7 @@ qp_solve( //
     }
 
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
+    T dual_feasibility_lhs_new(dual_feasibility_lhs);
     proxsuite::common::update_solver_status(qpsettings,
                                             qpmodel,
                                             qpresults,
@@ -1237,16 +1238,13 @@ qp_solve( //
                                             primal_feasibility_eq_lhs,
                                             primal_feasibility_in_lhs,
                                             primal_feasibility_lhs_new,
-                                            dual_feasibility_lhs,
+                                            dual_feasibility_lhs_new,
                                             dual_feasibility_rhs_0,
                                             dual_feasibility_rhs_1,
                                             dual_feasibility_rhs_3,
                                             rhs_duality_gap,
                                             duality_gap,
                                             scaled_eps);
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    /// mu update
 
     if (qpsettings.bcl_update) {
       bcl_update(qpsettings,
@@ -1275,23 +1273,6 @@ qp_solve( //
                       new_bcl_mu_eq_inv);
     }
     // COLD RESTART
-
-    T dual_feasibility_lhs_new(dual_feasibility_lhs);
-
-    global_dual_residual(qpresults,
-                         qpwork,
-                         qpmodel,
-                         box_constraints,
-                         ruiz,
-                         dual_feasibility_lhs_new,
-                         dual_feasibility_rhs_0,
-                         dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3,
-                         rhs_duality_gap,
-                         duality_gap,
-                         hessian_type);
-    qpresults.info.dua_res = dual_feasibility_lhs_new;
-    qpresults.info.duality_gap = duality_gap;
 
     if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
         dual_feasibility_lhs_new >= dual_feasibility_lhs &&
@@ -1328,16 +1309,13 @@ qp_solve( //
     qpresults.info.mu_in = new_bcl_mu_in;
     qpresults.info.mu_eq_inv = new_bcl_mu_eq_inv;
     qpresults.info.mu_in_inv = new_bcl_mu_in_inv;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    /// end of mu update
   }
 
   proxsuite::common::unscale_solver(
     qpsettings, qpmodel, qpresults, box_constraints, ruiz);
   proxsuite::common::compute_objective(qpmodel, qpresults);
   if (qpsettings.compute_timings) {
-    proxsuite::common::compute_timings(qpsettings, qpresults, qpwork);
+    proxsuite::common::compute_timings(qpresults, qpwork);
   }
 
   if (qpsettings.verbose) {
