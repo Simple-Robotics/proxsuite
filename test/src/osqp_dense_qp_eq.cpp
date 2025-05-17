@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 - 2024 INRIA
 //
+#include "proxsuite/proxqp/status.hpp"
 #include <iostream>
 #include <doctest.hpp>
 #include <Eigen/Core>
@@ -102,8 +103,16 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter_ext
+    std::cout << "number of iterations (admm): " << qp.results.info.iter_ext
               << std::endl;
+    if (qp.settings.polish &&
+        !(qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND ||
+          qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NOT_RUN)) {
+      std::cout << "number of iterations (polishing): "
+                << qp.settings.polish_refine_iter << std::endl;
+    }
   }
 }
 DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
@@ -158,8 +167,16 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter_ext
+    std::cout << "number of iterations (admm): " << qp.results.info.iter_ext
               << std::endl;
+    if (qp.settings.polish &&
+        !(qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND ||
+          qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NOT_RUN)) {
+      std::cout << "number of iterations (polishing): "
+                << qp.settings.polish_refine_iter << std::endl;
+    }
   }
 }
 
@@ -219,8 +236,16 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter_ext
+    std::cout << "number of iterations (admm): " << qp.results.info.iter_ext
               << std::endl;
+    if (qp.settings.polish &&
+        !(qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND ||
+          qp.results.info.polish_status ==
+            proxqp::PolishStatus::POLISH_NOT_RUN)) {
+      std::cout << "number of iterations (polishing): "
+                << qp.settings.polish_refine_iter << std::endl;
+    }
   }
 }
 

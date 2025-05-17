@@ -43,7 +43,9 @@ main()
   qp_osqp.settings.default_mu_in = T(1.E1);
 
   qp_osqp.settings.polish = true;
-  qp_osqp.settings.eps_abs = T(1.E-3);
+
+  qp_osqp.settings.eps_abs = T(1.E-9);
+  qp_osqp.settings.high_accuracy = true;
 
   qp_osqp.init(qp_random.H,
                qp_random.g,

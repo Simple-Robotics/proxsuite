@@ -1140,6 +1140,7 @@ qp_solve( //
   T duality_gap(0);
   T rhs_duality_gap(0);
   T scaled_eps(qpsettings.eps_abs);
+  T scaled_eps_rel(qpsettings.eps_rel);
 
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
 
@@ -1168,6 +1169,7 @@ qp_solve( //
                                                   rhs_duality_gap,
                                                   duality_gap,
                                                   scaled_eps,
+                                                  scaled_eps_rel,
                                                   iter);
     if (is_solved) {
       break;
@@ -1244,7 +1246,8 @@ qp_solve( //
                                             dual_feasibility_rhs_3,
                                             rhs_duality_gap,
                                             duality_gap,
-                                            scaled_eps);
+                                            scaled_eps,
+                                            scaled_eps_rel);
 
     if (qpsettings.bcl_update) {
       bcl_update(qpsettings,

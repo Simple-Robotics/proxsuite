@@ -236,11 +236,15 @@ print_solver_statistics(const pp::Settings<T>& qpsettings,
       case pp::PolishStatus::POLISH_FAILED: {
         std::cout << "polishing:      "
                   << "Failed" << std::endl;
+        std::cout << "Resumed ADMM algorithm option: "
+                  << (qpsettings.resume_admm ? "ON" : "OFF") << std::endl;
         break;
       }
       case pp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
         std::cout << "polishing:      "
                   << "Not run because no active set found" << std::endl;
+        std::cout << "Resumed ADMM algorithm option: "
+                  << (qpsettings.resume_admm ? "ON" : "OFF") << std::endl;
         break;
       }
       case pp::PolishStatus::POLISH_NOT_RUN: {
@@ -1035,6 +1039,7 @@ is_solved( //
   T& rhs_duality_gap,
   T& duality_gap,
   T& scaled_eps,
+  T& scaled_eps_rel,
   plv::i64 iter)
 {
 
@@ -1068,16 +1073,16 @@ is_solved( //
   qpresults.info.duality_gap = duality_gap;
 
   T rhs_pri(scaled_eps);
-  if (qpsettings.eps_rel != 0) {
-    rhs_pri += qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
-                                             primal_feasibility_in_rhs_0);
+  if (scaled_eps_rel != 0) {
+    rhs_pri += scaled_eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                         primal_feasibility_in_rhs_0);
   }
   bool is_primal_feasible = primal_feasibility_lhs <= rhs_pri;
 
-  T rhs_dua(qpsettings.eps_abs);
-  if (qpsettings.eps_rel != 0) {
+  T rhs_dua(scaled_eps);
+  if (scaled_eps_rel != 0) {
     rhs_dua +=
-      qpsettings.eps_rel *
+      scaled_eps_rel *
       std::max(std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
                std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2));
   }
@@ -1097,11 +1102,10 @@ is_solved( //
 
     compute_objective(qpmodel, qpresults);
 
-    std::cout << "\033[1;32m[outer iteration " << iter + 1 << "]\033[0m"
-              << std::endl;
-
     switch (qp_solver) {
       case common::QPSolver::PROXQP: {
+        std::cout << "\033[1;32m[outer iteration " << iter + 1 << "]\033[0m"
+                  << std::endl;
         std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                   << " | primal residual=" << qpresults.info.pri_res
                   << " | dual residual=" << qpresults.info.dua_res
@@ -1110,6 +1114,8 @@ is_solved( //
                   << " | rho=" << qpresults.info.rho << std::endl;
         break;
         case common::QPSolver::OSQP: {
+          std::cout << "\033[1;32m[admm iteration " << iter + 1 << "]\033[0m"
+                    << std::endl;
           std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                     << " | primal residual=" << qpresults.info.pri_res
                     << " | dual residual=" << qpresults.info.dua_res
@@ -1187,7 +1193,8 @@ update_solver_status( //
   T& dual_feasibility_rhs_3,
   T& rhs_duality_gap,
   T& duality_gap,
-  T& scaled_eps)
+  T& scaled_eps,
+  T& scaled_eps_rel)
 {
   ppd::global_primal_residual(qpmodel,
                               qpresults,
@@ -1203,8 +1210,8 @@ update_solver_status( //
 
   bool is_primal_feasible =
     primal_feasibility_lhs_new <=
-    (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
-                                                primal_feasibility_in_rhs_0));
+    (scaled_eps + scaled_eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                            primal_feasibility_in_rhs_0));
   qpresults.info.pri_res = primal_feasibility_lhs_new;
 
   if (is_primal_feasible) {
@@ -1225,8 +1232,8 @@ update_solver_status( //
 
     bool is_dual_feasible =
       dual_feasibility_lhs_new <=
-      (qpsettings.eps_abs +
-       qpsettings.eps_rel *
+      (scaled_eps +
+       scaled_eps_rel *
          std::max(
            std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
            std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));

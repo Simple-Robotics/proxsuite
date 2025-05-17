@@ -135,6 +135,8 @@ struct Settings
   T eps_abs;
   T eps_rel;
 
+  bool high_accuracy;
+
   isize max_iter;
   isize max_iter_in;
   isize safe_guard;
@@ -161,6 +163,7 @@ struct Settings
   bool polish;
   isize polish_refine_iter;
   T delta;
+  bool resume_admm;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -216,6 +219,8 @@ struct Settings
    * in osqp.
    * @param eps_abs asbolute stopping criterion of the solver.
    * @param eps_rel relative stopping criterion of the solver.
+   * @param high_accuracy if set to true, epsilon for ADMM set to 1e-5 instead
+   * of 1e-3 in osqp.
    * @param max_iter maximal number of authorized iteration.
    * @param max_iter_in maximal number of authorized iterations for an inner
    * loop.
@@ -256,6 +261,8 @@ struct Settings
    * @param polish_refine_iter number of iterative refinements in polishing in
    * OSQP
    * @param delta regularization parameter in solution polishing in OSQP
+   * @param resume_admm if set to true, resumes to ADMM iterations after polish
+   * failed to found active sets or provide a better solution.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -308,6 +315,7 @@ struct Settings
     T cold_reset_mu_in_inv_osqp = 1.1,
     T eps_abs = 1.e-5,
     T eps_rel = 0,
+    bool high_accuracy = false,
     isize max_iter = 10000,
     isize max_iter_in = 1500,
     isize safe_guard = 1.E4,
@@ -332,9 +340,10 @@ struct Settings
     UpdateMuIterationCriteria update_mu_iteration_criteria =
       UpdateMuIterationCriteria::FixedNumberIterations,
     isize interval_update_mu = 10,
-    bool polish = false,
+    bool polish = true,
     isize polish_refine_iter = 3,
     T delta = 1.e-6,
+    bool resume_admm = true,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -375,6 +384,7 @@ struct Settings
     , cold_reset_mu_in_inv_osqp(cold_reset_mu_in_inv_osqp)
     , eps_abs(eps_abs)
     , eps_rel(eps_rel)
+    , high_accuracy(high_accuracy)
     , max_iter(max_iter)
     , max_iter_in(max_iter_in)
     , safe_guard(safe_guard)
@@ -398,6 +408,7 @@ struct Settings
     , polish(polish)
     , polish_refine_iter(polish_refine_iter)
     , delta(delta)
+    , resume_admm(resume_admm)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -465,6 +476,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
       settings2.cold_reset_mu_in_inv_osqp &&
     settings1.eps_abs == settings2.eps_abs &&
     settings1.eps_rel == settings2.eps_rel &&
+    settings1.high_accuracy == settings2.high_accuracy &&
     settings1.max_iter == settings2.max_iter &&
     settings1.max_iter_in == settings2.max_iter_in &&
     settings1.safe_guard == settings2.safe_guard &&
@@ -491,6 +503,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.polish == settings2.polish &&
     settings1.polish_refine_iter == settings2.polish_refine_iter &&
     settings1.delta == settings2.delta &&
+    settings1.resume_admm == settings2.resume_admm &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

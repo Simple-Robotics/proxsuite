@@ -19,6 +19,7 @@
 #include "proxsuite/proxqp/dense/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/settings.hpp"
 #include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/proxqp/status.hpp"
 #include "proxsuite/solvers/common/utils.hpp"
 #include <iostream>
 
@@ -35,18 +36,14 @@ using namespace proxsuite::proxqp::dense;
  * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling
  * performed).
- * @param qpsettings solver settings.
  * @param qpresults solver results.
  */
 template<typename T>
 T
-compute_update_ratio_primal_dual(const Settings<T>& qpsettings,
-                                 const Model<T>& qpmodel,
+compute_update_ratio_primal_dual(const Model<T>& qpmodel,
                                  Results<T>& qpresults,
                                  Workspace<T>& qpwork,
                                  const bool box_constraints,
-                                 const isize n_constraints,
-                                 const DenseBackend dense_backend,
                                  const HessianType hessian_type)
 {
   proxsuite::common::global_primal_residual_scaled(
@@ -157,15 +154,8 @@ update_mu(const Settings<T>& qpsettings,
   }
 
   if (iteration_condition) {
-    T update_ratio_primal_dual =
-      compute_update_ratio_primal_dual(qpsettings,
-                                       qpmodel,
-                                       qpresults,
-                                       qpwork,
-                                       box_constraints,
-                                       n_constraints,
-                                       dense_backend,
-                                       hessian_type);
+    T update_ratio_primal_dual = compute_update_ratio_primal_dual(
+      qpmodel, qpresults, qpwork, box_constraints, hessian_type);
     // std::cout << "update_ratio_update_mu :" << update_ratio_primal_dual <<
     // std::endl;
 
@@ -354,8 +344,7 @@ admm_step(const Settings<T>& qpsettings,
           Workspace<T>& qpwork,
           const bool box_constraints,
           const isize n_constraints,
-          const DenseBackend dense_backend,
-          const HessianType hessian_type)
+          const DenseBackend dense_backend)
 {
   // Note:
   // In the context of a library (proxsuite) to implement different solvers, we
@@ -429,6 +418,163 @@ admm_step(const Settings<T>& qpsettings,
   qpwork.zeta_in = zeta_in_next;
 }
 /*!
+ * Iterations of the ADMM algorithm in OSQP.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ * @param iter_start starting index of the first iteration.
+ */
+template<typename T>
+void
+admm( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const bool box_constraints,
+  isize n_constraints,
+  const DenseBackend& dense_backend,
+  const HessianType& hessian_type,
+  preconditioner::RuizEquilibration<T>& ruiz,
+  T& primal_feasibility_eq_rhs_0,
+  T& primal_feasibility_in_rhs_0,
+  T& primal_feasibility_eq_lhs,
+  T& primal_feasibility_in_lhs,
+  T& primal_feasibility_lhs,
+  T& dual_feasibility_lhs,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T& duality_gap,
+  T& scaled_eps,
+  T& scaled_eps_rel,
+  i64 iter_start)
+{
+  for (i64 iter = iter_start; iter < qpsettings.max_iter; ++iter) {
+
+    T new_mu_in(qpresults.info.mu_in);
+    T new_mu_eq(qpresults.info.mu_eq);
+    T new_mu_in_inv(qpresults.info.mu_in_inv);
+    T new_mu_eq_inv(qpresults.info.mu_eq_inv);
+
+    bool is_solved_qp =
+      proxsuite::common::is_solved(qpsettings,
+                                   qpmodel,
+                                   qpresults,
+                                   qpwork,
+                                   box_constraints,
+                                   hessian_type,
+                                   ruiz,
+                                   common::QPSolver::OSQP,
+                                   primal_feasibility_eq_rhs_0,
+                                   primal_feasibility_in_rhs_0,
+                                   primal_feasibility_eq_lhs,
+                                   primal_feasibility_in_lhs,
+                                   primal_feasibility_lhs,
+                                   dual_feasibility_lhs,
+                                   dual_feasibility_rhs_0,
+                                   dual_feasibility_rhs_1,
+                                   dual_feasibility_rhs_3,
+                                   rhs_duality_gap,
+                                   duality_gap,
+                                   scaled_eps,
+                                   scaled_eps_rel,
+                                   iter);
+    if (is_solved_qp) {
+      break;
+    }
+
+    qpresults.info.iter_ext += 1;
+
+    qpwork.x_prev = qpresults.x;
+    qpwork.y_prev = qpresults.y;
+    qpwork.z_prev = qpresults.z;
+
+    proxsuite::common::compute_scaled_primal_residual_ineq(
+      qpsettings,
+      qpmodel,
+      qpresults,
+      qpwork,
+      box_constraints,
+      ruiz,
+      common::QPSolver::OSQP);
+
+    admm_step(qpsettings,
+              qpmodel,
+              qpresults,
+              qpwork,
+              box_constraints,
+              n_constraints,
+              dense_backend);
+
+    bool is_infeasible_qp = is_infeasible(qpsettings,
+                                          qpmodel,
+                                          qpresults,
+                                          qpwork,
+                                          box_constraints,
+                                          ruiz,
+                                          hessian_type);
+    if (is_infeasible_qp) {
+      break;
+    }
+
+    qpwork.active_set_up.array() =
+      (qpwork.primal_residual_in_scaled_up.array() >
+       0); // {zeta_in - u + z > 0}
+    qpwork.active_set_low.array() =
+      (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
+
+    T primal_feasibility_lhs_new(primal_feasibility_lhs);
+    T dual_feasibility_lhs_new(dual_feasibility_lhs);
+    proxsuite::common::update_solver_status(qpsettings,
+                                            qpmodel,
+                                            qpresults,
+                                            qpwork,
+                                            box_constraints,
+                                            hessian_type,
+                                            ruiz,
+                                            primal_feasibility_eq_rhs_0,
+                                            primal_feasibility_in_rhs_0,
+                                            primal_feasibility_eq_lhs,
+                                            primal_feasibility_in_lhs,
+                                            primal_feasibility_lhs_new,
+                                            dual_feasibility_lhs_new,
+                                            dual_feasibility_rhs_0,
+                                            dual_feasibility_rhs_1,
+                                            dual_feasibility_rhs_3,
+                                            rhs_duality_gap,
+                                            duality_gap,
+                                            scaled_eps,
+                                            scaled_eps_rel);
+
+    if (qpsettings.update_mu) {
+      update_mu(qpsettings,
+                qpmodel,
+                qpresults,
+                qpwork,
+                box_constraints,
+                n_constraints,
+                dense_backend,
+                hessian_type,
+                primal_feasibility_lhs,
+                primal_feasibility_lhs_new,
+                dual_feasibility_lhs,
+                dual_feasibility_lhs_new,
+                new_mu_eq,
+                new_mu_in,
+                new_mu_eq_inv,
+                new_mu_in_inv,
+                iter);
+    }
+
+  } // outer iterations loop
+}
+/*!
  * Solution polishing.
  *
  * @param qpwork solver workspace.
@@ -458,8 +604,7 @@ polish(const Settings<T>& qpsettings,
        T& dual_feasibility_rhs_1,
        T& dual_feasibility_rhs_3,
        T& rhs_duality_gap,
-       T& duality_gap,
-       T& scaled_eps)
+       T& duality_gap)
 {
   // Timing polishing
   qpwork.timer_polish.stop();
@@ -469,6 +614,7 @@ polish(const Settings<T>& qpsettings,
   auto x_admm = qpresults.x;
   auto y_admm = qpresults.y;
   auto z_admm = qpresults.z;
+  auto zeta_in_admm = qpwork.zeta_in;
 
   auto pri_res_admm = qpresults.info.pri_res;
   auto dua_res_admm = qpresults.info.dua_res;
@@ -497,6 +643,11 @@ polish(const Settings<T>& qpsettings,
 
   if (num_active_constraints == 0) {
     qpresults.info.polish_status = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
+    if (qpsettings.verbose) {
+      std::cout << "\033[1;34m[polishing: no active set found. "
+                << (qpsettings.resume_admm ? "Resume ADMM" : "") << "]\033[0m"
+                << std::endl;
+    }
     return;
   }
 
@@ -701,7 +852,7 @@ polish(const Settings<T>& qpsettings,
     hat_t = hat_t + delta_hat_t;
   }
 
-  // Update of x, y, z
+  // Update of (x, y, z)
   qpresults.x = hat_t.head(qpmodel.dim);
 
   low_index = 0;
@@ -734,6 +885,20 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
+  // Projection of the dual solution into the normal cone N_C(zeta)
+  Vec<T> tmp_z(n_constraints);
+  tmp_z = qpresults.z + qpwork.zeta_in;
+  if (box_constraints) {
+    qpwork.zeta_in.head(qpmodel.n_in) = qpwork.l_scaled.cwiseMax(
+      qpresults.z.head(qpmodel.n_in).cwiseMin(qpwork.u_scaled));
+    qpwork.zeta_in.tail(qpmodel.dim) = qpwork.l_box_scaled.cwiseMax(
+      qpresults.z.tail(qpmodel.dim).cwiseMin(qpwork.u_box_scaled));
+  } else {
+    qpresults.z =
+      qpwork.l_scaled.cwiseMax(qpwork.zeta_in.cwiseMin(qpwork.u_scaled));
+  }
+  qpresults.z = tmp_z - qpwork.zeta_in;
+
   // Timing polishing
   qpwork.time_polishing = qpwork.timer_polish.elapsed().user;
 
@@ -754,8 +919,9 @@ polish(const Settings<T>& qpsettings,
 
   bool is_primal_feasible =
     primal_feasibility_lhs <=
-    (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
-                                                primal_feasibility_in_rhs_0));
+    (qpsettings.eps_abs +
+     qpsettings.eps_rel *
+       std::max(primal_feasibility_eq_rhs_0, primal_feasibility_in_rhs_0));
   qpresults.info.pri_res = primal_feasibility_lhs;
 
   if (is_primal_feasible) {
@@ -813,7 +979,7 @@ polish(const Settings<T>& qpsettings,
       ((qpresults.info.duality_gap < duality_gap_admm) &&
        polish_success_primal_dual)
 
-      || (qpresults.info.duality_gap < 1e-9) && polish_success_primal_dual;
+      || ((qpresults.info.duality_gap < 1e-9) && polish_success_primal_dual);
   } else {
     polish_success = ((qpresults.info.pri_res < pri_res_admm) &&
                       (qpresults.info.dua_res < dua_res_admm))
@@ -829,15 +995,10 @@ polish(const Settings<T>& qpsettings,
     polish_success = false;
   }
 
-  switch (polish_success) {
-    case true: {
-      qpresults.info.polish_status = PolishStatus::POLISH_SUCCEED;
-      break;
-    }
-    case false: {
-      qpresults.info.polish_status = PolishStatus::POLISH_FAILED;
-      break;
-    }
+  if (polish_success) {
+    qpresults.info.polish_status = PolishStatus::POLISH_SUCCEED;
+  } else {
+    qpresults.info.polish_status = PolishStatus::POLISH_FAILED;
   }
 
   // Print polishing line
@@ -847,9 +1008,31 @@ polish(const Settings<T>& qpsettings,
               << " | primal residual=" << qpresults.info.pri_res
               << " | dual residual=" << qpresults.info.dua_res
               << " | duality gap=" << qpresults.info.duality_gap
-              << " | delta=" << qpsettings.delta
-              << " | feasible sol=" << (is_feasible ? "True" : "False")
-              << std::endl;
+              << " | delta=" << qpsettings.delta << std::endl;
+    switch (qpresults.info.polish_status) {
+      case PolishStatus::POLISH_SUCCEED: {
+        std::cout << "\033[1;34m[polishing: succeed]\033[0m" << std::endl;
+        break;
+      }
+      case PolishStatus::POLISH_FAILED: {
+        if (!is_feasible) {
+          std::cout << "\033[1;34m[polishing: infeasible solution. "
+                    << (qpsettings.resume_admm ? "Resume ADMM" : "")
+                    << "]\033[0m" << std::endl;
+        } else {
+          std::cout << "\033[1;34m[polishing: failed. "
+                    << (qpsettings.resume_admm ? "Resume ADMM" : "")
+                    << "]\033[0m" << std::endl;
+        }
+        break;
+      }
+      case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+        break;
+      }
+      case PolishStatus::POLISH_NOT_RUN: {
+        break;
+      }
+    }
   }
 
   // Go back if polish failed
@@ -857,6 +1040,7 @@ polish(const Settings<T>& qpsettings,
     qpresults.x = x_admm;
     qpresults.y = y_admm;
     qpresults.z = z_admm;
+    qpwork.zeta_in = zeta_in_admm;
 
     qpresults.info.pri_res = pri_res_admm;
     qpresults.info.dua_res = dua_res_admm;
@@ -914,132 +1098,52 @@ qp_solve( //
 
   T duality_gap(0);
   T rhs_duality_gap(0);
-  T scaled_eps(qpsettings.eps_abs);
 
-  for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
+  bool polish_solution = qpsettings.polish;
+  if (qpmodel.n_in + qpmodel.n_eq == 0) {
+    polish_solution = false;
+  }
 
-    T new_mu_in(qpresults.info.mu_in);
-    T new_mu_eq(qpresults.info.mu_eq);
-    T new_mu_in_inv(qpresults.info.mu_in_inv);
-    T new_mu_eq_inv(qpresults.info.mu_eq_inv);
-
-    // proxsuite::proxqp::Timer<T> timer_admm_iter;
-    // timer_admm_iter.stop();
-    // std::cout << "Time iter: " << timer_admm_iter.elapsed().user <<
-    // std::endl; timer_admm_iter.start();
-
-    bool is_solved_qp =
-      proxsuite::common::is_solved(qpsettings,
-                                   qpmodel,
-                                   qpresults,
-                                   qpwork,
-                                   box_constraints,
-                                   hessian_type,
-                                   ruiz,
-                                   common::QPSolver::OSQP,
-                                   primal_feasibility_eq_rhs_0,
-                                   primal_feasibility_in_rhs_0,
-                                   primal_feasibility_eq_lhs,
-                                   primal_feasibility_in_lhs,
-                                   primal_feasibility_lhs,
-                                   dual_feasibility_lhs,
-                                   dual_feasibility_rhs_0,
-                                   dual_feasibility_rhs_1,
-                                   dual_feasibility_rhs_3,
-                                   rhs_duality_gap,
-                                   duality_gap,
-                                   scaled_eps,
-                                   iter);
-    if (is_solved_qp) {
-      break;
+  T scaled_eps;
+  T scaled_eps_rel;
+  if (polish_solution) {
+    if (qpsettings.high_accuracy) {
+      scaled_eps = 1e-5;
+      scaled_eps_rel = (qpsettings.eps_rel == 0) ? 0 : 1e-5;
+    } else {
+      scaled_eps = 1e-3;
+      scaled_eps_rel = (qpsettings.eps_rel == 0) ? 0 : 1e-3;
     }
+  } else {
+    scaled_eps = qpsettings.eps_abs;
+    scaled_eps_rel = qpsettings.eps_rel;
+  }
 
-    qpresults.info.iter_ext += 1;
+  admm(qpsettings,
+       qpmodel,
+       qpresults,
+       qpwork,
+       box_constraints,
+       n_constraints,
+       dense_backend,
+       hessian_type,
+       ruiz,
+       primal_feasibility_eq_rhs_0,
+       primal_feasibility_in_rhs_0,
+       primal_feasibility_eq_lhs,
+       primal_feasibility_in_lhs,
+       primal_feasibility_lhs,
+       dual_feasibility_lhs,
+       dual_feasibility_rhs_0,
+       dual_feasibility_rhs_1,
+       dual_feasibility_rhs_3,
+       rhs_duality_gap,
+       duality_gap,
+       scaled_eps,
+       scaled_eps_rel,
+       0);
 
-    qpwork.x_prev = qpresults.x;
-    qpwork.y_prev = qpresults.y;
-    qpwork.z_prev = qpresults.z;
-
-    proxsuite::common::compute_scaled_primal_residual_ineq(
-      qpsettings,
-      qpmodel,
-      qpresults,
-      qpwork,
-      box_constraints,
-      ruiz,
-      common::QPSolver::OSQP);
-
-    admm_step(qpsettings,
-              qpmodel,
-              qpresults,
-              qpwork,
-              box_constraints,
-              n_constraints,
-              dense_backend,
-              hessian_type);
-
-    bool is_infeasible_qp = is_infeasible(qpsettings,
-                                          qpmodel,
-                                          qpresults,
-                                          qpwork,
-                                          box_constraints,
-                                          ruiz,
-                                          hessian_type);
-    if (is_infeasible_qp) {
-      break;
-    }
-
-    qpwork.active_set_up.array() =
-      (qpwork.primal_residual_in_scaled_up.array() >
-       0); // {zeta_in - u + z > 0}
-    qpwork.active_set_low.array() =
-      (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
-
-    T primal_feasibility_lhs_new(primal_feasibility_lhs);
-    T dual_feasibility_lhs_new(dual_feasibility_lhs);
-    proxsuite::common::update_solver_status(qpsettings,
-                                            qpmodel,
-                                            qpresults,
-                                            qpwork,
-                                            box_constraints,
-                                            hessian_type,
-                                            ruiz,
-                                            primal_feasibility_eq_rhs_0,
-                                            primal_feasibility_in_rhs_0,
-                                            primal_feasibility_eq_lhs,
-                                            primal_feasibility_in_lhs,
-                                            primal_feasibility_lhs_new,
-                                            dual_feasibility_lhs_new,
-                                            dual_feasibility_rhs_0,
-                                            dual_feasibility_rhs_1,
-                                            dual_feasibility_rhs_3,
-                                            rhs_duality_gap,
-                                            duality_gap,
-                                            scaled_eps);
-
-    if (qpsettings.update_mu) {
-      update_mu(qpsettings,
-                qpmodel,
-                qpresults,
-                qpwork,
-                box_constraints,
-                n_constraints,
-                dense_backend,
-                hessian_type,
-                primal_feasibility_lhs,
-                primal_feasibility_lhs_new,
-                dual_feasibility_lhs,
-                dual_feasibility_lhs_new,
-                new_mu_eq,
-                new_mu_in,
-                new_mu_eq_inv,
-                new_mu_in_inv,
-                iter);
-    }
-
-  } // outer iterations loop
-
-  if (qpsettings.polish) {
+  if (polish_solution) {
     if (qpresults.info.status == QPSolverOutput::PROXQP_SOLVED) {
       polish(qpsettings,
              qpmodel,
@@ -1060,8 +1164,38 @@ qp_solve( //
              dual_feasibility_rhs_1,
              dual_feasibility_rhs_3,
              rhs_duality_gap,
+             duality_gap);
+
+      if ((qpresults.info.polish_status ==
+             PolishStatus::POLISH_NO_ACTIVE_SET_FOUND ||
+           qpresults.info.polish_status == PolishStatus::POLISH_FAILED) &&
+          qpsettings.resume_admm) {
+        scaled_eps = qpsettings.eps_abs;
+        scaled_eps_rel = qpsettings.eps_rel;
+        admm(qpsettings,
+             qpmodel,
+             qpresults,
+             qpwork,
+             box_constraints,
+             n_constraints,
+             dense_backend,
+             hessian_type,
+             ruiz,
+             primal_feasibility_eq_rhs_0,
+             primal_feasibility_in_rhs_0,
+             primal_feasibility_eq_lhs,
+             primal_feasibility_in_lhs,
+             primal_feasibility_lhs,
+             dual_feasibility_lhs,
+             dual_feasibility_rhs_0,
+             dual_feasibility_rhs_1,
+             dual_feasibility_rhs_3,
+             rhs_duality_gap,
              duality_gap,
-             scaled_eps);
+             scaled_eps,
+             scaled_eps_rel,
+             qpresults.info.iter_ext);
+      }
     }
   }
 
