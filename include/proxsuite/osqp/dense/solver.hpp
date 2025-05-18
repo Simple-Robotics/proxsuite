@@ -29,6 +29,7 @@ namespace dense {
 
 using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
+namespace plv = proxsuite::linalg::veg;
 
 /*!
  * Computes the scaled primal - dual residual ratio to update mu in OSQP.
@@ -575,7 +576,7 @@ admm( //
   } // outer iterations loop
 }
 /*!
- * Solution polishing.
+ * Find the active sets in solution polishing.
  *
  * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling
@@ -585,76 +586,62 @@ admm( //
  */
 template<typename T>
 void
-polish(const Settings<T>& qpsettings,
-       const Model<T>& qpmodel,
-       Results<T>& qpresults,
-       Workspace<T>& qpwork,
-       const bool box_constraints,
-       const isize n_constraints,
-       const DenseBackend dense_backend,
-       const HessianType hessian_type,
-       preconditioner::RuizEquilibration<T>& ruiz,
-       T& primal_feasibility_lhs,
-       T& primal_feasibility_eq_rhs_0,
-       T& primal_feasibility_in_rhs_0,
-       T& primal_feasibility_eq_lhs,
-       T& primal_feasibility_in_lhs,
-       T& dual_feasibility_lhs,
-       T& dual_feasibility_rhs_0,
-       T& dual_feasibility_rhs_1,
-       T& dual_feasibility_rhs_3,
-       T& rhs_duality_gap,
-       T& duality_gap)
+find_active_sets(const Settings<T>& qpsettings,
+                 const Model<T>& qpmodel,
+                 Results<T>& qpresults,
+                 Workspace<T>& qpwork,
+                 VecBool& active_constraints_eq,
+                 isize& num_active_constraints_eq,
+                 isize& num_active_constraints_eq_low,
+                 isize& num_active_constraints_eq_up,
+                 VecBool& active_constraints_ineq,
+                 isize& num_active_constraints_ineq,
+                 isize& num_active_constraints_ineq_low,
+                 isize& num_active_constraints_ineq_up,
+                 isize& num_active_constraints,
+                 isize& inner_pb_dim)
 {
-  // Timing polishing
-  qpwork.timer_polish.stop();
-  qpwork.timer_polish.start();
-
-  // ADMM solution
-  auto x_admm = qpresults.x;
-  auto y_admm = qpresults.y;
-  auto z_admm = qpresults.z;
-  auto zeta_in_admm = qpwork.zeta_in;
-
-  auto pri_res_admm = qpresults.info.pri_res;
-  auto dua_res_admm = qpresults.info.dua_res;
-  auto duality_gap_admm = qpresults.info.duality_gap;
-
   // Upper and lower active constraints
   qpwork.active_set_low_eq.array() = (qpresults.y.array() < 0);
   qpwork.active_set_up_eq.array() = (qpresults.y.array() > 0);
-  VecBool active_constraints_eq =
-    qpwork.active_set_up_eq || qpwork.active_set_low_eq;
-  isize num_active_constraints_eq = active_constraints_eq.count();
-  isize num_active_constraints_eq_low = qpwork.active_set_low_eq.count();
-  isize num_active_constraints_eq_up = qpwork.active_set_up_eq.count();
+  active_constraints_eq = qpwork.active_set_up_eq || qpwork.active_set_low_eq;
+  num_active_constraints_eq = active_constraints_eq.count();
+  num_active_constraints_eq_low = qpwork.active_set_low_eq.count();
+  num_active_constraints_eq_up = qpwork.active_set_up_eq.count();
 
   // active_set_low and active_setup_low already computed in ADMM
-  VecBool active_constraints_ineq =
-    qpwork.active_set_up || qpwork.active_set_low;
-  isize num_active_constraints_ineq = active_constraints_ineq.count();
-  isize num_active_constraints_ineq_low = qpwork.active_set_low.count();
-  isize num_active_constraints_ineq_up = qpwork.active_set_up.count();
+  active_constraints_ineq = qpwork.active_set_up || qpwork.active_set_low;
+  num_active_constraints_ineq = active_constraints_ineq.count();
+  num_active_constraints_ineq_low = qpwork.active_set_low.count();
+  num_active_constraints_ineq_up = qpwork.active_set_up.count();
 
-  isize num_active_constraints =
+  num_active_constraints =
     num_active_constraints_eq + num_active_constraints_ineq;
 
-  isize inner_pb_dim = qpmodel.dim + num_active_constraints;
-
-  if (num_active_constraints == 0) {
-    qpresults.info.polish_status = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
-    if (qpsettings.verbose) {
-      std::cout << "\033[1;34m[polishing: no active set found. "
-                << (qpsettings.resume_admm ? "Resume ADMM" : "") << "]\033[0m"
-                << std::endl;
-    }
-    return;
-  }
-
-  // Build the reducted matrices of the constraints
-  Mat<T> A_low(num_active_constraints_eq_low, qpmodel.dim);
-  Mat<T> A_up(num_active_constraints_eq_up, qpmodel.dim);
-
+  inner_pb_dim = qpmodel.dim + num_active_constraints;
+}
+/*!
+ * Build the reduced matrices of constraints in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+build_reduced_constraints_matrices( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const isize n_constraints,
+  Mat<T>& A_low,
+  Mat<T>& A_up,
+  Mat<T>& C_low,
+  Mat<T>& C_up)
+{
   isize low_index = 0;
   isize up_index = 0;
   for (isize i = 0; i < qpmodel.n_eq; ++i) {
@@ -667,9 +654,6 @@ polish(const Settings<T>& qpsettings,
       ++up_index;
     }
   }
-
-  Mat<T> C_low(num_active_constraints_ineq_low, qpmodel.dim);
-  Mat<T> C_up(num_active_constraints_ineq_up, qpmodel.dim);
 
   low_index = 0;
   up_index = 0;
@@ -699,13 +683,39 @@ polish(const Settings<T>& qpsettings,
       ++up_index;
     }
   }
-
+}
+/*!
+ * Build the matrices K and K + Delta_K in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+build_kkt_matrices_polishing( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Workspace<T>& qpwork,
+  const HessianType hessian_type,
+  Mat<T>& k_polish,
+  Mat<T>& k_plus_delta_k_polish,
+  Mat<T> A_low,
+  Mat<T> A_up,
+  Mat<T> C_low,
+  Mat<T> C_up,
+  isize num_active_constraints_eq_low,
+  isize num_active_constraints_ineq_low,
+  isize num_active_constraints_eq_up,
+  isize num_active_constraints_ineq_up,
+  isize num_active_constraints)
+{
   // Construction of K
   isize row;
   isize col;
 
-  Mat<T> k_polish(inner_pb_dim, inner_pb_dim);
-  Mat<T> k_plus_delta_k_polish(inner_pb_dim, inner_pb_dim);
+  std::cout << "B" << std::endl;
 
   switch (hessian_type) {
     case HessianType::Dense:
@@ -718,6 +728,8 @@ polish(const Settings<T>& qpsettings,
       k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
   }
+
+  std::cout << "C" << std::endl;
 
   col = qpmodel.dim;
   k_polish.block(0, col, qpmodel.dim, num_active_constraints_eq_low) =
@@ -750,8 +762,11 @@ polish(const Settings<T>& qpsettings,
   k_polish.bottomRightCorner(num_active_constraints, num_active_constraints)
     .setZero();
 
-  // Construction and factorization of K + Delta_K
+  std::cout << "D" << std::endl;
+
+  // Construction of K + Delta_K
   k_plus_delta_k_polish = k_polish;
+  std::cout << "E" << std::endl;
   k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim)
     .diagonal()
     .array() += qpsettings.delta;
@@ -760,16 +775,32 @@ polish(const Settings<T>& qpsettings,
     .diagonal()
     .array() -= qpsettings.delta;
 
-  proxsuite::linalg::veg::dynstack::DynStackMut stack{
-    proxsuite::linalg::veg::from_slice_mut,
-    qpwork.ldl_stack.as_mut(),
-  };
-
-  qpwork.ldl.factorize(k_plus_delta_k_polish.transpose(), stack);
-
-  // Construction of rhs_polish
-  low_index = 0;
-  up_index = 0;
+  std::cout << "F" << std::endl;
+}
+/*!
+ * Build the right hand side (-g, l_L, u_U) in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+build_rhs_polishing( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Workspace<T>& qpwork,
+  const HessianType hessian_type,
+  const isize n_constraints,
+  Vec<T>& rhs_polish,
+  isize num_active_constraints_eq_low,
+  isize num_active_constraints_ineq_low,
+  isize num_active_constraints_eq_up,
+  isize num_active_constraints_ineq_up)
+{
+  isize low_index = 0;
+  isize up_index = 0;
   Vec<T> b_low(num_active_constraints_eq_low);
   Vec<T> b_up(num_active_constraints_eq_up);
   for (isize i = 0; i < qpmodel.n_eq; ++i) {
@@ -806,7 +837,8 @@ polish(const Settings<T>& qpsettings,
     }
   }
 
-  Vec<T> rhs_polish(inner_pb_dim);
+  isize row;
+  isize col;
 
   row = qpmodel.dim;
   rhs_polish.head(row) = -qpwork.g_scaled;
@@ -818,11 +850,32 @@ polish(const Settings<T>& qpsettings,
   row += num_active_constraints_ineq_low;
   rhs_polish.segment(row, num_active_constraints_eq_up) = b_up;
   rhs_polish.tail(num_active_constraints_ineq_up) = u_up;
-
+}
+/*!
+ * Iterative refinement in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+iterative_refinement_polishing( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const DenseBackend& dense_backend,
+  const isize n_constraints,
+  Vec<T>& hat_t,
+  Vec<T> rhs_polish,
+  Mat<T> k_polish,
+  isize inner_pb_dim,
+  plv::dynstack::DynStackMut& stack)
+{
   // Solve the reduced system before iterative refinement
-  Vec<T> hat_t(inner_pb_dim);
   hat_t = rhs_polish;
-
   solve_linear_system(hat_t,
                       qpmodel,
                       qpresults,
@@ -851,12 +904,33 @@ polish(const Settings<T>& qpsettings,
 
     hat_t = hat_t + delta_hat_t;
   }
-
-  // Update of (x, y, z)
+}
+/*!
+ * Update primal and dual variables in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+update_variables_polishing( //
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const bool box_constraints,
+  const isize n_constraints,
+  Vec<T> hat_t,
+  isize num_active_constraints_eq_low,
+  isize num_active_constraints_eq_up,
+  isize num_active_constraints_ineq_low)
+{
+  // Get (x, y, z) from hat_t
   qpresults.x = hat_t.head(qpmodel.dim);
 
-  low_index = 0;
-  up_index = 0;
+  isize low_index = 0;
+  isize up_index = 0;
   for (isize i = 0; i < qpmodel.n_eq; ++i) {
     if (qpwork.active_set_low_eq(i)) {
       qpresults.y(i) = hat_t(qpmodel.dim + low_index);
@@ -898,13 +972,40 @@ polish(const Settings<T>& qpsettings,
       qpwork.l_scaled.cwiseMax(qpwork.zeta_in.cwiseMin(qpwork.u_scaled));
   }
   qpresults.z = tmp_z - qpwork.zeta_in;
-
-  // Timing polishing
-  qpwork.time_polishing = qpwork.timer_polish.elapsed().user;
-
-  // Update of residuals
-  bool is_feasible = false;
-
+}
+/*!
+ * Update residuals in polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+update_residuals_polishing( //
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const bool box_constraints,
+  const isize n_constraints,
+  const HessianType hessian_type,
+  preconditioner::RuizEquilibration<T>& ruiz,
+  T& primal_feasibility_lhs,
+  T& primal_feasibility_eq_rhs_0,
+  T& primal_feasibility_in_rhs_0,
+  T& primal_feasibility_eq_lhs,
+  T& primal_feasibility_in_lhs,
+  T& dual_feasibility_lhs,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T& duality_gap,
+  bool& is_feasible)
+{
   global_primal_residual(qpmodel,
                          qpresults,
                          qpsettings,
@@ -960,10 +1061,24 @@ polish(const Settings<T>& qpsettings,
       }
     }
   }
-
-  // Check polish success
-  bool polish_success;
-
+}
+/*!
+ * Check the success of solution polishing.
+ *
+ * @param qpresults solver results.
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+check_success_polishing( //
+  const Settings<T>& qpsettings,
+  Results<T>& qpresults,
+  T pri_res_admm,
+  T dua_res_admm,
+  T duality_gap_admm,
+  bool is_feasible,
+  bool& polish_success)
+{
   if (qpsettings.check_duality_gap) {
     bool polish_success_primal_dual =
       ((qpresults.info.pri_res < pri_res_admm) &&
@@ -994,6 +1109,268 @@ polish(const Settings<T>& qpsettings,
   if (!is_feasible) {
     polish_success = false;
   }
+}
+/*!
+ * Print polishing line after the ADMM iterations.
+ *
+ * @param qpresults solver results.
+ * @param qpsettings solver settings.
+ */
+template<typename T>
+void
+print_polishing_line( //
+  const Settings<T>& qpsettings,
+  Results<T>& qpresults,
+  bool is_feasible)
+{
+  std::cout << "\033[1;34m[polishing]\033[0m" << std::endl;
+  std::cout << std::scientific << std::setw(2) << std::setprecision(2)
+            << " | primal residual=" << qpresults.info.pri_res
+            << " | dual residual=" << qpresults.info.dua_res
+            << " | duality gap=" << qpresults.info.duality_gap
+            << " | delta=" << qpsettings.delta << std::endl;
+  switch (qpresults.info.polish_status) {
+    case PolishStatus::POLISH_SUCCEED: {
+      std::cout << "\033[1;34m[polishing: succeed]\033[0m" << std::endl;
+      break;
+    }
+    case PolishStatus::POLISH_FAILED: {
+      if (!is_feasible) {
+        std::cout << "\033[1;34m[polishing: infeasible solution. "
+                  << (qpsettings.resume_admm ? "Resume ADMM" : "") << "]\033[0m"
+                  << std::endl;
+      } else {
+        std::cout << "\033[1;34m[polishing: failed. "
+                  << (qpsettings.resume_admm ? "Resume ADMM" : "") << "]\033[0m"
+                  << std::endl;
+      }
+      break;
+    }
+    case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+      break;
+    }
+    case PolishStatus::POLISH_NOT_RUN: {
+      break;
+    }
+  }
+}
+/*!
+ * Solution polishing.
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpsettings solver settings.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+polish(const Settings<T>& qpsettings,
+       const Model<T>& qpmodel,
+       Results<T>& qpresults,
+       Workspace<T>& qpwork,
+       const bool box_constraints,
+       const isize n_constraints,
+       const DenseBackend dense_backend,
+       const HessianType hessian_type,
+       preconditioner::RuizEquilibration<T>& ruiz,
+       T& primal_feasibility_lhs,
+       T& primal_feasibility_eq_rhs_0,
+       T& primal_feasibility_in_rhs_0,
+       T& primal_feasibility_eq_lhs,
+       T& primal_feasibility_in_lhs,
+       T& dual_feasibility_lhs,
+       T& dual_feasibility_rhs_0,
+       T& dual_feasibility_rhs_1,
+       T& dual_feasibility_rhs_3,
+       T& rhs_duality_gap,
+       T& duality_gap)
+{
+
+  // Timing polishing
+  qpwork.timer_polish.stop();
+  qpwork.timer_polish.start();
+
+  // ADMM solution
+  auto x_admm = qpresults.x;
+  auto y_admm = qpresults.y;
+  auto z_admm = qpresults.z;
+  auto zeta_in_admm = qpwork.zeta_in;
+
+  auto pri_res_admm = qpresults.info.pri_res;
+  auto dua_res_admm = qpresults.info.dua_res;
+  auto duality_gap_admm = qpresults.info.duality_gap;
+
+  // Upper and lower active constraints
+  VecBool active_constraints_eq;
+  isize num_active_constraints_eq;
+  isize num_active_constraints_eq_low;
+  isize num_active_constraints_eq_up;
+
+  VecBool active_constraints_ineq;
+  isize num_active_constraints_ineq;
+  isize num_active_constraints_ineq_low;
+  isize num_active_constraints_ineq_up;
+
+  isize num_active_constraints;
+  isize inner_pb_dim;
+
+  find_active_sets(qpsettings,
+                   qpmodel,
+                   qpresults,
+                   qpwork,
+                   active_constraints_eq,
+                   num_active_constraints_eq,
+                   num_active_constraints_eq_low,
+                   num_active_constraints_eq_up,
+                   active_constraints_ineq,
+                   num_active_constraints_ineq,
+                   num_active_constraints_ineq_low,
+                   num_active_constraints_ineq_up,
+                   num_active_constraints,
+                   inner_pb_dim);
+
+  std::cout << "qpresults.z: " << qpresults.z << std::endl;
+  std::cout << "active_set_up: " << qpwork.active_set_up << std::endl;
+  std::cout << "active_set_low: " << qpwork.active_set_low << std::endl;
+  std::cout << "active_constraints_ineq: " << active_constraints_ineq
+            << std::endl;
+
+  if (num_active_constraints == 0) {
+    qpresults.info.polish_status = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
+    if (qpsettings.verbose) {
+      std::cout << "\033[1;34m[polishing: no active set found. "
+                << (qpsettings.resume_admm ? "Resume ADMM" : "") << "]\033[0m"
+                << std::endl;
+    }
+    return;
+  }
+
+  // Build the reduced matrices of the constraints
+  Mat<T> A_low(num_active_constraints_eq_low, qpmodel.dim);
+  Mat<T> A_up(num_active_constraints_eq_up, qpmodel.dim);
+
+  Mat<T> C_low(num_active_constraints_ineq_low, qpmodel.dim);
+  Mat<T> C_up(num_active_constraints_ineq_up, qpmodel.dim);
+
+  build_reduced_constraints_matrices(qpsettings,
+                                     qpmodel,
+                                     qpresults,
+                                     qpwork,
+                                     n_constraints,
+                                     A_low,
+                                     A_up,
+                                     C_low,
+                                     C_up);
+
+  // Build the KKT and regularized KKT matrices
+  Mat<T> k_polish(inner_pb_dim, inner_pb_dim);
+  Mat<T> k_plus_delta_k_polish(inner_pb_dim, inner_pb_dim);
+
+  std::cout << "A" << std::endl;
+
+  build_kkt_matrices_polishing(qpsettings,
+                               qpmodel,
+                               qpwork,
+                               hessian_type,
+                               k_polish,
+                               k_plus_delta_k_polish,
+                               A_low,
+                               A_up,
+                               C_low,
+                               C_up,
+                               num_active_constraints_eq_low,
+                               num_active_constraints_ineq_low,
+                               num_active_constraints_eq_up,
+                               num_active_constraints_ineq_up,
+                               num_active_constraints);
+
+  std::cout << "G" << std::endl;
+
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut,
+    qpwork.ldl_stack.as_mut(),
+  };
+
+  qpwork.ldl.factorize(k_plus_delta_k_polish.transpose(), stack);
+
+  // Construction of rhs_polish
+  Vec<T> rhs_polish(inner_pb_dim);
+
+  build_rhs_polishing(qpsettings,
+                      qpmodel,
+                      qpwork,
+                      hessian_type,
+                      n_constraints,
+                      rhs_polish,
+                      num_active_constraints_eq_low,
+                      num_active_constraints_ineq_low,
+                      num_active_constraints_eq_up,
+                      num_active_constraints_ineq_up);
+
+  // Iterative refinement
+  Vec<T> hat_t(inner_pb_dim);
+
+  iterative_refinement_polishing(qpsettings,
+                                 qpmodel,
+                                 qpresults,
+                                 qpwork,
+                                 dense_backend,
+                                 n_constraints,
+                                 hat_t,
+                                 rhs_polish,
+                                 k_polish,
+                                 inner_pb_dim,
+                                 stack);
+
+  // Update of (x, y, z)
+  update_variables_polishing(qpmodel,
+                             qpresults,
+                             qpwork,
+                             box_constraints,
+                             n_constraints,
+                             hat_t,
+                             num_active_constraints_eq_low,
+                             num_active_constraints_eq_up,
+                             num_active_constraints_ineq_low);
+
+  // Timing polishing
+  qpwork.time_polishing = qpwork.timer_polish.elapsed().user;
+
+  // Update of residuals
+  bool is_feasible = false;
+
+  update_residuals_polishing(qpsettings,
+                             qpmodel,
+                             qpresults,
+                             qpwork,
+                             box_constraints,
+                             n_constraints,
+                             hessian_type,
+                             ruiz,
+                             primal_feasibility_lhs,
+                             primal_feasibility_eq_rhs_0,
+                             primal_feasibility_in_rhs_0,
+                             primal_feasibility_eq_lhs,
+                             primal_feasibility_in_lhs,
+                             dual_feasibility_lhs,
+                             dual_feasibility_rhs_0,
+                             dual_feasibility_rhs_1,
+                             dual_feasibility_rhs_3,
+                             rhs_duality_gap,
+                             duality_gap,
+                             is_feasible);
+
+  // Check polish success
+  bool polish_success;
+
+  check_success_polishing(qpsettings,
+                          qpresults,
+                          pri_res_admm,
+                          dua_res_admm,
+                          duality_gap_admm,
+                          is_feasible,
+                          polish_success);
 
   if (polish_success) {
     qpresults.info.polish_status = PolishStatus::POLISH_SUCCEED;
@@ -1003,36 +1380,7 @@ polish(const Settings<T>& qpsettings,
 
   // Print polishing line
   if (qpsettings.verbose) {
-    std::cout << "\033[1;34m[polishing]\033[0m" << std::endl;
-    std::cout << std::scientific << std::setw(2) << std::setprecision(2)
-              << " | primal residual=" << qpresults.info.pri_res
-              << " | dual residual=" << qpresults.info.dua_res
-              << " | duality gap=" << qpresults.info.duality_gap
-              << " | delta=" << qpsettings.delta << std::endl;
-    switch (qpresults.info.polish_status) {
-      case PolishStatus::POLISH_SUCCEED: {
-        std::cout << "\033[1;34m[polishing: succeed]\033[0m" << std::endl;
-        break;
-      }
-      case PolishStatus::POLISH_FAILED: {
-        if (!is_feasible) {
-          std::cout << "\033[1;34m[polishing: infeasible solution. "
-                    << (qpsettings.resume_admm ? "Resume ADMM" : "")
-                    << "]\033[0m" << std::endl;
-        } else {
-          std::cout << "\033[1;34m[polishing: failed. "
-                    << (qpsettings.resume_admm ? "Resume ADMM" : "")
-                    << "]\033[0m" << std::endl;
-        }
-        break;
-      }
-      case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
-        break;
-      }
-      case PolishStatus::POLISH_NOT_RUN: {
-        break;
-      }
-    }
+    print_polishing_line(qpsettings, qpresults, is_feasible);
   }
 
   // Go back if polish failed
