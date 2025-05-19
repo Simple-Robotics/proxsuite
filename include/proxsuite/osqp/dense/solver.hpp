@@ -485,6 +485,9 @@ admm( //
                                    scaled_eps_rel,
                                    iter);
     if (is_solved_qp) {
+      if (iter == 0) {
+        qpwork.admm_solved_at_init = true;
+      }
       break;
     }
 
@@ -527,6 +530,14 @@ admm( //
        0); // {zeta_in - u + z > 0}
     qpwork.active_set_low.array() =
       (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
+
+    // std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+    // std::cout << "In admm:" << std::endl;
+    // std::cout << "z:" << std::endl << qpresults.z << std::endl;
+    // std::cout << "active_set_low:" << std::endl << qpwork.active_set_low <<
+    // std::endl; std::cout << "active_set_up:" << std::endl <<
+    // qpwork.active_set_up << std::endl; std::cout <<
+    // "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
     T dual_feasibility_lhs_new(dual_feasibility_lhs);
@@ -588,6 +599,8 @@ find_active_sets(const Settings<T>& qpsettings,
                  const Model<T>& qpmodel,
                  Results<T>& qpresults,
                  Workspace<T>& qpwork,
+                 const bool box_constraints,
+                 preconditioner::RuizEquilibration<T>& ruiz,
                  VecBool& active_constraints_eq,
                  isize& num_active_constraints_eq,
                  isize& num_active_constraints_eq_low,
@@ -599,7 +612,7 @@ find_active_sets(const Settings<T>& qpsettings,
                  isize& num_active_constraints,
                  isize& inner_pb_dim)
 {
-  // Upper and lower active constraints
+  // Equality
   qpwork.active_set_low_eq.array() = (qpresults.y.array() < 0);
   qpwork.active_set_up_eq.array() = (qpresults.y.array() > 0);
   active_constraints_eq = qpwork.active_set_up_eq || qpwork.active_set_low_eq;
@@ -607,7 +620,33 @@ find_active_sets(const Settings<T>& qpsettings,
   num_active_constraints_eq_low = qpwork.active_set_low_eq.count();
   num_active_constraints_eq_up = qpwork.active_set_up_eq.count();
 
-  // active_set_low and active_setup_low already computed in ADMM
+  // Inequality
+  if (qpwork.admm_solved_at_init) {
+    // Compute active sets that could not be computed in ADMM
+    qpwork.z_prev = qpresults.z;
+    if (box_constraints) {
+      qpwork.zeta_in.head(qpmodel.n_in) = qpwork.C_scaled * qpresults.x;
+      qpwork.zeta_in.tail(qpmodel.dim).array() =
+        qpwork.i_scaled.array() * qpresults.x.array();
+    } else {
+      qpwork.zeta_in = qpwork.C_scaled * qpresults.x;
+    }
+
+    proxsuite::common::compute_scaled_primal_residual_ineq(
+      qpsettings,
+      qpmodel,
+      qpresults,
+      qpwork,
+      box_constraints,
+      ruiz,
+      common::QPSolver::OSQP);
+
+    qpwork.active_set_up.array() =
+      (qpwork.primal_residual_in_scaled_up.array() >
+       0); // {zeta_in - u + z > 0}
+    qpwork.active_set_low.array() =
+      (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
+  }
   active_constraints_ineq = qpwork.active_set_up || qpwork.active_set_low;
   num_active_constraints_ineq = active_constraints_ineq.count();
   num_active_constraints_ineq_low = qpwork.active_set_low.count();
@@ -617,6 +656,17 @@ find_active_sets(const Settings<T>& qpsettings,
     num_active_constraints_eq + num_active_constraints_ineq;
 
   inner_pb_dim = qpmodel.dim + num_active_constraints;
+
+  // std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+  // std::cout << "In find_active_sets" << std::endl;
+  // std::cout << "y:" << std::endl << qpresults.y << std::endl;
+  // std::cout << "active_set_low_eq:" << std::endl << qpwork.active_set_low_eq
+  // << std::endl; std::cout << "active_set_up_eq:" << std::endl <<
+  // qpwork.active_set_up_eq << std::endl; std::cout << "z:" << std::endl <<
+  // qpresults.z << std::endl; std::cout << "active_set_low:" << std::endl <<
+  // qpwork.active_set_low << std::endl; std::cout << "active_set_up:" <<
+  // std::endl << qpwork.active_set_up << std::endl; std::cout <<
+  // "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 }
 /*!
  * Build the reduced matrices of constraints in polishing.
@@ -1208,6 +1258,8 @@ polish(const Settings<T>& qpsettings,
                    qpmodel,
                    qpresults,
                    qpwork,
+                   box_constraints,
+                   ruiz,
                    active_constraints_eq,
                    num_active_constraints_eq,
                    num_active_constraints_eq_low,
@@ -1447,28 +1499,6 @@ qp_solve( //
     scaled_eps_rel = qpsettings.eps_rel;
   }
 
-  // qpwork.active_set_low_eq.array() = (qpresults.y.array() < 0);
-  // qpwork.active_set_low_eq.array() = (qpresults.y.array() > 0);
-
-  // qpwork.x_prev = qpresults.x;
-  // qpwork.y_prev = qpresults.y;
-  // qpwork.z_prev = qpresults.z;
-
-  // proxsuite::common::compute_scaled_primal_residual_ineq(
-  //   qpsettings,
-  //   qpmodel,
-  //   qpresults,
-  //   qpwork,
-  //   box_constraints,
-  //   ruiz,
-  //   common::QPSolver::OSQP);
-
-  // qpwork.active_set_up.array() =
-  //     (qpwork.primal_residual_in_scaled_up.array() >
-  //      0); // {zeta_in - u + z > 0}
-  // qpwork.active_set_low.array() =
-  //     (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
-
   // Body of solve
   admm(qpsettings,
        qpmodel,
@@ -1523,6 +1553,7 @@ qp_solve( //
           qpsettings.resume_admm) {
         scaled_eps = qpsettings.eps_abs;
         scaled_eps_rel = qpsettings.eps_rel;
+        // TODO: Go back to the full KKT matrix of ADMM after a POLISH_FAILED
         admm(qpsettings,
              qpmodel,
              qpresults,

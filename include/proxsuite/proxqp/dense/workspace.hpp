@@ -69,6 +69,8 @@ struct Workspace
   VecBool active_set_low_eq;
   VecBool active_set_up_eq;
 
+  bool admm_solved_at_init;
+
   //// First order residuals for line search
 
   Vec<T> Hdx;
@@ -144,6 +146,7 @@ struct Workspace
     , nu_eq(n_eq)
     , active_set_low_eq(n_eq)
     , active_set_up_eq(n_eq)
+    , admm_solved_at_init(false)
     , Hdx(dim)
     , Adx(n_eq)
     , dual_residual_scaled(dim)
@@ -418,6 +421,8 @@ struct Workspace
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
     }
+
+    admm_solved_at_init = false;
 
     constraints_changed = false;
     dirty = false;
