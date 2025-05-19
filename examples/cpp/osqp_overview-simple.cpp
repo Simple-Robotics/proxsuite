@@ -16,7 +16,7 @@ int
 main()
 {
   T sparsity_factor = 0.15;
-  ppd::isize dim = 200;
+  ppd::isize dim = 10;
   ppd::isize n_eq(dim / 4);
   ppd::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
@@ -24,56 +24,24 @@ main()
   ppd::Model<T> qp_random = pp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  // // Proxqp
-  // ppd::QP<T> qp_proxqp(dim, n_eq, n_in);
+  pod::QP<T> qp(dim, n_eq, n_in);
 
-  // qp_proxqp.init(qp_random.H,
-  //         qp_random.g,
-  //         qp_random.A,
-  //         qp_random.b,
-  //         qp_random.C,
-  //         qp_random.l,
-  //         qp_random.u);
-  // qp_proxqp.solve();
+  qp.settings.default_mu_eq = T(1.E-2);
+  qp.settings.default_mu_in = T(1.E1);
 
-  // Osqp without update
-  pod::QP<T> qp_osqp(dim, n_eq, n_in);
+  qp.settings.update_mu = true;
+  qp.settings.polish = true;
 
-  qp_osqp.settings.default_mu_eq = T(1.E-2);
-  qp_osqp.settings.default_mu_in = T(1.E1);
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  qp.solve();
 
-  qp_osqp.settings.polish = true;
-
-  qp_osqp.settings.eps_abs = T(1.E-9);
-  qp_osqp.settings.high_accuracy = true;
-
-  qp_osqp.init(qp_random.H,
-               qp_random.g,
-               qp_random.A,
-               qp_random.b,
-               qp_random.C,
-               qp_random.l,
-               qp_random.u);
-  qp_osqp.solve();
-
-  // std::cout << "optimal x: " << qp_osqp.results.x << std::endl;
-  // std::cout << "optimal y: " << qp_osqp.results.y << std::endl;
-  // std::cout << "optimal z: " << qp_osqp.results.z << std::endl;
-
-  // qp_osqp_1 with mu_update
-  // pod::QP<T> qp_osqp_1(dim, n_eq, n_in);
-
-  // qp_osqp_1.settings.default_mu_eq = T(1.E-2);
-  // qp_osqp_1.settings.default_mu_in = T(1.E1);
-
-  // qp_osqp_1.settings.update_mu = true;
-
-  // qp_osqp_1.init(qp_random.H,
-  //         qp_random.g,
-  //         qp_random.A,
-  //         qp_random.b,
-  //         qp_random.C,
-  //         qp_random.l,
-  //         qp_random.u);
-  // qp_osqp_1.solve();
+  std::cout << "optimal x: " << qp.results.x << std::endl;
+  std::cout << "optimal y: " << qp.results.y << std::endl;
+  std::cout << "optimal z: " << qp.results.z << std::endl;
 }

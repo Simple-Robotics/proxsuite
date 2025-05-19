@@ -157,8 +157,6 @@ update_mu(const Settings<T>& qpsettings,
   if (iteration_condition) {
     T update_ratio_primal_dual = compute_update_ratio_primal_dual(
       qpmodel, qpresults, qpwork, box_constraints, hessian_type);
-    // std::cout << "update_ratio_update_mu :" << update_ratio_primal_dual <<
-    // std::endl;
 
     bool value_condition =
       update_ratio_primal_dual > qpsettings.threshold_ratio_update_mu ||
@@ -182,9 +180,9 @@ update_mu(const Settings<T>& qpsettings,
                  qpsettings.mu_max_in_inv_osqp);
     }
 
-    if (primal_feasibility_lhs_new >= primal_feasibility_lhs - 1e-6 &&
-        dual_feasibility_lhs_new >= dual_feasibility_lhs - 1e-6 &&
-        qpresults.info.mu_in <= T(1e-3)) {
+    if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
+        dual_feasibility_lhs_new >= dual_feasibility_lhs &&
+        (qpresults.info.mu_in <= T(1e-3) || qpresults.info.mu_in >= T(1e5))) {
       new_mu_in = qpsettings.cold_reset_mu_in_osqp;
       new_mu_eq = qpsettings.cold_reset_mu_eq_osqp;
       new_mu_in_inv = qpsettings.cold_reset_mu_in_inv_osqp;
@@ -715,8 +713,6 @@ build_kkt_matrices_polishing( //
   isize row;
   isize col;
 
-  std::cout << "B" << std::endl;
-
   switch (hessian_type) {
     case HessianType::Dense:
       k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
@@ -728,8 +724,6 @@ build_kkt_matrices_polishing( //
       k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim) = qpwork.H_scaled;
       break;
   }
-
-  std::cout << "C" << std::endl;
 
   col = qpmodel.dim;
   k_polish.block(0, col, qpmodel.dim, num_active_constraints_eq_low) =
@@ -762,11 +756,8 @@ build_kkt_matrices_polishing( //
   k_polish.bottomRightCorner(num_active_constraints, num_active_constraints)
     .setZero();
 
-  std::cout << "D" << std::endl;
-
   // Construction of K + Delta_K
   k_plus_delta_k_polish = k_polish;
-  std::cout << "E" << std::endl;
   k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim)
     .diagonal()
     .array() += qpsettings.delta;
@@ -774,8 +765,6 @@ build_kkt_matrices_polishing( //
     .bottomRightCorner(num_active_constraints, num_active_constraints)
     .diagonal()
     .array() -= qpsettings.delta;
-
-  std::cout << "F" << std::endl;
 }
 /*!
  * Build the right hand side (-g, l_L, u_U) in polishing.
@@ -1230,12 +1219,6 @@ polish(const Settings<T>& qpsettings,
                    num_active_constraints,
                    inner_pb_dim);
 
-  std::cout << "qpresults.z: " << qpresults.z << std::endl;
-  std::cout << "active_set_up: " << qpwork.active_set_up << std::endl;
-  std::cout << "active_set_low: " << qpwork.active_set_low << std::endl;
-  std::cout << "active_constraints_ineq: " << active_constraints_ineq
-            << std::endl;
-
   if (num_active_constraints == 0) {
     qpresults.info.polish_status = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
     if (qpsettings.verbose) {
@@ -1267,8 +1250,6 @@ polish(const Settings<T>& qpsettings,
   Mat<T> k_polish(inner_pb_dim, inner_pb_dim);
   Mat<T> k_plus_delta_k_polish(inner_pb_dim, inner_pb_dim);
 
-  std::cout << "A" << std::endl;
-
   build_kkt_matrices_polishing(qpsettings,
                                qpmodel,
                                qpwork,
@@ -1284,8 +1265,6 @@ polish(const Settings<T>& qpsettings,
                                num_active_constraints_eq_up,
                                num_active_constraints_ineq_up,
                                num_active_constraints);
-
-  std::cout << "G" << std::endl;
 
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut,
@@ -1419,6 +1398,7 @@ qp_solve( //
 {
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
 
+  // Setup
   proxsuite::common::setup_solver(qpsettings,
                                   qpmodel,
                                   qpresults,
@@ -1467,6 +1447,29 @@ qp_solve( //
     scaled_eps_rel = qpsettings.eps_rel;
   }
 
+  // qpwork.active_set_low_eq.array() = (qpresults.y.array() < 0);
+  // qpwork.active_set_low_eq.array() = (qpresults.y.array() > 0);
+
+  // qpwork.x_prev = qpresults.x;
+  // qpwork.y_prev = qpresults.y;
+  // qpwork.z_prev = qpresults.z;
+
+  // proxsuite::common::compute_scaled_primal_residual_ineq(
+  //   qpsettings,
+  //   qpmodel,
+  //   qpresults,
+  //   qpwork,
+  //   box_constraints,
+  //   ruiz,
+  //   common::QPSolver::OSQP);
+
+  // qpwork.active_set_up.array() =
+  //     (qpwork.primal_residual_in_scaled_up.array() >
+  //      0); // {zeta_in - u + z > 0}
+  // qpwork.active_set_low.array() =
+  //     (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
+
+  // Body of solve
   admm(qpsettings,
        qpmodel,
        qpresults,
@@ -1547,6 +1550,7 @@ qp_solve( //
     }
   }
 
+  // End of solve
   proxsuite::common::unscale_solver(
     qpsettings, qpmodel, qpresults, box_constraints, ruiz);
   proxsuite::common::compute_objective(qpmodel, qpresults);

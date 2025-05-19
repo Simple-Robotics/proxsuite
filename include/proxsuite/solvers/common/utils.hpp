@@ -865,15 +865,18 @@ global_primal_residual_scaled(const ppd::Model<T>& qpmodel,
 
   qpresults.si.head(qpmodel.n_in) =
     helpers::positive_part(
-      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.u) +
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -
+      qpwork.u_scaled) +
     helpers::negative_part(
-      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpmodel.l);
+      qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) - qpwork.l_scaled);
   if (box_constraints) {
     qpresults.si.tail(qpmodel.dim) =
       helpers::positive_part(
-        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.u_box) +
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -
+        qpwork.u_box_scaled) +
       helpers::negative_part(
-        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) - qpmodel.l_box);
+        qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -
+        qpwork.l_box_scaled);
   }
 
   qpwork.primal_residual_scaled.head(qpmodel.n_eq) = qpresults.se;

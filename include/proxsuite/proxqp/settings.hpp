@@ -309,10 +309,11 @@ struct Settings
     T cold_reset_mu_in = 1. / 1.1,
     T cold_reset_mu_eq_inv = 1.1,
     T cold_reset_mu_in_inv = 1.1,
-    T cold_reset_mu_eq_osqp = 1. / 1.1,
-    T cold_reset_mu_in_osqp = 1. / 1.1,
-    T cold_reset_mu_eq_inv_osqp = 1.1,
-    T cold_reset_mu_in_inv_osqp = 1.1,
+    T cold_reset_mu_eq_osqp =
+      1.E-2, // TODO: tune (given scenari, algo, experiments)
+    T cold_reset_mu_in_osqp = 1.E1,      // idem
+    T cold_reset_mu_eq_inv_osqp = 1.E2,  // idem
+    T cold_reset_mu_in_inv_osqp = 1.E-1, // idem
     T eps_abs = 1.e-5,
     T eps_rel = 0,
     bool high_accuracy = false,
@@ -333,13 +334,13 @@ struct Settings
     bool check_duality_gap = false,
     T eps_duality_gap_abs = 1.e-4,
     T eps_duality_gap_rel = 0,
-    bool update_mu = false,
+    bool update_mu = true,
     T threshold_ratio_update_mu = 5.0,
     T threshold_ratio_update_mu_inv = 0.2,
     T percentage_factorization_time_update_mu = 0.4,
     UpdateMuIterationCriteria update_mu_iteration_criteria =
       UpdateMuIterationCriteria::FixedNumberIterations,
-    isize interval_update_mu = 10,
+    isize interval_update_mu = 50,
     bool polish = true,
     isize polish_refine_iter = 3,
     T delta = 1.e-6,
