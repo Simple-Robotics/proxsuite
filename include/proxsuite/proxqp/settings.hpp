@@ -164,6 +164,7 @@ struct Settings
   isize polish_refine_iter;
   T delta;
   bool resume_admm;
+  bool try_high_accuracy;
 
   isize preconditioner_max_iter;
   T preconditioner_accuracy;
@@ -263,6 +264,8 @@ struct Settings
    * @param delta regularization parameter in solution polishing in OSQP
    * @param resume_admm if set to true, resumes to ADMM iterations after polish
    * failed to found active sets or provide a better solution.
+   * @param try_high_accuracy if set to true, resume ADMM after polishing failed
+   * at precision 1e-3, then try at ADMM precision 1e-5.
    * @param preconditioner_max_iter maximal number of authorized iterations for
    * the preconditioner.
    * @param preconditioner_accuracy accuracy level of the preconditioner.
@@ -309,11 +312,10 @@ struct Settings
     T cold_reset_mu_in = 1. / 1.1,
     T cold_reset_mu_eq_inv = 1.1,
     T cold_reset_mu_in_inv = 1.1,
-    T cold_reset_mu_eq_osqp =
-      1.E-2, // TODO: tune (given scenari, algo, experiments)
-    T cold_reset_mu_in_osqp = 1.E1,      // idem
-    T cold_reset_mu_eq_inv_osqp = 1.E2,  // idem
-    T cold_reset_mu_in_inv_osqp = 1.E-1, // idem
+    T cold_reset_mu_eq_osqp = 1.E-2,     // default
+    T cold_reset_mu_in_osqp = 1.E1,      // default
+    T cold_reset_mu_eq_inv_osqp = 1.E2,  // default
+    T cold_reset_mu_in_inv_osqp = 1.E-1, // default
     T eps_abs = 1.e-5,
     T eps_rel = 0,
     bool high_accuracy = false,
@@ -322,7 +324,7 @@ struct Settings
     isize safe_guard = 1.E4,
     isize nb_iterative_refinement = 10,
     T eps_refact = 1.e-6, // before eps_refact_=1.e-6
-    bool verbose = true,
+    bool verbose = false,
     InitialGuessStatus initial_guess = InitialGuessStatus::
       EQUALITY_CONSTRAINED_INITIAL_GUESS, // default to
                                           // EQUALITY_CONSTRAINED_INITIAL_GUESS,
@@ -345,6 +347,7 @@ struct Settings
     isize polish_refine_iter = 3,
     T delta = 1.e-6,
     bool resume_admm = true,
+    bool try_high_accuracy = true,
     isize preconditioner_max_iter = 10,
     T preconditioner_accuracy = 1.e-3,
     T eps_primal_inf = 1.E-4,
@@ -410,6 +413,7 @@ struct Settings
     , polish_refine_iter(polish_refine_iter)
     , delta(delta)
     , resume_admm(resume_admm)
+    , try_high_accuracy(try_high_accuracy)
     , preconditioner_max_iter(preconditioner_max_iter)
     , preconditioner_accuracy(preconditioner_accuracy)
     , eps_primal_inf(eps_primal_inf)
@@ -505,6 +509,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.polish_refine_iter == settings2.polish_refine_iter &&
     settings1.delta == settings2.delta &&
     settings1.resume_admm == settings2.resume_admm &&
+    settings1.try_high_accuracy == settings2.try_high_accuracy &&
     settings1.preconditioner_max_iter == settings2.preconditioner_max_iter &&
     settings1.preconditioner_accuracy == settings2.preconditioner_accuracy &&
     settings1.eps_primal_inf == settings2.eps_primal_inf &&

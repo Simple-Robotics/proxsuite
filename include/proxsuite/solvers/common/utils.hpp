@@ -185,8 +185,9 @@ print_solver_statistics(const pp::Settings<T>& qpsettings,
       break;
     }
     case common::QPSolver::OSQP: {
-      std::cout << "outer iter:     " << qpresults.info.iter_ext << std::endl;
-      std::cout << "total iter:     " << qpresults.info.iter_ext << std::endl;
+      std::cout << "admm iter:      " << qpresults.info.iter_ext << std::endl;
+      std::cout << "polish calls:   " << qpresults.info.polish_calls
+                << std::endl;
       std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
       std::cout << "objective:      " << qpresults.info.objValue << std::endl;
       break;
@@ -227,30 +228,46 @@ print_solver_statistics(const pp::Settings<T>& qpsettings,
   }
 
   if (qp_solver == QPSolver::OSQP) {
-    switch (qpresults.info.polish_status) {
-      case pp::PolishStatus::POLISH_SUCCEED: {
-        std::cout << "polishing:      "
-                  << "Succeed" << std::endl;
-        break;
+    if (qpresults.info.polish_status == pp::PolishStatus::POLISH_NOT_RUN) {
+      std::cout << "polishing:      "
+                << "Not run" << std::endl;
+    } else {
+      switch (qpresults.info.polish_status) {
+        case pp::PolishStatus::POLISH_SUCCEED: {
+          std::cout << "polishing:      "
+                    << "Succeed" << std::endl;
+          break;
+        }
+        case pp::PolishStatus::POLISH_FAILED: {
+          std::cout << "polishing:      "
+                    << "Failed" << std::endl;
+          break;
+        }
+        case pp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+          std::cout << "polishing:      "
+                    << "No active set found" << std::endl;
+          break;
+        }
+        case pp::PolishStatus::POLISH_NOT_RUN: {
+          break;
+        }
       }
-      case pp::PolishStatus::POLISH_FAILED: {
-        std::cout << "polishing:      "
-                  << "Failed" << std::endl;
-        std::cout << "Resumed ADMM algorithm option: "
-                  << (qpsettings.resume_admm ? "ON" : "OFF") << std::endl;
-        break;
+      std::cout << "polishing options:" << std::endl;
+      std::cout << "       resume_admm: "
+                << (qpsettings.resume_admm ? "ON" : "OFF") << std::endl;
+      std::cout << "       high_accuracy: "
+                << (qpsettings.high_accuracy ? "ON" : "OFF") << std::endl;
+      if (!qpsettings.high_accuracy) {
+        std::cout << "       try_high_accuracy: "
+                  << (qpsettings.try_high_accuracy ? "ON" : "OFF") << std::endl;
       }
-      case pp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
-        std::cout << "polishing:      "
-                  << "Not run because no active set found" << std::endl;
-        std::cout << "Resumed ADMM algorithm option: "
-                  << (qpsettings.resume_admm ? "ON" : "OFF") << std::endl;
-        break;
-      }
-      case pp::PolishStatus::POLISH_NOT_RUN: {
-        std::cout << "polishing:      "
-                  << "Not run" << std::endl;
-        break;
+      std::cout << "polishing behaviour:" << std::endl;
+      std::cout << "       resumed admm: "
+                << (qpresults.info.resumed_admm ? "Yes" : "No") << std::endl;
+      if (qpresults.info.resumed_admm) {
+        std::cout << "       tried high accuracy: "
+                  << (qpresults.info.tried_high_accuracy ? "Yes" : "No")
+                  << std::endl;
       }
     }
   }

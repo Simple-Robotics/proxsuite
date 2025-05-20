@@ -486,7 +486,7 @@ admm( //
                                    iter);
     if (is_solved_qp) {
       if (iter == 0) {
-        qpwork.admm_solved_at_init = true;
+        qpresults.info.admm_solved_at_init = true;
       }
       break;
     }
@@ -621,7 +621,7 @@ find_active_sets(const Settings<T>& qpsettings,
   num_active_constraints_eq_up = qpwork.active_set_up_eq.count();
 
   // Inequality
-  if (qpwork.admm_solved_at_init) {
+  if (qpresults.info.admm_solved_at_init) {
     // Compute active sets that could not be computed in ADMM
     qpwork.z_prev = qpresults.z;
     if (box_constraints) {
@@ -1226,6 +1226,9 @@ polish(const Settings<T>& qpsettings,
        T& duality_gap)
 {
 
+  // Update number of polish calls
+  qpresults.info.polish_calls += 1;
+
   // Timing polishing
   qpwork.timer_polish.stop();
   qpwork.timer_polish.start();
@@ -1554,37 +1557,132 @@ qp_solve( //
          qpresults.info.polish_status == PolishStatus::POLISH_FAILED);
 
       if (resume) {
+        qpresults.info.resumed_admm = true;
+
         if (qpresults.info.polish_status == PolishStatus::POLISH_FAILED) {
+          // Retrieve the complete KKT matrix of the problem as the failed
+          // polish changed the stack and qpwork.ldl
           proxsuite::proxqp::dense::setup_factorization(
             qpwork, qpmodel, qpresults, dense_backend, hessian_type);
           proxsuite::common::setup_factorization_complete_kkt(
             qpwork, qpmodel, qpresults, dense_backend, n_constraints);
         }
-        scaled_eps = qpsettings.eps_abs;
-        scaled_eps_rel = qpsettings.eps_rel;
-        admm(qpsettings,
-             qpmodel,
-             qpresults,
-             qpwork,
-             box_constraints,
-             n_constraints,
-             dense_backend,
-             hessian_type,
-             ruiz,
-             primal_feasibility_eq_rhs_0,
-             primal_feasibility_in_rhs_0,
-             primal_feasibility_eq_lhs,
-             primal_feasibility_in_lhs,
-             primal_feasibility_lhs,
-             dual_feasibility_lhs,
-             dual_feasibility_rhs_0,
-             dual_feasibility_rhs_1,
-             dual_feasibility_rhs_3,
-             rhs_duality_gap,
-             duality_gap,
-             scaled_eps,
-             scaled_eps_rel,
-             qpresults.info.iter_ext);
+
+        if (qpsettings.high_accuracy == false && qpsettings.try_high_accuracy) {
+          // Resume with ADMM at "high" precision (1e-5), then polish
+          // prefered when ADMM only at settings precision (typically 1e-9)
+          // may not converge
+          qpresults.info.tried_high_accuracy = true;
+
+          scaled_eps = 1e-5;
+          scaled_eps_rel = (qpsettings.eps_rel == 0) ? 0 : 1e-5;
+          admm(qpsettings,
+               qpmodel,
+               qpresults,
+               qpwork,
+               box_constraints,
+               n_constraints,
+               dense_backend,
+               hessian_type,
+               ruiz,
+               primal_feasibility_eq_rhs_0,
+               primal_feasibility_in_rhs_0,
+               primal_feasibility_eq_lhs,
+               primal_feasibility_in_lhs,
+               primal_feasibility_lhs,
+               dual_feasibility_lhs,
+               dual_feasibility_rhs_0,
+               dual_feasibility_rhs_1,
+               dual_feasibility_rhs_3,
+               rhs_duality_gap,
+               duality_gap,
+               scaled_eps,
+               scaled_eps_rel,
+               qpresults.info.iter_ext);
+
+          if (qpresults.info.status == QPSolverOutput::PROXQP_SOLVED) {
+            polish(qpsettings,
+                   qpmodel,
+                   qpresults,
+                   qpwork,
+                   box_constraints,
+                   n_constraints,
+                   dense_backend,
+                   hessian_type,
+                   ruiz,
+                   primal_feasibility_lhs,
+                   primal_feasibility_eq_rhs_0,
+                   primal_feasibility_in_rhs_0,
+                   primal_feasibility_eq_lhs,
+                   primal_feasibility_in_lhs,
+                   dual_feasibility_lhs,
+                   dual_feasibility_rhs_0,
+                   dual_feasibility_rhs_1,
+                   dual_feasibility_rhs_3,
+                   rhs_duality_gap,
+                   duality_gap);
+
+            bool resume_second =
+              (qpresults.info.polish_status ==
+                 PolishStatus::POLISH_NO_ACTIVE_SET_FOUND ||
+               qpresults.info.polish_status == PolishStatus::POLISH_FAILED);
+
+            if (resume_second) {
+              // Resume with ADMM at OSQP settings precision
+              scaled_eps = qpsettings.eps_abs;
+              scaled_eps_rel = qpsettings.eps_rel;
+              admm(qpsettings,
+                   qpmodel,
+                   qpresults,
+                   qpwork,
+                   box_constraints,
+                   n_constraints,
+                   dense_backend,
+                   hessian_type,
+                   ruiz,
+                   primal_feasibility_eq_rhs_0,
+                   primal_feasibility_in_rhs_0,
+                   primal_feasibility_eq_lhs,
+                   primal_feasibility_in_lhs,
+                   primal_feasibility_lhs,
+                   dual_feasibility_lhs,
+                   dual_feasibility_rhs_0,
+                   dual_feasibility_rhs_1,
+                   dual_feasibility_rhs_3,
+                   rhs_duality_gap,
+                   duality_gap,
+                   scaled_eps,
+                   scaled_eps_rel,
+                   qpresults.info.iter_ext);
+            }
+          }
+        } else { // Resume with ADMM at OSQP settings precision
+          scaled_eps = qpsettings.eps_abs;
+          scaled_eps_rel = qpsettings.eps_rel;
+          admm(qpsettings,
+               qpmodel,
+               qpresults,
+               qpwork,
+               box_constraints,
+               n_constraints,
+               dense_backend,
+               hessian_type,
+               ruiz,
+               primal_feasibility_eq_rhs_0,
+               primal_feasibility_in_rhs_0,
+               primal_feasibility_eq_lhs,
+               primal_feasibility_in_lhs,
+               primal_feasibility_lhs,
+               dual_feasibility_lhs,
+               dual_feasibility_rhs_0,
+               dual_feasibility_rhs_1,
+               dual_feasibility_rhs_3,
+               rhs_duality_gap,
+               duality_gap,
+               scaled_eps,
+               scaled_eps_rel,
+               qpresults.info.iter_ext);
+        }
       }
     }
   }

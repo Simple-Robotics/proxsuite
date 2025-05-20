@@ -45,6 +45,12 @@ struct Info
   ///// polishing osqp
   PolishStatus polish_status;
 
+  bool admm_solved_at_init;
+  bool resumed_admm;
+  bool tried_high_accuracy;
+
+  isize polish_calls;
+
   //// timings
   T setup_time;
   T solve_time;
@@ -143,6 +149,10 @@ struct Results
     info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.polish_status = PolishStatus::POLISH_NOT_RUN;
+    info.admm_solved_at_init = false;
+    info.resumed_admm = false;
+    info.tried_high_accuracy = false;
+    info.polish_calls = 0;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
   }
@@ -176,6 +186,10 @@ struct Results
     info.status =
       QPSolverOutput::PROXQP_MAX_ITER_REACHED; // TODO: PROXQP_NOT_RUN instead ?
     info.polish_status = PolishStatus::POLISH_NOT_RUN;
+    info.admm_solved_at_init = false;
+    info.resumed_admm = false;
+    info.tried_high_accuracy = false;
+    info.polish_calls = 0;
     info.sparse_backend = SparseBackend::Automatic;
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
@@ -214,19 +228,24 @@ bool
 operator==(const Info<T>& info1, const Info<T>& info2)
 {
   bool value =
-    info1.mu_eq == info2.mu_eq && info1.mu_eq_inv == info2.mu_eq_inv &&
-    info1.mu_in == info2.mu_in && info1.mu_in_inv == info2.mu_in_inv &&
-    info1.rho == info2.rho && info1.nu == info2.nu &&
-    info1.iter == info2.iter && info1.iter_ext == info2.iter_ext &&
-    info1.mu_updates == info2.mu_updates &&
-    info1.rho_updates == info2.rho_updates && info1.status == info2.status &&
-    info1.polish_status == info2.polish_status &&
-    info1.setup_time == info2.setup_time &&
-    info1.solve_time == info2.solve_time && info1.run_time == info2.run_time &&
-    info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
-    info1.dua_res == info2.dua_res && info1.duality_gap == info2.duality_gap &&
-    info1.duality_gap == info2.duality_gap &&
-    info1.minimal_H_eigenvalue_estimate == info2.minimal_H_eigenvalue_estimate;
+    info1.mu_eq == info2.mu_eq&& info1.mu_eq_inv ==
+    info2.mu_eq_inv&& info1.mu_in == info2.mu_in&& info1.mu_in_inv ==
+    info2.mu_in_inv&& info1.rho == info2.rho&& info1.nu ==
+    info2.nu&& info1.iter == info2.iter&& info1.iter_ext ==
+    info2.iter_ext&& info1.mu_updates == info2.mu_updates&& info1.rho_updates ==
+    info2.rho_updates&& info1.status == info2.status&& info1.polish_status ==
+    info2.polish_status&& info1.admm_solved_at_init ==
+    info2.admm_solved_at_init&& info1.resumed_admm ==
+    info2.resumed_admm&& info1.tried_high_accuracy =
+      info2.tried_high_accuracy && info1.setup_time == info2.setup_time &&
+      info1.solve_time && info1.polish_calls == info2.polish_calls &&
+      info2.solve_time && info1.run_time == info2.run_time &&
+      info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
+      info1.dua_res == info2.dua_res &&
+      info1.duality_gap == info2.duality_gap &&
+      info1.duality_gap == info2.duality_gap &&
+      info1.minimal_H_eigenvalue_estimate ==
+        info2.minimal_H_eigenvalue_estimate;
   return value;
 }
 
