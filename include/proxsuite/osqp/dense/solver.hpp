@@ -1427,31 +1427,6 @@ polish(const Settings<T>& qpsettings,
   }
 }
 /*!
- * Retrieve and factorize the KKT matrix in ADMM after polishing failed.
- *
- * @param qpwork solver workspace.
- * @param qpmodel QP problem model as defined by the user (without any scaling
- * performed).
- * @param qpsettings solver settings.
- * @param qpresults solver results.
- * @param ruiz ruiz preconditioner.
- */
-template<typename T>
-void
-setup_solver_resume_admm( //
-  const Model<T>& qpmodel,
-  Results<T>& qpresults,
-  Workspace<T>& qpwork,
-  const isize n_constraints,
-  const DenseBackend& dense_backend,
-  const HessianType& hessian_type)
-{
-  proxsuite::proxqp::dense::setup_factorization(
-    qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-  proxsuite::common::setup_factorization_complete_kkt(
-    qpwork, qpmodel, qpresults, dense_backend, n_constraints);
-}
-/*!
  * Executes the OSQP algorithm.
  *
  * @param qpwork solver workspace.
@@ -1580,12 +1555,10 @@ qp_solve( //
 
       if (resume) {
         if (qpresults.info.polish_status == PolishStatus::POLISH_FAILED) {
-          setup_solver_resume_admm(qpmodel,
-                                   qpresults,
-                                   qpwork,
-                                   n_constraints,
-                                   dense_backend,
-                                   hessian_type);
+          proxsuite::proxqp::dense::setup_factorization(
+            qpwork, qpmodel, qpresults, dense_backend, hessian_type);
+          proxsuite::common::setup_factorization_complete_kkt(
+            qpwork, qpmodel, qpresults, dense_backend, n_constraints);
         }
         scaled_eps = qpsettings.eps_abs;
         scaled_eps_rel = qpsettings.eps_rel;
