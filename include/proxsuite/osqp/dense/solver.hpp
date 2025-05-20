@@ -531,14 +531,6 @@ admm( //
     qpwork.active_set_low.array() =
       (qpresults.si.array() < 0); // {zeta_in - l + z < 0}
 
-    // std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
-    // std::cout << "In admm:" << std::endl;
-    // std::cout << "z:" << std::endl << qpresults.z << std::endl;
-    // std::cout << "active_set_low:" << std::endl << qpwork.active_set_low <<
-    // std::endl; std::cout << "active_set_up:" << std::endl <<
-    // qpwork.active_set_up << std::endl; std::cout <<
-    // "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
-
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
     T dual_feasibility_lhs_new(dual_feasibility_lhs);
     proxsuite::common::update_solver_status(qpsettings,
@@ -656,17 +648,6 @@ find_active_sets(const Settings<T>& qpsettings,
     num_active_constraints_eq + num_active_constraints_ineq;
 
   inner_pb_dim = qpmodel.dim + num_active_constraints;
-
-  // std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
-  // std::cout << "In find_active_sets" << std::endl;
-  // std::cout << "y:" << std::endl << qpresults.y << std::endl;
-  // std::cout << "active_set_low_eq:" << std::endl << qpwork.active_set_low_eq
-  // << std::endl; std::cout << "active_set_up_eq:" << std::endl <<
-  // qpwork.active_set_up_eq << std::endl; std::cout << "z:" << std::endl <<
-  // qpresults.z << std::endl; std::cout << "active_set_low:" << std::endl <<
-  // qpwork.active_set_low << std::endl; std::cout << "active_set_up:" <<
-  // std::endl << qpwork.active_set_up << std::endl; std::cout <<
-  // "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
 }
 /*!
  * Build the reduced matrices of constraints in polishing.
