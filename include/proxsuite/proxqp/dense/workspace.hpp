@@ -95,6 +95,16 @@ struct Workspace
   bool is_initialized;
 
   sparse::isize n_c; // final number of active inequalities
+
+  // OSQP
+  Vec<T> x_tilde;
+  Vec<T> nu_eq;
+  Vec<T> nu_in;
+  Vec<T> zeta_eq;
+  Vec<T> zeta_in;
+  Vec<T> zeta_tilde_eq;
+  Vec<T> zeta_tilde_in;
+
   /*!
    * Default constructor.
    * @param dim primal variable dimension.
@@ -125,6 +135,10 @@ struct Workspace
     , refactorize(false)
     , proximal_parameter_update(false)
     , is_initialized(false)
+    , x_tilde(dim)
+    , nu_eq(n_eq)
+    , zeta_eq(n_eq)
+    , zeta_tilde_eq(n_eq)
   {
 
     if (box_constraints) {
@@ -215,6 +229,9 @@ struct Workspace
       primal_residual_in_scaled_low_plus_alphaCdx.resize(dim + n_in);
       Cdx.resize(n_in + dim);
       alphas.reserve(2 * n_in + 2 * dim);
+      nu_in.resize(n_in + dim);
+      zeta_in.resize(n_in + dim);
+      zeta_tilde_in.resize(n_in + dim);
     } else {
       z_prev.resize(n_in);
 
@@ -290,6 +307,9 @@ struct Workspace
       primal_residual_in_scaled_low_plus_alphaCdx.resize(n_in);
       Cdx.resize(n_in);
       alphas.reserve(2 * n_in);
+      nu_in.resize(n_in);
+      zeta_in.resize(n_in);
+      zeta_tilde_in.resize(n_in);
     }
 
     H_scaled.setZero();
@@ -323,6 +343,14 @@ struct Workspace
     primal_residual_in_scaled_low_plus_alphaCdx.setZero();
     CTz.setZero();
     n_c = 0;
+
+    x_tilde.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    zeta_tilde_eq.setZero();
+    zeta_tilde_in.setZero();
   }
   /*!
    * Clean-ups solver's workspace.
@@ -374,6 +402,14 @@ struct Workspace
     proximal_parameter_update = false;
     is_initialized = false;
     n_c = 0;
+
+    x_tilde.setZero();
+    nu_eq.setZero();
+    nu_in.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
+    zeta_tilde_eq.setZero();
+    zeta_tilde_in.setZero();
   }
 };
 } // namespace dense
