@@ -141,6 +141,22 @@ struct Settings
   bool primal_infeasibility_solving;
   isize frequence_infeasibility_check;
   T default_H_eigenvalue_estimate;
+
+  // OSQP
+  T alpha_osqp;
+
+  T mu_max_eq;
+  T mu_max_in;
+  T mu_min_eq_inv;
+  T mu_min_in_inv;
+
+  isize adaptive_mu_interval;
+  T adaptive_mu_tolerance;
+
+  bool polishing;
+  T delta_osqp;
+  isize polish_refine_iter;
+
   /*!
    * Default constructor.
    * @param default_rho default rho parameter of result class
@@ -208,6 +224,19 @@ struct Settings
    * quadratic cost H
    * @param default_H_eigenvalue_estimate default H eigenvalue estimate (i.e.,
    * if we make a model update and H does not change this one is used)
+   * @param alpha_osqp (OSQP): alpha parameter in ADMM
+   * @param mu_max_eq (OSQP): maximum value for mu_eq
+   * @param mu_max_in (OSQP): maximum value for mu_in
+   * @param mu_min_eq_inv (OSQP): minimum value for mu_eq_inv
+   * @param mu_min_in_inv (OSQP): minimum value for mu_in_inv
+   * @param adaptive_mu_interval (OSQP): minimum number of iterations before
+   * updating mu
+   * @param adaptive_mu_tolerance (OSQP): minimum ratio between old and new mu
+   * @param polishing (OSQP): if set to true, polish the solution obtained from
+   * ADMM
+   * @param delta_osqp (OSQP): delta parameter in solution polishing
+   * @param polish_refine_iter (OSQP): number of iterative refinements in
+   * solution polishing
    */
 
   Settings(
@@ -257,7 +286,17 @@ struct Settings
     SparseBackend sparse_backend = SparseBackend::Automatic,
     bool primal_infeasibility_solving = false,
     isize frequence_infeasibility_check = 1,
-    T default_H_eigenvalue_estimate = 0.)
+    T default_H_eigenvalue_estimate = 0.,
+    T alpha_osqp = 1.6,
+    T mu_max_eq = 1e3,
+    T mu_max_in = 1e6,
+    T mu_min_eq_inv = 1e-3,
+    T mu_min_in_inv = 1e-6,
+    isize adaptive_mu_interval = 50,
+    T adaptive_mu_tolerance = 5.,
+    bool polishing = false,
+    T delta_osqp = 1e-6,
+    isize polish_refine_iter = 3)
     : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
     , alpha_bcl(alpha_bcl)
@@ -300,6 +339,16 @@ struct Settings
     , primal_infeasibility_solving(primal_infeasibility_solving)
     , frequence_infeasibility_check(frequence_infeasibility_check)
     , default_H_eigenvalue_estimate(default_H_eigenvalue_estimate)
+    , alpha_osqp(alpha_osqp)
+    , mu_max_eq(mu_max_eq)
+    , mu_max_in(mu_max_in)
+    , mu_min_eq_inv(mu_min_eq_inv)
+    , mu_min_in_inv(mu_min_in_inv)
+    , adaptive_mu_interval(adaptive_mu_interval)
+    , adaptive_mu_tolerance(adaptive_mu_tolerance)
+    , polishing(polishing)
+    , delta_osqp(delta_osqp)
+    , polish_refine_iter(polish_refine_iter)
   {
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
@@ -366,7 +415,17 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.frequence_infeasibility_check ==
       settings2.frequence_infeasibility_check &&
     settings1.default_H_eigenvalue_estimate ==
-      settings2.default_H_eigenvalue_estimate;
+      settings2.default_H_eigenvalue_estimate &&
+    settings1.alpha_osqp == settings2.alpha_osqp &&
+    settings1.mu_max_eq == settings2.mu_max_eq &&
+    settings1.mu_max_in == settings2.mu_max_in &&
+    settings1.mu_min_eq_inv == settings2.mu_min_eq_inv &&
+    settings1.mu_min_in_inv == settings2.mu_min_in_inv &&
+    settings1.adaptive_mu_interval == settings2.adaptive_mu_interval &&
+    settings1.adaptive_mu_tolerance == settings2.adaptive_mu_tolerance &&
+    settings1.polishing == settings2.polishing &&
+    settings1.delta_osqp == settings2.delta_osqp &&
+    settings1.polish_refine_iter == settings2.polish_refine_iter;
   return value;
 }
 

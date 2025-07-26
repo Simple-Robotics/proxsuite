@@ -65,16 +65,121 @@ public:
   /*!
    * Initializes the settings as in the source code of OSQP.
    * code: https://github.com/osqp/osqp-python
+   * Commented names of settings are related to ProxQP only.
+   * Mention TODO for potential improvement or future implementations.
    */
-  void init_osqp_settings() { this->settings.verbose = true; };
+  void init_osqp_settings()
+  {
+    // From proxsuite/proxqp/settings.hpp (proxsuite)
+    this->settings.verbose = false;
+
+    this->settigns.default_rho = 1e-6;
+    this->settigns.default_mu_eq = 1e-2;
+    this->settigns.default_mu_in = 1e1;
+
+    this->settings.mu_min_eq = 1e-9;
+    this->settings.mu_min_in = 1e-6;
+    this->settings.mu_max_eq_inv = 1e9;
+    this->settings.mu_max_in_inv = 1e6;
+
+    // TODO: this->settings.cold_reset_mu_eq = ;
+    // TODO: this->settings.cold_reset_mu_in = ;
+    // TODO: this->settings.cold_reset_mu_eq_inv = ;
+    // TODO: this->settings.cold_reset_mu_in_inv = ;
+
+    this->settings.eps_abs = 1e-3;
+    this->settings.eps_rel = 1e-3;
+    this->settings.check_duality_gap = false;
+    this->settings.eps_duality_gap_abs = 1e-3;
+    this->settings.eps_duality_gap_abs = 1e-3;
+
+    this->settings.eps_primal_inf = 1e-4;
+    this->settings.eps_dual_inf = 1e-4;
+    this->settings.primal_infeasibility_solving = false;
+    this->settings.frequence_infeasibility_check =
+      1; // TODO: 25 + adaptation to source later
+
+    this->settings.update_preconditioner = false; // TODO: Check
+    this->settings.compute_preconditioner =
+      true; // TODO: Check if same computation
+    this->settings.preconditioner_max_iter = 10;
+    this->settings.preconditioner_accuracy = 1e-3;
+
+    this->settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    this->settings.max_iter = 4000;
+
+    this->settings.compute_timings = true;
+
+    this->settings.default_H_eigenvalue_estimate = 0.;
+
+    // TODO: this->settings.sparse_backend = ;
+
+    // max_iter_in
+    // nb_iterative_refinement
+    // eps_refact
+    // safe_guard
+
+    // alpha_bcl
+    // beta_bcl
+    // bcl_update
+
+    // mu_update_factor
+    // mu_update_inv_factor
+
+    // refactor_dual_feasibility_threshold
+    // refactor_rho_threshold
+
+    // From osqp_api_constants.h (OSQP)
+    this->settings.alpha_osqp = 1.6;
+
+    this->settings.mu_max_eq = 1e3;
+    this->settings.mu_max_in = 1e6;
+    this->settings.mu_min_eq_inv = 1e-3;
+    this->settings.mu_min_in_inv = 1e-6;
+    // TODO: this->settings.mu_tol = 1e-4;
+
+    // TODO: this->settings.cg_max_iter = 20;
+    // TODO: this->settings.cg_tol_reduction = 10;
+    // TODO: this->settings.cg_tol_fraction = 0.15;
+
+    // TODO: this->settings.adaptive_mu_update_disable = false;
+    // TODO: this->settings.adaptive_mu_update_kkt_error = false;
+    // TODO: this->settings.adaptive_mu_update_time = false;
+    // TODO: this->settings.adaptive_mu_fraction = 0.4;
+    // TODO: this->settings.adaptive_mu_update_iterations = true;
+    this->settings.adaptive_mu_interval = 100;
+    this->settings.adaptive_mu_tolerance = 5.;
+    // TODO: this->settings.adaptive_mu_multiple_termination = 4;
+    // TODO: this->settings.adaptive_mu_fixed = 100;
+
+    this->settings.polishing = false;
+    this->settings.delta_osqp = 1e-6;
+    this->settings.polish_refine_iter = 3;
+
+    // TODO: this->settings.check_termination = 1; // TODO: 25 + adaptation to
+    // source later
+
+    // TODO numerics:
+    // this->settings.infty
+    // this->settings.division_tol
+
+    // this->settings.min_scaling
+    // this->settings.max_scaling
+
+    // this->settings.cg_tol_min
+    // this->settings.cg_polish_tol
+
+    // this->settings.zero_deadzone
+  };
 };
 
 /*!
  * Solves the QP problem using OSQP algorithm without the need to define a QP
- * object, with matrices defined by Dense Eigen matrices. It is possible to set
- * up some of the solver parameters (warm start, initial guess option, proximal
- * step sizes, absolute and relative accuracies, maximum number of iterations,
- * preconditioner execution). There are no box constraints in the model.
+ * object, with matrices defined by Dense Eigen matrices. It is possible to
+ * set up some of the solver parameters (warm start, initial guess option,
+ * proximal step sizes, absolute and relative accuracies, maximum number of
+ * iterations, preconditioner execution). There are no box constraints in the
+ * model.
  * @param H quadratic cost input defining the QP model.
  * @param g linear cost input defining the QP model.
  * @param A equality constraint matrix input defining the QP model.
@@ -85,8 +190,8 @@ public:
  * @param x primal warm start.
  * @param y dual equality constraint warm start.
  * @param z dual inequality constraint warm start.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
+ * @param verbose if set to true, the solver prints more information about
+ * each iteration.
  * @param compute_preconditioner bool parameter for executing or not the
  * preconditioner.
  * @param compute_timings boolean parameter for computing the solver timings.
@@ -98,8 +203,8 @@ public:
  * @param max_iter maximum number of iteration.
  * @param initial_guess initial guess option for warm starting or not the
  * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
+ * @param check_duality_gap If set to true, include the duality gap in
+ * absolute and relative stopping criteria.
  * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
@@ -195,10 +300,10 @@ solve(optional<MatRef<T>> H,
 }
 /*!
  * Solves the QP problem using OSQP algorithm without the need to define a QP
- * object, with matrices defined by Dense Eigen matrices. It is possible to set
- * up some of the solver parameters (warm start, initial guess option, proximal
- * step sizes, absolute and relative accuracies, maximum number of iterations,
- * preconditioner execution).
+ * object, with matrices defined by Dense Eigen matrices. It is possible to
+ * set up some of the solver parameters (warm start, initial guess option,
+ * proximal step sizes, absolute and relative accuracies, maximum number of
+ * iterations, preconditioner execution).
  * @param H quadratic cost input defining the QP model.
  * @param g linear cost input defining the QP model.
  * @param A equality constraint matrix input defining the QP model.
@@ -212,11 +317,11 @@ solve(optional<MatRef<T>> H,
  * model.
  * @param x primal warm start.
  * @param y dual equality constraint warm start.
- * @param z dual inequality constraint warm start. The upper part must contain a
- * warm start for inequality constraints wrt C matrix, whereas the latter wrt
- * the box inequalities.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
+ * @param z dual inequality constraint warm start. The upper part must contain
+ * a warm start for inequality constraints wrt C matrix, whereas the latter
+ * wrt the box inequalities.
+ * @param verbose if set to true, the solver prints more information about
+ * each iteration.
  * @param compute_preconditioner bool parameter for executing or not the
  * preconditioner.
  * @param compute_timings boolean parameter for computing the solver timings.
@@ -228,8 +333,8 @@ solve(optional<MatRef<T>> H,
  * @param max_iter maximum number of iteration.
  * @param initial_guess initial guess option for warm starting or not the
  * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
+ * @param check_duality_gap If set to true, include the duality gap in
+ * absolute and relative stopping criteria.
  * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
