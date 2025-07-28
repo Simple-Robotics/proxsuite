@@ -68,6 +68,13 @@ exposeWorkspaceDense(nanobind::module_ m)
             &Workspace<T>::proximal_parameter_update)
     .def_ro("is_initialized", &Workspace<T>::is_initialized)
     .def_ro("n_c", &Workspace<T>::n_c)
+    .def_ro("x_tilde", &Workspace<T>::x_tilde)
+    .def_ro("nu_eq", &Workspace<T>::nu_eq)
+    .def_ro("nu_in", &Workspace<T>::nu_in)
+    .def_ro("zeta_eq", &Workspace<T>::zeta_eq)
+    .def_ro("zeta_in", &Workspace<T>::zeta_in)
+    .def_ro("zeta_tilde_eq", &Workspace<T>::zeta_tilde_eq)
+    .def_ro("zeta_tilde_in", &Workspace<T>::zeta_tilde_in)
     .def("__getstate__",
          [](const Workspace<T>& workspace) {
            return proxsuite::serialization::saveToString(workspace);

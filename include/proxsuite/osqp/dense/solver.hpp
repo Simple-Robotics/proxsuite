@@ -13,6 +13,7 @@
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/settings.hpp"
 #include "proxsuite/proxqp/results.hpp"
+#include <iostream>
 
 namespace proxsuite {
 namespace osqp {
@@ -43,6 +44,7 @@ qp_solve( //
   const HessianType& hessian_type,
   preconditioner::RuizEquilibration<T>& ruiz)
 {
+  std::cout << "Running proxsuite::osqp::dense::qp_solve" << std::endl;
 }
 
 } // namespace dense

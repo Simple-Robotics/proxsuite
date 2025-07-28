@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 #include <proxsuite/fwd.hpp>
 
@@ -9,12 +9,16 @@
 #include <nanobind/stl/string.h>
 
 #include "algorithms.hpp"
+#include "helpers.hpp"
+
 #include <proxsuite/proxqp/dense/utils.hpp>
 #include <proxsuite/helpers/version.hpp>
 
 namespace proxsuite {
 namespace proxqp {
 namespace python {
+
+using namespace proxsuite::python;
 
 template<typename T>
 void
@@ -86,13 +90,14 @@ NB_MODULE(PYTHON_MODULE_NAME, m)
         proxsuite
     )pbdoc";
 
+  // PROXQP
   nanobind::module_ proxqp_module =
     m.def_submodule("proxqp", "The proxQP solvers of the proxSuite library");
   exposeCommon<f64>(proxqp_module);
-  nanobind::module_ dense_module =
+  nanobind::module_ proxqp_dense_module =
     proxqp_module.def_submodule("dense", "Dense solver of proxQP");
-  exposeDenseAlgorithms<f64>(dense_module);
-  exposeBackward<f64>(dense_module);
+  exposeDenseAlgorithms<f64>(proxqp_dense_module);
+  exposeBackward<f64>(proxqp_dense_module);
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
   exposeDenseParallel<f64>(dense_module);
 #endif
@@ -102,6 +107,38 @@ NB_MODULE(PYTHON_MODULE_NAME, m)
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
   exposeSparseParallel<f64, int32_t>(sparse_module);
 #endif
+
+  // OSQP
+  nanobind::module_ osqp_module =
+    m.def_submodule("osqp", "The OSQP solvers of the proxSuite library");
+  // exposeCommon: exposeResults
+  exposeAndExportValues<QPSolverOutput>(osqp_module);
+  osqp_module.attr("Info") = m.attr("proxqp").attr("Info");
+  osqp_module.attr("Results") = m.attr("proxqp").attr("Results");
+  // exposeCommon: exposeSettings
+  exposeAndExportValues<InitialGuessStatus>(osqp_module);
+  exposeAndExportValues<SparseBackend>(osqp_module);
+  exposeAndExportValues<EigenValueEstimateMethodOption>(osqp_module);
+  osqp_module.attr("Settings") = m.attr("proxqp").attr("Settings");
+  // dense_module
+  nanobind::module_ osqp_dense_module =
+    osqp_module.def_submodule("dense", "Dense solver of OSQP");
+  // exposeDenseAlgorithms: exposeWorkspaceDense
+  osqp_dense_module.attr("workspace") =
+    m.attr("proxqp").attr("dense").attr("workspace");
+  // exposeDenseAlgorithms: exposeDenseModel
+  osqp_dense_module.attr("model") =
+    m.attr("proxqp").attr("dense").attr("model");
+  // exposeDenseAlgorithms: exposeQpObjectDense
+  exposeAndExportValues<DenseBackend>(osqp_dense_module);
+  exposeAndExportValues<HessianType>(osqp_dense_module);
+  osqp::dense::python::exposeQpObjectDense<f64>(osqp_dense_module);
+  // exposeDenseAlgorithms: solveDenseQp
+  osqp::dense::python::solveDenseQp<f64>(osqp_dense_module);
+  // exposeDenseAlgorithms: exposeDenseHelpers
+  osqp_dense_module.attr("estimate_minimal_eigen_value_of_symmetric_matrix") =
+    m.attr("proxqp").attr("dense").attr(
+      "estimate_minimal_eigen_value_of_symmetric_matrix");
 
   // Add version
   m.attr("__version__") = helpers::printVersion();
