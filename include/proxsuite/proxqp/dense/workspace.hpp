@@ -100,8 +100,6 @@ struct Workspace
   Vec<T> x_tilde;
   Vec<T> nu_eq;
   Vec<T> nu_in;
-  Vec<T> zeta_eq;
-  Vec<T> zeta_in;
   Vec<T> zeta_tilde_eq;
   Vec<T> zeta_tilde_in;
 
@@ -137,7 +135,6 @@ struct Workspace
     , is_initialized(false)
     , x_tilde(dim)
     , nu_eq(n_eq)
-    , zeta_eq(n_eq)
     , zeta_tilde_eq(n_eq)
   {
 
@@ -230,7 +227,6 @@ struct Workspace
       Cdx.resize(n_in + dim);
       alphas.reserve(2 * n_in + 2 * dim);
       nu_in.resize(n_in + dim);
-      zeta_in.resize(n_in + dim);
       zeta_tilde_in.resize(n_in + dim);
     } else {
       z_prev.resize(n_in);
@@ -308,7 +304,6 @@ struct Workspace
       Cdx.resize(n_in);
       alphas.reserve(2 * n_in);
       nu_in.resize(n_in);
-      zeta_in.resize(n_in);
       zeta_tilde_in.resize(n_in);
     }
 
@@ -347,8 +342,6 @@ struct Workspace
     x_tilde.setZero();
     nu_eq.setZero();
     nu_in.setZero();
-    zeta_eq.setZero();
-    zeta_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
   }
@@ -406,8 +399,6 @@ struct Workspace
     x_tilde.setZero();
     nu_eq.setZero();
     nu_in.setZero();
-    zeta_eq.setZero();
-    zeta_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
   }

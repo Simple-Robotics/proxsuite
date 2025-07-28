@@ -99,6 +99,8 @@ exposeResults(nanobind::module_ m)
             &Results<T>::si,
             "Optimal shift to the closest feasible problem wrt inequality "
             "constraints.")
+    .def_rw("zeta_eq", &Results<T>::zeta_eq, "Equality 'z' in OSQP")
+    .def_rw("zeta_in", &Results<T>::zeta_in, "Equality 'z' in OSQP")
     .def_rw("info", &Results<T>::info)
     .def(nanobind::self == nanobind::self)
     .def(nanobind::self != nanobind::self)

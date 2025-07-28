@@ -80,6 +80,10 @@ struct Results
 
   Info<T> info;
 
+  // OSQP
+  sparse::Vec<T> zeta_eq;
+  sparse::Vec<T> zeta_in;
+
   ////// SOLUTION STATUS
   /*!
    * Default constructor.
@@ -97,19 +101,25 @@ struct Results
     , z(n_in)
     , se(n_eq)
     , si(n_in)
+    , zeta_eq(n_eq)
+    , zeta_in(n_in)
   {
     if (box_constraints) {
       z.resize(dim + n_in);
       si.resize(dim + n_in);
+      zeta_in.resize(dim + n_in);
     } else {
       z.resize(n_in);
       si.resize(n_in);
+      zeta_in.resize(n_in);
     }
     x.setZero();
     y.setZero();
     z.setZero();
     se.setZero();
     si.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
     switch (dense_backend) {
       case DenseBackend::PrimalDualLDLT:
         info.rho = 1e-6;
@@ -153,6 +163,8 @@ struct Results
     z.setZero();
     se.setZero();
     si.setZero();
+    zeta_eq.setZero();
+    zeta_in.setZero();
     cold_start(settings);
   }
   void cleanup_statistics()
@@ -199,6 +211,8 @@ struct Results
     z.setZero();
     se.setZero();
     si.setZero();
+    zeta_eq.setZero();
+    zeta_eq.setZero();
     cleanup_statistics();
   }
 };
