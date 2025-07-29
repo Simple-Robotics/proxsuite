@@ -12,9 +12,10 @@
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
+#include "proxsuite/proxqp/dense/utils.hpp"
+#include "proxsuite/proxqp/dense/solver.hpp"
 #include "proxsuite/proxqp/settings.hpp"
 #include "proxsuite/proxqp/results.hpp"
-#include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/osqp/dense/utils.hpp"
 #include <iostream>
 #include <iomanip>
@@ -25,6 +26,97 @@ namespace dense {
 
 using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
+
+/*!
+ * One iteration of the ADMM algorithm adapted in OSQP.
+ *
+ * Solves the linear system (KKT), then update the primal and dual variables.
+ *
+ * @param qpsettings solver settings.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ * @param qpwork solver workspace.
+ */
+template<typename T>
+void
+admm_step(const Settings<T>& qpsettings,
+          const Model<T>& qpmodel,
+          Results<T>& qpresults,
+          Workspace<T>& qpwork,
+          const bool box_constraints,
+          const isize n_constraints,
+          const DenseBackend dense_backend)
+{
+  // Solve the linear system
+  qpwork.x_tilde.setZero();
+  qpwork.nu_eq.setZero();
+  qpwork.nu_in.setZero();
+  qpwork.zeta_tilde_eq.setZero();
+  qpwork.zeta_tilde_in.setZero();
+  qpwork.zeta_in_next.setZero();
+
+  qpwork.rhs.setZero();
+  qpwork.rhs.head(qpmodel.dim) =
+    qpresults.info.rho * qpresults.x - qpwork.g_scaled;
+  qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
+    qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y; // zeta_eq = b
+  qpwork.rhs.tail(n_constraints) =
+    qpresults.zeta_in - qpresults.info.mu_in * qpresults.z;
+
+  isize inner_pb_dim = qpmodel.dim + qpmodel.n_eq + n_constraints;
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  };
+  solve_linear_system(qpwork.rhs,
+                      qpmodel,
+                      qpresults,
+                      qpwork,
+                      n_constraints,
+                      dense_backend,
+                      inner_pb_dim,
+                      stack);
+  qpwork.x_tilde = qpwork.rhs.head(qpmodel.dim);
+  qpwork.nu_eq = qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq);
+  qpwork.nu_in = qpwork.rhs.tail(n_constraints);
+
+  // Update the variables
+  qpwork.zeta_tilde_eq =
+    qpwork.b_scaled +
+    qpresults.info.mu_eq * (qpwork.nu_eq - qpresults.y); // zeta_eq = b
+  qpwork.zeta_tilde_in =
+    qpresults.zeta_in + qpresults.info.mu_in * (qpwork.nu_in - qpresults.z);
+
+  qpresults.x = qpsettings.alpha_osqp * qpwork.x_tilde +
+                (1 - qpsettings.alpha_osqp) * qpresults.x;
+
+  qpresults.zeta_eq = qpwork.b_scaled; // zeta_eq = b
+  qpwork.zeta_in_next = qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
+                        (1 - qpsettings.alpha_osqp) * qpresults.zeta_in +
+                        qpresults.info.mu_in * qpresults.z;
+  if (box_constraints) {
+    qpwork.zeta_in_next.head(qpmodel.n_in) = qpwork.l_scaled.cwiseMax(
+      qpwork.zeta_in_next.head(qpmodel.n_in).cwiseMin(qpwork.u_scaled));
+    qpwork.zeta_in_next.tail(qpmodel.dim) = qpwork.l_box_scaled.cwiseMax(
+      qpwork.zeta_in_next.tail(qpmodel.dim).cwiseMin(qpwork.u_box_scaled));
+  } else {
+    qpwork.zeta_in_next =
+      qpwork.l_scaled.cwiseMax(qpwork.zeta_in_next.cwiseMin(qpwork.u_scaled));
+  }
+
+  qpresults.y =
+    qpresults.y +
+    qpresults.info.mu_eq_inv *
+      (qpsettings.alpha_osqp * qpwork.zeta_tilde_eq +
+       (1 - qpsettings.alpha_osqp) * qpresults.zeta_eq - qpresults.zeta_eq);
+  qpresults.z =
+    qpresults.z +
+    qpresults.info.mu_in_inv *
+      (qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
+       (1 - qpsettings.alpha_osqp) * qpresults.zeta_in - qpwork.zeta_in_next);
+
+  qpresults.zeta_in = qpwork.zeta_in_next;
+}
 
 /*!
  * Executes the OSQP algorithm.
@@ -411,7 +503,13 @@ qp_solve( //
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    // ADMM step
+    admm_step(qpsettings,
+              qpmodel,
+              qpresults,
+              qpwork,
+              box_constraints,
+              n_constraints,
+              dense_backend);
 
     //////////////////////////////////////////////////////////////////////////////////////////
 

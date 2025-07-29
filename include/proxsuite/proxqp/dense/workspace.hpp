@@ -102,6 +102,7 @@ struct Workspace
   Vec<T> nu_in;
   Vec<T> zeta_tilde_eq;
   Vec<T> zeta_tilde_in;
+  Vec<T> zeta_in_next;
 
   /*!
    * Default constructor.
@@ -228,6 +229,7 @@ struct Workspace
       alphas.reserve(2 * n_in + 2 * dim);
       nu_in.resize(n_in + dim);
       zeta_tilde_in.resize(n_in + dim);
+      zeta_in_next.resize(n_in + dim);
     } else {
       z_prev.resize(n_in);
 
@@ -305,6 +307,7 @@ struct Workspace
       alphas.reserve(2 * n_in);
       nu_in.resize(n_in);
       zeta_tilde_in.resize(n_in);
+      zeta_in_next.resize(n_in);
     }
 
     H_scaled.setZero();
@@ -344,6 +347,7 @@ struct Workspace
     nu_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
+    zeta_in_next.setZero();
   }
   /*!
    * Clean-ups solver's workspace.
@@ -401,6 +405,7 @@ struct Workspace
     nu_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
+    zeta_in_next.setZero();
   }
 };
 } // namespace dense
