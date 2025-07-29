@@ -8,8 +8,8 @@
 
 #include <iostream>
 
+namespace proxsuite {
 namespace osqp {
-namespace proxqp {
 
 inline void
 print_line()

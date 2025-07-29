@@ -21,18 +21,7 @@ namespace dense {
 template<typename T>
 struct QP : public proxsuite::proxqp::dense::QP<T>
 {
-private:
-  DenseBackend dense_backend;
-  bool box_constraints;
-  HessianType hessian_type;
-
 public:
-  Results<T> results;
-  Settings<T> settings;
-  Model<T> model;
-  Workspace<T> work;
-  preconditioner::RuizEquilibration<T> ruiz;
-
   /*!
    * Default constructor using QP model dimensions.
    * @param _dim primal variable dimension.
@@ -53,24 +42,13 @@ public:
                            _n_in,
                            _box_constraints,
                            _hessian_type,
-                           _dense_backend)
-    , dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+                           dense_backend_choice<T>(_dense_backend,
+                                                   _dim,
+                                                   _n_eq,
+                                                   _n_in,
+                                                   _box_constraints))
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -92,25 +70,14 @@ public:
                            _n_eq,
                            _n_in,
                            _box_constraints,
-                           _dense_backend,
+                           dense_backend_choice<T>(_dense_backend,
+                                                   _dim,
+                                                   _n_eq,
+                                                   _n_in,
+                                                   _box_constraints),
                            _hessian_type)
-    , dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -126,25 +93,20 @@ public:
      isize _n_in,
      bool _box_constraints,
      proxsuite::proxqp::HessianType _hessian_type)
-    : proxqp::dense::QP<T>(_dim, _n_eq, _n_in, _box_constraints, _hessian_type)
-    , dense_backend(dense_backend_choice<T>(
-        DenseBackend::PrimalDualLDLT, // TODO: Automatic when PrimalLDLT coded
+    : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
         _n_in,
-        _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+        _box_constraints,
+        _hessian_type,
+        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
+                                // TODO: Automatic when PrimalLDLT coded
+                                _dim,
+                                _n_eq,
+                                _n_in,
+                                _box_constraints))
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -161,24 +123,18 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend)
-    : proxqp::dense::QP<T>(_dim, _n_eq, _n_in, _box_constraints, _dense_backend)
-    , dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    : proxqp::dense::QP<T>(_dim,
+                           _n_eq,
+                           _n_in,
+                           _box_constraints,
+                           dense_backend_choice<T>(_dense_backend,
+                                                   _dim,
+                                                   _n_eq,
+                                                   _n_in,
+                                                   _box_constraints),
+                           HessianType::Dense)
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -189,25 +145,20 @@ public:
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : proxqp::dense::QP<T>(_dim, _n_eq, _n_in, _box_constraints)
-    , dense_backend(dense_backend_choice<T>(
-        DenseBackend::PrimalDualLDLT, // TODO: Automatic when PrimalLDLT coded
+    : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
         _n_in,
-        _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(proxsuite::proxqp::HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+        _box_constraints,
+        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
+                                // TODO: Automatic when PrimalLDLT coded
+                                _dim,
+                                _n_eq,
+                                _n_in,
+                                _box_constraints),
+        HessianType::Dense)
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -221,22 +172,20 @@ public:
      isize _n_eq,
      isize _n_in,
      proxsuite::proxqp::HessianType _hessian_type)
-    : proxqp::dense::QP<T>(_dim, _n_eq, _n_in, _hessian_type)
-    , dense_backend(dense_backend_choice<T>(
-        DenseBackend::PrimalDualLDLT, // TODO: Automatic when PrimalLDLT coded
+    : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
         _n_in,
-        false))
-    , box_constraints(false)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, false, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
+        false,
+        _hessian_type,
+        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
+                                // TODO: Automatic when PrimalLDLT coded
+                                _dim,
+                                _n_eq,
+                                _n_in,
+                                false))
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -246,22 +195,20 @@ public:
    * @param _n_in number of inequality constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in)
-    : proxqp::dense::QP<T>(_dim, _n_eq, _n_in)
-    , dense_backend(dense_backend_choice<T>(
-        DenseBackend::PrimalDualLDLT, // TODO: Automatic when PrimalLDLT coded
+    : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
         _n_in,
-        false))
-    , box_constraints(false)
-    , hessian_type(proxsuite::proxqp::HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, false, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
+        false,
+        HessianType::Dense,
+        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
+                                // TODO: Automatic when PrimalLDLT coded
+                                _dim,
+                                _n_eq,
+                                _n_in,
+                                false))
   {
-    work.timer.stop();
+    this->work.timer.stop();
     init_osqp_settings();
   }
   /*!
@@ -309,7 +256,7 @@ public:
   void init_osqp_settings()
   {
     // From proxsuite/proxqp/settings.hpp (proxsuite)
-    this->settings.verbose = false;
+    this->settings.verbose = true;
 
     this->settings.default_rho = 1e-6;
     this->settings.default_mu_eq = 1e-2;
