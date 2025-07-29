@@ -49,7 +49,7 @@ public:
                                                    _box_constraints))
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -78,7 +78,7 @@ public:
                            _hessian_type)
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -107,7 +107,7 @@ public:
                                 _box_constraints))
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -135,7 +135,7 @@ public:
                            HessianType::Dense)
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -159,7 +159,7 @@ public:
         HessianType::Dense)
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -186,7 +186,7 @@ public:
                                 false))
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -209,7 +209,7 @@ public:
                                 false))
   {
     this->work.timer.stop();
-    init_osqp_settings();
+    init_osqp_settings_and_results();
   }
   /*!
    * Solves the QP problem using OSQP algorithm.
@@ -253,14 +253,17 @@ public:
    * Commented names of settings are related to ProxQP only.
    * Mention TODO for potential improvement or future implementations.
    */
-  void init_osqp_settings()
+  void init_osqp_settings_and_results()
   {
+    T default_mu_eq_osqp = 1e-2;
+    T default_mu_in_osqp = 1e1;
+
     // From proxsuite/proxqp/settings.hpp (proxsuite)
-    this->settings.verbose = true;
+    this->settings.verbose = false;
 
     this->settings.default_rho = 1e-6;
-    this->settings.default_mu_eq = 1e-2;
-    this->settings.default_mu_in = 1e1;
+    this->settings.default_mu_eq = default_mu_eq_osqp;
+    this->settings.default_mu_in = default_mu_in_osqp;
 
     this->settings.mu_min_eq = 1e-9;
     this->settings.mu_min_in = 1e-6;
@@ -355,6 +358,12 @@ public:
     // this->settings.cg_polish_tol
 
     // this->settings.zero_deadzone
+
+    // Results
+    this->results.info.mu_eq = default_mu_eq_osqp;
+    this->results.info.mu_in = default_mu_in_osqp;
+    this->results.info.mu_eq_inv = T(1) / default_mu_eq_osqp;
+    this->results.info.mu_in_inv = T(1) / default_mu_in_osqp;
   };
 };
 
