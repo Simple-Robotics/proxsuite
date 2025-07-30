@@ -265,10 +265,10 @@ public:
     this->settings.default_mu_eq = default_mu_eq_osqp;
     this->settings.default_mu_in = default_mu_in_osqp;
 
-    this->settings.mu_min_eq = 1e-9;
-    this->settings.mu_min_in = 1e-6;
-    this->settings.mu_max_eq_inv = 1e9;
     this->settings.mu_max_in_inv = 1e6;
+    // TODO: this->settings.mu_min_in = 1e-6;
+    // TODO: this->settings.mu_min_eq = ;
+    // TODO: this->settings.mu_max_eq_inv = ;
 
     // TODO: this->settings.cold_reset_mu_eq = ;
     // TODO: this->settings.cold_reset_mu_in = ;
@@ -320,22 +320,23 @@ public:
     // From osqp_api_constants.h (OSQP)
     this->settings.alpha_osqp = 1.6;
 
-    this->settings.mu_max_eq = 1e3;
-    this->settings.mu_max_in = 1e6;
-    this->settings.mu_min_eq_inv = 1e-3;
     this->settings.mu_min_in_inv = 1e-6;
+    // TODO: this->settings.mu_max_in = ;
+    // TODO: this->settings.mu_max_eq = ;
+    // TODO: this->settings.mu_min_eq_inv = 1e-3;
     // TODO: this->settings.mu_tol = 1e-4;
 
     // TODO: this->settings.cg_max_iter = 20;
     // TODO: this->settings.cg_tol_reduction = 10;
     // TODO: this->settings.cg_tol_fraction = 0.15;
 
+    this->settings.adaptive_mu = true;
     // TODO: this->settings.adaptive_mu_update_disable = false;
     // TODO: this->settings.adaptive_mu_update_kkt_error = false;
     // TODO: this->settings.adaptive_mu_update_time = false;
     // TODO: this->settings.adaptive_mu_fraction = 0.4;
     // TODO: this->settings.adaptive_mu_update_iterations = true;
-    this->settings.adaptive_mu_interval = 100;
+    this->settings.adaptive_mu_interval = 50;
     this->settings.adaptive_mu_tolerance = 5.;
     // TODO: this->settings.adaptive_mu_multiple_termination = 4;
     // TODO: this->settings.adaptive_mu_fixed = 100;
@@ -403,6 +404,10 @@ public:
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
  * criterion.
+ * @param adaptive_mu if set to true, perform updates of mu.
+ * @param adaptive_mu_interval minimum interval between to mu update iterations.
+ * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
+ * update.
  */
 template<typename T>
 proxqp::Results<T>
@@ -431,7 +436,10 @@ solve(optional<MatRef<T>> H,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,
       bool primal_infeasibility_solving = false,
-      optional<T> manual_minimal_H_eigenvalue = nullopt)
+      optional<T> manual_minimal_H_eigenvalue = nullopt,
+      optional<bool> adaptive_mu = nullopt,
+      optional<isize> adaptive_mu_interval = nullopt,
+      optional<T> adaptive_mu_tolerance = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -470,6 +478,15 @@ solve(optional<MatRef<T>> H,
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
+  if (adaptive_mu != nullopt) {
+    Qp.settings.adaptive_mu = adaptive_mu.value();
+  }
+  if (adaptive_mu_interval != nullopt) {
+    Qp.settings.adaptive_mu_interval = adaptive_mu_interval.value();
+  }
+  if (adaptive_mu_tolerance != nullopt) {
+    Qp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
+  }
   if (manual_minimal_H_eigenvalue != nullopt) {
     Qp.init(H,
             g,
@@ -532,6 +549,10 @@ solve(optional<MatRef<T>> H,
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
  * criterion.
+ * @param adaptive_mu if set to true, perform updates of mu.
+ * @param adaptive_mu_interval minimum interval between to mu update iterations.
+ * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
+ * update.
  */
 template<typename T>
 proxqp::Results<T>
@@ -562,7 +583,10 @@ solve(optional<MatRef<T>> H,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,
       bool primal_infeasibility_solving = false,
-      optional<T> manual_minimal_H_eigenvalue = nullopt)
+      optional<T> manual_minimal_H_eigenvalue = nullopt,
+      optional<bool> adaptive_mu = nullopt,
+      optional<isize> adaptive_mu_interval = nullopt,
+      optional<T> adaptive_mu_tolerance = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -601,6 +625,15 @@ solve(optional<MatRef<T>> H,
   }
   Qp.settings.compute_timings = compute_timings;
   Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
+  if (adaptive_mu != nullopt) {
+    Qp.settings.adaptive_mu = adaptive_mu.value();
+  }
+  if (adaptive_mu_interval != nullopt) {
+    Qp.settings.adaptive_mu_interval = adaptive_mu_interval.value();
+  }
+  if (adaptive_mu_tolerance != nullopt) {
+    Qp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
+  }
   if (manual_minimal_H_eigenvalue != nullopt) {
     Qp.init(H,
             g,

@@ -119,6 +119,138 @@ admm_step(const Settings<T>& qpsettings,
 }
 
 /*!
+ * Derives the scaled global primal residual of the QP problem.
+ * Computed as OSQP source code does to compute the ratio for mu update.
+ *
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ * @param qpwork solver workspace.
+ * @param scaled_primal_feasibility_lhs primal infeasibility.
+ * @param scaled_primal_feasibility_eq_rhs_0 norm(scaled Ax)
+ * @param scaled_primal_feasibility_in_rhs_0 norm(scaled Cx)
+ * @param scaled_primal_feasibility_eq_lhs norm(scaled Ax - zeta_eq)
+ * @param scaled_primal_feasibility_in_lhs norm(scaled Cx - zeta_in)
+ */
+template<typename T>
+void
+scaled_global_primal_residual(const Model<T>& qpmodel,
+                              Results<T>& qpresults,
+                              Workspace<T>& qpwork,
+                              const bool box_constraints,
+                              T& scaled_primal_feasibility_lhs,
+                              T& scaled_primal_feasibility_eq_rhs_0,
+                              T& scaled_primal_feasibility_in_rhs_0,
+                              T& scaled_primal_feasibility_eq_lhs,
+                              T& scaled_primal_feasibility_in_lhs)
+{
+  qpresults.se.noalias() = qpwork.A_scaled * qpresults.x;
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
+    qpwork.C_scaled * qpresults.x;
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) = qpresults.x;
+  }
+
+  scaled_primal_feasibility_eq_rhs_0 = infty_norm(qpresults.se);
+  scaled_primal_feasibility_in_rhs_0 =
+    infty_norm(qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in));
+
+  qpresults.si.head(qpmodel.n_in) =
+    qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -
+    qpresults.zeta_in.head(qpmodel.n_in);
+  if (box_constraints) {
+    qpresults.si.tail(qpmodel.dim) =
+      qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -
+      qpresults.zeta_in.tail(qpmodel.dim);
+
+    qpwork.active_part_z.tail(qpmodel.dim) =
+      qpresults.x - qpresults.si.tail(qpmodel.dim);
+    scaled_primal_feasibility_in_rhs_0 =
+      std::max(scaled_primal_feasibility_in_rhs_0,
+               infty_norm(qpwork.active_part_z.tail(qpmodel.dim)));
+    scaled_primal_feasibility_in_rhs_0 =
+      std::max(scaled_primal_feasibility_in_rhs_0, infty_norm(qpresults.x));
+  }
+  qpresults.se -= qpwork.b_scaled;
+
+  scaled_primal_feasibility_in_lhs = infty_norm(qpresults.si);
+  scaled_primal_feasibility_eq_lhs = infty_norm(qpresults.se);
+  scaled_primal_feasibility_lhs = std::max(scaled_primal_feasibility_eq_lhs,
+                                           scaled_primal_feasibility_in_lhs);
+}
+
+/*!
+ * Derives the scaled global dual residual of the QP problem.
+ * Computed as OSQP source code does to compute the ratio for mu update.
+ *
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ * @param dual_feasibility_lhs primal infeasibility.
+ * @param scaled_dual_feasibility_eq_rhs_0 scalar variable used when using a
+ * relative stopping criterion.
+ * @param scaled_dual_feasibility_rhs_0 scalar variable used when using a
+ * relative stopping criterion.
+ * @param scaled_dual_feasibility_rhs_1 scalar variable used when using a
+ * relative stopping criterion.
+ * @param scaled_dual_feasibility_rhs_3 scalar variable used when using a
+ * relative stopping criterion.
+ */
+template<typename T>
+void
+scaled_global_dual_residual(
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const bool box_constraints,
+  T& scaled_dual_feasibility_lhs,   // norm(scaled dual residual)
+  T& scaled_dual_feasibility_rhs_0, // norm(Hx)
+  T& scaled_dual_feasibility_rhs_1, // norm(ATy)
+  T& scaled_dual_feasibility_rhs_3, // norm(CTz)
+  const HessianType& hessian_type)
+{
+  qpwork.dual_residual_scaled = qpwork.g_scaled;
+
+  switch (hessian_type) {
+    case HessianType::Zero:
+      scaled_dual_feasibility_rhs_0 = 0;
+      break;
+    case HessianType::Dense:
+      qpwork.CTz.noalias() =
+        qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * qpresults.x;
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      scaled_dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+      break;
+    case HessianType::Diagonal:
+      qpwork.CTz.array() =
+        qpwork.H_scaled.diagonal().array() * qpresults.x.array();
+      qpwork.dual_residual_scaled += qpwork.CTz;
+      scaled_dual_feasibility_rhs_0 = infty_norm(qpwork.CTz);
+      break;
+  }
+
+  qpwork.CTz.noalias() = qpwork.A_scaled.transpose() * qpresults.y;
+  qpwork.dual_residual_scaled += qpwork.CTz;
+  scaled_dual_feasibility_rhs_1 = infty_norm(qpwork.CTz);
+
+  qpwork.CTz.noalias() =
+    qpwork.C_scaled.transpose() * qpresults.z.head(qpmodel.n_in);
+  qpwork.dual_residual_scaled += qpwork.CTz;
+  scaled_dual_feasibility_rhs_3 = infty_norm(qpwork.CTz);
+  if (box_constraints) {
+    qpwork.CTz.noalias() = qpresults.z.tail(qpmodel.dim);
+    qpwork.CTz.array() *= qpwork.i_scaled.array();
+
+    qpwork.dual_residual_scaled += qpwork.CTz;
+    scaled_dual_feasibility_rhs_3 =
+      std::max(infty_norm(qpwork.CTz), scaled_dual_feasibility_rhs_3);
+  }
+
+  scaled_dual_feasibility_lhs = infty_norm(qpwork.dual_residual_scaled);
+}
+
+/*!
  * Executes the OSQP algorithm.
  *
  * @param qpsettings solver settings.
@@ -371,6 +503,31 @@ qp_solve( //
   T primal_feasibility_eq_lhs(0);
   T primal_feasibility_in_lhs(0);
   T dual_feasibility_lhs(0);
+
+  T scaled_primal_feasibility_lhs(0);
+  T scaled_primal_feasibility_eq_rhs_0(0);
+  T scaled_primal_feasibility_in_rhs_0(0);
+  T scaled_primal_feasibility_eq_lhs(0);
+  T scaled_primal_feasibility_in_lhs(0);
+  T scaled_dual_feasibility_lhs(0);
+  T scaled_dual_feasibility_rhs_0(0);
+  T scaled_dual_feasibility_rhs_1(0);
+  T scaled_dual_feasibility_rhs_3(0);
+
+  T sqrt_mu_update(0);
+  T zeta_norms(0);
+  T pri_res_norms(0);
+  T pri_res_update(0);
+  T objective_norms(0);
+  T constraints_norms(0);
+  T dua_res_update(0);
+  T mu_update_ratio(0);
+  T mu_in_inv_estimate(0);
+
+  T new_mu_eq(qpresults.info.mu_eq);
+  T new_mu_in(qpresults.info.mu_in);
+  T new_mu_eq_inv(qpresults.info.mu_eq_inv);
+  T new_mu_in_inv(qpresults.info.mu_in_inv);
 
   T duality_gap(0);
   T rhs_duality_gap(0);
@@ -674,6 +831,86 @@ qp_solve( //
           } else {
             qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
           }
+        }
+      }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    if (qpsettings.adaptive_mu) {
+      bool iteration_condition = iter % qpsettings.adaptive_mu_interval == 0;
+
+      if (iteration_condition) {
+        scaled_global_primal_residual(
+          qpmodel,
+          qpresults,
+          qpwork,
+          box_constraints,
+          scaled_primal_feasibility_lhs,      // norm(scaled pri res)
+          scaled_primal_feasibility_eq_rhs_0, // norm(scaled Ax)
+          scaled_primal_feasibility_in_rhs_0, // norm(scaled Cx)
+          scaled_primal_feasibility_eq_lhs,   // norm(scaled Ax - zeta_eq)
+          scaled_primal_feasibility_in_lhs);  // norm(scaled Cx - zeta_in)
+
+        scaled_global_dual_residual(
+          qpmodel,
+          qpresults,
+          qpwork,
+          box_constraints,
+          scaled_dual_feasibility_lhs,   // norm(scaled dua res)
+          scaled_dual_feasibility_rhs_0, // norm(Hx)
+          scaled_dual_feasibility_rhs_1, // norm(ATy)
+          scaled_dual_feasibility_rhs_3, // norm(CTz)
+          hessian_type);
+
+        zeta_norms = std::max(infty_norm(qpresults.zeta_eq),
+                              infty_norm(qpresults.zeta_in));
+        pri_res_norms = std::max(scaled_primal_feasibility_eq_rhs_0,
+                                 scaled_primal_feasibility_in_rhs_0);
+        pri_res_update = scaled_primal_feasibility_lhs /
+                         (std::max(zeta_norms, pri_res_norms) + 1e-30);
+
+        objective_norms =
+          std::max(scaled_dual_feasibility_rhs_0, infty_norm(qpwork.g_scaled));
+        constraints_norms = std::max(scaled_dual_feasibility_rhs_1,
+                                     scaled_dual_feasibility_rhs_3);
+        dua_res_update = scaled_dual_feasibility_lhs /
+                         (std::max(objective_norms, constraints_norms) + 1e-30);
+
+        mu_update_ratio = std::sqrt(pri_res_update / dua_res_update);
+
+        mu_in_inv_estimate = qpresults.info.mu_in_inv * mu_update_ratio;
+        mu_in_inv_estimate =
+          std::min(std::max(mu_in_inv_estimate, qpsettings.mu_min_in_inv),
+                   qpsettings.mu_max_in_inv);
+
+        bool tolerance_condition =
+          (mu_in_inv_estimate >
+             qpresults.info.mu_in_inv * qpsettings.adaptive_mu_tolerance ||
+           mu_in_inv_estimate <
+             qpresults.info.mu_in_inv / qpsettings.adaptive_mu_tolerance);
+
+        if (tolerance_condition) {
+          {
+            ++qpresults.info.mu_updates;
+
+            new_mu_eq = 1e-3 / mu_in_inv_estimate;
+            new_mu_in = 1.0 / mu_in_inv_estimate;
+            new_mu_eq_inv = 1e3 * mu_in_inv_estimate;
+            new_mu_in_inv = mu_in_inv_estimate;
+          }
+          mu_update(qpmodel,
+                    qpresults,
+                    qpwork,
+                    n_constraints,
+                    dense_backend,
+                    new_mu_eq,
+                    new_mu_in);
+
+          qpresults.info.mu_eq = new_mu_eq;
+          qpresults.info.mu_in = new_mu_in;
+          qpresults.info.mu_eq_inv = new_mu_eq_inv;
+          qpresults.info.mu_in_inv = new_mu_in_inv;
         }
       }
     }

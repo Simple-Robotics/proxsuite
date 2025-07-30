@@ -150,6 +150,7 @@ struct Settings
   T mu_min_eq_inv;
   T mu_min_in_inv;
 
+  bool adaptive_mu;
   isize adaptive_mu_interval;
   T adaptive_mu_tolerance;
 
@@ -229,6 +230,7 @@ struct Settings
    * @param mu_max_in (OSQP): maximum value for mu_in
    * @param mu_min_eq_inv (OSQP): minimum value for mu_eq_inv
    * @param mu_min_in_inv (OSQP): minimum value for mu_in_inv
+   * @param adaptive_mu (OSQP): if set to true, performs mu udpates
    * @param adaptive_mu_interval (OSQP): minimum number of iterations before
    * updating mu
    * @param adaptive_mu_tolerance (OSQP): minimum ratio between old and new mu
@@ -292,6 +294,7 @@ struct Settings
     T mu_max_in = 1e6,
     T mu_min_eq_inv = 1e-3,
     T mu_min_in_inv = 1e-6,
+    bool adaptive_mu = true,
     isize adaptive_mu_interval = 50,
     T adaptive_mu_tolerance = 5.,
     bool polishing = false,
@@ -344,6 +347,7 @@ struct Settings
     , mu_max_in(mu_max_in)
     , mu_min_eq_inv(mu_min_eq_inv)
     , mu_min_in_inv(mu_min_in_inv)
+    , adaptive_mu(adaptive_mu)
     , adaptive_mu_interval(adaptive_mu_interval)
     , adaptive_mu_tolerance(adaptive_mu_tolerance)
     , polishing(polishing)
@@ -421,6 +425,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.mu_max_in == settings2.mu_max_in &&
     settings1.mu_min_eq_inv == settings2.mu_min_eq_inv &&
     settings1.mu_min_in_inv == settings2.mu_min_in_inv &&
+    settings1.adaptive_mu == settings2.adaptive_mu &&
     settings1.adaptive_mu_interval == settings2.adaptive_mu_interval &&
     settings1.adaptive_mu_tolerance == settings2.adaptive_mu_tolerance &&
     settings1.polishing == settings2.polishing &&

@@ -31,6 +31,9 @@ res_proxsuite = proxsuite.osqp.dense.solve(
     compute_timings=True,
     max_iter=4000,
     check_duality_gap=False,
+    adaptive_mu=True,
+    adaptive_mu_interval=50,
+    adaptive_mu_tolerance=5.0,
 )
 
 # OSQP source code
@@ -58,7 +61,9 @@ prob.setup(
     max_iter=4000,
     warm_start=False,
     check_termination=1,
-    adaptive_rho=False,
+    adaptive_rho=True,
+    adaptive_rho_interval=50,
+    adaptive_rho_tolerance=5.0,
 )
 res_source = prob.solve()
 
