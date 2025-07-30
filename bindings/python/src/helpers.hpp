@@ -16,7 +16,6 @@ type_name_short(nanobind::handle h)
 {
   namespace nb = nanobind;
   assert(h.is_type());
-  assert(nb::type_check(h));
   return nb::steal<nb::str>(PyType_GetName((PyTypeObject*)h.ptr()));
 }
 } // namespace detail
