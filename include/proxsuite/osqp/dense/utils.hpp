@@ -124,7 +124,7 @@ print_setup_header(const Settings<T>& settings,
 
 template<typename T>
 void
-setup_factorisation_complete_kkt(Results<T>& qpresults,
+setup_factorization_complete_kkt(Results<T>& qpresults,
                                  const Model<T>& qpmodel,
                                  Workspace<T>& qpwork,
                                  const isize n_constraints,

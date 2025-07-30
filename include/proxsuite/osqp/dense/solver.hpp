@@ -267,7 +267,7 @@ qp_solve( //
                                                  hessian_type,
                                                  qpresults);
     }
-    setup_factorisation_complete_kkt(
+    setup_factorization_complete_kkt(
       qpresults, qpmodel, qpwork, n_constraints, dense_backend);
   } else { // the following is used for a first solve after initializing or
            // updating the Qp object
@@ -282,7 +282,7 @@ qp_solve( //
                                                    dense_backend,
                                                    hessian_type,
                                                    qpresults);
-        setup_factorisation_complete_kkt(
+        setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -303,14 +303,14 @@ qp_solve( //
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorisation_complete_kkt(
+        setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorisation_complete_kkt(
+        setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -328,7 +328,7 @@ qp_solve( //
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorisation_complete_kkt(
+        setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -352,7 +352,7 @@ qp_solve( //
                                   // parameter has changed
           setup_factorization(
             qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-          setup_factorisation_complete_kkt(
+          setup_factorization_complete_kkt(
             qpresults, qpmodel, qpwork, n_constraints, dense_backend);
           break;
         }
