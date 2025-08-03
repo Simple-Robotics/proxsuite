@@ -46,6 +46,7 @@ struct Info
   T setup_time;
   T solve_time;
   T run_time;
+
   T objValue;
   T pri_res;
   T dua_res;
@@ -55,6 +56,10 @@ struct Info
   SparseBackend sparse_backend;
   //// quadratic cost minimal eigenvalue estimate
   T minimal_H_eigenvalue_estimate;
+
+  // OSQP
+  T polish_time;
+  PolishStatus status_polish;
 };
 ///
 /// @brief This class stores all the results of PROXQP solvers with sparse and
@@ -143,6 +148,7 @@ struct Results
     info.run_time = 0;
     info.setup_time = 0;
     info.solve_time = 0;
+    info.polish_time = 0.;
     info.objValue = 0.;
     info.pri_res = 0.;
     info.dua_res = 0.;
@@ -151,6 +157,7 @@ struct Results
     info.status = QPSolverOutput::PROXQP_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
+    info.status_polish = PolishStatus::POLISH_NOT_RUN;
   }
   /*!
    * cleanups the Result variables and set the info variables to their initial
@@ -172,6 +179,7 @@ struct Results
     info.run_time = 0;
     info.setup_time = 0;
     info.solve_time = 0;
+    info.polish_time = 0.;
     info.objValue = 0.;
     info.iter = 0;
     info.iter_ext = 0;
@@ -183,6 +191,7 @@ struct Results
     info.iterative_residual = 0.;
     info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
+    info.status_polish = PolishStatus::POLISH_NOT_RUN;
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
   {
@@ -230,6 +239,8 @@ operator==(const Info<T>& info1, const Info<T>& info2)
     info1.rho_updates == info2.rho_updates && info1.status == info2.status &&
     info1.setup_time == info2.setup_time &&
     info1.solve_time == info2.solve_time && info1.run_time == info2.run_time &&
+    info1.polish_time == info2.polish_time &&
+    info1.status_polish == info2.status_polish &&
     info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
     info1.dua_res == info2.dua_res && info1.duality_gap == info2.duality_gap &&
     info1.duality_gap == info2.duality_gap &&

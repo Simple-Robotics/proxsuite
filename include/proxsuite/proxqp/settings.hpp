@@ -297,7 +297,7 @@ struct Settings
     bool adaptive_mu = true,
     isize adaptive_mu_interval = 50,
     T adaptive_mu_tolerance = 5.,
-    bool polishing = false,
+    bool polishing = true,
     T delta_osqp = 1e-6,
     isize polish_refine_iter = 3)
     : default_mu_eq(default_mu_eq)

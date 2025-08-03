@@ -104,6 +104,10 @@ struct Workspace
   Vec<T> zeta_tilde_in;
   Vec<T> zeta_in_next;
 
+  Mat<T> C_scaled_low;
+  Mat<T> C_scaled_upper;
+  Timer<T> timer_polish;
+
   /*!
    * Default constructor.
    * @param dim primal variable dimension.

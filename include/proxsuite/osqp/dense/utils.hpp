@@ -120,6 +120,26 @@ print_setup_header(const Settings<T>& settings,
         << "          initial guess: equality constrained initial guess. \n"
         << std::endl;
   }
+  if (settings.adaptive_mu) {
+    std::cout << "          adaptive_mu: on, " << std::endl;
+    std::cout << "          adaptive_mu_interval: "
+              << settings.adaptive_mu_interval << ", " << std::endl;
+    std::cout << "          adaptive_mu_tolerance: "
+              << settings.adaptive_mu_tolerance << ". \n"
+              << std::endl;
+  } else {
+    std::cout << "          adaptive_mu: off. \n" << std::endl;
+  }
+  if (settings.polishing) {
+    std::cout << "          polishing: on, " << std::endl;
+    std::cout << "          delta: " << settings.delta_osqp << ", "
+              << std::endl;
+    std::cout << "          polish_refine_iter: " << settings.polish_refine_iter
+              << ". \n"
+              << std::endl;
+  } else {
+    std::cout << "          polishing: off. \n" << std::endl;
+  }
 }
 
 template<typename T>
