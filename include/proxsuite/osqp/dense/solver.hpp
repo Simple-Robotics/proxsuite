@@ -1305,9 +1305,9 @@ qp_solve( //
                                    numactive_inequalities);
 
       proxsuite::linalg::veg::dynstack::DynStackMut stack{
-        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_polish_stack.as_mut()
       };
-      qpwork.ldl.factorize(k_plus_delta_k_polish.transpose(), stack);
+      qpwork.ldl_polish.factorize(k_plus_delta_k_polish.transpose(), stack);
 
       // Build the reduced rhs
       Vec<T> rhs_polish(inner_pb_dim);
@@ -1324,14 +1324,7 @@ qp_solve( //
       // Solve K t = rhs before iterative refinement
       Vec<T> hat_t = rhs_polish;
 
-      solve_linear_system(hat_t,
-                          qpmodel,
-                          qpresults,
-                          qpwork,
-                          n_constraints,
-                          dense_backend,
-                          inner_pb_dim,
-                          stack);
+      qpwork.ldl_polish.solve_in_place(hat_t.head(inner_pb_dim), stack);
 
       // Iterative refinement
       Vec<T> rhs_polish_refine(inner_pb_dim);
@@ -1341,14 +1334,7 @@ qp_solve( //
         rhs_polish_refine = rhs_polish - k_polish * hat_t;
         delta_hat_t = rhs_polish_refine;
 
-        solve_linear_system(delta_hat_t,
-                            qpmodel,
-                            qpresults,
-                            qpwork,
-                            n_constraints,
-                            dense_backend,
-                            inner_pb_dim,
-                            stack);
+        qpwork.ldl_polish.solve_in_place(delta_hat_t.head(inner_pb_dim), stack);
 
         hat_t = hat_t + delta_hat_t;
       }

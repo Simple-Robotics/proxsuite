@@ -108,6 +108,9 @@ struct Workspace
   Mat<T> C_scaled_upper;
   Timer<T> timer_polish;
 
+  proxsuite::linalg::dense::Ldlt<T> ldl_polish{};
+  proxsuite::linalg::veg::Vec<unsigned char> ldl_polish_stack;
+
   /*!
    * Default constructor.
    * @param dim primal variable dimension.
@@ -141,6 +144,7 @@ struct Workspace
     , x_tilde(dim)
     , nu_eq(n_eq)
     , zeta_tilde_eq(n_eq)
+    , ldl_polish{}
   {
 
     if (box_constraints) {
@@ -182,11 +186,63 @@ struct Workspace
                                                                     n_in + dim))
               // TODO optimize here
               .alloc_req());
+
+          ldl_polish.reserve_uninit(dim + n_eq + n_in + dim);
+          ldl_polish_stack.resize_for_overwrite(
+            proxsuite::linalg::veg::dynstack::StackReq(
+              // optimize here
+              proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq +
+                                                               n_in + dim) |
+
+              (proxsuite::linalg::dense::temp_vec_req(
+                 proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in + dim) &
+               proxsuite::linalg::veg::dynstack::StackReq{
+                 isize{ sizeof(isize) } * (n_eq + n_in + dim),
+                 alignof(isize) } &
+               proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+                 dim + n_eq + n_in + dim, n_eq + n_in + dim)) |
+
+              (proxsuite::linalg::dense::temp_mat_req(
+                 proxsuite::linalg::veg::Tag<T>{},
+                 dim + n_eq + n_in + dim,
+                 n_in + dim) &
+               proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+                 dim + n_eq + n_in + dim, n_in + dim)) |
+
+              proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq +
+                                                                    n_in + dim))
+              // TODO optimize here
+              .alloc_req());
           break;
         case DenseBackend::PrimalLDLT:
           kkt.resize(dim, dim);
           ldl.reserve_uninit(dim);
           ldl_stack.resize_for_overwrite(
+            proxsuite::linalg::veg::dynstack::StackReq(
+
+              proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim) |
+              // check simplification possible
+              (proxsuite::linalg::dense::temp_vec_req(
+                 proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in + dim) &
+               proxsuite::linalg::veg::dynstack::StackReq{
+                 isize{ sizeof(isize) } * (n_eq + n_in + dim),
+                 alignof(isize) } &
+               proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+                 dim + n_eq + n_in + dim, n_eq + n_in + dim)) |
+
+              (proxsuite::linalg::dense::temp_mat_req(
+                 proxsuite::linalg::veg::Tag<T>{},
+                 dim + n_eq + n_in + dim,
+                 n_in + dim) &
+               proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+                 dim + n_eq + n_in + dim, n_in + dim)) |
+              // end check
+              proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim))
+
+              .alloc_req());
+
+          ldl_polish.reserve_uninit(dim);
+          ldl_polish_stack.resize_for_overwrite(
             proxsuite::linalg::veg::dynstack::StackReq(
 
               proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim) |
@@ -263,11 +319,56 @@ struct Workspace
                                                                     n_in))
               // end todo optimize here
               .alloc_req());
+
+          ldl_polish.reserve_uninit(dim + n_eq + n_in);
+          ldl_polish_stack.resize_for_overwrite(
+            proxsuite::linalg::veg::dynstack::StackReq(
+              // todo optimize here
+              proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim + n_eq +
+                                                               n_in) |
+
+              (proxsuite::linalg::dense::temp_vec_req(
+                 proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in) &
+               proxsuite::linalg::veg::dynstack::StackReq{
+                 isize{ sizeof(isize) } * (n_eq + n_in), alignof(isize) } &
+               proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+                 dim + n_eq + n_in, n_eq + n_in)) |
+
+              (proxsuite::linalg::dense::temp_mat_req(
+                 proxsuite::linalg::veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
+               proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+                 dim + n_eq + n_in, n_in)) |
+
+              proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim + n_eq +
+                                                                    n_in))
+              // end todo optimize here
+              .alloc_req());
           break;
         case DenseBackend::PrimalLDLT:
           kkt.resize(dim, dim);
           ldl.reserve_uninit(dim);
           ldl_stack.resize_for_overwrite(
+            proxsuite::linalg::veg::dynstack::StackReq(
+
+              proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim) |
+              // check if it can be more simplified
+              (proxsuite::linalg::dense::temp_vec_req(
+                 proxsuite::linalg::veg::Tag<T>{}, n_eq + n_in) &
+               proxsuite::linalg::veg::dynstack::StackReq{
+                 isize{ sizeof(isize) } * (n_eq + n_in), alignof(isize) } &
+               proxsuite::linalg::dense::Ldlt<T>::diagonal_update_req(
+                 dim + n_eq + n_in, n_eq + n_in)) |
+              (proxsuite::linalg::dense::temp_mat_req(
+                 proxsuite::linalg::veg::Tag<T>{}, dim + n_eq + n_in, n_in) &
+               proxsuite::linalg::dense::Ldlt<T>::insert_block_at_req(
+                 dim + n_eq + n_in, n_in)) |
+              // end check
+              proxsuite::linalg::dense::Ldlt<T>::solve_in_place_req(dim))
+
+              .alloc_req());
+
+          ldl_polish.reserve_uninit(dim);
+          ldl_polish_stack.resize_for_overwrite(
             proxsuite::linalg::veg::dynstack::StackReq(
 
               proxsuite::linalg::dense::Ldlt<T>::factorize_req(dim) |

@@ -7211,7 +7211,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
-    // CHECK(pri_res <= eps_abs); // Fail here (1e-3)
+    // CHECK(pri_res <= eps_abs); // Fail here (mu update, 1e-3)
   }
   // idem but without ineq and without eq constraints
   for (isize i = 0; i < n_test; i++) {
@@ -7455,8 +7455,8 @@ TEST_CASE("ProxQP::dense: test primal infeasibility solving")
                  qp_random.g + qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    // DOCTEST_CHECK(pri_res <= scaled_eps); // Fail here (1e-3)
-    // DOCTEST_CHECK(dua_res <= eps_abs); // Fail here  (1e-3)
+    DOCTEST_CHECK(pri_res <= scaled_eps); // Fail here (mu udpate, 1e-3)
+    DOCTEST_CHECK(dua_res <= eps_abs);    // Fail here  (mu update, 1e-3)
   }
 }
 
