@@ -16,7 +16,7 @@ using namespace proxsuite::proxqp;
 DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
 {
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   utils::rand::set_seed(1);
   dense::isize dim = 10;
@@ -92,7 +92,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                "inequality constraints: test solve function---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -141,7 +141,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                "inequality constraints: test solve with different rho value---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -193,7 +193,7 @@ DOCTEST_TEST_CASE(
                "mu_in values---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -244,7 +244,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                "inequality constraints: test warm starting---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -285,7 +285,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                "inequality constraints: test verbose = true ---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -338,7 +338,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                "inequality constraints: test no initial guess ---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 

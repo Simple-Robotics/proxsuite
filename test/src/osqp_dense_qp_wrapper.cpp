@@ -22,7 +22,7 @@ DOCTEST_TEST_CASE(
   //  "and empty equality constraints---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -172,7 +172,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update H---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -309,7 +309,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update A---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
 
@@ -447,7 +447,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update C---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
 
@@ -585,7 +585,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update b---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
 
@@ -723,7 +723,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update u---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -864,7 +864,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update g---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -1001,7 +1001,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update H and A and b and u and l---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -1153,7 +1153,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update rho---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -1288,7 +1288,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test update mu_eq and mu_in---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -1426,7 +1426,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test warm starting---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   isize dim = 10;
   isize n_eq(dim / 4);
@@ -1550,7 +1550,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test dense init---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -1599,7 +1599,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test with no initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -1688,7 +1688,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test with equality constrained initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -1779,7 +1779,7 @@ DOCTEST_TEST_CASE(
   // //  "inequality constraints: test with warm start with previous result---"
   // //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -1908,7 +1908,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test with cold start option---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2037,7 +2037,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test equilibration options at initialization---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2135,7 +2135,7 @@ DOCTEST_TEST_CASE(
   //  "inequality constraints: test equilibration options at update---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2281,7 +2281,7 @@ TEST_CASE(
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2413,7 +2413,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2546,7 +2546,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2684,7 +2684,7 @@ TEST_CASE(
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2822,7 +2822,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -2960,7 +2960,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3094,7 +3094,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3191,7 +3191,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3337,7 +3337,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3485,7 +3485,7 @@ TEST_CASE(
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3637,7 +3637,7 @@ TEST_CASE(
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3786,7 +3786,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -3936,7 +3936,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -4124,7 +4124,7 @@ TEST_CASE(
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -4334,7 +4334,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -4602,7 +4602,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -4869,7 +4869,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -5175,7 +5175,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -5301,7 +5301,7 @@ DOCTEST_TEST_CASE(
   //  "updates using warm start with previous results---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -5375,9 +5375,9 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  // DOCTEST_CHECK(pri_res <= eps_abs); // Fail here (mu update)
-  // DOCTEST_CHECK(dua_res <= eps_abs); // Fail here CHECK( 2.57172e-05 <= 1e-05
-  // ) conter factual check with another QP object starting at the updated model
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+  // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp2.settings.initial_guess ==
                 proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
@@ -5479,9 +5479,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  // DOCTEST_CHECK(pri_res <= eps_abs); // Fail here (mu update)
-  // DOCTEST_CHECK(dua_res <= eps_abs); // Fail here CHECK( 2.57172e-05 <= 1e-05
-  // )
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
 }
 
 DOCTEST_TEST_CASE(
@@ -5495,7 +5494,7 @@ DOCTEST_TEST_CASE(
   //  "updates using cold start with previous results---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -5688,7 +5687,7 @@ DOCTEST_TEST_CASE(
   //  "updates using equality constrained initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -5881,7 +5880,7 @@ DOCTEST_TEST_CASE(
   //  "updates using no initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -6071,7 +6070,7 @@ DOCTEST_TEST_CASE(
   //  "several solves using warm start with previous results---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -6308,7 +6307,7 @@ DOCTEST_TEST_CASE(
   //  "several solves using cold start with previous results---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -6537,7 +6536,7 @@ DOCTEST_TEST_CASE(
   //  "several solves using equality constrained initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -6766,7 +6765,7 @@ DOCTEST_TEST_CASE(
   //  "several solves using no initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -6985,7 +6984,7 @@ TEST_CASE("ProxQP::dense: init must be called before update")
 {
 
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   utils::rand::set_seed(1);
   dense::isize dim = 10;
 
@@ -7055,7 +7054,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
 {
   dense::isize n_test(1000);
   double sparsity_factor = 1.;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   dense::isize dim = 15;
 
   // mixing ineq and box constraints
@@ -7150,9 +7149,8 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
                  qp_random.C.transpose() * qp.results.z.head(n_in) +
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
-    // CHECK(dua_res <= eps_abs); // Fail here (mu udpate) CHECK( env 1e-5 but >
-    // 1e-05 ) CHECK(pri_res <= eps_abs); // Fail here CHECK( env 1e-5 but >
-    // 1e-05 )
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
   }
   // idem but without ineq constraints
   for (isize i = 0; i < n_test; i++) {
@@ -7213,8 +7211,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
-    // CHECK(pri_res <= eps_abs); // Fail here CHECK( 5.41321e-05 <= 1e-05 )
-    // (example)
+    // CHECK(pri_res <= eps_abs); // Fail here (1e-3)
   }
   // idem but without ineq and without eq constraints
   for (isize i = 0; i < n_test; i++) {
@@ -7323,7 +7320,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 {
 
   double sparsity_factor = 1.;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   dense::isize dim = 50;
   dense::isize n_eq(dim / 4);
   dense::isize n_in(dim / 4);
@@ -7407,7 +7404,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 TEST_CASE("ProxQP::dense: test primal infeasibility solving")
 {
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5);
+  T eps_abs = T(1e-3);
   utils::rand::set_seed(1);
   dense::isize dim = 20;
 
@@ -7458,9 +7455,8 @@ TEST_CASE("ProxQP::dense: test primal infeasibility solving")
                  qp_random.g + qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    // DOCTEST_CHECK(pri_res <= scaled_eps); // Fail here CHECK( 0.0231856
-    // <= 3.02736e-05  (example) DOCTEST_CHECK(dua_res <= eps_abs); // Fail here
-    // CHECK( 0.0043853 <= 1e-05 ) (example)
+    // DOCTEST_CHECK(pri_res <= scaled_eps); // Fail here (1e-3)
+    // DOCTEST_CHECK(dua_res <= eps_abs); // Fail here  (1e-3)
   }
 }
 

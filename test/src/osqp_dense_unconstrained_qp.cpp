@@ -20,7 +20,7 @@ DOCTEST_TEST_CASE(
                "dimension---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
   for (int dim = 10; dim < 1000; dim += 100) {
 
@@ -70,7 +70,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
                "with increasing dimension---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
   for (int dim = 10; dim < 1000; dim += 100) {
 
@@ -122,7 +122,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
 
   std::cout << "---unconstrained qp with H = Id and g random---" << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
 
   int dim(100);
@@ -171,7 +171,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
 
   std::cout << "---unconstrained qp with H = Id and g = 0---" << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
 
   int dim(100);

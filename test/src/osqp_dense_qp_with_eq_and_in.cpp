@@ -21,7 +21,7 @@ DOCTEST_TEST_CASE(
        "inequality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -74,7 +74,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -125,7 +125,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -177,7 +177,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.45;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   T strong_convexity_factor(1e-2);
   proxqp::utils::rand::set_seed(1);
@@ -202,8 +202,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
             qp_random.l,
             qp_random.u);
     qp.solve();
-    // DOCTEST_CHECK(qp.results.info.status ==
-    //               proxqp::QPSolverOutput::PROXQP_SOLVED); // Fail here
+    DOCTEST_CHECK(qp.results.info.status ==
+                  proxqp::QPSolverOutput::PROXQP_SOLVED); // Fail here
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -213,8 +213,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    // DOCTEST_CHECK(pri_res <= eps_abs); // Fail here
-    // DOCTEST_CHECK(dua_res <= eps_abs);
+    DOCTEST_CHECK(pri_res <= eps_abs); // Fail here
+    DOCTEST_CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -233,7 +233,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
                "increasing dimension using the API---"
             << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {

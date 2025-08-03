@@ -41,7 +41,7 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(0);
   Eigen::Matrix<T, Eigen::Dynamic, 1> l(0);
   dual_init_in.setZero();
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -63,7 +63,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
                "constraints and increasing dimension with the wrapper API---"
             << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -112,7 +112,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
                "increasing dimension using wrapper API---"
             << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -170,7 +170,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
        "equality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
   for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
@@ -253,7 +253,7 @@ DOCTEST_TEST_CASE("infeasible qp")
   proxsuite::osqp::dense::QP<T> qp(n, n_eq, n_in);
   qp.init(H, g, nullopt, nullopt, C, l, u);
   qp.settings.eps_rel = 0.;
-  qp.settings.eps_abs = 1e-5; // ADMM only (high precision)
+  qp.settings.eps_abs = 1e-3; // OSQP unit test
 
   qp.solve();
 

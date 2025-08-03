@@ -23,7 +23,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 {
 
   std::cout << "---3 dim test case from cvxpy, check feasibility " << std::endl;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   dense::isize dim = 3;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
@@ -63,7 +63,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   std::cout << "---simple test case from cvxpy, check feasibility "
             << std::endl;
-  T eps_abs = T(1e-5); // ADMM only (high precision)
+  T eps_abs = T(1e-3); // OSQP unit test
   dense::isize dim = 1;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);

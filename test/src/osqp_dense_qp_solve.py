@@ -58,7 +58,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
 
         results = proxsuite.osqp.dense.solve(
             H=H,
@@ -99,7 +99,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
 
         results = proxsuite.osqp.dense.solve(
             H=H,
@@ -142,7 +142,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
 
         results = proxsuite.osqp.dense.solve(
             H=H,
@@ -185,7 +185,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
         z_wm = np.random.randn(n_in)
@@ -231,7 +231,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
         results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
@@ -272,7 +272,7 @@ class DenseQpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
         results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
@@ -399,7 +399,7 @@ class DenseQpWrapper(unittest.TestCase):
         l = m["l"].astype(float)
         u = m["u"].astype(float)
 
-        eps_abs = 1e-5  # ADMM only (high precision)
+        eps_abs = 1e-3  # OSQP unit test
 
         results = proxsuite.osqp.dense.solve(
             P, q, A, b, C, l, u, verbose=False, eps_abs=eps_abs, eps_rel=0

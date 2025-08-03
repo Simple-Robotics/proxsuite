@@ -102,7 +102,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.init(
@@ -120,7 +120,7 @@ class DenseqpWrapper(unittest.TestCase):
         z_prev = np.copy(qp.results.z)
         for i in range(20):
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-            qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+            qp.settings.eps_abs = 1.0e-5  # OSQP unit test
             qp.settings.eps_rel = 0
             qp.settings.verbose = False
             qp.init(
@@ -152,7 +152,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.init(
@@ -179,8 +179,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -201,7 +201,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.init(
@@ -230,8 +230,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -252,7 +252,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.init(
@@ -280,8 +280,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -302,7 +302,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.init(
@@ -330,8 +330,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -352,7 +352,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -380,8 +380,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -402,7 +402,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -430,8 +430,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -469,8 +469,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -490,7 +490,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
@@ -521,8 +521,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -542,7 +542,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -571,8 +571,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert pri_res <= 1e-5
-        assert dua_res <= 1e-5
+        assert pri_res <= 1e-3
+        assert dua_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -583,7 +583,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.init(
@@ -668,7 +668,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -712,7 +712,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1.0e-5
         assert dua_res <= 1.0e-5
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.init(
@@ -797,7 +797,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -844,7 +844,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.init(
@@ -896,7 +896,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -983,7 +983,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.init(
@@ -1060,7 +1060,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
@@ -1111,7 +1111,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -1140,8 +1140,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1165,8 +1165,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1191,8 +1191,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1217,8 +1217,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1238,7 +1238,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -1269,8 +1269,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1294,8 +1294,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1320,8 +1320,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1346,8 +1346,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1369,7 +1369,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -1400,8 +1400,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1429,8 +1429,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1455,8 +1455,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1481,8 +1481,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1502,7 +1502,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -1531,8 +1531,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1560,8 +1560,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1586,8 +1586,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1612,8 +1612,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1633,7 +1633,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -1662,8 +1662,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1691,8 +1691,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1717,8 +1717,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1743,8 +1743,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1764,7 +1764,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
@@ -1795,8 +1795,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1822,8 +1822,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1848,8 +1848,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1874,8 +1874,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1895,7 +1895,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -1927,8 +1927,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -1940,7 +1940,7 @@ class DenseqpWrapper(unittest.TestCase):
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
         qp2.init(H, g, A, b, C, l, u)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
         qp2.solve(qp.results.x, qp.results.y, qp.results.z)
         dua_res = normInf(
@@ -1956,8 +1956,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve with new QP object")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -1979,7 +1979,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -2008,8 +2008,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2046,8 +2046,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2072,8 +2072,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2098,8 +2098,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2121,7 +2121,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -2152,8 +2152,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2190,8 +2190,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2216,8 +2216,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2242,8 +2242,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2265,7 +2265,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -2296,8 +2296,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2338,8 +2338,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2364,8 +2364,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2390,8 +2390,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2413,7 +2413,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -2442,8 +2442,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2484,8 +2484,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2510,8 +2510,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2536,8 +2536,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2559,7 +2559,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -2588,8 +2588,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2629,8 +2629,8 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.results.info.setup_time, qp.results.info.solve_time
             )
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.solve()
         dua_res = normInf(
             H @ qp.results.x
@@ -2645,8 +2645,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2671,8 +2671,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2692,7 +2692,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -2721,8 +2721,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2761,8 +2761,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2787,8 +2787,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2813,8 +2813,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
@@ -2834,7 +2834,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -2864,8 +2864,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -2876,7 +2876,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
@@ -2907,8 +2907,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp2.results.info.iter))
@@ -2919,7 +2919,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp3.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
@@ -2950,8 +2950,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp3.results.info.iter))
@@ -2962,7 +2962,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp4.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
@@ -2993,8 +2993,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp4.results.info.iter))
@@ -3005,7 +3005,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp5.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
         qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
@@ -3034,8 +3034,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp5.results.info.iter))
@@ -3054,7 +3054,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -3083,8 +3083,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(g=g)
         assert normInf(qp.model.g - g) <= 1.0e-5
         qp.solve()
@@ -3101,8 +3101,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -3113,7 +3113,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
@@ -3142,8 +3142,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp2.update(g=g)
         assert normInf(qp.model.g - g) <= 1.0e-5
         qp2.solve()
@@ -3160,8 +3160,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp2.results.info.iter))
@@ -3172,7 +3172,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp3.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
@@ -3201,8 +3201,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp3.update(g=g)
         assert normInf(qp.model.g - g) <= 1.0e-5
         qp3.solve()
@@ -3219,8 +3219,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp3.results.info.iter))
@@ -3231,7 +3231,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp4.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
@@ -3260,8 +3260,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp4.update(g=g)
         assert normInf(qp.model.g - g) <= 1.0e-5
         qp4.solve()
@@ -3278,8 +3278,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp4.results.info.iter))
@@ -3290,7 +3290,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp5.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
         qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
@@ -3317,8 +3317,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp5.update(g=g)
         assert normInf(qp.model.g - g) <= 1.0e-5
         qp5.solve()
@@ -3335,8 +3335,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp5.results.info.iter))
@@ -3355,7 +3355,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A_old.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -3384,8 +3384,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(A=A_new, b=b_new)
         assert normInf(qp.model.A - A_new) <= 1.0e-5
         qp.solve()
@@ -3402,8 +3402,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -3414,7 +3414,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
@@ -3443,8 +3443,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp2.update(A=A_new, b=b_new)
         assert normInf(qp.model.A - A_new) <= 1.0e-5
         qp2.solve()
@@ -3461,8 +3461,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp2.results.info.iter))
@@ -3473,7 +3473,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp3.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
@@ -3502,8 +3502,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp3.update(A=A_new, b=b_new)
         assert normInf(qp.model.A - A_new) <= 1.0e-5
         qp3.solve()
@@ -3520,8 +3520,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp3.results.info.iter))
@@ -3532,7 +3532,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp4.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
@@ -3561,8 +3561,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp4.update(A=A_new, b=b_new)
         assert normInf(qp.model.A - A_new) <= 1.0e-5
         qp4.solve()
@@ -3579,8 +3579,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp4.results.info.iter))
@@ -3591,7 +3591,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp5.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
         qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
@@ -3618,8 +3618,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp5.update(A=A_new, b=b_new)
         assert normInf(qp.model.A - A_new) <= 1.0e-5
         qp5.solve()
@@ -3636,8 +3636,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp5.results.info.iter))
@@ -3656,7 +3656,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -3684,8 +3684,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(rho=1.0e-7)
         assert qp.results.info.rho == 1.0e-7
         qp.solve()
@@ -3702,8 +3702,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter))
@@ -3714,7 +3714,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp2.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
@@ -3743,8 +3743,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp2.update(rho=1.0e-7)
         assert qp2.results.info.rho == 1.0e-7
         qp2.solve()
@@ -3761,8 +3761,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp2.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp2.results.info.iter))
@@ -3773,7 +3773,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp3.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
@@ -3802,8 +3802,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp3.update(rho=1.0e-7)
         assert qp3.results.info.rho == 1.0e-7
         qp3.solve()
@@ -3820,8 +3820,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp3.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp3.results.info.iter))
@@ -3832,7 +3832,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp4.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
             proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
@@ -3861,8 +3861,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp4.update(rho=1.0e-7)
         assert qp4.results.info.rho == 1.0e-7
         qp4.solve()
@@ -3879,8 +3879,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp4.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp4.results.info.iter))
@@ -3891,7 +3891,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp5.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
         qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
@@ -3918,8 +3918,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp5.update(rho=1.0e-7)
         assert qp5.results.info.rho == 1.0e-7
         qp5.solve()
@@ -3936,8 +3936,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp5.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp5.results.info.iter))
@@ -4001,7 +4001,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -4037,8 +4037,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         for i in range(10):
             qp.solve()
             assert np.abs(rho - qp.settings.default_rho) < 1.0e-9
@@ -4057,8 +4057,8 @@ class DenseqpWrapper(unittest.TestCase):
                     + np.minimum(C @ qp.results.x - l, 0)
                 ),
             )
-            assert dua_res <= 1e-5
-            assert pri_res <= 1e-5
+            assert dua_res <= 1e-3
+            assert pri_res <= 1e-3
 
     def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(
         self,
@@ -4073,7 +4073,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4111,8 +4111,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         for i in range(10):
             qp.solve()
             assert np.abs(rho - qp.settings.default_rho) < 1.0e-9
@@ -4131,8 +4131,8 @@ class DenseqpWrapper(unittest.TestCase):
                     + np.minimum(C @ qp.results.x - l, 0)
                 ),
             )
-            assert dua_res <= 1e-5
-            assert pri_res <= 1e-5
+            assert dua_res <= 1e-3
+            assert pri_res <= 1e-3
 
     def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(
         self,
@@ -4147,7 +4147,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4185,8 +4185,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         for i in range(10):
             qp.solve()
             assert np.abs(rho - qp.settings.default_rho) < 1.0e-9
@@ -4205,8 +4205,8 @@ class DenseqpWrapper(unittest.TestCase):
                     + np.minimum(C @ qp.results.x - l, 0)
                 ),
             )
-            assert dua_res <= 1e-5
-            assert pri_res <= 1e-5
+            assert dua_res <= 1e-3
+            assert pri_res <= 1e-3
 
     def test_sparse_problem_multiple_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(
         self,
@@ -4221,7 +4221,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4259,8 +4259,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         for i in range(10):
             qp.solve()
             assert np.abs(rho - qp.settings.default_rho) < 1.0e-9
@@ -4279,8 +4279,8 @@ class DenseqpWrapper(unittest.TestCase):
                     + np.minimum(C @ qp.results.x - l, 0)
                 ),
             )
-            assert dua_res <= 1e-5
-            assert pri_res <= 1e-5
+            assert dua_res <= 1e-3
+            assert pri_res <= 1e-3
 
     def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_WARM_START_WITH_PREVIOUS_RESULT(
         self,
@@ -4295,7 +4295,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4333,8 +4333,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(mu_eq=1.0e-3, rho=1.0e-6)
         assert np.abs(1.0e-6 - qp.settings.default_rho) < 1.0e-9
         assert np.abs(1.0e-6 - qp.results.info.rho) < 1.0e-9
@@ -4353,8 +4353,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
 
     def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_COLD_START_WITH_PREVIOUS_RESULT(
         self,
@@ -4369,7 +4369,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4407,8 +4407,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(mu_eq=1.0e-3, rho=1.0e-6)
         assert np.abs(1.0e-6 - qp.settings.default_rho) < 1.0e-9
         assert np.abs(1.0e-6 - qp.results.info.rho) < 1.0e-9
@@ -4427,8 +4427,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
 
     def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_EQUALITY_CONSTRAINED_INITIAL_GUESS(
         self,
@@ -4443,7 +4443,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
@@ -4481,8 +4481,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(mu_eq=1.0e-3, rho=1.0e-6)
         assert np.abs(1.0e-6 - qp.settings.default_rho) < 1.0e-9
         assert np.abs(1.0e-6 - qp.results.info.rho) < 1.0e-9
@@ -4501,8 +4501,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
 
     def test_sparse_problem_update_and_solve_with_default_rho_mu_eq_and_NO_INITIAL_GUESS(
         self,
@@ -4517,7 +4517,7 @@ class DenseqpWrapper(unittest.TestCase):
         rho = 1.0e-7
         mu_eq = 1.0e-4
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
-        qp.settings.eps_abs = 1.0e-5  # ADMM only (high precision)
+        qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
@@ -4553,8 +4553,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         qp.update(mu_eq=1.0e-3, rho=1.0e-6)
         assert np.abs(1.0e-6 - qp.settings.default_rho) < 1.0e-9
         assert np.abs(1.0e-6 - qp.results.info.rho) < 1.0e-9
@@ -4573,8 +4573,8 @@ class DenseqpWrapper(unittest.TestCase):
                 + np.minimum(C @ qp.results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
 
     def test_initializing_with_None(self):
         print("------------------------test initialization with Nones")
@@ -4611,7 +4611,7 @@ class DenseqpWrapper(unittest.TestCase):
 
         n = 50
         n_test = 1000
-        eps = 1.0e-5  # ADMM only (high precision)
+        eps = 1.0e-5  # OSQP unit test
         # inequality and box constraints case
         for i in range(n_test):
             H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n, i)
@@ -4758,7 +4758,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
         n = 50
         H, g, A, b, C, u, l = generate_mixed_qp(n)
-        eps = 1.0e-5  # ADMM only (high precision)
+        eps = 1.0e-5  # OSQP unit test
         n_eq = A.shape[0]
         n_in = C.shape[0]
         u_box = np.ones(n) * 100

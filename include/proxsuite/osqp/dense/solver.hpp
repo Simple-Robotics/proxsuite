@@ -1278,7 +1278,7 @@ qp_solve( //
                      numactive_upper_inequalities,
                      inner_pb_dim);
 
-    if (numactive_inequalities == 0) {
+    if (qpmodel.n_eq == 0 && numactive_inequalities == 0) {
       qpresults.info.status_polish = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
     } else {
 
