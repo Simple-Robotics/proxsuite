@@ -178,7 +178,7 @@ def solve_maros_maszaros(
         print("OSQP proxsuite")
         print(r_pri_proxsuite)
         print("OSQP source")
-        print(r_dua_proxsuite)
+        print(r_pri_source)
 
         print("")
         print("r_dua")
@@ -229,8 +229,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MAROS_MESZAROS_DIR = REPO_ROOT / "test" / "data" / "maros_meszaros_data"
 
 files = [
-    # Split tests given OSQP fails or passes
-    # Configuration: mu update, no polishing, eps_abs = 1e-3
     # Proxsuite OSQP fails in cpp unit test
     MAROS_MESZAROS_DIR / "PRIMALC1.mat",
     MAROS_MESZAROS_DIR / "PRIMALC2.mat",
