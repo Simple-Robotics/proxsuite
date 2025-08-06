@@ -183,7 +183,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -234,7 +234,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -284,7 +284,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -334,7 +334,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -384,7 +384,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -434,7 +434,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -473,7 +473,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -525,7 +525,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -575,7 +575,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -624,7 +624,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -651,7 +651,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -703,7 +703,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -752,7 +752,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -779,7 +779,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -836,7 +836,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -879,7 +879,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -931,7 +931,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= 1.0e-5
         print("--n = {} ; n_eq = {} ; n_in = {} with qp".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -975,7 +975,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1014,7 +1014,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= 1.0e-5
         print("--n = {} ; n_eq = {} ; n_in = {} with qp2".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1044,7 +1044,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1093,7 +1093,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= 1.0e-5
         print("--n = {} ; n_eq = {} ; n_in = {} with qp".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1144,7 +1144,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1170,7 +1170,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1196,7 +1196,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1222,7 +1222,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1273,7 +1273,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1299,7 +1299,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1325,7 +1325,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1351,7 +1351,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1404,7 +1404,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1434,7 +1434,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1460,7 +1460,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1486,7 +1486,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1535,7 +1535,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1565,7 +1565,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1591,7 +1591,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1617,7 +1617,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1666,7 +1666,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1696,7 +1696,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1722,7 +1722,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1748,7 +1748,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1799,7 +1799,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1827,7 +1827,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1853,7 +1853,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1879,7 +1879,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1931,7 +1931,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -1961,7 +1961,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve with new QP object")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print("total number of iteration: {}".format(qp2.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp2.results.info.setup_time, qp2.results.info.solve_time
@@ -2012,7 +2012,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2051,7 +2051,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2077,7 +2077,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2103,7 +2103,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2156,7 +2156,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2195,7 +2195,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2221,7 +2221,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2247,7 +2247,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2300,7 +2300,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2343,7 +2343,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2369,7 +2369,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2395,7 +2395,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2446,7 +2446,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2489,7 +2489,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2515,7 +2515,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2541,7 +2541,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2592,7 +2592,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2623,7 +2623,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2650,7 +2650,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2676,7 +2676,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2725,7 +2725,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2766,7 +2766,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Second solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2792,7 +2792,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Third solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2818,7 +2818,7 @@ class DenseqpWrapper(unittest.TestCase):
         print("Fourth solve ")
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2868,7 +2868,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -2911,7 +2911,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print("total number of iteration: {}".format(qp2.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp2.results.info.setup_time, qp2.results.info.solve_time
@@ -2954,7 +2954,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp3.results.info.iter))
+        print("total number of iteration: {}".format(qp3.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp3.results.info.setup_time, qp3.results.info.solve_time
@@ -2997,7 +2997,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp4.results.info.iter))
+        print("total number of iteration: {}".format(qp4.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp4.results.info.setup_time, qp4.results.info.solve_time
@@ -3038,7 +3038,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp5.results.info.iter))
+        print("total number of iteration: {}".format(qp5.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp5.results.info.setup_time, qp5.results.info.solve_time
@@ -3105,7 +3105,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -3164,7 +3164,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print("total number of iteration: {}".format(qp2.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp2.results.info.setup_time, qp2.results.info.solve_time
@@ -3223,7 +3223,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp3.results.info.iter))
+        print("total number of iteration: {}".format(qp3.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp3.results.info.setup_time, qp3.results.info.solve_time
@@ -3282,7 +3282,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp4.results.info.iter))
+        print("total number of iteration: {}".format(qp4.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp4.results.info.setup_time, qp4.results.info.solve_time
@@ -3339,7 +3339,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp5.results.info.iter))
+        print("total number of iteration: {}".format(qp5.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp5.results.info.setup_time, qp5.results.info.solve_time
@@ -3406,7 +3406,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -3465,7 +3465,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print("total number of iteration: {}".format(qp2.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp2.results.info.setup_time, qp2.results.info.solve_time
@@ -3524,7 +3524,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp3.results.info.iter))
+        print("total number of iteration: {}".format(qp3.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp3.results.info.setup_time, qp3.results.info.solve_time
@@ -3583,7 +3583,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp4.results.info.iter))
+        print("total number of iteration: {}".format(qp4.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp4.results.info.setup_time, qp4.results.info.solve_time
@@ -3640,7 +3640,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp5.results.info.iter))
+        print("total number of iteration: {}".format(qp5.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp5.results.info.setup_time, qp5.results.info.solve_time
@@ -3706,7 +3706,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -3765,7 +3765,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp2.results.info.iter))
+        print("total number of iteration: {}".format(qp2.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp2.results.info.setup_time, qp2.results.info.solve_time
@@ -3824,7 +3824,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp3.results.info.iter))
+        print("total number of iteration: {}".format(qp3.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp3.results.info.setup_time, qp3.results.info.solve_time
@@ -3883,7 +3883,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp4.results.info.iter))
+        print("total number of iteration: {}".format(qp4.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp4.results.info.setup_time, qp4.results.info.solve_time
@@ -3940,7 +3940,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert pri_res <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp5.results.info.iter))
+        print("total number of iteration: {}".format(qp5.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp5.results.info.setup_time, qp5.results.info.solve_time
@@ -3981,7 +3981,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert normInf(x_theoretically_optimal - qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -4597,7 +4597,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= 1e-3  # default precision of the solver
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
         print("dual residual = {} ".format(dua_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time

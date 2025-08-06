@@ -48,7 +48,7 @@ class CvxpyTest(unittest.TestCase):
         assert normInf(x_sol - qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time

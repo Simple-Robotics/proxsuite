@@ -57,7 +57,7 @@ DOCTEST_TEST_CASE(
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -112,7 +112,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -162,7 +162,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
             << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
+  std::cout << "total number of iteration: " << qp.results.info.iter_ext
             << std::endl;
 }
 
@@ -212,6 +212,6 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
             << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
+  std::cout << "total number of iteration: " << qp.results.info.iter_ext
             << std::endl;
 }

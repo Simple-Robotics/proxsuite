@@ -100,7 +100,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -155,7 +155,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -215,7 +215,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }

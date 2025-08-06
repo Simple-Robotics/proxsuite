@@ -74,7 +74,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -124,7 +124,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -157,7 +157,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -210,7 +210,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -255,7 +255,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -292,7 +292,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -347,7 +347,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -394,7 +394,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -430,7 +430,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -485,7 +485,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -532,7 +532,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -568,7 +568,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -623,7 +623,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -670,7 +670,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -706,7 +706,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -759,7 +759,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -811,7 +811,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -847,7 +847,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -900,7 +900,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -948,7 +948,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -984,7 +984,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1037,7 +1037,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1100,7 +1100,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1136,7 +1136,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1189,7 +1189,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1230,7 +1230,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1271,7 +1271,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1324,7 +1324,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1368,7 +1368,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1409,7 +1409,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1463,7 +1463,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1495,7 +1495,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1533,7 +1533,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1637,7 +1637,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1671,7 +1671,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1727,7 +1727,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1762,7 +1762,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1818,7 +1818,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1871,7 +1871,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -1891,7 +1891,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -1947,7 +1947,7 @@ DOCTEST_TEST_CASE(
   //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2000,7 +2000,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2020,7 +2020,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -2078,7 +2078,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "ruiz vector : " << qp.ruiz.delta << " ruiz scalar factor "
   //  << qp.ruiz.c << std::endl;
@@ -2116,7 +2116,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "ruiz vector : " << qp2.ruiz.delta << " ruiz scalar factor "
   //  << qp2.ruiz.c << std::endl;
@@ -2175,7 +2175,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2207,7 +2207,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2242,7 +2242,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -2265,7 +2265,7 @@ DOCTEST_TEST_CASE(
   //  << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   // std::cout << "primal residual: " << pri_res << std::endl;
   // std::cout << "dual residual: " << dua_res << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "ruiz vector : " << qp2.ruiz.delta << " ruiz scalar factor "
   //  << qp2.ruiz.c << std::endl;
@@ -2325,7 +2325,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2350,7 +2350,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2375,7 +2375,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2400,7 +2400,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2458,7 +2458,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2483,7 +2483,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2508,7 +2508,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2533,7 +2533,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2594,7 +2594,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2621,7 +2621,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2646,7 +2646,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2671,7 +2671,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2732,7 +2732,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2759,7 +2759,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2784,7 +2784,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2809,7 +2809,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2871,7 +2871,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2898,7 +2898,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2923,7 +2923,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -2948,7 +2948,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3006,7 +3006,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3032,7 +3032,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3057,7 +3057,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3082,7 +3082,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3140,7 +3140,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3176,7 +3176,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -3236,7 +3236,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3274,7 +3274,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3299,7 +3299,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3324,7 +3324,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3383,7 +3383,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3421,7 +3421,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3446,7 +3446,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3471,7 +3471,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3534,7 +3534,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3574,7 +3574,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3599,7 +3599,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3624,7 +3624,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3685,7 +3685,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3723,7 +3723,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3748,7 +3748,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3773,7 +3773,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3835,7 +3835,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3873,7 +3873,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3898,7 +3898,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3923,7 +3923,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -3982,7 +3982,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4021,7 +4021,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4062,7 +4062,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4087,7 +4087,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4112,7 +4112,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4172,7 +4172,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4210,7 +4210,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -4248,7 +4248,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp3.results.info.iter
+  // std::cout << "total number of iteration: " << qp3.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp3.results.info.setup_time << " solve time
   // "
@@ -4286,7 +4286,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp4.results.info.iter
+  // std::cout << "total number of iteration: " << qp4.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp4.results.info.setup_time << " solve time
   // "
@@ -4323,7 +4323,7 @@ TEST_CASE(
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp5.results.info.iter
+  // std::cout << "total number of iteration: " << qp5.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp5.results.info.setup_time << " solve time
   // "
@@ -4395,7 +4395,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4444,7 +4444,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -4493,7 +4493,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp3.results.info.iter
+  // std::cout << "total number of iteration: " << qp3.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp3.results.info.setup_time << " solve time
   // "
@@ -4542,7 +4542,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp4.results.info.iter
+  // std::cout << "total number of iteration: " << qp4.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp4.results.info.setup_time << " solve time
   // "
@@ -4590,7 +4590,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp5.results.info.iter
+  // std::cout << "total number of iteration: " << qp5.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp5.results.info.setup_time << " solve time
   // "
@@ -4662,7 +4662,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4711,7 +4711,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -4760,7 +4760,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp3.results.info.iter
+  // std::cout << "total number of iteration: " << qp3.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp3.results.info.setup_time << " solve time
   // "
@@ -4809,7 +4809,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp4.results.info.iter
+  // std::cout << "total number of iteration: " << qp4.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp4.results.info.setup_time << " solve time
   // "
@@ -4857,7 +4857,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp5.results.info.iter
+  // std::cout << "total number of iteration: " << qp5.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp5.results.info.setup_time << " solve time
   // "
@@ -4935,7 +4935,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -4992,7 +4992,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -5049,7 +5049,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp3.results.info.iter
+  // std::cout << "total number of iteration: " << qp3.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp3.results.info.setup_time << " solve time
   // "
@@ -5106,7 +5106,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp4.results.info.iter
+  // std::cout << "total number of iteration: " << qp4.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp4.results.info.setup_time << " solve time
   // "
@@ -5162,7 +5162,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp5.results.info.iter
+  // std::cout << "total number of iteration: " << qp5.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp5.results.info.setup_time << " solve time
   // "
@@ -5220,7 +5220,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -5247,7 +5247,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp.results.info.iter
+  // std::cout << "total number of iteration: " << qp.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp.results.info.setup_time << " solve time
   // "
@@ -5282,7 +5282,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   // std::cout << "; dual residual " << dua_res << "; primal residual " <<
   // pri_res
   //  << std::endl;
-  // std::cout << "total number of iteration: " << qp2.results.info.iter
+  // std::cout << "total number of iteration: " << qp2.results.info.iter_ext
   //  << std::endl;
   // std::cout << "setup timing " << qp2.results.info.setup_time << " solve time
   // "
@@ -7987,7 +7987,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
 //           //  << " neq: " << n_eq << " nin: " << n_in << std::endl;
 //   // std::cout << "primal residual: " << pri_res << std::endl;
 //   // std::cout << "dual residual: " << dua_res << std::endl;
-//   // std::cout << "total number of iteration: " << qp.results.info.iter
+//   // std::cout << "total number of iteration: " << qp.results.info.iter_ext
 //           //  << std::endl;
 //   // std::cout << "setup timing " << qp.results.info.setup_time << " solve
 //   time "

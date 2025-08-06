@@ -243,7 +243,7 @@ TEST_CASE("dense maros meszaros using the api")
           CHECK((C * x - u).maxCoeff() < eps);
 
           if (it > 0) {
-            CHECK(qp.results.info.iter == 0);
+            CHECK(qp.results.info.iter_ext == 0);
           }
         }
         timer.stop();

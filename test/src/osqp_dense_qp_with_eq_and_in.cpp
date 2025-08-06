@@ -60,7 +60,7 @@ DOCTEST_TEST_CASE(
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -111,7 +111,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -162,7 +162,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }
@@ -220,7 +220,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
   // dim =  10: Pass
@@ -285,7 +285,7 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
               << " nin: " << n_in << std::endl;
     std::cout << "primal residual: " << pri_res << std::endl;
     std::cout << "dual residual: " << dua_res << std::endl;
-    std::cout << "total number of iteration: " << qp.results.info.iter
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
 }

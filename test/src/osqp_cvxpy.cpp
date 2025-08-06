@@ -53,7 +53,8 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -96,7 +97,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << results.info.iter << std::endl;
+  std::cout << "total number of iteration: " << results.info.iter_ext
+            << std::endl;
   std::cout << "setup timing " << results.info.setup_time << " solve time "
             << results.info.solve_time << std::endl;
 }
@@ -147,14 +149,14 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
   T dua_res = (H * qp.results.x + g + C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
 
-  DOCTEST_CHECK(qp.results.info.iter <= 0);
+  DOCTEST_CHECK(qp.results.info.iter_ext <= 0);
   DOCTEST_CHECK((x_sol - qp.results.x.coeff(0, 0)) <= eps_abs);
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
+  std::cout << "total number of iteration: " << qp.results.info.iter_ext
             << std::endl;
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
