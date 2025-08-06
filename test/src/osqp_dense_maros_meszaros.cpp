@@ -10,170 +10,153 @@ using namespace proxsuite;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
-// ---------- Pass or fail given mu update, eps = 1e-3, without polishing
-// NO_INITIAL_GUESS:                   74 passed, 115 failed
-// EQUALITY_CONSTRAINED_INITIAL_GUESS: 79 passed, 110 failed
+// Pass or fail with the settings:
+// eps_abs = 1e-3, eps_rel = 0.
+// adaptive_mu_update = true, adaptive_mu_interval = 50
+// polishing = false
+
+// More details in /examples/python/osqp_calibration_dense_maros_meszaros.py
+// Commented problems fail in both OSQP Proxsuite and source code
+
 char const* files[] = {
-  // // MAROS_MESZAROS_DIR "AUG2D.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "AUG2DC.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "AUG2DCQP.mat", // Skip
-  // // MAROS_MESZAROS_DIR "AUG2DQP.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "AUG3D.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "AUG3DC.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "AUG3DCQP.mat", // Skip
-  // // MAROS_MESZAROS_DIR "AUG3DQP.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "BOYD1.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "BOYD2.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "CONT-050.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CONT-100.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CONT-101.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CONT-200.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CONT-201.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CONT-300.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP1_L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP1_M.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP1_S.mat", // ---------- Pass
-  // // MAROS_MESZAROS_DIR "CVXQP2_L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP2_M.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP2_S.mat", // ---------- Pass
-  // // MAROS_MESZAROS_DIR "CVXQP3_L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP3_M.mat", // Skip
-  // // MAROS_MESZAROS_DIR "CVXQP3_S.mat", // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DPKLO1.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DTOC3.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "DUAL1.mat",    // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUAL2.mat",    // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUAL3.mat",    // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUAL4.mat",    // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUALC1.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUALC2.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUALC5.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "DUALC8.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "EXDATA.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "GENHS28.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "GOULDQP2.mat", // Skip
-  // // MAROS_MESZAROS_DIR "GOULDQP3.mat", // Skip
-  // // MAROS_MESZAROS_DIR "HS118.mat",    // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS21.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS268.mat",    // -----------Pass
-  // // MAROS_MESZAROS_DIR "HS35.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS35MOD.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS51.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS52.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS53.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HS76.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "HUES-MOD.mat", // Skip
-  // // MAROS_MESZAROS_DIR "HUESTIS.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "KSIP.mat",     // Skip
-  // // MAROS_MESZAROS_DIR "LASER.mat",    // Skip
-  // // MAROS_MESZAROS_DIR "LISWET1.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET10.mat", // Skip
-  // // MAROS_MESZAROS_DIR "LISWET11.mat", // Skip
-  // // MAROS_MESZAROS_DIR "LISWET12.mat", // Skip
-  // // MAROS_MESZAROS_DIR "LISWET2.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET3.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET4.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET5.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET6.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET7.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET8.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LISWET9.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "LOTSCHD.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "MOSARQP1.mat", // Skip
-  // // MAROS_MESZAROS_DIR "MOSARQP2.mat", // Skip
-  // // MAROS_MESZAROS_DIR "POWELL20.mat", // Skip
-  // // MAROS_MESZAROS_DIR "PRIMAL1.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "PRIMAL2.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "PRIMAL3.mat",  // ---------- Pass
-  // // MAROS_MESZAROS_DIR "PRIMAL4.mat",  // Skip
-  // MAROS_MESZAROS_DIR "PRIMALC1.mat", //  Fail: iter 4000 / r_pri 44.6737 /
-  // r_dua 0.0176225
-  // MAROS_MESZAROS_DIR "PRIMALC2.mat", //  Fail: iter 4000 / r_pri 30735.2 /
-  // r_dua 0.0161805
-  // MAROS_MESZAROS_DIR "PRIMALC5.mat", //  Fail: iter 4000 / r_pri 3344.08 /
-  // r_dua 0.000564655
-  // MAROS_MESZAROS_DIR "PRIMALC8.mat", //  Fail: iter 4000 / r_pri 2319.54 /
-  // r_dua 0.000803382
-  // // // MAROS_MESZAROS_DIR "Q25FV47.mat",  // Skip
-  // // // MAROS_MESZAROS_DIR "QADLITTL.mat", // ---------- Pass
-  // // // MAROS_MESZAROS_DIR "QAFIRO.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "QBANDM.mat",   //  Fail: iter 4000 / r_pri
-  // 0.000589548 / r_dua 0.00159197
-  // // // MAROS_MESZAROS_DIR "QBEACONF.mat", // ---------- Pass
-  // MAROS_MESZAROS_DIR "QBORE3D.mat",  //  Fail: iter 4000 / r_pri 0.0319256  /
-  // r_dua 0.0500743
-  // MAROS_MESZAROS_DIR "QBRANDY.mat",  //  Fail: iter 4000 / r_pri 0.0257938  /
-  // r_dua 0.0298944
-  // MAROS_MESZAROS_DIR "QCAPRI.mat",   //  Fail: iter 4000 / r_pri 0.071915   /
-  // r_dua 3.33603
-  // MAROS_MESZAROS_DIR "QE226.mat",    //  Fail: iter 4000 / r_pri 0.00715393 /
-  // r_dua 0.00539403
-  // // // MAROS_MESZAROS_DIR "QETAMACR.mat", // Skip
-  // // // MAROS_MESZAROS_DIR "QFFFFF80.mat", // Skip
-  // MAROS_MESZAROS_DIR "QFORPLAN.mat", //  Fail: iter 4000 / r_pri 0.0115237 /
-  // r_dua 0.180164
-  // // MAROS_MESZAROS_DIR "QGFRDXPN.mat", // Skip
-  // MAROS_MESZAROS_DIR "QGROW15.mat",  //  Fail: iter 4000 / r_pri 468.799 /
-  // r_dua 0.00827391
-  // // // MAROS_MESZAROS_DIR "QGROW22.mat",  // Skip
-  // MAROS_MESZAROS_DIR "QGROW7.mat",   //  Fail: iter 4000 / r_pri 338.337 /
-  // r_dua 0.0074492
-  // MAROS_MESZAROS_DIR "QISRAEL.mat",  //  Fail: iter 4000 / r_pri 0.142769 /
-  // r_dua 0.188693
-  // // MAROS_MESZAROS_DIR "QPCBLEND.mat", // ---------- Pass
-  // MAROS_MESZAROS_DIR "QPCBOEI1.mat", //  Fail: iter 4000 / r_pri 0.309261 /
-  // r_dua 0.00663501
-  // MAROS_MESZAROS_DIR "QPCBOEI2.mat", //  Fail: iter 4000 / r_pri 0.0469285 /
-  // r_dua 32.9503
-  // // MAROS_MESZAROS_DIR "QPCSTAIR.mat", // ---------- Pass
-  // // MAROS_MESZAROS_DIR "QPILOTNO.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QPTEST.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "QRECIPE.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "QSC205.mat",   // Skip
-  // MAROS_MESZAROS_DIR "QSCAGR25.mat", //  Fail: iter 4000 / r_pri 0.31853 /
-  // r_dua 0.552699
-  // MAROS_MESZAROS_DIR "QSCAGR7.mat",  //  Fail: iter 4000 / r_pri 0.0154598 /
-  // r_dua 0.561846
-  // MAROS_MESZAROS_DIR "QSCFXM1.mat",  //  Fail: iter 4000 / r_pri 0.00859554 /
-  // r_dua 0.100231
-  // // MAROS_MESZAROS_DIR "QSCFXM2.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "QSCFXM3.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "QSCORPIO.mat", // ---------- Pass
-  // // MAROS_MESZAROS_DIR "QSCRS8.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "QSCSD1.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "QSCSD6.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "QSCSD8.mat",   // Skip
-  // MAROS_MESZAROS_DIR "QSCTAP1.mat",  //  Fail: iter 4000 / r_pri 0.00190064 /
-  // r_dua 0.301728
-  // // MAROS_MESZAROS_DIR "QSCTAP2.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "QSCTAP3.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "QSEBA.mat",    // Skip
-  // MAROS_MESZAROS_DIR "QSHARE1B.mat", //  Fail: iter 4000 / r_pri 35.2001 /
-  // r_dua 0.0110607
-  // MAROS_MESZAROS_DIR "QSHARE2B.mat", //  Fail: iter 4000 / r_pri 0.164123 /
-  // r_dua 0.0935488
-  // // MAROS_MESZAROS_DIR "QSHELL.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP04L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP04S.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP08L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP08S.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP12L.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSHIP12S.mat", // Skip
-  // // MAROS_MESZAROS_DIR "QSIERRA.mat",  // Skip
-  // MAROS_MESZAROS_DIR "QSTAIR.mat",   //  Fail: iter 4000 / r_pri 0.00108468 /
-  // r_dua 0.148513
-  // // MAROS_MESZAROS_DIR "QSTANDAT.mat", // Skip
-  // // MAROS_MESZAROS_DIR "S268.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "STADAT1.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "STADAT2.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "STADAT3.mat",  // Skip
-  // // MAROS_MESZAROS_DIR "STCQP1.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "STCQP2.mat",   // Skip
-  // // MAROS_MESZAROS_DIR "TAME.mat",     // ---------- Pass
-  // // MAROS_MESZAROS_DIR "UBH1.mat",     // Skip
-  // // MAROS_MESZAROS_DIR "VALUES.mat",   // ---------- Pass
-  // // MAROS_MESZAROS_DIR "YAO.mat",      // Skip
-  // // MAROS_MESZAROS_DIR "ZECEVIC2.mat", // ---------- Pass
+  MAROS_MESZAROS_DIR "AUG2D.mat",    // Skip
+  MAROS_MESZAROS_DIR "AUG2DC.mat",   // Skip
+  MAROS_MESZAROS_DIR "AUG2DCQP.mat", // Skip
+  MAROS_MESZAROS_DIR "AUG2DQP.mat",  // Skip
+  MAROS_MESZAROS_DIR "AUG3D.mat",    // Skip
+  MAROS_MESZAROS_DIR "AUG3DC.mat",   // Skip
+  MAROS_MESZAROS_DIR "AUG3DCQP.mat", // Skip
+  MAROS_MESZAROS_DIR "AUG3DQP.mat",  // Skip
+  MAROS_MESZAROS_DIR "BOYD1.mat",    // Skip
+  MAROS_MESZAROS_DIR "BOYD2.mat",    // Skip
+  MAROS_MESZAROS_DIR "CONT-050.mat", // Skip
+  MAROS_MESZAROS_DIR "CONT-100.mat", // Skip
+  MAROS_MESZAROS_DIR "CONT-101.mat", // Skip
+  MAROS_MESZAROS_DIR "CONT-200.mat", // Skip
+  MAROS_MESZAROS_DIR "CONT-201.mat", // Skip
+  MAROS_MESZAROS_DIR "CONT-300.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP1_L.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP1_M.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP1_S.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "CVXQP2_L.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP2_M.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP2_S.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "CVXQP3_L.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP3_M.mat", // Skip
+  MAROS_MESZAROS_DIR "CVXQP3_S.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "DPKLO1.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "DTOC3.mat",    // Skip
+  MAROS_MESZAROS_DIR "DUAL1.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "DUAL2.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "DUAL3.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "DUAL4.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "DUALC1.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "DUALC2.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "DUALC5.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "DUALC8.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "EXDATA.mat",   // Skip
+  MAROS_MESZAROS_DIR "GENHS28.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "GOULDQP2.mat", // Skip
+  MAROS_MESZAROS_DIR "GOULDQP3.mat", // Skip
+  MAROS_MESZAROS_DIR "HS118.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "HS21.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HS268.mat",    // ----- Pass
+  MAROS_MESZAROS_DIR "HS35.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HS35MOD.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "HS51.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HS52.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HS53.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HS76.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "HUES-MOD.mat", // Skip
+  MAROS_MESZAROS_DIR "HUESTIS.mat",  // Skip
+  MAROS_MESZAROS_DIR "KSIP.mat",     // Skip
+  MAROS_MESZAROS_DIR "LASER.mat",    // Skip
+  MAROS_MESZAROS_DIR "LISWET1.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET10.mat", // Skip
+  MAROS_MESZAROS_DIR "LISWET11.mat", // Skip
+  MAROS_MESZAROS_DIR "LISWET12.mat", // Skip
+  MAROS_MESZAROS_DIR "LISWET2.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET3.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET4.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET5.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET6.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET7.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET8.mat",  // Skip
+  MAROS_MESZAROS_DIR "LISWET9.mat",  // Skip
+  MAROS_MESZAROS_DIR "LOTSCHD.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "MOSARQP1.mat", // Skip
+  MAROS_MESZAROS_DIR "MOSARQP2.mat", // Skip
+  MAROS_MESZAROS_DIR "POWELL20.mat", // Skip
+  MAROS_MESZAROS_DIR "PRIMAL1.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "PRIMAL2.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "PRIMAL3.mat",  // ----- Pass
+  MAROS_MESZAROS_DIR "PRIMAL4.mat",  // Skip
+  // MAROS_MESZAROS_DIR "PRIMALC1.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "PRIMALC2.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "PRIMALC5.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "PRIMALC8.mat", // ------------- Fail
+  MAROS_MESZAROS_DIR "Q25FV47.mat",  // Skip
+  MAROS_MESZAROS_DIR "QADLITTL.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "QAFIRO.mat",   // ----- Pass
+  // MAROS_MESZAROS_DIR "QBANDM.mat",   // ------------- Fail
+  MAROS_MESZAROS_DIR "QBEACONF.mat", // ----- Pass
+  // MAROS_MESZAROS_DIR "QBORE3D.mat",  // ------------- Fail
+  // MAROS_MESZAROS_DIR "QBRANDY.mat",  // ------------- Fail
+  // MAROS_MESZAROS_DIR "QCAPRI.mat",   // ------------- Fail
+  // MAROS_MESZAROS_DIR "QE226.mat",    // ------------- Fail
+  MAROS_MESZAROS_DIR "QETAMACR.mat", // Skip
+  MAROS_MESZAROS_DIR "QFFFFF80.mat", // Skip
+  // MAROS_MESZAROS_DIR "QFORPLAN.mat", // ------------- Fail
+  MAROS_MESZAROS_DIR "QGFRDXPN.mat", // Skip
+  // MAROS_MESZAROS_DIR "QFORPLAN.mat", // ------------- Fail
+  MAROS_MESZAROS_DIR "QGROW22.mat", // Skip
+  // MAROS_MESZAROS_DIR "QGROW7.mat",   // ------------- Fail
+  // MAROS_MESZAROS_DIR "QISRAEL.mat",  // ------------- Fail
+  MAROS_MESZAROS_DIR "QPCBLEND.mat", // ----- Pass
+  // MAROS_MESZAROS_DIR "QPCBOEI1.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "QPCBOEI2.mat", // ------------- Fail
+  MAROS_MESZAROS_DIR "QPCSTAIR.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "QPILOTNO.mat", // Skip
+  MAROS_MESZAROS_DIR "QPTEST.mat",   // Skip
+  MAROS_MESZAROS_DIR "QRECIPE.mat",  // Skip
+  MAROS_MESZAROS_DIR "QSC205.mat",   // Skip
+  // MAROS_MESZAROS_DIR "QSCAGR25.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "QSCAGR7.mat",  // ------------- Fail
+  // MAROS_MESZAROS_DIR "QSCFXM1.mat",  // ------------- Fail
+  MAROS_MESZAROS_DIR "QSCFXM2.mat",  // Skip
+  MAROS_MESZAROS_DIR "QSCFXM3.mat",  // Skip
+  MAROS_MESZAROS_DIR "QSCORPIO.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "QSCRS8.mat",   // Skip
+  MAROS_MESZAROS_DIR "QSCSD1.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "QSCSD6.mat",   // Skip
+  MAROS_MESZAROS_DIR "QSCSD8.mat",   // Skip
+  // MAROS_MESZAROS_DIR "QSCTAP1.mat",  // ------------- Fail
+  MAROS_MESZAROS_DIR "QSCTAP2.mat", // Skip
+  MAROS_MESZAROS_DIR "QSCTAP3.mat", // Skip
+  MAROS_MESZAROS_DIR "QSEBA.mat",   // Skip
+  // MAROS_MESZAROS_DIR "QSHARE1B.mat", // ------------- Fail
+  // MAROS_MESZAROS_DIR "QSHARE2B.mat", // ------------- Fail
+  MAROS_MESZAROS_DIR "QSHELL.mat",   // Skip
+  MAROS_MESZAROS_DIR "QSHIP04L.mat", // Skip
+  MAROS_MESZAROS_DIR "QSHIP04S.mat", // Skip
+  MAROS_MESZAROS_DIR "QSHIP08L.mat", // Skip
+  MAROS_MESZAROS_DIR "QSHIP08S.mat", // Skip
+  MAROS_MESZAROS_DIR "QSHIP12L.mat", // Skip
+  MAROS_MESZAROS_DIR "QSHIP12S.mat", // Skip
+  MAROS_MESZAROS_DIR "QSIERRA.mat",  // Skip
+  // MAROS_MESZAROS_DIR "QSTAIR.mat",   // ------------- Fail
+  MAROS_MESZAROS_DIR "QSTANDAT.mat", // Skip
+  MAROS_MESZAROS_DIR "S268.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "STADAT1.mat",  // Skip
+  MAROS_MESZAROS_DIR "STADAT2.mat",  // Skip
+  MAROS_MESZAROS_DIR "STADAT3.mat",  // Skip
+  MAROS_MESZAROS_DIR "STCQP1.mat",   // Skip
+  MAROS_MESZAROS_DIR "STCQP2.mat",   // Skip
+  MAROS_MESZAROS_DIR "TAME.mat",     // ----- Pass
+  MAROS_MESZAROS_DIR "UBH1.mat",     // Skip
+  MAROS_MESZAROS_DIR "VALUES.mat",   // ----- Pass
+  MAROS_MESZAROS_DIR "YAO.mat",      // Skip
+  MAROS_MESZAROS_DIR "ZECEVIC2.mat", // ----- Pass
 };
 
 TEST_CASE("dense maros meszaros using the api")
@@ -231,8 +214,6 @@ TEST_CASE("dense maros meszaros using the api")
         qp.settings.eps_primal_inf = 1e-12;
         qp.settings.eps_dual_inf = 1e-12;
         auto& eps = qp.settings.eps_abs;
-
-        qp.settings.adaptive_mu = true;
 
         for (size_t it = 0; it < 2; ++it) {
           if (it > 0)
