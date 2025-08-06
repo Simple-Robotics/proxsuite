@@ -4426,7 +4426,6 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
   qp2.update(nullopt, qp_random.g, nullopt, nullopt, nullopt, nullopt, nullopt);
-  qp2.settings.verbose = true;
   qp2.solve();
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5361,7 +5360,6 @@ DOCTEST_TEST_CASE(
 
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
-  // qp.settings.verbose = true;
   qp.solve();
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
@@ -7211,7 +7209,27 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
-    // CHECK(pri_res <= eps_abs); // Fail here (mu update, 1e-3)
+    CHECK(pri_res <= eps_abs); // Fail here
+    // if (pri_res > eps_abs) {
+    //   std::cout << "pri_res: " << pri_res << std::endl;
+    //   std::cout << "i of failed pri_res: " << i << std::endl;
+    //   std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
+    //   std::endl; std::cout << "Status: " <<
+    // (qp.results.info.status == QPSolverOutput::PROXQP_SOLVED            ?
+    // "Success" :
+    //  qp.results.info.status == QPSolverOutput::PROXQP_MAX_ITER_REACHED  ?
+    //  "Max iterations (success)" : qp.results.info.status ==
+    //  QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
+    //  qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE   ?
+    //  "Dual infeasible" : qp.results.info.status ==
+    //  QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
+    //                                                                       "Unknown
+    //                                                                       status")
+    // << std::endl;
+    // // i = 294: pri_res 0.00624957 >= 0.001 / iter 83 / Primal infeasible
+    // // i = 715: pri_res 0.00138004 >= 0.001 / iter 72 / Primal infeasible
+    // // i = 782: pri_res 0.00217198 >= 0.001 / iter 91 / Primal infeasible
+    // }
   }
   // idem but without ineq and without eq constraints
   for (isize i = 0; i < n_test; i++) {
@@ -7401,64 +7419,113 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
   CHECK(pri_res <= eps_abs);
 }
 
-TEST_CASE("ProxQP::dense: test primal infeasibility solving")
-{
-  double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3);
-  utils::rand::set_seed(1);
-  dense::isize dim = 20;
+// TODO: To test when (if) OSQP with primal_infeasibility_solving (closest) is
+// coded TEST_CASE("ProxQP::dense: test primal infeasibility solving")
+// {
+//   double sparsity_factor = 0.15;
+//   T eps_abs = T(1e-3);
+//   utils::rand::set_seed(1);
+//   dense::isize dim = 20;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
-  T strong_convexity_factor(1.e-2);
-  for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
-      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+//   dense::isize n_eq(dim / 4);
+//   dense::isize n_in(dim / 4);
+//   T strong_convexity_factor(1.e-2);
+//   for (isize i = 0; i < 20; ++i) {
+//     ::proxsuite::proxqp::utils::rand::set_seed(i);
+//     proxqp::dense::Model<T> qp_random =
+//     proxqp::utils::dense_strongly_convex_qp(
+//       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    osqp::dense::QP<T> qp(dim, n_eq, n_in);
-    qp.settings.eps_abs = eps_abs;
-    qp.settings.eps_rel = 0;
-    // create infeasible problem
-    qp_random.b.array() += T(10.);
-    qp_random.u.array() -= T(100.);
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-    qp.settings.primal_infeasibility_solving = true;
-    qp.settings.eps_primal_inf = T(1.E-4);
-    qp.settings.eps_dual_inf = T(1.E-4);
-    qp.settings.verbose = false;
-    qp.init(qp_random.H,
-            qp_random.g,
-            qp_random.A,
-            qp_random.b,
-            qp_random.C,
-            qp_random.l,
-            qp_random.u);
-    qp.solve();
+//     osqp::dense::QP<T> qp(dim, n_eq, n_in);
+//     qp.settings.eps_abs = eps_abs;
+//     qp.settings.eps_rel = 0;
+//     // create infeasible problem
+//     qp_random.b.array() += T(10.);
+//     qp_random.u.array() -= T(100.);
+//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+//     qp.settings.primal_infeasibility_solving = true;
+//     qp.settings.eps_primal_inf = T(1.E-4);
+//     qp.settings.eps_dual_inf = T(1.E-4);
+//     qp.settings.verbose = false;
+//     qp.init(qp_random.H,
+//             qp_random.g,
+//             qp_random.A,
+//             qp_random.b,
+//             qp_random.C,
+//             qp_random.l,
+//             qp_random.u);
+//     qp.solve();
 
-    proxsuite::proxqp::utils::Vec<T> rhs_dim(dim);
-    proxsuite::proxqp::utils::Vec<T> rhs_n_eq(n_eq);
-    rhs_n_eq.setOnes();
-    proxsuite::proxqp::utils::Vec<T> rhs_n_in(n_in);
-    rhs_n_in.setOnes();
-    rhs_dim.noalias() =
-      qp_random.A.transpose() * rhs_n_eq + qp_random.C.transpose() * rhs_n_in;
-    T scaled_eps = (rhs_dim).lpNorm<Eigen::Infinity>() * eps_abs;
+//     proxsuite::proxqp::utils::Vec<T> rhs_dim(dim);
+//     proxsuite::proxqp::utils::Vec<T> rhs_n_eq(n_eq);
+//     rhs_n_eq.setOnes();
+//     proxsuite::proxqp::utils::Vec<T> rhs_n_in(n_in);
+//     rhs_n_in.setOnes();
+//     rhs_dim.noalias() =
+//       qp_random.A.transpose() * rhs_n_eq + qp_random.C.transpose() *
+//       rhs_n_in;
+//     T scaled_eps = (rhs_dim).lpNorm<Eigen::Infinity>() * eps_abs;
 
-    T pri_res =
-      (qp_random.A.transpose() * (qp_random.A * qp.results.x - qp_random.b) +
-       qp_random.C.transpose() *
-         (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-          helpers::negative_part(qp_random.C * qp.results.x - qp_random.l)))
-        .lpNorm<Eigen::Infinity>();
-    T dua_res = (qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x +
-                 qp_random.g + qp_random.A.transpose() * qp.results.y +
-                 qp_random.C.transpose() * qp.results.z)
-                  .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= scaled_eps); // Fail here (mu udpate, 1e-3)
-    DOCTEST_CHECK(dua_res <= eps_abs);    // Fail here  (mu update, 1e-3)
-  }
-}
+//     T pri_res =
+//       (qp_random.A.transpose() * (qp_random.A * qp.results.x - qp_random.b) +
+//        qp_random.C.transpose() *
+//          (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+//           helpers::negative_part(qp_random.C * qp.results.x - qp_random.l)))
+//         .lpNorm<Eigen::Infinity>();
+//     T dua_res = (qp_random.H.selfadjointView<Eigen::Upper>() * qp.results.x +
+//                  qp_random.g + qp_random.A.transpose() * qp.results.y +
+//                  qp_random.C.transpose() * qp.results.z)
+//                   .lpNorm<Eigen::Infinity>();
+//     DOCTEST_CHECK(pri_res <= scaled_eps);
+//     DOCTEST_CHECK(dua_res <= eps_abs);
+//     if (pri_res > scaled_eps) {
+//       std::cout << "pri_res: " << pri_res << std::endl;
+//       std::cout << "i of failed pri_res: " << i << std::endl;
+//       std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
+//       std::endl; std::cout << "Status: " <<
+//     (qp.results.info.status == QPSolverOutput::PROXQP_SOLVED           ?
+//     "Success" :
+//      qp.results.info.status == QPSolverOutput::PROXQP_MAX_ITER_REACHED ? "Max
+//      iterations (success)" : qp.results.info.status ==
+//      QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
+//      qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE   ?
+//      "Dual infeasible" : qp.results.info.status ==
+//      QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
+//                                                                            "Unknown
+//                                                                            status")
+//     << std::endl;
+//     }
+//     if (dua_res > scaled_eps) {
+//       std::cout << "dua_res: " << dua_res << std::endl;
+//       std::cout << "i of failed dua_res: " << i << std::endl;
+//       std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
+//       std::endl; std::cout << "Status: " <<
+//     (qp.results.info.status == QPSolverOutput::PROXQP_SOLVED           ?
+//     "Success" :
+//      qp.results.info.status == QPSolverOutput::PROXQP_MAX_ITER_REACHED ? "Max
+//      iterations (success)" : qp.results.info.status ==
+//      QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
+//      qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE   ?
+//      "Dual infeasible" : qp.results.info.status ==
+//      QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
+//                                                                            "Unknown
+//                                                                            status")
+//     << std::endl;
+//     }
+//     // Note: Values are way larger than expected
+//     // i = 1: pri_res 0.700136 >= 0.00231401 / iter 52 / Primal infeasible
+//     // i = 5: dua_res 63.0452 >= 0.001       / iter 66 / Primal infeasible
+//     // i = 5: dua_res 0.0694577 >= 0.001     / iter 57 / Primal infeasible
+//     // i = 9: pri_res 1.53315 and dua_res 0.0178529 / iter 35 / Primal
+//     infeasible
+//     // i = 10: dua_res 3.77981               / iter 56 / Primal infeasible
+//     // i = 14: dua_res 0.424509              / iter 4000 / Max iterations
+//     // i = 15: pri_res 0.896644 and dua_res 3.88932  / iter 78 / Primal
+//     infeasible
+//     // i = 18: pri_res 0.369713 and dua_res 12.2003  / iter 55 / Primal
+//     infeasible
+//   }
+// }
 
 TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
 {

@@ -32,8 +32,8 @@ class CvxpyTest(unittest.TestCase):
         qp = proxsuite.osqp.dense.QP(n, 0, n)
         qp.init(H, g, A, b, C, l, u)
         qp.settings.verbose = True
-        qp.settings.eps_abs = 1e-9  # Default precision equal to 1e-3
-        qp.settings.eps_abs = 1e-9  # Default precision equal to 1e-3
+        qp.settings.eps_abs = 1e-9
+        qp.settings.eps_abs = 1e-9
         qp.solve()
         x_sol = np.array([1, 0.5, -1])
 
@@ -43,8 +43,8 @@ class CvxpyTest(unittest.TestCase):
         )
         assert qp.results.info.status.name == "PROXQP_SOLVED"
 
-        assert dua_res <= 1e-3  # default precision of the solver
-        assert pri_res <= 1e-3
+        assert dua_res <= 1e-9
+        assert pri_res <= 1e-9
         assert normInf(x_sol - qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))

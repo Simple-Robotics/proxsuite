@@ -259,7 +259,7 @@ public:
     T default_mu_in_osqp = 1e1;
 
     // From proxsuite/proxqp/settings.hpp (proxsuite)
-    this->settings.verbose = true;
+    this->settings.verbose = false;
 
     this->settings.default_rho = 1e-6;
     this->settings.default_mu_eq = default_mu_eq_osqp;
@@ -341,7 +341,7 @@ public:
     // TODO: this->settings.adaptive_mu_multiple_termination = 4;
     // TODO: this->settings.adaptive_mu_fixed = 100;
 
-    this->settings.polishing = true;
+    this->settings.polishing = false;
     this->settings.delta_osqp = 1e-6;
     this->settings.polish_refine_iter = 3;
 

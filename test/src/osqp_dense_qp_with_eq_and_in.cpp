@@ -223,6 +223,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
     std::cout << "total number of iteration: " << qp.results.info.iter
               << std::endl;
   }
+  // dim =  10: Pass
+  // dim = 110: Fail: r_pri plafond 1.63e-01 / r_dua cv / r_g -1.20e+21 / Primal
+  // infeasible dim = 210: Pass: But r_g -3.15e+20 dim = 310: Fail: r_pri
+  // plafond 2.01e-02 / r_dua cv / r_g -3.16e+20 / Primal infeasible dim = 410:
+  // Fail: r_pri plafond 1.73e-02 / r_dua cv / r_g -2.14e+19 / Primal infeasible
+  // dim = 510: Fail: r_pri plafond 7.13e-03 / r_dua cv / r_g -1.48e+20 / Primal
+  // infeasible dim = 610: Pass: But r_g -2.45e+20 dim = 710: Pass: But r_g
+  // -2.78e+19 dim = 810: Fail: r_pri plafond 1.48e-02 / r_dua cv / r_g
+  // -2.58e+20 / Primal infeasible dim = 910: Pass: But r_g -1.51e+20
 }
 
 DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
