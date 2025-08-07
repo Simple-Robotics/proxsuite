@@ -215,3 +215,46 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   std::cout << "total number of iteration: " << qp.results.info.iter_ext
             << std::endl;
 }
+
+DOCTEST_TEST_CASE(
+  "sparse random strongly convex unconstrained qp and increasing dimension"
+  "with solution poslihing to check that no active set is found")
+{
+
+  std::cout << "---testing sparse random strongly convex qp with increasing "
+               "dimension with solution poslihing to check that no active set  "
+               "is found---"
+            << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_rel = 0;
+  for (int dim = 10; dim < 1000; dim += 100) {
+
+    int n_eq(0);
+    int n_in(0);
+    T strong_convexity_factor(1.e-2);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
+      dim, sparsity_factor, strong_convexity_factor);
+    osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = eps_rel;
+    qp.settings.polishing = true;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+
+    DOCTEST_CHECK(qp.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_NOT_RUN); // not run before solve
+
+    qp.solve();
+
+    DOCTEST_CHECK(
+      qp.results.info.status_polish ==
+      proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND); // because no
+                                                         // constraints
+  }
+}

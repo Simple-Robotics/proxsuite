@@ -289,3 +289,94 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
               << std::endl;
   }
 }
+
+DOCTEST_TEST_CASE(
+  "sparse random strongly convex qp with equality and inequality constraints "
+  "and increasing dimension using wrapper API to test different settings "
+  "on solution polishing.")
+{
+
+  std::cout
+    << "---testing sparse random strongly convex qp with equality and "
+       "inequality constraints and increasing dimension using wrapper API "
+       "to test different settings on solution polishing---"
+    << std::endl;
+  T sparsity_factor = 0.15;
+  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_rel = T(0);
+  proxqp::utils::rand::set_seed(1);
+  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+
+    proxqp::isize n_eq(dim / 4);
+    proxqp::isize n_in(dim / 4);
+    T strong_convexity_factor(1.e-2);
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+      dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+    // Trivial test
+    osqp::dense::QP<T> qp{ dim, n_eq, n_in };
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = eps_rel;
+    qp.settings.polishing = true;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+
+    DOCTEST_CHECK(qp.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_NOT_RUN);
+
+    qp.solve();
+
+    DOCTEST_CHECK(qp.results.info.status_polish !=
+                  proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND);
+
+    // Polishing not run because problem is not solved as
+    // algorithm is stopped early
+    osqp::dense::QP<T> qp2{ dim, n_eq, n_in };
+    qp2.settings.eps_abs = eps_abs;
+    qp2.settings.eps_rel = eps_rel;
+    qp2.settings.polishing = true;
+    qp2.settings.max_iter = 1;
+    qp2.init(qp_random.H,
+             qp_random.g,
+             qp_random.A,
+             qp_random.b,
+             qp_random.C,
+             qp_random.l,
+             qp_random.u);
+
+    DOCTEST_CHECK(qp2.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_NOT_RUN);
+
+    qp2.solve();
+
+    DOCTEST_CHECK(qp2.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_NOT_RUN);
+
+    // Polish succeeds as the problem is not hard (compared
+    // to some Maros Meszaros ones, see OSQP benchmarks)
+    osqp::dense::QP<T> qp3{ dim, n_eq, n_in };
+    qp3.settings.eps_abs = eps_abs;
+    qp3.settings.eps_rel = eps_rel;
+    qp3.settings.polishing = true;
+    qp3.init(qp_random.H,
+             qp_random.g,
+             qp_random.A,
+             qp_random.b,
+             qp_random.C,
+             qp_random.l,
+             qp_random.u);
+
+    DOCTEST_CHECK(qp3.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_NOT_RUN);
+
+    qp3.solve();
+
+    DOCTEST_CHECK(qp3.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_SUCCEEDED);
+  }
+}
