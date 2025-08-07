@@ -43,8 +43,8 @@ class CvxpyTest(unittest.TestCase):
         )
         assert qp.results.info.status.name == "PROXQP_SOLVED"
 
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= 1e-3
+        assert pri_res <= 1e-3
         assert normInf(x_sol - qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))

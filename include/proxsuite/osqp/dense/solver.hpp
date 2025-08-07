@@ -610,6 +610,7 @@ qp_solve( //
     qpwork.timer.start();
   }
 
+  // Setup header
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.verbose) {
@@ -621,6 +622,7 @@ qp_solve( //
                                                hessian_type);
   }
 
+  // Ruiz equilibration and factorization
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpwork.dirty) { // the following is used when a solve has already been
@@ -819,6 +821,7 @@ qp_solve( //
     }
   }
 
+  // Tmp variables
   //////////////////////////////////////////////////////////////////////////////////////////
 
   T primal_feasibility_eq_rhs_0(0);
@@ -860,6 +863,7 @@ qp_solve( //
   T rhs_duality_gap(0);
   T scaled_eps(qpsettings.eps_abs);
 
+  // ADMM loop
   //////////////////////////////////////////////////////////////////////////////////////////
 
   for (i64 iter = 0; iter < qpsettings.max_iter; ++iter) {
@@ -911,6 +915,7 @@ qp_solve( //
 
     bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
 
+    // Print iteration
     //////////////////////////////////////////////////////////////////////////////////////////
 
     if (qpsettings.verbose) {
@@ -954,6 +959,7 @@ qp_solve( //
       }
     }
 
+    // Check if solved
     //////////////////////////////////////////////////////////////////////////////////////////
 
     if (is_primal_feasible && is_dual_feasible) {
@@ -977,6 +983,7 @@ qp_solve( //
       }
     }
 
+    // Set iteration and variables
     //////////////////////////////////////////////////////////////////////////////////////////
 
     qpresults.info.iter_ext += 1; // We start a new external loop update
@@ -985,6 +992,7 @@ qp_solve( //
     qpwork.y_prev = qpresults.y;
     qpwork.z_prev = qpresults.z;
 
+    // ADMM step of variable updates
     //////////////////////////////////////////////////////////////////////////////////////////
 
     admm_step(qpsettings,
@@ -995,6 +1003,7 @@ qp_solve( //
               n_constraints,
               dense_backend);
 
+    // Check infeasibility
     //////////////////////////////////////////////////////////////////////////////////////////
 
     Vec<T> dx = qpresults.x - qpwork.x_prev;
@@ -1077,18 +1086,7 @@ qp_solve( //
       }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-    if ((qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE &&
-         !qpsettings.primal_infeasibility_solving) ||
-        qpresults.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE) {
-      // certificate of infeasibility
-      qpresults.x = qpwork.dw_aug.head(qpmodel.dim);
-      qpresults.y = qpwork.dw_aug.segment(qpmodel.dim, qpmodel.n_eq);
-      qpresults.z = qpwork.dw_aug.tail(n_constraints);
-      break;
-    }
-
+    // Update solver status
     //////////////////////////////////////////////////////////////////////////////////////////
 
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
@@ -1162,6 +1160,7 @@ qp_solve( //
       }
     }
 
+    // Update of proximal parameter mu
     //////////////////////////////////////////////////////////////////////////////////////////
 
     if (qpsettings.adaptive_mu) {
@@ -1241,8 +1240,9 @@ qp_solve( //
         }
       }
     }
-  }
+  } // End of ADMM loop
 
+  // Solution polishing
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.polishing &&
@@ -1409,6 +1409,7 @@ qp_solve( //
     }
   }
 
+  // Unscale results
   //////////////////////////////////////////////////////////////////////////////////////////
 
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
@@ -1420,6 +1421,7 @@ qp_solve( //
       VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
   }
 
+  // Compute objective function
   //////////////////////////////////////////////////////////////////////////////////////////
 
   {
@@ -1435,6 +1437,7 @@ qp_solve( //
     qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
   }
 
+  // Compute timings
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.compute_timings) {
@@ -1443,6 +1446,7 @@ qp_solve( //
       qpresults.info.solve_time + qpresults.info.setup_time;
   }
 
+  // Print solver statistics
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.verbose) {
@@ -1490,6 +1494,7 @@ qp_solve( //
               << std::endl;
   }
 
+  // Prepare next solve
   //////////////////////////////////////////////////////////////////////////////////////////
 
   qpwork.dirty = true;
