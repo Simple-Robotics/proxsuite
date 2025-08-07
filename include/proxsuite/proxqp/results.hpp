@@ -58,6 +58,8 @@ struct Info
   T minimal_H_eigenvalue_estimate;
 
   // OSQP
+  T rho_osqp_estimate;
+
   T polish_time;
   PolishStatus status_polish;
 };
@@ -158,6 +160,7 @@ struct Results
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
     info.status_polish = PolishStatus::POLISH_NOT_RUN;
+    info.rho_osqp_estimate = 1e-1;
   }
   /*!
    * cleanups the Result variables and set the info variables to their initial
@@ -202,6 +205,7 @@ struct Results
     info.mu_in = 1e-1;
     info.nu = 1.;
     info.minimal_H_eigenvalue_estimate = 0.;
+    info.rho_osqp_estimate = 1e-1;
     if (settings != nullopt) {
       info.rho = settings.value().default_rho;
       info.mu_eq = settings.value().default_mu_eq;
@@ -244,7 +248,9 @@ operator==(const Info<T>& info1, const Info<T>& info2)
     info1.objValue == info2.objValue && info1.pri_res == info2.pri_res &&
     info1.dua_res == info2.dua_res && info1.duality_gap == info2.duality_gap &&
     info1.duality_gap == info2.duality_gap &&
-    info1.minimal_H_eigenvalue_estimate == info2.minimal_H_eigenvalue_estimate;
+    info1.minimal_H_eigenvalue_estimate ==
+      info2.minimal_H_eigenvalue_estimate &&
+    info1.rho_osqp_estimate == info2.rho_osqp_estimate;
   return value;
 }
 

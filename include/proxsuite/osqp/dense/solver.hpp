@@ -852,7 +852,6 @@ qp_solve( //
   T constraints_norms(0);
   T dua_res_update(0);
   T mu_update_ratio(0);
-  T mu_in_inv_estimate(0);
 
   T new_mu_eq(qpresults.info.mu_eq);
   T new_mu_in(qpresults.info.mu_in);
@@ -1205,25 +1204,26 @@ qp_solve( //
 
         mu_update_ratio = std::sqrt(pri_res_update / dua_res_update);
 
-        mu_in_inv_estimate = qpresults.info.mu_in_inv * mu_update_ratio;
-        mu_in_inv_estimate =
-          std::min(std::max(mu_in_inv_estimate, qpsettings.mu_min_in_inv),
-                   qpsettings.mu_max_in_inv);
+        qpresults.info.rho_osqp_estimate =
+          qpresults.info.mu_in_inv * mu_update_ratio;
+        qpresults.info.rho_osqp_estimate = std::min(
+          std::max(qpresults.info.rho_osqp_estimate, qpsettings.mu_min_in_inv),
+          qpsettings.mu_max_in_inv);
 
         bool tolerance_condition =
-          (mu_in_inv_estimate >
+          (qpresults.info.rho_osqp_estimate >
              qpresults.info.mu_in_inv * qpsettings.adaptive_mu_tolerance ||
-           mu_in_inv_estimate <
+           qpresults.info.rho_osqp_estimate <
              qpresults.info.mu_in_inv / qpsettings.adaptive_mu_tolerance);
 
         if (tolerance_condition) {
           {
             ++qpresults.info.mu_updates;
 
-            new_mu_eq = 1e-3 / mu_in_inv_estimate;
-            new_mu_in = 1.0 / mu_in_inv_estimate;
-            new_mu_eq_inv = 1e3 * mu_in_inv_estimate;
-            new_mu_in_inv = mu_in_inv_estimate;
+            new_mu_eq = 1e-3 / qpresults.info.rho_osqp_estimate;
+            new_mu_in = 1.0 / qpresults.info.rho_osqp_estimate;
+            new_mu_eq_inv = 1e3 * qpresults.info.rho_osqp_estimate;
+            new_mu_in_inv = qpresults.info.rho_osqp_estimate;
           }
           mu_update(qpmodel,
                     qpresults,

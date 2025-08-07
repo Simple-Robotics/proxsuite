@@ -150,18 +150,11 @@ if verbose_calibration:
     print(res_source.info.iter)
 
     print("")
-    print("mu_eq")
+    print("rho_osqp_estimate")
     print("OSQP proxsuite")
-    print(res_proxsuite.info.mu_eq)
+    print(res_proxsuite.info.rho_osqp_estimate)
     print("OSQP source")
-    print(1e3 / res_source.info.rho_estimate)
-
-    print("")
-    print("mu_in")
-    print("OSQP proxsuite")
-    print(res_proxsuite.info.mu_in)
-    print("OSQP source")
-    print(1 / res_source.info.rho_estimate)
+    print(res_source.info.rho_estimate)
 
     print("")
     print("mu_updates")

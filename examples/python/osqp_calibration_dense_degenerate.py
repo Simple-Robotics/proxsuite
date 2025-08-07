@@ -87,11 +87,8 @@ def solve_dense_degenerate(
     iter_proxsuite = proxsuite_osqp.results.info.iter_ext
     iter_source = res_source.info.iter
 
-    mu_eq_proxsuite = proxsuite_osqp.results.info.mu_eq
-    mu_eq_source = 1e3 / res_source.info.rho_estimate
-
-    mu_in_proxsuite = proxsuite_osqp.results.info.mu_in
-    mu_in_source = 1 / res_source.info.rho_estimate
+    rho_osqp_estimate_proxsuite = proxsuite_osqp.results.info.rho_osqp_estimate
+    rho_osqp_estimate_source = res_source.info.rho_estimate
 
     mu_updates_proxsuite = proxsuite_osqp.results.info.mu_updates
     mu_updates_source = res_source.info.rho_updates
@@ -141,18 +138,11 @@ def solve_dense_degenerate(
         print(iter_source)
 
         print("")
-        print("mu_eq")
+        print("rho_osqp_estimate")
         print("OSQP proxsuite")
-        print(mu_eq_proxsuite)
+        print(rho_osqp_estimate_proxsuite)
         print("OSQP source")
-        print(mu_eq_source)
-
-        print("")
-        print("mu_in")
-        print("OSQP proxsuite")
-        print(mu_in_proxsuite)
-        print("OSQP source")
-        print(mu_in_source)
+        print(rho_osqp_estimate_source)
 
         print("")
         print("mu_updates")

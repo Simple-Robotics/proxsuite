@@ -57,7 +57,8 @@ exposeResults(nanobind::module_ m)
             &Info<T>::minimal_H_eigenvalue_estimate,
             "By default it equals 0, in order to get an estimate, set "
             "appropriately the setting option "
-            "find_H_minimal_eigenvalue.");
+            "find_H_minimal_eigenvalue.")
+    .def_rw("rho_osqp_estimate", &Info<T>::rho_osqp_estimate);
 
   ::nanobind::class_<Results<T>>(m, "Results")
     .def(::nanobind::init<isize, isize, isize>(),
