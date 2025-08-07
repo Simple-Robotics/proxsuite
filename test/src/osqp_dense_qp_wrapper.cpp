@@ -7180,6 +7180,9 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     osqp::dense::QP<T> qp(dim, n_eq, n_in, true);
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
+    if (i == 294 || i == 715 || i == 782) {
+      qp.settings.verbose = true;
+    }
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
     qp.init(qp_random.H,
@@ -7210,26 +7213,28 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
     // CHECK(pri_res <= eps_abs); // Fail here
-    // if (pri_res > eps_abs) {
-    //   std::cout << "pri_res: " << pri_res << std::endl;
-    //   std::cout << "i of failed pri_res: " << i << std::endl;
-    //   std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
-    //   std::endl; std::cout << "Status: " <<
-    // (qp.results.info.status == QPSolverOutput::PROXQP_SOLVED            ?
-    // "Success" :
-    //  qp.results.info.status == QPSolverOutput::PROXQP_MAX_ITER_REACHED  ?
-    //  "Max iterations (success)" : qp.results.info.status ==
-    //  QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
-    //  qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE   ?
-    //  "Dual infeasible" : qp.results.info.status ==
-    //  QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
-    //                                                                       "Unknown
-    //                                                                       status")
-    // << std::endl;
-    // // i = 294: pri_res 0.00624957 >= 0.001 / iter 83 / Primal infeasible
-    // // i = 715: pri_res 0.00138004 >= 0.001 / iter 72 / Primal infeasible
-    // // i = 782: pri_res 0.00217198 >= 0.001 / iter 91 / Primal infeasible
-    // }
+    if (pri_res > eps_abs) {
+      std::cout << "pri_res: " << pri_res << std::endl;
+      std::cout << "i of failed pri_res: " << i << std::endl;
+      std::cout << "iter_ext at i: " << qp.results.info.iter_ext << std::endl;
+      std::cout
+        << "Status: "
+        << (qp.results.info.status == QPSolverOutput::PROXQP_SOLVED ? "Success"
+            : qp.results.info.status == QPSolverOutput::PROXQP_MAX_ITER_REACHED
+              ? "Max iterations (success)"
+            : qp.results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE
+              ? "Primal infeasible"
+            : qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE
+              ? "Dual infeasible"
+            : qp.results.info.status == QPSolverOutput::PROXQP_NOT_RUN
+              ? "Not run"
+              : "Unknown")
+        << std::endl;
+      // Fails: Only 3 over 1000 tests
+      // i = 294: pri_res 0.00624957 >= 0.001 / iter 83 / Primal infeasible
+      // i = 715: pri_res 0.00138004 >= 0.001 / iter 72 / Primal infeasible
+      // i = 782: pri_res 0.00217198 >= 0.001 / iter 91 / Primal infeasible
+    }
   }
   // idem but without ineq and without eq constraints
   for (isize i = 0; i < n_test; i++) {

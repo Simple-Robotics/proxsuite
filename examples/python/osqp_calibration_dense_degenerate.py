@@ -100,7 +100,6 @@ def solve_dense_degenerate(
     status_source = res_source.info.status
 
     proxsuite_pass = status_proxsuite == proxsuite.osqp.PROXQP_SOLVED
-
     source_pass = status_source == "solved"
 
     # Prints calibration OSQP proxsuite vs source
@@ -176,44 +175,44 @@ source_pass_list = []
 source_fail_list = []
 proxsuite_pass_list = []
 proxsuite_fail_list = []
-for dim in range(10, 1000, 100):
-    proxsuite_pass, source_pass = solve_dense_degenerate(
-        dim,
-        verbose=True,
-        verbose_results_variables=False,
-        verbose_calibration=True,
-        adaptive_mu=False,
-    )
+# for dim in range(10, 1000, 100):
+#     proxsuite_pass, source_pass = solve_dense_degenerate(
+#         dim,
+#         verbose=True,
+#         verbose_results_variables=False,
+#         verbose_calibration=True,
+#         adaptive_mu=False,
+#     )
 
-    if proxsuite_pass:
-        proxsuite_pass_list.append(dim)
-    else:
-        proxsuite_fail_list.append(dim)
+#     if proxsuite_pass:
+#         proxsuite_pass_list.append(dim)
+#     else:
+#         proxsuite_fail_list.append(dim)
 
-    if source_pass:
-        source_pass_list.append(dim)
-    else:
-        source_fail_list.append(dim)
+#     if source_pass:
+#         source_pass_list.append(dim)
+#     else:
+#         source_fail_list.append(dim)
 
-# dim = 410
+dim = 510
 
-# proxsuite_pass, source_pass = solve_dense_degenerate(
-#     dim,
-#     verbose=True,
-#     verbose_results_variables=False,
-#     verbose_calibration=True,
-#     adaptive_mu=False,
-# )
+proxsuite_pass, source_pass = solve_dense_degenerate(
+    dim,
+    verbose=True,
+    verbose_results_variables=False,
+    verbose_calibration=True,
+    adaptive_mu=False,
+)
 
-# if proxsuite_pass:
-#     proxsuite_pass_list.append(dim)
-# else:
-#     proxsuite_fail_list.append(dim)
+if proxsuite_pass:
+    proxsuite_pass_list.append(dim)
+else:
+    proxsuite_fail_list.append(dim)
 
-# if source_pass:
-#     source_pass_list.append(dim)
-# else:
-#     source_fail_list.append(dim)
+if source_pass:
+    source_pass_list.append(dim)
+else:
+    source_fail_list.append(dim)
 
 print("")
 print("Which test passed/failed on which solver")
@@ -234,12 +233,36 @@ print("")
 print("source_fail_list:")
 print(source_fail_list)
 
-# adaptive_mu = True
-# Pass proxsuite: [10, 410, 610, 910]
-# Fail proxsuite: [110, 210, 310, 510, 710, 810]
+
+# Results at commit: 63bf0cc981abdd11e398098a0d9722c287442264
+
 
 # adaptive_mu = False
 # Pass proxsuite: [10, 910]
 # Fail proxsuite: [110, 210, 310, 410, 510, 610, 710, 810]
 
+# adaptive_mu = False
+# Pass source: [10, 110, 210, 310, 410, 510, 610, 710, 810, 910]
+# Fail source: []
+
+
 # Goal: Passes for all tests, even without mu_update
+
+# adaptive_mu = False
+# iter proxsuite / source
+
+# Passed: i = 10: 46 / 150
+# Passed: i = 910: 208 / 208
+
+# Failed: Primal infeasible, i = 110: 78 / 508
+# Failed: Primal infeasible, i = 210: 83 / 136
+# Failed: Primal infeasible, i = 310: 90 / 631
+# Failed: Primal infeasible, i = 410: 171 / 799
+# Failed: Primal infeasible, i = 510: 125 / 171
+# Failed: Primal infeasible, i = 610: 248 / 540
+# Failed: Primal infeasible, i = 710: 183 / 421
+# Failed: Primal infeasible, i = 810: 244 / 400
+
+# Remarks:
+# - In difficult problems, many iterations are needed (OSQP source)
+# - TODO: Calibration ADMM only
