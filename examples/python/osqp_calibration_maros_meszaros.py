@@ -10,7 +10,7 @@ from pathlib import Path
 
 def solve_maros_maszaros(
     filename: str,
-    verbose: bool = False,
+    verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
 ):
@@ -55,7 +55,7 @@ def solve_maros_maszaros(
     proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in, box_constraints=False)
     proxsuite_osqp.init(H, g, A, b, C, l, u)
 
-    proxsuite_osqp.settings.verbose = verbose
+    proxsuite_osqp.settings.verbose = verbose_solver
     proxsuite_osqp.settings.eps_abs = eps_abs
     proxsuite_osqp.settings.eps_rel = eps_rel
     proxsuite_osqp.settings.eps_primal_inf = eps_primal_inf
@@ -85,7 +85,7 @@ def solve_maros_maszaros(
         eps_dual_inf=eps_dual_inf,
         sigma=1e-6,
         rho=0.1,
-        verbose=verbose,
+        verbose=verbose_solver,
         scaling=10,
         max_iter=4000,
         warm_start=False,
@@ -290,7 +290,7 @@ for file in files:
     filename = str(file)
     proxsuite_pass, source_pass = solve_maros_maszaros(
         filename,
-        verbose=True,
+        verbose_solver=True,
         verbose_results_variables=False,
         verbose_calibration=True,
     )

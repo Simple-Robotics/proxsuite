@@ -3,15 +3,21 @@ import osqp
 
 import numpy as np
 import scipy.sparse as spa
-from util import dense_degenerate_qp
+from util import degenerate_qp
 
 
-def solve_dense_degenerate(
+def solve_degenerate_qp(
     dim: int,
-    verbose: bool = False,
+    n_eq: int,
+    n_in: int,
+    verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
+    verbose_timings: bool = False,
     adaptive_mu: bool = True,
+    polishing: bool = False,
+    max_iter: int = 4000,
+    compute_preconditioner: bool = True,
 ):
     # Generate a degenerate qp problem
     sparsity_factor = 0.45
@@ -19,23 +25,25 @@ def solve_dense_degenerate(
     eps_abs = 1e-3
     eps_rel = 0
 
-    m = dim // 4
-    n_in = 2 * m
-    n_eq = 0
+    m = n_in // 2
 
-    H, g, A, b, C, u, l = dense_degenerate_qp(
+    H, g, A, b, C, u, l = degenerate_qp(
         dim, n_eq, m, sparsity_factor, strong_convexity_factor
     )
 
     # OSQP proxsuite
-    proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in, box_constraints=False)
+    proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in)
     proxsuite_osqp.init(H, g, A, b, C, l, u)
 
-    proxsuite_osqp.settings.verbose = verbose
+    proxsuite_osqp.settings.verbose = verbose_solver
     proxsuite_osqp.settings.eps_abs = eps_abs
     proxsuite_osqp.settings.eps_rel = eps_rel
 
     proxsuite_osqp.settings.adaptive_mu = adaptive_mu
+    proxsuite_osqp.settings.polishing = polishing
+
+    proxsuite_osqp.settings.max_iter = max_iter
+    proxsuite_osqp.settings.compute_preconditioner = compute_preconditioner
 
     proxsuite_osqp.solve()
 
@@ -59,14 +67,15 @@ def solve_dense_degenerate(
         eps_rel=eps_rel,
         sigma=1e-6,
         rho=0.1,
-        verbose=verbose,
-        scaling=10,
-        max_iter=4000,
+        verbose=verbose_solver,
+        scaling=10 if compute_preconditioner else 0,
+        max_iter=max_iter,
         warm_start=False,
         check_termination=1,
         adaptive_rho=adaptive_mu,
         adaptive_rho_interval=50,
         adaptive_rho_tolerance=5.0,
+        polish=polishing,
     )
     res_source = prob.solve()
 
@@ -95,6 +104,15 @@ def solve_dense_degenerate(
 
     status_proxsuite = proxsuite_osqp.results.info.status
     status_source = res_source.info.status
+
+    setup_time_proxsuite = proxsuite_osqp.results.info.setup_time
+    setup_time_source = res_source.info.setup_time
+
+    solve_time_proxsuite = proxsuite_osqp.results.info.solve_time
+    solve_time_source = res_source.info.solve_time
+
+    run_time_proxsuite = proxsuite_osqp.results.info.run_time
+    run_time_source = res_source.info.run_time
 
     proxsuite_pass = status_proxsuite == proxsuite.osqp.PROXQP_SOLVED
     source_pass = status_source == "solved"
@@ -138,25 +156,48 @@ def solve_dense_degenerate(
         print(iter_source)
 
         print("")
-        print("rho_osqp_estimate")
-        print("OSQP proxsuite")
-        print(rho_osqp_estimate_proxsuite)
-        print("OSQP source")
-        print(rho_osqp_estimate_source)
-
-        print("")
-        print("mu_updates")
-        print("OSQP proxsuite")
-        print(mu_updates_proxsuite)
-        print("OSQP source")
-        print(mu_updates_source)
-
-        print("")
         print("status")
         print("OSQP proxsuite")
         print(status_proxsuite)
         print("OSQP source")
         print(status_source)
+
+        if adaptive_mu:
+            print("")
+            print("rho_osqp_estimate")
+            print("OSQP proxsuite")
+            print(rho_osqp_estimate_proxsuite)
+            print("OSQP source")
+            print(rho_osqp_estimate_source)
+
+            print("")
+            print("mu_updates")
+            print("OSQP proxsuite")
+            print(mu_updates_proxsuite)
+            print("OSQP source")
+            print(mu_updates_source)
+
+        if verbose_timings:
+            print("")
+            print("setup_time (micro sec)")
+            print("OSQP proxsuite")
+            print(setup_time_proxsuite)
+            print("OSQP source")
+            print(1e6 * setup_time_source)
+
+            print("")
+            print("solve_time (micro sec)")
+            print("OSQP proxsuite")
+            print(solve_time_proxsuite)
+            print("OSQP source")
+            print(1e6 * solve_time_source)
+
+            print("")
+            print("run_time (micro sec)")
+            print("OSQP proxsuite")
+            print(run_time_proxsuite)
+            print("OSQP source")
+            print(1e6 * run_time_source)
 
     return proxsuite_pass, source_pass
 
@@ -165,44 +206,30 @@ source_pass_list = []
 source_fail_list = []
 proxsuite_pass_list = []
 proxsuite_fail_list = []
-# for dim in range(10, 1000, 100):
-#     proxsuite_pass, source_pass = solve_dense_degenerate(
-#         dim,
-#         verbose=True,
-#         verbose_results_variables=False,
-#         verbose_calibration=True,
-#         adaptive_mu=False,
-#     )
+for dim in range(10, 1000, 100):
+    proxsuite_pass, source_pass = solve_degenerate_qp(
+        dim,
+        n_eq=0,
+        n_in=dim // 2,
+        verbose_solver=True,
+        verbose_results_variables=False,
+        verbose_calibration=True,
+        verbose_timings=False,
+        adaptive_mu=False,
+        polishing=False,
+        max_iter=4000,
+        compute_preconditioner=True,
+    )
 
-#     if proxsuite_pass:
-#         proxsuite_pass_list.append(dim)
-#     else:
-#         proxsuite_fail_list.append(dim)
+    if proxsuite_pass:
+        proxsuite_pass_list.append(dim)
+    else:
+        proxsuite_fail_list.append(dim)
 
-#     if source_pass:
-#         source_pass_list.append(dim)
-#     else:
-#         source_fail_list.append(dim)
-
-dim = 510
-
-proxsuite_pass, source_pass = solve_dense_degenerate(
-    dim,
-    verbose=True,
-    verbose_results_variables=False,
-    verbose_calibration=True,
-    adaptive_mu=False,
-)
-
-if proxsuite_pass:
-    proxsuite_pass_list.append(dim)
-else:
-    proxsuite_fail_list.append(dim)
-
-if source_pass:
-    source_pass_list.append(dim)
-else:
-    source_fail_list.append(dim)
+    if source_pass:
+        source_pass_list.append(dim)
+    else:
+        source_fail_list.append(dim)
 
 print("")
 print("Which test passed/failed on which solver")

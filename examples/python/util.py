@@ -1,8 +1,13 @@
 import numpy as np
+import numpy.linalg as la
 import scipy.sparse as spa
 import scipy.io as spio
 
 from dataclasses import dataclass
+
+
+def infty_norm(vec: np.ndarray):
+    return la.norm(vec, np.inf, axis=0)
 
 
 def generate_mixed_qp(n, sparse=False, seed=1, reg=1e-2, dens1=0.075):
@@ -62,7 +67,7 @@ def sparse_matrix_rand_not_compressed(nrows, ncols, p, rng):
     return A
 
 
-def dense_degenerate_qp(
+def degenerate_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
 ):
     # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
@@ -90,6 +95,64 @@ def dense_degenerate_qp(
 
     u = C @ x_sol + delta
     l = -1.0e20 * np.ones(2 * n_in)
+
+    return H, g, A, b, C, u, l
+
+
+def strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
+):
+    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+
+    rng = np.random.default_rng(seed)
+
+    H = sparse_positive_definite_rand_not_compressed(
+        dim, strong_convexity_factor, sparsity_factor, rng=rng
+    )
+    g = rng.standard_normal(dim)
+
+    A = sparse_matrix_rand_not_compressed(n_eq, dim, sparsity_factor, rng=rng)
+    C = sparse_matrix_rand_not_compressed(n_in, dim, sparsity_factor, rng=rng)
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    x_sol = rng.standard_normal(dim)
+    delta = rng.uniform(size=n_in)
+
+    b = A @ x_sol
+
+    u = C @ x_sol + delta
+    l = -1.0e20 * np.ones(n_in)
+
+    return H, g, A, b, C, u, l
+
+
+def unconstrained_qp(
+    dim, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
+):
+    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+
+    rng = np.random.default_rng(seed)
+
+    H = sparse_positive_definite_rand_not_compressed(
+        dim, strong_convexity_factor, sparsity_factor, rng=rng
+    )
+    g = rng.standard_normal(dim)
+
+    A = sparse_matrix_rand_not_compressed(0, dim, sparsity_factor, rng=rng)
+    C = sparse_matrix_rand_not_compressed(0, dim, sparsity_factor, rng=rng)
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    b = rng.standard_normal(0)
+    u = rng.standard_normal(0)
+    l = rng.standard_normal(0)
 
     return H, g, A, b, C, u, l
 
