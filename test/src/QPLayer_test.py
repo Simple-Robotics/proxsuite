@@ -296,6 +296,7 @@ def generate_mixed_qp(n: int, seed: int = 1, reg: float = 0.01) -> Tuple[
     # Generate constraint matrices
     A = sp.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
     v = np.random.randn(n)
+    delta = np.random.rand(m)
     u = A @ v
     l = 1.0e20 * np.ones(m)
 
@@ -449,6 +450,76 @@ class TestQpLayerWrapper(unittest.TestCase):
             f"Expected batch solution shape {expected_batch_shape}, got {sol_structural_feasible.shape}",
         )
 
+    def test_backward_pass(self) -> None:
+        """Test that backward pass works correctly for both single and batch problems."""
+
+        # Test single QP backward pass with structural feasibility
+        qp_matrices = generate_mixed_qp(self.qp_size)
+        torch_tensors_single = to_torch_tensors(qp_matrices)
+
+        # Enable gradients for parameters
+        torch_tensors_single = tuple(
+            t.requires_grad_(True) for t in torch_tensors_single
+        )
+
+        try:
+            sol_single_feasible = solve_single_qp_torch_feasible(*torch_tensors_single)
+            # Create a scalar loss to compute gradients
+            loss = sol_single_feasible.sum()
+            loss.backward()
+        except Exception as e:
+            self.fail(
+                f"Single QP backward pass with structural feasibility failed: {e}"
+            )
+
+        # Test single QP backward pass without structural feasibility
+        torch_tensors_single = to_torch_tensors(qp_matrices)
+        torch_tensors_single = tuple(
+            t.requires_grad_(True) for t in torch_tensors_single
+        )
+
+        try:
+            sol_single_non_feasible = solve_single_qp_torch_non_structural_feasible(
+                *torch_tensors_single
+            )
+            loss = sol_single_non_feasible.sum()
+            loss.backward()
+        except Exception as e:
+            self.fail(
+                f"Single QP backward pass without structural feasibility failed: {e}"
+            )
+
+        # Test batch QP backward pass with structural feasibility
+        batch = batch_generate_qps(generate_mixed_qp, self.batch_size, self.qp_size)
+        torch_tensors_batch = to_torch_tensors(batch)
+        torch_tensors_batch = tuple(t.requires_grad_(True) for t in torch_tensors_batch)
+
+        try:
+            sol_batch_feasible = solve_batch_qp_torch_feasible(*torch_tensors_batch)
+            loss = sol_batch_feasible.sum()
+            loss.backward()
+        except Exception as e:
+            self.fail(f"Batch QP backward pass with structural feasibility failed: {e}")
+
+        # Test batch QP backward pass without structural feasibility
+        torch_tensors_batch = to_torch_tensors(batch)
+        torch_tensors_batch = tuple(t.requires_grad_(True) for t in torch_tensors_batch)
+
+        try:
+            sol_batch_non_feasible = solve_batch_qp_torch_non_structural_feasible(
+                *torch_tensors_batch
+            )
+            loss = sol_batch_non_feasible.sum()
+            loss.backward()
+        except Exception as e:
+            self.fail(
+                f"Batch QP backward pass without structural feasibility failed: {e}"
+            )
+
+        # If we reach here, all backward passes succeeded
+        self.assertTrue(True, "All backward passes completed successfully")
+
 
 if __name__ == "__main__":
+
     unittest.main()
