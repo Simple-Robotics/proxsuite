@@ -3,7 +3,7 @@ import osqp
 
 import numpy as np
 import scipy.sparse as spa
-from util import strongly_convex_qp
+from util import strongly_convex_qp, infty_norm, status_to_string
 
 
 def solve_strongly_convex_qp(
@@ -14,7 +14,7 @@ def solve_strongly_convex_qp(
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
     verbose_timings: bool = False,
-    adaptive_mu: bool = True,
+    adaptive_mu: bool = False,
     polishing: bool = False,
     max_iter: int = 4000,
     compute_preconditioner: bool = True,
@@ -22,13 +22,6 @@ def solve_strongly_convex_qp(
     # Precision (OSQP)
     eps_abs = 1e-3
     eps_rel = 0
-
-    # Handle constraints dimensions
-    if n_eq + n_in > dim:
-        raise ValueError(
-            f"Too many constraints: n_eq + n_in ({n_eq + n_in}) "
-            f"cannot exceed dimension ({dim})"
-        )
 
     # Generate a qp problem
     sparsity_factor = 0.45
@@ -90,6 +83,7 @@ def solve_strongly_convex_qp(
     x_proxsuite = proxsuite_osqp.results.x
     y_proxsuite = proxsuite_osqp.results.y
     z_proxsuite = proxsuite_osqp.results.z
+    yz_proxsuite = np.concatenate([y_proxsuite, z_proxsuite])
 
     x_source = res_source.x
     y_source = res_source.y
@@ -138,7 +132,7 @@ def solve_strongly_convex_qp(
         print("")
         print("(y, z) (proxsuite) vs y (source)")
         print("OSQP proxsuite")
-        print(np.concatenate([y_proxsuite, z_proxsuite]))
+        print(yz_proxsuite)
         print("OSQP source")
         print(y_source)
 
@@ -208,17 +202,242 @@ def solve_strongly_convex_qp(
             print("OSQP source")
             print(1e6 * run_time_source)
 
+    # Calibration results
+    cal_res = {
+        "x_proxsuite": x_proxsuite,
+        "x_source": x_source,
+        "yz_proxsuite": yz_proxsuite,
+        "y_source": y_source,
+        "r_pri_proxsuite": r_pri_proxsuite,
+        "r_pri_source": r_pri_source,
+        "r_dua_proxsuite": r_dua_proxsuite,
+        "r_dua_source": r_dua_source,
+        "iter_proxsuite": iter_proxsuite,
+        "iter_source": iter_source,
+        "status_proxsuite": status_proxsuite,
+        "status_source": status_source,
+    }
+    return cal_res
 
-solve_strongly_convex_qp(
-    dim=10,
-    n_eq=2,
-    n_in=0,
-    verbose_solver=True,
-    verbose_results_variables=True,
-    verbose_calibration=True,
-    verbose_timings=False,
-    adaptive_mu=False,
-    polishing=False,
-    max_iter=4000,
-    compute_preconditioner=True,
+
+# Test calibration
+def test_calibration_strongly_convex_qp(
+    dim_start: int = 10,
+    dim_end: int = 1000,
+    dim_step: int = 100,
+    full_n_eq: bool = False,
+    full_n_in: bool = False,
+    verbose_solver: bool = False,
+    verbose_results_variables: bool = False,
+    verbose_calibration: bool = False,
+    verbose_timings: bool = False,
+    adaptive_mu: bool = False,
+    polishing: bool = False,
+    max_iter: int = 4000,
+    compute_preconditioner: bool = True,
+    prec_x: float = 1e-3,
+    prec_yz: float = 1e-3,
+    prec_r_pri: float = 1e-3,
+    prec_r_dua: float = 1e-3,
+):
+    # Constraints setting
+    if full_n_eq and full_n_in:
+        print("full_n_eq and full_n_in cannot be set together")
+        return
+
+    # Diff lists
+    diff_x_lst = []
+    diff_yz_lst = []
+    diff_r_pri_lst = []
+    diff_r_dua_lst = []
+    diff_iter_lst = []
+    diff_status_lst = []
+
+    nb_tests = 0
+    failed_tests = 0
+
+    for dim in range(dim_start, dim_end, dim_step):
+        if full_n_eq:
+            n_eq = dim // 2
+            n_in = 0
+        elif full_n_in:
+            n_in = dim // 2
+            n_eq = 0
+        else:
+            n_eq = dim // 4
+            n_in = dim // 4
+
+        cal_res = solve_strongly_convex_qp(
+            dim=dim,
+            n_eq=n_eq,
+            n_in=n_in,
+            verbose_solver=verbose_solver,
+            verbose_results_variables=verbose_results_variables,
+            verbose_calibration=verbose_calibration,
+            verbose_timings=verbose_timings,
+            adaptive_mu=adaptive_mu,
+            polishing=polishing,
+            max_iter=max_iter,
+            compute_preconditioner=compute_preconditioner,
+        )
+
+        x_proxsuite = cal_res["x_proxsuite"]
+        x_source = cal_res["x_source"]
+        yz_proxsuite = cal_res["yz_proxsuite"]
+        y_source = cal_res["y_source"]
+        r_pri_proxsuite = cal_res["r_pri_proxsuite"]
+        r_pri_source = cal_res["r_pri_source"]
+        r_dua_proxsuite = cal_res["r_dua_proxsuite"]
+        r_dua_source = cal_res["r_dua_source"]
+        iter_proxsuite = cal_res["iter_proxsuite"]
+        iter_source = cal_res["iter_source"]
+        status_proxsuite = cal_res["status_proxsuite"]
+        status_source = cal_res["status_source"]
+
+        max_diff_x = infty_norm(x_proxsuite - x_source)
+        same_x = max_diff_x <= prec_x
+
+        max_diff_yz = infty_norm(yz_proxsuite - y_source)
+        same_yz = max_diff_yz <= prec_yz
+
+        error_r_pri = np.abs(r_pri_proxsuite - r_pri_source)
+        same_r_pri = error_r_pri <= prec_r_pri
+
+        error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
+        same_r_dua = error_r_dua <= prec_r_dua
+
+        same_iter = iter_proxsuite == iter_source
+
+        both_succeed = (
+            status_proxsuite == proxsuite.osqp.PROXQP_SOLVED
+            and status_source == "solved"
+        )
+        both_max_iter = (
+            status_proxsuite == proxsuite.osqp.PROXQP_MAX_ITER_REACHED
+            and status_source == "maximum iterations reached"
+        )
+        same_status = True if (both_succeed or both_max_iter) else False
+
+        if not same_x:
+            print("")
+            print("x differs in dim = ", dim, " at precision ", prec_x, ":")
+            if dim <= 30:
+                print("Proxsuite: ")
+                print(x_proxsuite)
+                print("Source: ")
+                print(x_source)
+            else:
+                print("dim ", dim, " > 30 too large for visualization.")
+            print("Max error: ")
+            print(max_diff_x)
+            diff_x_lst.append(dim)
+
+        if not same_yz:
+            print("")
+            print("yz differs in dim = ", dim, " at precision ", prec_yz, ":")
+            if n_eq + n_in <= 30:
+                print("Proxsuite: ")
+                print(yz_proxsuite)
+                print("Source: ")
+                print(y_source)
+            else:
+                print("n_eq + n_in ", n_eq + n_in, " > 30 too large for visualization.")
+            print("Max error: ")
+            print(max_diff_yz)
+            diff_yz_lst.append(dim)
+
+        if not same_r_pri:
+            print("")
+            print("r_pri differs in dim = ", dim, " at precision ", prec_r_pri, ":")
+            print("Proxsuite: ")
+            print(r_pri_proxsuite)
+            print("Source: ")
+            print(r_pri_source)
+            print("Error")
+            print(error_r_pri)
+            diff_r_pri_lst.append(dim)
+
+        if not same_r_dua:
+            print("")
+            print("r_dua differs in dim = ", dim, " at precision ", prec_r_dua, ":")
+            print("Proxsuite: ")
+            print(r_dua_proxsuite)
+            print("Source: ")
+            print(r_dua_source)
+            print("Error")
+            print(error_r_dua)
+            diff_r_dua_lst.append(dim)
+
+        if not same_iter:
+            print("")
+            print("iter differs in dim = ", dim, ":")
+            print("Proxsuite: ")
+            print(iter_proxsuite)
+            print("Source: ")
+            print(iter_source)
+            diff_iter_lst.append(dim)
+
+        if not same_status:
+            print("")
+            print("status differs in dim = ", dim, ":")
+            print("Proxsuite: ")
+            print(status_to_string(status_proxsuite))
+            print("Source: ")
+            print(status_source)
+            diff_status_lst.append(dim)
+
+        if not (same_x and same_r_dua and same_iter and same_status):
+            failed_tests += 1
+        nb_tests += 1
+
+    print("")
+    print("Results of calibration test")
+    print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
+
+    print("")
+    print("diff_x_lst (prec_x = ", prec_x, "):")
+    print(diff_x_lst)
+
+    print("")
+    print("diff_yz_lst (prec_x = ", prec_yz, "):")
+    print(diff_yz_lst)
+
+    print("")
+    print("diff_r_pri_lst (prec_x = ", prec_r_pri, "):")
+    print(diff_r_pri_lst)
+
+    print("")
+    print("diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
+    print(diff_r_dua_lst)
+
+    print("")
+    print("diff_iter_lst:")
+    print(diff_iter_lst)
+
+    print("")
+    print("diff_status_lst:")
+    print(diff_status_lst)
+
+
+# Run test
+test_calibration_strongly_convex_qp(
+    dim_start=10,
+    dim_end=1000,
+    dim_step=20,
+    full_n_eq=True,
+    full_n_in=False,
 )
+
+# Notes:
+
+# full_n_eq:
+# Failed: 2/50  | dim=10 iter 27 vs 30 | dim=30 30 vs 31
+
+# full_n_in:
+# Failed: 16/50 | dim=10 diff_x error 6e-2 and diff_yz error 2e-3 and iter 23 vs 19 |
+#               | other dim: iter (max gap 2)
+
+# n_eq and n_in:
+# Failed: 3/50 | dim=10 iter 25 vs 28 | dim=250 34 vs 35 | dim=990 41 vs 42
+
+# => Implem very close from source

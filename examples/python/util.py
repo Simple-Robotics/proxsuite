@@ -1,3 +1,5 @@
+import proxsuite
+
 import numpy as np
 import numpy.linalg as la
 import scipy.sparse as spa
@@ -8,6 +10,21 @@ from dataclasses import dataclass
 
 def infty_norm(vec: np.ndarray):
     return la.norm(vec, np.inf, axis=0)
+
+
+def status_to_string(status: proxsuite.proxqp.QPSolverOutput):
+    if status == proxsuite.proxqp.PROXQP_SOLVED:
+        return "Solved"
+    elif status == proxsuite.proxqp.PROXQP_MAX_ITER_REACHED:
+        return "Maximum number of iterations reached"
+    elif status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE:
+        return "Primal infeasible"
+    elif status == proxsuite.proxqp.PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE:
+        return "Solved closest primal feasible"
+    elif status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE:
+        return "Dual infeasible"
+    elif status == proxsuite.proxqp.PROXQP_NOT_RUN:
+        return "Solver not run"
 
 
 def generate_mixed_qp(n, sparse=False, seed=1, reg=1e-2, dens1=0.075):
@@ -126,6 +143,35 @@ def strongly_convex_qp(
 
     u = C @ x_sol + delta
     l = -1.0e20 * np.ones(n_in)
+
+    return H, g, A, b, C, u, l
+
+
+def not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor, sparse=False, seed=1):
+    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+
+    rng = np.random.default_rng(seed)
+
+    H = sparse_positive_definite_rand_not_compressed(dim, 0, sparsity_factor, rng=rng)
+    A = sparse_matrix_rand_not_compressed(n_eq, dim, sparsity_factor, rng=rng)
+    C = sparse_matrix_rand_not_compressed(n_in, dim, sparsity_factor, rng=rng)
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    x_sol = rng.standard_normal(dim)
+    y_sol = rng.standard_normal(n_eq)
+    z_sol = rng.standard_normal(n_in)
+    delta = rng.uniform(size=n_in)
+
+    Cx = C @ x_sol
+    u = Cx + delta
+    l = Cx - delta
+    b = A @ x_sol
+
+    g = -(H @ x_sol + A.T @ y_sol + C.T @ z_sol)
 
     return H, g, A, b, C, u, l
 

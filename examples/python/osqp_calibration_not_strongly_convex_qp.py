@@ -3,21 +3,20 @@ import osqp
 
 import numpy as np
 import scipy.sparse as spa
-from util import degenerate_qp, infty_norm, status_to_string
+from util import not_strongly_convex_qp, infty_norm, status_to_string
 
 
-def solve_degenerate_qp(
+def solve_not_strongly_convex_qp(
     dim: int,
     n_eq: int,
     n_in: int,
-    m: int,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
     verbose_timings: bool = False,
     adaptive_mu: bool = False,
     polishing: bool = False,
-    max_iter: int = 20,
+    max_iter: int = 4000,
     compute_preconditioner: bool = True,
 ):
     # Precision (OSQP)
@@ -26,11 +25,8 @@ def solve_degenerate_qp(
 
     # Generate a qp problem
     sparsity_factor = 0.45
-    strong_convexity_factor = 1e-2
 
-    H, g, A, b, C, u, l = degenerate_qp(
-        dim, n_eq, m, sparsity_factor, strong_convexity_factor
-    )
+    H, g, A, b, C, u, l = not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor)
 
     # OSQP proxsuite
     proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in)
@@ -222,7 +218,7 @@ def solve_degenerate_qp(
 
 
 # Test calibration
-def test_calibration_degenerate_qp(
+def test_calibration_not_strongly_convex_qp(
     dim_start: int = 10,
     dim_end: int = 1000,
     dim_step: int = 100,
@@ -261,21 +257,17 @@ def test_calibration_degenerate_qp(
         if full_n_eq:
             n_eq = dim // 2
             n_in = 0
-            m = 0
         elif full_n_in:
-            m = dim // 4
-            n_in = 2 * m
+            n_in = dim // 2
             n_eq = 0
         else:
-            m = dim // 4
-            n_in = 2 * m
             n_eq = dim // 4
+            n_in = dim // 4
 
-        cal_res = solve_degenerate_qp(
+        cal_res = solve_not_strongly_convex_qp(
             dim=dim,
             n_eq=n_eq,
             n_in=n_in,
-            m=m,
             verbose_solver=verbose_solver,
             verbose_results_variables=verbose_results_variables,
             verbose_calibration=verbose_calibration,
@@ -400,55 +392,32 @@ def test_calibration_degenerate_qp(
     print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
 
     print("")
-    print(
-        "diff_x_lst (prec_x = ", prec_x, "):", len(diff_x_lst), "fails over ", nb_tests
-    )
+    print("diff_x_lst (prec_x = ", prec_x, "):")
     print(diff_x_lst)
 
     print("")
-    print(
-        "diff_yz_lst (prec_x = ",
-        prec_yz,
-        "):",
-        len(diff_yz_lst),
-        "fails over ",
-        nb_tests,
-    )
+    print("diff_yz_lst (prec_x = ", prec_yz, "):")
     print(diff_yz_lst)
 
     print("")
-    print(
-        "diff_r_pri_lst (prec_x = ",
-        prec_r_pri,
-        "):",
-        len(diff_r_pri_lst),
-        "fails over ",
-        nb_tests,
-    )
+    print("diff_r_pri_lst (prec_x = ", prec_r_pri, "):")
     print(diff_r_pri_lst)
 
     print("")
-    print(
-        "diff_r_dua_lst (prec_x = ",
-        prec_r_dua,
-        "):",
-        len(diff_r_dua_lst),
-        "fails over ",
-        nb_tests,
-    )
+    print("diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
     print(diff_r_dua_lst)
 
     print("")
-    print("diff_iter_lst:", len(diff_iter_lst), "fails over ", nb_tests)
+    print("diff_iter_lst:")
     print(diff_iter_lst)
 
     print("")
-    print("diff_status_lst:", len(diff_status_lst), "fails over ", nb_tests)
+    print("diff_status_lst:")
     print(diff_status_lst)
 
 
 # Run test
-test_calibration_degenerate_qp(
+test_calibration_not_strongly_convex_qp(
     dim_start=10,
     dim_end=1000,
     dim_step=20,
@@ -459,19 +428,16 @@ test_calibration_degenerate_qp(
 # Notes:
 
 # full_n_eq:
-# Failed: 2/50  | We retieve case of strongly convex qp, only few differences in number iter
+# Failed: 50/50 | iter error increases with dim, and max diff iter = 6 in favour of proxsuite
 
 # full_n_in:
-# Failed: 47/50 | status: Primal infeasible vs solved (36/50)
-#               | iter: proxsuite stops (way) before source (47/50)
+# Failed: 49/50 | iter error increases with dim with big diff in favour of proxsuite (eg 28 vs 208)
+#               | dim=10, 30: diff_yz error 1e-3 | dim=50: diff_yz error 2e-3
 
-# n_eq: and n_in
-# Failed: /50   | Similar to full_n_in
+# n_eq and n_in:
+# Failed: 50/50 | iter error increases with dim with big diff in favour of proxsuite (eg 38 vs 183)
+#               | dim=10: diff_yz error 1e-3
 
-# => full_n_eq: Trivial and out of discussion
-# => proxsuite detects primal infeasibility and stops early, while source can go up to 3000 iter to solve
-
-# Case where I early stop (eg after 20 iter):
-# Proxsuite residuals > (>>) to source residual.
-# With dim increasing: This difference (ratio) vanishes
-# Intuition ?
+# => Errors in variable values are negligible
+# => Errors in number of iterations suggest that proxsuite efficient and stable with increasing
+# dim but not osqp source

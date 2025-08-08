@@ -3,7 +3,7 @@ import osqp
 
 import numpy as np
 import scipy.sparse as spa
-from util import unconstrained_qp, infty_norm
+from util import unconstrained_qp, infty_norm, status_to_string
 
 
 def solve_unconstrained_qp(
@@ -213,9 +213,9 @@ def test_calibration_unconstrained_qp(
     diff_r_dua_lst = []
     diff_iter_lst = []
     diff_status_lst = []
-    failed_tests = []
 
-    nb_tests = max(0, (dim_end - dim_start + dim_step - 1) // dim_step)
+    nb_tests = 0
+    failed_tests = 0
 
     for dim in range(dim_start, dim_end, dim_step):
         cal_res = solve_unconstrained_qp(
@@ -273,7 +273,7 @@ def test_calibration_unconstrained_qp(
 
         if not same_r_dua:
             print("")
-            print("r_dua differs in dim = ", " at precision ", prec_r_dua, ":")
+            print("r_dua differs in dim = ", dim, " at precision ", prec_r_dua, ":")
             print("Proxsuite: ")
             print(r_dua_proxsuite)
             print("Source: ")
@@ -295,24 +295,25 @@ def test_calibration_unconstrained_qp(
             print("")
             print("status differs in dim = ", dim, ":")
             print("Proxsuite: ")
-            print(status_proxsuite)
+            print(status_to_string(status_proxsuite))
             print("Source: ")
             print(status_source)
             diff_status_lst.append(dim)
 
         if not (same_x and same_r_dua and same_iter and same_status):
-            failed_tests.append(dim)
+            failed_tests += 1
+        nb_tests += 1
 
     print("")
     print("Results of calibration test")
-    print("Number of tests: ", nb_tests, " | Tests failed: ", len(failed_tests))
+    print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
 
     print("")
     print("diff_x_lst (prec_x = ", prec_x, "):")
     print(diff_x_lst)
 
     print("")
-    print("diff_r_dua_lst (prec_x = ", prec_x, "):")
+    print("diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
     print(diff_r_dua_lst)
 
     print("")
@@ -331,17 +332,6 @@ test_calibration_unconstrained_qp(
     dim_step=20,
 )
 
-# Run one instance
-# cal_res = solve_unconstrained_qp(
-#     dim=10,
-#     verbose_solver=True,
-#     verbose_results_variables=True,
-#     verbose_calibration=True,
-#     verbose_timings=True,
-#     adaptive_mu=False,
-#     polishing=False,
-#     max_iter=4000,
-#     compute_preconditioner=True,
-#     prec_x=1e-9,
-#     prec_r_dua=1e-9,
-# )
+# Notes:
+
+# => Implem very close from source
