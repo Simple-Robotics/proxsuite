@@ -255,7 +255,8 @@ def QPFunction(
     class QPFunctionFn_infeas(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
-            n_in, nz = G_.size()  # true double-sided inequality size
+
+            n_in, nz = G_.size()[-2], G_.size()[-1]  # true double-sided inequality size
             nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
 
             Q, _ = expandParam(Q_, nBatch, 3)
@@ -436,9 +437,9 @@ def QPFunction(
                 if neq > 0:
                     kkt[:dim, dim : dim + n_eq] = A_i.transpose()
                     kkt[dim : dim + n_eq, :dim] = A_i
-                    kkt[
-                        dim + n_eq + n_in : dim + 2 * n_eq + n_in, dim : dim + n_eq
-                    ] = -np.eye(n_eq)
+                    kkt[dim + n_eq + n_in : dim + 2 * n_eq + n_in, dim : dim + n_eq] = (
+                        -np.eye(n_eq)
+                    )
                     kkt[
                         dim + n_eq + n_in : dim + 2 * n_eq + n_in,
                         dim + n_eq + 2 * n_in : 2 * dim + n_eq + 2 * n_in,
@@ -485,9 +486,9 @@ def QPFunction(
                         rhs[dim + n_eq : dim + n_eq + n_in_sol][~active_set] = dl_dnus[
                             i
                         ][~active_set]
-                        rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][
-                            active_set
-                        ] = -dl_dnus[i][active_set]
+                        rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][active_set] = (
+                            -dl_dnus[i][active_set]
+                        )
                 if dl_ds_e is not None:
                     if dl_ds_e.shape[0] != 0:
                         rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]
