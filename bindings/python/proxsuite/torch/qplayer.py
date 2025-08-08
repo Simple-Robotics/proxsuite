@@ -257,6 +257,7 @@ def QPFunction(
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
 
             n_in, nz = G_.size()[-2], G_.size()[-1]  # true double-sided inequality size
+            ctx.G_size = G_.size()
             nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
 
             Q, _ = expandParam(Q_, nBatch, 3)
@@ -543,8 +544,11 @@ def QPFunction(
                 )
                 if n_eq > 0:
                     dlam[i] = torch.from_numpy(
-                        np.float64(vector_of_qps.get(i).results.x[dim : dim + n_eq])
+                        vector_of_qps.get(i)
+                        .results.x[dim : dim + n_eq]
+                        .astype(np.float64)
                     )
+
                 dnu[i] = torch.from_numpy(
                     np.float64(
                         vector_of_qps.get(i).results.x[dim + n_eq : dim + n_eq + n_in]
@@ -598,16 +602,28 @@ def QPFunction(
             if p_e:
                 dps = dps.mean(0)
 
-            grads = (
-                dQs,
-                dps,
-                dAs,
-                dbs,
-                dGs[n_in_sol:, :],
-                -dhs[:n_in_sol],
-                dhs[n_in_sol:],
-            )
-
+            if len(ctx.G_size) == 2:
+                grads = (
+                    dQs,
+                    dps,
+                    dAs,
+                    dbs,
+                    dGs[n_in_sol:, :],
+                    -dhs[:n_in_sol],
+                    dhs[n_in_sol:],
+                )
+            elif len(ctx.G_size) == 3:
+                grads = (
+                    dQs,
+                    dps,
+                    dAs,
+                    dbs,
+                    dGs[:, n_in_sol:, :],
+                    -dhs[:, :n_in_sol],
+                    dhs[:, n_in_sol:],
+                )
+            else:
+                raise
             return grads
 
     if structural_feasibility:
