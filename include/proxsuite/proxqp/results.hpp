@@ -225,7 +225,7 @@ struct Results
     se.setZero();
     si.setZero();
     zeta_eq.setZero();
-    zeta_eq.setZero();
+    zeta_in.setZero();
     cleanup_statistics();
   }
 };

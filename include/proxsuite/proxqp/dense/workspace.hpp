@@ -102,6 +102,7 @@ struct Workspace
   Vec<T> nu_in;
   Vec<T> zeta_tilde_eq;
   Vec<T> zeta_tilde_in;
+  Vec<T> zeta_eq_next;
   Vec<T> zeta_in_next;
 
   Mat<T> C_scaled_low;
@@ -144,6 +145,7 @@ struct Workspace
     , x_tilde(dim)
     , nu_eq(n_eq)
     , zeta_tilde_eq(n_eq)
+    , zeta_eq_next(n_eq)
     , ldl_polish{}
   {
 
@@ -452,6 +454,7 @@ struct Workspace
     nu_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
+    zeta_eq_next.setZero();
     zeta_in_next.setZero();
   }
   /*!
@@ -510,6 +513,7 @@ struct Workspace
     nu_in.setZero();
     zeta_tilde_eq.setZero();
     zeta_tilde_in.setZero();
+    zeta_eq_next.setZero();
     zeta_in_next.setZero();
   }
 };

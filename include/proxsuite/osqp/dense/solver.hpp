@@ -60,7 +60,7 @@ admm_step(const Settings<T>& qpsettings,
   qpwork.rhs.head(qpmodel.dim) =
     qpresults.info.rho * qpresults.x - qpwork.g_scaled;
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) =
-    qpwork.b_scaled - qpresults.info.mu_eq * qpresults.y; // zeta_eq = b
+    qpresults.zeta_eq - qpresults.info.mu_eq * qpresults.y;
   qpwork.rhs.tail(n_constraints) =
     qpresults.zeta_in - qpresults.info.mu_in * qpresults.z;
 
@@ -82,15 +82,14 @@ admm_step(const Settings<T>& qpsettings,
 
   // Update the variables
   qpwork.zeta_tilde_eq =
-    qpwork.b_scaled +
-    qpresults.info.mu_eq * (qpwork.nu_eq - qpresults.y); // zeta_eq = b
+    qpresults.zeta_eq + qpresults.info.mu_eq * (qpwork.nu_eq - qpresults.y);
   qpwork.zeta_tilde_in =
     qpresults.zeta_in + qpresults.info.mu_in * (qpwork.nu_in - qpresults.z);
 
   qpresults.x = qpsettings.alpha_osqp * qpwork.x_tilde +
                 (1 - qpsettings.alpha_osqp) * qpresults.x;
 
-  qpresults.zeta_eq = qpwork.b_scaled; // zeta_eq = b
+  qpwork.zeta_eq_next = qpwork.b_scaled; // projection in [b, b]
   qpwork.zeta_in_next = qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
                         (1 - qpsettings.alpha_osqp) * qpresults.zeta_in +
                         qpresults.info.mu_in * qpresults.z;
@@ -108,13 +107,14 @@ admm_step(const Settings<T>& qpsettings,
     qpresults.y +
     qpresults.info.mu_eq_inv *
       (qpsettings.alpha_osqp * qpwork.zeta_tilde_eq +
-       (1 - qpsettings.alpha_osqp) * qpresults.zeta_eq - qpresults.zeta_eq);
+       (1 - qpsettings.alpha_osqp) * qpresults.zeta_eq - qpwork.zeta_eq_next);
   qpresults.z =
     qpresults.z +
     qpresults.info.mu_in_inv *
       (qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
        (1 - qpsettings.alpha_osqp) * qpresults.zeta_in - qpwork.zeta_in_next);
 
+  qpresults.zeta_eq = qpwork.zeta_eq_next;
   qpresults.zeta_in = qpwork.zeta_in_next;
 }
 
