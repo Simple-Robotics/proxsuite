@@ -2,7 +2,7 @@ from calibration_base import test_calibration_qp
 
 # Run test
 test_calibration_qp(
-    problem="not_strongly_convex_qp",
+    problem="box_constrained_qp",
     dim_start=10,
     dim_end=1000,
     dim_step=20,
@@ -30,16 +30,12 @@ test_calibration_qp(
 # Notes:
 
 # only_eq:
-# Failed: 50/50 | iter error increases with dim, and max diff iter = 6 in favour of proxsuite
+# Not tested (makes no sense)
 
 # only_in:
-# Failed: 49/50 | iter error increases with dim with big diff in favour of proxsuite (eg 28 vs 208)
-#               | dim=10, 30: diff_yz error 1e-3 | dim=50: diff_yz error 2e-3
+# Failed: 47/50 | dim=10 diff x 5e-3, diff y 0.8 (one coord), diff r_pri 7e-3,
+#                 diff iter 205 vs 376, primal inf vs solved
+#               | other dims: iter proxsuite better than source, same status solved
 
 # n_eq and n_in:
-# Failed: 50/50 | iter error increases with dim with big diff in favour of proxsuite (eg 38 vs 183)
-#               | dim=10: diff_yz error 1e-3
-
-# => Errors in variable values are negligible
-# => Errors in number of iterations suggest that proxsuite efficient and stable with increasing
-# dim but not osqp source
+# Same that only_in

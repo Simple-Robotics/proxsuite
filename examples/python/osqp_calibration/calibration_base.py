@@ -10,6 +10,9 @@ from util import (
     strongly_convex_qp,
     not_strongly_convex_qp,
     degenerate_qp,
+    box_constrained_qp,
+    primal_infeasible_qp,
+    dual_infeasible_qp,
 )
 
 
@@ -45,6 +48,18 @@ def solve_qp(
     elif problem == "degenerate_qp":
         H, g, A, b, C, u, l = degenerate_qp(
             dim, n_eq, m, sparsity_factor, strong_convexity_factor
+        )
+    elif problem == "box_constrained_qp":
+        H, g, A, b, C, u, l = box_constrained_qp(
+            dim, n_eq, sparsity_factor, strong_convexity_factor
+        )
+    elif problem == "primal_infeasible_qp":
+        H, g, A, b, C, u, l = primal_infeasible_qp(
+            dim, n_eq, n_in, sparsity_factor, strong_convexity_factor
+        )
+    elif problem == "dual_infeasible_qp":
+        H, g, A, b, C, u, l = dual_infeasible_qp(
+            dim, n_eq, n_in, sparsity_factor, strong_convexity_factor
         )
 
     # OSQP proxsuite
@@ -258,7 +273,12 @@ def test_calibration_qp(
     failed_tests = 0
 
     for dim in range(dim_start, dim_end, dim_step):
-        if problem in ["strongly_convex_qp", "not_strongly_convex_qp"]:
+        if problem in [
+            "strongly_convex_qp",
+            "not_strongly_convex_qp",
+            "primal_infeasible_qp",
+            "dual_infeasible_qp",
+        ]:
             if only_eq:
                 n_eq = dim // 2
                 n_in = 0
@@ -288,6 +308,18 @@ def test_calibration_qp(
                 m = dim // 4
                 n_in = 2 * m
                 n_eq = dim // 4
+
+        elif problem == "box_constrained_qp":
+            if only_eq:
+                print("only_eq makes no sense in box_constrained_qp")
+                return
+            elif only_in:
+                n_eq = 0
+                n_in = dim
+            else:
+                n_eq = dim // 4
+                n_in = dim
+            m = 0
 
         cal_res = solve_qp(
             problem=problem,
@@ -322,17 +354,26 @@ def test_calibration_qp(
         status_proxsuite = cal_res["status_proxsuite"]
         status_source = cal_res["status_source"]
 
-        error_x = infty_norm(x_proxsuite - x_source)
-        same_x = error_x <= prec_x
+        same_x = True
+        same_yz = True
+        same_r_pri = True
+        same_r_dua = True
 
-        error_yz = infty_norm(yz_proxsuite - y_source)
-        same_yz = error_yz <= prec_yz
+        # Prevent x_source or y_source = [None, None, None, ...]
+        if not (
+            status_source == "primal infeasible" or status_source == "dual infeasible"
+        ):
+            error_x = infty_norm(x_proxsuite - x_source)
+            same_x = error_x <= prec_x
 
-        error_r_pri = np.abs(r_pri_proxsuite - r_pri_source)
-        same_r_pri = error_r_pri <= prec_r_pri
+            error_yz = infty_norm(yz_proxsuite - y_source)
+            same_yz = error_yz <= prec_yz
 
-        error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
-        same_r_dua = error_r_dua <= prec_r_dua
+            error_r_pri = np.abs(r_pri_proxsuite - r_pri_source)
+            same_r_pri = error_r_pri <= prec_r_pri
+
+            error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
+            same_r_dua = error_r_dua <= prec_r_dua
 
         error_iter = np.abs(iter_proxsuite - iter_source)
         same_iter = error_iter <= prec_iter
@@ -364,55 +405,62 @@ def test_calibration_qp(
             else False
         )
 
-        if not same_x:
-            print("")
-            print("x differs in dim = ", dim, " at precision ", prec_x, ":")
-            if dim <= 30:
+        if not (
+            status_source == "primal infeasible" or status_source == "dual infeasible"
+        ):
+            if not same_x:
+                print("")
+                print("x differs in dim = ", dim, " at precision ", prec_x, ":")
+                if dim <= 30:
+                    print("Proxsuite: ")
+                    print(x_proxsuite)
+                    print("Source: ")
+                    print(x_source)
+                else:
+                    print("dim ", dim, " > 30 too large for visualization.")
+                print("Max error: ")
+                print(error_x)
+                diff_x_lst.append(dim)
+
+            if not same_yz:
+                print("")
+                print("yz differs in dim = ", dim, " at precision ", prec_yz, ":")
+                if n_eq + n_in <= 30:
+                    print("Proxsuite: ")
+                    print(yz_proxsuite)
+                    print("Source: ")
+                    print(y_source)
+                else:
+                    print(
+                        "n_eq + n_in ",
+                        n_eq + n_in,
+                        " > 30 too large for visualization.",
+                    )
+                print("Max error: ")
+                print(error_yz)
+                diff_yz_lst.append(dim)
+
+            if not same_r_pri:
+                print("")
+                print("r_pri differs in dim = ", dim, " at precision ", prec_r_pri, ":")
                 print("Proxsuite: ")
-                print(x_proxsuite)
+                print(r_pri_proxsuite)
                 print("Source: ")
-                print(x_source)
-            else:
-                print("dim ", dim, " > 30 too large for visualization.")
-            print("Max error: ")
-            print(error_x)
-            diff_x_lst.append(dim)
+                print(r_pri_source)
+                print("Error")
+                print(error_r_pri)
+                diff_r_pri_lst.append(dim)
 
-        if not same_yz:
-            print("")
-            print("yz differs in dim = ", dim, " at precision ", prec_yz, ":")
-            if n_eq + n_in <= 30:
+            if not same_r_dua:
+                print("")
+                print("r_dua differs in dim = ", dim, " at precision ", prec_r_dua, ":")
                 print("Proxsuite: ")
-                print(yz_proxsuite)
+                print(r_dua_proxsuite)
                 print("Source: ")
-                print(y_source)
-            else:
-                print("n_eq + n_in ", n_eq + n_in, " > 30 too large for visualization.")
-            print("Max error: ")
-            print(error_yz)
-            diff_yz_lst.append(dim)
-
-        if not same_r_pri:
-            print("")
-            print("r_pri differs in dim = ", dim, " at precision ", prec_r_pri, ":")
-            print("Proxsuite: ")
-            print(r_pri_proxsuite)
-            print("Source: ")
-            print(r_pri_source)
-            print("Error")
-            print(error_r_pri)
-            diff_r_pri_lst.append(dim)
-
-        if not same_r_dua:
-            print("")
-            print("r_dua differs in dim = ", dim, " at precision ", prec_r_dua, ":")
-            print("Proxsuite: ")
-            print(r_dua_proxsuite)
-            print("Source: ")
-            print(r_dua_source)
-            print("Error")
-            print(error_r_dua)
-            diff_r_dua_lst.append(dim)
+                print(r_dua_source)
+                print("Error")
+                print(error_r_dua)
+                diff_r_dua_lst.append(dim)
 
         if not same_iter:
             print("")
@@ -450,25 +498,28 @@ def test_calibration_qp(
     print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
 
     print("")
-    print("diff_x_lst (prec_x = ", prec_x, "):")
-    print(diff_x_lst)
+    print("diff lists on x, yz, r_pri, r_dua (relevant when status is not infeasible):")
 
     print("")
-    print("diff_yz_lst (prec_x = ", prec_yz, "):")
-    print(diff_yz_lst)
+    print("  diff_x_lst (prec_x = ", prec_x, "):")
+    print(" ", diff_x_lst)
 
     print("")
-    print("diff_r_pri_lst (prec_x = ", prec_r_pri, "):")
-    print(diff_r_pri_lst)
+    print("  diff_yz_lst (prec_x = ", prec_yz, "):")
+    print(" ", diff_yz_lst)
 
     print("")
-    print("diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
-    print(diff_r_dua_lst)
+    print("  diff_r_pri_lst (prec_x = ", prec_r_pri, "):")
+    print(" ", diff_r_pri_lst)
 
     print("")
-    print("diff_iter_lst:")
-    print(diff_iter_lst)
+    print("  diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
+    print(" ", diff_r_dua_lst)
 
     print("")
-    print("diff_status_lst:")
-    print(diff_status_lst)
+    print("  diff_iter_lst (prec_iter = ", prec_iter, "):")
+    print(" ", diff_iter_lst)
+
+    print("")
+    print("  diff_status_lst:")
+    print(" ", diff_status_lst)

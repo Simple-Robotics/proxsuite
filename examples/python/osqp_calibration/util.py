@@ -174,6 +174,103 @@ def degenerate_qp(
     return H, g, A, b, C, u, l
 
 
+def box_constrained_qp(
+    dim, n_eq, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
+):
+    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Note: n_in is not in argument, as C must be square with size dim
+
+    rng = np.random.default_rng(seed)
+
+    H = sparse_positive_definite_rand_not_compressed(
+        dim, strong_convexity_factor, sparsity_factor, rng=rng
+    )
+    g = rng.standard_normal(dim)
+
+    A = sparse_matrix_rand_not_compressed(n_eq, dim, sparsity_factor, rng=rng)
+    C = np.ones((dim, dim))
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    x_sol = rng.standard_normal(dim)
+    delta = rng.uniform(size=dim)
+
+    b = A @ x_sol
+
+    u = C @ x_sol + delta
+    l = C @ x_sol - delta
+
+    return H, g, A, b, C, u, l
+
+
+def primal_infeasible_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
+):
+    rng = np.random.default_rng(seed)
+
+    H = sparse_positive_definite_rand_not_compressed(
+        dim, strong_convexity_factor, sparsity_factor, rng=rng
+    )
+    g = rng.standard_normal(dim)
+
+    A = sparse_matrix_rand_not_compressed(n_eq, dim, sparsity_factor, rng=rng)
+    C = sparse_matrix_rand_not_compressed(n_in, dim, sparsity_factor, rng=rng)
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    x_sol = rng.standard_normal(dim)
+    delta = rng.uniform(size=n_in)
+
+    b = A @ x_sol
+
+    u = C @ x_sol + delta
+    l = -1.0e20 * np.ones(n_in)
+
+    n_cont = n_in // 2
+    for idx in range(n_cont):
+        i = 2 * idx
+        j = 2 * idx + 1
+        if j < n_in:
+            C[j] = -C[i]
+            u[i] = rng.uniform(1.0, 3.0)
+            u[j] = -rng.uniform(u[i] + 0.5, u[i] + 5.0)
+
+    return H, g, A, b, C, u, l
+
+
+def dual_infeasible_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
+):
+    rng = np.random.default_rng(seed)
+
+    H = np.zeros((dim, dim))
+    g = np.ones(dim)
+
+    A = sparse_matrix_rand_not_compressed(n_eq, dim, sparsity_factor, rng=rng)
+    C = sparse_matrix_rand_not_compressed(n_in, dim, sparsity_factor, rng=rng)
+
+    if sparse:
+        H = spa.csc_matrix(H)
+        A = spa.csc_matrix(A)
+        C = spa.csc_matrix(C)
+
+    x_sol = rng.standard_normal(dim)
+    delta = rng.uniform(size=n_in)
+
+    b = A @ x_sol
+
+    u = C @ x_sol + delta
+    l = -1.0e20 * np.ones(n_in)
+
+    return H, g, A, b, C, u, l
+
+
 @dataclass
 class MarosMeszarosQp:
     filename: str
