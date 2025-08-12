@@ -3,30 +3,49 @@ import osqp
 
 import numpy as np
 import scipy.sparse as spa
-from util import not_strongly_convex_qp, infty_norm, status_to_string
+
+from util import infty_norm, status_to_string
+from util import (
+    unconstrained_qp,
+    strongly_convex_qp,
+    not_strongly_convex_qp,
+    degenerate_qp,
+)
 
 
-def solve_not_strongly_convex_qp(
+def solve_qp(
+    problem: str,
     dim: int,
     n_eq: int,
     n_in: int,
+    m: int,
+    max_iter: int = 4000,
+    compute_preconditioner: bool = True,
+    eps_abs: float = 1e-3,
+    eps_rel: float = 0,
+    sparsity_factor: float = 0.45,
+    strong_convexity_factor: float = 1e-2,
+    adaptive_mu: bool = False,
+    polishing: bool = False,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
     verbose_timings: bool = False,
-    adaptive_mu: bool = False,
-    polishing: bool = False,
-    max_iter: int = 4000,
-    compute_preconditioner: bool = True,
 ):
-    # Precision (OSQP)
-    eps_abs = 1e-3
-    eps_rel = 0
-
-    # Generate a qp problem
-    sparsity_factor = 0.45
-
-    H, g, A, b, C, u, l = not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor)
+    if problem == "unconstrained_qp":
+        H, g, A, b, C, u, l = unconstrained_qp(
+            dim, sparsity_factor, strong_convexity_factor
+        )
+    elif problem == "strongly_convex_qp":
+        H, g, A, b, C, u, l = strongly_convex_qp(
+            dim, n_eq, n_in, sparsity_factor, strong_convexity_factor
+        )
+    elif problem == "not_strongly_convex_qp":
+        H, g, A, b, C, u, l = not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor)
+    elif problem == "degenerate_qp":
+        H, g, A, b, C, u, l = degenerate_qp(
+            dim, n_eq, m, sparsity_factor, strong_convexity_factor
+        )
 
     # OSQP proxsuite
     proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in)
@@ -78,11 +97,11 @@ def solve_not_strongly_convex_qp(
 
     # Check results
     x_proxsuite = proxsuite_osqp.results.x
+    x_source = res_source.x
+
     y_proxsuite = proxsuite_osqp.results.y
     z_proxsuite = proxsuite_osqp.results.z
     yz_proxsuite = np.concatenate([y_proxsuite, z_proxsuite])
-
-    x_source = res_source.x
     y_source = res_source.y
 
     r_pri_proxsuite = proxsuite_osqp.results.info.pri_res
@@ -93,12 +112,6 @@ def solve_not_strongly_convex_qp(
 
     iter_proxsuite = proxsuite_osqp.results.info.iter_ext
     iter_source = res_source.info.iter
-
-    rho_osqp_estimate_proxsuite = proxsuite_osqp.results.info.rho_osqp_estimate
-    rho_osqp_estimate_source = res_source.info.rho_estimate
-
-    mu_updates_proxsuite = proxsuite_osqp.results.info.mu_updates
-    mu_updates_source = res_source.info.rho_updates
 
     status_proxsuite = proxsuite_osqp.results.info.status
     status_source = res_source.info.status
@@ -162,21 +175,6 @@ def solve_not_strongly_convex_qp(
         print("OSQP source")
         print(status_source)
 
-        if adaptive_mu:
-            print("")
-            print("rho_osqp_estimate")
-            print("OSQP proxsuite")
-            print(rho_osqp_estimate_proxsuite)
-            print("OSQP source")
-            print(rho_osqp_estimate_source)
-
-            print("")
-            print("mu_updates")
-            print("OSQP proxsuite")
-            print(mu_updates_proxsuite)
-            print("OSQP source")
-            print(mu_updates_source)
-
         if verbose_timings:
             print("")
             print("setup_time (micro sec)")
@@ -214,35 +212,41 @@ def solve_not_strongly_convex_qp(
         "status_proxsuite": status_proxsuite,
         "status_source": status_source,
     }
+
     return cal_res
 
 
-# Test calibration
-def test_calibration_not_strongly_convex_qp(
+def test_calibration_qp(
+    problem: str,
     dim_start: int = 10,
     dim_end: int = 1000,
-    dim_step: int = 100,
-    full_n_eq: bool = False,
-    full_n_in: bool = False,
+    dim_step: int = 20,
+    only_eq: bool = False,
+    only_in: bool = False,
+    max_iter: int = 4000,
+    compute_preconditioner: bool = True,
+    eps_abs: float = 1e-3,
+    eps_rel: float = 0,
+    sparsity_factor: float = 0.45,
+    strong_convexity_factor: float = 1e-2,
+    adaptive_mu: bool = False,
+    polishing: bool = False,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
     verbose_timings: bool = False,
-    adaptive_mu: bool = False,
-    polishing: bool = False,
-    max_iter: int = 4000,
-    compute_preconditioner: bool = True,
     prec_x: float = 1e-3,
     prec_yz: float = 1e-3,
     prec_r_pri: float = 1e-3,
     prec_r_dua: float = 1e-3,
+    prec_iter: int = 0,
 ):
     # Constraints setting
-    if full_n_eq and full_n_in:
-        print("full_n_eq and full_n_in cannot be set together")
+    if only_eq and only_in:
+        print("only_eq and only_in cannot be set together")
         return
 
-    # Diff lists
+    # Diff lists and failed tests
     diff_x_lst = []
     diff_yz_lst = []
     diff_r_pri_lst = []
@@ -254,28 +258,55 @@ def test_calibration_not_strongly_convex_qp(
     failed_tests = 0
 
     for dim in range(dim_start, dim_end, dim_step):
-        if full_n_eq:
-            n_eq = dim // 2
-            n_in = 0
-        elif full_n_in:
-            n_in = dim // 2
-            n_eq = 0
-        else:
-            n_eq = dim // 4
-            n_in = dim // 4
+        if problem in ["strongly_convex_qp", "not_strongly_convex_qp"]:
+            if only_eq:
+                n_eq = dim // 2
+                n_in = 0
+            elif only_in:
+                n_in = dim // 2
+                n_eq = 0
+            else:
+                n_eq = dim // 4
+                n_in = dim // 4
+            m = 0
 
-        cal_res = solve_not_strongly_convex_qp(
+        elif problem == "unconstrained_qp":
+            n_eq = 0
+            n_in = 0
+            m = 0
+
+        elif problem == "degenerate_qp":
+            if only_eq:
+                n_eq = dim // 2
+                n_in = 0
+                m = 0
+            elif only_in:
+                m = dim // 4
+                n_in = 2 * m
+                n_eq = 0
+            else:
+                m = dim // 4
+                n_in = 2 * m
+                n_eq = dim // 4
+
+        cal_res = solve_qp(
+            problem=problem,
             dim=dim,
             n_eq=n_eq,
             n_in=n_in,
+            m=m,
+            max_iter=max_iter,
+            compute_preconditioner=compute_preconditioner,
+            eps_abs=eps_abs,
+            eps_rel=eps_rel,
+            sparsity_factor=sparsity_factor,
+            strong_convexity_factor=strong_convexity_factor,
+            adaptive_mu=adaptive_mu,
+            polishing=polishing,
             verbose_solver=verbose_solver,
             verbose_results_variables=verbose_results_variables,
             verbose_calibration=verbose_calibration,
             verbose_timings=verbose_timings,
-            adaptive_mu=adaptive_mu,
-            polishing=polishing,
-            max_iter=max_iter,
-            compute_preconditioner=compute_preconditioner,
         )
 
         x_proxsuite = cal_res["x_proxsuite"]
@@ -291,11 +322,11 @@ def test_calibration_not_strongly_convex_qp(
         status_proxsuite = cal_res["status_proxsuite"]
         status_source = cal_res["status_source"]
 
-        max_diff_x = infty_norm(x_proxsuite - x_source)
-        same_x = max_diff_x <= prec_x
+        error_x = infty_norm(x_proxsuite - x_source)
+        same_x = error_x <= prec_x
 
-        max_diff_yz = infty_norm(yz_proxsuite - y_source)
-        same_yz = max_diff_yz <= prec_yz
+        error_yz = infty_norm(yz_proxsuite - y_source)
+        same_yz = error_yz <= prec_yz
 
         error_r_pri = np.abs(r_pri_proxsuite - r_pri_source)
         same_r_pri = error_r_pri <= prec_r_pri
@@ -303,9 +334,10 @@ def test_calibration_not_strongly_convex_qp(
         error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
         same_r_dua = error_r_dua <= prec_r_dua
 
-        same_iter = iter_proxsuite == iter_source
+        error_iter = np.abs(iter_proxsuite - iter_source)
+        same_iter = error_iter <= prec_iter
 
-        both_succeed = (
+        both_solved = (
             status_proxsuite == proxsuite.osqp.PROXQP_SOLVED
             and status_source == "solved"
         )
@@ -313,7 +345,24 @@ def test_calibration_not_strongly_convex_qp(
             status_proxsuite == proxsuite.osqp.PROXQP_MAX_ITER_REACHED
             and status_source == "maximum iterations reached"
         )
-        same_status = True if (both_succeed or both_max_iter) else False
+        both_primal_infeasible = (
+            status_proxsuite == proxsuite.osqp.PROXQP_PRIMAL_INFEASIBLE
+            and status_source == "primal infeasible"
+        )
+        both_dual_infeasible = (
+            status_proxsuite == proxsuite.osqp.PROXQP_DUAL_INFEASIBLE
+            and status_source == "dual infeasible"
+        )
+        same_status = (
+            True
+            if (
+                both_solved
+                or both_max_iter
+                or both_primal_infeasible
+                or both_dual_infeasible
+            )
+            else False
+        )
 
         if not same_x:
             print("")
@@ -326,7 +375,7 @@ def test_calibration_not_strongly_convex_qp(
             else:
                 print("dim ", dim, " > 30 too large for visualization.")
             print("Max error: ")
-            print(max_diff_x)
+            print(error_x)
             diff_x_lst.append(dim)
 
         if not same_yz:
@@ -340,7 +389,7 @@ def test_calibration_not_strongly_convex_qp(
             else:
                 print("n_eq + n_in ", n_eq + n_in, " > 30 too large for visualization.")
             print("Max error: ")
-            print(max_diff_yz)
+            print(error_yz)
             diff_yz_lst.append(dim)
 
         if not same_r_pri:
@@ -367,11 +416,13 @@ def test_calibration_not_strongly_convex_qp(
 
         if not same_iter:
             print("")
-            print("iter differs in dim = ", dim, ":")
+            print("iter differs in dim = ", dim, " at precision ", prec_iter, ":")
             print("Proxsuite: ")
             print(iter_proxsuite)
             print("Source: ")
             print(iter_source)
+            print("Error")
+            print(error_iter)
             diff_iter_lst.append(dim)
 
         if not same_status:
@@ -383,7 +434,14 @@ def test_calibration_not_strongly_convex_qp(
             print(status_source)
             diff_status_lst.append(dim)
 
-        if not (same_x and same_r_dua and same_iter and same_status):
+        if not (
+            same_x
+            and same_yz
+            and same_r_pri
+            and same_r_dua
+            and same_iter
+            and same_status
+        ):
             failed_tests += 1
         nb_tests += 1
 
@@ -414,30 +472,3 @@ def test_calibration_not_strongly_convex_qp(
     print("")
     print("diff_status_lst:")
     print(diff_status_lst)
-
-
-# Run test
-test_calibration_not_strongly_convex_qp(
-    dim_start=10,
-    dim_end=1000,
-    dim_step=20,
-    full_n_eq=False,
-    full_n_in=True,
-)
-
-# Notes:
-
-# full_n_eq:
-# Failed: 50/50 | iter error increases with dim, and max diff iter = 6 in favour of proxsuite
-
-# full_n_in:
-# Failed: 49/50 | iter error increases with dim with big diff in favour of proxsuite (eg 28 vs 208)
-#               | dim=10, 30: diff_yz error 1e-3 | dim=50: diff_yz error 2e-3
-
-# n_eq and n_in:
-# Failed: 50/50 | iter error increases with dim with big diff in favour of proxsuite (eg 38 vs 183)
-#               | dim=10: diff_yz error 1e-3
-
-# => Errors in variable values are negligible
-# => Errors in number of iterations suggest that proxsuite efficient and stable with increasing
-# dim but not osqp source

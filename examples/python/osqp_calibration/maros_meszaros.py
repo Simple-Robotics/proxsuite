@@ -113,12 +113,6 @@ def solve_maros_maszaros(
     iter_proxsuite = proxsuite_osqp.results.info.iter_ext
     iter_source = res_source.info.iter
 
-    rho_osqp_estimate_proxsuite = proxsuite_osqp.results.info.rho_osqp_estimate
-    rho_osqp_estimate_source = res_source.info.rho_estimate
-
-    mu_updates_proxsuite = proxsuite_osqp.results.info.mu_updates
-    mu_updates_source = res_source.info.rho_updates
-
     status_proxsuite = proxsuite_osqp.results.info.status
     status_source = res_source.info.status
 
@@ -192,20 +186,6 @@ def solve_maros_maszaros(
         print(iter_source)
 
         print("")
-        print("rho_osqp_estimate")
-        print("OSQP proxsuite")
-        print(rho_osqp_estimate_proxsuite)
-        print("OSQP source")
-        print(rho_osqp_estimate_source)
-
-        print("")
-        print("mu_updates")
-        print("OSQP proxsuite")
-        print(mu_updates_proxsuite)
-        print("OSQP source")
-        print(mu_updates_source)
-
-        print("")
         print("status")
         print("OSQP proxsuite")
         print(status_proxsuite)
@@ -215,7 +195,7 @@ def solve_maros_maszaros(
     return proxsuite_pass, source_pass
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 MAROS_MESZAROS_DIR = REPO_ROOT / "test" / "data" / "maros_meszaros_data"
 
 files = [
@@ -290,9 +270,9 @@ for file in files:
     filename = str(file)
     proxsuite_pass, source_pass = solve_maros_maszaros(
         filename,
-        verbose_solver=True,
+        verbose_solver=False,
         verbose_results_variables=False,
-        verbose_calibration=True,
+        verbose_calibration=False,
     )
 
     filename_only = Path(filename).name

@@ -1,0 +1,25 @@
+from calibration_base import test_calibration_qp
+
+# Run test
+test_calibration_qp(
+    problem="strongly_convex_qp",
+    dim_start=10,
+    dim_end=1000,
+    dim_step=20,
+    only_eq=False,
+    only_in=False,
+)
+
+# Notes:
+
+# only_eq:
+# Failed: 2/50  | dim=10 iter 27 vs 30 | dim=30 30 vs 31
+
+# only_in:
+# Failed: 16/50 | dim=10 diff_x error 6e-2 and diff_yz error 2e-3 and iter 23 vs 19 |
+#               | other dim: iter (max gap 2)
+
+# n_eq and n_in:
+# Failed: 3/50 | dim=10 iter 25 vs 28 | dim=250 34 vs 35 | dim=990 41 vs 42
+
+# => Implem very close from source
