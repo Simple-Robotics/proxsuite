@@ -12,19 +12,58 @@ def infty_norm(vec: np.ndarray):
     return la.norm(vec, np.inf, axis=0)
 
 
-def status_to_string(status: proxsuite.proxqp.QPSolverOutput):
-    if status == proxsuite.proxqp.PROXQP_SOLVED:
-        return "Solved"
-    elif status == proxsuite.proxqp.PROXQP_MAX_ITER_REACHED:
-        return "Maximum number of iterations reached"
-    elif status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE:
-        return "Primal infeasible"
-    elif status == proxsuite.proxqp.PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE:
-        return "Solved closest primal feasible"
-    elif status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE:
-        return "Dual infeasible"
-    elif status == proxsuite.proxqp.PROXQP_NOT_RUN:
-        return "Solver not run"
+def status_to_string(status, solver):
+    if solver == "proxsuite":
+        if status == proxsuite.osqp.PROXQP_SOLVED:
+            return "Solved"
+        elif status == proxsuite.osqp.PROXQP_MAX_ITER_REACHED:
+            return "Maximum number of iterations reached"
+        elif status == proxsuite.osqp.PROXQP_PRIMAL_INFEASIBLE:
+            return "Primal infeasible"
+        elif status == proxsuite.osqp.PROXQP_DUAL_INFEASIBLE:
+            return "Dual infeasible"
+        elif status == proxsuite.osqp.PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE:
+            return "Solved closest primal feasible"
+        elif status == proxsuite.osqp.PROXQP_NOT_RUN:
+            return "Solver not run"
+
+    elif solver == "source":
+        if status == "solved":
+            return "Solved"
+        elif status == "maximum iterations reached":
+            return "Maximum number of iterations reached"
+        elif status == "primal infeasible":
+            return "Primal infeasible"
+        elif status == "dual infeasible":
+            return "Dual infeasible"
+
+    else:
+        print("solver argument must be proxsuite or source")
+
+
+def status_polish_to_string(status, solver):
+    if solver == "proxsuite":
+        if status == proxsuite.osqp.POLISH_SUCCEEDED:
+            return "Polishing: succeed"
+        elif status == proxsuite.osqp.POLISH_FAILED:
+            return "Polishing: failed"
+        elif status == proxsuite.osqp.POLISH_NOT_RUN:
+            return "Polishing: not run"
+        elif status == proxsuite.osqp.POLISH_NO_ACTIVE_SET_FOUND:
+            return "Polishing: no active set found"
+
+    elif solver == "source":
+        if status == 1:
+            return "Polishing: succeed"
+        elif status == -1:
+            return "Polishing: failed"
+        elif status == 0:
+            return "Polishing: not run"
+        elif status == 2:
+            return "Polishing: no active set found"
+
+    else:
+        print("solver argument must be proxsuite or source")
 
 
 def sparse_positive_definite_rand_not_compressed(dim, rho, p, rng):

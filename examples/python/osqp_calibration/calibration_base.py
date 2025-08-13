@@ -4,7 +4,7 @@ import osqp
 import numpy as np
 import scipy.sparse as spa
 
-from utils import infty_norm, status_to_string
+from utils import infty_norm, status_to_string, status_polish_to_string
 from utils import (
     unconstrained_qp,
     strongly_convex_qp,
@@ -32,6 +32,8 @@ def solve_qp(
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
     polishing: bool = False,
+    delta_osqp: float = 1e-6,
+    polish_refine_iter: int = 3,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
@@ -77,7 +79,10 @@ def solve_qp(
     proxsuite_osqp.settings.eps_dual_inf = eps_dual_inf
 
     proxsuite_osqp.settings.adaptive_mu = adaptive_mu
+
     proxsuite_osqp.settings.polishing = polishing
+    proxsuite_osqp.settings.delta_osqp = delta_osqp
+    proxsuite_osqp.settings.polish_refine_iter = polish_refine_iter
 
     proxsuite_osqp.settings.max_iter = max_iter
     proxsuite_osqp.settings.compute_preconditioner = compute_preconditioner
@@ -115,6 +120,8 @@ def solve_qp(
         adaptive_rho_interval=50,
         adaptive_rho_tolerance=5.0,
         polish=polishing,
+        delta=delta_osqp,
+        polish_refine_iter=polish_refine_iter,
     )
     res_source = prob.solve()
 
@@ -138,6 +145,9 @@ def solve_qp(
 
     status_proxsuite = proxsuite_osqp.results.info.status
     status_source = res_source.info.status
+
+    status_polish_proxsuite = proxsuite_osqp.results.info.status_polish
+    status_polish_source = res_source.info.status_polish
 
     setup_time_proxsuite = proxsuite_osqp.results.info.setup_time
     setup_time_source = res_source.info.setup_time
@@ -194,9 +204,17 @@ def solve_qp(
         print("")
         print("status")
         print("OSQP proxsuite")
-        print(status_proxsuite)
+        print(status_to_string(status_proxsuite, "proxsuite"))
         print("OSQP source")
-        print(status_source)
+        print(status_to_string(status_source, "source"))
+
+        if polishing:
+            print("")
+            print("status_polish")
+            print("OSQP proxsuite")
+            print(status_polish_to_string(status_polish_proxsuite, "proxsuite"))
+            print("OSQP source")
+            print(status_polish_to_string(status_polish_source, "source"))
 
         if verbose_timings:
             print("")
@@ -234,6 +252,8 @@ def solve_qp(
         "iter_source": iter_source,
         "status_proxsuite": status_proxsuite,
         "status_source": status_source,
+        "status_polish_proxsuite": status_polish_proxsuite,
+        "status_polish_source": status_polish_source,
     }
 
     return cal_res
@@ -256,6 +276,8 @@ def test_calibration_qp(
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
     polishing: bool = False,
+    delta_osqp: float = 1e-6,
+    polish_refine_iter: int = 3,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
@@ -264,6 +286,7 @@ def test_calibration_qp(
     prec_yz: float = 1e-3,
     prec_r_pri: float = 1e-3,
     prec_r_dua: float = 1e-3,
+    prec_polish: float = 1e-9,
     prec_iter: int = 0,
 ):
     # Constraints setting
@@ -278,6 +301,7 @@ def test_calibration_qp(
     diff_r_dua_lst = []
     diff_iter_lst = []
     diff_status_lst = []
+    diff_status_polish_lst = []
 
     nb_tests = 0
     failed_tests = 0
@@ -347,6 +371,8 @@ def test_calibration_qp(
             strong_convexity_factor=strong_convexity_factor,
             adaptive_mu=adaptive_mu,
             polishing=polishing,
+            delta_osqp=delta_osqp,
+            polish_refine_iter=polish_refine_iter,
             verbose_solver=verbose_solver,
             verbose_results_variables=verbose_results_variables,
             verbose_calibration=verbose_calibration,
@@ -365,11 +391,38 @@ def test_calibration_qp(
         iter_source = cal_res["iter_source"]
         status_proxsuite = cal_res["status_proxsuite"]
         status_source = cal_res["status_source"]
+        status_polish_proxsuite = cal_res["status_polish_proxsuite"]
+        status_polish_source = cal_res["status_polish_source"]
+
+        status_proxsuite_str = status_to_string(status_proxsuite, "proxsuite")
+        status_source_str = status_to_string(status_source, "source")
+
+        same_status = status_proxsuite_str == status_source_str
+
+        status_polish_proxsuite_str = status_polish_to_string(
+            status_proxsuite, "proxsuite"
+        )
+        status_polish_source_str = status_polish_to_string(status_source, "source")
+
+        same_status_polish = status_polish_proxsuite_str == status_polish_source_str
+
+        error_iter = np.abs(iter_proxsuite - iter_source)
+        same_iter = error_iter <= prec_iter
 
         same_x = True
         same_yz = True
         same_r_pri = True
         same_r_dua = True
+
+        if (
+            same_status_polish
+            and status_polish_to_string(status_polish_source, "source")
+            == "Polishing: succeed"
+        ):
+            prec_x = prec_polish
+            prec_yz = prec_polish
+            prec_r_pri = prec_polish
+            prec_r_dua = prec_polish
 
         # Prevent x_source or y_source = [None, None, None, ...]
         if not (
@@ -386,36 +439,6 @@ def test_calibration_qp(
 
             error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
             same_r_dua = error_r_dua <= prec_r_dua
-
-        error_iter = np.abs(iter_proxsuite - iter_source)
-        same_iter = error_iter <= prec_iter
-
-        both_solved = (
-            status_proxsuite == proxsuite.osqp.PROXQP_SOLVED
-            and status_source == "solved"
-        )
-        both_max_iter = (
-            status_proxsuite == proxsuite.osqp.PROXQP_MAX_ITER_REACHED
-            and status_source == "maximum iterations reached"
-        )
-        both_primal_infeasible = (
-            status_proxsuite == proxsuite.osqp.PROXQP_PRIMAL_INFEASIBLE
-            and status_source == "primal infeasible"
-        )
-        both_dual_infeasible = (
-            status_proxsuite == proxsuite.osqp.PROXQP_DUAL_INFEASIBLE
-            and status_source == "dual infeasible"
-        )
-        same_status = (
-            True
-            if (
-                both_solved
-                or both_max_iter
-                or both_primal_infeasible
-                or both_dual_infeasible
-            )
-            else False
-        )
 
         if not (
             status_source == "primal infeasible" or status_source == "dual infeasible"
@@ -489,10 +512,19 @@ def test_calibration_qp(
             print("")
             print("status differs in dim = ", dim, ":")
             print("Proxsuite: ")
-            print(status_to_string(status_proxsuite))
+            print(status_proxsuite_str)
             print("Source: ")
-            print(status_source)
+            print(status_source_str)
             diff_status_lst.append(dim)
+
+        if not same_status_polish:
+            print("")
+            print("status_polish differs in dim = ", dim, ":")
+            print("Proxsuite: ")
+            print(status_polish_to_string(status_polish_proxsuite, "proxsuite"))
+            print("Source: ")
+            print(status_polish_to_string(status_polish_source, "source"))
+            diff_status_polish_lst.append(dim)
 
         if not (
             same_x
@@ -501,6 +533,7 @@ def test_calibration_qp(
             and same_r_dua
             and same_iter
             and same_status
+            and same_status_polish
         ):
             failed_tests += 1
         nb_tests += 1
@@ -535,3 +568,7 @@ def test_calibration_qp(
     print("")
     print("  diff_status_lst:")
     print(" ", diff_status_lst)
+
+    print("")
+    print("  diff_status_polish_lst:")
+    print(" ", diff_status_polish_lst)

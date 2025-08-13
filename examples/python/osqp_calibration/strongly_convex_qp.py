@@ -18,6 +18,8 @@ test_calibration_qp(
     strong_convexity_factor=1e-2,
     adaptive_mu=False,
     polishing=False,
+    delta_osqp=1e-6,
+    polish_refine_iter=3,
     verbose_solver=False,
     verbose_results_variables=False,
     verbose_calibration=False,
@@ -26,6 +28,7 @@ test_calibration_qp(
     prec_yz=1e-3,
     prec_r_pri=1e-3,
     prec_r_dua=1e-3,
+    prec_polish=1e-9,
     prec_iter=0,
 )
 
@@ -42,3 +45,7 @@ test_calibration_qp(
 # Failed: 3/50 | dim=10 iter 25 vs 28 | dim=250 34 vs 35 | dim=990 41 vs 42
 
 # => Implem very close from source
+
+# Polish:
+# prec_polish = 1e-9
+# => Pass
