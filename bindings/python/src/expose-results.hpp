@@ -30,6 +30,14 @@ exposeResults(nanobind::module_ m)
     .value("PROXQP_NOT_RUN", QPSolverOutput::PROXQP_NOT_RUN)
     .export_values();
 
+  ::nanobind::enum_<PolishStatus>(m, "PolishStatus")
+    .value("POLISH_FAILED", PolishStatus::POLISH_FAILED)
+    .value("POLISH_NOT_RUN", PolishStatus::POLISH_NOT_RUN)
+    .value("POLISH_SUCCEEDED", PolishStatus::POLISH_SUCCEEDED)
+    .value("POLISH_NO_ACTIVE_SET_FOUND",
+           PolishStatus::POLISH_NO_ACTIVE_SET_FOUND)
+    .export_values();
+
   ::nanobind::class_<Info<T>>(m, "Info")
     .def(::nanobind::init(), "Default constructor.")
     .def_rw("mu_eq", &Info<T>::mu_eq)
@@ -60,7 +68,9 @@ exposeResults(nanobind::module_ m)
             "By default it equals 0, in order to get an estimate, set "
             "appropriately the setting option "
             "find_H_minimal_eigenvalue.")
-    .def_rw("rho_osqp_estimate", &Info<T>::rho_osqp_estimate);
+    .def_rw("rho_osqp_estimate", &Info<T>::rho_osqp_estimate)
+    .def_rw("polish_time", &Info<T>::polish_time)
+    .def_rw("status_polish", &Info<T>::status_polish);
 
   ::nanobind::class_<Results<T>>(m, "Results")
     .def(::nanobind::init<isize, isize, isize>(),
