@@ -218,7 +218,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
 
 DOCTEST_TEST_CASE(
   "sparse random strongly convex unconstrained qp and increasing dimension"
-  "with solution poslihing to check that no active set is found")
+  "with solution poslihing")
 {
 
   std::cout << "---testing sparse random strongly convex qp with increasing "
@@ -252,9 +252,10 @@ DOCTEST_TEST_CASE(
 
     qp.solve();
 
-    DOCTEST_CHECK(
-      qp.results.info.status_polish ==
-      proxqp::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND); // because no
-                                                         // constraints
+    DOCTEST_CHECK(qp.results.info.status_polish ==
+                  proxqp::PolishStatus::POLISH_SUCCEEDED);
+    // Note: Choice in the implemntation: Perform solution polishing on Hx = -g
+    // on unconstrained problems to make the dual residual vanish.
+    // It is done in the osqp wrapper from conda.
   }
 }

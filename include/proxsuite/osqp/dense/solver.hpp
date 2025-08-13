@@ -1278,126 +1278,121 @@ qp_solve( //
                      numactive_upper_inequalities,
                      inner_pb_dim);
 
-    if (qpmodel.n_eq == 0 && numactive_inequalities == 0) {
-      qpresults.info.status_polish = PolishStatus::POLISH_NO_ACTIVE_SET_FOUND;
-    } else {
+    // Build the reduced KKT matrix
+    Mat<T> C_low(numactive_lower_inequalities, qpmodel.dim);
+    Mat<T> C_up(numactive_upper_inequalities, qpmodel.dim);
 
-      // Build the reduced KKT matrix
-      Mat<T> C_low(numactive_lower_inequalities, qpmodel.dim);
-      Mat<T> C_up(numactive_upper_inequalities, qpmodel.dim);
+    build_reduced_inequality_constraints_matrices(
+      qpsettings, qpmodel, qpresults, qpwork, n_constraints, C_low, C_up);
 
-      build_reduced_inequality_constraints_matrices(
-        qpsettings, qpmodel, qpresults, qpwork, n_constraints, C_low, C_up);
+    Mat<T> k_polish(inner_pb_dim, inner_pb_dim);
+    Mat<T> k_plus_delta_k_polish(inner_pb_dim, inner_pb_dim);
 
-      Mat<T> k_polish(inner_pb_dim, inner_pb_dim);
-      Mat<T> k_plus_delta_k_polish(inner_pb_dim, inner_pb_dim);
-
-      build_kkt_matrices_polishing(qpsettings,
-                                   qpmodel,
-                                   qpwork,
-                                   hessian_type,
-                                   k_polish,
-                                   k_plus_delta_k_polish,
-                                   C_low,
-                                   C_up,
-                                   numactive_lower_inequalities,
-                                   numactive_upper_inequalities,
-                                   numactive_inequalities);
-
-      proxsuite::linalg::veg::dynstack::DynStackMut stack{
-        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_polish_stack.as_mut()
-      };
-      qpwork.ldl_polish.factorize(k_plus_delta_k_polish.transpose(), stack);
-
-      // Build the reduced rhs
-      Vec<T> rhs_polish(inner_pb_dim);
-
-      build_rhs_polishing(qpsettings,
-                          qpmodel,
-                          qpwork,
-                          hessian_type,
-                          n_constraints,
-                          rhs_polish,
-                          numactive_lower_inequalities,
-                          numactive_upper_inequalities);
-
-      // Solve K t = rhs before iterative refinement
-      Vec<T> hat_t = rhs_polish;
-
-      qpwork.ldl_polish.solve_in_place(hat_t.head(inner_pb_dim), stack);
-
-      // Iterative refinement
-      Vec<T> rhs_polish_refine(inner_pb_dim);
-      Vec<T> delta_hat_t(inner_pb_dim);
-
-      for (i64 iter = 0; iter < qpsettings.polish_refine_iter; ++iter) {
-        rhs_polish_refine = rhs_polish - k_polish * hat_t;
-        delta_hat_t = rhs_polish_refine;
-
-        qpwork.ldl_polish.solve_in_place(delta_hat_t.head(inner_pb_dim), stack);
-
-        hat_t = hat_t + delta_hat_t;
-      }
-
-      // Update variables
-      update_variables_polishing(qpmodel,
-                                 qpresults,
+    build_kkt_matrices_polishing(qpsettings,
+                                 qpmodel,
                                  qpwork,
-                                 box_constraints,
-                                 n_constraints,
-                                 hat_t,
-                                 numactive_lower_inequalities);
+                                 hessian_type,
+                                 k_polish,
+                                 k_plus_delta_k_polish,
+                                 C_low,
+                                 C_up,
+                                 numactive_lower_inequalities,
+                                 numactive_upper_inequalities,
+                                 numactive_inequalities);
 
-      // Check if solution polishing succeeded
-      global_primal_residual(qpmodel,
-                             qpresults,
-                             qpsettings,
-                             qpwork,
-                             ruiz,
-                             box_constraints,
-                             primal_feasibility_lhs,
-                             primal_feasibility_eq_rhs_0,
-                             primal_feasibility_in_rhs_0,
-                             primal_feasibility_eq_lhs,
-                             primal_feasibility_in_lhs);
+    proxsuite::linalg::veg::dynstack::DynStackMut stack{
+      proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_polish_stack.as_mut()
+    };
+    qpwork.ldl_polish.factorize(k_plus_delta_k_polish.transpose(), stack);
 
-      global_dual_residual(qpresults,
+    // Build the reduced rhs
+    Vec<T> rhs_polish(inner_pb_dim);
+
+    build_rhs_polishing(qpsettings,
+                        qpmodel,
+                        qpwork,
+                        hessian_type,
+                        n_constraints,
+                        rhs_polish,
+                        numactive_lower_inequalities,
+                        numactive_upper_inequalities);
+
+    // Solve K t = rhs before iterative refinement
+    Vec<T> hat_t = rhs_polish;
+
+    qpwork.ldl_polish.solve_in_place(hat_t.head(inner_pb_dim), stack);
+
+    // Iterative refinement
+    Vec<T> rhs_polish_refine(inner_pb_dim);
+    Vec<T> delta_hat_t(inner_pb_dim);
+
+    for (i64 iter = 0; iter < qpsettings.polish_refine_iter; ++iter) {
+      rhs_polish_refine = rhs_polish - k_polish * hat_t;
+      delta_hat_t = rhs_polish_refine;
+
+      qpwork.ldl_polish.solve_in_place(delta_hat_t.head(inner_pb_dim), stack);
+
+      hat_t = hat_t + delta_hat_t;
+    }
+
+    // Update variables
+    update_variables_polishing(qpmodel,
+                               qpresults,
+                               qpwork,
+                               box_constraints,
+                               n_constraints,
+                               hat_t,
+                               numactive_lower_inequalities);
+
+    // Check if solution polishing succeeded
+    global_primal_residual(qpmodel,
+                           qpresults,
+                           qpsettings,
                            qpwork,
-                           qpmodel,
-                           box_constraints,
                            ruiz,
-                           dual_feasibility_lhs,
-                           dual_feasibility_rhs_0,
-                           dual_feasibility_rhs_1,
-                           dual_feasibility_rhs_3,
-                           rhs_duality_gap,
-                           duality_gap,
-                           hessian_type);
+                           box_constraints,
+                           primal_feasibility_lhs,
+                           primal_feasibility_eq_rhs_0,
+                           primal_feasibility_in_rhs_0,
+                           primal_feasibility_eq_lhs,
+                           primal_feasibility_in_lhs);
 
-      qpresults.info.pri_res = primal_feasibility_lhs;
-      qpresults.info.dua_res = dual_feasibility_lhs;
-      qpresults.info.duality_gap = duality_gap;
+    global_dual_residual(qpresults,
+                         qpwork,
+                         qpmodel,
+                         box_constraints,
+                         ruiz,
+                         dual_feasibility_lhs,
+                         dual_feasibility_rhs_0,
+                         dual_feasibility_rhs_1,
+                         dual_feasibility_rhs_3,
+                         rhs_duality_gap,
+                         duality_gap,
+                         hessian_type);
 
-      bool polish_succeeded =
-        (qpresults.info.pri_res < pri_res_admm &&
-         qpresults.info.dua_res < dua_res_admm) ||
-        (qpresults.info.pri_res < pri_res_admm && dua_res_admm < 1e-10) ||
-        (qpresults.info.dua_res < dua_res_admm && pri_res_admm < 1e-10);
+    qpresults.info.pri_res = primal_feasibility_lhs;
+    qpresults.info.dua_res = dual_feasibility_lhs;
+    qpresults.info.duality_gap = duality_gap;
 
-      if (polish_succeeded) {
-        qpresults.info.status_polish = PolishStatus::POLISH_SUCCEEDED;
-      } else {
-        qpresults.x = x_admm;
-        qpresults.y = y_admm;
-        qpresults.z = z_admm;
-        qpresults.zeta_in = zeta_in_admm;
+    bool polish_succeeded =
+      (qpresults.info.pri_res < pri_res_admm &&
+       qpresults.info.dua_res < dua_res_admm) ||
+      (qpresults.info.pri_res < pri_res_admm && dua_res_admm < 1e-10) ||
+      (qpresults.info.dua_res < dua_res_admm && pri_res_admm < 1e-10);
 
-        qpresults.info.pri_res = pri_res_admm;
-        qpresults.info.dua_res = dua_res_admm;
-        qpresults.info.duality_gap = duality_gap_admm;
+    if (polish_succeeded) {
+      qpresults.info.status_polish = PolishStatus::POLISH_SUCCEEDED;
+    } else {
+      qpresults.x = x_admm;
+      qpresults.y = y_admm;
+      qpresults.z = z_admm;
+      qpresults.zeta_in = zeta_in_admm;
 
-        qpresults.info.status_polish = PolishStatus::POLISH_FAILED;
-      }
+      qpresults.info.pri_res = pri_res_admm;
+      qpresults.info.dua_res = dua_res_admm;
+      qpresults.info.duality_gap = duality_gap_admm;
+
+      qpresults.info.status_polish = PolishStatus::POLISH_FAILED;
     }
 
     // Timing polishing
