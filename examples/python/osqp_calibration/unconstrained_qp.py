@@ -10,6 +10,8 @@ test_calibration_qp(
     compute_preconditioner=True,
     eps_abs=1e-3,
     eps_rel=0,
+    eps_primal_inf=1e-4,
+    eps_dual_inf=1e-4,
     sparsity_factor=0.45,
     strong_convexity_factor=1e-2,
     adaptive_mu=False,

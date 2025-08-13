@@ -26,6 +26,8 @@ def solve_qp(
     compute_preconditioner: bool = True,
     eps_abs: float = 1e-3,
     eps_rel: float = 0,
+    eps_primal_inf: float = 1e-4,
+    eps_dual_inf: float = 1e-4,
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
@@ -67,8 +69,12 @@ def solve_qp(
     proxsuite_osqp.init(H, g, A, b, C, l, u)
 
     proxsuite_osqp.settings.verbose = verbose_solver
+
     proxsuite_osqp.settings.eps_abs = eps_abs
     proxsuite_osqp.settings.eps_rel = eps_rel
+
+    proxsuite_osqp.settings.eps_primal_inf = eps_primal_inf
+    proxsuite_osqp.settings.eps_dual_inf = eps_dual_inf
 
     proxsuite_osqp.settings.adaptive_mu = adaptive_mu
     proxsuite_osqp.settings.polishing = polishing
@@ -96,6 +102,8 @@ def solve_qp(
         u_source,
         eps_abs=eps_abs,
         eps_rel=eps_rel,
+        eps_prim_inf=eps_primal_inf,
+        eps_dual_inf=eps_dual_inf,
         sigma=1e-6,
         rho=0.1,
         verbose=verbose_solver,
@@ -242,6 +250,8 @@ def test_calibration_qp(
     compute_preconditioner: bool = True,
     eps_abs: float = 1e-3,
     eps_rel: float = 0,
+    eps_primal_inf: float = 1e-4,
+    eps_dual_inf: float = 1e-4,
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
@@ -331,6 +341,8 @@ def test_calibration_qp(
             compute_preconditioner=compute_preconditioner,
             eps_abs=eps_abs,
             eps_rel=eps_rel,
+            eps_primal_inf=eps_primal_inf,
+            eps_dual_inf=eps_dual_inf,
             sparsity_factor=sparsity_factor,
             strong_convexity_factor=strong_convexity_factor,
             adaptive_mu=adaptive_mu,
