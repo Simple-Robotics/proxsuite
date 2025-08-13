@@ -45,3 +45,8 @@ test_calibration_qp(
 # => Errors in variable values are negligible
 # => Errors in number of iterations suggest that proxsuite efficient and stable with increasing
 # dim but not osqp source
+
+# Note:
+# We are in a not strong convexity setting regarding the hessian (H)
+# # With ineq: Number of iters is stable (around 38 from some values of dim), but source incearses with dim
+# # With eq only: Not this behaviour (and max 6 iter of difference)

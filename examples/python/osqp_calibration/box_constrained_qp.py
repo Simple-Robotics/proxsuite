@@ -37,7 +37,11 @@ test_calibration_qp(
 # only_in:
 # Failed: 47/50 | dim=10 diff x 5e-3, diff y 0.8 (one coord), diff r_pri 7e-3,
 #                 diff iter 205 vs 376, primal inf vs solved
-#               | other dims: iter proxsuite better than source, same status solved
+#               | some dims with iter gap = 1 only, other with way larger
+#               | proxsuite always better in terms of iter
 
 # n_eq and n_in:
 # Same that only_in
+
+# Note:
+# We are in a non strong convexity setting regarding the constraints (C)
