@@ -46,3 +46,6 @@ test_calibration_qp(
 # Proxsuite residuals > (>>) to source residual.
 # With dim increasing: This difference (ratio) vanishes
 # Intuition ?
+
+# Note:
+# Not any mistake on r_dua -> the same, but r_pri (and variables) differ

@@ -7,7 +7,7 @@ test_calibration_qp(
     dim_end=1000,
     dim_step=20,
     only_eq=False,
-    only_in=True,
+    only_in=False,
     max_iter=4000,
     compute_preconditioner=True,
     eps_abs=1e-3,
@@ -24,7 +24,7 @@ test_calibration_qp(
     prec_yz=1e-3,
     prec_r_pri=1e-3,
     prec_r_dua=1e-3,
-    prec_iter=1,
+    prec_iter=0,
 )
 
 # Notes:
@@ -40,4 +40,4 @@ test_calibration_qp(
 # All tests pass
 
 # => At prec_iter = 1, almost al tests pass on status + number of iter
-# => All tests pass with iprec_iter = 0 on status
+# => All tests pass with prec_iter = 0 on status

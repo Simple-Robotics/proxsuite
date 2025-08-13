@@ -4,8 +4,8 @@ import osqp
 import numpy as np
 import scipy.sparse as spa
 
-from util import infty_norm, status_to_string
-from util import (
+from utils import infty_norm, status_to_string
+from utils import (
     unconstrained_qp,
     strongly_convex_qp,
     not_strongly_convex_qp,

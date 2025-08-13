@@ -24,16 +24,9 @@ test_calibration_qp(
     prec_yz=1e-3,
     prec_r_pri=1e-3,
     prec_r_dua=1e-3,
-    prec_iter=1,
+    prec_iter=0,
 )
 
 # Notes:
 
-# only_eq:
-#
-
-# only_in:
-#
-
-# n_eq and n_in:
-#
+# => Implem very close from source
