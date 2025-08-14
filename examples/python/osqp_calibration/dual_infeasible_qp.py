@@ -17,12 +17,15 @@ test_calibration_qp(
     sparsity_factor=0.45,
     strong_convexity_factor=1e-2,
     adaptive_mu=False,
+    adaptive_mu_interval=50,
+    adaptive_mu_tolerance=5.0,
     polishing=False,
     delta_osqp=1e-6,
     polish_refine_iter=3,
+    verbose_test_settings=True,
     verbose_solver=False,
     verbose_results_variables=False,
-    verbose_calibration=True,
+    verbose_calibration=False,
     verbose_timings=False,
     prec_x=1e-3,
     prec_yz=1e-3,
@@ -30,6 +33,7 @@ test_calibration_qp(
     prec_r_dua=1e-3,
     prec_polish=1e-9,
     prec_iter=0,
+    prec_mu_updates=0,
 )
 
 # Notes:

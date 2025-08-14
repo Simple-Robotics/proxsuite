@@ -17,9 +17,12 @@ test_calibration_qp(
     sparsity_factor=0.45,
     strong_convexity_factor=1e-2,
     adaptive_mu=False,
+    adaptive_mu_interval=50,
+    adaptive_mu_tolerance=5.0,
     polishing=False,
     delta_osqp=1e-6,
     polish_refine_iter=3,
+    verbose_test_settings=True,
     verbose_solver=False,
     verbose_results_variables=False,
     verbose_calibration=False,
@@ -30,6 +33,7 @@ test_calibration_qp(
     prec_r_dua=1e-3,
     prec_polish=1e-9,
     prec_iter=0,
+    prec_mu_updates=0,
 )
 
 # Notes:
@@ -53,3 +57,17 @@ test_calibration_qp(
 # We are in a not strong convexity setting regarding the hessian (H)
 # # With ineq: Number of iters is stable (around 38 from some values of dim), but source incearses with dim
 # # With eq only: Not this behaviour (and max 6 iter of difference)
+
+
+# Polishing, only_eq / only_in:
+# False, False: Pass
+# True, False: Pass
+# False, True: status polish different at dim = 390 and 430 => proxsuite sucess and source fails
+
+# => In the big lines: Pass or better
+
+# Mu updates:
+# True, False: Same results, and no mu update (proxsuite and source)
+# False, False: Still large number of iter fails | full mu updates fails from dim threshold (proxsuite dont and source does)
+# False, True: Same
+# Interpretation: Comes from the fact that proxsuite is stopped way before ?

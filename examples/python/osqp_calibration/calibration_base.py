@@ -31,6 +31,8 @@ def solve_qp(
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
+    adaptive_mu_interval: int = 50,
+    adaptive_mu_tolerance: float = 5.0,
     polishing: bool = False,
     delta_osqp: float = 1e-6,
     polish_refine_iter: int = 3,
@@ -79,6 +81,8 @@ def solve_qp(
     proxsuite_osqp.settings.eps_dual_inf = eps_dual_inf
 
     proxsuite_osqp.settings.adaptive_mu = adaptive_mu
+    proxsuite_osqp.settings.adaptive_mu_interval = adaptive_mu_interval
+    proxsuite_osqp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance
 
     proxsuite_osqp.settings.polishing = polishing
     proxsuite_osqp.settings.delta_osqp = delta_osqp
@@ -117,8 +121,8 @@ def solve_qp(
         warm_start=False,
         check_termination=1,
         adaptive_rho=adaptive_mu,
-        adaptive_rho_interval=50,
-        adaptive_rho_tolerance=5.0,
+        adaptive_rho_interval=adaptive_mu_interval,
+        adaptive_rho_tolerance=adaptive_mu_tolerance,
         polish=polishing,
         delta=delta_osqp,
         polish_refine_iter=polish_refine_iter,
@@ -143,6 +147,9 @@ def solve_qp(
     iter_proxsuite = proxsuite_osqp.results.info.iter_ext
     iter_source = res_source.info.iter
 
+    mu_updates_proxsuite = proxsuite_osqp.results.info.mu_updates
+    mu_updates_source = res_source.info.rho_updates
+
     status_proxsuite = proxsuite_osqp.results.info.status
     status_source = res_source.info.status
 
@@ -161,82 +168,89 @@ def solve_qp(
     # Prints calibration OSQP proxsuite vs source
     if verbose_results_variables or verbose_calibration:
         print("-----------------------------------------------------------------")
-        print("")
         print("Comparison of results between OSQP proxsuite and source")
+        print("")
 
     if verbose_results_variables:
-        print("")
         print("x")
         print("OSQP proxsuite")
         print(x_proxsuite)
         print("OSQP source")
         print(x_source)
-
         print("")
+
         print("(y, z) (proxsuite) vs y (source)")
         print("OSQP proxsuite")
         print(yz_proxsuite)
         print("OSQP source")
         print(y_source)
+        print("")
 
     if verbose_calibration:
-        print("")
         print("r_pri")
         print("OSQP proxsuite")
         print(r_pri_proxsuite)
         print("OSQP source")
         print(r_pri_source)
-
         print("")
+
         print("r_dua")
         print("OSQP proxsuite")
         print(r_dua_proxsuite)
         print("OSQP source")
         print(r_dua_source)
-
         print("")
+
         print("iter")
         print("OSQP proxsuite")
         print(iter_proxsuite)
         print("OSQP source")
         print(iter_source)
-
         print("")
+
         print("status")
         print("OSQP proxsuite")
         print(status_to_string(status_proxsuite, "proxsuite"))
         print("OSQP source")
         print(status_to_string(status_source, "source"))
 
-        if polishing:
+        if adaptive_mu:
+            print("mu_updates")
+            print("OSQP proxsuite")
+            print(mu_updates_proxsuite)
+            print("OSQP source")
+            print(mu_updates_source)
             print("")
+
+        if polishing:
             print("status_polish")
             print("OSQP proxsuite")
             print(status_polish_to_string(status_polish_proxsuite, "proxsuite"))
             print("OSQP source")
             print(status_polish_to_string(status_polish_source, "source"))
+            print("")
 
         if verbose_timings:
-            print("")
             print("setup_time (micro sec)")
             print("OSQP proxsuite")
             print(setup_time_proxsuite)
             print("OSQP source")
             print(1e6 * setup_time_source)
-
             print("")
+
             print("solve_time (micro sec)")
             print("OSQP proxsuite")
             print(solve_time_proxsuite)
             print("OSQP source")
             print(1e6 * solve_time_source)
-
             print("")
+
             print("run_time (micro sec)")
             print("OSQP proxsuite")
             print(run_time_proxsuite)
             print("OSQP source")
             print(1e6 * run_time_source)
+            print("")
 
     # Calibration results
     cal_res = {
@@ -250,6 +264,8 @@ def solve_qp(
         "r_dua_source": r_dua_source,
         "iter_proxsuite": iter_proxsuite,
         "iter_source": iter_source,
+        "mu_updates_proxsuite": mu_updates_proxsuite,
+        "mu_updates_source": mu_updates_source,
         "status_proxsuite": status_proxsuite,
         "status_source": status_source,
         "status_polish_proxsuite": status_polish_proxsuite,
@@ -275,9 +291,12 @@ def test_calibration_qp(
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
+    adaptive_mu_interval: int = 50,
+    adaptive_mu_tolerance: float = 5.0,
     polishing: bool = False,
     delta_osqp: float = 1e-6,
     polish_refine_iter: int = 3,
+    verbose_test_settings: bool = False,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
     verbose_calibration: bool = False,
@@ -288,11 +307,19 @@ def test_calibration_qp(
     prec_r_dua: float = 1e-3,
     prec_polish: float = 1e-9,
     prec_iter: int = 0,
+    prec_mu_updates: int = 0,
 ):
     # Constraints setting
     if only_eq and only_in:
         print("only_eq and only_in cannot be set together")
         return
+
+    if verbose_test_settings:
+        function_args = locals().copy()
+        print("Calibration test settings:")
+        for param_name, param_value in function_args.items():
+            print(f"  {param_name}: {param_value}")
+        print("")
 
     # Diff lists and failed tests
     diff_x_lst = []
@@ -300,6 +327,7 @@ def test_calibration_qp(
     diff_r_pri_lst = []
     diff_r_dua_lst = []
     diff_iter_lst = []
+    diff_mu_updates_lst = []
     diff_status_lst = []
     diff_status_polish_lst = []
 
@@ -370,6 +398,8 @@ def test_calibration_qp(
             sparsity_factor=sparsity_factor,
             strong_convexity_factor=strong_convexity_factor,
             adaptive_mu=adaptive_mu,
+            adaptive_mu_interval=adaptive_mu_interval,
+            adaptive_mu_tolerance=adaptive_mu_tolerance,
             polishing=polishing,
             delta_osqp=delta_osqp,
             polish_refine_iter=polish_refine_iter,
@@ -389,6 +419,8 @@ def test_calibration_qp(
         r_dua_source = cal_res["r_dua_source"]
         iter_proxsuite = cal_res["iter_proxsuite"]
         iter_source = cal_res["iter_source"]
+        mu_updates_proxsuite = cal_res["mu_updates_proxsuite"]
+        mu_updates_source = cal_res["mu_updates_source"]
         status_proxsuite = cal_res["status_proxsuite"]
         status_source = cal_res["status_source"]
         status_polish_proxsuite = cal_res["status_polish_proxsuite"]
@@ -400,52 +432,61 @@ def test_calibration_qp(
         same_status = status_proxsuite_str == status_source_str
 
         status_polish_proxsuite_str = status_polish_to_string(
-            status_proxsuite, "proxsuite"
+            status_polish_proxsuite, "proxsuite"
         )
-        status_polish_source_str = status_polish_to_string(status_source, "source")
+        status_polish_source_str = status_polish_to_string(
+            status_polish_source, "source"
+        )
 
         same_status_polish = status_polish_proxsuite_str == status_polish_source_str
 
         error_iter = np.abs(iter_proxsuite - iter_source)
         same_iter = error_iter <= prec_iter
 
+        error_mu_updates = np.abs(mu_updates_proxsuite - mu_updates_source)
+        same_mu_updates = error_mu_updates <= prec_mu_updates
+
         same_x = True
         same_yz = True
         same_r_pri = True
         same_r_dua = True
 
-        if (
-            same_status_polish
-            and status_polish_to_string(status_polish_source, "source")
-            == "Polishing: succeed"
-        ):
-            prec_x = prec_polish
-            prec_yz = prec_polish
-            prec_r_pri = prec_polish
-            prec_r_dua = prec_polish
+        same_pol_success = (
+            same_status_polish and status_polish_source_str == "Polishing: succeed"
+        )
+
+        eps_x = prec_x
+        eps_yz = prec_yz
+        eps_r_pri = prec_r_pri
+        eps_r_dua = prec_r_dua
+
+        if same_pol_success:
+            eps_x = prec_polish
+            eps_yz = prec_polish
+            eps_r_pri = prec_polish
+            eps_r_dua = prec_polish
 
         # Prevent x_source or y_source = [None, None, None, ...]
         if not (
             status_source == "primal infeasible" or status_source == "dual infeasible"
         ):
             error_x = infty_norm(x_proxsuite - x_source)
-            same_x = error_x <= prec_x
+            same_x = error_x <= eps_x
 
             error_yz = infty_norm(yz_proxsuite - y_source)
-            same_yz = error_yz <= prec_yz
+            same_yz = error_yz <= eps_yz
 
             error_r_pri = np.abs(r_pri_proxsuite - r_pri_source)
-            same_r_pri = error_r_pri <= prec_r_pri
+            same_r_pri = error_r_pri <= eps_r_pri
 
             error_r_dua = np.abs(r_dua_proxsuite - r_dua_source)
-            same_r_dua = error_r_dua <= prec_r_dua
+            same_r_dua = error_r_dua <= eps_r_dua
 
         if not (
             status_source == "primal infeasible" or status_source == "dual infeasible"
         ):
             if not same_x:
-                print("")
-                print("x differs in dim = ", dim, " at precision ", prec_x, ":")
+                print("x differs in dim = ", dim, " at precision ", eps_x, ":")
                 if dim <= 30:
                     print("Proxsuite: ")
                     print(x_proxsuite)
@@ -455,11 +496,11 @@ def test_calibration_qp(
                     print("dim ", dim, " > 30 too large for visualization.")
                 print("Max error: ")
                 print(error_x)
+                print("")
                 diff_x_lst.append(dim)
 
             if not same_yz:
-                print("")
-                print("yz differs in dim = ", dim, " at precision ", prec_yz, ":")
+                print("yz differs in dim = ", dim, " at precision ", eps_yz, ":")
                 if n_eq + n_in <= 30:
                     print("Proxsuite: ")
                     print(yz_proxsuite)
@@ -473,32 +514,32 @@ def test_calibration_qp(
                     )
                 print("Max error: ")
                 print(error_yz)
+                print("")
                 diff_yz_lst.append(dim)
 
             if not same_r_pri:
-                print("")
-                print("r_pri differs in dim = ", dim, " at precision ", prec_r_pri, ":")
+                print("r_pri differs in dim = ", dim, " at precision ", eps_r_pri, ":")
                 print("Proxsuite: ")
                 print(r_pri_proxsuite)
                 print("Source: ")
                 print(r_pri_source)
                 print("Error")
                 print(error_r_pri)
+                print("")
                 diff_r_pri_lst.append(dim)
 
             if not same_r_dua:
-                print("")
-                print("r_dua differs in dim = ", dim, " at precision ", prec_r_dua, ":")
+                print("r_dua differs in dim = ", dim, " at precision ", eps_r_dua, ":")
                 print("Proxsuite: ")
                 print(r_dua_proxsuite)
                 print("Source: ")
                 print(r_dua_source)
                 print("Error")
                 print(error_r_dua)
+                print("")
                 diff_r_dua_lst.append(dim)
 
         if not same_iter:
-            print("")
             print("iter differs in dim = ", dim, " at precision ", prec_iter, ":")
             print("Proxsuite: ")
             print(iter_proxsuite)
@@ -506,25 +547,43 @@ def test_calibration_qp(
             print(iter_source)
             print("Error")
             print(error_iter)
+            print("")
             diff_iter_lst.append(dim)
 
-        if not same_status:
+        if not same_mu_updates:
+            print(
+                "mu_updates differs in dim = ",
+                dim,
+                " at precision ",
+                prec_mu_updates,
+                ":",
+            )
+            print("Proxsuite: ")
+            print(mu_updates_proxsuite)
+            print("Source: ")
+            print(mu_updates_source)
+            print("Error")
+            print(error_mu_updates)
             print("")
+            diff_mu_updates_lst.append(dim)
+
+        if not same_status:
             print("status differs in dim = ", dim, ":")
             print("Proxsuite: ")
             print(status_proxsuite_str)
             print("Source: ")
             print(status_source_str)
             diff_status_lst.append(dim)
+            print("")
 
         if not same_status_polish:
-            print("")
             print("status_polish differs in dim = ", dim, ":")
             print("Proxsuite: ")
             print(status_polish_to_string(status_polish_proxsuite, "proxsuite"))
             print("Source: ")
             print(status_polish_to_string(status_polish_source, "source"))
             diff_status_polish_lst.append(dim)
+            print("")
 
         if not (
             same_x
@@ -532,43 +591,76 @@ def test_calibration_qp(
             and same_r_pri
             and same_r_dua
             and same_iter
+            and same_mu_updates
             and same_status
             and same_status_polish
         ):
             failed_tests += 1
         nb_tests += 1
 
-    print("")
     print("Results of calibration test")
     print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
-
     print("")
-    print("diff lists on x, yz, r_pri, r_dua (relevant when status is not infeasible):")
 
-    print("")
-    print("  diff_x_lst (prec_x = ", prec_x, "):")
+    if polishing:
+        print(
+            "diff criteria at a given dim:\n",
+            "prec_polish =",
+            prec_polish,
+            "if both solvers gave results with polishing, \n else prec_x =",
+            prec_x,
+            ", prec_yz =",
+            prec_yz,
+            ", prec_r_pri =",
+            prec_r_pri,
+            ", prec_r_dua =",
+            prec_r_dua,
+        )
+        print("")
+    else:
+        print(
+            "diff criteria at a given dim:\n",
+            " prec_x =",
+            prec_x,
+            ", prec_yz =",
+            prec_yz,
+            ", prec_r_pri =",
+            prec_r_pri,
+            ", prec_r_dua =",
+            prec_r_dua,
+        )
+        print("")
+
+    print("  diff_x_lst:")
     print(" ", diff_x_lst)
-
     print("")
-    print("  diff_yz_lst (prec_x = ", prec_yz, "):")
+
+    print("  diff_yz_lst:")
     print(" ", diff_yz_lst)
-
     print("")
-    print("  diff_r_pri_lst (prec_x = ", prec_r_pri, "):")
+
+    print("  diff_r_pri_lst:")
     print(" ", diff_r_pri_lst)
-
     print("")
-    print("  diff_r_dua_lst (prec_x = ", prec_r_dua, "):")
+
+    print("  diff_r_dua_lst:")
     print(" ", diff_r_dua_lst)
-
     print("")
-    print("  diff_iter_lst (prec_iter = ", prec_iter, "):")
+
+    print("  diff_iter_lst:")
     print(" ", diff_iter_lst)
-
     print("")
+
     print("  diff_status_lst:")
     print(" ", diff_status_lst)
-
     print("")
-    print("  diff_status_polish_lst:")
-    print(" ", diff_status_polish_lst)
+
+    if adaptive_mu:
+        print("  diff_mu_updates_lst:")
+        print(" ", diff_mu_updates_lst)
+        print("")
+
+    if polishing:
+        print("  diff_status_polish_lst:")
+        print(" ", diff_status_polish_lst)
+        print("")
