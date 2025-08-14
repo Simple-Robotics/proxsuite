@@ -86,7 +86,7 @@ TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
   using isize = proxqp::utils::isize;
-  proxsuite::proxqp::Timer<T> timer;
+  proxsuite::common::Timer<T> timer;
   T elapsed_time = 0.0;
 
   for (auto const* file : files) {

@@ -10,6 +10,7 @@ using I = long long;
 
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
+using namespace proxsuite::common;
 
 int
 main(int /*argc*/, const char** /*argv*/)

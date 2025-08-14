@@ -11,7 +11,7 @@
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
-#include <proxsuite/proxqp/timings.hpp>
+#include <proxsuite/common/timings.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
@@ -27,6 +27,8 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+using namespace proxsuite::common;
 
 template<typename T, typename I>
 void

@@ -9,12 +9,15 @@
 
 #include <Eigen/Core>
 #include <proxsuite/linalg/dense/ldlt.hpp>
-#include <proxsuite/proxqp/timings.hpp>
+#include <proxsuite/common/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using namespace proxsuite::common;
+
 ///
 /// @brief This class defines the workspace of the dense solver.
 ///

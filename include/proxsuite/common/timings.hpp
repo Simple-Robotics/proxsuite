@@ -8,7 +8,7 @@
 #include <chrono>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 
 struct CPUTimes
 {
@@ -95,7 +95,7 @@ protected:
   std::chrono::time_point<std::chrono::steady_clock> m_start, m_end;
 };
 
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
 #endif // ifndef PROXSUITE_PROXQP_TIMINGS_HPP
