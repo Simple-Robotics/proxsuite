@@ -10,7 +10,7 @@
 
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/common/status.hpp>
 #include <proxsuite/proxqp/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
@@ -20,6 +20,8 @@
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using namespace proxsuite::common;
 
 template<typename T,
          typename MatIn,

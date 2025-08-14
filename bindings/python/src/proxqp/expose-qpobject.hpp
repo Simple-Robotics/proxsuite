@@ -9,7 +9,7 @@
 
 #include <proxsuite/proxqp/dense/wrapper.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/common/status.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/wrapper.hpp>
 
@@ -20,6 +20,8 @@ using proxsuite::linalg::veg::isize;
 namespace dense {
 
 namespace python {
+
+using namespace proxsuite::common;
 
 template<typename T>
 void

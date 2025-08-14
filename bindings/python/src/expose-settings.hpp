@@ -7,13 +7,16 @@
 #include <nanobind/operators.h>
 
 #include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/common/status.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/settings.hpp>
 
 namespace proxsuite {
 namespace proxqp {
 namespace python {
+
+using namespace proxsuite::common;
+
 template<typename T>
 void
 exposeSettings(nanobind::module_ m)

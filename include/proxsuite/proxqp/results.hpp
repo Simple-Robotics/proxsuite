@@ -12,11 +12,14 @@
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/proxqp/settings.hpp>
-#include "proxsuite/proxqp/status.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 
 namespace proxsuite {
 namespace proxqp {
+
+using namespace proxsuite::common;
+
 ///
 /// @brief This class stores the results statistics of PROXQP solvers with
 /// sparse and dense backends.

@@ -8,12 +8,14 @@
 #define PROXSUITE_PROXQP_SETTINGS_HPP
 
 #include <Eigen/Core>
-#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/common/status.hpp>
 #include <proxsuite/proxqp/dense/views.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
 
 namespace proxsuite {
 namespace proxqp {
+
+using namespace proxsuite::common;
 
 // Sparse backend specifications
 enum struct SparseBackend

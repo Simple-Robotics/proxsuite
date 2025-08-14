@@ -4,11 +4,11 @@
 /**
  * @file constants.hpp
  */
-#ifndef PROXSUITE_PROXQP_CONSTANTS_HPP
-#define PROXSUITE_PROXQP_CONSTANTS_HPP
+#ifndef PROXSUITE_COMMON_STATUS_HPP
+#define PROXSUITE_COMMON_STATUS_HPP
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 
 // SOLVER STATUS
 enum struct QPSolverOutput
@@ -47,7 +47,7 @@ enum struct PolishStatus
   POLISH_NO_ACTIVE_SET_FOUND // no active set detected, polishing skipped.
 };
 
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_CONSTANTS_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_STATUS_HPP */
