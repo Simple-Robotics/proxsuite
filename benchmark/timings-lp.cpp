@@ -9,8 +9,8 @@ using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
 using namespace proxsuite::common;
+using namespace proxsuite::proxqp;
 
 int
 main(int /*argc*/, const char** /*argv*/)
