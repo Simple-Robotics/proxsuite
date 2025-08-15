@@ -20,7 +20,7 @@
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/osqp/utils/prints.hpp>
 #include <proxsuite/common/settings.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 
 namespace proxsuite {
 namespace osqp {

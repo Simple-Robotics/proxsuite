@@ -4,7 +4,7 @@
 #include "proxsuite/common/settings.hpp"
 #include <iostream>
 #include <proxsuite/proxqp/sparse/solver.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
@@ -17,6 +17,7 @@ using namespace proxsuite::linalg::sparse::tags;
 
 using proxsuite::common::HessianType;
 using proxsuite::common::isize;
+using proxsuite::common::Symmetry;
 
 TEST_CASE("upper part")
 {
@@ -52,7 +53,7 @@ TEST_CASE("upper part")
   proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
     n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::UPPER,
   };
-  proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
+  common::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
     n, n_eq, n_in, box_constraints, 1e-3, 10, Symmetry::upper,
   };
   VEG_MAKE_STACK(stack,
@@ -146,7 +147,7 @@ TEST_CASE("lower part")
   proxqp::sparse::preconditioner::RuizEquilibration<T, I> ruiz{
     n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::LOWER,
   };
-  proxqp::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
+  common::dense::preconditioner::RuizEquilibration<T> ruiz_dense{
     n, n_eq, n_in, box_constraints, 1e-3, 10, Symmetry::lower,
   };
   VEG_MAKE_STACK(stack,

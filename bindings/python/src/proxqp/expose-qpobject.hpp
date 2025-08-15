@@ -39,7 +39,7 @@ exposeQpObjectDense(nanobind::module_ m)
     .value("Diagonal", proxsuite::common::HessianType::Diagonal)
     .export_values();
 
-  // ::nanobind::class_<proxsuite::proxqp::dense::preconditioner::RuizEquilibration<T>>(m,
+  // ::nanobind::class_<proxsuite::common::dense::preconditioner::RuizEquilibration<T>>(m,
   // "ruiz")
   //   .def(::nanobind::init(), "Default constructor.")
   //   .def_rw("mu_eq", &RuizEquilibration<T>::delta)
@@ -49,7 +49,7 @@ exposeQpObjectDense(nanobind::module_ m)
   //   .def_rw("iter_ext", &RuizEquilibration<T>::max_iter)
   //   .def_rw("run_time", &RuizEquilibration<T>::sym);
 
-  // ::nanobind::class_<proxsuite::proxqp::dense::preconditioner::RuizEquilibration<T>>(m,
+  // ::nanobind::class_<proxsuite::common::dense::preconditioner::RuizEquilibration<T>>(m,
   // "ruiz")
   //   .def(::nanobind::init(), "Default constructor.")
   //   .def_rw("mu_eq", &RuizEquilibration<T>::delta)

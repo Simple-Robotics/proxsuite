@@ -10,7 +10,7 @@
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/proxqp/dense/helpers.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 
 namespace proxsuite {
@@ -126,7 +126,7 @@ public:
   Settings<T> settings;
   Model<T> model;
   Workspace<T> work;
-  preconditioner::RuizEquilibration<T> ruiz;
+  common::dense::preconditioner::RuizEquilibration<T> ruiz;
 
   /*!
    * Default constructor using QP model dimensions.
@@ -154,10 +154,11 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
     , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    , ruiz(
+        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                             _n_eq,
+                                                             _n_in,
+                                                             _box_constraints })
   {
     work.timer.stop();
   }
@@ -187,10 +188,11 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
     , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    , ruiz(
+        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                             _n_eq,
+                                                             _n_in,
+                                                             _box_constraints })
   {
     work.timer.stop();
   }
@@ -218,10 +220,11 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
     , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    , ruiz(
+        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                             _n_eq,
+                                                             _n_in,
+                                                             _box_constraints })
   {
     work.timer.stop();
   }
@@ -250,10 +253,11 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
     , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    , ruiz(
+        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                             _n_eq,
+                                                             _n_in,
+                                                             _box_constraints })
   {
     work.timer.stop();
   }
@@ -276,10 +280,11 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
     , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim,
-                                                 _n_eq,
-                                                 _n_in,
-                                                 _box_constraints })
+    , ruiz(
+        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                             _n_eq,
+                                                             _n_in,
+                                                             _box_constraints })
   {
     work.timer.stop();
   }
@@ -305,7 +310,10 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
     , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
+    , ruiz(common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                                _n_eq,
+                                                                _n_in,
+                                                                false })
   {
     work.timer.stop();
   }
@@ -327,7 +335,10 @@ public:
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
     , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(preconditioner::RuizEquilibration<T>{ _dim, _n_eq, _n_in, false })
+    , ruiz(common::dense::preconditioner::RuizEquilibration<T>{ _dim,
+                                                                _n_eq,
+                                                                _n_in,
+                                                                false })
   {
     work.timer.stop();
   }

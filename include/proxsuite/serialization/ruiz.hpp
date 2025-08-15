@@ -9,14 +9,14 @@
 #define PROXSUITE_SERIALIZATION_RUIZ_HPP
 
 #include <cereal/cereal.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 
 namespace cereal {
 
 template<class Archive, typename T>
 void
 serialize(Archive& archive,
-          proxsuite::proxqp::dense::preconditioner::RuizEquilibration<T>& ruiz)
+          proxsuite::common::dense::preconditioner::RuizEquilibration<T>& ruiz)
 {
   archive(
     // CEREAL_NVP(ruiz.delta),

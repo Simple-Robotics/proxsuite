@@ -17,9 +17,9 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   int dim = 5;
   int n_eq = 6;
   int n_in = 0;
-  auto sym = proxqp::Symmetry::general; // 0 : upper triangular (by default),
+  auto sym = common::Symmetry::general; // 0 : upper triangular (by default),
   // 1:
-  // auto sym = proxqp::Symmetry::lower; // 0 : upper triangular (by default),
+  // auto sym = common::Symmetry::lower; // 0 : upper triangular (by default),
   // 1: lower triangular ; else full matrix
 
   Scalar sparsity_factor(0.75);
@@ -29,11 +29,11 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   switch (sym) {
-    case proxqp::Symmetry::upper: {
+    case common::Symmetry::upper: {
       qp_random.H = qp_random.H.triangularView<Eigen::Upper>();
       break;
     }
-    case proxqp::Symmetry::lower: {
+    case common::Symmetry::lower: {
       qp_random.H = qp_random.H.triangularView<Eigen::Lower>();
       break;
     }

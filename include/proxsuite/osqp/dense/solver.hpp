@@ -8,7 +8,7 @@
 #ifndef PROXSUITE_OSQP_DENSE_SOLVER_HPP
 #define PROXSUITE_OSQP_DENSE_SOLVER_HPP
 
-#include "proxsuite/proxqp/dense/preconditioner/ruiz.hpp"
+#include "proxsuite/common/dense/preconditioner/ruiz.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
@@ -597,7 +597,7 @@ qp_solve( //
   const bool box_constraints,
   const DenseBackend& dense_backend,
   const HessianType& hessian_type,
-  preconditioner::RuizEquilibration<T>& ruiz)
+  common::dense::preconditioner::RuizEquilibration<T>& ruiz)
 {
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
 

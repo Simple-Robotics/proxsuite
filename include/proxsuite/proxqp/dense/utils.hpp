@@ -19,7 +19,7 @@
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/proxqp/utils/prints.hpp>
 #include <proxsuite/common/settings.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 
 // #include <fmt/format.h>
 // #include <fmt/ostream.h>
@@ -165,17 +165,18 @@ save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
  */
 template<typename T>
 void
-global_primal_residual(const Model<T>& qpmodel,
-                       Results<T>& qpresults,
-                       const Settings<T>& qpsettings,
-                       Workspace<T>& qpwork,
-                       const preconditioner::RuizEquilibration<T>& ruiz,
-                       const bool box_constraints,
-                       T& primal_feasibility_lhs,
-                       T& primal_feasibility_eq_rhs_0,
-                       T& primal_feasibility_in_rhs_0,
-                       T& primal_feasibility_eq_lhs,
-                       T& primal_feasibility_in_lhs)
+global_primal_residual(
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  const Settings<T>& qpsettings,
+  Workspace<T>& qpwork,
+  const common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+  const bool box_constraints,
+  T& primal_feasibility_lhs,
+  T& primal_feasibility_eq_rhs_0,
+  T& primal_feasibility_in_rhs_0,
+  T& primal_feasibility_eq_lhs,
+  T& primal_feasibility_in_lhs)
 {
   // COMPUTES:
   // primal_residual_eq_scaled = scaled(Ax - b)
@@ -279,7 +280,7 @@ global_primal_residual_infeasibility(
   const Model<T>& qpmodel,
   const Settings<T>& qpsettings,
   const bool box_constraints,
-  const preconditioner::RuizEquilibration<T>& ruiz)
+  const common::dense::preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is primal infeasible if the following four conditions hold:
@@ -353,7 +354,7 @@ global_dual_residual_infeasibility(
   const Settings<T>& qpsettings,
   const Model<T>& qpmodel,
   const bool box_constraints,
-  const preconditioner::RuizEquilibration<T>& ruiz)
+  const common::dense::preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is dual infeasible the two following conditions hold:
@@ -438,18 +439,19 @@ global_dual_residual_infeasibility(
  */
 template<typename T>
 void
-global_dual_residual(Results<T>& qpresults,
-                     Workspace<T>& qpwork,
-                     const Model<T>& qpmodel,
-                     const bool box_constraints,
-                     const preconditioner::RuizEquilibration<T>& ruiz,
-                     T& dual_feasibility_lhs,
-                     T& dual_feasibility_rhs_0,
-                     T& dual_feasibility_rhs_1,
-                     T& dual_feasibility_rhs_3,
-                     T& rhs_duality_gap,
-                     T& duality_gap,
-                     const HessianType& hessian_type)
+global_dual_residual(
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const Model<T>& qpmodel,
+  const bool box_constraints,
+  const common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+  T& dual_feasibility_lhs,
+  T& dual_feasibility_rhs_0,
+  T& dual_feasibility_rhs_1,
+  T& dual_feasibility_rhs_3,
+  T& rhs_duality_gap,
+  T& duality_gap,
+  const HessianType& hessian_type)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))

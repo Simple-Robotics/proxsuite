@@ -13,7 +13,7 @@
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/common/dense/fwd.hpp>
-#include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
+#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Eigenvalues>
@@ -318,7 +318,7 @@ setup_equilibration(Workspace<T>& qpwork,
                     const Settings<T>& qpsettings,
                     const bool box_constraints,
                     const HessianType hessian_type,
-                    preconditioner::RuizEquilibration<T>& ruiz,
+                    common::dense::preconditioner::RuizEquilibration<T>& ruiz,
                     bool execute_preconditioner)
 {
 
@@ -531,7 +531,7 @@ setup( //
   Workspace<T>& qpwork,
   Results<T>& qpresults,
   const bool box_constraints,
-  preconditioner::RuizEquilibration<T>& ruiz,
+  common::dense::preconditioner::RuizEquilibration<T>& ruiz,
   PreconditionerStatus preconditioner_status,
   const HessianType hessian_type)
 {

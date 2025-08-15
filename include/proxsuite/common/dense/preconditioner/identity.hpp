@@ -4,13 +4,13 @@
 /**
  * @file identity.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_PRECOND_IDENTITY_HPP
-#define PROXSUITE_PROXQP_DENSE_PRECOND_IDENTITY_HPP
+#ifndef PROXSUITE_COMMON_DENSE_PRECOND_IDENTITY_HPP
+#define PROXSUITE_COMMON_DENSE_PRECOND_IDENTITY_HPP
 
 #include "proxsuite/common/dense/views.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 namespace preconditioner {
 
@@ -109,9 +109,9 @@ struct IdentityPrecond
   }
 };
 } // namespace preconditioner
-} // namespace dense
+} // namespace common
 } // namespace proxqp
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_PRECOND_IDENTITY_HPP     \
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_PRECOND_IDENTITY_HPP     \
         */

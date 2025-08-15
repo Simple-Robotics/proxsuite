@@ -881,16 +881,17 @@ primal_dual_semi_smooth_newton_step(const Settings<T>& qpsettings,
  */
 template<typename T>
 void
-primal_dual_newton_semi_smooth(const Settings<T>& qpsettings,
-                               const Model<T>& qpmodel,
-                               Results<T>& qpresults,
-                               Workspace<T>& qpwork,
-                               const bool box_constraints,
-                               const isize n_constraints,
-                               preconditioner::RuizEquilibration<T>& ruiz,
-                               const DenseBackend& dense_backend,
-                               const HessianType& hessian_type,
-                               T eps_int)
+primal_dual_newton_semi_smooth(
+  const Settings<T>& qpsettings,
+  const Model<T>& qpmodel,
+  Results<T>& qpresults,
+  Workspace<T>& qpwork,
+  const bool box_constraints,
+  const isize n_constraints,
+  common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+  const DenseBackend& dense_backend,
+  const HessianType& hessian_type,
+  T eps_int)
 {
 
   /* MUST CONTAIN IN ENTRY WITH x = x_prev ; y = y_prev ; z = z_prev
@@ -1095,7 +1096,7 @@ qp_solve( //
   const bool box_constraints,
   const DenseBackend& dense_backend,
   const HessianType& hessian_type,
-  preconditioner::RuizEquilibration<T>& ruiz)
+  common::dense::preconditioner::RuizEquilibration<T>& ruiz)
 {
   /*** TEST WITH MATRIX FULL OF NAN FOR DEBUG
     static constexpr Layout layout = rowmajor;

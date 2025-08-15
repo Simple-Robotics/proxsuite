@@ -4,19 +4,19 @@
 /**
  * @file ruiz.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
-#define PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
+#ifndef PROXSUITE_COMMON_DENSE_PRECOND_RUIZ_HPP
+#define PROXSUITE_COMMON_DENSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/dense/fwd.hpp"
-#include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/common/settings.hpp>
+#include <proxsuite/linalg/dense/core.hpp>
 #include <ostream>
 #include <iostream>
 #include <Eigen/Core>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 enum struct Symmetry
 {
   general,
@@ -734,7 +734,7 @@ operator!=(const RuizEquilibration<T>& ruiz1, const RuizEquilibration<T>& ruiz2)
 
 } // namespace preconditioner
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_PRECOND_RUIZ_HPP */
