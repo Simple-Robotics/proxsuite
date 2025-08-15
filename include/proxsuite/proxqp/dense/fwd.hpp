@@ -6,6 +6,7 @@
 #define PROXSUITE_PROXQP_DENSE_FWD_HPP
 
 #include <Eigen/Sparse>
+#include "proxsuite/linalg/veg/vec.hpp"
 #include "proxsuite/helpers/common.hpp"
 
 namespace proxsuite {
