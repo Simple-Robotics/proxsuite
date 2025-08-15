@@ -73,8 +73,8 @@ main(int /*argc*/, const char** /*argv*/)
                              n_eq,
                              n_in,
                              true,
-                             proxsuite::proxqp::DenseBackend::PrimalDualLDLT,
-                             proxsuite::proxqp::HessianType::Diagonal };
+                             proxsuite::common::DenseBackend::PrimalDualLDLT,
+                             proxsuite::common::HessianType::Diagonal };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
     // qp.settings.verbose = true;
@@ -111,8 +111,8 @@ main(int /*argc*/, const char** /*argv*/)
       n_eq,
       n_in,
       true,
-      proxsuite::proxqp::DenseBackend::PrimalDualLDLT,
-      proxsuite::proxqp::HessianType::Dense
+      proxsuite::common::DenseBackend::PrimalDualLDLT,
+      proxsuite::common::HessianType::Dense
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;

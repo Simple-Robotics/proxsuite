@@ -9,7 +9,7 @@
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
-#include "proxsuite/proxqp/settings.hpp"
+#include "proxsuite/common/settings.hpp"
 #include <cmath>
 namespace proxsuite {
 namespace proxqp {

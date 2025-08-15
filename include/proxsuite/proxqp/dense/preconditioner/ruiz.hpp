@@ -10,7 +10,7 @@
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <ostream>
 #include <iostream>
 #include <Eigen/Core>

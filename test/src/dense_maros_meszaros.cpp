@@ -120,7 +120,7 @@ TEST_CASE("dense maros meszaros using the api")
       timer.stop();
       timer.start();
       proxqp::dense::QP<T> qp{
-        dim, n_eq, n_in, false, proxsuite::proxqp::DenseBackend::Automatic
+        dim, n_eq, n_in, false, proxsuite::common::DenseBackend::Automatic
       }; // creating QP object
       qp.init(H, g, A, b, C, l, u);
 

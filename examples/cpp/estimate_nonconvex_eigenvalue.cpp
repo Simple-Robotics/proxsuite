@@ -31,7 +31,7 @@ main()
   T estimate_minimal_eigen_value =
     proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
       qp_random.H,
-      proxqp::EigenValueEstimateMethodOption::ExactMethod,
+      common::EigenValueEstimateMethodOption::ExactMethod,
       1.E-6,
       10000);
   bool compute_preconditioner = false;

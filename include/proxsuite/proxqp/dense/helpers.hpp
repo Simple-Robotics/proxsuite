@@ -10,7 +10,7 @@
 
 #include "proxsuite/common/dense/views.hpp"
 #include <proxsuite/proxqp/results.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/proxqp/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>

@@ -18,7 +18,7 @@
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/proxqp/utils/prints.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 
 // #include <fmt/format.h>

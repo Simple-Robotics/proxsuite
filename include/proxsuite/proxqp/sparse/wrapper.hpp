@@ -8,7 +8,7 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
 #include <proxsuite/proxqp/results.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
 
@@ -731,8 +731,8 @@ solve(
   optional<isize> max_iter = nullopt,
   proxsuite::common::InitialGuessStatus initial_guess =
     proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  proxsuite::proxqp::SparseBackend sparse_backend =
-    proxsuite::proxqp::SparseBackend::Automatic,
+  proxsuite::common::SparseBackend sparse_backend =
+    proxsuite::common::SparseBackend::Automatic,
   bool check_duality_gap = false,
   optional<T> eps_duality_gap_abs = nullopt,
   optional<T> eps_duality_gap_rel = nullopt,

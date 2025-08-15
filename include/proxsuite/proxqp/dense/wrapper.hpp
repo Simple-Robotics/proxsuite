@@ -141,7 +141,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HessianType _hessian_type,
+     proxsuite::common::HessianType _hessian_type,
      DenseBackend _dense_backend)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
@@ -175,7 +175,7 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
                                             _n_eq,
@@ -206,7 +206,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -271,7 +271,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , hessian_type(proxsuite::proxqp::HessianType::Dense)
+    , hessian_type(proxsuite::common::HessianType::Dense)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -293,7 +293,7 @@ public:
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -322,7 +322,7 @@ public:
                                             _n_in,
                                             false))
     , box_constraints(false)
-    , hessian_type(proxsuite::proxqp::HessianType::Dense)
+    , hessian_type(proxsuite::common::HessianType::Dense)
     , results(_dim, _n_eq, _n_in, false, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)

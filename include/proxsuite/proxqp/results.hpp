@@ -11,7 +11,7 @@
 #include <Eigen/Core>
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include "proxsuite/common/status.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 

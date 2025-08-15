@@ -6,7 +6,7 @@
 #include <nanobind/eigen/sparse.h>
 #include <nanobind/operators.h>
 
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/settings.hpp>

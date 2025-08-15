@@ -11,7 +11,7 @@
 #include <proxsuite/linalg/dense/ldlt.hpp>
 #include <proxsuite/common/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 namespace proxsuite {
 namespace proxqp {
 namespace dense {

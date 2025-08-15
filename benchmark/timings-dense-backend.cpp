@@ -65,7 +65,7 @@ main(int /*argc*/, const char** /*argv*/)
     elapsed_time = 0.0;
     timer.stop();
     proxqp::dense::QP<T> qp{
-      dim, n_eq, n_in, true, proxqp::DenseBackend::PrimalLDLT
+      dim, n_eq, n_in, true, common::DenseBackend::PrimalLDLT
     };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
@@ -99,7 +99,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{
-      dim, n_eq, n_in, true, proxqp::DenseBackend::PrimalDualLDLT
+      dim, n_eq, n_in, true, common::DenseBackend::PrimalDualLDLT
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;
@@ -134,7 +134,7 @@ main(int /*argc*/, const char** /*argv*/)
               << elapsed_time * 1e-3 / smooth << "ms" << std::endl;
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare_bis{
-      dim, n_eq, n_in, true, proxqp::DenseBackend::Automatic
+      dim, n_eq, n_in, true, common::DenseBackend::Automatic
     };
     qp_compare_bis.settings.eps_abs = eps_abs;
     qp_compare_bis.settings.eps_rel = 0;

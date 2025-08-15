@@ -34,9 +34,9 @@ exposeQpObjectDense(nanobind::module_ m)
     .export_values();
 
   ::nanobind::enum_<HessianType>(m, "HessianType")
-    .value("Dense", proxsuite::proxqp::HessianType::Dense)
-    .value("Zero", proxsuite::proxqp::HessianType::Zero)
-    .value("Diagonal", proxsuite::proxqp::HessianType::Diagonal)
+    .value("Dense", proxsuite::common::HessianType::Dense)
+    .value("Zero", proxsuite::common::HessianType::Zero)
+    .value("Diagonal", proxsuite::common::HessianType::Diagonal)
     .export_values();
 
   // ::nanobind::class_<proxsuite::proxqp::dense::preconditioner::RuizEquilibration<T>>(m,
@@ -64,15 +64,15 @@ exposeQpObjectDense(nanobind::module_ m)
                           isize,
                           isize,
                           bool,
-                          proxsuite::proxqp::HessianType,
-                          proxsuite::proxqp::DenseBackend>(),
+                          proxsuite::common::HessianType,
+                          proxsuite::common::DenseBackend>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
          nanobind::arg("n_in") = 0,
          nanobind::arg("box_constraints") = false,
-         nanobind::arg("hessian_type") = proxsuite::proxqp::HessianType::Dense,
+         nanobind::arg("hessian_type") = proxsuite::common::HessianType::Dense,
          nanobind::arg("dense_backend") =
-           proxsuite::proxqp::DenseBackend::Automatic,
+           proxsuite::common::DenseBackend::Automatic,
          "Default constructor using QP model dimensions.") // constructor
     .def_rw("results",
             &dense::QP<T>::results,

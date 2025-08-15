@@ -41,9 +41,9 @@ struct init<proxsuite::proxqp::Results<T>>
 };
 
 template<typename T>
-struct init<proxsuite::proxqp::Settings<T>>
+struct init<proxsuite::common::Settings<T>>
 {
-  typedef proxsuite::proxqp::Settings<T> Settings;
+  typedef proxsuite::common::Settings<T> Settings;
 
   static Settings run()
   {

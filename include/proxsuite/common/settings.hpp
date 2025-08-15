@@ -4,19 +4,15 @@
 /**
  * @file settings.hpp
  */
-#ifndef PROXSUITE_PROXQP_SETTINGS_HPP
-#define PROXSUITE_PROXQP_SETTINGS_HPP
+#ifndef PROXSUITE_COMMON_SETTINGS_HPP
+#define PROXSUITE_COMMON_SETTINGS_HPP
 
 #include <Eigen/Core>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/common/dense/views.hpp>
-#include <proxsuite/proxqp/sparse/fwd.hpp>
 
 namespace proxsuite {
-namespace proxqp {
-
-using proxsuite::common::InitialGuessStatus;
-using proxsuite::common::isize;
+namespace common {
 
 // Sparse backend specifications
 enum struct SparseBackend
@@ -444,7 +440,7 @@ operator!=(const Settings<T>& settings1, const Settings<T>& settings2)
   return !(settings1 == settings2);
 }
 
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_SETTINGS_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_SETTINGS_HPP */

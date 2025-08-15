@@ -238,8 +238,8 @@ DOCTEST_TEST_CASE(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::InitialGuessStatus initial_guess =
       proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
-    proxsuite::proxqp::SparseBackend sparse_backend =
-      proxsuite::proxqp::SparseBackend::MatrixFree;
+    proxsuite::common::SparseBackend sparse_backend =
+      proxsuite::common::SparseBackend::MatrixFree;
     proxsuite::proxqp::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,

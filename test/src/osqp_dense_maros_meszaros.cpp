@@ -203,7 +203,7 @@ TEST_CASE("dense maros meszaros using the api")
           n_eq,
           n_in,
           false,
-          proxsuite::proxqp::DenseBackend::PrimalDualLDLT
+          proxsuite::common::DenseBackend::PrimalDualLDLT
         }; // creating QP object
         // TODO: Automatic when PrimalDualLDLT is solved
         qp.init(H, g, A, b, C, l, u);

@@ -256,10 +256,10 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
     qp.settings.eps_abs = 1.E-9;
     qp.settings.verbose = true;
     CHECK(qp.settings.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::Automatic);
-    qp.settings.sparse_backend = proxsuite::proxqp::SparseBackend::MatrixFree;
+          proxsuite::common::SparseBackend::Automatic);
+    qp.settings.sparse_backend = proxsuite::common::SparseBackend::MatrixFree;
     CHECK(qp.settings.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::MatrixFree);
+          proxsuite::common::SparseBackend::MatrixFree);
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -284,7 +284,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
     CHECK(dua_res <= 1e-9);
     CHECK(pri_res <= 1E-9);
     CHECK(qp.results.info.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::MatrixFree);
+          proxsuite::common::SparseBackend::MatrixFree);
     std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
               << std::endl;
     std::cout << "dual residual " << dua_res << "; primal residual " << pri_res
@@ -298,11 +298,11 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
     qp2.settings.eps_abs = 1.E-9;
     qp2.settings.verbose = true;
     CHECK(qp2.settings.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::Automatic);
+          proxsuite::common::SparseBackend::Automatic);
     qp2.settings.sparse_backend =
-      proxsuite::proxqp::SparseBackend::SparseCholesky;
+      proxsuite::common::SparseBackend::SparseCholesky;
     CHECK(qp2.settings.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::SparseCholesky);
+          proxsuite::common::SparseBackend::SparseCholesky);
     qp2.init(qp_random.H,
              qp_random.g,
              qp_random.A,
@@ -327,7 +327,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
     CHECK(dua_res2 <= 1e-9);
     CHECK(pri_res2 <= 1E-9);
     CHECK(qp2.results.info.sparse_backend ==
-          proxsuite::proxqp::SparseBackend::SparseCholesky);
+          proxsuite::common::SparseBackend::SparseCholesky);
     std::cout << "--n = " << n << " n_eq " << n_eq << " n_in " << n_in
               << std::endl;
     std::cout << "dual residual " << dua_res2 << "; primal residual "

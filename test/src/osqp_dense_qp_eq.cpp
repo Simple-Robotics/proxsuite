@@ -188,7 +188,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
     osqp::dense::QP<T> qp{
-      dim, n_eq, n_in, proxqp::HessianType::Zero
+      dim, n_eq, n_in, common::HessianType::Zero
     }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = eps_rel;

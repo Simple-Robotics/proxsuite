@@ -35,7 +35,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HessianType _hessian_type,
+     proxsuite::common::HessianType _hessian_type,
      DenseBackend _dense_backend)
     : proxqp::dense::QP<T>(_dim,
                            _n_eq,
@@ -65,7 +65,7 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : proxqp::dense::QP<T>(_dim,
                            _n_eq,
                            _n_in,
@@ -92,7 +92,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
@@ -171,7 +171,7 @@ public:
   QP(isize _dim,
      isize _n_eq,
      isize _n_in,
-     proxsuite::proxqp::HessianType _hessian_type)
+     proxsuite::common::HessianType _hessian_type)
     : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
@@ -258,7 +258,7 @@ public:
     T default_mu_eq_osqp = 1e-2;
     T default_mu_in_osqp = 1e1;
 
-    // From proxsuite/proxqp/settings.hpp (proxsuite)
+    // From proxsuite/common/settings.hpp (proxsuite)
     this->settings.verbose = false;
 
     this->settings.default_rho = 1e-6;

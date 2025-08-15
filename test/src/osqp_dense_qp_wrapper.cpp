@@ -7565,7 +7565,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::ExactMethod,
+        common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
         10000);
 
@@ -7606,7 +7606,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::ExactMethod,
+        common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
         10000);
 
@@ -7647,7 +7647,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::ExactMethod,
+        common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
         10000);
 
@@ -7806,7 +7806,7 @@ TEST_CASE(
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::PowerIteration,
+        common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
         10000);
 
@@ -7847,7 +7847,7 @@ TEST_CASE(
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::PowerIteration,
+        common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
         10000);
 
@@ -7889,7 +7889,7 @@ TEST_CASE(
     T estimate_minimal_eigen_value = proxsuite::proxqp::dense::
       estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
-        proxqp::EigenValueEstimateMethodOption::PowerIteration,
+        common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
         10000);
 
@@ -7986,8 +7986,8 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
 //     n_eq,
 //     n_in,
 //     false,
-//     proxsuite::proxqp::HessianType::Dense,
-//     proxsuite::proxqp::DenseBackend::PrimalLDLT
+//     proxsuite::common::HessianType::Dense,
+//     proxsuite::common::DenseBackend::PrimalLDLT
 //   }; // creating QP object
 //   T eps_abs = T(1e-7);
 //   qp.settings.eps_abs = eps_abs;

@@ -17,7 +17,7 @@ main()
   // and dim box inequality constraints
   // we specify PrimalDualLDLT backend
   proxqp::dense::QP<T> qp(
-    dim, n_eq, n_in, true, proxsuite::proxqp::DenseBackend::PrimalDualLDLT);
+    dim, n_eq, n_in, true, proxsuite::common::DenseBackend::PrimalDualLDLT);
   // true specifies we take into accounts box constraints
   // n_in are any other type of inequality constraints
 
@@ -29,7 +29,7 @@ main()
   // and dim box inequality constraints
   // we specify PrimalLDLT backend
   proxqp::dense::QP<T> qp2(
-    dim, n_eq, 0, true, proxsuite::proxqp::DenseBackend::PrimalLDLT);
+    dim, n_eq, 0, true, proxsuite::common::DenseBackend::PrimalLDLT);
   // true specifies we take into accounts box constraints
   // we don't need to precise n_in = dim, it is taken
   // into account internally
@@ -37,6 +37,6 @@ main()
   // we let here the solver decide with Automatic
   // backend choice.
   proxqp::dense::QP<T> qp3(
-    dim, n_eq, 0, true, proxsuite::proxqp::DenseBackend::Automatic);
+    dim, n_eq, 0, true, proxsuite::common::DenseBackend::Automatic);
   // Note that it is the default choice
 }

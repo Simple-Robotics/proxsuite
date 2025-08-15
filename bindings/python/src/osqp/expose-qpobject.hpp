@@ -32,15 +32,15 @@ exposeQpObjectDense(nanobind::module_ m)
                        isize,
                        isize,
                        bool,
-                       proxsuite::proxqp::HessianType,
-                       proxsuite::proxqp::DenseBackend>(),
+                       proxsuite::common::HessianType,
+                       proxsuite::common::DenseBackend>(),
       nanobind::arg("n") = 0,
       nanobind::arg("n_eq") = 0,
       nanobind::arg("n_in") = 0,
       nanobind::arg("box_constraints") = false,
-      nanobind::arg("hessian_type") = proxsuite::proxqp::HessianType::Dense,
+      nanobind::arg("hessian_type") = proxsuite::common::HessianType::Dense,
       nanobind::arg("dense_backend") =
-        proxsuite::proxqp::DenseBackend::PrimalDualLDLT, // TODO: Automatic when
+        proxsuite::common::DenseBackend::PrimalDualLDLT, // TODO: Automatic when
                                                          // PrimalLDLT is coded
       "Default constructor using QP model dimensions.")  // constructor
     .def_rw("results",
