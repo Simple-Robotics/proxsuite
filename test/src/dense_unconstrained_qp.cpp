@@ -8,9 +8,9 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-using namespace proxsuite;
 
 using T = double;
+using namespace proxsuite;
 
 DOCTEST_TEST_CASE(
   "sparse random strongly convex unconstrained qp and increasing dimension")

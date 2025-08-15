@@ -77,17 +77,17 @@ TEST_CASE("upper part")
     stack);
   HessianType HessianType(proxsuite::proxqp::HessianType::Dense);
   ruiz_dense.scale_qp_in_place(
-    proxqp::dense::QpViewBoxMut<T>{
-      { proxqp::from_eigen, H_scaled_dense },
-      { proxqp::from_eigen, g_scaled_dense },
-      { proxqp::from_eigen, A_scaled_dense },
-      { proxqp::from_eigen, b_scaled_dense },
-      { proxqp::from_eigen, C_scaled_dense },
-      { proxqp::from_eigen, l_scaled_dense },
-      { proxqp::from_eigen, u_scaled_dense },
-      { proxqp::from_eigen, u_scaled_box },
-      { proxqp::from_eigen, l_scaled_box },
-      { proxqp::from_eigen, eye },
+    common::dense::QpViewBoxMut<T>{
+      { common::from_eigen, H_scaled_dense },
+      { common::from_eigen, g_scaled_dense },
+      { common::from_eigen, A_scaled_dense },
+      { common::from_eigen, b_scaled_dense },
+      { common::from_eigen, C_scaled_dense },
+      { common::from_eigen, l_scaled_dense },
+      { common::from_eigen, u_scaled_dense },
+      { common::from_eigen, u_scaled_box },
+      { common::from_eigen, l_scaled_box },
+      { common::from_eigen, eye },
     },
     execute_preconditioner,
     settings.primal_infeasibility_solving,
@@ -170,17 +170,17 @@ TEST_CASE("lower part")
   proxqp::dense::Vec<T> eye(0);
   HessianType HessianType(HessianType::Dense);
   ruiz_dense.scale_qp_in_place(
-    proxqp::dense::QpViewBoxMut<T>{
-      { proxqp::from_eigen, H_scaled_dense },
-      { proxqp::from_eigen, g_scaled_dense },
-      { proxqp::from_eigen, A_scaled_dense },
-      { proxqp::from_eigen, b_scaled_dense },
-      { proxqp::from_eigen, C_scaled_dense },
-      { proxqp::from_eigen, l_scaled_dense },
-      { proxqp::from_eigen, u_scaled_dense },
-      { proxqp::from_eigen, u_scaled_box },
-      { proxqp::from_eigen, l_scaled_box },
-      { proxqp::from_eigen, eye },
+    common::dense::QpViewBoxMut<T>{
+      { common::from_eigen, H_scaled_dense },
+      { common::from_eigen, g_scaled_dense },
+      { common::from_eigen, A_scaled_dense },
+      { common::from_eigen, b_scaled_dense },
+      { common::from_eigen, C_scaled_dense },
+      { common::from_eigen, l_scaled_dense },
+      { common::from_eigen, u_scaled_dense },
+      { common::from_eigen, u_scaled_box },
+      { common::from_eigen, l_scaled_box },
+      { common::from_eigen, eye },
     },
     execute_preconditioner,
     settings.primal_infeasibility_solving,

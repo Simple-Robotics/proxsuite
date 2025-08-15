@@ -11,16 +11,16 @@
 
 using T = double;
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
+using proxsuite::common::isize;
 
 DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(5), n_in(0);
+  isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-1);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -33,7 +33,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
   // Eigen::Matrix<T, 2, 1> l = random_qp.l;
   // Eigen::Matrix<T, 2, 1> u = random_qp.u;
 
-  dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
 
@@ -45,7 +45,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
   Eigen::MatrixXd dx_dg = Eigen::MatrixXd::Zero(dim, dim);
   for (int i = 0; i < dim; i++) {
     loss_derivative(i) = T(1);
-    dense::compute_backward<double>(qp, loss_derivative, 1e-5, 1e-7, 1e-7);
+    proxqp::dense::compute_backward<double>(
+      qp, loss_derivative, 1e-5, 1e-7, 1e-7);
     dx_dg.row(i) = qp.model.backward_data.dL_dg;
     loss_derivative(i) = T(0);
   }
@@ -83,10 +84,10 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(5), n_in(0);
+  isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -99,7 +100,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   // Eigen::Matrix<T, 2, 1> l = random_qp.l;
   // Eigen::Matrix<T, 2, 1> u = random_qp.u;
 
-  dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
 
@@ -111,7 +112,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   Eigen::MatrixXd dx_db = Eigen::MatrixXd::Zero(dim, n_eq);
   for (int i = 0; i < dim; i++) {
     loss_derivative(i) = 1;
-    dense::compute_backward<double>(qp, loss_derivative, 1e-5, 1e-7, 1e-7);
+    proxqp::dense::compute_backward<double>(
+      qp, loss_derivative, 1e-5, 1e-7, 1e-7);
     dx_db.row(i) = qp.model.backward_data.dL_db;
     loss_derivative(i) = 0;
   }
@@ -150,10 +152,10 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  utils::rand::set_seed(1);
-  dense::isize dim = 6;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 6;
 
-  dense::isize n_eq(0), n_in(12);
+  isize n_eq(0), n_in(12);
   T strong_convexity_factor(1.e-1);
   proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -172,7 +174,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
   l(9) = 1e3;
   // Eigen::Matrix<T, 2, 1> u = random_qp.u;
 
-  dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
 
@@ -187,7 +189,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
   Eigen::MatrixXd dx_dg = Eigen::MatrixXd::Zero(dim, dim);
   for (int i = 0; i < dim; i++) {
     loss_derivative(i) = T(1);
-    dense::compute_backward<double>(qp, loss_derivative, 1e-5, 1e-7, 1e-7);
+    proxqp::dense::compute_backward<double>(
+      qp, loss_derivative, 1e-5, 1e-7, 1e-7);
     dx_dg.row(i) = qp.model.backward_data.dL_dg;
     loss_derivative(i) = T(0);
   }

@@ -8,9 +8,9 @@
 #include <proxsuite/osqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-using namespace proxsuite;
 
 using T = double;
+using namespace proxsuite;
 
 DOCTEST_TEST_CASE(
   "sparse random strongly convex unconstrained qp and increasing dimension")
@@ -248,12 +248,12 @@ DOCTEST_TEST_CASE(
             qp_random.u);
 
     DOCTEST_CHECK(qp.results.info.status_polish ==
-                  proxqp::PolishStatus::POLISH_NOT_RUN); // not run before solve
+                  common::PolishStatus::POLISH_NOT_RUN); // not run before solve
 
     qp.solve();
 
     DOCTEST_CHECK(qp.results.info.status_polish ==
-                  proxqp::PolishStatus::POLISH_SUCCEEDED);
+                  common::PolishStatus::POLISH_SUCCEEDED);
     // Note: Choice in the implemntation: Perform solution polishing on Hx = -g
     // on unconstrained problems to make the dual residual vanish.
     // It is done in the osqp wrapper from conda.

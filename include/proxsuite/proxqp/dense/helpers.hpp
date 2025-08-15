@@ -8,6 +8,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_HELPERS_HPP
 #define PROXSUITE_PROXQP_DENSE_HELPERS_HPP
 
+#include "proxsuite/common/dense/views.hpp"
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/common/status.hpp>
@@ -21,7 +22,8 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
-using namespace proxsuite::common;
+using proxsuite::common::dense::infty_norm;
+using proxsuite::common::dense::QpViewBoxMut;
 
 template<typename T,
          typename MatIn,
@@ -55,7 +57,7 @@ power_iteration(const Eigen::MatrixBase<MatIn>& H,
     eig = rhs.dot(dw_cc);
     // calculate associated error
     err_v_cc = dw_cc - eig * rhs_cc;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v_cc);
+    T err = proxsuite::common::dense::infty_norm(err_v_cc);
     // std::cout << "power iteration max: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {
@@ -103,7 +105,7 @@ min_eigen_value_via_modified_power_iteration(
     eig = rhs_cc.dot(dw_cc);
     // calculate associated error
     err_v_cc = dw_cc - eig * rhs_cc;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v_cc);
+    T err = proxsuite::common::dense::infty_norm(err_v_cc);
     // std::cout << "power iteration min: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {

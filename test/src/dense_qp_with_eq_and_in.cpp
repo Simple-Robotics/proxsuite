@@ -8,8 +8,10 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+
 using T = double;
 using namespace proxsuite;
+using proxsuite::proxqp::isize;
 
 DOCTEST_TEST_CASE(
   "sparse random strongly convex qp with equality and inequality constraints "
@@ -23,10 +25,10 @@ DOCTEST_TEST_CASE(
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+  for (isize dim = 10; dim < 1000; dim += 100) {
 
-    proxqp::isize n_eq(dim / 4);
-    proxqp::isize n_in(dim / 4);
+    isize n_eq(dim / 4);
+    isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -75,10 +77,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+  for (isize dim = 10; dim < 1000; dim += 100) {
 
-    proxqp::isize n_eq(0);
-    proxqp::isize n_in(dim);
+    isize n_eq(0);
+    isize n_in(dim);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_box_constrained_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -125,9 +127,9 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
-    proxqp::isize n_in(dim / 2);
-    proxqp::isize n_eq(0);
+  for (isize dim = 10; dim < 1000; dim += 100) {
+    isize n_in(dim / 2);
+    isize n_eq(0);
     proxqp::dense::Model<T> qp_random =
       proxqp::utils::dense_not_strongly_convex_qp(
         dim, n_eq, n_in, sparsity_factor);
@@ -176,10 +178,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   T eps_abs = T(1e-9);
   T strong_convexity_factor(1e-2);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
-    proxqp::isize m(dim / 4);
-    proxqp::isize n_in(2 * m);
-    proxqp::isize n_eq(0);
+  for (isize dim = 10; dim < 1000; dim += 100) {
+    isize m(dim / 4);
+    isize n_in(2 * m);
+    isize n_eq(0);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_degenerate_qp(
       dim,
       n_eq,
@@ -198,7 +200,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
             qp_random.u);
     qp.solve();
     DOCTEST_CHECK(qp.results.info.status ==
-                  proxqp::QPSolverOutput::PROXQP_SOLVED);
+                  common::QPSolverOutput::PROXQP_SOLVED);
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -230,9 +232,9 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
-    proxqp::isize n_in(dim / 2);
-    proxqp::isize n_eq(0);
+  for (isize dim = 10; dim < 1000; dim += 100) {
+    isize n_in(dim / 2);
+    isize n_eq(0);
     proxqp::dense::Model<T> qp_random =
       proxqp::utils::dense_not_strongly_convex_qp(
         dim, n_eq, n_in, sparsity_factor);

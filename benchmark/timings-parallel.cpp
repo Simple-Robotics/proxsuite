@@ -10,8 +10,7 @@ using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using namespace proxsuite::common;
-using namespace proxsuite::proxqp;
+using proxsuite::common::isize;
 
 int
 main(int /*argc*/, const char** /*argv*/)
@@ -20,9 +19,9 @@ main(int /*argc*/, const char** /*argv*/)
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
 
-  dense::isize dim = 100;
-  dense::isize n_eq(50);
-  dense::isize n_in(50);
+  isize dim = 100;
+  isize n_eq(50);
+  isize n_in(50);
 
   T strong_convexity_factor(1.e-2);
   int num_qps = 1024;
@@ -39,20 +38,21 @@ main(int /*argc*/, const char** /*argv*/)
     // Benchmark: generate and initialize dense qps
     std::cout << "############### Generating and initializing QPs ############"
               << std::endl;
-    Timer<T> timer;
+    common::Timer<T> timer;
     for (int j = 0; j < smooth; j++) {
       std::vector<proxqp::dense::QP<T>> qps;
       qps.reserve(num_qps);
       for (int i = 0; i < num_qps; i++) {
-        utils::rand::set_seed(i);
+        proxqp::utils::rand::set_seed(i);
         proxqp::dense::Model<T> qp_random =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-        dense::QP<T> qp{ dim, n_eq, n_in };
+        proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess =
+          common::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -69,9 +69,9 @@ main(int /*argc*/, const char** /*argv*/)
 
     timer.start();
     for (int j = 0; j < smooth; j++) {
-      dense::BatchQP<T> qps_vector = dense::BatchQP<T>(num_qps);
+      proxqp::dense::BatchQP<T> qps_vector = proxqp::dense::BatchQP<T>(num_qps);
       for (int i = 0; i < num_qps; i++) {
-        utils::rand::set_seed(i);
+        proxqp::utils::rand::set_seed(i);
         proxqp::dense::Model<T> qp_random =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -79,7 +79,8 @@ main(int /*argc*/, const char** /*argv*/)
         auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess =
+          common::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -97,16 +98,17 @@ main(int /*argc*/, const char** /*argv*/)
       std::vector<proxqp::sparse::QP<T, I>> qps;
       qps.reserve(num_qps);
       for (int i = 0; i < num_qps; i++) {
-        utils::rand::set_seed(i);
+        proxqp::utils::rand::set_seed(i);
         proxqp::dense::Model<T> qp_dense =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
         proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();
 
-        sparse::QP<T, I> qp{ dim, n_eq, n_in };
+        proxqp::sparse::QP<T, I> qp{ dim, n_eq, n_in };
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess =
+          common::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -123,9 +125,10 @@ main(int /*argc*/, const char** /*argv*/)
 
     timer.start();
     for (int j = 0; j < smooth; j++) {
-      sparse::BatchQP<T, I> qps_vector = sparse::BatchQP<T, I>(num_qps);
+      proxqp::sparse::BatchQP<T, I> qps_vector =
+        proxqp::sparse::BatchQP<T, I>(num_qps);
       for (int i = 0; i < num_qps; i++) {
-        utils::rand::set_seed(i);
+        proxqp::utils::rand::set_seed(i);
         proxqp::dense::Model<T> qp_dense =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -134,7 +137,8 @@ main(int /*argc*/, const char** /*argv*/)
         auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess =
+          common::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -151,21 +155,21 @@ main(int /*argc*/, const char** /*argv*/)
 
   {
     // Benchmark: solve dense qps
-    Timer<T> timer;
+    common::Timer<T> timer;
     std::cout << "#################### Solving DENSE QPs #################### "
               << std::endl;
     std::vector<proxqp::dense::QP<T>> qps;
     qps.reserve(num_qps);
     for (int i = 0; i < num_qps; i++) {
-      utils::rand::set_seed(i);
+      proxqp::utils::rand::set_seed(i);
       proxqp::dense::Model<T> qp_random =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-      dense::QP<T> qp{ dim, n_eq, n_in };
+      proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -176,9 +180,9 @@ main(int /*argc*/, const char** /*argv*/)
       qps.push_back(std::move(qp));
     }
 
-    dense::BatchQP<T> qps_vector = dense::BatchQP<T>(num_qps);
+    proxqp::dense::BatchQP<T> qps_vector = proxqp::dense::BatchQP<T>(num_qps);
     for (int i = 0; i < num_qps; i++) {
-      utils::rand::set_seed(i);
+      proxqp::utils::rand::set_seed(i);
       proxqp::dense::Model<T> qp_random =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -186,7 +190,7 @@ main(int /*argc*/, const char** /*argv*/)
       auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -208,7 +212,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     const size_t NUM_THREADS = (size_t)omp_get_max_threads();
 
-    std::cout << "\nparallel using dense::BatchQP" << std::endl;
+    std::cout << "\nparallel using proxqp::dense::BatchQP" << std::endl;
     for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
       timer.start();
       for (int j = 0; j < smooth; j++) {
@@ -235,22 +239,22 @@ main(int /*argc*/, const char** /*argv*/)
 
   {
     // Benchmark: solve sparse qps
-    Timer<T> timer;
+    common::Timer<T> timer;
     std::cout << "#################### Solving SPARSE QPs #################### "
               << std::endl;
     std::vector<proxqp::sparse::QP<T, I>> qps;
     qps.reserve(num_qps);
     for (int i = 0; i < num_qps; i++) {
-      utils::rand::set_seed(i);
+      proxqp::utils::rand::set_seed(i);
       proxqp::dense::Model<T> qp_dense =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
       proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();
 
-      sparse::QP<T, I> qp{ dim, n_eq, n_in };
+      proxqp::sparse::QP<T, I> qp{ dim, n_eq, n_in };
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -261,9 +265,10 @@ main(int /*argc*/, const char** /*argv*/)
       qps.push_back(std::move(qp));
     }
 
-    sparse::BatchQP<T, I> qps_vector = sparse::BatchQP<T, I>(num_qps);
+    proxqp::sparse::BatchQP<T, I> qps_vector =
+      proxqp::sparse::BatchQP<T, I>(num_qps);
     for (int i = 0; i < num_qps; i++) {
-      utils::rand::set_seed(i);
+      proxqp::utils::rand::set_seed(i);
       proxqp::dense::Model<T> qp_dense =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -272,7 +277,7 @@ main(int /*argc*/, const char** /*argv*/)
       auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -294,7 +299,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     const size_t NUM_THREADS = (size_t)omp_get_max_threads();
 
-    std::cout << "\nparallel using sparse::BatchQP" << std::endl;
+    std::cout << "\nparallel using proxqp::sparse::BatchQP" << std::endl;
     for (size_t num_threads = 1; num_threads <= NUM_THREADS; ++num_threads) {
       timer.start();
       for (int j = 0; j < smooth; j++) {

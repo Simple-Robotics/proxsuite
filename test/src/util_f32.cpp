@@ -20,7 +20,7 @@ LDLT_EXPLICIT_TPL_DEF(3, sparse_positive_definite_rand<f32>);
 } // namespace rand
 
 LDLT_EXPLICIT_TPL_DEF(2, matmul_impl<long double>);
-LDLT_EXPLICIT_TPL_DEF(1, mat_cast<proxqp::f32, long double>);
+LDLT_EXPLICIT_TPL_DEF(1, mat_cast<f32, long double>);
 
 } // namespace utils
 } // namespace proxqp

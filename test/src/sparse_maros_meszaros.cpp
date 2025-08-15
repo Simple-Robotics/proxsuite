@@ -18,16 +18,16 @@ compute_primal_dual_feasibility(const PreprocessedQpSparse& preprocessed,
                                 T& primal_feasibility,
                                 T& dual_feasibility)
 {
-  dual_feasibility = proxsuite::proxqp::dense::infty_norm(
+  dual_feasibility = proxsuite::common::dense::infty_norm(
     preprocessed.H.selfadjointView<Eigen::Upper>() * results.x +
     preprocessed.g + preprocessed.AT * results.y + preprocessed.CT * results.z);
 
-  T prim_eq = proxsuite::proxqp::dense::infty_norm(
+  T prim_eq = proxsuite::common::dense::infty_norm(
     preprocessed.AT.transpose() * results.x - preprocessed.b);
   T prim_in =
-    std::max(proxsuite::proxqp::dense::infty_norm(
+    std::max(proxsuite::common::dense::infty_norm(
                preprocessed.AT.transpose() * results.x - preprocessed.b),
-             proxsuite::proxqp::dense::infty_norm(
+             proxsuite::common::dense::infty_norm(
                helpers::positive_part(preprocessed.CT.transpose() * results.x -
                                       preprocessed.u) +
                helpers::negative_part(preprocessed.CT.transpose() * results.x -
@@ -153,7 +153,7 @@ TEST_CASE("sparse maros meszaros using the API")
 
       for (isize iter = 0; iter < 2; ++iter) {
         if (iter > 0)
-          qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
+          qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::
             WARM_START_WITH_PREVIOUS_RESULT;
         qp.solve();
 
@@ -173,11 +173,11 @@ TEST_CASE("sparse maros meszaros using the API")
       {
         qp.solve();
 
-        CHECK(proxsuite::proxqp::dense::infty_norm(
+        CHECK(proxsuite::common::dense::infty_norm(
                 H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
                 AT * qp.results.y + CT * qp.results.z) <=
               2 * eps_abs_no_duality_gap);
-        CHECK(proxsuite::proxqp::dense::infty_norm(
+        CHECK(proxsuite::common::dense::infty_norm(
                 AT.transpose() * qp.results.x - b) <= eps_abs_no_duality_gap);
         if (n_in > 0) {
           CHECK((CT.transpose() * qp.results.x - l).minCoeff() >
@@ -197,7 +197,7 @@ TEST_CASE("sparse maros meszaros using the API")
 
       {
         qp.settings.initial_guess =
-          proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
+          proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
         qp.settings.check_duality_gap = true;
         qp.settings.eps_abs = eps_abs_with_duality_gap;
         qp.settings.eps_duality_gap_abs = eps_abs_with_duality_gap;

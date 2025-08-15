@@ -132,7 +132,7 @@ TEST_CASE("dense maros meszaros using the api")
 
       for (size_t it = 0; it < 2; ++it) {
         if (it > 0)
-          qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::
+          qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::
             WARM_START_WITH_PREVIOUS_RESULT;
 
         qp.solve();
@@ -140,20 +140,20 @@ TEST_CASE("dense maros meszaros using the api")
         const auto& y = qp.results.y;
         const auto& z = qp.results.z;
 
-        T prim_eq = proxqp::dense::infty_norm(A * x - b);
+        T prim_eq = common::dense::infty_norm(A * x - b);
         T prim_in =
-          proxqp::dense::infty_norm(helpers::positive_part(C * x - u) +
+          common::dense::infty_norm(helpers::positive_part(C * x - u) +
                                     helpers::negative_part(C * x - l));
         std::cout << "primal residual " << std::max(prim_eq, prim_in)
                   << std::endl;
         std::cout << "dual residual "
-                  << proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
+                  << common::dense::infty_norm(H * x + g + A.transpose() * y +
                                                C.transpose() * z)
                   << std::endl;
         std::cout << "iter " << qp.results.info.iter << std::endl;
-        CHECK(proxqp::dense::infty_norm(H * x + g + A.transpose() * y +
+        CHECK(common::dense::infty_norm(H * x + g + A.transpose() * y +
                                         C.transpose() * z) < 2 * eps);
-        CHECK(proxqp::dense::infty_norm(A * x - b) > -eps);
+        CHECK(common::dense::infty_norm(A * x - b) > -eps);
         CHECK((C * x - l).minCoeff() > -eps);
         CHECK((C * x - u).maxCoeff() < eps);
 

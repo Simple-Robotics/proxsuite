@@ -5,7 +5,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
 #include "proxsuite/proxqp/results.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"

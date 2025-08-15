@@ -2,22 +2,23 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
-using namespace proxsuite;
-using namespace proxsuite::proxqp;
 using T = double;
+using namespace proxsuite;
+using proxsuite::common::isize;
+
 int
 main()
 {
-  dense::isize dim = 10;
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize dim = 10;
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   // generate a random qp
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
+  proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -28,7 +29,7 @@ main()
   qp.solve();           // solve the problem
   // re update the linear cost taking previous result
   qp.settings.initial_guess =
-    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // it takes effect at the update because it is set before
   // (the workspace is not erased at the update method, hence
   // the previous factorization is kept)

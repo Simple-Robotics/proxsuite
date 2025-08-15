@@ -37,9 +37,9 @@ auto main() -> int {
         // Generate a random QP problem with primal variable dimension of size
 dim; n_eq equality constraints and n_in inequality constraints
         ::proxsuite::proxqp::test::rand::set_seed(1);
-        proxqp::isize dim = 10;
-        proxqp::isize n_eq(dim / 4);
-        proxqp::isize n_in(dim / 4);
+        isize dim = 10;
+        isize n_eq(dim / 4);
+        isize n_in(dim / 4);
         T strong_convexity_factor(1.e-2);
         T sparsity_factor = 0.15; // controls the sparsity of each matrix of the
 problem generated T eps_abs = T(1e-9); double p = 1.0; T conditioning(10.0);
@@ -259,9 +259,9 @@ struct QP
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
     if (compute_preconditioner_) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
+      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
+      preconditioner_status = proxsuite::common::PreconditionerStatus::IDENTITY;
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
@@ -379,9 +379,9 @@ struct QP
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
     if (update_preconditioner) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
+      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
+      preconditioner_status = proxsuite::common::PreconditionerStatus::KEEP;
     }
     isize n = model.dim;
     isize n_eq = model.n_eq;
@@ -729,8 +729,8 @@ solve(
   bool compute_preconditioner = true,
   bool compute_timings = false,
   optional<isize> max_iter = nullopt,
-  proxsuite::proxqp::InitialGuessStatus initial_guess =
-    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+  proxsuite::common::InitialGuessStatus initial_guess =
+    proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
   proxsuite::proxqp::SparseBackend sparse_backend =
     proxsuite::proxqp::SparseBackend::Automatic,
   bool check_duality_gap = false,

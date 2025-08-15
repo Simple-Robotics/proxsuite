@@ -9,13 +9,14 @@
 
 #include <Eigen/Core>
 #include <proxsuite/common/status.hpp>
-#include <proxsuite/proxqp/dense/views.hpp>
+#include <proxsuite/common/dense/views.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
 
 namespace proxsuite {
 namespace proxqp {
 
-using namespace proxsuite::common;
+using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::isize;
 
 // Sparse backend specifications
 enum struct SparseBackend

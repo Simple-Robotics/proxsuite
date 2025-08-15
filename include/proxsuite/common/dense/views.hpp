@@ -4,8 +4,8 @@
 /**
  * @file views.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_VIEWS_HPP
-#define PROXSUITE_PROXQP_DENSE_VIEWS_HPP
+#ifndef PROXSUITE_COMMON_DENSE_VIEWS_HPP
+#define PROXSUITE_COMMON_DENSE_VIEWS_HPP
 
 #include <proxsuite/linalg/veg/type_traits/core.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
@@ -14,12 +14,12 @@
 #include <Eigen/Core>
 
 #define LDLT_CONCEPT(...)                                                      \
-  VEG_CONCEPT_MACRO(::proxsuite::proxqp::concepts, __VA_ARGS__)
+  VEG_CONCEPT_MACRO(::proxsuite::common::concepts, __VA_ARGS__)
 #define LDLT_CHECK_CONCEPT(...)                                                \
-  VEG_CHECK_CONCEPT_MACRO(::proxqp::concepts, __VA_ARGS__)
+  VEG_CHECK_CONCEPT_MACRO(::common::concepts, __VA_ARGS__)
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 
 using usize = decltype(sizeof(0));
 namespace detail {
@@ -35,7 +35,7 @@ struct FnInfo<auto(Args...)->Ret_>
 } // namespace detail
 
 #define LDLT_IMPL_GET_PARAM(Fn, Idx)                                           \
-  typename ::proxsuite::proxqp::detail::FnInfo<                                \
+  typename ::proxsuite::common::detail::FnInfo<                                \
     decltype Fn /* NOLINT */>::template Arg<(Idx)>,
 
 #define LDLT_IMPL_GET_PARAMS_0(NParams, ...)                                   \
@@ -52,9 +52,9 @@ struct FnInfo<auto(Args...)->Ret_>
 #define LDLT_EXPLICIT_TPL_DEF(NParams, ...)                                    \
   template auto __VA_ARGS__(                                                   \
     LDLT_IMPL_GET_PARAMS(NParams, __VA_ARGS__)                                 \
-      typename ::proxsuite::proxqp::detail::FnInfo<                            \
+      typename ::proxsuite::common::detail::FnInfo<                            \
         decltype(__VA_ARGS__)>::template Arg<(NParams) - 1>) ->                \
-    typename ::proxsuite::proxqp::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
+    typename ::proxsuite::common::detail::FnInfo<decltype(__VA_ARGS__)>::Ret
 #define LDLT_EXPLICIT_TPL_DECL(NParams, ...)                                   \
   extern LDLT_EXPLICIT_TPL_DEF(NParams, __VA_ARGS__)
 
@@ -894,7 +894,7 @@ public:
     return trans().col(r);
   }
   VEG_INLINE auto trans() const noexcept
-    -> MatrixView<T, proxqp::flip_layout(L)>
+    -> MatrixView<T, common::flip_layout(L)>
   {
     return {
       from_ptr_rows_cols_stride, data, cols, rows, outer_stride,
@@ -1000,7 +1000,7 @@ public:
     return trans().col(r);
   }
   VEG_INLINE auto trans() const noexcept
-    -> MatrixViewMut<T, proxqp::flip_layout(L)>
+    -> MatrixViewMut<T, common::flip_layout(L)>
   {
     return {
       from_ptr_rows_cols_stride, data, cols, rows, outer_stride,
@@ -1300,11 +1300,11 @@ noalias_mul_sub_tr_lo(MatrixViewMut<T, colmajor> out,
 }
 
 } // namespace detail
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 
 namespace dense {
 
@@ -1457,7 +1457,7 @@ VEG_NIEBLOID(sqrt);
 VEG_NIEBLOID(pow);
 VEG_NIEBLOID(infty_norm);
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_VIEWS_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_VIEWS_HPP */

@@ -2,8 +2,10 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
-using namespace proxsuite::proxqp;
 using T = double;
+using namespace proxsuite;
+using proxsuite::common::isize;
+
 int
 main()
 {
@@ -13,10 +15,10 @@ main()
   // generate a random qp
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  dense::QP<T> qp(
+  proxqp::dense::QP<T> qp(
     dim, n_eq, n_in); // create the QP
                       // initialize the model, along with another rho parameter
   qp.init(qp_random.H,

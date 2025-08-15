@@ -6,8 +6,9 @@
 #include <proxsuite/helpers/optional.hpp> // for c++14
 #include <proxsuite/proxqp/dense/dense.hpp>
 
-using namespace proxsuite::proxqp;
+using namespace proxsuite;
 using proxsuite::nullopt; // c++17 simply use std::nullopt
+using proxsuite::common::isize;
 
 int
 main()
@@ -18,7 +19,7 @@ main()
 
   // define the problem
   double eps_abs = 1e-9;
-  dense::isize dim = 3, n_eq = 0, n_in = 3;
+  isize dim = 3, n_eq = 0, n_in = 3;
 
   // cost H
   Eigen::MatrixXd H = Eigen::MatrixXd(dim, dim);
@@ -44,10 +45,10 @@ main()
   std::cout << "u.T:" << u.transpose() << std::endl;
 
   // create qp object and pass some settings
-  dense::QP<double> qp(dim, n_eq, n_in);
+  proxqp::dense::QP<double> qp(dim, n_eq, n_in);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // initialize qp with matrices describing the problem

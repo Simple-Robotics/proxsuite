@@ -46,7 +46,7 @@ power_iteration(SparseMat<T, I>& H,
     eig = rhs.dot(dw);
     // calculate associated error
     err_v = dw - eig * rhs;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    T err = proxsuite::common::dense::infty_norm(err_v);
     // std::cout << "power iteration max: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {
@@ -95,7 +95,7 @@ min_eigen_value_via_modified_power_iteration(SparseMat<T, I>& H,
     eig = rhs.dot(dw);
     // calculate associated error
     err_v = dw - eig * rhs;
-    T err = proxsuite::proxqp::dense::infty_norm(err_v);
+    T err = proxsuite::common::dense::infty_norm(err_v);
     // std::cout << "power iteration min: i " << i << " err " << err <<
     // std::endl;
     if (err <= power_iteration_accuracy) {

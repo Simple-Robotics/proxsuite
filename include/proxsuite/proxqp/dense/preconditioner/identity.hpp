@@ -7,12 +7,16 @@
 #ifndef PROXSUITE_PROXQP_DENSE_PRECOND_IDENTITY_HPP
 #define PROXSUITE_PROXQP_DENSE_PRECOND_IDENTITY_HPP
 
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
 namespace preconditioner {
+
+using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::QpViewBoxMut;
+
 struct IdentityPrecond
 {
 

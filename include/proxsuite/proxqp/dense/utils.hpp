@@ -13,7 +13,7 @@
 #include <type_traits>
 
 #include "proxsuite/helpers/common.hpp"
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/results.hpp>
@@ -27,6 +27,8 @@
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using proxsuite::common::dense::infty_norm;
 
 template<typename T>
 void

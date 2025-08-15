@@ -380,7 +380,7 @@ struct RuizEquilibration
     if (execute_preconditioner) {
       delta.setOnes();
       c = detail::ruiz_scale_qp_in_place( //
-        { proxqp::from_eigen, delta },
+        { common::from_eigen, delta },
         qp,
         epsilon,
         max_iter,

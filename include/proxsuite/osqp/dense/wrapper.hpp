@@ -430,8 +430,8 @@ solve(optional<MatRef<T>> H,
       bool compute_preconditioner = true,
       bool compute_timings = false,
       optional<isize> max_iter = nullopt,
-      proxsuite::proxqp::InitialGuessStatus initial_guess =
-        proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS,
+      proxsuite::common::InitialGuessStatus initial_guess =
+        proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS,
       bool check_duality_gap = false,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,
@@ -577,8 +577,8 @@ solve(optional<MatRef<T>> H,
       bool compute_preconditioner = true,
       bool compute_timings = false,
       optional<isize> max_iter = nullopt,
-      proxsuite::proxqp::InitialGuessStatus initial_guess =
-        proxsuite::proxqp::InitialGuessStatus::NO_INITIAL_GUESS,
+      proxsuite::common::InitialGuessStatus initial_guess =
+        proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS,
       bool check_duality_gap = false,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,

@@ -12,6 +12,9 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+using proxsuite::common::isize;
+
 ///
 /// @brief This class stores the model of the QP problem.
 ///
@@ -189,34 +192,26 @@ struct SparseModel
   {
   }
 
-  auto as_view() -> proxqp::dense::QpView<Scalar>
+  auto as_view() -> common::dense::QpView<Scalar>
   {
     return {
-      { proxqp::from_eigen, H },
-      { proxqp::from_eigen, g },
-      { proxqp::from_eigen, A },
-      { proxqp::from_eigen, b },
-      { proxqp::from_ptr_rows_cols_stride,
-        nullptr,
-        0,
-        proxqp::isize(H.rows()),
-        0 },
-      { proxqp::from_ptr_size, nullptr, 0 },
+      { common::from_eigen, H },
+      { common::from_eigen, g },
+      { common::from_eigen, A },
+      { common::from_eigen, b },
+      { common::from_ptr_rows_cols_stride, nullptr, 0, isize(H.rows()), 0 },
+      { common::from_ptr_size, nullptr, 0 },
     };
   }
-  auto as_mut() -> proxqp::dense::QpViewMut<Scalar>
+  auto as_mut() -> common::dense::QpViewMut<Scalar>
   {
     return {
-      { proxqp::from_eigen, H },
-      { proxqp::from_eigen, g },
-      { proxqp::from_eigen, A },
-      { proxqp::from_eigen, b },
-      { proxqp::from_ptr_rows_cols_stride,
-        nullptr,
-        0,
-        proxqp::isize(H.rows()),
-        0 },
-      { proxqp::from_ptr_size, nullptr, 0 },
+      { common::from_eigen, H },
+      { common::from_eigen, g },
+      { common::from_eigen, A },
+      { common::from_eigen, b },
+      { common::from_ptr_rows_cols_stride, nullptr, 0, isize(H.rows()), 0 },
+      { common::from_ptr_size, nullptr, 0 },
     };
   }
 };

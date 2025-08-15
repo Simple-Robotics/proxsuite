@@ -11,11 +11,13 @@
 
 using T = double;
 using namespace proxsuite;
+using proxsuite::common::isize;
+
 DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
 {
-  proxqp::isize dim = 30;
-  proxqp::isize n_eq = 6;
-  proxqp::isize n_in = 0;
+  isize dim = 30;
+  isize n_eq = 6;
+  isize n_in = 0;
   T sparsity_factor = 0.15;
   T strong_convexity_factor(1.e-2);
   std::cout << "---testing sparse random strongly convex qp with equality "
@@ -47,7 +49,7 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_abs = eps_rel;
-  qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START;
+  qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::WARM_START;
   qp.init(H, g, A, b, C, l, u);
   qp.solve(primal_solution, dual_solution, dual_init_in);
 
@@ -66,10 +68,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+  for (isize dim = 10; dim < 1000; dim += 100) {
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(0);
+    isize n_eq(dim / 2);
+    isize n_in(0);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -115,10 +117,10 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+  for (isize dim = 10; dim < 1000; dim += 100) {
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(0);
+    isize n_eq(dim / 2);
+    isize n_in(0);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -173,10 +175,10 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
   proxqp::utils::rand::set_seed(1);
-  for (proxqp::isize dim = 10; dim < 1000; dim += 100) {
+  for (isize dim = 10; dim < 1000; dim += 100) {
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(0);
+    isize n_eq(dim / 2);
+    isize n_in(0);
     T strong_convexity_factor(1.e-2);
     proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -258,5 +260,5 @@ DOCTEST_TEST_CASE("infeasible qp")
   qp.solve();
 
   DOCTEST_CHECK(qp.results.info.status ==
-                proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
+                proxsuite::common::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 }

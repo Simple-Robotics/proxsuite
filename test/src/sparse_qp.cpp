@@ -66,10 +66,10 @@ ruiz{ n, n_eq + n_in, 1e-3, 10, proxqp::sparse::preconditioner::Symmetry::UPPER,
 
                         sparse::qp_solve(results, data, settings, work, ruiz);
                         CHECK(
-                                        proxqp::dense::infty_norm(
+                                        common::dense::infty_norm(
                                                         H.selfadjointView<Eigen::Upper>()
 * x + g + AT * y + CT * z) <= 1e-9);
-                        CHECK(proxqp::dense::infty_norm(AT.transpose() * x - b)
+                        CHECK(common::dense::infty_norm(AT.transpose() * x - b)
 <= 1e-9); if (n_in > 0) { CHECK((CT.transpose() * x - l).minCoeff() > -1e-9);
                                 CHECK((CT.transpose() * x - u).maxCoeff() <
 1e-9);
@@ -107,10 +107,10 @@ proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
                         qp.setup_sparse_matrices(H,g,A,b,C,u,l);
                         qp.solve();
                         CHECK(
-                                        proxqp::dense::infty_norm(
+                                        common::dense::infty_norm(
                                                         H.selfadjointView<Eigen::Upper>()
 * qp.results.x + g + A.transpose() * qp.results.y + C.transpose() *
-qp.results.z) <= 1e-9); CHECK(proxqp::dense::infty_norm(A * qp.results.x - b) <=
+qp.results.z) <= 1e-9); CHECK(common::dense::infty_norm(A * qp.results.x - b) <=
 1e-9); if (n_in > 0) { CHECK((C * qp.results.x - l).minCoeff() > -1e-9);
                                 CHECK((C * qp.results.x - u).maxCoeff() < 1e-9);
                         }
@@ -170,10 +170,10 @@ u},
                         sparse::qp_solve(results, data, settings, work, id);
 
                         CHECK(
-                                        proxqp::dense::infty_norm(
+                                        common::dense::infty_norm(
                                                         H.selfadjointView<Eigen::Upper>()
 * x + g + AT * y + CT * z) <= 1e-9);
-                        CHECK(proxqp::dense::infty_norm(AT.transpose() * x - b)
+                        CHECK(common::dense::infty_norm(AT.transpose() * x - b)
 <= 1e-9); if (n_in > 0) { CHECK((CT.transpose() * x - l).minCoeff() > -1e-9);
                                 CHECK((CT.transpose() * x - u).maxCoeff() <
 1e-9);
@@ -211,11 +211,11 @@ TEST_CASE("random id using the API")
       qp.init(H, g, A, b, C, l, u);
       qp.solve();
 
-      CHECK(proxqp::dense::infty_norm(
+      CHECK(common::dense::infty_norm(
               H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
               A.transpose() * qp.results.y + C.transpose() * qp.results.z) <=
             1e-9);
-      CHECK(proxqp::dense::infty_norm(A * qp.results.x - b) <= 1e-9);
+      CHECK(common::dense::infty_norm(A * qp.results.x - b) <= 1e-9);
       if (n_in > 0) {
         CHECK((C * qp.results.x - l).minCoeff() > -1e-9);
         CHECK((C * qp.results.x - u).maxCoeff() < 1e-9);

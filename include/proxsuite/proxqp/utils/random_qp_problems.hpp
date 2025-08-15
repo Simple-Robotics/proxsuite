@@ -7,7 +7,7 @@
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <utility>
-#include <proxsuite/proxqp/dense/views.hpp>
+#include <proxsuite/common/dense/views.hpp>
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <map>
@@ -20,14 +20,19 @@ namespace utils {
 using c_int = long long;
 using c_float = double;
 
-namespace proxqp = proxsuite::proxqp;
+namespace common = proxsuite::common;
 
-template<typename T, proxqp::Layout L>
-using Mat =
-  Eigen::Matrix<T,
-                Eigen::Dynamic,
-                Eigen::Dynamic,
-                (L == proxqp::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
+using proxsuite::common::colmajor;
+using proxsuite::common::f32;
+using proxsuite::common::f64;
+using proxsuite::common::isize;
+using proxsuite::common::rowmajor;
+
+template<typename T, common::Layout L>
+using Mat = Eigen::Matrix<T,
+                          Eigen::Dynamic,
+                          Eigen::Dynamic,
+                          (L == colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template<typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -64,8 +69,8 @@ LDLT_EXPLICIT_TPL_DECL(2, ldlt_compute<Mat<f64, rowmajor>>);
 } // namespace eigen
 namespace rand {
 
-using proxqp::u32;
-using proxqp::u64;
+using common::u32;
+using common::u64;
 
 #ifdef _MSC_VER
 /* Using the MSCV compiler on Windows causes problems because the type uint128
@@ -368,7 +373,7 @@ sparse_matrix_rand_not_compressed(isize nrows, isize ncols, Scalar p)
 }
 
 } // namespace rand
-using proxqp::usize;
+using common::usize;
 
 namespace osqp {
 auto
@@ -380,31 +385,31 @@ to_sparse_sym(Mat<c_float, colmajor> const& mat) -> SparseMat<c_float>;
 template<typename T>
 auto
 matmul_impl( //
-  Mat<T, proxqp::colmajor> const& lhs,
-  Mat<T, proxqp::colmajor> const& rhs) -> Mat<T, proxqp::colmajor>
+  Mat<T, colmajor> const& lhs,
+  Mat<T, colmajor> const& rhs) -> Mat<T, colmajor>
 {
   return lhs.operator*(rhs);
 }
 template<typename To, typename From>
 auto
-mat_cast(Mat<From, proxqp::colmajor> const& from) -> Mat<To, proxqp::colmajor>
+mat_cast(Mat<From, colmajor> const& from) -> Mat<To, colmajor>
 {
   return from.template cast<To>();
 }
 LDLT_EXPLICIT_TPL_DECL(2, matmul_impl<long double>);
-LDLT_EXPLICIT_TPL_DECL(1, mat_cast<proxqp::f64, long double>);
-LDLT_EXPLICIT_TPL_DECL(1, mat_cast<proxqp::f32, long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<f64, long double>);
+LDLT_EXPLICIT_TPL_DECL(1, mat_cast<f32, long double>);
 
 template<typename MatLhs, typename MatRhs, typename T = typename MatLhs::Scalar>
 auto
-matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, proxqp::colmajor>
+matmul(MatLhs const& a, MatRhs const& b) -> Mat<T, colmajor>
 {
   using Upscaled = typename std::
     conditional<std::is_floating_point<T>::value, long double, T>::type;
 
-  return mat_cast<T, Upscaled>(matmul_impl<Upscaled>(
-    Mat<T, proxqp::colmajor>(a).template cast<Upscaled>(),
-    Mat<T, proxqp::colmajor>(b).template cast<Upscaled>()));
+  return mat_cast<T, Upscaled>(
+    matmul_impl<Upscaled>(Mat<T, colmajor>(a).template cast<Upscaled>(),
+                          Mat<T, colmajor>(b).template cast<Upscaled>()));
 }
 
 template<typename MatLhs,
@@ -412,8 +417,7 @@ template<typename MatLhs,
          typename MatRhs,
          typename T = typename MatLhs::Scalar>
 auto
-matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c)
-  -> Mat<T, proxqp::colmajor>
+matmul3(MatLhs const& a, MatMid const& b, MatRhs const& c) -> Mat<T, colmajor>
 {
   return matmul(matmul(a, b), c);
 }
@@ -437,7 +441,7 @@ struct EigenNoAlloc
 
 template<typename Scalar>
 proxsuite::proxqp::dense::Model<Scalar>
-dense_unconstrained_qp(proxqp::isize dim,
+dense_unconstrained_qp(isize dim,
                        Scalar sparsity_factor,
                        Scalar strong_convexity_factor = Scalar(1e-2))
 {
@@ -461,9 +465,9 @@ dense_unconstrained_qp(proxqp::isize dim,
 
 template<typename Scalar>
 proxsuite::proxqp::dense::Model<Scalar>
-dense_strongly_convex_qp(proxqp::isize dim,
-                         proxqp::isize n_eq,
-                         proxqp::isize n_in,
+dense_strongly_convex_qp(isize dim,
+                         isize n_eq,
+                         isize n_in,
                          Scalar sparsity_factor,
                          Scalar strong_convexity_factor = Scalar(1e-2))
 {
@@ -480,7 +484,7 @@ dense_strongly_convex_qp(proxqp::isize dim,
   Vec<Scalar> x_sol = rand::vector_rand<Scalar>(dim);
   auto delta = Vec<Scalar>(n_in);
 
-  for (proxqp::isize i = 0; i < n_in; ++i) {
+  for (isize i = 0; i < n_in; ++i) {
     delta(i) = rand::uniform_rand();
   }
 
@@ -503,9 +507,9 @@ dense_strongly_convex_qp(proxqp::isize dim,
 
 template<typename Scalar>
 proxsuite::proxqp::dense::Model<Scalar>
-dense_not_strongly_convex_qp(proxqp::isize dim,
-                             proxqp::isize n_eq,
-                             proxqp::isize n_in,
+dense_not_strongly_convex_qp(isize dim,
+                             isize n_eq,
+                             isize n_in,
                              Scalar sparsity_factor)
 {
 
@@ -522,7 +526,7 @@ dense_not_strongly_convex_qp(proxqp::isize dim,
   Vec<Scalar> z_sol = rand::vector_rand<Scalar>(n_in);
   auto delta = Vec<Scalar>(n_in);
 
-  for (proxqp::isize i = 0; i < n_in; ++i) {
+  for (isize i = 0; i < n_in; ++i) {
     delta(i) = rand::uniform_rand();
   }
   auto Cx = C * x_sol;
@@ -544,9 +548,9 @@ dense_not_strongly_convex_qp(proxqp::isize dim,
 
 template<typename Scalar>
 proxsuite::proxqp::dense::Model<Scalar>
-dense_degenerate_qp(proxqp::isize dim,
-                    proxqp::isize n_eq,
-                    proxqp::isize n_in,
+dense_degenerate_qp(isize dim,
+                    isize n_eq,
+                    isize n_in,
                     Scalar sparsity_factor,
                     Scalar strong_convexity_factor = Scalar(1e-2))
 {
@@ -557,12 +561,12 @@ dense_degenerate_qp(proxqp::isize dim,
   Vec<Scalar> g = rand::vector_rand<Scalar>(dim);
   Mat<Scalar, colmajor> A =
     rand::sparse_matrix_rand_not_compressed<Scalar>(n_eq, dim, sparsity_factor);
-  Mat<Scalar, colmajor> C = Mat<Scalar, proxqp::colmajor>(2 * n_in, dim);
+  Mat<Scalar, colmajor> C = Mat<Scalar, colmajor>(2 * n_in, dim);
 
   Vec<Scalar> x_sol = rand::vector_rand<Scalar>(dim);
   auto delta = Vec<Scalar>(2 * n_in);
 
-  for (proxqp::isize i = 0; i < 2 * n_in; ++i) {
+  for (isize i = 0; i < 2 * n_in; ++i) {
     delta(i) = rand::uniform_rand();
   }
   Vec<Scalar> b = A * x_sol;
@@ -590,9 +594,9 @@ dense_degenerate_qp(proxqp::isize dim,
 
 template<typename Scalar>
 proxsuite::proxqp::dense::Model<Scalar>
-dense_box_constrained_qp(proxqp::isize dim,
-                         proxqp::isize n_eq,
-                         proxqp::isize n_in,
+dense_box_constrained_qp(isize dim,
+                         isize n_eq,
+                         isize n_in,
                          Scalar sparsity_factor,
                          Scalar strong_convexity_factor = Scalar(1e-2))
 {
@@ -603,12 +607,12 @@ dense_box_constrained_qp(proxqp::isize dim,
   Vec<Scalar> g = rand::vector_rand<Scalar>(dim);
   Mat<Scalar, colmajor> A =
     rand::sparse_matrix_rand_not_compressed<Scalar>(n_eq, dim, sparsity_factor);
-  Mat<Scalar, colmajor> C = Mat<Scalar, proxqp::colmajor>(n_in, dim);
+  Mat<Scalar, colmajor> C = Mat<Scalar, colmajor>(n_in, dim);
 
   Vec<Scalar> x_sol = rand::vector_rand<Scalar>(dim);
   auto delta = Vec<Scalar>(n_in);
 
-  for (proxqp::isize i = 0; i < n_in; ++i) {
+  for (isize i = 0; i < n_in; ++i) {
     delta(i) = rand::uniform_rand();
   }
   Vec<Scalar> b = A * x_sol;
@@ -629,9 +633,9 @@ dense_box_constrained_qp(proxqp::isize dim,
 
 template<typename Scalar>
 proxsuite::proxqp::sparse::SparseModel<Scalar>
-sparse_strongly_convex_qp(proxqp::isize dim,
-                          proxqp::isize n_eq,
-                          proxqp::isize n_in,
+sparse_strongly_convex_qp(isize dim,
+                          isize n_eq,
+                          isize n_in,
                           Scalar sparsity_factor,
                           Scalar strong_convexity_factor = Scalar(1e-2))
 {
@@ -647,7 +651,7 @@ sparse_strongly_convex_qp(proxqp::isize dim,
   Vec<Scalar> x_sol = rand::vector_rand<Scalar>(dim);
   auto delta = Vec<Scalar>(n_in);
 
-  for (proxqp::isize i = 0; i < n_in; ++i) {
+  for (isize i = 0; i < n_in; ++i) {
     delta(i) = rand::uniform_rand();
   }
 

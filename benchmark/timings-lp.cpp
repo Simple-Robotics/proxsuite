@@ -9,13 +9,12 @@ using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using namespace proxsuite::common;
-using namespace proxsuite::proxqp;
+using proxsuite::common::isize;
 
 int
 main(int /*argc*/, const char** /*argv*/)
 {
-  Timer<T> timer;
+  common::Timer<T> timer;
   int smooth = 0;
 
   T sparsity_factor = 0.75;
@@ -23,8 +22,7 @@ main(int /*argc*/, const char** /*argv*/)
   T elapsed_time = 0.0;
   proxqp::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
-  for (proxqp::isize dim = 10; dim <= 1000;
-       dim = (dim == 10) ? 100 : dim + 100) {
+  for (isize dim = 10; dim <= 1000; dim = (dim == 10) ? 100 : dim + 100) {
 
     if (dim == 10 || dim == 100) {
       smooth = 1000;
@@ -32,8 +30,8 @@ main(int /*argc*/, const char** /*argv*/)
       smooth = 100;
     }
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(dim / 2);
+    isize n_eq(dim / 2);
+    isize n_in(dim / 2);
     T strong_convexity_factor(1.e-2);
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << std::endl;
@@ -51,7 +49,7 @@ main(int /*argc*/, const char** /*argv*/)
     };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
       timer.start();
       qp.init(qp_random.H,
@@ -82,7 +80,8 @@ main(int /*argc*/, const char** /*argv*/)
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;
-    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp_compare.settings.initial_guess =
+      common::InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
       timer.start();
       qp_compare.init(qp_random.H,

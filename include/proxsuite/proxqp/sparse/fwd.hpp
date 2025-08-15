@@ -7,14 +7,14 @@
 
 #include <Eigen/Sparse>
 #include "proxsuite/linalg/veg/vec.hpp"
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/helpers/common.hpp"
 
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 
-using dense::infty_norm;
+using common::dense::infty_norm;
 using proxsuite::linalg::veg::i64;
 using proxsuite::linalg::veg::isize;
 using proxsuite::linalg::veg::usize;

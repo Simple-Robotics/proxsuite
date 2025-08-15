@@ -7,7 +7,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
 #define PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
 
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/fwd.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/proxqp/settings.hpp>
@@ -25,6 +25,11 @@ enum struct Symmetry
 };
 namespace dense {
 namespace detail {
+
+using proxsuite::common::i64;
+using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::infty_norm;
+using proxsuite::common::dense::QpViewBoxMut;
 
 template<typename T>
 auto
@@ -259,7 +264,7 @@ ruiz_scale_qp_in_place( //
               // upper triangular part
               T tmp = T(0);
               for (isize j = 0; j < n; ++j) {
-                tmp += proxqp::dense::infty_norm(H.row(j).tail(n - j));
+                tmp += common::dense::infty_norm(H.row(j).tail(n - j));
               }
               gamma = 1 / std::max(tmp / T(n), T(1));
               break;
@@ -268,7 +273,7 @@ ruiz_scale_qp_in_place( //
               // lower triangular part
               T tmp = T(0);
               for (isize j = 0; j < n; ++j) {
-                tmp += proxqp::dense::infty_norm(H.col(j).tail(n - j));
+                tmp += common::dense::infty_norm(H.col(j).tail(n - j));
               }
               gamma = 1 / std::max(tmp / T(n), T(1));
               break;
@@ -312,6 +317,10 @@ ruiz_scale_qp_in_place( //
 } // namespace detail
 
 namespace preconditioner {
+
+using proxsuite::common::i64;
+using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::QpViewBoxMut;
 
 template<typename T>
 struct RuizEquilibration
@@ -412,7 +421,7 @@ struct RuizEquilibration
     if (execute_preconditioner) {
       delta.setOnes();
       c =
-        detail::ruiz_scale_qp_in_place({ proxqp::from_eigen, delta },
+        detail::ruiz_scale_qp_in_place({ common::from_eigen, delta },
                                        logger_ptr,
                                        qp,
                                        epsilon,

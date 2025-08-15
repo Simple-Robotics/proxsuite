@@ -2,8 +2,9 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
-using namespace proxsuite::proxqp;
 using T = double;
+using namespace proxsuite;
+using proxsuite::common::isize;
 
 int
 main()
@@ -15,10 +16,10 @@ main()
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
 
-  dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
+  proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -27,9 +28,9 @@ main()
           qp_random.l,
           qp_random.u); // initialize the model
   qp.solve();           // solve the problem without warm start
-  auto x_wm = utils::rand::vector_rand<T>(dim);
-  auto y_wm = utils::rand::vector_rand<T>(n_eq);
-  auto z_wm = utils::rand::vector_rand<T>(n_in);
+  auto x_wm = proxqp::utils::rand::vector_rand<T>(dim);
+  auto y_wm = proxqp::utils::rand::vector_rand<T>(n_eq);
+  auto z_wm = proxqp::utils::rand::vector_rand<T>(n_in);
   qp.solve(x_wm, y_wm,
            z_wm); // if you have a warm start, put it here
   // print an optimal solution x,y and z
@@ -39,10 +40,10 @@ main()
 
   // Another example if you have box constraints (for the dense backend only for
   // the moment)
-  dense::QP<T> qp2(dim, n_eq, n_in, true); // create the QP object
+  proxqp::dense::QP<T> qp2(dim, n_eq, n_in, true); // create the QP object
   // some trivial boxes
-  dense::Vec<T> u_box(dim);
-  dense::Vec<T> l_box(dim);
+  proxqp::dense::Vec<T> u_box(dim);
+  proxqp::dense::Vec<T> l_box(dim);
   u_box.setZero();
   l_box.setZero();
   u_box.array() += 1.E10;

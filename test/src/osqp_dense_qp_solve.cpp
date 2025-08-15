@@ -11,17 +11,17 @@
 
 using T = double;
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
+using proxsuite::common::isize;
 
 DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(5), n_in(2);
+  isize n_eq(5), n_in(2);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -35,7 +35,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
   Eigen::Matrix<T, 2, 1> u = qp.u;
 
   {
-    Results<T> results = osqp::dense::solve<T>(
+    proxqp::Results<T> results = osqp::dense::solve<T>(
       H, g, A, b, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
     T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -65,7 +65,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
     qp_problem.settings.eps_rel = eps_rel;
     qp_problem.solve();
 
-    const Results<T>& results = qp_problem.results;
+    const proxqp::Results<T>& results = qp_problem.results;
 
     T pri_res = (qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>();
     T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y)
@@ -93,26 +93,26 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  Results<T> results = osqp::dense::solve<T>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             0);
+  proxqp::Results<T> results = osqp::dense::solve<T>(qp.H,
+                                                     qp.g,
+                                                     qp.A,
+                                                     qp.b,
+                                                     qp.C,
+                                                     qp.l,
+                                                     qp.u,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     eps_abs,
+                                                     0);
 
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -143,27 +143,27 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  Results<T> results = osqp::dense::solve<T>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             0,
-                                             T(1.E-7));
+  proxqp::Results<T> results = osqp::dense::solve<T>(qp.H,
+                                                     qp.g,
+                                                     qp.A,
+                                                     qp.b,
+                                                     qp.C,
+                                                     qp.l,
+                                                     qp.u,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     eps_abs,
+                                                     0,
+                                                     T(1.E-7));
   DOCTEST_CHECK(results.info.rho == T(1.E-7));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -196,29 +196,29 @@ DOCTEST_TEST_CASE(
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  Results<T> results = osqp::dense::solve<T>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             0,
-                                             nullopt,
-                                             T(1.E-1),
-                                             T(1.E0));
+  proxqp::Results<T> results = osqp::dense::solve<T>(qp.H,
+                                                     qp.g,
+                                                     qp.A,
+                                                     qp.b,
+                                                     qp.C,
+                                                     qp.l,
+                                                     qp.u,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     eps_abs,
+                                                     0,
+                                                     nullopt,
+                                                     T(1.E-1),
+                                                     T(1.E0));
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))
@@ -248,18 +248,18 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  auto x_wm = utils::rand::vector_rand<T>(dim);
-  auto y_wm = utils::rand::vector_rand<T>(n_eq);
-  auto z_wm = utils::rand::vector_rand<T>(n_in);
-  Results<T> results = osqp::dense::solve<T>(
+  auto x_wm = proxqp::utils::rand::vector_rand<T>(dim);
+  auto y_wm = proxqp::utils::rand::vector_rand<T>(n_eq);
+  auto z_wm = proxqp::utils::rand::vector_rand<T>(n_in);
+  proxqp::Results<T> results = osqp::dense::solve<T>(
     qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs, 0);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -290,31 +290,31 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   bool verbose = true;
-  Results<T> results = osqp::dense::solve<T>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             0,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             verbose);
+  proxqp::Results<T> results = osqp::dense::solve<T>(qp.H,
+                                                     qp.g,
+                                                     qp.A,
+                                                     qp.b,
+                                                     qp.C,
+                                                     qp.l,
+                                                     qp.u,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     eps_abs,
+                                                     0,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     verbose);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))
@@ -344,35 +344,36 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
             << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
+  proxqp::utils::rand::set_seed(1);
+  isize dim = 10;
 
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
+  isize n_eq(dim / 4);
+  isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-  Results<T> results = osqp::dense::solve<T>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             0,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             true,
-                                             true,
-                                             nullopt,
-                                             initial_guess);
+  common::InitialGuessStatus initial_guess =
+    common::InitialGuessStatus::NO_INITIAL_GUESS;
+  proxqp::Results<T> results = osqp::dense::solve<T>(qp.H,
+                                                     qp.g,
+                                                     qp.A,
+                                                     qp.b,
+                                                     qp.C,
+                                                     qp.l,
+                                                     qp.u,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     eps_abs,
+                                                     0,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     nullopt,
+                                                     true,
+                                                     true,
+                                                     nullopt,
+                                                     initial_guess);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
                         helpers::negative_part(qp.C * results.x - qp.l))

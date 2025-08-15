@@ -9,7 +9,7 @@
 #define PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 
 #include "proxsuite/fwd.hpp"
-#include "proxsuite/proxqp/dense/views.hpp"
+#include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
@@ -1135,14 +1135,14 @@ qp_solve( //
         qpwork.cleanup(box_constraints);
         qpresults.cold_start(qpsettings);
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen, qpresults.x });
+          { proxsuite::common::from_eigen, qpresults.x });
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         break;
       }
@@ -1157,16 +1157,16 @@ qp_solve( //
           qpsettings); // because there was already a solve,
                        // precond was already computed if set so
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen,
+          { proxsuite::common::from_eigen,
             qpresults
               .x }); // it contains the value given in entry for warm start
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         break;
       }
@@ -1175,14 +1175,14 @@ qp_solve( //
         // std::cout << "i keep previous solution" << std::endl;
         qpresults.cleanup_statistics();
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen, qpresults.x });
+          { proxsuite::common::from_eigen, qpresults.x });
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         break;
       }
@@ -1283,17 +1283,17 @@ qp_solve( //
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         //!\ TODO in a quicker way
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen,
+          { proxsuite::common::from_eigen,
             qpresults
               .x }); // meaningful for when there is an upate of the model and
                      // one wants to warm start with previous result
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
@@ -1317,14 +1317,14 @@ qp_solve( //
       case InitialGuessStatus::WARM_START: {
         //!\ TODO in a quicker way
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen, qpresults.x });
+          { proxsuite::common::from_eigen, qpresults.x });
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
@@ -1343,17 +1343,17 @@ qp_solve( //
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
         // std::cout << "i refactorize from previous solution" << std::endl;
         ruiz.scale_primal_in_place(
-          { proxsuite::proxqp::from_eigen,
+          { proxsuite::common::from_eigen,
             qpresults
               .x }); // meaningful for when there is an upate of the model and
                      // one wants to warm start with previous result
         ruiz.scale_dual_in_place_eq(
-          { proxsuite::proxqp::from_eigen, qpresults.y });
+          { proxsuite::common::from_eigen, qpresults.y });
         ruiz.scale_dual_in_place_in(
-          { proxsuite::proxqp::from_eigen, qpresults.z.head(qpmodel.n_in) });
+          { proxsuite::common::from_eigen, qpresults.z.head(qpmodel.n_in) });
         if (box_constraints) {
           ruiz.scale_box_dual_in_place_in(
-            { proxsuite::proxqp::from_eigen, qpresults.z.tail(qpmodel.dim) });
+            { proxsuite::common::from_eigen, qpresults.z.tail(qpmodel.dim) });
         }
         if (qpwork.refactorize) { // refactorization only when one of the
                                   // matrices has changed or one proximal

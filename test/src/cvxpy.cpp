@@ -8,14 +8,14 @@
 
 using T = double;
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
+using proxsuite::common::colmajor;
+using proxsuite::common::isize;
 
-template<typename T, proxqp::Layout L>
-using Mat =
-  Eigen::Matrix<T,
-                Eigen::Dynamic,
-                Eigen::Dynamic,
-                (L == proxqp::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
+template<typename T, common::Layout L>
+using Mat = Eigen::Matrix<T,
+                          Eigen::Dynamic,
+                          Eigen::Dynamic,
+                          (L == colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template<typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -24,7 +24,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   std::cout << "---3 dim test case from cvxpy, check feasibility " << std::endl;
   T eps_abs = T(1e-9);
-  dense::isize dim = 3;
+  isize dim = 3;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
   H << 13.0, 12.0, -2.0, 12.0, 17.0, 6.0, -2.0, 6.0, 12.0;
@@ -40,7 +40,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0, 1.0, 1.0;
-  Results<T> results = dense::solve<T>(
+  proxqp::Results<T> results = proxqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +
@@ -64,7 +64,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
   std::cout << "---simple test case from cvxpy, check feasibility "
             << std::endl;
   T eps_abs = T(1e-8);
-  dense::isize dim = 1;
+  isize dim = 1;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
   H << 20.0;
@@ -80,7 +80,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0;
-  Results<T> results = dense::solve<T>(
+  proxqp::Results<T> results = proxqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +
@@ -109,7 +109,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
                "solver stays there"
             << std::endl;
   T eps_abs = T(1e-4);
-  dense::isize dim = 1;
+  isize dim = 1;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
   H << 20.0;
@@ -128,15 +128,15 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
 
   T x_sol = 0.5;
 
-  proxqp::isize n_in(1);
-  proxqp::isize n_eq(0);
+  isize n_in(1);
+  isize n_eq(0);
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
   qp.settings.eps_abs = eps_abs;
 
   qp.init(H, g, nullopt, nullopt, C, u, l);
 
-  dense::Vec<T> x = dense::Vec<T>(dim);
-  dense::Vec<T> z = dense::Vec<T>(n_in);
+  proxqp::dense::Vec<T> x = proxqp::dense::Vec<T>(dim);
+  proxqp::dense::Vec<T> z = proxqp::dense::Vec<T>(n_in);
   x << 0.5;
   z << 0.0;
   qp.solve(x, nullopt, z);

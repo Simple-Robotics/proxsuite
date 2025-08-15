@@ -2,8 +2,9 @@
 #include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse API of ProxQP
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
-using namespace proxsuite::proxqp;
 using T = double;
+using namespace proxsuite;
+using proxsuite::common::isize;
 
 int
 main()
@@ -12,7 +13,7 @@ main()
   isize n = 10;
   isize n_eq(n / 4);
   isize n_in(n / 4);
-  sparse::QP<T, isize> qp(n, n_eq, n_in);
+  proxqp::sparse::QP<T, isize> qp(n, n_eq, n_in);
 
   // assume you generate these matrices H, A and C for your QP problem
 

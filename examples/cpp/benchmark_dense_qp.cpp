@@ -47,8 +47,9 @@ Solve Time consumption(dense): 0.101507s
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 
-using namespace proxsuite::proxqp;
 using T = double;
+using namespace proxsuite;
+using proxsuite::common::isize;
 
 int
 main()
@@ -57,17 +58,17 @@ main()
   double solve_time = 0.0;
   double setup_time = 0.0;
 
-  dense::isize dim = 100;
-  dense::isize n_eq(dim / 2);
-  dense::isize n_in(dim / 2);
+  isize dim = 100;
+  isize n_eq(dim / 2);
+  isize n_in(dim / 2);
 
   for (T sparsity_factor = 0.1; sparsity_factor < 0.5; sparsity_factor += 0.1) {
     T strong_convexity_factor(1.e-2);
-    dense::Model<T> qp_random = utils::dense_strongly_convex_qp(
+    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     for (int i = 0; i < N; i++) {
-      dense::QP<T> qp(dim, n_eq, n_in);
+      proxqp::dense::QP<T> qp(dim, n_eq, n_in);
       qp.settings.compute_timings = true; // compute all timings
       qp.settings.max_iter = 10000;
       qp.settings.max_iter_in = 1000;
