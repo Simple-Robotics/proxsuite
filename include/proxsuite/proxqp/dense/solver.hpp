@@ -8,6 +8,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 #define PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 
+#include "proxsuite/common/settings.hpp"
 #include "proxsuite/fwd.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
@@ -25,6 +26,9 @@
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using proxsuite::common::i32;
+using proxsuite::common::MeritFunctionType;
 
 /*!
  * Performs a refactorization of the KKT matrix used by the solver.

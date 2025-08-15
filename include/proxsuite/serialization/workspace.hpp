@@ -9,13 +9,13 @@
 #define PROXSUITE_SERIALIZATION_WORKSPACE_HPP
 
 #include <cereal/cereal.hpp>
-#include <proxsuite/proxqp/dense/workspace.hpp>
+#include <proxsuite/common/dense/workspace.hpp>
 
 namespace cereal {
 
 template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::dense::Workspace<T>& work)
+serialize(Archive& archive, proxsuite::common::dense::Workspace<T>& work)
 {
   archive(
     // CEREAL_NVP(work.ldl),

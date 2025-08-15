@@ -4,21 +4,25 @@
 /**
  * @file workspace.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP
-#define PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP
+#ifndef PROXSUITE_COMMON_DENSE_WORKSPACE_HPP
+#define PROXSUITE_COMMON_DENSE_WORKSPACE_HPP
 
 #include <Eigen/Core>
 #include <proxsuite/linalg/dense/ldlt.hpp>
-#include <proxsuite/common/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
+#include <proxsuite/common/timings.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/dense/fwd.hpp>
+
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 using namespace proxsuite::common;
 
+using proxsuite::common::dense::isize;
+using proxsuite::common::dense::Mat;
+using proxsuite::common::dense::Vec;
 using proxsuite::common::dense::VecBool;
 using proxsuite::common::dense::VecISize;
 
@@ -101,7 +105,7 @@ struct Workspace
   bool proximal_parameter_update;
   bool is_initialized;
 
-  sparse::isize n_c; // final number of active inequalities
+  isize n_c; // final number of active inequalities
 
   // OSQP
   Vec<T> x_tilde;
@@ -525,7 +529,7 @@ struct Workspace
   }
 };
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_WORKSPACE_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_WORKSPACE_HPP */

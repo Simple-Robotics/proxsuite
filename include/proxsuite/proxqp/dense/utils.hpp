@@ -12,9 +12,10 @@
 #include <cmath>
 #include <type_traits>
 
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/helpers/common.hpp"
 #include "proxsuite/common/dense/views.hpp"
-#include "proxsuite/proxqp/dense/workspace.hpp"
+#include "proxsuite/common/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/proxqp/utils/prints.hpp>
@@ -28,7 +29,18 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
+using proxsuite::common::from_eigen;
+using proxsuite::common::i64;
 using proxsuite::common::dense::infty_norm;
+
+using proxsuite::common::DenseBackend;
+using proxsuite::common::HessianType;
+using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::QPSolverOutput;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
+using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::Workspace;
 
 template<typename T>
 void

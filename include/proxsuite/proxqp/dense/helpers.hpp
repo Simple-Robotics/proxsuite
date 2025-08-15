@@ -9,6 +9,7 @@
 #define PROXSUITE_PROXQP_DENSE_HELPERS_HPP
 
 #include "proxsuite/common/dense/views.hpp"
+#include "proxsuite/common/dense/workspace.hpp"
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
@@ -37,6 +38,7 @@ using proxsuite::common::dense::MatRef;
 using proxsuite::common::dense::QpViewBoxMut;
 using proxsuite::common::dense::Vec;
 using proxsuite::common::dense::VecRef;
+using proxsuite::common::dense::Workspace;
 
 template<typename T,
          typename MatIn,

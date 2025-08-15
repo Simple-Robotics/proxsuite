@@ -4,7 +4,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
-#include <proxsuite/proxqp/dense/workspace.hpp>
+#include <proxsuite/common/dense/workspace.hpp>
 #include <proxsuite/proxqp/dense/utils.hpp>
 
 #include <proxsuite/serialization/archive.hpp>
@@ -15,11 +15,15 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 namespace python {
+
+using proxsuite::common::i64;
+using proxsuite::common::dense::Workspace;
+
 template<typename T>
 void
 exposeWorkspaceDense(nanobind::module_ m)
 {
-  ::nanobind::class_<proxsuite::proxqp::dense::Workspace<T>>(m, "workspace")
+  ::nanobind::class_<proxsuite::common::dense::Workspace<T>>(m, "workspace")
     .def(::nanobind::init<i64, i64, i64>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,

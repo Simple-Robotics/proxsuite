@@ -9,8 +9,9 @@
 #define PROXSUITE_OSQP_DENSE_SOLVER_HPP
 
 #include "proxsuite/common/dense/preconditioner/ruiz.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/proxqp/dense/model.hpp"
-#include "proxsuite/proxqp/dense/workspace.hpp"
+#include "proxsuite/common/dense/workspace.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/proxqp/dense/solver.hpp"
@@ -26,6 +27,8 @@ namespace dense {
 
 using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
+
+using proxsuite::common::PolishStatus;
 
 /*!
  * One iteration of the ADMM algorithm adapted in OSQP.
