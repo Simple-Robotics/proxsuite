@@ -12,11 +12,15 @@
 #include <proxsuite/common/timings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/common/settings.hpp>
+#include <proxsuite/common/dense/fwd.hpp>
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
 using namespace proxsuite::common;
+
+using proxsuite::common::dense::VecBool;
+using proxsuite::common::dense::VecISize;
 
 ///
 /// @brief This class defines the workspace of the dense solver.

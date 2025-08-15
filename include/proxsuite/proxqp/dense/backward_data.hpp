@@ -10,11 +10,14 @@
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Core>
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
-#include "proxsuite/proxqp/dense/fwd.hpp"
+#include "proxsuite/common/dense/fwd.hpp"
 
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using proxsuite::common::dense::isize;
+using proxsuite::common::dense::Vec;
 
 ///
 /// @brief This class stores the jacobians of PROXQP solvers with

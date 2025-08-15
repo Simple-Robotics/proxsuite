@@ -12,7 +12,7 @@
 #include <proxsuite/proxqp/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
-#include <proxsuite/proxqp/dense/fwd.hpp>
+#include <proxsuite/common/dense/fwd.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 #include <proxsuite/helpers/optional.hpp>
@@ -23,7 +23,11 @@ namespace proxqp {
 namespace dense {
 
 using proxsuite::common::dense::infty_norm;
+using proxsuite::common::dense::Mat;
+using proxsuite::common::dense::MatRef;
 using proxsuite::common::dense::QpViewBoxMut;
+using proxsuite::common::dense::Vec;
+using proxsuite::common::dense::VecRef;
 
 template<typename T,
          typename MatIn,

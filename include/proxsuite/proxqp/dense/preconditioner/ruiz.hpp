@@ -8,7 +8,7 @@
 #define PROXSUITE_PROXQP_DENSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/common/dense/views.hpp"
-#include "proxsuite/proxqp/dense/fwd.hpp"
+#include "proxsuite/common/dense/fwd.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <ostream>
@@ -29,6 +29,7 @@ namespace detail {
 using proxsuite::common::i64;
 using proxsuite::common::VectorViewMut;
 using proxsuite::common::dense::infty_norm;
+using proxsuite::common::dense::isize;
 using proxsuite::common::dense::QpViewBoxMut;
 
 template<typename T>
@@ -320,7 +321,9 @@ namespace preconditioner {
 
 using proxsuite::common::i64;
 using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::isize;
 using proxsuite::common::dense::QpViewBoxMut;
+using proxsuite::common::dense::Vec;
 
 template<typename T>
 struct RuizEquilibration

@@ -2,15 +2,15 @@
 // Copyright (c) 2022-2023 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_PROXQP_DENSE_FWD_HPP
-#define PROXSUITE_PROXQP_DENSE_FWD_HPP
+#ifndef PROXSUITE_COMMON_DENSE_FWD_HPP
+#define PROXSUITE_COMMON_DENSE_FWD_HPP
 
 #include <Eigen/Sparse>
 #include "proxsuite/linalg/veg/vec.hpp"
 #include "proxsuite/helpers/common.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 static constexpr auto DYN = Eigen::Dynamic;
@@ -52,7 +52,7 @@ using VecMapBool = Eigen::Map<Eigen::Matrix<bool, DYN, 1> const>;
 using VecBool = Eigen::Matrix<bool, DYN, 1>;
 
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_FWD_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_FWD_HPP */
