@@ -17,7 +17,7 @@
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/workspace.hpp"
 #include <proxsuite/proxqp/dense/model.hpp>
-#include <proxsuite/proxqp/results.hpp>
+#include <proxsuite/common/results.hpp>
 #include <proxsuite/osqp/utils/prints.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>

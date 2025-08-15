@@ -1,7 +1,8 @@
 //
 // Copyright (c) 2022-2024 INRIA
 //
-#include <proxsuite/proxqp/results.hpp>
+#include <proxsuite/common/results.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
@@ -15,6 +16,12 @@
 namespace proxsuite {
 namespace proxqp {
 namespace python {
+
+using proxsuite::common::Info;
+using proxsuite::common::isize;
+using proxsuite::common::PolishStatus;
+using proxsuite::common::QPSolverOutput;
+using proxsuite::common::Results;
 
 template<typename T>
 void

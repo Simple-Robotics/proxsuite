@@ -62,7 +62,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     proxqp::dense::Model<T> qp_dense = utils::dense_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::sparse::SparseModel<T> qp = qp_dense.to_sparse();
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,
@@ -117,7 +117,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     ::proxsuite::proxqp::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,
@@ -176,7 +176,7 @@ DOCTEST_TEST_CASE(
     ::proxsuite::proxqp::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,
@@ -240,7 +240,7 @@ DOCTEST_TEST_CASE(
       proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
     proxsuite::common::SparseBackend sparse_backend =
       proxsuite::common::SparseBackend::MatrixFree;
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,
@@ -271,7 +271,8 @@ DOCTEST_TEST_CASE(
                            helpers::negative_part(qp.C * results.x - qp.l)));
     DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
-    DOCTEST_CHECK(results.info.sparse_backend == SparseBackend::MatrixFree);
+    DOCTEST_CHECK(results.info.sparse_backend ==
+                  common::SparseBackend::MatrixFree);
 
     std::cout << "------using API solving qp with dim: " << n
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -308,7 +309,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     auto x_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
     auto y_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n_eq);
     auto z_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n_in);
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(
         qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs);
     T dua_res = common::dense::infty_norm(
@@ -354,7 +355,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     bool verbose = true;
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,
@@ -415,7 +416,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::InitialGuessStatus initial_guess =
       proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
-    proxsuite::proxqp::Results<T> results =
+    proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
                                              qp.A,

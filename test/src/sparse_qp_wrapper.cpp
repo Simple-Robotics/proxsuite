@@ -5999,7 +5999,7 @@ TEST_CASE("ProxQP::sparse: init must be called before update")
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
 
   // call update without init, update calls init internally
   qp.update(qp_random.H,
@@ -6074,7 +6074,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
     // create infeasible problem
     qp_random.b.array() += T(10.);
     qp_random.u.array() -= T(100.);
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     qp.settings.primal_infeasibility_solving = true;
     qp.settings.eps_primal_inf = T(1.E-4);
     qp.settings.eps_dual_inf = T(1.E-4);
@@ -6142,7 +6142,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //     qp.settings.max_iter_in = 1;
 //     qp.settings.estimate_method_option =
 //       EigenValueEstimateMethodOption::EigenRegularization;
-//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+//     qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
 //     SparseMat<T> H_sparse = qp_random.H.sparseView();
 //     SparseMat<T> A_sparse = qp_random.A.sparseView();
 //     SparseMat<T> C_sparse = qp_random.C.sparseView();
@@ -6173,7 +6173,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //     qp.settings.max_iter_in = 1;
 //     qp.settings.estimate_method_option =
 //       EigenValueEstimateMethodOption::EigenRegularization;
-//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+//     qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
 //     SparseMat<T> H_sparse = qp_random.H.sparseView();
 //     SparseMat<T> A_sparse = qp_random.A.sparseView();
 //     SparseMat<T> C_sparse = qp_random.C.sparseView();
@@ -6220,7 +6220,7 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
@@ -6254,7 +6254,7 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
@@ -6310,7 +6310,7 @@ TEST_CASE(
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
@@ -6347,7 +6347,7 @@ TEST_CASE(
     proxqp::sparse::QP<T, I> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();

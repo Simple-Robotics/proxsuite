@@ -33,7 +33,7 @@ main()
   Vec u = (l.array() + 10).matrix();
 
   // Solve the problem using the sparse backend
-  proxqp::Results<T> results_sparse_solver =
+  common::Results<T> results_sparse_solver =
     proxqp::sparse::solve<T, isize>(H, g, A, b, C, l, u);
   std::cout << "optimal x from sparse solver: " << results_sparse_solver.x
             << std::endl;
@@ -42,7 +42,7 @@ main()
   std::cout << "optimal z from sparse solver: " << results_sparse_solver.z
             << std::endl;
   // Solve the problem using the dense backend
-  proxqp::Results<T> results_dense_solver =
+  common::Results<T> results_dense_solver =
     proxqp::dense::solve<T>(H_dense, g, A_dense, b, C_dense, l, u);
 
   // print an optimal solution x,y and z
@@ -66,7 +66,7 @@ main()
   // make sure to specify at least next 9 variables of the solve function after
   // u_box to make sure the overloading work and use the specific feature for
   // handling more efficiently box constraints
-  proxqp::Results<T> results_dense_solver_box =
+  common::Results<T> results_dense_solver_box =
     proxqp::dense::solve<T>(H_dense,
                             g,
                             A_dense,

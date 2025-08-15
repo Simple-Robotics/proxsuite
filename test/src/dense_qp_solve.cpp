@@ -34,7 +34,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
   Eigen::Matrix<T, 2, 1> u = qp.u;
 
   {
-    proxqp::Results<T> results = proxqp::dense::solve<T>(
+    common::Results<T> results = proxqp::dense::solve<T>(
       H, g, A, b, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
     T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
@@ -63,7 +63,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
     qp_problem.settings.eps_abs = eps_abs;
     qp_problem.solve();
 
-    const proxqp::Results<T>& results = qp_problem.results;
+    const common::Results<T>& results = qp_problem.results;
 
     T pri_res = (qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>();
     T dua_res = (qp.H * results.x + qp.g + qp.A.transpose() * results.y)
@@ -99,7 +99,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  proxqp::Results<T> results = proxqp::dense::solve<T>(qp.H,
+  common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,
                                                        qp.b,
@@ -148,7 +148,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  proxqp::Results<T> results = proxqp::dense::solve<T>(qp.H,
+  common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,
                                                        qp.b,
@@ -200,7 +200,7 @@ DOCTEST_TEST_CASE(
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  proxqp::Results<T> results = proxqp::dense::solve<T>(qp.H,
+  common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,
                                                        qp.b,
@@ -254,7 +254,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   auto x_wm = proxqp::utils::rand::vector_rand<T>(dim);
   auto y_wm = proxqp::utils::rand::vector_rand<T>(n_eq);
   auto z_wm = proxqp::utils::rand::vector_rand<T>(n_in);
-  proxqp::Results<T> results = proxqp::dense::solve<T>(
+  common::Results<T> results = proxqp::dense::solve<T>(
     qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs, 0);
   T pri_res = std::max((qp.A * results.x - qp.b).lpNorm<Eigen::Infinity>(),
                        (helpers::positive_part(qp.C * results.x - qp.u) +
@@ -293,7 +293,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   proxqp::dense::Model<T> qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   bool verbose = true;
-  proxqp::Results<T> results = proxqp::dense::solve<T>(qp.H,
+  common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,
                                                        qp.b,
@@ -347,7 +347,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   common::InitialGuessStatus initial_guess =
     common::InitialGuessStatus::NO_INITIAL_GUESS;
-  proxqp::Results<T> results = proxqp::dense::solve<T>(qp.H,
+  common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,
                                                        qp.b,

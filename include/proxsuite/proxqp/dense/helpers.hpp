@@ -9,7 +9,7 @@
 #define PROXSUITE_PROXQP_DENSE_HELPERS_HPP
 
 #include "proxsuite/common/dense/views.hpp"
-#include <proxsuite/proxqp/results.hpp>
+#include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/common/dense/fwd.hpp>
@@ -22,6 +22,15 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
+using proxsuite::common::DenseBackend;
+using proxsuite::common::EigenValueEstimateMethodOption;
+using proxsuite::common::from_eigen;
+using proxsuite::common::HessianType;
+using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::isize;
+using proxsuite::common::PreconditionerStatus;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
 using proxsuite::common::dense::infty_norm;
 using proxsuite::common::dense::Mat;
 using proxsuite::common::dense::MatRef;

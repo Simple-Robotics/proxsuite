@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022 INRIA
 //
+#include "proxsuite/common/settings.hpp"
 #include <iostream>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
@@ -13,6 +14,9 @@ using namespace proxsuite::proxqp;
 using T = double;
 using I = utils::c_int;
 using namespace proxsuite::linalg::sparse::tags;
+
+using proxsuite::common::HessianType;
+using proxsuite::common::isize;
 
 TEST_CASE("upper part")
 {

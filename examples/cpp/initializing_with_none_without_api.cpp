@@ -20,7 +20,7 @@ main()
   proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-  proxqp::Results<T> results = proxqp::dense::solve<T>(
+  common::Results<T> results = proxqp::dense::solve<T>(
     qp_random.H,
     qp_random.g,
     qp_random.A,

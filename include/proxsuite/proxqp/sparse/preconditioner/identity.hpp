@@ -6,10 +6,14 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_PRECOND_IDENTITY_HPP
 #define PROXSUITE_PROXQP_SPARSE_PRECOND_IDENTITY_HPP
 
+#include "proxsuite/common/dense/views.hpp"
+
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 namespace preconditioner {
+
+using proxsuite::common::VectorViewMut;
 
 template<typename T, typename I>
 struct Identity

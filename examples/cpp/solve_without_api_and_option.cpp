@@ -20,7 +20,7 @@ main()
   // Solve the problem using the dense backend
   // and suppose you want to change the accuracy to 1.E-9 and rho initial value
   // to 1.E-7
-  proxsuite::proxqp::Results<T> results =
+  proxsuite::common::Results<T> results =
     proxsuite::proxqp::dense::solve<T>(qp_random.H,
                                        qp_random.g,
                                        qp_random.A,

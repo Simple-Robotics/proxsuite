@@ -15,7 +15,7 @@
 #include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/proxqp/dense/solver.hpp"
 #include "proxsuite/common/settings.hpp"
-#include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/common/results.hpp"
 #include "proxsuite/osqp/dense/utils.hpp"
 #include <iostream>
 #include <iomanip>

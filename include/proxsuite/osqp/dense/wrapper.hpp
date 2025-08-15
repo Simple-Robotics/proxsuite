@@ -410,7 +410,7 @@ public:
  * update.
  */
 template<typename T>
-proxqp::Results<T>
+common::Results<T>
 solve(optional<MatRef<T>> H,
       optional<VecRef<T>> g,
       optional<MatRef<T>> A,
@@ -555,7 +555,7 @@ solve(optional<MatRef<T>> H,
  * update.
  */
 template<typename T>
-proxqp::Results<T>
+common::Results<T>
 solve(optional<MatRef<T>> H,
       optional<VecRef<T>> g,
       optional<MatRef<T>> A,

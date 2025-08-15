@@ -5,6 +5,9 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_HELPERS_HPP
 #define PROXSUITE_PROXQP_SPARSE_HELPERS_HPP
 
+#include "proxsuite/common/status.hpp"
+#include "proxsuite/common/results.hpp"
+#include "proxsuite/common/settings.hpp"
 #include <Eigen/Sparse>
 #include <proxsuite/helpers/optional.hpp>
 
@@ -14,6 +17,10 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+using proxsuite::common::PreconditionerStatus;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
 
 template<typename T, typename I>
 T

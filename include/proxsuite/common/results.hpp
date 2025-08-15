@@ -4,8 +4,8 @@
 /**
  * @file results.hpp
  */
-#ifndef PROXSUITE_PROXQP_RESULTS_HPP
-#define PROXSUITE_PROXQP_RESULTS_HPP
+#ifndef PROXSUITE_COMMON_RESULTS_HPP
+#define PROXSUITE_COMMON_RESULTS_HPP
 
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Core>
@@ -13,12 +13,13 @@
 #include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/common/settings.hpp>
 #include "proxsuite/common/status.hpp"
-#include "proxsuite/proxqp/sparse/fwd.hpp"
+#include "proxsuite/common/dense/fwd.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 
-using namespace proxsuite::common;
+using proxsuite::common::dense::isize;
+using proxsuite::common::dense::Vec;
 
 ///
 /// @brief This class stores the results statistics of PROXQP solvers with
@@ -39,10 +40,10 @@ struct Info
   T nu;
 
   ///// iteration count
-  sparse::isize iter;
-  sparse::isize iter_ext;
-  sparse::isize mu_updates;
-  sparse::isize rho_updates;
+  isize iter;
+  isize iter_ext;
+  isize mu_updates;
+  isize rho_updates;
   QPSolverOutput status;
 
   //// timings
@@ -79,20 +80,20 @@ struct Results
 
   ///// SOLUTION STORAGE
 
-  sparse::Vec<T> x;
-  sparse::Vec<T> y;
-  sparse::Vec<T> z;
-  sparse::Vec<T> se; // optimal shift to the closest feasible problem wrt
-                     // equality constraints
-  sparse::Vec<T> si; // optimal shift to the closest feasible problem wrt
-                     // inequality constraints
+  Vec<T> x;
+  Vec<T> y;
+  Vec<T> z;
+  Vec<T> se; // optimal shift to the closest feasible problem wrt
+             // equality constraints
+  Vec<T> si; // optimal shift to the closest feasible problem wrt
+             // inequality constraints
   proxsuite::linalg::veg::Vec<bool> active_constraints;
 
   Info<T> info;
 
   // OSQP
-  sparse::Vec<T> zeta_eq;
-  sparse::Vec<T> zeta_in;
+  Vec<T> zeta_eq;
+  Vec<T> zeta_in;
 
   ////// SOLUTION STATUS
   /*!
@@ -280,7 +281,7 @@ operator!=(const Results<T>& results1, const Results<T>& results2)
   return !(results1 == results2);
 }
 
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_RESULTS_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_RESULTS_HPP */

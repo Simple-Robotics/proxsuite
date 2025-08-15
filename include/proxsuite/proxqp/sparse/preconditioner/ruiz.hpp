@@ -20,6 +20,9 @@ enum struct Symmetry
 };
 
 namespace detail {
+
+using proxsuite::common::VectorViewMut;
+
 template<typename T, typename I>
 void
 rowwise_infty_norm(T* row_norm, proxsuite::linalg::sparse::MatRef<T, I> m)
@@ -330,6 +333,8 @@ ruiz_scale_qp_in_place( //
   return c;
 }
 } // namespace detail
+
+using proxsuite::common::VectorViewMut;
 
 template<typename T, typename I>
 struct RuizEquilibration

@@ -17,7 +17,8 @@
 #include <proxsuite/common/dense/views.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-#include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/common/results.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/proxqp/sparse/fwd.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
@@ -34,6 +35,14 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+using proxsuite::common::from_eigen;
+using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::QPSolverOutput;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
+using proxsuite::common::VectorView;
+using proxsuite::common::VectorViewMut;
 
 template<typename T, typename I>
 void

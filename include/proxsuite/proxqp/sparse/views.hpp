@@ -15,7 +15,7 @@
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/sparse/model.hpp"
-#include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/common/results.hpp"
 
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>

@@ -998,7 +998,7 @@ public:
  * criterion.
  */
 template<typename T>
-proxqp::Results<T>
+common::Results<T>
 solve(
   optional<MatRef<T>> H,
   optional<VecRef<T>> g,
@@ -1128,7 +1128,7 @@ solve(
  * criterion.
  */
 template<typename T>
-proxqp::Results<T>
+common::Results<T>
 solve(
   optional<MatRef<T>> H,
   optional<VecRef<T>> g,

@@ -26,6 +26,7 @@ enum struct Symmetry
 namespace dense {
 namespace detail {
 
+using proxsuite::common::HessianType;
 using proxsuite::common::i64;
 using proxsuite::common::VectorViewMut;
 using proxsuite::common::dense::infty_norm;
@@ -318,6 +319,8 @@ ruiz_scale_qp_in_place( //
 } // namespace detail
 
 namespace preconditioner {
+
+using proxsuite::common::HessianType;
 
 using proxsuite::common::i64;
 using proxsuite::common::VectorViewMut;

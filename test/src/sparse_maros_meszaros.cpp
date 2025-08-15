@@ -14,7 +14,7 @@ using namespace proxsuite;
 template<typename T>
 void
 compute_primal_dual_feasibility(const PreprocessedQpSparse& preprocessed,
-                                const proxqp::Results<T>& results,
+                                const common::Results<T>& results,
                                 T& primal_feasibility,
                                 T& dual_feasibility)
 {

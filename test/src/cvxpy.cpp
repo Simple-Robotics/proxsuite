@@ -40,7 +40,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0, 1.0, 1.0;
-  proxqp::Results<T> results = proxqp::dense::solve<T>(
+  common::Results<T> results = proxqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +
@@ -80,7 +80,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0;
-  proxqp::Results<T> results = proxqp::dense::solve<T>(
+  common::Results<T> results = proxqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +

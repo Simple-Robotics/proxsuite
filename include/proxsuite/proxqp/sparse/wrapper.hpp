@@ -7,7 +7,7 @@
 
 #ifndef PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
-#include <proxsuite/proxqp/results.hpp>
+#include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
@@ -708,7 +708,7 @@ struct QP
  * criterion.
  */
 template<typename T, typename I>
-proxqp::Results<T>
+common::Results<T>
 solve(
   optional<SparseMat<T, I>> H,
   optional<VecRef<T>> g,

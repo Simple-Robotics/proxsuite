@@ -17,7 +17,7 @@
 #include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
-#include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/common/results.hpp"
 #include "proxsuite/proxqp/sparse/utils.hpp"
 
 #include <memory>
@@ -27,6 +27,12 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+using proxsuite::common::MeritFunctionType;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
+using proxsuite::common::SparseBackend;
+using proxsuite::common::Timer;
 
 template<typename T, typename I>
 void

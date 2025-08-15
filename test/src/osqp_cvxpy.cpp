@@ -16,7 +16,7 @@ using Mat =
   Eigen::Matrix<T,
                 Eigen::Dynamic,
                 Eigen::Dynamic,
-                (L == proxqp::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
+                (L == common::colmajor) ? Eigen::ColMajor : Eigen::RowMajor>;
 template<typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -41,7 +41,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0, 1.0, 1.0;
-  proxqp::Results<T> results = osqp::dense::solve<T>(
+  common::Results<T> results = osqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +
@@ -82,7 +82,7 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
 
   Vec<T> u = Vec<T>(dim);
   u << 1.0;
-  proxqp::Results<T> results = osqp::dense::solve<T>(
+  common::Results<T> results = osqp::dense::solve<T>(
     H, g, nullopt, nullopt, C, l, u, nullopt, nullopt, nullopt, eps_abs, 0);
 
   T pri_res = (helpers::positive_part(C * results.x - u) +

@@ -29,9 +29,9 @@ struct init<proxsuite::proxqp::dense::Model<T>>
 };
 
 template<typename T>
-struct init<proxsuite::proxqp::Results<T>>
+struct init<proxsuite::common::Results<T>>
 {
-  typedef proxsuite::proxqp::Results<T> Results;
+  typedef proxsuite::common::Results<T> Results;
 
   static Results run()
   {
