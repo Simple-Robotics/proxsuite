@@ -41,8 +41,8 @@ main()
   std::cout << "optimal z: " << qp.results.z << std::endl;
   // if you have boxes (dense backend only) you proceed the same way
   proxqp::dense::QP<T> qp_box(dim, n_eq, n_in, true); // create the QP object
-  proxqp::dense::Vec<T> u_box(dim);
-  proxqp::dense::Vec<T> l_box(dim);
+  common::dense::Vec<T> u_box(dim);
+  common::dense::Vec<T> l_box(dim);
   u_box.setZero();
   l_box.setZero();
   u_box.array() += 1.E10;

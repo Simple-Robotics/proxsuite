@@ -6,7 +6,7 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 
-#include <proxsuite/proxqp/dense/helpers.hpp>
+#include <proxsuite/common/dense/helpers.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
 
 namespace proxsuite {
@@ -15,6 +15,10 @@ namespace proxqp {
 namespace dense {
 
 namespace python {
+
+using proxsuite::common::EigenValueEstimateMethodOption;
+using proxsuite::common::isize;
+using proxsuite::common::dense::MatRef;
 
 template<typename T>
 void
@@ -26,7 +30,7 @@ exposeDenseHelpers(nanobind::module_ m)
         EigenValueEstimateMethodOption estimate_method_option,
         T power_iteration_accuracy,
         isize nb_power_iteration) {
-      return dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      return common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         H,
         estimate_method_option,
         power_iteration_accuracy,

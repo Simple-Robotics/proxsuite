@@ -9,13 +9,18 @@
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
-#include <proxsuite/proxqp/dense/helpers.hpp>
+#include <proxsuite/common/dense/helpers.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include <chrono>
 
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
+
+using proxsuite::common::PreconditionerStatus;
+using proxsuite::common::dense::MatRef;
+using proxsuite::common::dense::VecRef;
+
 ///
 /// @brief This class defines the API of PROXQP solver with dense backend.
 ///
@@ -479,13 +484,13 @@ public:
     } else {
       preconditioner_status = proxsuite::common::PreconditionerStatus::IDENTITY;
     }
-    proxsuite::proxqp::dense::update_proximal_parameters(
+    proxsuite::common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
+    proxsuite::common::dense::
       update_default_rho_with_minimal_Hessian_eigen_value(
         manual_minimal_H_eigenvalue, results, settings);
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::proxqp::dense::setup(H,
+    proxsuite::common::dense::setup(H,
                                     g,
                                     A,
                                     b,
@@ -685,12 +690,12 @@ public:
     } else {
       preconditioner_status = proxsuite::common::PreconditionerStatus::IDENTITY;
     }
-    proxsuite::proxqp::dense::update_proximal_parameters(
+    proxsuite::common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
+    proxsuite::common::dense::
       update_default_rho_with_minimal_Hessian_eigen_value(
         manual_minimal_H_eigenvalue, results, settings);
-    proxsuite::proxqp::dense::setup(H,
+    proxsuite::common::dense::setup(H,
                                     g,
                                     A,
                                     b,
@@ -773,7 +778,7 @@ public:
         C == nullopt && u == nullopt && l == nullopt);
     if (matrix_update) {
       typedef optional<VecRef<T>> optional_VecRef;
-      proxsuite::proxqp::dense::update(H,
+      proxsuite::common::dense::update(H,
                                        g,
                                        A,
                                        b,
@@ -786,14 +791,14 @@ public:
                                        work,
                                        box_constraints);
     }
-    proxsuite::proxqp::dense::update_proximal_parameters(
+    proxsuite::common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
+    proxsuite::common::dense::
       update_default_rho_with_minimal_Hessian_eigen_value(
         manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::proxqp::dense::setup(/* avoid double assignation */
+    proxsuite::common::dense::setup(/* avoid double assignation */
                                     optional_MatRef(nullopt),
                                     optional_VecRef(nullopt),
                                     optional_MatRef(nullopt),
@@ -894,17 +899,17 @@ public:
         C == nullopt && u == nullopt && l == nullopt && u_box == nullopt &&
         l_box == nullopt);
     if (matrix_update) {
-      proxsuite::proxqp::dense::update(
+      proxsuite::common::dense::update(
         H, g, A, b, C, l, u, l_box, u_box, model, work, box_constraints);
     }
-    proxsuite::proxqp::dense::update_proximal_parameters(
+    proxsuite::common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
+    proxsuite::common::dense::
       update_default_rho_with_minimal_Hessian_eigen_value(
         manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::proxqp::dense::setup(/* avoid double assignation */
+    proxsuite::common::dense::setup(/* avoid double assignation */
                                     optional_MatRef(nullopt),
                                     optional_VecRef(nullopt),
                                     optional_MatRef(nullopt),
@@ -952,7 +957,7 @@ public:
              optional<VecRef<T>> y,
              optional<VecRef<T>> z)
   {
-    proxsuite::proxqp::dense::warm_start(x, y, z, results, settings, model);
+    proxsuite::common::dense::warm_start(x, y, z, results, settings, model);
     qp_solve( //
       settings,
       model,

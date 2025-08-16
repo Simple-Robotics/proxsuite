@@ -7233,7 +7233,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().tail(1).setConstant(-1.);
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7268,13 +7268,13 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7307,15 +7307,15 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += 100 * random_diag.array();
-    Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+    Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7392,7 +7392,7 @@ TEST_CASE(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
@@ -7424,10 +7424,10 @@ TEST_CASE(
     common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += 100 * random_diag.array();
-    Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+    Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
@@ -7474,7 +7474,7 @@ TEST_CASE(
     qp_random.H.diagonal().tail(1).setConstant(-0.5);
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7509,13 +7509,13 @@ TEST_CASE(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7548,16 +7548,16 @@ TEST_CASE(
     common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() +=
       100 * random_diag.array(); // add some random values to dense matrix
-    Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+    Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
     T estimate_minimal_eigen_value =
-      proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7630,7 +7630,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
   qp_random.H.diagonal().tail(1).setConstant(-0.5);
   H = qp_random.H;
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
-  proxqp::dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
+  common::dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 

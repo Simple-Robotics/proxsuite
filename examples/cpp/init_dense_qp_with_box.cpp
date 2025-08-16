@@ -18,8 +18,8 @@ main()
   common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // specify some trivial box constraints
-  proxqp::dense::Vec<T> u_box(dim);
-  proxqp::dense::Vec<T> l_box(dim);
+  common::dense::Vec<T> u_box(dim);
+  common::dense::Vec<T> l_box(dim);
   u_box.setZero();
   l_box.setZero();
   u_box.array() += 1.E10;

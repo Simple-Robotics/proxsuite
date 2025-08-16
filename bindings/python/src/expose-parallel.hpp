@@ -11,7 +11,7 @@
 #include <nanobind/stl/bind_vector.h>
 
 NB_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::QP<double>>)
-NB_MAKE_OPAQUE(std::vector<proxsuite::proxqp::dense::Vec<double>>)
+NB_MAKE_OPAQUE(std::vector<proxsuite::common::dense::Vec<double>>)
 namespace proxsuite {
 namespace proxqp {
 using proxsuite::linalg::veg::isize;
@@ -24,7 +24,7 @@ void
 solveDenseQpParallel(nanobind::module_ m)
 {
 
-  nanobind::bind_vector<std::vector<proxsuite::proxqp::dense::Vec<T>>>(
+  nanobind::bind_vector<std::vector<proxsuite::common::dense::Vec<T>>>(
     m, "VectorLossDerivatives");
 
   nanobind::bind_vector<std::vector<proxsuite::proxqp::dense::QP<T>>>(
@@ -54,7 +54,7 @@ solveDenseQpParallel(nanobind::module_ m)
   m.def("solve_backward_in_parallel",
         nanobind::overload_cast<optional<const size_t>,
                                 proxqp::dense::BatchQP<T>&,
-                                std::vector<proxqp::dense::Vec<T>>&,
+                                std::vector<common::dense::Vec<T>>&,
                                 T,
                                 T,
                                 T>(&qp_solve_backward_in_parallel<T>),
@@ -69,7 +69,7 @@ solveDenseQpParallel(nanobind::module_ m)
   m.def("solve_backward_in_parallel",
         nanobind::overload_cast<optional<const size_t>,
                                 std::vector<proxqp::dense::QP<T>>&,
-                                std::vector<proxqp::dense::Vec<T>>&,
+                                std::vector<common::dense::Vec<T>>&,
                                 T,
                                 T,
                                 T>(&qp_solve_backward_in_parallel<T>),

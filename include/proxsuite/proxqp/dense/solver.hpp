@@ -12,7 +12,7 @@
 #include "proxsuite/fwd.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
-#include "proxsuite/proxqp/dense/helpers.hpp"
+#include "proxsuite/common/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/common/dense/iterative_solve.hpp"
 #include "proxsuite/common/dense/prints.hpp"
@@ -30,6 +30,7 @@ namespace proxqp {
 namespace dense {
 
 using proxsuite::common::i32;
+using proxsuite::common::isize;
 using proxsuite::common::MeritFunctionType;
 
 /*!
@@ -700,14 +701,14 @@ qp_solve( //
       qpwork.C_scaled = qpmodel.C;
       qpwork.u_scaled = qpmodel.u;
       qpwork.l_scaled = qpmodel.l;
-      proxsuite::proxqp::dense::setup_equilibration(
+      proxsuite::common::dense::setup_equilibration(
         qpwork,
         qpsettings,
         box_constraints,
         hessian_type,
         ruiz,
         false); // reuse previous equilibration
-      proxsuite::proxqp::dense::setup_factorization(
+      proxsuite::common::dense::setup_factorization(
         qpwork, qpmodel, qpresults, dense_backend, hessian_type);
     }
     switch (qpsettings.initial_guess) {
@@ -764,7 +765,7 @@ qp_solve( //
            // updating the Qp object
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-        proxsuite::proxqp::dense::setup_factorization(
+        proxsuite::common::dense::setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         compute_equality_constrained_initial_guess(qpwork,
                                                    qpsettings,

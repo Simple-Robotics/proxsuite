@@ -5,26 +5,25 @@
  * @file helpers.hpp
  */
 
-#ifndef PROXSUITE_PROXQP_DENSE_HELPERS_HPP
-#define PROXSUITE_PROXQP_DENSE_HELPERS_HPP
+#ifndef PROXSUITE_COMMON_DENSE_HELPERS_HPP
+#define PROXSUITE_COMMON_DENSE_HELPERS_HPP
 
+#include <Eigen/Eigenvalues>
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
+#include "proxsuite/common/dense/model.hpp"
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/common/dense/fwd.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include "proxsuite/common/dense/iterative_solve.hpp"
-#include <chrono>
-#include <fstream>
 #include <proxsuite/helpers/optional.hpp>
-#include <Eigen/Eigenvalues>
-
-#include "proxsuite/common/dense/model.hpp"
+#include <fstream>
+#include <chrono>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 using proxsuite::common::DenseBackend;
@@ -39,12 +38,11 @@ using proxsuite::common::Settings;
 using proxsuite::common::dense::infty_norm;
 using proxsuite::common::dense::Mat;
 using proxsuite::common::dense::MatRef;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::QpViewBoxMut;
 using proxsuite::common::dense::Vec;
 using proxsuite::common::dense::VecRef;
 using proxsuite::common::dense::Workspace;
-
-using proxsuite::common::dense::Model;
 
 template<typename T,
          typename MatIn,
@@ -926,7 +924,7 @@ save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
 }
 
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_HELPERS_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_HELPERS_HPP */

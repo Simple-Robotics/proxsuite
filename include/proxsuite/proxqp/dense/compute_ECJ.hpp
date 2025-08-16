@@ -69,7 +69,7 @@ compute_backward(dense::QP<T>& solved_qp,
     // so in order to avoid to much refactorization later in the
     // iterative refinement, a factorization from scratch is directly
     // performed with new mu and rho as well to enable more stability
-    proxsuite::proxqp::dense::setup_factorization(
+    proxsuite::common::dense::setup_factorization(
       solved_qp.work,
       solved_qp.model,
       solved_qp.results,

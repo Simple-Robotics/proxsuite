@@ -7,8 +7,8 @@ using T = double;
 using namespace proxsuite;
 using proxsuite::common::isize;
 
-using Mat = proxqp::dense::Mat<T>;
-using Vec = proxqp::dense::Vec<T>;
+using Mat = common::dense::Mat<T>;
+using Vec = common::dense::Vec<T>;
 
 int
 main()

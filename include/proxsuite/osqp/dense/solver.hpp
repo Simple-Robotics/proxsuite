@@ -12,7 +12,7 @@
 #include "proxsuite/common/status.hpp"
 #include "proxsuite/common/dense/model.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
-#include "proxsuite/proxqp/dense/helpers.hpp"
+#include "proxsuite/common/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/common/dense/prints.hpp"
 #include "proxsuite/proxqp/dense/solver.hpp"
@@ -31,7 +31,9 @@ using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
 
 using proxsuite::common::PolishStatus;
+using proxsuite::common::dense::Mat;
 using proxsuite::common::dense::Model;
+using proxsuite::common::dense::Vec;
 
 /*!
  * One iteration of the ADMM algorithm adapted in OSQP.
@@ -715,14 +717,14 @@ qp_solve( //
       qpwork.C_scaled = qpmodel.C;
       qpwork.u_scaled = qpmodel.u;
       qpwork.l_scaled = qpmodel.l;
-      proxsuite::proxqp::dense::setup_equilibration(
+      proxsuite::common::dense::setup_equilibration(
         qpwork,
         qpsettings,
         box_constraints,
         hessian_type,
         ruiz,
         false); // reuse previous equilibration
-      proxsuite::proxqp::dense::setup_factorization(
+      proxsuite::common::dense::setup_factorization(
         qpwork, qpmodel, qpresults, dense_backend, hessian_type);
     }
     if (qpsettings.initial_guess ==
@@ -741,7 +743,7 @@ qp_solve( //
            // updating the Qp object
     switch (qpsettings.initial_guess) {
       case InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS: {
-        proxsuite::proxqp::dense::setup_factorization(
+        proxsuite::common::dense::setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
         compute_equality_constrained_initial_guess(qpwork,
                                                    qpsettings,

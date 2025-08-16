@@ -138,8 +138,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
 
   qp.init(H, g, nullopt, nullopt, C, u, l);
 
-  proxqp::dense::Vec<T> x = proxqp::dense::Vec<T>(dim);
-  proxqp::dense::Vec<T> z = proxqp::dense::Vec<T>(n_in);
+  common::dense::Vec<T> x = common::dense::Vec<T>(dim);
+  common::dense::Vec<T> z = common::dense::Vec<T>(n_in);
   x << 0.5;
   z << 0.0;
   qp.solve(x, nullopt, z);

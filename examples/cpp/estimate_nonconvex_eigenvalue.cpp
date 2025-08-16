@@ -18,18 +18,18 @@ main()
   common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // make the QP nonconvex
-  proxqp::dense::Vec<T> diag(dim);
+  common::dense::Vec<T> diag(dim);
   diag.setOnes();
   qp_random.H.diagonal().array() -=
     2. * diag.array(); // add some nonpositive values dense matrix
-  Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+  Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
     qp_random.H, Eigen::EigenvaluesOnly);
   T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
   // choose scaling for regularizing default_rho accordingly
   proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
   // choose the option for estimating this eigenvalue
   T estimate_minimal_eigen_value =
-    proxqp::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+    common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
       qp_random.H,
       common::EigenValueEstimateMethodOption::ExactMethod,
       1.E-6,

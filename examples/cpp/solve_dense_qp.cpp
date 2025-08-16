@@ -42,8 +42,8 @@ main()
   // the moment)
   proxqp::dense::QP<T> qp2(dim, n_eq, n_in, true); // create the QP object
   // some trivial boxes
-  proxqp::dense::Vec<T> u_box(dim);
-  proxqp::dense::Vec<T> l_box(dim);
+  common::dense::Vec<T> u_box(dim);
+  common::dense::Vec<T> l_box(dim);
   u_box.setZero();
   l_box.setZero();
   u_box.array() += 1.E10;
