@@ -9,11 +9,14 @@
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/common/dense/fwd.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
-#include "proxsuite/proxqp/dense/backward_data.hpp"
+#include "proxsuite/common/dense/backward_data.hpp"
+
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
 
+using proxsuite::common::isize;
+using proxsuite::common::dense::BackwardData;
 using proxsuite::common::dense::Mat;
 using proxsuite::common::dense::SparseMat;
 using proxsuite::common::dense::Vec;

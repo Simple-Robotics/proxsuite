@@ -4,16 +4,16 @@
 /**
  * @file results.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_BACKWARD_DATA_HPP
-#define PROXSUITE_PROXQP_DENSE_BACKWARD_DATA_HPP
+#ifndef PROXSUITE_COMMON_DENSE_BACKWARD_DATA_HPP
+#define PROXSUITE_COMMON_DENSE_BACKWARD_DATA_HPP
 
-#include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Core>
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
+#include <proxsuite/helpers/optional.hpp>
 #include "proxsuite/common/dense/fwd.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 using proxsuite::common::dense::isize;
@@ -131,7 +131,7 @@ struct BackwardData
 };
 
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_BACKWARD_DATA_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_BACKWARD_DATA_HPP */
