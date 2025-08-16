@@ -138,7 +138,7 @@ global_primal_residual(
   primal_feasibility_lhs =
     std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
   if (qpsettings.primal_infeasibility_solving &&
-      qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+      qpresults.info.status == QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
     qpwork.rhs.head(qpmodel.dim).noalias() =
       qpmodel.A.transpose() * qpresults.se;
     qpwork.rhs.head(qpmodel.dim).noalias() +=

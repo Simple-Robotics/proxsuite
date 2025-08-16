@@ -160,7 +160,7 @@ struct Results
     info.dua_res = 0.;
     info.duality_gap = 0.;
     info.iterative_residual = 0.;
-    info.status = QPSolverOutput::PROXQP_NOT_RUN;
+    info.status = QPSolverOutput::QPSOLVER_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
     info.status_polish = PolishStatus::POLISH_NOT_RUN;
@@ -196,7 +196,7 @@ struct Results
     info.dua_res = 0.;
     info.duality_gap = 0.;
     info.iterative_residual = 0.;
-    info.status = QPSolverOutput::PROXQP_MAX_ITER_REACHED;
+    info.status = QPSolverOutput::QPSOLVER_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
     info.status_polish = PolishStatus::POLISH_NOT_RUN;
   }

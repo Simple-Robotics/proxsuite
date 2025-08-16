@@ -14,17 +14,17 @@ def infty_norm(vec: np.ndarray):
 
 def status_to_string(status, solver):
     if solver == "proxsuite":
-        if status == proxsuite.osqp.PROXQP_SOLVED:
+        if status == proxsuite.osqp.QPSOLVER_SOLVED:
             return "Solved"
-        elif status == proxsuite.osqp.PROXQP_MAX_ITER_REACHED:
+        elif status == proxsuite.osqp.QPSOLVER_MAX_ITER_REACHED:
             return "Maximum number of iterations reached"
-        elif status == proxsuite.osqp.PROXQP_PRIMAL_INFEASIBLE:
+        elif status == proxsuite.osqp.QPSOLVER_PRIMAL_INFEASIBLE:
             return "Primal infeasible"
-        elif status == proxsuite.osqp.PROXQP_DUAL_INFEASIBLE:
+        elif status == proxsuite.osqp.QPSOLVER_DUAL_INFEASIBLE:
             return "Dual infeasible"
-        elif status == proxsuite.osqp.PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE:
+        elif status == proxsuite.osqp.QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE:
             return "Solved closest primal feasible"
-        elif status == proxsuite.osqp.PROXQP_NOT_RUN:
+        elif status == proxsuite.osqp.QPSOLVER_NOT_RUN:
             return "Solver not run"
 
     elif solver == "source":

@@ -35,7 +35,7 @@ compute_backward(dense::QP<T>& solved_qp,
                  T mu_new = 1.E-6)
 {
   bool check =
-    solved_qp.results.info.status == QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+    solved_qp.results.info.status == QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE;
   if (check) {
     PROXSUITE_THROW_PRETTY(
       true,

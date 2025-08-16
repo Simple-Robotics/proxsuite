@@ -738,7 +738,7 @@ unscaled_primal_dual_residual(
     std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
 
   if ((settings.primal_infeasibility_solving &&
-       results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)) {
+       results.info.status == QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE)) {
     tmp.setZero();
     {
       results.se = primal_residual_eq_scaled;

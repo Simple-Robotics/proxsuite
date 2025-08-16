@@ -28,13 +28,15 @@ void
 exposeResults(nanobind::module_ m)
 {
   ::nanobind::enum_<QPSolverOutput>(m, "QPSolverOutput")
-    .value("PROXQP_SOLVED", QPSolverOutput::PROXQP_SOLVED)
-    .value("PROXQP_MAX_ITER_REACHED", QPSolverOutput::PROXQP_MAX_ITER_REACHED)
-    .value("PROXQP_PRIMAL_INFEASIBLE", QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
-    .value("PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE",
-           QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE)
-    .value("PROXQP_DUAL_INFEASIBLE", QPSolverOutput::PROXQP_DUAL_INFEASIBLE)
-    .value("PROXQP_NOT_RUN", QPSolverOutput::PROXQP_NOT_RUN)
+    .value("QPSOLVER_SOLVED", QPSolverOutput::QPSOLVER_SOLVED)
+    .value("QPSOLVER_MAX_ITER_REACHED",
+           QPSolverOutput::QPSOLVER_MAX_ITER_REACHED)
+    .value("QPSOLVER_PRIMAL_INFEASIBLE",
+           QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE)
+    .value("QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE",
+           QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE)
+    .value("QPSOLVER_DUAL_INFEASIBLE", QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE)
+    .value("QPSOLVER_NOT_RUN", QPSolverOutput::QPSOLVER_NOT_RUN)
     .export_values();
 
   ::nanobind::enum_<PolishStatus>(m, "PolishStatus")

@@ -13,13 +13,14 @@ namespace common {
 // SOLVER STATUS
 enum struct QPSolverOutput
 {
-  PROXQP_SOLVED,           // the problem is solved.
-  PROXQP_MAX_ITER_REACHED, // the maximum number of iterations has been reached.
-  PROXQP_PRIMAL_INFEASIBLE,              // the problem is primal infeasible.
-  PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE, // the closest (in L2 sense) feasible
-                                         // problem is solved.
-  PROXQP_DUAL_INFEASIBLE,                // the problem is dual infeasible.
-  PROXQP_NOT_RUN                         // the solver has not been run yet.
+  QPSOLVER_SOLVED,            // the problem is solved.
+  QPSOLVER_MAX_ITER_REACHED,  // the maximum number of iterations has been
+                              // reached.
+  QPSOLVER_PRIMAL_INFEASIBLE, // the problem is primal infeasible.
+  QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE, // the closest (in L2 sense) feasible
+                                           // problem is solved.
+  QPSOLVER_DUAL_INFEASIBLE,                // the problem is dual infeasible.
+  QPSOLVER_NOT_RUN                         // the solver has not been run yet.
 };
 // INITIAL GUESS STATUS
 enum struct InitialGuessStatus

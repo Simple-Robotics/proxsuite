@@ -7222,19 +7222,19 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
       std::cout << "iter_ext at i: " << qp.results.info.iter_ext << std::endl;
       std::cout << "Status: "
                 << (qp.results.info.status ==
-                        common::QPSolverOutput::PROXQP_SOLVED
+                        common::QPSolverOutput::QPSOLVER_SOLVED
                       ? "Success"
                     : qp.results.info.status ==
-                        common::QPSolverOutput::PROXQP_MAX_ITER_REACHED
+                        common::QPSolverOutput::QPSOLVER_MAX_ITER_REACHED
                       ? "Max iterations (success)"
                     : qp.results.info.status ==
-                        common::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE
+                        common::QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE
                       ? "Primal infeasible"
                     : qp.results.info.status ==
-                        common::QPSolverOutput::PROXQP_DUAL_INFEASIBLE
+                        common::QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE
                       ? "Dual infeasible"
                     : qp.results.info.status ==
-                        common::QPSolverOutput::PROXQP_NOT_RUN
+                        common::QPSolverOutput::QPSOLVER_NOT_RUN
                       ? "Not run"
                       : "Unknown")
                 << std::endl;
@@ -7497,15 +7497,16 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 //       std::cout << "i of failed pri_res: " << i << std::endl;
 //       std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
 //       std::endl; std::cout << "Status: " <<
-//     (qp.results.info.status == common::QPSolverOutput::PROXQP_SOLVED ?
+//     (qp.results.info.status == common::QPSolverOutput::QPSOLVER_SOLVED ?
 //     "Success" :
 //      qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_MAX_ITER_REACHED ? "Max iterations
+//      common::QPSolverOutput::QPSOLVER_MAX_ITER_REACHED ? "Max iterations
 //      (success)" : qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
-//      qp.results.info.status == common::QPSolverOutput::PROXQP_DUAL_INFEASIBLE
-//      ? "Dual infeasible" : qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
+//      common::QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE ? "Primal infeasible"
+//      : qp.results.info.status ==
+//      common::QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE ? "Dual infeasible" :
+//      qp.results.info.status == common::QPSolverOutput::QPSOLVER_NOT_RUN ?
+//      "Not run" :
 //                                                                            "Unknown
 //                                                                            status")
 //     << std::endl;
@@ -7515,15 +7516,16 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 //       std::cout << "i of failed dua_res: " << i << std::endl;
 //       std::cout << "iter_ext at i: " << qp.results.info.iter_ext <<
 //       std::endl; std::cout << "Status: " <<
-//     (qp.results.info.status == common::QPSolverOutput::PROXQP_SOLVED ?
+//     (qp.results.info.status == common::QPSolverOutput::QPSOLVER_SOLVED ?
 //     "Success" :
 //      qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_MAX_ITER_REACHED ? "Max iterations
+//      common::QPSolverOutput::QPSOLVER_MAX_ITER_REACHED ? "Max iterations
 //      (success)" : qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE ? "Primal infeasible" :
-//      qp.results.info.status == common::QPSolverOutput::PROXQP_DUAL_INFEASIBLE
-//      ? "Dual infeasible" : qp.results.info.status ==
-//      common::QPSolverOutput::PROXQP_NOT_RUN           ? "Not run" :
+//      common::QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE ? "Primal infeasible"
+//      : qp.results.info.status ==
+//      common::QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE ? "Dual infeasible" :
+//      qp.results.info.status == common::QPSolverOutput::QPSOLVER_NOT_RUN ?
+//      "Not run" :
 //                                                                            "Unknown
 //                                                                            status")
 //     << std::endl;

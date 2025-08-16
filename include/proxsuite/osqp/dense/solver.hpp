@@ -961,16 +961,16 @@ qp_solve( //
               qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
           if (qpsettings.primal_infeasibility_solving &&
               qpresults.info.status ==
-                QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+                QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
             qpresults.info.status =
-              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+              QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
           } else {
-            qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+            qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
           }
           break;
         }
       } else {
-        qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+        qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
         break;
       }
     }
@@ -1072,10 +1072,10 @@ qp_solve( //
           box_constraints,
           ruiz);
       if (is_primal_infeasible) {
-        qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
+        qpresults.info.status = QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE;
         break;
       } else if (is_dual_infeasible) {
-        qpresults.info.status = QPSolverOutput::PROXQP_DUAL_INFEASIBLE;
+        qpresults.info.status = QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE;
         break;
       }
     }
@@ -1135,21 +1135,21 @@ qp_solve( //
                 qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
             if (qpsettings.primal_infeasibility_solving &&
                 qpresults.info.status ==
-                  QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+                  QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
               qpresults.info.status =
-                QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+                QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
             } else {
-              qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+              qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
             }
           }
         } else {
           if (qpsettings.primal_infeasibility_solving &&
               qpresults.info.status ==
-                QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+                QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
             qpresults.info.status =
-              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+              QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
           } else {
-            qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+            qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
           }
         }
       }
@@ -1242,7 +1242,7 @@ qp_solve( //
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.polishing &&
-      qpresults.info.status == QPSolverOutput::PROXQP_SOLVED) {
+      qpresults.info.status == QPSolverOutput::QPSOLVER_SOLVED) {
 
     // Timing polishing
     qpwork.timer_polish.stop();
@@ -1448,32 +1448,32 @@ qp_solve( //
     std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
     std::cout << "objective:      " << qpresults.info.objValue << std::endl;
     switch (qpresults.info.status) {
-      case QPSolverOutput::PROXQP_SOLVED: {
+      case QPSolverOutput::QPSOLVER_SOLVED: {
         std::cout << "status:         "
                   << "Solved" << std::endl;
         break;
       }
-      case QPSolverOutput::PROXQP_MAX_ITER_REACHED: {
+      case QPSolverOutput::QPSOLVER_MAX_ITER_REACHED: {
         std::cout << "status:         "
                   << "Maximum number of iterations reached" << std::endl;
         break;
       }
-      case QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE: {
+      case QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE: {
         std::cout << "status:         "
                   << "Primal infeasible" << std::endl;
         break;
       }
-      case QPSolverOutput::PROXQP_DUAL_INFEASIBLE: {
+      case QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE: {
         std::cout << "status:         "
                   << "Dual infeasible" << std::endl;
         break;
       }
-      case QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
+      case QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
         std::cout << "status:         "
                   << "Solved closest primal feasible" << std::endl;
         break;
       }
-      case QPSolverOutput::PROXQP_NOT_RUN: {
+      case QPSolverOutput::QPSOLVER_NOT_RUN: {
         std::cout << "status:         "
                   << "Solver not run" << std::endl;
         break;

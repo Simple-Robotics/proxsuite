@@ -4626,8 +4626,8 @@ class DenseqpWrapper(unittest.TestCase):
 
             # if infeasibility is detected, we relax the tolerance and solve again
             if (
-                qp.results.info.status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE
-                or qp.results.info.status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE
+                qp.results.info.status == proxsuite.proxqp.QPSOLVER_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.proxqp.QPSOLVER_PRIMAL_INFEASIBLE
             ):
                 print(f"[{i}] {qp.results.info.status=}, solve again.")
                 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
@@ -4638,7 +4638,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.settings.eps_dual_inf = 1e-12
                 qp.solve()
 
-            assert qp.results.info.status == proxsuite.proxqp.PROXQP_SOLVED
+            assert qp.results.info.status == proxsuite.proxqp.QPSOLVER_SOLVED
 
             dua_res = normInf(
                 H @ qp.results.x
@@ -4677,8 +4677,8 @@ class DenseqpWrapper(unittest.TestCase):
 
             # if infeasibility is detected, we relax the tolerance and solve again
             if (
-                qp.results.info.status == proxsuite.proxqp.PROXQP_DUAL_INFEASIBLE
-                or qp.results.info.status == proxsuite.proxqp.PROXQP_PRIMAL_INFEASIBLE
+                qp.results.info.status == proxsuite.proxqp.QPSOLVER_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.proxqp.QPSOLVER_PRIMAL_INFEASIBLE
             ):
                 print(f"[{i}] {qp.results.info.status=}, solve again.")
                 qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
@@ -4689,7 +4689,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.settings.eps_dual_inf = 1e-12
                 qp.solve()
 
-            assert qp.results.info.status == proxsuite.proxqp.PROXQP_SOLVED
+            assert qp.results.info.status == proxsuite.proxqp.QPSOLVER_SOLVED
 
             dua_res = normInf(
                 H @ qp.results.x

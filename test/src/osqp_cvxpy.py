@@ -41,7 +41,7 @@ class CvxpyTest(unittest.TestCase):
         pri_res = normInf(
             np.maximum(C @ qp.results.x - u, 0) + np.minimum(C @ qp.results.x - l, 0)
         )
-        assert qp.results.info.status.name == "PROXQP_SOLVED"
+        assert qp.results.info.status.name == "QPSOLVER_SOLVED"
 
         assert dua_res <= 1e-3
         assert pri_res <= 1e-3

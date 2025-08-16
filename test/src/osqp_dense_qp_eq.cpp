@@ -260,5 +260,5 @@ DOCTEST_TEST_CASE("infeasible qp")
   qp.solve();
 
   DOCTEST_CHECK(qp.results.info.status ==
-                proxsuite::common::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
+                proxsuite::common::QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE);
 }
