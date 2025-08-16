@@ -924,44 +924,15 @@ qp_solve( //
     //////////////////////////////////////////////////////////////////////////////////////////
 
     if (qpsettings.verbose) {
-
-      ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
-      ruiz.unscale_dual_in_place_eq(
-        VectorViewMut<T>{ from_eigen, qpresults.y });
-      ruiz.unscale_dual_in_place_in(
-        VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
-      if (box_constraints) {
-        ruiz.unscale_box_dual_in_place_in(
-          VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
-      }
-      {
-        qpresults.info.objValue = 0;
-        for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
-          qpresults.info.objValue +=
-            0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
-          qpresults.info.objValue +=
-            qpresults.x(j) * T(qpmodel.H.col(j)
-                                 .tail(qpmodel.dim - j - 1)
-                                 .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
-        }
-        qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
-      }
-      std::cout << "\033[1;32m[iteration " << iter + 1 << "]\033[0m"
-                << std::endl;
-      std::cout << std::scientific << std::setw(2) << std::setprecision(2)
-                << "| primal residual=" << qpresults.info.pri_res
-                << " | dual residual=" << qpresults.info.dua_res
-                << " | duality gap=" << qpresults.info.duality_gap
-                << " | mu_eq=" << qpresults.info.mu_eq
-                << " | mu_in=" << qpresults.info.mu_in << std::endl;
-      ruiz.scale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
-      ruiz.scale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
-      ruiz.scale_dual_in_place_in(
-        VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
-      if (box_constraints) {
-        ruiz.scale_box_dual_in_place_in(
-          VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
-      }
+      proxsuite::common::dense::print_iteration_line(qpsettings,
+                                                     qpresults,
+                                                     qpmodel,
+                                                     box_constraints,
+                                                     dense_backend,
+                                                     hessian_type,
+                                                     ruiz,
+                                                     common::Solver::OSQP,
+                                                     iter);
     }
 
     // Check if solved
