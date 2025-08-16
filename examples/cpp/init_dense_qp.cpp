@@ -15,7 +15,7 @@ main()
   // generate a random qp
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object

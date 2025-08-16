@@ -21,7 +21,7 @@
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Eigenvalues>
 
-#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/common/dense/model.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -44,7 +44,7 @@ using proxsuite::common::dense::Vec;
 using proxsuite::common::dense::VecRef;
 using proxsuite::common::dense::Workspace;
 
-using proxsuite::proxqp::dense::Model;
+using proxsuite::common::dense::Model;
 
 template<typename T,
          typename MatIn,

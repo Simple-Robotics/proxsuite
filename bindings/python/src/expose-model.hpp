@@ -6,7 +6,7 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/operators.h>
 
-#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/common/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <proxsuite/proxqp/dense/utils.hpp>
 #include <proxsuite/serialization/archive.hpp>
@@ -17,6 +17,9 @@ namespace proxsuite {
 namespace proxqp {
 namespace dense {
 namespace python {
+
+using proxsuite::common::dense::BackwardData;
+
 template<typename T>
 void
 exposeDenseModel(nanobind::module_ m)
@@ -43,7 +46,7 @@ exposeDenseModel(nanobind::module_ m)
   // .def_ro("dL_dsi",
   // &proxsuite::proxqp::dense::BackwardData<T>::dL_dsi);
 
-  ::nanobind::class_<proxsuite::proxqp::dense::Model<T>>(m, "model")
+  ::nanobind::class_<proxsuite::common::dense::Model<T>>(m, "model")
     .def(::nanobind::init<i64, i64, i64>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
@@ -67,7 +70,7 @@ exposeDenseModel(nanobind::module_ m)
     .def(nanobind::self == nanobind::self)
     .def(nanobind::self != nanobind::self)
     .def("__getstate__",
-         [](const proxsuite::proxqp::dense::Model<T>& model) {
+         [](const proxsuite::common::dense::Model<T>& model) {
            return proxsuite::serialization::saveToString(model);
          })
     .def("__setstate__", [](dense::Model<T>& model, const std::string& s) {

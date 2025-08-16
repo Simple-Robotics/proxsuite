@@ -64,7 +64,7 @@ main()
 
   for (T sparsity_factor = 0.1; sparsity_factor < 0.5; sparsity_factor += 0.1) {
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     for (int i = 0; i < N; i++) {

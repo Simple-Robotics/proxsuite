@@ -36,7 +36,7 @@ main(int /*argc*/, const char** /*argv*/)
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << std::endl;
 
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
     auto y_sol = proxqp::utils::rand::vector_rand<T>(n_eq);

@@ -26,7 +26,7 @@ DOCTEST_TEST_CASE(
     int n_eq(0);
     int n_in(0);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
       dim, sparsity_factor, strong_convexity_factor);
     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
@@ -74,7 +74,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
     int n_eq(0);
     int n_in(0);
     T strong_convexity_factor(0);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
       dim, sparsity_factor, strong_convexity_factor);
     auto x_sol = proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.g =
@@ -124,7 +124,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
   int n_eq(0);
   int n_in(0);
   T strong_convexity_factor(1.E-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
     dim, sparsity_factor, strong_convexity_factor);
   qp_random.H.setZero();
   qp_random.H.diagonal().array() += 1;
@@ -171,7 +171,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
   int n_eq(0);
   int n_in(0);
   T strong_convexity_factor(1.E-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_unconstrained_qp(
     dim, sparsity_factor, strong_convexity_factor);
   qp_random.H.setZero();
   qp_random.H.diagonal().array() += 1;

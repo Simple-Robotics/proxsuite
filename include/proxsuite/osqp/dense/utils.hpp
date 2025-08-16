@@ -16,7 +16,7 @@
 #include "proxsuite/helpers/common.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
-#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/common/dense/model.hpp>
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
@@ -25,14 +25,13 @@ namespace proxsuite {
 namespace osqp {
 namespace dense {
 
-using namespace proxsuite::proxqp;
-using namespace proxsuite::proxqp::dense;
-
 using proxsuite::common::DenseBackend;
 using proxsuite::common::HessianType;
 using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::isize;
 using proxsuite::common::Results;
 using proxsuite::common::Settings;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
 template<typename T>

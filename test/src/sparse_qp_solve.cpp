@@ -59,7 +59,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                   sparsity_factor,
                                   strong_convexity_factor);
     */
-    proxqp::dense::Model<T> qp_dense = utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_dense = utils::dense_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::sparse::SparseModel<T> qp = qp_dense.to_sparse();
     proxsuite::common::Results<T> results =

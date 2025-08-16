@@ -6,7 +6,7 @@
 #define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
 #include "proxsuite/common/dense/views.hpp"
-#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/common/dense/model.hpp"
 #include "proxsuite/common/results.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
 #include "proxsuite/common/settings.hpp"
@@ -16,8 +16,10 @@ namespace proxqp {
 namespace dense {
 namespace linesearch {
 
+using proxsuite::common::isize;
 using proxsuite::common::Results;
 using proxsuite::common::Settings;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
 using proxsuite::common::DenseBackend;

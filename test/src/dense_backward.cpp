@@ -22,7 +22,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
 
   isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-1);
-  proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   Eigen::Matrix<T, 10, 10> H = random_qp.H;
@@ -89,7 +89,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
 
   isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   Eigen::Matrix<T, 10, 10> H = random_qp.H;
@@ -157,7 +157,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
 
   isize n_eq(0), n_in(12);
   T strong_convexity_factor(1.e-1);
-  proxqp::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   std::cout << "creating random  qp " << std::endl;

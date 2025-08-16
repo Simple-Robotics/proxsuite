@@ -2,17 +2,17 @@
 // Copyright (c) 2022 INRIA
 //
 /** \file */
-#ifndef PROXSUITE_PROXQP_DENSE_MODEL_HPP
-#define PROXSUITE_PROXQP_DENSE_MODEL_HPP
+#ifndef PROXSUITE_COMMON_DENSE_MODEL_HPP
+#define PROXSUITE_COMMON_DENSE_MODEL_HPP
 
 #include <Eigen/Core>
 #include "proxsuite/linalg/veg/type_traits/core.hpp"
 #include "proxsuite/common/dense/fwd.hpp"
-#include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/common/dense/backward_data.hpp"
+#include "proxsuite/proxqp/sparse/model.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 using proxsuite::common::isize;
@@ -178,7 +178,7 @@ operator!=(const Model<T>& model1, const Model<T>& model2)
 }
 
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_MODEL_HPP */
+#endif /* end of include guard PROXSUITE_COMMON_DENSE_MODEL_HPP */

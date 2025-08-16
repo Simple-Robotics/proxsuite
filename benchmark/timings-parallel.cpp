@@ -44,7 +44,7 @@ main(int /*argc*/, const char** /*argv*/)
       qps.reserve(num_qps);
       for (int i = 0; i < num_qps; i++) {
         proxqp::utils::rand::set_seed(i);
-        proxqp::dense::Model<T> qp_random =
+        common::dense::Model<T> qp_random =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -72,7 +72,7 @@ main(int /*argc*/, const char** /*argv*/)
       proxqp::dense::BatchQP<T> qps_vector = proxqp::dense::BatchQP<T>(num_qps);
       for (int i = 0; i < num_qps; i++) {
         proxqp::utils::rand::set_seed(i);
-        proxqp::dense::Model<T> qp_random =
+        common::dense::Model<T> qp_random =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -99,7 +99,7 @@ main(int /*argc*/, const char** /*argv*/)
       qps.reserve(num_qps);
       for (int i = 0; i < num_qps; i++) {
         proxqp::utils::rand::set_seed(i);
-        proxqp::dense::Model<T> qp_dense =
+        common::dense::Model<T> qp_dense =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
         proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();
@@ -129,7 +129,7 @@ main(int /*argc*/, const char** /*argv*/)
         proxqp::sparse::BatchQP<T, I>(num_qps);
       for (int i = 0; i < num_qps; i++) {
         proxqp::utils::rand::set_seed(i);
-        proxqp::dense::Model<T> qp_dense =
+        common::dense::Model<T> qp_dense =
           proxqp::utils::dense_strongly_convex_qp(
             dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
         proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();
@@ -162,7 +162,7 @@ main(int /*argc*/, const char** /*argv*/)
     qps.reserve(num_qps);
     for (int i = 0; i < num_qps; i++) {
       proxqp::utils::rand::set_seed(i);
-      proxqp::dense::Model<T> qp_random =
+      common::dense::Model<T> qp_random =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -183,7 +183,7 @@ main(int /*argc*/, const char** /*argv*/)
     proxqp::dense::BatchQP<T> qps_vector = proxqp::dense::BatchQP<T>(num_qps);
     for (int i = 0; i < num_qps; i++) {
       proxqp::utils::rand::set_seed(i);
-      proxqp::dense::Model<T> qp_random =
+      common::dense::Model<T> qp_random =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -246,7 +246,7 @@ main(int /*argc*/, const char** /*argv*/)
     qps.reserve(num_qps);
     for (int i = 0; i < num_qps; i++) {
       proxqp::utils::rand::set_seed(i);
-      proxqp::dense::Model<T> qp_dense =
+      common::dense::Model<T> qp_dense =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
       proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();
@@ -269,7 +269,7 @@ main(int /*argc*/, const char** /*argv*/)
       proxqp::sparse::BatchQP<T, I>(num_qps);
     for (int i = 0; i < num_qps; i++) {
       proxqp::utils::rand::set_seed(i);
-      proxqp::dense::Model<T> qp_dense =
+      common::dense::Model<T> qp_dense =
         proxqp::utils::dense_strongly_convex_qp(
           dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
       proxqp::sparse::SparseModel<T> qp_random = qp_dense.to_sparse();

@@ -9,13 +9,13 @@
 #define PROXSUITE_SERIALIZATION_MODEL_HPP
 
 #include <cereal/cereal.hpp>
-#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/common/dense/model.hpp>
 
 namespace cereal {
 
 template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::dense::Model<T>& model)
+serialize(Archive& archive, proxsuite::common::dense::Model<T>& model)
 {
   archive(CEREAL_NVP(model.dim),
           CEREAL_NVP(model.n_eq),

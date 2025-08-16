@@ -15,7 +15,7 @@
 #include "proxsuite/helpers/common.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
-#include <proxsuite/proxqp/dense/model.hpp>
+#include <proxsuite/common/dense/model.hpp>
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
@@ -38,6 +38,7 @@ using proxsuite::common::QPSolverOutput;
 using proxsuite::common::Results;
 using proxsuite::common::Settings;
 using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
 /*!

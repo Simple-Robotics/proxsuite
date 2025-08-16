@@ -16,7 +16,7 @@ main()
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
 
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   // load OSQP solver with dense backend and solve the problem

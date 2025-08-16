@@ -10,7 +10,7 @@
 
 #include "proxsuite/common/dense/preconditioner/ruiz.hpp"
 #include "proxsuite/common/status.hpp"
-#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/common/dense/model.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
@@ -31,6 +31,7 @@ using namespace proxsuite::proxqp;
 using namespace proxsuite::proxqp::dense;
 
 using proxsuite::common::PolishStatus;
+using proxsuite::common::dense::Model;
 
 /*!
  * One iteration of the ADMM algorithm adapted in OSQP.

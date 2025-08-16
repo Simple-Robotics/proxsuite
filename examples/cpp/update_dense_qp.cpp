@@ -16,7 +16,7 @@ main()
   // generate a random qp
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
@@ -29,7 +29,7 @@ main()
           qp_random.u); // initialize the model
   qp.solve();           // solve the problem
                         // a new qp problem
-  proxqp::dense::Model<T> qp2 = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp2 = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // re update the model
   qp.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.l, qp2.u);

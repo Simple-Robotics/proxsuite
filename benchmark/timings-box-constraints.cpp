@@ -30,7 +30,7 @@ main(int /*argc*/, const char** /*argv*/)
               << " box: " << dim << std::endl;
     T strong_convexity_factor(1.e-2);
 
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
       proxqp::utils::rand::vector_rand<T>(dim);

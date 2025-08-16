@@ -17,9 +17,9 @@ template<typename object>
 struct init;
 
 template<typename T>
-struct init<proxsuite::proxqp::dense::Model<T>>
+struct init<proxsuite::common::dense::Model<T>>
 {
-  typedef proxsuite::proxqp::dense::Model<T> Model;
+  typedef proxsuite::common::dense::Model<T> Model;
 
   static Model run()
   {
@@ -120,7 +120,7 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
   isize n_eq(0);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object

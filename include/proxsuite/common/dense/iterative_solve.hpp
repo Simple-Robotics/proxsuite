@@ -14,7 +14,7 @@
 #include "proxsuite/common/settings.hpp"
 #include "proxsuite/common/results.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
-#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/common/dense/model.hpp"
 #include <iostream>
 
 namespace proxsuite {
@@ -23,6 +23,7 @@ namespace dense {
 
 using proxsuite::common::i32;
 using proxsuite::common::Results;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
 /*!
@@ -36,7 +37,7 @@ using proxsuite::common::dense::Workspace;
  */
 template<typename T>
 void
-refactorize(const proxsuite::proxqp::dense::Model<T>& qpmodel,
+refactorize(const Model<T>& qpmodel,
             Results<T>& qpresults,
             Workspace<T>& qpwork,
             const isize n_constraints,
@@ -124,7 +125,7 @@ refactorize(const proxsuite::proxqp::dense::Model<T>& qpmodel,
  */
 template<typename T>
 void
-iterative_residual(const proxsuite::proxqp::dense::Model<T>& qpmodel,
+iterative_residual(const Model<T>& qpmodel,
                    Results<T>& qpresults,
                    Workspace<T>& qpwork,
                    const isize n_constraints,
@@ -202,7 +203,7 @@ iterative_residual(const proxsuite::proxqp::dense::Model<T>& qpmodel,
 template<typename T>
 void
 solve_linear_system(proxsuite::common::dense::Vec<T>& dw,
-                    const proxsuite::proxqp::dense::Model<T>& qpmodel,
+                    const Model<T>& qpmodel,
                     Results<T>& qpresults,
                     Workspace<T>& qpwork,
                     const isize n_constraints,
@@ -289,7 +290,7 @@ template<typename T>
 void
 iterative_solve_with_permut_fact( //
   const Settings<T>& qpsettings,
-  const proxsuite::proxqp::dense::Model<T>& qpmodel,
+  const Model<T>& qpmodel,
   Results<T>& qpresults,
   Workspace<T>& qpwork,
   const isize n_constraints,

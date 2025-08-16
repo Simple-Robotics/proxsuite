@@ -6125,7 +6125,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //   n_in = dim;
 //   for (isize i = 0; i < 20; ++i) {
 //     ::proxsuite::proxqp::utils::rand::set_seed(i);
-//     proxqp::dense::Model<T> qp_random =
+//     common::dense::Model<T> qp_random =
 //     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 //     // proxqp::sparse::SparseModel<T> qp_random =
@@ -6161,7 +6161,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //   n_in = dim;
 //   for (isize i = 0; i < 20; ++i) {
 //     ::proxsuite::proxqp::utils::rand::set_seed(i);
-//     proxqp::dense::Model<T> qp_random =
+//     common::dense::Model<T> qp_random =
 //     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -6205,14 +6205,14 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // proxqp::sparse::SparseModel<T> qp_random =
     // utils::sparse_strongly_convex_qp(
     //   dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
@@ -6244,10 +6244,10 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += 100 * random_diag.array();
 
@@ -6258,7 +6258,7 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
     SparseMat<T> H_sparse = qp_random.H.sparseView();
     SparseMat<T> A_sparse = qp_random.A.sparseView();
     SparseMat<T> C_sparse = qp_random.C.sparseView();
-    Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+    Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
     qp.init(H_sparse,
@@ -6293,14 +6293,14 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // proxqp::sparse::SparseModel<T> qp_random =
     // utils::sparse_strongly_convex_qp(
     //   dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
@@ -6337,10 +6337,10 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    proxqp::dense::Vec<T> random_diag =
+    common::dense::Vec<T> random_diag =
       proxqp::utils::rand::vector_rand<T>(dim);
     qp_random.H.diagonal().array() += 100 * random_diag.array();
 
@@ -6354,7 +6354,7 @@ TEST_CASE(
     T estimate_minimal_eigen_value =
       sparse::estimate_minimal_eigen_value_of_symmetric_matrix<T, I>(
         H_sparse, 1.E-6, 10000);
-    Eigen::SelfAdjointEigenSolver<proxqp::dense::Mat<T>> es(
+    Eigen::SelfAdjointEigenSolver<common::dense::Mat<T>> es(
       qp_random.H, Eigen::EigenvaluesOnly);
     const T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
     qp.init(H_sparse,

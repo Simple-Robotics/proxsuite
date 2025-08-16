@@ -62,9 +62,9 @@ TEST_CASE("upper part")
 
   bool execute_preconditioner = true;
   proxsuite::common::Settings<T> settings;
-  proxqp::dense::Vec<T> u_scaled_box(0);
-  proxqp::dense::Vec<T> l_scaled_box(0);
-  proxqp::dense::Vec<T> eye(0);
+  common::dense::Vec<T> u_scaled_box(0);
+  common::dense::Vec<T> l_scaled_box(0);
+  common::dense::Vec<T> eye(0);
   ruiz.scale_qp_in_place(
     {
       { proxsuite::linalg::sparse::from_eigen, H_scaled },
@@ -170,9 +170,9 @@ TEST_CASE("lower part")
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
-  proxqp::dense::Vec<T> u_scaled_box(0);
-  proxqp::dense::Vec<T> l_scaled_box(0);
-  proxqp::dense::Vec<T> eye(0);
+  common::dense::Vec<T> u_scaled_box(0);
+  common::dense::Vec<T> l_scaled_box(0);
+  common::dense::Vec<T> eye(0);
   HessianType HessianType(HessianType::Dense);
   ruiz_dense.scale_qp_in_place(
     common::dense::QpViewBoxMut<T>{

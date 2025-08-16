@@ -17,7 +17,7 @@ main()
   // we generate a qp, so the function used from helpers.hpp is
   // in proxqp namespace. The qp is in dense eigen format and
   // you can control its sparsity ratio and strong convexity factor.
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   common::Results<T> results = proxqp::dense::solve<T>(

@@ -30,7 +30,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(0);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -180,7 +180,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -317,7 +317,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -455,7 +455,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -593,7 +593,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -730,7 +730,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
@@ -871,7 +871,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
@@ -1008,7 +1008,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
@@ -1161,7 +1161,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
@@ -1296,7 +1296,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
@@ -1434,7 +1434,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -1559,7 +1559,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -1608,7 +1608,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -1697,7 +1697,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -1788,7 +1788,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -1917,7 +1917,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -2046,7 +2046,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -2144,7 +2144,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -2290,7 +2290,7 @@ TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -2422,7 +2422,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -2555,7 +2555,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -2693,7 +2693,7 @@ TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -2831,7 +2831,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -2969,7 +2969,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3103,7 +3103,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3200,7 +3200,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3346,7 +3346,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3494,7 +3494,7 @@ TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3646,7 +3646,7 @@ TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3795,7 +3795,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -3945,7 +3945,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -4133,7 +4133,7 @@ TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -4343,7 +4343,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -4610,7 +4610,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -4877,7 +4877,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -5183,7 +5183,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -5309,7 +5309,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -5501,7 +5501,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -5694,7 +5694,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -5887,7 +5887,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -6077,7 +6077,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -6314,7 +6314,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -6543,7 +6543,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -6772,7 +6772,7 @@ DOCTEST_TEST_CASE(
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   T rho(1.e-7);
@@ -6991,7 +6991,7 @@ TEST_CASE("ProxQP::dense: init must be called before update")
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
@@ -7063,7 +7063,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     isize n_eq(dim / 4);
     isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // ineq and boxes
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
@@ -7159,7 +7159,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     isize n_eq(dim / 4);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // ineq and boxes
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
@@ -7255,7 +7255,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     eye.setZero();
     eye.diagonal().array() += 1.;
 
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     // ineq and boxes
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
@@ -7357,7 +7357,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
   isize n_eq(dim / 4);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // ineq and boxes
   osqp::dense::QP<T> qp(dim, n_eq, n_in, true);
@@ -7446,7 +7446,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 //   T strong_convexity_factor(1.e-2);
 //   for (isize i = 0; i < 20; ++i) {
 //     ::proxsuite::proxqp::utils::rand::set_seed(i);
-//     proxqp::dense::Model<T> qp_random =
+//     common::dense::Model<T> qp_random =
 //     proxqp::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7555,7 +7555,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   for (isize i = 0; i < 1; ++i) {
     // trivial test
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7594,7 +7594,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7634,7 +7634,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     proxqp::dense::Vec<T> random_diag =
@@ -7686,7 +7686,7 @@ TEST_CASE(
   for (isize i = 0; i < 1; ++i) {
     // trivial test
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7718,7 +7718,7 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7751,7 +7751,7 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     proxqp::dense::Vec<T> random_diag =
@@ -7796,7 +7796,7 @@ TEST_CASE(
   for (isize i = 0; i < 1; ++i) {
     // trivial test
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7835,7 +7835,7 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qp_random.H.setZero();
@@ -7875,7 +7875,7 @@ TEST_CASE(
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
     ::proxsuite::proxqp::utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     proxqp::dense::Vec<T> random_diag =
@@ -7952,7 +7952,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
   Eigen::VectorXd dw(2), rhs(2), err_v(2);
   // trivial test
   ::proxsuite::proxqp::utils::rand::set_seed(1234);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   qp_random.H.setZero();
@@ -7978,7 +7978,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
 //   isize n_eq(0);
 //   isize n_in(9);
 //   T strong_convexity_factor(1.e-2);
-//   proxqp::dense::Model<T> qp_random =
+//   common::dense::Model<T> qp_random =
 //   proxqp::utils::dense_strongly_convex_qp(
 //     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 //   osqp::dense::QP<T> qp{

@@ -70,7 +70,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
@@ -117,7 +117,7 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
     auto y_sol = proxqp::utils::rand::vector_rand<T>(
@@ -174,7 +174,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
     auto y_sol = proxqp::utils::rand::vector_rand<T>(

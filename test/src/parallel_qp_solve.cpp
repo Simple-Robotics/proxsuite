@@ -33,7 +33,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
   // Generate two lists with identical QPs
   for (int i = 0; i < num_qps; i++) {
     utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     dense::QP<T> qp{ dim, n_eq, n_in };
@@ -93,7 +93,7 @@ DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
   for (int i = 0; i < num_qps; i++) {
     auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
     utils::rand::set_seed(i);
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0.0;

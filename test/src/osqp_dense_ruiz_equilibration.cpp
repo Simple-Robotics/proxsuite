@@ -24,7 +24,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
 
   Scalar sparsity_factor(0.75);
   Scalar strong_convexity_factor(0.01);
-  proxqp::dense::Model<Scalar> qp_random =
+  common::dense::Model<Scalar> qp_random =
     proxqp::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 

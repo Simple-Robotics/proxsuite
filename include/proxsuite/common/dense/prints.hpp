@@ -8,7 +8,7 @@
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/results.hpp"
 #include "proxsuite/common/utils/prints.hpp"
-#include "proxsuite/proxqp/dense/model.hpp"
+#include "proxsuite/common/dense/model.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
 #include "proxsuite/common/dense/preconditioner/ruiz.hpp"
 #include <iomanip>
@@ -20,13 +20,14 @@ namespace dense {
 using proxsuite::common::Results;
 using proxsuite::common::Settings;
 using proxsuite::common::Solver;
+using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
 template<typename T>
 void
 print_setup_header(const Settings<T>& settings,
                    const Results<T>& results,
-                   const proxsuite::proxqp::dense::Model<T>& model,
+                   const Model<T>& model,
                    const bool box_constraints,
                    const DenseBackend& dense_backend,
                    const HessianType& hessian_type,
@@ -150,7 +151,7 @@ void
 print_iteration_line( //
   const Settings<T>& settings,
   Results<T>& qpresults,
-  const proxsuite::proxqp::dense::Model<T>& qpmodel,
+  const Model<T>& qpmodel,
   const bool box_constraints,
   const DenseBackend& dense_backend,
   const HessianType& hessian_type,
