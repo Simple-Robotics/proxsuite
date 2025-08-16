@@ -11,7 +11,7 @@
 #include "algorithms.hpp"
 #include "helpers.hpp"
 
-#include <proxsuite/proxqp/dense/utils.hpp>
+#include <proxsuite/common/dense/utils.hpp>
 #include <proxsuite/helpers/version.hpp>
 
 namespace proxsuite {

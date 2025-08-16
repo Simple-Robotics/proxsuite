@@ -9,11 +9,12 @@
 #define PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 
 #include "proxsuite/common/settings.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/fwd.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/proxqp/dense/linesearch.hpp"
 #include "proxsuite/common/dense/helpers.hpp"
-#include "proxsuite/proxqp/dense/utils.hpp"
+#include "proxsuite/common/dense/utils.hpp"
 #include "proxsuite/common/dense/iterative_solve.hpp"
 #include "proxsuite/common/dense/prints.hpp"
 #include <cmath>
@@ -30,8 +31,23 @@ namespace proxqp {
 namespace dense {
 
 using proxsuite::common::i32;
+using proxsuite::common::i64;
 using proxsuite::common::isize;
+
+using proxsuite::common::from_eigen;
+using proxsuite::common::VectorViewMut;
+using proxsuite::common::dense::infty_norm;
+
+using proxsuite::common::DenseBackend;
+using proxsuite::common::HessianType;
+using proxsuite::common::InitialGuessStatus;
 using proxsuite::common::MeritFunctionType;
+using proxsuite::common::QPSolverOutput;
+
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
+using proxsuite::common::dense::Model;
+using proxsuite::common::dense::Workspace;
 
 /*!
  * BCL rule for updating penalization parameters and accuracy variables.
@@ -523,27 +539,29 @@ primal_dual_newton_semi_smooth(
     if (iter % qpsettings.frequence_infeasibility_check == 0 ||
         qpsettings.primal_infeasibility_solving) {
       // compute primal and dual infeasibility criteria
-      bool is_primal_infeasible = global_primal_residual_infeasibility(
-        VectorViewMut<T>{ from_eigen, ATdy },
-        VectorViewMut<T>{ from_eigen, CTdz },
-        VectorViewMut<T>{ from_eigen, dy },
-        VectorViewMut<T>{ from_eigen, dz },
-        qpwork,
-        qpmodel,
-        qpsettings,
-        box_constraints,
-        ruiz);
+      bool is_primal_infeasible =
+        proxsuite::common::dense::global_primal_residual_infeasibility(
+          VectorViewMut<T>{ from_eigen, ATdy },
+          VectorViewMut<T>{ from_eigen, CTdz },
+          VectorViewMut<T>{ from_eigen, dy },
+          VectorViewMut<T>{ from_eigen, dz },
+          qpwork,
+          qpmodel,
+          qpsettings,
+          box_constraints,
+          ruiz);
 
       bool is_dual_infeasible =
-        global_dual_residual_infeasibility(VectorViewMut<T>{ from_eigen, Adx },
-                                           VectorViewMut<T>{ from_eigen, Cdx },
-                                           VectorViewMut<T>{ from_eigen, Hdx },
-                                           VectorViewMut<T>{ from_eigen, dx },
-                                           qpwork,
-                                           qpsettings,
-                                           qpmodel,
-                                           box_constraints,
-                                           ruiz);
+        proxsuite::common::dense::global_dual_residual_infeasibility(
+          VectorViewMut<T>{ from_eigen, Adx },
+          VectorViewMut<T>{ from_eigen, Cdx },
+          VectorViewMut<T>{ from_eigen, Hdx },
+          VectorViewMut<T>{ from_eigen, dx },
+          qpwork,
+          qpsettings,
+          qpmodel,
+          box_constraints,
+          ruiz);
       if (is_primal_infeasible) {
         qpresults.info.status = QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE;
         if (!qpsettings.primal_infeasibility_solving) {
@@ -895,30 +913,31 @@ qp_solve( //
     // compute primal residual
 
     // PERF: fuse matrix product computations in global_{primal, dual}_residual
-    global_primal_residual(qpmodel,
-                           qpresults,
-                           qpsettings,
-                           qpwork,
-                           ruiz,
-                           box_constraints,
-                           primal_feasibility_lhs,
-                           primal_feasibility_eq_rhs_0,
-                           primal_feasibility_in_rhs_0,
-                           primal_feasibility_eq_lhs,
-                           primal_feasibility_in_lhs);
+    proxsuite::common::dense::global_primal_residual(
+      qpmodel,
+      qpresults,
+      qpsettings,
+      qpwork,
+      ruiz,
+      box_constraints,
+      primal_feasibility_lhs,
+      primal_feasibility_eq_rhs_0,
+      primal_feasibility_in_rhs_0,
+      primal_feasibility_eq_lhs,
+      primal_feasibility_in_lhs);
 
-    global_dual_residual(qpresults,
-                         qpwork,
-                         qpmodel,
-                         box_constraints,
-                         ruiz,
-                         dual_feasibility_lhs,
-                         dual_feasibility_rhs_0,
-                         dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3,
-                         rhs_duality_gap,
-                         duality_gap,
-                         hessian_type);
+    proxsuite::common::dense::global_dual_residual(qpresults,
+                                                   qpwork,
+                                                   qpmodel,
+                                                   box_constraints,
+                                                   ruiz,
+                                                   dual_feasibility_lhs,
+                                                   dual_feasibility_rhs_0,
+                                                   dual_feasibility_rhs_1,
+                                                   dual_feasibility_rhs_3,
+                                                   rhs_duality_gap,
+                                                   duality_gap,
+                                                   hessian_type);
 
     qpresults.info.pri_res = primal_feasibility_lhs;
     qpresults.info.dua_res = dual_feasibility_lhs;
@@ -1061,17 +1080,18 @@ qp_solve( //
     }
     T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
-    global_primal_residual(qpmodel,
-                           qpresults,
-                           qpsettings,
-                           qpwork,
-                           ruiz,
-                           box_constraints,
-                           primal_feasibility_lhs_new,
-                           primal_feasibility_eq_rhs_0,
-                           primal_feasibility_in_rhs_0,
-                           primal_feasibility_eq_lhs,
-                           primal_feasibility_in_lhs);
+    proxsuite::common::dense::global_primal_residual(
+      qpmodel,
+      qpresults,
+      qpsettings,
+      qpwork,
+      ruiz,
+      box_constraints,
+      primal_feasibility_lhs_new,
+      primal_feasibility_eq_rhs_0,
+      primal_feasibility_in_rhs_0,
+      primal_feasibility_eq_lhs,
+      primal_feasibility_in_lhs);
 
     is_primal_feasible =
       primal_feasibility_lhs_new <=
@@ -1081,18 +1101,18 @@ qp_solve( //
     if (is_primal_feasible) {
       T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-      global_dual_residual(qpresults,
-                           qpwork,
-                           qpmodel,
-                           box_constraints,
-                           ruiz,
-                           dual_feasibility_lhs_new,
-                           dual_feasibility_rhs_0,
-                           dual_feasibility_rhs_1,
-                           dual_feasibility_rhs_3,
-                           rhs_duality_gap,
-                           duality_gap,
-                           hessian_type);
+      proxsuite::common::dense::global_dual_residual(qpresults,
+                                                     qpwork,
+                                                     qpmodel,
+                                                     box_constraints,
+                                                     ruiz,
+                                                     dual_feasibility_lhs_new,
+                                                     dual_feasibility_rhs_0,
+                                                     dual_feasibility_rhs_1,
+                                                     dual_feasibility_rhs_3,
+                                                     rhs_duality_gap,
+                                                     duality_gap,
+                                                     hessian_type);
       qpresults.info.dua_res = dual_feasibility_lhs_new;
       qpresults.info.duality_gap = duality_gap;
 
@@ -1160,18 +1180,18 @@ qp_solve( //
 
     T dual_feasibility_lhs_new(dual_feasibility_lhs);
 
-    global_dual_residual(qpresults,
-                         qpwork,
-                         qpmodel,
-                         box_constraints,
-                         ruiz,
-                         dual_feasibility_lhs_new,
-                         dual_feasibility_rhs_0,
-                         dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3,
-                         rhs_duality_gap,
-                         duality_gap,
-                         hessian_type);
+    proxsuite::common::dense::global_dual_residual(qpresults,
+                                                   qpwork,
+                                                   qpmodel,
+                                                   box_constraints,
+                                                   ruiz,
+                                                   dual_feasibility_lhs_new,
+                                                   dual_feasibility_rhs_0,
+                                                   dual_feasibility_rhs_1,
+                                                   dual_feasibility_rhs_3,
+                                                   rhs_duality_gap,
+                                                   duality_gap,
+                                                   hessian_type);
     qpresults.info.dua_res = dual_feasibility_lhs_new;
     qpresults.info.duality_gap = duality_gap;
 

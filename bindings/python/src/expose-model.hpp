@@ -8,7 +8,7 @@
 
 #include <proxsuite/common/dense/model.hpp>
 #include <proxsuite/proxqp/sparse/model.hpp>
-#include <proxsuite/proxqp/dense/utils.hpp>
+#include <proxsuite/common/dense/utils.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/model.hpp>
@@ -18,7 +18,10 @@ namespace proxqp {
 namespace dense {
 namespace python {
 
+using proxsuite::common::i64;
+;
 using proxsuite::common::dense::BackwardData;
+using proxsuite::common::dense::Model;
 
 template<typename T>
 void
@@ -73,11 +76,12 @@ exposeDenseModel(nanobind::module_ m)
          [](const proxsuite::common::dense::Model<T>& model) {
            return proxsuite::serialization::saveToString(model);
          })
-    .def("__setstate__", [](dense::Model<T>& model, const std::string& s) {
-      // create qp model which will be updated by loaded data
-      new (&model) dense::Model<T>(1, 1, 1);
-      proxsuite::serialization::loadFromString(model, s);
-    });
+    .def("__setstate__",
+         [](common::dense::Model<T>& model, const std::string& s) {
+           // create qp model which will be updated by loaded data
+           new (&model) common::dense::Model<T>(1, 1, 1);
+           proxsuite::serialization::loadFromString(model, s);
+         });
 }
 } // namespace python
 } // namespace dense

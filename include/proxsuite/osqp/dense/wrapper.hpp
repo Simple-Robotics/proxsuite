@@ -15,6 +15,9 @@ namespace proxsuite {
 namespace osqp {
 namespace dense {
 
+using proxsuite::common::dense::MatRef;
+using proxsuite::common::dense::VecRef;
+
 ///
 /// @brief This class defines the API of OSQP solver with dense backend.
 ///
@@ -37,16 +40,17 @@ public:
      bool _box_constraints,
      proxsuite::common::HessianType _hessian_type,
      DenseBackend _dense_backend)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           _box_constraints,
-                           _hessian_type,
-                           dense_backend_choice<T>(_dense_backend,
-                                                   _dim,
-                                                   _n_eq,
-                                                   _n_in,
-                                                   _box_constraints))
+    : proxqp::dense::QP<T>(
+        _dim,
+        _n_eq,
+        _n_in,
+        _box_constraints,
+        _hessian_type,
+        proxqp::dense::dense_backend_choice<T>(_dense_backend,
+                                               _dim,
+                                               _n_eq,
+                                               _n_in,
+                                               _box_constraints))
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -66,16 +70,17 @@ public:
      bool _box_constraints,
      DenseBackend _dense_backend,
      proxsuite::common::HessianType _hessian_type)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           _box_constraints,
-                           dense_backend_choice<T>(_dense_backend,
-                                                   _dim,
-                                                   _n_eq,
-                                                   _n_in,
-                                                   _box_constraints),
-                           _hessian_type)
+    : proxqp::dense::QP<T>(
+        _dim,
+        _n_eq,
+        _n_in,
+        _box_constraints,
+        proxqp::dense::dense_backend_choice<T>(_dense_backend,
+                                               _dim,
+                                               _n_eq,
+                                               _n_in,
+                                               _box_constraints),
+        _hessian_type)
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -93,18 +98,18 @@ public:
      isize _n_in,
      bool _box_constraints,
      proxsuite::common::HessianType _hessian_type)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        _box_constraints,
-        _hessian_type,
-        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
-                                // TODO: Automatic when PrimalLDLT coded
-                                _dim,
-                                _n_eq,
-                                _n_in,
-                                _box_constraints))
+    : proxqp::dense::QP<T>(_dim,
+                           _n_eq,
+                           _n_in,
+                           _box_constraints,
+                           _hessian_type,
+                           proxqp::dense::dense_backend_choice<T>(
+                             DenseBackend::PrimalDualLDLT,
+                             // TODO: Automatic when PrimalLDLT coded
+                             _dim,
+                             _n_eq,
+                             _n_in,
+                             _box_constraints))
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -123,16 +128,17 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           _box_constraints,
-                           dense_backend_choice<T>(_dense_backend,
-                                                   _dim,
-                                                   _n_eq,
-                                                   _n_in,
-                                                   _box_constraints),
-                           HessianType::Dense)
+    : proxqp::dense::QP<T>(
+        _dim,
+        _n_eq,
+        _n_in,
+        _box_constraints,
+        proxqp::dense::dense_backend_choice<T>(_dense_backend,
+                                               _dim,
+                                               _n_eq,
+                                               _n_in,
+                                               _box_constraints),
+        HessianType::Dense)
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -145,18 +151,18 @@ public:
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        _box_constraints,
-        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
-                                // TODO: Automatic when PrimalLDLT coded
-                                _dim,
-                                _n_eq,
-                                _n_in,
-                                _box_constraints),
-        HessianType::Dense)
+    : proxqp::dense::QP<T>(_dim,
+                           _n_eq,
+                           _n_in,
+                           _box_constraints,
+                           proxqp::dense::dense_backend_choice<T>(
+                             DenseBackend::PrimalDualLDLT,
+                             // TODO: Automatic when PrimalLDLT coded
+                             _dim,
+                             _n_eq,
+                             _n_in,
+                             _box_constraints),
+                           HessianType::Dense)
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -172,18 +178,18 @@ public:
      isize _n_eq,
      isize _n_in,
      proxsuite::common::HessianType _hessian_type)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        false,
-        _hessian_type,
-        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
-                                // TODO: Automatic when PrimalLDLT coded
-                                _dim,
-                                _n_eq,
-                                _n_in,
-                                false))
+    : proxqp::dense::QP<T>(_dim,
+                           _n_eq,
+                           _n_in,
+                           false,
+                           _hessian_type,
+                           proxqp::dense::dense_backend_choice<T>(
+                             DenseBackend::PrimalDualLDLT,
+                             // TODO: Automatic when PrimalLDLT coded
+                             _dim,
+                             _n_eq,
+                             _n_in,
+                             false))
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();
@@ -195,18 +201,18 @@ public:
    * @param _n_in number of inequality constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        false,
-        HessianType::Dense,
-        dense_backend_choice<T>(DenseBackend::PrimalDualLDLT,
-                                // TODO: Automatic when PrimalLDLT coded
-                                _dim,
-                                _n_eq,
-                                _n_in,
-                                false))
+    : proxqp::dense::QP<T>(_dim,
+                           _n_eq,
+                           _n_in,
+                           false,
+                           HessianType::Dense,
+                           proxqp::dense::dense_backend_choice<T>(
+                             DenseBackend::PrimalDualLDLT,
+                             // TODO: Automatic when PrimalLDLT coded
+                             _dim,
+                             _n_eq,
+                             _n_in,
+                             false))
   {
     this->work.timer.stop();
     init_osqp_settings_and_results();

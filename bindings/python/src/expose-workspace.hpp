@@ -5,7 +5,7 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 #include <proxsuite/common/dense/workspace.hpp>
-#include <proxsuite/proxqp/dense/utils.hpp>
+#include <proxsuite/common/dense/utils.hpp>
 
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>

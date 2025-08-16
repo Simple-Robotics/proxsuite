@@ -4,15 +4,15 @@
 /**
  * @file utils.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_UTILS_HPP
-#define PROXSUITE_PROXQP_DENSE_UTILS_HPP
+#ifndef PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP
+#define PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP
 
 #include <iostream>
 #include <cmath>
 #include <type_traits>
 
-#include "proxsuite/common/status.hpp"
 #include "proxsuite/helpers/common.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
 #include <proxsuite/common/dense/model.hpp>
@@ -24,7 +24,7 @@
 // #include <fmt/ostream.h>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 
 using proxsuite::common::from_eigen;
@@ -487,7 +487,8 @@ global_dual_residual(
 }
 
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_DENSE_UTILS_HPP */
+#endif /* end of include guard                                                 \
+          PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP */
