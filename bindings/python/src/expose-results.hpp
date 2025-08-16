@@ -1,8 +1,7 @@
 //
 // Copyright (c) 2022-2025 INRIA
 //
-#include <proxsuite/common/results.hpp>
-#include <proxsuite/common/settings.hpp>
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
@@ -10,18 +9,14 @@
 #include "optional-eigen-fix.hpp"
 
 #include <proxsuite/helpers/optional.hpp>
+#include <proxsuite/common/results.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/results.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace python {
-
-using proxsuite::common::Info;
-using proxsuite::common::isize;
-using proxsuite::common::PolishStatus;
-using proxsuite::common::QPSolverOutput;
-using proxsuite::common::Results;
 
 template<typename T>
 void
@@ -137,5 +132,5 @@ exposeResults(nanobind::module_ m)
   ;
 }
 } // namespace python
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

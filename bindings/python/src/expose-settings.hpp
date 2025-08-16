@@ -1,6 +1,7 @@
 //
 // Copyright (c) 2022-2025 INRIA
 //
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
@@ -12,10 +13,8 @@
 #include <proxsuite/serialization/settings.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace python {
-
-using namespace proxsuite::common;
 
 template<typename T>
 void
@@ -117,5 +116,5 @@ exposeSettings(nanobind::module_ m)
   ;
 }
 } // namespace python
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

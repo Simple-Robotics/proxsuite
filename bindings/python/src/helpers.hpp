@@ -8,8 +8,8 @@
 #include <nanobind/eigen/sparse.h>
 
 namespace proxsuite {
+namespace common {
 namespace python {
-
 namespace detail {
 inline auto
 type_name_short(nanobind::handle h)
@@ -50,4 +50,5 @@ exposeAndExportValues(nanobind::module_& m, bool export_values = true)
 }
 
 } // namespace python
+} // namespace common
 } // namespace proxsuite

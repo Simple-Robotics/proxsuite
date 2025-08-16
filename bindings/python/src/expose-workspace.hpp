@@ -1,29 +1,27 @@
 //
 // Copyright (c) 2022-2025 INRIA
 //
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
+
 #include <proxsuite/common/dense/workspace.hpp>
 #include <proxsuite/common/dense/utils.hpp>
-
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/workspace.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 namespace python {
-
-using proxsuite::common::i64;
-using proxsuite::common::dense::Workspace;
 
 template<typename T>
 void
 exposeWorkspaceDense(nanobind::module_ m)
 {
-  ::nanobind::class_<proxsuite::common::dense::Workspace<T>>(m, "workspace")
+  ::nanobind::class_<Workspace<T>>(m, "workspace")
     .def(::nanobind::init<i64, i64, i64>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
@@ -90,5 +88,5 @@ exposeWorkspaceDense(nanobind::module_ m)
 }
 } // namespace python
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

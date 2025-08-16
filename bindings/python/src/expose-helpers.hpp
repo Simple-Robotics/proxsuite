@@ -10,15 +10,9 @@
 #include <proxsuite/proxqp/sparse/helpers.hpp>
 
 namespace proxsuite {
-namespace proxqp {
-
+namespace common {
 namespace dense {
-
 namespace python {
-
-using proxsuite::common::EigenValueEstimateMethodOption;
-using proxsuite::common::isize;
-using proxsuite::common::dense::MatRef;
 
 template<typename T>
 void
@@ -50,9 +44,12 @@ exposeDenseHelpers(nanobind::module_ m)
 }
 } // namespace python
 } // namespace dense
+} // namespace common
+} // namespace proxsuite
 
+namespace proxsuite {
+namespace proxqp {
 namespace sparse {
-
 namespace python {
 
 template<typename T, typename I>
@@ -72,6 +69,5 @@ exposeSparseHelpers(nanobind::module_ m)
 
 } // namespace python
 } // namespace sparse
-
 } // namespace proxqp
 } // namespace proxsuite
