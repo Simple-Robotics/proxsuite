@@ -19,7 +19,6 @@
 #include "proxsuite/common/settings.hpp"
 #include "proxsuite/common/results.hpp"
 #include "proxsuite/common/dense/iterative_solve.hpp"
-#include "proxsuite/osqp/dense/utils.hpp"
 #include <iostream>
 #include <iomanip>
 
@@ -38,6 +37,15 @@ using proxsuite::common::dense::infty_norm;
 using proxsuite::common::dense::Mat;
 using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Vec;
+
+using proxsuite::common::DenseBackend;
+using proxsuite::common::HessianType;
+using proxsuite::common::InitialGuessStatus;
+using proxsuite::common::isize;
+using proxsuite::common::Results;
+using proxsuite::common::Settings;
+using proxsuite::common::dense::Model;
+using proxsuite::common::dense::Workspace;
 
 /*!
  * One iteration of the ADMM algorithm adapted in OSQP.
@@ -741,7 +749,7 @@ qp_solve( //
                                                  hessian_type,
                                                  qpresults);
     }
-    setup_factorization_complete_kkt(
+    proxsuite::common::dense::setup_factorization_complete_kkt(
       qpresults, qpmodel, qpwork, n_constraints, dense_backend);
   } else { // the following is used for a first solve after initializing or
            // updating the Qp object
@@ -756,7 +764,7 @@ qp_solve( //
                                                    dense_backend,
                                                    hessian_type,
                                                    qpresults);
-        setup_factorization_complete_kkt(
+        proxsuite::common::dense::setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -777,14 +785,14 @@ qp_solve( //
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorization_complete_kkt(
+        proxsuite::common::dense::setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorization_complete_kkt(
+        proxsuite::common::dense::setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -802,7 +810,7 @@ qp_solve( //
         }
         setup_factorization(
           qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-        setup_factorization_complete_kkt(
+        proxsuite::common::dense::setup_factorization_complete_kkt(
           qpresults, qpmodel, qpwork, n_constraints, dense_backend);
         break;
       }
@@ -826,7 +834,7 @@ qp_solve( //
                                   // parameter has changed
           setup_factorization(
             qpwork, qpmodel, qpresults, dense_backend, hessian_type);
-          setup_factorization_complete_kkt(
+          proxsuite::common::dense::setup_factorization_complete_kkt(
             qpresults, qpmodel, qpwork, n_constraints, dense_backend);
           break;
         }
