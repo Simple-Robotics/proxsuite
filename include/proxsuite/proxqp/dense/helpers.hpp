@@ -16,6 +16,7 @@
 #include <proxsuite/common/dense/fwd.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
 #include <chrono>
+#include <fstream>
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Eigenvalues>
 
@@ -780,6 +781,28 @@ warm_start(optional<VecRef<T>> x_wm,
     results.z = z_wm.value().eval();
   }
 }
+
+/*!
+ * Save a matrix into a CSV format. Used for debug purposes.
+ *
+ * @param filename filename name for the CSV.
+ * @param mat matrix to save into CSV format.
+ */
+template<typename Derived>
+void
+save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
+{
+  // https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
+  const static Eigen::IOFormat CSVFormat(
+    Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n");
+
+  std::ofstream file(filename);
+  if (file.is_open()) {
+    file << mat.format(CSVFormat);
+    file.close();
+  }
+}
+
 } // namespace dense
 } // namespace proxqp
 } // namespace proxsuite

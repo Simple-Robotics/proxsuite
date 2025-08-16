@@ -8,7 +8,6 @@
 #define PROXSUITE_PROXQP_DENSE_UTILS_HPP
 
 #include <iostream>
-#include <fstream>
 #include <cmath>
 #include <type_traits>
 
@@ -133,27 +132,6 @@ print_setup_header(const Settings<T>& settings,
       std::cout
         << "          initial guess: equality constrained initial guess. \n"
         << std::endl;
-  }
-}
-
-/*!
- * Save a matrix into a CSV format. Used for debug purposes.
- *
- * @param filename filename name for the CSV.
- * @param mat matrix to save into CSV format.
- */
-template<typename Derived>
-void
-save_data(const std::string& filename, const ::Eigen::MatrixBase<Derived>& mat)
-{
-  // https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
-  const static Eigen::IOFormat CSVFormat(
-    Eigen::FullPrecision, Eigen::DontAlignCols, ", ", "\n");
-
-  std::ofstream file(filename);
-  if (file.is_open()) {
-    file << mat.format(CSVFormat);
-    file.close();
   }
 }
 
