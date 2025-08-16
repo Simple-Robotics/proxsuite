@@ -15,10 +15,13 @@
 #include <proxsuite/common/status.hpp>
 #include <proxsuite/common/dense/fwd.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
+#include "proxsuite/common/dense/iterative_solve.hpp"
 #include <chrono>
 #include <fstream>
 #include <proxsuite/helpers/optional.hpp>
 #include <Eigen/Eigenvalues>
+
+#include "proxsuite/proxqp/dense/model.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -40,6 +43,8 @@ using proxsuite::common::dense::QpViewBoxMut;
 using proxsuite::common::dense::Vec;
 using proxsuite::common::dense::VecRef;
 using proxsuite::common::dense::Workspace;
+
+using proxsuite::proxqp::dense::Model;
 
 template<typename T,
          typename MatIn,
@@ -230,7 +235,7 @@ compute_equality_constrained_initial_guess(Workspace<T>& qpwork,
   qpwork.rhs.setZero();
   qpwork.rhs.head(qpmodel.dim) = -qpwork.g_scaled;
   qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq) = qpwork.b_scaled;
-  iterative_solve_with_permut_fact( //
+  proxsuite::common::dense::iterative_solve_with_permut_fact( //
     qpsettings,
     qpmodel,
     qpresults,

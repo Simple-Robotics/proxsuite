@@ -110,7 +110,7 @@ compute_backward(dense::QP<T>& solved_qp,
           from_eigen, solved_qp.work.rhs.tail(solved_qp.model.n_in) });
       }
     }
-    iterative_solve_with_permut_fact( //
+    proxsuite::common::dense::iterative_solve_with_permut_fact( //
       solved_qp.settings,
       solved_qp.model,
       solved_qp.results,

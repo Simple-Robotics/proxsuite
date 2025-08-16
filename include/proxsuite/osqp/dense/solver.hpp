@@ -17,6 +17,7 @@
 #include "proxsuite/proxqp/dense/solver.hpp"
 #include "proxsuite/common/settings.hpp"
 #include "proxsuite/common/results.hpp"
+#include "proxsuite/common/dense/iterative_solve.hpp"
 #include "proxsuite/osqp/dense/utils.hpp"
 #include <iostream>
 #include <iomanip>
@@ -71,14 +72,14 @@ admm_step(const Settings<T>& qpsettings,
   proxsuite::linalg::veg::dynstack::DynStackMut stack{
     proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
   };
-  solve_linear_system(qpwork.rhs,
-                      qpmodel,
-                      qpresults,
-                      qpwork,
-                      n_constraints,
-                      dense_backend,
-                      inner_pb_dim,
-                      stack);
+  proxsuite::common::dense::solve_linear_system(qpwork.rhs,
+                                                qpmodel,
+                                                qpresults,
+                                                qpwork,
+                                                n_constraints,
+                                                dense_backend,
+                                                inner_pb_dim,
+                                                stack);
   qpwork.x_tilde = qpwork.rhs.head(qpmodel.dim);
   qpwork.nu_eq = qpwork.rhs.segment(qpmodel.dim, qpmodel.n_eq);
   qpwork.nu_in = qpwork.rhs.tail(n_constraints);
