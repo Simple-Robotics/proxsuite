@@ -24,7 +24,6 @@ namespace dense {
 using proxsuite::common::i32;
 using proxsuite::common::Results;
 using proxsuite::common::dense::Workspace;
-using proxsuite::proxqp::dense::Model;
 
 /*!
  * Performs a refactorization of the KKT matrix used by the solver.
@@ -37,7 +36,7 @@ using proxsuite::proxqp::dense::Model;
  */
 template<typename T>
 void
-refactorize(const Model<T>& qpmodel,
+refactorize(const proxsuite::proxqp::dense::Model<T>& qpmodel,
             Results<T>& qpresults,
             Workspace<T>& qpwork,
             const isize n_constraints,
@@ -125,7 +124,7 @@ refactorize(const Model<T>& qpmodel,
  */
 template<typename T>
 void
-iterative_residual(const Model<T>& qpmodel,
+iterative_residual(const proxsuite::proxqp::dense::Model<T>& qpmodel,
                    Results<T>& qpresults,
                    Workspace<T>& qpwork,
                    const isize n_constraints,
@@ -203,7 +202,7 @@ iterative_residual(const Model<T>& qpmodel,
 template<typename T>
 void
 solve_linear_system(proxsuite::common::dense::Vec<T>& dw,
-                    const Model<T>& qpmodel,
+                    const proxsuite::proxqp::dense::Model<T>& qpmodel,
                     Results<T>& qpresults,
                     Workspace<T>& qpwork,
                     const isize n_constraints,
@@ -290,7 +289,7 @@ template<typename T>
 void
 iterative_solve_with_permut_fact( //
   const Settings<T>& qpsettings,
-  const Model<T>& qpmodel,
+  const proxsuite::proxqp::dense::Model<T>& qpmodel,
   Results<T>& qpresults,
   Workspace<T>& qpwork,
   const isize n_constraints,

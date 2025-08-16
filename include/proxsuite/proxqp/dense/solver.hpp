@@ -15,6 +15,7 @@
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
 #include "proxsuite/common/dense/iterative_solve.hpp"
+#include "proxsuite/common/dense/prints.hpp"
 #include <cmath>
 #include <Eigen/Sparse>
 #include <iostream>
@@ -607,12 +608,13 @@ qp_solve( //
     qpwork.timer.start();
   }
   if (qpsettings.verbose) {
-    dense::print_setup_header(qpsettings,
-                              qpresults,
-                              qpmodel,
-                              box_constraints,
-                              dense_backend,
-                              hessian_type);
+    proxsuite::common::dense::print_setup_header(qpsettings,
+                                                 qpresults,
+                                                 qpmodel,
+                                                 box_constraints,
+                                                 dense_backend,
+                                                 hessian_type,
+                                                 common::Solver::PROXQP);
   }
   // std::cout << "qpwork.dirty " << qpwork.dirty << std::endl;
   if (qpwork.dirty) { // the following is used when a solve has already been

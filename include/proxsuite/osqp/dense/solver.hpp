@@ -14,6 +14,7 @@
 #include "proxsuite/common/dense/workspace.hpp"
 #include "proxsuite/proxqp/dense/helpers.hpp"
 #include "proxsuite/proxqp/dense/utils.hpp"
+#include "proxsuite/common/dense/prints.hpp"
 #include "proxsuite/proxqp/dense/solver.hpp"
 #include "proxsuite/common/settings.hpp"
 #include "proxsuite/common/results.hpp"
@@ -618,12 +619,13 @@ qp_solve( //
   //////////////////////////////////////////////////////////////////////////////////////////
 
   if (qpsettings.verbose) {
-    proxsuite::osqp::dense::print_setup_header(qpsettings,
-                                               qpresults,
-                                               qpmodel,
-                                               box_constraints,
-                                               dense_backend,
-                                               hessian_type);
+    proxsuite::common::dense::print_setup_header(qpsettings,
+                                                 qpresults,
+                                                 qpmodel,
+                                                 box_constraints,
+                                                 dense_backend,
+                                                 hessian_type,
+                                                 common::Solver::OSQP);
   }
 
   // Ruiz equilibration and factorization

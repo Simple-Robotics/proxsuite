@@ -21,7 +21,7 @@
 #include <proxsuite/common/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/common/results.hpp"
-#include "proxsuite/proxqp/utils/prints.hpp"
+#include "proxsuite/common/utils/prints.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/ruiz.hpp"
@@ -46,7 +46,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T, I>& model)
 {
 
-  proxsuite::proxqp::print_preambule();
+  proxsuite::common::print_preambule(common::Solver::PROXQP);
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
