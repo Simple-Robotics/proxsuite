@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 - 2025 INRIA
+// Copyright (c) 2025 INRIA
 //
 #include <iostream>
 #include <doctest.hpp>

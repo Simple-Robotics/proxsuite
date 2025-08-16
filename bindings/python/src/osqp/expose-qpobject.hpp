@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2025 INRIA
 //
 
 #include <nanobind/nanobind.h>

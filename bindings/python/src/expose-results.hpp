@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 #include <proxsuite/common/results.hpp>
 #include <proxsuite/common/settings.hpp>

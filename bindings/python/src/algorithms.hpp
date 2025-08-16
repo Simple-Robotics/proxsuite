@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2023 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 #ifndef proxsuite_python_algorithms_hpp
 #define proxsuite_python_algorithms_hpp

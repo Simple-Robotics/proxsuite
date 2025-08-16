@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022-2023 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 /** \file */
 #ifndef PROXSUITE_COMMON_DENSE_PRINTS_HPP

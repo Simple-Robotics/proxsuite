@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 /**
  * @file constants.hpp
