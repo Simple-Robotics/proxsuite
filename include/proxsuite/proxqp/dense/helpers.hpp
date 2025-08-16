@@ -783,6 +783,123 @@ warm_start(optional<VecRef<T>> x_wm,
 }
 
 /*!
+ * Updates the dual proximal parameters of the solver (i.e., penalization
+ * parameters of the primal-dual merit function).
+ *
+ * @param qpwork solver workspace.
+ * @param qpmodel QP problem model as defined by the user (without any scaling
+ * performed).
+ * @param qpresults solver results.
+ * @param mu_eq_new new dual equality constrained proximal parameter.
+ * @param mu_in_new new dual inequality constrained proximal parameter.
+ */
+template<typename T>
+void
+mu_update(const Model<T>& qpmodel,
+          Results<T>& qpresults,
+          Workspace<T>& qpwork,
+          isize n_constraints,
+          const DenseBackend& dense_backend,
+          T mu_eq_new,
+          T mu_in_new)
+{
+  proxsuite::linalg::veg::dynstack::DynStackMut stack{
+    proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+  };
+
+  isize n = qpmodel.dim;
+  isize n_eq = qpmodel.n_eq;
+  isize n_c = qpwork.n_c;
+
+  if ((n_eq + n_c) == 0) {
+    return;
+  }
+  switch (dense_backend) {
+    case DenseBackend::PrimalDualLDLT: {
+      LDLT_TEMP_VEC_UNINIT(T, rank_update_alpha, n_eq + n_c, stack);
+
+      rank_update_alpha.head(n_eq).setConstant(qpresults.info.mu_eq -
+                                               mu_eq_new);
+      rank_update_alpha.tail(n_c).setConstant(qpresults.info.mu_in - mu_in_new);
+
+      {
+        auto _indices = stack.make_new_for_overwrite(
+          proxsuite::linalg::veg::Tag<isize>{}, n_eq + n_c);
+        isize* indices = _indices.ptr_mut();
+        for (isize k = 0; k < n_eq; ++k) {
+          indices[k] = n + k;
+        }
+        for (isize k = 0; k < n_c; ++k) {
+          indices[n_eq + k] = n + n_eq + k;
+        }
+        qpwork.ldl.diagonal_update_clobber_indices(
+          indices, n_eq + n_c, rank_update_alpha, stack);
+      }
+    } break;
+    case DenseBackend::PrimalLDLT: {
+      // we refactorize there for the moment
+      proxsuite::linalg::veg::dynstack::DynStackMut stack{
+        proxsuite::linalg::veg::from_slice_mut,
+        qpwork.ldl_stack.as_mut(),
+      };
+      // qpwork.kkt.noalias() = qpwork.H_scaled + (qpwork.A_scaled.transpose() *
+      // qpwork.A_scaled) / mu_eq_new; qpwork.kkt.diagonal().array() +=
+      // qpresults.info.rho; for (isize i = 0; i < n_constraints; i++){
+      //   if (qpwork.active_inequalities(i)){
+      //     if (i >=qpmodel.n_in){
+      //       // box constraints
+      //       qpwork.kkt(i-qpmodel.n_in,i-qpmodel.n_in) +=
+      //       std::pow(qpwork.i_scaled(i-qpmodel.n_in),2) / mu_in_new ;
+      //     } else{
+      //       // generic ineq constraint
+      //       qpwork.kkt.noalias() += qpwork.C_scaled.row(i).transpose() *
+      //       qpwork.C_scaled.row(i) / mu_in_new ;
+      //     }
+      //   }
+      // }
+      // qpwork.ldl.factorize(qpwork.kkt.transpose(), stack);
+
+      // mu update for C_J
+      {
+        LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpwork.n_c, stack);
+        qpwork.dw_aug.head(qpmodel.dim).setOnes();
+        T delta_mu(T(1) / mu_in_new - qpresults.info.mu_in_inv);
+        qpwork.dw_aug.head(qpmodel.dim).array() *= delta_mu;
+        for (isize i = 0; i < n_constraints; ++i) {
+          isize j = qpwork.current_bijection_map[i];
+          if (j < n_c) {
+            auto col = new_cols.col(j);
+            if (i >= qpmodel.n_in) {
+              // box constraint
+              col.setZero();
+              col[i - qpmodel.n_in] = qpwork.i_scaled[i - qpmodel.n_in];
+            } else {
+              // generic ineq constraints
+              col = qpwork.C_scaled.row(i);
+            }
+          }
+        }
+        qpwork.ldl.rank_r_update(
+          new_cols, qpwork.dw_aug.head(qpwork.n_c), stack);
+      }
+      // mu update for A
+      {
+        LDLT_TEMP_MAT_UNINIT(T, new_cols, qpmodel.dim, qpmodel.n_eq, stack);
+        qpwork.dw_aug.head(qpmodel.n_eq).setOnes();
+        T delta_mu(1 / mu_eq_new - qpresults.info.mu_eq_inv);
+        qpwork.dw_aug.head(qpmodel.n_eq).array() *= delta_mu;
+        new_cols = qpwork.A_scaled.transpose();
+        qpwork.ldl.rank_r_update(
+          new_cols, qpwork.dw_aug.head(qpmodel.n_eq), stack);
+      }
+    } break;
+    case DenseBackend::Automatic:
+      break;
+  }
+  qpwork.constraints_changed = true;
+}
+
+/*!
  * Save a matrix into a CSV format. Used for debug purposes.
  *
  * @param filename filename name for the CSV.
