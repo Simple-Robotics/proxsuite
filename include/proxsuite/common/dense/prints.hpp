@@ -7,6 +7,7 @@
 
 #include "proxsuite/common/dense/views.hpp"
 #include "proxsuite/common/results.hpp"
+#include "proxsuite/common/status.hpp"
 #include "proxsuite/common/utils/prints.hpp"
 #include "proxsuite/common/dense/model.hpp"
 #include "proxsuite/common/dense/workspace.hpp"
@@ -25,9 +26,9 @@ using proxsuite::common::dense::Workspace;
 
 template<typename T>
 void
-print_setup_header(const Settings<T>& settings,
-                   const Results<T>& results,
-                   const Model<T>& model,
+print_setup_header(const Settings<T>& qpsettings,
+                   const Results<T>& qpresults,
+                   const Model<T>& qpmodel,
                    const bool box_constraints,
                    const DenseBackend& dense_backend,
                    const HessianType& hessian_type,
@@ -38,24 +39,25 @@ print_setup_header(const Settings<T>& settings,
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
-  std::cout << "          variables n = " << model.dim
-            << ", equality constraints n_eq = " << model.n_eq << ",\n"
-            << "          inequality constraints n_in = " << model.n_in
+  std::cout << "          variables n = " << qpmodel.dim
+            << ", equality constraints n_eq = " << qpmodel.n_eq << ",\n"
+            << "          inequality constraints n_in = " << qpmodel.n_in
             << std::endl;
 
   // Print Settings
   std::cout << "settings: " << std::endl;
   std::cout << "          backend = dense," << std::endl;
-  std::cout << "          eps_abs = " << settings.eps_abs
-            << " eps_rel = " << settings.eps_rel << std::endl;
-  std::cout << "          eps_prim_inf = " << settings.eps_primal_inf
-            << ", eps_dual_inf = " << settings.eps_dual_inf << "," << std::endl;
+  std::cout << "          eps_abs = " << qpsettings.eps_abs
+            << " eps_rel = " << qpsettings.eps_rel << std::endl;
+  std::cout << "          eps_prim_inf = " << qpsettings.eps_primal_inf
+            << ", eps_dual_inf = " << qpsettings.eps_dual_inf << ","
+            << std::endl;
 
-  std::cout << "          rho = " << results.info.rho
-            << ", mu_eq = " << results.info.mu_eq
-            << ", mu_in = " << results.info.mu_in << "," << std::endl;
-  std::cout << "          max_iter = " << settings.max_iter
-            << ", max_iter_in = " << settings.max_iter_in << "," << std::endl;
+  std::cout << "          rho = " << qpresults.info.rho
+            << ", mu_eq = " << qpresults.info.mu_eq
+            << ", mu_in = " << qpresults.info.mu_in << "," << std::endl;
+  std::cout << "          max_iter = " << qpsettings.max_iter
+            << ", max_iter_in = " << qpsettings.max_iter_in << "," << std::endl;
   if (box_constraints) {
     std::cout << "          box constraints: on, " << std::endl;
   } else {
@@ -84,17 +86,17 @@ print_setup_header(const Settings<T>& settings,
         << std::endl;
       break;
   }
-  if (settings.compute_preconditioner) {
+  if (qpsettings.compute_preconditioner) {
     std::cout << "          scaling: on, " << std::endl;
   } else {
     std::cout << "          scaling: off, " << std::endl;
   }
-  if (settings.compute_timings) {
+  if (qpsettings.compute_timings) {
     std::cout << "          timings: on, " << std::endl;
   } else {
     std::cout << "          timings: off, " << std::endl;
   }
-  switch (settings.initial_guess) {
+  switch (qpsettings.initial_guess) {
     case InitialGuessStatus::WARM_START:
       std::cout << "          initial guess: warm start. \n" << std::endl;
       break;
@@ -121,22 +123,22 @@ print_setup_header(const Settings<T>& settings,
       break;
     }
     case QPSolver::OSQP: {
-      if (settings.adaptive_mu) {
+      if (qpsettings.adaptive_mu) {
         std::cout << "          adaptive_mu: on, " << std::endl;
         std::cout << "          adaptive_mu_interval: "
-                  << settings.adaptive_mu_interval << ", " << std::endl;
+                  << qpsettings.adaptive_mu_interval << ", " << std::endl;
         std::cout << "          adaptive_mu_tolerance: "
-                  << settings.adaptive_mu_tolerance << ". \n"
+                  << qpsettings.adaptive_mu_tolerance << ". \n"
                   << std::endl;
       } else {
         std::cout << "          adaptive_mu: off. \n" << std::endl;
       }
-      if (settings.polishing) {
+      if (qpsettings.polishing) {
         std::cout << "          polishing: on, " << std::endl;
-        std::cout << "          delta: " << settings.delta_osqp << ", "
+        std::cout << "          delta: " << qpsettings.delta_osqp << ", "
                   << std::endl;
         std::cout << "          polish_refine_iter: "
-                  << settings.polish_refine_iter << ". \n"
+                  << qpsettings.polish_refine_iter << ". \n"
                   << std::endl;
       } else {
         std::cout << "          polishing: off. \n" << std::endl;
@@ -149,12 +151,9 @@ print_setup_header(const Settings<T>& settings,
 template<typename T>
 void
 print_iteration_line( //
-  const Settings<T>& settings,
   Results<T>& qpresults,
   const Model<T>& qpmodel,
   const bool box_constraints,
-  const DenseBackend& dense_backend,
-  const HessianType& hessian_type,
   common::dense::preconditioner::RuizEquilibration<T>& ruiz,
   const QPSolver solver,
   const isize iter)
@@ -212,6 +211,102 @@ print_iteration_line( //
     ruiz.scale_box_dual_in_place_in(
       VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
   }
+}
+
+template<typename T>
+void
+print_solver_statistics( //
+  const Settings<T>& qpsettings,
+  const Results<T>& qpresults,
+  const QPSolver solver)
+{
+  std::cout << "-------------------SOLVER STATISTICS-------------------"
+            << std::endl;
+  switch (solver) {
+    case QPSolver::PROXQP: {
+      std::cout << "outer iter:     " << qpresults.info.iter_ext << std::endl;
+      std::cout << "total iter:     " << qpresults.info.iter << std::endl;
+      std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
+      std::cout << "rho updates:    " << qpresults.info.rho_updates
+                << std::endl;
+      std::cout << "objective:      " << qpresults.info.objValue << std::endl;
+      break;
+    }
+    case QPSolver::OSQP: {
+      std::cout << "total iter:     " << qpresults.info.iter << std::endl;
+      std::cout << "mu updates:     " << qpresults.info.mu_updates << std::endl;
+      std::cout << "objective:      " << qpresults.info.objValue << std::endl;
+      break;
+    }
+  }
+  switch (qpresults.info.status) {
+    case QPSolverOutput::QPSOLVER_SOLVED: {
+      std::cout << "status:         "
+                << "Solved" << std::endl;
+      break;
+    }
+    case QPSolverOutput::QPSOLVER_MAX_ITER_REACHED: {
+      std::cout << "status:         "
+                << "Maximum number of iterations reached" << std::endl;
+      break;
+    }
+    case QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE: {
+      std::cout << "status:         "
+                << "Primal infeasible" << std::endl;
+      break;
+    }
+    case QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE: {
+      std::cout << "status:         "
+                << "Dual infeasible" << std::endl;
+      break;
+    }
+    case QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE: {
+      std::cout << "status:         "
+                << "Solved closest primal feasible" << std::endl;
+      break;
+    }
+    case QPSolverOutput::QPSOLVER_NOT_RUN: {
+      std::cout << "status:         "
+                << "Solver not run" << std::endl;
+      break;
+    }
+  }
+  switch (solver) {
+    case QPSolver::PROXQP: {
+      break;
+    }
+    case QPSolver::OSQP: {
+      if (qpsettings.polishing == true) {
+        switch (qpresults.info.status_polish) {
+          case PolishStatus::POLISH_SUCCEEDED: {
+            std::cout << "status_polish:  "
+                      << "Success" << std::endl;
+            break;
+          }
+          case PolishStatus::POLISH_FAILED: {
+            std::cout << "status_polish:  "
+                      << "Failed" << std::endl;
+            break;
+          }
+          case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+            std::cout << "status_polish:  "
+                      << "No active set found" << std::endl;
+            break;
+          }
+          case PolishStatus::POLISH_NOT_RUN: {
+            std::cout << "status_polish:  "
+                      << "Not" << std::endl;
+            break;
+          }
+        }
+      }
+      break;
+    }
+  }
+  if (qpsettings.compute_timings)
+    std::cout << "run time [μs]:  " << qpresults.info.solve_time << std::endl;
+  std::cout << "--------------------------------------------------------"
+            << std::endl;
 }
 
 } // namespace dense

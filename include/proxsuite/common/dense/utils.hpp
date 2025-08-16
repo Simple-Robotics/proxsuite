@@ -486,6 +486,265 @@ global_dual_residual(
   }
 }
 
+/*!
+ * Compute timings at the end of qp_solve function.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+compute_timings(Results<T>& qpresults, Workspace<T>& qpwork)
+{
+  qpresults.info.solve_time = qpwork.timer.elapsed().user; // in microseconds
+  qpresults.info.run_time =
+    qpresults.info.solve_time + qpresults.info.setup_time;
+}
+
+/*!
+ * Computes the objective function.
+ *
+ * @param qpmodel solver model.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+compute_objective(Results<T>& qpresults, const Model<T>& qpmodel)
+{
+  qpresults.info.objValue = 0;
+  for (Eigen::Index j = 0; j < qpmodel.dim; ++j) {
+    qpresults.info.objValue +=
+      0.5 * (qpresults.x(j) * qpresults.x(j)) * qpmodel.H(j, j);
+    qpresults.info.objValue +=
+      qpresults.x(j) * T(qpmodel.H.col(j)
+                           .tail(qpmodel.dim - j - 1)
+                           .dot(qpresults.x.tail(qpmodel.dim - j - 1)));
+  }
+  qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
+}
+
+/*!
+ * Computes the unscaled primal and dual residuals.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ * @param ruiz ruiz preconditioner.
+ */
+template<typename T>
+void
+compute_residuals(const Settings<T>& qpsettings,
+                  const Model<T>& qpmodel,
+                  Results<T>& qpresults,
+                  Workspace<T>& qpwork,
+                  const bool box_constraints,
+                  const HessianType& hessian_type,
+                  common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+                  T& primal_feasibility_lhs,
+                  T& primal_feasibility_eq_rhs_0,
+                  T& primal_feasibility_in_rhs_0,
+                  T& primal_feasibility_eq_lhs,
+                  T& primal_feasibility_in_lhs,
+                  T& dual_feasibility_lhs,
+                  T& dual_feasibility_rhs_0,
+                  T& dual_feasibility_rhs_1,
+                  T& dual_feasibility_rhs_3,
+                  T& rhs_duality_gap,
+                  T& duality_gap)
+{
+  // PERF: fuse matrix product computations in global_{primal, dual}_residual
+  proxsuite::common::dense::global_primal_residual(qpmodel,
+                                                   qpresults,
+                                                   qpsettings,
+                                                   qpwork,
+                                                   ruiz,
+                                                   box_constraints,
+                                                   primal_feasibility_lhs,
+                                                   primal_feasibility_eq_rhs_0,
+                                                   primal_feasibility_in_rhs_0,
+                                                   primal_feasibility_eq_lhs,
+                                                   primal_feasibility_in_lhs);
+
+  proxsuite::common::dense::global_dual_residual(qpresults,
+                                                 qpwork,
+                                                 qpmodel,
+                                                 box_constraints,
+                                                 ruiz,
+                                                 dual_feasibility_lhs,
+                                                 dual_feasibility_rhs_0,
+                                                 dual_feasibility_rhs_1,
+                                                 dual_feasibility_rhs_3,
+                                                 rhs_duality_gap,
+                                                 duality_gap,
+                                                 hessian_type);
+
+  qpresults.info.pri_res = primal_feasibility_lhs;
+  qpresults.info.dua_res = dual_feasibility_lhs;
+  qpresults.info.duality_gap = duality_gap;
+}
+
+/*!
+ * Checks if the problem if solved.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ */
+template<typename T>
+bool
+is_solved(const Settings<T>& qpsettings,
+          Results<T>& qpresults,
+          const Workspace<T>& qpwork,
+          T scaled_eps,
+          T primal_feasibility_lhs,
+          T primal_feasibility_eq_rhs_0,
+          T primal_feasibility_in_rhs_0,
+          T dual_feasibility_lhs,
+          T dual_feasibility_rhs_0,
+          T dual_feasibility_rhs_1,
+          T dual_feasibility_rhs_3,
+          T rhs_duality_gap)
+{
+  bool is_solved = false;
+
+  T rhs_pri(scaled_eps);
+  if (qpsettings.eps_rel != 0) {
+    rhs_pri += qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                             primal_feasibility_in_rhs_0);
+  }
+  bool is_primal_feasible = primal_feasibility_lhs <= rhs_pri;
+
+  T rhs_dua(qpsettings.eps_abs);
+  if (qpsettings.eps_rel != 0) {
+    rhs_dua +=
+      qpsettings.eps_rel *
+      std::max(std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+               std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2));
+  }
+  bool is_dual_feasible = dual_feasibility_lhs <= rhs_dua;
+
+  if (is_primal_feasible && is_dual_feasible) {
+    if (qpsettings.check_duality_gap) {
+      if (std::fabs(qpresults.info.duality_gap) <=
+          qpsettings.eps_duality_gap_abs +
+            qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
+        if (qpsettings.primal_infeasibility_solving &&
+            qpresults.info.status ==
+              QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
+          qpresults.info.status =
+            QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+        } else {
+          qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
+        }
+        is_solved = true;
+      }
+    } else {
+      qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
+      is_solved = true;
+    }
+  }
+
+  return is_solved;
+}
+
+/*!
+ * Checks if the problem if solved or closest solved.
+ * Used at the end of the loop to update the solver status
+ * in case of last iter.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+is_solved_or_closest_solved(const Settings<T>& qpsettings,
+                            Results<T>& qpresults,
+                            const Workspace<T>& qpwork,
+                            T scaled_eps,
+                            T primal_feasibility_lhs_new,
+                            T primal_feasibility_eq_rhs_0,
+                            T primal_feasibility_in_rhs_0,
+                            T dual_feasibility_lhs_new,
+                            T dual_feasibility_rhs_0,
+                            T dual_feasibility_rhs_1,
+                            T dual_feasibility_rhs_3,
+                            T rhs_duality_gap)
+{
+  bool is_primal_feasible =
+    primal_feasibility_lhs_new <=
+    (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
+                                                primal_feasibility_in_rhs_0));
+
+  if (is_primal_feasible) {
+    bool is_dual_feasible =
+      dual_feasibility_lhs_new <=
+      (qpsettings.eps_abs +
+       qpsettings.eps_rel *
+         std::max(
+           std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
+           std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
+
+    if (is_dual_feasible) {
+      if (qpsettings.check_duality_gap) {
+        if (std::fabs(qpresults.info.duality_gap) <=
+            qpsettings.eps_duality_gap_abs +
+              qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
+          if (qpsettings.primal_infeasibility_solving &&
+              qpresults.info.status ==
+                QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
+            qpresults.info.status =
+              QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+          } else {
+            qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
+          }
+        }
+      } else {
+        if (qpsettings.primal_infeasibility_solving &&
+            qpresults.info.status ==
+              QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
+          qpresults.info.status =
+            QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+        } else {
+          qpresults.info.status = QPSolverOutput::QPSOLVER_SOLVED;
+        }
+      }
+    }
+  }
+}
+
+/*!
+ * Unscales solver at the end of function qp_solve.
+ *
+ * @param qpwork solver workspace.
+ * @param qpresults solver results.
+ */
+template<typename T>
+void
+unscale_solver(const Settings<T>& qpsettings,
+               const Model<T>& qpmodel,
+               Results<T>& qpresults,
+               const bool box_constraints,
+               common::dense::preconditioner::RuizEquilibration<T>& ruiz)
+{
+  ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
+  ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });
+  ruiz.unscale_dual_in_place_in(
+    VectorViewMut<T>{ from_eigen, qpresults.z.head(qpmodel.n_in) });
+  if (box_constraints) {
+    ruiz.unscale_box_dual_in_place_in(
+      VectorViewMut<T>{ from_eigen, qpresults.z.tail(qpmodel.dim) });
+  }
+  if (qpsettings.primal_infeasibility_solving &&
+      qpresults.info.status == QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE) {
+    ruiz.unscale_primal_residual_in_place_eq(
+      VectorViewMut<T>{ from_eigen, qpresults.se });
+    ruiz.unscale_primal_residual_in_place_in(
+      VectorViewMut<T>{ from_eigen, qpresults.si.head(qpmodel.n_in) });
+    if (box_constraints) {
+      ruiz.unscale_box_primal_residual_in_place_in(
+        VectorViewMut<T>{ from_eigen, qpresults.si.tail(qpmodel.dim) });
+    }
+  }
+}
+
 } // namespace dense
 } // namespace common
 } // namespace proxsuite
