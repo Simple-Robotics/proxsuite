@@ -5,13 +5,14 @@
 #include <iostream>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/common/dense/preconditioner/ruiz.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 using T = double;
+namespace utils = proxsuite::common::utils;
 using I = utils::c_int;
 using namespace proxsuite::linalg::sparse::tags;
 

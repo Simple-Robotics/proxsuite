@@ -7,7 +7,7 @@
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using namespace proxsuite;
 using Scalar = double;
@@ -25,7 +25,7 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   Scalar sparsity_factor(0.75);
   Scalar strong_convexity_factor(0.01);
   common::dense::Model<Scalar> qp_random =
-    proxqp::utils::dense_strongly_convex_qp(
+    common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   switch (sym) {

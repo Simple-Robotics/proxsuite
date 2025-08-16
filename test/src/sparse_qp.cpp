@@ -3,13 +3,13 @@
 //
 #include <iostream>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <doctest.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
 using T = double;
-using I = proxqp::utils::c_int;
+using I = common::utils::c_int;
 using namespace linalg::sparse::tags;
 /*
 TEST_CASE("random ruiz") {
@@ -26,12 +26,12 @@ TEST_CASE("random ruiz") {
 
                 double p = 1.0;
 
-                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto AT =
-proxqp::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-proxqp::utils::rand::vector_rand<T>(n_eq); auto CT =
-proxqp::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = common::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = common::utils::rand::vector_rand<T>(n); auto AT =
+common::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+common::utils::rand::vector_rand<T>(n_eq); auto CT =
+common::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+common::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -92,12 +92,12 @@ TEST_CASE("random ruiz using the API") {
 
                 double p = 1.0;
 
-                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto A =
-proxqp::utils::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
-proxqp::utils::rand::vector_rand<T>(n_eq); auto C =
-proxqp::utils::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
-proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = common::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = common::utils::rand::vector_rand<T>(n); auto A =
+common::utils::rand::sparse_matrix_rand<T>(n_eq,n, p); auto b =
+common::utils::rand::vector_rand<T>(n_eq); auto C =
+common::utils::rand::sparse_matrix_rand<T>(n_in,n, p); auto l =
+common::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -132,12 +132,12 @@ TEST_CASE("random id") {
 
                 double p = 1.0;
 
-                auto H = proxqp::utils::rand::sparse_positive_definite_rand(n,
-T(10.0), p); auto g = proxqp::utils::rand::vector_rand<T>(n); auto AT =
-proxqp::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
-proxqp::utils::rand::vector_rand<T>(n_eq); auto CT =
-proxqp::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
-proxqp::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
+                auto H = common::utils::rand::sparse_positive_definite_rand(n,
+T(10.0), p); auto g = common::utils::rand::vector_rand<T>(n); auto AT =
+common::utils::rand::sparse_matrix_rand<T>(n, n_eq, p); auto b =
+common::utils::rand::vector_rand<T>(n_eq); auto CT =
+common::utils::rand::sparse_matrix_rand<T>(n, n_in, p); auto l =
+common::utils::rand::vector_rand<T>(n_in); auto u = (l.array() +
 1).matrix().eval();
 
                 {
@@ -196,12 +196,12 @@ TEST_CASE("random id using the API")
 
     double p = 1.0;
 
-    auto H = proxqp::utils::rand::sparse_positive_definite_rand(n, T(10.0), p);
-    auto g = proxqp::utils::rand::vector_rand<T>(n);
-    auto A = proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
-    auto b = proxqp::utils::rand::vector_rand<T>(n_eq);
-    auto C = proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
-    auto l = proxqp::utils::rand::vector_rand<T>(n_in);
+    auto H = common::utils::rand::sparse_positive_definite_rand(n, T(10.0), p);
+    auto g = common::utils::rand::vector_rand<T>(n);
+    auto A = common::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+    auto b = common::utils::rand::vector_rand<T>(n_eq);
+    auto C = common::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+    auto l = common::utils::rand::vector_rand<T>(n_in);
     auto u = (l.array() + 1).matrix().eval();
 
     {

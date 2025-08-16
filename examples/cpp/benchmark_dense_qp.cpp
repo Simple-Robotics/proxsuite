@@ -45,7 +45,7 @@ Solve Time consumption(dense): 0.101507s
 */
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using namespace proxsuite;
@@ -64,7 +64,7 @@ main()
 
   for (T sparsity_factor = 0.1; sparsity_factor < 0.5; sparsity_factor += 0.1) {
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     for (int i = 0; i < N; i++) {

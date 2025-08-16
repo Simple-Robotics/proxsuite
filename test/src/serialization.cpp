@@ -4,7 +4,7 @@
 #include <iostream>
 #include <doctest.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/model.hpp>
@@ -114,13 +114,13 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(0);
   isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object

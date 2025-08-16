@@ -7,7 +7,7 @@
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using namespace proxsuite;
@@ -24,13 +24,13 @@ DOCTEST_TEST_CASE(
     << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
 
     isize n_eq(dim / 4);
     isize n_in(dim / 4);
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -76,13 +76,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
     << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
 
     isize n_eq(0);
     isize n_in(dim);
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_box_constrained_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_box_constrained_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
@@ -126,12 +126,12 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
     << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
     isize n_in(dim / 2);
     isize n_eq(0);
     common::dense::Model<T> qp_random =
-      proxqp::utils::dense_not_strongly_convex_qp(
+      common::utils::dense_not_strongly_convex_qp(
         dim, n_eq, n_in, sparsity_factor);
 
     proxqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -177,12 +177,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   T sparsity_factor = 0.45;
   T eps_abs = T(1e-9);
   T strong_convexity_factor(1e-2);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
     isize m(dim / 4);
     isize n_in(2 * m);
     isize n_eq(0);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_degenerate_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_degenerate_qp(
       dim,
       n_eq,
       m, // it n_in = 2 * m, it doubles the inequality constraints
@@ -231,15 +231,15 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
             << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
     isize n_in(dim / 2);
     isize n_eq(0);
     common::dense::Model<T> qp_random =
-      proxqp::utils::dense_not_strongly_convex_qp(
+      common::utils::dense_not_strongly_convex_qp(
         dim, n_eq, n_in, sparsity_factor);
     qp_random.H.setZero();
-    auto z_sol = proxqp::utils::rand::vector_rand<T>(n_in);
+    auto z_sol = common::utils::rand::vector_rand<T>(n_in);
     qp_random.g = -qp_random.C.transpose() *
                   z_sol; // make sure the LP is bounded within the feasible set
     // std::cout << "g : " << qp.g << " C " << qp.C  << " u " << qp.u << " l "

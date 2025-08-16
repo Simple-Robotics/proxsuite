@@ -4,12 +4,12 @@
 #include <iostream>
 #include <doctest.hpp>
 #include <proxsuite/proxqp/sparse/sparse.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
-using namespace proxsuite::proxqp::utils;
+using namespace proxsuite::common::utils;
 using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
@@ -32,16 +32,16 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
+    ::proxsuite::common::utils::rand::set_seed(1);
 
     /*
-    auto H = ::proxsuite::proxqp::utils::rand::sparse_positive_definite_rand(
+    auto H = ::proxsuite::common::utils::rand::sparse_positive_definite_rand(
       n, T(10.0), sparsity_factor);
-    auto g = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
-    auto A = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n,
+    auto g = ::proxsuite::common::utils::rand::vector_rand<T>(n);
+    auto A = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_eq, n,
     sparsity_factor); auto x_sol =
-    ::proxsuite::proxqp::utils::rand::vector_rand<T>(n); auto b = A * x_sol;
-    auto C = ::proxsuite::proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n,
+    ::proxsuite::common::utils::rand::vector_rand<T>(n); auto b = A * x_sol;
+    auto C = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_in, n,
     sparsity_factor); auto l = C * x_sol; auto u = (l.array() +
     10).matrix().eval();
 
@@ -59,7 +59,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
                                   sparsity_factor,
                                   strong_convexity_factor);
     */
-    common::dense::Model<T> qp_dense = utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_dense = common::utils::dense_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::sparse::SparseModel<T> qp = qp_dense.to_sparse();
     proxsuite::common::Results<T> results =
@@ -114,9 +114,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
@@ -173,9 +174,10 @@ DOCTEST_TEST_CASE(
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
                                              qp.g,
@@ -233,9 +235,10 @@ DOCTEST_TEST_CASE(
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::InitialGuessStatus initial_guess =
       proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
     proxsuite::common::SparseBackend sparse_backend =
@@ -303,12 +306,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    auto x_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n);
-    auto y_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n_eq);
-    auto z_wm = ::proxsuite::proxqp::utils::rand::vector_rand<T>(n_in);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    auto x_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n);
+    auto y_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n_eq);
+    auto z_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n_in);
     proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(
         qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs);
@@ -351,9 +355,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     bool verbose = true;
     proxsuite::common::Results<T> results =
       proxsuite::proxqp::sparse::solve<T, I>(qp.H,
@@ -411,9 +416,10 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::proxqp::utils::rand::set_seed(1);
-    proxqp::sparse::SparseModel<T> qp = utils::sparse_strongly_convex_qp(
-      n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+    ::proxsuite::common::utils::rand::set_seed(1);
+    proxqp::sparse::SparseModel<T> qp =
+      common::utils::sparse_strongly_convex_qp(
+        n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxsuite::common::InitialGuessStatus initial_guess =
       proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
     proxsuite::common::Results<T> results =

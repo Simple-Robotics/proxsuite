@@ -6,7 +6,7 @@
 #include <Eigen/Core>
 #include <optional>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/compute_ECJ.hpp>
 
 using T = double;
@@ -17,12 +17,12 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-1);
-  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   Eigen::Matrix<T, 10, 10> H = random_qp.H;
@@ -84,12 +84,12 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   isize dim = 10;
 
   isize n_eq(5), n_in(0);
   T strong_convexity_factor(1.e-2);
-  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   Eigen::Matrix<T, 10, 10> H = random_qp.H;
@@ -152,12 +152,12 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   isize dim = 6;
 
   isize n_eq(0), n_in(12);
   T strong_convexity_factor(1.e-1);
-  common::dense::Model<T> random_qp = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> random_qp = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   std::cout << "creating random  qp " << std::endl;

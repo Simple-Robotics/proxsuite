@@ -1,7 +1,7 @@
 #include <iostream>
 #include <proxsuite/proxqp/sparse/sparse.hpp> // get the sparse backend of ProxQP
 #include <proxsuite/proxqp/dense/dense.hpp>   // get the dense backend of ProxQP
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
+#include <proxsuite/common/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
 using T = double;
 using namespace proxsuite;
@@ -15,7 +15,7 @@ main()
   isize n_in(n / 4);
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
-  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
     n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
   // Solve the problem using the dense backend
   // and suppose you want to change the accuracy to 1.E-9 and rho initial value

@@ -3,7 +3,7 @@
 //
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using I = long long;
@@ -20,7 +20,7 @@ main(int /*argc*/, const char** /*argv*/)
   T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
   T elapsed_time = 0.0;
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
   for (isize dim = 10; dim <= 1000; dim = (dim == 10) ? 100 : dim + 100) {
 
@@ -36,10 +36,10 @@ main(int /*argc*/, const char** /*argv*/)
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << std::endl;
 
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
-    auto y_sol = proxqp::utils::rand::vector_rand<T>(n_eq);
+    auto y_sol = common::utils::rand::vector_rand<T>(n_eq);
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
     elapsed_time = 0.0;

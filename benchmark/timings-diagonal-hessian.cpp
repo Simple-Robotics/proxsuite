@@ -3,7 +3,7 @@
 //
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using I = long long;
@@ -20,7 +20,7 @@ main(int /*argc*/, const char** /*argv*/)
   T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
   T elapsed_time = 0.0;
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
   for (isize dim = 100; dim <= 500; dim = dim + 100) {
 
@@ -30,13 +30,13 @@ main(int /*argc*/, const char** /*argv*/)
               << " box: " << dim << std::endl;
     T strong_convexity_factor(1.e-2);
 
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
-      proxqp::utils::rand::vector_rand<T>(dim);
+      common::utils::rand::vector_rand<T>(dim);
     Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
     for (isize i = 0; i < n_in; ++i) {
-      delta(i) = proxqp::utils::rand::uniform_rand();
+      delta(i) = common::utils::rand::uniform_rand();
     }
     qp_random.u = qp_random.C * x_sol + delta;
     qp_random.b = qp_random.A * x_sol;
@@ -45,7 +45,7 @@ main(int /*argc*/, const char** /*argv*/)
     Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
     l_box.setZero();
     for (isize i = 0; i < dim; ++i) {
-      T shift = proxqp::utils::rand::uniform_rand();
+      T shift = common::utils::rand::uniform_rand();
       u_box(i) = x_sol(i) + shift;
       l_box(i) = x_sol(i) - shift;
     }

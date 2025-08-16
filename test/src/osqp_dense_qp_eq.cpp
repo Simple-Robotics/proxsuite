@@ -7,7 +7,7 @@
 #include <Eigen/Cholesky>
 #include <proxsuite/osqp/dense/dense.hpp>
 #include <proxsuite/linalg/veg/util/dbg.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using namespace proxsuite;
@@ -24,20 +24,20 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
                "constraints and starting at the solution using the wrapper "
                "framework---"
             << std::endl;
-  proxqp::utils::rand::set_seed(1);
-  auto H = ::proxsuite::proxqp::utils::rand::
+  common::utils::rand::set_seed(1);
+  auto H = ::proxsuite::common::utils::rand::
     sparse_positive_definite_rand_not_compressed(
       dim, strong_convexity_factor, sparsity_factor);
   auto A =
-    ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
+    ::proxsuite::common::utils::rand::sparse_matrix_rand_not_compressed<T>(
       n_eq, dim, sparsity_factor);
-  auto solution = ::proxsuite::proxqp::utils::rand::vector_rand<T>(dim + n_eq);
+  auto solution = ::proxsuite::common::utils::rand::vector_rand<T>(dim + n_eq);
   auto primal_solution = solution.topRows(dim);
   auto dual_solution = solution.bottomRows(n_eq);
   auto b = A * primal_solution;
   auto g = -H * primal_solution - A.transpose() * dual_solution;
   auto C =
-    ::proxsuite::proxqp::utils::rand::sparse_matrix_rand_not_compressed<T>(
+    ::proxsuite::common::utils::rand::sparse_matrix_rand_not_compressed<T>(
       0, dim, sparsity_factor);
   Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init_in(n_in);
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(0);
@@ -67,13 +67,13 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
 
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
@@ -116,16 +116,16 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
 
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
-    auto y_sol = proxqp::utils::rand::vector_rand<T>(
+    auto y_sol = common::utils::rand::vector_rand<T>(
       n_eq); // make sure the LP is bounded within the feasible set
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
@@ -174,16 +174,16 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
 
     isize n_eq(dim / 2);
     isize n_in(0);
     T strong_convexity_factor(1.e-2);
-    common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
-    auto y_sol = proxqp::utils::rand::vector_rand<T>(
+    auto y_sol = common::utils::rand::vector_rand<T>(
       n_eq); // make sure the LP is bounded within the feasible set
     qp_random.g = -qp_random.A.transpose() * y_sol;
 

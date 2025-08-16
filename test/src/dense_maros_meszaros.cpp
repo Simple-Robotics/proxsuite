@@ -3,7 +3,7 @@
 //
 #include <doctest.hpp>
 #include <maros_meszaros.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite;
@@ -85,7 +85,7 @@ char const* files[] = {
 TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
-  using isize = proxqp::utils::isize;
+  using isize = common::utils::isize;
   proxsuite::common::Timer<T> timer;
   T elapsed_time = 0.0;
 

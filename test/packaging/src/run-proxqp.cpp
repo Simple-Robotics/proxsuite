@@ -1,5 +1,5 @@
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex Qp
+#include <proxsuite/common/utils/random_qp_problems.hpp> // used for generating a random convex Qp
 
 using namespace proxsuite::proxqp;
 using T = double;

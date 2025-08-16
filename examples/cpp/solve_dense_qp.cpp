@@ -1,6 +1,6 @@
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp> // load the dense solver backend
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp> // used for generating a random convex qp
+#include <proxsuite/common/utils/random_qp_problems.hpp> // used for generating a random convex qp
 
 using T = double;
 using namespace proxsuite;
@@ -16,7 +16,7 @@ main()
   T sparsity_factor(0.15);
   T strong_convexity_factor(1.e-2);
 
-  common::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+  common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   proxqp::dense::QP<T> qp(dim, n_eq, n_in); // create the QP object
@@ -28,9 +28,9 @@ main()
           qp_random.l,
           qp_random.u); // initialize the model
   qp.solve();           // solve the problem without warm start
-  auto x_wm = proxqp::utils::rand::vector_rand<T>(dim);
-  auto y_wm = proxqp::utils::rand::vector_rand<T>(n_eq);
-  auto z_wm = proxqp::utils::rand::vector_rand<T>(n_in);
+  auto x_wm = common::utils::rand::vector_rand<T>(dim);
+  auto y_wm = common::utils::rand::vector_rand<T>(n_eq);
+  auto z_wm = common::utils::rand::vector_rand<T>(n_in);
   qp.solve(x_wm, y_wm,
            z_wm); // if you have a warm start, put it here
   // print an optimal solution x,y and z

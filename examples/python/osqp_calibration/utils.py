@@ -67,7 +67,7 @@ def status_polish_to_string(status, solver):
 
 
 def sparse_positive_definite_rand_not_compressed(dim, rho, p, rng):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     H = np.zeros((dim, dim), dtype=np.float64)
 
@@ -84,7 +84,7 @@ def sparse_positive_definite_rand_not_compressed(dim, rho, p, rng):
 
 
 def sparse_matrix_rand_not_compressed(nrows, ncols, p, rng):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     mask = rng.uniform(size=(nrows, ncols)) < p
 
@@ -97,7 +97,7 @@ def sparse_matrix_rand_not_compressed(nrows, ncols, p, rng):
 def unconstrained_qp(
     dim, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
 ):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     rng = np.random.default_rng(seed)
 
@@ -124,7 +124,7 @@ def unconstrained_qp(
 def strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
 ):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     rng = np.random.default_rng(seed)
 
@@ -153,7 +153,7 @@ def strongly_convex_qp(
 
 
 def not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor, sparse=False, seed=1):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     rng = np.random.default_rng(seed)
 
@@ -184,7 +184,7 @@ def not_strongly_convex_qp(dim, n_eq, n_in, sparsity_factor, sparse=False, seed=
 def degenerate_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
 ):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 
     rng = np.random.default_rng(seed)
 
@@ -216,7 +216,7 @@ def degenerate_qp(
 def box_constrained_qp(
     dim, n_eq, sparsity_factor, strong_convexity_factor=1e-2, sparse=False, seed=1
 ):
-    # Inspired from "proxsuite/proxqp/utils/random_qp_problems.hpp"
+    # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
     # Note: n_in is not in argument, as C must be square with size dim
 
     rng = np.random.default_rng(seed)

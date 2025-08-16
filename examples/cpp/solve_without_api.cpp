@@ -1,7 +1,7 @@
 #include <iostream>
 #include "proxsuite/proxqp/sparse/sparse.hpp" // get the sparse backend of ProxQP
 #include "proxsuite/proxqp/dense/dense.hpp"   // get the dense backend of ProxQP
-#include "proxsuite/proxqp/utils/random_qp_problems.hpp" // used for generating a random convex qp
+#include "proxsuite/common/utils/random_qp_problems.hpp" // used for generating a random convex qp
 
 using T = double;
 using namespace proxsuite;
@@ -18,16 +18,16 @@ main()
   isize n_in(n / 4);
   T p = 0.35;            // level of sparsity
   T conditioning = 10.0; // conditioning level for H
-  auto H = proxqp::utils::rand::sparse_positive_definite_rand(
+  auto H = common::utils::rand::sparse_positive_definite_rand(
     n, conditioning, p); // upper triangular matrix
   Mat H_dense = Mat(H);
   H_dense.template triangularView<Eigen::Lower>() = H_dense.transpose();
-  Vec g = proxqp::utils::rand::vector_rand<T>(n);
-  auto A = proxqp::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+  Vec g = common::utils::rand::vector_rand<T>(n);
+  auto A = common::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
   Mat A_dense = Mat(A);
-  auto C = proxqp::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+  auto C = common::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
   Mat C_dense = Mat(C);
-  Vec x_sol = proxqp::utils::rand::vector_rand<T>(n);
+  Vec x_sol = common::utils::rand::vector_rand<T>(n);
   Vec b = A * x_sol;
   Vec l = C * x_sol;
   Vec u = (l.array() + 10).matrix();

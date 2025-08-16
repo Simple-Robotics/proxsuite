@@ -1,9 +1,9 @@
 #pragma once
 
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace utils {
 
 namespace eigen {
@@ -25,5 +25,5 @@ LDLT_EXPLICIT_TPL_DECL(3, sparse_positive_definite_rand<f64>);
 LDLT_EXPLICIT_TPL_DECL(1, mat_cast<f64, long double>);
 
 } // namespace utils
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

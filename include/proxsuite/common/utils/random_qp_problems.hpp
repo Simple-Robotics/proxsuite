@@ -1,5 +1,10 @@
-#ifndef PROXSUITE_PROXQP_UTILS_RANDOM_QP_PROBLEMS_HPP
-#define PROXSUITE_PROXQP_UTILS_RANDOM_QP_PROBLEMS_HPP
+//
+// Copyright (c) 2022 - 2025 INRIA
+//
+/** \file */
+
+#ifndef PROXSUITE_COMMON_UTILS_RANDOM_QP_PROBLEMS_HPP
+#define PROXSUITE_COMMON_UTILS_RANDOM_QP_PROBLEMS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
@@ -14,13 +19,11 @@
 #include <random>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace utils {
 
 using c_int = long long;
 using c_float = double;
-
-namespace common = proxsuite::common;
 
 using proxsuite::common::colmajor;
 using proxsuite::common::f32;
@@ -666,8 +669,8 @@ sparse_strongly_convex_qp(isize dim,
 }
 
 } // namespace utils
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite
 
-#endif /* end of include guard PROXSUITE_PROXQP_UTILS_RANDOM_QP_PROBLEMS_HPP   \
+#endif /* end of include guard PROXSUITE_COMMON_UTILS_RANDOM_QP_PROBLEMS_HPP   \
         */
