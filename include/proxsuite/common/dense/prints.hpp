@@ -17,9 +17,9 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
+using proxsuite::common::QPSolver;
 using proxsuite::common::Results;
 using proxsuite::common::Settings;
-using proxsuite::common::Solver;
 using proxsuite::common::dense::Model;
 using proxsuite::common::dense::Workspace;
 
@@ -31,7 +31,7 @@ print_setup_header(const Settings<T>& settings,
                    const bool box_constraints,
                    const DenseBackend& dense_backend,
                    const HessianType& hessian_type,
-                   const Solver solver)
+                   const QPSolver solver)
 {
 
   proxsuite::common::print_preambule(solver);
@@ -117,10 +117,10 @@ print_setup_header(const Settings<T>& settings,
         << std::endl;
   }
   switch (solver) {
-    case Solver::PROXQP: {
+    case QPSolver::PROXQP: {
       break;
     }
-    case Solver::OSQP: {
+    case QPSolver::OSQP: {
       if (settings.adaptive_mu) {
         std::cout << "          adaptive_mu: on, " << std::endl;
         std::cout << "          adaptive_mu_interval: "
@@ -156,7 +156,7 @@ print_iteration_line( //
   const DenseBackend& dense_backend,
   const HessianType& hessian_type,
   common::dense::preconditioner::RuizEquilibration<T>& ruiz,
-  const Solver solver,
+  const QPSolver solver,
   const isize iter)
 {
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
@@ -181,7 +181,7 @@ print_iteration_line( //
     qpresults.info.objValue += (qpmodel.g).dot(qpresults.x);
   }
   switch (solver) {
-    case Solver::PROXQP: {
+    case QPSolver::PROXQP: {
       std::cout << "\033[1;32m[outer iteration " << iter + 1 << "]\033[0m"
                 << std::endl;
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)
@@ -192,7 +192,7 @@ print_iteration_line( //
                 << " | rho=" << qpresults.info.rho << std::endl;
       break;
     }
-    case Solver::OSQP: {
+    case QPSolver::OSQP: {
       std::cout << "\033[1;32m[iteration " << iter + 1 << "]\033[0m"
                 << std::endl;
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)

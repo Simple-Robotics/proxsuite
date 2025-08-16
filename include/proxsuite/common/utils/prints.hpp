@@ -21,11 +21,11 @@ print_line()
 }
 
 inline void
-print_preambule(const Solver solver)
+print_preambule(const QPSolver solver)
 {
   print_line();
   switch (solver) {
-    case Solver::PROXQP: {
+    case QPSolver::PROXQP: {
       std::cout
         << "                              ProxQP - Primal-Dual Proximal QP "
            "Solver\n"
@@ -36,7 +36,7 @@ print_preambule(const Solver solver)
         << std::endl;
       break;
     }
-    case Solver::OSQP: {
+    case QPSolver::OSQP: {
       std::cout
         << "OSQP - An operator splitting algorithm for QP programs\n"
         << "(c) Paper - Bartolomeo Stellato, Goran Banjac, Paul Goulart, "

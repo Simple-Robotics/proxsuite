@@ -11,7 +11,7 @@ namespace proxsuite {
 namespace common {
 
 // SOLVERS IN PROXSUITE
-enum struct Solver
+enum struct QPSolver
 {
   PROXQP,
   OSQP

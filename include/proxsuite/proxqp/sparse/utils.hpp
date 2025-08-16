@@ -46,7 +46,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T, I>& model)
 {
 
-  proxsuite::common::print_preambule(common::Solver::PROXQP);
+  proxsuite::common::print_preambule(common::QPSolver::PROXQP);
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;

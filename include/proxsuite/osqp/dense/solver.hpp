@@ -640,7 +640,7 @@ qp_solve( //
                                                  box_constraints,
                                                  dense_backend,
                                                  hessian_type,
-                                                 common::Solver::OSQP);
+                                                 common::QPSolver::OSQP);
   }
 
   // Ruiz equilibration and factorization
@@ -947,7 +947,7 @@ qp_solve( //
                                                      dense_backend,
                                                      hessian_type,
                                                      ruiz,
-                                                     common::Solver::OSQP,
+                                                     common::QPSolver::OSQP,
                                                      iter);
     }
 

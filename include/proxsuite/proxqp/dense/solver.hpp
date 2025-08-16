@@ -633,7 +633,7 @@ qp_solve( //
                                                  box_constraints,
                                                  dense_backend,
                                                  hessian_type,
-                                                 common::Solver::PROXQP);
+                                                 common::QPSolver::PROXQP);
   }
   // std::cout << "qpwork.dirty " << qpwork.dirty << std::endl;
   if (qpwork.dirty) { // the following is used when a solve has already been
@@ -974,7 +974,7 @@ qp_solve( //
                                                      dense_backend,
                                                      hessian_type,
                                                      ruiz,
-                                                     common::Solver::PROXQP,
+                                                     common::QPSolver::PROXQP,
                                                      iter);
     }
     if (is_primal_feasible && is_dual_feasible) {
