@@ -44,7 +44,7 @@ def status_to_string(status, solver):
 def status_polish_to_string(status, solver):
     if solver == "proxsuite":
         if status == proxsuite.osqp.POLISH_SUCCEEDED:
-            return "Polishing: succeed"
+            return "Polishing: succeeded"
         elif status == proxsuite.osqp.POLISH_FAILED:
             return "Polishing: failed"
         elif status == proxsuite.osqp.POLISH_NOT_RUN:
@@ -54,7 +54,7 @@ def status_polish_to_string(status, solver):
 
     elif solver == "source":
         if status == 1:
-            return "Polishing: succeed"
+            return "Polishing: succeeded"
         elif status == -1:
             return "Polishing: failed"
         elif status == 0:

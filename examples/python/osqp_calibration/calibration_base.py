@@ -452,7 +452,7 @@ def test_calibration_qp(
         same_r_dua = True
 
         same_pol_success = (
-            same_status_polish and status_polish_source_str == "Polishing: succeed"
+            same_status_polish and status_polish_source_str == "Polishing: succeeded"
         )
 
         eps_x = prec_x
