@@ -110,7 +110,7 @@ refactorize(const Model<T>& qpmodel,
 }
 /*!
  * Derives the residual of the iterative refinement algorithm used for solving
- * associated linear systems of PROXQP algorithm.
+ * associated linear systems of solvers algorithms.
  *
  * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling
@@ -270,8 +270,8 @@ solve_linear_system(Vec<T>& dw,
 }
 
 /*!
- * Performs iterative refinement for solving associated linear systems of PROXQP
- * algorithm.
+ * Performs iterative refinement for solving associated linear systems of
+ * solvers algorithms.
  *
  * @param qpwork solver workspace.
  * @param qpmodel QP problem model as defined by the user (without any scaling

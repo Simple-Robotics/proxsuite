@@ -328,7 +328,7 @@ class DenseQpWrapper(unittest.TestCase):
 
         results = proxsuite.osqp.dense.solve(
             H, g, A, b, C, l, u, eps_rel=0
-        )  # test refers to proxqp one with eps_rel = 0
+        )  # test refers to osqp one with eps_rel = 0
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
         dua_res = normInf(H @ results.x + g + C.transpose() @ results.z)
@@ -365,7 +365,7 @@ class DenseQpWrapper(unittest.TestCase):
             A,
             b,
             C,
-            eps_rel=0,  # test refers to proxqp one with eps_rel = 0
+            eps_rel=0,  # test refers to osqp one with eps_rel = 0
         )
         print("optimal x: {}".format(results.x))
 

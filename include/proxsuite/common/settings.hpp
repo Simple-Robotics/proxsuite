@@ -76,7 +76,7 @@ operator<<(std::ostream& os, const DenseBackend& dense_backend)
 }
 
 ///
-/// @brief This class defines the settings of PROXQP solvers with sparse and
+/// @brief This class defines the settings of the solvers with sparse and
 /// dense backends.
 ///
 /*!

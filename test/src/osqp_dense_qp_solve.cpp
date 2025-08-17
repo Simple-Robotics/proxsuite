@@ -13,7 +13,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
+DOCTEST_TEST_CASE("osqp::dense: test init with fixed sizes matrices")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test

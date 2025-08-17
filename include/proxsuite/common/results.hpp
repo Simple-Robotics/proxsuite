@@ -19,7 +19,7 @@ namespace proxsuite {
 namespace common {
 
 ///
-/// @brief This class stores the results statistics of PROXQP solvers with
+/// @brief This class stores the results statistics of the solvers with
 /// sparse and dense backends.
 ///
 /*!
@@ -65,7 +65,7 @@ struct Info
   PolishStatus status_polish;
 };
 ///
-/// @brief This class stores all the results of PROXQP solvers with sparse and
+/// @brief This class stores all the results of the solvers with sparse and
 /// dense backends.
 ///
 /*!

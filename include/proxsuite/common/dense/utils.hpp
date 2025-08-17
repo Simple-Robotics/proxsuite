@@ -4,8 +4,8 @@
 /**
  * @file utils.hpp
  */
-#ifndef PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP
-#define PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP
+#ifndef PROXSUITE_COMMON_DENSE_UTILS_HPP
+#define PROXSUITE_COMMON_DENSE_UTILS_HPP
 
 #include <iostream>
 #include <cmath>
@@ -734,4 +734,4 @@ unscale_solver(const Settings<T>& qpsettings,
 } // namespace proxsuite
 
 #endif /* end of include guard                                                 \
-          PROXSUITE_PROXQP_DENSE_UTILS_HPPPROXSUITE_COMMON_DENSE_UTILS_HPP */
+          PROXSUITE_COMMON_DENSE_UTILS_HPP */

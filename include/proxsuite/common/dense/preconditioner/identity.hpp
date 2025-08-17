@@ -106,8 +106,8 @@ struct IdentityPrecond
   }
 };
 } // namespace preconditioner
+} // namespace dense
 } // namespace common
-} // namespace proxqp
 } // namespace proxsuite
 
 #endif /* end of include guard PROXSUITE_COMMON_DENSE_PRECOND_IDENTITY_HPP     \

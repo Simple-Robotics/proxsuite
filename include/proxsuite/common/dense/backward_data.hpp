@@ -17,7 +17,7 @@ namespace common {
 namespace dense {
 
 ///
-/// @brief This class stores the jacobians of PROXQP solvers with
+/// @brief This class stores the jacobians of the solvers with
 /// dense backends at a solutions wrt model parameters.
 ///
 /*!
