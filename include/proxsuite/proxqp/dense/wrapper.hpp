@@ -36,7 +36,7 @@ auto main() -> int {
 
         // Generate a random QP problem with primal variable dimension of size
 dim; n_eq equality constraints and n_in inequality constraints
-        ::proxsuite::proxqp::test::rand::set_seed(1);
+        ::proxsuite::common::test::rand::set_seed(1);
         isize dim = 10;
         isize n_eq(dim / 4);
         isize n_in(dim / 4);
