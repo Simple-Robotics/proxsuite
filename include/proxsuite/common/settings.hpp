@@ -87,6 +87,12 @@ template<typename T>
 struct Settings
 {
 
+  // Note code factorization
+  // Default values (e.g. default_mu_eq, default_mu_in, etc) come form ProxQP,
+  // as it was the first solver in ProxSuite. As this header is shared with
+  // others, like OSQP, the default values are systematically initialized in the
+  // corresponding wrappers.
+
   T default_rho;
   T default_mu_eq;
   T default_mu_in;
