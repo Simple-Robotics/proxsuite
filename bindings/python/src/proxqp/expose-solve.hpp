@@ -15,8 +15,6 @@ using proxsuite::linalg::veg::isize;
 namespace dense {
 namespace python {
 
-;
-
 template<typename T>
 void
 solveDenseQp(nanobind::module_ m)

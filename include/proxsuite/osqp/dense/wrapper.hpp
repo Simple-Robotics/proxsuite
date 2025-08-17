@@ -8,9 +8,9 @@
 #ifndef PROXSUITE_OSQP_DENSE_WRAPPER_HPP
 #define PROXSUITE_OSQP_DENSE_WRAPPER_HPP
 
-#include <proxsuite/proxqp/dense/wrapper.hpp>
-#include <proxsuite/osqp/dense/solver.hpp>
 #include "proxsuite/osqp/dense/aliases.hpp"
+#include <proxsuite/osqp/dense/solver.hpp>
+#include <proxsuite/common/dense/wrapper.hpp>
 
 namespace proxsuite {
 namespace osqp {
@@ -20,8 +20,11 @@ namespace dense {
 /// @brief This class defines the API of OSQP solver with dense backend.
 ///
 template<typename T>
-struct QP : public proxsuite::proxqp::dense::QP<T>
+struct QP : common::dense::QPBase<QP<T>, T>
 {
+private:
+  using Base = common::dense::QPBase<QP<T>, T>;
+
 public:
   /*!
    * Default constructor using QP model dimensions.
@@ -38,20 +41,8 @@ public:
      bool _box_constraints,
      HessianType _hessian_type,
      DenseBackend _dense_backend)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        _box_constraints,
-        _hessian_type,
-        proxqp::dense::dense_backend_choice<T>(_dense_backend,
-                                               _dim,
-                                               _n_eq,
-                                               _n_in,
-                                               _box_constraints))
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _hessian_type, _dense_backend)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -68,20 +59,8 @@ public:
      bool _box_constraints,
      DenseBackend _dense_backend,
      HessianType _hessian_type)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        _box_constraints,
-        proxqp::dense::dense_backend_choice<T>(_dense_backend,
-                                               _dim,
-                                               _n_eq,
-                                               _n_in,
-                                               _box_constraints),
-        _hessian_type)
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _dense_backend, _hessian_type)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -96,21 +75,13 @@ public:
      isize _n_in,
      bool _box_constraints,
      HessianType _hessian_type)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           _box_constraints,
-                           _hessian_type,
-                           proxqp::dense::dense_backend_choice<T>(
-                             DenseBackend::PrimalDualLDLT,
-                             // TODO: Automatic when PrimalLDLT coded
-                             _dim,
-                             _n_eq,
-                             _n_in,
-                             _box_constraints))
+    : Base(_dim,
+           _n_eq,
+           _n_in,
+           _box_constraints,
+           _hessian_type,
+           DenseBackend::PrimalDualLDLT)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -126,20 +97,8 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend)
-    : proxqp::dense::QP<T>(
-        _dim,
-        _n_eq,
-        _n_in,
-        _box_constraints,
-        proxqp::dense::dense_backend_choice<T>(_dense_backend,
-                                               _dim,
-                                               _n_eq,
-                                               _n_in,
-                                               _box_constraints),
-        HessianType::Dense)
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _dense_backend)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -149,21 +108,13 @@ public:
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           _box_constraints,
-                           proxqp::dense::dense_backend_choice<T>(
-                             DenseBackend::PrimalDualLDLT,
-                             // TODO: Automatic when PrimalLDLT coded
-                             _dim,
-                             _n_eq,
-                             _n_in,
-                             _box_constraints),
-                           HessianType::Dense)
+    : Base(_dim,
+           _n_eq,
+           _n_in,
+           _box_constraints,
+           HessianType::Dense,
+           DenseBackend::PrimalDualLDLT)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -173,21 +124,13 @@ public:
    * @param _hessian_type specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, HessianType _hessian_type)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           false,
-                           _hessian_type,
-                           proxqp::dense::dense_backend_choice<T>(
-                             DenseBackend::PrimalDualLDLT,
-                             // TODO: Automatic when PrimalLDLT coded
-                             _dim,
-                             _n_eq,
-                             _n_in,
-                             false))
+    : Base(_dim,
+           _n_eq,
+           _n_in,
+           false,
+           _hessian_type,
+           DenseBackend::PrimalDualLDLT)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -196,177 +139,296 @@ public:
    * @param _n_in number of inequality constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in)
-    : proxqp::dense::QP<T>(_dim,
-                           _n_eq,
-                           _n_in,
-                           false,
-                           HessianType::Dense,
-                           proxqp::dense::dense_backend_choice<T>(
-                             DenseBackend::PrimalDualLDLT,
-                             // TODO: Automatic when PrimalLDLT coded
-                             _dim,
-                             _n_eq,
-                             _n_in,
-                             false))
+    : Base(_dim,
+           _n_eq,
+           _n_in,
+           false,
+           HessianType::Dense,
+           DenseBackend::PrimalDualLDLT)
   {
-    this->work.timer.stop();
-    init_osqp_settings_and_results();
   }
   /*!
-   * Solves the QP problem using OSQP algorithm.
+   * Initialize OSQP-specific settings.
    */
-  void solve()
+  void init_derived_settings()
   {
-    proxsuite::osqp::dense::qp_solve( //
-      this->settings,
-      this->model,
-      this->results,
-      this->work,
-      this->is_box_constrained(),
-      this->which_dense_backend(),
-      this->which_hessian_type(),
-      this->ruiz);
-  };
-  /*!
-   * Solves the QP problem using OSQP algorithm using a warm start.
-   * @param x primal warm start.
-   * @param y dual equality warm start.
-   * @param z dual inequality warm start.
-   */
-  void solve(optional<VecRef<T>> x,
-             optional<VecRef<T>> y,
-             optional<VecRef<T>> z)
-  {
-    warm_start(x, y, z, this->results, this->settings, this->model);
-    proxsuite::osqp::dense::qp_solve( //
-      this->settings,
-      this->model,
-      this->results,
-      this->work,
-      this->is_box_constrained(),
-      this->which_dense_backend(),
-      this->which_hessian_type(),
-      this->ruiz);
-  };
-  /*!
-   * Initializes the settings as in the source code of OSQP.
-   * code: https://github.com/osqp/osqp-python
-   * Commented names of settings are related to ProxQP only.
-   * Mention TODO for potential improvement or future implementations.
-   */
-  void init_osqp_settings_and_results()
-  {
-    T default_mu_eq_osqp = 1e-2;
-    T default_mu_in_osqp = 1e1;
+    this->settings.default_mu_eq = 1.E-2;
+    this->settings.default_mu_in = 1.E1;
 
-    // From proxsuite/common/settings.hpp (proxsuite)
-    this->settings.verbose = false;
+    this->settings.alpha_bcl = 0.1;
+    this->settings.beta_bcl = 0.9;
+    this->settings.refactor_dual_feasibility_threshold = 1e-2;
+    this->settings.refactor_rho_threshold = 1E-7;
 
-    this->settings.default_rho = 1e-6;
-    this->settings.default_mu_eq = default_mu_eq_osqp;
-    this->settings.default_mu_in = default_mu_in_osqp;
+    this->settings.mu_min_eq = 1E-9;
+    this->settings.mu_min_in = 1E-6;
+    this->settings.mu_max_eq_inv = 1E9;
+    this->settings.mu_max_in_inv = 1E6;
 
-    this->settings.mu_max_in_inv = 1e6;
-    // TODO: this->settings.mu_min_in = 1e-6;
-    // TODO: this->settings.mu_min_eq = ;
-    // TODO: this->settings.mu_max_eq_inv = ;
+    this->settings.mu_update_factor = 0.1;
+    this->settings.mu_update_inv_factor = 10;
+    this->settings.cold_reset_mu_eq = 1. / 1.1;
+    this->settings.cold_reset_mu_in = 1. / 1.1;
+    this->settings.cold_reset_mu_eq_inv = 1.1;
+    this->settings.cold_reset_mu_in_inv = 1.1;
 
-    // TODO: this->settings.cold_reset_mu_eq = ;
-    // TODO: this->settings.cold_reset_mu_in = ;
-    // TODO: this->settings.cold_reset_mu_eq_inv = ;
-    // TODO: this->settings.cold_reset_mu_in_inv = ;
-
-    this->settings.eps_abs = 1e-3;
-    this->settings.eps_rel = 1e-3;
-    this->settings.check_duality_gap = false;
-    this->settings.eps_duality_gap_abs = 1e-3;
-    this->settings.eps_duality_gap_abs = 1e-3;
-
-    this->settings.eps_primal_inf = 1e-4;
-    this->settings.eps_dual_inf = 1e-4;
-    this->settings.primal_infeasibility_solving = false;
-    this->settings.frequence_infeasibility_check =
-      1; // TODO: 25 + adaptation to source later
-
-    this->settings.update_preconditioner = false; // TODO: Check
-    this->settings.compute_preconditioner =
-      true; // TODO: Check if same computation
-    this->settings.preconditioner_max_iter = 10;
-    this->settings.preconditioner_accuracy = 1e-3;
-
-    this->settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    this->settings.eps_abs = 1.E-3;
+    this->settings.eps_rel = 1.E-3;
     this->settings.max_iter = 4000;
+    this->settings.max_iter_in = 1500;
+    this->settings.safe_guard = 1.E4;
+    this->settings.nb_iterative_refinement = 10;
+    this->settings.eps_refact = 1.E-6;
 
-    this->settings.compute_timings = true;
+    this->settings.verbose = false;
+    this->settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    this->settings.update_preconditioner = false;
+    this->settings.compute_preconditioner = true;
+    this->settings.compute_timings = false;
 
+    this->settings.check_duality_gap = false;
+    this->settings.eps_duality_gap_abs = 1.E-3;
+    this->settings.eps_duality_gap_rel = 1.E-3;
+
+    this->settings.preconditioner_max_iter = 10;
+    this->settings.preconditioner_accuracy = 1.E-3;
+    this->settings.eps_primal_inf = 1.E-4;
+    this->settings.eps_dual_inf = 1.E-4;
+    this->settings.bcl_update = true;
+    this->settings.merit_function_type = MeritFunctionType::GPDAL;
+    this->settings.alpha_gpdal = 0.95;
+    this->settings.sparse_backend = SparseBackend::Automatic;
+    this->settings.primal_infeasibility_solving = false;
+    this->settings.frequence_infeasibility_check = 1;
     this->settings.default_H_eigenvalue_estimate = 0.;
 
-    // TODO: this->settings.sparse_backend = ;
-
-    // max_iter_in
-    // nb_iterative_refinement
-    // eps_refact
-    // safe_guard
-
-    // alpha_bcl
-    // beta_bcl
-    // bcl_update
-
-    // mu_update_factor
-    // mu_update_inv_factor
-
-    // refactor_dual_feasibility_threshold
-    // refactor_rho_threshold
-
-    // From osqp_api_constants.h (OSQP)
     this->settings.alpha_osqp = 1.6;
-
-    this->settings.mu_min_in_inv = 1e-6;
-    // TODO: this->settings.mu_max_in = ;
-    // TODO: this->settings.mu_max_eq = ;
-    // TODO: this->settings.mu_min_eq_inv = 1e-3;
-    // TODO: this->settings.mu_tol = 1e-4;
-
-    // TODO: this->settings.cg_max_iter = 20;
-    // TODO: this->settings.cg_tol_reduction = 10;
-    // TODO: this->settings.cg_tol_fraction = 0.15;
-
+    this->settings.mu_max_eq = 1E3;
+    this->settings.mu_max_in = 1E6;
+    this->settings.mu_min_eq_inv = 1E-3;
+    this->settings.mu_min_in_inv = 1E-6;
     this->settings.adaptive_mu = true;
-    // TODO: this->settings.adaptive_mu_update_disable = false;
-    // TODO: this->settings.adaptive_mu_update_kkt_error = false;
-    // TODO: this->settings.adaptive_mu_update_time = false;
-    // TODO: this->settings.adaptive_mu_fraction = 0.4;
-    // TODO: this->settings.adaptive_mu_update_iterations = true;
     this->settings.adaptive_mu_interval = 50;
     this->settings.adaptive_mu_tolerance = 5.;
-    // TODO: this->settings.adaptive_mu_multiple_termination = 4;
-    // TODO: this->settings.adaptive_mu_fixed = 100;
-
     this->settings.polishing = false;
-    this->settings.delta_osqp = 1e-6;
+    this->settings.delta_osqp = 1E-6;
     this->settings.polish_refine_iter = 3;
+  }
+  /*!
+   * Initialize OSQP-specific results.
+   */
+  void init_derived_results()
+  {
+    this->results.info.mu_eq = 1E-2;
+    this->results.info.mu_in = 1E1;
+    this->results.info.mu_eq_inv = 1E2;
+    this->results.info.mu_in_inv = 1E-1;
+  }
+  /*!
+   * OSQP-specific solve implementation.
+   * Calls the OSQP algorithm.
+   */
+  void solve_implem()
+  {
+    qp_solve( //
+      this->settings,
+      this->model,
+      this->results,
+      this->work,
+      this->is_box_constrained(),
+      this->which_dense_backend(),
+      this->which_hessian_type(),
+      this->ruiz);
+  }
+};
 
-    // TODO: this->settings.check_termination = 1; // TODO: 25 + adaptation to
-    // source later
+///
+/// @brief This class defines the OSQP default parameter
+/// configuration of the function osqp::dense::solve<T>.
+///
+template<typename T>
+struct OSQPConfig
+{
+  optional<T> eps_abs;
+  optional<T> eps_rel;
+  optional<T> rho;
+  optional<T> mu_eq;
+  optional<T> mu_in;
+  optional<bool> verbose;
+  bool compute_preconditioner;
+  bool compute_timings;
+  optional<isize> max_iter;
+  InitialGuessStatus initial_guess;
+  bool check_duality_gap;
+  optional<T> eps_duality_gap_abs;
+  optional<T> eps_duality_gap_rel;
+  bool primal_infeasibility_solving;
+  optional<T> manual_minimal_H_eigenvalue;
+  bool adaptive_mu;
+  optional<isize> adaptive_mu_interval;
+  optional<T> adaptive_mu_tolerance;
 
-    // TODO numerics:
-    // this->settings.infty
-    // this->settings.division_tol
+  OSQPConfig(
+    optional<T> eps_abs = nullopt,
+    optional<T> eps_rel = nullopt,
+    optional<T> rho = nullopt,
+    optional<T> mu_eq = nullopt,
+    optional<T> mu_in = nullopt,
+    optional<bool> verbose = nullopt,
+    bool compute_preconditioner = true,
+    bool compute_timings = false,
+    optional<isize> max_iter = nullopt,
+    InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS,
+    bool check_duality_gap = false,
+    optional<T> eps_duality_gap_abs = nullopt,
+    optional<T> eps_duality_gap_rel = nullopt,
+    bool primal_infeasibility_solving = false,
+    optional<T> manual_minimal_H_eigenvalue = nullopt,
+    bool adaptive_mu = true,
+    optional<isize> adaptive_mu_interval = nullopt,
+    optional<T> adaptive_mu_tolerance = nullopt)
+    : eps_abs(eps_abs)
+    , eps_rel(eps_rel)
+    , rho(rho)
+    , mu_eq(mu_eq)
+    , mu_in(mu_in)
+    , verbose(verbose)
+    , compute_preconditioner(compute_preconditioner)
+    , compute_timings(compute_timings)
+    , max_iter(max_iter)
+    , initial_guess(initial_guess)
+    , check_duality_gap(check_duality_gap)
+    , eps_duality_gap_abs(eps_duality_gap_abs)
+    , eps_duality_gap_rel(eps_duality_gap_rel)
+    , primal_infeasibility_solving(primal_infeasibility_solving)
+    , manual_minimal_H_eigenvalue(manual_minimal_H_eigenvalue)
+    , adaptive_mu(adaptive_mu)
+    , adaptive_mu_interval(adaptive_mu_interval)
+    , adaptive_mu_tolerance(adaptive_mu_tolerance)
+  {
+  }
+  /*!
+   * OSQP settings initialization.
+   */
+  void init_derived_settings(Settings<T>& settings) const
+  {
+    settings.initial_guess = initial_guess;
+    settings.check_duality_gap = check_duality_gap;
+    settings.compute_timings = compute_timings;
+    settings.primal_infeasibility_solving = primal_infeasibility_solving;
+    settings.adaptive_mu = adaptive_mu;
 
-    // this->settings.min_scaling
-    // this->settings.max_scaling
-
-    // this->settings.cg_tol_min
-    // this->settings.cg_polish_tol
-
-    // this->settings.zero_deadzone
-
-    // Results
-    this->results.info.mu_eq = default_mu_eq_osqp;
-    this->results.info.mu_in = default_mu_in_osqp;
-    this->results.info.mu_eq_inv = T(1) / default_mu_eq_osqp;
-    this->results.info.mu_in_inv = T(1) / default_mu_in_osqp;
-  };
+    if (eps_abs != nullopt) {
+      settings.eps_abs = eps_abs.value();
+    }
+    if (eps_rel != nullopt) {
+      settings.eps_rel = eps_rel.value();
+    }
+    if (verbose != nullopt) {
+      settings.verbose = verbose.value();
+    }
+    if (max_iter != nullopt) {
+      settings.max_iter = max_iter.value();
+    }
+    if (eps_duality_gap_abs != nullopt) {
+      settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
+    }
+    if (eps_duality_gap_rel != nullopt) {
+      settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
+    }
+    if (adaptive_mu_interval != nullopt) {
+      settings.adaptive_mu_interval = adaptive_mu_interval.value();
+    }
+    if (adaptive_mu_tolerance != nullopt) {
+      settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
+    }
+  }
+  /*!
+   * Call to init() from QPBase without box constraints.
+   */
+  void init_qp(QP<T>& qp,
+               optional<MatRef<T>> H,
+               optional<VecRef<T>> g,
+               optional<MatRef<T>> A,
+               optional<VecRef<T>> b,
+               optional<MatRef<T>> C,
+               optional<VecRef<T>> l,
+               optional<VecRef<T>> u) const
+  {
+    if (manual_minimal_H_eigenvalue != nullopt) {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              manual_minimal_H_eigenvalue.value());
+    } else {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              nullopt);
+    }
+  }
+  /*!
+   * Call to QPBase init() without box constraints.
+   */
+  void init_qp_box(QP<T>& qp,
+                   optional<MatRef<T>> H,
+                   optional<VecRef<T>> g,
+                   optional<MatRef<T>> A,
+                   optional<VecRef<T>> b,
+                   optional<MatRef<T>> C,
+                   optional<VecRef<T>> l,
+                   optional<VecRef<T>> u,
+                   optional<VecRef<T>> l_box,
+                   optional<VecRef<T>> u_box) const
+  {
+    if (manual_minimal_H_eigenvalue != nullopt) {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              l_box,
+              u_box,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              manual_minimal_H_eigenvalue.value());
+    } else {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              l_box,
+              u_box,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              nullopt);
+    }
+  }
 };
 
 /*!
@@ -437,76 +499,31 @@ solve(optional<MatRef<T>> H,
       optional<T> eps_duality_gap_rel = nullopt,
       bool primal_infeasibility_solving = false,
       optional<T> manual_minimal_H_eigenvalue = nullopt,
-      optional<bool> adaptive_mu = nullopt,
+      bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
       optional<T> adaptive_mu_tolerance = nullopt)
 {
-  isize n(0);
-  isize n_eq(0);
-  isize n_in(0);
-  if (H != nullopt) {
-    n = H.value().rows();
-  }
-  if (A != nullopt) {
-    n_eq = A.value().rows();
-  }
-  if (C != nullopt) {
-    n_in = C.value().rows();
-  }
+  OSQPConfig<T> config(eps_abs,
+                       eps_rel,
+                       rho,
+                       mu_eq,
+                       mu_in,
+                       verbose,
+                       compute_preconditioner,
+                       compute_timings,
+                       max_iter,
+                       initial_guess,
+                       check_duality_gap,
+                       eps_duality_gap_abs,
+                       eps_duality_gap_rel,
+                       primal_infeasibility_solving,
+                       manual_minimal_H_eigenvalue,
+                       adaptive_mu,
+                       adaptive_mu_interval,
+                       adaptive_mu_tolerance);
 
-  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
-
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (adaptive_mu != nullopt) {
-    Qp.settings.adaptive_mu = adaptive_mu.value();
-  }
-  if (adaptive_mu_interval != nullopt) {
-    Qp.settings.adaptive_mu_interval = adaptive_mu_interval.value();
-  }
-  if (adaptive_mu_tolerance != nullopt) {
-    Qp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
-  }
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(
-      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return common::dense::solve_base<QP<T>, OSQPConfig<T>, T>(
+    config, H, g, A, b, C, l, u, x, y, z);
 }
 /*!
  * Solves the QP problem using OSQP algorithm without the need to define a QP
@@ -583,90 +600,31 @@ solve(optional<MatRef<T>> H,
       optional<T> eps_duality_gap_rel = nullopt,
       bool primal_infeasibility_solving = false,
       optional<T> manual_minimal_H_eigenvalue = nullopt,
-      optional<bool> adaptive_mu = nullopt,
+      bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
       optional<T> adaptive_mu_tolerance = nullopt)
 {
-  isize n(0);
-  isize n_eq(0);
-  isize n_in(0);
-  if (H != nullopt) {
-    n = H.value().rows();
-  }
-  if (A != nullopt) {
-    n_eq = A.value().rows();
-  }
-  if (C != nullopt) {
-    n_in = C.value().rows();
-  }
+  OSQPConfig<T> config(eps_abs,
+                       eps_rel,
+                       rho,
+                       mu_eq,
+                       mu_in,
+                       verbose,
+                       compute_preconditioner,
+                       compute_timings,
+                       max_iter,
+                       initial_guess,
+                       check_duality_gap,
+                       eps_duality_gap_abs,
+                       eps_duality_gap_rel,
+                       primal_infeasibility_solving,
+                       manual_minimal_H_eigenvalue,
+                       adaptive_mu,
+                       adaptive_mu_interval,
+                       adaptive_mu_tolerance);
 
-  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
-
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (adaptive_mu != nullopt) {
-    Qp.settings.adaptive_mu = adaptive_mu.value();
-  }
-  if (adaptive_mu_interval != nullopt) {
-    Qp.settings.adaptive_mu_interval = adaptive_mu_interval.value();
-  }
-  if (adaptive_mu_tolerance != nullopt) {
-    Qp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
-  }
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return common::dense::solve_base_box<QP<T>, OSQPConfig<T>, T>(
+    config, H, g, A, b, C, l, u, l_box, u_box, x, y, z);
 }
 
 template<typename T>

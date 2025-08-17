@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2022 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 /**
  * @file wrapper.hpp
@@ -9,11 +9,8 @@
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 
 #include <proxsuite/proxqp/dense/aliases.hpp>
-#include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
-#include <proxsuite/common/dense/helpers.hpp>
-#include <proxsuite/common/dense/preconditioner/ruiz.hpp>
-#include <chrono>
+#include <proxsuite/common/dense/wrapper.hpp>
 
 namespace proxsuite {
 namespace proxqp {
@@ -80,57 +77,14 @@ Qp.results.y + qp.C.transpose() * Qp.results.z) .lpNorm<Eigen::Infinity>();
 }
  * ```
  */
-///// QP object
+
 template<typename T>
-DenseBackend
-dense_backend_choice(DenseBackend _dense_backend,
-                     isize dim,
-                     isize n_eq,
-                     isize n_in,
-                     bool box_constraints)
-{
-  if (_dense_backend == DenseBackend::Automatic) {
-    isize n_constraints(n_in);
-    if (box_constraints) {
-      n_constraints += dim;
-    }
-    T threshold(1.5);
-    T frequence(0.2);
-    T PrimalDualLDLTCost =
-      0.5 * std::pow(T(n_eq) / T(dim), 2) +
-      0.17 * (std::pow(T(n_eq) / T(dim), 3) +
-              std::pow(T(n_constraints) / T(dim), 3)) +
-      frequence * std::pow(T(n_eq + n_constraints) / T(dim), 2) / T(dim);
-    T PrimalLDLTCost =
-      threshold *
-      ((0.5 * T(n_eq) + T(n_constraints)) / T(dim) + frequence / T(dim));
-    bool choice = PrimalDualLDLTCost > PrimalLDLTCost;
-    if (choice) {
-      return DenseBackend::PrimalLDLT;
-    } else {
-      return DenseBackend::PrimalDualLDLT;
-    }
-  } else {
-    return _dense_backend;
-  }
-}
-template<typename T>
-struct QP
+struct QP : public common::dense::QPBase<QP<T>, T>
 {
 private:
-  // structure of the problem
-  // not supposed to change
-  DenseBackend dense_backend;
-  bool box_constraints;
-  HessianType hessian_type;
+  using Base = common::dense::QPBase<QP<T>, T>;
 
 public:
-  Results<T> results;
-  Settings<T> settings;
-  Model<T> model;
-  Workspace<T> work;
-  common::dense::preconditioner::RuizEquilibration<T> ruiz;
-
   /*!
    * Default constructor using QP model dimensions.
    * @param _dim primal variable dimension.
@@ -146,24 +100,8 @@ public:
      bool _box_constraints,
      HessianType _hessian_type,
      DenseBackend _dense_backend)
-    : dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(
-        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                             _n_eq,
-                                                             _n_in,
-                                                             _box_constraints })
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _hessian_type, _dense_backend)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -180,24 +118,8 @@ public:
      bool _box_constraints,
      DenseBackend _dense_backend,
      HessianType _hessian_type)
-    : dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(
-        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                             _n_eq,
-                                                             _n_in,
-                                                             _box_constraints })
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _dense_backend, _hessian_type)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -212,24 +134,8 @@ public:
      isize _n_in,
      bool _box_constraints,
      HessianType _hessian_type)
-    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(
-        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                             _n_eq,
-                                                             _n_in,
-                                                             _box_constraints })
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _hessian_type)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -245,24 +151,8 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend)
-    : dense_backend(dense_backend_choice<T>(_dense_backend,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(
-        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                             _n_eq,
-                                                             _n_in,
-                                                             _box_constraints })
+    : Base(_dim, _n_eq, _n_in, _box_constraints, _dense_backend)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -272,24 +162,8 @@ public:
    * @param _box_constraints specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, bool _box_constraints)
-    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            _box_constraints))
-    , box_constraints(_box_constraints)
-    , hessian_type(HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, _box_constraints)
-    , work(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
-    , ruiz(
-        common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                             _n_eq,
-                                                             _n_in,
-                                                             _box_constraints })
+    : Base(_dim, _n_eq, _n_in, _box_constraints)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -299,23 +173,8 @@ public:
    * @param _hessian_type specify that there are (or not) box constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in, HessianType _hessian_type)
-    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            false))
-    , box_constraints(false)
-    , hessian_type(_hessian_type)
-    , results(_dim, _n_eq, _n_in, false, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                                _n_eq,
-                                                                _n_in,
-                                                                false })
+    : Base(_dim, _n_eq, _n_in, _hessian_type)
   {
-    work.timer.stop();
   }
   /*!
    * Default constructor using QP model dimensions.
@@ -324,656 +183,285 @@ public:
    * @param _n_in number of inequality constraints.
    */
   QP(isize _dim, isize _n_eq, isize _n_in)
-    : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
-                                            _dim,
-                                            _n_eq,
-                                            _n_in,
-                                            false))
-    , box_constraints(false)
-    , hessian_type(HessianType::Dense)
-    , results(_dim, _n_eq, _n_in, false, dense_backend)
-    , settings(dense_backend)
-    , model(_dim, _n_eq, _n_in, false)
-    , work(_dim, _n_eq, _n_in, false, dense_backend)
-    , ruiz(common::dense::preconditioner::RuizEquilibration<T>{ _dim,
-                                                                _n_eq,
-                                                                _n_in,
-                                                                false })
+    : Base(_dim, _n_eq, _n_in)
   {
-    work.timer.stop();
   }
-  bool is_box_constrained() const { return box_constraints; };
-  DenseBackend which_dense_backend() const { return dense_backend; };
-  HessianType which_hessian_type() const { return hessian_type; };
   /*!
-   * Setups the QP model (with dense matrix format) and equilibrates it if
-   * specified by the user.
-   * @param H quadratic cost input defining the QP model.
-   * @param g linear cost input defining the QP model.
-   * @param A equality constraint matrix input defining the QP model.
-   * @param b equality constraint vector input defining the QP model.
-   * @param C inequality constraint matrix input defining the QP model.
-   * @param l lower inequality constraint vector input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
-   * @param compute_preconditioner boolean parameter for executing or not the
-   * preconditioner.
-   * @param rho proximal step size wrt primal variable.
-   * @param mu_eq proximal step size wrt equality constrained multiplier.
-   * @param mu_in proximal step size wrt inequality constrained multiplier.
-   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
+   * Initialize ProxQP-specific settings.
    */
-  void init(optional<MatRef<T>> H,
-            optional<VecRef<T>> g,
-            optional<MatRef<T>> A,
-            optional<VecRef<T>> b,
-            optional<MatRef<T>> C,
-            optional<VecRef<T>> l,
-            optional<VecRef<T>> u,
-            bool compute_preconditioner = true,
-            optional<T> rho = nullopt,
-            optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt,
-            optional<T> manual_minimal_H_eigenvalue = nullopt)
+  void init_derived_settings()
   {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed with box "
-      "constraints, but is initialized without lower or upper box "
-      "inequalities.");
-    // dense case
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    settings.compute_preconditioner = compute_preconditioner;
-    // check the model is valid
-    if (g != nullopt && g.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        g.value().size(),
-        model.dim,
-        "the dimension wrt the primal variable x variable for initializing g "
-        "is not valid.");
-    } else {
-      g.reset();
-    }
-    if (b != nullopt && b.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        b.value().size(),
-        model.n_eq,
-        "the dimension wrt equality constrained variables for initializing b "
-        "is not valid.");
-    } else {
-      b.reset();
-    }
-    if (u != nullopt && u.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing u "
-        "is not valid.");
-    } else {
-      u.reset();
-    }
-    if (l != nullopt && l.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing l "
-        "is not valid.");
-    } else {
-      l.reset();
-    }
-    if (H != nullopt && H.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().rows(),
-        model.dim,
-        "the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().cols(),
-        model.dim,
-        "the column dimension for initializing H is not valid.");
-    } else {
-      H.reset();
-    }
-    if (A != nullopt && A.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().rows(),
-        model.n_eq,
-        "the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().cols(),
-        model.dim,
-        "the column dimension for initializing A is not valid.");
-    } else {
-      A.reset();
-    }
-    if (C != nullopt && C.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().rows(),
-        model.n_in,
-        "the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().cols(),
-        model.dim,
-        "the column dimension for initializing C is not valid.");
-    } else {
-      C.reset();
-    }
-    if (settings.initial_guess ==
-        InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
-      work.refactorize =
-        true; // necessary for the first solve (then refactorize only if there
-              // is an update of the matrices)
-    } else {
-      work.refactorize = false;
-    }
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (compute_preconditioner) {
-      preconditioner_status = PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = PreconditionerStatus::IDENTITY;
-    }
-    common::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
-      manual_minimal_H_eigenvalue, results, settings);
-    typedef optional<VecRef<T>> optional_VecRef;
-    common::dense::setup(H,
-                         g,
-                         A,
-                         b,
-                         C,
-                         l,
-                         u,
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         settings,
-                         model,
-                         work,
-                         results,
-                         box_constraints,
-                         ruiz,
-                         preconditioner_status,
-                         hessian_type);
-    work.is_initialized = true;
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
-  };
-  /*!
-   * Setups the QP model (with dense matrix format) and equilibrates it if
-   * specified by the user.
-   * @param H quadratic cost input defining the QP model.
-   * @param g linear cost input defining the QP model.
-   * @param A equality constraint matrix input defining the QP model.
-   * @param b equality constraint vector input defining the QP model.
-   * @param C inequality constraint matrix input defining the QP model.
-   * @param l lower inequality constraint vector input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
-   * @param l_box lower box inequality constraint vector input defining the QP
-   * model.
-   * @param u_box uppper box inequality constraint vector input defining the QP
-   * model.
-   * @param compute_preconditioner boolean parameter for executing or not the
-   * preconditioner.
-   * @param rho proximal step size wrt primal variable.
-   * @param mu_eq proximal step size wrt equality constrained multiplier.
-   * @param mu_in proximal step size wrt inequality constrained multiplier.
-   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
-   */
-  void init(optional<MatRef<T>> H,
-            optional<VecRef<T>> g,
-            optional<MatRef<T>> A,
-            optional<VecRef<T>> b,
-            optional<MatRef<T>> C,
-            optional<VecRef<T>> l,
-            optional<VecRef<T>> u,
-            optional<VecRef<T>> l_box,
-            optional<VecRef<T>> u_box,
-            bool compute_preconditioner = true,
-            optional<T> rho = nullopt,
-            optional<T> mu_eq = nullopt,
-            optional<T> mu_in = nullopt,
-            optional<T> manual_minimal_H_eigenvalue = nullopt)
-  {
+    this->settings.default_mu_eq = 1.E-3;
+    this->settings.default_mu_in = 1.E-1;
 
-    // dense case
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    settings.compute_preconditioner = compute_preconditioner;
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == false && (l_box != nullopt || u_box != nullopt),
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed without box "
-      "constraints, but is initialized with lower or upper box inequalities.");
-    if (l_box != nullopt && l_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(l_box.value().size(),
-                                    model.dim,
-                                    "the dimension wrt the primal variable x "
-                                    "variable for initializing l_box "
-                                    "is not valid.");
-    } else {
-      l_box.reset();
-    }
-    if (u_box != nullopt && u_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(u_box.value().size(),
-                                    model.dim,
-                                    "the dimension wrt the primal variable x "
-                                    "variable for initializing u_box "
-                                    "is not valid.");
-    } else {
-      l_box.reset();
-    }
-    // check the model is valid
-    if (g != nullopt && g.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        g.value().size(),
-        model.dim,
-        "the dimension wrt the primal variable x variable for initializing g "
-        "is not valid.");
-    } else {
-      g.reset();
-    }
-    if (b != nullopt && b.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        b.value().size(),
-        model.n_eq,
-        "the dimension wrt equality constrained variables for initializing b "
-        "is not valid.");
-    } else {
-      b.reset();
-    }
-    if (u != nullopt && u.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing u "
-        "is not valid.");
-    } else {
-      u.reset();
-    }
-    if (u_box != nullopt && u_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing u_box "
-        "is not valid.");
-    } else {
-      u_box.reset();
-    }
-    if (l != nullopt && l.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing l "
-        "is not valid.");
-    } else {
-      l.reset();
-    }
-    if (l_box != nullopt && l_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing l_box "
-        "is not valid.");
-    } else {
-      l_box.reset();
-    }
-    if (H != nullopt && H.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().rows(),
-        model.dim,
-        "the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().cols(),
-        model.dim,
-        "the column dimension for initializing H is not valid.");
-    } else {
-      H.reset();
-    }
-    if (A != nullopt && A.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().rows(),
-        model.n_eq,
-        "the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().cols(),
-        model.dim,
-        "the column dimension for initializing A is not valid.");
-    } else {
-      A.reset();
-    }
-    if (C != nullopt && C.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().rows(),
-        model.n_in,
-        "the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().cols(),
-        model.dim,
-        "the column dimension for initializing C is not valid.");
-    } else {
-      C.reset();
-    }
-    if (settings.initial_guess ==
-        InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
-      work.refactorize =
-        true; // necessary for the first solve (then refactorize only if there
-              // is an update of the matrices)
-    } else {
-      work.refactorize = false;
-    }
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (compute_preconditioner) {
-      preconditioner_status = PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = PreconditionerStatus::IDENTITY;
-    }
-    common::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
-      manual_minimal_H_eigenvalue, results, settings);
-    common::dense::setup(H,
-                         g,
-                         A,
-                         b,
-                         C,
-                         l,
-                         u,
-                         l_box,
-                         u_box,
-                         settings,
-                         model,
-                         work,
-                         results,
-                         box_constraints,
-                         ruiz,
-                         preconditioner_status,
-                         hessian_type);
-    work.is_initialized = true;
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
-  };
-  /*!
-   * Updates the QP model (with dense matrix format) and re-equilibrates it if
-   * specified by the user.
-   * @param H quadratic cost input defining the QP model.
-   * @param g linear cost input defining the QP model.
-   * @param A equality constraint matrix input defining the QP model.
-   * @param b equality constraint vector input defining the QP model.
-   * @param C inequality constraint matrix input defining the QP model.
-   * @param l lower inequality constraint vector input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
-   * @param update_preconditioner bool parameter for updating or not the
-   * preconditioner and the associated scaled model.
-   * @param rho proximal step size wrt primal variable.
-   * @param mu_eq proximal step size wrt equality constrained multiplier.
-   * @param mu_in proximal step size wrt inequality constrained multiplier.
-   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
-   * @note The init method should be called before update. If it has not been
-   * done before, init is called depending on the is_initialized flag.
-   */
-  void update(optional<MatRef<T>> H,
-              optional<VecRef<T>> g,
-              optional<MatRef<T>> A,
-              optional<VecRef<T>> b,
-              optional<MatRef<T>> C,
-              optional<VecRef<T>> l,
-              optional<VecRef<T>> u,
-              bool update_preconditioner = false,
-              optional<T> rho = nullopt,
-              optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt,
-              optional<T> manual_minimal_H_eigenvalue = nullopt)
-  {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed without box "
-      "constraints, but the update does not include lower or upper box "
-      "inequalities.");
-    settings.update_preconditioner = update_preconditioner;
-    if (!work.is_initialized) {
-      init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
-      return;
-    }
-    // dense case
-    work.refactorize = false;
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (update_preconditioner) {
-      preconditioner_status = PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = PreconditionerStatus::KEEP;
-    }
-    const bool matrix_update =
-      !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
-        C == nullopt && u == nullopt && l == nullopt);
-    if (matrix_update) {
-      typedef optional<VecRef<T>> optional_VecRef;
-      common::dense::update(H,
-                            g,
-                            A,
-                            b,
-                            C,
-                            l,
-                            u,
-                            optional_VecRef(nullopt),
-                            optional_VecRef(nullopt),
-                            model,
-                            work,
-                            box_constraints);
-    }
-    common::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
-      manual_minimal_H_eigenvalue, results, settings);
-    typedef optional<MatRef<T>> optional_MatRef;
-    typedef optional<VecRef<T>> optional_VecRef;
-    common::dense::setup(/* avoid double assignation */
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         settings,
-                         model,
-                         work,
-                         results,
-                         box_constraints,
-                         ruiz,
-                         preconditioner_status,
-                         hessian_type);
+    this->settings.alpha_bcl = 0.1;
+    this->settings.beta_bcl = 0.9;
+    this->settings.refactor_dual_feasibility_threshold = 1E-2;
+    this->settings.refactor_rho_threshold = 1E-7;
 
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
-  };
-  /*!
-   * Updates the QP model (with dense matrix format) and re-equilibrates it if
-   * specified by the user.
-   * @param H quadratic cost input defining the QP model.
-   * @param g linear cost input defining the QP model.
-   * @param A equality constraint matrix input defining the QP model.
-   * @param b equality constraint vector input defining the QP model.
-   * @param C inequality constraint matrix input defining the QP model.
-   * @param l lower inequality constraint vector input defining the QP model.
-   * @param u upper inequality constraint vector input defining the QP model.
-   * @param l_box lower inequality constraint vector input defining the QP
-   * model.
-   * @param u_box upper inequality constraint vector input defining the QP
-   * model.
-   * @param update_preconditioner bool parameter for updating or not the
-   * preconditioner and the associated scaled model.
-   * @param rho proximal step size wrt primal variable.
-   * @param mu_eq proximal step size wrt equality constrained multiplier.
-   * @param mu_in proximal step size wrt inequality constrained multiplier.
-   * @param manual_minimal_H_eigenvalue manual minimal eigenvalue proposed for H
-   * @note The init method should be called before update. If it has not been
-   * done before, init is called depending on the is_initialized flag.
-   */
-  void update(optional<MatRef<T>> H,
-              optional<VecRef<T>> g,
-              optional<MatRef<T>> A,
-              optional<VecRef<T>> b,
-              optional<MatRef<T>> C,
-              optional<VecRef<T>> l,
-              optional<VecRef<T>> u,
-              optional<VecRef<T>> l_box,
-              optional<VecRef<T>> u_box,
-              bool update_preconditioner = false,
-              optional<T> rho = nullopt,
-              optional<T> mu_eq = nullopt,
-              optional<T> mu_in = nullopt,
-              optional<T> manual_minimal_H_eigenvalue = nullopt)
-  {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == false && (l_box != nullopt || u_box != nullopt),
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed without box "
-      "constraints, but the update includes lower or upper box inequalities.");
-    settings.update_preconditioner = update_preconditioner;
-    if (!work.is_initialized) {
-      init(H,
-           g,
-           A,
-           b,
-           C,
-           l,
-           u,
-           l_box,
-           u_box,
-           update_preconditioner,
-           rho,
-           mu_eq,
-           mu_in);
-      return;
-    }
-    // dense case
-    work.refactorize = false;
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (update_preconditioner) {
-      preconditioner_status = PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = PreconditionerStatus::KEEP;
-    }
-    const bool matrix_update =
-      !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
-        C == nullopt && u == nullopt && l == nullopt && u_box == nullopt &&
-        l_box == nullopt);
-    if (matrix_update) {
-      common::dense::update(
-        H, g, A, b, C, l, u, l_box, u_box, model, work, box_constraints);
-    }
-    common::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
-      manual_minimal_H_eigenvalue, results, settings);
-    typedef optional<MatRef<T>> optional_MatRef;
-    typedef optional<VecRef<T>> optional_VecRef;
-    common::dense::setup(/* avoid double assignation */
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_MatRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         optional_VecRef(nullopt),
-                         settings,
-                         model,
-                         work,
-                         results,
-                         box_constraints,
-                         ruiz,
-                         preconditioner_status,
-                         hessian_type);
+    this->settings.mu_min_eq = 1E-9;
+    this->settings.mu_min_in = 1E-8;
+    this->settings.mu_max_eq_inv = 1E9;
+    this->settings.mu_max_in_inv = 1E8;
 
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
-  };
+    this->settings.mu_update_factor = 0.1;
+    this->settings.mu_update_inv_factor = 10;
+    this->settings.cold_reset_mu_eq = 1. / 1.1;
+    this->settings.cold_reset_mu_in = 1. / 1.1;
+    this->settings.cold_reset_mu_eq_inv = 1.1;
+    this->settings.cold_reset_mu_in_inv = 1.1;
+
+    this->settings.eps_abs = 1.E-5;
+    this->settings.eps_rel = 0;
+    this->settings.max_iter = 10000;
+    this->settings.max_iter_in = 1500;
+    this->settings.safe_guard = 1.E4;
+    this->settings.nb_iterative_refinement = 10;
+    this->settings.eps_refact = 1.E-6;
+
+    this->settings.verbose = false;
+    this->settings.initial_guess =
+      InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    this->settings.update_preconditioner = false;
+    this->settings.compute_preconditioner = true;
+    this->settings.compute_timings = false;
+
+    this->settings.check_duality_gap = false;
+    this->settings.eps_duality_gap_abs = 1.E-4;
+    this->settings.eps_duality_gap_rel = 0;
+
+    this->settings.preconditioner_max_iter = 10;
+    this->settings.preconditioner_accuracy = 1.E-3;
+    this->settings.eps_primal_inf = 1.E-4;
+    this->settings.eps_dual_inf = 1.E-4;
+    this->settings.bcl_update = true;
+    this->settings.merit_function_type = MeritFunctionType::GPDAL;
+    this->settings.alpha_gpdal = 0.95;
+    this->settings.sparse_backend = SparseBackend::Automatic;
+    this->settings.primal_infeasibility_solving = false;
+    this->settings.frequence_infeasibility_check = 1;
+    this->settings.default_H_eigenvalue_estimate = 0.;
+
+    this->settings.alpha_osqp = 1.6;
+    this->settings.mu_max_eq = 1E3;
+    this->settings.mu_max_in = 1E6;
+    this->settings.mu_min_eq_inv = 1E-3;
+    this->settings.mu_min_in_inv = 1E-6;
+    this->settings.adaptive_mu = true;
+    this->settings.adaptive_mu_interval = 50;
+    this->settings.adaptive_mu_tolerance = 5.;
+    this->settings.polishing = false;
+    this->settings.delta_osqp = 1E-6;
+    this->settings.polish_refine_iter = 3;
+  }
   /*!
-   * Solves the QP problem using PRXOQP algorithm.
+   * Initialize ProxQP-specific results.
    */
-  void solve()
+  void init_derived_results()
+  {
+    this->results.info.mu_eq = 1E-3;
+    this->results.info.mu_in = 1E-1;
+    this->results.info.mu_eq_inv = 1E3;
+    this->results.info.mu_in_inv = 1E1;
+  }
+  /*!
+   * ProxQP-specific solve implementation.
+   * Calls the ProxQP algorithm.
+   */
+  void solve_implem()
   {
     qp_solve( //
-      settings,
-      model,
-      results,
-      work,
-      box_constraints,
-      dense_backend,
-      hessian_type,
-      ruiz);
-  };
-  /*!
-   * Solves the QP problem using PROXQP algorithm using a warm start.
-   * @param x primal warm start.
-   * @param y dual equality warm start.
-   * @param z dual inequality warm start.
-   */
-  void solve(optional<VecRef<T>> x,
-             optional<VecRef<T>> y,
-             optional<VecRef<T>> z)
-  {
-    common::dense::warm_start(x, y, z, results, settings, model);
-    qp_solve( //
-      settings,
-      model,
-      results,
-      work,
-      box_constraints,
-      dense_backend,
-      hessian_type,
-      ruiz);
-  };
-  /*!
-   * Clean-ups solver's results and workspace.
-   */
-  void cleanup()
-  {
-    results.cleanup(settings);
-    work.cleanup(box_constraints);
+      this->settings,
+      this->model,
+      this->results,
+      this->work,
+      this->is_box_constrained(),
+      this->which_dense_backend(),
+      this->which_hessian_type(),
+      this->ruiz);
   }
 };
+
+///
+/// @brief This class defines the ProxQP default parameter
+/// configuration of the function proxqp::dense::solve<T>.
+///
+template<typename T>
+struct ProxQPConfig
+{
+  optional<T> eps_abs;
+  optional<T> eps_rel;
+  optional<T> rho;
+  optional<T> mu_eq;
+  optional<T> mu_in;
+  optional<bool> verbose;
+  bool compute_preconditioner;
+  bool compute_timings;
+  optional<isize> max_iter;
+  InitialGuessStatus initial_guess;
+  bool check_duality_gap;
+  optional<T> eps_duality_gap_abs;
+  optional<T> eps_duality_gap_rel;
+  bool primal_infeasibility_solving;
+  optional<T> manual_minimal_H_eigenvalue;
+
+  ProxQPConfig(optional<T> eps_abs = nullopt,
+               optional<T> eps_rel = nullopt,
+               optional<T> rho = nullopt,
+               optional<T> mu_eq = nullopt,
+               optional<T> mu_in = nullopt,
+               optional<bool> verbose = nullopt,
+               bool compute_preconditioner = true,
+               bool compute_timings = false,
+               optional<isize> max_iter = nullopt,
+               InitialGuessStatus initial_guess =
+                 InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+               bool check_duality_gap = false,
+               optional<T> eps_duality_gap_abs = nullopt,
+               optional<T> eps_duality_gap_rel = nullopt,
+               bool primal_infeasibility_solving = false,
+               optional<T> manual_minimal_H_eigenvalue = nullopt)
+    : eps_abs(eps_abs)
+    , eps_rel(eps_rel)
+    , rho(rho)
+    , mu_eq(mu_eq)
+    , mu_in(mu_in)
+    , verbose(verbose)
+    , compute_preconditioner(compute_preconditioner)
+    , compute_timings(compute_timings)
+    , max_iter(max_iter)
+    , initial_guess(initial_guess)
+    , check_duality_gap(check_duality_gap)
+    , eps_duality_gap_abs(eps_duality_gap_abs)
+    , eps_duality_gap_rel(eps_duality_gap_rel)
+    , primal_infeasibility_solving(primal_infeasibility_solving)
+    , manual_minimal_H_eigenvalue(manual_minimal_H_eigenvalue)
+  {
+  }
+  /*!
+   * ProxQP settings initialization.
+   */
+  void init_derived_settings(Settings<T>& settings) const
+  {
+    settings.initial_guess = initial_guess;
+    settings.check_duality_gap = check_duality_gap;
+    settings.compute_timings = compute_timings;
+    settings.primal_infeasibility_solving = primal_infeasibility_solving;
+
+    if (eps_abs != nullopt) {
+      settings.eps_abs = eps_abs.value();
+    }
+    if (eps_rel != nullopt) {
+      settings.eps_rel = eps_rel.value();
+    }
+    if (verbose != nullopt) {
+      settings.verbose = verbose.value();
+    }
+    if (max_iter != nullopt) {
+      settings.max_iter = max_iter.value();
+    }
+    if (eps_duality_gap_abs != nullopt) {
+      settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
+    }
+    if (eps_duality_gap_rel != nullopt) {
+      settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
+    }
+  }
+  /*!
+   * Call to init() from QPBase without box constraints.
+   */
+  void init_qp(QP<T>& qp,
+               optional<MatRef<T>> H,
+               optional<VecRef<T>> g,
+               optional<MatRef<T>> A,
+               optional<VecRef<T>> b,
+               optional<MatRef<T>> C,
+               optional<VecRef<T>> l,
+               optional<VecRef<T>> u) const
+  {
+    if (manual_minimal_H_eigenvalue != nullopt) {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              manual_minimal_H_eigenvalue.value());
+    } else {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              nullopt);
+    }
+  }
+  /*!
+   * Call to QPBase init() without box constraints.
+   */
+  void init_qp_box(QP<T>& qp,
+                   optional<MatRef<T>> H,
+                   optional<VecRef<T>> g,
+                   optional<MatRef<T>> A,
+                   optional<VecRef<T>> b,
+                   optional<MatRef<T>> C,
+                   optional<VecRef<T>> l,
+                   optional<VecRef<T>> u,
+                   optional<VecRef<T>> l_box,
+                   optional<VecRef<T>> u_box) const
+  {
+    if (manual_minimal_H_eigenvalue != nullopt) {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              l_box,
+              u_box,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              manual_minimal_H_eigenvalue.value());
+    } else {
+      qp.init(H,
+              g,
+              A,
+              b,
+              C,
+              l,
+              u,
+              l_box,
+              u_box,
+              compute_preconditioner,
+              rho,
+              mu_eq,
+              mu_in,
+              nullopt);
+    }
+  }
+};
+
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
- * object, with matrices defined by Dense Eigen matrices. It is possible to set
- * up some of the solver parameters (warm start, initial guess option, proximal
- * step sizes, absolute and relative accuracies, maximum number of iterations,
- * preconditioner execution). There are no box constraints in the model.
+ * object, with matrices defined by Dense Eigen matrices. It is possible to
+ * set up some of the solver parameters (warm start, initial guess option,
+ * proximal step sizes, absolute and relative accuracies, maximum number of
+ * iterations, preconditioner execution). There are no box constraints in the
+ * model.
  * @param H quadratic cost input defining the QP model.
  * @param g linear cost input defining the QP model.
  * @param A equality constraint matrix input defining the QP model.
@@ -984,8 +472,8 @@ public:
  * @param x primal warm start.
  * @param y dual equality constraint warm start.
  * @param z dual inequality constraint warm start.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
+ * @param verbose if set to true, the solver prints more information about
+ * each iteration.
  * @param compute_preconditioner bool parameter for executing or not the
  * preconditioner.
  * @param compute_timings boolean parameter for computing the solver timings.
@@ -997,8 +485,8 @@ public:
  * @param max_iter maximum number of iteration.
  * @param initial_guess initial guess option for warm starting or not the
  * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
+ * @param check_duality_gap If set to true, include the duality gap in
+ * absolute and relative stopping criteria.
  * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
@@ -1033,70 +521,31 @@ solve(optional<MatRef<T>> H,
       bool primal_infeasibility_solving = false,
       optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
-  isize n(0);
-  isize n_eq(0);
-  isize n_in(0);
-  if (H != nullopt) {
-    n = H.value().rows();
-  }
-  if (A != nullopt) {
-    n_eq = A.value().rows();
-  }
-  if (C != nullopt) {
-    n_in = C.value().rows();
-  }
+  ProxQPConfig<T> config(eps_abs,
+                         eps_rel,
+                         rho,
+                         mu_eq,
+                         mu_in,
+                         verbose,
+                         compute_preconditioner,
+                         compute_timings,
+                         max_iter,
+                         initial_guess,
+                         check_duality_gap,
+                         eps_duality_gap_abs,
+                         eps_duality_gap_rel,
+                         primal_infeasibility_solving,
+                         manual_minimal_H_eigenvalue);
 
-  QP<T> Qp(n, n_eq, n_in, false, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
-
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(
-      H, g, A, b, C, l, u, compute_preconditioner, rho, mu_eq, mu_in, nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return common::dense::solve_base<QP<T>, ProxQPConfig<T>, T>(
+    config, H, g, A, b, C, l, u, x, y, z);
 }
 /*!
  * Solves the QP problem using PROXQP algorithm without the need to define a QP
- * object, with matrices defined by Dense Eigen matrices. It is possible to set
- * up some of the solver parameters (warm start, initial guess option, proximal
- * step sizes, absolute and relative accuracies, maximum number of iterations,
- * preconditioner execution).
+ * object, with matrices defined by Dense Eigen matrices. It is possible to
+ * set up some of the solver parameters (warm start, initial guess option,
+ * proximal step sizes, absolute and relative accuracies, maximum number of
+ * iterations, preconditioner execution).
  * @param H quadratic cost input defining the QP model.
  * @param g linear cost input defining the QP model.
  * @param A equality constraint matrix input defining the QP model.
@@ -1110,11 +559,11 @@ solve(optional<MatRef<T>> H,
  * model.
  * @param x primal warm start.
  * @param y dual equality constraint warm start.
- * @param z dual inequality constraint warm start. The upper part must contain a
- * warm start for inequality constraints wrt C matrix, whereas the latter wrt
- * the box inequalities.
- * @param verbose if set to true, the solver prints more information about each
- * iteration.
+ * @param z dual inequality constraint warm start. The upper part must contain
+ * a warm start for inequality constraints wrt C matrix, whereas the latter
+ * wrt the box inequalities.
+ * @param verbose if set to true, the solver prints more information about
+ * each iteration.
  * @param compute_preconditioner bool parameter for executing or not the
  * preconditioner.
  * @param compute_timings boolean parameter for computing the solver timings.
@@ -1126,8 +575,8 @@ solve(optional<MatRef<T>> H,
  * @param max_iter maximum number of iteration.
  * @param initial_guess initial guess option for warm starting or not the
  * initial iterate values.
- * @param check_duality_gap If set to true, include the duality gap in absolute
- * and relative stopping criteria.
+ * @param check_duality_gap If set to true, include the duality gap in
+ * absolute and relative stopping criteria.
  * @param eps_duality_gap_abs absolute accuracy threshold for the duality-gap
  * criterion.
  * @param eps_duality_gap_rel relative accuracy threshold for the duality-gap
@@ -1164,77 +613,24 @@ solve(optional<MatRef<T>> H,
       bool primal_infeasibility_solving = false,
       optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
-  isize n(0);
-  isize n_eq(0);
-  isize n_in(0);
-  if (H != nullopt) {
-    n = H.value().rows();
-  }
-  if (A != nullopt) {
-    n_eq = A.value().rows();
-  }
-  if (C != nullopt) {
-    n_in = C.value().rows();
-  }
+  ProxQPConfig<T> config(eps_abs,
+                         eps_rel,
+                         rho,
+                         mu_eq,
+                         mu_in,
+                         verbose,
+                         compute_preconditioner,
+                         compute_timings,
+                         max_iter,
+                         initial_guess,
+                         check_duality_gap,
+                         eps_duality_gap_abs,
+                         eps_duality_gap_rel,
+                         primal_infeasibility_solving,
+                         manual_minimal_H_eigenvalue);
 
-  QP<T> Qp(n, n_eq, n_in, true, DenseBackend::PrimalDualLDLT);
-  Qp.settings.initial_guess = initial_guess;
-  Qp.settings.check_duality_gap = check_duality_gap;
-
-  if (eps_abs != nullopt) {
-    Qp.settings.eps_abs = eps_abs.value();
-  }
-  if (eps_rel != nullopt) {
-    Qp.settings.eps_rel = eps_rel.value();
-  }
-  if (verbose != nullopt) {
-    Qp.settings.verbose = verbose.value();
-  }
-  if (max_iter != nullopt) {
-    Qp.settings.max_iter = max_iter.value();
-  }
-  if (eps_duality_gap_abs != nullopt) {
-    Qp.settings.eps_duality_gap_abs = eps_duality_gap_abs.value();
-  }
-  if (eps_duality_gap_rel != nullopt) {
-    Qp.settings.eps_duality_gap_rel = eps_duality_gap_rel.value();
-  }
-  Qp.settings.compute_timings = compute_timings;
-  Qp.settings.primal_infeasibility_solving = primal_infeasibility_solving;
-  if (manual_minimal_H_eigenvalue != nullopt) {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            manual_minimal_H_eigenvalue.value());
-  } else {
-    Qp.init(H,
-            g,
-            A,
-            b,
-            C,
-            l,
-            u,
-            l_box,
-            u_box,
-            compute_preconditioner,
-            rho,
-            mu_eq,
-            mu_in,
-            nullopt);
-  }
-  Qp.solve(x, y, z);
-
-  return Qp.results;
+  return common::dense::solve_base_box<QP<T>, ProxQPConfig<T>, T>(
+    config, H, g, A, b, C, l, u, l_box, u_box, x, y, z);
 }
 
 template<typename T>

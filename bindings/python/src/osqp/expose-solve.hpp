@@ -14,8 +14,6 @@ using proxsuite::linalg::veg::isize;
 namespace dense {
 namespace python {
 
-;
-
 template<typename T>
 void
 solveDenseQp(nanobind::module_ m)
@@ -47,7 +45,7 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<T>,
-                            optional<bool>,
+                            bool,
                             optional<isize>,
                             optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
@@ -80,7 +78,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
     nanobind::arg("default_H_eigenvalue_estimate") = 0.,
-    nanobind::arg("adaptive_mu") = nanobind::none(),
+    nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none());
 
@@ -113,7 +111,7 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<T>,
-                            optional<bool>,
+                            bool,
                             optional<isize>,
                             optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
@@ -148,7 +146,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
     nanobind::arg("default_H_eigenvalue_estimate") = 0.,
-    nanobind::arg("adaptive_mu") = nanobind::none(),
+    nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none());
 
@@ -178,7 +176,7 @@ solveDenseQp(nanobind::module_ m)
                                 optional<T>,
                                 bool,
                                 optional<T>,
-                                optional<bool>,
+                                bool,
                                 optional<isize>,
                                 optional<T>>(&dense::solve<T>),
         "Function for solving a QP problem using OSQP dense backend directly "
@@ -213,7 +211,7 @@ solveDenseQp(nanobind::module_ m)
         nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
         nanobind::arg("primal_infeasibility_solving") = false,
         nanobind::arg("default_H_eigenvalue_estimate") = 0.,
-        nanobind::arg("adaptive_mu") = nanobind::none(),
+        nanobind::arg("adaptive_mu") = true,
         nanobind::arg("adaptive_mu_interval") = nanobind::none(),
         nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
         nanobind::call_guard<nanobind::gil_scoped_release>());
@@ -247,7 +245,7 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<T>,
-                            optional<bool>,
+                            bool,
                             optional<isize>,
                             optional<T>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
@@ -284,7 +282,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
     nanobind::arg("primal_infeasibility_solving") = false,
     nanobind::arg("default_H_eigenvalue_estimate") = 0.,
-    nanobind::arg("adaptive_mu") = nanobind::none(),
+    nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
     nanobind::call_guard<nanobind::gil_scoped_release>());
