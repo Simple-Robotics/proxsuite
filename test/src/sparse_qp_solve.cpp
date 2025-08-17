@@ -7,11 +7,11 @@
 #include <proxsuite/common/utils/random_qp_problems.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
-using namespace proxsuite;
-using namespace proxsuite::proxqp;
-using namespace proxsuite::common::utils;
 using T = double;
-using I = c_int;
+using namespace proxsuite;
+using namespace proxsuite::common;
+
+using I = common::utils::c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
 DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
@@ -32,16 +32,16 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     T eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
 
     /*
-    auto H = ::proxsuite::common::utils::rand::sparse_positive_definite_rand(
+    auto H = ::utils::rand::sparse_positive_definite_rand(
       n, T(10.0), sparsity_factor);
-    auto g = ::proxsuite::common::utils::rand::vector_rand<T>(n);
-    auto A = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_eq, n,
+    auto g = ::utils::rand::vector_rand<T>(n);
+    auto A = ::utils::rand::sparse_matrix_rand<T>(n_eq, n,
     sparsity_factor); auto x_sol =
-    ::proxsuite::common::utils::rand::vector_rand<T>(n); auto b = A * x_sol;
-    auto C = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_in, n,
+    ::utils::rand::vector_rand<T>(n); auto b = A * x_sol;
+    auto C = ::utils::rand::sparse_matrix_rand<T>(n_in, n,
     sparsity_factor); auto l = C * x_sol; auto u = (l.array() +
     10).matrix().eval();
 
@@ -62,18 +62,17 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     common::dense::Model<T> qp_dense = common::utils::dense_strongly_convex_qp(
       n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     proxqp::sparse::SparseModel<T> qp = qp_dense.to_sparse();
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs);
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs);
 
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
@@ -114,24 +113,23 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             nullopt,
-                                             T(1.E-7));
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs,
+                                                                nullopt,
+                                                                T(1.E-7));
     DOCTEST_CHECK(results.info.rho == T(1.E-7));
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
@@ -174,26 +172,25 @@ DOCTEST_TEST_CASE(
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             nullopt,
-                                             nullopt,
-                                             T(1.E-2),
-                                             T(1.E-2));
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs,
+                                                                nullopt,
+                                                                nullopt,
+                                                                T(1.E-2),
+                                                                T(1.E-2));
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
@@ -235,36 +232,33 @@ DOCTEST_TEST_CASE(
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::common::InitialGuessStatus initial_guess =
-      proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
-    proxsuite::common::SparseBackend sparse_backend =
-      proxsuite::common::SparseBackend::MatrixFree;
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             true,
-                                             true,
-                                             nullopt,
-                                             initial_guess,
-                                             sparse_backend);
+    InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    SparseBackend sparse_backend = SparseBackend::MatrixFree;
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                true,
+                                                                true,
+                                                                nullopt,
+                                                                initial_guess,
+                                                                sparse_backend);
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
@@ -306,16 +300,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    auto x_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n);
-    auto y_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n_eq);
-    auto z_wm = ::proxsuite::common::utils::rand::vector_rand<T>(n_in);
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(
-        qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs);
+    auto x_wm = ::utils::rand::vector_rand<T>(n);
+    auto y_wm = ::utils::rand::vector_rand<T>(n_eq);
+    auto z_wm = ::utils::rand::vector_rand<T>(n_in);
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(
+      qp.H, qp.g, qp.A, qp.b, qp.C, qp.l, qp.u, x_wm, y_wm, z_wm, eps_abs);
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
@@ -355,28 +348,27 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     bool verbose = true;
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             verbose);
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                verbose);
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);
@@ -416,33 +408,31 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
     double eps_abs = 1.e-9;
     T sparsity_factor = 0.15;
     T strong_convexity_factor = 0.01;
-    ::proxsuite::common::utils::rand::set_seed(1);
+    ::utils::rand::set_seed(1);
     proxqp::sparse::SparseModel<T> qp =
       common::utils::sparse_strongly_convex_qp(
         n, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-    proxsuite::common::InitialGuessStatus initial_guess =
-      proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
-    proxsuite::common::Results<T> results =
-      proxsuite::proxqp::sparse::solve<T, I>(qp.H,
-                                             qp.g,
-                                             qp.A,
-                                             qp.b,
-                                             qp.C,
-                                             qp.l,
-                                             qp.u,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             eps_abs,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             nullopt,
-                                             true,
-                                             true,
-                                             nullopt,
-                                             initial_guess);
+    InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+    Results<T> results = proxsuite::proxqp::sparse::solve<T, I>(qp.H,
+                                                                qp.g,
+                                                                qp.A,
+                                                                qp.b,
+                                                                qp.C,
+                                                                qp.l,
+                                                                qp.u,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                eps_abs,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                nullopt,
+                                                                true,
+                                                                true,
+                                                                nullopt,
+                                                                initial_guess);
     T dua_res = common::dense::infty_norm(
       qp.H.selfadjointView<Eigen::Upper>() * results.x + qp.g +
       qp.A.transpose() * results.y + qp.C.transpose() * results.z);

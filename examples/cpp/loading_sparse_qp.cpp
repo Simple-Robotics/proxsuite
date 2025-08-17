@@ -20,10 +20,9 @@ main()
   T p = 0.15;            // level of sparsity
   T conditioning = 10.0; // conditioning level for H
 
-  auto H = ::proxsuite::common::utils::rand::sparse_positive_definite_rand(
-    n, conditioning, p);
-  auto A = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
-  auto C = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+  auto H = utils::rand::sparse_positive_definite_rand(n, conditioning, p);
+  auto A = utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+  auto C = utils::rand::sparse_matrix_rand<T>(n_in, n, p);
 
   // design a qp2 object using sparsity masks of H, A and C
   proxsuite::proxqp::sparse::QP<T, isize> qp2(

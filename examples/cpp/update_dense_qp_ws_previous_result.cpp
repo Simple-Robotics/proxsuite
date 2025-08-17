@@ -29,7 +29,7 @@ main()
   qp.solve();           // solve the problem
   // re update the linear cost taking previous result
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // it takes effect at the update because it is set before
   // (the workspace is not erased at the update method, hence
   // the previous factorization is kept)

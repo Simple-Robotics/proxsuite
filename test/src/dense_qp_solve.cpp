@@ -345,8 +345,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality and "
   T strong_convexity_factor(1.e-2);
   common::dense::Model<T> qp = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  common::InitialGuessStatus initial_guess =
-    common::InitialGuessStatus::NO_INITIAL_GUESS;
+  InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   common::Results<T> results = proxqp::dense::solve<T>(qp.H,
                                                        qp.g,
                                                        qp.A,

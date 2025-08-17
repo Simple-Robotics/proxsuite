@@ -29,7 +29,7 @@ print_setup_header(const Settings<T>& qpsettings,
                    const QPSolver solver)
 {
 
-  proxsuite::common::print_preambule(solver);
+  print_preambule(solver);
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
@@ -148,7 +148,7 @@ print_iteration_line( //
   Results<T>& qpresults,
   const Model<T>& qpmodel,
   const bool box_constraints,
-  common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+  preconditioner::RuizEquilibration<T>& ruiz,
   const QPSolver solver,
   const isize iter)
 {

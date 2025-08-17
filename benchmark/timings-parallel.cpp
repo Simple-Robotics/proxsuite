@@ -38,7 +38,7 @@ main(int /*argc*/, const char** /*argv*/)
     // Benchmark: generate and initialize dense qps
     std::cout << "############### Generating and initializing QPs ############"
               << std::endl;
-    common::Timer<T> timer;
+    Timer<T> timer;
     for (int j = 0; j < smooth; j++) {
       std::vector<proxqp::dense::QP<T>> qps;
       qps.reserve(num_qps);
@@ -51,8 +51,7 @@ main(int /*argc*/, const char** /*argv*/)
         proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess =
-          common::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -79,8 +78,7 @@ main(int /*argc*/, const char** /*argv*/)
         auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess =
-          common::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -107,8 +105,7 @@ main(int /*argc*/, const char** /*argv*/)
         proxqp::sparse::QP<T, I> qp{ dim, n_eq, n_in };
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess =
-          common::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -137,8 +134,7 @@ main(int /*argc*/, const char** /*argv*/)
         auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
         qp.settings.eps_abs = eps_abs;
         qp.settings.eps_rel = 0;
-        qp.settings.initial_guess =
-          common::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
         qp.init(qp_random.H,
                 qp_random.g,
                 qp_random.A,
@@ -155,7 +151,7 @@ main(int /*argc*/, const char** /*argv*/)
 
   {
     // Benchmark: solve dense qps
-    common::Timer<T> timer;
+    Timer<T> timer;
     std::cout << "#################### Solving DENSE QPs #################### "
               << std::endl;
     std::vector<proxqp::dense::QP<T>> qps;
@@ -169,7 +165,7 @@ main(int /*argc*/, const char** /*argv*/)
       proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -190,7 +186,7 @@ main(int /*argc*/, const char** /*argv*/)
       auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -239,7 +235,7 @@ main(int /*argc*/, const char** /*argv*/)
 
   {
     // Benchmark: solve sparse qps
-    common::Timer<T> timer;
+    Timer<T> timer;
     std::cout << "#################### Solving SPARSE QPs #################### "
               << std::endl;
     std::vector<proxqp::sparse::QP<T, I>> qps;
@@ -254,7 +250,7 @@ main(int /*argc*/, const char** /*argv*/)
       proxqp::sparse::QP<T, I> qp{ dim, n_eq, n_in };
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,
@@ -277,7 +273,7 @@ main(int /*argc*/, const char** /*argv*/)
       auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
       qp.settings.eps_abs = eps_abs;
       qp.settings.eps_rel = 0;
-      qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+      qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
       qp.init(qp_random.H,
               qp_random.g,
               qp_random.A,

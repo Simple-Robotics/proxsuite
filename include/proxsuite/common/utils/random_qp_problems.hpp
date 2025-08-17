@@ -25,7 +25,7 @@ namespace utils {
 using c_int = long long;
 using c_float = double;
 
-template<typename T, common::Layout L>
+template<typename T, Layout L>
 using Mat = Eigen::Matrix<T,
                           Eigen::Dynamic,
                           Eigen::Dynamic,
@@ -36,7 +36,6 @@ using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 template<typename Scalar>
 using SparseMat = Eigen::SparseMatrix<Scalar, Eigen::ColMajor, c_int>;
 
-using namespace proxqp;
 namespace eigen {
 template<typename T>
 void
@@ -437,7 +436,7 @@ struct EigenNoAlloc
 };
 
 template<typename Scalar>
-proxsuite::common::dense::Model<Scalar>
+dense::Model<Scalar>
 dense_unconstrained_qp(isize dim,
                        Scalar sparsity_factor,
                        Scalar strong_convexity_factor = Scalar(1e-2))
@@ -454,14 +453,14 @@ dense_unconstrained_qp(isize dim,
     rand::sparse_matrix_rand_not_compressed<Scalar>(0, dim, sparsity_factor);
   Vec<Scalar> u = rand::vector_rand<Scalar>(0);
   Vec<Scalar> l = rand::vector_rand<Scalar>(0);
-  proxsuite::common::dense::Model<Scalar> model(dim, 0, 0);
+  dense::Model<Scalar> model(dim, 0, 0);
   model.H = H;
   model.g = g;
   return model;
 }
 
 template<typename Scalar>
-proxsuite::common::dense::Model<Scalar>
+dense::Model<Scalar>
 dense_strongly_convex_qp(isize dim,
                          isize n_eq,
                          isize n_in,
@@ -491,7 +490,7 @@ dense_strongly_convex_qp(isize dim,
   l.setZero();
   l.array() -= 1.e20;
 
-  proxsuite::common::dense::Model<Scalar> model(dim, n_eq, n_in);
+  dense::Model<Scalar> model(dim, n_eq, n_in);
   model.H = H;
   model.g = g;
   model.A = A;
@@ -503,7 +502,7 @@ dense_strongly_convex_qp(isize dim,
 }
 
 template<typename Scalar>
-proxsuite::common::dense::Model<Scalar>
+dense::Model<Scalar>
 dense_not_strongly_convex_qp(isize dim,
                              isize n_eq,
                              isize n_in,
@@ -532,7 +531,7 @@ dense_not_strongly_convex_qp(isize dim,
   Vec<Scalar> l = Cx - delta;
   Vec<Scalar> g = -(H * x_sol + C.transpose() * z_sol + A.transpose() * y_sol);
 
-  proxsuite::common::dense::Model<Scalar> model(dim, n_eq, n_in);
+  dense::Model<Scalar> model(dim, n_eq, n_in);
   model.H = H;
   model.g = g;
   model.A = A;
@@ -544,7 +543,7 @@ dense_not_strongly_convex_qp(isize dim,
 }
 
 template<typename Scalar>
-proxsuite::common::dense::Model<Scalar>
+dense::Model<Scalar>
 dense_degenerate_qp(isize dim,
                     isize n_eq,
                     isize n_in,
@@ -578,7 +577,7 @@ dense_degenerate_qp(isize dim,
   l.setZero();
   l.array() -= 1.e20;
 
-  proxsuite::common::dense::Model<Scalar> model(dim, n_eq, n_in);
+  dense::Model<Scalar> model(dim, n_eq, n_in);
   model.H = H;
   model.g = g;
   model.A = A;
@@ -590,7 +589,7 @@ dense_degenerate_qp(isize dim,
 }
 
 template<typename Scalar>
-proxsuite::common::dense::Model<Scalar>
+dense::Model<Scalar>
 dense_box_constrained_qp(isize dim,
                          isize n_eq,
                          isize n_in,
@@ -617,7 +616,7 @@ dense_box_constrained_qp(isize dim,
   C.diagonal().array() += 1;
   Vec<Scalar> u = x_sol + delta;
   Vec<Scalar> l = x_sol - delta;
-  proxsuite::common::dense::Model<Scalar> model(dim, n_eq, n_in);
+  dense::Model<Scalar> model(dim, n_eq, n_in);
   model.H = H;
   model.g = g;
   model.A = A;

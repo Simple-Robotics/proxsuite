@@ -20,7 +20,7 @@ namespace dense {
 
 namespace python {
 
-using namespace proxsuite::common;
+;
 
 template<typename T>
 void
@@ -28,21 +28,16 @@ exposeQpObjectDense(nanobind::module_ m)
 {
   ::nanobind::class_<dense::QP<T>>(m, "QP")
     .def(
-      ::nanobind::init<isize,
-                       isize,
-                       isize,
-                       bool,
-                       proxsuite::common::HessianType,
-                       proxsuite::common::DenseBackend>(),
+      ::nanobind::init<isize, isize, isize, bool, HessianType, DenseBackend>(),
       nanobind::arg("n") = 0,
       nanobind::arg("n_eq") = 0,
       nanobind::arg("n_in") = 0,
       nanobind::arg("box_constraints") = false,
-      nanobind::arg("hessian_type") = proxsuite::common::HessianType::Dense,
+      nanobind::arg("hessian_type") = HessianType::Dense,
       nanobind::arg("dense_backend") =
-        proxsuite::common::DenseBackend::PrimalDualLDLT, // TODO: Automatic when
-                                                         // PrimalLDLT is coded
-      "Default constructor using QP model dimensions.")  // constructor
+        DenseBackend::PrimalDualLDLT,                   // TODO: Automatic when
+                                                        // PrimalLDLT is coded
+      "Default constructor using QP model dimensions.") // constructor
     .def_rw("results",
             &dense::QP<T>::results,
             "class containing the solution or certificate of infeasibility, "

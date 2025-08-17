@@ -8,6 +8,7 @@
 #ifndef PROXSUITE_PROXQP_SPARSE_ALIASES_HPP
 #define PROXSUITE_PROXQP_SPARSE_ALIASES_HPP
 
+#include "proxsuite/common/solvers.hpp"
 #include "proxsuite/common/status.hpp"
 #include "proxsuite/common/settings.hpp"
 #include "proxsuite/common/results.hpp"
@@ -25,6 +26,7 @@ using proxsuite::common::HessianType;
 using proxsuite::common::InitialGuessStatus;
 using proxsuite::common::MeritFunctionType;
 using proxsuite::common::PreconditionerStatus;
+using proxsuite::common::QPSolver;
 using proxsuite::common::QPSolverOutput;
 using proxsuite::common::SparseBackend;
 using proxsuite::common::Timer;

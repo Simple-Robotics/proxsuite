@@ -47,18 +47,17 @@ namespace dense {
  */
 template<typename T>
 void
-global_primal_residual(
-  const Model<T>& qpmodel,
-  Results<T>& qpresults,
-  const Settings<T>& qpsettings,
-  Workspace<T>& qpwork,
-  const common::dense::preconditioner::RuizEquilibration<T>& ruiz,
-  const bool box_constraints,
-  T& primal_feasibility_lhs,
-  T& primal_feasibility_eq_rhs_0,
-  T& primal_feasibility_in_rhs_0,
-  T& primal_feasibility_eq_lhs,
-  T& primal_feasibility_in_lhs)
+global_primal_residual(const Model<T>& qpmodel,
+                       Results<T>& qpresults,
+                       const Settings<T>& qpsettings,
+                       Workspace<T>& qpwork,
+                       const preconditioner::RuizEquilibration<T>& ruiz,
+                       const bool box_constraints,
+                       T& primal_feasibility_lhs,
+                       T& primal_feasibility_eq_rhs_0,
+                       T& primal_feasibility_in_rhs_0,
+                       T& primal_feasibility_eq_lhs,
+                       T& primal_feasibility_in_lhs)
 {
   // COMPUTES:
   // primal_residual_eq_scaled = scaled(Ax - b)
@@ -162,7 +161,7 @@ global_primal_residual_infeasibility(
   const Model<T>& qpmodel,
   const Settings<T>& qpsettings,
   const bool box_constraints,
-  const common::dense::preconditioner::RuizEquilibration<T>& ruiz)
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is primal infeasible if the following four conditions hold:
@@ -236,7 +235,7 @@ global_dual_residual_infeasibility(
   const Settings<T>& qpsettings,
   const Model<T>& qpmodel,
   const bool box_constraints,
-  const common::dense::preconditioner::RuizEquilibration<T>& ruiz)
+  const preconditioner::RuizEquilibration<T>& ruiz)
 {
 
   // The problem is dual infeasible the two following conditions hold:
@@ -321,19 +320,18 @@ global_dual_residual_infeasibility(
  */
 template<typename T>
 void
-global_dual_residual(
-  Results<T>& qpresults,
-  Workspace<T>& qpwork,
-  const Model<T>& qpmodel,
-  const bool box_constraints,
-  const common::dense::preconditioner::RuizEquilibration<T>& ruiz,
-  T& dual_feasibility_lhs,
-  T& dual_feasibility_rhs_0,
-  T& dual_feasibility_rhs_1,
-  T& dual_feasibility_rhs_3,
-  T& rhs_duality_gap,
-  T& duality_gap,
-  const HessianType& hessian_type)
+global_dual_residual(Results<T>& qpresults,
+                     Workspace<T>& qpwork,
+                     const Model<T>& qpmodel,
+                     const bool box_constraints,
+                     const preconditioner::RuizEquilibration<T>& ruiz,
+                     T& dual_feasibility_lhs,
+                     T& dual_feasibility_rhs_0,
+                     T& dual_feasibility_rhs_1,
+                     T& dual_feasibility_rhs_3,
+                     T& rhs_duality_gap,
+                     T& duality_gap,
+                     const HessianType& hessian_type)
 {
   // dual_feasibility_lhs = norm(dual_residual_scaled)
   // dual_feasibility_rhs_0 = norm(unscaled(Hx))
@@ -524,7 +522,7 @@ compute_residuals(const Settings<T>& qpsettings,
                   Workspace<T>& qpwork,
                   const bool box_constraints,
                   const HessianType& hessian_type,
-                  common::dense::preconditioner::RuizEquilibration<T>& ruiz,
+                  preconditioner::RuizEquilibration<T>& ruiz,
                   T& primal_feasibility_lhs,
                   T& primal_feasibility_eq_rhs_0,
                   T& primal_feasibility_in_rhs_0,
@@ -538,30 +536,30 @@ compute_residuals(const Settings<T>& qpsettings,
                   T& duality_gap)
 {
   // PERF: fuse matrix product computations in global_{primal, dual}_residual
-  proxsuite::common::dense::global_primal_residual(qpmodel,
-                                                   qpresults,
-                                                   qpsettings,
-                                                   qpwork,
-                                                   ruiz,
-                                                   box_constraints,
-                                                   primal_feasibility_lhs,
-                                                   primal_feasibility_eq_rhs_0,
-                                                   primal_feasibility_in_rhs_0,
-                                                   primal_feasibility_eq_lhs,
-                                                   primal_feasibility_in_lhs);
+  global_primal_residual(qpmodel,
+                         qpresults,
+                         qpsettings,
+                         qpwork,
+                         ruiz,
+                         box_constraints,
+                         primal_feasibility_lhs,
+                         primal_feasibility_eq_rhs_0,
+                         primal_feasibility_in_rhs_0,
+                         primal_feasibility_eq_lhs,
+                         primal_feasibility_in_lhs);
 
-  proxsuite::common::dense::global_dual_residual(qpresults,
-                                                 qpwork,
-                                                 qpmodel,
-                                                 box_constraints,
-                                                 ruiz,
-                                                 dual_feasibility_lhs,
-                                                 dual_feasibility_rhs_0,
-                                                 dual_feasibility_rhs_1,
-                                                 dual_feasibility_rhs_3,
-                                                 rhs_duality_gap,
-                                                 duality_gap,
-                                                 hessian_type);
+  global_dual_residual(qpresults,
+                       qpwork,
+                       qpmodel,
+                       box_constraints,
+                       ruiz,
+                       dual_feasibility_lhs,
+                       dual_feasibility_rhs_0,
+                       dual_feasibility_rhs_1,
+                       dual_feasibility_rhs_3,
+                       rhs_duality_gap,
+                       duality_gap,
+                       hessian_type);
 
   qpresults.info.pri_res = primal_feasibility_lhs;
   qpresults.info.dua_res = dual_feasibility_lhs;
@@ -708,7 +706,7 @@ unscale_solver(const Settings<T>& qpsettings,
                const Model<T>& qpmodel,
                Results<T>& qpresults,
                const bool box_constraints,
-               common::dense::preconditioner::RuizEquilibration<T>& ruiz)
+               preconditioner::RuizEquilibration<T>& ruiz)
 {
   ruiz.unscale_primal_in_place(VectorViewMut<T>{ from_eigen, qpresults.x });
   ruiz.unscale_dual_in_place_eq(VectorViewMut<T>{ from_eigen, qpresults.y });

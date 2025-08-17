@@ -15,6 +15,8 @@ using proxsuite::linalg::veg::isize;
 namespace dense {
 namespace python {
 
+;
+
 template<typename T>
 void
 solveDenseQp(nanobind::module_ m)
@@ -40,7 +42,7 @@ solveDenseQp(nanobind::module_ m)
                             bool,
                             bool,
                             optional<isize>,
-                            proxsuite::common::InitialGuessStatus,
+                            InitialGuessStatus,
                             bool,
                             optional<T>,
                             optional<T>,
@@ -101,7 +103,7 @@ solveDenseQp(nanobind::module_ m)
                             bool,
                             bool,
                             optional<isize>,
-                            proxsuite::common::InitialGuessStatus,
+                            InitialGuessStatus,
                             bool,
                             optional<T>,
                             optional<T>,
@@ -134,7 +136,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("compute_timings") = false,
     nanobind::arg("max_iter") = nanobind::none(),
     nanobind::arg("initial_guess") =
-      proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
     nanobind::arg("check_duality_gap") = false,
     nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),
@@ -161,7 +163,7 @@ solveDenseQp(nanobind::module_ m)
                                 bool,
                                 bool,
                                 optional<isize>,
-                                proxsuite::common::InitialGuessStatus,
+                                InitialGuessStatus,
                                 bool,
                                 optional<T>,
                                 optional<T>,
@@ -225,7 +227,7 @@ solveDenseQp(nanobind::module_ m)
                             bool,
                             bool,
                             optional<isize>,
-                            proxsuite::common::InitialGuessStatus,
+                            InitialGuessStatus,
                             bool,
                             optional<T>,
                             optional<T>,
@@ -260,7 +262,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("compute_timings") = false,
     nanobind::arg("max_iter") = nanobind::none(),
     nanobind::arg("initial_guess") =
-      proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
     nanobind::arg("check_duality_gap") = false,
     nanobind::arg("eps_duality_gap_abs") = nanobind::none(),
     nanobind::arg("eps_duality_gap_rel") = nanobind::none(),

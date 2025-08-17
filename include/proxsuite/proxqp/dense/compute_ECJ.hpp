@@ -69,12 +69,11 @@ compute_backward(dense::QP<T>& solved_qp,
     // so in order to avoid to much refactorization later in the
     // iterative refinement, a factorization from scratch is directly
     // performed with new mu and rho as well to enable more stability
-    proxsuite::common::dense::setup_factorization(
-      solved_qp.work,
-      solved_qp.model,
-      solved_qp.results,
-      solved_qp.which_dense_backend(),
-      solved_qp.which_hessian_type());
+    common::dense::setup_factorization(solved_qp.work,
+                                       solved_qp.model,
+                                       solved_qp.results,
+                                       solved_qp.which_dense_backend(),
+                                       solved_qp.which_hessian_type());
     solved_qp.work.n_c = 0;
     for (isize i = 0; i < solved_qp.model.n_in; i++) {
       solved_qp.work.current_bijection_map(i) = i;
@@ -110,7 +109,7 @@ compute_backward(dense::QP<T>& solved_qp,
           from_eigen, solved_qp.work.rhs.tail(solved_qp.model.n_in) });
       }
     }
-    proxsuite::common::dense::iterative_solve_with_permut_fact( //
+    common::dense::iterative_solve_with_permut_fact( //
       solved_qp.settings,
       solved_qp.model,
       solved_qp.results,

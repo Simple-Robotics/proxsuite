@@ -36,7 +36,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::common::HessianType _hessian_type,
+     HessianType _hessian_type,
      DenseBackend _dense_backend)
     : proxqp::dense::QP<T>(
         _dim,
@@ -67,7 +67,7 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::common::HessianType _hessian_type)
+     HessianType _hessian_type)
     : proxqp::dense::QP<T>(
         _dim,
         _n_eq,
@@ -95,7 +95,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::common::HessianType _hessian_type)
+     HessianType _hessian_type)
     : proxqp::dense::QP<T>(_dim,
                            _n_eq,
                            _n_in,
@@ -172,10 +172,7 @@ public:
    * @param _n_in number of inequality constraints.
    * @param _hessian_type specify that there are (or not) box constraints.
    */
-  QP(isize _dim,
-     isize _n_eq,
-     isize _n_in,
-     proxsuite::common::HessianType _hessian_type)
+  QP(isize _dim, isize _n_eq, isize _n_in, HessianType _hessian_type)
     : proxqp::dense::QP<T>(_dim,
                            _n_eq,
                            _n_in,
@@ -414,7 +411,7 @@ public:
  * update.
  */
 template<typename T>
-common::Results<T>
+Results<T>
 solve(optional<MatRef<T>> H,
       optional<VecRef<T>> g,
       optional<MatRef<T>> A,
@@ -434,8 +431,7 @@ solve(optional<MatRef<T>> H,
       bool compute_preconditioner = true,
       bool compute_timings = false,
       optional<isize> max_iter = nullopt,
-      proxsuite::common::InitialGuessStatus initial_guess =
-        proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS,
+      InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS,
       bool check_duality_gap = false,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,
@@ -559,7 +555,7 @@ solve(optional<MatRef<T>> H,
  * update.
  */
 template<typename T>
-common::Results<T>
+Results<T>
 solve(optional<MatRef<T>> H,
       optional<VecRef<T>> g,
       optional<MatRef<T>> A,
@@ -581,8 +577,7 @@ solve(optional<MatRef<T>> H,
       bool compute_preconditioner = true,
       bool compute_timings = false,
       optional<isize> max_iter = nullopt,
-      proxsuite::common::InitialGuessStatus initial_guess =
-        proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS,
+      InitialGuessStatus initial_guess = InitialGuessStatus::NO_INITIAL_GUESS,
       bool check_duality_gap = false,
       optional<T> eps_duality_gap_abs = nullopt,
       optional<T> eps_duality_gap_rel = nullopt,

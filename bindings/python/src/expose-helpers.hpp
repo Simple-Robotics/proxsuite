@@ -24,7 +24,7 @@ exposeDenseHelpers(nanobind::module_ m)
         EigenValueEstimateMethodOption estimate_method_option,
         T power_iteration_accuracy,
         isize nb_power_iteration) {
-      return common::dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      return estimate_minimal_eigen_value_of_symmetric_matrix(
         H,
         estimate_method_option,
         power_iteration_accuracy,

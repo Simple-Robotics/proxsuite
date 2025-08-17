@@ -10,13 +10,11 @@
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
-using T = double;
-namespace utils = proxsuite::common::utils;
-using I = utils::c_int;
-using namespace proxsuite::linalg::sparse::tags;
-
 using namespace proxsuite::common;
+using T = double;
+using I = common::utils::c_int;
+
+using namespace proxsuite::linalg::sparse::tags;
 
 TEST_CASE("upper part")
 {
@@ -60,7 +58,7 @@ TEST_CASE("upper part")
                    proxsuite::linalg::veg::Tag<T>{}, n, n_eq, n_in));
 
   bool execute_preconditioner = true;
-  proxsuite::common::Settings<T> settings;
+  Settings<T> settings;
   common::dense::Vec<T> u_scaled_box(0);
   common::dense::Vec<T> l_scaled_box(0);
   common::dense::Vec<T> eye(0);
@@ -79,7 +77,7 @@ TEST_CASE("upper part")
     settings.preconditioner_max_iter,
     settings.preconditioner_accuracy,
     stack);
-  HessianType HessianType(proxsuite::common::HessianType::Dense);
+  HessianType HessianType(HessianType::Dense);
   ruiz_dense.scale_qp_in_place(
     common::dense::QpViewBoxMut<T>{
       { common::from_eigen, H_scaled_dense },
@@ -153,7 +151,7 @@ TEST_CASE("lower part")
                  ruiz.scale_qp_in_place_req(
                    proxsuite::linalg::veg::Tag<T>{}, n, n_eq, n_in));
   bool execute_preconditioner = true;
-  proxsuite::common::Settings<T> settings;
+  Settings<T> settings;
   ruiz.scale_qp_in_place(
     {
       { proxsuite::linalg::sparse::from_eigen, H_scaled },

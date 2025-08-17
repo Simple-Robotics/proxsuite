@@ -197,7 +197,7 @@ iterative_residual(const Model<T>& qpmodel,
 
 template<typename T>
 void
-solve_linear_system(proxsuite::common::dense::Vec<T>& dw,
+solve_linear_system(Vec<T>& dw,
                     const Model<T>& qpmodel,
                     Results<T>& qpresults,
                     Workspace<T>& qpwork,

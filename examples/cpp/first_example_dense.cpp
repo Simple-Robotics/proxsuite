@@ -48,7 +48,7 @@ main()
   proxqp::dense::QP<double> qp(dim, n_eq, n_in);
 
   qp.settings.eps_abs = eps_abs;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.verbose = true;
 
   // initialize qp with matrices describing the problem

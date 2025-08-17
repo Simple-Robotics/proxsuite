@@ -14,7 +14,7 @@ using namespace proxsuite::common;
 int
 main(int /*argc*/, const char** /*argv*/)
 {
-  common::Timer<T> timer;
+  Timer<T> timer;
   int smooth = 0;
 
   T sparsity_factor = 0.75;
@@ -49,7 +49,7 @@ main(int /*argc*/, const char** /*argv*/)
     };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
       timer.start();
       qp.init(qp_random.H,
@@ -80,8 +80,7 @@ main(int /*argc*/, const char** /*argv*/)
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;
-    qp_compare.settings.initial_guess =
-      common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     for (int j = 0; j < smooth; j++) {
       timer.start();
       qp_compare.init(qp_random.H,

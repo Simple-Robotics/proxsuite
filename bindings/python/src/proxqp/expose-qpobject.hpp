@@ -21,7 +21,7 @@ namespace dense {
 
 namespace python {
 
-using namespace proxsuite::common;
+;
 
 template<typename T>
 void
@@ -34,12 +34,12 @@ exposeQpObjectDense(nanobind::module_ m)
     .export_values();
 
   ::nanobind::enum_<HessianType>(m, "HessianType")
-    .value("Dense", proxsuite::common::HessianType::Dense)
-    .value("Zero", proxsuite::common::HessianType::Zero)
-    .value("Diagonal", proxsuite::common::HessianType::Diagonal)
+    .value("Dense", HessianType::Dense)
+    .value("Zero", HessianType::Zero)
+    .value("Diagonal", HessianType::Diagonal)
     .export_values();
 
-  // ::nanobind::class_<proxsuite::common::dense::preconditioner::RuizEquilibration<T>>(m,
+  // ::nanobind::class_<dense::preconditioner::RuizEquilibration<T>>(m,
   // "ruiz")
   //   .def(::nanobind::init(), "Default constructor.")
   //   .def_rw("mu_eq", &RuizEquilibration<T>::delta)
@@ -49,7 +49,7 @@ exposeQpObjectDense(nanobind::module_ m)
   //   .def_rw("iter_ext", &RuizEquilibration<T>::max_iter)
   //   .def_rw("run_time", &RuizEquilibration<T>::sym);
 
-  // ::nanobind::class_<proxsuite::common::dense::preconditioner::RuizEquilibration<T>>(m,
+  // ::nanobind::class_<dense::preconditioner::RuizEquilibration<T>>(m,
   // "ruiz")
   //   .def(::nanobind::init(), "Default constructor.")
   //   .def_rw("mu_eq", &RuizEquilibration<T>::delta)
@@ -60,20 +60,15 @@ exposeQpObjectDense(nanobind::module_ m)
   //   .def_rw("run_time", &RuizEquilibration<T>::sym);
 
   ::nanobind::class_<dense::QP<T>>(m, "QP")
-    .def(::nanobind::init<isize,
-                          isize,
-                          isize,
-                          bool,
-                          proxsuite::common::HessianType,
-                          proxsuite::common::DenseBackend>(),
-         nanobind::arg("n") = 0,
-         nanobind::arg("n_eq") = 0,
-         nanobind::arg("n_in") = 0,
-         nanobind::arg("box_constraints") = false,
-         nanobind::arg("hessian_type") = proxsuite::common::HessianType::Dense,
-         nanobind::arg("dense_backend") =
-           proxsuite::common::DenseBackend::Automatic,
-         "Default constructor using QP model dimensions.") // constructor
+    .def(
+      ::nanobind::init<isize, isize, isize, bool, HessianType, DenseBackend>(),
+      nanobind::arg("n") = 0,
+      nanobind::arg("n_eq") = 0,
+      nanobind::arg("n_in") = 0,
+      nanobind::arg("box_constraints") = false,
+      nanobind::arg("hessian_type") = HessianType::Dense,
+      nanobind::arg("dense_backend") = DenseBackend::Automatic,
+      "Default constructor using QP model dimensions.") // constructor
     .def_rw("results",
             &dense::QP<T>::results,
             "class containing the solution or certificate of infeasibility, "

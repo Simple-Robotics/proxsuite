@@ -259,7 +259,7 @@ ruiz_scale_qp_in_place( //
               // upper triangular part
               T tmp = T(0);
               for (isize j = 0; j < n; ++j) {
-                tmp += common::dense::infty_norm(H.row(j).tail(n - j));
+                tmp += infty_norm(H.row(j).tail(n - j));
               }
               gamma = 1 / std::max(tmp / T(n), T(1));
               break;
@@ -268,7 +268,7 @@ ruiz_scale_qp_in_place( //
               // lower triangular part
               T tmp = T(0);
               for (isize j = 0; j < n; ++j) {
-                tmp += common::dense::infty_norm(H.col(j).tail(n - j));
+                tmp += infty_norm(H.col(j).tail(n - j));
               }
               gamma = 1 / std::max(tmp / T(n), T(1));
               break;
@@ -412,7 +412,7 @@ struct RuizEquilibration
     if (execute_preconditioner) {
       delta.setOnes();
       c =
-        detail::ruiz_scale_qp_in_place({ common::from_eigen, delta },
+        detail::ruiz_scale_qp_in_place({ from_eigen, delta },
                                        logger_ptr,
                                        qp,
                                        epsilon,

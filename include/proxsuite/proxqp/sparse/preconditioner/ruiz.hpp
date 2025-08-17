@@ -333,6 +333,8 @@ ruiz_scale_qp_in_place( //
 }
 } // namespace detail
 
+;
+
 template<typename T, typename I>
 struct RuizEquilibration
 {
@@ -382,7 +384,7 @@ struct RuizEquilibration
     if (execute_preconditioner) {
       delta.setOnes();
       c = detail::ruiz_scale_qp_in_place( //
-        { common::from_eigen, delta },
+        { from_eigen, delta },
         qp,
         epsilon,
         max_iter,

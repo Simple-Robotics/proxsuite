@@ -37,6 +37,8 @@ namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 
+;
+
 template<typename T, typename I>
 void
 ldl_solve(VectorViewMut<T> sol,
@@ -159,8 +161,8 @@ ldl_iter_solve_noalias(
     }
     prev_err_norm = err_norm;
 
-    ldl_solve({ common::from_eigen, err },
-              { common::from_eigen, err },
+    ldl_solve({ from_eigen, err },
+              { from_eigen, err },
               n_tot,
               ldl,
               iterative_solver,
@@ -221,7 +223,7 @@ ldl_solve_in_place(
   proxsuite::linalg::veg::SliceMut<bool> active_constraints)
 {
   LDLT_TEMP_VEC_UNINIT(T, tmp, n_tot, stack);
-  ldl_iter_solve_noalias({ common::from_eigen, tmp },
+  ldl_iter_solve_noalias({ from_eigen, tmp },
                          rhs.as_const(),
                          init_guess,
                          results,
@@ -395,12 +397,9 @@ qp_solve(Results<T>& results,
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         // keep solutions but restart workspace and results
         results.cold_start(settings);
-        precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen, results.x });
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_primal_in_place({ from_eigen, results.x });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
@@ -411,23 +410,18 @@ qp_solve(Results<T>& results,
         results.cold_start(settings); // because there was already a solve,
                                       // precond was already computed if set so
         precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen,
+          { from_eigen,
             results.x }); // it contains the value given in entry for warm start
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
         // keep workspace and results solutions except statistics
         results.cleanup_statistics();
-        precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen, results.x });
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_primal_in_place({ from_eigen, results.x });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
     }
@@ -449,36 +443,29 @@ qp_solve(Results<T>& results,
       }
       case InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT: {
         precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen,
+          { from_eigen,
             results.x }); // meaningful for when there is an upate of the model
                           // and one wants to warm start with previous result
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
       case InitialGuessStatus::NO_INITIAL_GUESS: {
         break;
       }
       case InitialGuessStatus::WARM_START: {
-        precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen, results.x });
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_primal_in_place({ from_eigen, results.x });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
       case InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT: {
         precond.scale_primal_in_place(
-          { proxsuite::common::from_eigen,
+          { from_eigen,
             results.x }); // meaningful for when there is an upate of the model
                           // and one wants to warm start with previous result
-        precond.scale_dual_in_place_eq(
-          { proxsuite::common::from_eigen, results.y });
-        precond.scale_dual_in_place_in(
-          { proxsuite::common::from_eigen, results.z });
+        precond.scale_dual_in_place_eq({ from_eigen, results.y });
+        precond.scale_dual_in_place_in({ from_eigen, results.z });
         break;
       }
     }
@@ -498,9 +485,9 @@ qp_solve(Results<T>& results,
   isize n_in = data.n_in;
   isize n_tot = n + n_eq + n_in;
 
-  VectorViewMut<T> x{ common::from_eigen, results.x };
-  VectorViewMut<T> y{ common::from_eigen, results.y };
-  VectorViewMut<T> z{ common::from_eigen, results.z };
+  VectorViewMut<T> x{ from_eigen, results.x };
+  VectorViewMut<T> y{ from_eigen, results.y };
+  VectorViewMut<T> z{ from_eigen, results.z };
 
   proxsuite::linalg::sparse::MatMut<T, I> kkt = data.kkt_mut();
 
@@ -698,8 +685,8 @@ qp_solve(Results<T>& results,
       rhs.segment(n, n_eq) = b_scaled_e;
       rhs.segment(n + n_eq, n_in).setZero();
 
-      ldl_solve_in_place({ common::from_eigen, rhs },
-                         { common::from_eigen, no_guess },
+      ldl_solve_in_place({ from_eigen, rhs },
+                         { from_eigen, no_guess },
                          results,
                          data,
                          n_tot,
@@ -830,11 +817,11 @@ qp_solve(Results<T>& results,
         LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
         tmp.setZero();
         detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
-        precond.unscale_dual_residual_in_place({ common::from_eigen, tmp });
+        precond.unscale_dual_residual_in_place({ from_eigen, tmp });
 
-        precond.unscale_primal_in_place({ common::from_eigen, x_e });
-        precond.unscale_dual_in_place_eq({ common::from_eigen, y_e });
-        precond.unscale_dual_in_place_in({ common::from_eigen, z_e });
+        precond.unscale_primal_in_place({ from_eigen, x_e });
+        precond.unscale_dual_in_place_eq({ from_eigen, y_e });
+        precond.unscale_dual_in_place_in({ from_eigen, z_e });
         tmp *= 0.5;
         tmp += data.g;
         results.info.objValue = (tmp).dot(x_e);
@@ -1046,10 +1033,9 @@ qp_solve(Results<T>& results,
             //     break;
             // }
             ldl_solve_in_place(
-              { common::from_eigen, rhs },
-              { common::from_eigen,
-                dw_prev }, // todo: MAJ dw_prev avec dw pour avoir meilleur
-                           // guess sur les solve in place
+              { from_eigen, rhs },
+              { from_eigen, dw_prev }, // todo: MAJ dw_prev avec dw pour avoir
+                                       // meilleur guess sur les solve in place
               results,
               data,
               n_tot,
@@ -1610,11 +1596,11 @@ qp_solve(Results<T>& results,
   LDLT_TEMP_VEC_UNINIT(T, tmp, n, stack);
   tmp.setZero();
   detail::noalias_symhiv_add(tmp, qp_scaled.H.to_eigen(), x_e);
-  precond.unscale_dual_residual_in_place({ common::from_eigen, tmp });
+  precond.unscale_dual_residual_in_place({ from_eigen, tmp });
 
-  precond.unscale_primal_in_place({ common::from_eigen, x_e });
-  precond.unscale_dual_in_place_eq({ common::from_eigen, y_e });
-  precond.unscale_dual_in_place_in({ common::from_eigen, z_e });
+  precond.unscale_primal_in_place({ from_eigen, x_e });
+  precond.unscale_dual_in_place_eq({ from_eigen, y_e });
+  precond.unscale_dual_in_place_in({ from_eigen, z_e });
   tmp *= 0.5;
   tmp += data.g;
   results.info.objValue = (tmp).dot(x_e);

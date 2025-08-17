@@ -20,22 +20,21 @@ main()
   // Solve the problem using the dense backend
   // and suppose you want to change the accuracy to 1.E-9 and rho initial value
   // to 1.E-7
-  proxsuite::common::Results<T> results =
-    proxsuite::proxqp::dense::solve<T>(qp_random.H,
-                                       qp_random.g,
-                                       qp_random.A,
-                                       qp_random.b,
-                                       qp_random.C,
-                                       qp_random.l,
-                                       qp_random.u,
-                                       nullopt,
-                                       nullopt,
-                                       nullopt,
-                                       T(1.E-9),
-                                       nullopt,
-                                       nullopt,
-                                       nullopt,
-                                       T(1.E-7));
+  Results<T> results = proxsuite::proxqp::dense::solve<T>(qp_random.H,
+                                                          qp_random.g,
+                                                          qp_random.A,
+                                                          qp_random.b,
+                                                          qp_random.C,
+                                                          qp_random.l,
+                                                          qp_random.u,
+                                                          nullopt,
+                                                          nullopt,
+                                                          nullopt,
+                                                          T(1.E-9),
+                                                          nullopt,
+                                                          nullopt,
+                                                          nullopt,
+                                                          T(1.E-7));
   // print an optimal solution x,y and z
   std::cout << "optimal x: " << results.x << std::endl;
   std::cout << "optimal y: " << results.y << std::endl;

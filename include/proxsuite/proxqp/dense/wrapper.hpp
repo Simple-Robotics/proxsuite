@@ -144,7 +144,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::common::HessianType _hessian_type,
+     HessianType _hessian_type,
      DenseBackend _dense_backend)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
@@ -179,7 +179,7 @@ public:
      isize _n_in,
      bool _box_constraints,
      DenseBackend _dense_backend,
-     proxsuite::common::HessianType _hessian_type)
+     HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(_dense_backend,
                                             _dim,
                                             _n_eq,
@@ -211,7 +211,7 @@ public:
      isize _n_eq,
      isize _n_in,
      bool _box_constraints,
-     proxsuite::common::HessianType _hessian_type)
+     HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -278,7 +278,7 @@ public:
                                             _n_in,
                                             _box_constraints))
     , box_constraints(_box_constraints)
-    , hessian_type(proxsuite::common::HessianType::Dense)
+    , hessian_type(HessianType::Dense)
     , results(_dim, _n_eq, _n_in, _box_constraints, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, _box_constraints)
@@ -298,10 +298,7 @@ public:
    * @param _n_in number of inequality constraints.
    * @param _hessian_type specify that there are (or not) box constraints.
    */
-  QP(isize _dim,
-     isize _n_eq,
-     isize _n_in,
-     proxsuite::common::HessianType _hessian_type)
+  QP(isize _dim, isize _n_eq, isize _n_in, HessianType _hessian_type)
     : dense_backend(dense_backend_choice<T>(DenseBackend::Automatic,
                                             _dim,
                                             _n_eq,
@@ -333,7 +330,7 @@ public:
                                             _n_in,
                                             false))
     , box_constraints(false)
-    , hessian_type(proxsuite::common::HessianType::Dense)
+    , hessian_type(HessianType::Dense)
     , results(_dim, _n_eq, _n_in, false, dense_backend)
     , settings(dense_backend)
     , model(_dim, _n_eq, _n_in, false)
@@ -478,33 +475,32 @@ public:
     }
     PreconditionerStatus preconditioner_status;
     if (compute_preconditioner) {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::IDENTITY;
+      preconditioner_status = PreconditionerStatus::IDENTITY;
     }
-    proxsuite::common::dense::update_proximal_parameters(
+    common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::common::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
+    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
+      manual_minimal_H_eigenvalue, results, settings);
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::common::dense::setup(H,
-                                    g,
-                                    A,
-                                    b,
-                                    C,
-                                    l,
-                                    u,
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
+    common::dense::setup(H,
+                         g,
+                         A,
+                         b,
+                         C,
+                         l,
+                         u,
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         settings,
+                         model,
+                         work,
+                         results,
+                         box_constraints,
+                         ruiz,
+                         preconditioner_status,
+                         hessian_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -684,32 +680,31 @@ public:
     }
     PreconditionerStatus preconditioner_status;
     if (compute_preconditioner) {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::IDENTITY;
+      preconditioner_status = PreconditionerStatus::IDENTITY;
     }
-    proxsuite::common::dense::update_proximal_parameters(
+    common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::common::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
-    proxsuite::common::dense::setup(H,
-                                    g,
-                                    A,
-                                    b,
-                                    C,
-                                    l,
-                                    u,
-                                    l_box,
-                                    u_box,
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
+    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
+      manual_minimal_H_eigenvalue, results, settings);
+    common::dense::setup(H,
+                         g,
+                         A,
+                         b,
+                         C,
+                         l,
+                         u,
+                         l_box,
+                         u_box,
+                         settings,
+                         model,
+                         work,
+                         results,
+                         box_constraints,
+                         ruiz,
+                         preconditioner_status,
+                         hessian_type);
     work.is_initialized = true;
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -767,53 +762,52 @@ public:
     }
     PreconditionerStatus preconditioner_status;
     if (update_preconditioner) {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::KEEP;
+      preconditioner_status = PreconditionerStatus::KEEP;
     }
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt);
     if (matrix_update) {
       typedef optional<VecRef<T>> optional_VecRef;
-      proxsuite::common::dense::update(H,
-                                       g,
-                                       A,
-                                       b,
-                                       C,
-                                       l,
-                                       u,
-                                       optional_VecRef(nullopt),
-                                       optional_VecRef(nullopt),
-                                       model,
-                                       work,
-                                       box_constraints);
+      common::dense::update(H,
+                            g,
+                            A,
+                            b,
+                            C,
+                            l,
+                            u,
+                            optional_VecRef(nullopt),
+                            optional_VecRef(nullopt),
+                            model,
+                            work,
+                            box_constraints);
     }
-    proxsuite::common::dense::update_proximal_parameters(
+    common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::common::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
+    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
+      manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::common::dense::setup(/* avoid double assignation */
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
+    common::dense::setup(/* avoid double assignation */
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         settings,
+                         model,
+                         work,
+                         results,
+                         box_constraints,
+                         ruiz,
+                         preconditioner_status,
+                         hessian_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -888,43 +882,42 @@ public:
     }
     PreconditionerStatus preconditioner_status;
     if (update_preconditioner) {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::common::PreconditionerStatus::KEEP;
+      preconditioner_status = PreconditionerStatus::KEEP;
     }
     const bool matrix_update =
       !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
         C == nullopt && u == nullopt && l == nullopt && u_box == nullopt &&
         l_box == nullopt);
     if (matrix_update) {
-      proxsuite::common::dense::update(
+      common::dense::update(
         H, g, A, b, C, l, u, l_box, u_box, model, work, box_constraints);
     }
-    proxsuite::common::dense::update_proximal_parameters(
+    common::dense::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::common::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
+    common::dense::update_default_rho_with_minimal_Hessian_eigen_value(
+      manual_minimal_H_eigenvalue, results, settings);
     typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::common::dense::setup(/* avoid double assignation */
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
+    common::dense::setup(/* avoid double assignation */
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_MatRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         optional_VecRef(nullopt),
+                         settings,
+                         model,
+                         work,
+                         results,
+                         box_constraints,
+                         ruiz,
+                         preconditioner_status,
+                         hessian_type);
 
     if (settings.compute_timings) {
       results.info.setup_time = work.timer.elapsed().user; // in microseconds
@@ -955,7 +948,7 @@ public:
              optional<VecRef<T>> y,
              optional<VecRef<T>> z)
   {
-    proxsuite::common::dense::warm_start(x, y, z, results, settings, model);
+    common::dense::warm_start(x, y, z, results, settings, model);
     qp_solve( //
       settings,
       model,
@@ -1012,34 +1005,33 @@ public:
  * criterion.
  */
 template<typename T>
-common::Results<T>
-solve(
-  optional<MatRef<T>> H,
-  optional<VecRef<T>> g,
-  optional<MatRef<T>> A,
-  optional<VecRef<T>> b,
-  optional<MatRef<T>> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
-  optional<VecRef<T>> x = nullopt,
-  optional<VecRef<T>> y = nullopt,
-  optional<VecRef<T>> z = nullopt,
-  optional<T> eps_abs = nullopt,
-  optional<T> eps_rel = nullopt,
-  optional<T> rho = nullopt,
-  optional<T> mu_eq = nullopt,
-  optional<T> mu_in = nullopt,
-  optional<bool> verbose = nullopt,
-  bool compute_preconditioner = true,
-  bool compute_timings = false,
-  optional<isize> max_iter = nullopt,
-  proxsuite::common::InitialGuessStatus initial_guess =
-    proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  bool check_duality_gap = false,
-  optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false,
-  optional<T> manual_minimal_H_eigenvalue = nullopt)
+Results<T>
+solve(optional<MatRef<T>> H,
+      optional<VecRef<T>> g,
+      optional<MatRef<T>> A,
+      optional<VecRef<T>> b,
+      optional<MatRef<T>> C,
+      optional<VecRef<T>> l,
+      optional<VecRef<T>> u,
+      optional<VecRef<T>> x = nullopt,
+      optional<VecRef<T>> y = nullopt,
+      optional<VecRef<T>> z = nullopt,
+      optional<T> eps_abs = nullopt,
+      optional<T> eps_rel = nullopt,
+      optional<T> rho = nullopt,
+      optional<T> mu_eq = nullopt,
+      optional<T> mu_in = nullopt,
+      optional<bool> verbose = nullopt,
+      bool compute_preconditioner = true,
+      bool compute_timings = false,
+      optional<isize> max_iter = nullopt,
+      InitialGuessStatus initial_guess =
+        InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      bool check_duality_gap = false,
+      optional<T> eps_duality_gap_abs = nullopt,
+      optional<T> eps_duality_gap_rel = nullopt,
+      bool primal_infeasibility_solving = false,
+      optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);
@@ -1142,36 +1134,35 @@ solve(
  * criterion.
  */
 template<typename T>
-common::Results<T>
-solve(
-  optional<MatRef<T>> H,
-  optional<VecRef<T>> g,
-  optional<MatRef<T>> A,
-  optional<VecRef<T>> b,
-  optional<MatRef<T>> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
-  optional<VecRef<T>> l_box,
-  optional<VecRef<T>> u_box,
-  optional<VecRef<T>> x = nullopt,
-  optional<VecRef<T>> y = nullopt,
-  optional<VecRef<T>> z = nullopt,
-  optional<T> eps_abs = nullopt,
-  optional<T> eps_rel = nullopt,
-  optional<T> rho = nullopt,
-  optional<T> mu_eq = nullopt,
-  optional<T> mu_in = nullopt,
-  optional<bool> verbose = nullopt,
-  bool compute_preconditioner = true,
-  bool compute_timings = false,
-  optional<isize> max_iter = nullopt,
-  proxsuite::common::InitialGuessStatus initial_guess =
-    proxsuite::common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  bool check_duality_gap = false,
-  optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false,
-  optional<T> manual_minimal_H_eigenvalue = nullopt)
+Results<T>
+solve(optional<MatRef<T>> H,
+      optional<VecRef<T>> g,
+      optional<MatRef<T>> A,
+      optional<VecRef<T>> b,
+      optional<MatRef<T>> C,
+      optional<VecRef<T>> l,
+      optional<VecRef<T>> u,
+      optional<VecRef<T>> l_box,
+      optional<VecRef<T>> u_box,
+      optional<VecRef<T>> x = nullopt,
+      optional<VecRef<T>> y = nullopt,
+      optional<VecRef<T>> z = nullopt,
+      optional<T> eps_abs = nullopt,
+      optional<T> eps_rel = nullopt,
+      optional<T> rho = nullopt,
+      optional<T> mu_eq = nullopt,
+      optional<T> mu_in = nullopt,
+      optional<bool> verbose = nullopt,
+      bool compute_preconditioner = true,
+      bool compute_timings = false,
+      optional<isize> max_iter = nullopt,
+      InitialGuessStatus initial_guess =
+        InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      bool check_duality_gap = false,
+      optional<T> eps_duality_gap_abs = nullopt,
+      optional<T> eps_duality_gap_rel = nullopt,
+      bool primal_infeasibility_solving = false,
+      optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
   isize n(0);
   isize n_eq(0);

@@ -25,20 +25,17 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
                "framework---"
             << std::endl;
   common::utils::rand::set_seed(1);
-  auto H = ::proxsuite::common::utils::rand::
-    sparse_positive_definite_rand_not_compressed(
-      dim, strong_convexity_factor, sparsity_factor);
-  auto A =
-    ::proxsuite::common::utils::rand::sparse_matrix_rand_not_compressed<T>(
-      n_eq, dim, sparsity_factor);
-  auto solution = ::proxsuite::common::utils::rand::vector_rand<T>(dim + n_eq);
+  auto H = ::utils::rand::sparse_positive_definite_rand_not_compressed(
+    dim, strong_convexity_factor, sparsity_factor);
+  auto A = ::utils::rand::sparse_matrix_rand_not_compressed<T>(
+    n_eq, dim, sparsity_factor);
+  auto solution = ::utils::rand::vector_rand<T>(dim + n_eq);
   auto primal_solution = solution.topRows(dim);
   auto dual_solution = solution.bottomRows(n_eq);
   auto b = A * primal_solution;
   auto g = -H * primal_solution - A.transpose() * dual_solution;
-  auto C =
-    ::proxsuite::common::utils::rand::sparse_matrix_rand_not_compressed<T>(
-      0, dim, sparsity_factor);
+  auto C = ::utils::rand::sparse_matrix_rand_not_compressed<T>(
+    0, dim, sparsity_factor);
   Eigen::Matrix<T, Eigen::Dynamic, 1> dual_init_in(n_in);
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(0);
   Eigen::Matrix<T, Eigen::Dynamic, 1> l(0);
@@ -49,7 +46,7 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_abs = eps_rel;
-  qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::WARM_START;
+  qp.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp.init(H, g, A, b, C, l, u);
   qp.solve(primal_solution, dual_solution, dual_init_in);
 
@@ -260,5 +257,5 @@ DOCTEST_TEST_CASE("infeasible qp")
   qp.solve();
 
   DOCTEST_CHECK(qp.results.info.status ==
-                proxsuite::common::QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE);
+                QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE);
 }

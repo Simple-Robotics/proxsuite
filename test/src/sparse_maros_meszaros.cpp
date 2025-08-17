@@ -8,6 +8,7 @@
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 
 using namespace proxsuite;
+using namespace proxsuite::common;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -18,20 +19,19 @@ compute_primal_dual_feasibility(const PreprocessedQpSparse& preprocessed,
                                 T& primal_feasibility,
                                 T& dual_feasibility)
 {
-  dual_feasibility = proxsuite::common::dense::infty_norm(
+  dual_feasibility = dense::infty_norm(
     preprocessed.H.selfadjointView<Eigen::Upper>() * results.x +
     preprocessed.g + preprocessed.AT * results.y + preprocessed.CT * results.z);
 
-  T prim_eq = proxsuite::common::dense::infty_norm(
-    preprocessed.AT.transpose() * results.x - preprocessed.b);
-  T prim_in =
-    std::max(proxsuite::common::dense::infty_norm(
-               preprocessed.AT.transpose() * results.x - preprocessed.b),
-             proxsuite::common::dense::infty_norm(
-               helpers::positive_part(preprocessed.CT.transpose() * results.x -
-                                      preprocessed.u) +
-               helpers::negative_part(preprocessed.CT.transpose() * results.x -
-                                      preprocessed.l)));
+  T prim_eq =
+    dense::infty_norm(preprocessed.AT.transpose() * results.x - preprocessed.b);
+  T prim_in = std::max(
+    dense::infty_norm(preprocessed.AT.transpose() * results.x - preprocessed.b),
+    dense::infty_norm(
+      helpers::positive_part(preprocessed.CT.transpose() * results.x -
+                             preprocessed.u) +
+      helpers::negative_part(preprocessed.CT.transpose() * results.x -
+                             preprocessed.l)));
   primal_feasibility = std::max(prim_eq, prim_in);
 }
 
@@ -153,8 +153,8 @@ TEST_CASE("sparse maros meszaros using the API")
 
       for (isize iter = 0; iter < 2; ++iter) {
         if (iter > 0)
-          qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::
-            WARM_START_WITH_PREVIOUS_RESULT;
+          qp.settings.initial_guess =
+            InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
         qp.solve();
 
         T primal_feasibility, dual_feasibility;
@@ -173,12 +173,12 @@ TEST_CASE("sparse maros meszaros using the API")
       {
         qp.solve();
 
-        CHECK(proxsuite::common::dense::infty_norm(
-                H.selfadjointView<Eigen::Upper>() * qp.results.x + g +
-                AT * qp.results.y + CT * qp.results.z) <=
-              2 * eps_abs_no_duality_gap);
-        CHECK(proxsuite::common::dense::infty_norm(
-                AT.transpose() * qp.results.x - b) <= eps_abs_no_duality_gap);
+        CHECK(
+          dense::infty_norm(H.selfadjointView<Eigen::Upper>() * qp.results.x +
+                            g + AT * qp.results.y + CT * qp.results.z) <=
+          2 * eps_abs_no_duality_gap);
+        CHECK(dense::infty_norm(AT.transpose() * qp.results.x - b) <=
+              eps_abs_no_duality_gap);
         if (n_in > 0) {
           CHECK((CT.transpose() * qp.results.x - l).minCoeff() >
                 -eps_abs_no_duality_gap);
@@ -196,8 +196,7 @@ TEST_CASE("sparse maros meszaros using the API")
       }
 
       {
-        qp.settings.initial_guess =
-          proxsuite::common::InitialGuessStatus::NO_INITIAL_GUESS;
+        qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
         qp.settings.check_duality_gap = true;
         qp.settings.eps_abs = eps_abs_with_duality_gap;
         qp.settings.eps_duality_gap_abs = eps_abs_with_duality_gap;

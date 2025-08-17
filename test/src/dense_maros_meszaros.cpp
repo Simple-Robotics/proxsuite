@@ -7,6 +7,7 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite;
+using namespace proxsuite::common;
 
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
@@ -85,8 +86,8 @@ char const* files[] = {
 TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
-  using isize = common::dense::isize;
-  proxsuite::common::Timer<T> timer;
+  using isize = dense::isize;
+  Timer<T> timer;
   T elapsed_time = 0.0;
 
   for (auto const* file : files) {
@@ -120,7 +121,7 @@ TEST_CASE("dense maros meszaros using the api")
       timer.stop();
       timer.start();
       proxqp::dense::QP<T> qp{
-        dim, n_eq, n_in, false, proxsuite::common::DenseBackend::Automatic
+        dim, n_eq, n_in, false, DenseBackend::Automatic
       }; // creating QP object
       qp.init(H, g, A, b, C, l, u);
 
@@ -132,8 +133,8 @@ TEST_CASE("dense maros meszaros using the api")
 
       for (size_t it = 0; it < 2; ++it) {
         if (it > 0)
-          qp.settings.initial_guess = proxsuite::common::InitialGuessStatus::
-            WARM_START_WITH_PREVIOUS_RESULT;
+          qp.settings.initial_guess =
+            InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 
         qp.solve();
         const auto& x = qp.results.x;

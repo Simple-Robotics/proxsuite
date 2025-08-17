@@ -1477,7 +1477,7 @@ DOCTEST_TEST_CASE(
   // std::cout << "x_wm :  " << x_wm << std::endl;
   // std::cout << "y_wm :  " << y_wm << std::endl;
   // std::cout << "z_wm :  " << z_wm << std::endl;
-  qp.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp.solve(x_wm, y_wm, z_wm);
 
   pri_res = std::max(
@@ -1506,7 +1506,7 @@ DOCTEST_TEST_CASE(
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
-  qp2.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp2.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -1611,7 +1611,7 @@ DOCTEST_TEST_CASE(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -1647,7 +1647,7 @@ DOCTEST_TEST_CASE(
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
-  qp2.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp2.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -1703,7 +1703,7 @@ DOCTEST_TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -1738,7 +1738,7 @@ DOCTEST_TEST_CASE(
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -1794,7 +1794,7 @@ DOCTEST_TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -1828,7 +1828,7 @@ DOCTEST_TEST_CASE(
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
-  qp2.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp2.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -1853,7 +1853,7 @@ DOCTEST_TEST_CASE(
   qp2.solve(x, y, z);
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp.update(
     nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, false);
   qp.solve();
@@ -1923,7 +1923,7 @@ DOCTEST_TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -1957,7 +1957,7 @@ DOCTEST_TEST_CASE(
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
-  qp2.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp2.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -1982,7 +1982,7 @@ DOCTEST_TEST_CASE(
   qp2.solve(x, y, z);
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   qp.update(
     nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt, true);
   qp.solve();
@@ -2052,7 +2052,7 @@ DOCTEST_TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -2091,7 +2091,7 @@ DOCTEST_TEST_CASE(
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -2150,7 +2150,7 @@ DOCTEST_TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,
@@ -2218,7 +2218,7 @@ DOCTEST_TEST_CASE(
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -2295,7 +2295,7 @@ TEST_CASE(
   osqp::dense::QP<T> qp(dim, n_eq, n_in);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with no initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -2428,7 +2428,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with equality constrained initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -2561,7 +2561,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with warm start with previous result and first solve
   // with "
@@ -2602,7 +2602,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp.solve();
   pri_res = std::max(
@@ -2699,7 +2699,7 @@ TEST_CASE(
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with warm start with previous result and first solve
   // with "
@@ -2740,7 +2740,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp.solve();
   pri_res = std::max(
@@ -2838,7 +2838,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with cold start with previous result and first solve
   // with "
@@ -2879,7 +2879,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp.solve();
   pri_res = std::max(
@@ -2975,7 +2975,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with warm start and first solve with no initial guess"
   //  << std::endl;
@@ -3013,7 +3013,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // "
   //  << qp.results.info.solve_time << std::endl;
 
-  qp.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp.settings.initial_guess = InitialGuessStatus::WARM_START;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp.solve(qp.results.x, qp.results.y, qp.results.z);
   pri_res = std::max(
@@ -3109,7 +3109,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with warm start and first solve with no initial guess"
   //  << std::endl;
@@ -3157,7 +3157,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
            qp_random.u);
   qp2.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp2.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp2.settings.initial_guess = InitialGuessStatus::WARM_START;
   // std::cout << "dirty workspace for qp2 : " << qp2.work.dirty << std::endl;
   qp2.solve(qp.results.x, qp.results.y, qp.results.z);
   pri_res = std::max(
@@ -3206,7 +3206,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with no initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -3353,7 +3353,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with equality constrained initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -3501,7 +3501,7 @@ TEST_CASE(
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with warm start with previous result and first solve
   // with "
@@ -3542,7 +3542,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp_random.H *= 2.;
   qp_random.g = common::utils::rand::vector_rand<T>(dim);
@@ -3652,7 +3652,7 @@ TEST_CASE(
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with warm start with previous result and first solve
   // with "
@@ -3693,7 +3693,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp_random.H *= 2.;
   qp_random.g = common::utils::rand::vector_rand<T>(dim);
@@ -3802,7 +3802,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
 
   // std::cout << "Test with cold start with previous result and first solve
   // with "
@@ -3843,7 +3843,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 
   qp.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   qp_random.H *= 2.;
   qp_random.g = common::utils::rand::vector_rand<T>(dim);
@@ -3951,7 +3951,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test with warm start and first solve with no initial guess"
   //  << std::endl;
@@ -3989,7 +3989,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
   // "
   //  << qp.results.info.solve_time << std::endl;
 
-  qp.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp.settings.initial_guess = InitialGuessStatus::WARM_START;
   // std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
   auto x_wm = qp.results.x; // keep previous result
   auto y_wm = qp.results.y;
@@ -4139,7 +4139,7 @@ TEST_CASE(
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test initializaton with rho for different initial guess"
   //  << std::endl;
@@ -4183,7 +4183,7 @@ TEST_CASE(
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4221,7 +4221,7 @@ TEST_CASE(
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp3.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4259,7 +4259,7 @@ TEST_CASE(
   qp4.settings.eps_abs = eps_abs;
   qp4.settings.eps_rel = 0;
   qp4.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   qp4.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4296,7 +4296,7 @@ TEST_CASE(
   osqp::dense::QP<T> qp5(dim, n_eq, n_in);
   qp5.settings.eps_abs = eps_abs;
   qp5.settings.eps_rel = 0;
-  qp5.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp5.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp5.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4349,7 +4349,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test g update for different initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -4406,7 +4406,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp2.init(qp_random.H,
            old_g,
            qp_random.A,
@@ -4455,7 +4455,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp3.init(qp_random.H,
            old_g,
            qp_random.A,
@@ -4504,7 +4504,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   qp4.settings.eps_abs = eps_abs;
   qp4.settings.eps_rel = 0;
   qp4.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   qp4.init(qp_random.H,
            old_g,
            qp_random.A,
@@ -4552,7 +4552,7 @@ TEST_CASE("ProxQP::dense: Test g update for different initial guess")
   osqp::dense::QP<T> qp5(dim, n_eq, n_in);
   qp5.settings.eps_abs = eps_abs;
   qp5.settings.eps_rel = 0;
-  qp5.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp5.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp5.init(qp_random.H,
            old_g,
            qp_random.A,
@@ -4616,7 +4616,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test A update for different initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -4673,7 +4673,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4722,7 +4722,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp3.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4771,7 +4771,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   qp4.settings.eps_abs = eps_abs;
   qp4.settings.eps_rel = 0;
   qp4.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   qp4.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4819,7 +4819,7 @@ TEST_CASE("ProxQP::dense: Test A update for different initial guess")
   osqp::dense::QP<T> qp5(dim, n_eq, n_in);
   qp5.settings.eps_abs = eps_abs;
   qp5.settings.eps_rel = 0;
-  qp5.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp5.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp5.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -4883,7 +4883,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // std::cout << "Test rho update for different initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -4946,7 +4946,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp2.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -5003,7 +5003,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   qp3.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -5060,7 +5060,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   qp4.settings.eps_abs = eps_abs;
   qp4.settings.eps_rel = 0;
   qp4.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   qp4.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -5116,7 +5116,7 @@ TEST_CASE("ProxQP::dense: Test rho update for different initial guess")
   osqp::dense::QP<T> qp5(dim, n_eq, n_in);
   qp5.settings.eps_abs = eps_abs;
   qp5.settings.eps_rel = 0;
-  qp5.settings.initial_guess = common::InitialGuessStatus::WARM_START;
+  qp5.settings.initial_guess = InitialGuessStatus::WARM_START;
   qp5.init(qp_random.H,
            qp_random.g,
            qp_random.A,
@@ -5190,7 +5190,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 
   // std::cout << "Test rho update for different initial guess" << std::endl;
   // std::cout << "dirty workspace before any solving: " << qp.work.dirty
@@ -5258,7 +5258,7 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   qp2.init(qp_random.H,
            g,
            qp_random.A,
@@ -5317,7 +5317,7 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5357,7 +5357,7 @@ DOCTEST_TEST_CASE(
             compute_preconditioner,
             1.e-6);
   qp.settings.initial_guess =
-    proxsuite::common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 
   DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
@@ -5379,7 +5379,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5415,7 +5415,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5462,7 +5462,7 @@ DOCTEST_TEST_CASE(
              1.e-6,
              1.e-3);
   qp3.settings.initial_guess =
-    proxsuite::common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
   DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5509,9 +5509,9 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5570,9 +5570,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5608,9 +5608,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5702,9 +5702,9 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5763,9 +5763,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5801,9 +5801,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5894,9 +5894,9 @@ DOCTEST_TEST_CASE(
   bool compute_preconditioner = true;
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5954,9 +5954,9 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
-  qp2.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp2.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5991,9 +5991,9 @@ DOCTEST_TEST_CASE(
 
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
-  qp3.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp3.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6085,7 +6085,7 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6116,7 +6116,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(dua_res <= eps_abs);
 
   qp.settings.initial_guess =
-    proxsuite::common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
@@ -6163,7 +6163,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6185,7 +6185,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   qp2.settings.initial_guess =
-    proxsuite::common::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   for (isize iter = 0; iter < 10; ++iter) {
     // warm start with previous result used, hence if the qp is small and
     // simple, the parameters should not changed during first solve, and also
@@ -6213,7 +6213,7 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.verbose = false;
@@ -6322,9 +6322,9 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6400,9 +6400,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6447,9 +6447,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+                InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6551,9 +6551,9 @@ DOCTEST_TEST_CASE(
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6629,9 +6629,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6676,9 +6676,9 @@ DOCTEST_TEST_CASE(
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
-    common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
+    InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+                InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6779,9 +6779,9 @@ DOCTEST_TEST_CASE(
   bool compute_preconditioner = true;
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6856,9 +6856,9 @@ DOCTEST_TEST_CASE(
 
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
-  qp2.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp2.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp2.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6902,9 +6902,9 @@ DOCTEST_TEST_CASE(
 
   // conter factual check with another QP object starting at the updated model
   osqp::dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
-  qp3.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp3.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   DOCTEST_CHECK(qp3.settings.initial_guess ==
-                common::InitialGuessStatus::NO_INITIAL_GUESS);
+                InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6997,7 +6997,7 @@ TEST_CASE("ProxQP::dense: init must be called before update")
 
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   // call update without init, update calls init internally
   qp.update(qp_random.H,
@@ -7106,7 +7106,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     // qp_compare.settings.max_iter_in = 10;
     // qp_compare.settings.verbose = true;
     // qp_compare.settings.initial_guess =
-    // common::InitialGuessStatus::NO_INITIAL_GUESS;
+    // InitialGuessStatus::NO_INITIAL_GUESS;
     // qp_compare.init(qp_random.H,
     //                 qp_random.g,
     //                 qp_random.A,
@@ -7122,7 +7122,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     osqp::dense::QP<T> qp(dim, n_eq, n_in, true);
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7185,7 +7185,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     if (i == 294 || i == 715 || i == 782) {
       qp.settings.verbose = true;
     }
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
     qp.init(qp_random.H,
             qp_random.g,
@@ -7278,8 +7278,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     osqp::dense::QP<T> qp_compare(dim, n_eq, dim, false);
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;
-    qp_compare.settings.initial_guess =
-      common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp_compare.settings.compute_preconditioner = true;
     qp_compare.init(qp_random.H,
                     qp_random.g,
@@ -7314,7 +7313,7 @@ TEST_CASE("ProxQP::dense: check ordering of z when there are box constraints")
     osqp::dense::QP<T> qp(dim, n_eq, n_in, true);
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.settings.compute_preconditioner = true;
     qp.init(qp_random.H,
             qp_random.g,
@@ -7368,7 +7367,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
   l_box.array() -= 1.E2;
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 
   qp.init(qp_random.H,
           qp_random.g,
@@ -7444,7 +7443,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 //   isize n_in(dim / 4);
 //   T strong_convexity_factor(1.e-2);
 //   for (isize i = 0; i < 20; ++i) {
-//     ::proxsuite::common::utils::rand::set_seed(i);
+//     ::utils::rand::set_seed(i);
 //     common::dense::Model<T> qp_random =
 //     common::utils::dense_strongly_convex_qp(
 //       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -7455,7 +7454,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 //     // create infeasible problem
 //     qp_random.b.array() += T(10.);
 //     qp_random.u.array() -= T(100.);
-//     qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+//     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
 //     qp.settings.primal_infeasibility_solving = true;
 //     qp.settings.eps_primal_inf = T(1.E-4);
 //     qp.settings.eps_dual_inf = T(1.E-4);
@@ -7555,7 +7554,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   T strong_convexity_factor(1.e-2);
   for (isize i = 0; i < 1; ++i) {
     // trivial test
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7563,8 +7562,8 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().setOnes();
     qp_random.H.diagonal().tail(1).setConstant(-1.);
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7573,7 +7572,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7594,7 +7593,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7604,8 +7603,8 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7614,7 +7613,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7634,7 +7633,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7645,8 +7644,8 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::ExactMethod,
         1.E-6,
@@ -7655,7 +7654,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7686,7 +7685,7 @@ TEST_CASE(
   T strong_convexity_factor(1.e-2);
   for (isize i = 0; i < 1; ++i) {
     // trivial test
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7697,7 +7696,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7718,7 +7717,7 @@ TEST_CASE(
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7731,7 +7730,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7751,7 +7750,7 @@ TEST_CASE(
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7765,7 +7764,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7796,7 +7795,7 @@ TEST_CASE(
   T strong_convexity_factor(1.e-2);
   for (isize i = 0; i < 1; ++i) {
     // trivial test
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7804,8 +7803,8 @@ TEST_CASE(
     qp_random.H.diagonal().setOnes();
     qp_random.H.diagonal().tail(1).setConstant(-0.5);
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7814,7 +7813,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7835,7 +7834,7 @@ TEST_CASE(
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7845,8 +7844,8 @@ TEST_CASE(
     qp_random.H.diagonal().array() += random_diag.array();
     T minimal_eigenvalue = qp_random.H.diagonal().minCoeff();
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7855,7 +7854,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7875,7 +7874,7 @@ TEST_CASE(
   n_eq = dim;
   n_in = dim;
   for (isize i = 0; i < 20; ++i) {
-    ::proxsuite::common::utils::rand::set_seed(i);
+    ::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7887,8 +7886,8 @@ TEST_CASE(
       qp_random.H, Eigen::EigenvaluesOnly);
     T minimal_eigenvalue = T(es.eigenvalues().minCoeff());
 
-    T estimate_minimal_eigen_value = proxsuite::common::dense::
-      estimate_minimal_eigen_value_of_symmetric_matrix(
+    T estimate_minimal_eigen_value =
+      dense::estimate_minimal_eigen_value_of_symmetric_matrix(
         qp_random.H,
         common::EigenValueEstimateMethodOption::PowerIteration,
         1.E-6,
@@ -7897,7 +7896,7 @@ TEST_CASE(
     osqp::dense::QP<T> qp(dim, n_eq, n_in);
     qp.settings.max_iter = 1;
     qp.settings.max_iter_in = 1;
-    qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+    qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -7952,7 +7951,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
   Eigen::Matrix<double, 2, 2, Eigen::ColMajor> H;
   Eigen::VectorXd dw(2), rhs(2), err_v(2);
   // trivial test
-  ::proxsuite::common::utils::rand::set_seed(1234);
+  ::utils::rand::set_seed(1234);
   common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
@@ -7961,7 +7960,7 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
   qp_random.H.diagonal().tail(1).setConstant(-0.5);
   H = qp_random.H;
   PROXSUITE_EIGEN_MALLOC_NOT_ALLOWED();
-  proxsuite::common::dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
+  dense::power_iteration(H, dw, rhs, err_v, 1.E-6, 10000);
   PROXSUITE_EIGEN_MALLOC_ALLOWED();
 }
 
@@ -7987,8 +7986,8 @@ TEST_CASE("ProxQP::dense: test memory allocation when estimating biggest "
 //     n_eq,
 //     n_in,
 //     false,
-//     proxsuite::common::HessianType::Dense,
-//     proxsuite::common::DenseBackend::PrimalLDLT
+//     HessianType::Dense,
+//     DenseBackend::PrimalLDLT
 //   }; // creating QP object
 //   T eps_abs = T(1e-7);
 //   qp.settings.eps_abs = eps_abs;

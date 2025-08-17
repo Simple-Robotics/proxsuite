@@ -21,7 +21,7 @@ main()
   proxqp::dense::QP<T> qp(
     dim, n_eq, n_in); // create the QP
                       // initialize the model, along with another rho parameter
-  qp.settings.initial_guess = common::InitialGuessStatus::NO_INITIAL_GUESS;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
   qp.init(qp_random.H,
           qp_random.g,
           qp_random.A,

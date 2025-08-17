@@ -15,12 +15,11 @@ main()
 
   T p = 0.15;            // level of sparsity
   T conditioning = 10.0; // conditioning level for H
-  auto H = ::proxsuite::common::utils::rand::sparse_positive_definite_rand(
-    n, conditioning, p);
-  auto g = ::proxsuite::common::utils::rand::vector_rand<T>(n);
-  auto A = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
-  auto C = ::proxsuite::common::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
-  auto x_sol = ::proxsuite::common::utils::rand::vector_rand<T>(n);
+  auto H = ::utils::rand::sparse_positive_definite_rand(n, conditioning, p);
+  auto g = ::utils::rand::vector_rand<T>(n);
+  auto A = ::utils::rand::sparse_matrix_rand<T>(n_eq, n, p);
+  auto C = ::utils::rand::sparse_matrix_rand<T>(n_in, n, p);
+  auto x_sol = ::utils::rand::vector_rand<T>(n);
   auto b = A * x_sol;
   auto l = C * x_sol;
   auto u = (l.array() + 10).matrix().eval();
@@ -40,8 +39,7 @@ main()
             nullopt); // update H with H_new, it will work
   qp.solve();
   // generate H2 with another sparsity structure
-  auto H2 = ::proxsuite::common::utils::rand::sparse_positive_definite_rand(
-    n, conditioning, p);
+  auto H2 = ::utils::rand::sparse_positive_definite_rand(n, conditioning, p);
   qp.update(H2,
             nullopt,
             nullopt,
@@ -50,7 +48,7 @@ main()
             nullopt,
             nullopt); // nothing will happen
   // if only a vector changes, then the update takes effect
-  auto g_new = ::proxsuite::common::utils::rand::vector_rand<T>(n);
+  auto g_new = ::utils::rand::vector_rand<T>(n);
   qp.update(nullopt, g, nullopt, nullopt, nullopt, nullopt, nullopt);
   qp.solve(); // it solves the problem with another vector
   // to solve the problem with H2 matrix create a new qp object
