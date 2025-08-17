@@ -139,6 +139,7 @@ struct Results
         info.rho = 1.E-6;
         break;
     }
+    // Arbitrary values of mu
     info.mu_eq_inv = 1e3;
     info.mu_eq = 1e-3;
     info.mu_in_inv = 1e1;
@@ -199,6 +200,7 @@ struct Results
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
   {
+    // Arbitrary values of mu
     info.rho = 1e-6;
     info.mu_eq_inv = 1e3;
     info.mu_eq = 1e-3;
