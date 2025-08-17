@@ -18,7 +18,7 @@
 #     adaptive_mu_interval=50,
 #     adaptive_mu_tolerance=5.0,
 #     polishing=False,
-#     delta_osqp=1e-6,
+#     delta=1e-6,
 #     polish_refine_iter=3,
 #     verbose_test_settings=True,
 #     verbose_solver=False,

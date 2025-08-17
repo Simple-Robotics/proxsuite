@@ -242,7 +242,7 @@ public:
     this->settings.frequence_infeasibility_check = 1;
     this->settings.default_H_eigenvalue_estimate = 0.;
 
-    this->settings.alpha_osqp = 1.6;
+    this->settings.alpha = 1.6;
     this->settings.mu_max_eq = 1E3;
     this->settings.mu_max_in = 1E6;
     this->settings.mu_min_eq_inv = 1E-3;
@@ -251,7 +251,7 @@ public:
     this->settings.adaptive_mu_interval = 50;
     this->settings.adaptive_mu_tolerance = 5.;
     this->settings.polishing = false;
-    this->settings.delta_osqp = 1E-6;
+    this->settings.delta = 1E-6;
     this->settings.polish_refine_iter = 3;
   }
   /*!

@@ -142,7 +142,7 @@ struct Settings
   T default_H_eigenvalue_estimate;
 
   // OSQP
-  T alpha_osqp;
+  T alpha;
 
   T mu_max_eq;
   T mu_max_in;
@@ -154,7 +154,7 @@ struct Settings
   T adaptive_mu_tolerance;
 
   bool polishing;
-  T delta_osqp;
+  T delta;
   isize polish_refine_iter;
 
   /*!
@@ -224,7 +224,7 @@ struct Settings
    * quadratic cost H
    * @param default_H_eigenvalue_estimate default H eigenvalue estimate (i.e.,
    * if we make a model update and H does not change this one is used)
-   * @param alpha_osqp (OSQP): alpha parameter in ADMM
+   * @param alpha (OSQP): alpha parameter in ADMM
    * @param mu_max_eq (OSQP): maximum value for mu_eq
    * @param mu_max_in (OSQP): maximum value for mu_in
    * @param mu_min_eq_inv (OSQP): minimum value for mu_eq_inv
@@ -235,7 +235,7 @@ struct Settings
    * @param adaptive_mu_tolerance (OSQP): minimum ratio between old and new mu
    * @param polishing (OSQP): if set to true, polish the solution obtained from
    * ADMM
-   * @param delta_osqp (OSQP): delta parameter in solution polishing
+   * @param delta (OSQP): delta parameter in solution polishing
    * @param polish_refine_iter (OSQP): number of iterative refinements in
    * solution polishing
    */
@@ -288,7 +288,7 @@ struct Settings
     bool primal_infeasibility_solving = false,
     isize frequence_infeasibility_check = 1,
     T default_H_eigenvalue_estimate = 0.,
-    T alpha_osqp = 1.6,
+    T alpha = 1.6,
     T mu_max_eq = 1e3,
     T mu_max_in = 1e6,
     T mu_min_eq_inv = 1e-3,
@@ -297,7 +297,7 @@ struct Settings
     isize adaptive_mu_interval = 50,
     T adaptive_mu_tolerance = 5.,
     bool polishing = false,
-    T delta_osqp = 1e-6,
+    T delta = 1e-6,
     isize polish_refine_iter = 3)
     : default_mu_eq(default_mu_eq)
     , default_mu_in(default_mu_in)
@@ -341,7 +341,7 @@ struct Settings
     , primal_infeasibility_solving(primal_infeasibility_solving)
     , frequence_infeasibility_check(frequence_infeasibility_check)
     , default_H_eigenvalue_estimate(default_H_eigenvalue_estimate)
-    , alpha_osqp(alpha_osqp)
+    , alpha(alpha)
     , mu_max_eq(mu_max_eq)
     , mu_max_in(mu_max_in)
     , mu_min_eq_inv(mu_min_eq_inv)
@@ -350,7 +350,7 @@ struct Settings
     , adaptive_mu_interval(adaptive_mu_interval)
     , adaptive_mu_tolerance(adaptive_mu_tolerance)
     , polishing(polishing)
-    , delta_osqp(delta_osqp)
+    , delta(delta)
     , polish_refine_iter(polish_refine_iter)
   {
     switch (dense_backend) {
@@ -419,7 +419,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
       settings2.frequence_infeasibility_check &&
     settings1.default_H_eigenvalue_estimate ==
       settings2.default_H_eigenvalue_estimate &&
-    settings1.alpha_osqp == settings2.alpha_osqp &&
+    settings1.alpha == settings2.alpha &&
     settings1.mu_max_eq == settings2.mu_max_eq &&
     settings1.mu_max_in == settings2.mu_max_in &&
     settings1.mu_min_eq_inv == settings2.mu_min_eq_inv &&
@@ -428,7 +428,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.adaptive_mu_interval == settings2.adaptive_mu_interval &&
     settings1.adaptive_mu_tolerance == settings2.adaptive_mu_tolerance &&
     settings1.polishing == settings2.polishing &&
-    settings1.delta_osqp == settings2.delta_osqp &&
+    settings1.delta == settings2.delta &&
     settings1.polish_refine_iter == settings2.polish_refine_iter;
   return value;
 }

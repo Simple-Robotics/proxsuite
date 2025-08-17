@@ -129,7 +129,7 @@ print_setup_header(const Settings<T>& qpsettings,
       }
       if (qpsettings.polishing) {
         std::cout << "          polishing: on, " << std::endl;
-        std::cout << "          delta: " << qpsettings.delta_osqp << ", "
+        std::cout << "          delta: " << qpsettings.delta << ", "
                   << std::endl;
         std::cout << "          polish_refine_iter: "
                   << qpsettings.polish_refine_iter << ". \n"

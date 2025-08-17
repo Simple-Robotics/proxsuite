@@ -80,12 +80,12 @@ admm_step(const Settings<T>& qpsettings,
   qpwork.zeta_tilde_in =
     qpresults.zeta_in + qpresults.info.mu_in * (qpwork.nu_in - qpresults.z);
 
-  qpresults.x = qpsettings.alpha_osqp * qpwork.x_tilde +
-                (1 - qpsettings.alpha_osqp) * qpresults.x;
+  qpresults.x =
+    qpsettings.alpha * qpwork.x_tilde + (1 - qpsettings.alpha) * qpresults.x;
 
   qpwork.zeta_eq_next = qpwork.b_scaled; // projection in [b, b]
-  qpwork.zeta_in_next = qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
-                        (1 - qpsettings.alpha_osqp) * qpresults.zeta_in +
+  qpwork.zeta_in_next = qpsettings.alpha * qpwork.zeta_tilde_in +
+                        (1 - qpsettings.alpha) * qpresults.zeta_in +
                         qpresults.info.mu_in * qpresults.z;
   if (box_constraints) {
     qpwork.zeta_in_next.head(qpmodel.n_in) = qpwork.l_scaled.cwiseMax(
@@ -97,16 +97,14 @@ admm_step(const Settings<T>& qpsettings,
       qpwork.l_scaled.cwiseMax(qpwork.zeta_in_next.cwiseMin(qpwork.u_scaled));
   }
 
-  qpresults.y =
-    qpresults.y +
-    qpresults.info.mu_eq_inv *
-      (qpsettings.alpha_osqp * qpwork.zeta_tilde_eq +
-       (1 - qpsettings.alpha_osqp) * qpresults.zeta_eq - qpwork.zeta_eq_next);
-  qpresults.z =
-    qpresults.z +
-    qpresults.info.mu_in_inv *
-      (qpsettings.alpha_osqp * qpwork.zeta_tilde_in +
-       (1 - qpsettings.alpha_osqp) * qpresults.zeta_in - qpwork.zeta_in_next);
+  qpresults.y = qpresults.y + qpresults.info.mu_eq_inv *
+                                (qpsettings.alpha * qpwork.zeta_tilde_eq +
+                                 (1 - qpsettings.alpha) * qpresults.zeta_eq -
+                                 qpwork.zeta_eq_next);
+  qpresults.z = qpresults.z + qpresults.info.mu_in_inv *
+                                (qpsettings.alpha * qpwork.zeta_tilde_in +
+                                 (1 - qpsettings.alpha) * qpresults.zeta_in -
+                                 qpwork.zeta_in_next);
 
   qpresults.zeta_eq = qpwork.zeta_eq_next;
   qpresults.zeta_in = qpwork.zeta_in_next;
@@ -408,12 +406,12 @@ build_kkt_matrices_polishing( //
   k_plus_delta_k_polish = k_polish;
   k_plus_delta_k_polish.topLeftCorner(qpmodel.dim, qpmodel.dim)
     .diagonal()
-    .array() += qpsettings.delta_osqp;
+    .array() += qpsettings.delta;
   k_plus_delta_k_polish
     .bottomRightCorner(qpmodel.n_eq + numactive_inequalities,
                        qpmodel.n_eq + numactive_inequalities)
     .diagonal()
-    .array() -= qpsettings.delta_osqp;
+    .array() -= qpsettings.delta;
 }
 
 /*!
@@ -545,7 +543,7 @@ print_polishing_line( //
                 << "| primal residual=" << qpresults.info.pri_res
                 << " | dual residual=" << qpresults.info.dua_res
                 << " | duality gap=" << qpresults.info.duality_gap
-                << " | delta=" << qpsettings.delta_osqp << std::endl;
+                << " | delta=" << qpsettings.delta << std::endl;
       std::cout << "\033[1;34m[polishing: succeed]\033[0m" << std::endl;
       break;
     }
@@ -555,7 +553,7 @@ print_polishing_line( //
                 << "| primal residual=" << qpresults.info.pri_res
                 << " | dual residual=" << qpresults.info.dua_res
                 << " | duality gap=" << qpresults.info.duality_gap
-                << " | delta=" << qpsettings.delta_osqp << std::endl;
+                << " | delta=" << qpsettings.delta << std::endl;
       std::cout << "\033[1;34m[polishing: failed]\033[0m" << std::endl;
       break;
     }

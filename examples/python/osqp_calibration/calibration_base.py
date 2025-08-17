@@ -34,7 +34,7 @@ def solve_qp(
     adaptive_mu_interval: int = 50,
     adaptive_mu_tolerance: float = 5.0,
     polishing: bool = False,
-    delta_osqp: float = 1e-6,
+    delta: float = 1e-6,
     polish_refine_iter: int = 3,
     verbose_solver: bool = False,
     verbose_results_variables: bool = False,
@@ -85,7 +85,7 @@ def solve_qp(
     proxsuite_osqp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance
 
     proxsuite_osqp.settings.polishing = polishing
-    proxsuite_osqp.settings.delta_osqp = delta_osqp
+    proxsuite_osqp.settings.delta = delta
     proxsuite_osqp.settings.polish_refine_iter = polish_refine_iter
 
     proxsuite_osqp.settings.max_iter = max_iter
@@ -124,7 +124,7 @@ def solve_qp(
         adaptive_rho_interval=adaptive_mu_interval,
         adaptive_rho_tolerance=adaptive_mu_tolerance,
         polish=polishing,
-        delta=delta_osqp,
+        delta=delta,
         polish_refine_iter=polish_refine_iter,
     )
     res_source = prob.solve()
@@ -294,7 +294,7 @@ def test_calibration_qp(
     adaptive_mu_interval: int = 50,
     adaptive_mu_tolerance: float = 5.0,
     polishing: bool = False,
-    delta_osqp: float = 1e-6,
+    delta: float = 1e-6,
     polish_refine_iter: int = 3,
     verbose_test_settings: bool = False,
     verbose_solver: bool = False,
@@ -401,7 +401,7 @@ def test_calibration_qp(
             adaptive_mu_interval=adaptive_mu_interval,
             adaptive_mu_tolerance=adaptive_mu_tolerance,
             polishing=polishing,
-            delta_osqp=delta_osqp,
+            delta=delta,
             polish_refine_iter=polish_refine_iter,
             verbose_solver=verbose_solver,
             verbose_results_variables=verbose_results_variables,
