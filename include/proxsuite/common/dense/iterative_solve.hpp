@@ -21,11 +21,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::i32;
-using proxsuite::common::Results;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Workspace;
-
 /*!
  * Performs a refactorization of the KKT matrix used by the solver.
  *

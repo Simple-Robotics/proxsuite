@@ -5,7 +5,7 @@
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 int
 main()

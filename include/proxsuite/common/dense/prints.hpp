@@ -18,12 +18,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::QPSolver;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Workspace;
-
 template<typename T>
 void
 print_setup_header(const Settings<T>& qpsettings,

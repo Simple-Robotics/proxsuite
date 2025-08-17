@@ -162,7 +162,7 @@ char const* files[] = {
 TEST_CASE("dense maros meszaros using the api")
 {
   using T = double;
-  using isize = common::utils::isize;
+  using isize = common::dense::isize;
   proxsuite::common::Timer<T> timer;
   T elapsed_time = 0.0;
 

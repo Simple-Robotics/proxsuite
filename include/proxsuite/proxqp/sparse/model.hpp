@@ -13,8 +13,6 @@ namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 
-using proxsuite::common::isize;
-
 ///
 /// @brief This class stores the model of the QP problem.
 ///

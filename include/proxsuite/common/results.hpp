@@ -18,9 +18,6 @@
 namespace proxsuite {
 namespace common {
 
-using proxsuite::common::dense::isize;
-using proxsuite::common::dense::Vec;
-
 ///
 /// @brief This class stores the results statistics of PROXQP solvers with
 /// sparse and dense backends.
@@ -80,20 +77,20 @@ struct Results
 
   ///// SOLUTION STORAGE
 
-  Vec<T> x;
-  Vec<T> y;
-  Vec<T> z;
-  Vec<T> se; // optimal shift to the closest feasible problem wrt
-             // equality constraints
-  Vec<T> si; // optimal shift to the closest feasible problem wrt
-             // inequality constraints
+  dense::Vec<T> x;
+  dense::Vec<T> y;
+  dense::Vec<T> z;
+  dense::Vec<T> se; // optimal shift to the closest feasible problem wrt
+                    // equality constraints
+  dense::Vec<T> si; // optimal shift to the closest feasible problem wrt
+                    // inequality constraints
   proxsuite::linalg::veg::Vec<bool> active_constraints;
 
   Info<T> info;
 
   // OSQP
-  Vec<T> zeta_eq;
-  Vec<T> zeta_in;
+  dense::Vec<T> zeta_eq;
+  dense::Vec<T> zeta_in;
 
   ////// SOLUTION STATUS
   /*!

@@ -12,15 +12,12 @@
 #include <proxsuite/helpers/optional.hpp>
 
 #include <proxsuite/linalg/veg/vec.hpp>
+#include <proxsuite/proxqp/sparse/aliases.hpp>
 #include <proxsuite/proxqp/sparse/fwd.hpp>
 #include <iostream>
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
-
-using proxsuite::common::PreconditionerStatus;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
 
 template<typename T, typename I>
 T

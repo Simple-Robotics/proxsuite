@@ -16,9 +16,7 @@ namespace utils = proxsuite::common::utils;
 using I = utils::c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
-using proxsuite::common::HessianType;
-using proxsuite::common::isize;
-using proxsuite::common::Symmetry;
+using namespace proxsuite::common;
 
 TEST_CASE("upper part")
 {

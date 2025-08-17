@@ -7,8 +7,8 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite;
+using namespace proxsuite::common;
 using proxsuite::nullopt; // c++17 simply use std::nullopt
-using proxsuite::common::isize;
 
 int
 main()

@@ -11,8 +11,7 @@
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::isize;
-using proxsuite::common::rowmajor;
+using namespace proxsuite::common;
 
 DOCTEST_TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with inequality constraints"

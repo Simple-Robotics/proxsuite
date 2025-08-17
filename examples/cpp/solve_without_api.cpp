@@ -5,7 +5,7 @@
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 using Mat = common::dense::Mat<T>;
 using Vec = common::dense::Vec<T>;

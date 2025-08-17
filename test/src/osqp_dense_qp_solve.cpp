@@ -11,7 +11,7 @@
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 DOCTEST_TEST_CASE("proxqp::dense: test init with fixed sizes matrices")
 {

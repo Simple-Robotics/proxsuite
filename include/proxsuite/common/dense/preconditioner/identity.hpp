@@ -14,9 +14,6 @@ namespace common {
 namespace dense {
 namespace preconditioner {
 
-using proxsuite::common::VectorViewMut;
-using proxsuite::common::dense::QpViewBoxMut;
-
 struct IdentityPrecond
 {
 

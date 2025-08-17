@@ -7,6 +7,8 @@
 
 #ifndef PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
+
+#include <proxsuite/proxqp/dense/aliases.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/common/dense/helpers.hpp>
@@ -16,10 +18,6 @@
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
-
-using proxsuite::common::PreconditionerStatus;
-using proxsuite::common::dense::MatRef;
-using proxsuite::common::dense::VecRef;
 
 ///
 /// @brief This class defines the API of PROXQP solver with dense backend.

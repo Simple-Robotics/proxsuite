@@ -8,8 +8,7 @@
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::colmajor;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 template<typename T, common::Layout L>
 using Mat =

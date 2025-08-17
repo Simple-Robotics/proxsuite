@@ -11,13 +11,14 @@
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
+#include <proxsuite/linalg/veg/vec.hpp>
 #include <proxsuite/common/timings.hpp>
 #include <proxsuite/common/settings.hpp>
+#include "proxsuite/common/results.hpp"
 #include <proxsuite/common/dense/views.hpp>
-#include <proxsuite/linalg/veg/vec.hpp>
+#include "proxsuite/proxqp/sparse/aliases.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
-#include "proxsuite/common/results.hpp"
 #include "proxsuite/proxqp/sparse/utils.hpp"
 
 #include <memory>
@@ -27,12 +28,6 @@
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
-
-using proxsuite::common::MeritFunctionType;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::SparseBackend;
-using proxsuite::common::Timer;
 
 template<typename T, typename I>
 void

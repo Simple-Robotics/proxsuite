@@ -28,25 +28,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::DenseBackend;
-using proxsuite::common::EigenValueEstimateMethodOption;
-using proxsuite::common::from_eigen;
-using proxsuite::common::HessianType;
-using proxsuite::common::InitialGuessStatus;
-using proxsuite::common::isize;
-using proxsuite::common::PreconditionerStatus;
-using proxsuite::common::QPSolver;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::dense::infty_norm;
-using proxsuite::common::dense::Mat;
-using proxsuite::common::dense::MatRef;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::QpViewBoxMut;
-using proxsuite::common::dense::Vec;
-using proxsuite::common::dense::VecRef;
-using proxsuite::common::dense::Workspace;
-
 template<typename T,
          typename MatIn,
          typename VecIn1,

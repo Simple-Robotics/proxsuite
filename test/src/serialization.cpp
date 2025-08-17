@@ -108,7 +108,7 @@ generic_test(const T& object, const std::string& filename)
 
 using T = double;
 using namespace proxsuite;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
 {

@@ -18,14 +18,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using namespace proxsuite::common;
-
-using proxsuite::common::dense::isize;
-using proxsuite::common::dense::Mat;
-using proxsuite::common::dense::Vec;
-using proxsuite::common::dense::VecBool;
-using proxsuite::common::dense::VecISize;
-
 ///
 /// @brief This class defines the workspace of the dense solver.
 ///

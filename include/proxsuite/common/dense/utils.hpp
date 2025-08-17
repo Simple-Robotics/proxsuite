@@ -27,20 +27,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::from_eigen;
-using proxsuite::common::i64;
-using proxsuite::common::dense::infty_norm;
-
-using proxsuite::common::DenseBackend;
-using proxsuite::common::HessianType;
-using proxsuite::common::InitialGuessStatus;
-using proxsuite::common::QPSolverOutput;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::VectorViewMut;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Workspace;
-
 /*!
  * Derives the global primal residual of the QP problem.
  *

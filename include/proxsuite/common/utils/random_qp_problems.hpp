@@ -25,12 +25,6 @@ namespace utils {
 using c_int = long long;
 using c_float = double;
 
-using proxsuite::common::colmajor;
-using proxsuite::common::f32;
-using proxsuite::common::f64;
-using proxsuite::common::isize;
-using proxsuite::common::rowmajor;
-
 template<typename T, common::Layout L>
 using Mat = Eigen::Matrix<T,
                           Eigen::Dynamic,

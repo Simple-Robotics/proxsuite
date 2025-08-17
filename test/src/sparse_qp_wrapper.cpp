@@ -4283,10 +4283,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -4481,10 +4481,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -4678,10 +4678,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -4880,10 +4880,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -5083,10 +5083,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -5140,7 +5140,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
@@ -5166,7 +5166,7 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
@@ -5208,7 +5208,7 @@ DOCTEST_TEST_CASE(
   qp2.solve();
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
     qp2.solve();
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
@@ -5245,7 +5245,7 @@ DOCTEST_TEST_CASE(
            rho,
            mu_eq);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5276,7 +5276,7 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5311,10 +5311,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -5369,7 +5369,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
@@ -5395,7 +5395,7 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
@@ -5438,7 +5438,7 @@ DOCTEST_TEST_CASE(
   qp2.solve();
   DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
     qp2.solve();
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
@@ -5476,7 +5476,7 @@ DOCTEST_TEST_CASE(
            rho,
            mu_eq);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5506,7 +5506,7 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5541,10 +5541,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -5599,7 +5599,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
@@ -5625,7 +5625,7 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
@@ -5670,7 +5670,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
     DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
@@ -5712,7 +5712,7 @@ DOCTEST_TEST_CASE(
            rho,
            mu_eq);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5747,7 +5747,7 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5786,10 +5786,10 @@ DOCTEST_TEST_CASE(
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -5844,7 +5844,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(pri_res <= eps_abs);
   DOCTEST_CHECK(dua_res <= eps_abs);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
@@ -5870,7 +5870,7 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     qp.solve();
     DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
@@ -5915,7 +5915,7 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
   DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
     DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
@@ -5957,7 +5957,7 @@ DOCTEST_TEST_CASE(
            rho,
            mu_eq);
 
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -5992,7 +5992,7 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  for (isize iter = 0; iter < 10; ++iter) {
+  for (common::dense::isize iter = 0; iter < 10; ++iter) {
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
     DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
@@ -6023,10 +6023,10 @@ TEST_CASE("ProxQP::sparse: init must be called before update")
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
-  isize dim = 10;
+  common::dense::isize dim = 10;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
   ::proxsuite::common::utils::rand::set_seed(1);
   proxqp::sparse::SparseModel<T> qp_random =
@@ -6097,12 +6097,12 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-5);
   common::utils::rand::set_seed(1);
-  isize dim = 20;
+  common::dense::isize dim = 20;
 
-  isize n_eq(dim / 4);
-  isize n_in(dim / 4);
+  common::dense::isize n_eq(dim / 4);
+  common::dense::isize n_in(dim / 4);
   T strong_convexity_factor(1.e-2);
-  for (isize i = 0; i < 20; ++i) {
+  for (common::dense::isize i = 0; i < 20; ++i) {
     ::proxsuite::common::utils::rand::set_seed(i);
     proxqp::sparse::SparseModel<T> qp_random =
       common::utils::sparse_strongly_convex_qp(
@@ -6158,14 +6158,14 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //   double sparsity_factor = 0.25;
 //   T tol = T(1e-6);
 //   common::utils::rand::set_seed(1);
-//   isize dim = 2;
-//   isize n_eq(dim);
-//   isize n_in(dim);
+//   common::dense::isize dim = 2;
+//   common::dense::isize n_eq(dim);
+//   common::dense::isize n_in(dim);
 //   T strong_convexity_factor(1.e-2);
 //   dim = 50;
 //   n_eq = dim;
 //   n_in = dim;
-//   for (isize i = 0; i < 20; ++i) {
+//   for (common::dense::isize i = 0; i < 20; ++i) {
 //     ::proxsuite::common::utils::rand::set_seed(i);
 //     common::dense::Model<T> qp_random =
 //     common::utils::dense_strongly_convex_qp(
@@ -6201,7 +6201,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //   dim = 50;
 //   n_eq = dim;
 //   n_in = dim;
-//   for (isize i = 0; i < 20; ++i) {
+//   for (common::dense::isize i = 0; i < 20; ++i) {
 //     ::proxsuite::common::utils::rand::set_seed(i);
 //     common::dense::Model<T> qp_random =
 //     common::utils::dense_strongly_convex_qp(
@@ -6238,14 +6238,14 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
   double sparsity_factor = 0.25;
   T tol = T(1e-6);
   common::utils::rand::set_seed(1);
-  isize dim = 2;
-  isize n_eq(dim);
-  isize n_in(dim);
+  common::dense::isize dim = 2;
+  common::dense::isize n_eq(dim);
+  common::dense::isize n_in(dim);
   T strong_convexity_factor(1.e-2);
   dim = 50;
   n_eq = dim;
   n_in = dim;
-  for (isize i = 0; i < 20; ++i) {
+  for (common::dense::isize i = 0; i < 20; ++i) {
     ::proxsuite::common::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -6284,7 +6284,7 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
   dim = 50;
   n_eq = dim;
   n_in = dim;
-  for (isize i = 0; i < 20; ++i) {
+  for (common::dense::isize i = 0; i < 20; ++i) {
     ::proxsuite::common::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -6326,14 +6326,14 @@ TEST_CASE(
   double sparsity_factor = 0.25;
   T tol = T(1e-6);
   common::utils::rand::set_seed(1);
-  isize dim = 2;
-  isize n_eq(dim);
-  isize n_in(dim);
+  common::dense::isize dim = 2;
+  common::dense::isize n_eq(dim);
+  common::dense::isize n_in(dim);
   T strong_convexity_factor(1.e-2);
   dim = 50;
   n_eq = dim;
   n_in = dim;
-  for (isize i = 0; i < 20; ++i) {
+  for (common::dense::isize i = 0; i < 20; ++i) {
     ::proxsuite::common::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
@@ -6377,7 +6377,7 @@ TEST_CASE(
   dim = 50;
   n_eq = dim;
   n_in = dim;
-  for (isize i = 0; i < 20; ++i) {
+  for (common::dense::isize i = 0; i < 20; ++i) {
     ::proxsuite::common::utils::rand::set_seed(i);
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);

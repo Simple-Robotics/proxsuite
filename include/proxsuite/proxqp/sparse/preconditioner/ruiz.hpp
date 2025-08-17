@@ -7,6 +7,7 @@
 #define PROXSUITE_PROXQP_SPARSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/proxqp/sparse/fwd.hpp"
+#include "proxsuite/proxqp/sparse/aliases.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -20,8 +21,6 @@ enum struct Symmetry
 };
 
 namespace detail {
-
-using proxsuite::common::VectorViewMut;
 
 template<typename T, typename I>
 void
@@ -333,8 +332,6 @@ ruiz_scale_qp_in_place( //
   return c;
 }
 } // namespace detail
-
-using proxsuite::common::VectorViewMut;
 
 template<typename T, typename I>
 struct RuizEquilibration

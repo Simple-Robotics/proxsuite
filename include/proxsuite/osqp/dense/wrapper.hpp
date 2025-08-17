@@ -10,13 +10,11 @@
 
 #include <proxsuite/proxqp/dense/wrapper.hpp>
 #include <proxsuite/osqp/dense/solver.hpp>
+#include "proxsuite/osqp/dense/aliases.hpp"
 
 namespace proxsuite {
 namespace osqp {
 namespace dense {
-
-using proxsuite::common::dense::MatRef;
-using proxsuite::common::dense::VecRef;
 
 ///
 /// @brief This class defines the API of OSQP solver with dense backend.

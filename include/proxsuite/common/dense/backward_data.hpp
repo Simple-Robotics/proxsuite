@@ -16,9 +16,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::dense::isize;
-using proxsuite::common::dense::Vec;
-
 ///
 /// @brief This class stores the jacobians of PROXQP solvers with
 /// dense backends at a solutions wrt model parameters.

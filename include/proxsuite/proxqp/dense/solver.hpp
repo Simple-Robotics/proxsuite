@@ -9,12 +9,7 @@
 #define PROXSUITE_PROXQP_DENSE_SOLVER_HPP
 
 #include "proxsuite/fwd.hpp"
-#include "proxsuite/common/settings.hpp"
-#include "proxsuite/common/status.hpp"
-#include "proxsuite/common/results.hpp"
-#include "proxsuite/common/dense/views.hpp"
-#include "proxsuite/common/dense/model.hpp"
-#include "proxsuite/common/dense/workspace.hpp"
+#include "proxsuite/proxqp/dense/aliases.hpp"
 #include "proxsuite/common/dense/helpers.hpp"
 #include "proxsuite/common/dense/utils.hpp"
 #include "proxsuite/common/dense/prints.hpp"
@@ -26,25 +21,6 @@
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
-
-using proxsuite::common::i32;
-using proxsuite::common::i64;
-using proxsuite::common::isize;
-
-using proxsuite::common::from_eigen;
-using proxsuite::common::VectorViewMut;
-using proxsuite::common::dense::infty_norm;
-
-using proxsuite::common::DenseBackend;
-using proxsuite::common::HessianType;
-using proxsuite::common::InitialGuessStatus;
-using proxsuite::common::MeritFunctionType;
-using proxsuite::common::QPSolverOutput;
-
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Workspace;
 
 /*!
  * BCL rule for updating penalization parameters and accuracy variables.

@@ -15,12 +15,6 @@ namespace proxsuite {
 namespace common {
 namespace dense {
 
-using proxsuite::common::isize;
-using proxsuite::common::dense::BackwardData;
-using proxsuite::common::dense::Mat;
-using proxsuite::common::dense::SparseMat;
-using proxsuite::common::dense::Vec;
-
 ///
 /// @brief This class stores the model of the QP problem.
 ///

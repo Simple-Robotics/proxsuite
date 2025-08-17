@@ -9,43 +9,17 @@
 #define PROXSUITE_OSQP_DENSE_SOLVER_HPP
 
 #include "proxsuite/fwd.hpp"
-#include "proxsuite/common/status.hpp"
-#include "proxsuite/common/settings.hpp"
-#include "proxsuite/common/results.hpp"
-#include "proxsuite/common/dense/views.hpp"
-#include "proxsuite/common/dense/model.hpp"
-#include "proxsuite/common/dense/workspace.hpp"
+#include "proxsuite/osqp/dense/aliases.hpp"
 #include "proxsuite/common/dense/helpers.hpp"
 #include "proxsuite/common/dense/utils.hpp"
 #include "proxsuite/common/dense/prints.hpp"
-#include "proxsuite/common/dense/iterative_solve.hpp"
+
 #include <iostream>
 #include <iomanip>
 
 namespace proxsuite {
 namespace osqp {
 namespace dense {
-
-using namespace proxsuite::proxqp;
-
-using proxsuite::common::from_eigen;
-using proxsuite::common::i64;
-using proxsuite::common::PolishStatus;
-using proxsuite::common::QPSolverOutput;
-using proxsuite::common::VectorViewMut;
-using proxsuite::common::dense::infty_norm;
-using proxsuite::common::dense::Mat;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Vec;
-
-using proxsuite::common::DenseBackend;
-using proxsuite::common::HessianType;
-using proxsuite::common::InitialGuessStatus;
-using proxsuite::common::isize;
-using proxsuite::common::Results;
-using proxsuite::common::Settings;
-using proxsuite::common::dense::Model;
-using proxsuite::common::dense::Workspace;
 
 /*!
  * One iteration of the ADMM algorithm adapted in OSQP.
@@ -993,10 +967,10 @@ qp_solve( //
     qpwork.timer_polish.start();
 
     // ADMM solution
-    sparse::Vec<T> x_admm = qpresults.x;
-    sparse::Vec<T> y_admm = qpresults.y;
-    sparse::Vec<T> z_admm = qpresults.z;
-    sparse::Vec<T> zeta_in_admm = qpresults.zeta_in;
+    dense::Vec<T> x_admm = qpresults.x;
+    dense::Vec<T> y_admm = qpresults.y;
+    dense::Vec<T> z_admm = qpresults.z;
+    dense::Vec<T> zeta_in_admm = qpresults.zeta_in;
 
     T pri_res_admm = qpresults.info.pri_res;
     T dua_res_admm = qpresults.info.dua_res;

@@ -9,7 +9,7 @@ using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using proxsuite::common::isize;
+using namespace proxsuite::common;
 
 int
 main(int /*argc*/, const char** /*argv*/)
