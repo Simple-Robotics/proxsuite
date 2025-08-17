@@ -951,7 +951,7 @@ qp_solve( //
   // Solution polishing
   ///////////////////////
 
-  if (qpsettings.polishing &&
+  if (qpsettings.polish &&
       qpresults.info.status == QPSolverOutput::QPSOLVER_SOLVED) {
 
     // Timing polishing

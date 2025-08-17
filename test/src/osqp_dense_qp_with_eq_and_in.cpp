@@ -319,7 +319,7 @@ DOCTEST_TEST_CASE(
     osqp::dense::QP<T> qp{ dim, n_eq, n_in };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = eps_rel;
-    qp.settings.polishing = true;
+    qp.settings.polish = true;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -341,7 +341,7 @@ DOCTEST_TEST_CASE(
     osqp::dense::QP<T> qp2{ dim, n_eq, n_in };
     qp2.settings.eps_abs = eps_abs;
     qp2.settings.eps_rel = eps_rel;
-    qp2.settings.polishing = true;
+    qp2.settings.polish = true;
     qp2.settings.max_iter = 1;
     qp2.init(qp_random.H,
              qp_random.g,
@@ -364,7 +364,7 @@ DOCTEST_TEST_CASE(
     osqp::dense::QP<T> qp3{ dim, n_eq, n_in };
     qp3.settings.eps_abs = eps_abs;
     qp3.settings.eps_rel = eps_rel;
-    qp3.settings.polishing = true;
+    qp3.settings.polish = true;
     qp3.init(qp_random.H,
              qp_random.g,
              qp_random.A,

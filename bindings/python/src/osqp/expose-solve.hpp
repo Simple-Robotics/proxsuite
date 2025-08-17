@@ -84,7 +84,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
-    nanobind::arg("polishing") = false,
+    nanobind::arg("polish") = false,
     nanobind::arg("delta") = nanobind::none(),
     nanobind::arg("polish_refine_iter") = nanobind::none());
 
@@ -158,7 +158,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
-    nanobind::arg("polishing") = false,
+    nanobind::arg("polish") = false,
     nanobind::arg("delta") = nanobind::none(),
     nanobind::arg("polish_refine_iter") = nanobind::none());
 
@@ -229,7 +229,7 @@ solveDenseQp(nanobind::module_ m)
         nanobind::arg("adaptive_mu") = true,
         nanobind::arg("adaptive_mu_interval") = nanobind::none(),
         nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
-        nanobind::arg("polishing") = false,
+        nanobind::arg("polish") = false,
         nanobind::arg("delta") = nanobind::none(),
         nanobind::arg("polish_refine_iter") = nanobind::none(),
         nanobind::call_guard<nanobind::gil_scoped_release>());
@@ -306,7 +306,7 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
-    nanobind::arg("polishing") = false,
+    nanobind::arg("polish") = false,
     nanobind::arg("delta") = nanobind::none(),
     nanobind::arg("polish_refine_iter") = nanobind::none(),
     nanobind::call_guard<nanobind::gil_scoped_release>());

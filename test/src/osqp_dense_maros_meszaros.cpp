@@ -14,7 +14,7 @@ using namespace proxsuite::common;
 // Pass or fail with the settings:
 // eps_abs = 1e-3, eps_rel = 0.
 // adaptive_mu_update = true, adaptive_mu_interval = 50
-// polishing = false
+// polish = false
 
 // More details in /examples/python/osqp_calibration_dense_maros_meszaros.py
 // Commented problems fail in both OSQP Proxsuite and source code

@@ -238,7 +238,7 @@ DOCTEST_TEST_CASE(
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = eps_rel;
-    qp.settings.polishing = true;
+    qp.settings.polish = true;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,

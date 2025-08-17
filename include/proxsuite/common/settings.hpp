@@ -159,7 +159,7 @@ struct Settings
   isize adaptive_mu_interval;
   T adaptive_mu_tolerance;
 
-  bool polishing;
+  bool polish;
   T delta;
   isize polish_refine_iter;
 
@@ -239,7 +239,7 @@ struct Settings
    * @param adaptive_mu_interval (OSQP): minimum number of iterations before
    * updating mu
    * @param adaptive_mu_tolerance (OSQP): minimum ratio between old and new mu
-   * @param polishing (OSQP): if set to true, polish the solution obtained from
+   * @param polish (OSQP): if set to true, polish the solution obtained from
    * ADMM
    * @param delta (OSQP): delta parameter in solution polishing
    * @param polish_refine_iter (OSQP): number of iterative refinements in
@@ -302,7 +302,7 @@ struct Settings
     bool adaptive_mu = true,
     isize adaptive_mu_interval = 50,
     T adaptive_mu_tolerance = 5.,
-    bool polishing = false,
+    bool polish = false,
     T delta = 1e-6,
     isize polish_refine_iter = 3)
     : default_mu_eq(default_mu_eq)
@@ -355,7 +355,7 @@ struct Settings
     , adaptive_mu(adaptive_mu)
     , adaptive_mu_interval(adaptive_mu_interval)
     , adaptive_mu_tolerance(adaptive_mu_tolerance)
-    , polishing(polishing)
+    , polish(polish)
     , delta(delta)
     , polish_refine_iter(polish_refine_iter)
   {
@@ -433,7 +433,7 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.adaptive_mu == settings2.adaptive_mu &&
     settings1.adaptive_mu_interval == settings2.adaptive_mu_interval &&
     settings1.adaptive_mu_tolerance == settings2.adaptive_mu_tolerance &&
-    settings1.polishing == settings2.polishing &&
+    settings1.polish == settings2.polish &&
     settings1.delta == settings2.delta &&
     settings1.polish_refine_iter == settings2.polish_refine_iter;
   return value;

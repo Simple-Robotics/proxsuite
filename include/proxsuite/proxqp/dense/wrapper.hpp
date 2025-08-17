@@ -250,7 +250,7 @@ public:
     this->settings.adaptive_mu = true;
     this->settings.adaptive_mu_interval = 50;
     this->settings.adaptive_mu_tolerance = 5.;
-    this->settings.polishing = false;
+    this->settings.polish = false;
     this->settings.delta = 1E-6;
     this->settings.polish_refine_iter = 3;
   }

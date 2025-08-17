@@ -33,7 +33,7 @@ def solve_qp(
     adaptive_mu: bool = False,
     adaptive_mu_interval: int = 50,
     adaptive_mu_tolerance: float = 5.0,
-    polishing: bool = False,
+    polish: bool = False,
     delta: float = 1e-6,
     polish_refine_iter: int = 3,
     verbose_solver: bool = False,
@@ -84,7 +84,7 @@ def solve_qp(
     proxsuite_osqp.settings.adaptive_mu_interval = adaptive_mu_interval
     proxsuite_osqp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance
 
-    proxsuite_osqp.settings.polishing = polishing
+    proxsuite_osqp.settings.polish = polish
     proxsuite_osqp.settings.delta = delta
     proxsuite_osqp.settings.polish_refine_iter = polish_refine_iter
 
@@ -123,7 +123,7 @@ def solve_qp(
         adaptive_rho=adaptive_mu,
         adaptive_rho_interval=adaptive_mu_interval,
         adaptive_rho_tolerance=adaptive_mu_tolerance,
-        polish=polishing,
+        polish=polish,
         delta=delta,
         polish_refine_iter=polish_refine_iter,
     )
@@ -222,7 +222,7 @@ def solve_qp(
             print(mu_updates_source)
             print("")
 
-        if polishing:
+        if polish:
             print("status_polish")
             print("OSQP proxsuite")
             print(status_polish_to_string(status_polish_proxsuite, "proxsuite"))
@@ -293,7 +293,7 @@ def test_calibration_qp(
     adaptive_mu: bool = False,
     adaptive_mu_interval: int = 50,
     adaptive_mu_tolerance: float = 5.0,
-    polishing: bool = False,
+    polish: bool = False,
     delta: float = 1e-6,
     polish_refine_iter: int = 3,
     verbose_test_settings: bool = False,
@@ -400,7 +400,7 @@ def test_calibration_qp(
             adaptive_mu=adaptive_mu,
             adaptive_mu_interval=adaptive_mu_interval,
             adaptive_mu_tolerance=adaptive_mu_tolerance,
-            polishing=polishing,
+            polish=polish,
             delta=delta,
             polish_refine_iter=polish_refine_iter,
             verbose_solver=verbose_solver,
@@ -602,7 +602,7 @@ def test_calibration_qp(
     print("Number of tests: ", nb_tests, " | Tests failed: ", failed_tests)
     print("")
 
-    if polishing:
+    if polish:
         print(
             "diff criteria at a given dim:\n",
             "prec_polish =",
@@ -660,7 +660,7 @@ def test_calibration_qp(
         print(" ", diff_mu_updates_lst)
         print("")
 
-    if polishing:
+    if polish:
         print("  diff_status_polish_lst:")
         print(" ", diff_status_polish_lst)
         print("")

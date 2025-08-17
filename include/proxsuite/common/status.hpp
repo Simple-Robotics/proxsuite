@@ -42,10 +42,10 @@ enum struct PreconditionerStatus
 // POLISH (OSQP) STATUS
 enum struct PolishStatus
 {
-  POLISH_FAILED,             // polishing failed.
-  POLISH_NOT_RUN,            // polishing have not been run yet.
+  POLISH_FAILED,             // polish failed.
+  POLISH_NOT_RUN,            // polish have not been run yet.
   POLISH_SUCCEEDED,          // residuals are reduced.
-  POLISH_NO_ACTIVE_SET_FOUND // no active set detected, polishing skipped.
+  POLISH_NO_ACTIVE_SET_FOUND // no active set detected, polish skipped.
 };
 
 } // namespace common

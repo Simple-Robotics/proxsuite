@@ -127,15 +127,15 @@ print_setup_header(const Settings<T>& qpsettings,
       } else {
         std::cout << "          adaptive_mu: off. \n" << std::endl;
       }
-      if (qpsettings.polishing) {
-        std::cout << "          polishing: on, " << std::endl;
+      if (qpsettings.polish) {
+        std::cout << "          polish: on, " << std::endl;
         std::cout << "          delta: " << qpsettings.delta << ", "
                   << std::endl;
         std::cout << "          polish_refine_iter: "
                   << qpsettings.polish_refine_iter << ". \n"
                   << std::endl;
       } else {
-        std::cout << "          polishing: off. \n" << std::endl;
+        std::cout << "          polish: off. \n" << std::endl;
       }
       break;
     }
@@ -270,7 +270,7 @@ print_solver_statistics( //
       break;
     }
     case QPSolver::OSQP: {
-      if (qpsettings.polishing == true) {
+      if (qpsettings.polish == true) {
         switch (qpresults.info.status_polish) {
           case PolishStatus::POLISH_SUCCEEDED: {
             std::cout << "status_polish:  "

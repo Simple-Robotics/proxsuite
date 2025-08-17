@@ -210,7 +210,7 @@ public:
     this->settings.adaptive_mu = true;
     this->settings.adaptive_mu_interval = 50;
     this->settings.adaptive_mu_tolerance = 5.;
-    this->settings.polishing = false;
+    this->settings.polish = false;
     this->settings.delta = 1E-6;
     this->settings.polish_refine_iter = 3;
   }
@@ -267,7 +267,7 @@ struct OSQPConfig
   bool adaptive_mu;
   optional<isize> adaptive_mu_interval;
   optional<T> adaptive_mu_tolerance;
-  bool polishing;
+  bool polish;
   optional<T> delta;
   optional<isize> polish_refine_iter;
 
@@ -290,7 +290,7 @@ struct OSQPConfig
     bool adaptive_mu = true,
     optional<isize> adaptive_mu_interval = nullopt,
     optional<T> adaptive_mu_tolerance = nullopt,
-    bool polishing = false,
+    bool polish = false,
     optional<T> delta = nullopt,
     optional<isize> polish_refine_iter = nullopt)
     : eps_abs(eps_abs)
@@ -311,7 +311,7 @@ struct OSQPConfig
     , adaptive_mu(adaptive_mu)
     , adaptive_mu_interval(adaptive_mu_interval)
     , adaptive_mu_tolerance(adaptive_mu_tolerance)
-    , polishing(polishing)
+    , polish(polish)
     , delta(delta)
     , polish_refine_iter(polish_refine_iter)
   {
@@ -326,7 +326,7 @@ struct OSQPConfig
     settings.compute_timings = compute_timings;
     settings.primal_infeasibility_solving = primal_infeasibility_solving;
     settings.adaptive_mu = adaptive_mu;
-    settings.polishing = polishing;
+    settings.polish = polish;
 
     if (eps_abs != nullopt) {
       settings.eps_abs = eps_abs.value();
@@ -487,7 +487,7 @@ struct OSQPConfig
  * @param adaptive_mu_interval minimum interval between to mu update iterations.
  * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
  * update.
- * @param polishing if set to true, perform solution polishing.
+ * @param polish if set to true, perform solution polishing.
  * @param delta regularisation parameter in solution polishing.
  * @param polish_refine_iter number of iterations in polishing refinement
  * procedure.
@@ -522,7 +522,7 @@ solve(optional<MatRef<T>> H,
       bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
       optional<T> adaptive_mu_tolerance = nullopt,
-      bool polishing = false,
+      bool polish = false,
       optional<T> delta = nullopt,
       optional<isize> polish_refine_iter = nullopt)
 {
@@ -544,7 +544,7 @@ solve(optional<MatRef<T>> H,
                        adaptive_mu,
                        adaptive_mu_interval,
                        adaptive_mu_tolerance,
-                       polishing,
+                       polish,
                        delta,
                        polish_refine_iter);
 
@@ -596,7 +596,7 @@ solve(optional<MatRef<T>> H,
  * @param adaptive_mu_interval minimum interval between to mu update iterations.
  * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
  * update.
- * @param polishing if set to true, perform solution polishing.
+ * @param polish if set to true, perform solution polishing.
  * @param delta regularisation parameter in solution polishing.
  * @param polish_refine_iter number of iterations in polishing refinement
  * procedure.
@@ -633,7 +633,7 @@ solve(optional<MatRef<T>> H,
       bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
       optional<T> adaptive_mu_tolerance = nullopt,
-      bool polishing = false,
+      bool polish = false,
       optional<T> delta = nullopt,
       optional<isize> polish_refine_iter = nullopt)
 {
@@ -655,7 +655,7 @@ solve(optional<MatRef<T>> H,
                        adaptive_mu,
                        adaptive_mu_interval,
                        adaptive_mu_tolerance,
-                       polishing,
+                       polish,
                        delta,
                        polish_refine_iter);
 
