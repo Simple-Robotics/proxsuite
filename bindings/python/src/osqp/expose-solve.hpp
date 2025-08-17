@@ -47,7 +47,10 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<isize>,
-                            optional<T>>(&dense::solve<T>),
+                            optional<T>,
+                            bool,
+                            optional<T>,
+                            optional<isize>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -80,7 +83,10 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("default_H_eigenvalue_estimate") = 0.,
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
-    nanobind::arg("adaptive_mu_tolerance") = nanobind::none());
+    nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
+    nanobind::arg("polishing") = false,
+    nanobind::arg("delta") = nanobind::none(),
+    nanobind::arg("polish_refine_iter") = nanobind::none());
 
   m.def(
     "solve",
@@ -113,7 +119,10 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<isize>,
-                            optional<T>>(&dense::solve<T>),
+                            optional<T>,
+                            bool,
+                            optional<T>,
+                            optional<isize>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
     "without defining a QP object. It is possible to set up some of the solver "
     "parameters (warm start, initial guess option, proximal step sizes, "
@@ -148,7 +157,10 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("default_H_eigenvalue_estimate") = 0.,
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
-    nanobind::arg("adaptive_mu_tolerance") = nanobind::none());
+    nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
+    nanobind::arg("polishing") = false,
+    nanobind::arg("delta") = nanobind::none(),
+    nanobind::arg("polish_refine_iter") = nanobind::none());
 
   m.def("solve_no_gil",
         nanobind::overload_cast<optional<dense::MatRef<T>>,
@@ -178,7 +190,10 @@ solveDenseQp(nanobind::module_ m)
                                 optional<T>,
                                 bool,
                                 optional<isize>,
-                                optional<T>>(&dense::solve<T>),
+                                optional<T>,
+                                bool,
+                                optional<T>,
+                                optional<isize>>(&dense::solve<T>),
         "Function for solving a QP problem using OSQP dense backend directly "
         "without defining a QP object and while releasing the Global "
         "Interpreter Lock (GIL). "
@@ -214,6 +229,9 @@ solveDenseQp(nanobind::module_ m)
         nanobind::arg("adaptive_mu") = true,
         nanobind::arg("adaptive_mu_interval") = nanobind::none(),
         nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
+        nanobind::arg("polishing") = false,
+        nanobind::arg("delta") = nanobind::none(),
+        nanobind::arg("polish_refine_iter") = nanobind::none(),
         nanobind::call_guard<nanobind::gil_scoped_release>());
 
   m.def(
@@ -247,7 +265,10 @@ solveDenseQp(nanobind::module_ m)
                             optional<T>,
                             bool,
                             optional<isize>,
-                            optional<T>>(&dense::solve<T>),
+                            optional<T>,
+                            bool,
+                            optional<T>,
+                            optional<isize>>(&dense::solve<T>),
     "Function for solving a QP problem using OSQP dense backend directly "
     "without defining a QP object and while releasing the Global Interpreter "
     "Lock (GIL). "
@@ -285,6 +306,9 @@ solveDenseQp(nanobind::module_ m)
     nanobind::arg("adaptive_mu") = true,
     nanobind::arg("adaptive_mu_interval") = nanobind::none(),
     nanobind::arg("adaptive_mu_tolerance") = nanobind::none(),
+    nanobind::arg("polishing") = false,
+    nanobind::arg("delta") = nanobind::none(),
+    nanobind::arg("polish_refine_iter") = nanobind::none(),
     nanobind::call_guard<nanobind::gil_scoped_release>());
 }
 

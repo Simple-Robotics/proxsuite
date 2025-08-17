@@ -267,6 +267,9 @@ struct OSQPConfig
   bool adaptive_mu;
   optional<isize> adaptive_mu_interval;
   optional<T> adaptive_mu_tolerance;
+  bool polishing;
+  optional<T> delta;
+  optional<isize> polish_refine_iter;
 
   OSQPConfig(
     optional<T> eps_abs = nullopt,
@@ -286,7 +289,10 @@ struct OSQPConfig
     optional<T> manual_minimal_H_eigenvalue = nullopt,
     bool adaptive_mu = true,
     optional<isize> adaptive_mu_interval = nullopt,
-    optional<T> adaptive_mu_tolerance = nullopt)
+    optional<T> adaptive_mu_tolerance = nullopt,
+    bool polishing = false,
+    optional<T> delta = nullopt,
+    optional<isize> polish_refine_iter = nullopt)
     : eps_abs(eps_abs)
     , eps_rel(eps_rel)
     , rho(rho)
@@ -305,6 +311,9 @@ struct OSQPConfig
     , adaptive_mu(adaptive_mu)
     , adaptive_mu_interval(adaptive_mu_interval)
     , adaptive_mu_tolerance(adaptive_mu_tolerance)
+    , polishing(polishing)
+    , delta(delta)
+    , polish_refine_iter(polish_refine_iter)
   {
   }
   /*!
@@ -317,6 +326,7 @@ struct OSQPConfig
     settings.compute_timings = compute_timings;
     settings.primal_infeasibility_solving = primal_infeasibility_solving;
     settings.adaptive_mu = adaptive_mu;
+    settings.polishing = polishing;
 
     if (eps_abs != nullopt) {
       settings.eps_abs = eps_abs.value();
@@ -341,6 +351,12 @@ struct OSQPConfig
     }
     if (adaptive_mu_tolerance != nullopt) {
       settings.adaptive_mu_tolerance = adaptive_mu_tolerance.value();
+    }
+    if (delta != nullopt) {
+      settings.delta = delta.value();
+    }
+    if (polish_refine_iter != nullopt) {
+      settings.polish_refine_iter = polish_refine_iter.value();
     }
   }
   /*!
@@ -471,6 +487,10 @@ struct OSQPConfig
  * @param adaptive_mu_interval minimum interval between to mu update iterations.
  * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
  * update.
+ * @param polishing if set to true, perform solution polishing.
+ * @param delta regularisation parameter in solution polishing.
+ * @param polish_refine_iter number of iterations in polishing refinement
+ * procedure.
  */
 template<typename T>
 Results<T>
@@ -501,7 +521,10 @@ solve(optional<MatRef<T>> H,
       optional<T> manual_minimal_H_eigenvalue = nullopt,
       bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
-      optional<T> adaptive_mu_tolerance = nullopt)
+      optional<T> adaptive_mu_tolerance = nullopt,
+      bool polishing = false,
+      optional<T> delta = nullopt,
+      optional<isize> polish_refine_iter = nullopt)
 {
   OSQPConfig<T> config(eps_abs,
                        eps_rel,
@@ -520,7 +543,10 @@ solve(optional<MatRef<T>> H,
                        manual_minimal_H_eigenvalue,
                        adaptive_mu,
                        adaptive_mu_interval,
-                       adaptive_mu_tolerance);
+                       adaptive_mu_tolerance,
+                       polishing,
+                       delta,
+                       polish_refine_iter);
 
   return common::dense::solve_base<QP<T>, OSQPConfig<T>, T>(
     config, H, g, A, b, C, l, u, x, y, z);
@@ -570,6 +596,10 @@ solve(optional<MatRef<T>> H,
  * @param adaptive_mu_interval minimum interval between to mu update iterations.
  * @param adaptive_mu_tolerance tolerance on the ratio of residuals in mu
  * update.
+ * @param polishing if set to true, perform solution polishing.
+ * @param delta regularisation parameter in solution polishing.
+ * @param polish_refine_iter number of iterations in polishing refinement
+ * procedure.
  */
 template<typename T>
 Results<T>
@@ -602,7 +632,10 @@ solve(optional<MatRef<T>> H,
       optional<T> manual_minimal_H_eigenvalue = nullopt,
       bool adaptive_mu = true,
       optional<isize> adaptive_mu_interval = nullopt,
-      optional<T> adaptive_mu_tolerance = nullopt)
+      optional<T> adaptive_mu_tolerance = nullopt,
+      bool polishing = false,
+      optional<T> delta = nullopt,
+      optional<isize> polish_refine_iter = nullopt)
 {
   OSQPConfig<T> config(eps_abs,
                        eps_rel,
@@ -621,7 +654,10 @@ solve(optional<MatRef<T>> H,
                        manual_minimal_H_eigenvalue,
                        adaptive_mu,
                        adaptive_mu_interval,
-                       adaptive_mu_tolerance);
+                       adaptive_mu_tolerance,
+                       polishing,
+                       delta,
+                       polish_refine_iter);
 
   return common::dense::solve_base_box<QP<T>, OSQPConfig<T>, T>(
     config, H, g, A, b, C, l, u, l_box, u_box, x, y, z);

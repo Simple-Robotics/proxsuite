@@ -20,8 +20,6 @@ namespace dense {
 
 namespace python {
 
-;
-
 template<typename T>
 void
 exposeQpObjectDense(nanobind::module_ m)
