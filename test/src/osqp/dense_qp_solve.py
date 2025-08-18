@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022, INRIA
+# Copyright (c) 2025 INRIA
 #
 import os
 import proxsuite
@@ -52,14 +52,15 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_basic_solve(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test basic solve"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test basic solve"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
+        eps_abs = 1e-3  # OSQP unit test
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -67,7 +68,7 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
         )
         dua_res = normInf(
@@ -79,11 +80,11 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -92,14 +93,15 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_different_rho_value(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test different rho values"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test different rho values"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
+        eps_abs = 1e-3  # OSQP unit test
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -107,7 +109,7 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
             rho=1.0e-7,
         )
@@ -121,11 +123,11 @@ class DenseQpWrapper(unittest.TestCase):
             ),
         )
         assert results.info.rho == 1e-7
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -134,14 +136,15 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_different_mu_values(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test different mu_eq and mu_in values"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test different mu_eq and mu_in values"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
+        eps_abs = 1e-3  # OSQP unit test
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -149,10 +152,10 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
-            mu_eq=1.0e-2,
-            mu_in=1.0e-2,
+            mu_eq=1.0e-1,
+            mu_in=1.0e0,
         )
         dua_res = normInf(
             H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z
@@ -163,11 +166,11 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -176,16 +179,17 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_different_warm_starting(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test warm starting"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test warm starting"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
+        eps_abs = 1e-3  # OSQP unit test
         x_wm = np.random.randn(n)
         y_wm = np.random.randn(n_eq)
         z_wm = np.random.randn(n_in)
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -193,7 +197,7 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
             x=x_wm,
             y=y_wm,
@@ -208,11 +212,11 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -221,13 +225,14 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_different_verbose_true(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test verbose = true"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test verbose = true"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.proxqp.dense.solve(
+        eps_abs = 1e-3  # OSQP unit test
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -235,7 +240,7 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
             verbose=True,
         )
@@ -248,11 +253,11 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -261,13 +266,14 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_case_different_no_initial_guess(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test no initial guess"
+            "------------------------OSQP:  sparse random strongly convex qp with equality and inequality constraints: test no initial guess"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        results = proxsuite.proxqp.dense.solve(
+        eps_abs = 1e-3  # OSQP unit test
+        results = proxsuite.osqp.dense.solve(
             H=H,
             g=np.asfortranarray(g),
             A=A,
@@ -275,9 +281,9 @@ class DenseQpWrapper(unittest.TestCase):
             C=C,
             l=np.asfortranarray(l),
             u=np.asfortranarray(u),
-            eps_abs=1.0e-9,
+            eps_abs=eps_abs,
             eps_rel=0,
-            initial_guess=proxsuite.proxqp.NO_INITIAL_GUESS,
+            initial_guess=proxsuite.osqp.NO_INITIAL_GUESS,
         )
         dua_res = normInf(
             H @ results.x + g + A.transpose() @ results.y + C.transpose() @ results.z
@@ -288,11 +294,11 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-9
-        assert pri_res <= 1e-9
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -301,7 +307,7 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_sparse_problem_with_exact_solution_known(self):
         print(
-            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints and exact solution known"
+            "------------------------OSQP:  sparse random strongly convex qp with inequality constraints and exact solution known"
         )
 
         n = 150
@@ -320,7 +326,9 @@ class DenseQpWrapper(unittest.TestCase):
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.inf)
 
-        results = proxsuite.proxqp.dense.solve(H, g, A, b, C, l, u)
+        results = proxsuite.osqp.dense.solve(
+            H, g, A, b, C, l, u, eps_rel=0
+        )  # test refers to osqp one with eps_rel = 0
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
 
         dua_res = normInf(H @ results.x + g + C.transpose() @ results.z)
@@ -333,7 +341,7 @@ class DenseQpWrapper(unittest.TestCase):
         assert normInf(x_theoretically_optimal - results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -341,7 +349,7 @@ class DenseQpWrapper(unittest.TestCase):
         )
 
     def test_initializing_with_None(self):
-        print("------------------------ProxQP: test initialization with Nones")
+        print("------------------------OSQP:  test initialization with Nones")
 
         H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
         g = np.array([-13.0, 15.0, 7.0])
@@ -351,12 +359,13 @@ class DenseQpWrapper(unittest.TestCase):
         _u = None
         _l = None
 
-        results = proxsuite.proxqp.dense.solve(
+        results = proxsuite.osqp.dense.solve(
             H,
             g,
             A,
             b,
             C,
+            eps_rel=0,  # test refers to osqp one with eps_rel = 0
         )
         print("optimal x: {}".format(results.x))
 
@@ -365,7 +374,7 @@ class DenseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-3  # default precision of the solver
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
         print("dual residual = {} ".format(dua_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time
@@ -374,10 +383,10 @@ class DenseQpWrapper(unittest.TestCase):
 
     def test_solve_qpsolvers_problem(self):
         print(
-            "------------------------ProxQP: test case from qpsolvers with equality constraint and upper bound inequality constraints"
+            "------------------------OSQP:  test case from qpsolvers with equality constraint and upper bound inequality constraints"
         )
         file_path = os.path.dirname(os.path.realpath(__file__))
-        data_path = os.path.join(file_path, "..", "data")
+        data_path = os.path.join(file_path, "..", "..", "data")
         m = spio.loadmat(
             os.path.join(data_path, "simple_qp_with_inifinity_lower_bound.mat"),
             squeeze_me=True,
@@ -390,7 +399,11 @@ class DenseQpWrapper(unittest.TestCase):
         l = m["l"].astype(float)
         u = m["u"].astype(float)
 
-        results = proxsuite.proxqp.dense.solve(P, q, A, b, C, l, u, verbose=False)
+        eps_abs = 1e-3  # OSQP unit test
+
+        results = proxsuite.osqp.dense.solve(
+            P, q, A, b, C, l, u, verbose=False, eps_abs=eps_abs, eps_rel=0
+        )
         print("optimal x: {}".format(results.x))
 
         dua_res = normInf(
@@ -402,12 +415,12 @@ class DenseQpWrapper(unittest.TestCase):
                 np.maximum(C @ results.x - u, 0) + np.minimum(C @ results.x - l, 0)
             ),
         )
-        assert dua_res <= 1e-5
-        assert pri_res <= 1e-5
+        assert dua_res <= eps_abs
+        assert pri_res <= eps_abs
 
         print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 1, 3))
         print("dual residual = {} ".format(dua_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print("total number of iteration: {}".format(results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 results.info.setup_time, results.info.solve_time

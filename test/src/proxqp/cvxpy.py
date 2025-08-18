@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022, INRIA
+# Copyright (c) 2025, INRIA
 #
 
 import proxsuite
@@ -17,7 +17,7 @@ def normInf(x):
 class CvxpyTest(unittest.TestCase):
     def test_trigger_infeasibility_with_exact_solution_known(self):
         print(
-            "------------------------ ProxQP: test if infeasibility is triggered even though exact solution known"
+            "------------------------ ProxQP:  test if infeasibility is triggered even though exact solution known"
         )
 
         n = 3
@@ -46,7 +46,7 @@ class CvxpyTest(unittest.TestCase):
         assert normInf(x_sol - qp.results.x) <= 1e-3
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print("total number of iteration: {}".format(qp.results.info.iter_ext))
         print(
             "setup timing = {} ; solve time = {}".format(
                 qp.results.info.setup_time, qp.results.info.solve_time
@@ -54,7 +54,9 @@ class CvxpyTest(unittest.TestCase):
         )
 
     def test_one_dim_with_exact_solution_known(self):
-        print("------------------------ ProxQP: test_one_dim_with_exact_solution_known")
+        print(
+            "------------------------ ProxQP:  test_one_dim_with_exact_solution_known"
+        )
         n = 1
         H = np.array([[20.0]])
         g = np.array([-10.0])

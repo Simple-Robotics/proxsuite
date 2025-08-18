@@ -39,32 +39,32 @@ macro(proxsuite_test name path)
   add_dependencies(build_tests ${target_name})
 endmacro()
 
-proxsuite_test(dense_ruiz_equilibration src/dense_ruiz_equilibration.cpp)
-proxsuite_test(dense_qp_eq src/dense_qp_eq.cpp)
-proxsuite_test(dense_qp_with_eq_and_in src/dense_qp_with_eq_and_in.cpp)
-proxsuite_test(dense_qp_unconstrained src/dense_unconstrained_qp.cpp)
-proxsuite_test(dense_backward src/dense_backward.cpp)
-proxsuite_test(dense_qp_wrapper src/dense_qp_wrapper.cpp)
-proxsuite_test(dense_qp_solve src/dense_qp_solve.cpp)
-proxsuite_test(sparse_ruiz_equilibration src/sparse_ruiz_equilibration.cpp)
-proxsuite_test(sparse_qp src/sparse_qp.cpp)
-proxsuite_test(sparse_qp_wrapper src/sparse_qp_wrapper.cpp)
-proxsuite_test(sparse_qp_solve src/sparse_qp_solve.cpp)
-proxsuite_test(sparse_factorization src/sparse_factorization.cpp)
-proxsuite_test(cvxpy src/cvxpy.cpp)
+proxsuite_test(proxqp-dense_ruiz_equilibration src/proxqp/dense_ruiz_equilibration.cpp)
+proxsuite_test(proxqp-dense_qp_eq src/proxqp/dense_qp_eq.cpp)
+proxsuite_test(proxqp-dense_qp_with_eq_and_in src/proxqp/dense_qp_with_eq_and_in.cpp)
+proxsuite_test(proxqp-dense_qp_unconstrained src/proxqp/dense_unconstrained_qp.cpp)
+proxsuite_test(proxqp-dense_backward src/proxqp/dense_backward.cpp)
+proxsuite_test(proxqp-dense_qp_wrapper src/proxqp/dense_qp_wrapper.cpp)
+proxsuite_test(proxqp-dense_qp_solve src/proxqp/dense_qp_solve.cpp)
+proxsuite_test(proxqp-sparse_ruiz_equilibration src/proxqp/sparse_ruiz_equilibration.cpp)
+proxsuite_test(proxqp-sparse_qp src/proxqp/sparse_qp.cpp)
+proxsuite_test(proxqp-sparse_qp_wrapper src/proxqp/sparse_qp_wrapper.cpp)
+proxsuite_test(proxqp-sparse_qp_solve src/proxqp/sparse_qp_solve.cpp)
+proxsuite_test(proxqp-sparse_factorization src/proxqp/sparse_factorization.cpp)
+proxsuite_test(proxqp-cvxpy src/proxqp/cvxpy.cpp)
 
-proxsuite_test(osqp_cvxpy src/osqp_cvxpy.cpp)
-proxsuite_test(osqp_dense_qp_eq src/osqp_dense_qp_eq.cpp)
-proxsuite_test(osqp_dense_qp_solve src/osqp_dense_qp_solve.cpp)
-proxsuite_test(osqp_dense_qp_with_eq_and_in src/osqp_dense_qp_with_eq_and_in.cpp)
-proxsuite_test(osqp_dense_qp_wrapper src/osqp_dense_qp_wrapper.cpp)
-proxsuite_test(osqp_dense_ruiz_equilibration src/osqp_dense_ruiz_equilibration.cpp)
-proxsuite_test(osqp_dense_qp_unconstrained src/osqp_dense_unconstrained_qp.cpp)
+proxsuite_test(osqp-cvxpy src/osqp/cvxpy.cpp)
+proxsuite_test(osqp-dense_qp_eq src/osqp/dense_qp_eq.cpp)
+proxsuite_test(osqp-dense_qp_solve src/osqp/dense_qp_solve.cpp)
+proxsuite_test(osqp-dense_qp_with_eq_and_in src/osqp/dense_qp_with_eq_and_in.cpp)
+proxsuite_test(osqp-dense_qp_wrapper src/osqp/dense_qp_wrapper.cpp)
+proxsuite_test(osqp-dense_ruiz_equilibration src/osqp/dense_ruiz_equilibration.cpp)
+proxsuite_test(osqp-dense_qp_unconstrained src/osqp/dense_unconstrained_qp.cpp)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
-  proxsuite_test(parallel src/parallel_qp_solve.cpp)
+  proxsuite_test(proxqp-parallel src/proxqp/parallel_qp_solve.cpp)
   target_link_libraries(
-    ${PROJECT_NAME}-test-cpp-parallel
+    ${PROJECT_NAME}-test-cpp-proxqp-parallel
     PRIVATE OpenMP::OpenMP_CXX
   )
 endif()
@@ -75,29 +75,29 @@ macro(ADD_TEST_CFLAGS target flag)
 endmacro()
 
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/serialization-data")
-proxsuite_test(serialization src/serialization.cpp)
+proxsuite_test(proxqp-serialization src/proxqp/serialization.cpp)
 add_test_cflags(
-  ${PROJECT_NAME}-test-cpp-serialization
+  ${PROJECT_NAME}-test-cpp-proxqp-serialization
   "-DTEST_SERIALIZATION_FOLDER=\\\\\"${CMAKE_CURRENT_BINARY_DIR}/serialization-data\\\\\""
 )
 if(cereal_FOUND)
   target_link_libraries(
-    ${PROJECT_NAME}-test-cpp-serialization
+    ${PROJECT_NAME}-test-cpp-proxqp-serialization
     PRIVATE cereal::cereal
   )
 else()
   target_include_directories(
-    ${PROJECT_NAME}-test-cpp-serialization
+    ${PROJECT_NAME}-test-cpp-proxqp-serialization
     SYSTEM
     PRIVATE ${PROJECT_SOURCE_DIR}/external/cereal/include
   )
 endif()
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
-  proxsuite_test(dense_maros_meszaros src/dense_maros_meszaros.cpp)
-  proxsuite_test(sparse_maros_meszaros src/sparse_maros_meszaros.cpp)
+  proxsuite_test(proxqp-dense_maros_meszaros src/proxqp/dense_maros_meszaros.cpp)
+  proxsuite_test(proxqp-sparse_maros_meszaros src/proxqp/sparse_maros_meszaros.cpp)
 
-  proxsuite_test(osqp_dense_maros_meszaros src/osqp_dense_maros_meszaros.cpp)
+  proxsuite_test(osqp-dense_maros_meszaros src/osqp/dense_maros_meszaros.cpp)
 endif()
 
 if(BUILD_PYTHON_INTERFACE)
@@ -116,10 +116,21 @@ if(BUILD_PYTHON_INTERFACE)
 
   foreach(TEST_FILE ${${PROJECT_NAME}_PYTHON_UNITTEST})
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
-    string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/" "" TEST_FILE ${TEST_FILE})
+    string(REGEX REPLACE "${PROJECT_SOURCE_DIR}/" "" TEST_FILE_REL ${TEST_FILE})
+    string(REGEX REPLACE "^test/src/" "" TEST_SUBPATH ${TEST_FILE_REL})
+    get_filename_component(TEST_DIR ${TEST_SUBPATH} DIRECTORY)
+    if(TEST_DIR STREQUAL "")
+      set(PYTHON_TEST_NAME "${PROJECT_NAME}-test-py-${TEST_NAME}")
+    else()
+      string(REPLACE "/" "-" TEST_DIR_CLEAN ${TEST_DIR})
+      set(
+        PYTHON_TEST_NAME
+        "${PROJECT_NAME}-test-py-${TEST_DIR_CLEAN}-${TEST_NAME}"
+      )
+    endif()
     ADD_PYTHON_UNIT_TEST(
-      "${PROJECT_NAME}-test-py-${TEST_NAME}"
-      "${TEST_FILE}"
+      "${PYTHON_TEST_NAME}"
+      "${TEST_FILE_REL}"
       "bindings/python"
     )
   endforeach()
