@@ -179,9 +179,11 @@ DOCTEST_TEST_CASE(
     << "---OSQP:  testing sparse random strongly convex qp with degenerate "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
-  T sparsity_factor = 0.45;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
+  T eps_primal_inf = T(1e-12); // TODO: Make test pass with 1e-4
+  T eps_dual_inf = T(1e-4);
+  T sparsity_factor = 0.45;
   T strong_convexity_factor(1e-2);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -197,6 +199,8 @@ DOCTEST_TEST_CASE(
     osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = eps_rel;
+    qp.settings.eps_primal_inf = eps_primal_inf;
+    qp.settings.eps_dual_inf = eps_dual_inf;
     qp.init(qp_random.H,
             qp_random.g,
             qp_random.A,
@@ -205,8 +209,9 @@ DOCTEST_TEST_CASE(
             qp_random.l,
             qp_random.u);
     qp.solve();
-    // DOCTEST_CHECK(qp.results.info.status ==
-    //               common::QPSolverOutput::QPSOLVER_SOLVED); // Fail here
+    DOCTEST_CHECK(
+      qp.results.info.status ==
+      common::QPSolverOutput::QPSOLVER_SOLVED); // Fail (eps_primal_inf = 1e-3)
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -216,8 +221,8 @@ DOCTEST_TEST_CASE(
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    // DOCTEST_CHECK(pri_res <= eps_abs); // Fail here
-    // DOCTEST_CHECK(dua_res <= eps_abs);
+    DOCTEST_CHECK(pri_res <= eps_abs); // Fail (eps_primal_inf = 1e-3)
+    DOCTEST_CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -226,15 +231,10 @@ DOCTEST_TEST_CASE(
     std::cout << "total number of iteration: " << qp.results.info.iter_ext
               << std::endl;
   }
-  // dim =  10: Pass
-  // dim = 110: Fail: r_pri plafond 1.63e-01 / r_dua cv / r_g -1.20e+21 / Primal
-  // infeasible dim = 210: Pass: But r_g -3.15e+20 dim = 310: Fail: r_pri
-  // plafond 2.01e-02 / r_dua cv / r_g -3.16e+20 / Primal infeasible dim = 410:
-  // Fail: r_pri plafond 1.73e-02 / r_dua cv / r_g -2.14e+19 / Primal infeasible
-  // dim = 510: Fail: r_pri plafond 7.13e-03 / r_dua cv / r_g -1.48e+20 / Primal
-  // infeasible dim = 610: Pass: But r_g -2.45e+20 dim = 710: Pass: But r_g
-  // -2.78e+19 dim = 810: Fail: r_pri plafond 1.48e-02 / r_dua cv / r_g
-  // -2.58e+20 / Primal infeasible dim = 910: Pass: But r_g -1.51e+20
+  // Note:
+  // Fails with default value of eps_primal_inf
+  // Passes with eps_primal_inf = 1e-12
+  // Calibration tests show that OSQP should pass at eps_primal_inf = 1e-3
 }
 
 DOCTEST_TEST_CASE(
