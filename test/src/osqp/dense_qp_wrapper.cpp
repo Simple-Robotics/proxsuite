@@ -7071,6 +7071,7 @@ TEST_CASE("OSQP: :dense: init must be called before update")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 }
+// Fail
 // test of the box constraints interface
 TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
 {
@@ -7237,7 +7238,7 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
-    // CHECK(pri_res <= eps_abs); // Fail here
+    // CHECK(pri_res <= eps_abs);
     if (pri_res > eps_abs) {
       std::cout << "pri_res: " << pri_res << std::endl;
       std::cout << "i of failed pri_res: " << i << std::endl;
@@ -7260,7 +7261,7 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
                       ? "Not run"
                       : "Unknown")
                 << std::endl;
-      // Fails: Only 3 over 1000 tests
+      // Only 3 over 1000 tests do not pass
       // i = 294: pri_res 0.00624957 >= 0.001 / iter 83 / Primal infeasible
       // i = 715: pri_res 0.00138004 >= 0.001 / iter 72 / Primal infeasible
       // i = 782: pri_res 0.00217198 >= 0.001 / iter 91 / Primal infeasible

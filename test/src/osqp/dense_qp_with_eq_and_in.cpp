@@ -169,7 +169,6 @@ DOCTEST_TEST_CASE("OSQP:  sparse random not strongly convex qp with inequality "
   }
 }
 
-// Test fail
 DOCTEST_TEST_CASE(
   "OSQP:  sparse random strongly convex qp with degenerate inequality "
   "constraints and increasing dimension using the API")
@@ -181,8 +180,8 @@ DOCTEST_TEST_CASE(
     << std::endl;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
-  T eps_primal_inf = T(1e-12); // TODO: Make test pass with 1e-4
-  T eps_dual_inf = T(1e-4);
+  T eps_primal_inf = T(1e-15);
+  T eps_dual_inf = T(1e-15);
   T sparsity_factor = 0.45;
   T strong_convexity_factor(1e-2);
   common::utils::rand::set_seed(1);
@@ -209,9 +208,8 @@ DOCTEST_TEST_CASE(
             qp_random.l,
             qp_random.u);
     qp.solve();
-    DOCTEST_CHECK(
-      qp.results.info.status ==
-      common::QPSolverOutput::QPSOLVER_SOLVED); // Fail (eps_primal_inf = 1e-3)
+    DOCTEST_CHECK(qp.results.info.status ==
+                  common::QPSolverOutput::QPSOLVER_SOLVED);
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -221,7 +219,7 @@ DOCTEST_TEST_CASE(
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs); // Fail (eps_primal_inf = 1e-3)
+    DOCTEST_CHECK(pri_res <= eps_abs);
     DOCTEST_CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
@@ -232,9 +230,9 @@ DOCTEST_TEST_CASE(
               << std::endl;
   }
   // Note:
-  // Fails with default value of eps_primal_inf
-  // Passes with eps_primal_inf = 1e-12
-  // Calibration tests show that OSQP should pass at eps_primal_inf = 1e-3
+  // eps_primal_inf and eps_dual_inf are set to 1e-15 to reproduce the
+  // benchmark setting on OSQP in the benchmark repository:
+  // https://github.com/Simple-Robotics/proxqp_benchmark
 }
 
 DOCTEST_TEST_CASE(
